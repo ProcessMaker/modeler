@@ -9,7 +9,10 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "vue": "^2.5.17"
+    "bpmn-moddle": "^5.1.5",
+    "jointjs": "^2.1.4",
+    "vue": "^2.5.17",
+    "vue-drag-drop": "^1.1.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.3",
