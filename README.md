@@ -1,4 +1,4 @@
-# modeler
+# A vue.js based BPMN modeler
 
 ## Project setup
 ```
