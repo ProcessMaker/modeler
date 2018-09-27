@@ -9,6 +9,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@processmaker/vue-form-builder": "github:processmaker/vue-form-builder",
+    "@processmaker/vue-form-elements": "github:processmaker/vue-form-elements",
     "bootstrap-vue": "^2.0.0-rc.11",
     "bpmn-moddle": "^5.1.5",
     "jointjs": "^2.1.4",

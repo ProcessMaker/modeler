@@ -36,6 +36,7 @@ export default {
       '<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
       'id="empty-definitions" ' +
       'targetNamespace="http://bpmn.io/schema/bpmn">' +
+        '<bpmn2:process id="process_1" name="Blank Process"></bpmn2:process>' +
       "</bpmn2:definitions>";
     this.$refs.modeler.loadXML(blank);
   },

@@ -31,7 +31,8 @@ export default {
         this.shape.resize(bounds.get('width'), bounds.get('height'));
         this.shape.attr({
             body: {
-                fill: 'red'
+                fill: '#FFF1F2',
+                stroke: '#ED4757'
             }
         });
         this.shape.addTo(this.graph)
