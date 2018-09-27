@@ -3,23 +3,32 @@
     <div class="navbar">
       <div>ProcessMaker Modeler</div>
       <div class="actions">
-        <button class="button">Upload XML</button>
+        <b-btn v-b-modal="'uploadmodal'">Upload XML</b-btn>
         <button class="button" @click="download">Download XML</button>
       </div>
     </div>
     <div class="modeler-container">
       <modeler ref="modeler" />
     </div>
+
+    <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
+      <file-upload ref="upload" @input="handleUpload">
+        Upload file
+      </file-upload>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import Modeler from "./components/Modeler.vue";
 
+import FileUpload from "vue-upload-component";
+
 export default {
   name: "ModelerApp",
   components: {
-    Modeler
+    Modeler,
+    FileUpload
   },
   mounted() {
     let blank =
@@ -28,13 +37,21 @@ export default {
       'id="empty-definitions" ' +
       'targetNamespace="http://bpmn.io/schema/bpmn">' +
       "</bpmn2:definitions>";
-      this.$refs.modeler.loadXML(blank);
+    this.$refs.modeler.loadXML(blank);
   },
   methods: {
     download() {
       this.$refs.modeler.toXML(function(err, xml) {
         alert(xml);
-      })
+      });
+    },
+    handleUpload(files) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        this.$refs.modeler.loadXML(reader.result);
+        this.$refs.uploadmodal.hide();
+      }
+      reader.readAsText(files[0].file);
     }
   }
 };
