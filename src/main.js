@@ -1,10 +1,6 @@
 import Vue from 'vue'
 import ModelerApp from './ModelerApp.vue'
 
-import VueDragDrop from 'vue-drag-drop';
-
-Vue.use(VueDragDrop);
-
 import BootstrapVue from 'bootstrap-vue'
 
 Vue.use(BootstrapVue);

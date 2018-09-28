@@ -6,6 +6,46 @@
 <script>
 import joint from "jointjs";
 
+joint.dia.Element.define('processmaker.modeler.bpmn.exclusiveGateway', {
+        attrs: {
+        body: {
+            refWidth: '100%',
+            refHeight: '100%',
+            fill: 'transparent',
+            strokeWidth: 0,
+        },
+        diamond: {
+            strokeWidth: 2,
+            stroke: '#000000',
+            fill: '#FFFFFF',
+            transform: 'rotate(45)',
+            refWidth: '100%',
+            refHeight: '100%'
+        },
+        label: {
+            textVerticalAnchor: 'middle',
+            textAnchor: 'middle',
+            refX: '50%',
+            refY: '50%',
+            fontSize: 14,
+            fill: '#333333'
+        }
+    }
+}, {
+    markup: [{
+        tagName: 'rect',
+        selector: 'body',
+    }, {
+        tagName: 'rect',
+        selector: 'diamond'
+    },
+    {
+        tagName: 'text',
+        selector: 'label'
+    }]
+
+});
+
 export default {
   props: ["graph", "node", "id"],
   data() {
@@ -14,12 +54,12 @@ export default {
       definition: null,
       inspectorConfig: [
         {
-          name: "Task",
+          name: "Exclusive Gateway",
           items: [
             {
                 component: 'FormText',
                 config: {
-                    label: 'Task',
+                    label: 'Exclusive Gateway',
                     fontSize: '2em'
                 }
             },
@@ -36,7 +76,7 @@ export default {
               component: "FormInput",
               config: {
                 label: "Name",
-                helper: "The Name of the Task",
+                helper: "The Name of the Gateway",
                 name: "name"
               }
             }
@@ -68,15 +108,11 @@ export default {
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
-    this.shape = new joint.shapes.standard.Rectangle();
+    this.shape = new joint.shapes.processmaker.modeler.bpmn.exclusiveGateway();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
-          body: {
-              rx: 4,
-              ry: 4
-          },
         label: {
           text: this.node.definition.get("name"),
           fill: "black"

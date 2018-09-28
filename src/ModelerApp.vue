@@ -8,10 +8,11 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" />
+      <modeler ref="modeler" :controls="controls" />
     </div>
     <statusbar>
-        {{statusText}} <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
+      {{statusText}}
+      <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
     </statusbar>
 
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
@@ -28,11 +29,14 @@ import statusbar from "./components/statusbar.vue";
 
 import FileUpload from "vue-upload-component";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faCheckCircle,
+  faTimesCircle
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-console.log(faCheckCircle);
+import InitialControls from "./controls";
 
 export default {
   name: "ModelerApp",
@@ -44,25 +48,38 @@ export default {
   },
   data() {
     return {
-      statusText: 'No errors detected',
+      controls: InitialControls,
+      statusText: "No errors detected",
       statusIcon: faCheckCircle,
-      statusColor: 'green'
-    }
+      statusColor: "green"
+    };
   },
   mounted() {
-    let blank =
-      '<?xml version="1.0" encoding="UTF-8"?>' +
-      '<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
-      'id="empty-definitions" ' +
-      'targetNamespace="http://bpmn.io/schema/bpmn">' +
-        '<bpmn2:process id="process_1" name="Blank Process"></bpmn2:process>' +
-      "</bpmn2:definitions>";
+    let blank = `
+    <?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="Process_1" isExecutable="true">
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+
+    `;
+
     this.$refs.modeler.loadXML(blank);
   },
   methods: {
     download() {
       this.$refs.modeler.toXML(function(err, xml) {
-        alert(xml);
+        if (err) {
+          alert(err);
+          console.log(err);
+        } else {
+          alert(xml);
+          console.log(xml);
+        }
       });
     },
     handleUpload(files) {
@@ -70,7 +87,7 @@ export default {
       reader.onloadend = () => {
         this.$refs.modeler.loadXML(reader.result);
         this.$refs.uploadmodal.hide();
-      }
+      };
       reader.readAsText(files[0].file);
     }
   }

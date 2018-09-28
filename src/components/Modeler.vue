@@ -1,17 +1,20 @@
 <template>
     <div class="modeler">
-        <toolpanel ref="toolpanel" />
         <div class="modeler-container">
-            <div class="inspector">
-                <vue-form-renderer ref="inspector" :data="inspectorData" @update="handleInspectorUpdate" :config="inspectorConfig" />
-            </div>
+            <controls :controls="controls">
 
+            </controls>
             <div ref="paper-container" class="paper-container">
                 <drop @drop="test">
                     <div class="paper">
                     </div>
                 </drop>
             </div>
+
+            <div class="inspector">
+                <vue-form-renderer ref="inspector" :data="inspectorData" @update="handleInspectorUpdate" :config="inspectorConfig" />
+            </div>
+
         </div>
         <div class="definitions-container" v-if="definitions">
             <component :is="node.type" :key="id" v-for="(node, id) in nodes" :graph="graph" :node="node" :id="id"></component>
@@ -20,8 +23,8 @@
 </template>
 
 <script>
-import toolpanel from "./ToolPanel";
 import BpmnModdle from "bpmn-moddle";
+import controls from "./controls";
 
 // Our renderer for our inspector
 
@@ -30,8 +33,11 @@ import task from "./nodes/task";
 import startEvent from "./nodes/startEvent";
 import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
+import exclusiveGateway from "./nodes/exclusiveGateway";
 import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
 import processInspectorConfig from "./inspectors/process";
+
+import { Drag, Drop } from 'vue-drag-drop';
 
 // Bring in inspector items
 import {
@@ -52,12 +58,18 @@ if (!window.joint) {
 }
 
 export default {
+  props: [
+    'controls'
+  ],
   components: {
-    toolpanel,
+    Drag,
+    Drop,
+      controls,
     task,
     startEvent,
     endEvent,
     sequenceFlow,
+    exclusiveGateway,
     VueFormRenderer
   },
   data() {
@@ -67,6 +79,7 @@ export default {
       // Our jointjs paper
       paper: null,
       definitions: null,
+      planeElements: null,
       // This is our id based lookup model
       inspectors: {
         process: processInspectorConfig
@@ -137,24 +150,28 @@ export default {
                   type: "startEvent",
                   definition: element
                 });
-              }
-              if (element.$type == "bpmn:EndEvent") {
+              } else if (element.$type == "bpmn:EndEvent") {
                 this.$set(this.nodes, element.id, {
                   type: "endEvent",
                   definition: element
                 });
-              }
-              if (element.$type == "bpmn:Task") {
+              } else if (element.$type == "bpmn:Task") {
                 this.$set(this.nodes, element.id, {
                   type: "task",
                   definition: element
                 });
-              }
-              if (element.$type == "bpmn:SequenceFlow") {
+              } else if (element.$type == "bpmn:ExclusiveGateway") {
+                this.$set(this.nodes, element.id, {
+                  type: "exclusiveGateway",
+                  definition: element
+                });
+              } else if (element.$type == "bpmn:SequenceFlow") {
                 this.$set(this.nodes, element.id, {
                   type: "sequenceFlow",
                   definition: element
                 });
+              } else {
+                console.log("UNKNOWN TYPE: " + element.$type);
               }
             }
           }
@@ -166,7 +183,11 @@ export default {
         for (var diagram of diagrams) {
           var plane = diagram.plane;
           var elements = plane.planeElement;
-          for (var diagramElement of elements) {
+          if(!plane.planeElement) {
+            plane.planeElement = [];
+          }
+          this.planeElements = plane.planeElement;
+          for (var diagramElement of this.planeElements) {
             if (this.nodes[diagramElement.bpmnElement.id]) {
               this.$set(
                 this.nodes[diagramElement.bpmnElement.id],
@@ -194,8 +215,29 @@ export default {
       let moddle = new BpmnModdle();
       moddle.toXML(this.definitions, cb);
     },
-    test(/*transferData, event*/) {
-      // Do nothing
+    test(transferData, event) {
+      // Add to our processNode
+      let definition = transferData.definition();
+
+      let id = transferData.type + '_' + Object.keys(this.nodes).length;
+      definition.id = id;
+                                              
+      this.processNode.get('flowElements').push(definition)
+      // Now, let's modify planeElement
+      let diagram = transferData.diagram();
+      diagram.id = id + '_di';
+      diagram.bpmnElement = definition;
+      diagram.bounds.x = event.offsetX;
+      diagram.bounds.y = event.offsetY;
+      // Create diagram
+      this.planeElements.push(diagram)
+      // Our BPMN models are updated, now add to our nodes
+      // @todo come up with random id
+      this.$set(this.nodes, id, {
+        type: transferData.type,
+        definition: definition,
+        diagram: diagram,
+      });
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -271,7 +313,7 @@ export default {
     max-width: 100%;
     width: 100%;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
 
     .inspector {
       font-size: 0.75em;
