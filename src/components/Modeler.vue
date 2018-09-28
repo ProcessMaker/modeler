@@ -6,7 +6,7 @@
                 <vue-form-renderer ref="inspector" :data="inspectorData" @update="handleInspectorUpdate" :config="inspectorConfig" />
             </div>
 
-            <div class="paper-container">
+            <div ref="paper-container" class="paper-container">
                 <drop @drop="test">
                     <div class="paper">
                     </div>
@@ -199,8 +199,8 @@ export default {
     },
     handleResize() {
       let parent = this.$el.parentElement;
-      this.$el.style.width = parent.clientWidth + "px";
-      this.$el.style.height = parent.clientHeight + "px";
+      this.$refs['paper-container'].style.width = parent.clientWidth + "px";
+      this.$refs['paper-container'].style.height = parent.clientHeight + "px";
     },
     setInspector(node, config) {
       this.inspectorNode = node;
@@ -231,7 +231,7 @@ export default {
       gridSize: 10,
       width: this.$el.clientWidth,
       height: this.$el.clientHeight,
-      drawGrid: "mesh"
+      drawGrid: true
     });
     this.paper.on("blank:pointerclick", () => {
       if (this.highlighted) {
@@ -278,7 +278,8 @@ export default {
       text-align: left;
       padding: 8px;
       width: 320px;
-      background-color: lightgrey;
+      background-color: #eeeeee;
+      border-left: 1px solid #aaaaaa;
     }
 
     .paper-container {

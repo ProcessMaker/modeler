@@ -10,6 +10,9 @@
     <div class="modeler-container">
       <modeler ref="modeler" />
     </div>
+    <statusbar>
+        {{statusText}} <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
+    </statusbar>
 
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload ref="upload" @input="handleUpload">
@@ -21,14 +24,30 @@
 
 <script>
 import Modeler from "./components/Modeler.vue";
+import statusbar from "./components/statusbar.vue";
 
 import FileUpload from "vue-upload-component";
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+console.log(faCheckCircle);
 
 export default {
   name: "ModelerApp",
   components: {
     Modeler,
-    FileUpload
+    FileUpload,
+    statusbar,
+    FontAwesomeIcon
+  },
+  data() {
+    return {
+      statusText: 'No errors detected',
+      statusIcon: faCheckCircle,
+      statusColor: 'green'
+    }
   },
   mounted() {
     let blank =

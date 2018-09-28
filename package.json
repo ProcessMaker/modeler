@@ -9,11 +9,16 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.4",
+    "@fortawesome/free-solid-svg-icons": "^5.3.1",
+    "@fortawesome/vue-fontawesome": "^0.1.1",
     "@processmaker/vue-form-builder": "github:processmaker/vue-form-builder",
     "@processmaker/vue-form-elements": "github:processmaker/vue-form-elements",
     "bootstrap-vue": "^2.0.0-rc.11",
     "bpmn-moddle": "^5.1.5",
+    "i": "^0.3.6",
     "jointjs": "^2.1.4",
+    "npm": "^6.4.1",
     "vue": "^2.5.17",
     "vue-drag-drop": "^1.1.4",
     "vue-upload-component": "^2.8.14"
