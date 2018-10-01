@@ -1,6 +1,6 @@
 <template>
-    <div>
-    </div>
+  <div>
+  </div>
 </template>
 
 <script>
@@ -17,11 +17,11 @@ export default {
           name: "Task",
           items: [
             {
-                component: 'FormText',
-                config: {
-                    label: 'Task',
-                    fontSize: '2em'
-                }
+              component: "FormText",
+              config: {
+                label: "Task",
+                fontSize: "2em"
+              }
             },
             {
               component: "FormInput",
@@ -54,17 +54,32 @@ export default {
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
-        body: {
-        },
+        body: {},
         label: {
-          text: this.node.definition.get("name"),
+          text: joint.util.breakText(this.node.definition.get("name"), {
+            width: bounds.width
+          }),
           fill: "black"
         }
       });
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.setInspector(
+        this.node.definition,
+        this.inspectorConfig,
+        this.handleInspectionUpdate
+      );
+    },
+    handleInspectionUpdate(value) {
+      // Go through each property and rebind it to our data
+      for (var key in value) {
+        // Only change if the value is different
+        if (this.node.definition[key] != value[key]) {
+          this.node.definition[key] = value[key];
+        }
+      }
+      this.updateShape();
     }
   },
   mounted() {
@@ -73,30 +88,34 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-          body: {
-              rx: 8,
-              ry: 8
-          },
-        label: {
-          text: joint.util.breakText(this.node.definition.get("name"), {width: bounds.width}),
-          fill: "black",
-        }
-      });
-    this.shape.on('change:position', (element, position) => {
-        this.node.diagram.bounds.x = position.x;
-        this.node.diagram.bounds.y = position.y;
-        // This is done so any flows pointing to this task are updated
-        this.$emit('move', {
+    this.shape.attr({
+      body: {
+        rx: 8,
+        ry: 8
+      },
+      label: {
+        text: joint.util.breakText(this.node.definition.get("name"), {
+          width: bounds.width
+        }),
+        fill: "black"
+      }
+    });
+    this.shape.on("change:position", (element, position) => {
+      this.node.diagram.bounds.x = position.x;
+      this.node.diagram.bounds.y = position.y;
+      // This is done so any flows pointing to this task are updated
+      this.$emit(
+        "move",
+        {
           x: bounds.x,
           y: bounds.y
-        }, element);
+        },
+        element
+      );
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-
-
   }
 };
 </script>
