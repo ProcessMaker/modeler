@@ -61,6 +61,7 @@ export default {
           fill: "black"
         }
       });
+      // Alert anyone that we have moved
     },
     handleClick() {
       this.$parent.setInspector(this.node.definition, this.inspectorConfig);
@@ -74,21 +75,28 @@ export default {
     this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
           body: {
-              rx: 4,
-              ry: 4
+              rx: 8,
+              ry: 8
           },
         label: {
-          text: this.node.definition.get("name"),
-          fill: "black"
+          text: joint.util.breakText(this.node.definition.get("name"), {width: bounds.width}),
+          fill: "black",
         }
       });
     this.shape.on('change:position', (element, position) => {
         this.node.diagram.bounds.x = position.x;
         this.node.diagram.bounds.y = position.y;
+        // This is done so any flows pointing to this task are updated
+        this.$emit('move', {
+          x: bounds.x,
+          y: bounds.y
+        }, element);
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
+
+
   }
 };
 </script>

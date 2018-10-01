@@ -5,7 +5,7 @@
 
             </controls>
             <div ref="paper-container" class="paper-container">
-                <drop @drop="test">
+                <drop @drop="handleDrop">
                     <div class="paper">
                     </div>
                 </drop>
@@ -215,7 +215,7 @@ export default {
       let moddle = new BpmnModdle();
       moddle.toXML(this.definitions, cb);
     },
-    test(transferData, event) {
+    handleDrop(transferData, event) {
       // Add to our processNode
       let definition = transferData.definition();
 

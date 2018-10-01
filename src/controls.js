@@ -19,9 +19,7 @@ export default {
                 return moddle.create('bpmndi:BPMNShape', {
                     bounds: moddle.create('dc:Bounds', {
                         height: 80,
-                        width: 100,
-                        x: null,
-                        y: null
+                        width: 100
                     })
                 })
             },
@@ -29,7 +27,22 @@ export default {
         {
             icon: require('./assets/toolpanel/exclusive-gateway.svg'),
             label: 'Exclusive Gateway',
-            component: require('./components/nodes/task')
+            component: require('./components/nodes/task'),
+            type: 'exclusiveGateway',
+            definition: function() {
+                return moddle.create('bpmn:ExclusiveGateway', {
+                    name: 'New Exclusive Gateway',
+                    gatewayDirection: 'Diverging'
+                })
+            },
+            diagram: function () {
+                return moddle.create('bpmndi:BPMNShape', {
+                    bounds: moddle.create('dc:Bounds', {
+                        height: 42,
+                        width: 42
+                    })
+                })
+            }
         },
         {
             icon: require('./assets/toolpanel/parallel-gateway.svg'),

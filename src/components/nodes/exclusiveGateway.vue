@@ -1,50 +1,46 @@
 <template>
-    <div>
-    </div>
+  <div>
+  </div>
 </template>
 
 <script>
 import joint from "jointjs";
 
-joint.dia.Element.define('processmaker.modeler.bpmn.exclusiveGateway', {
-        attrs: {
-        body: {
-            refWidth: '100%',
-            refHeight: '100%',
-            fill: 'transparent',
-            strokeWidth: 0,
-        },
-        diamond: {
-            strokeWidth: 2,
-            stroke: '#000000',
-            fill: '#FFFFFF',
-            transform: 'rotate(45)',
-            refWidth: '100%',
-            refHeight: '100%'
-        },
-        label: {
-            textVerticalAnchor: 'middle',
-            textAnchor: 'middle',
-            refX: '50%',
-            refY: '50%',
-            fontSize: 14,
-            fill: '#333333'
-        }
-    }
-}, {
-    markup: [{
-        tagName: 'rect',
-        selector: 'body',
-    }, {
-        tagName: 'rect',
-        selector: 'diamond'
+joint.dia.Element.define(
+  "processmaker.modeler.bpmn.exclusiveGateway",
+  {
+    size: {
+      width: 80,
+      height: 80
     },
-    {
-        tagName: 'text',
-        selector: 'label'
-    }]
-
-});
+    attrs: {
+      ".body": {
+        strokeWidth: 2,
+        stroke: "#000000",
+        points: "40,0, 80,40, 40,80, 0,40",
+        fill: "#FFFFFF",
+      },
+      ".label": {
+        textVerticalAnchor: "middle",
+        textAnchor: "middle",
+        refX: "50%",
+        refY: "115%",
+        fontSize: 14,
+        fill: "#333333"
+      },
+      image: {
+        width: 40,
+        height: 40,
+        "xlink:href": "",
+        transform: "translate(20,20)"
+      }
+    }
+  },
+  {
+    markup:
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/>'
+  }
+);
 
 export default {
   props: ["graph", "node", "id"],
@@ -57,11 +53,11 @@ export default {
           name: "Exclusive Gateway",
           items: [
             {
-                component: 'FormText',
-                config: {
-                    label: 'Exclusive Gateway',
-                    fontSize: '2em'
-                }
+              component: "FormText",
+              config: {
+                label: "Exclusive Gateway",
+                fontSize: "2em"
+              }
             },
             {
               component: "FormInput",
@@ -79,6 +75,24 @@ export default {
                 helper: "The Name of the Gateway",
                 name: "name"
               }
+            },
+            {
+              component: "FormSelect",
+              config: {
+                label: "Direction",
+                helper: "The direction of the gateway",
+                name: "gatewayDirection",
+                options: [
+                  {
+                    value: "Diverging",
+                    content: "Diverging"
+                  },
+                  {
+                    value: "Converging",
+                    content: "Converging"
+                  }
+                ]
+              }
             }
           ]
         }
@@ -94,8 +108,7 @@ export default {
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
-        body: {
-        },
+        body: {},
         label: {
           text: this.node.definition.get("name"),
           fill: "black"
@@ -112,19 +125,35 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        label: {
-          text: this.node.definition.get("name"),
-          fill: "black"
-        }
-      });
-    this.shape.on('change:position', (element, position) => {
-        this.node.diagram.bounds.x = position.x;
-        this.node.diagram.bounds.y = position.y;
+    this.shape.attr({
+      ".label": {
+        text: this.node.definition.get("name"),
+        fill: "black"
+      }
+    });
+    this.shape.on("change:position", (element, position) => {
+      this.node.diagram.bounds.x = position.x;
+      this.node.diagram.bounds.y = position.y;
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
+
+    this.shape.on("change:position", (element, position) => {
+      this.node.diagram.bounds.x = position.x;
+      this.node.diagram.bounds.y = position.y;
+      // This is done so any flows pointing to this task are updated
+      this.$emit(
+        "move",
+        {
+          x: bounds.x,
+          y: bounds.y
+        },
+        element
+      );
+    });
+
+
   }
 };
 </script>
