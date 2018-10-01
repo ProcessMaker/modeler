@@ -80,6 +80,7 @@ export default {
       paper: null,
       definitions: null,
       planeElements: null,
+      canvasDragPosition: null,
       // This is our id based lookup model
       inspectors: {
         process: processInspectorConfig
@@ -203,6 +204,12 @@ export default {
       let moddle = new BpmnModdle();
       moddle.toXML(this.definitions, cb);
     },
+
+    handleCanvasMove() {
+
+    },
+
+
     handleDrop(transferData, event) {
       // Add to our processNode
       let definition = transferData.definition();
@@ -215,8 +222,12 @@ export default {
       let diagram = transferData.diagram();
       diagram.id = id + '_di';
       diagram.bpmnElement = definition;
-      diagram.bounds.x = event.offsetX;
-      diagram.bounds.y = event.offsetY;
+      // Handle transform
+
+      diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
+      diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
+      
+
       // Create diagram
       this.planeElements.push(diagram)
       // Our BPMN models are updated, now add to our nodes
@@ -269,8 +280,8 @@ export default {
       el: el,
       model: this.graph,
       gridSize: 10,
-      width: this.$el.clientWidth,
-      height: this.$el.clientHeight,
+      width: this.$refs['paper-container'].clientWidth,
+      height: this.$refs['paper-container'].clientHeight,
       drawGrid: true
     });
     this.paper.on("blank:pointerclick", () => {
@@ -281,6 +292,21 @@ export default {
       this.inspectorNode = this.processNode;
       this.inspectorConfig = processInspectorConfig;
     });
+
+    this.paper.on("blank:pointerdown", (event, x, y) => {
+      this.canvasDragPosition = {x: x, y: y};
+    });
+    this.paper.on('cell:pointerup blank:pointerup', (cellView, x, y) => {
+      this.canvasDragPosition = null;
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if(this.canvasDragPosition) {
+        this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
+      }
+    })
+
+
     this.paper.on("cell:pointerclick", cellView => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
@@ -345,7 +371,7 @@ export default {
             min-width: 100%;
             max-height: 100%;
             */
-      overflow: scroll;
+      overflow: hidden;
     }
   }
 }
