@@ -61,6 +61,7 @@ export default {
             type: 'startEvent',
             definition: function () {
                 return moddle.create('bpmn:StartEvent', {
+                    name: 'Start Event'
                 })
             },
             diagram: function () {
@@ -83,7 +84,24 @@ export default {
         {
             icon: require('./assets/toolpanel/end-event.svg'),
             label: 'End Event',
-            component: require('./components/nodes/endEvent')
+            component: require('./components/nodes/endEvent'),
+            type: 'endEvent',
+            definition: function () {
+                return moddle.create('bpmn:EndEvent', {
+                    name: 'End Event'
+                })
+            },
+            diagram: function () {
+                return moddle.create('bpmndi:BPMNShape', {
+                    bounds: moddle.create('dc:Bounds', {
+                        height: 36,
+                        width: 36,
+                        x: null,
+                        y: null
+                    })
+                })
+            },
+
         },
         {
             icon: require('./assets/toolpanel/end-email-event.svg'),

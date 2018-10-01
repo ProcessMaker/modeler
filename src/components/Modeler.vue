@@ -87,7 +87,7 @@ export default {
       processNode: null,
       inspectorNode: null,
       inspectorData: null,
-      inspectorHandler: this.handleProcessInspectorUpdate,
+      inspectorHandler: null,
       highlighted: null,
       inspectorConfig: [
         {
@@ -237,7 +237,7 @@ export default {
       for (var key in value) {
         // Only change if the value is different
         if (this.processNode[key] != value[key]) {
-          this.processNode[key] = value[key];
+          this.processNode.definition[key] = value[key];
         }
       }
     },
@@ -280,7 +280,6 @@ export default {
       }
       this.inspectorNode = this.processNode;
       this.inspectorConfig = processInspectorConfig;
-      this.inspectorHandler = this.handleProcessInspectorUpdate;
     });
     this.paper.on("cell:pointerclick", cellView => {
       if (this.highlighted) {

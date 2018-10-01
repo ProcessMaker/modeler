@@ -24,7 +24,7 @@ joint.dia.Element.define(
         textVerticalAnchor: "middle",
         textAnchor: "middle",
         refX: "50%",
-        refY: "115%",
+        refY: "130%",
         fontSize: 14,
         fill: "#333333"
       },

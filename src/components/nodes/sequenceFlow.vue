@@ -54,14 +54,6 @@ export default {
       ]
     };
   },
-  watch: {
-    node: {
-      handler() {
-        this.updateShape();
-      },
-      deep: true
-    }
-  },
   methods: {
     handleClick() {
       this.$parent.setInspector(this.node.definition, this.inspectorConfig);

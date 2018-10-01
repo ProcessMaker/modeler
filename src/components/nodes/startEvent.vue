@@ -11,13 +11,74 @@ export default {
   data() {
     return {
       shape: null,
-      definition: null
+      definition: null,
+      inspectorConfig: [
+        {
+          name: "Start Event",
+          items: [
+            {
+              component: "FormText",
+              config: {
+                label: "Start Event",
+                fontSize: "2em"
+              }
+            },
+            {
+              component: "FormInput",
+              config: {
+                label: "Identifier",
+                helper:
+                  "The id field should be unique across all elements in the diagram",
+                name: "id"
+              }
+            },
+            {
+              component: "FormInput",
+              config: {
+                label: "Name",
+                helper: "The Name of the Start Event",
+                name: "name"
+              }
+            }
+          ]
+        }
+      ]
     };
   },
   methods: {
     getShape() {
       return this.shape;
-    }
+    },
+    handleClick() {
+      this.$parent.setInspector(
+        this.node.definition,
+        this.inspectorConfig,
+        this.handleInspectionUpdate
+      );
+    },
+    handleInspectionUpdate(value) {
+      // Go through each property and rebind it to our data
+      for (var key in value) {
+        // Only change if the value is different
+        if (this.node.definition[key] != value[key]) {
+          this.node.definition[key] = value[key];
+        }
+      }
+      this.updateShape();
+    },
+    updateShape() {
+      let bounds = this.node.diagram.bounds;
+      this.shape.position(bounds.x, bounds.y);
+      this.shape.resize(bounds.width, bounds.height);
+      this.shape.attr({
+        body: {},
+        label: {
+          text: this.node.definition.get("name"),
+          fill: "black"
+        }
+      });
+    },
+
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
@@ -29,9 +90,15 @@ export default {
       body: {
         stroke: "#00bf9c",
         fill: "#EDFFFC"
+      },
+      label: {
+        text: this.node.definition.get("name"),
+        refY: "130%",
       }
     });
     this.shape.addTo(this.graph);
+    this.shape.component = this;
+
     this.$parent.nodes[this.id].component = this;
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
