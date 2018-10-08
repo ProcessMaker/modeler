@@ -51,6 +51,8 @@ import {
 
 import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
 
+import processMakerModdle from "@processmaker/processmaker-bpmn-moddle/resources/processmaker";
+
 let version = "1.0";
 
 if (!window.joint) {
@@ -74,6 +76,10 @@ export default {
   },
   data() {
     return {
+      // What bpmn moddle extensions should we register
+      extensions: [
+
+      ],
       // Our jointjs data graph model
       graph: null,
       // Our jointjs paper
@@ -120,6 +126,14 @@ export default {
     }
   },
   methods: {
+    /**
+     * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
+     * This is used to support new attributes and elements that would be needed for specific 
+     * bpmn execution environments.
+     */
+    registerBpmnExtension(namespace, extension) {
+      this.extensions[namespace] = extension;
+    },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
       // get the top level process objects
@@ -189,7 +203,7 @@ export default {
       }
     },
     loadXML(xml) {
-      let moddle = new BpmnModdle();
+      let moddle = new BpmnModdle(this.extensions);
       moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
@@ -201,7 +215,7 @@ export default {
       });
     },
     toXML(cb) {
-      let moddle = new BpmnModdle();
+      let moddle = new BpmnModdle(this.extensions);
       moddle.toXML(this.definitions, cb);
     },
 
@@ -259,6 +273,8 @@ export default {
     }
   },
   mounted() {
+    // Register our bpmn moddle extension
+    this.registerBpmnExtension('processmaker', processMakerModdle);
     // Register controls with inspector
     this.$refs.inspector.$options.components["FormText"] = FormText;
     this.$refs.inspector.$options.components["FormInput"] = FormInput;
