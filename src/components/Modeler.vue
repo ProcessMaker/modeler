@@ -300,7 +300,7 @@ export default {
       this.canvasDragPosition = null;
     });
 
-    document.addEventListener('mousemove', (event) => {
+    this.$el.addEventListener('mousemove', (event) => {
       if(this.canvasDragPosition) {
         this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
       }
