@@ -19,9 +19,7 @@ export default {
                 return moddle.create('bpmndi:BPMNShape', {
                     bounds: moddle.create('dc:Bounds', {
                         height: 80,
-                        width: 100,
-                        x: null,
-                        y: null
+                        width: 100
                     })
                 })
             },
@@ -29,7 +27,22 @@ export default {
         {
             icon: require('./assets/toolpanel/exclusive-gateway.svg'),
             label: 'Exclusive Gateway',
-            component: require('./components/nodes/task')
+            component: require('./components/nodes/task'),
+            type: 'exclusiveGateway',
+            definition: function() {
+                return moddle.create('bpmn:ExclusiveGateway', {
+                    name: 'New Exclusive Gateway',
+                    gatewayDirection: 'Diverging'
+                })
+            },
+            diagram: function () {
+                return moddle.create('bpmndi:BPMNShape', {
+                    bounds: moddle.create('dc:Bounds', {
+                        height: 42,
+                        width: 42
+                    })
+                })
+            }
         },
         {
             icon: require('./assets/toolpanel/parallel-gateway.svg'),
@@ -48,6 +61,7 @@ export default {
             type: 'startEvent',
             definition: function () {
                 return moddle.create('bpmn:StartEvent', {
+                    name: 'Start Event'
                 })
             },
             diagram: function () {
@@ -70,7 +84,24 @@ export default {
         {
             icon: require('./assets/toolpanel/end-event.svg'),
             label: 'End Event',
-            component: require('./components/nodes/endEvent')
+            component: require('./components/nodes/endEvent'),
+            type: 'endEvent',
+            definition: function () {
+                return moddle.create('bpmn:EndEvent', {
+                    name: 'End Event'
+                })
+            },
+            diagram: function () {
+                return moddle.create('bpmndi:BPMNShape', {
+                    bounds: moddle.create('dc:Bounds', {
+                        height: 36,
+                        width: 36,
+                        x: null,
+                        y: null
+                    })
+                })
+            },
+
         },
         {
             icon: require('./assets/toolpanel/end-email-event.svg'),

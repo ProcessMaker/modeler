@@ -5,14 +5,14 @@
 
             </controls>
             <div ref="paper-container" class="paper-container">
-                <drop @drop="test">
+                <drop @drop="handleDrop">
                     <div class="paper">
                     </div>
                 </drop>
             </div>
 
             <div class="inspector">
-                <vue-form-renderer ref="inspector" :data="inspectorData" @update="handleInspectorUpdate" :config="inspectorConfig" />
+                <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
             </div>
 
         </div>
@@ -93,6 +93,7 @@ export default {
       processNode: null,
       inspectorNode: null,
       inspectorData: null,
+      inspectorHandler: null,
       highlighted: null,
       inspectorConfig: [
         {
@@ -132,19 +133,6 @@ export default {
     registerBpmnExtension(namespace, extension) {
       this.extensions[namespace] = extension;
     },
-    handleInspectorUpdate(value) {
-      // Go through each property and rebind it to our inspectorNode
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.inspectorNode[key] != value[key]) {
-          this.inspectorNode[key] = value[key];
-        }
-      }
-      if (this.nodes[value.id].component) {
-        this.nodes[value.id].component.updateShape();
-      }
-    },
-
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
       // get the top level process objects
@@ -229,7 +217,7 @@ export default {
       let moddle = new BpmnModdle(this.extensions);
       moddle.toXML(this.definitions, cb);
     },
-    test(transferData, event) {
+    handleDrop(transferData, event) {
       // Add to our processNode
       let definition = transferData.definition();
 
@@ -258,9 +246,19 @@ export default {
       this.$refs['paper-container'].style.width = parent.clientWidth + "px";
       this.$refs['paper-container'].style.height = parent.clientHeight + "px";
     },
-    setInspector(node, config) {
+    handleProcessInspectorUpdate(value) {
+      // Go through each property and rebind it to our data
+      for (var key in value) {
+        // Only change if the value is different
+        if (this.processNode[key] != value[key]) {
+          this.processNode.definition[key] = value[key];
+        }
+      }
+    },
+    setInspector(node, config, handler) {
       this.inspectorNode = node;
       this.inspectorConfig = config;
+      this.inspectorHandler = handler ? handler : (() => {});
     }
   },
   mounted() {
@@ -310,6 +308,18 @@ export default {
         cellView.model.component.handleClick();
       }
     });
+    this.paper.on("link:pointerclick", cellView => {
+      if (this.highlighted) {
+        this.highlighted.unhighlight();
+        this.highlighted = null;
+      }
+      if (cellView.model.component) {
+        cellView.highlight();
+        this.highlighted = cellView;
+        cellView.model.component.handleClick();
+      }
+    });
+
   }
 };
 </script>

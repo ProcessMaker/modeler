@@ -12,6 +12,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.4",
     "@fortawesome/free-solid-svg-icons": "^5.3.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
+    "@processmaker/processmaker-bpmn-moddle": "^0.1.0",
     "@processmaker/vue-form-builder": "github:processmaker/vue-form-builder",
     "@processmaker/vue-form-elements": "github:processmaker/vue-form-elements",
     "bootstrap-vue": "^2.0.0-rc.11",
