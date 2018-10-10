@@ -5,9 +5,11 @@
 
 <script>
 import joint from "jointjs";
+import crownConfig from '@/mixins/crownConfig';
 
 export default {
   props: ["graph", "node", "id"],
+  mixins: [crownConfig],
   data() {
     return {
       shape: null,
@@ -113,6 +115,8 @@ export default {
         element
       );
     });
+
+    console.log('End mounted');
   }
 };
 </script>

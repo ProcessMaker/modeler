@@ -5,6 +5,7 @@
 
 <script>
 import joint from "jointjs";
+import crownConfig from '@/mixins/crownConfig';
 
 joint.dia.Element.define(
   "processmaker.modeler.bpmn.exclusiveGateway",
@@ -44,6 +45,7 @@ joint.dia.Element.define(
 
 export default {
   props: ["graph", "node", "id"],
+  mixins: [crownConfig],
   data() {
     return {
       shape: null,
