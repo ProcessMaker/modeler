@@ -17,7 +17,16 @@
 
         </div>
         <div class="definitions-container" v-if="definitions">
-            <component :is="node.type" :key="id" v-for="(node, id) in nodes" :graph="graph" :node="node" :id="id"></component>
+            <component
+              v-for="(node, id) in nodes"
+              :is="node.type"
+              :key="id"
+              :graph="graph"
+              :paper="paper"
+              :node="node"
+              :id="id"
+              :highlighted="highlighted && highlighted.model.component === node.component"
+            />
         </div>
     </div>
 </template>
@@ -66,13 +75,13 @@ export default {
   components: {
     Drag,
     Drop,
-      controls,
+    controls,
     task,
     startEvent,
     endEvent,
     sequenceFlow,
     exclusiveGateway,
-    VueFormRenderer
+    VueFormRenderer,
   },
   data() {
     return {
@@ -123,12 +132,12 @@ export default {
           return value;
         })
       );
-    }
+    },
   },
   methods: {
     /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
-     * This is used to support new attributes and elements that would be needed for specific 
+     * This is used to support new attributes and elements that would be needed for specific
      * bpmn execution environments.
      */
     registerBpmnExtension(namespace, extension) {
@@ -230,7 +239,7 @@ export default {
 
       let id = transferData.type + '_' + Object.keys(this.nodes).length;
       definition.id = id;
-                                              
+
       this.processNode.get('flowElements').push(definition)
       // Now, let's modify planeElement
       let diagram = transferData.diagram();
@@ -240,7 +249,7 @@ export default {
 
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
       diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
-      
+
 
       // Create diagram
       this.planeElements.push(diagram)
@@ -270,7 +279,7 @@ export default {
       this.inspectorNode = node;
       this.inspectorConfig = config;
       this.inspectorHandler = handler ? handler : (() => {});
-    }
+    },
   },
   mounted() {
     // Register our bpmn moddle extension
@@ -298,7 +307,14 @@ export default {
       gridSize: 10,
       width: this.$refs['paper-container'].clientWidth,
       height: this.$refs['paper-container'].clientHeight,
-      drawGrid: true
+      drawGrid: true,
+      interactive(cellView) {
+        if (cellView.model.get('onClick')) {
+          return false;
+        }
+
+        return { labelMove: false };
+      },
     });
     this.paper.on("blank:pointerclick", () => {
       if (this.highlighted) {
@@ -322,14 +338,19 @@ export default {
       }
     })
 
-
     this.paper.on("cell:pointerclick", cellView => {
+      const clickHandler = cellView.model.get('onClick');
+      if (clickHandler) {
+        clickHandler(cellView);
+      }
+
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
       }
       if (cellView.model.component) {
         cellView.highlight();
+        cellView.model.toFront({ deep: true });
         this.highlighted = cellView;
         cellView.model.component.handleClick();
       }
