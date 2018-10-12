@@ -9,7 +9,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ["graph", "node", "nodes", "id"],
   mixins: [crownConfig],
   data() {
     return {
@@ -49,9 +49,7 @@ export default {
       crownConfig: [
         {
           icon: connectIcon,
-          clickHandler() {
-            /* TODO: Link item */
-          },
+          clickHandler: this.addSequence,
         },
       ],
     };
@@ -129,6 +127,6 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  }
+  },
 };
 </script>

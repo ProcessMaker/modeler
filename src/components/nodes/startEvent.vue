@@ -6,6 +6,7 @@
 <script>
 import joint from "jointjs";
 import crownConfig from '@/mixins/crownConfig';
+import connectIcon from '@/assets/connect-elements.svg';
 
 export default {
   props: ["graph", "node", "id"],
@@ -44,7 +45,13 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      crownConfig: [
+        {
+          icon: connectIcon,
+          clickHandler: this.addSequence,
+        },
+      ],
     };
   },
   methods: {

@@ -1,8 +1,16 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import BpmnModdle from 'bpmn-moddle'
+
+let moddle = new BpmnModdle;
 
 export default {
   props: ['highlighted', 'paper'],
+  data() {
+    return {
+      buttons: [],
+    }
+  },
   watch: {
     highlighted(highlighted) {
       highlighted ? this.addCrown() : this.removeCrown();
@@ -17,15 +25,27 @@ export default {
     removeCrown() {
       this.getEmbeddedCells.forEach((button) => {
         button.attr({
-          image: { display: 'none' },
+          image: { display: 'none', fill: '#fff' },
         });
       });
     },
     addCrown() {
       this.getEmbeddedCells.forEach((button) => {
         button.attr({
-          image: { display: 'initial' },
+          image: { display: 'initial', fill: '#fff' },
         });
+      });
+    },
+    addSequence(cellView, evt, x, y) {
+      const sequenceLink = moddle.create('bpmn:SequenceFlow', {
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
+      });
+
+      this.$emit('add-node', {
+        type: 'sequenceFlow',
+        definition: sequenceLink,
+        diagram: moddle.create('bpmndi:BPMNEdge'),
       });
     },
     configureCrown() {
@@ -38,15 +58,11 @@ export default {
         clickHandler: () => this.shape.remove(),
       });
 
-      this.crownConfig.forEach(({ icon, clickHandler }, index) => {
+      this.crownConfig.forEach(({ icon, clickHandler }) => {
         const button = new joint.shapes.standard.Image();
-        const buttonLength = 25;
-        const buttonMargin = 10;
-        const yOffset = (buttonLength + buttonMargin) * index;
+        this.buttons.push(button);
 
         button.set('onClick', clickHandler);
-        button.disableInteractions = true;
-        button.resize(buttonLength, buttonLength);
         button.attr({
           image: {
             xlinkHref: icon,
@@ -57,12 +73,24 @@ export default {
 
         this.shape.embed(button);
         button.addTo(this.graph);
-        const { x, width } = this.shape.findView(this.paper).$el[0].getBBox();
-        button.position(x + width + buttonMargin, yOffset, { parentRelative: true });
+        this.updateCrownPosition();
+      });
+    },
+    updateCrownPosition() {
+      const buttonLength = 25;
+      const buttonMargin = 10;
+
+      const { width } = this.shape.findView(this.paper).$el[0].getBBox();
+
+      this.buttons.forEach((button, index) => {
+        const yOffset = (buttonLength + buttonMargin) * index;
+
+        button.resize(buttonLength, buttonLength);
+        button.position(width + buttonMargin, yOffset, { parentRelative: true });
       });
     }
   },
   mounted() {
     this.$nextTick(this.configureCrown);
-  }
+  },
 };
