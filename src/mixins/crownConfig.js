@@ -25,14 +25,14 @@ export default {
     removeCrown() {
       this.getEmbeddedCells.forEach((button) => {
         button.attr({
-          image: { display: 'none', fill: '#fff' },
+          root: { display: 'none' },
         });
       });
     },
     addCrown() {
       this.getEmbeddedCells.forEach((button) => {
         button.attr({
-          image: { display: 'initial', fill: '#fff' },
+          root: { display: 'initial' },
         });
       });
     },
@@ -59,15 +59,24 @@ export default {
       });
 
       this.crownConfig.forEach(({ icon, clickHandler }) => {
-        const button = new joint.shapes.standard.Image();
+        const button = new joint.shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);
         button.attr({
+          root: { display: 'none' },
+          body: {
+            fill: '#fff',
+            stroke:' #fff',
+            opacity: 0.8,
+            cursor: 'pointer',
+          },
           image: {
             xlinkHref: icon,
             cursor: 'pointer',
-            display: 'none',
+            refWidth: 1,
+            refHeight: 1,
+            resetOffset: true,
           },
         });
 
@@ -75,18 +84,29 @@ export default {
         button.addTo(this.graph);
         this.updateCrownPosition();
       });
+
+      this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
+        if (this.buttons.includes(cellView.model)) {
+          cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } });
+
+          this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
+            cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } });
+          });
+        }
+      });
     },
     updateCrownPosition() {
       const buttonLength = 25;
       const buttonMargin = 10;
-
-      const { width } = this.shape.findView(this.paper).$el[0].getBBox();
+      const { x, y, width, height } = this.shape.findView(this.paper).getBBox();
+      const crownHeight = (buttonLength * this.buttons.length) + (buttonMargin * (this.buttons.length - 1))
+      const centerY = 0 - (crownHeight / 2) + (height / 2);
 
       this.buttons.forEach((button, index) => {
         const yOffset = (buttonLength + buttonMargin) * index;
 
         button.resize(buttonLength, buttonLength);
-        button.position(width + buttonMargin, yOffset, { parentRelative: true });
+        button.position(x + width + buttonMargin, y + yOffset + centerY);
       });
     }
   },
