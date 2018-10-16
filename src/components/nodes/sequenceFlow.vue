@@ -140,7 +140,7 @@ export default {
       });
     },
     removeLink() {
-      delete this.$parent.nodes[this.id];
+      this.removeShape();
       this.resetPaper();
     },
     resetPaper() {
@@ -171,8 +171,7 @@ export default {
     this.$parent.nodes[this.id].component = this;
   },
   destroyed() {
-    this.shape.stopListening();
-    this.shape.remove();
+    this.updateWaypoints.cancel();
   }
 };
 </script>

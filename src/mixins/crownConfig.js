@@ -22,6 +22,9 @@ export default {
     }
   },
   methods: {
+    removeShape() {
+      this.$delete(this.$parent.nodes, this.id);
+    },
     removeCrown() {
       this.getEmbeddedCells.forEach((button) => {
         button.attr({
@@ -55,7 +58,7 @@ export default {
 
       this.crownConfig.push({
         icon: trashIcon,
-        clickHandler: () => this.shape.remove(),
+        clickHandler: this.removeShape,
       });
 
       this.crownConfig.forEach(({ icon, clickHandler }) => {
@@ -113,4 +116,18 @@ export default {
   mounted() {
     this.$nextTick(this.configureCrown);
   },
+  destroyed() {
+    const { incoming, outgoing } = this.node.definition;
+
+    if (incoming) {
+      incoming.forEach(link => this.$delete(this.$parent.nodes, link.id));
+    }
+
+    if (outgoing) {
+      outgoing.forEach(link => this.$delete(this.$parent.nodes, link.id));
+    }
+
+    this.shape.stopListening();
+    this.shape.remove();
+  }
 };
