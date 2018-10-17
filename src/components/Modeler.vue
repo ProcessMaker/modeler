@@ -43,6 +43,7 @@ import startEvent from "./nodes/startEvent";
 import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
 import exclusiveGateway from "./nodes/exclusiveGateway";
+import textAnnotation from "./nodes/textAnnotation"
 import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
 import processInspectorConfig from "./inspectors/process";
 
@@ -81,6 +82,7 @@ export default {
     endEvent,
     sequenceFlow,
     exclusiveGateway,
+    textAnnotation,
     VueFormRenderer,
   },
   data() {
@@ -180,6 +182,11 @@ export default {
               } else if (element.$type == "bpmn:SequenceFlow") {
                 this.$set(this.nodes, element.id, {
                   type: "sequenceFlow",
+                  definition: element
+                });
+              } else if (element.$type == "bpmn:TextAnnotation") {
+                this.$set(this.nodes, element.id, {
+                  type: "textAnnotation",
                   definition: element
                 });
               } else {
@@ -372,45 +379,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~jointjs/dist/joint.css";
+@import '~jointjs/dist/joint.css';
 
 .modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+    position: relative;
+    width: inherit;
+    max-width: inherit;
+    height: inherit;
+    max-height: inherit;
+    overflow: hidden;
 
-  .modeler-container {
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+    .modeler-container {
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
 
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eeeeee;
-      border-left: 1px solid #aaaaaa;
-    }
+        .inspector {
+            font-size: 0.75em;
+            text-align: left;
+            padding: 8px;
+            width: 320px;
+            background-color: #eeeeee;
+            border-left: 1px solid #aaaaaa;
+        }
 
-    .paper-container {
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
+        .paper-container {
+            height: 100%;
+            max-height: 100%;
+            min-height: 100%;
 
-      /*
+            /*
             width: 100%;
             height: 100%;
             min-width: 100%;
             max-height: 100%;
             */
-      overflow: hidden;
+            overflow: hidden;
+        }
     }
-  }
 }
 </style>
 
