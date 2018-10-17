@@ -50,9 +50,7 @@ export default {
       crownConfig: [
         {
           icon: connectIcon,
-          clickHandler() {
-            /* TODO: Link item */
-          },
+          clickHandler: this.addAssociation,
         },
       ],
     };
@@ -141,3 +139,4 @@ export default {
   }
 };
 </script>
+

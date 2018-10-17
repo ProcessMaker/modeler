@@ -43,6 +43,7 @@ import task from "./nodes/task";
 import startEvent from "./nodes/startEvent";
 import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
+import association from "./nodes/association"
 import exclusiveGateway from "./nodes/exclusiveGateway";
 import textAnnotation from "./nodes/textAnnotation"
 import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
@@ -82,6 +83,7 @@ export default {
     startEvent,
     endEvent,
     sequenceFlow,
+    association,
     exclusiveGateway,
     textAnnotation,
     VueFormRenderer,
@@ -183,6 +185,11 @@ export default {
               } else if (element.$type == "bpmn:SequenceFlow") {
                 this.$set(this.nodes, element.id, {
                   type: "sequenceFlow",
+                  definition: element
+                });
+              } else if (element.$type == "bpmn:Association") {
+                this.$set(this.nodes, element.id, {
+                  type: "association",
                   definition: element
                 });
               } else if (element.$type == "bpmn:TextAnnotation") {
