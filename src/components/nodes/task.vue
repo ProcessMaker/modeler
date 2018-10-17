@@ -5,9 +5,12 @@
 
 <script>
 import joint from "jointjs";
+import connectIcon from '@/assets/connect-elements.svg';
+import crownConfig from '@/mixins/crownConfig';
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ["graph", "node", "nodes", "id"],
+  mixins: [crownConfig],
   data() {
     return {
       shape: null,
@@ -42,7 +45,13 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      crownConfig: [
+        {
+          icon: connectIcon,
+          clickHandler: this.addSequence,
+        },
+      ],
     };
   },
   methods: {
@@ -83,8 +92,8 @@ export default {
     }
   },
   mounted() {
-    // Now, let's add a rounded rect to the graph
     this.shape = new joint.shapes.standard.Rectangle();
+
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
@@ -98,8 +107,9 @@ export default {
           width: bounds.width
         }),
         fill: "black"
-      }
+      },
     });
+
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
@@ -113,13 +123,10 @@ export default {
         element
       );
     });
+
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  }
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
-

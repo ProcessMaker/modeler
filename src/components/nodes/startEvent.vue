@@ -5,9 +5,12 @@
 
 <script>
 import joint from "jointjs";
+import crownConfig from '@/mixins/crownConfig';
+import connectIcon from '@/assets/connect-elements.svg';
 
 export default {
   props: ["graph", "node", "id"],
+  mixins: [crownConfig],
   data() {
     return {
       shape: null,
@@ -42,7 +45,13 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      crownConfig: [
+        {
+          icon: connectIcon,
+          clickHandler: this.addSequence,
+        },
+      ],
     };
   },
   methods: {
@@ -113,6 +122,8 @@ export default {
         element
       );
     });
+
+    console.log('End mounted');
   }
 };
 </script>

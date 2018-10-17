@@ -5,13 +5,26 @@
 
 <script>
 import joint from "jointjs";
+import crownConfig from '@/mixins/crownConfig';
+import get from 'lodash/get';
+import debounce from 'lodash/debounce';
+import BpmnModdle from 'bpmn-moddle'
+
+let moddle = new BpmnModdle;
 
 export default {
   props: ["graph", "node", "id"],
+  mixins: [crownConfig],
   data() {
     return {
       shape: null,
       definition: null,
+      sourceShape: null,
+      validConnections: {
+        task: ['task', 'endEvent'],
+        startEvent: ['task', 'endEvent'],
+        exclusiveGateway: ['task', 'endEvent'],
+      },
       inspectorConfig: [
         {
           name: "Task",
@@ -54,79 +67,111 @@ export default {
       ]
     };
   },
+  computed: {
+    sourceType() {
+      return this.sourceShape && this.sourceShape.component.node.type;
+    }
+  },
   methods: {
     handleClick() {
       this.$parent.setInspector(this.node.definition, this.inspectorConfig);
     },
-    updateShape() {}
+    updateShape() {},
+    completeLink() {
+      this.shape.stopListening(this.paper, 'cell:mouseleave');
+      this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+      this.shape.attr({ wrapper: { cursor: 'default' } });
+
+      this.resetPaper();
+
+      const targetShape = this.shape.getTargetElement();
+
+      this.node.definition.targetRef = targetShape.component.node.definition;
+      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
+      targetShape.component.node.definition.get('incoming').push(this.node.definition)
+
+      this.updateWaypoints();
+
+      targetShape.attr({
+        body: { fill: '#fff', cursor: 'move' },
+        label: { cursor: 'move' },
+      });
+
+      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+    },
+    updateWaypoints() {
+      const connections = this.shape.findView(this.paper).getConnection();
+      const points = [connections.start, ...connections.segments.map(segment => segment.end)];
+
+      this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
+      this.updateCrownPosition();
+    },
+    updateLinkTarget({ clientX, clientY }) {
+      const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
+      const [target] = this.graph.findModelsFromPoint(localMousePosition);
+      const targetType = get(target, 'component.node.type');
+
+      if (!targetType || !this.validConnections[this.sourceType].includes(targetType)) {
+        this.shape.target({
+          x: localMousePosition.x,
+          y: localMousePosition.y,
+        });
+        return;
+      }
+
+      this.shape.target(target);
+      target.attr({
+        body: { fill: '#dffdd0', cursor: 'default' },
+        label: { cursor: 'default' },
+      });
+
+      this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
+      this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
+
+      this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
+        this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
+        this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
+
+        target.attr({
+          body: { fill: '#fff', cursor: 'move' },
+          label: { cursor: 'move' },
+        });
+      });
+    },
+    removeLink() {
+      this.removeShape();
+      this.resetPaper();
+    },
+    resetPaper() {
+      this.paper.el.style.cursor = 'default';
+      this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
+      this.paper.setInteractivity(this.graph.get('interactiveFunc'));
+    },
+  },
+  created() {
+    this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
-    // Now, let's add a rounded rect to the graph
-    this.shape = new joint.shapes.standard.Link({
-      router: { name: "manhattan" },
-      connector: { name: "rounded" }
-    });
+    this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
+    const targetPoint = this.node.definition.get('targetRef');
 
-    /*
-        // @todo Instead of pointing to a shape directly, we're having it point to the x/y
-        this.shape.source(this.$parent.nodes[this.node.definition.sourceRef.id].component.getShape());
-        this.shape.target(this.$parent.nodes[this.node.definition.targetRef.id].component.getShape());
-        */
-    let waypoints = this.node.diagram.waypoint;
-
-    // Source is the first waypoint
-
-    this.shape.source({
-      x: waypoints[0].x,
-      y: waypoints[0].y
-    });
-
-    // Target is the second
-    this.shape.target({
-      x: waypoints[1].x,
-      y: waypoints[1].y
-    });
-
-    // Now, we want to listen for move events on the target and source components so that
-    // when THEY move, our points move relative to it
-    this.$parent.nodes[this.node.definition.targetRef.id].component.$on(
-      "move",
-      (position, element) => {
-        // Determine the position change
-        let xDiff = position.x - element.previousAttributes().position.x;
-        let yDiff = position.y - element.previousAttributes().position.y;
-        // Update our shape
-        this.shape.target({
-          x: this.shape.attributes.target.x + xDiff,
-          y: this.shape.attributes.target.y + yDiff
-        });
-        // Update our diagram
-        this.node.diagram.waypoint[1].x = this.shape.target.x;
-        this.node.diagram.waypoint[1].y = this.shape.target.y;
-      }
-    );
-
-    this.$parent.nodes[this.node.definition.sourceRef.id].component.$on(
-      "move",
-      (position, element) => {
-        // Determine the position change
-        let xDiff = position.x - element.previousAttributes().position.x;
-        let yDiff = position.y - element.previousAttributes().position.y;
-        // Update our shape
-        this.shape.source({
-          x: this.shape.attributes.source.x + xDiff,
-          y: this.shape.attributes.source.y + yDiff
-        });
-        // Update our diagram
-        this.node.diagram.waypoint[1].x = this.shape.source.x;
-        this.node.diagram.waypoint[1].y = this.shape.source.y;
-      }
-    );
-
+    this.paper.setInteractivity(false);
+    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
+    this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
+    this.shape.source(this.sourceShape);
+    this.shape.target(targetPoint);
     this.shape.addTo(this.graph);
-    this.shape.component = this;
 
+    this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
+    this.paper.el.style.cursor = 'not-allowed';
+    this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+
+    this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
+  },
+  destroyed() {
+    this.updateWaypoints.cancel();
   }
 };
 </script>

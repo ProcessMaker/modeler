@@ -17,7 +17,17 @@
 
         </div>
         <div class="definitions-container" v-if="definitions">
-            <component :is="node.type" :key="id" v-for="(node, id) in nodes" :graph="graph" :node="node" :id="id"></component>
+            <component
+              v-for="(node, id) in nodes"
+              :is="node.type"
+              :key="id"
+              :graph="graph"
+              :paper="paper"
+              :node="node"
+              :id="id"
+              :highlighted="highlighted && highlighted.model.component === node.component"
+              @add-node="addNode"
+            />
         </div>
     </div>
 </template>
@@ -66,13 +76,13 @@ export default {
   components: {
     Drag,
     Drop,
-      controls,
+    controls,
     task,
     startEvent,
     endEvent,
     sequenceFlow,
     exclusiveGateway,
-    VueFormRenderer
+    VueFormRenderer,
   },
   data() {
     return {
@@ -123,12 +133,12 @@ export default {
           return value;
         })
       );
-    }
+    },
   },
   methods: {
     /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
-     * This is used to support new attributes and elements that would be needed for specific 
+     * This is used to support new attributes and elements that would be needed for specific
      * bpmn execution environments.
      */
     registerBpmnExtension(namespace, extension) {
@@ -223,34 +233,34 @@ export default {
 
     },
 
-
     handleDrop(transferData, event) {
       // Add to our processNode
       let definition = transferData.definition();
 
-      let id = transferData.type + '_' + Object.keys(this.nodes).length;
-      definition.id = id;
-                                              
-      this.processNode.get('flowElements').push(definition)
       // Now, let's modify planeElement
       let diagram = transferData.diagram();
-      diagram.id = id + '_di';
-      diagram.bpmnElement = definition;
       // Handle transform
 
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
       diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
-      
 
-      // Create diagram
-      this.planeElements.push(diagram)
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
-      this.$set(this.nodes, id, {
+      this.addNode({
         type: transferData.type,
-        definition: definition,
-        diagram: diagram,
+        definition,
+        diagram,
       });
+    },
+    addNode({ type, definition, diagram }) {
+      const id = `${type}_${Object.keys(this.nodes).length}`
+      definition.id = id;
+      diagram.id = `${id}_di`;
+      diagram.bpmnElement = definition;
+
+      this.planeElements.push(diagram);
+      this.processNode.get('flowElements').push(definition);
+      this.$set(this.nodes, id, { type, definition, diagram });
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -270,7 +280,7 @@ export default {
       this.inspectorNode = node;
       this.inspectorConfig = config;
       this.inspectorHandler = handler ? handler : (() => {});
-    }
+    },
   },
   mounted() {
     // Register our bpmn moddle extension
@@ -292,13 +302,21 @@ export default {
 
     let el = this.$el.getElementsByClassName("paper").item(0);
     this.graph = new window.joint.dia.Graph();
+    this.graph.set('interactiveFunc', cellView => {
+      if (cellView.model.get('onClick')) {
+        return false;
+      }
+
+      return { labelMove: false };
+    });
     this.paper = new window.joint.dia.Paper({
       el: el,
       model: this.graph,
       gridSize: 10,
       width: this.$refs['paper-container'].clientWidth,
       height: this.$refs['paper-container'].clientHeight,
-      drawGrid: true
+      drawGrid: true,
+      interactive: this.graph.get('interactiveFunc'),
     });
     this.paper.on("blank:pointerclick", () => {
       if (this.highlighted) {
@@ -322,14 +340,19 @@ export default {
       }
     })
 
+    this.paper.on("cell:pointerclick", (cellView, evt, x, y) => {
+      const clickHandler = cellView.model.get('onClick');
+      if (clickHandler) {
+        clickHandler(cellView, evt, x, y);
+      }
 
-    this.paper.on("cell:pointerclick", cellView => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
       }
       if (cellView.model.component) {
         cellView.highlight();
+        cellView.model.toFront({ deep: true });
         this.highlighted = cellView;
         cellView.model.component.handleClick();
       }
