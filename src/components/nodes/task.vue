@@ -83,7 +83,7 @@ export default {
       );
     },
     handleInspectionUpdate(value) {
-      // // Go through each property and rebind it to our data
+      // Go through each property and rebind it to our data
       for (var key in value) {
         // Only change if the value is different
         if (this.node.definition[key] != value[key]) {
