@@ -1,12 +1,22 @@
 {
   "name": "@processmaker/modeler",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/index.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
+  "main": "./dist/modeler.common.js",
+  "files": [
+    "dist/*",
+    "src/*",
+    "public/*",
+    "*.json",
+    "*.js",
+    "blank.bpmn"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.6",
     "@fortawesome/free-solid-svg-icons": "^5.4.1",
@@ -55,7 +65,7 @@
     }
   },
   "browserslist": [
-    "> 1%",
+    "> 2%",
     "last 2 versions",
     "not ie <= 8"
   ],
