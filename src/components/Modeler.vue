@@ -1,38 +1,40 @@
 <template>
-    <div class="modeler">
-        <div class="modeler-container">
-            <controls :controls="controls">
+  <div class="modeler">
+    <div class="modeler-container">
+      <controls />
 
-            </controls>
-            <div ref="paper-container" class="paper-container">
-                <drop @drop="handleDrop">
-                    <div class="paper">
-                    </div>
-                </drop>
-            </div>
+      <div ref="paper-container" class="paper-container">
+        <drop @drop="handleDrop" @dragover="validateDropTarget">
+          <div ref="paper" />
+        </drop>
+      </div>
 
-            <div class="inspector">
-                <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
-            </div>
+      <div class="inspector">
+        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
+      </div>
 
-        </div>
-          <component
-            v-for="(node, id) in nodes"
-            :is="node.type"
-            :key="id"
-            :graph="graph"
-            :paper="paper"
-            :node="node"
-            :id="id"
-            :highlighted="highlighted && highlighted.model.component === node.component"
-            @add-node="addNode"
-          />
     </div>
+    <div class="definitions-container" v-if="definitions">
+      <component
+        v-for="(node, id) in nodes"
+        :is="node.type"
+        :key="id"
+        :graph="graph"
+        :paper="paper"
+        :node="node"
+        :id="id"
+        :highlighted="highlighted && highlighted.model.component === node.component"
+        :collaboration="collaboration"
+        @add-node="addNode"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
 import BpmnModdle from "bpmn-moddle";
 import controls from "./controls";
+import throttle from 'lodash/throttle';
 
 // Our renderer for our inspector
 
@@ -41,10 +43,11 @@ import task from "./nodes/task";
 import startEvent from "./nodes/startEvent";
 import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
-import association from "./nodes/association"
+import association from "./nodes/association";
 import exclusiveGateway from "./nodes/exclusiveGateway";
-import textAnnotation from "./nodes/textAnnotation"
+import textAnnotation from "./nodes/textAnnotation";
 import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
+import pool from "./nodes/pool";
 import processInspectorConfig from "./inspectors/process";
 
 import { Drag, Drop } from 'vue-drag-drop';
@@ -56,7 +59,7 @@ import {
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
-  FormDatePicker
+  FormDatePicker,
 } from "@processmaker/vue-form-elements";
 
 
@@ -73,13 +76,10 @@ const bpmnTypeMap = {
   'bpmn:ExclusiveGateway': 'exclusiveGateway',
   'bpmn:SequenceFlow': 'sequenceFlow',
   'bpmn:Association': 'association',
-  'bpmn:TextAnnotation': 'textAnnotation'
+  'bpmn:TextAnnotation': 'textAnnotation',
 };
 
 export default {
-  props: [
-    'controls'
-  ],
   components: {
     Drag,
     Drop,
@@ -91,6 +91,7 @@ export default {
     association,
     exclusiveGateway,
     textAnnotation,
+    pool,
     VueFormRenderer,
   },
   data() {
@@ -108,7 +109,7 @@ export default {
       canvasDragPosition: null,
       // This is our id based lookup model
       inspectors: {
-        process: processInspectorConfig
+        process: processInspectorConfig,
       },
       processNode: null,
       inspectorNode: null,
@@ -118,10 +119,16 @@ export default {
       inspectorConfig: [
         {
           name: "Empty",
-          items: []
-        }
+          items: [],
+        },
       ],
-      nodes: {}
+      nodes: {},
+      collaboration: null,
+      moddle: null,
+      dragPoint: { x: null, y: null },
+      allowDrop: true,
+      poolTarget: null,
+      processes: [],
     };
   },
   watch: {
@@ -158,6 +165,7 @@ export default {
       // get the top level process objects
       // All root elements are bpmn:process types
       this.definitions.rootElements.forEach(process => {
+        this.processes.push(process);
         this.processNode = process;
         this.inspectorConfig = this.inspectors["process"];
         this.inspectorNode = this.processNode;
@@ -180,7 +188,8 @@ export default {
 
       // Okay, now let's get the diagrams
       this.definitions.diagrams.forEach(diagram => {
-        this.planeElements = diagram.plane.get('planeElement');
+        this.plane = diagram.plane;
+        this.planeElements = this.plane.get('planeElement');
 
         this.planeElements.forEach(diagramElement => {
           if (this.nodes[diagramElement.bpmnElement.id]) {
@@ -194,8 +203,7 @@ export default {
       });
     },
     loadXML(xml) {
-      const moddle = new BpmnModdle(this.extensions);
-      moddle.fromXML(xml, (err, definitions) => {
+      this.moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
           definitions.exporter = "ProcessMaker Modeler";
@@ -206,8 +214,7 @@ export default {
       });
     },
     toXML(cb) {
-      let moddle = new BpmnModdle(this.extensions);
-      moddle.toXML(this.definitions, cb);
+      this.moddle.toXML(this.definitions, cb);
     },
 
     handleCanvasMove() {
@@ -215,11 +222,15 @@ export default {
     },
 
     handleDrop(transferData, event) {
+      if (!this.allowDrop) {
+        return;
+      }
+
       // Add to our processNode
-      let definition = transferData.definition();
+      const definition = transferData.definition();
 
       // Now, let's modify planeElement
-      let diagram = transferData.diagram();
+      const diagram = transferData.diagram();
       // Handle transform
 
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
@@ -234,14 +245,58 @@ export default {
       });
     },
     addNode({ type, definition, diagram }) {
-      const id = `${type}_${Object.keys(this.nodes).length}`
+      /*
+
+      If we are adding a pool, first, create a bpmn:Collaboration, or
+      get the current bpmn:Collaboration, is one exists,
+
+      For each process, bpmn:Collaboration will contain a bpmn:participant (a "pool")
+      if there are currently no pools, don't create a new process, use the current one instead,
+      and add (embed) all current flow elements to it.
+
+      For lanes, it will be bpmn:laneSet > bpmn:lanes (will do later)
+
+      bpmndi:BPMNPlane should reference collaboration element instead of Process_1
+
+      */
+      if (type === 'pool') {
+        if (!this.collaboration) {
+          this.collaboration = this.moddle.create('bpmn:Collaboration');
+          this.definitions.get('rootElements').push(this.collaboration);
+          this.collaboration.set('id', 'collaboration_0');
+          this.plane.set('bpmnElement', this.collaboration);
+        }
+
+        let process;
+        if (this.collaboration.get('participants').length === 0) {
+          process = this.processNode;
+        } else {
+          process = this.moddle.create('bpmn:Process');
+          this.processes.push(process);
+          process.set('id', `process_${this.processes.length}`);
+          process.set('isExecutable', false);
+
+          this.definitions.get('rootElements').push(process);
+        }
+
+        definition.set('processRef', process);
+        this.collaboration.get('participants').push(definition);
+      } else {
+        /* Check if this.poolTarget is set, and if so, add to appropriate process. */
+        const targetProcess =  this.poolTarget
+          ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
+          : this.processNode;
+
+        targetProcess.get('flowElements').push(definition);
+      }
+
+      const id = `${type}_${Object.keys(this.nodes).length}`;
       definition.id = id;
       diagram.id = `${id}_di`;
       diagram.bpmnElement = definition;
 
       this.planeElements.push(diagram);
-      this.processNode.get('flowElements').push(definition);
-      this.$set(this.nodes, id, { type, definition, diagram });
+      this.$set(this.nodes, id, { type, definition, diagram, pool: this.poolTarget });
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -262,6 +317,41 @@ export default {
       this.inspectorConfig = config;
       this.inspectorHandler = handler ? handler : (() => {});
     },
+    validateDropTarget(transferData, { clientX, clientY }) {
+      if (transferData.type === 'pool') {
+        return;
+      }
+
+      /* If there are any pools on the grid, only allow dragging components over pools */
+      if (!this.collaboration || this.collaboration.get('participants').length === 0) {
+        return;
+      }
+
+      const { x, y } = this.dragPoint;
+      if (clientX === x && clientY === y) {
+        /* We don't need to re-calcaulte values if mouse position hasn't changed  asdasdsd */
+        return;
+      }
+
+      this.dragPoint = { x: clientX, y: clientY };
+
+      const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
+      const pool = this.graph.findModelsFromPoint(localMousePosition).find(({ component }) => {
+        return component && component.node.type === 'pool';
+      });
+
+      if (!pool) {
+        this.allowDrop = false;
+        this.poolTarget = null;
+      } else {
+        this.allowDrop = true;
+        this.poolTarget = pool;
+      }
+    },
+  },
+  created() {
+    this.moddle = new BpmnModdle(this.extensions);
+    this.validateDropTarget = throttle(this.validateDropTarget, 100, { leading: true });
   },
   mounted() {
     // Register controls with inspector
@@ -279,17 +369,19 @@ export default {
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
 
-    let el = this.$el.getElementsByClassName("paper").item(0);
     this.graph = new window.joint.dia.Graph();
     this.graph.set('interactiveFunc', cellView => {
-      if (cellView.model.get('onClick')) {
+      if (
+        cellView.model.getParentCell() &&
+        cellView.model.getParentCell().component.node.type !== 'pool'
+      ) {
         return false;
       }
 
       return { labelMove: false };
     });
     this.paper = new window.joint.dia.Paper({
-      el: el,
+      el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
       width: this.$refs['paper-container'].clientWidth,
@@ -315,10 +407,10 @@ export default {
     });
 
     this.$el.addEventListener('mousemove', (event) => {
-      if(this.canvasDragPosition) {
+      if (this.canvasDragPosition) {
         this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
       }
-    })
+    });
 
     this.paper.on("cell:pointerclick", (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
@@ -349,7 +441,7 @@ export default {
       }
     });
 
-  }
+  },
 };
 </script>
 
@@ -379,21 +471,12 @@ export default {
             border-left: 1px solid #aaaaaa;
         }
 
-        .paper-container {
-            height: 100%;
-            max-height: 100%;
-            min-height: 100%;
-
-            /*
-            width: 100%;
-            height: 100%;
-            min-width: 100%;
-            max-height: 100%;
-            */
-            overflow: hidden;
-        }
+    .paper-container {
+      height: 100%;
+      max-height: 100%;
+      min-height: 100%;
+      overflow: hidden;
     }
+  }
 }
 </style>
-
-

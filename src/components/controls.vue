@@ -1,29 +1,42 @@
 <template>
-    <div class="controls">
-        <div v-for="(items, category) in controls" :key="category">
-            <h2>{{category}}</h2>
-            <drag v-for="(control, index) in items" :key="index" :transfer-data="{component: control.component, type: control.type, definitionType: control.definitionType, definition: control.definition, diagramType: control.diagramType, diagram: control.diagram}">
-                <div class="tool">
-                    <div class="img-container">
-                        <img :src="control.icon">
-                    </div>
-                    <div>{{control.label}}</div>
-                </div>
-            </drag>
+  <div class="controls">
+    <div v-for="(items, category) in controls" :key="category">
+      <h2>{{category}}</h2>
+
+      <drag
+        v-for="(control, index) in items"
+        :key="index"
+        :transfer-data="{
+          component: control.component,
+          type: control.type,
+          definition: control.definition,
+          diagram: control.diagram,
+        }"
+      >
+        <div class="tool">
+          <div class="img-container">
+            <img :src="control.icon">
+          </div>
+          <div>{{control.label}}</div>
         </div>
+      </drag>
     </div>
+  </div>
 </template>
 
-
 <script>
-import { Drag, Drop } from 'vue-drag-drop';
+import { Drag } from 'vue-drag-drop';
+import controls from '../controls';
 
 export default {
-  props: ["controls"],
   components: {
-      Drag,
-      Drop
-  }
+    Drag,
+  },
+  data() {
+    return {
+      controls,
+    };
+  },
 };
 </script>
 
@@ -56,10 +69,10 @@ export default {
       padding: 4px;
       font-weight: bold;
       color: #333333;
+      cursor: pointer;
 
       &:hover {
           background-color: #3397e1;
-          cursor: pointer;
           color: white;
       }
 

@@ -23,8 +23,8 @@ export default {
               component: "FormText",
               config: {
                 label: "Task",
-                fontSize: "2em"
-              }
+                fontSize: "2em",
+              },
             },
             {
               component: "FormInput",
@@ -32,19 +32,19 @@ export default {
                 label: "Identifier",
                 helper:
                   "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
+                name: "id",
+              },
             },
             {
               component: "FormInput",
               config: {
                 label: "Name",
                 helper: "The Name of the Task",
-                name: "name"
-              }
-            }
-          ]
-        }
+                name: "name",
+              },
+            },
+          ],
+        },
       ],
       crownConfig: [
         {
@@ -66,10 +66,10 @@ export default {
         body: {},
         label: {
           text: joint.util.breakText(this.node.definition.get("name"), {
-            width: bounds.width
+            width: bounds.width,
           }),
-          fill: "black"
-        }
+          fill: "black",
+        },
       });
       // Alert anyone that we have moved
     },
@@ -90,7 +90,7 @@ export default {
       }
 
       this.updateShape();
-    }
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Rectangle();
@@ -101,13 +101,13 @@ export default {
     this.shape.attr({
       body: {
         rx: 8,
-        ry: 8
+        ry: 8,
       },
       label: {
         text: joint.util.breakText(this.node.definition.get("name"), {
-          width: bounds.width
+          width: bounds.width,
         }),
-        fill: "black"
+        fill: "black",
       },
     });
 
@@ -119,7 +119,7 @@ export default {
         "move",
         {
           x: bounds.x,
-          y: bounds.y
+          y: bounds.y,
         },
         element
       );

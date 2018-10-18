@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" :controls="controls" />
+      <modeler ref="modeler" />
     </div>
     <statusbar>
       {{statusText}}
@@ -29,14 +29,8 @@ import statusbar from "./components/statusbar.vue";
 
 import FileUpload from "vue-upload-component";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faCheckCircle,
-  faTimesCircle
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
-import InitialControls from "./controls";
 
 export default {
   name: "ModelerApp",
@@ -44,14 +38,13 @@ export default {
     Modeler,
     FileUpload,
     statusbar,
-    FontAwesomeIcon
+    FontAwesomeIcon,
   },
   data() {
     return {
-      controls: InitialControls,
       statusText: "No errors detected",
       statusIcon: faCheckCircle,
-      statusColor: "green"
+      statusColor: "green",
     };
   },
   mounted() {
@@ -89,8 +82,8 @@ export default {
         this.$refs.uploadmodal.hide();
       };
       reader.readAsText(files[0].file);
-    }
-  }
+    },
+  },
 };
 </script>
 

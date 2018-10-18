@@ -26,8 +26,8 @@ export default {
               component: "FormText",
               config: {
                 label: "Text Annotation",
-                fontSize: "2em"
-              }
+                fontSize: "2em",
+              },
             },
             {
               component: "FormInput",
@@ -35,8 +35,8 @@ export default {
                 label: "Identifier",
                 helper:
                   "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
+                name: "id",
+              },
             },
             {
               component: "FormInput",
@@ -44,11 +44,11 @@ export default {
                 label: "Annotation Description",
                 helper: "Body of the text annotation",
                 text: "text",
-                placeholder: 'New Text Annotation'
-              }
-            }
-          ]
-        }
+                placeholder: 'New Text Annotation',
+              },
+            },
+          ],
+        },
       ],
       crownConfig: [
         {
@@ -63,8 +63,7 @@ export default {
       return this.shape;
     },
     updateShape() {
-
-      let bounds = this.node.diagram.bounds;
+      const bounds = this.node.diagram.bounds;
       const { height } = this.shape.findView(this.paper).getBBox();
 
       this.shape.position(bounds.x, bounds.y);
@@ -77,8 +76,8 @@ export default {
           text: joint.util.breakText(this.node.definition.get("text"), {
             width: bounds.width,
           }),
-          fill: "black"
-        }
+          fill: "black",
+        },
       });
       // Alert anyone that we have moved
     },
@@ -91,16 +90,16 @@ export default {
     },
     handleInspectionUpdate(value) {
       // Go through each property and rebind it to our data
-      for (var key in value) {
+      for (const key in value) {
         // Only change if the value is different
         if (this.node.definition[key] != value[key]) {
           this.node.definition[key] = value[key];
-          this.node.definition.set('text', value[key])
+          this.node.definition.set('text', value[key]);
         }
       }
 
       this.updateShape();
-    }
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Polyline();
@@ -110,7 +109,7 @@ export default {
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
       body: {
-        refPoints: '25 10 3 10 3 3 25 3'
+        refPoints: '25 10 3 10 3 3 25 3',
       },
       label: {
         text: joint.util.breakText(this.node.definition.get("text"), {
@@ -124,6 +123,9 @@ export default {
       },
     });
 
+    this.shape.on('change:size', () => {
+      this.updateCrownPosition();
+    });
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -133,7 +135,7 @@ export default {
         "move",
         {
           x: bounds.x,
-          y: bounds.y
+          y: bounds.y,
         },
         element
       );
@@ -142,7 +144,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  }
+  },
 };
 </script>
 
