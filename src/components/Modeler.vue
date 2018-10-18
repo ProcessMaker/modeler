@@ -16,19 +16,17 @@
             </div>
 
         </div>
-        <div class="definitions-container" v-if="definitions">
-            <component
-              v-for="(node, id) in nodes"
-              :is="node.type"
-              :key="id"
-              :graph="graph"
-              :paper="paper"
-              :node="node"
-              :id="id"
-              :highlighted="highlighted && highlighted.model.component === node.component"
-              @add-node="addNode"
-            />
-        </div>
+          <component
+            v-for="(node, id) in nodes"
+            :is="node.type"
+            :key="id"
+            :graph="graph"
+            :paper="paper"
+            :node="node"
+            :id="id"
+            :highlighted="highlighted && highlighted.model.component === node.component"
+            @add-node="addNode"
+          />
     </div>
 </template>
 
@@ -66,6 +64,14 @@ let version = "1.0";
 if (!window.joint) {
   window.joint = require("jointjs");
 }
+
+const bpmnTypeMap = {
+  'bpmn:StartEvent': 'startEvent',
+  'bpmn:EndEvent': 'endEvent',
+  'bpmn:Task': 'task',
+  'bpmn:ExclusiveGateway': 'exclusiveGateway',
+  'bpmn:SequenceFlow': 'sequenceFlow',
+};
 
 export default {
   props: [
@@ -146,71 +152,44 @@ export default {
     parse() {
       // get the top level process objects
       // All root elements are bpmn:process types
-      let processes = this.definitions.rootElements;
-      if (processes) {
-        for (var process of processes) {
-          this.processNode = process;
-          this.inspectorConfig = this.inspectors["process"];
-          this.inspectorNode = this.processNode;
+      this.definitions.rootElements.forEach(process => {
+        this.processNode = process;
+        this.inspectorConfig = this.inspectors["process"];
+        this.inspectorNode = this.processNode;
 
-          // Now iterate through all the elements in processes
-          if (process.flowElements) {
-            for (var element of process.flowElements) {
-              if (element.$type == "bpmn:StartEvent") {
-                this.$set(this.nodes, element.id, {
-                  type: "startEvent",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:EndEvent") {
-                this.$set(this.nodes, element.id, {
-                  type: "endEvent",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:Task") {
-                this.$set(this.nodes, element.id, {
-                  type: "task",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:ExclusiveGateway") {
-                this.$set(this.nodes, element.id, {
-                  type: "exclusiveGateway",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:SequenceFlow") {
-                this.$set(this.nodes, element.id, {
-                  type: "sequenceFlow",
-                  definition: element
-                });
-              } else {
-                throw new Error("Unsupported element type in parse():" + element.$type);
-              }
-            }
+        // Now iterate through all the elements in processes
+        process.get('flowElements').forEach(element => {
+          const type = bpmnTypeMap[element.$type];
+
+          if (!type) {
+            throw new Error(`Unsupported element type in parse: ${element.$type}`);
           }
-        }
-      }
+
+          if (!element.get('name')) {
+            element.set('name', '');
+          }
+
+          this.$set(this.nodes, element.id, { type, definition: element });
+        });
+      });
+
       // Okay, now let's get the diagrams
-      let diagrams = this.definitions.diagrams;
-      if (diagrams) {
-        for (var diagram of diagrams) {
-          var plane = diagram.plane;
-          if(!plane.planeElement) {
-            plane.planeElement = [];
+      this.definitions.diagrams.forEach(diagram => {
+        this.planeElements = diagram.plane.get('planeElement');
+
+        this.planeElements.forEach(diagramElement => {
+          if (this.nodes[diagramElement.bpmnElement.id]) {
+            this.$set(
+              this.nodes[diagramElement.bpmnElement.id],
+              "diagram",
+              diagramElement
+            );
           }
-          this.planeElements = plane.planeElement;
-          for (var diagramElement of this.planeElements) {
-            if (this.nodes[diagramElement.bpmnElement.id]) {
-              this.$set(
-                this.nodes[diagramElement.bpmnElement.id],
-                "diagram",
-                diagramElement
-              );
-            }
-          }
-        }
-      }
+        });
+      });
     },
     loadXML(xml) {
-      let moddle = new BpmnModdle(this.extensions);
+      const moddle = new BpmnModdle(this.extensions);
       moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information

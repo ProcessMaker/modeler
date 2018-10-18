@@ -153,22 +153,30 @@ export default {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
+    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
+
     this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
-    const targetPoint = this.node.definition.get('targetRef');
+    const targetRef = this.node.definition.get('targetRef');
+    const targetIsPoint = targetRef instanceof joint.g.point;
+
+    this.shape.source(this.sourceShape);
+    this.shape.target(targetIsPoint ? targetRef : this.$parent.nodes[targetRef.get('id')].component.shape);
+    this.shape.addTo(this.graph);
+
+    this.shape.component = this;
+    this.$parent.nodes[this.id].component = this;
+
+    if (!targetIsPoint) {
+      this.completeLink();
+      return;
+    }
 
     this.paper.setInteractivity(false);
-    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
     this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
-    this.shape.source(this.sourceShape);
-    this.shape.target(targetPoint);
-    this.shape.addTo(this.graph);
 
     this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
     this.paper.el.style.cursor = 'not-allowed';
     this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-
-    this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
   },
   destroyed() {
     this.updateWaypoints.cancel();
