@@ -61,8 +61,6 @@ import {
 
 import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
 
-import processMakerModdle from "@processmaker/processmaker-bpmn-moddle/resources/processmaker";
-
 let version = "1.0";
 
 if (!window.joint) {
@@ -184,7 +182,7 @@ export default {
                   definition: element
                 });
               } else {
-                console.log("UNKNOWN TYPE: " + element.$type);
+                throw new Error("Unsupported element type in parse():" + element.$type);
               }
             }
           }
@@ -195,7 +193,6 @@ export default {
       if (diagrams) {
         for (var diagram of diagrams) {
           var plane = diagram.plane;
-          var elements = plane.planeElement;
           if(!plane.planeElement) {
             plane.planeElement = [];
           }
@@ -283,8 +280,6 @@ export default {
     },
   },
   mounted() {
-    // Register our bpmn moddle extension
-    this.registerBpmnExtension('processmaker', processMakerModdle);
     // Register controls with inspector
     this.$refs.inspector.$options.components["FormText"] = FormText;
     this.$refs.inspector.$options.components["FormInput"] = FormInput;
@@ -330,7 +325,7 @@ export default {
     this.paper.on("blank:pointerdown", (event, x, y) => {
       this.canvasDragPosition = {x: x, y: y};
     });
-    this.paper.on('cell:pointerup blank:pointerup', (cellView, x, y) => {
+    this.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
     });
 
