@@ -53,8 +53,8 @@ export default {
         },
         addAssociation(cellView, evt, x, y) {
             const associationLink = moddle.create('bpmn:Association', {
-                sourceRef: this.shape.component.node.definition,
-                targetRef: { x, y }
+                sourceRef: { x, y },
+                targetRef: this.shape.component.node.definition
             })
 
             this.$emit('add-node', {

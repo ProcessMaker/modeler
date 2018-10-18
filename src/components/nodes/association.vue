@@ -21,7 +21,7 @@ export default {
       definition: null,
       sourceShape: null,
       validConnections: {
-        textAnnotation: ['task', 'textAnnotation'],
+        textAnnotation: ['task', 'startEvent', 'endEvent', 'exclusiveGateway'],
       },
       inspectorConfig: [
         {
@@ -66,8 +66,8 @@ export default {
     };
   },
   computed: {
-    sourceType() {
-      return this.sourceShape && this.sourceShape.component.node.type;
+    targetType() {
+      return this.targetShape && this.targetShape.component.node.type;
     }
   },
   methods: {
@@ -82,25 +82,23 @@ export default {
 
       this.resetPaper();
 
-      const targetShape = this.shape.getTargetElement();
+      const sourceShape = this.shape.getTargetElement();
 
-      this.node.definition.targetRef = targetShape.component.node.definition;
-      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition)
+      this.node.definition.sourceRef = sourceShape.component.node.definition;
 
       this.updateWaypoints();
 
-      targetShape.attr({
+      sourceShape.attr({
         body: { fill: '#fff', cursor: 'move' },
         label: { cursor: 'move' },
       });
 
-      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
-      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(this.targetShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(sourceShape, 'change:position', this.updateWaypoints);
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
-      const points = [connections.start, ...connections.segments.map(segment => segment.end)];
+      const points = connections.segments.map(segment => segment.end);
 
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
@@ -108,9 +106,9 @@ export default {
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
       const [target] = this.graph.findModelsFromPoint(localMousePosition);
-      const targetType = get(target, 'component.node.type');
+      const sourceType = get(target, 'component.node.type');
 
-      if (!targetType || !this.validConnections[this.sourceType].includes(targetType)) {
+      if (!sourceType || !this.validConnections[this.targetType].includes(sourceType)) {
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
@@ -151,23 +149,29 @@ export default {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
-    this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
-    const targetPoint = this.node.definition.get('targetRef');
+    this.targetShape = this.$parent.nodes[this.node.definition.get('targetRef').get('id')].component.shape;
+    const sourcePoint = this.node.definition.get('sourceRef');
 
     this.paper.setInteractivity(false);
-    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
+    this.shape = new joint.shapes.standard.Link({ router: { name: 'normal' } });
     this.shape.attr({
         wrapper: {
           cursor: 'not-allowed'
         },
         line: {
           stroke: 'black',
-          strokeWidth: 2,
-          strokeDasharray: '5 5',
+          strokeWidth: 1,
+          strokeDasharray: '5 5 5 5 5',
+          targetMarker: {
+                'type': 'rect',
+                'width': 1,
+                'height': 1,
+                'stroke': 'none'
+            }
         }
     });
-    this.shape.source(this.sourceShape);
-    this.shape.target(targetPoint);
+    this.shape.source(this.targetShape);
+    this.shape.target(sourcePoint);
     this.shape.addTo(this.graph);
 
     this.paper.el.addEventListener('mousemove', this.updateLinkTarget);

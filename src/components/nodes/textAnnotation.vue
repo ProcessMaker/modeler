@@ -16,6 +16,7 @@ export default {
       shape: null,
       definition: null,
       nodeWidth: 10,
+      nodeHeight: 40,
       inspectorConfig: [
         {
           name: "Text Annotation",
@@ -63,7 +64,7 @@ export default {
       let bounds = this.node.diagram.bounds;
 
       this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(this.nodeWidth, bounds.height);
+      this.shape.resize(this.nodeWidth, this.nodeHeight );
       this.shape.attr({
         body: {
           refPoints: '25 30 3 30 3 3 25 3',

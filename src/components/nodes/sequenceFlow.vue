@@ -102,7 +102,7 @@ export default {
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
-      const points = [connections.start, ...connections.segments.map(segment => segment.end)];
+      const points = connections.segments.map(segment => segment.end);
 
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
