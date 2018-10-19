@@ -102,7 +102,7 @@ export default {
       processNode: null,
       inspectorNode: null,
       inspectorData: null,
-      inspectorHandler: null,
+      inspectorHandler: () => {},
       highlighted: null,
       inspectorConfig: [
         {
@@ -182,7 +182,7 @@ export default {
                   definition: element
                 });
               } else {
-                throw new Error("Unsupported element type in parse():" + element.$type);
+                console.warn("Unsupported element type in parse():" + element.$type);
               }
             }
           }
