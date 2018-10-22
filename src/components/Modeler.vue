@@ -16,19 +16,17 @@
             </div>
 
         </div>
-        <div class="definitions-container" v-if="definitions">
-            <component
-              v-for="(node, id) in nodes"
-              :is="node.type"
-              :key="id"
-              :graph="graph"
-              :paper="paper"
-              :node="node"
-              :id="id"
-              :highlighted="highlighted && highlighted.model.component === node.component"
-              @add-node="addNode"
-            />
-        </div>
+          <component
+            v-for="(node, id) in nodes"
+            :is="node.type"
+            :key="id"
+            :graph="graph"
+            :paper="paper"
+            :node="node"
+            :id="id"
+            :highlighted="highlighted && highlighted.model.component === node.component"
+            @add-node="addNode"
+          />
     </div>
 </template>
 
@@ -46,7 +44,7 @@ import sequenceFlow from "./nodes/sequenceFlow";
 import association from "./nodes/association"
 import exclusiveGateway from "./nodes/exclusiveGateway";
 import textAnnotation from "./nodes/textAnnotation"
-import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
+import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
 import processInspectorConfig from "./inspectors/process";
 
 import { Drag, Drop } from 'vue-drag-drop';
@@ -59,17 +57,24 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormDatePicker
-} from "@processmaker/vue-form-elements/src/components";
+} from "@processmaker/vue-form-elements";
 
-import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
-
-import processMakerModdle from "@processmaker/processmaker-bpmn-moddle/resources/processmaker";
 
 let version = "1.0";
 
 if (!window.joint) {
   window.joint = require("jointjs");
 }
+
+const bpmnTypeMap = {
+  'bpmn:StartEvent': 'startEvent',
+  'bpmn:EndEvent': 'endEvent',
+  'bpmn:Task': 'task',
+  'bpmn:ExclusiveGateway': 'exclusiveGateway',
+  'bpmn:SequenceFlow': 'sequenceFlow',
+  'bpmn:Association': 'association',
+  'bpmn:TextAnnotation': 'textAnnotation'
+};
 
 export default {
   props: [
@@ -108,7 +113,7 @@ export default {
       processNode: null,
       inspectorNode: null,
       inspectorData: null,
-      inspectorHandler: null,
+      inspectorHandler: () => {},
       highlighted: null,
       inspectorConfig: [
         {
@@ -152,82 +157,44 @@ export default {
     parse() {
       // get the top level process objects
       // All root elements are bpmn:process types
-      let processes = this.definitions.rootElements;
-      if (processes) {
-        for (var process of processes) {
-          this.processNode = process;
-          this.inspectorConfig = this.inspectors["process"];
-          this.inspectorNode = this.processNode;
+      this.definitions.rootElements.forEach(process => {
+        this.processNode = process;
+        this.inspectorConfig = this.inspectors["process"];
+        this.inspectorNode = this.processNode;
 
-          // Now iterate through all the elements in processes
-          if (process.flowElements) {
-            for (var element of process.flowElements) {
-              if (element.$type == "bpmn:StartEvent") {
-                this.$set(this.nodes, element.id, {
-                  type: "startEvent",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:EndEvent") {
-                this.$set(this.nodes, element.id, {
-                  type: "endEvent",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:Task") {
-                this.$set(this.nodes, element.id, {
-                  type: "task",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:ExclusiveGateway") {
-                this.$set(this.nodes, element.id, {
-                  type: "exclusiveGateway",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:SequenceFlow") {
-                this.$set(this.nodes, element.id, {
-                  type: "sequenceFlow",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:Association") {
-                this.$set(this.nodes, element.id, {
-                  type: "association",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:TextAnnotation") {
-                this.$set(this.nodes, element.id, {
-                  type: "textAnnotation",
-                  definition: element
-                });
-              } else {
-                console.log("UNKNOWN TYPE: " + element.$type);
-              }
-            }
+        // Now iterate through all the elements in processes
+        process.get('flowElements').forEach(element => {
+          const type = bpmnTypeMap[element.$type];
+
+          if (!type) {
+            throw new Error(`Unsupported element type in parse: ${element.$type}`);
           }
-        }
-      }
+
+          if (!element.get('name')) {
+            element.set('name', '');
+          }
+
+          this.$set(this.nodes, element.id, { type, definition: element });
+        });
+      });
+
       // Okay, now let's get the diagrams
-      let diagrams = this.definitions.diagrams;
-      if (diagrams) {
-        for (var diagram of diagrams) {
-          var plane = diagram.plane;
-          var elements = plane.planeElement;
-          if(!plane.planeElement) {
-            plane.planeElement = [];
+      this.definitions.diagrams.forEach(diagram => {
+        this.planeElements = diagram.plane.get('planeElement');
+
+        this.planeElements.forEach(diagramElement => {
+          if (this.nodes[diagramElement.bpmnElement.id]) {
+            this.$set(
+              this.nodes[diagramElement.bpmnElement.id],
+              "diagram",
+              diagramElement
+            );
           }
-          this.planeElements = plane.planeElement;
-          for (var diagramElement of this.planeElements) {
-            if (this.nodes[diagramElement.bpmnElement.id]) {
-              this.$set(
-                this.nodes[diagramElement.bpmnElement.id],
-                "diagram",
-                diagramElement
-              );
-            }
-          }
-        }
-      }
+        });
+      });
     },
     loadXML(xml) {
-      let moddle = new BpmnModdle(this.extensions);
+      const moddle = new BpmnModdle(this.extensions);
       moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
@@ -297,10 +264,8 @@ export default {
     },
   },
   mounted() {
-    // Register our bpmn moddle extension
-    this.registerBpmnExtension('processmaker', processMakerModdle);
     // Register controls with inspector
-    this.$refs.inspector.$options.components["FormText"] = FormText;
+    this.$refs.inspector.$options.components["FormText"] = renderer.FormText;
     this.$refs.inspector.$options.components["FormInput"] = FormInput;
     this.$refs.inspector.$options.components["FormDatePicker"] = FormDatePicker;
     this.$refs.inspector.$options.components[
@@ -330,6 +295,7 @@ export default {
       width: this.$refs['paper-container'].clientWidth,
       height: this.$refs['paper-container'].clientHeight,
       drawGrid: true,
+      perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
     });
     this.paper.on("blank:pointerclick", () => {
@@ -344,7 +310,7 @@ export default {
     this.paper.on("blank:pointerdown", (event, x, y) => {
       this.canvasDragPosition = {x: x, y: y};
     });
-    this.paper.on('cell:pointerup blank:pointerup', (cellView, x, y) => {
+    this.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
     });
 
