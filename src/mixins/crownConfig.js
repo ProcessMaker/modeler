@@ -108,6 +108,11 @@ export default {
                         cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } })
                     })
                 }
+                this.updateCrownPosition()
+            })
+
+            this.shape.listenTo(this.paper, 'paper:mouseeneter', () => {
+                this.updateCrownPosition()
             })
         },
         updateCrownPosition() {

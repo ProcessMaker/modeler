@@ -22,7 +22,8 @@ export default [
                 config: {
                     label: 'Name',
                     helper: 'The Name of the Process',
-                    name: 'name'
+                    name: 'name',
+                    placeholder: ''
                 }
             }
         ]

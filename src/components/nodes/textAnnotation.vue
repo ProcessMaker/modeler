@@ -16,7 +16,8 @@ export default {
       shape: null,
       definition: null,
       nodeWidth: 10,
-      nodeHeight: 40,
+      //Highlight adds 3 pixels of padding
+      highlightHeight: 3,
       inspectorConfig: [
         {
           name: "Text Annotation",
@@ -42,7 +43,8 @@ export default {
               config: {
                 label: "Annotation Description",
                 helper: "Body of the text annotation",
-                text: "text"
+                text: "text",
+                placeholder: 'New Text Annotation'
               }
             }
           ]
@@ -61,17 +63,19 @@ export default {
       return this.shape;
     },
     updateShape() {
+
       let bounds = this.node.diagram.bounds;
+      const { height } = this.shape.findView(this.paper).getBBox();
 
       this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(this.nodeWidth, this.nodeHeight );
+      this.shape.resize(this.nodeWidth, height - this.highlightHeight);
+      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
+
       this.shape.attr({
-        body: {
-          refPoints: '25 30 3 30 3 3 25 3',
-        },
+        body: { refPoints  },
         label: {
           text: joint.util.breakText(this.node.definition.get("text"), {
-            width: bounds.width
+            width: bounds.width,
           }),
           fill: "black"
         }
@@ -106,7 +110,7 @@ export default {
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
       body: {
-        refPoints: '25 30 3 30 3 3 25 3',
+        refPoints: '25 10 3 10 3 3 25 3'
       },
       label: {
         text: joint.util.breakText(this.node.definition.get("text"), {
@@ -119,6 +123,7 @@ export default {
         refY: '5',
       },
     });
+
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -140,4 +145,5 @@ export default {
   }
 };
 </script>
+
 
