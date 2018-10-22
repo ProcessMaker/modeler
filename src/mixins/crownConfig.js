@@ -42,7 +42,7 @@ export default {
     addSequence(cellView, evt, x, y) {
       const sequenceLink = moddle.create('bpmn:SequenceFlow', {
         sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
+        targetRef: new joint.g.point(x, y),
       });
 
       this.$emit('add-node', {

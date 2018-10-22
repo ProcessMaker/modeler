@@ -20,6 +20,7 @@ export default {
       shape: null,
       definition: null,
       sourceShape: null,
+      anchorPadding: 25,
       validConnections: {
         task: ['task', 'endEvent'],
         startEvent: ['task', 'endEvent'],
@@ -70,6 +71,9 @@ export default {
   computed: {
     sourceType() {
       return this.sourceShape && this.sourceShape.component.node.type;
+    },
+    elementPadding() {
+      return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     }
   },
   methods: {
@@ -102,10 +106,13 @@ export default {
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
-      const points = [connections.start, ...connections.segments.map(segment => segment.end)];
+      const points = connections.segments.map(segment => segment.end);
 
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
+    },
+    updateRouter() {
+      this.shape.router('orthogonal', { elementPadding: this.elementPadding });
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
@@ -120,7 +127,16 @@ export default {
         return;
       }
 
-      this.shape.target(target);
+      this.shape.target(target, {
+        anchor: {
+          name: target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: this.anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.updateRouter();
+
       target.attr({
         body: { fill: '#dffdd0', cursor: 'default' },
         label: { cursor: 'default' },
@@ -153,22 +169,53 @@ export default {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
+    this.shape = new joint.shapes.standard.Link({
+      router: {
+        name: 'orthogonal',
+        args: {
+          elementPadding: this.elementPadding,
+        },
+      },
+    });
+
     this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
-    const targetPoint = this.node.definition.get('targetRef');
 
-    this.paper.setInteractivity(false);
-    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
-    this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
-    this.shape.source(this.sourceShape);
-    this.shape.target(targetPoint);
+    this.shape.source(this.sourceShape, {
+      anchor: { name: 'modelCenter' },
+      connectionPoint: { name: 'boundary' },
+    });
+
     this.shape.addTo(this.graph);
-
-    this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-    this.paper.el.style.cursor = 'not-allowed';
-    this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
+
+    const targetRef = this.node.definition.get('targetRef');
+
+    if (targetRef.id) {
+      const targetShape = this.$parent.nodes[targetRef.get('id')].component.shape;
+      this.shape.target(targetShape, {
+        anchor: {
+          name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: this.anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.completeLink();
+    } else {
+      this.shape.target(targetRef, {
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.paper.setInteractivity(false);
+      this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
+
+      this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
+      this.paper.el.style.cursor = 'not-allowed';
+      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+    }
+
+    this.updateRouter();
   },
   destroyed() {
     this.updateWaypoints.cancel();
