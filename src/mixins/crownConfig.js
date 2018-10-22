@@ -109,6 +109,7 @@ export default {
                     })
                 }
                 this.updateCrownPosition()
+                this.updateCrownPositionOnKeyDown()
             })
 
             this.shape.listenTo(this.paper, 'paper:mouseeneter', () => {
@@ -127,6 +128,11 @@ export default {
 
                 button.resize(buttonLength, buttonLength)
                 button.position(x + width + buttonMargin, y + yOffset + centerY)
+            })
+        },
+        updateCrownPositionOnKeyDown() {
+            document.addEventListener('keydown', () => {
+                this.updateCrownPosition()
             })
         }
     },
