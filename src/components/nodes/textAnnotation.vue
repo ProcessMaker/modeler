@@ -9,20 +9,23 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 
 export default {
-  props: ["graph", "node", "nodes", "id"],
+  props: ["graph", "node", "id"],
   mixins: [crownConfig],
   data() {
     return {
       shape: null,
       definition: null,
+      nodeWidth: 10,
+      //Highlight adds 3 pixels of padding
+      highlightHeight: 3,
       inspectorConfig: [
         {
-          name: "Task",
+          name: "Text Annotation",
           items: [
             {
               component: "FormText",
               config: {
-                label: "Task",
+                label: "Text Annotation",
                 fontSize: "2em"
               }
             },
@@ -38,9 +41,10 @@ export default {
             {
               component: "FormInput",
               config: {
-                label: "Name",
-                helper: "The Name of the Task",
-                name: "name"
+                label: "Annotation Description",
+                helper: "Body of the text annotation",
+                text: "text",
+                placeholder: 'New Text Annotation'
               }
             }
           ]
@@ -49,7 +53,7 @@ export default {
       crownConfig: [
         {
           icon: connectIcon,
-          clickHandler: this.addSequence,
+          clickHandler: this.addAssociation,
         },
       ],
     };
@@ -59,14 +63,19 @@ export default {
       return this.shape;
     },
     updateShape() {
+
       let bounds = this.node.diagram.bounds;
+      const { height } = this.shape.findView(this.paper).getBBox();
+
       this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
+      this.shape.resize(this.nodeWidth, height - this.highlightHeight);
+      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
+
       this.shape.attr({
-        body: {},
+        body: { refPoints  },
         label: {
-          text: joint.util.breakText(this.node.definition.get("name"), {
-            width: bounds.width
+          text: joint.util.breakText(this.node.definition.get("text"), {
+            width: bounds.width,
           }),
           fill: "black"
         }
@@ -86,6 +95,7 @@ export default {
         // Only change if the value is different
         if (this.node.definition[key] != value[key]) {
           this.node.definition[key] = value[key];
+          this.node.definition.set('text', value[key])
         }
       }
 
@@ -93,23 +103,27 @@ export default {
     }
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Rectangle();
+    this.shape = new joint.shapes.standard.Polyline();
 
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
-    this.shape.resize(bounds.width, bounds.height);
+    this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
       body: {
-        rx: 8,
-        ry: 8
+        refPoints: '25 10 3 10 3 3 25 3'
       },
       label: {
-        text: joint.util.breakText(this.node.definition.get("name"), {
-          width: bounds.width
+        text: joint.util.breakText(this.node.definition.get("text"), {
+          width: bounds.width,
         }),
-        fill: "black"
+        fill: "black",
+        yAlignment: 'left',
+        xAlignment: 'left',
+        refX: '5',
+        refY: '5',
       },
     });
+
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -128,6 +142,8 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  },
+  }
 };
 </script>
+
+

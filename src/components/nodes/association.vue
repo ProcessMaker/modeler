@@ -20,11 +20,8 @@ export default {
       shape: null,
       definition: null,
       sourceShape: null,
-      anchorPadding: 25,
       validConnections: {
-        task: ['task', 'endEvent'],
-        startEvent: ['task', 'endEvent'],
-        exclusiveGateway: ['task', 'endEvent'],
+        textAnnotation: ['task', 'startEvent', 'endEvent', 'exclusiveGateway'],
       },
       inspectorConfig: [
         {
@@ -50,7 +47,7 @@ export default {
               component: "FormInput",
               config: {
                 label: "Name",
-                helper: "The Name of the Sequence Flow",
+                helper: "The Name of the Association",
                 name: "name"
               }
             },
@@ -58,7 +55,7 @@ export default {
               component: "FormInput",
               config: {
                 label: "Expression",
-                helper: "The condition expression for this sequence flow. Only used if used with a diverging gateway",
+                helper: "Shows relationships between artifacts and flow objects.",
                 name: "conditionExpression.body"
               }
             }
@@ -69,11 +66,8 @@ export default {
     };
   },
   computed: {
-    sourceType() {
-      return this.sourceShape && this.sourceShape.component.node.type;
-    },
-    elementPadding() {
-      return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
+    targetType() {
+      return this.targetShape && this.targetShape.component.node.type;
     }
   },
   methods: {
@@ -88,21 +82,19 @@ export default {
 
       this.resetPaper();
 
-      const targetShape = this.shape.getTargetElement();
+      const sourceShape = this.shape.getTargetElement();
 
-      this.node.definition.targetRef = targetShape.component.node.definition;
-      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition)
+      this.node.definition.sourceRef = sourceShape.component.node.definition;
 
       this.updateWaypoints();
 
-      targetShape.attr({
+      sourceShape.attr({
         body: { fill: '#fff', cursor: 'move' },
         label: { cursor: 'move' },
       });
 
-      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
-      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(this.targetShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(sourceShape, 'change:position', this.updateWaypoints);
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
@@ -111,15 +103,12 @@ export default {
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
-    updateRouter() {
-      this.shape.router('orthogonal', { elementPadding: this.elementPadding });
-    },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
       const [target] = this.graph.findModelsFromPoint(localMousePosition);
-      const targetType = get(target, 'component.node.type');
+      const sourceType = get(target, 'component.node.type');
 
-      if (!targetType || !this.validConnections[this.sourceType].includes(targetType)) {
+      if (!sourceType || !this.validConnections[this.targetType].includes(sourceType)) {
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
@@ -127,16 +116,7 @@ export default {
         return;
       }
 
-      this.shape.target(target, {
-        anchor: {
-          name: target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: this.anchorPadding },
-        },
-        connectionPoint: { name: 'boundary' },
-      });
-
-      this.updateRouter();
-
+      this.shape.target(target);
       target.attr({
         body: { fill: '#dffdd0', cursor: 'default' },
         label: { cursor: 'default' },
@@ -169,53 +149,37 @@ export default {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Link({
-      router: {
-        name: 'orthogonal',
-        args: {
-          elementPadding: this.elementPadding,
+    this.targetShape = this.$parent.nodes[this.node.definition.get('targetRef').get('id')].component.shape;
+    const sourcePoint = this.node.definition.get('sourceRef');
+
+    this.paper.setInteractivity(false);
+    this.shape = new joint.shapes.standard.Link({ router: { name: 'normal' } });
+    this.shape.attr({
+        wrapper: {
+          cursor: 'not-allowed'
         },
-      },
+        line: {
+          stroke: 'black',
+          strokeWidth: 1,
+          strokeDasharray: '5 5 5 5 5',
+          targetMarker: {
+                'type': 'rect',
+                'width': 1,
+                'height': 1,
+                'stroke': 'none'
+            }
+        }
     });
-
-    this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
-
-    this.shape.source(this.sourceShape, {
-      anchor: { name: 'modelCenter' },
-      connectionPoint: { name: 'boundary' },
-    });
-
+    this.shape.source(this.targetShape);
+    this.shape.target(sourcePoint);
     this.shape.addTo(this.graph);
+
+    this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
+    this.paper.el.style.cursor = 'not-allowed';
+    this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-
-    const targetRef = this.node.definition.get('targetRef');
-
-    if (targetRef.id) {
-      const targetShape = this.$parent.nodes[targetRef.get('id')].component.shape;
-      this.shape.target(targetShape, {
-        anchor: {
-          name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: this.anchorPadding },
-        },
-        connectionPoint: { name: 'boundary' },
-      });
-
-      this.completeLink();
-    } else {
-      this.shape.target(targetRef, {
-        connectionPoint: { name: 'boundary' },
-      });
-
-      this.paper.setInteractivity(false);
-      this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
-
-      this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.paper.el.style.cursor = 'not-allowed';
-      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-    }
-
-    this.updateRouter();
   },
   destroyed() {
     this.updateWaypoints.cancel();

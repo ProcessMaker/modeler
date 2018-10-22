@@ -1,6 +1,6 @@
 export default [
     {
-        name: "Process Information",
+        name: 'Process Information',
         items: [
             {
                 component: 'FormText',
@@ -22,14 +22,10 @@ export default [
                 config: {
                     label: 'Name',
                     helper: 'The Name of the Process',
-                    name: 'name'
+                    name: 'name',
+                    placeholder: ''
                 }
-            },
-
-
-
-
+            }
         ]
     }
 ]
-

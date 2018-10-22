@@ -1,7 +1,7 @@
 <template>
     <div class="tool-panel" ref="panel">
         <div class="header" @mousedown="startDrag"></div>
-        <drag :transfer-data="{type: 'Task'}">
+        <drag :transfer-data="{type: 'task'}">
         <div class="tool">
             <img src="../assets/toolpanel/task.svg">
         </div>
@@ -84,38 +84,38 @@ export default {
 
 <style lang="scss" scoped>
 .tool-panel {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: lightgrey;
-  border-radius: 2px;
-  border: 1px solid #888888;
-  z-index: 50;
-  width: 42px;
-  display: flex;
-  flex-direction: column;
-  user-select: none;
-
-  .header {
-    height: 16px;
-    min-height: 16px;
-    background-color: darkgrey;
-    border-bottom: 1px solid #888888;
-  }
-
-  .tool {
-    margin: 4px;
-    height: 32px;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: lightgrey;
+    border-radius: 2px;
+    border: 1px solid #888888;
+    z-index: 50;
+    width: 42px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid lightgrey;
-    &:hover {
-      background-color: #bbbbbb;
-      border: 1px solid #888888;
-      border-radius: 2px;
+    flex-direction: column;
+    user-select: none;
+
+    .header {
+        height: 16px;
+        min-height: 16px;
+        background-color: darkgrey;
+        border-bottom: 1px solid #888888;
     }
-  }
+
+    .tool {
+        margin: 4px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid lightgrey;
+        &:hover {
+            background-color: #bbbbbb;
+            border: 1px solid #888888;
+            border-radius: 2px;
+        }
+    }
 }
 </style>
 
