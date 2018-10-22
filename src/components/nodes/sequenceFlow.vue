@@ -21,9 +21,9 @@ export default {
       definition: null,
       sourceShape: null,
       validConnections: {
-        task: ['task', 'endEvent'],
+        task: ['task', 'endEvent', 'exclusiveGateway'],
         startEvent: ['task', 'endEvent'],
-        exclusiveGateway: ['task', 'endEvent'],
+        exclusiveGateway: ['task'],
       },
       inspectorConfig: [
         {
@@ -90,6 +90,7 @@ export default {
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition)
 
+      this.checkExclusiveGateway();
       this.updateWaypoints();
 
       targetShape.attr({
@@ -99,6 +100,22 @@ export default {
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+    },
+    checkExclusiveGateway() {
+      const inboundFlowMax = 1;
+      let sequenceFlowCount = this.node.definition.targetRef.incoming.length;
+      let gatewayDirection = this.node.definition.targetRef.get('gatewayDirection');
+
+      if (gatewayDirection == 'Diverging') {
+        if (sequenceFlowCount > inboundFlowMax) {
+          /* To do: Handle Error Messages ?, Alert is temporary */
+          alert('Only One Inbound Flow Allowed')
+          this.shape.disconnect()
+        }
+      } else if (gatewayDirection == 'Coverging') {
+        return
+      }
+
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();

@@ -125,7 +125,18 @@ export default {
       });
     },
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.setInspector(this.node.definition, this.inspectorConfig,this.handleInspectionUpdate);
+    },
+    handleInspectionUpdate(value) {
+      // Go through each property and rebind it to our data
+      for (var key in value) {
+        // Only change if the value is different
+        if (this.node.definition[key] != value[key]) {
+          this.node.definition[key] = value[key];
+          this.node.definition.set('gatewayDirection',this.node.definition.gatewayDirection)
+        }
+      }
+      this.updateShape();
     }
   },
   mounted() {
