@@ -44,7 +44,7 @@ import startEvent from "./nodes/startEvent";
 import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
 import exclusiveGateway from "./nodes/exclusiveGateway";
-import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
+import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
 import processInspectorConfig from "./inspectors/process";
 
 import { Drag, Drop } from 'vue-drag-drop';
@@ -57,9 +57,8 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormDatePicker
-} from "@processmaker/vue-form-elements/src/components";
+} from "@processmaker/vue-form-elements";
 
-import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
 
 let version = "1.0";
 
@@ -281,7 +280,7 @@ export default {
   },
   mounted() {
     // Register controls with inspector
-    this.$refs.inspector.$options.components["FormText"] = FormText;
+    this.$refs.inspector.$options.components["FormText"] = renderer.FormText;
     this.$refs.inspector.$options.components["FormInput"] = FormInput;
     this.$refs.inspector.$options.components["FormDatePicker"] = FormDatePicker;
     this.$refs.inspector.$options.components[
