@@ -102,7 +102,7 @@ export default {
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
-      const points = [connections.start, ...connections.segments.map(segment => segment.end)];
+      const points = connections.segments.map(segment => segment.end);
 
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
@@ -153,7 +153,14 @@ export default {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
+    this.shape = new joint.shapes.standard.Link({
+      router: {
+        name: 'manhattan',
+        args: {
+          excludeTypes: ['basic.Text', 'standard.EmbeddedImage'],
+        },
+      },
+    });
 
     this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
     const targetRef = this.node.definition.get('targetRef');

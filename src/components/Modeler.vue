@@ -290,6 +290,7 @@ export default {
       width: this.$refs['paper-container'].clientWidth,
       height: this.$refs['paper-container'].clientHeight,
       drawGrid: true,
+      perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
     });
     this.paper.on("blank:pointerclick", () => {
