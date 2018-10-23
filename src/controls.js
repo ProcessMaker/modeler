@@ -27,7 +27,7 @@ export default {
         {
             icon: require('./assets/toolpanel/exclusive-gateway.svg'),
             label: 'Exclusive Gateway',
-            component: require('./components/nodes/task'),
+            component: require('./components/nodes/exclusiveGateway'),
             type: 'exclusiveGateway',
             definition: function() {
                 return moddle.create('bpmn:ExclusiveGateway', {

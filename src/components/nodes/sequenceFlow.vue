@@ -102,20 +102,19 @@ export default {
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
     },
     checkExclusiveGateway() {
-      const inboundFlowMax = 1;
+      const MaxInboundFlow = 1;
       let sequenceFlowCount = this.node.definition.targetRef.incoming.length;
       let gatewayDirection = this.node.definition.targetRef.get('gatewayDirection');
 
       if (gatewayDirection == 'Diverging') {
-        if (sequenceFlowCount > inboundFlowMax) {
+        if (sequenceFlowCount > MaxInboundFlow) {
           /* To do: Handle Error Messages ?, Alert is temporary */
           alert('Only One Inbound Flow Allowed')
-          this.shape.disconnect()
+          this.shape.disconnect();
         }
       } else if (gatewayDirection == 'Coverging') {
-        return
+        return;
       }
-
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();

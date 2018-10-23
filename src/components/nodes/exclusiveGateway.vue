@@ -118,14 +118,20 @@ export default {
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
         body: {},
-        label: {
-          text: this.node.definition.get("name"),
+        ".label": {
+          text: joint.util.breakText(this.node.definition.get("name"), {
+            width: 100
+          }),
           fill: "black"
         }
       });
     },
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig,this.handleInspectionUpdate);
+      this.$parent.setInspector(
+          this.node.definition,
+          this.inspectorConfig,
+          this.handleInspectionUpdate
+      );
     },
     handleInspectionUpdate(value) {
       // Go through each property and rebind it to our data
@@ -133,9 +139,11 @@ export default {
         // Only change if the value is different
         if (this.node.definition[key] != value[key]) {
           this.node.definition[key] = value[key];
-          this.node.definition.set('gatewayDirection',this.node.definition.gatewayDirection)
+          this.node.definition.set('name', this.node.definition.name);
+          this.node.definition.set('gatewayDirection',this.node.definition.gatewayDirection);
         }
       }
+
       this.updateShape();
     }
   },
@@ -155,9 +163,6 @@ export default {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
     });
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -172,6 +177,11 @@ export default {
         element
       );
     });
+
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
+    this.$parent.nodes[this.id].component = this;
+
   }
 };
 </script>
