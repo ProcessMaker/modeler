@@ -45,7 +45,7 @@ joint.dia.Element.define(
 );
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ["graph", "node", "nodes", "id"],
   mixins: [crownConfig],
   data() {
     return {
