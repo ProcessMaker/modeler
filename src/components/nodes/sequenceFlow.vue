@@ -25,6 +25,7 @@ export default {
       invalidNodeColor: '#fae0e6',
       defaultNodeColor: '#fff',
       gatewayDirectionOptions: { Diverging: 'Diverging', Converging: 'Converging' },
+      anchorPadding: 25,
       validConnections: {
         task: ['task', 'endEvent', 'exclusiveGateway'],
         startEvent: ['task', 'endEvent'],
@@ -74,6 +75,9 @@ export default {
   computed: {
     sourceType() {
       return this.sourceShape && this.sourceShape.component.node.type;
+    },
+    elementPadding() {
+      return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     }
   },
   methods: {
@@ -137,7 +141,7 @@ export default {
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
-      const points = [connections.start, ...connections.segments.map(segment => segment.end)];
+      const points = connections.segments.map(segment => segment.end);
 
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
@@ -158,6 +162,9 @@ export default {
       }
       return true;
     },
+    updateRouter() {
+      this.shape.router('orthogonal', { elementPadding: this.elementPadding });
+    },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
 
@@ -175,8 +182,22 @@ export default {
         return;
       }
 
-      this.shape.target(this.target);
-      this.nodeState(this.validNodeColor, 'default');
+      this.shape.target(this.target, {
+        anchor: {
+          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: this.anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.updateRouter();
+
+      this.nodeState(this.validNodeColor, 'default')
+      // this.target.attr({
+      //   body: { fill: 'green', cursor: 'default' },
+      //   label: { cursor: 'default' },
+      // });
+
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
 
@@ -208,22 +229,53 @@ export default {
     }
   },
   mounted() {
+    this.shape = new joint.shapes.standard.Link({
+      router: {
+        name: 'orthogonal',
+        args: {
+          elementPadding: this.elementPadding,
+        },
+      },
+    });
+
     this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
-    const targetPoint = this.node.definition.get('targetRef');
 
-    this.paper.setInteractivity(false);
-    this.shape = new joint.shapes.standard.Link({ router: { name: 'orthogonal' } });
-    this.shape.attr({ wrapper: { cursor: 'not-allowed' }});
-    this.shape.source(this.sourceShape);
-    this.shape.target(targetPoint);
+    this.shape.source(this.sourceShape, {
+      anchor: { name: 'modelCenter' },
+      connectionPoint: { name: 'boundary' },
+    });
+
     this.shape.addTo(this.graph);
-
-    this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-    this.paper.el.style.cursor = 'not-allowed';
-    this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
+
+    const targetRef = this.node.definition.get('targetRef');
+
+    if (targetRef.id) {
+      const targetShape = this.$parent.nodes[targetRef.get('id')].component.shape;
+      this.shape.target(targetShape, {
+        anchor: {
+          name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: this.anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.completeLink();
+    } else {
+      this.shape.target(targetRef, {
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.paper.setInteractivity(false);
+      this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
+
+      this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
+      this.paper.el.style.cursor = 'not-allowed';
+      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+    }
+
+    this.updateRouter();
   },
   destroyed() {
     this.updateWaypoints.cancel();

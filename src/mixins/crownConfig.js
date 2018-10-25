@@ -51,6 +51,18 @@ export default {
                 diagram: moddle.create('bpmndi:BPMNEdge')
             })
         },
+        addAssociation(cellView, evt, x, y) {
+            const associationLink = moddle.create('bpmn:Association', {
+                sourceRef: { x, y },
+                targetRef: this.shape.component.node.definition
+            })
+
+            this.$emit('add-node', {
+                type: 'association',
+                definition: associationLink,
+                diagram: moddle.create('bpmndi:BPMNEdge')
+            })
+        },
         configureCrown() {
             if (!this.crownConfig) {
                 this.crownConfig = []
@@ -96,6 +108,12 @@ export default {
                         cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } })
                     })
                 }
+                this.updateCrownPosition()
+                this.updateCrownPositionOnKeyDown()
+            })
+
+            this.shape.listenTo(this.paper, 'paper:mouseeneter', () => {
+                this.updateCrownPosition()
             })
         },
         updateCrownPosition() {
@@ -110,6 +128,11 @@ export default {
 
                 button.resize(buttonLength, buttonLength)
                 button.position(x + width + buttonMargin, y + yOffset + centerY)
+            })
+        },
+        updateCrownPositionOnKeyDown() {
+            document.addEventListener('keydown', () => {
+                this.updateCrownPosition()
             })
         }
     },

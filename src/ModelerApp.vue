@@ -83,7 +83,7 @@ export default {
       });
     },
     handleUpload(files) {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.onloadend = () => {
         this.$refs.modeler.loadXML(reader.result);
         this.$refs.uploadmodal.hide();

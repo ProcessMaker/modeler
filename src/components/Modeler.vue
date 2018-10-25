@@ -16,19 +16,17 @@
             </div>
 
         </div>
-        <div class="definitions-container" v-if="definitions">
-            <component
-              v-for="(node, id) in nodes"
-              :is="node.type"
-              :key="id"
-              :graph="graph"
-              :paper="paper"
-              :node="node"
-              :id="id"
-              :highlighted="highlighted && highlighted.model.component === node.component"
-              @add-node="addNode"
-            />
-        </div>
+          <component
+            v-for="(node, id) in nodes"
+            :is="node.type"
+            :key="id"
+            :graph="graph"
+            :paper="paper"
+            :node="node"
+            :id="id"
+            :highlighted="highlighted && highlighted.model.component === node.component"
+            @add-node="addNode"
+          />
     </div>
 </template>
 
@@ -43,8 +41,10 @@ import task from "./nodes/task";
 import startEvent from "./nodes/startEvent";
 import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
+import association from "./nodes/association"
 import exclusiveGateway from "./nodes/exclusiveGateway";
-import VueFormRenderer from "@processmaker/vue-form-builder/src/components/vue-form-renderer";
+import textAnnotation from "./nodes/textAnnotation"
+import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
 import processInspectorConfig from "./inspectors/process";
 
 import { Drag, Drop } from 'vue-drag-drop';
@@ -57,15 +57,24 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormDatePicker
-} from "@processmaker/vue-form-elements/src/components";
+} from "@processmaker/vue-form-elements";
 
-import FormText from "@processmaker/vue-form-builder/src/components/renderer/form-text";
 
 let version = "1.0";
 
 if (!window.joint) {
   window.joint = require("jointjs");
 }
+
+const bpmnTypeMap = {
+  'bpmn:StartEvent': 'startEvent',
+  'bpmn:EndEvent': 'endEvent',
+  'bpmn:Task': 'task',
+  'bpmn:ExclusiveGateway': 'exclusiveGateway',
+  'bpmn:SequenceFlow': 'sequenceFlow',
+  'bpmn:Association': 'association',
+  'bpmn:TextAnnotation': 'textAnnotation'
+};
 
 export default {
   props: [
@@ -79,7 +88,9 @@ export default {
     startEvent,
     endEvent,
     sequenceFlow,
+    association,
     exclusiveGateway,
+    textAnnotation,
     VueFormRenderer,
   },
   data() {
@@ -102,7 +113,7 @@ export default {
       processNode: null,
       inspectorNode: null,
       inspectorData: null,
-      inspectorHandler: null,
+      inspectorHandler: () => {},
       highlighted: null,
       inspectorConfig: [
         {
@@ -146,71 +157,44 @@ export default {
     parse() {
       // get the top level process objects
       // All root elements are bpmn:process types
-      let processes = this.definitions.rootElements;
-      if (processes) {
-        for (var process of processes) {
-          this.processNode = process;
-          this.inspectorConfig = this.inspectors["process"];
-          this.inspectorNode = this.processNode;
+      this.definitions.rootElements.forEach(process => {
+        this.processNode = process;
+        this.inspectorConfig = this.inspectors["process"];
+        this.inspectorNode = this.processNode;
 
-          // Now iterate through all the elements in processes
-          if (process.flowElements) {
-            for (var element of process.flowElements) {
-              if (element.$type == "bpmn:StartEvent") {
-                this.$set(this.nodes, element.id, {
-                  type: "startEvent",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:EndEvent") {
-                this.$set(this.nodes, element.id, {
-                  type: "endEvent",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:Task") {
-                this.$set(this.nodes, element.id, {
-                  type: "task",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:ExclusiveGateway") {
-                this.$set(this.nodes, element.id, {
-                  type: "exclusiveGateway",
-                  definition: element
-                });
-              } else if (element.$type == "bpmn:SequenceFlow") {
-                this.$set(this.nodes, element.id, {
-                  type: "sequenceFlow",
-                  definition: element
-                });
-              } else {
-                throw new Error("Unsupported element type in parse():" + element.$type);
-              }
-            }
+        // Now iterate through all the elements in processes
+        process.get('flowElements').forEach(element => {
+          const type = bpmnTypeMap[element.$type];
+
+          if (!type) {
+            throw new Error(`Unsupported element type in parse: ${element.$type}`);
           }
-        }
-      }
+
+          if (!element.get('name')) {
+            element.set('name', '');
+          }
+
+          this.$set(this.nodes, element.id, { type, definition: element });
+        });
+      });
+
       // Okay, now let's get the diagrams
-      let diagrams = this.definitions.diagrams;
-      if (diagrams) {
-        for (var diagram of diagrams) {
-          var plane = diagram.plane;
-          if(!plane.planeElement) {
-            plane.planeElement = [];
+      this.definitions.diagrams.forEach(diagram => {
+        this.planeElements = diagram.plane.get('planeElement');
+
+        this.planeElements.forEach(diagramElement => {
+          if (this.nodes[diagramElement.bpmnElement.id]) {
+            this.$set(
+              this.nodes[diagramElement.bpmnElement.id],
+              "diagram",
+              diagramElement
+            );
           }
-          this.planeElements = plane.planeElement;
-          for (var diagramElement of this.planeElements) {
-            if (this.nodes[diagramElement.bpmnElement.id]) {
-              this.$set(
-                this.nodes[diagramElement.bpmnElement.id],
-                "diagram",
-                diagramElement
-              );
-            }
-          }
-        }
-      }
+        });
+      });
     },
     loadXML(xml) {
-      let moddle = new BpmnModdle(this.extensions);
+      const moddle = new BpmnModdle(this.extensions);
       moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
@@ -281,7 +265,7 @@ export default {
   },
   mounted() {
     // Register controls with inspector
-    this.$refs.inspector.$options.components["FormText"] = FormText;
+    this.$refs.inspector.$options.components["FormText"] = renderer.FormText;
     this.$refs.inspector.$options.components["FormInput"] = FormInput;
     this.$refs.inspector.$options.components["FormDatePicker"] = FormDatePicker;
     this.$refs.inspector.$options.components[
@@ -311,6 +295,7 @@ export default {
       width: this.$refs['paper-container'].clientWidth,
       height: this.$refs['paper-container'].clientHeight,
       drawGrid: true,
+      perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
     });
     this.paper.on("blank:pointerclick", () => {
@@ -369,45 +354,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~jointjs/dist/joint.css";
+@import '~jointjs/dist/joint.css';
 
 .modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+    position: relative;
+    width: inherit;
+    max-width: inherit;
+    height: inherit;
+    max-height: inherit;
+    overflow: hidden;
 
-  .modeler-container {
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+    .modeler-container {
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
 
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eeeeee;
-      border-left: 1px solid #aaaaaa;
-    }
+        .inspector {
+            font-size: 0.75em;
+            text-align: left;
+            padding: 8px;
+            width: 320px;
+            background-color: #eeeeee;
+            border-left: 1px solid #aaaaaa;
+        }
 
-    .paper-container {
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
+        .paper-container {
+            height: 100%;
+            max-height: 100%;
+            min-height: 100%;
 
-      /*
+            /*
             width: 100%;
             height: 100%;
             min-width: 100%;
             max-height: 100%;
             */
-      overflow: hidden;
+            overflow: hidden;
+        }
     }
-  }
 }
 </style>
 
