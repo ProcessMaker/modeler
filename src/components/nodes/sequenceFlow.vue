@@ -127,12 +127,12 @@ export default {
         return true;
       }
     },
-    nodeState( fillColor, cursorType) {
-      this.target.attr({
-        body: { fill: fillColor, cursor: cursorType },
-        label: { cursor: cursorType },
-        ".body": { fill: fillColor, cursor: cursorType },
-        ".label": { cursor: cursorType },
+    nodeState( fill, cursor, target = this.target) {
+      target.attr({
+        body: { fill , cursor },
+        label: { cursor },
+        ".body": { fill, cursor },
+        ".label": { cursor },
       });
     },
     updateWaypoints() {
@@ -199,6 +199,13 @@ export default {
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
+  },
+  watch: {
+    target( target , previousTarget ) {
+      if (previousTarget && previousTarget !== target ) {
+        this.nodeState(this.defaultNodeColor, 'default', previousTarget )
+      }
+    }
   },
   mounted() {
     this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
