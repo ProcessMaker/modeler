@@ -191,13 +191,7 @@ export default {
       });
 
       this.updateRouter();
-
       this.nodeState(this.validNodeColor, 'default')
-      // this.target.attr({
-      //   body: { fill: 'green', cursor: 'default' },
-      //   label: { cursor: 'default' },
-      // });
-
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
 
@@ -285,4 +279,3 @@ export default {
 
 <style lang="scss" scoped>
 </style>
-
