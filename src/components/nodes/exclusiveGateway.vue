@@ -30,14 +30,14 @@ joint.dia.Element.define(
         fontSize: 14,
         fill: "#333333"
       },
-      ".iconTop": {
+      ".iconSideA": {
         strokeWidth: "10",
         points: "40 220 80 180 120 220",
         stroke: "black",
         fill: "transparent",
         transform: "translate(37, 57) rotate(180) scale(0.20)",
       },
-      ".iconBottom": {
+      ".iconSideB": {
         strokeWidth: "10",
         points: "40 220 80 180 120 220",
         stroke: "black",
@@ -55,7 +55,7 @@ joint.dia.Element.define(
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconTop"/><polyline class="iconBottom"/>'
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>'
   }
 );
 
