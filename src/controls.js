@@ -47,7 +47,22 @@ export default {
         {
             icon: require('./assets/toolpanel/parallel-gateway.svg'),
             label: 'Parallel Gateway',
-            component: require('./components/nodes/task')
+            component: require('./components/nodes/task'),
+            type: 'parallelGateway',
+            definition: function() {
+                return moddle.create('bpmn:ParallelGateway', {
+                    name: 'New Parallel Gateway',
+                    gatewayDirection: 'Diverging'
+                })
+            },
+            diagram: function() {
+                return moddle.create('bpmndi:BPMNShape', {
+                    bounds: moddle.create('dc:Bounds', {
+                        height: 42,
+                        width: 42
+                    })
+                })
+            }
         },
         {
             icon: require('./assets/toolpanel/inclusive-gateway.svg'),
@@ -56,7 +71,8 @@ export default {
             type: 'inclusiveGateway',
             definition: function() {
                 return moddle.create('bpmn:InclusiveGateway', {
-                    name: 'New Inclusive Gateway'
+                    name: 'New Inclusive Gateway',
+                    gatewayDirection: 'Diverging'
                 })
             },
             diagram: function() {

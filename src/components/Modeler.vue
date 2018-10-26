@@ -44,6 +44,7 @@ import sequenceFlow from "./nodes/sequenceFlow";
 import association from "./nodes/association"
 import exclusiveGateway from "./nodes/exclusiveGateway";
 import inclusiveGateway from "./nodes/inclusiveGateway";
+import parallelGateway from "./nodes/parallelGateway";
 import textAnnotation from "./nodes/textAnnotation";
 import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
 import processInspectorConfig from "./inspectors/process";
@@ -73,6 +74,7 @@ const bpmnTypeMap = {
   'bpmn:Task': 'task',
   'bpmn:ExclusiveGateway': 'exclusiveGateway',
   'bpmn:InclusiveGateway': 'inclusiveGateway',
+  'bpmn:ParallelGateway': 'parallelGateway',
   'bpmn:SequenceFlow': 'sequenceFlow',
   'bpmn:Association': 'association',
   'bpmn:TextAnnotation': 'textAnnotation'
@@ -93,6 +95,7 @@ export default {
     association,
     exclusiveGateway,
     inclusiveGateway,
+    parallelGateway,
     textAnnotation,
     VueFormRenderer,
   },
