@@ -43,7 +43,8 @@ import endEvent from "./nodes/endEvent";
 import sequenceFlow from "./nodes/sequenceFlow";
 import association from "./nodes/association"
 import exclusiveGateway from "./nodes/exclusiveGateway";
-import textAnnotation from "./nodes/textAnnotation"
+import inclusiveGateway from "./nodes/inclusiveGateway";
+import textAnnotation from "./nodes/textAnnotation";
 import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
 import processInspectorConfig from "./inspectors/process";
 
@@ -71,6 +72,7 @@ const bpmnTypeMap = {
   'bpmn:EndEvent': 'endEvent',
   'bpmn:Task': 'task',
   'bpmn:ExclusiveGateway': 'exclusiveGateway',
+  'bpmn:InclusiveGateway': 'inclusiveGateway',
   'bpmn:SequenceFlow': 'sequenceFlow',
   'bpmn:Association': 'association',
   'bpmn:TextAnnotation': 'textAnnotation'
@@ -90,6 +92,7 @@ export default {
     sequenceFlow,
     association,
     exclusiveGateway,
+    inclusiveGateway,
     textAnnotation,
     VueFormRenderer,
   },

@@ -27,7 +27,7 @@ export default {
         {
             icon: require('./assets/toolpanel/exclusive-gateway.svg'),
             label: 'Exclusive Gateway',
-            component: require('./components/nodes/task'),
+            component: require('./components/nodes/exclusiveGateway'),
             type: 'exclusiveGateway',
             definition: function() {
                 return moddle.create('bpmn:ExclusiveGateway', {
@@ -52,7 +52,21 @@ export default {
         {
             icon: require('./assets/toolpanel/inclusive-gateway.svg'),
             label: 'Inclusive Gateway',
-            component: require('./components/nodes/task')
+            component: require('./components/nodes/inclusiveGateway'),
+            type: 'inclusiveGateway',
+            definition: function() {
+                return moddle.create('bpmn:InclusiveGateway', {
+                    name: 'New Inclusive Gateway'
+                })
+            },
+            diagram: function() {
+                return moddle.create('bpmndi:BPMNShape', {
+                    bounds: moddle.create('dc:Bounds', {
+                        height: 42,
+                        width: 42
+                    })
+                })
+            }
         },
         {
             icon: require('./assets/toolpanel/start-event.svg'),
