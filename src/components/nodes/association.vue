@@ -160,8 +160,10 @@ export default {
         },
         line: {
           stroke: 'black',
-          strokeWidth: 1,
-          strokeDasharray: '5 5 5 5 5',
+          strokeWidth: '4',
+          strokeLinecap: 'round',
+          strokeDasharray: '1, 8',
+          strokeDashoffset: '5',
           targetMarker: {
                 'type': 'rect',
                 'width': 1,
