@@ -30,6 +30,15 @@ joint.dia.Element.define(
         fontSize: 14,
         fill: "#333333"
       },
+      ".innerCircle": {
+        strokeWidth: "3",
+        cs: "25",
+        cy: "75",
+        r: "20",
+        stroke: "black",
+        fill: "transparent",
+        transform: "translate(20.75, -16.75) scale(0.5)",
+      },
       image: {
         width: 40,
         height: 40,
@@ -40,7 +49,7 @@ joint.dia.Element.define(
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/>'
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><circle class="innerCircle"/>'
   }
 );
 
