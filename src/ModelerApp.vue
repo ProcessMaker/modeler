@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" :controls="controls" />
+      <modeler ref="modeler" />
     </div>
     <statusbar>
       {{statusText}}
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import Modeler from "./components/Modeler.vue";
 import statusbar from "./components/statusbar.vue";
 
@@ -36,7 +37,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import InitialControls from "./controls";
+// Our initial node types
+const initialNodes = [
+  require('./components/nodes/startEvent/index.js').default,
+  require('./components/nodes/task/index.js').default
+]
 
 export default {
   name: "ModelerApp",
@@ -48,7 +53,6 @@ export default {
   },
   data() {
     return {
-      controls: InitialControls,
       statusText: "No errors detected",
       statusIcon: faCheckCircle,
       statusColor: "green"
@@ -69,6 +73,9 @@ export default {
     `;
 
     this.$refs.modeler.loadXML(blank);
+    for(var node of initialNodes) {
+      this.$refs.modeler.registerNode(node)
+    }
   },
   methods: {
     download() {

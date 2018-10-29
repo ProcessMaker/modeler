@@ -5,26 +5,7 @@ let moddle = new BpmnModdle()
 
 export default {
     BPMN: [
-        {
-            icon: require('./assets/toolpanel/task.svg'),
-            label: 'Task',
-            component: require('./components/nodes/task'),
-            type: 'task',
-            definition: function() {
-                return moddle.create('bpmn:Task', {
-                    name: 'New Task'
-                })
-            },
-            diagram: function() {
-                return moddle.create('bpmndi:BPMNShape', {
-                    bounds: moddle.create('dc:Bounds', {
-                        height: 80,
-                        width: 100
-                    })
-                })
-            }
-        },
-        {
+       {
             icon: require('./assets/toolpanel/exclusive-gateway.svg'),
             label: 'Exclusive Gateway',
             component: require('./components/nodes/task'),
@@ -54,28 +35,7 @@ export default {
             label: 'Inclusive Gateway',
             component: require('./components/nodes/task')
         },
-        {
-            icon: require('./assets/toolpanel/start-event.svg'),
-            label: 'Start Event',
-            component: require('./components/nodes/startEvent'),
-            type: 'startEvent',
-            definition: function() {
-                return moddle.create('bpmn:StartEvent', {
-                    name: 'Start Event'
-                })
-            },
-            diagram: function() {
-                return moddle.create('bpmndi:BPMNShape', {
-                    bounds: moddle.create('dc:Bounds', {
-                        height: 36,
-                        width: 36,
-                        x: null,
-                        y: null
-                    })
-                })
-            }
-        },
-        {
+       {
             icon: require('./assets/toolpanel/intermediate-mail-event.svg'),
             label: 'Intermediate Mail Event',
             component: require('./components/nodes/task')
