@@ -330,7 +330,7 @@ export default {
 
       const { x, y } = this.dragPoint;
       if (clientX === x && clientY === y) {
-        /* We don't need to re-calcaulte values if mouse position hasn't changed  asdasdsd */
+        /* We don't need to re-calcaulte values if mouse position hasn't changed */
         return;
       }
 

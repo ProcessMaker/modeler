@@ -1,6 +1,6 @@
 <template>
-    <div>
-    </div>
+  <div>
+  </div>
 </template>
 
 <script>
@@ -8,7 +8,7 @@ import joint from "jointjs";
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import BpmnModdle from 'bpmn-moddle'
+import BpmnModdle from 'bpmn-moddle';
 
 let moddle = new BpmnModdle;
 
@@ -34,8 +34,8 @@ export default {
               component: "FormText",
               config: {
                 label: "Task",
-                fontSize: "2em"
-              }
+                fontSize: "2em",
+              },
             },
             {
               component: "FormInput",
@@ -43,29 +43,29 @@ export default {
                 label: "Identifier",
                 helper:
                   "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
+                name: "id",
+              },
             },
             {
               component: "FormInput",
               config: {
                 label: "Name",
                 helper: "The Name of the Sequence Flow",
-                name: "name"
-              }
+                name: "name",
+              },
             },
             {
               component: "FormInput",
               config: {
                 label: "Expression",
                 helper: "The condition expression for this sequence flow. Only used if used with a diverging gateway",
-                name: "conditionExpression.body"
-              }
-            }
+                name: "conditionExpression.body",
+              },
+            },
 
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     };
   },
   computed: {
@@ -74,7 +74,7 @@ export default {
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
-    }
+    },
   },
   methods: {
     handleClick() {
@@ -92,7 +92,7 @@ export default {
 
       this.node.definition.targetRef = targetShape.component.node.definition;
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition)
+      targetShape.component.node.definition.get('incoming').push(this.node.definition);
 
       this.updateWaypoints();
 
@@ -116,10 +116,25 @@ export default {
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
-      const [target] = this.graph.findModelsFromPoint(localMousePosition);
-      const targetType = get(target, 'component.node.type');
 
-      if (!targetType || !this.validConnections[this.sourceType].includes(targetType)) {
+      const target = this.graph.findModelsFromPoint(localMousePosition).find(element => {
+        const targetType = get(element, 'component.node.type');
+
+        if (!targetType) {
+          return false;
+        }
+
+        const targetPool = element.component.node.pool;
+        const sourcePool = this.sourceShape.component.node.pool;
+
+        if (sourcePool && sourcePool !== targetPool) {
+          return false;
+        }
+
+        return this.validConnections[this.sourceType].includes(targetType);
+      });
+
+      if (!target) {
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
@@ -219,7 +234,7 @@ export default {
   },
   destroyed() {
     this.updateWaypoints.cancel();
-  }
+  },
 };
 </script>
 
