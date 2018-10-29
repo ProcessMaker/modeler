@@ -37,7 +37,7 @@ joint.dia.Element.define(
         r: "20",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(20.75, -16.75) scale(0.5)",
+        transform: "translate(21, -16) scale(0.5)",
       },
       image: {
         width: 40,

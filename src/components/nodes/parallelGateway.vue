@@ -35,14 +35,14 @@ joint.dia.Element.define(
         points: "40 220 80 180 120 220",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(35.75, -15.5) rotate(45) scale(0.20)",
+        transform: "translate(35.5, -15.5) rotate(45) scale(0.20)",
       },
       ".iconSideB": {
         strokeWidth: "10",
         points: "40 220 80 180 120 220",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(7.5, 58) rotate(-135) scale(0.20)"
+        transform: "translate(7.25, 58) rotate(-135) scale(0.20)"
       },
       image: {
         width: 40,
