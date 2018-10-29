@@ -428,6 +428,7 @@ export default {
       if (cellView.model.component) {
         cellView.highlight();
         cellView.model.toFront({ deep: true });
+
         this.highlighted = cellView;
         cellView.model.component.handleClick();
       }
