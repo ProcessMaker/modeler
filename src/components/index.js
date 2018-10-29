@@ -1,14 +1,10 @@
 // Our main modeler component
-import Modeler from '@/components/Modeler';
+import Modeler from './Modeler';
 
 // Our StatusBar component, if desired
-import StatusBar from '@/components/statusbar';
-
-// Core BPMN Node controls
-import BaseControls from '@/controls';
+import StatusBar from './statusbar';
 
 export {
     Modeler,
-    StatusBar,
-    BaseControls
+    StatusBar
 }; 

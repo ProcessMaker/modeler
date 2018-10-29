@@ -31,33 +31,38 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import BpmnModdle from "bpmn-moddle";
 import controls from "./controls";
 
 // Our renderer for our inspector
-
-// Our nodes
-import task from "./nodes/task";
-import startEvent from "./nodes/startEvent";
-import endEvent from "./nodes/endEvent";
-import sequenceFlow from "./nodes/sequenceFlow";
-import association from "./nodes/association"
-import exclusiveGateway from "./nodes/exclusiveGateway";
-import textAnnotation from "./nodes/textAnnotation"
-import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
-import processInspectorConfig from "./inspectors/process";
-
 import { Drag, Drop } from 'vue-drag-drop';
 
-// Bring in inspector items
+// Bring in our own form controls
 import {
   FormInput,
   FormSelect,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
-  FormDatePicker
 } from "@processmaker/vue-form-elements";
+
+import processInspectorConfig from "./inspectors/process"
+
+import {
+  VueFormRenderer,
+  renderer
+} from "@processmaker/vue-form-builder";
+
+// Register those components
+Vue.component('FormText', renderer.FormText);
+Vue.component('FormInput', FormInput);
+Vue.component('FormSelect', FormSelect);
+Vue.component('FormTextArea', FormTextArea);
+Vue.component('FormCheckbox', FormCheckbox);
+Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
+
+Vue.component('VueFormRenderer', VueFormRenderer);
 
 
 let version = "1.0";
@@ -66,32 +71,11 @@ if (!window.joint) {
   window.joint = require("jointjs");
 }
 
-const bpmnTypeMap = {
-  'bpmn:StartEvent': 'startEvent',
-  'bpmn:EndEvent': 'endEvent',
-  'bpmn:Task': 'task',
-  'bpmn:ExclusiveGateway': 'exclusiveGateway',
-  'bpmn:SequenceFlow': 'sequenceFlow',
-  'bpmn:Association': 'association',
-  'bpmn:TextAnnotation': 'textAnnotation'
-};
-
 export default {
-  props: [
-    'controls'
-  ],
   components: {
     Drag,
     Drop,
     controls,
-    task,
-    startEvent,
-    endEvent,
-    sequenceFlow,
-    association,
-    exclusiveGateway,
-    textAnnotation,
-    VueFormRenderer,
   },
   data() {
     return {
@@ -99,6 +83,18 @@ export default {
       extensions: [
 
       ],
+      // What is our bpmn type mappings
+      bpmnTypeMap: {
+
+      },
+      // Our controls/nodes to show in our palette
+      controls: {
+
+      },
+      // Our node types, keyed by the id
+      nodeRegistry: {
+
+      },
       // Our jointjs data graph model
       graph: null,
       // Our jointjs paper
@@ -111,6 +107,8 @@ export default {
         process: processInspectorConfig
       },
       processNode: null,
+      // Each type/control in our modeler has it's own inspector configuration
+      inspectorConfigurations: {},
       inspectorNode: null,
       inspectorData: null,
       inspectorHandler: () => {},
@@ -153,6 +151,24 @@ export default {
     registerBpmnExtension(namespace, extension) {
       this.extensions[namespace] = extension;
     },
+    // This registers a node to use in the bpmn modeler
+    registerNode(node) {
+      this.inspectorConfigurations[node.id] = node.inspectorConfig;
+      this.nodeRegistry[node.id] = node;
+      Vue.component(node.id, node.component);
+      this.bpmnTypeMap[node.bpmnType] = node.id;
+      if(node.control) {
+        // Register the control for our control palette
+        if(typeof this.controls[node.category] == 'undefined') {
+          this.$set(this.controls, node.category, []);
+        }
+        this.controls[node.category].push({
+          type: node.id,
+          icon: node.icon,
+          label: node.label
+        });
+      }
+    },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
       // get the top level process objects
@@ -164,7 +180,7 @@ export default {
 
         // Now iterate through all the elements in processes
         process.get('flowElements').forEach(element => {
-          const type = bpmnTypeMap[element.$type];
+          const type = this.bpmnTypeMap[element.$type];
 
           if (!type) {
             throw new Error(`Unsupported element type in parse: ${element.$type}`);
@@ -215,11 +231,12 @@ export default {
     },
 
     handleDrop(transferData, event) {
+      let type = transferData.type;
       // Add to our processNode
-      let definition = transferData.definition();
+      let definition = this.nodeRegistry[type].definition();
 
       // Now, let's modify planeElement
-      let diagram = transferData.diagram();
+      let diagram = this.nodeRegistry[type].diagram();
       // Handle transform
 
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
@@ -234,7 +251,7 @@ export default {
       });
     },
     addNode({ type, definition, diagram }) {
-      const id = `${type}_${Object.keys(this.nodes).length}`
+      const id = `node_${Object.keys(this.nodes).length}`
       definition.id = id;
       diagram.id = `${id}_di`;
       diagram.bpmnElement = definition;
@@ -257,24 +274,15 @@ export default {
         }
       }
     },
-    setInspector(node, config, handler) {
-      this.inspectorNode = node;
-      this.inspectorConfig = config;
-      this.inspectorHandler = handler ? handler : (() => {});
+    loadInspector(type, data, component) {
+      this.inspectorNode = data;
+      this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      this.inspectorHandler = (value) => {
+        this.nodeRegistry[type].inspectorHandler(value, data, component);
+      }
     },
   },
   mounted() {
-    // Register controls with inspector
-    this.$refs.inspector.$options.components["FormText"] = renderer.FormText;
-    this.$refs.inspector.$options.components["FormInput"] = FormInput;
-    this.$refs.inspector.$options.components["FormDatePicker"] = FormDatePicker;
-    this.$refs.inspector.$options.components[
-      "FormRadioButtonGroup"
-    ] = FormRadioButtonGroup;
-    this.$refs.inspector.$options.components["FormCheckbox"] = FormCheckbox;
-    this.$refs.inspector.$options.components["FormTextArea"] = FormTextArea;
-    this.$refs.inspector.$options.components["FormSelect"] = FormSelect;
-
     // Handle window resize
     this.handleResize();
     window.addEventListener("resize", this.handleResize);

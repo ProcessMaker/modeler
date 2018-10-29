@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" :controls="controls" />
+      <modeler ref="modeler" />
     </div>
     <statusbar>
       {{statusText}}
@@ -36,7 +36,27 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import InitialControls from "./controls";
+// Our initial node types to register with our modeler
+import {
+  association,
+  endEvent,
+  exclusiveGateway,
+  sequenceFlow,
+  startEvent,
+  task,
+  textAnnotation
+} from './components/nodes'
+
+let nodeTypes = [
+  startEvent,
+  endEvent,
+  task,
+  exclusiveGateway,
+  sequenceFlow,
+  textAnnotation,
+  association,
+
+]
 
 export default {
   name: "ModelerApp",
@@ -48,7 +68,6 @@ export default {
   },
   data() {
     return {
-      controls: InitialControls,
       statusText: "No errors detected",
       statusIcon: faCheckCircle,
       statusColor: "green"
@@ -69,16 +88,17 @@ export default {
     `;
 
     this.$refs.modeler.loadXML(blank);
+    for(var node of nodeTypes) {
+      this.$refs.modeler.registerNode(node)
+    }
   },
   methods: {
     download() {
       this.$refs.modeler.toXML(function(err, xml) {
         if (err) {
           alert(err);
-          console.log(err);
         } else {
           alert(xml);
-          console.log(xml);
         }
       });
     },
