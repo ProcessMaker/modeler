@@ -25,6 +25,7 @@
         :id="id"
         :highlighted="highlighted && highlighted.model.component === node.component"
         :collaboration="collaboration"
+        :processNode="processNode"
         @add-node="addNode"
       />
     </div>

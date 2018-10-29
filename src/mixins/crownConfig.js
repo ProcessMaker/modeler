@@ -5,7 +5,7 @@ import BpmnModdle from 'bpmn-moddle';
 let moddle = new BpmnModdle();
 
 export default {
-  props: ['highlighted', 'paper'],
+  props: ['highlighted', 'paper', 'processNode'],
   data() {
     return {
       buttons: [],
@@ -23,6 +23,11 @@ export default {
   },
   methods: {
     removeShape() {
+      if (this.node.type !== 'pool') {
+        const flowElements = this.processNode.get('flowElements');
+        flowElements.splice(flowElements.indexOf(this.node.definition), 1);
+      }
+
       this.$delete(this.$parent.nodes, this.id);
     },
     removeCrown() {

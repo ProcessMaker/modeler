@@ -83,7 +83,7 @@ export default {
     removePoolChildren() {
       this.shape.getEmbeddedCells().forEach(cell => {
         if (cell.component) {
-          delete this.$parent.nodes[cell.component.node.definition.id];
+          cell.component.removeShape();
         }
       });
     },
@@ -246,6 +246,9 @@ export default {
   },
   beforeDestroy() {
     this.removePoolChildren();
+
+    const participants = this.collaboration.get('participants');
+    participants.splice(participants.indexOf(this.node.definition), 1);
   },
 };
 </script>
