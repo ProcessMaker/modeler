@@ -5,7 +5,7 @@
 
       <div ref="paper-container" class="paper-container">
         <drop @drop="handleDrop" @dragover="validateDropTarget">
-          <div ref="paper" />
+          <div ref="paper" class="paper-grid" />
         </drop>
       </div>
 
@@ -450,27 +450,27 @@ export default {
 @import '~jointjs/dist/joint.css';
 
 .modeler {
-    position: relative;
-    width: inherit;
-    max-width: inherit;
-    height: inherit;
-    max-height: inherit;
-    overflow: hidden;
+  position: relative;
+  width: inherit;
+  max-width: inherit;
+  height: inherit;
+  max-height: inherit;
+  overflow: hidden;
 
-    .modeler-container {
-        max-width: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: row;
+  .modeler-container {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 
-        .inspector {
-            font-size: 0.75em;
-            text-align: left;
-            padding: 8px;
-            width: 320px;
-            background-color: #eeeeee;
-            border-left: 1px solid #aaaaaa;
-        }
+    .inspector {
+      font-size: 0.75em;
+      text-align: left;
+      padding: 8px;
+      width: 320px;
+      background-color: #eee;
+      border-left: 1px solid #aaa;
+    }
 
     .paper-container {
       height: 100%;

@@ -43,6 +43,8 @@
     "babel-jest": "^23.0.1",
     "node-sass": "^4.9.4",
     "sass-loader": "^7.0.1",
+    "stylelint": "^9.7.0",
+    "stylelint-config-recommended": "^2.1.0",
     "vue-template-compiler": "^2.5.17"
   },
   "postcss": {
