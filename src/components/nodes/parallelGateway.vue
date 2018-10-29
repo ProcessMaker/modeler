@@ -23,7 +23,7 @@ joint.dia.Element.define(
         fill: "#FFFFFF",
       },
       ".label": {
-        textVerticalAnchor: "middle",
+        textVerticalAnchor: "top",
         textAnchor: "middle",
         refX: "50%",
         refY: "130%",
@@ -127,19 +127,41 @@ export default {
       return this.shape;
     },
     updateShape() {
+      const { width } = this.shape.findView(this.paper).getBBox();
       let bounds = this.node.diagram.bounds;
+
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
         body: {},
-        label: {
-          text: this.node.definition.get("name"),
+        ".label": {
+          text: joint.util.breakText(this.node.definition.get("name"), {
+            width: width
+          }),
           fill: "black"
         }
       });
     },
+
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.setInspector(
+        this.node.definition,
+        this.inspectorConfig,
+        this.handleInspectionUpdate
+      );
+    },
+    handleInspectionUpdate(value) {
+      // Go through each property and rebind it to our data
+      for (var key in value) {
+        // Only change if the value is different
+        if (this.node.definition[key] != value[key]) {
+          this.node.definition[key] = value[key];
+          this.node.definition.set('name', this.node.definition.name);
+          this.node.definition.set('gatewayDirection',this.node.definition.gatewayDirection);
+        }
+
+        this.updateShape();
+      }
     }
   },
   mounted() {
