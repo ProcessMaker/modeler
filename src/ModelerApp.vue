@@ -36,15 +36,25 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-// Our initial node types
-const initialNodes = [
-  require('./components/nodes/startEvent/index.js').default,
-  require('./components/nodes/endEvent/index.js').default,
-  require('./components/nodes/task/index.js').default,
-  require('./components/nodes/exclusiveGateway/index.js').default,
-  require('./components/nodes/sequenceFlow/index.js').default,
-  require('./components/nodes/textAnnotation/index.js').default,
-  require('./components/nodes/association/index.js').default
+// Our initial node types to register with our modeler
+import {
+  association,
+  endEvent,
+  exclusiveGateway,
+  sequenceFlow,
+  startEvent,
+  task,
+  textAnnotation
+} from './components/nodes'
+
+let nodeTypes = [
+  startEvent,
+  endEvent,
+  task,
+  exclusiveGateway,
+  sequenceFlow,
+  textAnnotation,
+  association,
 
 ]
 
@@ -78,7 +88,7 @@ export default {
     `;
 
     this.$refs.modeler.loadXML(blank);
-    for(var node of initialNodes) {
+    for(var node of nodeTypes) {
       this.$refs.modeler.registerNode(node)
     }
   },
