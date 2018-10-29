@@ -1,30 +1,10 @@
-import BpmnModdle from 'bpmn-moddle'
-
-let moddle = new BpmnModdle()
-
-import component from './task.vue'
+import component from './association.vue'
 
 export default {
-    id: 'processmaker-modeler-task',
+    id: 'processmaker-modeler-association',
     component: component,
-    bpmnType: 'bpmn:Task',
-    control: true,
-    category: 'BPMN',
-    icon: require('../../../assets/toolpanel/task.svg'),
-    label: 'Task',
-    definition: function () {
-        return moddle.create('bpmn:Task', {
-            name: 'New Task'
-        })
-    },
-    diagram: function () {
-        return moddle.create('bpmndi:BPMNShape', {
-            bounds: moddle.create('dc:Bounds', {
-                height: 80,
-                width: 100
-            })
-        })
-    },
+    bpmnType: 'bpmn:Association',
+    control: false,
     inspectorHandler: function (value, definition, component) {
         // Go through each property and rebind it to our data
         for (var key in value) {
@@ -59,11 +39,20 @@ export default {
                     component: "FormInput",
                     config: {
                         label: "Name",
-                        helper: "The Name of the Task",
+                        helper: "The Name of the Association",
                         name: "name"
                     }
+                },
+                {
+                    component: "FormInput",
+                    config: {
+                        label: "Expression",
+                        helper: "Shows relationships between artifacts and flow objects.",
+                        name: "conditionExpression.body"
+                    }
                 }
+
             ]
         }
     ]
-}
+}  

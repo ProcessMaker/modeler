@@ -5,9 +5,10 @@ let moddle = new BpmnModdle()
 import component from './startEvent.vue'
 
 export default {
-    id: 'processmaker-modeler-startEvent',
+    id: 'processmaker-modeler-start-event',
     component: component,
     bpmnType: 'bpmn:StartEvent',
+    control: true,
     category: 'BPMN',
     icon: require('../../../assets/toolpanel/start-event.svg'),
     label: 'Start Event',

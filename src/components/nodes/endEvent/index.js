@@ -2,26 +2,28 @@ import BpmnModdle from 'bpmn-moddle'
 
 let moddle = new BpmnModdle()
 
-import component from './task.vue'
+import component from './endEvent.vue'
 
 export default {
-    id: 'processmaker-modeler-task',
+    id: 'processmaker-modeler-end-event',
     component: component,
-    bpmnType: 'bpmn:Task',
+    bpmnType: 'bpmn:EndEvent',
     control: true,
     category: 'BPMN',
-    icon: require('../../../assets/toolpanel/task.svg'),
-    label: 'Task',
+    icon: require('../../../assets/toolpanel/end-event.svg'),
+    label: 'End Event',
     definition: function () {
-        return moddle.create('bpmn:Task', {
-            name: 'New Task'
+        return moddle.create('bpmn:EndEvent', {
+            name: 'End Event'
         })
     },
     diagram: function () {
         return moddle.create('bpmndi:BPMNShape', {
             bounds: moddle.create('dc:Bounds', {
-                height: 80,
-                width: 100
+                height: 36,
+                width: 36,
+                x: null,
+                y: null
             })
         })
     },
@@ -37,12 +39,12 @@ export default {
     },
     inspectorConfig: [
         {
-            name: "Task",
+            name: "End Event",
             items: [
                 {
                     component: "FormText",
                     config: {
-                        label: "Task",
+                        label: "End Event",
                         fontSize: "2em"
                     }
                 },
@@ -59,11 +61,13 @@ export default {
                     component: "FormInput",
                     config: {
                         label: "Name",
-                        helper: "The Name of the Task",
+                        helper: "The Name of the End Event",
                         name: "name"
                     }
                 }
             ]
         }
     ]
+
+
 }

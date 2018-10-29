@@ -157,15 +157,17 @@ export default {
       this.nodeRegistry[node.id] = node;
       Vue.component(node.id, node.component);
       this.bpmnTypeMap[node.bpmnType] = node.id;
-      // Register the control for our control palette
-      if(typeof this.controls[node.category] == 'undefined') {
-        this.$set(this.controls, node.category, []);
+      if(node.control) {
+        // Register the control for our control palette
+        if(typeof this.controls[node.category] == 'undefined') {
+          this.$set(this.controls, node.category, []);
+        }
+        this.controls[node.category].push({
+          type: node.id,
+          icon: node.icon,
+          label: node.label
+        });
       }
-      this.controls[node.category].push({
-        type: node.id,
-        icon: node.icon,
-        label: node.label
-      });
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {

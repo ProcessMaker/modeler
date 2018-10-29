@@ -77,8 +77,6 @@ export default {
         element
       );
     });
-
-    console.log('End mounted');
   }
 };
 </script>

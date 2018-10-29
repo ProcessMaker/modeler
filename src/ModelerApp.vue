@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import Modeler from "./components/Modeler.vue";
 import statusbar from "./components/statusbar.vue";
 
@@ -40,7 +39,13 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 // Our initial node types
 const initialNodes = [
   require('./components/nodes/startEvent/index.js').default,
-  require('./components/nodes/task/index.js').default
+  require('./components/nodes/endEvent/index.js').default,
+  require('./components/nodes/task/index.js').default,
+  require('./components/nodes/exclusiveGateway/index.js').default,
+  require('./components/nodes/sequenceFlow/index.js').default,
+  require('./components/nodes/textAnnotation/index.js').default,
+  require('./components/nodes/association/index.js').default
+
 ]
 
 export default {
@@ -82,10 +87,8 @@ export default {
       this.$refs.modeler.toXML(function(err, xml) {
         if (err) {
           alert(err);
-          console.log(err);
         } else {
           alert(xml);
-          console.log(xml);
         }
       });
     },

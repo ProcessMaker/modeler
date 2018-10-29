@@ -2,26 +2,27 @@ import BpmnModdle from 'bpmn-moddle'
 
 let moddle = new BpmnModdle()
 
-import component from './task.vue'
+import component from './exclusiveGateway.vue'
 
 export default {
-    id: 'processmaker-modeler-task',
+    id: 'processmaker-modeler-exclusive-gateway',
     component: component,
-    bpmnType: 'bpmn:Task',
+    bpmnType: 'bpmn:ExclusiveGateway',
     control: true,
     category: 'BPMN',
-    icon: require('../../../assets/toolpanel/task.svg'),
-    label: 'Task',
+    icon: require('../../../assets/toolpanel/exclusive-gateway.svg'),
+    label: 'Exclusive Gateway',
     definition: function () {
-        return moddle.create('bpmn:Task', {
-            name: 'New Task'
+        return moddle.create('bpmn:ExclusiveGateway', {
+            name: 'New Exclusive Gateway',
+            gatewayDirection: 'Diverging'
         })
     },
     diagram: function () {
         return moddle.create('bpmndi:BPMNShape', {
             bounds: moddle.create('dc:Bounds', {
-                height: 80,
-                width: 100
+                height: 42,
+                width: 42
             })
         })
     },
@@ -37,12 +38,12 @@ export default {
     },
     inspectorConfig: [
         {
-            name: "Task",
+            name: "Exclusive Gateway",
             items: [
                 {
                     component: "FormText",
                     config: {
-                        label: "Task",
+                        label: "Exclusive Gateway",
                         fontSize: "2em"
                     }
                 },
@@ -59,11 +60,30 @@ export default {
                     component: "FormInput",
                     config: {
                         label: "Name",
-                        helper: "The Name of the Task",
+                        helper: "The Name of the Gateway",
                         name: "name"
+                    }
+                },
+                {
+                    component: "FormSelect",
+                    config: {
+                        label: "Direction",
+                        helper: "The direction of the gateway",
+                        name: "gatewayDirection",
+                        options: [
+                            {
+                                value: "Diverging",
+                                content: "Diverging"
+                            },
+                            {
+                                value: "Converging",
+                                content: "Converging"
+                            }
+                        ]
                     }
                 }
             ]
         }
-    ]
+    ],
+
 }

@@ -2,26 +2,26 @@ import BpmnModdle from 'bpmn-moddle'
 
 let moddle = new BpmnModdle()
 
-import component from './task.vue'
+import component from './textAnnotation.vue'
 
 export default {
-    id: 'processmaker-modeler-task',
+    id: 'processmaker-modeler-text-annotation',
     component: component,
-    bpmnType: 'bpmn:Task',
+    bpmnType: 'bpmn:TextAnnotation',
     control: true,
     category: 'BPMN',
-    icon: require('../../../assets/toolpanel/task.svg'),
-    label: 'Task',
+    icon: require('../../../assets/toolpanel/text-annotation.svg'),
+    label: 'Text Annotation',
     definition: function () {
-        return moddle.create('bpmn:Task', {
-            name: 'New Task'
+        return moddle.create('bpmn:TextAnnotation', {
+            text: 'New Text Annotation'
         })
     },
     diagram: function () {
         return moddle.create('bpmndi:BPMNShape', {
             bounds: moddle.create('dc:Bounds', {
-                height: 80,
-                width: 100
+                height: 30,
+                width: 150
             })
         })
     },
@@ -31,18 +31,19 @@ export default {
             // Only change if the value is different
             if (definition[key] != value[key]) {
                 definition[key] = value[key];
+                definition.set('text', value[key])
             }
         }
         component.updateShape();
     },
     inspectorConfig: [
         {
-            name: "Task",
+            name: "Text Annotation",
             items: [
                 {
                     component: "FormText",
                     config: {
-                        label: "Task",
+                        label: "Text Annotation",
                         fontSize: "2em"
                     }
                 },
@@ -58,12 +59,13 @@ export default {
                 {
                     component: "FormInput",
                     config: {
-                        label: "Name",
-                        helper: "The Name of the Task",
-                        name: "name"
+                        label: "Annotation Description",
+                        helper: "Body of the text annotation",
+                        text: "text",
+                        placeholder: 'New Text Annotation'
                     }
                 }
             ]
         }
-    ]
-}
+    ],
+} 
