@@ -84,7 +84,7 @@ export default {
     completeLink() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-      this.shape.attr({ wrapper: { cursor: 'default' } });
+      this.$emit('set-cursor', null);
 
       this.resetPaper();
 
@@ -96,10 +96,7 @@ export default {
 
       this.updateWaypoints();
 
-      targetShape.attr({
-        body: { fill: '#fff', cursor: 'move' },
-        label: { cursor: 'move' },
-      });
+      targetShape.attr('body/fill', '#fff');
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -152,10 +149,8 @@ export default {
 
       this.updateRouter();
 
-      target.attr({
-        body: { fill: '#dffdd0', cursor: 'default' },
-        label: { cursor: 'default' },
-      });
+      this.$emit('set-cursor', 'default');
+      target.attr('body/fill', '#dffdd0');
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
@@ -164,10 +159,8 @@ export default {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
 
-        target.attr({
-          body: { fill: '#fff', cursor: 'move' },
-          label: { cursor: 'move' },
-        });
+        target.attr('body/fill', '#fff');
+        this.$emit('set-cursor', 'not-allowed');
       });
     },
     removeLink() {
@@ -175,7 +168,7 @@ export default {
       this.resetPaper();
     },
     resetPaper() {
-      this.paper.el.style.cursor = 'default';
+      this.$emit('set-cursor', null);
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
     },
@@ -223,11 +216,10 @@ export default {
       });
 
       this.paper.setInteractivity(false);
-      this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
-
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.paper.el.style.cursor = 'not-allowed';
       this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+
+      this.$emit('set-cursor', 'not-allowed');
     }
 
     this.updateRouter();
@@ -237,7 +229,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
-

@@ -3,9 +3,9 @@
     <div class="modeler-container">
       <controls />
 
-      <div ref="paper-container" class="paper-container">
+      <div ref="paper-container" class="paper-container" :class="cursor">
         <drop @drop="handleDrop" @dragover="validateDropTarget">
-          <div ref="paper" class="paper-grid" />
+          <div ref="paper" />
         </drop>
       </div>
 
@@ -27,6 +27,7 @@
         :collaboration="collaboration"
         :processNode="processNode"
         @add-node="addNode"
+        @set-cursor="cursor = $event"
       />
     </div>
   </div>
@@ -130,6 +131,7 @@ export default {
       allowDrop: true,
       poolTarget: null,
       processes: [],
+      cursor: null,
     };
   },
   watch: {
@@ -446,8 +448,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '~jointjs/dist/joint.css';
+
+$cursors: default, not-allowed;
 
 .modeler {
   position: relative;
@@ -477,6 +481,15 @@ export default {
       max-height: 100%;
       min-height: 100%;
       overflow: hidden;
+    }
+
+    @each $cursor in $cursors {
+      .paper-container.#{$cursor} {
+        .joint-paper,
+        .joint-paper * {
+          cursor: #{$cursor} !important;
+        }
+      }
     }
   }
 }
