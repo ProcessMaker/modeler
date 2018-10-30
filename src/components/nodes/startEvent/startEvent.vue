@@ -15,37 +15,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      inspectorConfig: [
-        {
-          name: "Start Event",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Start Event",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Start Event",
-                name: "name"
-              }
-            }
-          ]
-        }
-      ],
       crownConfig: [
         {
           icon: connectIcon,
@@ -59,21 +28,7 @@ export default {
       return this.shape;
     },
     handleClick() {
-      this.$parent.setInspector(
-        this.node.definition,
-        this.inspectorConfig,
-        this.handleInspectionUpdate
-      );
-    },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-        }
-      }
-      this.updateShape();
+      this.$parent.loadInspector('processmaker-modeler-startEvent', this.node.definition, this)
     },
     updateShape() {
       let bounds = this.node.diagram.bounds;
@@ -122,8 +77,6 @@ export default {
         element
       );
     });
-
-    console.log('End mounted');
   }
 };
 </script>

@@ -10,7 +10,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import BpmnModdle from 'bpmn-moddle';
 
-let moddle = new BpmnModdle;
+const moddle = new BpmnModdle;
 
 export default {
   props: ["graph", "node", "id"],
@@ -22,9 +22,9 @@ export default {
       sourceShape: null,
       anchorPadding: 25,
       validConnections: {
-        task: ['task', 'endEvent'],
-        startEvent: ['task', 'endEvent'],
-        exclusiveGateway: ['task', 'endEvent'],
+        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway'],
+        'processmaker-modeler-start-event': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
+        'processmaker-modeler-exclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
       },
       inspectorConfig: [
         {
@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this);
     },
     updateShape() {},
     completeLink() {

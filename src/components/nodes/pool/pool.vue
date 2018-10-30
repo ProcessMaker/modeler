@@ -6,6 +6,7 @@
 <script>
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
+import { id as poolId } from './index';
 
 const labelWidth = 30;
 const poolPadding = 20;
@@ -42,37 +43,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      inspectorConfig: [
-        {
-          name: 'Pool',
-          items: [
-            {
-              component: 'FormText',
-              config: {
-                label: 'Task',
-                fontSize: '2em',
-              },
-            },
-            {
-              component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper:
-                  'The id field should be unique across all elements in the diagram',
-                name: 'id',
-              },
-            },
-            {
-              component: 'FormInput',
-              config: {
-                label: 'Name',
-                helper: 'The Name of the Task',
-                name: 'name',
-              },
-            },
-          ],
-        },
-      ],
     };
   },
   methods: {
@@ -106,11 +76,7 @@ export default {
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.setInspector(
-        this.node.definition,
-        this.inspectorConfig,
-        this.handleInspectionUpdate,
-      );
+      this.$parent.loadInspector(poolId, this.node.definition, this);
     },
     handleInspectionUpdate(value) {
       // Go through each property and rebind it to our data

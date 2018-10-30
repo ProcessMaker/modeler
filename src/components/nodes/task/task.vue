@@ -5,8 +5,8 @@
 
 <script>
 import joint from "jointjs";
-import connectIcon from '@/assets/connect-elements.svg';
-import crownConfig from '@/mixins/crownConfig';
+import connectIcon from "@/assets/connect-elements.svg";
+import crownConfig from "@/mixins/crownConfig";
 
 export default {
   props: ["graph", "node", "nodes", "id"],
@@ -15,37 +15,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      inspectorConfig: [
-        {
-          name: "Task",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Task",
-                fontSize: "2em",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Task",
-                name: "name",
-              },
-            },
-          ],
-        },
-      ],
       crownConfig: [
         {
           icon: connectIcon,
@@ -74,22 +43,7 @@ export default {
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.setInspector(
-        this.node.definition,
-        this.inspectorConfig,
-        this.handleInspectionUpdate
-      );
-    },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-        }
-      }
-
-      this.updateShape();
+      this.$parent.loadInspector('processmaker-modeler-task', this.node.definition, this);
     },
   },
   mounted() {

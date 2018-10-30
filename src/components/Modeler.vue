@@ -1,7 +1,7 @@
 <template>
   <div class="modeler">
     <div class="modeler-container">
-      <controls />
+      <controls :controls="controls" />
 
       <div ref="paper-container" class="paper-container" :class="cursor">
         <drop @drop="handleDrop" @dragover="validateDropTarget">
@@ -34,67 +34,52 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import BpmnModdle from "bpmn-moddle";
 import controls from "./controls";
 import throttle from 'lodash/throttle';
 
 // Our renderer for our inspector
-
-// Our nodes
-import task from "./nodes/task";
-import startEvent from "./nodes/startEvent";
-import endEvent from "./nodes/endEvent";
-import sequenceFlow from "./nodes/sequenceFlow";
-import association from "./nodes/association";
-import exclusiveGateway from "./nodes/exclusiveGateway";
-import textAnnotation from "./nodes/textAnnotation";
-import {VueFormRenderer, renderer } from "@processmaker/vue-form-builder";
-import pool from "./nodes/pool";
-import processInspectorConfig from "./inspectors/process";
-
 import { Drag, Drop } from 'vue-drag-drop';
 
-// Bring in inspector items
+// Bring in our own form controls
 import {
   FormInput,
   FormSelect,
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
-  FormDatePicker,
 } from "@processmaker/vue-form-elements";
 
+import processInspectorConfig from "./inspectors/process";
 
-let version = "1.0";
+import {
+  VueFormRenderer,
+  renderer,
+} from "@processmaker/vue-form-builder";
+
+import { id as poolId } from './nodes/pool';
+
+// Register those components
+Vue.component('FormText', renderer.FormText);
+Vue.component('FormInput', FormInput);
+Vue.component('FormSelect', FormSelect);
+Vue.component('FormTextArea', FormTextArea);
+Vue.component('FormCheckbox', FormCheckbox);
+Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
+Vue.component('VueFormRenderer', VueFormRenderer);
+
+const version = "1.0";
 
 if (!window.joint) {
   window.joint = require("jointjs");
 }
-
-const bpmnTypeMap = {
-  'bpmn:StartEvent': 'startEvent',
-  'bpmn:EndEvent': 'endEvent',
-  'bpmn:Task': 'task',
-  'bpmn:ExclusiveGateway': 'exclusiveGateway',
-  'bpmn:SequenceFlow': 'sequenceFlow',
-  'bpmn:Association': 'association',
-  'bpmn:TextAnnotation': 'textAnnotation',
-};
 
 export default {
   components: {
     Drag,
     Drop,
     controls,
-    task,
-    startEvent,
-    endEvent,
-    sequenceFlow,
-    association,
-    exclusiveGateway,
-    textAnnotation,
-    pool,
-    VueFormRenderer,
   },
   data() {
     return {
@@ -102,6 +87,18 @@ export default {
       extensions: [
 
       ],
+      // What is our bpmn type mappings
+      bpmnTypeMap: {
+
+      },
+      // Our controls/nodes to show in our palette
+      controls: {
+
+      },
+      // Our node types, keyed by the id
+      nodeRegistry: {
+
+      },
       // Our jointjs data graph model
       graph: null,
       // Our jointjs paper
@@ -114,6 +111,8 @@ export default {
         process: processInspectorConfig,
       },
       processNode: null,
+      // Each type/control in our modeler has it's own inspector configuration
+      inspectorConfigurations: {},
       inspectorNode: null,
       inspectorData: null,
       inspectorHandler: () => {},
@@ -163,6 +162,26 @@ export default {
     registerBpmnExtension(namespace, extension) {
       this.extensions[namespace] = extension;
     },
+    // This registers a node to use in the bpmn modeler
+    registerNode(node) {
+      this.inspectorConfigurations[node.id] = node.inspectorConfig;
+      this.nodeRegistry[node.id] = node;
+      Vue.component(node.id, node.component);
+      this.bpmnTypeMap[node.bpmnType] = node.id;
+
+      if(node.control) {
+        // Register the control for our control palette
+        if (!this.controls[node.category]) {
+          this.$set(this.controls, node.category, []);
+        }
+
+        this.controls[node.category].push({
+          type: node.id,
+          icon: node.icon,
+          label: node.label,
+        });
+      }
+    },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
       // get the top level process objects
@@ -175,7 +194,7 @@ export default {
 
         // Now iterate through all the elements in processes
         process.get('flowElements').forEach(element => {
-          const type = bpmnTypeMap[element.$type];
+          const type = this.bpmnTypeMap[element.$type];
 
           if (!type) {
             throw new Error(`Unsupported element type in parse: ${element.$type}`);
@@ -229,11 +248,13 @@ export default {
         return;
       }
 
+      const type = transferData.type;
+
       // Add to our processNode
-      const definition = transferData.definition();
+      const definition = this.nodeRegistry[type].definition();
 
       // Now, let's modify planeElement
-      const diagram = transferData.diagram();
+      const diagram = this.nodeRegistry[type].diagram();
 
       // Handle transform
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
@@ -241,11 +262,7 @@ export default {
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
-      this.addNode({
-        type: transferData.type,
-        definition,
-        diagram,
-      });
+      this.addNode({ type, definition, diagram });
     },
     addNode({ type, definition, diagram }) {
       /*
@@ -258,7 +275,7 @@ export default {
        *
        * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
       */
-      if (type === 'pool') {
+      if (type === poolId) {
         if (!this.collaboration) {
           this.collaboration = this.moddle.create('bpmn:Collaboration');
           this.definitions.get('rootElements').push(this.collaboration);
@@ -289,7 +306,7 @@ export default {
         targetProcess.get('flowElements').push(definition);
       }
 
-      const id = `${type}_${Object.keys(this.nodes).length}`;
+      const id = `node_${Object.keys(this.nodes).length}`;
       definition.id = id;
       diagram.id = `${id}_di`;
       diagram.bpmnElement = definition;
@@ -299,8 +316,10 @@ export default {
         type,
         definition,
         diagram,
-        pool: type !== 'pool' ? this.poolTarget : null,
+        pool: type !== poolId ? this.poolTarget : null,
       });
+
+      this.poolTarget = null;
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -316,13 +335,15 @@ export default {
         }
       }
     },
-    setInspector(node, config, handler) {
-      this.inspectorNode = node;
-      this.inspectorConfig = config;
-      this.inspectorHandler = handler ? handler : (() => {});
+    loadInspector(type, data, component) {
+      this.inspectorNode = data;
+      this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      this.inspectorHandler = (value) => {
+        this.nodeRegistry[type].inspectorHandler(value, data, component);
+      };
     },
     validateDropTarget(transferData, { clientX, clientY }) {
-      if (transferData.type === 'pool') {
+      if (transferData.type === poolId) {
         return;
       }
 
@@ -341,7 +362,7 @@ export default {
 
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
       const pool = this.graph.findModelsFromPoint(localMousePosition).find(({ component }) => {
-        return component && component.node.type === 'pool';
+        return component && component.node.type === poolId;
       });
 
       if (!pool) {
@@ -358,17 +379,6 @@ export default {
     this.validateDropTarget = throttle(this.validateDropTarget, 100, { leading: true });
   },
   mounted() {
-    // Register controls with inspector
-    this.$refs.inspector.$options.components["FormText"] = renderer.FormText;
-    this.$refs.inspector.$options.components["FormInput"] = FormInput;
-    this.$refs.inspector.$options.components["FormDatePicker"] = FormDatePicker;
-    this.$refs.inspector.$options.components[
-      "FormRadioButtonGroup"
-    ] = FormRadioButtonGroup;
-    this.$refs.inspector.$options.components["FormCheckbox"] = FormCheckbox;
-    this.$refs.inspector.$options.components["FormTextArea"] = FormTextArea;
-    this.$refs.inspector.$options.components["FormSelect"] = FormSelect;
-
     // Handle window resize
     this.handleResize();
     window.addEventListener("resize", this.handleResize);

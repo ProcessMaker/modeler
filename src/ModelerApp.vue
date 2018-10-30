@@ -32,6 +32,29 @@ import FileUpload from "vue-upload-component";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+// Our initial node types to register with our modeler
+import {
+  association,
+  endEvent,
+  exclusiveGateway,
+  sequenceFlow,
+  startEvent,
+  task,
+  textAnnotation,
+  pool,
+} from './components/nodes';
+
+let nodeTypes = [
+  startEvent,
+  endEvent,
+  task,
+  exclusiveGateway,
+  sequenceFlow,
+  textAnnotation,
+  association,
+  pool,
+];
+
 export default {
   name: "ModelerApp",
   components: {
@@ -62,13 +85,15 @@ export default {
     `;
 
     this.$refs.modeler.loadXML(blank);
+    for(var node of nodeTypes) {
+      this.$refs.modeler.registerNode(node);
+    }
   },
   methods: {
     download() {
       this.$refs.modeler.toXML(function(err, xml) {
         if (err) {
           alert(err);
-          console.log(err);
         } else {
           alert(xml);
           console.log(xml);
@@ -99,7 +124,7 @@ html {
 }
 
 #modeler-app {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

@@ -18,38 +18,6 @@ export default {
       nodeWidth: 10,
       //Highlight adds 3 pixels of padding
       highlightHeight: 3,
-      inspectorConfig: [
-        {
-          name: "Text Annotation",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Text Annotation",
-                fontSize: "2em",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Annotation Description",
-                helper: "Body of the text annotation",
-                text: "text",
-                placeholder: 'New Text Annotation',
-              },
-            },
-          ],
-        },
-      ],
       crownConfig: [
         {
           icon: connectIcon,
@@ -82,23 +50,7 @@ export default {
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.setInspector(
-        this.node.definition,
-        this.inspectorConfig,
-        this.handleInspectionUpdate
-      );
-    },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (const key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-          this.node.definition.set('text', value[key]);
-        }
-      }
-
-      this.updateShape();
+      this.$parent.loadInspector('processmaker-modeler-text-annotation', this.node.definition, this);
     },
   },
   mounted() {
@@ -147,5 +99,3 @@ export default {
   },
 };
 </script>
-
-

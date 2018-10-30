@@ -1,6 +1,7 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
+import { id as poolId } from '@/components/nodes/pool';
 
 let moddle = new BpmnModdle();
 
@@ -23,7 +24,7 @@ export default {
   },
   methods: {
     removeShape() {
-      if (this.node.type !== 'pool') {
+      if (this.node.type !== poolId) {
         const flowElements = this.processNode.get('flowElements');
         flowElements.splice(flowElements.indexOf(this.node.definition), 1);
       }
@@ -51,7 +52,7 @@ export default {
       });
 
       this.$emit('add-node', {
-        type: 'sequenceFlow',
+        type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
         diagram: moddle.create('bpmndi:BPMNEdge'),
       });
@@ -63,7 +64,7 @@ export default {
       });
 
       this.$emit('add-node', {
-        type: 'association',
+        type: 'processmaker-modeler-association',
         definition: associationLink,
         diagram: moddle.create('bpmndi:BPMNEdge'),
       });
