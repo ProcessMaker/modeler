@@ -234,8 +234,8 @@ export default {
 
       // Now, let's modify planeElement
       const diagram = transferData.diagram();
-      // Handle transform
 
+      // Handle transform
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
       diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
 
@@ -249,18 +249,14 @@ export default {
     },
     addNode({ type, definition, diagram }) {
       /*
-
-      If we are adding a pool, first, create a bpmn:Collaboration, or
-      get the current bpmn:Collaboration, is one exists,
-
-      For each process, bpmn:Collaboration will contain a bpmn:participant (a "pool")
-      if there are currently no pools, don't create a new process, use the current one instead,
-      and add (embed) all current flow elements to it.
-
-      For lanes, it will be bpmn:laneSet > bpmn:lanes (will do later)
-
-      bpmndi:BPMNPlane should reference collaboration element instead of Process_1
-
+       * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
+       * is one exists.
+       *
+       * For each process, bpmn:Collaboration will contain a bpmn:participant (a "pool"). If there are
+       * currently no pools, don't create a new process, use the current one instead, and add (embed) all
+       * current flow elements to it.
+       *
+       * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
       */
       if (type === 'pool') {
         if (!this.collaboration) {
@@ -299,7 +295,12 @@ export default {
       diagram.bpmnElement = definition;
 
       this.planeElements.push(diagram);
-      this.$set(this.nodes, id, { type, definition, diagram, pool: this.poolTarget });
+      this.$set(this.nodes, id, {
+        type,
+        definition,
+        diagram,
+        pool: type !== 'pool' ? this.poolTarget : null,
+      });
     },
     handleResize() {
       let parent = this.$el.parentElement;

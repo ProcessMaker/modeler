@@ -228,7 +228,7 @@ export default {
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
 
-    /* If there are no other pools, fthe first pool should capture all current flow elements */
+    /* If there are no other pools, the first pool should capture all current flow elements */
     if (this.collaboration.get('participants').length === 1) {
       this.captureChildren();
     }
