@@ -2,7 +2,7 @@
     <div class="controls">
         <div v-for="(items, category) in controls" :key="category">
             <h2>{{category}}</h2>
-            <drag v-for="(control, index) in items" :key="index" :transfer-data="{component: control.component, type: control.type, definitionType: control.definitionType, definition: control.definition, diagramType: control.diagramType, diagram: control.diagram}">
+            <drag v-for="(control, index) in items" :key="index" :transfer-data="{type: control.type}">
                 <div class="tool">
                     <div class="img-container">
                         <img :src="control.icon">

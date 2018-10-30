@@ -27,49 +27,10 @@ export default {
       gatewayDirectionOptions: { Diverging: 'Diverging', Converging: 'Converging' },
       anchorPadding: 25,
       validConnections: {
-        task: ['task', 'endEvent', 'exclusiveGateway'],
-        startEvent: ['task', 'endEvent'],
-        exclusiveGateway: ['task'],
+        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway'],
+        'processmaker-modeler-start-event': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
+        'processmaker-modeler-exclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
       },
-      inspectorConfig: [
-        {
-          name: "Task",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Task",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Sequence Flow",
-                name: "name"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Expression",
-                helper: "The condition expression for this sequence flow. Only used if used with a diverging gateway",
-                name: "conditionExpression.body"
-              }
-            }
-          ]
-        }
-      ]
     };
   },
   computed: {
@@ -82,7 +43,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this)
     },
     updateShape() {},
     completeLink() {
@@ -157,7 +118,7 @@ export default {
         return false;
       }
 
-      if (targetType === 'exclusiveGateway') {
+      if (targetType === 'processmaker-modeler-exclusive-gateway') {
         return this.checkExclusiveGateway();
       }
       return true;

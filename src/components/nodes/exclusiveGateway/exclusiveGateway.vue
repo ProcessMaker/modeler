@@ -51,55 +51,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      inspectorConfig: [
-        {
-          name: "Exclusive Gateway",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Exclusive Gateway",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Gateway",
-                name: "name"
-              }
-            },
-            {
-              component: "FormSelect",
-              config: {
-                label: "Direction",
-                helper: "The direction of the gateway",
-                name: "gatewayDirection",
-                options: [
-                  {
-                    value: "Diverging",
-                    content: "Diverging"
-                  },
-                  {
-                    value: "Converging",
-                    content: "Converging"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ],
       crownConfig: [
         {
           icon: connectIcon,
@@ -129,24 +80,7 @@ export default {
       });
     },
     handleClick() {
-      this.$parent.setInspector(
-          this.node.definition,
-          this.inspectorConfig,
-          this.handleInspectionUpdate
-      );
-    },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-          this.node.definition.set('name', this.node.definition.name);
-          this.node.definition.set('gatewayDirection',this.node.definition.gatewayDirection);
-        }
-      }
-
-      this.updateShape();
+      this.$parent.loadInspector('processmaker-modeler-exclusive-gateway', this.node.definition, this)
     }
   },
   mounted() {

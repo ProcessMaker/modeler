@@ -46,7 +46,7 @@ export default {
             })
 
             this.$emit('add-node', {
-                type: 'sequenceFlow',
+                type: 'processmaker-modeler-sequence-flow',
                 definition: sequenceLink,
                 diagram: moddle.create('bpmndi:BPMNEdge')
             })
@@ -58,7 +58,7 @@ export default {
             })
 
             this.$emit('add-node', {
-                type: 'association',
+                type: 'processmaker-modeler-association',
                 definition: associationLink,
                 diagram: moddle.create('bpmndi:BPMNEdge')
             })
