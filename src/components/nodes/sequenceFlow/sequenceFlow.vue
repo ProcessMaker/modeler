@@ -226,6 +226,20 @@ export default {
     this.updateRouter();
   },
   destroyed() {
+    /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
+    const sourceNode = this.$parent.nodes[this.node.definition.sourceRef.id];
+    const targetNode = this.$parent.nodes[this.node.definition.targetRef.id];
+
+    if (sourceNode) {
+      const outgoing = sourceNode.definition.get('outgoing');
+      outgoing.splice(outgoing.indexOf(this.node.definition), 1);
+    }
+
+    if (targetNode) {
+      const incoming = targetNode.definition.get('incoming');
+      incoming.splice(incoming.indexOf(this.node.definition), 1);
+    }
+
     this.updateWaypoints.cancel();
   },
 };

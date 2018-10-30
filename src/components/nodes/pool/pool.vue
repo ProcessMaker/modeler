@@ -50,13 +50,6 @@ export default {
       this.shape.embed(element);
       this.expandToFixElement(element);
     },
-    removePoolChildren() {
-      this.shape.getEmbeddedCells().forEach(cell => {
-        if (cell.component) {
-          cell.component.removeShape();
-        }
-      });
-    },
     getShape() {
       return this.shape;
     },
@@ -211,8 +204,6 @@ export default {
     });
   },
   beforeDestroy() {
-    this.removePoolChildren();
-
     const participants = this.collaboration.get('participants');
     participants.splice(participants.indexOf(this.node.definition), 1);
   },

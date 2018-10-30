@@ -6,7 +6,7 @@ import { id as poolId } from '@/components/nodes/pool';
 let moddle = new BpmnModdle();
 
 export default {
-  props: ['highlighted', 'paper', 'processNode'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements'],
   data() {
     return {
       buttons: [],
@@ -28,6 +28,14 @@ export default {
         const flowElements = this.processNode.get('flowElements');
         flowElements.splice(flowElements.indexOf(this.node.definition), 1);
       }
+
+      this.planeElements.splice(this.planeElements.indexOf(this.node.diagram), 1);
+
+      this.shape.getEmbeddedCells().forEach(cell => {
+        if (cell.component) {
+          cell.component.removeShape();
+        }
+      });
 
       this.$delete(this.$parent.nodes, this.id);
     },
@@ -142,16 +150,7 @@ export default {
     });
   },
   destroyed() {
-    const { incoming, outgoing } = this.node.definition;
-
-    if (incoming) {
-      incoming.forEach(link => this.$delete(this.$parent.nodes, link.id));
-    }
-
-    if (outgoing) {
-      outgoing.forEach(link => this.$delete(this.$parent.nodes, link.id));
-    }
-
+    this.graph.getConnectedLinks(this.shape).forEach(shape => shape.component.removeShape());
     this.shape.stopListening();
     this.shape.remove();
   },

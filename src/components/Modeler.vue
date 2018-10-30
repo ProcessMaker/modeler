@@ -25,7 +25,8 @@
         :id="id"
         :highlighted="highlighted && highlighted.model.component === node.component"
         :collaboration="collaboration"
-        :processNode="processNode"
+        :process-node="processNode"
+        :plane-elements="planeElements"
         @add-node="addNode"
         @set-cursor="cursor = $event"
       />
