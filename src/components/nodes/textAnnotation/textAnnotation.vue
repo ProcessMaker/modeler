@@ -18,39 +18,7 @@ export default {
       nodeWidth: 10,
       //Highlight adds 3 pixels of padding
       highlightHeight: 3,
-      inspectorConfig: [
-        {
-          name: "Text Annotation",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Text Annotation",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Annotation Description",
-                helper: "Body of the text annotation",
-                text: "text",
-                placeholder: 'New Text Annotation'
-              }
-            }
-          ]
-        }
-      ],
-      crownConfig: [
+     crownConfig: [
         {
           icon: connectIcon,
           clickHandler: this.addAssociation,
@@ -63,7 +31,6 @@ export default {
       return this.shape;
     },
     updateShape() {
-
       let bounds = this.node.diagram.bounds;
       const { height } = this.shape.findView(this.paper).getBBox();
 
@@ -83,28 +50,11 @@ export default {
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.setInspector(
-        this.node.definition,
-        this.inspectorConfig,
-        this.handleInspectionUpdate
-      );
+      this.$parent.loadInspector('processmaker-modeler-text-annotation', this.node.definition, this)
     },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-          this.node.definition.set('text', value[key])
-        }
-      }
-
-      this.updateShape();
-    }
   },
   mounted() {
     this.shape = new joint.shapes.standard.Polyline();
-
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);

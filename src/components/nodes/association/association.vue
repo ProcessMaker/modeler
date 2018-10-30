@@ -21,49 +21,16 @@ export default {
       definition: null,
       sourceShape: null,
       validConnections: {
-        textAnnotation: ['task', 'startEvent', 'endEvent', 'exclusiveGateway'],
+        'processmaker-modeler-text-annotation': [
+          'processmaker-modeler-task',
+          'processmaker-modeler-start-event',
+          'processmaker-modeler-end-event',
+          'processmaker-modeler-exclusive-gateway',
+          'processmaker-modeler-inclusive-gateway',
+          'processmaker-modeler-parallel-gateway',
+        ],
       },
-      inspectorConfig: [
-        {
-          name: "Task",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Task",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Association",
-                name: "name"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Expression",
-                helper: "Shows relationships between artifacts and flow objects.",
-                name: "conditionExpression.body"
-              }
-            }
-
-          ]
-        }
-      ]
-    };
+  };
   },
   computed: {
     targetType() {

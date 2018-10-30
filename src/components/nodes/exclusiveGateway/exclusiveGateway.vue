@@ -23,7 +23,7 @@ joint.dia.Element.define(
         fill: "#FFFFFF",
       },
       ".label": {
-        textVerticalAnchor: "middle",
+        textVerticalAnchor: "top",
         textAnchor: "middle",
         refX: "50%",
         refY: "130%",
@@ -60,87 +60,42 @@ joint.dia.Element.define(
 );
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ["graph", "node", "nodes", "id"],
   mixins: [crownConfig],
   data() {
     return {
       shape: null,
       definition: null,
-      inspectorConfig: [
-        {
-          name: "Exclusive Gateway",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Exclusive Gateway",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Gateway",
-                name: "name"
-              }
-            },
-            {
-              component: "FormSelect",
-              config: {
-                label: "Direction",
-                helper: "The direction of the gateway",
-                name: "gatewayDirection",
-                options: [
-                  {
-                    value: "Diverging",
-                    content: "Diverging"
-                  },
-                  {
-                    value: "Converging",
-                    content: "Converging"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ],
       crownConfig: [
         {
-          icon: connectIcon,
+        icon: connectIcon,
           clickHandler: this.addSequence,
         },
       ],
     };
   },
+
   methods: {
     getShape() {
       return this.shape;
     },
     updateShape() {
+      const { width } = this.shape.findView(this.paper).getBBox();
       let bounds = this.node.diagram.bounds;
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
         body: {},
-        label: {
-          text: this.node.definition.get("name"),
+        ".label": {
+          text: joint.util.breakText(this.node.definition.get('name'), {
+            width: width,
+          }),
           fill: "black"
         }
       });
     },
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.loadInspector('processmaker-modeler-exclusive-gateway', this.node.definition, this)
     }
   },
   mounted() {
@@ -159,9 +114,6 @@ export default {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
     });
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -176,6 +128,10 @@ export default {
         element
       );
     });
+
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
+    this.$parent.nodes[this.id].component = this;
   }
 };
 </script>

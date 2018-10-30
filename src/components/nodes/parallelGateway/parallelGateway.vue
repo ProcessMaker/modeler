@@ -9,7 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 
 joint.dia.Element.define(
-  "processmaker.modeler.bpmn.inclusiveGateway",
+  "processmaker.modeler.bpmn.parallelGateway",
   {
     size: {
       width: 80,
@@ -26,18 +26,23 @@ joint.dia.Element.define(
         textVerticalAnchor: "top",
         textAnchor: "middle",
         refX: "50%",
-        refY: "50",
+        refY: "130%",
         fontSize: 14,
         fill: "#333333"
       },
-      ".innerCircle": {
-        strokeWidth: "3",
-        cs: "25",
-        cy: "75",
-        r: "20",
+      ".iconSideA": {
+        strokeWidth: "10",
+        points: "40 220 80 180 120 220",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(21, -16) scale(0.5)",
+        transform: "translate(35.5, -15.5) rotate(45) scale(0.20)",
+      },
+      ".iconSideB": {
+        strokeWidth: "10",
+        points: "40 220 80 180 120 220",
+        stroke: "black",
+        fill: "transparent",
+        transform: "translate(7.25, 58) rotate(-135) scale(0.20)"
       },
       image: {
         width: 40,
@@ -49,12 +54,12 @@ joint.dia.Element.define(
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><circle class="innerCircle"/>'
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>'
   }
 );
 
 export default {
-  props: ["graph", "node", "nodes", "id"],
+  props: ["graph", "node", "id"],
   mixins: [crownConfig],
   data() {
     return {
@@ -62,12 +67,12 @@ export default {
       definition: null,
       inspectorConfig: [
         {
-          name: "Inclusive Gateway",
+          name: "Parallel Gateway",
           items: [
             {
               component: "FormText",
               config: {
-                label: "Inclusive Gateway",
+                label: "Parallel Gateway",
                 fontSize: "2em"
               }
             },
@@ -130,7 +135,7 @@ export default {
       this.shape.attr({
         body: {},
         ".label": {
-          text: joint.util.breakText(this.node.definition.get("name"), {
+          text: joint.util.breakText(this.node.definition.get('name'), {
             width: width
           }),
           fill: "black"
@@ -138,29 +143,12 @@ export default {
       });
     },
     handleClick() {
-      this.$parent.setInspector(
-          this.node.definition,
-          this.inspectorConfig,
-          this.handleInspectionUpdate
-      );
+      this.$parent.loadInspector('processmaker-modeler-parallel-gateway', this.node.definition, this)
     },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-          this.node.definition.set('name', this.node.definition.name);
-          this.node.definition.set('gatewayDirection',this.node.definition.gatewayDirection);
-        }
-      }
-
-      this.updateShape();
-    }
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
-    this.shape = new joint.shapes.processmaker.modeler.bpmn.inclusiveGateway();
+    this.shape = new joint.shapes.processmaker.modeler.bpmn.parallelGateway();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
@@ -174,6 +162,9 @@ export default {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
     });
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
+    this.$parent.nodes[this.id].component = this;
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -188,16 +179,10 @@ export default {
         element
       );
     });
-
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
-
   }
 };
 </script>
 
 <style lang="scss" scoped>
 </style>
-
 

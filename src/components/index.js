@@ -1,14 +1,31 @@
 // Our main modeler component
-import Modeler from '@/components/Modeler';
+import Modeler from './Modeler'
 
 // Our StatusBar component, if desired
-import StatusBar from '@/components/statusbar';
+import StatusBar from './statusbar'
 
-// Core BPMN Node controls
-import BaseControls from '@/controls';
+import {
+    association,
+    endEvent,
+    exclusiveGateway,
+    inclusiveGateway,
+    parallelGateway,
+    sequenceFlow,
+    startEvent,
+    task,
+    textAnnotation
+} from './nodes/index'
 
 export {
     Modeler,
     StatusBar,
-    BaseControls
-}; 
+    association,
+    endEvent,
+    exclusiveGateway,
+    inclusiveGateway,
+    parallelGateway,
+    sequenceFlow,
+    startEvent,
+    task,
+    textAnnotation
+}
