@@ -376,7 +376,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
-        cellView.model.getParentCell().component.node.type !== 'pool'
+        !cellView.model.component
       ) {
         return false;
       }
