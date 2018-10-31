@@ -104,7 +104,7 @@ export default {
                 if (this.buttons.includes(cellView.model)) {
                     cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } })
 
-                    this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
+                    this.shape.listenTo(this.paper, 'cell:mouseleave', () => {
                         cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } })
                     })
                 }

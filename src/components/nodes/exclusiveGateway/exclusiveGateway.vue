@@ -23,10 +23,10 @@ joint.dia.Element.define(
         fill: "#FFFFFF",
       },
       ".label": {
-        textVerticalAnchor: "middle",
+        textVerticalAnchor: "top",
         textAnchor: "middle",
         refX: "50%",
-        refY: "130%",
+        refY: "50",
         fontSize: 14,
         fill: "#333333"
       },
@@ -45,7 +45,7 @@ joint.dia.Element.define(
 );
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ["graph", "node", "nodes", "id"],
   mixins: [crownConfig],
   data() {
     return {
@@ -64,13 +64,17 @@ export default {
       return this.shape;
     },
     updateShape() {
+      const { width } = this.shape.findView(this.paper).getBBox();
       let bounds = this.node.diagram.bounds;
+
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
         body: {},
-        label: {
-          text: this.node.definition.get("name"),
+        ".label": {
+          text: joint.util.breakText(this.node.definition.get("name"), {
+            width: width
+          }),
           fill: "black"
         }
       });
@@ -95,9 +99,6 @@ export default {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
     });
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -112,6 +113,11 @@ export default {
         element
       );
     });
+
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
+    this.$parent.nodes[this.id].component = this;
+
   }
 };
 </script>
