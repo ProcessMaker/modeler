@@ -1,18 +1,20 @@
 // Our main modeler component
-import Modeler from './Modeler';
+import Modeler from './Modeler'
 
 // Our StatusBar component, if desired
-import StatusBar from './statusbar';
+import StatusBar from './statusbar'
 
 import {
     association,
     endEvent,
     exclusiveGateway,
+    inclusiveGateway,
+    parallelGateway,
     sequenceFlow,
     startEvent,
     task,
     textAnnotation
-} from './nodes/index';
+} from './nodes/index'
 
 export {
     Modeler,
@@ -20,6 +22,8 @@ export {
     association,
     endEvent,
     exclusiveGateway,
+    inclusiveGateway,
+    parallelGateway,
     sequenceFlow,
     startEvent,
     task,

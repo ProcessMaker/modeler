@@ -21,7 +21,14 @@ export default {
       definition: null,
       sourceShape: null,
       validConnections: {
-        'processmaker-modeler-text-annotation': ['processmaker-modeler-task', 'processmaker-modeler-start-event', 'processmaker-model-end-event', 'processmaker-model-exclusive-gateway'],
+        'processmaker-modeler-text-annotation': [
+          'processmaker-modeler-task',
+          'processmaker-modeler-start-event',
+          'processmaker-modeler-end-event',
+          'processmaker-modeler-exclusive-gateway',
+          'processmaker-modeler-inclusive-gateway',
+          'processmaker-modeler-parallel-gateway',
+        ],
       },
   };
   },
@@ -120,8 +127,10 @@ export default {
         },
         line: {
           stroke: 'black',
-          strokeWidth: 1,
-          strokeDasharray: '5 5 5 5 5',
+          strokeWidth: '4',
+          strokeLinecap: 'round',
+          strokeDasharray: '1, 8',
+          strokeDashoffset: '5',
           targetMarker: {
                 'type': 'rect',
                 'width': 1,

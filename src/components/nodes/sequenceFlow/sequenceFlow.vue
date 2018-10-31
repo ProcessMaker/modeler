@@ -28,9 +28,11 @@ export default {
       defaultNodeColor: '#fff',
       anchorPadding: 25,
       validConnections: {
-        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway'],
+        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway', 'processmaker-modeler-inclusive-gateway', 'processmaker-modeler-parallel-gateway'],
         'processmaker-modeler-start-event': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
         'processmaker-modeler-exclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
+        'processmaker-modeler-inclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
+        'processmaker-modeler-parallel-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
       },
     };
   },
