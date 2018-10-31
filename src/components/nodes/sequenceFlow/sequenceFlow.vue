@@ -9,6 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import BpmnModdle from 'bpmn-moddle';
+import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 
 const moddle = new BpmnModdle;
 
@@ -20,52 +21,18 @@ export default {
       shape: null,
       definition: null,
       sourceShape: null,
+      target: null,
+      validNodeColor: '#dffdd0',
+      invalidNodeColor: '#fae0e6',
+      defaultNodeColor: '#fff',
       anchorPadding: 25,
       validConnections: {
-        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway'],
+        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway', 'processmaker-modeler-inclusive-gateway', 'processmaker-modeler-parallel-gateway'],
         'processmaker-modeler-start-event': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
         'processmaker-modeler-exclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
+        'processmaker-modeler-inclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
+        'processmaker-modeler-parallel-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
       },
-      inspectorConfig: [
-        {
-          name: "Task",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Task",
-                fontSize: "2em",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Sequence Flow",
-                name: "name",
-              },
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Expression",
-                helper: "The condition expression for this sequence flow. Only used if used with a diverging gateway",
-                name: "conditionExpression.body",
-              },
-            },
-
-          ],
-        },
-      ],
     };
   },
   computed: {
@@ -97,10 +64,29 @@ export default {
 
       this.updateWaypoints();
 
-      targetShape.attr('body/fill', '#fff');
+      targetShape.attr('body/fill', this.defaultNodeColor);
+      targetShape.attr('.body/fill', this.defaultNodeColor);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+    },
+    isValidGatewayConnection() {
+      const definition = this.target.component.node.definition;
+      const gatewayDirection = definition.get('gatewayDirection');
+      const incomingFlowCount = definition.get('incoming').length;
+      const outgoingFlowCount = definition.get('outgoing').length;
+
+      if (gatewayDirection == gatewayDirectionOptions.Converging) {
+        return true;
+      }
+
+      // Exclusive gateway can only recieve one incoming link
+      // If the node has an outgoing link only then it can recieve a incoming link
+      if (incomingFlowCount === 0 || outgoingFlowCount > 0) {
+        return true;
+      }
+
+      return false;
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
@@ -109,40 +95,56 @@ export default {
       this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
+    isValidConnection() {
+      const targetType = get(this.target, 'component.node.type');
+
+      if (!targetType) {
+        return false;
+      }
+
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      if (sourcePool && sourcePool !== targetPool) {
+        return false;
+      }
+
+      if (!this.validConnections[this.sourceType].includes(targetType)) {
+        return false;
+      }
+
+      if (targetType === 'processmaker-modeler-exclusive-gateway') {
+        return this.isValidGatewayConnection();
+      }
+
+      return true;
+    },
     updateRouter() {
       this.shape.router('orthogonal', { elementPadding: this.elementPadding });
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
 
-      const target = this.graph.findModelsFromPoint(localMousePosition).find(element => {
-        const targetType = get(element, 'component.node.type');
+      this.target = this.graph.findModelsFromPoint(localMousePosition)[0];
 
-        if (!targetType) {
-          return false;
-        }
-
-        const targetPool = element.component.node.pool;
-        const sourcePool = this.sourceShape.component.node.pool;
-
-        if (sourcePool && sourcePool !== targetPool) {
-          return false;
-        }
-
-        return this.validConnections[this.sourceType].includes(targetType);
-      });
-
-      if (!target) {
+      if (!this.isValidConnection()) {
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
         });
+
+        if (this.target) {
+          this.target.attr('body/fill', this.invalidNodeColor);
+          this.target.attr('.body/fill', this.invalidNodeColor);
+          this.$emit('set-cursor', 'not-allowed');
+        }
+
         return;
       }
 
-      this.shape.target(target, {
+      this.shape.target(this.target, {
         anchor: {
-          name: target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
           args: { padding: this.anchorPadding },
         },
         connectionPoint: { name: 'boundary' },
@@ -151,7 +153,8 @@ export default {
       this.updateRouter();
 
       this.$emit('set-cursor', 'default');
-      target.attr('body/fill', '#dffdd0');
+      this.target.attr('body/fill', this.validNodeColor);
+      this.target.attr('.body/fill', this.validNodeColor);
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
@@ -160,7 +163,8 @@ export default {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
 
-        target.attr('body/fill', '#fff');
+        this.target.attr('body/fill', this.defaultNodeColor);
+        this.target.attr('.body/fill', this.defaultNodeColor);
         this.$emit('set-cursor', 'not-allowed');
       });
     },
@@ -172,10 +176,22 @@ export default {
       this.$emit('set-cursor', null);
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
+
+      this.target.attr('body/fill', this.defaultNodeColor);
+      this.target.attr('.body/fill', this.defaultNodeColor);
     },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
+  },
+  watch: {
+    target(target, previousTarget) {
+      if (previousTarget && previousTarget !== target ) {
+        previousTarget.attr('body/fill', this.defaultNodeColor);
+        previousTarget.attr('.body/fill', this.defaultNodeColor);
+        this.$emit('set-cursor', null);
+      }
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({

@@ -9,11 +9,11 @@ import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 
 joint.dia.Element.define(
-  "processmaker.modeler.bpmn.exclusiveGateway",
+  "processmaker.modeler.bpmn.inclusiveGateway",
   {
     size: {
       width: 80,
-      height: 80,
+      height: 80
     },
     attrs: {
       ".body": {
@@ -28,34 +28,28 @@ joint.dia.Element.define(
         refX: "50%",
         refY: "50",
         fontSize: 14,
-        fill: "#333333",
+        fill: "#333333"
       },
-      ".iconSideA": {
-        strokeWidth: "10",
-        points: "40 220 80 180 120 220",
+      ".innerCircle": {
+        strokeWidth: "3",
+        cs: "25",
+        cy: "75",
+        r: "20",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(37, 57) rotate(180) scale(0.20)",
-      },
-      ".iconSideB": {
-        strokeWidth: "10",
-        points: "40 220 80 180 120 220",
-        stroke: "black",
-        fill: "transparent",
-        transform: "translate(5, -15) scale(0.20)",
+        transform: "translate(21, -16) scale(0.5)",
       },
       image: {
         width: 40,
         height: 40,
-        fill: "transparent",
         "xlink:href": "",
-        transform: "translate(20,20)",
-      },
-    },
+        transform: "translate(20,20)"
+      }
+    }
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>',
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><circle class="innerCircle"/>'
   }
 );
 
@@ -75,13 +69,11 @@ export default {
       ],
     };
   },
-
   methods: {
     getShape() {
       return this.shape;
     },
     updateShape() {
-      const { width } = this.shape.findView(this.paper).getBBox();
       let bounds = this.node.diagram.bounds;
 
       this.shape.position(bounds.x, bounds.y);
@@ -90,26 +82,26 @@ export default {
         body: {},
         ".label": {
           text: joint.util.breakText(this.node.definition.get('name'), {
-            width: width,
+            width: this.labelWidth
           }),
-          fill: "black",
-        },
+          fill: "black"
+        }
       });
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-exclusive-gateway', this.node.definition, this);
+      this.$parent.loadInspector('processmaker-modeler-inclusive-gateway', this.node.definition, this)
     },
   },
   mounted() {
-    this.shape = new joint.shapes.processmaker.modeler.bpmn.exclusiveGateway();
+    this.shape = new joint.shapes.processmaker.modeler.bpmn.inclusiveGateway();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
     this.shape.attr({
       ".label": {
         text: this.node.definition.get("name"),
-        fill: "black",
-      },
+        fill: "black"
+      }
     });
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -124,7 +116,7 @@ export default {
         "move",
         {
           x: bounds.x,
-          y: bounds.y,
+          y: bounds.y
         },
         element
       );
@@ -133,10 +125,12 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  },
+
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 </style>
+
 

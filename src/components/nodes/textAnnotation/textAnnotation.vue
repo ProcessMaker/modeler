@@ -55,7 +55,6 @@ export default {
   },
   mounted() {
     this.shape = new joint.shapes.standard.Polyline();
-
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);

@@ -9,11 +9,11 @@ import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 
 joint.dia.Element.define(
-  "processmaker.modeler.bpmn.exclusiveGateway",
+  "processmaker.modeler.bpmn.parallelGateway",
   {
     size: {
       width: 80,
-      height: 80,
+      height: 80
     },
     attrs: {
       ".body": {
@@ -26,47 +26,94 @@ joint.dia.Element.define(
         textVerticalAnchor: "top",
         textAnchor: "middle",
         refX: "50%",
-        refY: "50",
+        refY: "130%",
         fontSize: 14,
-        fill: "#333333",
+        fill: "#333333"
       },
       ".iconSideA": {
         strokeWidth: "10",
         points: "40 220 80 180 120 220",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(37, 57) rotate(180) scale(0.20)",
+        transform: "translate(35.5, -15.5) rotate(45) scale(0.20)",
       },
       ".iconSideB": {
         strokeWidth: "10",
         points: "40 220 80 180 120 220",
         stroke: "black",
         fill: "transparent",
-        transform: "translate(5, -15) scale(0.20)",
+        transform: "translate(7.25, 58) rotate(-135) scale(0.20)"
       },
       image: {
         width: 40,
         height: 40,
-        fill: "transparent",
         "xlink:href": "",
-        transform: "translate(20,20)",
-      },
-    },
+        transform: "translate(20,20)"
+      }
+    }
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>',
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>'
   }
 );
 
 export default {
-  props: ["graph", "node", "nodes", "id"],
+  props: ["graph", "node", "id"],
   mixins: [crownConfig],
   data() {
     return {
       shape: null,
       definition: null,
-      labelWidth: 175,
+      inspectorConfig: [
+        {
+          name: "Parallel Gateway",
+          items: [
+            {
+              component: "FormText",
+              config: {
+                label: "Parallel Gateway",
+                fontSize: "2em"
+              }
+            },
+            {
+              component: "FormInput",
+              config: {
+                label: "Identifier",
+                helper:
+                  "The id field should be unique across all elements in the diagram",
+                name: "id"
+              }
+            },
+            {
+              component: "FormInput",
+              config: {
+                label: "Name",
+                helper: "The Name of the Gateway",
+                name: "name"
+              }
+            },
+            {
+              component: "FormSelect",
+              config: {
+                label: "Direction",
+                helper: "The direction of the gateway",
+                name: "gatewayDirection",
+                options: [
+                  {
+                    value: "Diverging",
+                    content: "Diverging"
+                  },
+                  {
+                    value: "Converging",
+                    content: "Converging"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       crownConfig: [
         {
           icon: connectIcon,
@@ -75,7 +122,6 @@ export default {
       ],
     };
   },
-
   methods: {
     getShape() {
       return this.shape;
@@ -90,31 +136,34 @@ export default {
         body: {},
         ".label": {
           text: joint.util.breakText(this.node.definition.get('name'), {
-            width: width,
+            width: width
           }),
-          fill: "black",
-        },
+          fill: "black"
+        }
       });
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-exclusive-gateway', this.node.definition, this);
+      this.$parent.loadInspector('processmaker-modeler-parallel-gateway', this.node.definition, this)
     },
   },
   mounted() {
-    this.shape = new joint.shapes.processmaker.modeler.bpmn.exclusiveGateway();
+    this.shape = new joint.shapes.processmaker.modeler.bpmn.parallelGateway();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
     this.shape.attr({
       ".label": {
         text: this.node.definition.get("name"),
-        fill: "black",
-      },
+        fill: "black"
+      }
     });
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
     });
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
+    this.$parent.nodes[this.id].component = this;
 
     this.shape.on("change:position", (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -124,16 +173,12 @@ export default {
         "move",
         {
           x: bounds.x,
-          y: bounds.y,
+          y: bounds.y
         },
         element
       );
     });
-
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
-  },
+  }
 };
 </script>
 

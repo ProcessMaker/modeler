@@ -2,21 +2,19 @@ import BpmnModdle from 'bpmn-moddle'
 
 let moddle = new BpmnModdle()
 
-import component from './exclusiveGateway.vue'
-
-export const gatewayDirectionOptions = { Diverging: 'Diverging', Converging: 'Converging' }
+import component from './inclusiveGateway.vue'
 
 export default {
-    id: 'processmaker-modeler-exclusive-gateway',
+    id: 'processmaker-modeler-inclusive-gateway',
     component: component,
-    bpmnType: 'bpmn:ExclusiveGateway',
+    bpmnType: 'bpmn:InclusiveGateway',
     control: true,
     category: 'BPMN',
-    icon: require('../../../assets/toolpanel/exclusive-gateway.svg'),
-    label: 'Exclusive Gateway',
+    icon: require('../../../assets/toolpanel/inclusive-gateway.svg'),
+    label: 'Inclusive Gateway',
     definition: function() {
-        return moddle.create('bpmn:ExclusiveGateway', {
-            name: 'New Exclusive Gateway',
+        return moddle.create('bpmn:InclusiveGateway', {
+            name: 'New Inclusive Gateway',
             gatewayDirection: 'Diverging'
         })
     },
@@ -42,12 +40,12 @@ export default {
     },
     inspectorConfig: [
         {
-            name: 'Exclusive Gateway',
+            name: 'Inclusive Gateway',
             items: [
                 {
                     component: 'FormText',
                     config: {
-                        label: 'Exclusive Gateway',
+                        label: 'Inclusive Gateway',
                         fontSize: '2em'
                     }
                 },
@@ -75,11 +73,11 @@ export default {
                         name: 'gatewayDirection',
                         options: [
                             {
-                                value: gatewayDirectionOptions.Diverging,
+                                value: 'Diverging',
                                 content: 'Diverging'
                             },
                             {
-                                value: gatewayDirectionOptions.Converging,
+                                value: 'Converging',
                                 content: 'Converging'
                             }
                         ]
