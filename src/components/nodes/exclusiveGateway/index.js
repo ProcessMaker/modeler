@@ -4,6 +4,8 @@ let moddle = new BpmnModdle()
 
 import component from './exclusiveGateway.vue'
 
+export const gatewayDirectionOptions = { Diverging: 'Diverging', Converging: 'Converging' }
+
 export default {
     id: 'processmaker-modeler-exclusive-gateway',
     component: component,
@@ -12,7 +14,6 @@ export default {
     category: 'BPMN',
     icon: require('../../../assets/toolpanel/exclusive-gateway.svg'),
     label: 'Exclusive Gateway',
-    gatewayDirectionOptions: { Diverging: 'Diverging', Converging: 'Converging' },
     definition: function() {
         return moddle.create('bpmn:ExclusiveGateway', {
             name: 'New Exclusive Gateway',
@@ -72,11 +73,11 @@ export default {
                         name: 'gatewayDirection',
                         options: [
                             {
-                                value: 'Diverging',
+                                value: gatewayDirectionOptions.Diverging,
                                 content: 'Diverging'
                             },
                             {
-                                value: 'Converging',
+                                value: gatewayDirectionOptions.Converging,
                                 content: 'Converging'
                             }
                         ]

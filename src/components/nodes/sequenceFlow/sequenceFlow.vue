@@ -9,7 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import BpmnModdle from 'bpmn-moddle'
-import  ExclusiveGateway from '../exclusiveGateway/index'
+import  { gatewayDirectionOptions } from '../exclusiveGateway/index'
 
 
 let moddle = new BpmnModdle;
@@ -80,12 +80,12 @@ export default {
       const outgoingFlowCount = definition.get('outgoing').length;
 
 
-      if (gatewayDirection == ExclusiveGateway.gatewayDirectionOptions.Converging) {
+      if (gatewayDirection == gatewayDirectionOptions.Converging) {
         return true;
       }
+
       // Exclusive gateway can only recieve one incoming link
       // If the node has an outgoing link only then it can recieve a incoming link
-
       if (incomingFlowCount === 0 || outgoingFlowCount > 0) {
         return true;
       }
