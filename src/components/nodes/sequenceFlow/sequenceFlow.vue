@@ -9,6 +9,8 @@ import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import BpmnModdle from 'bpmn-moddle'
+import  ExclusiveGateway from '../exclusiveGateway/index'
+
 
 let moddle = new BpmnModdle;
 
@@ -24,7 +26,6 @@ export default {
       validNodeColor: '#dffdd0',
       invalidNodeColor: '#fae0e6',
       defaultNodeColor: '#fff',
-      gatewayDirectionOptions: { Diverging: 'Diverging', Converging: 'Converging' },
       anchorPadding: 25,
       validConnections: {
         'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway'],
@@ -72,25 +73,24 @@ export default {
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
     },
-    checkExclusiveGateway() {
+    isValidGatewayConnection() {
       const definition = this.target.component.node.definition;
       const gatewayDirection = definition.get('gatewayDirection');
-      const incoming = definition.get('incoming');
-      const outgoing = definition.get('outgoing');
-      const incomingFlowCount = incoming.length;
-      const outgoingFlowCount = outgoing.length;
+      const incomingFlowCount = definition.get('incoming').length;
+      const outgoingFlowCount = definition.get('outgoing').length;
 
-      if (gatewayDirection == this.gatewayDirectionOptions.Diverging) {
-        if (incomingFlowCount === 0) {
-          return true;
-        }
-        if (outgoingFlowCount > 0){
-          return true;
-        }
-        return false;
-      } else if (gatewayDirection == this.gatewayDirectionOptions.Converging) {
+
+      if (gatewayDirection == ExclusiveGateway.gatewayDirectionOptions.Converging) {
         return true;
       }
+      // Exclusive gateway can only recieve one incoming link
+      // If the node has an outgoing link only then it can recieve a incoming link
+
+      if (incomingFlowCount === 0 || outgoingFlowCount > 0) {
+        return true;
+      }
+
+      return false;
     },
     nodeState( fill, cursor, target = this.target) {
       target.attr({
@@ -119,7 +119,7 @@ export default {
       }
 
       if (targetType === 'processmaker-modeler-exclusive-gateway') {
-        return this.checkExclusiveGateway();
+        return this.isValidGatewayConnection();
       }
       return true;
     },
