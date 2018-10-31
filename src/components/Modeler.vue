@@ -344,12 +344,15 @@ export default {
       };
     },
     validateDropTarget(transferData, { clientX, clientY }) {
+      /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
       if (transferData.type === poolId) {
+        this.allowDrop = true;
         return;
       }
 
-      /* If there are any pools on the grid, only allow dragging components over pools */
+      /* If there are no pools on the grid, allow dragging components anywhere */
       if (!this.collaboration || this.collaboration.get('participants').length === 0) {
+        this.allowDrop = true;
         return;
       }
 
@@ -359,7 +362,10 @@ export default {
         return;
       }
 
+      /* The mouse co-ordinates are set so we can compare them above if this function runs again */
       this.dragPoint = { x: clientX, y: clientY };
+
+      /* Determine if we are over a pool, and only allow dropping elements over a pool */
 
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
       const pool = this.graph.findModelsFromPoint(localMousePosition).find(({ component }) => {
