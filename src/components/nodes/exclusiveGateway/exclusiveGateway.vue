@@ -66,6 +66,7 @@ export default {
     return {
       shape: null,
       definition: null,
+      labelWidth: 175,
       crownConfig: [
         {
         icon: connectIcon,
@@ -80,15 +81,15 @@ export default {
       return this.shape;
     },
     updateShape() {
-      const { width } = this.shape.findView(this.paper).getBBox();
       let bounds = this.node.diagram.bounds;
+
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
         body: {},
         ".label": {
           text: joint.util.breakText(this.node.definition.get('name'), {
-            width: width,
+            width: this.labelWidth
           }),
           fill: "black"
         }
@@ -99,7 +100,6 @@ export default {
     }
   },
   mounted() {
-    // Now, let's add a rounded rect to the graph
     this.shape = new joint.shapes.processmaker.modeler.bpmn.exclusiveGateway();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);

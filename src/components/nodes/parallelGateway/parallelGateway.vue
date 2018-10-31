@@ -147,7 +147,6 @@ export default {
     },
   },
   mounted() {
-    // Now, let's add a rounded rect to the graph
     this.shape = new joint.shapes.processmaker.modeler.bpmn.parallelGateway();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
