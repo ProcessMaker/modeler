@@ -38,7 +38,6 @@
 import Vue from 'vue';
 import BpmnModdle from "bpmn-moddle";
 import controls from "./controls";
-import throttle from 'lodash/throttle';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -383,7 +382,6 @@ export default {
   },
   created() {
     this.moddle = new BpmnModdle(this.extensions);
-    this.validateDropTarget = throttle(this.validateDropTarget, 100, { leading: true });
   },
   mounted() {
     // Handle window resize
