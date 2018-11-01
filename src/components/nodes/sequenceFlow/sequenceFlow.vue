@@ -12,6 +12,9 @@ import BpmnModdle from 'bpmn-moddle';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 
 const moddle = new BpmnModdle;
+const validNodeColor = '#dffdd0';
+const invalidNodeColor = '#fae0e6';
+const defaultNodeColor = '#fff';
 
 export default {
   props: ["graph", "node", "id"],
@@ -22,9 +25,6 @@ export default {
       definition: null,
       sourceShape: null,
       target: null,
-      validNodeColor: '#dffdd0',
-      invalidNodeColor: '#fae0e6',
-      defaultNodeColor: '#fff',
       anchorPadding: 25,
       validConnections: {
         'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway', 'processmaker-modeler-inclusive-gateway', 'processmaker-modeler-parallel-gateway'],
@@ -48,6 +48,10 @@ export default {
       this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this);
     },
     updateShape() {},
+    setBodyColor(color, target = this.target) {
+      target.attr('body/fill', color);
+      target.attr('.body/fill', color);
+    },
     completeLink() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
@@ -64,8 +68,7 @@ export default {
 
       this.updateWaypoints();
 
-      targetShape.attr('body/fill', this.defaultNodeColor);
-      targetShape.attr('.body/fill', this.defaultNodeColor);
+      this.setBodyColor(defaultNodeColor, targetShape);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -105,6 +108,8 @@ export default {
       const targetPool = this.target.component.node.pool;
       const sourcePool = this.sourceShape.component.node.pool;
 
+      /* If the link source is part of a pool, only allow sequence
+       * flows to the target if the target is also in the same pool  */
       if (sourcePool && sourcePool !== targetPool) {
         return false;
       }
@@ -125,18 +130,21 @@ export default {
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
 
-      this.target = this.graph.findModelsFromPoint(localMousePosition)[0];
+      /* Sort shapes by z-index descending; grab the shape on top (with the highest z-index) */
+      this.target = this.graph.findModelsFromPoint(localMousePosition).sort((shape1, shape2) => {
+        return shape2.get('z') - shape1.get('z');
+      })[0];
 
       if (!this.isValidConnection()) {
+        this.$emit('set-cursor', 'not-allowed');
+
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
         });
 
         if (this.target) {
-          this.target.attr('body/fill', this.invalidNodeColor);
-          this.target.attr('.body/fill', this.invalidNodeColor);
-          this.$emit('set-cursor', 'not-allowed');
+          this.setBodyColor(invalidNodeColor);
         }
 
         return;
@@ -153,8 +161,7 @@ export default {
       this.updateRouter();
 
       this.$emit('set-cursor', 'default');
-      this.target.attr('body/fill', this.validNodeColor);
-      this.target.attr('.body/fill', this.validNodeColor);
+      this.setBodyColor(validNodeColor);
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
@@ -163,8 +170,7 @@ export default {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
 
-        this.target.attr('body/fill', this.defaultNodeColor);
-        this.target.attr('.body/fill', this.defaultNodeColor);
+        this.setBodyColor(defaultNodeColor);
         this.$emit('set-cursor', 'not-allowed');
       });
     },
@@ -177,8 +183,9 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
 
-      this.target.attr('body/fill', this.defaultNodeColor);
-      this.target.attr('.body/fill', this.defaultNodeColor);
+      if (this.target) {
+        this.setBodyColor(defaultNodeColor);
+      }
     },
   },
   created() {
@@ -186,10 +193,8 @@ export default {
   },
   watch: {
     target(target, previousTarget) {
-      if (previousTarget && previousTarget !== target ) {
-        previousTarget.attr('body/fill', this.defaultNodeColor);
-        previousTarget.attr('.body/fill', this.defaultNodeColor);
-        this.$emit('set-cursor', null);
+      if (previousTarget && previousTarget !== target) {
+        this.setBodyColor(defaultNodeColor, previousTarget);
       }
     },
   },

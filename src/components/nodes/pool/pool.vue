@@ -127,7 +127,6 @@ export default {
           direction: `${directionHeight}-${directionWidth}`,
         });
         this.updateCrownPosition();
-        /* TODO: Update diagram bounds */
       }
     },
     captureChildren() {
@@ -136,9 +135,10 @@ export default {
       }
 
       this.$parent.processNode.flowElements.forEach(({ id }) => {
-        const elementShape = this.$parent.nodes[id].component.shape;
-        this.shape.embed(elementShape);
-        elementShape.toFront({ deep: true });
+        const { shape, node } = this.$parent.nodes[id].component;
+        this.shape.embed(shape);
+        shape.toFront({ deep: true });
+        node.pool = this.shape;
       });
 
       this.resizePool();
@@ -152,7 +152,6 @@ export default {
         Math.max(height, bounds.height)
       );
       this.shape.getEmbeddedCells().forEach(cell => cell.translate(labelWidth));
-      /* TODO: Update diagram bounds */
     },
   },
   mounted() {
