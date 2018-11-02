@@ -31,13 +31,13 @@ export default {
       return this.shape;
     },
     updateShape() {
-      let bounds = this.node.diagram.bounds;
       const { height } = this.shape.findView(this.paper).getBBox();
+      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
+      let bounds = this.node.diagram.bounds;
+      let textAnnotationLength = this.node.definition.get('text').length;
 
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(this.nodeWidth, height - this.highlightHeight);
-      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
-
       this.shape.attr({
         body: { refPoints  },
         label: {
@@ -47,6 +47,10 @@ export default {
           fill: "black"
         }
       });
+
+      if (textAnnotationLength === 0) {
+        this.shape.resize(this.nodeWidth, bounds.height);
+      }
       // Alert anyone that we have moved
     },
     handleClick() {
