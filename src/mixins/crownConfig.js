@@ -3,7 +3,7 @@ import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
 import { id as poolId } from '@/components/nodes/pool';
 
-let moddle = new BpmnModdle();
+const moddle = new BpmnModdle();
 
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements'],

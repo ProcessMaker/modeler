@@ -6,10 +6,13 @@
 <script>
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
-import { id as poolId } from './index';
+import Lane from '../poolLane';
+import { id as poolId, labelWidth, poolPadding } from './index';
+import { id as laneId } from '../poolLane';
+import laneIcon from '@/assets/lane.svg';
+import BpmnModdle from 'bpmn-moddle';
 
-const labelWidth = 30;
-const poolPadding = 20;
+const moddle = new BpmnModdle();
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -17,37 +20,78 @@ joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
     { tagName: 'polyline', selector: 'polyline' },
   ],
   attrs: {
-    body: {
-      rx: 8,
-      ry: 8,
-    },
     label: {
       fill: 'black',
       transform: 'rotate(-90)',
-      refX: labelWidth / 2,
+      // refX: labelWidth / 2,
     },
     polyline: {
       refPoints: '0,0 0,1',
       pointerEvents: 'none',
       stroke: '#000',
       strokeWidth: 2,
-      refX: labelWidth,
+      // refX: labelWidth,
     },
   },
 });
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id', 'collaboration'],
+  props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes'],
   mixins: [crownConfig],
   data() {
     return {
       shape: null,
       definition: null,
+      crownConfig: [
+        {
+          icon: laneIcon,
+          clickHandler: this.addLane,
+        },
+      ],
+      laneSet: null,
     };
   },
+  computed: {
+    containingProcess() {
+      return this.processes.find(process =>
+        process.id === this.node.definition.get('processRef').id
+      );
+    },
+  },
   methods: {
+    addLane() {
+      /* A Lane element must be contained in a LaneSet element.
+       * Get the current laneSet element or create a new one. */
+
+      if (!this.laneSet) {
+        const laneSet = moddle.create('bpmn:LaneSet');
+        this.laneSet = laneSet;
+        this.containingProcess.get('laneSets').push(laneSet);
+        this.pushNewLane();
+      }
+
+      this.pushNewLane();
+    },
+    pushNewLane() {
+      this.$emit('set-pool-target', this.shape);
+      this.$emit('add-node', {
+        type: Lane.id,
+        definition: Lane.definition(),
+        diagram: Lane.diagram(),
+      });
+    },
     addToPool(element) {
       this.shape.embed(element);
+
+      /* If there are lanes, add the element to the lane it's above */
+      if (element.component.node.type !== laneId && this.laneSet) {
+        const lane = this.graph.findModelsUnderElement(element, { searchBy: 'center' }).find(element => {
+          return element.component.node.type === laneId;
+        });
+
+        lane.component.node.definition.get('flowNodeRef').push(element.component.node.definition);
+      }
+
       this.expandToFixElement(element);
     },
     getShape() {
@@ -84,6 +128,23 @@ export default {
     expandToFixElement(element) {
       const { width, height } = this.shape.get('size');
       const { x, y } = this.shape.findView(this.paper).getBBox();
+
+      if (element.component.node.type === laneId) {
+        /* Position lane relative to pool */
+
+        const isFirstLane = this.shape.getEmbeddedCells().filter(cell => {
+          return cell.component && cell.component.node.type === laneId;
+        }).length === 1;
+
+        const laneHeight = isFirstLane ? height : element.component.node.diagram.bounds.height;
+        element.resize(width - labelWidth, laneHeight);
+        element.position(labelWidth, isFirstLane ? 0 : height, { parentRelative: true });
+        this.shape.resize(width, isFirstLane ? height : height + laneHeight);
+        this.updateCrownPosition();
+
+        return;
+      }
+
       const {
         x: elementX,
         y: elementY,
@@ -159,6 +220,9 @@ export default {
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
+
+    this.shape.attr('label/refX', labelWidth / 2);
+    this.shape.attr('polyline/refX', labelWidth);
     this.shape.attr('label/text', joint.util.breakText(this.node.definition.get('name'), {
       width: bounds.width,
     }));
@@ -195,6 +259,7 @@ export default {
       this.shape.listenTo(this.graph, 'change:position', element => {
         if (
           element.component && element.component !== this &&
+          element.component.node.type !== laneId &&
           element.getParentCell() && element.getParentCell().component === this
         ) {
           this.expandToFixElement(element);

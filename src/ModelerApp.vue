@@ -24,13 +24,13 @@
 </template>
 
 <script>
-import Modeler from "./components/Modeler.vue";
-import statusbar from "./components/statusbar.vue";
+import Modeler from './components/Modeler.vue';
+import statusbar from './components/statusbar.vue';
 
-import FileUpload from "vue-upload-component";
+import FileUpload from 'vue-upload-component';
 
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // Our initial node types to register with our modeler
 import {
@@ -44,6 +44,7 @@ import {
   task,
   textAnnotation,
   pool,
+  poolLane,
 } from './components/nodes';
 
 let nodeTypes = [
@@ -57,10 +58,11 @@ let nodeTypes = [
   textAnnotation,
   association,
   pool,
+  poolLane,
 ];
 
 export default {
-  name: "ModelerApp",
+  name: 'ModelerApp',
   components: {
     Modeler,
     FileUpload,
@@ -69,9 +71,9 @@ export default {
   },
   data() {
     return {
-      statusText: "No errors detected",
+      statusText: 'No errors detected',
       statusIcon: faCheckCircle,
-      statusColor: "green",
+      statusColor: 'green',
     };
   },
   mounted() {

@@ -26,9 +26,11 @@
         :highlighted="highlighted && highlighted.model.component === node.component"
         :collaboration="collaboration"
         :process-node="processNode"
+        :processes="processes"
         :plane-elements="planeElements"
         @add-node="addNode"
         @set-cursor="cursor = $event"
+        @set-pool-target="poolTarget = $event"
       />
     </div>
   </div>
@@ -36,8 +38,8 @@
 
 <script>
 import Vue from 'vue';
-import BpmnModdle from "bpmn-moddle";
-import controls from "./controls";
+import BpmnModdle from 'bpmn-moddle';
+import controls from './controls';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -49,16 +51,17 @@ import {
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
-} from "@processmaker/vue-form-elements";
+} from '@processmaker/vue-form-elements';
 
-import processInspectorConfig from "./inspectors/process";
+import processInspectorConfig from './inspectors/process';
 
 import {
   VueFormRenderer,
   renderer,
-} from "@processmaker/vue-form-builder";
+} from '@processmaker/vue-form-builder';
 
 import { id as poolId } from './nodes/pool';
+import { id as laneId } from './nodes/poolLane/';
 
 // Register those components
 Vue.component('FormText', renderer.FormText);
@@ -69,10 +72,10 @@ Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
-const version = "1.0";
+const version = '1.0';
 
 if (!window.joint) {
-  window.joint = require("jointjs");
+  window.joint = require('jointjs');
 }
 
 export default {
@@ -119,7 +122,7 @@ export default {
       highlighted: null,
       inspectorConfig: [
         {
-          name: "Empty",
+          name: 'Empty',
           items: [],
         },
       ],
@@ -142,10 +145,10 @@ export default {
       this.inspectorData = JSON.parse(
         JSON.stringify(this.inspectorNode, function(key, value) {
           // Empty key is the object itself
-          if (key == "") {
+          if (key == '') {
             return value;
           }
-          if (typeof value == "object") {
+          if (typeof value == 'object') {
             return undefined;
           }
           return value;
@@ -189,7 +192,7 @@ export default {
       this.definitions.rootElements.forEach(process => {
         this.processes.push(process);
         this.processNode = process;
-        this.inspectorConfig = this.inspectors["process"];
+        this.inspectorConfig = this.inspectors['process'];
         this.inspectorNode = this.processNode;
 
         // Now iterate through all the elements in processes
@@ -217,7 +220,7 @@ export default {
           if (this.nodes[diagramElement.bpmnElement.id]) {
             this.$set(
               this.nodes[diagramElement.bpmnElement.id],
-              "diagram",
+              'diagram',
               diagramElement
             );
           }
@@ -228,7 +231,7 @@ export default {
       this.moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
-          definitions.exporter = "ProcessMaker Modeler";
+          definitions.exporter = 'ProcessMaker Modeler';
           definitions.exporterVersion = version;
           this.definitions = definitions;
           this.parse();
@@ -267,11 +270,10 @@ export default {
     addNode({ type, definition, diagram }) {
       /*
        * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
-       * is one exists.
+       * if one exists.
        *
-       * For each process, bpmn:Collaboration will contain a bpmn:participant (a "pool"). If there are
-       * currently no pools, don't create a new process, use the current one instead, and add (embed) all
-       * current flow elements to it.
+       * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
+       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
        *
        * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
       */
@@ -303,13 +305,21 @@ export default {
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
           : this.processNode;
 
-        targetProcess.get('flowElements').push(definition);
+        const flowElements = targetProcess.get('flowElements');
+        if (type === laneId) {
+          targetProcess.get('laneSets')[0].get('lanes').push(definition);
+        } else {
+          flowElements.push(definition);
+        }
       }
 
       const id = `node_${Object.keys(this.nodes).length}`;
       definition.id = id;
-      diagram.id = `${id}_di`;
-      diagram.bpmnElement = definition;
+
+      if (diagram) {
+        diagram.id = `${id}_di`;
+        diagram.bpmnElement = definition;
+      }
 
       this.planeElements.push(diagram);
       this.$set(this.nodes, id, {
@@ -323,8 +333,8 @@ export default {
     },
     handleResize() {
       let parent = this.$el.parentElement;
-      this.$refs['paper-container'].style.width = parent.clientWidth + "px";
-      this.$refs['paper-container'].style.height = parent.clientHeight + "px";
+      this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
+      this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
     handleProcessInspectorUpdate(value) {
       // Go through each property and rebind it to our data
@@ -386,14 +396,15 @@ export default {
   mounted() {
     // Handle window resize
     this.handleResize();
-    window.addEventListener("resize", this.handleResize);
+    window.addEventListener('resize', this.handleResize);
 
     this.graph = new window.joint.dia.Graph();
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
-        !cellView.model.component
+        (!cellView.model.component || cellView.model.component.node.type === laneId)
       ) {
+        /* Prevent dragging crown icons and lanes */
         return false;
       }
 
@@ -409,7 +420,7 @@ export default {
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
     });
-    this.paper.on("blank:pointerclick", () => {
+    this.paper.on('blank:pointerclick', () => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
@@ -418,7 +429,7 @@ export default {
       this.inspectorConfig = processInspectorConfig;
     });
 
-    this.paper.on("blank:pointerdown", (event, x, y) => {
+    this.paper.on('blank:pointerdown', (event, x, y) => {
       this.canvasDragPosition = {x: x, y: y};
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
@@ -431,7 +442,7 @@ export default {
       }
     });
 
-    this.paper.on("cell:pointerclick", (cellView, evt, x, y) => {
+    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
@@ -443,13 +454,16 @@ export default {
       }
       if (cellView.model.component) {
         cellView.highlight();
-        cellView.model.toFront({ deep: true });
+
+        if (cellView.model.component.node.type !== laneId) {
+          cellView.model.toFront({ deep: true });
+        }
 
         this.highlighted = cellView;
         cellView.model.component.handleClick();
       }
     });
-    this.paper.on("link:pointerclick", cellView => {
+    this.paper.on('link:pointerclick', cellView => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
