@@ -27,6 +27,7 @@ export default {
       invalidNodeColor: '#fae0e6',
       defaultNodeColor: '#fff',
       anchorPadding: 25,
+      inspectorConfig: null,
       validConnections: {
         'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway', 'processmaker-modeler-inclusive-gateway', 'processmaker-modeler-parallel-gateway'],
         'processmaker-modeler-start-event': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
@@ -79,16 +80,13 @@ export default {
       const definition = this.target.component.node.definition;
       const gatewayDirection = definition.get('gatewayDirection');
       const incomingFlowCount = definition.get('incoming').length;
-      const outgoingFlowCount = definition.get('outgoing').length;
-
 
       if (gatewayDirection == gatewayDirectionOptions.Converging) {
         return true;
       }
 
       // Exclusive gateway can only recieve one incoming link
-      // If the node has an outgoing link only then it can recieve a incoming link
-      if (incomingFlowCount === 0 || outgoingFlowCount > 0) {
+      if (incomingFlowCount === 0) {
         return true;
       }
 
