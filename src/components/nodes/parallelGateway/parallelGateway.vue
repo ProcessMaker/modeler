@@ -65,55 +65,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      inspectorConfig: [
-        {
-          name: "Parallel Gateway",
-          items: [
-            {
-              component: "FormText",
-              config: {
-                label: "Parallel Gateway",
-                fontSize: "2em"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Identifier",
-                helper:
-                  "The id field should be unique across all elements in the diagram",
-                name: "id"
-              }
-            },
-            {
-              component: "FormInput",
-              config: {
-                label: "Name",
-                helper: "The Name of the Gateway",
-                name: "name"
-              }
-            },
-            {
-              component: "FormSelect",
-              config: {
-                label: "Direction",
-                helper: "The direction of the gateway",
-                name: "gatewayDirection",
-                options: [
-                  {
-                    value: "Diverging",
-                    content: "Diverging"
-                  },
-                  {
-                    value: "Converging",
-                    content: "Converging"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ],
       crownConfig: [
         {
           icon: connectIcon,

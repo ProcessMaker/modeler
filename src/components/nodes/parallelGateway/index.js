@@ -14,8 +14,7 @@ export default {
     label: 'Parallel Gateway',
     definition: function() {
         return moddle.create('bpmn:ParallelGateway', {
-            name: 'New Parallel Gateway',
-            gatewayDirection: 'Diverging'
+            name: 'New Parallel Gateway'
         })
     },
     diagram: function() {
@@ -33,7 +32,6 @@ export default {
             if (definition[key] != value[key]) {
                 definition[key] = value[key]
                 definition.set('name', value.name)
-                definition.set('gatewayDirection', value.gatewayDirection)
             }
         }
         component.updateShape()
@@ -63,24 +61,6 @@ export default {
                         label: 'Name',
                         helper: 'The Name of the Gateway',
                         name: 'name'
-                    }
-                },
-                {
-                    component: 'FormSelect',
-                    config: {
-                        label: 'Direction',
-                        helper: 'The direction of the gateway',
-                        name: 'gatewayDirection',
-                        options: [
-                            {
-                                value: 'Diverging',
-                                content: 'Diverging'
-                            },
-                            {
-                                value: 'Converging',
-                                content: 'Converging'
-                            }
-                        ]
                     }
                 }
             ]

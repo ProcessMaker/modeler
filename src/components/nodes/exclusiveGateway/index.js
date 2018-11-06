@@ -16,8 +16,7 @@ export default {
     label: 'Exclusive Gateway',
     definition: function() {
         return moddle.create('bpmn:ExclusiveGateway', {
-            name: 'New Exclusive Gateway',
-            gatewayDirection: 'Diverging'
+            name: 'New Exclusive Gateway'
         })
     },
     diagram: function() {
@@ -35,7 +34,6 @@ export default {
             if (definition[key] != value[key]) {
                 definition[key] = value[key]
                 definition.set('name', value.name)
-                definition.set('gatewayDirection', value.gatewayDirection)
             }
         }
         component.updateShape()
@@ -65,24 +63,6 @@ export default {
                         label: 'Name',
                         helper: 'The Name of the Gateway',
                         name: 'name'
-                    }
-                },
-                {
-                    component: 'FormSelect',
-                    config: {
-                        label: 'Direction',
-                        helper: 'The direction of the gateway',
-                        name: 'gatewayDirection',
-                        options: [
-                            {
-                                value: gatewayDirectionOptions.Diverging,
-                                content: 'Diverging'
-                            },
-                            {
-                                value: gatewayDirectionOptions.Converging,
-                                content: 'Converging'
-                            }
-                        ]
                     }
                 }
             ]
