@@ -47,6 +47,8 @@ export default {
       });
     },
     addCrown() {
+      this.updateCrownPosition();
+
       this.buttons.forEach((button) => {
         button.attr({
           root: { display: 'initial' },
@@ -128,6 +130,7 @@ export default {
       const buttonLength = 25;
       const buttonMargin = 10;
       const { x, y, width, height } = this.shape.findView(this.paper).getBBox();
+      const { tx, ty } = this.paper.translate();
       const crownHeight = (buttonLength * this.buttons.length) + (buttonMargin * (this.buttons.length - 1));
       const centerY = 0 - (crownHeight / 2) + (height / 2);
 
@@ -135,7 +138,7 @@ export default {
         const yOffset = (buttonLength + buttonMargin) * index;
 
         button.resize(buttonLength, buttonLength);
-        button.position(x + width + buttonMargin, y + yOffset + centerY);
+        button.position(x + width + buttonMargin - tx, y + yOffset + centerY - ty)
       });
     },
   },
