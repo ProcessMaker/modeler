@@ -67,16 +67,26 @@ export default {
         const laneSet = moddle.create('bpmn:LaneSet');
         this.laneSet = laneSet;
         this.containingProcess.get('laneSets').push(laneSet);
-        this.pushNewLane();
+
+        const definition = Lane.definition();
+
+        /* If there are currently elements in the pool, add them to the first lane */
+        this.shape.getEmbeddedCells().filter(element => {
+          return element.component && element.component.node.type !== laneId;
+        }).forEach(element => {
+          definition.get('flowNodeRef').push(element.component.node.definition);
+        });
+
+        this.pushNewLane(definition);
       }
 
       this.pushNewLane();
     },
-    pushNewLane() {
+    pushNewLane(definition = Lane.definition()) {
       this.$emit('set-pool-target', this.shape);
       this.$emit('add-node', {
         type: Lane.id,
-        definition: Lane.definition(),
+        definition,
         diagram: Lane.diagram(),
       });
     },
@@ -141,6 +151,12 @@ export default {
         element.position(labelWidth, isFirstLane ? 0 : height, { parentRelative: true });
         this.shape.resize(width, isFirstLane ? height : height + laneHeight);
         this.updateCrownPosition();
+
+        this.graph.findModelsUnderElement(element).filter(laneElement => {
+          return laneElement.component && ![poolId, laneId].includes(laneElement.component.node.type);
+        }).forEach(laneElement => {
+          laneElement.toFront({ deep: true });
+        });
 
         return;
       }

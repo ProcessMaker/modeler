@@ -455,8 +455,14 @@ export default {
       if (cellView.model.component) {
         cellView.highlight();
 
-        if (cellView.model.component.node.type !== laneId) {
-          cellView.model.toFront({ deep: true });
+        cellView.model.toFront({ deep: true });
+
+        if ([poolId, laneId].includes(cellView.model.component.node.type)) {
+          this.graph.findModelsUnderElement(cellView).filter(element => {
+            return element.component && ![poolId, laneId].includes(element.component.node.type);
+          }).forEach(element => {
+            element.toFront({ deep: true });
+          });
         }
 
         this.highlighted = cellView;

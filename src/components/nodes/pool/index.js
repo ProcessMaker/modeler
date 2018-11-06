@@ -41,29 +41,29 @@ export default {
   },
   inspectorConfig: [
     {
-      name: "Pool",
+      name: 'Pool',
       items: [
         {
-          component: "FormText",
+          component: 'FormText',
           config: {
-            label: "Pool",
-            fontSize: "2em",
+            label: 'Pool',
+            fontSize: '2em',
           },
         },
         {
-          component: "FormInput",
+          component: 'FormInput',
           config: {
-            label: "Identifier",
-            helper: "The id field should be unique across all elements in the diagram",
-            name: "id",
+            label: 'Identifier',
+            helper: 'The id field should be unique across all elements in the diagram',
+            name: 'id',
           },
         },
         {
-          component: "FormInput",
+          component: 'FormInput',
           config: {
-            label: "Name",
-            helper: "The Name of the Pool",
-            name: "name",
+            label: 'Name',
+            helper: 'The Name of the Pool',
+            name: 'name',
           },
         },
       ],
