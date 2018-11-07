@@ -1,39 +1,39 @@
 <template>
-    <div class="modeler">
-        <div class="modeler-container">
-            <controls :controls="controls">
+  <div class="modeler">
+    <div class="modeler-container">
+      <controls :controls="controls">
 
-            </controls>
-            <div ref="paper-container" class="paper-container">
-                <drop @drop="handleDrop">
-                    <div class="paper">
-                    </div>
-                </drop>
-            </div>
+      </controls>
+      <div ref="paper-container" class="paper-container">
+        <drop @drop="handleDrop">
+          <div class="paper">
+          </div>
+        </drop>
+      </div>
 
-            <div class="inspector">
-                <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
-            </div>
+      <div class="inspector">
+        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
+      </div>
 
-        </div>
-          <component
-            v-for="(node, id) in nodes"
-            :is="node.type"
-            :key="id"
-            :graph="graph"
-            :paper="paper"
-            :node="node"
-            :id="id"
-            :highlighted="highlighted && highlighted.model.component === node.component"
-            @add-node="addNode"
-          />
     </div>
+    <component
+      v-for="(node, id) in nodes"
+      :is="node.type"
+      :key="id"
+      :graph="graph"
+      :paper="paper"
+      :node="node"
+      :id="id"
+      :highlighted="highlighted && highlighted.model.component === node.component"
+      @add-node="addNode"
+    />
+  </div>
 </template>
 
 <script>
 import Vue from 'vue';
-import BpmnModdle from "bpmn-moddle";
-import controls from "./controls";
+import BpmnModdle from 'bpmn-moddle';
+import controls from './controls';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -45,14 +45,14 @@ import {
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
-} from "@processmaker/vue-form-elements";
+} from '@processmaker/vue-form-elements';
 
-import processInspectorConfig from "./inspectors/process"
+import processInspectorConfig from './inspectors/process';
 
 import {
   VueFormRenderer,
-  renderer
-} from "@processmaker/vue-form-builder";
+  renderer,
+} from '@processmaker/vue-form-builder';
 
 // Register those components
 Vue.component('FormText', renderer.FormText);
@@ -65,10 +65,10 @@ Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 
-let version = "1.0";
+let version = '1.0';
 
 if (!window.joint) {
-  window.joint = require("jointjs");
+  window.joint = require('jointjs');
 }
 
 export default {
@@ -104,7 +104,7 @@ export default {
       canvasDragPosition: null,
       // This is our id based lookup model
       inspectors: {
-        process: processInspectorConfig
+        process: processInspectorConfig,
       },
       processNode: null,
       // Each type/control in our modeler has it's own inspector configuration
@@ -115,11 +115,11 @@ export default {
       highlighted: null,
       inspectorConfig: [
         {
-          name: "Empty",
-          items: []
-        }
+          name: 'Empty',
+          items: [],
+        },
       ],
-      nodes: {}
+      nodes: {},
     };
   },
   watch: {
@@ -131,10 +131,10 @@ export default {
       this.inspectorData = JSON.parse(
         JSON.stringify(this.inspectorNode, function(key, value) {
           // Empty key is the object itself
-          if (key == "") {
+          if (key == '') {
             return value;
           }
-          if (typeof value == "object") {
+          if (typeof value == 'object') {
             return undefined;
           }
           return value;
@@ -165,7 +165,7 @@ export default {
         this.controls[node.category].push({
           type: node.id,
           icon: node.icon,
-          label: node.label
+          label: node.label,
         });
       }
     },
@@ -175,7 +175,7 @@ export default {
       // All root elements are bpmn:process types
       this.definitions.rootElements.forEach(process => {
         this.processNode = process;
-        this.inspectorConfig = this.inspectors["process"];
+        this.inspectorConfig = this.inspectors['process'];
         this.inspectorNode = this.processNode;
 
         // Now iterate through all the elements in processes
@@ -202,7 +202,7 @@ export default {
           if (this.nodes[diagramElement.bpmnElement.id]) {
             this.$set(
               this.nodes[diagramElement.bpmnElement.id],
-              "diagram",
+              'diagram',
               diagramElement
             );
           }
@@ -214,7 +214,7 @@ export default {
       moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
-          definitions.exporter = "ProcessMaker Modeler";
+          definitions.exporter = 'ProcessMaker Modeler';
           definitions.exporterVersion = version;
           this.definitions = definitions;
           this.parse();
@@ -251,7 +251,7 @@ export default {
       });
     },
     addNode({ type, definition, diagram }) {
-      const id = `node_${Object.keys(this.nodes).length}`
+      const id = `node_${Object.keys(this.nodes).length}`;
       definition.id = id;
       diagram.id = `${id}_di`;
       diagram.bpmnElement = definition;
@@ -262,8 +262,8 @@ export default {
     },
     handleResize() {
       let parent = this.$el.parentElement;
-      this.$refs['paper-container'].style.width = parent.clientWidth + "px";
-      this.$refs['paper-container'].style.height = parent.clientHeight + "px";
+      this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
+      this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
     handleProcessInspectorUpdate(value) {
       // Go through each property and rebind it to our data
@@ -279,15 +279,15 @@ export default {
       this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
       this.inspectorHandler = (value) => {
         this.nodeRegistry[type].inspectorHandler(value, data, component);
-      }
+      };
     },
   },
   mounted() {
     // Handle window resize
     this.handleResize();
-    window.addEventListener("resize", this.handleResize);
+    window.addEventListener('resize', this.handleResize);
 
-    let el = this.$el.getElementsByClassName("paper").item(0);
+    let el = this.$el.getElementsByClassName('paper').item(0);
     this.graph = new window.joint.dia.Graph();
     this.graph.set('interactiveFunc', cellView => {
       if (cellView.model.get('onClick')) {
@@ -306,7 +306,7 @@ export default {
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
     });
-    this.paper.on("blank:pointerclick", () => {
+    this.paper.on('blank:pointerclick', () => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
@@ -315,7 +315,7 @@ export default {
       this.inspectorConfig = processInspectorConfig;
     });
 
-    this.paper.on("blank:pointerdown", (event, x, y) => {
+    this.paper.on('blank:pointerdown', (event, x, y) => {
       this.canvasDragPosition = {x: x, y: y};
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
@@ -326,9 +326,9 @@ export default {
       if(this.canvasDragPosition) {
         this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
       }
-    })
+    });
 
-    this.paper.on("cell:pointerclick", (cellView, evt, x, y) => {
+    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
@@ -345,7 +345,7 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-    this.paper.on("link:pointerclick", cellView => {
+    this.paper.on('link:pointerclick', cellView => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
@@ -357,7 +357,7 @@ export default {
       }
     });
 
-  }
+  },
 };
 </script>
 

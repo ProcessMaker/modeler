@@ -4,63 +4,63 @@
 </template>
 
 <script>
-import joint from "jointjs";
+import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 
 joint.dia.Element.define(
-  "processmaker.modeler.bpmn.exclusiveGateway",
+  'processmaker.modeler.bpmn.exclusiveGateway',
   {
     size: {
       width: 80,
-      height: 80
+      height: 80,
     },
     attrs: {
-      ".body": {
+      '.body': {
         strokeWidth: 2,
-        stroke: "#000000",
-        points: "40,0, 80,40, 40,80, 0,40",
-        fill: "#FFFFFF",
+        stroke: '#000000',
+        points: '40,0, 80,40, 40,80, 0,40',
+        fill: '#FFFFFF',
       },
-      ".label": {
-        textVerticalAnchor: "top",
-        textAnchor: "middle",
-        refX: "50%",
-        refY: "50",
+      '.label': {
+        textVerticalAnchor: 'top',
+        textAnchor: 'middle',
+        refX: '50%',
+        refY: '50',
         fontSize: 14,
-        fill: "#333333"
+        fill: '#333333',
       },
-      ".iconSideA": {
-        strokeWidth: "10",
-        points: "40 220 80 180 120 220",
-        stroke: "black",
-        fill: "transparent",
-        transform: "translate(37, 57) rotate(180) scale(0.20)",
+      '.iconSideA': {
+        strokeWidth: '10',
+        points: '40 220 80 180 120 220',
+        stroke: 'black',
+        fill: 'transparent',
+        transform: 'translate(37, 57) rotate(180) scale(0.20)',
       },
-      ".iconSideB": {
-        strokeWidth: "10",
-        points: "40 220 80 180 120 220",
-        stroke: "black",
-        fill: "transparent",
-        transform: "translate(5, -15) scale(0.20)"
+      '.iconSideB': {
+        strokeWidth: '10',
+        points: '40 220 80 180 120 220',
+        stroke: 'black',
+        fill: 'transparent',
+        transform: 'translate(5, -15) scale(0.20)',
       },
       image: {
         width: 40,
         height: 40,
-        fill: "transparent",
-        "xlink:href": "",
-        transform: "translate(20,20)"
-      }
-    }
+        fill: 'transparent',
+        'xlink:href': '',
+        transform: 'translate(20,20)',
+      },
+    },
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>'
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>',
   }
 );
 
 export default {
-  props: ["graph", "node", "nodes", "id"],
+  props: ['graph', 'node', 'nodes', 'id'],
   mixins: [crownConfig],
   data() {
     return {
@@ -69,7 +69,7 @@ export default {
       labelWidth: 175,
       crownConfig: [
         {
-        icon: connectIcon,
+          icon: connectIcon,
           clickHandler: this.addSequence,
         },
       ],
@@ -88,17 +88,17 @@ export default {
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
         body: {},
-        ".label": {
+        '.label': {
           text: joint.util.breakText(this.node.definition.get('name'), {
-            width: width
+            width: width,
           }),
-          fill: "black"
-        }
+          fill: 'black',
+        },
       });
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-exclusive-gateway', this.node.definition, this)
-    }
+      this.$parent.loadInspector('processmaker-modeler-exclusive-gateway', this.node.definition, this);
+    },
   },
   mounted() {
     this.shape = new joint.shapes.processmaker.modeler.bpmn.exclusiveGateway();
@@ -106,25 +106,25 @@ export default {
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
     this.shape.attr({
-      ".label": {
-        text: this.node.definition.get("name"),
-        fill: "black"
-      }
+      '.label': {
+        text: this.node.definition.get('name'),
+        fill: 'black',
+      },
     });
-    this.shape.on("change:position", (element, position) => {
+    this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
     });
 
-    this.shape.on("change:position", (element, position) => {
+    this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
       // This is done so any flows pointing to this task are updated
       this.$emit(
-        "move",
+        'move',
         {
           x: bounds.x,
-          y: bounds.y
+          y: bounds.y,
         },
         element
       );
@@ -133,7 +133,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  }
+  },
 };
 </script>
 

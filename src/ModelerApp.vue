@@ -24,17 +24,17 @@
 </template>
 
 <script>
-import Modeler from "./components/Modeler.vue";
-import statusbar from "./components/statusbar.vue";
+import Modeler from './components/Modeler.vue';
+import statusbar from './components/statusbar.vue';
 
-import FileUpload from "vue-upload-component";
+import FileUpload from 'vue-upload-component';
 
-import { library } from "@fortawesome/fontawesome-svg-core";
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheckCircle,
-  faTimesCircle
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+  faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // Our initial node types to register with our modeler
 import {
@@ -46,8 +46,8 @@ import {
   sequenceFlow,
   startEvent,
   task,
-  textAnnotation
-} from './components/nodes'
+  textAnnotation,
+} from './components/nodes';
 
 let nodeTypes = [
   startEvent,
@@ -59,21 +59,21 @@ let nodeTypes = [
   sequenceFlow,
   textAnnotation,
   association,
-]
+];
 
 export default {
-  name: "ModelerApp",
+  name: 'ModelerApp',
   components: {
     Modeler,
     FileUpload,
     statusbar,
-    FontAwesomeIcon
+    FontAwesomeIcon,
   },
   data() {
     return {
-      statusText: "No errors detected",
+      statusText: 'No errors detected',
       statusIcon: faCheckCircle,
-      statusColor: "green"
+      statusColor: 'green',
     };
   },
   mounted() {
@@ -92,7 +92,7 @@ export default {
 
     this.$refs.modeler.loadXML(blank);
     for(var node of nodeTypes) {
-      this.$refs.modeler.registerNode(node)
+      this.$refs.modeler.registerNode(node);
     }
   },
   methods: {
@@ -102,7 +102,7 @@ export default {
           alert(err);
         } else {
           alert(xml);
-          console.log(xml)
+          console.log(xml);
         }
       });
     },
@@ -113,8 +113,8 @@ export default {
         this.$refs.uploadmodal.hide();
       };
       reader.readAsText(files[0].file);
-    }
-  }
+    },
+  },
 };
 </script>
 
