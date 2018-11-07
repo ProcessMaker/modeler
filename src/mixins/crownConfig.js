@@ -33,6 +33,8 @@ export default {
             })
         },
         addCrown() {
+            this.updateCrownPosition();
+
             this.getEmbeddedCells.forEach(button => {
                 button.attr({
                     root: { display: 'initial' }
@@ -103,31 +105,27 @@ export default {
             this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
                 if (this.buttons.includes(cellView.model)) {
                     cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } })
-
                     this.shape.listenTo(this.paper, 'cell:mouseleave', () => {
                         cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } })
                     })
                 }
-                this.updateCrownPosition()
-                this.updateCrownPositionOnKeyDown()
             })
 
-            this.shape.listenTo(this.paper, 'paper:mouseeneter', () => {
-                this.updateCrownPosition()
-            })
+            this.updateCrownPositionOnKeyDown()
         },
         updateCrownPosition() {
             const buttonLength = 25
             const buttonMargin = 10
             const { x, y, width, height } = this.shape.findView(this.paper).getBBox()
+            const { tx, ty } = this.paper.translate();
             const crownHeight = buttonLength * this.buttons.length + buttonMargin * (this.buttons.length - 1)
             const centerY = 0 - crownHeight / 2 + height / 2
 
             this.buttons.forEach((button, index) => {
                 const yOffset = (buttonLength + buttonMargin) * index
 
-                button.resize(buttonLength, buttonLength)
-                button.position(x + width + buttonMargin, y + yOffset + centerY)
+                button.resize(buttonLength, buttonLength);
+                button.position(x + width + buttonMargin - tx, y + yOffset + centerY - ty)
             })
         },
         updateCrownPositionOnKeyDown() {
