@@ -4,20 +4,18 @@
 </template>
 
 <script>
-import joint from "jointjs";
+import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import BpmnModdle from 'bpmn-moddle';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
+import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
 const moddle = new BpmnModdle;
-const validNodeColor = '#dffdd0';
-const invalidNodeColor = '#fae0e6';
-const defaultNodeColor = '#fff';
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ['graph', 'node', 'id'],
   mixins: [crownConfig],
   data() {
     return {

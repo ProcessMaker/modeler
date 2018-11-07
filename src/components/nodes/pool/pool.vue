@@ -11,6 +11,7 @@ import { id as poolId, labelWidth, poolPadding } from './index';
 import { id as laneId } from '../poolLane';
 import laneIcon from '@/assets/lane.svg';
 import BpmnModdle from 'bpmn-moddle';
+import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
 const moddle = new BpmnModdle();
 
@@ -23,14 +24,12 @@ joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
     label: {
       fill: 'black',
       transform: 'rotate(-90)',
-      // refX: labelWidth / 2,
     },
     polyline: {
       refPoints: '0,0 0,1',
       pointerEvents: 'none',
       stroke: '#000',
       strokeWidth: 2,
-      // refX: labelWidth,
     },
   },
 });
@@ -59,6 +58,26 @@ export default {
     },
   },
   methods: {
+    moveElement(element, toPool) {
+      const elementDefinition = element.component.node.definition;
+
+      if (this.laneSet) {
+        /* Remove references to the element from the current Lane */
+        const containingLane = this.laneSet.get('lanes').find(lane => {
+          return lane.get('flowNodeRef').includes(elementDefinition);
+        });
+
+        const nodeRefs = containingLane.get('flowNodeRef');
+        nodeRefs.splice(nodeRefs.indexOf(elementDefinition), 1);
+      }
+
+      /* Remove references to the element from the current process */
+      const flowElements = this.containingProcess.get('flowElements');
+      flowElements.splice(flowElements.indexOf(elementDefinition), 1);
+
+      toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+      toPool.component.addToPool(element);
+    },
     addLane() {
       /* A Lane element must be contained in a LaneSet element.
        * Get the current laneSet element or create a new one. */
@@ -207,11 +226,11 @@ export default {
       }
     },
     captureChildren() {
-      if (!this.$parent.processNode.flowElements) {
+      if (!this.$parent.processNode.get('flowElements')) {
         return;
       }
 
-      this.$parent.processNode.flowElements.forEach(({ id }) => {
+      this.$parent.processNode.get('flowElements').forEach(({ id }) => {
         const { shape, node } = this.$parent.nodes[id].component;
         this.shape.embed(shape);
         shape.toFront({ deep: true });
@@ -272,14 +291,62 @@ export default {
     }
 
     this.$nextTick(() => {
-      this.shape.listenTo(this.graph, 'change:position', element => {
+      let previousValidPosition;
+      let draggingElement;
+      let newPoolOrLane;
+
+      this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
         if (
           element.component && element.component !== this &&
           element.component.node.type !== laneId &&
           element.getParentCell() && element.getParentCell().component === this
         ) {
-          this.expandToFixElement(element);
+          if (!draggingElement) {
+            draggingElement = element;
+            draggingElement.toFront({ deep: true });
+          }
+
+          /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
+
+          const poolOrLane = this.graph.findModelsUnderElement(element, { searchBy: 'center' }).filter(model => {
+            return [poolId, laneId].includes(model.component.node.type);
+          })[0];
+
+          if (!poolOrLane) {
+            if (!previousValidPosition) {
+              previousValidPosition = newPosition;
+            }
+
+            this.paper.drawBackground({ color: invalidNodeColor });
+          } else {
+            this.paper.drawBackground({ color: defaultNodeColor });
+            previousValidPosition = null;
+
+            newPoolOrLane = poolOrLane !== this.shape
+              ? poolOrLane
+              : null;
+          }
         }
+      });
+
+      this.shape.listenTo(this.paper, 'cell:pointerup', cellView => {
+        if (!draggingElement || draggingElement !== cellView.model) {
+          return;
+        }
+
+        if (previousValidPosition) {
+          draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
+        }
+
+        if (newPoolOrLane) {
+          /* Remove the shape from its current pool */
+          this.moveElement(draggingElement, newPoolOrLane);
+        } else {
+          this.expandToFixElement(draggingElement);
+        }
+
+        this.paper.drawBackground({ color: defaultNodeColor });
+        draggingElement = null;
       });
     });
   },
