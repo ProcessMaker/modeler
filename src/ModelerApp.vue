@@ -24,17 +24,17 @@
 </template>
 
 <script>
-import Modeler from "./components/Modeler.vue";
-import statusbar from "./components/statusbar.vue";
+import Modeler from './components/Modeler.vue';
+import statusbar from './components/statusbar.vue';
 
-import FileUpload from "vue-upload-component";
+import FileUpload from 'vue-upload-component';
 
-import { library } from "@fortawesome/fontawesome-svg-core";
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheckCircle,
-  faTimesCircle
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+  faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // Our initial node types to register with our modeler
 import {
@@ -46,8 +46,8 @@ import {
   sequenceFlow,
   startEvent,
   task,
-  textAnnotation
-} from './components/nodes'
+  textAnnotation,
+} from './components/nodes';
 
 let nodeTypes = [
   startEvent,
@@ -59,21 +59,21 @@ let nodeTypes = [
   sequenceFlow,
   textAnnotation,
   association,
-]
+];
 
 export default {
-  name: "ModelerApp",
+  name: 'ModelerApp',
   components: {
     Modeler,
     FileUpload,
     statusbar,
-    FontAwesomeIcon
+    FontAwesomeIcon,
   },
   data() {
     return {
-      statusText: "No errors detected",
+      statusText: 'No errors detected',
       statusIcon: faCheckCircle,
-      statusColor: "green"
+      statusColor: 'green',
     };
   },
   mounted() {
@@ -92,7 +92,7 @@ export default {
 
     this.$refs.modeler.loadXML(blank);
     for(var node of nodeTypes) {
-      this.$refs.modeler.registerNode(node)
+      this.$refs.modeler.registerNode(node);
     }
   },
   methods: {
@@ -113,69 +113,69 @@ export default {
         this.$refs.uploadmodal.hide();
       };
       reader.readAsText(files[0].file);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
 body,
 html {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
 }
 
 #modeler-app {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-
-  .modeler-container {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-
-  .navbar {
-    font-weight: bold;
-    height: 42px;
-    min-height: 42px;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #3397e1;
-    color: white;
-    border-bottom: 1px solid grey;
-    padding-right: 16px;
-    padding-left: 16px;
+    flex-direction: column;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
 
-    .actions {
-      button {
-        border-radius: 4px;
-        display: inline-block;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        padding-left: 8px;
-        padding-right: 8px;
-        background-color: grey;
-        color: white;
-        border-width: 1px;
-        border-color: darkgrey;
-        margin-right: 8px;
-        font-weight: bold;
-      }
+    .modeler-container {
+        flex-grow: 1;
+        overflow: hidden;
     }
-  }
+
+    .navbar {
+        font-weight: bold;
+        height: 42px;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #3397e1;
+        color: white;
+        border-bottom: 1px solid grey;
+        padding-right: 16px;
+        padding-left: 16px;
+
+        .actions {
+            button {
+                border-radius: 4px;
+                display: inline-block;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                padding-left: 8px;
+                padding-right: 8px;
+                background-color: grey;
+                color: white;
+                border-width: 1px;
+                border-color: darkgrey;
+                margin-right: 8px;
+                font-weight: bold;
+            }
+        }
+    }
 }
 </style>
