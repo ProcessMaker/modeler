@@ -44,9 +44,12 @@ export default {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
       });
-      sequenceLink.conditionExpression = moddle.create('bpmn:FormalExpression', {
-        body: '',
-      });
+
+      if (sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+        sequenceLink.conditionExpression = moddle.create('bpmn:FormalExpression', {
+          body: '',
+        });
+      }
 
       this.$emit('add-node', {
         type: 'processmaker-modeler-sequence-flow',

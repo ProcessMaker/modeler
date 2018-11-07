@@ -24,8 +24,9 @@ export default {
       // Only change if the value is different
       if (definition[key] != value[key]) {
         definition[key] = value[key];
-        definition.set('name', value.name);
-        definition.conditionExpression.set('body', value.body);
+        if (definition.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+          definition.conditionExpression.set('body', value.body);
+        }
       }
     }
     component.updateShape();
