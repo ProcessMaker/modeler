@@ -10,6 +10,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import BpmnModdle from 'bpmn-moddle';
 import  { gatewayDirectionOptions } from '../exclusiveGateway/index';
+import data from './index';
 
 
 let moddle = new BpmnModdle;
@@ -51,6 +52,7 @@ export default {
     },
     updateShape() {},
     completeLink() {
+      this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
       this.shape.attr({ wrapper: { cursor: 'default' } });
@@ -118,9 +120,6 @@ export default {
         return false;
       }
 
-      if (targetType === 'processmaker-modeler-exclusive-gateway') {
-        return this.isValidGatewayConnection();
-      }
       return true;
     },
     updateRouter() {

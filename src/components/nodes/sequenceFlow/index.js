@@ -57,14 +57,6 @@ export default {
             name: 'name',
           },
         },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Condition Type: Expression',
-            helper: 'Expression',
-            name: 'body',
-          },
-        },
       ],
     },
   ],

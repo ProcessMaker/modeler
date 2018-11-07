@@ -119,6 +119,45 @@ export default {
           items: [],
         },
       ],
+      sequenceConfig: [
+        {
+          name: 'Sequence Flow',
+          items: [
+            {
+              component: 'FormText',
+              config: {
+                label: 'Sequence Flow',
+                fontSize: '2em',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Name',
+                helper: 'The Name of the Sequence Flow',
+                name: 'name',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Expression',
+                helper: 'The Name of Expression',
+                name: 'body',
+              },
+            },
+          ],
+        },
+      ],
+
       nodes: {},
     };
   },
@@ -276,7 +315,11 @@ export default {
     },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
-      this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      if(type === 'processmaker-modeler-sequence-flow' && data.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+        this.inspectorConfig = this.sequenceConfig;
+      } else {
+        this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      }
       this.inspectorHandler = (value) => {
         this.nodeRegistry[type].inspectorHandler(value, data, component);
       };
