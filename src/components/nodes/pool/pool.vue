@@ -9,7 +9,8 @@ import crownConfig from '@/mixins/crownConfig';
 import Lane from '../poolLane';
 import { id as poolId, labelWidth, poolPadding } from './index';
 import { id as laneId } from '../poolLane';
-import laneIcon from '@/assets/lane.svg';
+import laneAboveIcon from '@/assets/lane-above.svg';
+import laneBelowIcon from '@/assets/lane-below.svg';
 import BpmnModdle from 'bpmn-moddle';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
@@ -43,11 +44,22 @@ export default {
       definition: null,
       crownConfig: [
         {
-          icon: laneIcon,
-          clickHandler: this.addLane,
+          icon: laneAboveIcon,
+          clickHandler: () => {
+            this.addLaneAbove = true;
+            this.addLane();
+          },
+        },
+        {
+          icon: laneBelowIcon,
+          clickHandler: () => {
+            this.addLaneAbove = false;
+            this.addLane();
+          },
         },
       ],
       laneSet: null,
+      addLaneAbove: false,
     };
   },
   computed: {
@@ -168,8 +180,16 @@ export default {
 
         const laneHeight = isFirstLane ? height : element.component.node.diagram.bounds.height;
         element.resize(width - labelWidth, laneHeight);
-        element.position(labelWidth, isFirstLane ? 0 : height, { parentRelative: true });
-        this.shape.resize(width, isFirstLane ? height : height + laneHeight);
+        element.position(
+          labelWidth,
+          isFirstLane
+            ? 0
+            : this.addLaneAbove ? -laneHeight : height,
+          { parentRelative: true }
+        );
+        this.shape.resize(width, isFirstLane ? height : height + laneHeight, {
+          direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
+        });
         this.updateCrownPosition();
 
         this.graph.findModelsUnderElement(element).filter(laneElement => {
