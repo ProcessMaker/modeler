@@ -138,7 +138,7 @@ export default {
         const yOffset = (buttonLength + buttonMargin) * index;
 
         button.resize(buttonLength, buttonLength);
-        button.position(x + width + buttonMargin - tx, y + yOffset + centerY - ty)
+        button.position(x + width + buttonMargin - tx, y + yOffset + centerY - ty);
       });
     },
   },

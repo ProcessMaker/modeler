@@ -452,16 +452,19 @@ export default {
         this.highlighted.unhighlight();
         this.highlighted = null;
       }
+
       if (cellView.model.component) {
         cellView.highlight();
 
         cellView.model.toFront({ deep: true });
+        this.graph.getConnectedLinks(cellView.model).forEach(link => link.toFront());
 
         if ([poolId, laneId].includes(cellView.model.component.node.type)) {
           this.graph.findModelsUnderElement(cellView).filter(element => {
             return element.component && ![poolId, laneId].includes(element.component.node.type);
           }).forEach(element => {
             element.toFront({ deep: true });
+            this.graph.getConnectedLinks(element).forEach(link => link.toFront());
           });
         }
 

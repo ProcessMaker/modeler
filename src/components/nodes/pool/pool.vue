@@ -76,6 +76,7 @@ export default {
       flowElements.splice(flowElements.indexOf(elementDefinition), 1);
 
       toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+      element.component.node.pool = toPool;
       toPool.component.addToPool(element);
     },
     addLane() {
