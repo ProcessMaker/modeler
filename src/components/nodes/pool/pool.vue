@@ -243,8 +243,46 @@ export default {
         this.shape.resize(Math.max(newWidth, width), Math.max(newHeight, height), {
           direction: `${directionHeight}-${directionWidth}`,
         });
+
         this.updateCrownPosition();
+
+        if (this.laneSet) {
+          /* Expand any lanes within the poool */
+          this.resizeLanes();
+        }
       }
+    },
+    resizeLanes() {
+      this.laneSet.get('lanes').map(lane => {
+        return this.$parent.nodes[lane.id].component.shape;
+      }).sort((shape1, shape2) => {
+        /* Sort by y position ascending */
+        return shape1.position().y - shape2.position().y;
+      }).forEach((laneShape, index, lanes) => {
+        const { width, height } = this.shape.get('size');
+        const { height: laneHeight } = laneShape.get('size');
+        const { y: laneY } = laneShape.position({ parentRelative: true });
+
+        if (index === 0) {
+          /* Expand the height of the fist lane up */
+          laneShape.resize(width - labelWidth, laneHeight + laneShape.position({ parentRelative: true }).y, {
+            direction: 'top-right',
+          });
+          laneShape.position(labelWidth, 0, { parentRelative: true });
+          return;
+        }
+
+        if (index === lanes.length - 1) {
+          /* Expand the height of the last lane down */
+          const addedHeight = height - (laneShape.position({ parentRelative: true }).y + laneHeight);
+          laneShape.resize(width - labelWidth, laneHeight + addedHeight);
+          laneShape.position(labelWidth, laneY, { parentRelative: true });
+          return;
+        }
+
+        laneShape.resize(width - labelWidth, laneHeight);
+        laneShape.position(labelWidth, laneY, { parentRelative: true });
+      });
     },
     captureChildren() {
       if (!this.$parent.processNode.get('flowElements')) {
