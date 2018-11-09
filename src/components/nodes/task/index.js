@@ -4,6 +4,8 @@ let moddle = new BpmnModdle()
 
 import component from './task.vue'
 
+export const taskHeight = 80;
+
 export default {
     id: 'processmaker-modeler-task',
     component: component,
@@ -20,7 +22,7 @@ export default {
     diagram: function () {
         return moddle.create('bpmndi:BPMNShape', {
             bounds: moddle.create('dc:Bounds', {
-                height: 80,
+                height: taskHeight,
                 width: 100
             })
         })

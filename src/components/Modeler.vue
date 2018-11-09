@@ -34,6 +34,7 @@
 import Vue from 'vue';
 import BpmnModdle from "bpmn-moddle";
 import controls from "./controls";
+import { highlightPadding } from '@/mixins/crownConfig';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -305,6 +306,9 @@ export default {
       drawGrid: true,
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
+      highlighting: {
+        default: { options: { padding: highlightPadding } },
+      },
     });
     this.paper.on("blank:pointerclick", () => {
       if (this.highlighted) {
@@ -364,42 +368,42 @@ export default {
 @import '~jointjs/dist/joint.css';
 
 .modeler {
-    position: relative;
-    width: inherit;
-    max-width: inherit;
-    height: inherit;
-    max-height: inherit;
-    overflow: hidden;
+  position: relative;
+  width: inherit;
+  max-width: inherit;
+  height: inherit;
+  max-height: inherit;
+  overflow: hidden;
 
-    .modeler-container {
-        max-width: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: row;
+  .modeler-container {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 
-        .inspector {
-            font-size: 0.75em;
-            text-align: left;
-            padding: 8px;
-            width: 320px;
-            background-color: #eeeeee;
-            border-left: 1px solid #aaaaaa;
-        }
+    .inspector {
+      font-size: 0.75em;
+      text-align: left;
+      padding: 8px;
+      width: 320px;
+      background-color: #eeeeee;
+      border-left: 1px solid #aaaaaa;
+    }
 
-        .paper-container {
-            height: 100%;
-            max-height: 100%;
-            min-height: 100%;
+    .paper-container {
+      height: 100%;
+      max-height: 100%;
+      min-height: 100%;
 
-            /*
+      /*
             width: 100%;
             height: 100%;
             min-width: 100%;
             max-height: 100%;
             */
-            overflow: hidden;
-        }
+      overflow: hidden;
     }
+  }
 }
 </style>
 
