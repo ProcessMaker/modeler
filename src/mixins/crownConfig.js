@@ -111,6 +111,10 @@ export default {
         }
       });
 
+      this.shape.listenTo(this.paper, 'element:pointerclick', () => {
+        this.updateCrownPosition();
+      });
+
       this.updateCrownPositionOnKeyDown();
     },
     updateCrownPosition() {
