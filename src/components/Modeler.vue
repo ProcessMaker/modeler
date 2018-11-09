@@ -57,7 +57,7 @@ import processInspectorConfig from './inspectors/process';
 
 import {
   VueFormRenderer,
-  renderer,
+  renderer
 } from '@processmaker/vue-form-builder';
 
 import { id as poolId } from './nodes/pool';
@@ -226,6 +226,7 @@ export default {
           }
         });
       });
+      this.$emit('parsed')
     },
     loadXML(xml) {
       this.moddle.fromXML(xml, (err, definitions) => {
@@ -483,8 +484,7 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-
-  },
+  }
 };
 </script>
 
