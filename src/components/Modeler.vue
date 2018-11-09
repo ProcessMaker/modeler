@@ -52,9 +52,8 @@ import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
 
 import {
   VueFormRenderer,
-  renderer,
-} from '@processmaker/vue-form-builder';
-
+  renderer
+} from "@processmaker/vue-form-builder";
 // Register those components
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -210,6 +209,7 @@ export default {
           }
         });
       });
+      this.$emit('parsed')
     },
     loadXML(xml) {
       const moddle = new BpmnModdle(this.extensions);
@@ -362,8 +362,7 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-
-  },
+  }
 };
 </script>
 

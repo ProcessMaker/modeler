@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" />
+      <modeler ref="modeler"   @parsed.once="addStartEvent"/>
     </div>
     <statusbar>
       {{statusText}}
@@ -35,6 +35,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 // Our initial node types to register with our modeler
 import {
@@ -94,6 +95,7 @@ export default {
     for(var node of nodeTypes) {
       this.$refs.modeler.registerNode(node);
     }
+
   },
   methods: {
     download() {
@@ -105,6 +107,19 @@ export default {
           console.log(xml);
         }
       });
+    },
+    addStartEvent() {
+      const definition = startEvent.definition()
+    const diagram = startEvent.diagram()
+
+    diagram.bounds.x = 150;
+    diagram.bounds.y = 150;
+
+    this.$refs.modeler.addNode({
+      definition,
+      diagram,
+      type: startEvent.id
+    })
     },
     handleUpload(files) {
       const reader = new FileReader();
@@ -121,61 +136,61 @@ export default {
 <style lang="scss">
 body,
 html {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
 }
 
 #modeler-app {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-
-  .modeler-container {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-
-  .navbar {
-    font-weight: bold;
-    height: 42px;
-    min-height: 42px;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #3397e1;
-    color: white;
-    border-bottom: 1px solid grey;
-    padding-right: 16px;
-    padding-left: 16px;
+    flex-direction: column;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
 
-    .actions {
-      button {
-        border-radius: 4px;
-        display: inline-block;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        padding-left: 8px;
-        padding-right: 8px;
-        background-color: grey;
-        color: white;
-        border-width: 1px;
-        border-color: darkgrey;
-        margin-right: 8px;
-        font-weight: bold;
-      }
+    .modeler-container {
+        flex-grow: 1;
+        overflow: hidden;
     }
-  }
+
+    .navbar {
+        font-weight: bold;
+        height: 42px;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #3397e1;
+        color: white;
+        border-bottom: 1px solid grey;
+        padding-right: 16px;
+        padding-left: 16px;
+
+        .actions {
+            button {
+                border-radius: 4px;
+                display: inline-block;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                padding-left: 8px;
+                padding-right: 8px;
+                background-color: grey;
+                color: white;
+                border-width: 1px;
+                border-color: darkgrey;
+                margin-right: 8px;
+                font-weight: bold;
+            }
+        }
+    }
 }
 </style>
