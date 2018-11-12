@@ -26,8 +26,8 @@
 <script>
 import Modeler from "./components/Modeler.vue";
 import statusbar from "./components/statusbar.vue";
-
 import FileUpload from "vue-upload-component";
+import FilerSaver from 'file-saver';
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -74,7 +74,7 @@ export default {
     return {
       statusText: "No errors detected",
       statusIcon: faCheckCircle,
-      statusColor: "green"
+      statusColor: "green",
     };
   },
   mounted() {
@@ -103,8 +103,8 @@ export default {
         if (err) {
           alert(err);
         } else {
-          alert(xml);
-          console.log(xml);
+          let file = new File([xml], 'bpmnProcess.xml', {type: "text/xml"});
+          FilerSaver.saveAs(file)
         }
       });
     },
