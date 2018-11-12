@@ -8,6 +8,7 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
+import pull from 'lodash/pull';
 import BpmnModdle from 'bpmn-moddle';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
@@ -250,13 +251,11 @@ export default {
     const targetNode = this.$parent.nodes[this.node.definition.targetRef.id];
 
     if (sourceNode) {
-      const outgoing = sourceNode.definition.get('outgoing');
-      outgoing.splice(outgoing.indexOf(this.node.definition), 1);
+      pull(sourceNode.definition.get('outgoing'), this.node.definition);
     }
 
     if (targetNode) {
-      const incoming = targetNode.definition.get('incoming');
-      incoming.splice(incoming.indexOf(this.node.definition), 1);
+      pull(targetNode.definition.get('incoming'), this.node.definition);
     }
 
     this.updateWaypoints.cancel();
