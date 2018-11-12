@@ -3,7 +3,6 @@ import BpmnModdle from 'bpmn-moddle';
 let moddle = new BpmnModdle();
 
 import component from './textAnnotation.vue';
-export const textAnnotationWidth = 30;
 
 export default {
   id: 'processmaker-modeler-text-annotation',

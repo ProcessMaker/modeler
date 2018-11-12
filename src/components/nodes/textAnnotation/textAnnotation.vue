@@ -8,7 +8,7 @@ import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
-import { textAnnotationHeight } from './index';
+
 
 const labelPadding = 15;
 
@@ -20,8 +20,6 @@ export default {
       shape: null,
       definition: null,
       nodeWidth: 10,
-      //Highlight adds 3 pixels of padding
-      highlightHeight: 3,
       crownConfig: [
         {
           icon: connectIcon,
@@ -55,12 +53,13 @@ export default {
       const labelHeight = shapeView.selectors.label.getBBox().height;
 
       if (labelHeight + labelPadding !== height) {
-        height = labelHeight + 15;
-        this.shape.resize(this.nodeWidth, height - this.highlightHeight);
+        height = labelHeight + labelPadding;
+        this.shape.resize(this.nodeWidth, height - highlightPadding);
       }
 
       if (textAnnotationLength === 0) {
         this.shape.resize(this.nodeWidth, bounds.height);
+        this.updateCrownPosition();
       }
       // Alert anyone that we have moved
     },
