@@ -4,15 +4,15 @@
 </template>
 
 <script>
-import joint from "jointjs";
-import connectIcon from "@/assets/connect-elements.svg";
-import crownConfig from "@/mixins/crownConfig";
+import joint from 'jointjs';
+import connectIcon from '@/assets/connect-elements.svg';
+import crownConfig from '@/mixins/crownConfig';
 import { taskHeight } from './index';
 
 const labelPadding = 15;
 
 export default {
-  props: ["graph", "node", "nodes", "id"],
+  props: ['graph', 'node', 'nodes', 'id'],
   mixins: [crownConfig],
   data() {
     return {
@@ -21,9 +21,9 @@ export default {
       crownConfig: [
         {
           icon: connectIcon,
-          clickHandler: this.addSequence
-        }
-      ]
+          clickHandler: this.addSequence,
+        },
+      ],
     };
   },
   methods: {
@@ -34,6 +34,15 @@ export default {
       let bounds = this.node.diagram.bounds;
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
+      this.shape.attr({
+        body: {},
+        label: {
+          text: joint.util.breakText(this.node.definition.get('name'), {
+            width: bounds.width,
+          }),
+          fill: 'black',
+        },
+      });
 
       const name = this.node.definition.get('name');
       let labelText = joint.util.breakText(name, { width: bounds.width });
@@ -54,7 +63,7 @@ export default {
       // Alert anyone that we have moved
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-task', this.node.definition, this)
+      this.$parent.loadInspector('processmaker-modeler-task', this.node.definition, this);
     },
   },
   mounted() {
@@ -69,20 +78,20 @@ export default {
         ry: 8,
       },
       label: {
-        text: joint.util.breakText(this.node.definition.get("name"), { width: bounds.width }),
-        fill: "black"
-      }
+        text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
+        fill: 'black',
+      },
     });
 
-    this.shape.on("change:position", (element, position) => {
+    this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
       // This is done so any flows pointing to this task are updated
       this.$emit(
-        "move",
+        'move',
         {
           x: bounds.x,
-          y: bounds.y
+          y: bounds.y,
         },
         element
       );
@@ -91,6 +100,6 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  }
+  },
 };
 </script>

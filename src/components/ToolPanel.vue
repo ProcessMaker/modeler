@@ -1,45 +1,45 @@
 <template>
-    <div class="tool-panel" ref="panel">
-        <div class="header" @mousedown="startDrag"></div>
-        <drag :transfer-data="{type: 'task'}">
-        <div class="tool">
-            <img src="../assets/toolpanel/task.svg">
-        </div>
-        </drag>
-        <div class="tool">
-            <img src="../assets/toolpanel/exclusive-gateway.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/parallel-gateway.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/inclusive-gateway.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/start-event.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/intermediate-mail-event.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/intermediate-time-event.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/end-event.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/end-email-event.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/pool.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/lane.svg">
-        </div>
-        <div class="tool">
-            <img src="../assets/toolpanel/text-annotation.svg">
-        </div>
+  <div class="tool-panel" ref="panel">
+    <div class="header" @mousedown="startDrag"></div>
+    <drag :transfer-data="{type: 'task'}">
+      <div class="tool">
+        <img src="../assets/toolpanel/task.svg">
+      </div>
+    </drag>
+    <div class="tool">
+      <img src="../assets/toolpanel/exclusive-gateway.svg">
     </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/parallel-gateway.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/inclusive-gateway.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/start-event.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/intermediate-mail-event.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/intermediate-time-event.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/end-event.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/end-email-event.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/pool.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/lane.svg">
+    </div>
+    <div class="tool">
+      <img src="../assets/toolpanel/text-annotation.svg">
+    </div>
+  </div>
 </template>
 
 <script>
@@ -50,7 +50,7 @@ export default {
     return {
       dragging: false,
       dragX: null,
-      dragY: null
+      dragY: null,
     };
   },
   methods: {
@@ -58,27 +58,27 @@ export default {
       this.dragging = true;
       this.dragX = event.clientX;
       this.dragY = event.clientY;
-      document.addEventListener("mousemove", this.drag);
-      document.addEventListener("mouseup", this.endDrag);
+      document.addEventListener('mousemove', this.drag);
+      document.addEventListener('mouseup', this.endDrag);
     },
     endDrag() {
       this.dragging = false;
       this.dragX = null;
       this.dragY = null;
-      document.removeEventListener("mousemove", this.drag);
-      document.removeEventListener("mouseup", this.endDrag);
+      document.removeEventListener('mousemove', this.drag);
+      document.removeEventListener('mouseup', this.endDrag);
     },
     drag(event) {
       if (this.dragging) {
         let panel = this.$refs.panel;
-        panel.style.top = panel.offsetTop - (this.dragY - event.clientY) + "px";
+        panel.style.top = panel.offsetTop - (this.dragY - event.clientY) + 'px';
         panel.style.left =
-          panel.offsetLeft - (this.dragX - event.clientX) + "px";
+          panel.offsetLeft - (this.dragX - event.clientX) + 'px';
         this.dragX = event.clientX;
         this.dragY = event.clientY;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
