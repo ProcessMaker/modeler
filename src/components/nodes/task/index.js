@@ -4,6 +4,8 @@ let moddle = new BpmnModdle();
 
 import component from './task.vue';
 
+export const taskHeight = 80;
+
 export default {
   id: 'processmaker-modeler-task',
   component: component,
@@ -12,20 +14,20 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/task.svg'),
   label: 'Task',
-  definition: function () {
+  definition: function() {
     return moddle.create('bpmn:Task', {
       name: 'New Task',
     });
   },
-  diagram: function () {
+  diagram: function() {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: 80,
+        height: taskHeight,
         width: 100,
       }),
     });
   },
-  inspectorHandler: function (value, definition, component) {
+  inspectorHandler: function(value, definition, component) {
     // Go through each property and rebind it to our data
     for (var key in value) {
       // Only change if the value is different
@@ -37,30 +39,29 @@ export default {
   },
   inspectorConfig: [
     {
-      name: "Task",
+      name: 'Task',
       items: [
         {
-          component: "FormText",
+          component: 'FormText',
           config: {
-            label: "Task",
-            fontSize: "2em",
+            label: 'Task',
+            fontSize: '2em',
           },
         },
         {
-          component: "FormInput",
+          component: 'FormInput',
           config: {
-            label: "Identifier",
-            helper:
-              "The id field should be unique across all elements in the diagram",
-            name: "id",
+            label: 'Identifier',
+            helper: 'The id field should be unique across all elements in the diagram',
+            name: 'id',
           },
         },
         {
-          component: "FormInput",
+          component: 'FormInput',
           config: {
-            label: "Name",
-            helper: "The Name of the Task",
-            name: "name",
+            label: 'Name',
+            helper: 'The Name of the Task',
+            name: 'name',
           },
         },
       ],

@@ -1,9 +1,10 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
-import { id as poolId } from '@/components/nodes/pool';
 
 const moddle = new BpmnModdle();
+
+export const highlightPadding = 3;
 
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements'],
@@ -24,10 +25,8 @@ export default {
   },
   methods: {
     removeShape() {
-      if (this.node.type !== poolId) {
-        const flowElements = this.processNode.get('flowElements');
-        flowElements.splice(flowElements.indexOf(this.node.definition), 1);
-      }
+      const flowElements = this.processNode.get('flowElements');
+      flowElements.splice(flowElements.indexOf(this.node.definition), 1);
 
       this.planeElements.splice(this.planeElements.indexOf(this.node.diagram), 1);
 
@@ -119,12 +118,23 @@ export default {
       this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
         if (this.buttons.includes(cellView.model)) {
           cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } });
-
-          this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
+          this.shape.listenTo(this.paper, 'cell:mouseleave', () => {
             cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } });
           });
         }
       });
+
+      const shapeView = this.shape.findView(this.paper);
+
+      this.shape.on('change:size', () => {
+        if (this.highlighted) {
+          /* Ensure the highlight box expands to fit element */
+          shapeView.unhighlight();
+          shapeView.highlight();
+        }
+      });
+
+      this.updateCrownPositionOnKeyDown();
     },
     updateCrownPosition() {
       const buttonLength = 25;
@@ -141,6 +151,11 @@ export default {
         button.position(x + width + buttonMargin - tx, y + yOffset + centerY - ty);
       });
     },
+    updateCrownPositionOnKeyDown() {
+      document.addEventListener('keydown', () => {
+        this.updateCrownPosition();
+      });
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -154,6 +169,17 @@ export default {
   },
   destroyed() {
     this.graph.getConnectedLinks(this.shape).forEach(shape => shape.component.removeShape());
+
+    const { incoming, outgoing } = this.node.definition;
+
+    if (incoming) {
+      incoming.forEach(link => this.$delete(this.$parent.nodes, link.id));
+    }
+
+    if (outgoing) {
+      outgoing.forEach(link => this.$delete(this.$parent.nodes, link.id));
+    }
+
     this.shape.stopListening();
     this.shape.remove();
   },

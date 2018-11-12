@@ -12,27 +12,25 @@
       <div class="inspector">
         <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
       </div>
+    </div>
 
-    </div>
-    <div class="definitions-container" v-if="definitions">
-      <component
-        v-for="(node, id) in nodes"
-        :is="node.type"
-        :key="id"
-        :graph="graph"
-        :paper="paper"
-        :node="node"
-        :id="id"
-        :highlighted="highlighted && highlighted.model.component === node.component"
-        :collaboration="collaboration"
-        :process-node="processNode"
-        :processes="processes"
-        :plane-elements="planeElements"
-        @add-node="addNode"
-        @set-cursor="cursor = $event"
-        @set-pool-target="poolTarget = $event"
-      />
-    </div>
+    <component
+      v-for="(node, id) in nodes"
+      :is="node.type"
+      :key="id"
+      :graph="graph"
+      :paper="paper"
+      :node="node"
+      :id="id"
+      :highlighted="highlighted && highlighted.model.component === node.component"
+      :collaboration="collaboration"
+      :process-node="processNode"
+      :processes="processes"
+      :plane-elements="planeElements"
+      @add-node="addNode"
+      @set-cursor="cursor = $event"
+      @set-pool-target="poolTarget = $event"
+    />
   </div>
 </template>
 
@@ -40,6 +38,7 @@
 import Vue from 'vue';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
+import { highlightPadding } from '@/mixins/crownConfig';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -57,7 +56,7 @@ import processInspectorConfig from './inspectors/process';
 
 import {
   VueFormRenderer,
-  renderer
+  renderer,
 } from '@processmaker/vue-form-builder';
 
 import { id as poolId } from './nodes/pool';
@@ -169,7 +168,9 @@ export default {
     registerNode(node) {
       this.inspectorConfigurations[node.id] = node.inspectorConfig;
       this.nodeRegistry[node.id] = node;
+
       Vue.component(node.id, node.component);
+
       this.bpmnTypeMap[node.bpmnType] = node.id;
 
       if(node.control) {
@@ -226,7 +227,7 @@ export default {
           }
         });
       });
-      this.$emit('parsed')
+      this.$emit('parsed');
     },
     loadXML(xml) {
       this.moddle.fromXML(xml, (err, definitions) => {
@@ -420,6 +421,9 @@ export default {
       drawGrid: true,
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
+      highlighting: {
+        default: { options: { padding: highlightPadding } },
+      },
     });
     this.paper.on('blank:pointerclick', () => {
       if (this.highlighted) {
@@ -484,7 +488,7 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-  }
+  },
 };
 </script>
 

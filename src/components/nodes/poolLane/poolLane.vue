@@ -7,7 +7,7 @@
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import { id as laneId } from './index';
-import { id as poolId, labelWidth } from '../pool';
+import { labelWidth } from '../pool';
 
 export default {
   props: ['graph', 'node', 'nodes', 'id', 'collaboration'],

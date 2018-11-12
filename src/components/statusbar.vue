@@ -1,22 +1,21 @@
 <template>
-    <div class="statusbar">
-        <div>
-            <slot name="secondary"></slot>
-        </div>
-        <div>
-            <slot></slot>
-        </div>
+  <div class="statusbar">
+    <div>
+      <slot name="secondary"></slot>
     </div>
+    <div>
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-    
-}
+
+};
 </script>
 
 <style lang="scss" scoped>
-
 .statusbar {
     display: flex;
     justify-content: space-between;
@@ -29,7 +28,6 @@ export default {
     color: #555555;
     font-weight: normal;
 }
-
 </style>
 
 
