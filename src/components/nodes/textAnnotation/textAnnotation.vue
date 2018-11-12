@@ -7,6 +7,10 @@
 import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
+import { highlightPadding } from '@/mixins/crownConfig';
+import { textAnnotationHeight } from './index';
+
+const labelPadding = 15;
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -31,13 +35,12 @@ export default {
       return this.shape;
     },
     updateShape() {
-      const { height } = this.shape.findView(this.paper).getBBox();
-      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
+      let { height } = this.shape.findView(this.paper).getBBox();
       const bounds = this.node.diagram.bounds;
       const textAnnotationLength = this.node.definition.get('text').length;
+      let refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
 
       this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(this.nodeWidth, height - this.highlightHeight);
       this.shape.attr({
         body: { refPoints  },
         label: {
@@ -47,6 +50,14 @@ export default {
           fill: 'black',
         },
       });
+
+      const shapeView = this.shape.findView(this.paper);
+      const labelHeight = shapeView.selectors.label.getBBox().height;
+
+      if (labelHeight + labelPadding !== height) {
+        height = labelHeight + 15;
+        this.shape.resize(this.nodeWidth, height - this.highlightHeight);
+      }
 
       if (textAnnotationLength === 0) {
         this.shape.resize(this.nodeWidth, bounds.height);

@@ -34,6 +34,7 @@
 import Vue from 'vue';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
+import { highlightPadding } from '@/mixins/crownConfig';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -305,6 +306,9 @@ export default {
       drawGrid: true,
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
+      highlighting: {
+        default: { options: { padding: highlightPadding } },
+      },
     });
     this.paper.on('blank:pointerclick', () => {
       if (this.highlighted) {

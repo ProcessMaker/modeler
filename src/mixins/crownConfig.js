@@ -4,6 +4,8 @@ import BpmnModdle from 'bpmn-moddle';
 
 let moddle = new BpmnModdle();
 
+export const highlightPadding = 3;
+
 export default {
   props: ['highlighted', 'paper'],
   data() {
