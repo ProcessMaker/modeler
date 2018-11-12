@@ -28,7 +28,7 @@ export default {
       return this.shape;
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-startEvent', this.node.definition, this);
+      this.$parent.loadInspector('processmaker-modeler-start-event', this.node.definition, this);
     },
     updateShape() {
       let bounds = this.node.diagram.bounds;
@@ -61,9 +61,9 @@ export default {
       },
     });
     this.shape.addTo(this.graph);
+    this.$parent.nodes[this.id].component = this;
     this.shape.component = this;
 
-    this.$parent.nodes[this.id].component = this;
     this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
