@@ -360,15 +360,10 @@ export default {
           element.component.node.type !== laneId &&
           element.getParentCell() && element.getParentCell().component === this
         ) {
-          if (!draggingElement) {
-            draggingElement = element;
-            draggingElement.toFront({ deep: true });
-          }
-
           /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
 
           const poolOrLane = this.graph.findModelsUnderElement(element, { searchBy: 'center' }).filter(model => {
-            return [poolId, laneId].includes(model.component.node.type);
+            return model.component && [poolId, laneId].includes(model.component.node.type);
           })[0];
 
           if (!poolOrLane) {
@@ -385,6 +380,16 @@ export default {
               ? poolOrLane
               : null;
           }
+        }
+      });
+
+      this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
+        if (
+          (!draggingElement || draggingElement !== cellView.model) &&
+          cellView.model.component.node.type !== poolId
+        ) {
+          draggingElement = cellView.model;
+          draggingElement.toFront({ deep: true });
         }
       });
 
