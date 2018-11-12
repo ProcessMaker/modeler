@@ -1,8 +1,18 @@
 <template>
     <div class="controls">
+        <label>
+            Filter controls
+            <input class="filter-input" type="text" v-model="filterQuery">
+        </label>
+
         <div v-for="(items, category) in controls" :key="category">
             <h2>{{category}}</h2>
-            <drag v-for="(control, index) in items" :key="index" :transfer-data="{type: control.type}">
+            <drag
+                v-for="(control, index) in items"
+                :key="index"
+                :transfer-data="{type: control.type}"
+                v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+            >
                 <div class="tool">
                     <div class="img-container">
                         <img :src="control.icon">
@@ -23,7 +33,12 @@ export default {
   components: {
       Drag,
       Drop
-  }
+  },
+  data() {
+      return {
+          filterQuery: '',
+      };
+  },
 };
 </script>
 
@@ -35,6 +50,10 @@ export default {
   text-align: left;
   overflow-y: auto;
   overflow-x: auto;
+
+  .filter-input {
+      width: 100%;
+  }
 
   h2 {
       font-size: 1.1em;
