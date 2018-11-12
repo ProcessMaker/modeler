@@ -1,95 +1,77 @@
 {
-  "name": "@processmaker/modeler",
-  "version": "0.1.6",
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/index.js",
-    "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
-  },
-  "main": "./dist/modeler.common.js",
-  "files": [
-    "dist/*",
-    "src/*",
-    "public/*",
-    "*.json",
-    "*.js",
-    "blank.bpmn"
-  ],
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.6",
-    "@fortawesome/free-solid-svg-icons": "^5.4.1",
-    "@fortawesome/vue-fontawesome": "^0.1.1",
-    "@processmaker/vue-form-builder": "^0.3.1",
-    "@processmaker/vue-form-elements": "^0.2.3",
-    "bootstrap-vue": "^2.0.0-rc.11",
-    "bpmn-moddle": "^5.1.5",
-    "i": "^0.3.6",
-    "jointjs": "^2.1.4",
-    "lodash": "^4.17.11",
-    "npm": "^6.4.1",
-    "vue": "^2.5.17",
-    "vue-drag-drop": "^1.1.4",
-    "vue-upload-component": "^2.8.14"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-eslint": "^3.0.5",
-    "@vue/cli-plugin-unit-jest": "^3.0.5",
-    "@vue/cli-service": "^3.0.5",
-    "@vue/test-utils": "^1.0.0-beta.20",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^23.0.1",
-    "node-sass": "^4.9.4",
-    "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.17"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
+    "name": "@processmaker/modeler",
+    "version": "0.1.6",
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/index.js",
+        "lint": "vue-cli-service lint",
+        "test:unit": "vue-cli-service test:unit"
     },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+    "main": "./dist/modeler.common.js",
+    "files": [
+        "dist/*",
+        "src/*",
+        "public/*",
+        "*.json",
+        "*.js",
+        "blank.bpmn"
     ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
+    "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^1.2.6",
+        "@fortawesome/free-solid-svg-icons": "^5.4.1",
+        "@fortawesome/vue-fontawesome": "^0.1.1",
+        "@processmaker/vue-form-builder": "^0.3.1",
+        "@processmaker/vue-form-elements": "^0.2.3",
+        "bootstrap-vue": "^2.0.0-rc.11",
+        "bpmn-moddle": "^5.1.5",
+        "file-saver": "^2.0.0-rc.4",
+        "i": "^0.3.6",
+        "jointjs": "^2.1.4",
+        "lodash": "^4.17.11",
+        "npm": "^6.4.1",
+        "vue": "^2.5.17",
+        "vue-drag-drop": "^1.1.4",
+        "vue-upload-component": "^2.8.14"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.0.5",
+        "@vue/cli-plugin-eslint": "^3.0.5",
+        "@vue/cli-plugin-unit-jest": "^3.0.5",
+        "@vue/cli-service": "^3.0.5",
+        "@vue/test-utils": "^1.0.0-beta.20",
+        "babel-core": "7.0.0-bridge.0",
+        "babel-jest": "^23.0.1",
+        "node-sass": "^4.9.4",
+        "sass-loader": "^7.0.1",
+        "vue-template-compiler": "^2.5.17"
+    },
+    "browserslist": [
+        "> 2%",
+        "last 2 versions",
+        "not ie <= 8"
+    ],
+    "jest": {
+        "moduleFileExtensions": [
+            "js",
+            "jsx",
+            "json",
+            "vue"
+        ],
+        "transform": {
+            "^.+\\.vue$": "vue-jest",
+            ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+            "^.+\\.jsx?$": "babel-jest"
+        },
+        "moduleNameMapper": {
+            "^@/(.*)$": "<rootDir>/src/$1"
+        },
+        "snapshotSerializers": [
+            "jest-serializer-vue"
+        ],
+        "testMatch": [
+            "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+        ],
+        "testURL": "http://localhost/"
     }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 2%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testMatch": [
-      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
-    ],
-    "testURL": "http://localhost/"
-  }
 }

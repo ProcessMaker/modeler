@@ -1,27 +1,27 @@
 <template>
-    <div class="controls">
-        <label>
-            Filter controls
-            <input class="filter-input" type="text" v-model="filterQuery">
-        </label>
+  <div class="controls">
+    <label>
+      Filter controls
+      <input class="filter-input" type="text" v-model="filterQuery">
+    </label>
 
-        <div v-for="(items, category) in controls" :key="category">
-            <h2>{{category}}</h2>
-            <drag
-                v-for="(control, index) in items"
-                :key="index"
-                :transfer-data="{type: control.type}"
-                v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
-            >
-                <div class="tool">
-                    <div class="img-container">
-                        <img :src="control.icon">
-                    </div>
-                    <div>{{control.label}}</div>
-                </div>
-            </drag>
+    <div v-for="(items, category) in controls" :key="category">
+      <h2>{{category}}</h2>
+      <drag
+        v-for="(control, index) in items"
+        :key="index"
+        :transfer-data="{type: control.type}"
+        v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+      >
+        <div class="tool">
+          <div class="img-container">
+            <img :src="control.icon">
+          </div>
+          <div>{{control.label}}</div>
         </div>
+      </drag>
     </div>
+  </div>
 </template>
 
 
@@ -29,15 +29,15 @@
 import { Drag, Drop } from 'vue-drag-drop';
 
 export default {
-  props: ["controls"],
+  props: ['controls'],
   components: {
-      Drag,
-      Drop
+    Drag,
+    Drop,
   },
   data() {
-      return {
-          filterQuery: '',
-      };
+    return {
+      filterQuery: '',
+    };
   },
 };
 </script>
@@ -52,41 +52,41 @@ export default {
   overflow-x: auto;
 
   .filter-input {
-      width: 100%;
+    width: 100%;
   }
 
   h2 {
-      font-size: 1.1em;
-      background-color: #aaaaaa;
-      border-top: 1px solid #999999;
-      border-bottom: 1px solid #999999;
-      padding-left: 8px;
-      margin-bottom: 0px;
-      font-size: .75em;
-      font-weight: bold;
-      padding-bottom: 8px;
-      padding-top: 8px;
+    font-size: 1.1em;
+    background-color: #aaaaaa;
+    border-top: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    padding-left: 8px;
+    margin-bottom: 0px;
+    font-size: 0.75em;
+    font-weight: bold;
+    padding-bottom: 8px;
+    padding-top: 8px;
   }
 
   .tool {
-      display: flex;
-      align-items: center;
-      font-size: .75em;
-      padding: 4px;
-      font-weight: bold;
-      color: #333333;
+    display: flex;
+    align-items: center;
+    font-size: 0.75em;
+    padding: 4px;
+    font-weight: bold;
+    color: #333333;
 
-      &:hover {
-          background-color: #3397e1;
-          cursor: pointer;
-          color: white;
-      }
+    &:hover {
+      background-color: #3397e1;
+      cursor: pointer;
+      color: white;
+    }
 
-      .img-container {
-          margin-right: 8px;
-          width: 32px;
-          text-align: center;
-      }
+    .img-container {
+      margin-right: 8px;
+      width: 32px;
+      text-align: center;
+    }
   }
 }
 </style>
