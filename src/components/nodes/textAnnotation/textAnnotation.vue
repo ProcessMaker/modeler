@@ -4,13 +4,15 @@
 </template>
 
 <script>
-import joint from "jointjs";
+import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
 
+const labelPadding = 15;
+
 export default {
-  props: ["graph", "node", "id"],
+  props: ['graph', 'node', 'id'],
   mixins: [crownConfig],
   data() {
     return {
@@ -30,26 +32,37 @@ export default {
       return this.shape;
     },
     updateShape() {
-      let bounds = this.node.diagram.bounds;
-      const { height } = this.shape.findView(this.paper).getBBox();
+      let { height } = this.shape.findView(this.paper).getBBox();
+      let refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
+      const bounds = this.node.diagram.bounds;
+      const textAnnotationLength = this.node.definition.get('text').length;
 
       this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(this.nodeWidth, height - highlightPadding);
-      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
-
       this.shape.attr({
         body: { refPoints  },
         label: {
-          text: joint.util.breakText(this.node.definition.get("text"), {
+          text: joint.util.breakText(this.node.definition.get('text'), {
             width: bounds.width,
           }),
-          fill: "black"
-        }
+          fill: 'black',
+        },
       });
-      // Alert anyone that we have moved
+
+      const shapeView = this.shape.findView(this.paper);
+      const labelHeight = shapeView.selectors.label.getBBox().height;
+
+      if (labelHeight + labelPadding !== height) {
+        height = labelHeight + labelPadding;
+        this.shape.resize(this.nodeWidth, height - highlightPadding);
+      }
+
+      if (textAnnotationLength === 0) {
+        this.shape.resize(this.nodeWidth, bounds.height);
+        this.updateCrownPosition();
+      }
     },
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-text-annotation', this.node.definition, this)
+      this.$parent.loadInspector('processmaker-modeler-text-annotation', this.node.definition, this);
     },
   },
   mounted() {
@@ -59,13 +72,13 @@ export default {
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
       body: {
-        refPoints: '25 10 3 10 3 3 25 3'
+        refPoints: '25 10 3 10 3 3 25 3',
       },
       label: {
-        text: joint.util.breakText(this.node.definition.get("text"), {
+        text: joint.util.breakText(this.node.definition.get('text'), {
           width: bounds.width,
         }),
-        fill: "black",
+        fill: 'black',
         yAlignment: 'left',
         xAlignment: 'left',
         refX: '5',
@@ -74,15 +87,15 @@ export default {
     });
 
 
-    this.shape.on("change:position", (element, position) => {
+    this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
       this.node.diagram.bounds.y = position.y;
       // This is done so any flows pointing to this task are updated
       this.$emit(
-        "move",
+        'move',
         {
           x: bounds.x,
-          y: bounds.y
+          y: bounds.y,
         },
         element
       );
@@ -91,7 +104,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
-  }
+  },
 };
 </script>
 

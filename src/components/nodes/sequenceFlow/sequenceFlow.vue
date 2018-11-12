@@ -1,21 +1,21 @@
 <template>
-    <div>
-    </div>
+  <div>
+  </div>
 </template>
 
 <script>
-import joint from "jointjs";
+import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import BpmnModdle from 'bpmn-moddle'
-import  { gatewayDirectionOptions } from '../exclusiveGateway/index'
+import BpmnModdle from 'bpmn-moddle';
+import  { gatewayDirectionOptions } from '../exclusiveGateway/index';
 
 
 let moddle = new BpmnModdle;
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ['graph', 'node', 'id'],
   mixins: [crownConfig],
   data() {
     return {
@@ -42,11 +42,11 @@ export default {
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
-    }
+    },
   },
   methods: {
     handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this)
+      this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this);
     },
     updateShape() {},
     completeLink() {
@@ -68,8 +68,8 @@ export default {
         body: { fill: `${this.defaultNodeColor}`, cursor: 'move' },
         label: { cursor: 'move' },
 
-        ".body": { fill: `${this.defaultNodeColor}`, cursor: 'move' },
-        ".label": { cursor: 'move' },
+        '.body': { fill: `${this.defaultNodeColor}`, cursor: 'move' },
+        '.label': { cursor: 'move' },
       });
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
@@ -98,8 +98,8 @@ export default {
       target.attr({
         body: { fill , cursor },
         label: { cursor },
-        ".body": { fill, cursor },
-        ".label": { cursor },
+        '.body': { fill, cursor },
+        '.label': { cursor },
       });
     },
     updateWaypoints() {
@@ -154,7 +154,7 @@ export default {
       });
 
       this.updateRouter();
-      this.nodeState(this.validNodeColor, 'default')
+      this.nodeState(this.validNodeColor, 'default');
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
 
@@ -181,9 +181,9 @@ export default {
   watch: {
     target( target , previousTarget ) {
       if (previousTarget && previousTarget !== target ) {
-        this.nodeState(this.defaultNodeColor, 'default', previousTarget )
+        this.nodeState(this.defaultNodeColor, 'default', previousTarget );
       }
-    }
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({
@@ -236,7 +236,7 @@ export default {
   },
   destroyed() {
     this.updateWaypoints.cancel();
-  }
+  },
 };
 </script>
 

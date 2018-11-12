@@ -1,19 +1,19 @@
 <template>
-    <div>
-    </div>
+  <div>
+  </div>
 </template>
 
 <script>
-import joint from "jointjs";
+import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import BpmnModdle from 'bpmn-moddle'
+import BpmnModdle from 'bpmn-moddle';
 
 let moddle = new BpmnModdle;
 
 export default {
-  props: ["graph", "node", "id"],
+  props: ['graph', 'node', 'id'],
   mixins: [crownConfig],
   data() {
     return {
@@ -30,12 +30,12 @@ export default {
           'processmaker-modeler-parallel-gateway',
         ],
       },
-  };
+    };
   },
   computed: {
     targetType() {
       return this.targetShape && this.targetShape.component.node.type;
-    }
+    },
   },
   methods: {
     handleClick() {
@@ -122,22 +122,22 @@ export default {
     this.paper.setInteractivity(false);
     this.shape = new joint.shapes.standard.Link({ router: { name: 'normal' } });
     this.shape.attr({
-        wrapper: {
-          cursor: 'not-allowed'
+      wrapper: {
+        cursor: 'not-allowed',
+      },
+      line: {
+        stroke: 'black',
+        strokeWidth: '4',
+        strokeLinecap: 'round',
+        strokeDasharray: '1, 8',
+        strokeDashoffset: '5',
+        targetMarker: {
+          'type': 'rect',
+          'width': 1,
+          'height': 1,
+          'stroke': 'none',
         },
-        line: {
-          stroke: 'black',
-          strokeWidth: '4',
-          strokeLinecap: 'round',
-          strokeDasharray: '1, 8',
-          strokeDashoffset: '5',
-          targetMarker: {
-                'type': 'rect',
-                'width': 1,
-                'height': 1,
-                'stroke': 'none'
-            }
-        }
+      },
     });
     this.shape.source(this.targetShape);
     this.shape.target(sourcePoint);
@@ -152,7 +152,7 @@ export default {
   },
   destroyed() {
     this.updateWaypoints.cancel();
-  }
+  },
 };
 </script>
 
