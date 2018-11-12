@@ -113,8 +113,14 @@ export default {
         }
       });
 
-      this.shape.listenTo(this.paper, 'element:pointerclick', () => {
-        this.updateCrownPosition();
+      const shapeView = this.shape.findView(this.paper);
+
+      this.shape.on('change:size', () => {
+        if (this.highlighted) {
+          /* Ensure the highlight box expands to fit element */
+          shapeView.unhighlight();
+          shapeView.highlight();
+        }
       });
 
       this.updateCrownPositionOnKeyDown();

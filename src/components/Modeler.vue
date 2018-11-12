@@ -209,6 +209,7 @@ export default {
           }
         });
       });
+      this.$emit('parsed');
     },
     loadXML(xml) {
       const moddle = new BpmnModdle(this.extensions);
@@ -360,7 +361,6 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-
   },
 };
 </script>

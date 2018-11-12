@@ -9,7 +9,8 @@ module.exports = {
         'comma-dangle': ['error', 'always-multiline'],
         indent: ['error', 2],
         'vue/html-indent': 'error',
-        quotes: ['error', 'single']
+        quotes: ['error', 'single'],
+        'no-debugger': 'off'
     },
     parserOptions: {
         parser: 'babel-eslint'

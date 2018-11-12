@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" />
+      <modeler ref="modeler"   @parsed.once="addStartEvent"/>
     </div>
     <statusbar>
       {{statusText}}
@@ -35,6 +35,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 // Our initial node types to register with our modeler
 import {
@@ -94,6 +95,7 @@ export default {
     for(var node of nodeTypes) {
       this.$refs.modeler.registerNode(node);
     }
+
   },
   methods: {
     download() {
@@ -105,6 +107,19 @@ export default {
           console.log(xml);
         }
       });
+    },
+    addStartEvent() {
+      const definition = startEvent.definition()
+    const diagram = startEvent.diagram()
+
+    diagram.bounds.x = 150;
+    diagram.bounds.y = 150;
+
+    this.$refs.modeler.addNode({
+      definition,
+      diagram,
+      type: startEvent.id
+    })
     },
     handleUpload(files) {
       const reader = new FileReader();

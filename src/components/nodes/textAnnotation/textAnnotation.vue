@@ -9,7 +9,6 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
 
-
 const labelPadding = 15;
 
 export default {
@@ -34,9 +33,9 @@ export default {
     },
     updateShape() {
       let { height } = this.shape.findView(this.paper).getBBox();
+      let refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
       const textAnnotationLength = this.node.definition.get('text').length;
-      let refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
 
       this.shape.position(bounds.x, bounds.y);
       this.shape.attr({
@@ -61,7 +60,6 @@ export default {
         this.shape.resize(this.nodeWidth, bounds.height);
         this.updateCrownPosition();
       }
-      // Alert anyone that we have moved
     },
     handleClick() {
       this.$parent.loadInspector('processmaker-modeler-text-annotation', this.node.definition, this);

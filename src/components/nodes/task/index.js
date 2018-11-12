@@ -4,6 +4,8 @@ let moddle = new BpmnModdle();
 
 import component from './task.vue';
 
+export const taskHeight = 80;
+
 export default {
   id: 'processmaker-modeler-task',
   component: component,
