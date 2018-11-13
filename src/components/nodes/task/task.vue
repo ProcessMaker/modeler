@@ -7,6 +7,9 @@
 import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
+import { taskHeight } from './index';
+
+const labelPadding = 15;
 
 export default {
   props: ['graph', 'node', 'nodes', 'id'],
@@ -40,6 +43,23 @@ export default {
           fill: 'black',
         },
       });
+
+      const name = this.node.definition.get('name');
+      let labelText = joint.util.breakText(name, { width: bounds.width });
+
+      /* Update shape height if label text overflows */
+
+      this.shape.attr('label/text', labelText);
+
+      const shapeView = this.shape.findView(this.paper);
+      const labelHeight = shapeView.selectors.label.getBBox().height;
+      const { height } = this.shape.size();
+
+      if (labelHeight + labelPadding !== height) {
+        bounds.height = Math.max(labelHeight + 15, taskHeight);
+        this.shape.resize(bounds.width, bounds.height);
+      }
+
       // Alert anyone that we have moved
     },
     handleClick() {
@@ -58,9 +78,7 @@ export default {
         ry: 8,
       },
       label: {
-        text: joint.util.breakText(this.node.definition.get('name'), {
-          width: bounds.width,
-        }),
+        text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
         fill: 'black',
       },
     });

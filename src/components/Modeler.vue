@@ -34,6 +34,7 @@
 import Vue from 'vue';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
+import { highlightPadding } from '@/mixins/crownConfig';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -52,8 +53,9 @@ import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
 
 import {
   VueFormRenderer,
-  renderer
-} from "@processmaker/vue-form-builder";
+  renderer,
+} from '@processmaker/vue-form-builder';
+
 // Register those components
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -209,7 +211,7 @@ export default {
           }
         });
       });
-      this.$emit('parsed')
+      this.$emit('parsed');
     },
     loadXML(xml) {
       const moddle = new BpmnModdle(this.extensions);
@@ -311,6 +313,9 @@ export default {
       drawGrid: true,
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
+      highlighting: {
+        default: { options: { padding: highlightPadding } },
+      },
     });
     this.paper.on('blank:pointerclick', () => {
       if (this.highlighted) {
@@ -362,7 +367,7 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-  }
+  },
 };
 </script>
 

@@ -26,8 +26,8 @@
 <script>
 import Modeler from './components/Modeler.vue';
 import statusbar from './components/statusbar.vue';
-
 import FileUpload from 'vue-upload-component';
+import FilerSaver from 'file-saver';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -103,23 +103,23 @@ export default {
         if (err) {
           alert(err);
         } else {
-          alert(xml);
-          console.log(xml);
+          let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
+          FilerSaver.saveAs(file);
         }
       });
     },
     addStartEvent() {
-      const definition = startEvent.definition()
-    const diagram = startEvent.diagram()
+      const definition = startEvent.definition();
+      const diagram = startEvent.diagram();
 
-    diagram.bounds.x = 150;
-    diagram.bounds.y = 150;
+      diagram.bounds.x = 150;
+      diagram.bounds.y = 150;
 
-    this.$refs.modeler.addNode({
-      definition,
-      diagram,
-      type: startEvent.id
-    })
+      this.$refs.modeler.addNode({
+        definition,
+        diagram,
+        type: startEvent.id,
+      });
     },
     handleUpload(files) {
       const reader = new FileReader();

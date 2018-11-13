@@ -25,6 +25,7 @@
         "@processmaker/vue-form-elements": "^0.2.3",
         "bootstrap-vue": "^2.0.0-rc.11",
         "bpmn-moddle": "^5.1.5",
+        "file-saver": "^2.0.0-rc.4",
         "i": "^0.3.6",
         "jointjs": "^2.1.4",
         "lodash": "^4.17.11",
@@ -44,11 +45,6 @@
         "node-sass": "^4.9.4",
         "sass-loader": "^7.0.1",
         "vue-template-compiler": "^2.5.17"
-    },
-    "postcss": {
-        "plugins": {
-            "autoprefixer": {}
-        }
     },
     "browserslist": [
         "> 2%",
