@@ -385,7 +385,7 @@ export default {
       this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
-          cellView.model.component.node.type !== poolId
+          cellView.model.component && cellView.model.component.node.type !== poolId
         ) {
           draggingElement = cellView.model;
           draggingElement.toFront({ deep: true });
