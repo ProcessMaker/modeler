@@ -233,6 +233,7 @@ export default {
       this.$emit('parsed');
     },
     loadXML(xml) {
+      this.nodes = {};
       this.moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
