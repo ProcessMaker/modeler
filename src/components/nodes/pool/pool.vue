@@ -131,6 +131,7 @@ export default {
       }
 
       this.expandToFixElement(element);
+      console.log('Add Pool');
     },
     getShape() {
       return this.shape;
@@ -382,7 +383,7 @@ export default {
       this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
-          cellView.model.component && cellView.model.component.node.type !== poolId
+          cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
         ) {
           draggingElement = cellView.model;
           draggingElement.toFront({ deep: true });
@@ -402,6 +403,7 @@ export default {
           /* Remove the shape from its current pool */
           this.moveElement(draggingElement, newPoolOrLane);
         } else {
+          console.log('Drag Pool');
           this.expandToFixElement(draggingElement);
         }
 
