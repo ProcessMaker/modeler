@@ -1,21 +1,19 @@
 <template>
   <div class="modeler">
     <div class="modeler-container">
-      <controls :controls="controls">
+      <controls :controls="controls" />
 
-      </controls>
-      <div ref="paper-container" class="paper-container">
-        <drop @drop="handleDrop">
-          <div class="paper">
-          </div>
+      <div ref="paper-container" class="paper-container" :class="cursor">
+        <drop @drop="handleDrop" @dragover="validateDropTarget">
+          <div ref="paper" />
         </drop>
       </div>
 
       <div class="inspector">
         <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
       </div>
-
     </div>
+
     <component
       v-for="(node, id) in nodes"
       :is="node.type"
@@ -25,7 +23,13 @@
       :node="node"
       :id="id"
       :highlighted="highlighted && highlighted.model.component === node.component"
+      :collaboration="collaboration"
+      :process-node="processNode"
+      :processes="processes"
+      :plane-elements="planeElements"
       @add-node="addNode"
+      @set-cursor="cursor = $event"
+      @set-pool-target="poolTarget = $event"
     />
   </div>
 </template>
@@ -55,6 +59,9 @@ import {
   renderer,
 } from '@processmaker/vue-form-builder';
 
+import { id as poolId } from './nodes/pool';
+import { id as laneId } from './nodes/poolLane/';
+
 // Register those components
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -62,11 +69,9 @@ Vue.component('FormSelect', FormSelect);
 Vue.component('FormTextArea', FormTextArea);
 Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
-
 Vue.component('VueFormRenderer', VueFormRenderer);
 
-
-let version = '1.0';
+const version = '1.0';
 
 if (!window.joint) {
   window.joint = require('jointjs');
@@ -121,6 +126,13 @@ export default {
         },
       ],
       nodes: {},
+      collaboration: null,
+      moddle: null,
+      dragPoint: { x: null, y: null },
+      allowDrop: true,
+      poolTarget: null,
+      processes: [],
+      cursor: null,
     };
   },
   watch: {
@@ -156,13 +168,17 @@ export default {
     registerNode(node) {
       this.inspectorConfigurations[node.id] = node.inspectorConfig;
       this.nodeRegistry[node.id] = node;
+
       Vue.component(node.id, node.component);
+
       this.bpmnTypeMap[node.bpmnType] = node.id;
+
       if(node.control) {
         // Register the control for our control palette
-        if(typeof this.controls[node.category] == 'undefined') {
+        if (!this.controls[node.category]) {
           this.$set(this.controls, node.category, []);
         }
+
         this.controls[node.category].push({
           type: node.id,
           icon: node.icon,
@@ -175,6 +191,7 @@ export default {
       // get the top level process objects
       // All root elements are bpmn:process types
       this.definitions.rootElements.forEach(process => {
+        this.processes.push(process);
         this.processNode = process;
         this.inspectorConfig = this.inspectors['process'];
         this.inspectorNode = this.processNode;
@@ -197,7 +214,8 @@ export default {
 
       // Okay, now let's get the diagrams
       this.definitions.diagrams.forEach(diagram => {
-        this.planeElements = diagram.plane.get('planeElement');
+        this.plane = diagram.plane;
+        this.planeElements = this.plane.get('planeElement');
 
         this.planeElements.forEach(diagramElement => {
           if (this.nodes[diagramElement.bpmnElement.id]) {
@@ -212,8 +230,7 @@ export default {
       this.$emit('parsed');
     },
     loadXML(xml) {
-      const moddle = new BpmnModdle(this.extensions);
-      moddle.fromXML(xml, (err, definitions) => {
+      this.moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
           definitions.exporter = 'ProcessMaker Modeler';
@@ -224,8 +241,7 @@ export default {
       });
     },
     toXML(cb) {
-      let moddle = new BpmnModdle(this.extensions);
-      moddle.toXML(this.definitions, cb);
+      this.moddle.toXML(this.definitions, cb);
     },
 
     handleCanvasMove() {
@@ -233,34 +249,89 @@ export default {
     },
 
     handleDrop(transferData, event) {
-      let type = transferData.type;
+      if (!this.allowDrop) {
+        return;
+      }
+
+      const type = transferData.type;
+
       // Add to our processNode
-      let definition = this.nodeRegistry[type].definition();
+      const definition = this.nodeRegistry[type].definition();
 
       // Now, let's modify planeElement
-      let diagram = this.nodeRegistry[type].diagram();
-      // Handle transform
+      const diagram = this.nodeRegistry[type].diagram();
 
+      // Handle transform
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
       diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
-      this.addNode({
-        type: transferData.type,
-        definition,
-        diagram,
-      });
+      this.addNode({ type, definition, diagram });
     },
     addNode({ type, definition, diagram }) {
+      /*
+       * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
+       * if one exists.
+       *
+       * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
+       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
+       *
+       * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
+      */
+      if (type === poolId) {
+        if (!this.collaboration) {
+          this.collaboration = this.moddle.create('bpmn:Collaboration');
+          this.definitions.get('rootElements').push(this.collaboration);
+          this.collaboration.set('id', 'collaboration_0');
+          this.plane.set('bpmnElement', this.collaboration);
+        }
+
+        let process;
+        if (this.collaboration.get('participants').length === 0) {
+          process = this.processNode;
+        } else {
+          process = this.moddle.create('bpmn:Process');
+          this.processes.push(process);
+          process.set('id', `process_${this.processes.length}`);
+          process.set('isExecutable', false);
+
+          this.definitions.get('rootElements').push(process);
+        }
+
+        definition.set('processRef', process);
+        this.collaboration.get('participants').push(definition);
+      } else {
+        /* Check if this.poolTarget is set, and if so, add to appropriate process. */
+        const targetProcess =  this.poolTarget
+          ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
+          : this.processNode;
+
+        const flowElements = targetProcess.get('flowElements');
+        if (type === laneId) {
+          targetProcess.get('laneSets')[0].get('lanes').push(definition);
+        } else {
+          flowElements.push(definition);
+        }
+      }
+
       const id = `node_${Object.keys(this.nodes).length}`;
       definition.id = id;
-      diagram.id = `${id}_di`;
-      diagram.bpmnElement = definition;
+
+      if (diagram) {
+        diagram.id = `${id}_di`;
+        diagram.bpmnElement = definition;
+      }
 
       this.planeElements.push(diagram);
-      this.processNode.get('flowElements').push(definition);
-      this.$set(this.nodes, id, { type, definition, diagram });
+      this.$set(this.nodes, id, {
+        type,
+        definition,
+        diagram,
+        pool: type !== poolId ? this.poolTarget : null,
+      });
+
+      this.poolTarget = null;
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -283,23 +354,66 @@ export default {
         this.nodeRegistry[type].inspectorHandler(value, data, component);
       };
     },
+    validateDropTarget(transferData, { clientX, clientY }) {
+      /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
+      if (transferData.type === poolId) {
+        this.allowDrop = true;
+        return;
+      }
+
+      /* If there are no pools on the grid, allow dragging components anywhere */
+      if (!this.collaboration || this.collaboration.get('participants').length === 0) {
+        this.allowDrop = true;
+        return;
+      }
+
+      const { x, y } = this.dragPoint;
+      if (clientX === x && clientY === y) {
+        /* We don't need to re-calcaulte values if mouse position hasn't changed */
+        return;
+      }
+
+      /* The mouse co-ordinates are set so we can compare them above if this function runs again */
+      this.dragPoint = { x: clientX, y: clientY };
+
+      /* Determine if we are over a pool, and only allow dropping elements over a pool */
+
+      const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
+      const pool = this.graph.findModelsFromPoint(localMousePosition).find(({ component }) => {
+        return component && component.node.type === poolId;
+      });
+
+      if (!pool) {
+        this.allowDrop = false;
+        this.poolTarget = null;
+      } else {
+        this.allowDrop = true;
+        this.poolTarget = pool;
+      }
+    },
+  },
+  created() {
+    this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
     // Handle window resize
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    let el = this.$el.getElementsByClassName('paper').item(0);
     this.graph = new window.joint.dia.Graph();
     this.graph.set('interactiveFunc', cellView => {
-      if (cellView.model.get('onClick')) {
+      if (
+        cellView.model.getParentCell() &&
+        (!cellView.model.component || cellView.model.component.node.type === laneId)
+      ) {
+        /* Prevent dragging crown icons and lanes */
         return false;
       }
 
       return { labelMove: false };
     });
     this.paper = new window.joint.dia.Paper({
-      el: el,
+      el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
       width: this.$refs['paper-container'].clientWidth,
@@ -328,7 +442,7 @@ export default {
     });
 
     this.$el.addEventListener('mousemove', (event) => {
-      if(this.canvasDragPosition) {
+      if (this.canvasDragPosition) {
         this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
       }
     });
@@ -343,9 +457,22 @@ export default {
         this.highlighted.unhighlight();
         this.highlighted = null;
       }
+
       if (cellView.model.component) {
         cellView.highlight();
+
         cellView.model.toFront({ deep: true });
+        this.graph.getConnectedLinks(cellView.model).forEach(link => link.toFront());
+
+        if ([poolId, laneId].includes(cellView.model.component.node.type)) {
+          this.graph.findModelsUnderElement(cellView).filter(element => {
+            return element.component && ![poolId, laneId].includes(element.component.node.type);
+          }).forEach(element => {
+            element.toFront({ deep: true });
+            this.graph.getConnectedLinks(element).forEach(link => link.toFront());
+          });
+        }
+
         this.highlighted = cellView;
         cellView.model.component.handleClick();
       }
@@ -365,47 +492,49 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '~jointjs/dist/joint.css';
 
+$cursors: default, not-allowed;
+
 .modeler {
-    position: relative;
-    width: inherit;
-    max-width: inherit;
-    height: inherit;
-    max-height: inherit;
-    overflow: hidden;
+  position: relative;
+  width: inherit;
+  max-width: inherit;
+  height: inherit;
+  max-height: inherit;
+  overflow: hidden;
 
-    .modeler-container {
-        max-width: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: row;
+  .modeler-container {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 
-        .inspector {
-            font-size: 0.75em;
-            text-align: left;
-            padding: 8px;
-            width: 320px;
-            background-color: #eeeeee;
-            border-left: 1px solid #aaaaaa;
-        }
-
-        .paper-container {
-            height: 100%;
-            max-height: 100%;
-            min-height: 100%;
-
-            /*
-            width: 100%;
-            height: 100%;
-            min-width: 100%;
-            max-height: 100%;
-            */
-            overflow: hidden;
-        }
+    .inspector {
+      font-size: 0.75em;
+      text-align: left;
+      padding: 8px;
+      width: 320px;
+      background-color: #eee;
+      border-left: 1px solid #aaa;
     }
+
+    .paper-container {
+      height: 100%;
+      max-height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    @each $cursor in $cursors {
+      .paper-container.#{$cursor} {
+        .joint-paper,
+        .joint-paper * {
+          cursor: #{$cursor} !important;
+        }
+      }
+    }
+  }
 }
 </style>
-
-

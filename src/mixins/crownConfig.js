@@ -2,12 +2,12 @@ import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
 
-let moddle = new BpmnModdle();
+const moddle = new BpmnModdle();
 
 export const highlightPadding = 3;
 
 export default {
-  props: ['highlighted', 'paper'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements'],
   data() {
     return {
       buttons: [],
@@ -25,10 +25,21 @@ export default {
   },
   methods: {
     removeShape() {
+      const flowElements = this.processNode.get('flowElements');
+      flowElements.splice(flowElements.indexOf(this.node.definition), 1);
+
+      this.planeElements.splice(this.planeElements.indexOf(this.node.diagram), 1);
+
+      this.shape.getEmbeddedCells().forEach(cell => {
+        if (cell.component) {
+          cell.component.removeShape();
+        }
+      });
+
       this.$delete(this.$parent.nodes, this.id);
     },
     removeCrown() {
-      this.getEmbeddedCells.forEach(button => {
+      this.buttons.forEach((button) => {
         button.attr({
           root: { display: 'none' },
         });
@@ -37,7 +48,7 @@ export default {
     addCrown() {
       this.updateCrownPosition();
 
-      this.getEmbeddedCells.forEach(button => {
+      this.buttons.forEach((button) => {
         button.attr({
           root: { display: 'initial' },
         });
@@ -130,8 +141,8 @@ export default {
       const buttonMargin = 10;
       const { x, y, width, height } = this.shape.findView(this.paper).getBBox();
       const { tx, ty } = this.paper.translate();
-      const crownHeight = buttonLength * this.buttons.length + buttonMargin * (this.buttons.length - 1);
-      const centerY = 0 - crownHeight / 2 + height / 2;
+      const crownHeight = (buttonLength * this.buttons.length) + (buttonMargin * (this.buttons.length - 1));
+      const centerY = 0 - (crownHeight / 2) + (height / 2);
 
       this.buttons.forEach((button, index) => {
         const yOffset = (buttonLength + buttonMargin) * index;
@@ -147,9 +158,18 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(this.configureCrown);
+    this.$nextTick(() => {
+      this.configureCrown();
+
+      /* If we are over a pool, add the shape to the pool */
+      if (this.node.pool) {
+        this.node.pool.component.addToPool(this.shape);
+      }
+    });
   },
   destroyed() {
+    this.graph.getConnectedLinks(this.shape).forEach(shape => shape.component.removeShape());
+
     const { incoming, outgoing } = this.node.definition;
 
     if (incoming) {
