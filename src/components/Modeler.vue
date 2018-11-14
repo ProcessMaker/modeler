@@ -39,6 +39,7 @@ import Vue from 'vue';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
+import uniqueId from 'lodash/uniqueId';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -315,7 +316,7 @@ export default {
         }
       }
 
-      const id = `node_${Object.keys(this.nodes).length}`;
+      const id = uniqueId('node_');
       definition.id = id;
 
       if (diagram) {

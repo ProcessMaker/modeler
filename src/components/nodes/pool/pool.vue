@@ -13,6 +13,7 @@ import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
 import BpmnModdle from 'bpmn-moddle';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
+import pull from 'lodash/pull';
 
 const moddle = new BpmnModdle();
 
@@ -79,13 +80,11 @@ export default {
           return lane.get('flowNodeRef').includes(elementDefinition);
         });
 
-        const nodeRefs = containingLane.get('flowNodeRef');
-        nodeRefs.splice(nodeRefs.indexOf(elementDefinition), 1);
+        pull(containingLane.get('flowNodeRef'), elementDefinition);
       }
 
       /* Remove references to the element from the current process */
-      const flowElements = this.containingProcess.get('flowElements');
-      flowElements.splice(flowElements.indexOf(elementDefinition), 1);
+      pull(this.containingProcess.get('flowElements'), elementDefinition);
 
       toPool.component.containingProcess.get('flowElements').push(elementDefinition);
       element.component.node.pool = toPool;
@@ -415,8 +414,7 @@ export default {
     });
   },
   beforeDestroy() {
-    const participants = this.collaboration.get('participants');
-    participants.splice(participants.indexOf(this.node.definition), 1);
+    pull(this.collaboration.get('participants'), this.node.definition);
   },
 };
 </script>

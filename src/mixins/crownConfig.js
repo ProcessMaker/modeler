@@ -1,6 +1,7 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
+import pull from 'lodash/pull';
 
 const moddle = new BpmnModdle();
 
@@ -25,10 +26,8 @@ export default {
   },
   methods: {
     removeShape() {
-      const flowElements = this.processNode.get('flowElements');
-      flowElements.splice(flowElements.indexOf(this.node.definition), 1);
-
-      this.planeElements.splice(this.planeElements.indexOf(this.node.diagram), 1);
+      pull(this.processNode.get('flowElements'), this.node.definition);
+      pull(this.planeElements, this.node.diagram);
 
       this.shape.getEmbeddedCells().forEach(cell => {
         if (cell.component) {
