@@ -33,7 +33,7 @@ export default {
     },
     updateShape() {
       let { height } = this.shape.findView(this.paper).getBBox();
-      let refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
+      const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
       const textAnnotationLength = this.node.definition.get('text').length;
 
@@ -86,6 +86,9 @@ export default {
       },
     });
 
+    this.shape.on('change:size', () => {
+      this.updateCrownPosition();
+    });
 
     this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -107,5 +110,3 @@ export default {
   },
 };
 </script>
-
-

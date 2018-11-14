@@ -24,18 +24,12 @@
 </template>
 
 <script>
-import Modeler from "./components/Modeler.vue";
-import statusbar from "./components/statusbar.vue";
-import FileUpload from "vue-upload-component";
+import Modeler from './components/Modeler.vue';
+import statusbar from './components/statusbar.vue';
+import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
 
 // Our initial node types to register with our modeler
 import {
@@ -48,6 +42,8 @@ import {
   startEvent,
   task,
   textAnnotation,
+  pool,
+  poolLane,
 } from './components/nodes';
 
 let nodeTypes = [
@@ -60,6 +56,8 @@ let nodeTypes = [
   sequenceFlow,
   textAnnotation,
   association,
+  pool,
+  poolLane,
 ];
 
 export default {
@@ -92,8 +90,8 @@ export default {
     `;
 
     this.$refs.modeler.loadXML(blank);
-    for(var node of nodeTypes) {
-      this.$refs.modeler.registerNode(node);
+    for (let nodeType of nodeTypes) {
+      this.$refs.modeler.registerNodeType(nodeType);
     }
 
   },
@@ -103,23 +101,23 @@ export default {
         if (err) {
           alert(err);
         } else {
-          let file = new File([xml], 'bpmnProcess.xml', {type: "text/xml"});
-          FilerSaver.saveAs(file)
+          let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
+          FilerSaver.saveAs(file);
         }
       });
     },
     addStartEvent() {
-      const definition = startEvent.definition()
-    const diagram = startEvent.diagram()
+      const definition = startEvent.definition();
+      const diagram = startEvent.diagram();
 
-    diagram.bounds.x = 150;
-    diagram.bounds.y = 150;
+      diagram.bounds.x = 150;
+      diagram.bounds.y = 150;
 
-    this.$refs.modeler.addNode({
-      definition,
-      diagram,
-      type: startEvent.id
-    })
+      this.$refs.modeler.addNode({
+        definition,
+        diagram,
+        type: startEvent.id,
+      });
     },
     handleUpload(files) {
       const reader = new FileReader();

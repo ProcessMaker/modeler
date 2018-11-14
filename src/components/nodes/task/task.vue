@@ -12,7 +12,7 @@ import { taskHeight } from './index';
 const labelPadding = 15;
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id'],
+  props: ['graph', 'node', 'id'],
   mixins: [crownConfig],
   data() {
     return {

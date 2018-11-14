@@ -1,50 +1,52 @@
 import BpmnModdle from 'bpmn-moddle';
+import component from './pool';
 
-let moddle = new BpmnModdle();
+const moddle = new BpmnModdle();
 
-import component from './task.vue';
-
-export const taskHeight = 80;
+export const id = 'processmaker-modeler-pool';
+export const labelWidth = 30;
+export const poolPadding = 20;
 
 export default {
-  id: 'processmaker-modeler-task',
-  component: component,
-  bpmnType: 'bpmn:Task',
+  id,
+  component,
+  bpmnType: 'bpmn:Participant',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/task.svg'),
-  label: 'Task',
-  definition: function() {
-    return moddle.create('bpmn:Task', {
-      name: 'New Task',
+  icon: require('../../../assets/toolpanel/pool.svg'),
+  label: 'Pool',
+  definition: function () {
+    return moddle.create('bpmn:Participant', {
+      name: 'New Pool',
     });
   },
-  diagram: function() {
+  diagram: function () {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: taskHeight,
-        width: 100,
+        height: 250,
+        width: 600,
       }),
     });
   },
-  inspectorHandler: function(value, definition, component) {
+  inspectorHandler(value, definition, component) {
     // Go through each property and rebind it to our data
-    for (var key in value) {
+    for (const key in value) {
       // Only change if the value is different
       if (definition[key] != value[key]) {
         definition[key] = value[key];
       }
     }
+
     component.updateShape();
   },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Pool',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Task',
+            label: 'Pool',
             fontSize: '2em',
           },
         },
@@ -60,7 +62,7 @@ export default {
           component: 'FormInput',
           config: {
             label: 'Name',
-            helper: 'The Name of the Task',
+            helper: 'The Name of the Pool',
             name: 'name',
           },
         },

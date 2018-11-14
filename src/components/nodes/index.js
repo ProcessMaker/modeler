@@ -7,6 +7,8 @@ import sequenceFlow from './sequenceFlow';
 import startEvent from './startEvent';
 import task from './task';
 import textAnnotation from './textAnnotation';
+import pool from './pool';
+import poolLane from './poolLane';
 
 export {
   association,
@@ -18,4 +20,6 @@ export {
   startEvent,
   task,
   textAnnotation,
+  pool,
+  poolLane,
 };

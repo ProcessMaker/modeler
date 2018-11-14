@@ -24,15 +24,13 @@
   </div>
 </template>
 
-
 <script>
-import { Drag, Drop } from 'vue-drag-drop';
+import { Drag } from 'vue-drag-drop';
 
 export default {
   props: ['controls'],
   components: {
     Drag,
-    Drop,
   },
   data() {
     return {
@@ -44,8 +42,8 @@ export default {
 
 <style lang="scss" scoped>
 .controls {
-  background-color: #eeeeee;
-  border-right: 1px solid #aaaaaa;
+  background-color: #eee;
+  border-right: 1px solid #aaa;
   width: 320px;
   text-align: left;
   overflow-y: auto;
@@ -57,9 +55,9 @@ export default {
 
   h2 {
     font-size: 1.1em;
-    background-color: #aaaaaa;
-    border-top: 1px solid #999999;
-    border-bottom: 1px solid #999999;
+    background-color: #aaa;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
     padding-left: 8px;
     margin-bottom: 0px;
     font-size: 0.75em;
@@ -74,11 +72,11 @@ export default {
     font-size: 0.75em;
     padding: 4px;
     font-weight: bold;
-    color: #333333;
+    color: #333;
+    cursor: pointer;
 
     &:hover {
       background-color: #3397e1;
-      cursor: pointer;
       color: white;
     }
 

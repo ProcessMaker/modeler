@@ -1,50 +1,43 @@
 import BpmnModdle from 'bpmn-moddle';
+import component from './poolLane';
 
-let moddle = new BpmnModdle();
+const moddle = new BpmnModdle();
 
-import component from './task.vue';
-
-export const taskHeight = 80;
+export const id = 'processmaker-modeler-lane';
 
 export default {
-  id: 'processmaker-modeler-task',
-  component: component,
-  bpmnType: 'bpmn:Task',
-  control: true,
+  id,
+  component,
+  bpmnType: 'bpmn:Lane',
+  control: false,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/task.svg'),
-  label: 'Task',
-  definition: function() {
-    return moddle.create('bpmn:Task', {
-      name: 'New Task',
-    });
-  },
-  diagram: function() {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
-        height: taskHeight,
-        width: 100,
-      }),
-    });
-  },
-  inspectorHandler: function(value, definition, component) {
+  label: 'New Lane',
+  definition: () => moddle.create('bpmn:Lane', { name: '' }),
+  diagram: () => moddle.create('bpmndi:BPMNShape', {
+    bounds: moddle.create('dc:Bounds', {
+      height: 150,
+      width: 600,
+    }),
+  }),
+  inspectorHandler(value, definition, component) {
     // Go through each property and rebind it to our data
-    for (var key in value) {
+    for (const key in value) {
       // Only change if the value is different
       if (definition[key] != value[key]) {
         definition[key] = value[key];
       }
     }
+
     component.updateShape();
   },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Lane',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Task',
+            label: 'Lane',
             fontSize: '2em',
           },
         },
@@ -60,7 +53,7 @@ export default {
           component: 'FormInput',
           config: {
             label: 'Name',
-            helper: 'The Name of the Task',
+            helper: 'The Name of the Lane',
             name: 'name',
           },
         },
