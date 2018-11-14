@@ -507,43 +507,43 @@ export default {
 $cursors: default, not-allowed;
 
 .modeler {
-    position: relative;
-    width: inherit;
-    max-width: inherit;
-    height: inherit;
-    max-height: inherit;
-    overflow: hidden;
+  position: relative;
+  width: inherit;
+  max-width: inherit;
+  height: inherit;
+  max-height: inherit;
+  overflow: hidden;
 
-    .modeler-container {
-        max-width: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: row;
+  .modeler-container {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 
-        .inspector {
-            font-size: 0.75em;
-            text-align: left;
-            padding: 8px;
-            width: 320px;
-            background-color: #eee;
-            border-left: 1px solid #aaa;
-        }
-
-        .paper-container {
-            height: 100%;
-            max-height: 100%;
-            min-height: 100%;
-            overflow: hidden;
-        }
-
-        @each $cursor in $cursors {
-            .paper-container.#{$cursor} {
-                .joint-paper,
-                .joint-paper * {
-                    cursor: #{$cursor} !important;
-                }
-            }
-        }
+    .inspector {
+      font-size: 0.75em;
+      text-align: left;
+      padding: 8px;
+      width: 320px;
+      background-color: #eee;
+      border-left: 1px solid #aaa;
     }
+
+    .paper-container {
+      height: 100%;
+      max-height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    @each $cursor in $cursors {
+      .paper-container.#{$cursor} {
+        .joint-paper,
+        .joint-paper * {
+          cursor: #{$cursor} !important;
+        }
+      }
+    }
+  }
 }
 </style>

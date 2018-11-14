@@ -134,7 +134,6 @@ export default {
       }
 
       this.expandToFixElement(element);
-      console.log('Add Pool');
     },
     getShape() {
       return this.shape;
@@ -406,7 +405,6 @@ export default {
           /* Remove the shape from its current pool */
           this.moveElement(draggingElement, newPoolOrLane);
         } else {
-          console.log('Drag Pool');
           this.expandToFixElement(draggingElement);
         }
 
