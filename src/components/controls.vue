@@ -1,9 +1,14 @@
 <template>
   <div class="controls">
+      <input placeholder="Filter..." class="form-control form-control-sm" type="text" v-model="filterQuery">
     <div v-for="(items, category) in controls" :key="category">
       <h2>{{category}}</h2>
-
-      <drag v-for="(control, index) in items" :key="index" :transfer-data="{type: control.type}">
+      <drag
+        v-for="(control, index) in items"
+        :key="index"
+        :transfer-data="{type: control.type}"
+        v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+      >
         <div class="tool">
           <div class="img-container">
             <img :src="control.icon">
@@ -22,6 +27,11 @@ export default {
   props: ['controls'],
   components: {
     Drag,
+  },
+  data() {
+    return {
+      filterQuery: '',
+    };
   },
 };
 </script>
