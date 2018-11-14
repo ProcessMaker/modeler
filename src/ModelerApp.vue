@@ -28,14 +28,8 @@ import Modeler from './components/Modeler.vue';
 import statusbar from './components/statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
 
 // Our initial node types to register with our modeler
 import {
@@ -48,6 +42,8 @@ import {
   startEvent,
   task,
   textAnnotation,
+  pool,
+  poolLane,
 } from './components/nodes';
 
 let nodeTypes = [
@@ -60,6 +56,8 @@ let nodeTypes = [
   sequenceFlow,
   textAnnotation,
   association,
+  pool,
+  poolLane,
 ];
 
 export default {
@@ -92,8 +90,8 @@ export default {
     `;
 
     this.$refs.modeler.loadXML(blank);
-    for(var node of nodeTypes) {
-      this.$refs.modeler.registerNode(node);
+    for (let nodeType of nodeTypes) {
+      this.$refs.modeler.registerNodeType(nodeType);
     }
 
   },

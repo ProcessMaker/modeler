@@ -8,12 +8,13 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
+import pull from 'lodash/pull';
 import BpmnModdle from 'bpmn-moddle';
-import  { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import data from './index';
+import { gatewayDirectionOptions } from '../exclusiveGateway/index';
+import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
-
-let moddle = new BpmnModdle;
+const moddle = new BpmnModdle;
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -24,9 +25,6 @@ export default {
       definition: null,
       sourceShape: null,
       target: null,
-      validNodeColor: '#dffdd0',
-      invalidNodeColor: '#fae0e6',
-      defaultNodeColor: '#fff',
       anchorPadding: 25,
       inspectorConfig: null,
       validConnections: {
@@ -51,11 +49,15 @@ export default {
       this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this);
     },
     updateShape() {},
+    setBodyColor(color, target = this.target) {
+      target.attr('body/fill', color);
+      target.attr('.body/fill', color);
+    },
     completeLink() {
       this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-      this.shape.attr({ wrapper: { cursor: 'default' } });
+      this.$emit('set-cursor', null);
 
       this.resetPaper();
 
@@ -67,13 +69,7 @@ export default {
 
       this.updateWaypoints();
 
-      targetShape.attr({
-        body: { fill: `${this.defaultNodeColor}`, cursor: 'move' },
-        label: { cursor: 'move' },
-
-        '.body': { fill: `${this.defaultNodeColor}`, cursor: 'move' },
-        '.label': { cursor: 'move' },
-      });
+      this.setBodyColor(defaultNodeColor, targetShape);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -94,14 +90,6 @@ export default {
 
       return false;
     },
-    nodeState( fill, cursor, target = this.target) {
-      target.attr({
-        body: { fill , cursor },
-        label: { cursor },
-        '.body': { fill, cursor },
-        '.label': { cursor },
-      });
-    },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
@@ -113,6 +101,15 @@ export default {
       const targetType = get(this.target, 'component.node.type');
 
       if (!targetType) {
+        return false;
+      }
+
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      /* If the link source is part of a pool, only allow sequence
+       * flows to the target if the target is also in the same pool  */
+      if (sourcePool && sourcePool !== targetPool) {
         return false;
       }
 
@@ -128,17 +125,23 @@ export default {
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
 
-      this.target = this.graph.findModelsFromPoint(localMousePosition)[0];
+      /* Sort shapes by z-index descending; grab the shape on top (with the highest z-index) */
+      this.target = this.graph.findModelsFromPoint(localMousePosition).sort((shape1, shape2) => {
+        return shape2.get('z') - shape1.get('z');
+      })[0];
 
       if (!this.isValidConnection()) {
+        this.$emit('set-cursor', 'not-allowed');
+
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
         });
 
         if (this.target) {
-          this.nodeState(this.invalidNodeColor, 'not-allowed');
+          this.setBodyColor(invalidNodeColor);
         }
+
         return;
       }
 
@@ -151,14 +154,19 @@ export default {
       });
 
       this.updateRouter();
-      this.nodeState(this.validNodeColor, 'default');
+
+      this.$emit('set-cursor', 'default');
+      this.setBodyColor(validNodeColor);
+
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
-        this.nodeState(this.defaultNodeColor, 'move');
+
+        this.setBodyColor(defaultNodeColor);
+        this.$emit('set-cursor', 'not-allowed');
       });
     },
     removeLink() {
@@ -166,19 +174,22 @@ export default {
       this.resetPaper();
     },
     resetPaper() {
-      this.paper.el.style.cursor = 'default';
+      this.$emit('set-cursor', null);
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
-      this.target && this.nodeState(this.defaultNodeColor, 'not-allowed');
+
+      if (this.target) {
+        this.setBodyColor(defaultNodeColor);
+      }
     },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   watch: {
-    target( target , previousTarget ) {
-      if (previousTarget && previousTarget !== target ) {
-        this.nodeState(this.defaultNodeColor, 'default', previousTarget );
+    target(target, previousTarget) {
+      if (previousTarget && previousTarget !== target) {
+        this.setBodyColor(defaultNodeColor, previousTarget);
       }
     },
   },
@@ -222,20 +233,28 @@ export default {
       });
 
       this.paper.setInteractivity(false);
-      this.shape.attr({ wrapper: { cursor: 'not-allowed' } });
-
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.paper.el.style.cursor = 'not-allowed';
       this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+
+      this.$emit('set-cursor', 'not-allowed');
     }
 
     this.updateRouter();
   },
   destroyed() {
+    /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
+    const sourceNode = this.$parent.nodes[this.node.definition.sourceRef.id];
+    const targetNode = this.$parent.nodes[this.node.definition.targetRef.id];
+
+    if (sourceNode) {
+      pull(sourceNode.definition.get('outgoing'), this.node.definition);
+    }
+
+    if (targetNode) {
+      pull(targetNode.definition.get('incoming'), this.node.definition);
+    }
+
     this.updateWaypoints.cancel();
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

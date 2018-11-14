@@ -1,13 +1,14 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
+import pull from 'lodash/pull';
 
-let moddle = new BpmnModdle();
+const moddle = new BpmnModdle();
 
 export const highlightPadding = 3;
 
 export default {
-  props: ['highlighted', 'paper'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements'],
   data() {
     return {
       buttons: [],
@@ -25,10 +26,10 @@ export default {
   },
   methods: {
     removeShape() {
-      this.$delete(this.$parent.nodes, this.id);
+      this.$emit('remove-node', this.node);
     },
     removeCrown() {
-      this.getEmbeddedCells.forEach(button => {
+      this.buttons.forEach(button => {
         button.attr({
           root: { display: 'none' },
         });
@@ -37,7 +38,7 @@ export default {
     addCrown() {
       this.updateCrownPosition();
 
-      this.getEmbeddedCells.forEach(button => {
+      this.buttons.forEach(button => {
         button.attr({
           root: { display: 'initial' },
         });
@@ -136,8 +137,8 @@ export default {
       const buttonMargin = 10;
       const { x, y, width, height } = this.shape.findView(this.paper).getBBox();
       const { tx, ty } = this.paper.translate();
-      const crownHeight = buttonLength * this.buttons.length + buttonMargin * (this.buttons.length - 1);
-      const centerY = 0 - crownHeight / 2 + height / 2;
+      const crownHeight = (buttonLength * this.buttons.length) + (buttonMargin * (this.buttons.length - 1));
+      const centerY = 0 - (crownHeight / 2) + (height / 2);
 
       this.buttons.forEach((button, index) => {
         const yOffset = (buttonLength + buttonMargin) * index;
@@ -153,19 +154,25 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(this.configureCrown);
+    this.$nextTick(() => {
+      this.configureCrown();
+
+      /* If we are over a pool, add the shape to the pool */
+      if (this.node.pool) {
+        this.node.pool.component.addToPool(this.shape);
+      }
+    });
+  },
+  beforeDestroy() {
+    this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
+    this.shape.getEmbeddedCells().forEach(cell => {
+      if (cell.component) {
+        this.shape.unembed(cell);
+        this.$emit('remove-node', cell.component.node);
+      }
+    });
   },
   destroyed() {
-    const { incoming, outgoing } = this.node.definition;
-
-    if (incoming) {
-      incoming.forEach(link => this.$delete(this.$parent.nodes, link.id));
-    }
-
-    if (outgoing) {
-      outgoing.forEach(link => this.$delete(this.$parent.nodes, link.id));
-    }
-
     this.shape.stopListening();
     this.shape.remove();
   },
