@@ -1,10 +1,6 @@
 <template>
   <div class="controls">
-    <label>
-      Filter controls
-      <input class="filter-input" type="text" v-model="filterQuery">
-    </label>
-
+      <input placeholder="Filter..." class="form-control form-control-sm" type="text" v-model="filterQuery">
     <div v-for="(items, category) in controls" :key="category">
       <h2>{{category}}</h2>
       <drag
@@ -48,10 +44,6 @@ export default {
   text-align: left;
   overflow-y: auto;
   overflow-x: auto;
-
-  .filter-input {
-    width: 100%;
-  }
 
   h2 {
     font-size: 1.1em;
