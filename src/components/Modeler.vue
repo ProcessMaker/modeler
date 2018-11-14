@@ -28,6 +28,7 @@
       :processes="processes"
       :plane-elements="planeElements"
       @add-node="addNode"
+      @remove-node="removeNode"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
     />
@@ -40,6 +41,7 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
+import pull from 'lodash/pull';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -166,24 +168,24 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNode(node) {
-      this.inspectorConfigurations[node.id] = node.inspectorConfig;
-      this.nodeRegistry[node.id] = node;
+    registerNodeType(nodeType) {
+      this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
+      this.nodeRegistry[nodeType.id] = nodeType;
 
-      Vue.component(node.id, node.component);
+      Vue.component(nodeType.id, nodeType.component);
 
-      this.bpmnTypeMap[node.bpmnType] = node.id;
+      this.bpmnTypeMap[nodeType.bpmnType] = nodeType.id;
 
-      if(node.control) {
+      if(nodeType.control) {
         // Register the control for our control palette
-        if (!this.controls[node.category]) {
-          this.$set(this.controls, node.category, []);
+        if (!this.controls[nodeType.category]) {
+          this.$set(this.controls, nodeType.category, []);
         }
 
-        this.controls[node.category].push({
-          type: node.id,
-          icon: node.icon,
-          label: node.label,
+        this.controls[nodeType.category].push({
+          type: nodeType.id,
+          icon: nodeType.icon,
+          label: nodeType.label,
         });
       }
     },
@@ -231,6 +233,7 @@ export default {
       this.$emit('parsed');
     },
     loadXML(xml) {
+      this.nodes = {};
       this.moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
@@ -333,6 +336,11 @@ export default {
       });
 
       this.poolTarget = null;
+    },
+    removeNode(node) {
+      pull(this.processNode.get('flowElements'), node.definition);
+      pull(this.planeElements, node.diagram);
+      this.$delete(this.nodes, node.definition.id);
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -499,43 +507,43 @@ export default {
 $cursors: default, not-allowed;
 
 .modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+    position: relative;
+    width: inherit;
+    max-width: inherit;
+    height: inherit;
+    max-height: inherit;
+    overflow: hidden;
 
-  .modeler-container {
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+    .modeler-container {
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
 
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eee;
-      border-left: 1px solid #aaa;
-    }
-
-    .paper-container {
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
-      overflow: hidden;
-    }
-
-    @each $cursor in $cursors {
-      .paper-container.#{$cursor} {
-        .joint-paper,
-        .joint-paper * {
-          cursor: #{$cursor} !important;
+        .inspector {
+            font-size: 0.75em;
+            text-align: left;
+            padding: 8px;
+            width: 320px;
+            background-color: #eee;
+            border-left: 1px solid #aaa;
         }
-      }
+
+        .paper-container {
+            height: 100%;
+            max-height: 100%;
+            min-height: 100%;
+            overflow: hidden;
+        }
+
+        @each $cursor in $cursors {
+            .paper-container.#{$cursor} {
+                .joint-paper,
+                .joint-paper * {
+                    cursor: #{$cursor} !important;
+                }
+            }
+        }
     }
-  }
 }
 </style>

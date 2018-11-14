@@ -26,19 +26,10 @@ export default {
   },
   methods: {
     removeShape() {
-      pull(this.processNode.get('flowElements'), this.node.definition);
-      pull(this.planeElements, this.node.diagram);
-
-      this.shape.getEmbeddedCells().forEach(cell => {
-        if (cell.component) {
-          cell.component.removeShape();
-        }
-      });
-
-      this.$delete(this.$parent.nodes, this.id);
+      this.$emit('remove-node', this.node);
     },
     removeCrown() {
-      this.buttons.forEach((button) => {
+      this.buttons.forEach(button => {
         button.attr({
           root: { display: 'none' },
         });
@@ -47,7 +38,7 @@ export default {
     addCrown() {
       this.updateCrownPosition();
 
-      this.buttons.forEach((button) => {
+      this.buttons.forEach(button => {
         button.attr({
           root: { display: 'initial' },
         });
@@ -166,19 +157,16 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
+    this.shape.getEmbeddedCells().forEach(cell => {
+      if (cell.component) {
+        this.shape.unembed(cell);
+        this.$emit('remove-node', cell.component.node);
+      }
+    });
+  },
   destroyed() {
-    this.graph.getConnectedLinks(this.shape).forEach(shape => shape.component.removeShape());
-
-    const { incoming, outgoing } = this.node.definition;
-
-    if (incoming) {
-      incoming.forEach(link => this.$delete(this.$parent.nodes, link.id));
-    }
-
-    if (outgoing) {
-      outgoing.forEach(link => this.$delete(this.$parent.nodes, link.id));
-    }
-
     this.shape.stopListening();
     this.shape.remove();
   },

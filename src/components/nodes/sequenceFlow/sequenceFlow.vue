@@ -63,7 +63,6 @@ export default {
       this.node.definition.targetRef = targetShape.component.node.definition;
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
-      this.sourceShape.embed(this.shape);
 
       this.updateWaypoints();
 
