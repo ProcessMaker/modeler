@@ -493,7 +493,7 @@ export default {
       }
     });
 
-    this.paper.on('cell:pointerup', (cellView, evt, x, y) => {
+    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
@@ -511,7 +511,12 @@ export default {
         this.graph.getConnectedLinks(cellView.model).forEach(link => link.toFront());
 
         if ([poolId, laneId].includes(cellView.model.component.node.type)) {
-          this.graph.findModelsUnderElement(cellView).filter(element => {
+          /* If we brought a pool or lane to the front, ensure it doesn't overlap its children */
+
+          const { x, y, width, height} = cellView.model.getBBox();
+          const area = { x, y, width, height };
+
+          this.graph.findModelsInArea(area).filter(element => {
             return element.component && ![poolId, laneId].includes(element.component.node.type);
           }).forEach(element => {
             element.toFront({ deep: true });

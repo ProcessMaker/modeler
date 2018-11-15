@@ -68,6 +68,12 @@ export default {
     },
   },
   methods: {
+    getElementsUnderArea(element) {
+      const { x, y, width, height} = element.getBBox();
+      const area = { x, y, width, height };
+
+      return this.graph.findModelsInArea(area);
+    },
     moveElement(element, toPool) {
       const elementDefinition = element.component.node.definition;
 
@@ -123,7 +129,7 @@ export default {
 
       /* If there are lanes, add the element to the lane it's above */
       if (element.component.node.type !== laneId && this.laneSet) {
-        const lane = this.graph.findModelsUnderElement(element, { searchBy: 'center' }).find(element => {
+        const lane = this.getElementsUnderArea(element).find(element => {
           return element.component.node.type === laneId;
         });
 
@@ -141,7 +147,6 @@ export default {
       this.shape.position(bounds.x, bounds.y);
       this.shape.resize(bounds.width, bounds.height);
       this.shape.attr({
-        body: {},
         label: {
           text: joint.util.breakText(this.node.definition.get('name'), {
             width: bounds.width,
@@ -189,7 +194,7 @@ export default {
         });
         this.updateCrownPosition();
 
-        this.graph.findModelsUnderElement(element).filter(laneElement => {
+        this.getElementsUnderArea(element).filter(laneElement => {
           return laneElement.component && ![poolId, laneId].includes(laneElement.component.node.type);
         }).forEach(laneElement => {
           laneElement.toFront({ deep: true });
@@ -359,7 +364,7 @@ export default {
         ) {
           /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
 
-          const poolOrLane = this.graph.findModelsUnderElement(element, { searchBy: 'center' }).filter(model => {
+          const poolOrLane = this.getElementsUnderArea(element).filter(model => {
             return model.component && [poolId, laneId].includes(model.component.node.type);
           })[0];
 
