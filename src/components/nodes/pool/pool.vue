@@ -291,8 +291,9 @@ export default {
         return;
       }
 
-      this.$parent.processNode.get('flowElements').forEach(({ id }) => {
-        const { shape, node } = this.$parent.nodes[id].component;
+      this.$parent.processNode.get('flowElements').map(({ id }) => {
+        return this.$parent.nodes[id].component;
+      }).filter(component => component).forEach(({ shape, node }) => {
         this.shape.embed(shape);
         shape.toFront({ deep: true });
         node.pool = this.shape;
@@ -346,7 +347,8 @@ export default {
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
 
-    /* If there are no other pools, the first pool should capture all current flow elements */
+    /* If there are no other pools, the first pool should capture all current flow elements.
+     * Don't do this when parsing an uploaded diagram. */
     if (this.collaboration.get('participants').length === 1) {
       this.captureChildren();
     }

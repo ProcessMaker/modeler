@@ -1,7 +1,6 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import BpmnModdle from 'bpmn-moddle';
-import pull from 'lodash/pull';
 
 const moddle = new BpmnModdle();
 
@@ -149,11 +148,22 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
+       * This will ensure this.shape is defined. */
+
       this.configureCrown();
 
-      /* If we are over a pool, add the shape to the pool */
-      if (this.node.pool) {
-        this.node.pool.component.addToPool(this.shape);
+      if (!['processmaker-modeler-pool', 'processmaker-modeler-lane', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
+        /* If we are over a pool, add the shape to the pool */
+        // const pool = this.graph.findModelsUnderElement(this.shape, { searchBy: 'center' })
+        const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
+          return model.component && model.component.node.type === 'processmaker-modeler-pool';
+        })[0];
+
+        if (pool) {
+          this.node.pool = pool;
+          this.node.pool.component.addToPool(this.shape);
+        }
       }
     });
   },

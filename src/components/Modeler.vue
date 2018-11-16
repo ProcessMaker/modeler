@@ -207,44 +207,50 @@ export default {
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
-      // get the top level process objects
-      // All root elements are bpmn:process types
-      this.definitions.rootElements.forEach(process => {
-        this.processes.push(process);
-        this.processNode = process;
-        this.inspectorConfig = this.inspectors['process'];
-        this.inspectorNode = this.processNode;
+      // Get the top level objects
+      // All root elements are either bpmn:process or bpmn:collaboration types
+      // There should only be one collaboration
 
-        // Now iterate through all the elements in processes
-        process.get('flowElements').forEach(element => {
-          const type = this.bpmnTypeMap[element.$type];
+      this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
+      this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
 
-          if (!type) {
-            throw new Error(`Unsupported element type in parse: ${element.$type}`);
-          }
+      /* Get the diagram; there should only be one diagram. */
+      this.plane = this.definitions.diagrams[0].plane;
+      this.planeElements = this.plane.get('planeElement');
 
-          if (!element.get('name')) {
-            element.set('name', '');
-          }
+      /* TODO: Refactor this. Why is this.processNode needed? */
+      this.processNode = this.processes[0];
+      this.inspectorConfig = this.inspectors['process'];
+      this.inspectorNode = this.processNode;
 
-          this.$set(this.nodes, element.id, { type, definition: element });
-        });
+      /* Add any pools */
+      if (this.collaboration) {
+        this.collaboration.get('participants').forEach(this.setNode);
+      }
+
+      /* Iterate through all elements in each process. */
+      this.processes.forEach(process => {
+        process.get('flowElements').forEach(this.setNode);
       });
+    },
+    setNode(definition) {
+      const type = this.bpmnTypeMap[definition.$type];
 
-      // Okay, now let's get the diagrams
-      this.definitions.diagrams.forEach(diagram => {
-        this.plane = diagram.plane;
-        this.planeElements = this.plane.get('planeElement');
+      if (!type) {
+        throw new Error(`Unsupported element type in parse: ${definition.$type}`);
+      }
 
-        this.planeElements.forEach(diagramElement => {
-          if (this.nodes[diagramElement.bpmnElement.id]) {
-            this.$set(
-              this.nodes[diagramElement.bpmnElement.id],
-              'diagram',
-              diagramElement
-            );
-          }
-        });
+      if (!definition.get('name')) {
+        definition.set('name', '');
+      }
+
+      /* Get the diagram element for the corresponding flow element node. */
+      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+
+      this.$set(this.nodes, definition.id, {
+        type,
+        definition,
+        diagram,
       });
     },
     loadXML(xml) {
@@ -263,11 +269,6 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, cb);
     },
-
-    handleCanvasMove() {
-
-    },
-
     handleDrop(transferData, event) {
       if (!this.allowDrop) {
         return;
@@ -344,11 +345,11 @@ export default {
       }
 
       this.planeElements.push(diagram);
+
       this.$set(this.nodes, id, {
         type,
         definition,
         diagram,
-        pool: type !== poolId ? this.poolTarget : null,
       });
 
       this.poolTarget = null;
