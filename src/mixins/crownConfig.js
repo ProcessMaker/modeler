@@ -153,9 +153,9 @@ export default {
 
       this.configureCrown();
 
-      if (!['processmaker-modeler-pool', 'processmaker-modeler-lane', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
-        /* If we are over a pool, add the shape to the pool */
-        // const pool = this.graph.findModelsUnderElement(this.shape, { searchBy: 'center' })
+      /* If we are over a pool or lane, add the shape to the pool or lane */
+
+      if (!['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
         const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
           return model.component && model.component.node.type === 'processmaker-modeler-pool';
         })[0];
@@ -165,6 +165,17 @@ export default {
           this.node.pool.component.addToPool(this.shape);
         }
       }
+
+      // if (!['processmaker-modeler-pool', 'processmaker-modeler-lane', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
+      //   const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
+      //     return model.component && model.component.node.type === 'processmaker-modeler-pool';
+      //   })[0];
+
+      //   if (pool) {
+      //     this.node.pool = pool;
+      //     this.node.pool.component.addToPool(this.shape);
+      //   }
+      // }
     });
   },
   beforeDestroy() {

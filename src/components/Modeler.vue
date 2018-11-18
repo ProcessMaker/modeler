@@ -218,7 +218,6 @@ export default {
       this.plane = this.definitions.diagrams[0].plane;
       this.planeElements = this.plane.get('planeElement');
 
-      /* TODO: Refactor this. Why is this.processNode needed? */
       this.processNode = this.processes[0];
       this.inspectorConfig = this.inspectors['process'];
       this.inspectorNode = this.processNode;
@@ -230,6 +229,12 @@ export default {
 
       /* Iterate through all elements in each process. */
       this.processes.forEach(process => {
+        /* Add any lanes */
+        if (process.get('laneSets')[0]) {
+          process.laneSets[0].lanes.forEach(this.setNode);
+        }
+
+        /* Add all other elements */
         process.get('flowElements').forEach(this.setNode);
       });
     },

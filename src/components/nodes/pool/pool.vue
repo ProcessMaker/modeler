@@ -118,10 +118,14 @@ export default {
     },
     pushNewLane(definition = Lane.definition(this.$parent.moddle)) {
       this.$emit('set-pool-target', this.shape);
+
+      const diagram = Lane.diagram(this.$parent.moddle);
+      diagram.bounds.width = this.shape.getBBox().width;
+
       this.$emit('add-node', {
         type: Lane.id,
         definition,
-        diagram: Lane.diagram(this.$parent.moddle),
+        diagram,
       });
     },
     addToPool(element) {
@@ -312,6 +316,9 @@ export default {
       this.shape.getEmbeddedCells().forEach(cell => cell.translate(labelWidth));
     },
   },
+  created() {
+    this.laneSet = this.containingProcess.get('laneSets')[0];
+  },
   mounted() {
     this.shape = new joint.shapes.processmaker.modeler.bpmn.pool();
     const bounds = this.node.diagram.bounds;
@@ -356,7 +363,7 @@ export default {
     this.$nextTick(() => {
       let previousValidPosition;
       let draggingElement;
-      let newPoolOrLane;
+      let newPool;
 
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
         if (
@@ -366,11 +373,16 @@ export default {
         ) {
           /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
 
-          const poolOrLane = this.getElementsUnderArea(element).filter(model => {
-            return model.component && [poolId, laneId].includes(model.component.node.type);
-          })[0];
+          // const poolsAndLanes = this.getElementsUnderArea(element).filter(model => {
+          //   return model.component && [poolId, laneId].includes(model.component.node.type);
+          // });
+          // const poolOrLane = poolsAndLanes.find(model => model.component.node.type === laneId) ||
+          //   poolsAndLanes.find(model => model.component.node.type === poolId);
+          const pool = this.getElementsUnderArea(element).find(model => {
+            return model.component && model.component.node.type === poolId;
+          });
 
-          if (!poolOrLane) {
+          if (!pool) {
             if (!previousValidPosition) {
               previousValidPosition = newPosition;
             }
@@ -380,8 +392,8 @@ export default {
             this.paper.drawBackground({ color: defaultNodeColor });
             previousValidPosition = null;
 
-            newPoolOrLane = poolOrLane !== this.shape
-              ? poolOrLane
+            newPool = pool !== this.shape
+              ? pool
               : null;
           }
         }
@@ -406,12 +418,29 @@ export default {
           draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
         }
 
-        if (newPoolOrLane) {
+        if (newPool) {
           /* Remove the shape from its current pool */
-          this.moveElement(draggingElement, newPoolOrLane);
+          this.moveElement(draggingElement, newPool);
         } else {
           console.log('Drag Pool');
           this.expandToFixElement(draggingElement);
+
+          /* If there are lanes, add the element to the lane it's above */
+          const lane = this.getElementsUnderArea(cellView).find(model => {
+            return model.component && model.component.node.type === laneId;
+          });
+
+          if (lane) {
+            const elementDefinition = cellView.model.component.node.definition;
+
+            /* Remove references to the element from the current Lane */
+            const containingLane = this.laneSet.get('lanes').find(lane => {
+              return lane.get('flowNodeRef').includes(elementDefinition);
+            });
+
+            pull(containingLane.get('flowNodeRef'), elementDefinition);
+            lane.component.node.definition.get('flowNodeRef').push(cellView.model.component.node.definition);
+          }
         }
 
         this.paper.drawBackground({ color: defaultNodeColor });

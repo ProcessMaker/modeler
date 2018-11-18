@@ -18,11 +18,6 @@ export default {
       definition: null,
     };
   },
-  computed: {
-    parentPool() {
-      return this.shape.getParentCell();
-    },
-  },
   methods: {
     getShape() {
       return this.shape;
@@ -59,6 +54,8 @@ export default {
     this.shape = new joint.shapes.standard.Rectangle();
 
     const bounds = this.node.diagram.bounds;
+    this.shape.position(bounds.x, bounds.y);
+    this.shape.resize(bounds.width, bounds.height);
 
     this.shape.attr('body/cursor', 'default');
     this.shape.attr('label', {
