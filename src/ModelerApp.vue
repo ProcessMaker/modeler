@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler"   @parsed.once="addStartEvent"/>
+      <modeler ref="modeler"   @parsed.once="addStartEvent" @initialize="modelerInitialize" @ready="modelerReady"/>
     </div>
     <statusbar>
       {{statusText}}
@@ -30,6 +30,9 @@ import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+//Extenssion example
+import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker.json';
 
 // Our initial node types to register with our modeler
 import {
@@ -76,26 +79,62 @@ export default {
     };
   },
   mounted() {
-    let blank = `
-    <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
-  <bpmn:process id="Process_1" isExecutable="true">
-  </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn:definitions>
-
-    `;
-
-    this.$refs.modeler.loadXML(blank);
-    for (let nodeType of nodeTypes) {
-      this.$refs.modeler.registerNodeType(nodeType);
-    }
+    //Before ready: To load BPMN extensions and Node types
+    this.$emit('beforeReady');
+    //The modeler app is ready to be used with extensions and custom nodes
+    this.$emit('ready');
 
   },
   methods: {
+    testAddBpmnExtension (modeler) {
+      //Add a bpmn extension
+      modeler.registerBpmnExtension('pm', bpmnExtension);
+      //Add custom properties to inspector
+      task.inspectorConfig[0].items.push({
+          component: "FormInput",
+          config: {
+              type: "number",
+              label: "Due In",
+              placeholder: "72 hours",
+              helper: "Time when the task will due (hours)",
+              name: "dueIn"
+          }
+      });
+    },
+    testLoadBPMN (modeler) {
+      let blank = `<?xml version="1.0" encoding="UTF-8"?>
+        <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+          <bpmn:process id="Process_1" isExecutable="true">
+          </bpmn:process>
+          <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+            <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+            </bpmndi:BPMNPlane>
+          </bpmndi:BPMNDiagram>
+        </bpmn:definitions>
+      `;
+      this.$refs.modeler.loadXML(blank);
+      for (let nodeType of nodeTypes) {
+        this.$refs.modeler.registerNodeType(nodeType);
+      }
+    },
+    /**
+     * The modeler is initializing.
+     */
+    modelerInitialize(moddle) {
+      // Here the application could register BPMN extensions
+      this.$emit('modeler-init', this.$refs.modeler);
+      // Example of extension
+      this.testAddBpmnExtension(this.$refs.modeler);
+    },
+    /**
+     * The modeler is ready to be used
+     */
+    modelerReady() {
+      // Here the modeler is ready to be used
+      this.$emit('modeler-ready', this.$refs.modeler);
+      // Load a BPMN of example
+      this.testLoadBPMN(this.$refs.modeler);
+    },
     download() {
       this.$refs.modeler.toXML(function(err, xml) {
         if (err) {
