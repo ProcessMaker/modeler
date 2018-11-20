@@ -260,10 +260,10 @@ export default {
       const type = transferData.type;
 
       // Add to our processNode
-      const definition = this.nodeRegistry[type].definition();
+      const definition = this.nodeRegistry[type].definition(this.moddle);
 
       // Now, let's modify planeElement
-      const diagram = this.nodeRegistry[type].diagram();
+      const diagram = this.nodeRegistry[type].diagram(this.moddle);
 
       // Handle transform
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;

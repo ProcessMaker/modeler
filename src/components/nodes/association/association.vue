@@ -8,9 +8,6 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle;
 
 export default {
   props: ['graph', 'node', 'id'],

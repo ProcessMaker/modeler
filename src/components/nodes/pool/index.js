@@ -1,7 +1,4 @@
-import BpmnModdle from 'bpmn-moddle';
 import component from './pool';
-
-const moddle = new BpmnModdle();
 
 export const id = 'processmaker-modeler-pool';
 export const labelWidth = 30;
@@ -15,12 +12,12 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/pool.svg'),
   label: 'Pool',
-  definition: function () {
+  definition: function (moddle) {
     return moddle.create('bpmn:Participant', {
       name: 'New Pool',
     });
   },
-  diagram: function () {
+  diagram: function (moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 250,

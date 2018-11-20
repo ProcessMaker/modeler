@@ -1,6 +1,3 @@
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle();
 
 import component from './endEvent.vue';
 
@@ -12,12 +9,12 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/end-event.svg'),
   label: 'End Event',
-  definition: function() {
+  definition: function(moddle) {
     return moddle.create('bpmn:EndEvent', {
       name: 'End Event',
     });
   },
-  diagram: function() {
+  diagram: function(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 36,

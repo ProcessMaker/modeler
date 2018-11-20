@@ -107,8 +107,8 @@ export default {
       });
     },
     addStartEvent() {
-      const definition = startEvent.definition();
-      const diagram = startEvent.diagram();
+      const definition = startEvent.definition(this.$refs.modeler.moddle);
+      const diagram = startEvent.diagram(this.$refs.modeler.moddle);
 
       diagram.bounds.x = 150;
       diagram.bounds.y = 150;

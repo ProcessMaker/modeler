@@ -1,7 +1,3 @@
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle();
-
 import component from './textAnnotation.vue';
 
 export default {
@@ -12,12 +8,12 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/text-annotation.svg'),
   label: 'Text Annotation',
-  definition: function() {
+  definition: function(moddle) {
     return moddle.create('bpmn:TextAnnotation', {
       text: 'New Text Annotation',
     });
   },
-  diagram: function() {
+  diagram: function(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 30,

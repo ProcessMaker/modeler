@@ -1,7 +1,3 @@
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle();
-
 import component from './startEvent.vue';
 
 export default {
@@ -12,12 +8,12 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/start-event.svg'),
   label: 'Start Event',
-  definition: function() {
+  definition: function(moddle) {
     return moddle.create('bpmn:StartEvent', {
       name: 'Start Event',
     });
   },
-  diagram: function() {
+  diagram: function(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 36,
