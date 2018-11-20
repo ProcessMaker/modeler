@@ -401,10 +401,11 @@ export default {
       }
     },
   },
-  created() {
-    this.moddle = new BpmnModdle(this.extensions);
-  },
   mounted() {
+    // Initialize the BpmnModdle and its extensions
+    this.$emit('initialize');
+    this.moddle = new BpmnModdle(this.extensions);
+
     // Handle window resize
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
@@ -497,6 +498,9 @@ export default {
         cellView.model.component.handleClick();
       }
     });
+
+    // Register custom nodes
+    this.$emit('ready');
   },
 };
 </script>
