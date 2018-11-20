@@ -141,7 +141,6 @@ export default {
       }
 
       this.expandToFixElement(element);
-      console.log('Add Pool');
     },
     getShape() {
       return this.shape;
@@ -180,11 +179,18 @@ export default {
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
 
+        const elementBounds = element.component.node.diagram.bounds;
+
+        if (elementBounds.x && elementBounds.y) {
+          /* If lane already has a position, don't re-position or re-size it. */
+          return;
+        }
+
         const isFirstLane = this.shape.getEmbeddedCells().filter(cell => {
           return cell.component && cell.component.node.type === laneId;
         }).length === 1;
 
-        const laneHeight = isFirstLane ? height : element.component.node.diagram.bounds.height;
+        const laneHeight = isFirstLane ? height : elementBounds.height;
         element.resize(width - labelWidth, laneHeight);
         element.position(
           labelWidth,
@@ -291,7 +297,7 @@ export default {
       });
     },
     captureChildren() {
-      if (!this.$parent.processNode.get('flowElements')) {
+      if (this.$parent.processNode.get('flowElements').length === 0) {
         return;
       }
 
@@ -422,7 +428,6 @@ export default {
           /* Remove the shape from its current pool */
           this.moveElement(draggingElement, newPool);
         } else {
-          console.log('Drag Pool');
           this.expandToFixElement(draggingElement);
 
           /* If there are lanes, add the element to the lane it's above */

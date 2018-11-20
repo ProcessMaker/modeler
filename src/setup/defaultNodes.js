@@ -32,7 +32,7 @@ const nodeTypes = [
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
   /* Register basic node types */
   for (const node of nodeTypes) {
-    registerNode(node);
+    registerNode(node, () => node.id);
   }
 
   /* Add a BPMN extension */

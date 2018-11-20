@@ -89,14 +89,13 @@ export default {
   },
   data() {
     return {
+      /* Custom parsers for handling certain bpmn node types */
+      parsers: {},
+
       // What bpmn moddle extensions should we register
       extensions: [
 
       ],
-      // What is our bpmn type mappings
-      bpmnTypeMap: {
-
-      },
       // Our controls/nodes to show in our palette
       controls: {
 
@@ -184,13 +183,11 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNode(nodeType) {
+    registerNode(nodeType, parser) {
       this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
-
-      this.bpmnTypeMap[nodeType.bpmnType] = nodeType.id;
 
       if(nodeType.control) {
         // Register the control for our control palette
@@ -204,6 +201,10 @@ export default {
           label: nodeType.label,
         });
       }
+
+      this.parsers[nodeType.bpmnType]
+        ?  this.parsers[nodeType.bpmnType].push(parser)
+        : this.parsers[nodeType.bpmnType] = [parser];
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
@@ -239,7 +240,9 @@ export default {
       });
     },
     setNode(definition) {
-      const type = this.bpmnTypeMap[definition.$type];
+      const type = this.parsers[definition.$type].reduce((type, parser) => {
+        return parser(definition) || type;
+      }, null);
 
       if (!type) {
         throw new Error(`Unsupported element type in parse: ${definition.$type}`);

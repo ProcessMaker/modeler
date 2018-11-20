@@ -4,6 +4,7 @@ import {
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
+
   const component = {
     extends: task.component,
     methods: {
@@ -12,8 +13,12 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       },
     },
   };
+
+  const implementation = 'processmaker-social-twitter-send';
+  const nodeId = 'processmaker-connectors-social-twitter-send';
+
   const nodeType = {
-    id: 'processmaker-connectors-social-twitter-send',
+    id: nodeId,
     component: component,
     bpmnType: 'bpmn:ServiceTask',
     control: true,
@@ -23,7 +28,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     definition: function (moddle) {
       return moddle.create('bpmn:ServiceTask', {
         name: 'Send Tweet',
-        implementation: 'processmaker-social-twitter-send',
+        implementation,
       });
     },
     diagram: function (moddle) {
@@ -75,5 +80,10 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       },
     ],
   };
-  registerNode(nodeType);
+
+  registerNode(nodeType, definition => {
+    if (definition.implementation === implementation) {
+      return nodeId;
+    }
+  });
 });
