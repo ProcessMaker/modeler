@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import ModelerApp from './ModelerApp.vue';
-
 import BootstrapVue from 'bootstrap-vue';
+import './eventBus';
 
 Vue.use(BootstrapVue);
 

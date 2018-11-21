@@ -42,6 +42,7 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
+import { startEvent } from '@/components/nodes';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -159,8 +160,18 @@ export default {
     },
   },
   methods: {
+    registerInspectorExtension(node, config) {
+      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
+        return config.id && config.id === item.id;
+      });
+      if (registeredIndex === -1) {
+        node.inspectorConfig[0].items.push(config);
+      } else {
+        node.inspectorConfig[0].items[registeredIndex]= config;
+      }
+    },
     /**
-     * Register an inspector component to configure extended attributes and elements 
+     * Register an inspector component to configure extended attributes and elements
      * for specific bpmn extensions and execution environments. If the inspector
      * component is already registered, it is replaced by the new one.
      */
@@ -183,7 +194,7 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNodeType(nodeType) {
+    registerNode(nodeType) {
       this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
@@ -245,7 +256,6 @@ export default {
           }
         });
       });
-      this.$emit('parsed');
     },
     loadXML(xml) {
       this.nodes = {};
@@ -256,6 +266,7 @@ export default {
           definitions.exporterVersion = version;
           this.definitions = definitions;
           this.parse();
+          this.$emit('parsed');
         }
       });
     },
@@ -415,10 +426,28 @@ export default {
         this.poolTarget = pool;
       }
     },
+    addStartEvent() {
+      /* Add an initial startEvent node */
+      const definition = startEvent.definition(this.moddle);
+      const diagram = startEvent.diagram(this.moddle);
+
+      diagram.bounds.x = 150;
+      diagram.bounds.y = 150;
+
+      this.addNode({
+        definition,
+        diagram,
+        type: startEvent.id,
+      });
+    },
   },
-  created () {
-    // Initialize the BpmnModdle and its extensions
-    this.$emit('initialize', this);
+  mounted() {
+    /* Add a start event on initial load */
+    this.$once('parsed', this.addStartEvent);
+
+    /* Initialize the BpmnModdle and its extensions */
+    window.ProcessMaker.EventBus.$emit('modeler-init', this);
+
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
@@ -516,7 +545,8 @@ export default {
       }
     });
 
-    this.$emit('ready');
+    /* Register custom nodes */
+    window.ProcessMaker.EventBus.$emit('modeler-start', this);
   },
 };
 </script>
