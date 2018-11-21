@@ -23,6 +23,14 @@ export default {
       }),
     });
   },
+  /**
+   * Validate whether to accept an incoming flow from the node
+   * 
+   * @param node
+   */
+  validateIncoming: function () {
+    return false;
+  },
   inspectorHandler: function(value, definition, component) {
     // Go through each property and rebind it to our data
     for (var key in value) {
