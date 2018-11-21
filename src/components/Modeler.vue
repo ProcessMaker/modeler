@@ -160,6 +160,21 @@ export default {
   },
   methods: {
     /**
+     * Register an inspector component to configure extended attributes and elements 
+     * for specific bpmn extensions and execution environments. If the inspector
+     * component is already registered, it is replaced by the new one.
+     */
+    registerInspectorExtension(node, config) {
+      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
+        return config.id && config.id === item.id;
+      });
+      if (registeredIndex === -1) {
+        node.inspectorConfig[0].items.push(config);
+      } else {
+        node.inspectorConfig[0].items[registeredIndex]= config;
+      }
+    },
+    /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
      * This is used to support new attributes and elements that would be needed for specific
      * bpmn execution environments.
@@ -401,10 +416,12 @@ export default {
       }
     },
   },
-  mounted() {
+  created () {
     // Initialize the BpmnModdle and its extensions
-    this.$emit('initialize');
+    this.$emit('initialize', this);
     this.moddle = new BpmnModdle(this.extensions);
+  },
+  mounted() {
 
     // Handle window resize
     this.handleResize();
@@ -499,7 +516,6 @@ export default {
       }
     });
 
-    // Register custom nodes
     this.$emit('ready');
   },
 };
