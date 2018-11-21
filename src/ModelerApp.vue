@@ -86,20 +86,105 @@ export default {
 
   },
   methods: {
+    /**
+     * Add a BPMN extension
+     */
     testAddBpmnExtension (modeler) {
-      //Add a bpmn extension
       modeler.registerBpmnExtension('pm', bpmnExtension);
-      //Add custom properties to inspector
-      task.inspectorConfig[0].items.push({
-          component: "FormInput",
-          config: {
-              type: "number",
-              label: "Due In",
-              placeholder: "72 hours",
-              helper: "Time when the task will due (hours)",
-              name: "dueIn"
-          }
+    },
+    /**
+     * Add custom properties to inspector
+     */
+    testAddInspectorExtensions (modeler) {
+      // Add email
+      modeler.registerInspectorExtension(task, {
+        id: 'pm-due-in',
+        component: 'FormInput',
+        config: {
+          type: 'number',
+          label: 'Due In',
+          placeholder: '72 hours',
+          helper: 'Time when the task will due (hours)',
+          name: 'dueIn',
+        },
       });
+    },
+    /**
+     * Add a custom node example
+     */
+    testAddNodeType (modeler) {
+      const component = {
+        extends: task.component,
+        methods: {
+          handleClick () {
+            this.$parent.loadInspector('processmaker-connectors-social-twitter-send', this.node.definition, this);
+          }
+        },
+      };
+      const nodeType = {
+        id: 'processmaker-connectors-social-twitter-send',
+        component: component,
+        bpmnType: 'bpmn:ServiceTask',
+        control: true,
+        category: 'Social',
+        icon: require('./assets/toolpanel/task.svg'),
+        label: 'Send Tweet',
+        definition: function(moddle) {
+          return moddle.create('bpmn:ServiceTask', {
+            name: 'Send Tweet',
+            implementation: 'processmaker-social-twitter-send',
+          });
+        },
+        diagram: function(moddle) {
+          return moddle.create('bpmndi:BPMNShape', {
+            bounds: moddle.create('dc:Bounds', {
+              height: 80,
+              width: 100,
+            }),
+          });
+        },
+        inspectorHandler: function(value, definition, component) {
+          // Go through each property and rebind it to our data
+          for (var key in value) {
+            // Only change if the value is different
+            if (definition[key] != value[key]) {
+              definition[key] = value[key];
+            }
+          }
+          component.updateShape();
+        },
+        inspectorConfig: [
+          {
+            name: 'Send Tweet',
+            items: [
+              {
+                component: 'FormText',
+                config: {
+                  label: 'Send Tweet',
+                  fontSize: '2em',
+                },
+              },
+              {
+                component: 'FormInput',
+                config: {
+                  label: 'Identifier',
+                  helper: 'The id field should be unique across all elements in the diagram',
+                  name: 'id',
+                },
+              },
+              {
+                component: 'FormTextArea',
+                config: {
+                  label: 'Tweet Body',
+                  helper: 'The Body Of The Tweet to Send',
+                  name: 'tweet',
+                },
+              },
+            ],
+          },
+        ],
+      };
+      modeler.registerNodeType(nodeType);
     },
     testLoadBPMN (modeler) {
       let blank = `<?xml version="1.0" encoding="UTF-8"?>
@@ -112,19 +197,22 @@ export default {
           </bpmndi:BPMNDiagram>
         </bpmn:definitions>
       `;
-      this.$refs.modeler.loadXML(blank);
-      for (let nodeType of nodeTypes) {
-        this.$refs.modeler.registerNodeType(nodeType);
-      }
+      modeler.loadXML(blank);
     },
     /**
      * The modeler is initializing.
      */
-    modelerInitialize(moddle) {
+    modelerInitialize(modeler) {
       // Here the application could register BPMN extensions
-      this.$emit('modeler-init', this.$refs.modeler);
+      this.$emit('modeler-init', modeler);
+      // Register basic nodeTypes
+      for (let nodeType of nodeTypes) {
+        modeler.registerNodeType(nodeType);
+      }
       // Example of extension
-      this.testAddBpmnExtension(this.$refs.modeler);
+      this.testAddBpmnExtension(modeler);
+      this.testAddInspectorExtensions(modeler);
+      this.testAddNodeType(modeler);
     },
     /**
      * The modeler is ready to be used
