@@ -1,4 +1,5 @@
 // Our main modeler component
+import Vue from 'vue';
 import Modeler from './Modeler';
 
 // Our StatusBar component, if desired
@@ -15,6 +16,8 @@ import {
   task,
   textAnnotation,
 } from './nodes/index';
+
+window.VueFromCommon = Vue;
 
 export {
   Modeler,

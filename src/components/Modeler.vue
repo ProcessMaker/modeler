@@ -74,6 +74,7 @@ Vue.component('FormTextArea', FormTextArea);
 Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('VueFormRenderer', VueFormRenderer);
+window.VueComponentSet = Vue;
 
 const version = '1.0';
 
@@ -160,16 +161,6 @@ export default {
     },
   },
   methods: {
-    registerInspectorExtension(node, config) {
-      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
-        return config.id && config.id === item.id;
-      });
-      if (registeredIndex === -1) {
-        node.inspectorConfig[0].items.push(config);
-      } else {
-        node.inspectorConfig[0].items[registeredIndex]= config;
-      }
-    },
     /**
      * Register an inspector component to configure extended attributes and elements
      * for specific bpmn extensions and execution environments. If the inspector
@@ -199,6 +190,7 @@ export default {
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
+      window.VueTwo = Vue;
 
       this.bpmnTypeMap[nodeType.bpmnType] = nodeType.id;
 
@@ -441,17 +433,13 @@ export default {
       });
     },
   },
-  mounted() {
-    /* Add a start event on initial load */
-    this.$once('parsed', this.addStartEvent);
-
+  created() {
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', this);
 
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
-
     // Handle window resize
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
@@ -544,6 +532,9 @@ export default {
         cellView.model.component.handleClick();
       }
     });
+
+    /* Add a start event on initial load */
+    this.$once('parsed', this.addStartEvent);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', this);

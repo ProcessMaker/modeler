@@ -138,7 +138,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', modeler => {
       },
     ],
   };
-  modeler.registerNodeType(nodeType);
+  modeler.registerNode(nodeType);
 });
 
 window.ProcessMaker.EventBus.$on('modeler-start', modeler => {
@@ -146,7 +146,7 @@ window.ProcessMaker.EventBus.$on('modeler-start', modeler => {
 });
 
 window.ProcessMaker.EventBus.$on('modeler-start', async () => {
-  const { data: users } = await window.ProcessMaker.apiClient.get('/user');
+  // const { data: users } = await window.ProcessMaker.apiClient.get('/user');
 
   /* Add custom properties to inspector */
   task.inspectorConfig[0].items.push({
@@ -164,7 +164,7 @@ window.ProcessMaker.EventBus.$on('modeler-start', async () => {
       label: 'Direction',
       helper: 'The direction of the gateway',
       name: 'gatewayDirection',
-      options: users.map(user => ({ value: user.id, content: `${user.firstname} ${user.lastname}` })),
+      options: [],//users.map(user => ({ value: user.id, content: `${user.firstname} ${user.lastname}` })),
     },
   });
 });
