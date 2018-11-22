@@ -160,6 +160,21 @@ export default {
   },
   methods: {
     /**
+     * Register an inspector component to configure extended attributes and elements 
+     * for specific bpmn extensions and execution environments. If the inspector
+     * component is already registered, it is replaced by the new one.
+     */
+    registerInspectorExtension(node, config) {
+      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
+        return config.id && config.id === item.id;
+      });
+      if (registeredIndex === -1) {
+        node.inspectorConfig[0].items.push(config);
+      } else {
+        node.inspectorConfig[0].items[registeredIndex]= config;
+      }
+    },
+    /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
      * This is used to support new attributes and elements that would be needed for specific
      * bpmn execution environments.
@@ -260,10 +275,10 @@ export default {
       const type = transferData.type;
 
       // Add to our processNode
-      const definition = this.nodeRegistry[type].definition();
+      const definition = this.nodeRegistry[type].definition(this.moddle);
 
       // Now, let's modify planeElement
-      const diagram = this.nodeRegistry[type].diagram();
+      const diagram = this.nodeRegistry[type].diagram(this.moddle);
 
       // Handle transform
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
@@ -401,10 +416,13 @@ export default {
       }
     },
   },
-  created() {
+  created () {
+    // Initialize the BpmnModdle and its extensions
+    this.$emit('initialize', this);
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
+
     // Handle window resize
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
@@ -497,6 +515,8 @@ export default {
         cellView.model.component.handleClick();
       }
     });
+
+    this.$emit('ready');
   },
 };
 </script>

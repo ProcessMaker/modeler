@@ -1,7 +1,3 @@
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle();
-
 import component from './parallelGateway.vue';
 
 export default {
@@ -12,13 +8,13 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/parallel-gateway.svg'),
   label: 'Parallel Gateway',
-  definition: function() {
+  definition: function(moddle) {
     return moddle.create('bpmn:ParallelGateway', {
       name: 'New Parallel Gateway',
       gatewayDirection: 'Diverging',
     });
   },
-  diagram: function() {
+  diagram: function(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 42,
