@@ -2,10 +2,10 @@ import {
   task,
 } from '@/components/nodes';
 
-window.ProcessMaker.EventBus.$on('modeler-init', modeler => {
+window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }) => {
 
   /* Add custom properties to inspector */
-  modeler.registerInspectorExtension(task, {
+  registerInspectorExtension(task, {
     id: 'pm-due-in',
     component: 'FormInput',
     config: {
@@ -14,6 +14,20 @@ window.ProcessMaker.EventBus.$on('modeler-init', modeler => {
       placeholder: '72 hours',
       helper: 'Time when the task will due (hours)',
       name: 'dueIn',
+    },
+  });
+
+  registerInspectorExtension(task, {
+    id: 'pm-assigned-user',
+    component: 'FormSelect',
+    config: {
+      label: 'Users',
+      placeholder: 'Select a user',
+      helper: 'Assign user to task',
+      name: 'user',
+      options: [
+        {value: 'John Smith', content: 'John Smith'},
+      ],
     },
   });
 });

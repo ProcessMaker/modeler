@@ -2,7 +2,7 @@ import {
   task,
 } from '@/components/nodes';
 
-window.ProcessMaker.EventBus.$on('modeler-init', modeler => {
+window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
   const component = {
     extends: task.component,
@@ -75,5 +75,5 @@ window.ProcessMaker.EventBus.$on('modeler-init', modeler => {
       },
     ],
   };
-  modeler.registerNode(nodeType);
+  registerNode(nodeType);
 });

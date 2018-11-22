@@ -435,7 +435,11 @@ export default {
   },
   created() {
     /* Initialize the BpmnModdle and its extensions */
-    window.ProcessMaker.EventBus.$emit('modeler-init', this);
+    window.ProcessMaker.EventBus.$emit('modeler-init', {
+      registerInspectorExtension : this.registerInspectorExtension,
+      registerBpmnExtension : this.registerBpmnExtension,
+      registerNode : this.registerNode,
+    });
 
     this.moddle = new BpmnModdle(this.extensions);
   },
@@ -537,7 +541,7 @@ export default {
     this.$once('parsed', this.addStartEvent);
 
     /* Register custom nodes */
-    window.ProcessMaker.EventBus.$emit('modeler-start', this);
+    window.ProcessMaker.EventBus.$emit('modeler-start', { loadXML: this.loadXML });
   },
 };
 </script>
@@ -548,43 +552,43 @@ export default {
 $cursors: default, not-allowed;
 
 .modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+    position: relative;
+    width: inherit;
+    max-width: inherit;
+    height: inherit;
+    max-height: inherit;
+    overflow: hidden;
 
-  .modeler-container {
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+    .modeler-container {
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
 
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eee;
-      border-left: 1px solid #aaa;
-    }
-
-    .paper-container {
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
-      overflow: hidden;
-    }
-
-    @each $cursor in $cursors {
-      .paper-container.#{$cursor} {
-        .joint-paper,
-        .joint-paper * {
-          cursor: #{$cursor} !important;
+        .inspector {
+            font-size: 0.75em;
+            text-align: left;
+            padding: 8px;
+            width: 320px;
+            background-color: #eee;
+            border-left: 1px solid #aaa;
         }
-      }
+
+        .paper-container {
+            height: 100%;
+            max-height: 100%;
+            min-height: 100%;
+            overflow: hidden;
+        }
+
+        @each $cursor in $cursors {
+            .paper-container.#{$cursor} {
+                .joint-paper,
+                .joint-paper * {
+                    cursor: #{$cursor} !important;
+                }
+            }
+        }
     }
-  }
 }
 </style>
