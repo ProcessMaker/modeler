@@ -1,7 +1,3 @@
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle();
-
 import component from './task.vue';
 
 export const taskHeight = 80;
@@ -14,12 +10,12 @@ export default {
   category: 'BPMN',
   icon: require('../../../assets/toolpanel/task.svg'),
   label: 'Task',
-  definition: function() {
+  definition: function(moddle) {
     return moddle.create('bpmn:Task', {
       name: 'New Task',
     });
   },
-  diagram: function() {
+  diagram: function(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: taskHeight,

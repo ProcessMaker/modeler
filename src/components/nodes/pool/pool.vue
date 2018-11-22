@@ -11,11 +11,8 @@ import { id as poolId, labelWidth, poolPadding } from './index';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
-import BpmnModdle from 'bpmn-moddle';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
-
-const moddle = new BpmnModdle();
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -95,11 +92,11 @@ export default {
        * Get the current laneSet element or create a new one. */
 
       if (!this.laneSet) {
-        const laneSet = moddle.create('bpmn:LaneSet');
+        const laneSet = this.$parent.moddle.create('bpmn:LaneSet');
         this.laneSet = laneSet;
         this.containingProcess.get('laneSets').push(laneSet);
 
-        const definition = Lane.definition();
+        const definition = Lane.definition(this.$parent.moddle);
 
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
@@ -113,12 +110,12 @@ export default {
 
       this.pushNewLane();
     },
-    pushNewLane(definition = Lane.definition()) {
+    pushNewLane(definition = Lane.definition(this.$parent.moddle)) {
       this.$emit('set-pool-target', this.shape);
       this.$emit('add-node', {
         type: Lane.id,
         definition,
-        diagram: Lane.diagram(),
+        diagram: Lane.diagram(this.$parent.moddle),
       });
     },
     addToPool(element) {

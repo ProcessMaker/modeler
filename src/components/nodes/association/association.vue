@@ -8,9 +8,6 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle;
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -67,7 +64,7 @@ export default {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
 
-      this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
+      this.node.diagram.waypoint = points.map(point => this.$parent.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
     updateLinkTarget({ clientX, clientY }) {

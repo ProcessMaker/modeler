@@ -35,6 +35,7 @@
     "vue-upload-component": "^2.8.14"
   },
   "devDependencies": {
+    "@processmaker/processmaker-bpmn-moddle": "^0.1.2",
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-plugin-eslint": "^3.0.5",
     "@vue/cli-plugin-unit-jest": "^3.0.5",
