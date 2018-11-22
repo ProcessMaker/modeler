@@ -10,7 +10,7 @@ export default {
   bpmnType: 'bpmn:Participant',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/pool.svg'),
+  icon: require('@/assets/toolpanel/pool.svg'),
   label: 'Pool',
   definition: function (moddle) {
     return moddle.create('bpmn:Participant', {

@@ -7,7 +7,7 @@ export default {
   bpmnType: 'bpmn:EndEvent',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/end-event.svg'),
+  icon: require('@/assets/toolpanel/end-event.svg'),
   label: 'End Event',
   definition: function(moddle) {
     return moddle.create('bpmn:EndEvent', {
@@ -26,7 +26,7 @@ export default {
   },
   /**
    * Validate whether to accept an outgoing flow to the node
-   * 
+   *
    * @param node
    */
   validateOutgoing: function () {

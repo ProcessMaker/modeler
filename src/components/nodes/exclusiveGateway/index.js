@@ -8,7 +8,7 @@ export default {
   bpmnType: 'bpmn:ExclusiveGateway',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/exclusive-gateway.svg'),
+  icon: require('@/assets/toolpanel/exclusive-gateway.svg'),
   label: 'Exclusive Gateway',
   definition: function(moddle) {
     return moddle.create('bpmn:ExclusiveGateway', {
