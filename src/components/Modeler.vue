@@ -42,6 +42,7 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
+import { startEvent } from '@/components/nodes';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -56,6 +57,7 @@ import {
 } from '@processmaker/vue-form-elements';
 
 import processInspectorConfig from './inspectors/process';
+import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
 
 import {
   VueFormRenderer,
@@ -88,14 +90,13 @@ export default {
   },
   data() {
     return {
+      /* Custom parsers for handling certain bpmn node types */
+      parsers: {},
+
       // What bpmn moddle extensions should we register
       extensions: [
 
       ],
-      // What is our bpmn type mappings
-      bpmnTypeMap: {
-
-      },
       // Our controls/nodes to show in our palette
       controls: {
 
@@ -128,6 +129,7 @@ export default {
           items: [],
         },
       ],
+      sequenceExpressionInspectorConfig: sequenceExpressionInspectorConfig,
       nodes: {},
       collaboration: null,
       moddle: null,
@@ -160,6 +162,21 @@ export default {
   },
   methods: {
     /**
+     * Register an inspector component to configure extended attributes and elements
+     * for specific bpmn extensions and execution environments. If the inspector
+     * component is already registered, it is replaced by the new one.
+     */
+    registerInspectorExtension(node, config) {
+      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
+        return config.id && config.id === item.id;
+      });
+      if (registeredIndex === -1) {
+        node.inspectorConfig[0].items.push(config);
+      } else {
+        node.inspectorConfig[0].items[registeredIndex]= config;
+      }
+    },
+    /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
      * This is used to support new attributes and elements that would be needed for specific
      * bpmn execution environments.
@@ -168,13 +185,11 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNodeType(nodeType) {
+    registerNode(nodeType, parser) {
       this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
-
-      this.bpmnTypeMap[nodeType.bpmnType] = nodeType.id;
 
       if(nodeType.control) {
         // Register the control for our control palette
@@ -188,49 +203,65 @@ export default {
           label: nodeType.label,
         });
       }
+
+      this.parsers[nodeType.bpmnType]
+        ?  this.parsers[nodeType.bpmnType].push(parser)
+        : this.parsers[nodeType.bpmnType] = [parser];
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
-      // get the top level process objects
-      // All root elements are bpmn:process types
-      this.definitions.rootElements.forEach(process => {
-        this.processes.push(process);
-        this.processNode = process;
-        this.inspectorConfig = this.inspectors['process'];
-        this.inspectorNode = this.processNode;
+      // Get the top level objects
+      // All root elements are either bpmn:process or bpmn:collaboration types
+      // There should only be one collaboration
 
-        // Now iterate through all the elements in processes
-        process.get('flowElements').forEach(element => {
-          const type = this.bpmnTypeMap[element.$type];
+      this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
+      this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
 
-          if (!type) {
-            throw new Error(`Unsupported element type in parse: ${element.$type}`);
-          }
+      /* Get the diagram; there should only be one diagram. */
+      this.plane = this.definitions.diagrams[0].plane;
+      this.planeElements = this.plane.get('planeElement');
 
-          if (!element.get('name')) {
-            element.set('name', '');
-          }
+      this.processNode = this.processes[0];
+      this.inspectorConfig = this.inspectors['process'];
+      this.inspectorNode = this.processNode;
 
-          this.$set(this.nodes, element.id, { type, definition: element });
-        });
+      /* Add any pools */
+      if (this.collaboration) {
+        this.collaboration.get('participants').forEach(this.setNode);
+      }
+
+      /* Iterate through all elements in each process. */
+      this.processes.forEach(process => {
+        /* Add any lanes */
+        if (process.get('laneSets')[0]) {
+          process.laneSets[0].lanes.forEach(this.setNode);
+        }
+
+        /* Add all other elements */
+        process.get('flowElements').forEach(this.setNode);
       });
+    },
+    setNode(definition) {
+      const type = this.parsers[definition.$type].reduce((type, parser) => {
+        return parser(definition) || type;
+      }, null);
 
-      // Okay, now let's get the diagrams
-      this.definitions.diagrams.forEach(diagram => {
-        this.plane = diagram.plane;
-        this.planeElements = this.plane.get('planeElement');
+      if (!type) {
+        throw new Error(`Unsupported element type in parse: ${definition.$type}`);
+      }
 
-        this.planeElements.forEach(diagramElement => {
-          if (this.nodes[diagramElement.bpmnElement.id]) {
-            this.$set(
-              this.nodes[diagramElement.bpmnElement.id],
-              'diagram',
-              diagramElement
-            );
-          }
-        });
+      if (!definition.get('name')) {
+        definition.set('name', '');
+      }
+
+      /* Get the diagram element for the corresponding flow element node. */
+      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+
+      this.$set(this.nodes, definition.id, {
+        type,
+        definition,
+        diagram,
       });
-      this.$emit('parsed');
     },
     loadXML(xml) {
       this.nodes = {};
@@ -241,17 +272,13 @@ export default {
           definitions.exporterVersion = version;
           this.definitions = definitions;
           this.parse();
+          this.$emit('parsed');
         }
       });
     },
     toXML(cb) {
       this.moddle.toXML(this.definitions, cb);
     },
-
-    handleCanvasMove() {
-
-    },
-
     handleDrop(transferData, event) {
       if (!this.allowDrop) {
         return;
@@ -260,10 +287,10 @@ export default {
       const type = transferData.type;
 
       // Add to our processNode
-      const definition = this.nodeRegistry[type].definition();
+      const definition = this.nodeRegistry[type].definition(this.moddle);
 
       // Now, let's modify planeElement
-      const diagram = this.nodeRegistry[type].diagram();
+      const diagram = this.nodeRegistry[type].diagram(this.moddle);
 
       // Handle transform
       diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
@@ -328,11 +355,11 @@ export default {
       }
 
       this.planeElements.push(diagram);
+
       this.$set(this.nodes, id, {
         type,
         definition,
         diagram,
-        pool: type !== poolId ? this.poolTarget : null,
       });
 
       this.poolTarget = null;
@@ -358,7 +385,11 @@ export default {
     },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
-      this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      if(type === 'processmaker-modeler-sequence-flow' && data.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+        this.inspectorConfig = this.sequenceExpressionInspectorConfig;
+      } else {
+        this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      }
       this.inspectorHandler = (value) => {
         this.nodeRegistry[type].inspectorHandler(value, data, component);
       };
@@ -400,8 +431,29 @@ export default {
         this.poolTarget = pool;
       }
     },
+    addStartEvent() {
+      /* Add an initial startEvent node */
+      const definition = startEvent.definition(this.moddle);
+      const diagram = startEvent.diagram(this.moddle);
+
+      diagram.bounds.x = 150;
+      diagram.bounds.y = 150;
+
+      this.addNode({
+        definition,
+        diagram,
+        type: startEvent.id,
+      });
+    },
   },
   created() {
+    /* Initialize the BpmnModdle and its extensions */
+    window.ProcessMaker.EventBus.$emit('modeler-init', {
+      registerInspectorExtension : this.registerInspectorExtension,
+      registerBpmnExtension : this.registerBpmnExtension,
+      registerNode : this.registerNode,
+    });
+
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
@@ -502,6 +554,12 @@ export default {
         cellView.model.component.handleClick();
       }
     });
+
+    /* Add a start event on initial load */
+    this.$once('parsed', this.addStartEvent);
+
+    /* Register custom nodes */
+    window.ProcessMaker.EventBus.$emit('modeler-start', { loadXML: this.loadXML });
   },
 };
 </script>

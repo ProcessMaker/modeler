@@ -9,11 +9,9 @@ import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import pull from 'lodash/pull';
-import BpmnModdle from 'bpmn-moddle';
+import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
-
-const moddle = new BpmnModdle;
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -25,18 +23,20 @@ export default {
       sourceShape: null,
       target: null,
       anchorPadding: 25,
-      validConnections: {
-        'processmaker-modeler-task': ['processmaker-modeler-task', 'processmaker-modeler-end-event', 'processmaker-modeler-exclusive-gateway', 'processmaker-modeler-inclusive-gateway', 'processmaker-modeler-parallel-gateway'],
-        'processmaker-modeler-start-event': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
-        'processmaker-modeler-exclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
-        'processmaker-modeler-inclusive-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
-        'processmaker-modeler-parallel-gateway': ['processmaker-modeler-task', 'processmaker-modeler-end-event'],
-      },
     };
   },
   computed: {
+    sourceNode() {
+      return this.sourceShape && this.sourceShape.component.node;
+    },
+    targetNode() {
+      return this.target && this.target.component.node;
+    },
     sourceType() {
-      return this.sourceShape && this.sourceShape.component.node.type;
+      return this.sourceNode && this.$parent.nodeRegistry[this.sourceNode.type];
+    },
+    targetType() {
+      return this.targetNode && this.$parent.nodeRegistry[this.targetNode.type];
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
@@ -52,6 +52,7 @@ export default {
       target.attr('.body/fill', color);
     },
     completeLink() {
+      this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
       this.$emit('set-cursor', null);
@@ -75,15 +76,13 @@ export default {
       const definition = this.target.component.node.definition;
       const gatewayDirection = definition.get('gatewayDirection');
       const incomingFlowCount = definition.get('incoming').length;
-      const outgoingFlowCount = definition.get('outgoing').length;
 
       if (gatewayDirection == gatewayDirectionOptions.Converging) {
         return true;
       }
 
       // Exclusive gateway can only recieve one incoming link
-      // If the node has an outgoing link only then it can recieve a incoming link
-      if (incomingFlowCount === 0 || outgoingFlowCount > 0) {
+      if (incomingFlowCount === 0) {
         return true;
       }
 
@@ -93,7 +92,7 @@ export default {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
 
-      this.node.diagram.waypoint = points.map(point => moddle.create('dc:Point', point));
+      this.node.diagram.waypoint = points.map(point => this.$parent.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
     isValidConnection() {
@@ -112,12 +111,12 @@ export default {
         return false;
       }
 
-      if (!this.validConnections[this.sourceType].includes(targetType)) {
+      const invalidIncoming = this.targetType.validateIncoming instanceof Function
+        && !this.targetType.validateIncoming(this.sourceNode);
+      const invalidOutgoing = this.sourceType.validateOutgoing instanceof Function
+        && !this.sourceType.validateOutgoing(this.targetNode);
+      if (invalidIncoming || invalidOutgoing) {
         return false;
-      }
-
-      if (targetType === 'processmaker-modeler-exclusive-gateway') {
-        return this.isValidGatewayConnection();
       }
 
       return true;

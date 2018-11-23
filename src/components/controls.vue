@@ -1,6 +1,6 @@
 <template>
   <div class="controls">
-      <input placeholder="Filter..." class="form-control form-control-sm" type="text" v-model="filterQuery">
+    <input placeholder="Filter..." class="form-control form-control-sm" type="text" v-model="filterQuery">
     <div v-for="(items, category) in controls" :key="category">
       <h2>{{category}}</h2>
       <drag
@@ -46,7 +46,6 @@ export default {
   overflow-x: auto;
 
   h2 {
-    font-size: 1.1em;
     background-color: #aaa;
     border-top: 1px solid #999;
     border-bottom: 1px solid #999;

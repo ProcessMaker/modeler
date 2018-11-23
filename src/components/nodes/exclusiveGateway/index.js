@@ -1,7 +1,3 @@
-import BpmnModdle from 'bpmn-moddle';
-
-let moddle = new BpmnModdle();
-
 import component from './exclusiveGateway.vue';
 
 export const gatewayDirectionOptions = { Diverging: 'Diverging', Converging: 'Converging' };
@@ -12,15 +8,14 @@ export default {
   bpmnType: 'bpmn:ExclusiveGateway',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/exclusive-gateway.svg'),
+  icon: require('@/assets/toolpanel/exclusive-gateway.svg'),
   label: 'Exclusive Gateway',
-  definition: function() {
+  definition: function(moddle) {
     return moddle.create('bpmn:ExclusiveGateway', {
       name: 'New Exclusive Gateway',
-      gatewayDirection: 'Diverging',
     });
   },
-  diagram: function() {
+  diagram: function(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 42,
@@ -35,7 +30,6 @@ export default {
       if (definition[key] != value[key]) {
         definition[key] = value[key];
         definition.set('name', value.name);
-        definition.set('gatewayDirection', value.gatewayDirection);
       }
     }
     component.updateShape();
@@ -65,24 +59,6 @@ export default {
             label: 'Name',
             helper: 'The Name of the Gateway',
             name: 'name',
-          },
-        },
-        {
-          component: 'FormSelect',
-          config: {
-            label: 'Direction',
-            helper: 'The direction of the gateway',
-            name: 'gatewayDirection',
-            options: [
-              {
-                value: gatewayDirectionOptions.Diverging,
-                content: 'Diverging',
-              },
-              {
-                value: gatewayDirectionOptions.Converging,
-                content: 'Converging',
-              },
-            ],
           },
         },
       ],

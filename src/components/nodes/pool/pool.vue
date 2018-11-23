@@ -11,11 +11,8 @@ import { id as poolId, labelWidth, poolPadding } from './index';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
-import BpmnModdle from 'bpmn-moddle';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
-
-const moddle = new BpmnModdle();
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -101,11 +98,11 @@ export default {
        * Get the current laneSet element or create a new one. */
 
       if (!this.laneSet) {
-        const laneSet = moddle.create('bpmn:LaneSet');
+        const laneSet = this.$parent.moddle.create('bpmn:LaneSet');
         this.laneSet = laneSet;
         this.containingProcess.get('laneSets').push(laneSet);
 
-        const definition = Lane.definition();
+        const definition = Lane.definition(this.$parent.moddle);
 
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
@@ -119,12 +116,16 @@ export default {
 
       this.pushNewLane();
     },
-    pushNewLane(definition = Lane.definition()) {
+    pushNewLane(definition = Lane.definition(this.$parent.moddle)) {
       this.$emit('set-pool-target', this.shape);
+
+      const diagram = Lane.diagram(this.$parent.moddle);
+      diagram.bounds.width = this.shape.getBBox().width;
+
       this.$emit('add-node', {
         type: Lane.id,
         definition,
-        diagram: Lane.diagram(),
+        diagram,
       });
     },
     addToPool(element) {
@@ -178,11 +179,18 @@ export default {
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
 
+        const elementBounds = element.component.node.diagram.bounds;
+
+        if (elementBounds.x && elementBounds.y) {
+          /* If lane already has a position, don't re-position or re-size it. */
+          return;
+        }
+
         const isFirstLane = this.shape.getEmbeddedCells().filter(cell => {
           return cell.component && cell.component.node.type === laneId;
         }).length === 1;
 
-        const laneHeight = isFirstLane ? height : element.component.node.diagram.bounds.height;
+        const laneHeight = isFirstLane ? height : elementBounds.height;
         element.resize(width - labelWidth, laneHeight);
         element.position(
           labelWidth,
@@ -289,12 +297,13 @@ export default {
       });
     },
     captureChildren() {
-      if (!this.$parent.processNode.get('flowElements')) {
+      if (this.$parent.processNode.get('flowElements').length === 0) {
         return;
       }
 
-      this.$parent.processNode.get('flowElements').forEach(({ id }) => {
-        const { shape, node } = this.$parent.nodes[id].component;
+      this.$parent.processNode.get('flowElements').map(({ id }) => {
+        return this.$parent.nodes[id].component;
+      }).filter(component => component).forEach(({ shape, node }) => {
         this.shape.embed(shape);
         shape.toFront({ deep: true });
         node.pool = this.shape;
@@ -312,6 +321,9 @@ export default {
       );
       this.shape.getEmbeddedCells().forEach(cell => cell.translate(labelWidth));
     },
+  },
+  created() {
+    this.laneSet = this.containingProcess.get('laneSets')[0];
   },
   mounted() {
     this.shape = new joint.shapes.processmaker.modeler.bpmn.pool();
@@ -348,7 +360,8 @@ export default {
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;
 
-    /* If there are no other pools, the first pool should capture all current flow elements */
+    /* If there are no other pools, the first pool should capture all current flow elements.
+     * Don't do this when parsing an uploaded diagram. */
     if (this.collaboration.get('participants').length === 1) {
       this.captureChildren();
     }
@@ -356,7 +369,7 @@ export default {
     this.$nextTick(() => {
       let previousValidPosition;
       let draggingElement;
-      let newPoolOrLane;
+      let newPool;
 
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
         if (
@@ -366,11 +379,16 @@ export default {
         ) {
           /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
 
-          const poolOrLane = this.getElementsUnderArea(element).filter(model => {
-            return model.component && [poolId, laneId].includes(model.component.node.type);
-          })[0];
+          // const poolsAndLanes = this.getElementsUnderArea(element).filter(model => {
+          //   return model.component && [poolId, laneId].includes(model.component.node.type);
+          // });
+          // const poolOrLane = poolsAndLanes.find(model => model.component.node.type === laneId) ||
+          //   poolsAndLanes.find(model => model.component.node.type === poolId);
+          const pool = this.getElementsUnderArea(element).find(model => {
+            return model.component && model.component.node.type === poolId;
+          });
 
-          if (!poolOrLane) {
+          if (!pool) {
             if (!previousValidPosition) {
               previousValidPosition = newPosition;
             }
@@ -380,8 +398,8 @@ export default {
             this.paper.drawBackground({ color: defaultNodeColor });
             previousValidPosition = null;
 
-            newPoolOrLane = poolOrLane !== this.shape
-              ? poolOrLane
+            newPool = pool !== this.shape
+              ? pool
               : null;
           }
         }
@@ -406,11 +424,28 @@ export default {
           draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
         }
 
-        if (newPoolOrLane) {
+        if (newPool) {
           /* Remove the shape from its current pool */
-          this.moveElement(draggingElement, newPoolOrLane);
+          this.moveElement(draggingElement, newPool);
         } else {
           this.expandToFixElement(draggingElement);
+
+          /* If there are lanes, add the element to the lane it's above */
+          const lane = this.getElementsUnderArea(cellView).find(model => {
+            return model.component && model.component.node.type === laneId;
+          });
+
+          if (lane) {
+            const elementDefinition = cellView.model.component.node.definition;
+
+            /* Remove references to the element from the current Lane */
+            const containingLane = this.laneSet.get('lanes').find(lane => {
+              return lane.get('flowNodeRef').includes(elementDefinition);
+            });
+
+            pull(containingLane.get('flowNodeRef'), elementDefinition);
+            lane.component.node.definition.get('flowNodeRef').push(cellView.model.component.node.definition);
+          }
         }
 
         this.paper.drawBackground({ color: defaultNodeColor });

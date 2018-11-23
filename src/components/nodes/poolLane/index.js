@@ -1,7 +1,4 @@
-import BpmnModdle from 'bpmn-moddle';
 import component from './poolLane';
-
-const moddle = new BpmnModdle();
 
 export const id = 'processmaker-modeler-lane';
 
@@ -12,11 +9,13 @@ export default {
   control: false,
   category: 'BPMN',
   label: 'New Lane',
-  definition: () => moddle.create('bpmn:Lane', { name: '' }),
-  diagram: () => moddle.create('bpmndi:BPMNShape', {
+  definition: (moddle) => moddle.create('bpmn:Lane', { name: '' }),
+  diagram: (moddle) => moddle.create('bpmndi:BPMNShape', {
     bounds: moddle.create('dc:Bounds', {
       height: 150,
       width: 600,
+      x: null,
+      y: null,
     }),
   }),
   inspectorHandler(value, definition, component) {
