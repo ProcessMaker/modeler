@@ -6,7 +6,7 @@ export default {
   bpmnType: 'bpmn:TextAnnotation',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/text-annotation.svg'),
+  icon: require('@/assets/toolpanel/text-annotation.svg'),
   label: 'Text Annotation',
   definition: function(moddle) {
     return moddle.create('bpmn:TextAnnotation', {

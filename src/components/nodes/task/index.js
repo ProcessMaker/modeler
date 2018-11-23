@@ -8,7 +8,7 @@ export default {
   bpmnType: 'bpmn:Task',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/task.svg'),
+  icon: require('@/assets/toolpanel/task.svg'),
   label: 'Task',
   definition: function(moddle) {
     return moddle.create('bpmn:Task', {

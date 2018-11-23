@@ -6,7 +6,7 @@ export default {
   bpmnType: 'bpmn:StartEvent',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/start-event.svg'),
+  icon: require('@/assets/toolpanel/start-event.svg'),
   label: 'Start Event',
   definition: function(moddle) {
     return moddle.create('bpmn:StartEvent', {
@@ -25,7 +25,7 @@ export default {
   },
   /**
    * Validate whether to accept an incoming flow from the node
-   * 
+   *
    * @param node
    */
   validateIncoming: function () {

@@ -6,7 +6,7 @@ export default {
   bpmnType: 'bpmn:ParallelGateway',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/parallel-gateway.svg'),
+  icon: require('@/assets/toolpanel/parallel-gateway.svg'),
   label: 'Parallel Gateway',
   definition: function(moddle) {
     return moddle.create('bpmn:ParallelGateway', {

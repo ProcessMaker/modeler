@@ -6,7 +6,7 @@ export default {
   bpmnType: 'bpmn:InclusiveGateway',
   control: true,
   category: 'BPMN',
-  icon: require('../../../assets/toolpanel/inclusive-gateway.svg'),
+  icon: require('@/assets/toolpanel/inclusive-gateway.svg'),
   label: 'Inclusive Gateway',
   definition: function(moddle) {
     return moddle.create('bpmn:InclusiveGateway', {
