@@ -9,6 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import pull from 'lodash/pull';
+import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
@@ -51,6 +52,7 @@ export default {
       target.attr('.body/fill', color);
     },
     completeLink() {
+      this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
       this.$emit('set-cursor', null);
@@ -74,15 +76,13 @@ export default {
       const definition = this.target.component.node.definition;
       const gatewayDirection = definition.get('gatewayDirection');
       const incomingFlowCount = definition.get('incoming').length;
-      const outgoingFlowCount = definition.get('outgoing').length;
 
       if (gatewayDirection == gatewayDirectionOptions.Converging) {
         return true;
       }
 
       // Exclusive gateway can only recieve one incoming link
-      // If the node has an outgoing link only then it can recieve a incoming link
-      if (incomingFlowCount === 0 || outgoingFlowCount > 0) {
+      if (incomingFlowCount === 0) {
         return true;
       }
 
@@ -117,10 +117,6 @@ export default {
         && !this.sourceType.validateOutgoing(this.targetNode);
       if (invalidIncoming || invalidOutgoing) {
         return false;
-      }
-
-      if (targetType === 'processmaker-modeler-exclusive-gateway') {
-        return this.isValidGatewayConnection();
       }
 
       return true;

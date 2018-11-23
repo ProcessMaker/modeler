@@ -57,6 +57,7 @@ import {
 } from '@processmaker/vue-form-elements';
 
 import processInspectorConfig from './inspectors/process';
+import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
 
 import {
   VueFormRenderer,
@@ -128,6 +129,7 @@ export default {
           items: [],
         },
       ],
+      sequenceExpressionInspectorConfig: sequenceExpressionInspectorConfig,
       nodes: {},
       collaboration: null,
       moddle: null,
@@ -383,7 +385,11 @@ export default {
     },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
-      this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      if(type === 'processmaker-modeler-sequence-flow' && data.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+        this.inspectorConfig = this.sequenceExpressionInspectorConfig;
+      } else {
+        this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+      }
       this.inspectorHandler = (value) => {
         this.nodeRegistry[type].inspectorHandler(value, data, component);
       };
