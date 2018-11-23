@@ -14,6 +14,8 @@ export default {
     bounds: moddle.create('dc:Bounds', {
       height: 150,
       width: 600,
+      x: null,
+      y: null,
     }),
   }),
   inspectorHandler(value, definition, component) {

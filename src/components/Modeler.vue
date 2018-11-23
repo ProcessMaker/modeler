@@ -89,14 +89,13 @@ export default {
   },
   data() {
     return {
+      /* Custom parsers for handling certain bpmn node types */
+      parsers: {},
+
       // What bpmn moddle extensions should we register
       extensions: [
 
       ],
-      // What is our bpmn type mappings
-      bpmnTypeMap: {
-
-      },
       // Our controls/nodes to show in our palette
       controls: {
 
@@ -184,13 +183,11 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNode(nodeType) {
+    registerNode(nodeType, parser) {
       this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
-
-      this.bpmnTypeMap[nodeType.bpmnType] = nodeType.id;
 
       if(nodeType.control) {
         // Register the control for our control palette
@@ -204,47 +201,64 @@ export default {
           label: nodeType.label,
         });
       }
+
+      this.parsers[nodeType.bpmnType]
+        ?  this.parsers[nodeType.bpmnType].push(parser)
+        : this.parsers[nodeType.bpmnType] = [parser];
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
-      // get the top level process objects
-      // All root elements are bpmn:process types
-      this.definitions.rootElements.forEach(process => {
-        this.processes.push(process);
-        this.processNode = process;
-        this.inspectorConfig = this.inspectors['process'];
-        this.inspectorNode = this.processNode;
+      // Get the top level objects
+      // All root elements are either bpmn:process or bpmn:collaboration types
+      // There should only be one collaboration
 
-        // Now iterate through all the elements in processes
-        process.get('flowElements').forEach(element => {
-          const type = this.bpmnTypeMap[element.$type];
+      this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
+      this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
 
-          if (!type) {
-            throw new Error(`Unsupported element type in parse: ${element.$type}`);
-          }
+      /* Get the diagram; there should only be one diagram. */
+      this.plane = this.definitions.diagrams[0].plane;
+      this.planeElements = this.plane.get('planeElement');
 
-          if (!element.get('name')) {
-            element.set('name', '');
-          }
+      this.processNode = this.processes[0];
+      this.inspectorConfig = this.inspectors['process'];
+      this.inspectorNode = this.processNode;
 
-          this.$set(this.nodes, element.id, { type, definition: element });
-        });
+      /* Add any pools */
+      if (this.collaboration) {
+        this.collaboration.get('participants').forEach(this.setNode);
+      }
+
+      /* Iterate through all elements in each process. */
+      this.processes.forEach(process => {
+        /* Add any lanes */
+        if (process.get('laneSets')[0]) {
+          process.laneSets[0].lanes.forEach(this.setNode);
+        }
+
+        /* Add all other elements */
+        process.get('flowElements').forEach(this.setNode);
       });
+    },
+    setNode(definition) {
+      const type = this.parsers[definition.$type].reduce((type, parser) => {
+        return parser(definition) || type;
+      }, null);
 
-      // Okay, now let's get the diagrams
-      this.definitions.diagrams.forEach(diagram => {
-        this.plane = diagram.plane;
-        this.planeElements = this.plane.get('planeElement');
+      if (!type) {
+        throw new Error(`Unsupported element type in parse: ${definition.$type}`);
+      }
 
-        this.planeElements.forEach(diagramElement => {
-          if (this.nodes[diagramElement.bpmnElement.id]) {
-            this.$set(
-              this.nodes[diagramElement.bpmnElement.id],
-              'diagram',
-              diagramElement
-            );
-          }
-        });
+      if (!definition.get('name')) {
+        definition.set('name', '');
+      }
+
+      /* Get the diagram element for the corresponding flow element node. */
+      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+
+      this.$set(this.nodes, definition.id, {
+        type,
+        definition,
+        diagram,
       });
     },
     loadXML(xml) {
@@ -263,11 +277,6 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, cb);
     },
-
-    handleCanvasMove() {
-
-    },
-
     handleDrop(transferData, event) {
       if (!this.allowDrop) {
         return;
@@ -344,11 +353,11 @@ export default {
       }
 
       this.planeElements.push(diagram);
+
       this.$set(this.nodes, id, {
         type,
         definition,
         diagram,
-        pool: type !== poolId ? this.poolTarget : null,
       });
 
       this.poolTarget = null;
@@ -511,7 +520,12 @@ export default {
         this.graph.getConnectedLinks(cellView.model).forEach(link => link.toFront());
 
         if ([poolId, laneId].includes(cellView.model.component.node.type)) {
-          this.graph.findModelsUnderElement(cellView).filter(element => {
+          /* If we brought a pool or lane to the front, ensure it doesn't overlap its children */
+
+          const { x, y, width, height} = cellView.model.getBBox();
+          const area = { x, y, width, height };
+
+          this.graph.findModelsInArea(area).filter(element => {
             return element.component && ![poolId, laneId].includes(element.component.node.type);
           }).forEach(element => {
             element.toFront({ deep: true });

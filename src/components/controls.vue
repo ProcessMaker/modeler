@@ -46,7 +46,6 @@ export default {
   overflow-x: auto;
 
   h2 {
-    font-size: 1.1em;
     background-color: #aaa;
     border-top: 1px solid #999;
     border-bottom: 1px solid #999;
