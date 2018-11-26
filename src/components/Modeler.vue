@@ -146,18 +146,15 @@ export default {
     // But we also need to avoid circular references. In bpmn-moddle, this is usually brought
     // on by parent
     inspectorNode() {
-      this.inspectorData = JSON.parse(
-        JSON.stringify(this.inspectorNode, function(key, value) {
-          // Empty key is the object itself
-          if (key == '') {
-            return value;
-          }
-          if (typeof value == 'object') {
-            return undefined;
-          }
-          return value;
-        })
-      );
+      this.inspectorData = Object.entries(this.inspectorNode).reduce((data, [key, value]) => {
+        if (key === 'config') {
+          const config = JSON.parse(value);
+          return { ...data, ...config };
+        }
+
+        data[key] = value;
+        return data;
+      }, {});
     },
   },
   methods: {
@@ -277,7 +274,7 @@ export default {
       });
     },
     toXML(cb) {
-      this.moddle.toXML(this.definitions, cb);
+      this.moddle.toXML(this.definitions, { format: true }, cb);
     },
     handleDrop(transferData, event) {
       if (!this.allowDrop) {
