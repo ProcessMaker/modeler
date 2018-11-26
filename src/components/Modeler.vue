@@ -59,10 +59,7 @@ import {
 import processInspectorConfig from './inspectors/process';
 import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
 
-import {
-  VueFormRenderer,
-  renderer,
-} from '@processmaker/vue-form-builder';
+import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane/';
@@ -94,17 +91,11 @@ export default {
       parsers: {},
 
       // What bpmn moddle extensions should we register
-      extensions: [
-
-      ],
+      extensions: [],
       // Our controls/nodes to show in our palette
-      controls: {
-
-      },
+      controls: {},
       // Our node types, keyed by the id
-      nodeRegistry: {
-
-      },
+      nodeRegistry: {},
       // Our jointjs data graph model
       graph: null,
       // Our jointjs paper
@@ -162,25 +153,25 @@ export default {
   },
   methods: {
     /**
-     * Register an inspector component to configure extended attributes and elements
-     * for specific bpmn extensions and execution environments. If the inspector
-     * component is already registered, it is replaced by the new one.
-     */
+         * Register an inspector component to configure extended attributes and elements
+         * for specific bpmn extensions and execution environments. If the inspector
+         * component is already registered, it is replaced by the new one.
+         */
     registerInspectorExtension(node, config) {
-      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
+      const registeredIndex = node.inspectorConfig[0].items.findIndex(item => {
         return config.id && config.id === item.id;
       });
       if (registeredIndex === -1) {
         node.inspectorConfig[0].items.push(config);
       } else {
-        node.inspectorConfig[0].items[registeredIndex]= config;
+        node.inspectorConfig[0].items[registeredIndex] = config;
       }
     },
     /**
-     * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
-     * This is used to support new attributes and elements that would be needed for specific
-     * bpmn execution environments.
-     */
+         * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
+         * This is used to support new attributes and elements that would be needed for specific
+         * bpmn execution environments.
+         */
     registerBpmnExtension(namespace, extension) {
       this.extensions[namespace] = extension;
     },
@@ -191,7 +182,7 @@ export default {
 
       Vue.component(nodeType.id, nodeType.component);
 
-      if(nodeType.control) {
+      if (nodeType.control) {
         // Register the control for our control palette
         if (!this.controls[nodeType.category]) {
           this.$set(this.controls, nodeType.category, []);
@@ -205,8 +196,8 @@ export default {
       }
 
       this.parsers[nodeType.bpmnType]
-        ?  this.parsers[nodeType.bpmnType].push(parser)
-        : this.parsers[nodeType.bpmnType] = [parser];
+        ? this.parsers[nodeType.bpmnType].push(parser)
+        : (this.parsers[nodeType.bpmnType] = [parser]);
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
@@ -302,14 +293,14 @@ export default {
     },
     addNode({ type, definition, diagram }) {
       /*
-       * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
-       * if one exists.
-       *
-       * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
-       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
-       *
-       * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
-      */
+             * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
+             * if one exists.
+             *
+             * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
+             * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
+             *
+             * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
+             */
       if (type === poolId) {
         if (!this.collaboration) {
           this.collaboration = this.moddle.create('bpmn:Collaboration');
@@ -334,13 +325,18 @@ export default {
         this.collaboration.get('participants').push(definition);
       } else {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
-        const targetProcess =  this.poolTarget
-          ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
+        const targetProcess = this.poolTarget
+          ? this.processes.find(
+            ({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id
+          )
           : this.processNode;
 
         const flowElements = targetProcess.get('flowElements');
         if (type === laneId) {
-          targetProcess.get('laneSets')[0].get('lanes').push(definition);
+          targetProcess
+            .get('laneSets')[0]
+            .get('lanes')
+            .push(definition);
         } else {
           flowElements.push(definition);
         }
@@ -385,12 +381,12 @@ export default {
     },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
-      if(type === 'processmaker-modeler-sequence-flow' && data.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+      if (type === 'processmaker-modeler-sequence-flow' && data.sourceRef.$type === 'bpmn:ExclusiveGateway') {
         this.inspectorConfig = this.sequenceExpressionInspectorConfig;
       } else {
         this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
       }
-      this.inspectorHandler = (value) => {
+      this.inspectorHandler = value => {
         this.nodeRegistry[type].inspectorHandler(value, data, component);
       };
     },
@@ -449,9 +445,9 @@ export default {
   created() {
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
-      registerInspectorExtension : this.registerInspectorExtension,
-      registerBpmnExtension : this.registerBpmnExtension,
-      registerNode : this.registerNode,
+      registerInspectorExtension: this.registerInspectorExtension,
+      registerBpmnExtension: this.registerBpmnExtension,
+      registerNode: this.registerNode,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -465,7 +461,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
-        (!cellView.model.component || cellView.model.component.node.type === laneId)
+                (!cellView.model.component || cellView.model.component.node.type === laneId)
       ) {
         /* Prevent dragging crown icons and lanes */
         return false;
@@ -496,15 +492,18 @@ export default {
     });
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
-      this.canvasDragPosition = {x: x, y: y};
+      this.canvasDragPosition = { x: x, y: y };
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
     });
 
-    this.$el.addEventListener('mousemove', (event) => {
+    this.$el.addEventListener('mousemove', event => {
       if (this.canvasDragPosition) {
-        this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
+        this.paper.translate(
+          event.offsetX - this.canvasDragPosition.x,
+          event.offsetY - this.canvasDragPosition.y
+        );
       }
     });
 
@@ -528,15 +527,18 @@ export default {
         if ([poolId, laneId].includes(cellView.model.component.node.type)) {
           /* If we brought a pool or lane to the front, ensure it doesn't overlap its children */
 
-          const { x, y, width, height} = cellView.model.getBBox();
+          const { x, y, width, height } = cellView.model.getBBox();
           const area = { x, y, width, height };
 
-          this.graph.findModelsInArea(area).filter(element => {
-            return element.component && ![poolId, laneId].includes(element.component.node.type);
-          }).forEach(element => {
-            element.toFront({ deep: true });
-            this.graph.getConnectedLinks(element).forEach(link => link.toFront());
-          });
+          this.graph
+            .findModelsInArea(area)
+            .filter(element => {
+              return element.component && ![poolId, laneId].includes(element.component.node.type);
+            })
+            .forEach(element => {
+              element.toFront({ deep: true });
+              this.graph.getConnectedLinks(element).forEach(link => link.toFront());
+            });
         }
 
         this.highlighted = cellView;
@@ -570,43 +572,43 @@ export default {
 $cursors: default, not-allowed;
 
 .modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+    position: relative;
+    width: inherit;
+    max-width: inherit;
+    height: inherit;
+    max-height: inherit;
+    overflow: hidden;
 
-  .modeler-container {
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+    .modeler-container {
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
 
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eee;
-      border-left: 1px solid #aaa;
-    }
-
-    .paper-container {
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
-      overflow: hidden;
-    }
-
-    @each $cursor in $cursors {
-      .paper-container.#{$cursor} {
-        .joint-paper,
-        .joint-paper * {
-          cursor: #{$cursor} !important;
+        .inspector {
+            font-size: 0.75em;
+            text-align: left;
+            padding: 8px;
+            width: 320px;
+            background-color: #eee;
+            border-left: 1px solid #aaa;
         }
-      }
+
+        .paper-container {
+            height: 100%;
+            max-height: 100%;
+            min-height: 100%;
+            overflow: hidden;
+        }
+
+        @each $cursor in $cursors {
+            .paper-container.#{$cursor} {
+                .joint-paper,
+                .joint-paper * {
+                    cursor: #{$cursor} !important;
+                }
+            }
+        }
     }
-  }
 }
 </style>

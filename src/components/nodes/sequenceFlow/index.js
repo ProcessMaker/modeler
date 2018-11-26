@@ -1,14 +1,11 @@
-import BpmnModdle from 'bpmn-moddle';
 import component from './sequenceFlow.vue';
-
-let moddle = new BpmnModdle();
 
 export default {
   id: 'processmaker-modeler-sequence-flow',
   component: component,
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
-  definition: function() {
+  definition: function(moddle) {
     let sequenceFlow = moddle.create('bpmn:SequenceFlow', {
       name: 'New Sequence Flow',
     });
