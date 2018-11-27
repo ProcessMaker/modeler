@@ -110,6 +110,7 @@ export default {
       // Our jointjs paper
       paper: null,
       definitions: null,
+      context: null,
       planeElements: null,
       canvasDragPosition: null,
       // This is our id based lookup model
@@ -262,12 +263,14 @@ export default {
     },
     loadXML(xml) {
       this.nodes = {};
-      this.moddle.fromXML(xml, (err, definitions) => {
+      this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
           definitions.exporter = 'ProcessMaker Modeler';
           definitions.exporterVersion = version;
           this.definitions = definitions;
+          this.context = context;
+          this.initializeUniqueId(context);
           this.parse();
           this.$emit('parsed');
         }
@@ -360,6 +363,14 @@ export default {
       });
 
       this.poolTarget = null;
+    },
+    initializeUniqueId(context) {
+      let last = uniqueId() * 1;
+      context.references.forEach((ref)=>{
+        const ma = ref.id.match(/^node_(\d+)$/),
+          index = ma && ma[1] * 1;
+        while(last < index) last = uniqueId() * 1;
+      });
     },
     removeNode(node) {
       pull(this.processNode.get('flowElements'), node.definition);
