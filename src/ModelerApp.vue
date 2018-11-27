@@ -70,7 +70,7 @@ export default {
 
     /* Add a start event on initial load */
     this.$refs.modeler.$once('parsed', this.$refs.modeler.addStartEvent);
-  }
+  },
 };
 </script>
 
