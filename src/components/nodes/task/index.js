@@ -4,18 +4,18 @@ export const taskHeight = 80;
 
 export default {
   id: 'processmaker-modeler-task',
-  component: component,
+  component,
   bpmnType: 'bpmn:Task',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/task.svg'),
   label: 'Task',
-  definition: function(moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:Task', {
       name: 'New Task',
     });
   },
-  diagram: function(moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: taskHeight,
@@ -23,7 +23,7 @@ export default {
       }),
     });
   },
-  inspectorHandler: function(value, definition, component) {
+  inspectorHandler(value, definition, component) {
     // Go through each property and rebind it to our data
     for (var key in value) {
       // Only change if the value is different

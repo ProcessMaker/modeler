@@ -52,8 +52,9 @@ export default {
         if (err) {
           alert(err);
         } else {
-          let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
-          FilerSaver.saveAs(file);
+          console.log(xml);
+          // let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
+          // FilerSaver.saveAs(file);
         }
       });
     },

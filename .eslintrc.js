@@ -13,7 +13,9 @@ module.exports = {
     indent: ['error', 2],
     'vue/html-indent': 'error',
     quotes: ['error', 'single'],
-    'no-debugger': 'off'
+    'no-debugger': 'off',
+    'object-shorthand': 'error',
+    'space-before-function-paren': ['error', 'never']
   },
   parserOptions: {
     parser: 'babel-eslint',

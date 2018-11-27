@@ -4,6 +4,7 @@ import './globals';
 import './defaultNodes';
 import './extensions/testTaskInspectorExtension';
 import './extensions/twitterConnector';
+import './extensions/scriptTask';
 
 const blank = `
 <?xml version="1.0" encoding="UTF-8"?>

@@ -5,8 +5,8 @@ import {
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
 
-  const implementation = 'processmaker-social-twitter-send';
-  const nodeId = 'processmaker-connectors-social-twitter-send';
+  const implementation = 'processmaker-script-task-test';
+  const nodeId = 'processmaker-script-task-test';
 
   const component = {
     extends: task.component,
@@ -20,16 +20,16 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   const nodeType = {
     id: nodeId,
     component,
-    bpmnType: 'bpmn:ServiceTask',
+    bpmnType: 'bpmn:ScriptTask',
     control: true,
-    category: 'Social',
+    category: 'Other',
     icon: require('@/assets/toolpanel/task.svg'),
-    label: 'Send Tweet',
+    label: 'Script',
     definition(moddle) {
-      return moddle.create('bpmn:ServiceTask', {
-        name: 'Send Tweet',
+      return moddle.create('bpmn:ScriptTask', {
+        name: 'Script',
         implementation,
-        config: JSON.stringify({ tweet: '' }),
+        config: JSON.stringify({}),
       });
     },
     diagram(moddle) {
@@ -39,38 +39,6 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
           width: 100,
         }),
       });
-    },
-    /* Map values from inspector data to node definition  */
-    inspectorHandler(value, definition, component) {
-      // Go through each property and rebind it to our data
-      const config = JSON.parse(definition.config);
-
-      for (const key in value) {
-        if (key in config) {
-          config[key] = value[key];
-        } else if (definition[key] !== value[key]) {
-          definition[key] = value[key];
-        }
-      }
-
-      definition.config = JSON.stringify(config);
-      component.updateShape();
-    },
-    /* Map values from node definition to inspector data */
-    inspectorData(definition) {
-      return Object.entries(definition).reduce((data, [key, value]) => {
-        if (key === 'config') {
-          try {
-            const config = JSON.parse(value);
-            return { ...data, ...config };
-          } catch (error) {
-            /* Ignore invalid JSON */
-          }
-        }
-
-        data[key] = value;
-        return data;
-      }, {});
     },
     inspectorConfig: [
       {
@@ -94,9 +62,9 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
           {
             component: 'FormTextArea',
             config: {
-              label: 'Tweet Body',
-              helper: 'The Body Of The Tweet to Send',
-              name: 'tweet',
+              label: 'Config',
+              helper: 'Script configuration',
+              name: 'config',
             },
           },
         ],
