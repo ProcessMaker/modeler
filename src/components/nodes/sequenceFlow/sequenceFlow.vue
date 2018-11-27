@@ -242,6 +242,13 @@ export default {
 
       this.$emit('set-cursor', 'not-allowed');
     }
+    window.ProcessMaker.EventBus.$on('uploadState', isUpload => {
+      if (isUpload) {
+        const targetShape = this.shape.getTargetElement();
+        this.sourceShape.component.node.definition.get('outgoing').splice(0, 1);
+        targetShape.component.node.definition.get('incoming').splice(0, 1);
+      }
+    });
 
     this.updateRouter();
   },

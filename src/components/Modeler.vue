@@ -362,10 +362,10 @@ export default {
     },
     initializeUniqueId(context) {
       let last = uniqueId() * 1;
-      context.references.forEach((ref)=>{
+      context.references.forEach(ref => {
         const ma = ref.id.match(/^node_(\d+)$/),
           index = ma && ma[1] * 1;
-        while(last < index) last = uniqueId() * 1;
+        while (last < index) last = uniqueId() * 1;
       });
     },
     removeNode(node) {
