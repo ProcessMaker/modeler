@@ -29,6 +29,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       return moddle.create('bpmn:ServiceTask', {
         name: 'Send Tweet',
         implementation,
+        config: JSON.stringify({ tweet: '' }),
       });
     },
     diagram: function (moddle) {
@@ -41,12 +42,17 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     },
     inspectorHandler: function (value, definition, component) {
       // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (definition[key] != value[key]) {
+      const config = JSON.parse(definition.config);
+
+      for (const key in value) {
+        if (key in config) {
+          config[key] = value[key];
+        } else if (definition[key] !== value[key]) {
           definition[key] = value[key];
         }
       }
+
+      definition.config = JSON.stringify(config);
       component.updateShape();
     },
     inspectorConfig: [

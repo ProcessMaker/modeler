@@ -101,6 +101,7 @@ export default {
       // Our jointjs paper
       paper: null,
       definitions: null,
+      context: null,
       planeElements: null,
       canvasDragPosition: null,
       // This is our id based lookup model
@@ -137,18 +138,15 @@ export default {
     // But we also need to avoid circular references. In bpmn-moddle, this is usually brought
     // on by parent
     inspectorNode() {
-      this.inspectorData = JSON.parse(
-        JSON.stringify(this.inspectorNode, function(key, value) {
-          // Empty key is the object itself
-          if (key == '') {
-            return value;
-          }
-          if (typeof value == 'object') {
-            return undefined;
-          }
-          return value;
-        })
-      );
+      this.inspectorData = Object.entries(this.inspectorNode).reduce((data, [key, value]) => {
+        if (key === 'config') {
+          const config = JSON.parse(value);
+          return { ...data, ...config };
+        }
+
+        data[key] = value;
+        return data;
+      }, {});
     },
   },
   methods: {
@@ -256,19 +254,21 @@ export default {
     },
     loadXML(xml) {
       this.nodes = {};
-      this.moddle.fromXML(xml, (err, definitions) => {
+      this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
           definitions.exporter = 'ProcessMaker Modeler';
           definitions.exporterVersion = version;
           this.definitions = definitions;
+          this.context = context;
+          this.initializeUniqueId(context);
           this.parse();
           this.$emit('parsed');
         }
       });
     },
     toXML(cb) {
-      this.moddle.toXML(this.definitions, cb);
+      this.moddle.toXML(this.definitions, { format: true }, cb);
     },
     handleDrop(transferData, event) {
       if (!this.allowDrop) {
@@ -359,6 +359,14 @@ export default {
       });
 
       this.poolTarget = null;
+    },
+    initializeUniqueId(context) {
+      let last = uniqueId() * 1;
+      context.references.forEach((ref)=>{
+        const ma = ref.id.match(/^node_(\d+)$/),
+          index = ma && ma[1] * 1;
+        while(last < index) last = uniqueId() * 1;
+      });
     },
     removeNode(node) {
       pull(this.processNode.get('flowElements'), node.definition);
@@ -556,9 +564,6 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-
-    /* Add a start event on initial load */
-    this.$once('parsed', this.addStartEvent);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', { loadXML: this.loadXML });

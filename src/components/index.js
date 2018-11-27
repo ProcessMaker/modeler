@@ -13,6 +13,7 @@ import {
   sequenceFlow,
   startEvent,
   task,
+  scriptTask,
   textAnnotation,
 } from './nodes/index';
 
@@ -27,5 +28,6 @@ export {
   sequenceFlow,
   startEvent,
   task,
+  scriptTask,
   textAnnotation,
 };
