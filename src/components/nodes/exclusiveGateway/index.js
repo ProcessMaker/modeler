@@ -4,35 +4,24 @@ export const gatewayDirectionOptions = { Diverging: 'Diverging', Converging: 'Co
 
 export default {
   id: 'processmaker-modeler-exclusive-gateway',
-  component: component,
+  component,
   bpmnType: 'bpmn:ExclusiveGateway',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/exclusive-gateway.svg'),
   label: 'Exclusive Gateway',
-  definition: function(moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:ExclusiveGateway', {
       name: 'New Exclusive Gateway',
     });
   },
-  diagram: function(moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 42,
         width: 42,
       }),
     });
-  },
-  inspectorHandler: function(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (var key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-        definition.set('name', value.name);
-      }
-    }
-    component.updateShape();
   },
   inspectorConfig: [
     {

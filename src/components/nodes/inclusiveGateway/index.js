@@ -2,35 +2,24 @@ import component from './inclusiveGateway.vue';
 
 export default {
   id: 'processmaker-modeler-inclusive-gateway',
-  component: component,
+  component,
   bpmnType: 'bpmn:InclusiveGateway',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/inclusive-gateway.svg'),
   label: 'Inclusive Gateway',
-  definition: function(moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:InclusiveGateway', {
       name: 'New Inclusive Gateway',
     });
   },
-  diagram: function(moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 42,
         width: 42,
       }),
     });
-  },
-  inspectorHandler: function(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (var key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-        definition.set('name', value.name);
-      }
-    }
-    component.updateShape();
   },
   inspectorConfig: [
     {

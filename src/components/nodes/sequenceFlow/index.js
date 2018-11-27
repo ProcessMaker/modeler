@@ -5,10 +5,10 @@ let moddle = new BpmnModdle();
 
 export default {
   id: 'processmaker-modeler-sequence-flow',
-  component: component,
+  component,
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
-  definition: function() {
+  definition() {
     let sequenceFlow = moddle.create('bpmn:SequenceFlow', {
       name: 'New Sequence Flow',
     });
@@ -18,7 +18,7 @@ export default {
 
     return sequenceFlow.conditionExpression;
   },
-  inspectorHandler: function(value, definition, component) {
+  inspectorHandler(value, definition, component) {
     // Go through each property and rebind it to our data
     for (var key in value) {
       // Only change if the value is different

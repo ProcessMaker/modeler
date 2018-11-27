@@ -387,15 +387,6 @@ export default {
       this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
-    handleProcessInspectorUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.processNode[key] != value[key]) {
-          this.processNode.definition[key] = value[key];
-        }
-      }
-    },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
 

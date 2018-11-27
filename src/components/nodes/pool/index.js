@@ -12,29 +12,18 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/pool.svg'),
   label: 'Pool',
-  definition: function (moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:Participant', {
       name: 'New Pool',
     });
   },
-  diagram: function (moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 250,
         width: 600,
       }),
     });
-  },
-  inspectorHandler(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (const key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-      }
-    }
-
-    component.updateShape();
   },
   inspectorConfig: [
     {

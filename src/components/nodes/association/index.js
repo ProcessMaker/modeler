@@ -2,19 +2,9 @@ import component from './association.vue';
 
 export default {
   id: 'processmaker-modeler-association',
-  component: component,
+  component,
   bpmnType: 'bpmn:Association',
   control: false,
-  inspectorHandler: function(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (var key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-      }
-    }
-    component.updateShape();
-  },
   inspectorConfig: [
     {
       name: 'Task',

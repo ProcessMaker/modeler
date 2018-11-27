@@ -162,16 +162,6 @@ export default {
     handleClick() {
       this.$parent.loadInspector(poolId, this.node.definition, this);
     },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (const key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-        }
-      }
-      this.updateShape();
-    },
     expandToFixElement(element) {
       const { width, height } = this.shape.get('size');
       const { x, y } = this.shape.findView(this.paper).getBBox();

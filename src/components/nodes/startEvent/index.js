@@ -2,18 +2,18 @@ import component from './startEvent.vue';
 
 export default {
   id: 'processmaker-modeler-start-event',
-  component: component,
+  component,
   bpmnType: 'bpmn:StartEvent',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/start-event.svg'),
   label: 'Start Event',
-  definition: function(moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:StartEvent', {
       name: 'Start Event',
     });
   },
-  diagram: function(moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 36,
@@ -28,18 +28,8 @@ export default {
    *
    * @param node
    */
-  validateIncoming: function () {
+  validateIncoming() {
     return false;
-  },
-  inspectorHandler: function(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (var key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-      }
-    }
-    component.updateShape();
   },
   inspectorConfig: [
     {

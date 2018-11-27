@@ -105,7 +105,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   };
 
   registerNode(nodeType, definition => {
-    if (definition.implementation === implementation) {
+    if (definition.get('implementation') === implementation) {
       return nodeId;
     }
   });

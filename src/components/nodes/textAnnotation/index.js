@@ -2,35 +2,24 @@ import component from './textAnnotation.vue';
 
 export default {
   id: 'processmaker-modeler-text-annotation',
-  component: component,
+  component,
   bpmnType: 'bpmn:TextAnnotation',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/text-annotation.svg'),
   label: 'Text Annotation',
-  definition: function(moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:TextAnnotation', {
       text: 'New Text Annotation',
     });
   },
-  diagram: function(moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 30,
         width: 150,
       }),
     });
-  },
-  inspectorHandler: function(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (var key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-        definition.set('text', value[key]);
-      }
-    }
-    component.updateShape();
   },
   inspectorConfig: [
     {

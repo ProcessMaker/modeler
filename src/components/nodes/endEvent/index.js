@@ -3,18 +3,18 @@ import component from './endEvent.vue';
 
 export default {
   id: 'processmaker-modeler-end-event',
-  component: component,
+  component,
   bpmnType: 'bpmn:EndEvent',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/end-event.svg'),
   label: 'End Event',
-  definition: function(moddle) {
+  definition(moddle) {
     return moddle.create('bpmn:EndEvent', {
       name: 'End Event',
     });
   },
-  diagram: function(moddle) {
+  diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: 36,
@@ -29,18 +29,8 @@ export default {
    *
    * @param node
    */
-  validateOutgoing: function () {
+  validateOutgoing() {
     return false;
-  },
-  inspectorHandler: function(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (var key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-      }
-    }
-    component.updateShape();
   },
   inspectorConfig: [
     {
