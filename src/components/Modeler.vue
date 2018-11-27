@@ -563,9 +563,6 @@ export default {
       }
     });
 
-    /* Add a start event on initial load */
-    this.$once('parsed', this.addStartEvent);
-
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', { loadXML: this.loadXML });
   },
