@@ -184,6 +184,8 @@ export default {
     },
     // This registers a node to use in the bpmn modeler
     registerNode(nodeType, parser) {
+      const defaultParser = () => nodeType.id;
+
       this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
@@ -203,8 +205,8 @@ export default {
       }
 
       this.parsers[nodeType.bpmnType]
-        ?  this.parsers[nodeType.bpmnType].push(parser)
-        : this.parsers[nodeType.bpmnType] = [parser];
+        ? this.parsers[nodeType.bpmnType].push(parser || defaultParser)
+        : this.parsers[nodeType.bpmnType] = [parser || defaultParser];
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
@@ -440,7 +442,11 @@ export default {
       }
     },
     addStartEvent() {
-      /* Add an initial startEvent node */
+      /* Add an initial startEvent node if the graph is empty */
+      if (Object.keys(this.nodes).length === 0) {
+        return;
+      }
+
       const definition = startEvent.definition(this.moddle);
       const diagram = startEvent.diagram(this.moddle);
 
