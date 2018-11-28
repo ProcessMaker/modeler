@@ -340,11 +340,12 @@ export default {
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
           : this.processNode;
 
-        const flowElements = targetProcess.get('flowElements');
         if (type === laneId) {
           targetProcess.get('laneSets')[0].get('lanes').push(definition);
+        } else if (definition.$type === 'bpmn:TextAnnotation') {
+          targetProcess.get('artifacts').push(definition);
         } else {
-          flowElements.push(definition);
+          targetProcess.get('flowElements').push(definition);
         }
       }
 
