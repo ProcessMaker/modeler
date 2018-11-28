@@ -1,7 +1,7 @@
 <template>
   <div class="modeler">
     <div class="modeler-container">
-      <controls :controls="controls"/>
+      <controls :controls="controls" />
 
       <div ref="paper-container" class="paper-container" :class="cursor">
         <drop @drop="handleDrop" @dragover="validateDropTarget">
@@ -10,7 +10,7 @@
       </div>
 
       <div class="inspector">
-        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig"/>
+        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
       </div>
     </div>
 
@@ -91,22 +91,14 @@ export default {
   data() {
     return {
       /* Custom parsers for handling certain bpmn node types */
-      parsers: {
-
-      },
+      parsers: {},
 
       // What bpmn moddle extensions should we register
-      extensions: [
-
-      ],
+      extensions: [],
       // Our controls/nodes to show in our palette
-      controls: {
-
-      },
+      controls: {},
       // Our node types, keyed by the id
-      nodeRegistry: {
-
-      },
+      nodeRegistry: {},
       // Our jointjs data graph model
       graph: null,
       // Our jointjs paper
@@ -370,7 +362,7 @@ export default {
     },
     initializeUniqueId(context) {
       let last = uniqueId() * 1;
-      context.references.forEach((ref)=> {
+      context.references.forEach((ref)=>{
         const ma = ref.id.match(/^node_(\d+)$/),
           index = ma && ma[1] * 1;
         while(last < index) last = uniqueId() * 1;

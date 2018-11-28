@@ -67,6 +67,7 @@ export default {
     },
   },
   mounted() {
+
     /* Add a start event on initial load */
     this.$refs.modeler.$once('parsed', this.$refs.modeler.addStartEvent);
   },
