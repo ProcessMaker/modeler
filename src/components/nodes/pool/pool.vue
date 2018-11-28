@@ -321,6 +321,11 @@ export default {
       );
       this.shape.getEmbeddedCells().forEach(cell => cell.translate(labelWidth));
     },
+    isPoolChild(model) {
+      return model.component && model.component !== this &&
+        model.component.node.type !== laneId &&
+        model.getParentCell() && model.getParentCell().component === this;
+    },
   },
   created() {
     this.laneSet = this.containingProcess.get('laneSets')[0];
@@ -372,40 +377,37 @@ export default {
       let newPool;
 
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
-        if (
-          element.component && element.component !== this &&
-          element.component.node.type !== laneId &&
-          element.getParentCell() && element.getParentCell().component === this
-        ) {
-          /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
+        if (!this.isPoolChild(element)) {
+          return;
+        }
 
-          // const poolsAndLanes = this.getElementsUnderArea(element).filter(model => {
-          //   return model.component && [poolId, laneId].includes(model.component.node.type);
-          // });
-          // const poolOrLane = poolsAndLanes.find(model => model.component.node.type === laneId) ||
-          //   poolsAndLanes.find(model => model.component.node.type === poolId);
-          const pool = this.getElementsUnderArea(element).find(model => {
-            return model.component && model.component.node.type === poolId;
-          });
+        /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
 
-          if (!pool) {
-            if (!previousValidPosition) {
-              previousValidPosition = newPosition;
-            }
+        const pool = this.getElementsUnderArea(element).find(model => {
+          return model.component && model.component.node.type === poolId;
+        });
 
-            this.paper.drawBackground({ color: invalidNodeColor });
-          } else {
-            this.paper.drawBackground({ color: defaultNodeColor });
-            previousValidPosition = null;
-
-            newPool = pool !== this.shape
-              ? pool
-              : null;
+        if (!pool) {
+          if (!previousValidPosition) {
+            previousValidPosition = newPosition;
           }
+
+          this.paper.drawBackground({ color: invalidNodeColor });
+        } else {
+          this.paper.drawBackground({ color: defaultNodeColor });
+          previousValidPosition = null;
+
+          newPool = pool !== this.shape
+            ? pool
+            : null;
         }
       });
 
       this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
+        if (!this.isPoolChild(cellView.model)) {
+          return;
+        }
+
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
           cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
@@ -416,6 +418,10 @@ export default {
       });
 
       this.shape.listenTo(this.paper, 'cell:pointerup', cellView => {
+        if (!this.isPoolChild(cellView.model)) {
+          return;
+        }
+
         if (!draggingElement || draggingElement !== cellView.model) {
           return;
         }
