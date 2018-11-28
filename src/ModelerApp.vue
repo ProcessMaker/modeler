@@ -8,15 +8,17 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler"/>
+      <modeler ref="modeler" />
     </div>
     <statusbar>
       {{statusText}}
-      <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon"/>
+      <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
     </statusbar>
 
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
-      <file-upload ref="upload" @input="handleUpload">Upload file</file-upload>
+      <file-upload ref="upload" @input="handleUpload">
+        Upload file
+      </file-upload>
     </b-modal>
   </div>
 </template>
@@ -50,7 +52,7 @@ export default {
         if (err) {
           alert(err);
         } else {
-          let file = new File([xml], 'bpmnProcess.xml', { type: 'text/xml' });
+          let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
         }
       });

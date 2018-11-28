@@ -109,17 +109,15 @@ export default {
       const sourcePool = this.sourceShape.component.node.pool;
 
       /* If the link source is part of a pool, only allow sequence
-             * flows to the target if the target is also in the same pool  */
+       * flows to the target if the target is also in the same pool  */
       if (sourcePool && sourcePool !== targetPool) {
         return false;
       }
 
-      const invalidIncoming =
-                this.targetType.validateIncoming instanceof Function &&
-                !this.targetType.validateIncoming(this.sourceNode);
-      const invalidOutgoing =
-                this.sourceType.validateOutgoing instanceof Function &&
-                !this.sourceType.validateOutgoing(this.targetNode);
+      const invalidIncoming = this.targetType.validateIncoming instanceof Function
+        && !this.targetType.validateIncoming(this.sourceNode);
+      const invalidOutgoing = this.sourceType.validateOutgoing instanceof Function
+        && !this.sourceType.validateOutgoing(this.targetNode);
       if (invalidIncoming || invalidOutgoing) {
         return false;
       }
