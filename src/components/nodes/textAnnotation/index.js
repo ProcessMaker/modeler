@@ -45,7 +45,7 @@ export default {
           config: {
             label: 'Annotation Description',
             helper: 'Body of the text annotation',
-            text: 'text',
+            name: 'text',
             placeholder: 'New Text Annotation',
           },
         },
