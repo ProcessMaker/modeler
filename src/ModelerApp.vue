@@ -3,7 +3,7 @@
     <div class="navbar">
       <div>ProcessMaker Modeler</div>
       <div class="actions">
-        <b-btn v-b-modal="'uploadmodal'" @click="isUploadEvent()">Upload XML</b-btn>
+        <b-btn v-b-modal="'uploadmodal'">Upload XML</b-btn>
         <button class="button" @click="download">Download XML</button>
       </div>
     </div>
@@ -16,7 +16,7 @@
     </statusbar>
 
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
-      <file-upload ref="upload" @input="handleUpload" >
+      <file-upload ref="upload" @input="handleUpload">
         Upload file
       </file-upload>
     </b-modal>
@@ -44,14 +44,9 @@ export default {
       statusText: 'No errors detected',
       statusIcon: faCheckCircle,
       statusColor: 'green',
-      isUpload: false,
     };
   },
   methods: {
-    isUploadEvent() {
-      this.isUpload = true;
-      window.ProcessMaker.EventBus.$emit('uploadState', this.isUpload);
-    },
     download() {
       this.$refs.modeler.toXML(function(err, xml) {
         if (err) {
