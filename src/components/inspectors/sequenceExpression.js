@@ -30,7 +30,7 @@ export default [
         config: {
           label: 'Expression',
           helper: 'The Name of Expression',
-          name: 'body',
+          name: 'conditionExpression.body',
         },
       },
     ],

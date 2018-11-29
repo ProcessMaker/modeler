@@ -239,6 +239,7 @@ export default {
 
         /* Add all other elements */
         process.get('flowElements').forEach(this.setNode);
+        process.get('artifacts').forEach(this.setNode);
       });
     },
     setNode(definition) {
@@ -396,7 +397,7 @@ export default {
     },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
-      if(type === 'processmaker-modeler-sequence-flow' && data.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+      if(type === 'processmaker-modeler-sequence-flow' && (data.sourceRef.$type === 'bpmn:ExclusiveGateway' || data.sourceRef.$type === 'bpmn:InclusiveGateway')) {
         this.inspectorConfig = this.sequenceExpressionInspectorConfig;
       } else {
         this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
