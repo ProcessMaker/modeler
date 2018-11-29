@@ -94,17 +94,11 @@ export default {
       parsers: {},
 
       // What bpmn moddle extensions should we register
-      extensions: [
-
-      ],
+      extensions: [],
       // Our controls/nodes to show in our palette
-      controls: {
-
-      },
+      controls: {},
       // Our node types, keyed by the id
-      nodeRegistry: {
-
-      },
+      nodeRegistry: {},
       // Our jointjs data graph model
       graph: null,
       // Our jointjs paper
@@ -312,7 +306,7 @@ export default {
        * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
        *
        * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
-      */
+       */
       if (type === poolId) {
         if (!this.collaboration) {
           this.collaboration = this.moddle.create('bpmn:Collaboration');
@@ -337,7 +331,7 @@ export default {
         this.collaboration.get('participants').push(definition);
       } else {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
-        const targetProcess =  this.poolTarget
+        const targetProcess = this.poolTarget
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
           : this.processNode;
 

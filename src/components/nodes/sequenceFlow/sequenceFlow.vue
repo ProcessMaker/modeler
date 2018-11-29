@@ -51,6 +51,14 @@ export default {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);
     },
+    updateDefinitionLinks() {
+      const targetShape = this.shape.getTargetElement();
+
+      this.node.definition.targetRef = targetShape.component.node.definition;
+      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
+      targetShape.component.node.definition.get('incoming').push(this.node.definition);
+
+    },
     completeLink() {
       this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
@@ -59,14 +67,9 @@ export default {
 
       this.resetPaper();
 
-      const targetShape = this.shape.getTargetElement();
-
-      this.node.definition.targetRef = targetShape.component.node.definition;
-      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition);
-
       this.updateWaypoints();
 
+      const targetShape = this.shape.getTargetElement();
       this.setBodyColor(defaultNodeColor, targetShape);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
@@ -161,12 +164,14 @@ export default {
       this.setBodyColor(validNodeColor);
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
+      this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
+        this.completeLink();
+        this.updateDefinitionLinks();
+      });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-        this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
-
+        this.shape.stopListening(this.paper, 'cell:pointerclick');
         this.setBodyColor(defaultNodeColor);
         this.$emit('set-cursor', 'not-allowed');
       });
@@ -240,7 +245,6 @@ export default {
 
       this.$emit('set-cursor', 'not-allowed');
     }
-
     this.updateRouter();
   },
   destroyed() {
