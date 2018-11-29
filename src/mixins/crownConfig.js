@@ -49,7 +49,7 @@ export default {
         targetRef: { x, y },
       });
 
-      if (sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway') {
+      if (sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' || sequenceLink.sourceRef.$type === 'bpmn:InclusiveGateway') {
         sequenceLink.conditionExpression = moddle.create('bpmn:FormalExpression', {
           body: '',
         });
