@@ -362,6 +362,7 @@ export default {
         type,
         definition,
         diagram,
+        pool: this.poolTarget,
       });
 
       this.poolTarget = null;
