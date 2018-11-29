@@ -239,6 +239,7 @@ export default {
 
         /* Add all other elements */
         process.get('flowElements').forEach(this.setNode);
+        process.get('artifacts').forEach(this.setNode);
       });
     },
     setNode(definition) {
