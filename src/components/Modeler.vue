@@ -245,7 +245,9 @@ export default {
         throw new Error(`Unsupported element type in parse: ${definition.$type}`);
       }
 
-      if (!definition.get('name')) {
+      const unnamedElements = ['bpmn:TextAnnotation'];
+      const requireName = unnamedElements.indexOf(definition.$type) === -1;
+      if (requireName && !definition.get('name')) {
         definition.set('name', '');
       }
 
