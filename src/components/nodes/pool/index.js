@@ -8,7 +8,7 @@ export default {
   id,
   component,
   bpmnType: 'bpmn:Participant',
-  control: true,
+  control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/pool.svg'),
   label: 'Pool',

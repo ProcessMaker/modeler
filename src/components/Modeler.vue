@@ -226,16 +226,16 @@ export default {
       this.inspectorNode = this.processNode;
 
       /* Add any pools */
-      if (this.collaboration) {
-        this.collaboration.get('participants').forEach(this.setNode);
-      }
+      // if (this.collaboration) {
+      //   this.collaboration.get('participants').forEach(this.setNode);
+      // }
 
       /* Iterate through all elements in each process. */
       this.processes.forEach(process => {
         /* Add any lanes */
-        if (process.get('laneSets')[0]) {
-          process.laneSets[0].lanes.forEach(this.setNode);
-        }
+        // if (process.get('laneSets')[0]) {
+        //   process.laneSets[0].lanes.forEach(this.setNode);
+        // }
 
         /* Add all other elements */
         process.get('flowElements').forEach(this.setNode);
