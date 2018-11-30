@@ -39,16 +39,6 @@ export default {
     handleClick() {
       this.$parent.loadInspector(laneId, this.node.definition, this);
     },
-    handleInspectionUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (const key in value) {
-        // Only change if the value is different
-        if (this.node.definition[key] != value[key]) {
-          this.node.definition[key] = value[key];
-        }
-      }
-      this.updateShape();
-    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Rectangle();

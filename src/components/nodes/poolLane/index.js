@@ -18,17 +18,6 @@ export default {
       y: null,
     }),
   }),
-  inspectorHandler(value, definition, component) {
-    // Go through each property and rebind it to our data
-    for (const key in value) {
-      // Only change if the value is different
-      if (definition[key] != value[key]) {
-        definition[key] = value[key];
-      }
-    }
-
-    component.updateShape();
-  },
   inspectorConfig: [
     {
       name: 'Lane',

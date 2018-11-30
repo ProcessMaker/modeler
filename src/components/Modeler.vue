@@ -1,16 +1,21 @@
 <template>
   <div class="modeler">
     <div class="modeler-container">
-      <controls :controls="controls" />
+      <controls :controls="controls"/>
 
       <div ref="paper-container" class="paper-container" :class="cursor">
         <drop @drop="handleDrop" @dragover="validateDropTarget">
-          <div ref="paper" />
+          <div ref="paper"/>
         </drop>
       </div>
 
       <div class="inspector">
-        <vue-form-renderer ref="inspector" :data="inspectorData" @update="inspectorHandler" :config="inspectorConfig" />
+        <vue-form-renderer
+          ref="inspector"
+          :data="inspectorData"
+          @update="inspectorHandler"
+          :config="inspectorConfig"
+        />
       </div>
     </div>
 
@@ -54,15 +59,13 @@ import {
   FormTextArea,
   FormCheckbox,
   FormRadioButtonGroup,
+  FormCodeEditor,
 } from '@processmaker/vue-form-elements';
 
 import processInspectorConfig from './inspectors/process';
 import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
 
-import {
-  VueFormRenderer,
-  renderer,
-} from '@processmaker/vue-form-builder';
+import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane/';
@@ -74,6 +77,7 @@ Vue.component('FormSelect', FormSelect);
 Vue.component('FormTextArea', FormTextArea);
 Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
+Vue.component('FormCodeEditor', FormCodeEditor);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 const version = '1.0';
@@ -124,7 +128,7 @@ export default {
           items: [],
         },
       ],
-      sequenceExpressionInspectorConfig: sequenceExpressionInspectorConfig,
+      sequenceExpressionInspectorConfig,
       nodes: {},
       collaboration: null,
       moddle: null,
@@ -141,15 +145,17 @@ export default {
     // But we also need to avoid circular references. In bpmn-moddle, this is usually brought
     // on by parent
     inspectorNode() {
-      this.inspectorData = Object.entries(this.inspectorNode).reduce((data, [key, value]) => {
-        if (key === 'config') {
-          const config = JSON.parse(value);
-          return { ...data, ...config };
-        }
+      const type =
+        this.nodes[this.inspectorNode.id] &&
+        this.nodes[this.inspectorNode.id].type;
 
-        data[key] = value;
-        return data;
-      }, {});
+      this.inspectorData =
+        type && this.nodeRegistry[type].inspectorData
+          ? this.nodeRegistry[type].inspectorData(this.inspectorNode)
+          : Object.entries(this.inspectorNode).reduce((data, [key, value]) => {
+            data[key] = value;
+            return data;
+          }, {});
     },
   },
   methods: {
@@ -159,13 +165,13 @@ export default {
      * component is already registered, it is replaced by the new one.
      */
     registerInspectorExtension(node, config) {
-      const registeredIndex = node.inspectorConfig[0].items.findIndex((item) => {
+      const registeredIndex = node.inspectorConfig[0].items.findIndex(item => {
         return config.id && config.id === item.id;
       });
       if (registeredIndex === -1) {
         node.inspectorConfig[0].items.push(config);
       } else {
-        node.inspectorConfig[0].items[registeredIndex]= config;
+        node.inspectorConfig[0].items[registeredIndex] = config;
       }
     },
     /**
@@ -185,7 +191,7 @@ export default {
 
       Vue.component(nodeType.id, nodeType.component);
 
-      if(nodeType.control) {
+      if (nodeType.control) {
         // Register the control for our control palette
         if (!this.controls[nodeType.category]) {
           this.$set(this.controls, nodeType.category, []);
@@ -338,7 +344,10 @@ export default {
           : this.processNode;
 
         if (type === laneId) {
-          targetProcess.get('laneSets')[0].get('lanes').push(definition);
+          targetProcess
+            .get('laneSets')[0]
+            .get('lanes')
+            .push(definition);
         } else if (definition.$type === 'bpmn:TextAnnotation') {
           targetProcess.get('artifacts').push(definition);
         } else {
@@ -383,15 +392,6 @@ export default {
       this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
-    handleProcessInspectorUpdate(value) {
-      // Go through each property and rebind it to our data
-      for (var key in value) {
-        // Only change if the value is different
-        if (this.processNode[key] != value[key]) {
-          this.processNode.definition[key] = value[key];
-        }
-      }
-    },
     loadInspector(type, data, component) {
       this.inspectorNode = data;
       if(type === 'processmaker-modeler-sequence-flow' && (data.sourceRef.$type === 'bpmn:ExclusiveGateway' || data.sourceRef.$type === 'bpmn:InclusiveGateway')) {
@@ -399,9 +399,20 @@ export default {
       } else {
         this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
       }
-      this.inspectorHandler = (value) => {
-        this.nodeRegistry[type].inspectorHandler(value, data, component);
-      };
+
+      this.inspectorHandler = this.nodeRegistry[type].inspectorHandler
+        ? value => this.nodeRegistry[type].inspectorHandler(value, data, component)
+        : value => this.defaultInspectorHandler(value, data, component);
+    },
+    defaultInspectorHandler(value, definition, component) {
+      /* Go through each property and rebind it to our data */
+      for (const key in value) {
+        if (definition[key] !== value[key]) {
+          definition[key] = value[key];
+        }
+      }
+
+      component.updateShape();
     },
     validateDropTarget(transferData, { clientX, clientY }) {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
@@ -411,7 +422,10 @@ export default {
       }
 
       /* If there are no pools on the grid, allow dragging components anywhere */
-      if (!this.collaboration || this.collaboration.get('participants').length === 0) {
+      if (
+        !this.collaboration ||
+        this.collaboration.get('participants').length === 0
+      ) {
         this.allowDrop = true;
         return;
       }
@@ -427,10 +441,15 @@ export default {
 
       /* Determine if we are over a pool, and only allow dropping elements over a pool */
 
-      const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
-      const pool = this.graph.findModelsFromPoint(localMousePosition).find(({ component }) => {
-        return component && component.node.type === poolId;
+      const localMousePosition = this.paper.clientToLocalPoint({
+        x: clientX,
+        y: clientY,
       });
+      const pool = this.graph
+        .findModelsFromPoint(localMousePosition)
+        .find(({ component }) => {
+          return component && component.node.type === poolId;
+        });
 
       if (!pool) {
         this.allowDrop = false;
@@ -462,9 +481,9 @@ export default {
   created() {
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
-      registerInspectorExtension : this.registerInspectorExtension,
-      registerBpmnExtension : this.registerBpmnExtension,
-      registerNode : this.registerNode,
+      registerInspectorExtension: this.registerInspectorExtension,
+      registerBpmnExtension: this.registerBpmnExtension,
+      registerNode: this.registerNode,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -478,7 +497,8 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
-        (!cellView.model.component || cellView.model.component.node.type === laneId)
+        (!cellView.model.component ||
+          cellView.model.component.node.type === laneId)
       ) {
         /* Prevent dragging crown icons and lanes */
         return false;
@@ -509,15 +529,18 @@ export default {
     });
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
-      this.canvasDragPosition = {x: x, y: y};
+      this.canvasDragPosition = { x, y };
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
     });
 
-    this.$el.addEventListener('mousemove', (event) => {
+    this.$el.addEventListener('mousemove', event => {
       if (this.canvasDragPosition) {
-        this.paper.translate(event.offsetX - this.canvasDragPosition.x, event.offsetY - this.canvasDragPosition.y);
+        this.paper.translate(
+          event.offsetX - this.canvasDragPosition.x,
+          event.offsetY - this.canvasDragPosition.y
+        );
       }
     });
 
@@ -536,20 +559,30 @@ export default {
         cellView.highlight();
 
         cellView.model.toFront({ deep: true });
-        this.graph.getConnectedLinks(cellView.model).forEach(link => link.toFront());
+        this.graph
+          .getConnectedLinks(cellView.model)
+          .forEach(link => link.toFront());
 
         if ([poolId, laneId].includes(cellView.model.component.node.type)) {
           /* If we brought a pool or lane to the front, ensure it doesn't overlap its children */
 
-          const { x, y, width, height} = cellView.model.getBBox();
+          const { x, y, width, height } = cellView.model.getBBox();
           const area = { x, y, width, height };
 
-          this.graph.findModelsInArea(area).filter(element => {
-            return element.component && ![poolId, laneId].includes(element.component.node.type);
-          }).forEach(element => {
-            element.toFront({ deep: true });
-            this.graph.getConnectedLinks(element).forEach(link => link.toFront());
-          });
+          this.graph
+            .findModelsInArea(area)
+            .filter(element => {
+              return (
+                element.component &&
+                ![poolId, laneId].includes(element.component.node.type)
+              );
+            })
+            .forEach(element => {
+              element.toFront({ deep: true });
+              this.graph
+                .getConnectedLinks(element)
+                .forEach(link => link.toFront());
+            });
         }
 
         this.highlighted = cellView;
@@ -569,7 +602,9 @@ export default {
     });
 
     /* Register custom nodes */
-    window.ProcessMaker.EventBus.$emit('modeler-start', { loadXML: this.loadXML });
+    window.ProcessMaker.EventBus.$emit('modeler-start', {
+      loadXML: this.loadXML,
+    });
   },
 };
 </script>
