@@ -151,25 +151,32 @@ export default {
         this.updateCrownPosition();
       });
     },
+    configurePoolLane() {
+      if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
+        return;
+      }
+
+      if(this.node.pool) {
+        this.node.pool.component.addToPool(this.shape);
+        return;
+      }
+      /* If we are over a pool or lane, add the shape to the pool or lane */
+      const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
+        return model.component && model.component.node.type === 'processmaker-modeler-pool';
+      })[0];
+
+      if (pool) {
+        this.node.pool = pool;
+        this.node.pool.component.addToPool(this.shape);
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
-
       this.configureCrown();
-
-      /* If we are over a pool or lane, add the shape to the pool or lane */
-      if (!['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
-        const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
-          return model.component && model.component.node.type === 'processmaker-modeler-pool';
-        })[0];
-
-        if (pool) {
-          this.node.pool = pool;
-          this.node.pool.component.addToPool(this.shape);
-        }
-      }
+      this.configurePoolLane();
     });
   },
   beforeDestroy() {
