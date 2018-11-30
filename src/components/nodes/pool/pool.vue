@@ -394,7 +394,7 @@ export default {
         }
       });
 
-      this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
+      this.shape.listenTo(this.paper, 'cell:pointerclick', cellView => {
         if (!this.isPoolChild(cellView.model)) {
           return;
         }
