@@ -91,6 +91,7 @@ export default {
 
       toPool.component.containingProcess.get('flowElements').push(elementDefinition);
       element.component.node.pool = toPool;
+      this.shape.unembed(element);
       toPool.component.addToPool(element);
     },
     addLane() {
