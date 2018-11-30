@@ -12,7 +12,7 @@ import pull from 'lodash/pull';
 import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
-import LaneShape  from '../poolLane/index';
+import { id as laneId } from '../poolLane';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -24,7 +24,6 @@ export default {
       sourceShape: null,
       target: null,
       anchorPadding: 25,
-      laneShape: LaneShape.id,
     };
   },
   computed: {
@@ -107,7 +106,7 @@ export default {
         return false;
       }
 
-      if (targetType === this.laneShape) {
+      if (targetType === laneId) {
         return false;
       }
 
