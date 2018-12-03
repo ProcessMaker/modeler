@@ -152,7 +152,7 @@ export default {
       });
     },
     configurePoolLane() {
-      if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
+      if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow', 'processmaker-modeler-association'].includes(this.node.type)) {
         return;
       }
 

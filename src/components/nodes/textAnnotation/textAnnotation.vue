@@ -5,7 +5,7 @@
 
 <script>
 import joint from 'jointjs';
-//import connectIcon from '@/assets/connect-elements.svg';
+import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
 
@@ -20,11 +20,10 @@ export default {
       definition: null,
       nodeWidth: 10,
       crownConfig: [
-        // @todo text assosiation is not working properly
-        //{
-        //  icon: connectIcon,
-        //  clickHandler: this.addAssociation,
-        //},
+        {
+          icon: connectIcon,
+          clickHandler: this.addAssociation,
+        },
       ],
     };
   },
