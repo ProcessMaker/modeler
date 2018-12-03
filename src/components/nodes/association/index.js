@@ -7,12 +7,12 @@ export default {
   control: false,
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Association',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Task',
+            label: 'Association',
             fontSize: '2em',
           },
         },
