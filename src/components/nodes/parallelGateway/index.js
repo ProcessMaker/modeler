@@ -1,7 +1,7 @@
 import component from './parallelGateway.vue';
 
 export default {
-  id: 'processmaker-modeler-parallelGateway-gateway',
+  id: 'processmaker-modeler-parallel-gateway',
   component,
   bpmnType: 'bpmn:ParallelGateway',
   control: true,
