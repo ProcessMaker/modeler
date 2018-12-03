@@ -64,7 +64,7 @@ export default {
     completeLink() {
       this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
-      this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown', this.removeLink);
       this.$emit('set-cursor', null);
 
       this.resetPaper();
@@ -170,14 +170,14 @@ export default {
       this.setBodyColor(validNodeColor);
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
+      this.shape.listenToOnce(this.paper, 'cell:pointerdown', () => {
         this.completeLink();
         this.updateDefinitionLinks();
       });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-        this.shape.stopListening(this.paper, 'cell:pointerclick');
+        this.shape.stopListening(this.paper, 'cell:pointerdown');
         this.setBodyColor(defaultNodeColor);
         this.$emit('set-cursor', 'not-allowed');
       });
@@ -247,7 +247,7 @@ export default {
 
       this.paper.setInteractivity(false);
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
+      this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown', this.removeLink);
 
       this.$emit('set-cursor', 'not-allowed');
     }
