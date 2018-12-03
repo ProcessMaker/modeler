@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
+      this.$parent.loadInspector('processmaker-modeler-association', this.node.definition, this);
     },
     updateShape() {},
     completeLink() {
