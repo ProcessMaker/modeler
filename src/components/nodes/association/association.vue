@@ -41,7 +41,7 @@ export default {
     updateShape() {},
     completeLink() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
-      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown', this.removeLink);
+      this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
       this.shape.attr({ wrapper: { cursor: 'default' } });
 
       this.resetPaper();
@@ -87,11 +87,11 @@ export default {
       });
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'cell:pointerdown', this.completeLink);
+      this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-        this.shape.stopListening(this.paper, 'cell:pointerdown', this.completeLink);
+        this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
 
         target.attr({
           body: { fill: '#fff', cursor: 'move' },
@@ -142,7 +142,7 @@ export default {
 
     this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
     this.paper.el.style.cursor = 'not-allowed';
-    this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown', this.removeLink);
+    this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
 
     this.shape.component = this;
     this.$parent.nodes[this.id].component = this;

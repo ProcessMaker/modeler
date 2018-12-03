@@ -398,6 +398,9 @@ export default {
         if (!this.isPoolChild(cellView.model)) {
           return;
         }
+      });
+
+      this.shape.listenTo(this.paper, 'cell:pointerclick', cellView => {
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
           cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)

@@ -519,7 +519,7 @@ export default {
         default: { options: { padding: highlightPadding } },
       },
     });
-    this.paper.on('blank:pointerdown', () => {
+    this.paper.on('blank:pointerclick', () => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
@@ -544,7 +544,7 @@ export default {
       }
     });
 
-    this.paper.on('cell:pointerdown', (cellView, evt, x, y) => {
+    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
@@ -589,7 +589,7 @@ export default {
         cellView.model.component.handleClick();
       }
     });
-    this.paper.on('link:pointerdown', cellView => {
+    this.paper.on('link:pointerclick', cellView => {
       if (this.highlighted) {
         this.highlighted.unhighlight();
         this.highlighted = null;
