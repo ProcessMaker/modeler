@@ -12,10 +12,6 @@ export default {
     getMarker() {
       return { 'xlink:href': require('@/assets/script.svg') };
     },
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-script-task', this.node.definition, this);
-    },
   },
 };
-
 </script>

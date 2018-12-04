@@ -28,21 +28,18 @@ export default {
       ],
     };
   },
-  methods: {
-    getShape() {
-      return this.shape;
-    },
-    updateShape() {
+  watch: {
+    'node.definition.text'(text) {
       let { height } = this.shape.findView(this.paper).getBBox();
       const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
-      const textAnnotationLength = this.node.definition.get('text').length;
+      const textAnnotationLength = text.length;
 
       this.shape.position(bounds.x, bounds.y);
       this.shape.attr({
-        body: { refPoints  },
+        body: { refPoints },
         label: {
-          text: joint.util.breakText(this.node.definition.get('text'), {
+          text: joint.util.breakText(text, {
             width: bounds.width,
           }),
           fill: 'black',
@@ -61,9 +58,6 @@ export default {
         this.shape.resize(this.nodeWidth, bounds.height);
         this.updateCrownPosition();
       }
-    },
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-text-annotation', this.node.definition, this);
     },
   },
   mounted() {
@@ -107,7 +101,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
   },
 };
 </script>

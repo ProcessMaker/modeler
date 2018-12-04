@@ -73,28 +73,10 @@ export default {
       ],
     };
   },
-  methods: {
-    getShape() {
-      return this.shape;
-    },
-    updateShape() {
-      const { width } = this.shape.findView(this.paper).getBBox();
-      let bounds = this.node.diagram.bounds;
-
-      this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        body: {},
-        '.label': {
-          text: joint.util.breakText(this.node.definition.get('name'), {
-            width: width,
-          }),
-          fill: 'black',
-        },
-      });
-    },
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-parallel-gateway', this.node.definition, this);
+  watch: {
+    'node.definition.name'(name) {
+      const { width } = this.shapeView.getBBox();
+      this.shape.attr('label/text', joint.util.breakText(name, { width }));
     },
   },
   mounted() {
@@ -114,7 +96,6 @@ export default {
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     this.shape.on('change:position', (element, position) => {
       this.node.diagram.bounds.x = position.x;
@@ -132,7 +113,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
-

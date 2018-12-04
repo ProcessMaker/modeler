@@ -20,22 +20,28 @@
     </div>
 
     <component
-      v-for="(node, id) in nodes"
+      v-for="node in nodes"
       :is="node.type"
-      :key="id"
+      :key="node.definition.id"
       :graph="graph"
       :paper="paper"
       :node="node"
-      :id="id"
-      :highlighted="highlighted && highlighted.model.component === node.component"
+      :id="node.definition.id"
+      :highlighted="highlighted === node"
       :collaboration="collaboration"
       :process-node="processNode"
       :processes="processes"
       :plane-elements="planeElements"
+      :moddle="moddle"
+      :nodeRegistry="nodeRegistry"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
+      @click="() => {
+        highlighted = node;
+        loadInspector(node);
+      }"
     />
   </div>
 </template>
@@ -129,7 +135,7 @@ export default {
         },
       ],
       sequenceExpressionInspectorConfig,
-      nodes: {},
+      nodes: [],
       collaboration: null,
       moddle: null,
       dragPoint: { x: null, y: null },
@@ -145,9 +151,8 @@ export default {
     // But we also need to avoid circular references. In bpmn-moddle, this is usually brought
     // on by parent
     inspectorNode() {
-      const type =
-        this.nodes[this.inspectorNode.id] &&
-        this.nodes[this.inspectorNode.id].type;
+      const node = this.nodes.find(node => node === this.inspectorNode);
+      const type = node && node.type;
 
       this.inspectorData =
         type && this.nodeRegistry[type].inspectorData
@@ -260,14 +265,14 @@ export default {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
-      this.$set(this.nodes, definition.id, {
+      this.nodes.push({
         type,
         definition,
         diagram,
       });
     },
     loadXML(xml) {
-      this.nodes = {};
+      this.nodes = [];
       this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
@@ -365,7 +370,7 @@ export default {
 
       this.planeElements.push(diagram);
 
-      this.$set(this.nodes, id, {
+      this.nodes.push({
         type,
         definition,
         diagram,
@@ -385,34 +390,35 @@ export default {
     removeNode(node) {
       pull(this.processNode.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
-      this.$delete(this.nodes, node.definition.id);
+      this.nodes = this.nodes.filter(n => n !== node);
     },
     handleResize() {
       let parent = this.$el.parentElement;
       this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
-    loadInspector(type, data, component) {
-      this.inspectorNode = data;
-      if(type === 'processmaker-modeler-sequence-flow' && (data.sourceRef.$type === 'bpmn:ExclusiveGateway' || data.sourceRef.$type === 'bpmn:InclusiveGateway')) {
+    loadInspector(node) {
+      this.inspectorNode = node.definition;
+      if(
+        node.type === 'processmaker-modeler-sequence-flow' &&
+        (node.definition.sourceRef.$type === 'bpmn:ExclusiveGateway' || node.definition.sourceRef.$type === 'bpmn:InclusiveGateway')
+      ) {
         this.inspectorConfig = this.sequenceExpressionInspectorConfig;
       } else {
-        this.inspectorConfig = this.nodeRegistry[type].inspectorConfig;
+        this.inspectorConfig = this.nodeRegistry[node.type].inspectorConfig;
       }
 
-      this.inspectorHandler = this.nodeRegistry[type].inspectorHandler
-        ? value => this.nodeRegistry[type].inspectorHandler(value, data, component)
-        : value => this.defaultInspectorHandler(value, data, component);
+      this.inspectorHandler = this.nodeRegistry[node.type].inspectorHandler
+        ? value => this.nodeRegistry[node.type].inspectorHandler(value, node, this.moddle)
+        : value => this.defaultInspectorHandler(value, node);
     },
-    defaultInspectorHandler(value, definition, component) {
+    defaultInspectorHandler(value, node) {
       /* Go through each property and rebind it to our data */
       for (const key in value) {
-        if (definition[key] !== value[key]) {
-          definition[key] = value[key];
+        if (node.definition[key] !== value[key]) {
+          node.definition[key] = value[key];
         }
       }
-
-      component.updateShape();
     },
     validateDropTarget(transferData, { clientX, clientY }) {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
@@ -461,7 +467,7 @@ export default {
     },
     addStartEvent() {
       /* Add an initial startEvent node if the graph is empty */
-      if (Object.keys(this.nodes).length === 0) {
+      if (this.nodes.length === 0) {
         return;
       }
 
@@ -521,10 +527,7 @@ export default {
       },
     });
     this.paper.on('blank:pointerclick', () => {
-      if (this.highlighted) {
-        this.highlighted.unhighlight();
-        this.highlighted = null;
-      }
+      this.highlighted = null;
       this.inspectorNode = this.processNode;
       this.inspectorConfig = processInspectorConfig;
     });
@@ -551,14 +554,7 @@ export default {
         clickHandler(cellView, evt, x, y);
       }
 
-      if (this.highlighted) {
-        this.highlighted.unhighlight();
-        this.highlighted = null;
-      }
-
       if (cellView.model.component) {
-        cellView.highlight();
-
         cellView.model.toFront({ deep: true });
         this.graph
           .getConnectedLinks(cellView.model)
@@ -591,19 +587,7 @@ export default {
             });
         }
 
-        this.highlighted = cellView;
-        cellView.model.component.handleClick();
-      }
-    });
-    this.paper.on('link:pointerclick', cellView => {
-      if (this.highlighted) {
-        this.highlighted.unhighlight();
-        this.highlighted = null;
-      }
-      if (cellView.model.component) {
-        cellView.highlight();
-        this.highlighted = cellView;
-        cellView.model.component.handleClick();
+        cellView.model.component.$emit('click');
       }
     });
 
