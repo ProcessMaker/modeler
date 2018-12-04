@@ -222,6 +222,8 @@ export default {
       connectionPoint: { name: 'boundary' },
     });
 
+    this.sourceShape.embed(this.shape);
+
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
