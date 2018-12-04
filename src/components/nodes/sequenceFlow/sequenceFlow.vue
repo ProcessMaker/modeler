@@ -140,7 +140,7 @@ export default {
 
       if (!this.isValidConnection()) {
         this.$emit('set-cursor', 'not-allowed');
-        this.shape.listenToOnce(this.paper, 'element:pointerclick', this.removeLink);
+        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
         this.shape.target({
           x: localMousePosition.x,
@@ -154,7 +154,7 @@ export default {
         return;
       }
 
-      this.shape.stopListening(this.paper, 'element:pointerclick', this.removeLink);
+      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
       this.shape.target(this.target, {
         anchor: {
@@ -252,7 +252,6 @@ export default {
 
       this.paper.setInteractivity(false);
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
 
       this.$emit('set-cursor', 'not-allowed');
     }
