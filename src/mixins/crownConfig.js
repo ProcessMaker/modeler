@@ -25,9 +25,6 @@ export default {
     shapeView() {
       return this.shape.findView(this.paper);
     },
-    getEmbeddedCells() {
-      return this.shape.getEmbeddedCells();
-    },
   },
   methods: {
     removeShape() {

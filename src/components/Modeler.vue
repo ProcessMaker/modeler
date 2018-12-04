@@ -548,12 +548,14 @@ export default {
       }
     });
 
-    this.paper.on('cell:pointerdown', (cellView, evt, x, y) => {
+    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
+    });
 
+    this.paper.on('cell:pointerdown', cellView => {
       if (cellView.model.component) {
         cellView.model.toFront({ deep: true });
         this.graph

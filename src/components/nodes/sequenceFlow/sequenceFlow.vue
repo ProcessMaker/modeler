@@ -262,7 +262,7 @@ export default {
 
     /* If targetRef is defined, it could be a point or another element.
      * If targetRef has an id, that means it's an element and the reference to it
-     * can be safely removed.  */
+     * can be safely removed. */
     if (targetRef.id) {
       pull(targetRef.get('incoming'), this.node.definition);
     }
