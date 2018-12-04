@@ -513,6 +513,7 @@ export default {
       width: this.$refs['paper-container'].clientWidth,
       height: this.$refs['paper-container'].clientHeight,
       drawGrid: true,
+      clickThreshold: 10,
       perpendicularLinks: true,
       interactive: this.graph.get('interactiveFunc'),
       highlighting: {

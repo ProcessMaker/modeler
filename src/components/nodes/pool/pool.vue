@@ -405,7 +405,6 @@ export default {
         if (!this.isPoolChild(cellView.model)) {
           return;
         }
-
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
           cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
