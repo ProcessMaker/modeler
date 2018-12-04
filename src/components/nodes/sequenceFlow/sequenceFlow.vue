@@ -140,6 +140,7 @@ export default {
 
       if (!this.isValidConnection()) {
         this.$emit('set-cursor', 'not-allowed');
+        this.shape.listenToOnce(this.paper, 'element:pointerclick', this.removeLink);
 
         this.shape.target({
           x: localMousePosition.x,
@@ -152,6 +153,8 @@ export default {
 
         return;
       }
+
+      this.shape.stopListening(this.paper, 'element:pointerclick', this.removeLink);
 
       this.shape.target(this.target, {
         anchor: {
