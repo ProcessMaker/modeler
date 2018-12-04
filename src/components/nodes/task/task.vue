@@ -7,6 +7,7 @@
 import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
+import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './index';
 
 const labelPadding = 15;
@@ -27,6 +28,9 @@ export default {
     };
   },
   methods: {
+    getMarker() {
+      return undefined;
+    },
     getShape() {
       return this.shape;
     },
@@ -67,7 +71,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Rectangle();
+    this.shape = new TaskShape();
 
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
@@ -81,6 +85,7 @@ export default {
         text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
         fill: 'black',
       },
+      image: this.getMarker(),
     });
 
     this.shape.on('change:position', (element, position) => {
