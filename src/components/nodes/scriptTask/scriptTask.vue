@@ -5,13 +5,12 @@
 
 <script>
 import TaskComponent from '@/components/nodes/task/task';
+import scriptIcon from '@/assets/script.svg';
 
 export default {
   extends: TaskComponent,
-  methods: {
-    getMarker() {
-      return { 'xlink:href': require('@/assets/script.svg') };
-    },
+  mounted() {
+    this.shape.attr('image/xlink:href', scriptIcon);
   },
 };
 </script>

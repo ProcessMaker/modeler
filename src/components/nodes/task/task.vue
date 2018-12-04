@@ -43,11 +43,6 @@ export default {
       }
     },
   },
-  methods: {
-    getMarker() {
-      return undefined;
-    },
-  },
   mounted() {
     this.shape = new TaskShape();
 
@@ -63,7 +58,6 @@ export default {
         text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
         fill: 'black',
       },
-      image: this.getMarker(),
     });
 
     this.shape.on('change:position', (element, position) => {
