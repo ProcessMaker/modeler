@@ -373,13 +373,16 @@ export default {
       let previousValidPosition;
       let draggingElement;
       let newPool;
+      let invalidPool;
 
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
         if (!this.isPoolChild(element)) {
           return;
         }
 
-        /* If the element we are dragging is not over a pool or lane, prevent dropping it. */
+        /* If the element we are dragging is not over a pool or lane, prevent dropping it.
+         * Also prevent moving the element to another pool if it has a sequence flow, as
+         * sequence flows between pools are not valid. */
 
         const pool = this.getElementsUnderArea(element).find(model => {
           return model.component && model.component.node.type === poolId;
@@ -390,10 +393,27 @@ export default {
             previousValidPosition = newPosition;
           }
 
+          if (invalidPool) {
+            invalidPool.attr('body/fill', defaultNodeColor);
+            invalidPool = null;
+          }
+
           this.paper.drawBackground({ color: invalidNodeColor });
+        } else if (pool.component !== this && this.graph.getConnectedLinks(element).length > 0) {
+          if (!previousValidPosition) {
+            previousValidPosition = newPosition;
+          }
+
+          invalidPool = pool.component.shape;
+          invalidPool.attr('body/fill', invalidNodeColor);
         } else {
           this.paper.drawBackground({ color: defaultNodeColor });
           previousValidPosition = null;
+
+          if (invalidPool) {
+            invalidPool.attr('body/fill', defaultNodeColor);
+            invalidPool = null;
+          }
 
           newPool = pool !== this.shape
             ? pool
@@ -425,6 +445,11 @@ export default {
 
         if (previousValidPosition) {
           draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
+        }
+
+        if (invalidPool) {
+          invalidPool.attr('body/fill', defaultNodeColor);
+          invalidPool = null;
         }
 
         if (newPool) {
