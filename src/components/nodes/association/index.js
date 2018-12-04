@@ -5,6 +5,11 @@ export default {
   component,
   bpmnType: 'bpmn:Association',
   control: false,
+  definition(moddle) {
+    return moddle.create('bpmn:Association', {
+      name: 'New Association Flow',
+    });
+  },
   inspectorConfig: [
     {
       name: 'Association',

@@ -348,7 +348,7 @@ export default {
             .get('laneSets')[0]
             .get('lanes')
             .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation') {
+        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
           targetProcess.get('artifacts').push(definition);
         } else {
           targetProcess.get('flowElements').push(definition);
