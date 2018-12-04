@@ -196,8 +196,15 @@ export default {
         this.updateCrownPosition();
 
         this.getElementsUnderArea(element).filter(laneElement => {
-          return laneElement.component && ![poolId, laneId].includes(laneElement.component.node.type);
+          return laneElement.component &&
+            ![poolId, laneId].includes(laneElement.component.node.type) &&
+            laneElement.component.node.pool.component === this;
         }).forEach(laneElement => {
+          if (isFirstLane) {
+            this.shape.unembed(laneElement);
+            this.shape.embed(laneElement);
+          }
+
           laneElement.toFront({ deep: true });
         });
 
@@ -429,7 +436,9 @@ export default {
 
           /* If there are lanes, add the element to the lane it's above */
           const lane = this.getElementsUnderArea(cellView).find(model => {
-            return model.component && model.component.node.type === laneId;
+            return model.component &&
+              model.component.node.type === laneId &&
+              model.component.node.pool.component === this;
           });
 
           if (lane) {

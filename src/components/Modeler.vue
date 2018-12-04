@@ -544,7 +544,7 @@ export default {
       }
     });
 
-    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
+    this.paper.on('cell:pointerdown', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
@@ -563,9 +563,13 @@ export default {
           .getConnectedLinks(cellView.model)
           .forEach(link => link.toFront());
 
-        if ([poolId, laneId].includes(cellView.model.component.node.type)) {
-          /* If we brought a pool or lane to the front, ensure it doesn't overlap its children */
+        /* If the element belongs to a pool, bring the pool to the front as well */
+        if (cellView.model.component.node.pool) {
+          cellView.model.component.node.pool.component.shape.toFront({ deep: true });
+        }
 
+        /* If we brought a lane to the front, ensure it doesn't overlap its children */
+        if (cellView.model.component.node.type === laneId) {
           const { x, y, width, height } = cellView.model.getBBox();
           const area = { x, y, width, height };
 
@@ -574,7 +578,8 @@ export default {
             .filter(element => {
               return (
                 element.component &&
-                ![poolId, laneId].includes(element.component.node.type)
+                ![poolId, laneId].includes(element.component.node.type) &&
+                element.component.node.pool === cellView.model.component.node.pool
               );
             })
             .forEach(element => {
