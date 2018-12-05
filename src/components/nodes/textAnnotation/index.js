@@ -21,6 +21,14 @@ export default {
       }),
     });
   },
+  /**
+   * Validate whether to accept an incoming flow from the node
+   *
+   * @param node
+   */
+  validateIncoming() {
+    return false;
+  },
   inspectorConfig: [
     {
       name: 'Text Annotation',
