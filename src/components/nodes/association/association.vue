@@ -180,9 +180,6 @@ export default {
   mounted() {
     this.shape = new joint.shapes.standard.Link({ router: { name: 'normal' } });
     this.shape.attr({
-      wrapper: {
-        cursor: 'grab',
-      },
       line: {
         stroke: 'black',
         strokeWidth: '4',
