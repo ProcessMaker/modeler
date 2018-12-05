@@ -10,7 +10,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 
 export default {
-  props: ['graph', 'node', 'id'],
+  props: ['graph', 'node', 'id', 'moddle'],
   mixins: [crownConfig],
   data() {
     return {
@@ -35,10 +35,6 @@ export default {
     },
   },
   methods: {
-    handleClick() {
-      this.$parent.setInspector(this.node.definition, this.inspectorConfig);
-    },
-    updateShape() {},
     completeLink() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
@@ -64,7 +60,7 @@ export default {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
 
-      this.node.diagram.waypoint = points.map(point => this.$parent.moddle.create('dc:Point', point));
+      this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
     updateLinkTarget({ clientX, clientY }) {
@@ -113,7 +109,9 @@ export default {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
   mounted() {
-    this.targetShape = this.$parent.nodes[this.node.definition.get('targetRef').get('id')].component.shape;
+    this.targetShape = this.graph.getElements().find(element => {
+      return element.component && element.component.node.definition === this.node.definition.get('targetRef');
+    });
     const sourcePoint = this.node.definition.get('sourceRef');
 
     this.paper.setInteractivity(false);
@@ -145,7 +143,6 @@ export default {
     this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
 
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
   },
   destroyed() {
     this.updateWaypoints.cancel();

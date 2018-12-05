@@ -16,28 +16,9 @@ export default {
       definition: null,
     };
   },
-  methods: {
-    getShape() {
-      return this.shape;
-    },
-    handleClick() {
-      this.$parent.loadInspector(
-        'processmaker-modeler-end-event',
-        this.node.definition,
-        this
-      );
-    },
-    updateShape() {
-      let bounds = this.node.diagram.bounds;
-      this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        body: {},
-        label: {
-          text: this.node.definition.get('name'),
-          fill: 'black',
-        },
-      });
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', name);
     },
   },
   mounted() {
@@ -57,7 +38,6 @@ export default {
       },
     });
     this.shape.addTo(this.graph);
-    this.$parent.nodes[this.id].component = this;
     this.shape.component = this;
 
     this.shape.on('change:position', (element, position) => {

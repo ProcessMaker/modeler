@@ -23,26 +23,10 @@ export default {
       ],
     };
   },
-  methods: {
-    getShape() {
-      return this.shape;
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', name);
     },
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-start-event', this.node.definition, this);
-    },
-    updateShape() {
-      let bounds = this.node.diagram.bounds;
-      this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        body: {},
-        label: {
-          text: this.node.definition.get('name'),
-          fill: 'black',
-        },
-      });
-    },
-
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
@@ -61,7 +45,6 @@ export default {
       },
     });
     this.shape.addTo(this.graph);
-    this.$parent.nodes[this.id].component = this;
     this.shape.component = this;
 
     this.shape.on('change:position', (element, position) => {
@@ -80,7 +63,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
-

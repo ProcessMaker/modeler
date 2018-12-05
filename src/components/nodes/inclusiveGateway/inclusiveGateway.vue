@@ -69,27 +69,11 @@ export default {
       ],
     };
   },
-  methods: {
-    getShape() {
-      return this.shape;
-    },
-    updateShape() {
-      let bounds = this.node.diagram.bounds;
-
-      this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        body: {},
-        '.label': {
-          text: joint.util.breakText(this.node.definition.get('name'), {
-            width: this.labelWidth,
-          }),
-          fill: 'black',
-        },
-      });
-    },
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-inclusive-gateway', this.node.definition, this);
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', joint.util.breakText(name, {
+        width: this.labelWidth,
+      }));
     },
   },
   mounted() {
@@ -124,13 +108,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
-
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
-
-

@@ -10,11 +10,6 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
 
   const component = {
     extends: task.component,
-    methods: {
-      handleClick() {
-        this.$parent.loadInspector(nodeId, this.node.definition, this);
-      },
-    },
   };
 
   const nodeType = {

@@ -34,7 +34,7 @@ joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
 });
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes'],
+  props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes', 'moddle', 'processNode'],
   mixins: [crownConfig],
   data() {
     return {
@@ -65,6 +65,11 @@ export default {
       return this.processes.find(process =>
         process.id === this.node.definition.get('processRef').id
       );
+    },
+  },
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', name);
     },
   },
   methods: {
@@ -99,11 +104,11 @@ export default {
        * Get the current laneSet element or create a new one. */
 
       if (!this.laneSet) {
-        const laneSet = this.$parent.moddle.create('bpmn:LaneSet');
+        const laneSet = this.moddle.create('bpmn:LaneSet');
         this.laneSet = laneSet;
         this.containingProcess.get('laneSets').push(laneSet);
 
-        const definition = Lane.definition(this.$parent.moddle);
+        const definition = Lane.definition(this.moddle);
 
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
@@ -117,10 +122,10 @@ export default {
 
       this.pushNewLane();
     },
-    pushNewLane(definition = Lane.definition(this.$parent.moddle)) {
+    pushNewLane(definition = Lane.definition(this.moddle)) {
       this.$emit('set-pool-target', this.shape);
 
-      const diagram = Lane.diagram(this.$parent.moddle);
+      const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
 
       this.$emit('add-node', {
@@ -142,26 +147,6 @@ export default {
       }
 
       this.expandToFixElement(element);
-    },
-    getShape() {
-      return this.shape;
-    },
-    updateShape() {
-      const bounds = this.node.diagram.bounds;
-      this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        label: {
-          text: joint.util.breakText(this.node.definition.get('name'), {
-            width: bounds.width,
-          }),
-          fill: 'black',
-        },
-      });
-      // Alert anyone that we have moved
-    },
-    handleClick() {
-      this.$parent.loadInspector(poolId, this.node.definition, this);
     },
     expandToFixElement(element) {
       const { width, height } = this.shape.get('size');
@@ -263,8 +248,8 @@ export default {
       }
     },
     resizeLanes() {
-      this.laneSet.get('lanes').map(lane => {
-        return this.$parent.nodes[lane.id].component.shape;
+      this.shape.getEmbeddedCells().filter(({ component }) => {
+        return component && component.node.type === laneId;
       }).sort((shape1, shape2) => {
         /* Sort by y position ascending */
         return shape1.position().y - shape2.position().y;
@@ -295,17 +280,18 @@ export default {
       });
     },
     captureChildren() {
-      if (this.$parent.processNode.get('flowElements').length === 0) {
+      if (this.processNode.get('flowElements').length === 0) {
         return;
       }
 
-      this.$parent.processNode.get('flowElements').map(({ id }) => {
-        return this.$parent.nodes[id].component;
-      }).filter(component => component).forEach(({ shape, node }) => {
-        this.shape.embed(shape);
-        shape.toFront({ deep: true });
-        node.pool = this.shape;
-      });
+      this.graph
+        .getElements()
+        .filter(({ component }) => component && component !== this)
+        .forEach(({ component }) => {
+          this.shape.embed(component.shape);
+          component.shape.toFront({ deep: true });
+          component.node.pool = this.shape;
+        });
 
       this.resizePool();
     },
@@ -361,7 +347,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     /* If there are no other pools, the first pool should capture all current flow elements.
      * Don't do this when parsing an uploaded diagram. */

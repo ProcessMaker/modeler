@@ -15,7 +15,8 @@ export default {
 
     return sequenceFlow.conditionExpression;
   },
-  inspectorHandler(value, definition, component) {
+  inspectorHandler(value, node, moddle) {
+    const definition = node.definition;
     // Exclusive and inclusive gateways could have conditioned flows
     const hasCondition = definition.sourceRef.$type === 'bpmn:ExclusiveGateway'
       || definition.sourceRef.$type === 'bpmn:InclusiveGateway';
@@ -25,7 +26,7 @@ export default {
       if (isDirty && hasCondition && key === 'conditionExpression') {
         // Set the condition expression
         definition.conditionExpression = definition.conditionExpression.set instanceof Function
-          ? definition.conditionExpression : component.$parent.moddle.create('bpmn:FormalExpression', {
+          ? definition.conditionExpression : moddle.create('bpmn:FormalExpression', {
             body: value[key].body,
           });
         definition.conditionExpression.set('body', value[key].body);
@@ -33,7 +34,6 @@ export default {
         definition[key] = value[key];
       }
     }
-    component.updateShape();
   },
   inspectorConfig: [
     {

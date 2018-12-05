@@ -6,7 +6,6 @@
 <script>
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
-import { id as laneId } from './index';
 import { labelWidth } from '../pool';
 
 export default {
@@ -18,26 +17,9 @@ export default {
       definition: null,
     };
   },
-  methods: {
-    getShape() {
-      return this.shape;
-    },
-    updateShape() {
-      const bounds = this.node.diagram.bounds;
-      this.shape.position(bounds.x, bounds.y);
-      this.shape.resize(bounds.width, bounds.height);
-      this.shape.attr({
-        label: {
-          text: joint.util.breakText(this.node.definition.get('name'), {
-            width: bounds.width,
-          }),
-          fill: 'black',
-        },
-      });
-      // Alert anyone that we have moved
-    },
-    handleClick() {
-      this.$parent.loadInspector(laneId, this.node.definition, this);
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', name);
     },
   },
   mounted() {
@@ -75,7 +57,6 @@ export default {
     });
 
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
     this.shape.addTo(this.graph);
   },
 };

@@ -5,17 +5,12 @@
 
 <script>
 import TaskComponent from '@/components/nodes/task/task';
+import scriptIcon from '@/assets/script.svg';
 
 export default {
   extends: TaskComponent,
-  methods: {
-    getMarker() {
-      return { 'xlink:href': require('@/assets/script.svg') };
-    },
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-script-task', this.node.definition, this);
-    },
+  mounted() {
+    this.shape.attr('image/xlink:href', scriptIcon);
   },
 };
-
 </script>
