@@ -4,6 +4,11 @@
       <controls :controls="controls"/>
 
       <div ref="paper-container" class="paper-container" :class="cursor">
+        <div class="history-buttons">
+          <button @click="undo" :disabled="!canUndo">Undo</button>
+          <button @click="redo" :disabled="!canRedo">Redo</button>
+        </div>
+
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper"/>
         </drop>
@@ -54,6 +59,7 @@ import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
 import { startEvent } from '@/components/nodes';
+import store from '@/store';
 
 // Our renderer for our inspector
 import { Drag, Drop } from 'vue-drag-drop';
@@ -135,7 +141,6 @@ export default {
         },
       ],
       sequenceExpressionInspectorConfig,
-      nodes: [],
       collaboration: null,
       moddle: null,
       dragPoint: { x: null, y: null },
@@ -144,6 +149,11 @@ export default {
       processes: [],
       cursor: null,
     };
+  },
+  computed: {
+    nodes: () => store.getters.nodes,
+    canUndo: () => store.getters.canUndo,
+    canRedo: () => store.getters.canRedo,
   },
   watch: {
     // When assigning to a new inspectorNode, it's important to
@@ -164,6 +174,12 @@ export default {
     },
   },
   methods: {
+    undo() {
+      store.commit('undo');
+    },
+    redo() {
+      store.commit('redo');
+    },
     /**
      * Register an inspector component to configure extended attributes and elements
      * for specific bpmn extensions and execution environments. If the inspector
@@ -265,14 +281,14 @@ export default {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
-      this.nodes.push({
+      store.commit('addNode', {
         type,
         definition,
         diagram,
       });
     },
     loadXML(xml) {
-      this.nodes = [];
+      store.commit('clearNodes');
       this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
@@ -370,7 +386,7 @@ export default {
 
       this.planeElements.push(diagram);
 
-      this.nodes.push({
+      store.commit('addNode', {
         type,
         definition,
         diagram,
@@ -390,7 +406,7 @@ export default {
     removeNode(node) {
       pull(this.processNode.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
-      this.nodes = this.nodes.filter(n => n !== node);
+      store.commit('removeNode', node);
     },
     handleResize() {
       let parent = this.$el.parentElement;
@@ -467,7 +483,7 @@ export default {
     },
     addStartEvent() {
       /* Add an initial startEvent node if the graph is empty */
-      if (this.nodes.length === 0) {
+      if (this.nodes) {
         return;
       }
 
@@ -477,7 +493,7 @@ export default {
       diagram.bounds.x = 150;
       diagram.bounds.y = 150;
 
-      this.addNode({
+      store.commit('addNode', {
         definition,
         diagram,
         type: startEvent.id,
@@ -634,6 +650,18 @@ $cursors: default, not-allowed;
       max-height: 100%;
       min-height: 100%;
       overflow: hidden;
+      position: relative;
+
+      .history-buttons {
+        position: absolute;
+        z-index: 1;
+        left: 1rem;
+        top: 1rem;
+
+        > button {
+          cursor: pointer;
+        }
+      }
     }
 
     @each $cursor in $cursors {

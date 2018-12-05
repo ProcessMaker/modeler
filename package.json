@@ -32,7 +32,8 @@
     "npm": "^6.4.1",
     "vue": "^2.5.17",
     "vue-drag-drop": "^1.1.4",
-    "vue-upload-component": "^2.8.14"
+    "vue-upload-component": "^2.8.14",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@processmaker/processmaker-bpmn-moddle": "^0.1.2",
