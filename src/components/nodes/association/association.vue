@@ -66,6 +66,7 @@ export default {
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+      this.$emit('set-cursor', 'grab');
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
@@ -180,7 +181,7 @@ export default {
     this.shape = new joint.shapes.standard.Link({ router: { name: 'normal' } });
     this.shape.attr({
       wrapper: {
-        cursor: 'not-allowed',
+        cursor: 'grab',
       },
       line: {
         stroke: 'black',
