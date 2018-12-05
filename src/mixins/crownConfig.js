@@ -1,13 +1,10 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
-import BpmnModdle from 'bpmn-moddle';
-
-const moddle = new BpmnModdle();
 
 export const highlightPadding = 3;
 
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
   data() {
     return {
       buttons: [],
@@ -15,12 +12,18 @@ export default {
   },
   watch: {
     highlighted(highlighted) {
-      highlighted ? this.addCrown() : this.removeCrown();
+      if (highlighted) {
+        this.shapeView.highlight();
+        this.addCrown();
+      } else {
+        this.shapeView.unhighlight();
+        this.removeCrown();
+      }
     },
   },
   computed: {
-    getEmbeddedCells() {
-      return this.shape.getEmbeddedCells();
+    shapeView() {
+      return this.shape.findView(this.paper);
     },
   },
   methods: {
@@ -29,28 +32,25 @@ export default {
     },
     removeCrown() {
       this.buttons.forEach(button => {
-        button.attr({
-          root: { display: 'none' },
-        });
+        button.attr('root/display', 'none');
       });
     },
     addCrown() {
       this.updateCrownPosition();
 
       this.buttons.forEach(button => {
-        button.attr({
-          root: { display: 'initial' },
-        });
+        button.attr('root/display', 'initial');
       });
     },
     addSequence(cellView, evt, x, y) {
-      const sequenceLink = moddle.create('bpmn:SequenceFlow', {
-        sourceRef: this.shape.component.node.definition,
+      this.removeCrown();
+      const sequenceLink = this.moddle.create('bpmn:SequenceFlow', {
+        sourceRef: this.node.definition,
         targetRef: { x, y },
       });
 
       if (sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' || sequenceLink.sourceRef.$type === 'bpmn:InclusiveGateway') {
-        sequenceLink.conditionExpression = moddle.create('bpmn:FormalExpression', {
+        sequenceLink.conditionExpression = this.moddle.create('bpmn:FormalExpression', {
           body: '',
         });
       }
@@ -58,11 +58,11 @@ export default {
       this.$emit('add-node', {
         type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
-        diagram: moddle.create('bpmndi:BPMNEdge'),
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
     addAssociation(cellView, evt, x, y) {
-      const associationLink = moddle.create('bpmn:Association', {
+      const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
       });
@@ -70,7 +70,7 @@ export default {
       this.$emit('add-node', {
         type: 'processmaker-modeler-association',
         definition: associationLink,
-        diagram: moddle.create('bpmndi:BPMNEdge'),
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
     configureCrown() {
@@ -128,8 +128,6 @@ export default {
           shapeView.highlight();
         }
       });
-
-      this.updateCrownPositionOnKeyDown();
     },
     updateCrownPosition() {
       const buttonLength = 25;
@@ -146,17 +144,12 @@ export default {
         button.position(x + width + buttonMargin - tx, y + yOffset + centerY - ty);
       });
     },
-    updateCrownPositionOnKeyDown() {
-      document.addEventListener('keydown', () => {
-        this.updateCrownPosition();
-      });
-    },
     configurePoolLane() {
       if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow', 'processmaker-modeler-association'].includes(this.node.type)) {
         return;
       }
 
-      if(this.node.pool) {
+      if (this.node.pool) {
         this.node.pool.component.addToPool(this.shape);
         return;
       }

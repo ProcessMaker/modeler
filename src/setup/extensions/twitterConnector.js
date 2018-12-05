@@ -10,11 +10,6 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
 
   const component = {
     extends: task.component,
-    methods: {
-      handleClick() {
-        this.$parent.loadInspector(nodeId, this.node.definition, this);
-      },
-    },
   };
 
   const nodeType = {
@@ -41,8 +36,9 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       });
     },
     /* Map values from inspector data to node definition  */
-    inspectorHandler(value, definition, component) {
+    inspectorHandler(value, node) {
       // Go through each property and rebind it to our data
+      const definition = node.definition;
       const config = JSON.parse(definition.config);
 
       for (const key in value) {
@@ -54,7 +50,6 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       }
 
       definition.config = JSON.stringify(config);
-      component.updateShape();
     },
     /* Map values from node definition to inspector data */
     inspectorData(definition) {

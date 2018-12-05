@@ -12,10 +12,10 @@ import pull from 'lodash/pull';
 import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
-import LaneShape  from '../poolLane/index';
+import { id as laneId } from '../poolLane';
 
 export default {
-  props: ['graph', 'node', 'id'],
+  props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
   mixins: [crownConfig],
   data() {
     return {
@@ -24,31 +24,26 @@ export default {
       sourceShape: null,
       target: null,
       anchorPadding: 25,
-      laneShape: LaneShape.id,
     };
   },
   computed: {
     sourceNode() {
-      return this.sourceShape && this.sourceShape.component.node;
+      return get(this.sourceShape, 'component.node');
     },
     targetNode() {
-      return this.target && this.target.component.node;
+      return get(this.target, 'component.node');
     },
-    sourceType() {
-      return this.sourceNode && this.$parent.nodeRegistry[this.sourceNode.type];
+    sourceConfig() {
+      return this.sourceNode && this.nodeRegistry[this.sourceNode.type];
     },
-    targetType() {
-      return this.targetNode && this.$parent.nodeRegistry[this.targetNode.type];
+    targetConfig() {
+      return this.targetNode && this.nodeRegistry[this.targetNode.type];
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
   },
   methods: {
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-sequence-flow', this.node.definition, this);
-    },
-    updateShape() {},
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);
@@ -97,7 +92,7 @@ export default {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
 
-      this.node.diagram.waypoint = points.map(point => this.$parent.moddle.create('dc:Point', point));
+      this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
     isValidConnection() {
@@ -107,7 +102,7 @@ export default {
         return false;
       }
 
-      if (targetType === this.laneShape) {
+      if (targetType === laneId) {
         return false;
       }
 
@@ -120,10 +115,12 @@ export default {
         return false;
       }
 
-      const invalidIncoming = this.targetType.validateIncoming instanceof Function
-        && !this.targetType.validateIncoming(this.sourceNode);
-      const invalidOutgoing = this.sourceType.validateOutgoing instanceof Function
-        && !this.sourceType.validateOutgoing(this.targetNode);
+      const invalidIncoming = this.targetConfig.validateIncoming
+        && !this.targetConfig.validateIncoming(this.sourceNode);
+
+      const invalidOutgoing = this.sourceConfig.validateOutgoing
+        && !this.sourceConfig.validateOutgoing(this.targetNode);
+
       if (invalidIncoming || invalidOutgoing) {
         return false;
       }
@@ -143,6 +140,7 @@ export default {
 
       if (!this.isValidConnection()) {
         this.$emit('set-cursor', 'not-allowed');
+        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
         this.shape.target({
           x: localMousePosition.x,
@@ -155,6 +153,8 @@ export default {
 
         return;
       }
+
+      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
       this.shape.target(this.target, {
         anchor: {
@@ -216,21 +216,26 @@ export default {
       },
     });
 
-    this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
+    this.sourceShape = this.graph.getElements().find(element => {
+      return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
+    });
 
     this.shape.source(this.sourceShape, {
       anchor: { name: 'modelCenter' },
       connectionPoint: { name: 'boundary' },
     });
 
+    this.sourceShape.embed(this.shape);
+
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     const targetRef = this.node.definition.get('targetRef');
 
     if (targetRef.id) {
-      const targetShape = this.$parent.nodes[targetRef.get('id')].component.shape;
+      const targetShape = this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === targetRef;
+      });
       this.shape.target(targetShape, {
         anchor: {
           name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
@@ -247,7 +252,6 @@ export default {
 
       this.paper.setInteractivity(false);
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
 
       this.$emit('set-cursor', 'not-allowed');
     }
@@ -255,15 +259,16 @@ export default {
   },
   destroyed() {
     /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
-    const sourceNode = this.$parent.nodes[this.node.definition.sourceRef.id];
-    const targetNode = this.$parent.nodes[this.node.definition.targetRef.id];
-
-    if (sourceNode) {
-      pull(sourceNode.definition.get('outgoing'), this.node.definition);
+    const { sourceRef, targetRef } = this.node.definition;
+    if (sourceRef) {
+      pull(sourceRef.get('outgoing'), this.node.definition);
     }
 
-    if (targetNode) {
-      pull(targetNode.definition.get('incoming'), this.node.definition);
+    /* If targetRef is defined, it could be a point or another element.
+     * If targetRef has an id, that means it's an element and the reference to it
+     * can be safely removed. */
+    if (targetRef.id) {
+      pull(targetRef.get('incoming'), this.node.definition);
     }
 
     this.updateWaypoints.cancel();

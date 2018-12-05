@@ -11,7 +11,7 @@ import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
 export default {
-  props: ['graph', 'node', 'id'],
+  props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
   mixins: [crownConfig],
   data() {
     return {
@@ -24,26 +24,22 @@ export default {
   },
   computed: {
     sourceNode() {
-      return this.sourceShape && this.sourceShape.component.node;
+      return get(this.sourceShape, 'component.node');
     },
     targetNode() {
-      return this.target && this.target.component.node;
+      return get(this.target, 'component.node');
     },
-    sourceType() {
-      return this.sourceNode && this.$parent.nodeRegistry[this.sourceNode.type];
+    sourceConfig() {
+      return this.sourceNode && this.nodeRegistry[this.sourceNode.type];
     },
-    targetType() {
-      return this.targetNode && this.$parent.nodeRegistry[this.targetNode.type];
+    targetConfig() {
+      return this.targetNode && this.nodeRegistry[this.targetNode.type];
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
   },
   methods: {
-    handleClick() {
-      this.$parent.loadInspector('processmaker-modeler-association', this.node.definition, this);
-    },
-    updateShape() {},
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);
@@ -72,7 +68,7 @@ export default {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
 
-      this.node.diagram.waypoint = points.map(point => this.$parent.moddle.create('dc:Point', point));
+      this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
     isValidConnection() {
@@ -90,11 +86,12 @@ export default {
       if (sourcePool && sourcePool !== targetPool) {
         return false;
       }
+      const invalidIncoming = this.targetConfig.validateIncoming
+        && !this.targetConfig.validateIncoming(this.sourceNode);
 
-      const invalidIncoming = this.targetType.validateIncoming instanceof Function
-        && !this.targetType.validateIncoming(this.sourceNode);
-      const invalidOutgoing = this.sourceType.validateOutgoing instanceof Function
-        && !this.sourceType.validateOutgoing(this.targetNode);
+      const invalidOutgoing = this.sourceConfig.validateOutgoing
+        && !this.sourceConfig.validateOutgoing(this.targetNode);
+
       if (invalidIncoming || invalidOutgoing) {
         return false;
       }
@@ -114,6 +111,7 @@ export default {
 
       if (!this.isValidConnection()) {
         this.$emit('set-cursor', 'not-allowed');
+        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
         this.shape.target({
           x: localMousePosition.x,
@@ -126,6 +124,8 @@ export default {
 
         return;
       }
+
+      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
       this.shape.target(this.target, {
         anchor: {
@@ -195,19 +195,26 @@ export default {
       },
     });
 
-    this.sourceShape = this.$parent.nodes[this.node.definition.get('sourceRef').get('id')].component.shape;
+    this.sourceShape = this.graph.getElements().find(element => {
+      return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
+    });
+
     this.shape.source(this.sourceShape, {
       anchor: { name: 'modelCenter' },
       connectionPoint: { name: 'boundary' },
     });
 
+    this.sourceShape.embed(this.shape);
+
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$parent.nodes[this.id].component = this;
 
     const targetRef = this.node.definition.get('targetRef');
+
     if (targetRef.id) {
-      const targetShape = this.$parent.nodes[targetRef.get('id')].component.shape;
+      const targetShape = this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === targetRef;
+      });
       this.shape.target(targetShape, {
         anchor: {
           name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
@@ -224,7 +231,6 @@ export default {
 
       this.paper.setInteractivity(false);
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
 
       this.$emit('set-cursor', 'not-allowed');
     }
