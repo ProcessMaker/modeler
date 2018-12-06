@@ -86,11 +86,11 @@ export default {
       if (sourcePool && sourcePool !== targetPool) {
         return false;
       }
-      const invalidIncoming = this.targetConfig.validateIncoming
-        && !this.targetConfig.validateIncoming(this.sourceNode);
+      const invalidIncoming = this.targetConfig.validateAssociationIncoming
+        && !this.targetConfig.validateAssociationIncoming(this.sourceNode);
 
-      const invalidOutgoing = this.sourceConfig.validateOutgoing
-        && !this.sourceConfig.validateOutgoing(this.targetNode);
+      const invalidOutgoing = this.sourceConfig.validateAssociationOutgoing
+        && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
 
       if (invalidIncoming || invalidOutgoing) {
         return false;

@@ -29,6 +29,14 @@ export default {
   validateIncoming() {
     return false;
   },
+  /**
+   * Validate whether to accept an incoming association from an artifact
+   *
+   * @param node
+   */
+  validateAssociationIncoming() {
+    return false;
+  },
   inspectorConfig: [
     {
       name: 'Text Annotation',
