@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    highlightedNode: null,
     nodes: {
       past: [],
       present: null,
@@ -15,6 +16,7 @@ export default new Vuex.Store({
     nodes: state => state.nodes.present,
     canUndo: state => state.nodes.past.length > 0,
     canRedo: state => state.nodes.future.length > 0,
+    highlightedNode: state => state.highlightedNode,
   },
   mutations: {
     undo(state) {
@@ -57,6 +59,9 @@ export default new Vuex.Store({
         present: null,
         future: [],
       };
+    },
+    highlightNode(state, node) {
+      state.highlightedNode = node;
     },
   },
 });

@@ -1,7 +1,9 @@
 import component from './sequenceFlow.vue';
 
+export const id = 'processmaker-modeler-sequence-flow';
+
 export default {
-  id: 'processmaker-modeler-sequence-flow',
+  id,
   component,
   bpmnType: 'bpmn:SequenceFlow',
   control: false,

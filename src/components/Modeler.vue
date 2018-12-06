@@ -14,14 +14,11 @@
         </drop>
       </div>
 
-      <div class="inspector">
-        <vue-form-renderer
-          ref="inspector"
-          :data="inspectorData"
-          @update="inspectorHandler"
-          :config="inspectorConfig"
-        />
-      </div>
+      <InspectorPanel
+        :nodeRegistry="nodeRegistry"
+        :moddle="moddle"
+        :processNode="processNode"
+      />
     </div>
 
     <component
@@ -32,7 +29,7 @@
       :paper="paper"
       :node="node"
       :id="node.definition.id"
-      :highlighted="highlighted === node"
+      :highlighted="highlightedNode === node"
       :collaboration="collaboration"
       :process-node="processNode"
       :processes="processes"
@@ -43,10 +40,7 @@
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
-      @click="() => {
-        highlighted = node;
-        loadInspector(node);
-      }"
+      @click="highlightNode(node)"
     />
   </div>
 </template>
@@ -60,37 +54,13 @@ import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
+import InspectorPanel from '@/components/inspectors/InspectorPanel';
 
 // Our renderer for our inspector
-import { Drag, Drop } from 'vue-drag-drop';
-
-// Bring in our own form controls
-import {
-  FormInput,
-  FormSelect,
-  FormTextArea,
-  FormCheckbox,
-  FormRadioButtonGroup,
-  FormCodeEditor,
-} from '@processmaker/vue-form-elements';
-
-import processInspectorConfig from './inspectors/process';
-import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
-
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+import { Drop } from 'vue-drag-drop';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane/';
-
-// Register those components
-Vue.component('FormText', renderer.FormText);
-Vue.component('FormInput', FormInput);
-Vue.component('FormSelect', FormSelect);
-Vue.component('FormTextArea', FormTextArea);
-Vue.component('FormCheckbox', FormCheckbox);
-Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
-Vue.component('FormCodeEditor', FormCodeEditor);
-Vue.component('VueFormRenderer', VueFormRenderer);
 
 const version = '1.0';
 
@@ -100,9 +70,9 @@ if (!window.joint) {
 
 export default {
   components: {
-    Drag,
     Drop,
     controls,
+    InspectorPanel,
   },
   data() {
     return {
@@ -111,36 +81,24 @@ export default {
 
       // What bpmn moddle extensions should we register
       extensions: [],
+
       // Our controls/nodes to show in our palette
       controls: {},
+
       // Our node types, keyed by the id
       nodeRegistry: {},
+
       // Our jointjs data graph model
       graph: null,
+
       // Our jointjs paper
       paper: null,
+
       definitions: null,
       context: null,
       planeElements: null,
       canvasDragPosition: null,
-      // This is our id based lookup model
-      inspectors: {
-        process: processInspectorConfig,
-      },
       processNode: null,
-      // Each type/control in our modeler has it's own inspector configuration
-      inspectorConfigurations: {},
-      inspectorNode: null,
-      inspectorData: null,
-      inspectorHandler: () => {},
-      highlighted: null,
-      inspectorConfig: [
-        {
-          name: 'Empty',
-          items: [],
-        },
-      ],
-      sequenceExpressionInspectorConfig,
       collaboration: null,
       moddle: null,
       dragPoint: { x: null, y: null },
@@ -154,24 +112,7 @@ export default {
     nodes: () => store.getters.nodes,
     canUndo: () => store.getters.canUndo,
     canRedo: () => store.getters.canRedo,
-  },
-  watch: {
-    // When assigning to a new inspectorNode, it's important to
-    // create a new inspectorData that will be a "clean" object.
-    // But we also need to avoid circular references. In bpmn-moddle, this is usually brought
-    // on by parent
-    inspectorNode() {
-      const node = this.nodes.find(node => node === this.inspectorNode);
-      const type = node && node.type;
-
-      this.inspectorData =
-        type && this.nodeRegistry[type].inspectorData
-          ? this.nodeRegistry[type].inspectorData(this.inspectorNode)
-          : Object.entries(this.inspectorNode).reduce((data, [key, value]) => {
-            data[key] = value;
-            return data;
-          }, {});
-    },
+    highlightedNode: () => store.getters.highlightedNode,
   },
   methods: {
     undo() {
@@ -179,6 +120,9 @@ export default {
     },
     redo() {
       store.commit('redo');
+    },
+    highlightNode(node) {
+      store.commit('highlightNode', node);
     },
     /**
      * Register an inspector component to configure extended attributes and elements
@@ -207,7 +151,6 @@ export default {
     registerNode(nodeType, parser) {
       const defaultParser = () => nodeType.id;
 
-      this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
@@ -243,8 +186,7 @@ export default {
       this.planeElements = this.plane.get('planeElement');
 
       this.processNode = this.processes[0];
-      this.inspectorConfig = this.inspectors['process'];
-      this.inspectorNode = this.processNode;
+      store.commit('highlightNode', this.processNode);
 
       /* Add any pools */
       if (this.collaboration) {
@@ -413,29 +355,6 @@ export default {
       this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
-    loadInspector(node) {
-      this.inspectorNode = node.definition;
-      if(
-        node.type === 'processmaker-modeler-sequence-flow' &&
-        (node.definition.sourceRef.$type === 'bpmn:ExclusiveGateway' || node.definition.sourceRef.$type === 'bpmn:InclusiveGateway')
-      ) {
-        this.inspectorConfig = this.sequenceExpressionInspectorConfig;
-      } else {
-        this.inspectorConfig = this.nodeRegistry[node.type].inspectorConfig;
-      }
-
-      this.inspectorHandler = this.nodeRegistry[node.type].inspectorHandler
-        ? value => this.nodeRegistry[node.type].inspectorHandler(value, node, this.moddle)
-        : value => this.defaultInspectorHandler(value, node);
-    },
-    defaultInspectorHandler(value, node) {
-      /* Go through each property and rebind it to our data */
-      for (const key in value) {
-        if (node.definition[key] !== value[key]) {
-          node.definition[key] = value[key];
-        }
-      }
-    },
     validateDropTarget(transferData, { clientX, clientY }) {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
       if (transferData.type === poolId) {
@@ -493,7 +412,7 @@ export default {
       diagram.bounds.x = 150;
       diagram.bounds.y = 150;
 
-      store.commit('addNode', {
+      this.addNode({
         definition,
         diagram,
         type: startEvent.id,
@@ -543,9 +462,7 @@ export default {
       },
     });
     this.paper.on('blank:pointerclick', () => {
-      this.highlighted = null;
-      this.inspectorNode = this.processNode;
-      this.inspectorConfig = processInspectorConfig;
+      store.commit('highlightNode', this.processNode);
     });
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
@@ -635,15 +552,6 @@ $cursors: default, not-allowed;
     width: 100%;
     display: flex;
     flex-direction: row;
-
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eee;
-      border-left: 1px solid #aaa;
-    }
 
     .paper-container {
       height: 100%;
