@@ -12,7 +12,6 @@ import { id as poolId, labelWidth, poolPadding } from './index';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
-import resizeIcon from '@/assets/highlight-shape.svg';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
 
@@ -58,14 +57,6 @@ export default {
           },
         },
       ],
-      resizeConfig: [
-        {
-          icon: resizeIcon,
-          // clickHandler: () => {
-          //   this.resizePools();
-          // },
-        },
-      ],
       laneSet: null,
       addLaneAbove: false,
     };
@@ -83,30 +74,6 @@ export default {
     },
   },
   methods: {
-    // resizePools(){
-    //   const {x, y, width, height } = this.shape.findView(this.paper).getBBox();
-    //   const bottomRightPoint = {
-    //     x: x + width,
-    //     y: y + height,
-    //   };
-    //   this.paper.on('blank:pointerdown', (event, x , y) => {
-
-    //   });
-
-    //   this.paper.on('blank:pointermove', (event, x, y) => {
-    //     this.shape.resize( (x - bottomRightPoint.x) + width , (y - bottomRightPoint.y) + height );
-    //     this.updateAnchorPointPosition();
-    //     this.updateCrownPosition();
-
-    //   });
-
-    //   this.paper.on('blank:pointerup', (event, x, y) => {
-    //     this.shape.resize( (x - bottomRightPoint.x) + width , (y - bottomRightPoint.y) + height );
-    //   });
-    //   this.updateAnchorPointPosition();
-    //   this.updateCrownPosition();
-
-    // },
     getElementsUnderArea(element) {
       const { x, y, width, height} = element.getBBox();
       const area = { x, y, width, height };
@@ -213,7 +180,6 @@ export default {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
         this.updateCrownPosition();
-        this.updateAnchorPointPosition();
 
         this.getElementsUnderArea(element).filter(laneElement => {
           return laneElement.component &&
@@ -275,7 +241,6 @@ export default {
         });
 
         this.updateCrownPosition();
-        this.updateAnchorPointPosition();
 
         if (this.laneSet) {
           /* Expand any lanes within the poool */
