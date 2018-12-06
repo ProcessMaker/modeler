@@ -27,6 +27,7 @@
     "bpmn-moddle": "^5.1.5",
     "file-saver": "^2.0.0-rc.4",
     "i": "^0.3.6",
+    "immutability-helper": "^2.8.1",
     "jointjs": "^2.2.1",
     "lodash": "^4.17.11",
     "npm": "^6.4.1",

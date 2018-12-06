@@ -37,20 +37,6 @@ export default {
       refX: labelWidth / 2,
     });
 
-    this.shape.on('change:position', (element, position) => {
-      this.node.diagram.bounds.x = position.x;
-      this.node.diagram.bounds.y = position.y;
-      // This is done so any flows pointing to this task are updated
-      this.$emit(
-        'move',
-        {
-          x: bounds.x,
-          y: bounds.y,
-        },
-        element,
-      );
-    });
-
     this.shape.on('change:size', (element, newSize) => {
       this.node.diagram.bounds.width = newSize.width;
       this.node.diagram.bounds.height = newSize.height;

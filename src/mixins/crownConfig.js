@@ -1,5 +1,7 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import debounce from 'lodash/debounce';
+import store from '@/store';
 
 export const highlightPadding = 3;
 
@@ -19,6 +21,20 @@ export default {
         this.shapeView.unhighlight();
         this.removeCrown();
       }
+    },
+    'node.diagram.bounds'({ x, y }) {
+      const { x: shapeX, y: shapeY } = this.shape.position();
+      if (x === shapeX && y === shapeY) {
+        return;
+      }
+
+      /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
+      this.shape.off('change:position', this.updateNodePosition);
+
+      this.shape.position(x, y);
+      this.updateCrownPosition();
+
+      this.shape.on('change:position', this.updateNodePosition);
     },
   },
   computed: {
@@ -163,6 +179,9 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
+    updateNodePosition: debounce(function(element, newPosition) {
+      store.dispatch('updateNodePosition', { node: this.node, position: newPosition });
+    }, 200),
   },
   mounted() {
     this.$nextTick(() => {
@@ -170,6 +189,7 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
+      this.shape.on('change:position', this.updateNodePosition);
     });
   },
   beforeDestroy() {

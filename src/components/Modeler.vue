@@ -185,8 +185,10 @@ export default {
       this.plane = this.definitions.diagrams[0].plane;
       this.planeElements = this.plane.get('planeElement');
 
-      this.processNode = this.processes[0];
-      store.commit('highlightNode', this.processNode);
+      this.processNode = {
+        definition: this.processes[0],
+        diagram: this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+      };
 
       /* Add any pools */
       if (this.collaboration) {
@@ -204,6 +206,8 @@ export default {
         process.get('flowElements').forEach(this.setNode);
         process.get('artifacts').forEach(this.setNode);
       });
+
+      store.commit('highlightNode', this.processNode);
     },
     setNode(definition) {
       const type = this.parsers[definition.$type].reduce((type, parser) => {
@@ -223,7 +227,7 @@ export default {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
-      store.commit('addNode', {
+      store.dispatch('addNode', {
         type,
         definition,
         diagram,
@@ -288,7 +292,7 @@ export default {
 
         let process;
         if (this.collaboration.get('participants').length === 0) {
-          process = this.processNode;
+          process = this.processNode.definition;
         } else {
           process = this.moddle.create('bpmn:Process');
           this.processes.push(process);
@@ -304,7 +308,7 @@ export default {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
         const targetProcess = this.poolTarget
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
-          : this.processNode;
+          : this.processNode.definition;
 
         if (type === laneId) {
           targetProcess
@@ -328,7 +332,7 @@ export default {
 
       this.planeElements.push(diagram);
 
-      store.commit('addNode', {
+      store.dispatch('addNode', {
         type,
         definition,
         diagram,
@@ -346,9 +350,9 @@ export default {
       });
     },
     removeNode(node) {
-      pull(this.processNode.get('flowElements'), node.definition);
+      pull(this.processNode.definition.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
-      store.commit('removeNode', node);
+      store.dispatch('removeNode', node);
     },
     handleResize() {
       let parent = this.$el.parentElement;

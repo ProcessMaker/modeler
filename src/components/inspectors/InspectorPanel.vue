@@ -80,7 +80,7 @@ export default {
 
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler
         ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.moddle)
-        : value => this.defaultInspectorHandler(value, this.highlightedNode.definition);
+        : value => this.defaultInspectorHandler(value, this.highlightedNode);
     },
     data() {
       if (!this.highlightedNode) {
@@ -91,18 +91,18 @@ export default {
 
       return type && this.nodeRegistry[type].inspectorData
         ? this.nodeRegistry[type].inspectorData(this.highlightedNode)
-        : Object.entries(this.highlightedNode.definition || this.processNode).reduce((data, [key, value]) => {
+        : Object.entries(this.highlightedNode.definition).reduce((data, [key, value]) => {
           data[key] = value;
           return data;
         }, {});
     },
   },
   methods: {
-    defaultInspectorHandler(value, definition) {
+    defaultInspectorHandler(value, node) {
       /* Go through each property and rebind it to our data */
       for (const key in value) {
-        if (definition[key] !== value[key]) {
-          definition[key] = value[key];
+        if (node.definition[key] !== value[key]) {
+          node.definition[key] = value[key];
         }
       }
     },

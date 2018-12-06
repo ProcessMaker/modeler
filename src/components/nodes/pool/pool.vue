@@ -280,7 +280,7 @@ export default {
       });
     },
     captureChildren() {
-      if (this.processNode.get('flowElements').length === 0) {
+      if (this.processNode.definition.get('flowElements').length === 0) {
         return;
       }
 
@@ -325,20 +325,6 @@ export default {
     this.shape.attr('label/text', joint.util.breakText(this.node.definition.get('name'), {
       width: bounds.width,
     }));
-
-    this.shape.on('change:position', (element, position) => {
-      this.node.diagram.bounds.x = position.x;
-      this.node.diagram.bounds.y = position.y;
-      // This is done so any flows pointing to this task are updated
-      this.$emit(
-        'move',
-        {
-          x: bounds.x,
-          y: bounds.y,
-        },
-        element,
-      );
-    });
 
     this.shape.on('change:size', (element, newSize) => {
       this.node.diagram.bounds.width = newSize.width;
