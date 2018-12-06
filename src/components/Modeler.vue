@@ -503,6 +503,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
+        !cellView.model.get('isDrag') &&
         (!cellView.model.component ||
           cellView.model.component.node.type === laneId)
       ) {
