@@ -63,11 +63,13 @@ export default {
           this.shape.off('change:size', this.updateAnchorPointPosition);
 
           point.listenToOnce(this.paper, 'element:pointerup', () => {
+            this.updateAnchorPointPosition();
             point.off('change:position', this.resizeElement);
             this.shape.on('change:size', this.updateAnchorPointPosition);
           });
         }
       });
+
     },
     resizeElement(point, newPosition) {
       const { x, y } = newPosition;
@@ -77,7 +79,7 @@ export default {
         return;
       }
 
-      this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 60));
+      this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 100));
       if (x < 300 || y < 60) {
         point.position(Math.max(x, 300), Math.max(y, 60), {
           parentRelative: true,
@@ -87,9 +89,9 @@ export default {
       point.set('previousPosition', { x, y });
 
       if (this.laneSet) {
+        this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 400));
         this.resizeLanes();
       }
-
       this.updateCrownPosition();
     },
     addResizeAnchors() {

@@ -242,6 +242,7 @@ export default {
         });
 
         this.updateCrownPosition();
+        this.updateAnchorPointPosition();
 
         if (this.laneSet) {
           /* Expand any lanes within the poool */
