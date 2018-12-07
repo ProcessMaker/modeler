@@ -36,7 +36,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
       });
     },
     /* Map values from inspector data to node definition  */
-    inspectorHandler(value, node) {
+    inspectorHandler(value, node, setNodeProp) {
       // Go through each property and rebind it to our data
       const definition = node.definition;
       const config = JSON.parse(definition.config);
@@ -45,15 +45,18 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
         if (key in config) {
           config[key] = value[key];
         } else if (definition[key] !== value[key]) {
-          definition[key] = value[key];
+          setNodeProp(node, key, value[key]);
         }
       }
 
-      definition.config = JSON.stringify(config);
+      const newConfig = JSON.stringify(config);
+      if (newConfig !== definition.config) {
+        setNodeProp(node, 'config', newConfig);
+      }
     },
     /* Map values from node definition to inspector data */
-    inspectorData(definition) {
-      return Object.entries(definition).reduce((data, [key, value]) => {
+    inspectorData(node) {
+      return Object.entries(node.definition).reduce((data, [key, value]) => {
         if (key === 'config') {
           try {
             const config = JSON.parse(value);

@@ -4,6 +4,8 @@ import update from 'immutability-helper';
 
 Vue.use(Vuex);
 
+export const saveDebounce = 300;
+
 export default new Vuex.Store({
   state: {
     highlightedNodeIndex: null,
@@ -80,6 +82,16 @@ export default new Vuex.Store({
               y: { $set: position.y },
             },
           },
+        },
+      });
+
+      commit('updateNodes', newNodes);
+    },
+    updateNodeProp({ commit, state }, { node, key, value }) {
+      const nodeIndex = state.nodes.present.indexOf(node);
+      const newNodes = update(state.nodes.present, {
+        [nodeIndex]: {
+          definition: { [key]: { $set: value } },
         },
       });
 

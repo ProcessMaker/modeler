@@ -20,9 +20,10 @@ import {
   FormRadioButtonGroup,
   FormCodeEditor,
 } from '@processmaker/vue-form-elements';
-import store from '@/store';
+import store, { saveDebounce } from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
+import debounce from 'lodash/debounce';
 import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
 
@@ -75,12 +76,12 @@ export default {
       }
 
       if (this.highlightedNode === this.processNode) {
-        return value => this.defaultInspectorHandler(value, this.processNode);
+        return value => this.defaultInspectorHandler(value, this.processNode, this.setNodeProp);
       }
 
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler
-        ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.moddle)
-        : value => this.defaultInspectorHandler(value, this.highlightedNode);
+        ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle)
+        : value => this.defaultInspectorHandler(value, this.highlightedNode, this.setNodeProp);
     },
     data() {
       if (!this.highlightedNode) {
@@ -98,11 +99,14 @@ export default {
     },
   },
   methods: {
-    defaultInspectorHandler(value, node) {
+    setNodeProp: debounce(function(node, key, value) {
+      store.dispatch('updateNodeProp', { node, key, value });
+    }, saveDebounce),
+    defaultInspectorHandler(value, node, setNodeProp) {
       /* Go through each property and rebind it to our data */
       for (const key in value) {
         if (node.definition[key] !== value[key]) {
-          node.definition[key] = value[key];
+          setNodeProp(node, key, value[key]);
         }
       }
     },

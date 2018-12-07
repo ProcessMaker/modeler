@@ -1,7 +1,7 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import debounce from 'lodash/debounce';
-import store from '@/store';
+import store, { saveDebounce } from '@/store';
 
 export const highlightPadding = 3;
 
@@ -181,7 +181,7 @@ export default {
     },
     updateNodePosition: debounce(function(element, newPosition) {
       store.dispatch('updateNodePosition', { node: this.node, position: newPosition });
-    }, 200),
+    }, saveDebounce),
   },
   mounted() {
     this.$nextTick(() => {
