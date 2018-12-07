@@ -179,8 +179,16 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
-    updateNodeBounds: debounce(function(element, bounds) {
-      store.dispatch('updateNodeBounds', { node: this.node, bounds });
+    updateNodeBounds: debounce(function(element, newBounds) {
+      const { x, y, width, height } = this.node.diagram.bounds;
+      if (
+        (x === newBounds.x && y === newBounds.y) ||
+        (width === newBounds.width && height === newBounds.height)
+      ) {
+        return;
+      }
+
+      store.dispatch('updateNodeBounds', { node: this.node, bounds: newBounds });
     }, saveDebounce),
   },
   mounted() {
