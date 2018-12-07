@@ -153,8 +153,6 @@ export default {
         return;
       }
 
-      // this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
-
       this.shape.target(this.target, {
         anchor: {
           name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
