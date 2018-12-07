@@ -390,6 +390,7 @@ export default {
     removeNode(node) {
       pull(this.processNode.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
+      pull(this.processNode.get('artifacts'), node.definition);
       this.nodes = this.nodes.filter(n => n !== node);
     },
     handleResize() {

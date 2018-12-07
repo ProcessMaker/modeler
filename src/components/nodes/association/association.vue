@@ -154,6 +154,7 @@ export default {
       });
     },
     removeLink() {
+      this.$parent.removeNode(this);
       this.removeShape();
       this.resetPaper();
     },
