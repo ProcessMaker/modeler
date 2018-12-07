@@ -40,6 +40,9 @@ export default {
     },
   },
   methods: {
+    beforeLoadInspector(node) {
+      return node.definition && node.definition.targetRef && node.definition.targetRef.id;
+    },
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);

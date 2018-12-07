@@ -38,10 +38,7 @@
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
-      @click="() => {
-        highlighted = node;
-        loadInspector(node);
-      }"
+      @click="loadInspector(node)"
     />
   </div>
 </template>
@@ -399,6 +396,15 @@ export default {
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
     loadInspector(node) {
+      const component = this.$children.find(cmp => cmp.node === node);
+      // The component can control whether it can be inspected
+      const valid = component && component.beforeLoadInspector instanceof Function
+        ?  component.beforeLoadInspector(node) : true;
+      if (!valid) {
+        return;
+      }
+
+      this.highlighted = node;
       this.inspectorNode = node.definition;
       if(
         node.type === 'processmaker-modeler-sequence-flow' &&
