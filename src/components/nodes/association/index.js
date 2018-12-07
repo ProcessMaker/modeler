@@ -5,14 +5,19 @@ export default {
   component,
   bpmnType: 'bpmn:Association',
   control: false,
+  definition(moddle) {
+    return moddle.create('bpmn:Association', {
+      name: 'New Association Flow',
+    });
+  },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Association',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Task',
+            label: 'Association',
             fontSize: '2em',
           },
         },

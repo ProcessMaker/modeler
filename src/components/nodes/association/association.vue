@@ -8,53 +8,64 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
+import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
 export default {
-  props: ['graph', 'node', 'id', 'moddle'],
+  props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
   mixins: [crownConfig],
   data() {
     return {
       shape: null,
       definition: null,
       sourceShape: null,
-      validConnections: {
-        'processmaker-modeler-text-annotation': [
-          'processmaker-modeler-task',
-          'processmaker-modeler-start-event',
-          'processmaker-modeler-end-event',
-          'processmaker-modeler-exclusive-gateway',
-          'processmaker-modeler-inclusive-gateway',
-          'processmaker-modeler-parallel-gateway',
-        ],
-      },
+      target: null,
+      anchorPadding: 25,
     };
   },
   computed: {
-    targetType() {
-      return this.targetShape && this.targetShape.component.node.type;
+    sourceNode() {
+      return get(this.sourceShape, 'component.node');
+    },
+    targetNode() {
+      return get(this.target, 'component.node');
+    },
+    sourceConfig() {
+      return this.sourceNode && this.nodeRegistry[this.sourceNode.type];
+    },
+    targetConfig() {
+      return this.targetNode && this.nodeRegistry[this.targetNode.type];
+    },
+    elementPadding() {
+      return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
   },
   methods: {
+    beforeLoadInspector(node) {
+      return node.definition && node.definition.targetRef && node.definition.targetRef.id;
+    },
+    setBodyColor(color, target = this.target) {
+      target.attr('body/fill', color);
+      target.attr('.body/fill', color);
+    },
+    updateDefinitionLinks() {
+      const targetShape = this.shape.getTargetElement();
+      this.node.definition.targetRef = targetShape.component.node.definition;
+    },
     completeLink() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-      this.shape.attr({ wrapper: { cursor: 'default' } });
+      this.$emit('set-cursor', null);
 
       this.resetPaper();
 
-      const sourceShape = this.shape.getTargetElement();
-
-      this.node.definition.sourceRef = sourceShape.component.node.definition;
-
       this.updateWaypoints();
 
-      sourceShape.attr({
-        body: { fill: '#fff', cursor: 'move' },
-        label: { cursor: 'move' },
-      });
+      const targetShape = this.shape.getTargetElement();
+      this.setBodyColor(defaultNodeColor, targetShape);
 
-      this.shape.listenTo(this.targetShape, 'change:position', this.updateWaypoints);
-      this.shape.listenTo(sourceShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+      this.$emit('set-cursor', 'grab');
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
@@ -63,36 +74,86 @@ export default {
       this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
+    isValidConnection() {
+      const targetType = get(this.target, 'component.node.type');
+
+      if (!targetType) {
+        return false;
+      }
+
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      /* If the link source is part of a pool, only allow sequence
+       * flows to the target if the target is also in the same pool  */
+      if (sourcePool && sourcePool !== targetPool) {
+        return false;
+      }
+      const invalidIncoming = this.targetConfig.validateAssociationIncoming
+        && !this.targetConfig.validateAssociationIncoming(this.sourceNode);
+
+      const invalidOutgoing = this.sourceConfig.validateAssociationOutgoing
+        && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
+
+      if (invalidIncoming || invalidOutgoing) {
+        return false;
+      }
+
+      return true;
+    },
+    updateRouter() {
+      this.shape.router('normal', { elementPadding: this.elementPadding });
+    },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
-      const [target] = this.graph.findModelsFromPoint(localMousePosition);
-      const sourceType = get(target, 'component.node.type');
 
-      if (!sourceType || !this.validConnections[this.targetType].includes(sourceType)) {
+      /* Sort shapes by z-index descending; grab the shape on top (with the highest z-index) */
+      this.target = this.graph.findModelsFromPoint(localMousePosition).sort((shape1, shape2) => {
+        return shape2.get('z') - shape1.get('z');
+      })[0];
+
+      if (!this.isValidConnection()) {
+        this.$emit('set-cursor', 'not-allowed');
+        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
+
         this.shape.target({
           x: localMousePosition.x,
           y: localMousePosition.y,
         });
+
+        if (this.target) {
+          this.setBodyColor(invalidNodeColor);
+        }
+
         return;
       }
 
-      this.shape.target(target);
-      target.attr({
-        body: { fill: '#dffdd0', cursor: 'default' },
-        label: { cursor: 'default' },
+      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
+
+      this.shape.target(this.target, {
+        anchor: {
+          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: this.anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
       });
 
+      this.updateRouter();
+
+      this.$emit('set-cursor', 'default');
+      this.setBodyColor(validNodeColor);
+
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
-      this.shape.listenToOnce(this.paper, 'cell:pointerclick', this.completeLink);
+      this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
+        this.completeLink();
+        this.updateDefinitionLinks();
+      });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-        this.shape.stopListening(this.paper, 'cell:pointerclick', this.completeLink);
-
-        target.attr({
-          body: { fill: '#fff', cursor: 'move' },
-          label: { cursor: 'move' },
-        });
+        this.shape.stopListening(this.paper, 'cell:pointerclick');
+        this.setBodyColor(defaultNodeColor);
+        this.$emit('set-cursor', 'not-allowed');
       });
     },
     removeLink() {
@@ -100,26 +161,28 @@ export default {
       this.resetPaper();
     },
     resetPaper() {
-      this.paper.el.style.cursor = 'default';
+      this.$emit('set-cursor', null);
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
+
+      if (this.target) {
+        this.setBodyColor(defaultNodeColor);
+      }
     },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
   },
+  watch: {
+    target(target, previousTarget) {
+      if (previousTarget && previousTarget !== target) {
+        this.setBodyColor(defaultNodeColor, previousTarget);
+      }
+    },
+  },
   mounted() {
-    this.targetShape = this.graph.getElements().find(element => {
-      return element.component && element.component.node.definition === this.node.definition.get('targetRef');
-    });
-    const sourcePoint = this.node.definition.get('sourceRef');
-
-    this.paper.setInteractivity(false);
     this.shape = new joint.shapes.standard.Link({ router: { name: 'normal' } });
     this.shape.attr({
-      wrapper: {
-        cursor: 'not-allowed',
-      },
       line: {
         stroke: 'black',
         strokeWidth: '4',
@@ -134,21 +197,50 @@ export default {
         },
       },
     });
-    this.shape.source(this.targetShape);
-    this.shape.target(sourcePoint);
+
+    this.sourceShape = this.graph.getElements().find(element => {
+      return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
+    });
+
+    this.shape.source(this.sourceShape, {
+      anchor: { name: 'modelCenter' },
+      connectionPoint: { name: 'boundary' },
+    });
+
+    this.sourceShape.embed(this.shape);
+
     this.shape.addTo(this.graph);
-
-    this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
-    this.paper.el.style.cursor = 'not-allowed';
-    this.shape.listenToOnce(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
-
     this.shape.component = this;
+
+    const targetRef = this.node.definition.get('targetRef');
+
+    if (targetRef.id) {
+      const targetShape = this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === targetRef;
+      });
+      this.shape.target(targetShape, {
+        anchor: {
+          name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: this.anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.completeLink();
+    } else {
+      this.shape.target(targetRef, {
+        connectionPoint: { name: 'boundary' },
+      });
+
+      this.paper.setInteractivity(false);
+      this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
+
+      this.$emit('set-cursor', 'not-allowed');
+    }
+    this.updateRouter();
   },
   destroyed() {
     this.updateWaypoints.cancel();
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

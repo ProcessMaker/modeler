@@ -315,7 +315,7 @@ export default {
             .get('laneSets')[0]
             .get('lanes')
             .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation') {
+        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
           targetProcess.get('artifacts').push(definition);
         } else {
           targetProcess.get('flowElements').push(definition);
@@ -352,6 +352,7 @@ export default {
     removeNode(node) {
       pull(this.processNode.definition.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
+      pull(this.processNode.get('artifacts'), node.definition);
       store.dispatch('removeNode', node);
     },
     handleResize() {
