@@ -5,7 +5,7 @@
 
 <script>
 import joint from 'jointjs';
-import connectIcon from '@/assets/connect-elements.svg';
+import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
 
