@@ -180,6 +180,7 @@ export default {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
         this.updateCrownPosition();
+        this.updateAnchorPointPosition();
 
         this.getElementsUnderArea(element).filter(laneElement => {
           return laneElement.component &&

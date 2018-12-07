@@ -103,18 +103,11 @@ export default {
       });
     },
     updateAnchorPointPosition() {
-      // this.anchorPoints.forEach((point, index) => {
       const { x, y, width, height } = this.shape.findView(this.paper).getBBox();
-      const { tx, ty } = this.paper.translate();
-      const crownHeight = (this.anchorPoints.length) + ((this.anchorPoints.length - 1));
-      const centerY = 0 - (crownHeight) + (height);
 
-      this.anchorPoints.forEach((point, index) => {
-        const yOffset = index;
-
-        point.position(x + width - tx, y + yOffset + centerY - ty);
+      this.anchorPoints.forEach( point => {
+        point.position(x + width, y + height);
       });
-      // });
     },
   },
   mounted() {
