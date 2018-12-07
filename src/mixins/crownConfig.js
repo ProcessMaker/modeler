@@ -63,8 +63,8 @@ export default {
     },
     addAssociation(cellView, evt, x, y) {
       const associationLink = this.moddle.create('bpmn:Association', {
-        sourceRef: { x, y },
-        targetRef: this.shape.component.node.definition,
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
       });
 
       this.$emit('add-node', {
@@ -145,7 +145,7 @@ export default {
       });
     },
     configurePoolLane() {
-      if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow'].includes(this.node.type)) {
+      if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow', 'processmaker-modeler-association'].includes(this.node.type)) {
         return;
       }
 
