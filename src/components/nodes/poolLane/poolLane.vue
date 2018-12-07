@@ -37,11 +37,6 @@ export default {
       refX: labelWidth / 2,
     });
 
-    this.shape.on('change:size', (element, newSize) => {
-      this.node.diagram.bounds.width = newSize.width;
-      this.node.diagram.bounds.height = newSize.height;
-    });
-
     this.shape.component = this;
     this.shape.addTo(this.graph);
   },

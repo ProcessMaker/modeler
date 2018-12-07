@@ -29,12 +29,12 @@ export default {
       }
 
       /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
-      this.shape.off('change:position', this.updateNodePosition);
+      this.shape.off('change:position change:size', this.updateNodeBounds);
 
       this.shape.position(x, y);
       this.updateCrownPosition();
 
-      this.shape.on('change:position', this.updateNodePosition);
+      this.shape.on('change:position change:size', this.updateNodeBounds);
     },
   },
   computed: {
@@ -179,8 +179,8 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
-    updateNodePosition: debounce(function(element, newPosition) {
-      store.dispatch('updateNodePosition', { node: this.node, position: newPosition });
+    updateNodeBounds: debounce(function(element, bounds) {
+      store.dispatch('updateNodeBounds', { node: this.node, bounds });
     }, saveDebounce),
   },
   mounted() {
@@ -189,7 +189,7 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
-      this.shape.on('change:position', this.updateNodePosition);
+      this.shape.on('change:position change:size', this.updateNodeBounds);
     });
   },
   beforeDestroy() {

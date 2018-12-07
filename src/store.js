@@ -72,15 +72,12 @@ export default new Vuex.Store({
       const newNodes = update(state.nodes.present, { $splice: [[nodeIndex, 1]] });
       commit('updateNodes', newNodes);
     },
-    updateNodePosition({ commit, state }, { node, position }) {
+    updateNodeBounds({ commit, state }, { node, bounds }) {
       const nodeIndex = state.nodes.present.indexOf(node);
       const newNodes = update(state.nodes.present, {
         [nodeIndex]: {
           diagram: {
-            bounds: {
-              x: { $set: position.x },
-              y: { $set: position.y },
-            },
+            bounds: { $merge: bounds },
           },
         },
       });
