@@ -7,6 +7,7 @@ export default {
     return {
       anchorPoints: [],
       isResizing: true,
+      elementPadding: 5,
     };
   },
   watch: {
@@ -103,11 +104,11 @@ export default {
         const poolBottomEdge = poolY + poolHeight;
         const elementBottomEdge = elementY + elementHeight;
 
-        if(elementBottomEdge > poolBottomEdge) {
+        if(elementBottomEdge + this.elementPadding > poolBottomEdge) {
           this.isResizing = false;
         }
 
-        if(elementBottomEdge < poolBottomEdge) {
+        if(elementBottomEdge + this.elementPadding < poolBottomEdge) {
           this.isResizing = true;
         }
       });
@@ -116,6 +117,8 @@ export default {
         this.shape.resize(Math.max(x - poolX, poolWidth), Math.max(y - poolY, poolHeight), {
           parentRelative: true,
         });
+        this.captureChildren();
+        this.updateAnchorPointPosition();
       }
 
       point.set('previousPosition', { x, y });
@@ -124,8 +127,8 @@ export default {
         this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 400));
         this.resizeLanes();
       }
-      this.updateCrownPosition();
 
+      this.updateCrownPosition();
     },
     addResizeAnchors() {
       this.anchorPoints.forEach(button => {
