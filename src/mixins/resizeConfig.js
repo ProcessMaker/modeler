@@ -6,6 +6,7 @@ export default {
   data() {
     return {
       anchorPoints: [],
+      isResizing: true,
     };
   },
   watch: {
@@ -73,15 +74,46 @@ export default {
     },
     resizeElement(point, newPosition) {
       const { x, y } = newPosition;
-      const { x: poolX, y: poolY } = this.shape.position();
+      const {
+        x: poolX,
+        y: poolY,
+        width: poolWidth,
+        height: poolHeight,
+      } = this.shape.getBBox();
 
       if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
         return;
       }
 
-      this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 100));
-      if (x < 300 || y < 60) {
-        point.position(Math.max(x, 300), Math.max(y, 60), {
+      if(this.isResizing) {
+        this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 100));
+        if (x < 300 || y < 60) {
+          point.position(Math.max(x, 300), Math.max(y, 60), {
+            parentRelative: true,
+          });
+        }
+      }
+
+      this.shape.getEmbeddedCells().filter(element => element.component).forEach(element => {
+        const {
+          y: elementY,
+          height: elementHeight,
+        } = element.findView(this.paper).getBBox();
+
+        const poolBottomEdge = poolY + poolHeight;
+        const elementBottomEdge = elementY + elementHeight;
+
+        if(elementBottomEdge > poolBottomEdge) {
+          this.isResizing = false;
+        }
+
+        if(elementBottomEdge < poolBottomEdge) {
+          this.isResizing = true;
+        }
+      });
+
+      if(!this.isResizing) {
+        this.shape.resize(Math.max(x - poolX, poolWidth), Math.max(y - poolY, poolHeight), {
           parentRelative: true,
         });
       }
@@ -93,6 +125,7 @@ export default {
         this.resizeLanes();
       }
       this.updateCrownPosition();
+
     },
     addResizeAnchors() {
       this.anchorPoints.forEach(button => {
