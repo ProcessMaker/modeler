@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import update from 'immutability-helper';
+import pull from 'lodash/pull';
+import clone from 'lodash/clone';
 
 Vue.use(Vuex);
 
@@ -9,90 +11,90 @@ export const saveDebounce = 300;
 export default new Vuex.Store({
   state: {
     highlightedNodeIndex: null,
-    nodes: {
-      past: [],
-      present: null,
-      future: [],
-    },
+    undoList: [],
+    redoList: [],
+    nodes: [],
   },
   getters: {
-    nodes: state => state.nodes.present,
-    canUndo: state => state.nodes.past.length > 0,
-    canRedo: state => state.nodes.future.length > 0,
-    highlightedNode: state => state.nodes.present && state.nodes.present[state.highlightedNodeIndex],
+    nodes: state => state.nodes,
+    canUndo: state => state.undoList.length > 0,
+    canRedo: state => state.redoList.length > 0,
+    highlightedNode: state => state.nodes && state.nodes[state.highlightedNodeIndex],
   },
   mutations: {
     undo(state) {
-      if (state.nodes.past.length > 0) {
-        state.nodes.future.unshift(state.nodes.present);
-        state.nodes.present = state.nodes.past.pop();
+      if (state.undoList.length > 0) {
+        const undoRedo = state.undoList.pop();
+        undoRedo.undo();
+        state.redoList.unshift(undoRedo);
       }
     },
     redo(state) {
-      if (state.nodes.future.length > 0) {
-        state.nodes.past.push(state.nodes.present);
-        state.nodes.present = state.nodes.future.shift();
+      if (state.redoList.length > 0) {
+        const undoRedo = state.redoList.shift();
+        undoRedo.redo();
+        state.undoList.push(undoRedo);
       }
     },
-    updateNodes(state, nodes) {
-      if (state.nodes.present) {
-        state.nodes.past.push(state.nodes.present);
-        state.nodes.present = nodes;
-
-        if (state.nodes.future.length > 0) {
-          state.nodes.future = [];
-        }
-      } else {
-        state.nodes.present = nodes;
+    updateNodeBounds(state, { node, bounds }) {
+      for (const key in bounds) {
+        node.diagram.bounds.set(key, bounds[key]);
       }
+    },
+    updateNodeProp(state, { node, key, value }) {
+      node.definition.set(key, value);
     },
     clearNodes(state) {
-      state.nodes = {
-        past: [],
-        present: null,
-        future: [],
-      };
+      state.undoList = [];
+      state.redoList = [];
+      state.nodes = [];
+    },
+    clearRedoList(state) {
+      state.redoList = [];
     },
     highlightNode(state, node) {
-      state.highlightedNodeIndex = state.nodes.present && state.nodes.present.indexOf(node);
+      state.highlightedNodeIndex = state.nodes && state.nodes.indexOf(node);
     },
     revertAction(state) {
-      state.nodes.present = state.nodes.past.pop();
+      state.undoList.pop();
+    },
+    addNode(state, node) {
+      state.nodes.push(node);
+    },
+    removeNode(state, node) {
+      pull(state.nodes, node);
     },
   },
   actions: {
     addNode({ commit, state }, node) {
-      const newNodes = state.nodes.present
-        ? update(state.nodes.present, { $push: [node] })
-        : [node];
-      commit('updateNodes', newNodes);
+      commit('clearRedoList');
+      const undo = () => commit('removeNode', node);
+      const redo = () => commit('addNode', node);
+      redo();
+      state.undoList.push({ undo, redo });
     },
     removeNode({ commit, state }, node) {
-      const nodeIndex = state.nodes.present.indexOf(node);
-      const newNodes = update(state.nodes.present, { $splice: [[nodeIndex, 1]] });
-      commit('updateNodes', newNodes);
+      commit('clearRedoList');
+      const undo = () => commit('addNode', node);
+      const redo = () => commit('removeNode', node);
+      redo();
+      state.undoList.push({ undo, redo });
     },
     updateNodeBounds({ commit, state }, { node, bounds }) {
-      const nodeIndex = state.nodes.present.indexOf(node);
-      const newNodes = update(state.nodes.present, {
-        [nodeIndex]: {
-          diagram: {
-            bounds: { $merge: bounds },
-          },
-        },
-      });
-
-      commit('updateNodes', newNodes);
+      commit('clearRedoList');
+      const previousBounds = { ...node.diagram.bounds };
+      const undo = () => commit('updateNodeBounds', { node, bounds: previousBounds });
+      const redo = () => commit('updateNodeBounds', { node, bounds });
+      redo();
+      state.undoList.push({ undo, redo });
     },
     updateNodeProp({ commit, state }, { node, key, value }) {
-      const nodeIndex = state.nodes.present.indexOf(node);
-      const newNodes = update(state.nodes.present, {
-        [nodeIndex]: {
-          definition: { [key]: { $set: value } },
-        },
-      });
-
-      commit('updateNodes', newNodes);
+      commit('clearRedoList');
+      const previousValue = node.definition.get(key);
+      const undo = () => commit('updateNodeProp', { node, key, value: previousValue });
+      const redo = () => commit('updateNodeProp', { node, key, value });
+      redo();
+      state.undoList.push({ undo, redo });
     },
   },
 });

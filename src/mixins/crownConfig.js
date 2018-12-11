@@ -22,19 +22,22 @@ export default {
         this.removeCrown();
       }
     },
-    'node.diagram.bounds'({ x, y }) {
-      const { x: shapeX, y: shapeY } = this.shape.position();
-      if (x === shapeX && y === shapeY) {
-        return;
-      }
+    'node.diagram.bounds': {
+      handler({ x, y }) {
+        const { x: shapeX, y: shapeY } = this.shape.position();
+        if (x === shapeX && y === shapeY) {
+          return;
+        }
 
-      /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
-      this.shape.off('change:position change:size', this.updateNodeBounds);
+        /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
+        this.shape.off('change:position change:size', this.updateNodeBounds);
 
-      this.shape.position(x, y);
-      this.updateCrownPosition();
+        this.shape.position(x, y);
+        this.updateCrownPosition();
 
-      this.shape.on('change:position change:size', this.updateNodeBounds);
+        this.shape.on('change:position change:size', this.updateNodeBounds);
+      },
+      deep: true,
     },
   },
   computed: {

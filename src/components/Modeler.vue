@@ -352,7 +352,7 @@ export default {
     removeNode(node) {
       pull(this.processNode.definition.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
-      pull(this.processNode.get('artifacts'), node.definition);
+      pull(this.processNode.definition.get('artifacts'), node.definition);
       store.dispatch('removeNode', node);
     },
     handleResize() {
@@ -407,7 +407,7 @@ export default {
     },
     addStartEvent() {
       /* Add an initial startEvent node if the graph is empty */
-      if (this.nodes) {
+      if (this.nodes.length > 0) {
         return;
       }
 
