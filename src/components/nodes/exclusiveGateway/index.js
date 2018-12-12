@@ -18,8 +18,8 @@ export default {
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: 42,
-        width: 42,
+        height: 36,
+        width: 36,
       }),
     });
   },

@@ -31,18 +31,16 @@ joint.dia.Element.define(
         fill: '#333333',
       },
       '.iconSideA': {
-        strokeWidth: '10',
-        points: '40 220 80 180 120 220',
+        strokeWidth: '4',
+        points: '11 11 25 25',
         stroke: 'black',
         fill: 'transparent',
-        transform: 'translate(37, 57) rotate(180) scale(0.20)',
       },
       '.iconSideB': {
-        strokeWidth: '10',
-        points: '40 220 80 180 120 220',
+        strokeWidth: '4',
+        points: '25 11 11 25',
         stroke: 'black',
         fill: 'transparent',
-        transform: 'translate(5, -15) scale(0.20)',
       },
       image: {
         width: 40,

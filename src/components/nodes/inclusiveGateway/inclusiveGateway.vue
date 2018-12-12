@@ -31,13 +31,13 @@ joint.dia.Element.define(
         fill: '#333333',
       },
       '.innerCircle': {
-        strokeWidth: '3',
+        strokeWidth: '2',
         cs: '25',
         cy: '75',
-        r: '20',
+        r: '9',
         stroke: 'black',
         fill: 'transparent',
-        transform: 'translate(21, -16) scale(0.5)',
+        transform: 'translate(18, -57)',
       },
       image: {
         width: 40,
