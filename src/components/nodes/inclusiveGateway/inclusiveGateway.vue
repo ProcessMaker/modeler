@@ -71,7 +71,7 @@ export default {
   },
   watch: {
     'node.definition.name'(name) {
-      this.shape.attr('label/text', joint.util.breakText(name, {
+      this.shape.attr('.label/text', joint.util.breakText(name, {
         width: this.labelWidth,
       }));
     },
