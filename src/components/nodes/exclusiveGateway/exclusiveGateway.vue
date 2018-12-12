@@ -77,8 +77,7 @@ export default {
   },
   watch: {
     'node.definition.name'(name) {
-      const { width } = this.shapeView.getBBox();
-      this.shape.attr('label/text', joint.util.breakText(name, { width }));
+      this.shape.attr('.label/text', name);
     },
   },
   mounted() {
