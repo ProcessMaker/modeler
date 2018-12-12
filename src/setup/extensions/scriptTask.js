@@ -30,8 +30,8 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     diagram(moddle) {
       return moddle.create('bpmndi:BPMNShape', {
         bounds: moddle.create('dc:Bounds', {
-          height: 80,
-          width: 100,
+          height: 76,
+          width: 116,
         }),
       });
     },
