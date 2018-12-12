@@ -12,7 +12,7 @@ export default {
   definition: (moddle) => moddle.create('bpmn:Lane', { name: '' }),
   diagram: (moddle) => moddle.create('bpmndi:BPMNShape', {
     bounds: moddle.create('dc:Bounds', {
-      height: 150,
+      height: 200,
       width: 600,
       x: null,
       y: null,

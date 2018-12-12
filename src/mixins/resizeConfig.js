@@ -8,6 +8,7 @@ export default {
       anchorPoints: [],
       isResizing: true,
       elementPadding: 5,
+      labelWidth: 30,
     };
   },
   watch: {
@@ -117,7 +118,7 @@ export default {
         this.shape.resize(Math.max(x - poolX, poolWidth), Math.max(y - poolY, poolHeight), {
           parentRelative: true,
         });
-        this.captureChildren();
+        // this.captureChildren();
         this.updateAnchorPointPosition();
       }
 
@@ -126,6 +127,18 @@ export default {
       if (this.laneSet) {
         this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 400));
         this.resizeLanes();
+      }
+
+      if(this.shape.component.node.type === 'processmaker-modeler-lane') {
+        this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-pool').forEach(pool =>{
+          const { width, height, x ,y  } = this.shape.getBBox(); // this.shape === lane
+          const { width: poolWidth , height: poolHeight, x: poolX, y: poolY } = pool.getBBox();
+
+          this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-lane').forEach(lane => {
+            lane.resize(width, height);
+            pool.resize(width + this.labelWidth, poolHeight );
+          });
+        });
       }
 
       this.updateCrownPosition();
