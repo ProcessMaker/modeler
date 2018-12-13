@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import update from 'immutability-helper';
 import pull from 'lodash/pull';
-import clone from 'lodash/clone';
 
 Vue.use(Vuex);
 
@@ -10,9 +8,11 @@ export const saveDebounce = 300;
 
 export default new Vuex.Store({
   state: {
+    useTemp: false,
     highlightedNodeIndex: null,
     undoList: [],
     redoList: [],
+    tempAction: null,
     nodes: [],
   },
   getters: {
@@ -24,6 +24,7 @@ export default new Vuex.Store({
   mutations: {
     undo(state) {
       if (state.undoList.length > 0) {
+        state.highlightedNodeIndex = null;
         const undoRedo = state.undoList.pop();
         undoRedo.undo();
         state.redoList.unshift(undoRedo);
@@ -55,23 +56,40 @@ export default new Vuex.Store({
     highlightNode(state, node) {
       state.highlightedNodeIndex = state.nodes && state.nodes.indexOf(node);
     },
-    revertAction(state) {
-      state.undoList.pop();
-    },
     addNode(state, node) {
       state.nodes.push(node);
     },
     removeNode(state, node) {
       pull(state.nodes, node);
     },
+    useTemp(state) {
+      state.useTemp = true;
+    },
+    commitTemp(state) {
+      state.useTemp = false;
+      state.redoList = [];
+      state.undoList.push(state.tempAction);
+      state.tempAction = null;
+    },
+    purgeTemp(state) {
+      state.useTemp = false;
+      state.tempAction.undo();
+      state.tempAction = null;
+    },
   },
   actions: {
     addNode({ commit, state }, node) {
-      commit('clearRedoList');
       const undo = () => commit('removeNode', node);
       const redo = () => commit('addNode', node);
+
       redo();
-      state.undoList.push({ undo, redo });
+
+      if (state.useTemp) {
+        state.tempAction = { undo, redo };
+      } else {
+        commit('clearRedoList');
+        state.undoList.push({ undo, redo });
+      }
     },
     removeNode({ commit, state }, node) {
       commit('clearRedoList');

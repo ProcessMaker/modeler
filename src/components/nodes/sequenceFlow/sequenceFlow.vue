@@ -170,6 +170,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
         this.updateDefinitionLinks();
+        store.commit('commitTemp');
       });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
@@ -180,8 +181,8 @@ export default {
       });
     },
     removeLink() {
-      store.commit('revertAction');
       this.resetPaper();
+      store.commit('purgeTemp');
     },
     resetPaper() {
       this.$emit('set-cursor', null);

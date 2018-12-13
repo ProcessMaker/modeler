@@ -74,6 +74,7 @@ export default {
         });
       }
 
+      store.commit('useTemp');
       this.$emit('add-node', {
         type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
