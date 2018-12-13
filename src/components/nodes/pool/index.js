@@ -1,8 +1,6 @@
 import component from './pool';
 
 export const id = 'processmaker-modeler-pool';
-export const labelWidth = 30;
-export const poolPadding = 20;
 
 export default {
   id,

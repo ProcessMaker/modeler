@@ -15,7 +15,8 @@ module.exports = {
     quotes: ['error', 'single'],
     'no-debugger': 'off',
     'object-shorthand': 'error',
-    'space-before-function-paren': ['error', 'never']
+    'space-before-function-paren': ['error', 'never'],
+    'keyword-spacing': 'error'
   },
   parserOptions: {
     parser: 'babel-eslint',

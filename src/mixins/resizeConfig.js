@@ -1,5 +1,7 @@
 import joint from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
+import { minPoolHeight, minPoolWidth, labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
+import get from 'lodash/get';
 
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
@@ -8,7 +10,6 @@ export default {
       anchorPoints: [],
       isResizing: true,
       elementPadding: 5,
-      labelWidth: 30,
     };
   },
   watch: {
@@ -18,6 +19,11 @@ export default {
       } else {
         this.removeResizeAnchors();
       }
+    },
+  },
+  computed:{
+    poolComponent() {
+      return get(this, 'node.pool.component', this);
     },
   },
   methods: {
@@ -74,72 +80,73 @@ export default {
       });
 
     },
+    getYLimit() {
+      const lowestShapeY = this.poolComponent.shape.getEmbeddedCells().filter(element => {
+        return element.component;
+      }).reduce((highestY, element) => {
+        const { y, height } = element.findView(this.paper).getBBox();
+        const elementY = element.component.node.type === 'processmaker-modeler-lane'
+          ? y + minPoolHeight
+          : y + height + poolPadding;
+
+        return Math.max(elementY, highestY);
+      },0);
+
+      return lowestShapeY;
+    },
+    getXLimit() {
+      const lowestShapeX = this.poolComponent.shape.getEmbeddedCells().filter(element => {
+        return element.component;
+      }).reduce((highestY, element) => {
+        const { x, width } = element.findView(this.paper).getBBox();
+        const elementX = element.component.node.type === 'processmaker-modeler-lane'
+          ? x + minPoolWidth
+          : x + width + poolPadding;
+
+        return Math.max(elementX, highestY);
+      },0);
+
+      return lowestShapeX;
+    },
     resizeElement(point, newPosition) {
       const { x, y } = newPosition;
-      const {
-        x: poolX,
-        y: poolY,
-        width: poolWidth,
-        height: poolHeight,
-      } = this.shape.getBBox();
+      const { x: poolX, y: poolY } = this.poolComponent.shape.getBBox();
 
       if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
         return;
       }
+      const laneShape = this.node.type === 'processmaker-modeler-lane';
+      const maxPoolWidth = Math.max(x - poolX, this.getXLimit() - poolX, minPoolWidth);
+      const maxPoolHeight = Math.max(y - poolY, this.getYLimit() - poolY, minPoolHeight);
 
-      if(this.isResizing) {
-        this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 100));
-        if (x < 300 || y < 60) {
-          point.position(Math.max(x, 300), Math.max(y, 60), {
-            parentRelative: true,
-          });
+      if (!laneShape) {
+        this.shape.resize(maxPoolWidth , maxPoolHeight);
+        point.position(maxPoolWidth, maxPoolHeight, ({ parentRelative: true }));
+        point.set('previousPosition', { x, y });
+
+        if (this.laneSet) {
+          this.poolComponent.resizeLanes();
+        }
+      } else {
+        if (this.shape === this.poolComponent.sortedLanes[this.poolComponent.sortedLanes.length -1]) {
+          const { x, y } = this.shape.getBBox();
+          this.poolComponent.shape.resize(maxPoolWidth , maxPoolHeight);
+          point.position(maxPoolWidth + poolX, maxPoolHeight + poolY);
+          point.set('previousPosition', { x, y });
+          this.poolComponent.resizeLanes();
         }
       }
 
-      this.shape.getEmbeddedCells().filter(element => element.component).forEach(element => {
-        const {
-          y: elementY,
-          height: elementHeight,
-        } = element.findView(this.paper).getBBox();
+      // this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-pool').forEach(pool =>{
+      //   const { width, height, x ,y  } = this.shape.getBBox(); // this.shape === lane
+      //   const { width: poolWidth , height: poolHeight, x: poolX, y: poolY } = pool.getBBox();
 
-        const poolBottomEdge = poolY + poolHeight;
-        const elementBottomEdge = elementY + elementHeight;
+      //   this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-lane').forEach(lane => {
+      //     lane.resize(width, height);
+      //     pool.resize(width + labelWidth, poolHeight );
+      //   });
+      // });
 
-        if(elementBottomEdge + this.elementPadding > poolBottomEdge) {
-          this.isResizing = false;
-        }
-
-        if(elementBottomEdge + this.elementPadding < poolBottomEdge) {
-          this.isResizing = true;
-        }
-      });
-
-      if(!this.isResizing) {
-        this.shape.resize(Math.max(x - poolX, poolWidth), Math.max(y - poolY, poolHeight), {
-          parentRelative: true,
-        });
-        // this.captureChildren();
-        this.updateAnchorPointPosition();
-      }
-
-      point.set('previousPosition', { x, y });
-
-      if (this.laneSet) {
-        this.shape.resize(Math.max(x - poolX, 300), Math.max(y - poolY, 400));
-        this.resizeLanes();
-      }
-
-      if(this.shape.component.node.type === 'processmaker-modeler-lane') {
-        this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-pool').forEach(pool =>{
-          const { width, height, x ,y  } = this.shape.getBBox(); // this.shape === lane
-          const { width: poolWidth , height: poolHeight, x: poolX, y: poolY } = pool.getBBox();
-
-          this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-lane').forEach(lane => {
-            lane.resize(width, height);
-            pool.resize(width + this.labelWidth, poolHeight );
-          });
-        });
-      }
 
       this.updateCrownPosition();
     },

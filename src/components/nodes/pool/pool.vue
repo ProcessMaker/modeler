@@ -8,7 +8,8 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane from '../poolLane';
-import { id as poolId, labelWidth, poolPadding } from './index';
+import { id as poolId } from './index';
+import {poolPadding, labelWidth} from './poolSizes';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
@@ -66,6 +67,14 @@ export default {
       return this.processes.find(process =>
         process.id === this.node.definition.get('processRef').id
       );
+    },
+    sortedLanes() {
+      return  this.shape.getEmbeddedCells().filter(({ component }) => {
+        return component && component.node.type === laneId;
+      }).sort((shape1, shape2) => {
+        /* Sort by y position ascending */
+        return shape1.position().y - shape2.position().y;
+      });
     },
   },
   watch: {
@@ -251,12 +260,7 @@ export default {
       }
     },
     resizeLanes() {
-      this.shape.getEmbeddedCells().filter(({ component }) => {
-        return component && component.node.type === laneId;
-      }).sort((shape1, shape2) => {
-        /* Sort by y position ascending */
-        return shape1.position().y - shape2.position().y;
-      }).forEach((laneShape, index, lanes) => {
+      this.sortedLanes.forEach((laneShape, index, lanes) => {
         const { width, height } = this.shape.get('size');
         const { height: laneHeight } = laneShape.get('size');
         const { y: laneY } = laneShape.position({ parentRelative: true });
