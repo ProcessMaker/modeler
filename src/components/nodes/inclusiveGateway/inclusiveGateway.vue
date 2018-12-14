@@ -34,10 +34,10 @@ joint.dia.Element.define(
         strokeWidth: '2',
         cs: '25',
         cy: '75',
-        r: '9',
+        r: '22',
         stroke: 'black',
         fill: 'transparent',
-        transform: 'translate(18, -57)',
+        transform: 'translate(40, -35)',
       },
       image: {
         width: 40,
@@ -49,7 +49,7 @@ joint.dia.Element.define(
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><circle class="innerCircle"/>',
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><circle class="innerCircle"/><image/></g></g><text class="label"/>',
   }
 );
 
