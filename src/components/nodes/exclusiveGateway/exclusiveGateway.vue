@@ -32,13 +32,13 @@ joint.dia.Element.define(
       },
       '.iconSideA': {
         strokeWidth: '4',
-        points: '11 11 25 25',
+        points: '24 24 55 55',
         stroke: 'black',
         fill: 'transparent',
       },
       '.iconSideB': {
         strokeWidth: '4',
-        points: '25 11 11 25',
+        points: '55 24 24 55',
         stroke: 'black',
         fill: 'transparent',
       },
@@ -53,7 +53,7 @@ joint.dia.Element.define(
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>',
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><polyline class="iconSideA"/><polyline class="iconSideB"/><image/></g></g><text class="label"/>',
   }
 );
 
