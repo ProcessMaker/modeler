@@ -8,6 +8,7 @@ export const saveDebounce = 300;
 
 export default new Vuex.Store({
   state: {
+    graph: null,
     useTemp: false,
     highlightedNodeIndex: null,
     undoList: [],
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     canUndo: state => state.undoList.length > 0,
     canRedo: state => state.redoList.length > 0,
     highlightedNode: state => state.nodes && state.nodes[state.highlightedNodeIndex],
+    nodeShape: state => node => {
+      return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
+    },
   },
   mutations: {
     undo(state) {
@@ -59,6 +63,14 @@ export default new Vuex.Store({
     addNode(state, node) {
       state.nodes.push(node);
     },
+    unembedNodes(state, nodeShape) {
+      nodeShape.getEmbeddedCells().forEach(cell => {
+        if (cell.component) {
+          cell.component.node.pool = null;
+          cell.component && nodeShape.unembed(cell);
+        }
+      });
+    },
     removeNode(state, node) {
       pull(state.nodes, node);
     },
@@ -76,10 +88,22 @@ export default new Vuex.Store({
       state.tempAction.undo();
       state.tempAction = null;
     },
+    startBatchAction() {
+
+    },
+    commitBatchAction() {
+
+    },
+    setGraph(state, graph) {
+      state.graph = graph;
+    },
   },
   actions: {
-    addNode({ commit, state }, node) {
-      const undo = () => commit('removeNode', node);
+    addNode({ commit, state, getters }, node) {
+      const undo = () => {
+        commit('unembedNodes', getters.nodeShape(node));
+        commit('removeNode', node);
+      };
       const redo = () => commit('addNode', node);
 
       redo();
@@ -92,27 +116,27 @@ export default new Vuex.Store({
       }
     },
     removeNode({ commit, state }, node) {
-      commit('clearRedoList');
       const undo = () => commit('addNode', node);
       const redo = () => commit('removeNode', node);
       redo();
       state.undoList.push({ undo, redo });
+      commit('clearRedoList');
     },
     updateNodeBounds({ commit, state }, { node, bounds }) {
-      commit('clearRedoList');
       const previousBounds = { ...node.diagram.bounds };
       const undo = () => commit('updateNodeBounds', { node, bounds: previousBounds });
       const redo = () => commit('updateNodeBounds', { node, bounds });
       redo();
       state.undoList.push({ undo, redo });
+      commit('clearRedoList');
     },
     updateNodeProp({ commit, state }, { node, key, value }) {
-      commit('clearRedoList');
       const previousValue = node.definition.get(key);
       const undo = () => commit('updateNodeProp', { node, key, value: previousValue });
       const redo = () => commit('updateNodeProp', { node, key, value });
       redo();
       state.undoList.push({ undo, redo });
+      commit('clearRedoList');
     },
   },
 });

@@ -41,6 +41,8 @@
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
       @click="highlightNode(node)"
+      @unsetPools="unsetPools"
+      @setPools="setPools"
     />
   </div>
 </template>
@@ -115,6 +117,34 @@ export default {
     highlightedNode: () => store.getters.highlightedNode,
   },
   methods: {
+    setPools(poolDefinition) {
+      if (!this.collaboration) {
+        this.collaboration = this.moddle.create('bpmn:Collaboration');
+        this.definitions.get('rootElements').push(this.collaboration);
+        this.collaboration.set('id', 'collaboration_0');
+        this.plane.set('bpmnElement', this.collaboration);
+      }
+
+      let process;
+      if (this.collaboration.get('participants').length === 0) {
+        process = this.processNode.definition;
+      } else {
+        process = this.moddle.create('bpmn:Process');
+        this.processes.push(process);
+        process.set('id', `process_${this.processes.length}`);
+        process.set('isExecutable', false);
+
+        this.definitions.get('rootElements').push(process);
+      }
+
+      poolDefinition.set('processRef', process);
+      this.collaboration.get('participants').push(poolDefinition);
+    },
+    unsetPools() {
+      pull(this.definitions.get('rootElements'), this.collaboration);
+      this.plane.set('bpmnElement', this.processNode.definition);
+      this.collaboration = null;
+    },
     undo() {
       store.commit('undo');
     },
@@ -282,29 +312,7 @@ export default {
        *
        * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
        */
-      if (type === poolId) {
-        if (!this.collaboration) {
-          this.collaboration = this.moddle.create('bpmn:Collaboration');
-          this.definitions.get('rootElements').push(this.collaboration);
-          this.collaboration.set('id', 'collaboration_0');
-          this.plane.set('bpmnElement', this.collaboration);
-        }
-
-        let process;
-        if (this.collaboration.get('participants').length === 0) {
-          process = this.processNode.definition;
-        } else {
-          process = this.moddle.create('bpmn:Process');
-          this.processes.push(process);
-          process.set('id', `process_${this.processes.length}`);
-          process.set('isExecutable', false);
-
-          this.definitions.get('rootElements').push(process);
-        }
-
-        definition.set('processRef', process);
-        this.collaboration.get('participants').push(definition);
-      } else {
+      if (type !== poolId) {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
         const targetProcess = this.poolTarget
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
@@ -440,6 +448,7 @@ export default {
     window.addEventListener('resize', this.handleResize);
 
     this.graph = new window.joint.dia.Graph();
+    store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&

@@ -62,6 +62,10 @@ export default {
   },
   computed: {
     containingProcess() {
+      if (!this.node.definition.get('processRef')) {
+        return null;
+      }
+
       return this.processes.find(process =>
         process.id === this.node.definition.get('processRef').id
       );
@@ -296,14 +300,25 @@ export default {
       this.resizePool();
     },
     resizePool() {
-      const { width, height } = this.shape.get('size');
       this.shape.fitEmbeds({ padding: poolPadding });
+      const { width, height } = this.shape.get('size');
       const bounds = this.node.diagram.bounds;
+
       this.shape.resize(
         Math.max(width, bounds.width) + labelWidth,
         Math.max(height, bounds.height)
       );
-      this.shape.getEmbeddedCells().forEach(cell => cell.translate(labelWidth));
+
+      this.shape.getEmbeddedCells().forEach(cell => {
+        this.expandToFixElement(cell);
+      });
+
+      const { x, y } = this.shape.position();
+      const { width: newWidth, height: newHeight }=  this.shape.get('size');
+      this.node.diagram.bounds.x = x;
+      this.node.diagram.bounds.y = y;
+      this.node.diagram.bounds.width = newWidth;
+      this.node.diagram.bounds.height = newHeight;
     },
     isPoolChild(model) {
       return model.component && model.component !== this &&
@@ -311,10 +326,10 @@ export default {
         model.getParentCell() && model.getParentCell().component === this;
     },
   },
-  created() {
-    this.laneSet = this.containingProcess.get('laneSets')[0];
-  },
   mounted() {
+    this.$emit('setPools', this.node.definition);
+    this.laneSet = this.containingProcess.get('laneSets')[0];
+
     this.shape = new joint.shapes.processmaker.modeler.bpmn.pool();
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
@@ -331,7 +346,7 @@ export default {
 
     /* If there are no other pools, the first pool should capture all current flow elements.
      * Don't do this when parsing an uploaded diagram. */
-    if (this.collaboration.get('participants').length === 1) {
+    if (!this.collaboration) {
       this.captureChildren();
     }
 
@@ -450,7 +465,12 @@ export default {
     });
   },
   beforeDestroy() {
-    pull(this.collaboration.get('participants'), this.node.definition);
+    const participants = this.collaboration.get('participants');
+    pull(participants, this.node.definition);
+
+    if (participants.length === 0) {
+      this.$emit('unsetPools');
+    }
   },
 };
 </script>
