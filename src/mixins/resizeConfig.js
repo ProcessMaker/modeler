@@ -70,12 +70,6 @@ export default {
         if (cellView.model === point) {
           point.on('change:position', this.resizeElement);
           this.shape.off('change:size', this.updateAnchorPointPosition);
-
-          point.listenToOnce(this.paper, 'element:pointerup', () => {
-            this.updateAnchorPointPosition();
-            point.off('change:position', this.resizeElement);
-            this.shape.on('change:size', this.updateAnchorPointPosition);
-          });
         }
       });
 
@@ -108,7 +102,10 @@ export default {
 
       return lowestShapeX;
     },
-    resizeElement(point, newPosition) {
+    resizeElement(point, newPosition, source) {
+      if (!source.ui) {
+          return;
+      }
       const { x, y } = newPosition;
       const { x: poolX, y: poolY } = this.poolComponent.shape.getBBox();
 
