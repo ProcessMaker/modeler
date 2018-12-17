@@ -104,7 +104,7 @@ export default {
     },
     resizeElement(point, newPosition, source) {
       if (!source.ui) {
-          return;
+        return;
       }
       const { x, y } = newPosition;
       const { x: poolX, y: poolY } = this.poolComponent.shape.getBBox();
