@@ -57,21 +57,13 @@ export default {
       this.pointAttributes(pointTopRight);
       this.pointAttributes(pointTopLeft);
 
-      this.shape.embed(pointBottomRight);
-      pointBottomRight.addTo(this.graph);
-
-      this.shape.embed(pointBottomLeft);
-      pointBottomLeft.addTo(this.graph);
-
-      this.shape.embed(pointTopRight);
-      pointTopRight.addTo(this.graph);
-
-      this.shape.embed(pointTopLeft);
-      pointTopLeft.addTo(this.graph);
+      this.renderPoint(pointBottomRight);
+      this.renderPoint(pointBottomLeft);
+      this.renderPoint(pointTopRight);
+      this.renderPoint(pointTopLeft);
 
       const { width, height } = this.shape.get('size');
       const { x, y } = this.shape.position();
-
 
       pointBottomRight.position(x + width, y + height);
       pointBottomRight.set('previousPosition', pointBottomRight.position());
@@ -207,6 +199,10 @@ export default {
         },
       });
     },
+    renderPoint(pointLocation) {
+      this.shape.embed(pointLocation);
+      pointLocation.addTo(this.graph);
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -216,4 +212,3 @@ export default {
     });
   },
 };
-
