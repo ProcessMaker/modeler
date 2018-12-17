@@ -40,84 +40,22 @@ export default {
       const pointTopRight = new joint.shapes.standard.EmbeddedImage();
       const pointTopLeft = new joint.shapes.standard.EmbeddedImage();
 
-      this.anchorPoints.push(pointBottomRight);
-      this.anchorPoints.push(pointBottomLeft);
-      this.anchorPoints.push(pointTopRight);
-      this.anchorPoints.push(pointTopLeft);
+      this.anchorPoints.push(
+        pointBottomRight,
+        pointBottomLeft,
+        pointTopRight,
+        pointTopLeft
+      );
 
       pointBottomRight.set('isDrag', true);
       pointBottomLeft.set('isDrag', true);
       pointTopRight.set('isDrag', true);
       pointTopLeft.set('isDrag', true);
 
-      pointBottomRight.attr({
-        root: { display: 'none' },
-        body: {
-          fill: '#fff',
-          stroke: ' #fff',
-          opacity: 0.8,
-          cursor: 'nwse-resize',
-        },
-        image: {
-          xlinkHref: resizeIcon,
-          cursor: 'nwse-resize',
-          refWidth: 20,
-          refHeight: 20,
-          resetOffset: true,
-        },
-      });
-
-      pointBottomLeft.attr({
-        root: { display: 'none' },
-        body: {
-          fill: '#fff',
-          stroke: ' #fff',
-          opacity: 0.8,
-          cursor: 'nwse-resize',
-        },
-        image: {
-          xlinkHref: resizeIcon,
-          cursor: 'nwse-resize',
-          refWidth: 20,
-          refHeight: 20,
-          resetOffset: true,
-        },
-      });
-
-      pointTopRight.attr({
-        root: { display: 'none' },
-        body: {
-          fill: '#fff',
-          stroke: ' #fff',
-          opacity: 0.8,
-          cursor: 'nwse-resize',
-        },
-        image: {
-          xlinkHref: resizeIcon,
-          cursor: 'nwse-resize',
-          refWidth: 20,
-          refHeight: 20,
-          resetOffset: true,
-        },
-      });
-
-      pointTopLeft.attr({
-        root: { display: 'none' },
-        body: {
-          fill: '#fff',
-          stroke: ' #fff',
-          opacity: 0.8,
-          cursor: 'nwse-resize',
-        },
-        image: {
-          xlinkHref: resizeIcon,
-          cursor: 'nwse-resize',
-          refWidth: 20,
-          refHeight: 20,
-          resetOffset: true,
-        },
-      });
-
+      this.pointAttributes(pointBottomRight);
+      this.pointAttributes(pointBottomLeft);
+      this.pointAttributes(pointTopRight);
+      this.pointAttributes(pointTopLeft);
 
       this.shape.embed(pointBottomRight);
       pointBottomRight.addTo(this.graph);
@@ -250,9 +188,24 @@ export default {
       this.anchorPoints[1].position(x - this.pointWidth, y + height);
       this.anchorPoints[2].position(x + width, y - this.pointHeight);
       this.anchorPoints[3].position(x - this.pointWidth, y - this.pointWidth);
-      // this.anchorPoints.forEach( point => {
-      //   point.position(x + width, y + height);
-      // });
+    },
+    pointAttributes(point) {
+      point.attr({
+        root: { display: 'none' },
+        body: {
+          fill: '#fff',
+          stroke: ' #fff',
+          opacity: 0.8,
+          cursor: 'nwse-resize',
+        },
+        image: {
+          xlinkHref: resizeIcon,
+          cursor: 'nwse-resize',
+          refWidth: 20,
+          refHeight: 20,
+          resetOffset: true,
+        },
+      });
     },
   },
   mounted() {
@@ -263,3 +216,4 @@ export default {
     });
   },
 };
+
