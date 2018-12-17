@@ -1,6 +1,7 @@
 import joint from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
 import { minPoolHeight, minPoolWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
+import { minLaneWidth, minLaneHeight } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
 
 export default {
@@ -10,6 +11,8 @@ export default {
       anchorPoints: [],
       isResizing: true,
       elementPadding: 5,
+      pointWidth: 15,
+      pointHeight: 15,
     };
   },
   watch: {
@@ -32,13 +35,22 @@ export default {
         this.resizeConfig = [];
       }
 
-      const point = new joint.shapes.standard.EmbeddedImage();
+      const pointBottomRight = new joint.shapes.standard.EmbeddedImage();
+      const pointBottomLeft = new joint.shapes.standard.EmbeddedImage();
+      const pointTopRight = new joint.shapes.standard.EmbeddedImage();
+      const pointTopLeft = new joint.shapes.standard.EmbeddedImage();
 
-      this.anchorPoints.push(point);
+      this.anchorPoints.push(pointBottomRight);
+      this.anchorPoints.push(pointBottomLeft);
+      this.anchorPoints.push(pointTopRight);
+      this.anchorPoints.push(pointTopLeft);
 
-      point.set('isDrag', true);
+      pointBottomRight.set('isDrag', true);
+      pointBottomLeft.set('isDrag', true);
+      pointTopRight.set('isDrag', true);
+      pointTopLeft.set('isDrag', true);
 
-      point.attr({
+      pointBottomRight.attr({
         root: { display: 'none' },
         body: {
           fill: '#fff',
@@ -55,24 +67,95 @@ export default {
         },
       });
 
-      this.shape.embed(point);
-      point.addTo(this.graph);
+      pointBottomLeft.attr({
+        root: { display: 'none' },
+        body: {
+          fill: '#fff',
+          stroke: ' #fff',
+          opacity: 0.8,
+          cursor: 'nwse-resize',
+        },
+        image: {
+          xlinkHref: resizeIcon,
+          cursor: 'nwse-resize',
+          refWidth: 20,
+          refHeight: 20,
+          resetOffset: true,
+        },
+      });
+
+      pointTopRight.attr({
+        root: { display: 'none' },
+        body: {
+          fill: '#fff',
+          stroke: ' #fff',
+          opacity: 0.8,
+          cursor: 'nwse-resize',
+        },
+        image: {
+          xlinkHref: resizeIcon,
+          cursor: 'nwse-resize',
+          refWidth: 20,
+          refHeight: 20,
+          resetOffset: true,
+        },
+      });
+
+      pointTopLeft.attr({
+        root: { display: 'none' },
+        body: {
+          fill: '#fff',
+          stroke: ' #fff',
+          opacity: 0.8,
+          cursor: 'nwse-resize',
+        },
+        image: {
+          xlinkHref: resizeIcon,
+          cursor: 'nwse-resize',
+          refWidth: 20,
+          refHeight: 20,
+          resetOffset: true,
+        },
+      });
+
+
+      this.shape.embed(pointBottomRight);
+      pointBottomRight.addTo(this.graph);
+
+      this.shape.embed(pointBottomLeft);
+      pointBottomLeft.addTo(this.graph);
+
+      this.shape.embed(pointTopRight);
+      pointTopRight.addTo(this.graph);
+
+      this.shape.embed(pointTopLeft);
+      pointTopLeft.addTo(this.graph);
 
       const { width, height } = this.shape.get('size');
       const { x, y } = this.shape.position();
-      point.position(x + width, y + height);
-      point.set('previousPosition', point.position());
+
+
+      pointBottomRight.position(x + width, y + height);
+      pointBottomRight.set('previousPosition', pointBottomRight.position());
+
+      pointBottomLeft.position(x - this.pointWidth, y + height);
+      pointBottomLeft.set('previousPosition', pointBottomLeft.position());
+
+      pointTopRight.position(x + width, y - this.pointHeight);
+      pointTopRight.set('previousPosition', pointTopRight.position());
+
+      pointTopLeft.position(x - this.pointWidth, y - this.pointHeight);
+      pointTopLeft.set('previousPosition', pointTopLeft.position());
 
       this.shape.on('change:size', this.updateAnchorPointPosition);
 
-      point.listenTo(this.paper, 'element:pointerdown', cellView => {
+      pointBottomRight.listenTo(this.paper, 'element:pointerdown', cellView => {
         /* Only listen to position change when dragging the point. */
-        if (cellView.model === point) {
-          point.on('change:position', this.resizeElement);
+        if (cellView.model === pointBottomRight) {
+          pointBottomRight.on('change:position', this.resizeElement);
           this.shape.off('change:size', this.updateAnchorPointPosition);
         }
       });
-
     },
     getYLimit() {
       const lowestShapeY = this.poolComponent.shape.getEmbeddedCells().filter(element => {
@@ -108,6 +191,7 @@ export default {
       }
       const { x, y } = newPosition;
       const { x: poolX, y: poolY } = this.poolComponent.shape.getBBox();
+      const { x: laneX, y: laneY, width, height } = this.shape.getBBox();
 
       if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
         return;
@@ -115,6 +199,8 @@ export default {
       const laneShape = this.node.type === 'processmaker-modeler-lane';
       const maxPoolWidth = Math.max(x - poolX, this.getXLimit() - poolX, minPoolWidth);
       const maxPoolHeight = Math.max(y - poolY, this.getYLimit() - poolY, minPoolHeight);
+      const maxLaneWidth = Math.max(x - laneX, this.getXLimit() - minLaneWidth);
+      const maxLaneHeight = Math.max(y - laneY, this.getYLimit() - minLaneHeight);
 
       if (!laneShape) {
         this.shape.resize(maxPoolWidth , maxPoolHeight);
@@ -125,6 +211,17 @@ export default {
           this.poolComponent.resizeLanes();
         }
       } else {
+
+        if (this.shape === this.poolComponent.sortedLanes[0]) {
+          this.shape.resize(maxLaneWidth, maxLaneHeight);
+          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight);
+
+          // point.position(laneX + width, laneY + height);
+          // point.set('previousPosition', { x, y });
+          this.poolComponent.sortedLanes[this.poolComponent.sortedLanes.length -1].resize(width, height + y);
+          this.poolComponent.resizeLanes();
+        }
+
         if (this.shape === this.poolComponent.sortedLanes[this.poolComponent.sortedLanes.length -1]) {
           const { x, y } = this.shape.getBBox();
           this.poolComponent.shape.resize(maxPoolWidth , maxPoolHeight);
@@ -133,17 +230,6 @@ export default {
           this.poolComponent.resizeLanes();
         }
       }
-
-      // this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-pool').forEach(pool =>{
-      //   const { width, height, x ,y  } = this.shape.getBBox(); // this.shape === lane
-      //   const { width: poolWidth , height: poolHeight, x: poolX, y: poolY } = pool.getBBox();
-
-      //   this.graph.getElements().filter(element => element.component).filter(element => element.component.node.type === 'processmaker-modeler-lane').forEach(lane => {
-      //     lane.resize(width, height);
-      //     pool.resize(width + labelWidth, poolHeight );
-      //   });
-      // });
-
 
       this.updateCrownPosition();
     },
@@ -160,9 +246,13 @@ export default {
     updateAnchorPointPosition() {
       const { x, y, width, height } = this.shape.findView(this.paper).getBBox();
 
-      this.anchorPoints.forEach( point => {
-        point.position(x + width, y + height);
-      });
+      this.anchorPoints[0].position(x + width, y + height);
+      this.anchorPoints[1].position(x - this.pointWidth, y + height);
+      this.anchorPoints[2].position(x + width, y - this.pointHeight);
+      this.anchorPoints[3].position(x - this.pointWidth, y - this.pointWidth);
+      // this.anchorPoints.forEach( point => {
+      //   point.position(x + width, y + height);
+      // });
     },
   },
   mounted() {

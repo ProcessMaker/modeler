@@ -254,7 +254,7 @@ export default {
         this.updateAnchorPointPosition();
 
         if (this.laneSet) {
-          /* Expand any lanes within the poool */
+          /* Expand any lanes within the pool */
           this.resizeLanes();
         }
       }
