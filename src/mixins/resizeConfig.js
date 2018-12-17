@@ -1,6 +1,6 @@
 import joint from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
-import { minPoolHeight, minPoolWidth, labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
+import { minPoolHeight, minPoolWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 import get from 'lodash/get';
 
 export default {
