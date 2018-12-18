@@ -259,6 +259,34 @@ export default {
         }
       }
     },
+    fillLanes(resizingLane, direction) {
+      this.sortedLanes.forEach((laneShape, index) => {
+        if (index === this.sortedLanes.length - 1) {
+          return;
+        }
+
+        const { width: resizingLaneWidth } = resizingLane.getBBox();
+        const { height: currentLaneHeight, y: currentLaneY  } = laneShape.getBBox();
+        const nextLane = this.sortedLanes[index + 1];
+        const { y: nextLaneY, height: nextLaneHeight } = nextLane.getBBox();
+
+        if (nextLaneY === currentLaneY + currentLaneHeight) {
+          return;
+        }
+
+        if (nextLaneY < currentLaneY + currentLaneHeight) {
+          if (laneShape === resizingLane) {
+            nextLane.resize(resizingLaneWidth, nextLaneHeight - ((currentLaneY + currentLaneHeight) - nextLaneY), { direction });
+            this.shape.resize(resizingLaneWidth + labelWidth, this.shape.get('size').height, { direction });
+          }
+        } else {
+          if (laneShape === resizingLane) {
+            nextLane.resize(resizingLaneWidth, (nextLaneY + nextLaneHeight) - (currentLaneY + currentLaneHeight), { direction });
+            this.shape.resize(resizingLaneWidth + labelWidth, this.shape.get('size').height, { direction });
+          }
+        }
+      });
+    },
     resizeLanes() {
       this.sortedLanes.forEach((laneShape, index, lanes) => {
         const { width, height } = this.shape.get('size');
