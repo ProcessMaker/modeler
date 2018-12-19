@@ -1,5 +1,7 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import debounce from 'lodash/debounce';
+import store, { saveDebounce } from '@/store';
 
 export const highlightPadding = 3;
 
@@ -19,6 +21,23 @@ export default {
         this.shapeView.unhighlight();
         this.removeCrown();
       }
+    },
+    'node.diagram.bounds': {
+      handler({ x, y }) {
+        const { x: shapeX, y: shapeY } = this.shape.position();
+        if (x === shapeX && y === shapeY) {
+          return;
+        }
+
+        /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
+        this.shape.off('change:position change:size', this.updateNodeBounds);
+
+        this.shape.position(x, y);
+        this.updateCrownPosition();
+
+        this.shape.on('change:position change:size', this.updateNodeBounds);
+      },
+      deep: true,
     },
   },
   computed: {
@@ -55,6 +74,7 @@ export default {
         });
       }
 
+      store.commit('useTemp');
       this.$emit('add-node', {
         type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
@@ -163,6 +183,17 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
+    updateNodeBounds: debounce(function(element, newBounds) {
+      const { x, y, width, height } = this.node.diagram.bounds;
+      if (
+        (x === newBounds.x && y === newBounds.y) ||
+        (width === newBounds.width && height === newBounds.height)
+      ) {
+        return;
+      }
+
+      store.dispatch('updateNodeBounds', { node: this.node, bounds: newBounds });
+    }, saveDebounce),
   },
   mounted() {
     this.$nextTick(() => {
@@ -170,6 +201,7 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
+      this.shape.on('change:position change:size', this.updateNodeBounds);
     });
   },
   beforeDestroy() {

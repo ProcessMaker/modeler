@@ -4,19 +4,21 @@
       <controls :controls="controls"/>
 
       <div ref="paper-container" class="paper-container" :class="cursor">
+        <div class="history-buttons">
+          <button @click="undo" :disabled="!canUndo">Undo</button>
+          <button @click="redo" :disabled="!canRedo">Redo</button>
+        </div>
+
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper"/>
         </drop>
       </div>
 
-      <div class="inspector">
-        <vue-form-renderer
-          ref="inspector"
-          :data="inspectorData"
-          @update="inspectorHandler"
-          :config="inspectorConfig"
-        />
-      </div>
+      <InspectorPanel
+        :nodeRegistry="nodeRegistry"
+        :moddle="moddle"
+        :processNode="processNode"
+      />
     </div>
 
     <component
@@ -27,7 +29,7 @@
       :paper="paper"
       :node="node"
       :id="node.definition.id"
-      :highlighted="highlighted === node"
+      :highlighted="highlightedNode === node"
       :collaboration="collaboration"
       :process-node="processNode"
       :processes="processes"
@@ -38,7 +40,9 @@
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
-      @click="loadInspector(node)"
+      @click="highlightNode(node)"
+      @unsetPools="unsetPools"
+      @setPools="setPools"
     />
   </div>
 </template>
@@ -51,37 +55,14 @@ import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
 import { startEvent } from '@/components/nodes';
+import store from '@/store';
+import InspectorPanel from '@/components/inspectors/InspectorPanel';
 
 // Our renderer for our inspector
-import { Drag, Drop } from 'vue-drag-drop';
-
-// Bring in our own form controls
-import {
-  FormInput,
-  FormSelect,
-  FormTextArea,
-  FormCheckbox,
-  FormRadioButtonGroup,
-  FormCodeEditor,
-} from '@processmaker/vue-form-elements';
-
-import processInspectorConfig from './inspectors/process';
-import sequenceExpressionInspectorConfig from './inspectors/sequenceExpression';
-
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+import { Drop } from 'vue-drag-drop';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane/';
-
-// Register those components
-Vue.component('FormText', renderer.FormText);
-Vue.component('FormInput', FormInput);
-Vue.component('FormSelect', FormSelect);
-Vue.component('FormTextArea', FormTextArea);
-Vue.component('FormCheckbox', FormCheckbox);
-Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
-Vue.component('FormCodeEditor', FormCodeEditor);
-Vue.component('VueFormRenderer', VueFormRenderer);
 
 const version = '1.0';
 
@@ -91,9 +72,9 @@ if (!window.joint) {
 
 export default {
   components: {
-    Drag,
     Drop,
     controls,
+    InspectorPanel,
   },
   data() {
     return {
@@ -102,37 +83,24 @@ export default {
 
       // What bpmn moddle extensions should we register
       extensions: [],
+
       // Our controls/nodes to show in our palette
       controls: {},
+
       // Our node types, keyed by the id
       nodeRegistry: {},
+
       // Our jointjs data graph model
       graph: null,
+
       // Our jointjs paper
       paper: null,
+
       definitions: null,
       context: null,
       planeElements: null,
       canvasDragPosition: null,
-      // This is our id based lookup model
-      inspectors: {
-        process: processInspectorConfig,
-      },
       processNode: null,
-      // Each type/control in our modeler has it's own inspector configuration
-      inspectorConfigurations: {},
-      inspectorNode: null,
-      inspectorData: null,
-      inspectorHandler: () => {},
-      highlighted: null,
-      inspectorConfig: [
-        {
-          name: 'Empty',
-          items: [],
-        },
-      ],
-      sequenceExpressionInspectorConfig,
-      nodes: [],
       collaboration: null,
       moddle: null,
       dragPoint: { x: null, y: null },
@@ -142,25 +110,50 @@ export default {
       cursor: null,
     };
   },
-  watch: {
-    // When assigning to a new inspectorNode, it's important to
-    // create a new inspectorData that will be a "clean" object.
-    // But we also need to avoid circular references. In bpmn-moddle, this is usually brought
-    // on by parent
-    inspectorNode() {
-      const node = this.nodes.find(node => node === this.inspectorNode);
-      const type = node && node.type;
-
-      this.inspectorData =
-        type && this.nodeRegistry[type].inspectorData
-          ? this.nodeRegistry[type].inspectorData(this.inspectorNode)
-          : Object.entries(this.inspectorNode).reduce((data, [key, value]) => {
-            data[key] = value;
-            return data;
-          }, {});
-    },
+  computed: {
+    nodes: () => store.getters.nodes,
+    canUndo: () => store.getters.canUndo,
+    canRedo: () => store.getters.canRedo,
+    highlightedNode: () => store.getters.highlightedNode,
   },
   methods: {
+    setPools(poolDefinition) {
+      if (!this.collaboration) {
+        this.collaboration = this.moddle.create('bpmn:Collaboration');
+        this.definitions.get('rootElements').push(this.collaboration);
+        this.collaboration.set('id', 'collaboration_0');
+        this.plane.set('bpmnElement', this.collaboration);
+      }
+
+      let process;
+      if (this.collaboration.get('participants').length === 0) {
+        process = this.processNode.definition;
+      } else {
+        process = this.moddle.create('bpmn:Process');
+        this.processes.push(process);
+        process.set('id', `process_${this.processes.length}`);
+        process.set('isExecutable', false);
+
+        this.definitions.get('rootElements').push(process);
+      }
+
+      poolDefinition.set('processRef', process);
+      this.collaboration.get('participants').push(poolDefinition);
+    },
+    unsetPools() {
+      pull(this.definitions.get('rootElements'), this.collaboration);
+      this.plane.set('bpmnElement', this.processNode.definition);
+      this.collaboration = null;
+    },
+    undo() {
+      store.commit('undo');
+    },
+    redo() {
+      store.commit('redo');
+    },
+    highlightNode(node) {
+      store.commit('highlightNode', node);
+    },
     /**
      * Register an inspector component to configure extended attributes and elements
      * for specific bpmn extensions and execution environments. If the inspector
@@ -188,7 +181,6 @@ export default {
     registerNode(nodeType, parser) {
       const defaultParser = () => nodeType.id;
 
-      this.inspectorConfigurations[nodeType.id] = nodeType.inspectorConfig;
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
@@ -223,9 +215,10 @@ export default {
       this.plane = this.definitions.diagrams[0].plane;
       this.planeElements = this.plane.get('planeElement');
 
-      this.processNode = this.processes[0];
-      this.inspectorConfig = this.inspectors['process'];
-      this.inspectorNode = this.processNode;
+      this.processNode = {
+        definition: this.processes[0],
+        diagram: this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+      };
 
       /* Add any pools */
       if (this.collaboration) {
@@ -249,6 +242,8 @@ export default {
         // Then the associations
         process.get('artifacts').filter(node => node.$type === 'bpmn:Association').forEach(this.setNode);
       });
+
+      store.commit('highlightNode', this.processNode);
     },
     setNode(definition) {
       const type = this.parsers[definition.$type].reduce((type, parser) => {
@@ -268,14 +263,14 @@ export default {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
-      this.nodes.push({
+      store.dispatch('addNode', {
         type,
         definition,
         diagram,
       });
     },
     loadXML(xml) {
-      this.nodes = [];
+      store.commit('clearNodes');
       this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
@@ -323,33 +318,11 @@ export default {
        *
        * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
        */
-      if (type === poolId) {
-        if (!this.collaboration) {
-          this.collaboration = this.moddle.create('bpmn:Collaboration');
-          this.definitions.get('rootElements').push(this.collaboration);
-          this.collaboration.set('id', 'collaboration_0');
-          this.plane.set('bpmnElement', this.collaboration);
-        }
-
-        let process;
-        if (this.collaboration.get('participants').length === 0) {
-          process = this.processNode;
-        } else {
-          process = this.moddle.create('bpmn:Process');
-          this.processes.push(process);
-          process.set('id', `process_${this.processes.length}`);
-          process.set('isExecutable', false);
-
-          this.definitions.get('rootElements').push(process);
-        }
-
-        definition.set('processRef', process);
-        this.collaboration.get('participants').push(definition);
-      } else {
+      if (type !== poolId) {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
         const targetProcess = this.poolTarget
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
-          : this.processNode;
+          : this.processNode.definition;
 
         if (type === laneId) {
           targetProcess
@@ -373,7 +346,7 @@ export default {
 
       this.planeElements.push(diagram);
 
-      this.nodes.push({
+      store.dispatch('addNode', {
         type,
         definition,
         diagram,
@@ -391,47 +364,15 @@ export default {
       });
     },
     removeNode(node) {
-      pull(this.processNode.get('flowElements'), node.definition);
+      pull(this.processNode.definition.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
-      pull(this.processNode.get('artifacts'), node.definition);
-      this.nodes = this.nodes.filter(n => n !== node);
+      pull(this.processNode.definition.get('artifacts'), node.definition);
+      store.dispatch('removeNode', node);
     },
     handleResize() {
       let parent = this.$el.parentElement;
       this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
-    },
-    loadInspector(node) {
-      const component = this.$children.find(cmp => cmp.node === node);
-      // The component can control whether it can be inspected
-      const valid = component && component.beforeLoadInspector instanceof Function
-        ?  component.beforeLoadInspector(node) : true;
-      if (!valid) {
-        return;
-      }
-
-      this.highlighted = node;
-      this.inspectorNode = node.definition;
-      if(
-        node.type === 'processmaker-modeler-sequence-flow' &&
-        (node.definition.sourceRef.$type === 'bpmn:ExclusiveGateway' || node.definition.sourceRef.$type === 'bpmn:InclusiveGateway')
-      ) {
-        this.inspectorConfig = this.sequenceExpressionInspectorConfig;
-      } else {
-        this.inspectorConfig = this.nodeRegistry[node.type].inspectorConfig;
-      }
-
-      this.inspectorHandler = this.nodeRegistry[node.type].inspectorHandler
-        ? value => this.nodeRegistry[node.type].inspectorHandler(value, node, this.moddle)
-        : value => this.defaultInspectorHandler(value, node);
-    },
-    defaultInspectorHandler(value, node) {
-      /* Go through each property and rebind it to our data */
-      for (const key in value) {
-        if (node.definition[key] !== value[key]) {
-          node.definition[key] = value[key];
-        }
-      }
     },
     validateDropTarget(transferData, { clientX, clientY }) {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
@@ -480,7 +421,7 @@ export default {
     },
     addStartEvent() {
       /* Add an initial startEvent node if the graph is empty */
-      if (this.nodes.length === 0) {
+      if (this.nodes.length > 0) {
         return;
       }
 
@@ -513,6 +454,7 @@ export default {
     window.addEventListener('resize', this.handleResize);
 
     this.graph = new window.joint.dia.Graph();
+    store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
@@ -541,9 +483,7 @@ export default {
       },
     });
     this.paper.on('blank:pointerclick', () => {
-      this.highlighted = null;
-      this.inspectorNode = this.processNode;
-      this.inspectorConfig = processInspectorConfig;
+      store.commit('highlightNode', this.processNode);
     });
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
@@ -634,20 +574,23 @@ $cursors: default, not-allowed;
     display: flex;
     flex-direction: row;
 
-    .inspector {
-      font-size: 0.75em;
-      text-align: left;
-      padding: 8px;
-      width: 320px;
-      background-color: #eee;
-      border-left: 1px solid #aaa;
-    }
-
     .paper-container {
       height: 100%;
       max-height: 100%;
       min-height: 100%;
       overflow: hidden;
+      position: relative;
+
+      .history-buttons {
+        position: absolute;
+        z-index: 1;
+        left: 1rem;
+        top: 1rem;
+
+        > button {
+          cursor: pointer;
+        }
+      }
     }
 
     @each $cursor in $cursors {

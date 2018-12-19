@@ -88,26 +88,9 @@ export default {
         fill: 'black',
       },
     });
-    this.shape.on('change:position', (element, position) => {
-      this.node.diagram.bounds.x = position.x;
-      this.node.diagram.bounds.y = position.y;
-    });
+
     this.shape.addTo(this.graph);
     this.shape.component = this;
-
-    this.shape.on('change:position', (element, position) => {
-      this.node.diagram.bounds.x = position.x;
-      this.node.diagram.bounds.y = position.y;
-      // This is done so any flows pointing to this task are updated
-      this.$emit(
-        'move',
-        {
-          x: bounds.x,
-          y: bounds.y,
-        },
-        element
-      );
-    });
   },
 };
 </script>

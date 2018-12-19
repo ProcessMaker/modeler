@@ -13,6 +13,7 @@ import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import { id as laneId } from '../poolLane';
+import store from '@/store';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -42,6 +43,38 @@ export default {
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
+    isValidConnection() {
+      const targetType = get(this.target, 'component.node.type');
+
+      if (!targetType) {
+        return false;
+      }
+
+      if (targetType === laneId) {
+        return false;
+      }
+
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      /* If the link source is part of a pool, only allow sequence
+       * flows to the target if the target is also in the same pool  */
+      if (sourcePool && sourcePool !== targetPool) {
+        return false;
+      }
+
+      const invalidIncoming = this.targetConfig.validateIncoming
+        && !this.targetConfig.validateIncoming(this.sourceNode);
+
+      const invalidOutgoing = this.sourceConfig.validateOutgoing
+        && !this.sourceConfig.validateOutgoing(this.targetNode);
+
+      if (invalidIncoming || invalidOutgoing) {
+        return false;
+      }
+
+      return true;
+    },
   },
   methods: {
     setBodyColor(color, target = this.target) {
@@ -59,7 +92,6 @@ export default {
     completeLink() {
       this.inspectorConfigItems = data.inspectorConfig[0].items;
       this.shape.stopListening(this.paper, 'cell:mouseleave');
-      this.shape.stopListening(this.paper, 'blank:pointerclick link:pointerclick', this.removeLink);
       this.$emit('set-cursor', null);
 
       this.resetPaper();
@@ -95,38 +127,6 @@ export default {
       this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
-    isValidConnection() {
-      const targetType = get(this.target, 'component.node.type');
-
-      if (!targetType) {
-        return false;
-      }
-
-      if (targetType === laneId) {
-        return false;
-      }
-
-      const targetPool = this.target.component.node.pool;
-      const sourcePool = this.sourceShape.component.node.pool;
-
-      /* If the link source is part of a pool, only allow sequence
-       * flows to the target if the target is also in the same pool  */
-      if (sourcePool && sourcePool !== targetPool) {
-        return false;
-      }
-
-      const invalidIncoming = this.targetConfig.validateIncoming
-        && !this.targetConfig.validateIncoming(this.sourceNode);
-
-      const invalidOutgoing = this.sourceConfig.validateOutgoing
-        && !this.sourceConfig.validateOutgoing(this.targetNode);
-
-      if (invalidIncoming || invalidOutgoing) {
-        return false;
-      }
-
-      return true;
-    },
     updateRouter() {
       this.shape.router('orthogonal', { elementPadding: this.elementPadding });
     },
@@ -138,9 +138,8 @@ export default {
         return shape2.get('z') - shape1.get('z');
       })[0];
 
-      if (!this.isValidConnection()) {
+      if (!this.isValidConnection) {
         this.$emit('set-cursor', 'not-allowed');
-        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
         this.shape.target({
           x: localMousePosition.x,
@@ -153,8 +152,6 @@ export default {
 
         return;
       }
-
-      this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
 
       this.shape.target(this.target, {
         anchor: {
@@ -173,6 +170,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
         this.updateDefinitionLinks();
+        store.commit('commitTemp');
       });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
@@ -183,8 +181,8 @@ export default {
       });
     },
     removeLink() {
-      this.removeShape();
       this.resetPaper();
+      store.commit('purgeTemp');
     },
     resetPaper() {
       this.$emit('set-cursor', null);
@@ -203,6 +201,13 @@ export default {
     target(target, previousTarget) {
       if (previousTarget && previousTarget !== target) {
         this.setBodyColor(defaultNodeColor, previousTarget);
+      }
+    },
+    isValidConnection(isValid) {
+      if (isValid) {
+        this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
+      } else {
+        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
       }
     },
   },
@@ -254,6 +259,12 @@ export default {
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
 
       this.$emit('set-cursor', 'not-allowed');
+
+      if (this.isValidConnection) {
+        this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
+      } else {
+        this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
+      }
     }
     this.updateRouter();
   },

@@ -1,7 +1,9 @@
 import component from './sequenceFlow.vue';
 
+export const id = 'processmaker-modeler-sequence-flow';
+
 export default {
-  id: 'processmaker-modeler-sequence-flow',
+  id,
   component,
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
@@ -15,23 +17,24 @@ export default {
 
     return sequenceFlow.conditionExpression;
   },
-  inspectorHandler(value, node, moddle) {
+  inspectorHandler(value, node, setNodeProp, moddle) {
     const definition = node.definition;
+
     // Exclusive and inclusive gateways could have conditioned flows
-    const hasCondition = definition.sourceRef.$type === 'bpmn:ExclusiveGateway'
-      || definition.sourceRef.$type === 'bpmn:InclusiveGateway';
+    const hasCondition = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
+
     // Go through each property and rebind it to our data
     for (const key in value) {
-      const isDirty = definition[key] != value[key];
-      if (isDirty && hasCondition && key === 'conditionExpression') {
+      if (definition[key] === value[key]) {
+        continue;
+      }
+
+      if (key === 'conditionExpression' && hasCondition) {
         // Set the condition expression
-        definition.conditionExpression = definition.conditionExpression.set instanceof Function
-          ? definition.conditionExpression : moddle.create('bpmn:FormalExpression', {
-            body: value[key].body,
-          });
-        definition.conditionExpression.set('body', value[key].body);
-      } else if (isDirty) {
-        definition[key] = value[key];
+        const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key].body });
+        setNodeProp(node, 'conditionExpression', conditionExpression);
+      } else {
+        setNodeProp(node, key, value[key]);
       }
     }
   },
