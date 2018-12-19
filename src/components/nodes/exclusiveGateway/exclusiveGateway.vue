@@ -31,18 +31,16 @@ joint.dia.Element.define(
         fill: '#333333',
       },
       '.iconSideA': {
-        strokeWidth: '10',
-        points: '40 220 80 180 120 220',
+        strokeWidth: '4',
+        points: '24 24 55 55',
         stroke: 'black',
         fill: 'transparent',
-        transform: 'translate(37, 57) rotate(180) scale(0.20)',
       },
       '.iconSideB': {
-        strokeWidth: '10',
-        points: '40 220 80 180 120 220',
+        strokeWidth: '4',
+        points: '55 24 24 55',
         stroke: 'black',
         fill: 'transparent',
-        transform: 'translate(5, -15) scale(0.20)',
       },
       image: {
         width: 40,
@@ -55,7 +53,7 @@ joint.dia.Element.define(
   },
   {
     markup:
-      '<g class="rotatable"><g class="scalable"><polygon class="body"/><image/></g></g><text class="label"/><polyline class="iconSideA"/><polyline class="iconSideB"/>',
+      '<g class="rotatable"><g class="scalable"><polygon class="body"/><polyline class="iconSideA"/><polyline class="iconSideB"/><image/></g></g><text class="label"/>',
   }
 );
 
@@ -77,8 +75,7 @@ export default {
   },
   watch: {
     'node.definition.name'(name) {
-      const { width } = this.shapeView.getBBox();
-      this.shape.attr('label/text', joint.util.breakText(name, { width }));
+      this.shape.attr('.label/text', name);
     },
   },
   mounted() {

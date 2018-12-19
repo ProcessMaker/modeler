@@ -6,8 +6,10 @@
 <script>
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
+import resizeConfig from '@/mixins/resizeConfig';
 import Lane from '../poolLane';
-import { id as poolId, labelWidth, poolPadding } from './index';
+import { id as poolId } from './index';
+import {poolPadding, labelWidth} from './poolSizes';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
@@ -35,7 +37,7 @@ joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
 
 export default {
   props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes', 'moddle', 'processNode'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, resizeConfig],
   data() {
     return {
       shape: null,
@@ -69,6 +71,14 @@ export default {
       return this.processes.find(process =>
         process.id === this.node.definition.get('processRef').id
       );
+    },
+    sortedLanes() {
+      return  this.shape.getEmbeddedCells().filter(({ component }) => {
+        return component && component.node.type === laneId;
+      }).sort((shape1, shape2) => {
+        /* Sort by y position ascending */
+        return shape1.position().y - shape2.position().y;
+      });
     },
   },
   watch: {
@@ -183,6 +193,7 @@ export default {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
         this.updateCrownPosition();
+        this.updateAnchorPointPosition();
 
         this.getElementsUnderArea(element).filter(laneElement => {
           return laneElement.component &&
@@ -244,20 +255,40 @@ export default {
         });
 
         this.updateCrownPosition();
+        this.updateAnchorPointPosition();
 
         if (this.laneSet) {
-          /* Expand any lanes within the poool */
+          /* Expand any lanes within the pool */
           this.resizeLanes();
         }
       }
     },
+    fillLanes(resizingLane, direction) {
+      const poolHeight = this.shape.get('size').height;
+      const lanesHeight = this.sortedLanes.reduce((sum, lane) => {
+        return sum + lane.getBBox().height;
+      }, 0);
+      const heightDiff = poolHeight - lanesHeight;
+
+      let resizeDirection;
+      switch (direction) {
+        case 'top-right': resizeDirection = 'bottom-right'; break;
+        case 'top-left': resizeDirection = 'bottom-left'; break;
+        case 'bottom-right': resizeDirection = 'top-right'; break;
+        case 'bottom-left': resizeDirection = 'top-left'; break;
+      }
+
+      const resizingLaneIndex = this.sortedLanes.indexOf(resizingLane);
+      const { width: resizingLaneWidth } = resizingLane.getBBox();
+      const laneToResize = this.sortedLanes[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
+
+      laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, { direction: resizeDirection });
+      this.shape.resize(resizingLaneWidth + labelWidth, poolHeight, { direction: resizeDirection });
+
+      this.sortedLanes.forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
+    },
     resizeLanes() {
-      this.shape.getEmbeddedCells().filter(({ component }) => {
-        return component && component.node.type === laneId;
-      }).sort((shape1, shape2) => {
-        /* Sort by y position ascending */
-        return shape1.position().y - shape2.position().y;
-      }).forEach((laneShape, index, lanes) => {
+      this.sortedLanes.forEach((laneShape, index, lanes) => {
         const { width, height } = this.shape.get('size');
         const { height: laneHeight } = laneShape.get('size');
         const { y: laneY } = laneShape.position({ parentRelative: true });

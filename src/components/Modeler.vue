@@ -233,8 +233,14 @@ export default {
         }
 
         /* Add all other elements */
-        process.get('flowElements').forEach(this.setNode);
-        process.get('artifacts').forEach(this.setNode);
+        // First load the flow elements
+        process.get('flowElements').filter(node => node.$type !== 'bpmn:SequenceFlow').forEach(this.setNode);
+        // Then the sequence flows
+        process.get('flowElements').filter(node => node.$type === 'bpmn:SequenceFlow').forEach(this.setNode);
+        // Then the artifacts
+        process.get('artifacts').filter(node => node.$type !== 'bpmn:Association').forEach(this.setNode);
+        // Then the associations
+        process.get('artifacts').filter(node => node.$type === 'bpmn:Association').forEach(this.setNode);
       });
 
       store.commit('highlightNode', this.processNode);
@@ -452,6 +458,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       if (
         cellView.model.getParentCell() &&
+        !cellView.model.get('isDrag') &&
         (!cellView.model.component ||
           cellView.model.component.node.type === laneId)
       ) {

@@ -1,8 +1,6 @@
 import component from './pool';
 
 export const id = 'processmaker-modeler-pool';
-export const labelWidth = 30;
-export const poolPadding = 20;
 
 export default {
   id,
@@ -20,7 +18,7 @@ export default {
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: 250,
+        height: 300,
         width: 600,
       }),
     });
