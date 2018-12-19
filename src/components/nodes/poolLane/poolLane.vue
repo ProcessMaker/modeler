@@ -6,11 +6,12 @@
 <script>
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
-import { labelWidth } from '../pool';
+import resizeConfig from '@/mixins/resizeConfig';
+import { labelWidth } from '../pool/poolSizes';
 
 export default {
   props: ['graph', 'node', 'nodes', 'id', 'collaboration'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, resizeConfig],
   data() {
     return {
       shape: null,

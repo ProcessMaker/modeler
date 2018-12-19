@@ -1,6 +1,7 @@
 import component from './poolLane';
 
 export const id = 'processmaker-modeler-lane';
+export const minLaneHeight = 100;
 
 export default {
   id,
