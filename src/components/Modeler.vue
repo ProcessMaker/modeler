@@ -38,10 +38,7 @@
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
-      @click="() => {
-        highlighted = node;
-        loadInspector(node);
-      }"
+      @click="loadInspector(node)"
     />
   </div>
 </template>
@@ -243,8 +240,14 @@ export default {
         }
 
         /* Add all other elements */
-        process.get('flowElements').forEach(this.setNode);
-        process.get('artifacts').forEach(this.setNode);
+        // First load the flow elements
+        process.get('flowElements').filter(node => node.$type !== 'bpmn:SequenceFlow').forEach(this.setNode);
+        // Then the sequence flows
+        process.get('flowElements').filter(node => node.$type === 'bpmn:SequenceFlow').forEach(this.setNode);
+        // Then the artifacts
+        process.get('artifacts').filter(node => node.$type !== 'bpmn:Association').forEach(this.setNode);
+        // Then the associations
+        process.get('artifacts').filter(node => node.$type === 'bpmn:Association').forEach(this.setNode);
       });
     },
     setNode(definition) {
@@ -353,7 +356,7 @@ export default {
             .get('laneSets')[0]
             .get('lanes')
             .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation') {
+        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
           targetProcess.get('artifacts').push(definition);
         } else {
           targetProcess.get('flowElements').push(definition);
@@ -390,6 +393,7 @@ export default {
     removeNode(node) {
       pull(this.processNode.get('flowElements'), node.definition);
       pull(this.planeElements, node.diagram);
+      pull(this.processNode.get('artifacts'), node.definition);
       this.nodes = this.nodes.filter(n => n !== node);
     },
     handleResize() {
@@ -398,6 +402,15 @@ export default {
       this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
     },
     loadInspector(node) {
+      const component = this.$children.find(cmp => cmp.node === node);
+      // The component can control whether it can be inspected
+      const valid = component && component.beforeLoadInspector instanceof Function
+        ?  component.beforeLoadInspector(node) : true;
+      if (!valid) {
+        return;
+      }
+
+      this.highlighted = node;
       this.inspectorNode = node.definition;
       if(
         node.type === 'processmaker-modeler-sequence-flow' &&
