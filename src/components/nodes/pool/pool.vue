@@ -266,39 +266,22 @@ export default {
       }, 0);
       const heightDiff = poolHeight - lanesHeight;
 
-      this.sortedLanes.forEach((currentLane, index) => {
-        if (index === this.sortedLanes.length - 1) {
-          return;
-        }
+      let resizeDirection;
+      switch (direction) {
+        case 'top-right': resizeDirection = 'bottom-right'; break;
+        case 'top-left': resizeDirection = 'bottom-left'; break;
+        case 'bottom-right': resizeDirection = 'top-right'; break;
+        case 'bottom-left': resizeDirection = 'top-left'; break;
+      }
 
-        const { width: resizingLaneWidth } = resizingLane.getBBox();
-        const { height: currentLaneHeight, y: currentLaneY } = currentLane.getBBox();
-        const nextLane = this.sortedLanes[index + 1];
-        const { height: nextLaneHeight, y: nextLaneY } = nextLane.getBBox();
+      const resizingLaneIndex = this.sortedLanes.indexOf(resizingLane);
+      const { width: resizingLaneWidth } = resizingLane.getBBox();
+      const laneToResize = this.sortedLanes[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
 
-        // if (heightDiff < 0) {
-        if (nextLaneY < currentLaneY + currentLaneHeight) {
-          /* Lanes overlap (drag top lane down or bottom lane up) */
-          console.log('overlap!');
+      laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, { direction: resizeDirection });
+      this.shape.resize(resizingLaneWidth + labelWidth, poolHeight, { direction: resizeDirection });
 
-          if (currentLane === resizingLane) {
-            nextLane.resize(resizingLaneWidth, nextLaneHeight + heightDiff, { direction });
-          } else {
-            currentLane.resize(resizingLaneWidth, currentLaneHeight + heightDiff, { direction });
-          }
-        } else {
-          /* Space between lanes (drag top lane up or bottom lane down) */
-          console.log('space!');
-
-          if (currentLane === resizingLane) {
-            nextLane.resize(resizingLaneWidth, nextLaneHeight + heightDiff, { direction });
-          } else {
-            currentLane.resize(resizingLaneWidth, currentLaneHeight + heightDiff, { direction });
-          }
-        }
-
-        this.shape.resize(resizingLaneWidth + labelWidth, this.shape.get('size').height, { direction });
-      });
+      this.sortedLanes.forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
     },
     resizeLanes() {
       this.sortedLanes.forEach((laneShape, index, lanes) => {
