@@ -1,7 +1,7 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import debounce from 'lodash/debounce';
-import store, { saveDebounce } from '@/store';
+import store, { saveDebounce, debounceOffset } from '@/store';
 
 export const highlightPadding = 3;
 
@@ -31,11 +31,19 @@ export default {
 
         /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
         this.shape.off('change:position change:size', this.updateNodeBounds);
+        if (this.isPool) {
+          this.shape.off('change:position change:size', this.startBatch);
+          this.shape.off('change:position change:size', this.commitBatch);
+        }
 
         this.shape.position(x, y);
         this.updateCrownPosition();
 
         this.shape.on('change:position change:size', this.updateNodeBounds);
+        if (this.isPool) {
+          this.shape.on('change:position change:size', this.startBatch);
+          this.shape.on('change:position change:size', this.commitBatch);
+        }
       },
       deep: true,
     },
@@ -44,9 +52,16 @@ export default {
     shapeView() {
       return this.shape.findView(this.paper);
     },
+    isPool() {
+      return this.node.type === 'processmaker-modeler-pool';
+    },
   },
   methods: {
     removeShape() {
+      if (this.isPool) {
+        store.commit('startBatchAction');
+      }
+
       this.$emit('remove-node', this.node);
     },
     removeCrown() {
@@ -171,6 +186,7 @@ export default {
 
       if (this.node.pool) {
         this.node.pool.component.addToPool(this.shape);
+
         return;
       }
       /* If we are over a pool or lane, add the shape to the pool or lane */
@@ -183,7 +199,7 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
-    updateNodeBounds: debounce(function(element, newBounds) {
+    updateNodeBounds(element, newBounds) {
       const { x, y, width, height } = this.node.diagram.bounds;
       if (
         (x === newBounds.x && y === newBounds.y) ||
@@ -193,7 +209,20 @@ export default {
       }
 
       store.dispatch('updateNodeBounds', { node: this.node, bounds: newBounds });
-    }, saveDebounce),
+    },
+    startBatch() {
+      store.commit('startBatchAction');
+    },
+    commitBatch() {
+      this.startBatch.flush();
+      this.updateNodeBounds.flush();
+      store.commit('commitBatchAction');
+    },
+  },
+  created() {
+    this.updateNodeBounds = debounce(this.updateNodeBounds, saveDebounce);
+    this.startBatch = debounce(this.startBatch, saveDebounce - debounceOffset);
+    this.commitBatch = debounce(this.commitBatch, saveDebounce + debounceOffset);
   },
   mounted() {
     this.$nextTick(() => {
@@ -201,6 +230,15 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
+
+      if (this.isPool) {
+        /* Changes to pools always triggers batch actions. Because of this, ensure batch
+         * changs are enabled just before node update, and commited just after, using
+         * debounceOffset as the buffer. */
+        this.shape.on('change:position change:size', this.startBatch);
+        this.shape.on('change:position change:size', this.commitBatch);
+      }
+
       this.shape.on('change:position change:size', this.updateNodeBounds);
     });
   },
@@ -216,5 +254,11 @@ export default {
   destroyed() {
     this.shape.stopListening();
     this.shape.remove();
+
+    if (this.isPool) {
+      this.startBatch.flush();
+      this.updateNodeBounds.flush();
+      store.commit('commitBatchAction');
+    }
   },
 };

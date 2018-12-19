@@ -41,5 +41,10 @@ export default {
     this.shape.component = this;
     this.shape.addTo(this.graph);
   },
+  destroyed() {
+    /* Resize the parent pool to fill in the space where the lane was deleted.
+    * If this was the 2nd last lane, remove all lanes and rever the pool back to normal. */
+    this.node.pool.component.cleanupLanes();
+  },
 };
 </script>

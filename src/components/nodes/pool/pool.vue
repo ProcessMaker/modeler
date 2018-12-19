@@ -9,7 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane from '../poolLane';
 import { id as poolId } from './index';
-import {poolPadding, labelWidth} from './poolSizes';
+import { poolPadding, labelWidth } from './poolSizes';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
@@ -18,18 +18,19 @@ import pull from 'lodash/pull';
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
-    ...joint.shapes.standard.Rectangle.prototype.markup,
     { tagName: 'polyline', selector: 'polyline' },
+    ...joint.shapes.standard.Rectangle.prototype.markup,
   ],
   attrs: {
     label: {
       fill: 'black',
       transform: 'rotate(-90)',
+      refX: -(labelWidth / 2),
     },
     polyline: {
-      refPoints: '0,0 0,1',
-      pointerEvents: 'none',
+      refPointsKeepOffset: `0,0 -${labelWidth},0 -${labelWidth},200 0,200`,
       stroke: '#000',
+      fill: '#fff',
       strokeWidth: 2,
     },
   },
@@ -85,6 +86,7 @@ export default {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
+
   },
   methods: {
     getElementsUnderArea(element) {
@@ -149,6 +151,7 @@ export default {
       });
     },
     addToPool(element) {
+      this.shape.unembed(element);
       this.shape.embed(element);
 
       /* If there are lanes, add the element to the lane it's above */
@@ -164,7 +167,7 @@ export default {
     },
     expandToFixElement(element) {
       const { width, height } = this.shape.get('size');
-      const { x, y } = this.shape.findView(this.paper).getBBox();
+      const { x, y } = this.shape.position();
 
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
@@ -181,9 +184,9 @@ export default {
         }).length === 1;
 
         const laneHeight = isFirstLane ? height : elementBounds.height;
-        element.resize(width - labelWidth, laneHeight);
+        element.resize(width, laneHeight);
         element.position(
-          labelWidth,
+          0,
           isFirstLane
             ? 0
             : this.addLaneAbove ? -laneHeight : height,
@@ -211,12 +214,8 @@ export default {
         return;
       }
 
-      const {
-        x: elementX,
-        y: elementY,
-        width: elementWidth,
-        height: elementHeight,
-      } = element.findView(this.paper).getBBox();
+      const { width: elementWidth, height: elementHeight } = element.get('size');
+      const { x: elementX, y: elementY } = element.position();
 
       const relativeX = elementX - x;
       const relativeY = elementY - y;
@@ -235,8 +234,8 @@ export default {
         newWidth = rightEdge + poolPadding;
       }
 
-      if (leftEdge < labelWidth + poolPadding) {
-        newWidth = width + ((labelWidth + poolPadding) - leftEdge);
+      if (leftEdge < poolPadding) {
+        newWidth = width + (poolPadding - leftEdge);
         directionWidth = 'left';
       }
 
@@ -315,10 +314,6 @@ export default {
       });
     },
     captureChildren() {
-      if (this.processNode.definition.get('flowElements').length === 0) {
-        return;
-      }
-
       this.graph
         .getElements()
         .filter(({ component }) => component && component !== this)
@@ -336,7 +331,7 @@ export default {
       const bounds = this.node.diagram.bounds;
 
       this.shape.resize(
-        Math.max(width, bounds.width) + labelWidth,
+        Math.max(width, bounds.width),
         Math.max(height, bounds.height)
       );
 
@@ -356,6 +351,9 @@ export default {
         model.component.node.type !== laneId &&
         model.getParentCell() && model.getParentCell().component === this;
     },
+    validateElementMove() {
+
+    },
   },
   mounted() {
     this.$emit('setPools', this.node.definition);
@@ -365,9 +363,6 @@ export default {
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-
-    this.shape.attr('label/refX', labelWidth / 2);
-    this.shape.attr('polyline/refX', labelWidth);
     this.shape.attr('label/text', joint.util.breakText(this.node.definition.get('name'), {
       width: bounds.width,
     }));
@@ -388,7 +383,7 @@ export default {
       let invalidPool;
 
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
-        if (!this.isPoolChild(element)) {
+        if (!this.isPoolChild(element) || !draggingElement) {
           return;
         }
 
@@ -437,6 +432,7 @@ export default {
         if (!this.isPoolChild(cellView.model)) {
           return;
         }
+
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
           cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)

@@ -5,6 +5,7 @@ import pull from 'lodash/pull';
 Vue.use(Vuex);
 
 export const saveDebounce = 300;
+export const debounceOffset = 100;
 
 export default new Vuex.Store({
   state: {
@@ -15,6 +16,8 @@ export default new Vuex.Store({
     redoList: [],
     tempAction: null,
     nodes: [],
+    batch: false,
+    batchActions: [],
   },
   getters: {
     nodes: state => state.nodes,
@@ -30,14 +33,22 @@ export default new Vuex.Store({
       if (state.undoList.length > 0) {
         state.highlightedNodeIndex = null;
         const undoRedo = state.undoList.pop();
-        undoRedo.undo();
+
+        Array.isArray(undoRedo)
+          ? undoRedo.forEach(({ undo }) => undo())
+          : undoRedo.undo();
+
         state.redoList.unshift(undoRedo);
       }
     },
     redo(state) {
       if (state.redoList.length > 0) {
         const undoRedo = state.redoList.shift();
-        undoRedo.redo();
+
+        Array.isArray(undoRedo)
+          ? undoRedo.forEach(({ redo }) => redo())
+          : undoRedo.redo();
+
         state.undoList.push(undoRedo);
       }
     },
@@ -62,6 +73,7 @@ export default new Vuex.Store({
     },
     addNode(state, node) {
       state.nodes.push(node);
+      console.log('Added', node.type);
     },
     unembedNodes(state, nodeShape) {
       nodeShape.getEmbeddedCells().forEach(cell => {
@@ -88,11 +100,20 @@ export default new Vuex.Store({
       state.tempAction.undo();
       state.tempAction = null;
     },
-    startBatchAction() {
-
+    startBatchAction(state) {
+      state.batch = true;
+      console.log('start batch!');
     },
-    commitBatchAction() {
+    commitBatchAction(state) {
+      if (!state.batch) {
+        console.log('Tried to commit when batch is false');
+        return;
+      }
 
+      state.batch = false;
+      state.undoList.push(state.batchActions);
+      state.batchActions = [];
+      console.log('commit batch!');
     },
     setGraph(state, graph) {
       state.graph = graph;
@@ -112,14 +133,20 @@ export default new Vuex.Store({
         state.tempAction = { undo, redo };
       } else {
         commit('clearRedoList');
-        state.undoList.push({ undo, redo });
+        state.batch
+          ? state.batchActions.push({ undo, redo })
+          : state.undoList.push({ undo, redo });
       }
     },
     removeNode({ commit, state }, node) {
       const undo = () => commit('addNode', node);
       const redo = () => commit('removeNode', node);
       redo();
-      state.undoList.push({ undo, redo });
+
+      state.batch
+        ? state.batchActions.push({ undo, redo })
+        : state.undoList.push({ undo, redo });
+
       commit('clearRedoList');
     },
     updateNodeBounds({ commit, state }, { node, bounds }) {
@@ -127,7 +154,12 @@ export default new Vuex.Store({
       const undo = () => commit('updateNodeBounds', { node, bounds: previousBounds });
       const redo = () => commit('updateNodeBounds', { node, bounds });
       redo();
-      state.undoList.push({ undo, redo });
+      console.log(`updated bounds for ${node.type}`);
+
+      state.batch
+        ? state.batchActions.push({ undo, redo })
+        : state.undoList.push({ undo, redo });
+
       commit('clearRedoList');
     },
     updateNodeProp({ commit, state }, { node, key, value }) {
@@ -135,7 +167,11 @@ export default new Vuex.Store({
       const undo = () => commit('updateNodeProp', { node, key, value: previousValue });
       const redo = () => commit('updateNodeProp', { node, key, value });
       redo();
-      state.undoList.push({ undo, redo });
+
+      state.batch
+        ? state.batchActions.push({ undo, redo })
+        : state.undoList.push({ undo, redo });
+
       commit('clearRedoList');
     },
   },
