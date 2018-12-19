@@ -260,31 +260,44 @@ export default {
       }
     },
     fillLanes(resizingLane, direction) {
-      this.sortedLanes.forEach((laneShape, index) => {
+      const poolHeight = this.shape.get('size').height;
+      const lanesHeight = this.sortedLanes.reduce((sum, lane) => {
+        return sum + lane.getBBox().height;
+      }, 0);
+      const heightDiff = poolHeight - lanesHeight;
+
+      this.sortedLanes.forEach((currentLane, index) => {
         if (index === this.sortedLanes.length - 1) {
           return;
         }
 
         const { width: resizingLaneWidth } = resizingLane.getBBox();
-        const { height: currentLaneHeight, y: currentLaneY  } = laneShape.getBBox();
+        const { height: currentLaneHeight, y: currentLaneY } = currentLane.getBBox();
         const nextLane = this.sortedLanes[index + 1];
-        const { y: nextLaneY, height: nextLaneHeight } = nextLane.getBBox();
+        const { height: nextLaneHeight, y: nextLaneY } = nextLane.getBBox();
 
-        if (nextLaneY === currentLaneY + currentLaneHeight) {
-          return;
-        }
-
+        // if (heightDiff < 0) {
         if (nextLaneY < currentLaneY + currentLaneHeight) {
-          if (laneShape === resizingLane) {
-            nextLane.resize(resizingLaneWidth, nextLaneHeight - ((currentLaneY + currentLaneHeight) - nextLaneY), { direction });
-            this.shape.resize(resizingLaneWidth + labelWidth, this.shape.get('size').height, { direction });
+          /* Lanes overlap (drag top lane down or bottom lane up) */
+          console.log('overlap!');
+
+          if (currentLane === resizingLane) {
+            nextLane.resize(resizingLaneWidth, nextLaneHeight + heightDiff, { direction });
+          } else {
+            currentLane.resize(resizingLaneWidth, currentLaneHeight + heightDiff, { direction });
           }
         } else {
-          if (laneShape === resizingLane) {
-            nextLane.resize(resizingLaneWidth, (nextLaneY + nextLaneHeight) - (currentLaneY + currentLaneHeight), { direction });
-            this.shape.resize(resizingLaneWidth + labelWidth, this.shape.get('size').height, { direction });
+          /* Space between lanes (drag top lane up or bottom lane down) */
+          console.log('space!');
+
+          if (currentLane === resizingLane) {
+            nextLane.resize(resizingLaneWidth, nextLaneHeight + heightDiff, { direction });
+          } else {
+            currentLane.resize(resizingLaneWidth, currentLaneHeight + heightDiff, { direction });
           }
         }
+
+        this.shape.resize(resizingLaneWidth + labelWidth, this.shape.get('size').height, { direction });
       });
     },
     resizeLanes() {
