@@ -282,7 +282,7 @@ export default {
       const laneToResize = this.sortedLanes[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
 
       laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, { direction: resizeDirection });
-      this.shape.resize(resizingLaneWidth + labelWidth, poolHeight, { direction: resizeDirection });
+      this.shape.resize(resizingLaneWidth, poolHeight, { direction: resizeDirection });
 
       this.sortedLanes.forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
     },
@@ -294,23 +294,23 @@ export default {
 
         if (index === 0) {
           /* Expand the height of the fist lane up */
-          laneShape.resize(width - labelWidth, laneHeight + laneShape.position({ parentRelative: true }).y, {
+          laneShape.resize(width, laneHeight + laneShape.position({ parentRelative: true }).y, {
             direction: 'top-right',
           });
-          laneShape.position(labelWidth, 0, { parentRelative: true });
+          laneShape.position(0, 0, { parentRelative: true });
           return;
         }
 
         if (index === lanes.length - 1) {
           /* Expand the height of the last lane down */
           const addedHeight = height - (laneShape.position({ parentRelative: true }).y + laneHeight);
-          laneShape.resize(width - labelWidth, laneHeight + addedHeight);
-          laneShape.position(labelWidth, laneY, { parentRelative: true });
+          laneShape.resize(width, laneHeight + addedHeight);
+          laneShape.position(0, laneY, { parentRelative: true });
           return;
         }
 
-        laneShape.resize(width - labelWidth, laneHeight);
-        laneShape.position(labelWidth, laneY, { parentRelative: true });
+        laneShape.resize(width, laneHeight);
+        laneShape.position(0, laneY, { parentRelative: true });
       });
     },
     captureChildren() {

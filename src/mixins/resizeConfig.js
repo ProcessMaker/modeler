@@ -162,7 +162,7 @@ export default {
       }
 
       if (!laneShape) {
-        this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
         point.set('previousPosition', { x, y });
         this.updateAnchorPointPosition();
 
@@ -174,7 +174,7 @@ export default {
           if (maxPoolHeight < minLanePoolHeight) {
             return;
           }
-          this.poolComponent.shape.resize(maxPoolWidth + labelWidth, maxPoolHeight, { direction });
+          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
           this.updateAnchorPointPosition(3);
@@ -250,7 +250,7 @@ export default {
 
       const laneShape = this.node.type === 'processmaker-modeler-lane';
 
-      const maxPoolWidth = Math.max((poolX + poolWidth) - (x + this.pointWidth),this.getXLimit() - poolX,  minPoolWidth);
+      const maxPoolWidth = Math.max((poolX + poolWidth) - (x + this.pointWidth), this.getXLimit() - poolX,  minPoolWidth);
       const maxPoolHeight = Math.max(y - poolY, this.getYLimit() - poolHeight, minPoolHeight);
 
       const maxLaneWidth = Math.max(laneWidth + (laneX - (x + this.pointWidth)), minLaneWidth);
@@ -265,7 +265,7 @@ export default {
       }
 
       if (!laneShape) {
-        this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
         point.set('previousPosition', { x, y });
         this.updateAnchorPointPosition();
         if (this.laneSet) {
@@ -277,7 +277,7 @@ export default {
             return;
           }
 
-          this.poolComponent.shape.resize(maxPoolWidth + labelWidth, maxPoolHeight, { direction });
+          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
           this.updateAnchorPointPosition(1);
@@ -354,11 +354,18 @@ export default {
     updateAnchorPointPosition(excludePoint) {
       const { x, y } = this.shape.position();
       const { width, height } = this.shape.get('size');
+      let leftEdge = x;
+
+      if (this.node.type === 'processmaker-modeler-pool') {
+        /* The pool label is positioned to the left of the pool;
+         * account for it's width when positioning the drag handlers */
+        leftEdge = leftEdge - labelWidth;
+      }
 
       excludePoint !== 0 && this.anchorPoints[0].position(x + width, y + height); // Bottom Right Point
-      excludePoint !== 1 && this.anchorPoints[1].position(x - this.pointWidth, y + height); // Bottom Left Point
+      excludePoint !== 1 && this.anchorPoints[1].position(leftEdge - this.pointWidth, y + height); // Bottom Left Point
       excludePoint !== 2 && this.anchorPoints[2].position(x + width, y - this.pointHeight); // Top Right Point
-      excludePoint !== 3 && this.anchorPoints[3].position(x - this.pointWidth, y - this.pointWidth); //Top Left Point
+      excludePoint !== 3 && this.anchorPoints[3].position(leftEdge - this.pointWidth, y - this.pointWidth); //Top Left Point
     },
     pointAttributes(point, cursorDirection) {
       point.attr({
