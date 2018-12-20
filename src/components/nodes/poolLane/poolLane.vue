@@ -41,10 +41,30 @@ export default {
     this.shape.component = this;
     this.shape.addTo(this.graph);
   },
-  destroyed() {
+  beforeDestroy() {
     /* Resize the parent pool to fill in the space where the lane was deleted.
-    * If this was the 2nd last lane, remove all lanes and rever the pool back to normal. */
-    this.node.pool.component.cleanupLanes();
+     * If this was the 2nd last lane, remove all lanes and rever the pool back to normal. */
+
+    const sortedLanes = this.node.pool.component.sortedLanes();
+
+    if (sortedLanes.length === 1) {
+      /* Last lane being removed; nothing else to do */
+      return;
+    }
+
+    if (sortedLanes.length === 2) {
+      /* Do not allow pool with only one lane;
+       * if removing 2nd last lane, remove the other lane as well */
+      this.$emit('remove-node', sortedLanes.filter(lane => lane !== this.shape)[0].component.node);
+      return;
+    }
+
+    if (this.shape === sortedLanes[sortedLanes.length - 1]) {
+      this.node.pool.component.fillLanes(this.shape, 'top-right', true);
+      return;
+    }
+
+    this.node.pool.component.fillLanes(this.shape, 'bottom-right', true);
   },
 };
 </script>

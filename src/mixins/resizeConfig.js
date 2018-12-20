@@ -170,7 +170,7 @@ export default {
           this.poolComponent.resizeLanes();
         }
       } else {
-        if (this.shape === this.poolComponent.sortedLanes[0]) {
+        if (this.shape === this.poolComponent.sortedLanes()[0]) {
           if (maxPoolHeight < minLanePoolHeight) {
             return;
           }
@@ -220,7 +220,7 @@ export default {
           this.poolComponent.resizeLanes();
         }
       } else {
-        if (this.shape === this.poolComponent.sortedLanes[0]) {
+        if (this.shape === this.poolComponent.sortedLanes()[0]) {
           if (maxPoolHeight < minLanePoolHeight) {
             return;
           }
@@ -272,7 +272,8 @@ export default {
           this.poolComponent.resizeLanes();
         }
       } else {
-        if (this.shape === this.poolComponent.sortedLanes[this.poolComponent.sortedLanes.length - 1]) {
+        const sortedLanes = this.poolComponent.sortedLanes();
+        if (this.shape === sortedLanes[sortedLanes.length - 1]) {
           if (maxPoolHeight < minLanePoolHeight) {
             return;
           }
@@ -320,7 +321,8 @@ export default {
           this.poolComponent.resizeLanes();
         }
       } else {
-        if (this.shape === this.poolComponent.sortedLanes[this.poolComponent.sortedLanes.length - 1]) {
+        const sortedLanes = this.poolComponent.sortedLanes();
+        if (this.shape === sortedLanes[sortedLanes.length - 1]) {
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();

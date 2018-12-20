@@ -55,10 +55,13 @@ export default {
     isPool() {
       return this.node.type === 'processmaker-modeler-pool';
     },
+    isLane() {
+      return this.node.type === 'processmaker-modeler-lane';
+    },
   },
   methods: {
     removeShape() {
-      if (this.isPool) {
+      if (this.isPool || this.isLane) {
         store.commit('startBatchAction');
       }
 
@@ -255,7 +258,7 @@ export default {
     this.shape.stopListening();
     this.shape.remove();
 
-    if (this.isPool) {
+    if (this.isPool || this.isLane) {
       this.startBatch.flush();
       this.updateNodeBounds.flush();
       store.commit('commitBatchAction');

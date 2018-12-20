@@ -73,22 +73,21 @@ export default {
         process.id === this.node.definition.get('processRef').id
       );
     },
+  },
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', name);
+    },
+  },
+  methods: {
     sortedLanes() {
-      return  this.shape.getEmbeddedCells().filter(({ component }) => {
+      return this.shape.getEmbeddedCells().filter(({ component }) => {
         return component && component.node.type === laneId;
       }).sort((shape1, shape2) => {
         /* Sort by y position ascending */
         return shape1.position().y - shape2.position().y;
       });
     },
-  },
-  watch: {
-    'node.definition.name'(name) {
-      this.shape.attr('label/text', name);
-    },
-
-  },
-  methods: {
     getElementsUnderArea(element) {
       const { x, y, width, height} = element.getBBox();
       const area = { x, y, width, height };
@@ -262,12 +261,14 @@ export default {
         }
       }
     },
-    fillLanes(resizingLane, direction) {
+    fillLanes(resizingLane, direction, remove) {
       const poolHeight = this.shape.get('size').height;
-      const lanesHeight = this.sortedLanes.reduce((sum, lane) => {
+      const lanesHeight = this.sortedLanes().reduce((sum, lane) => {
         return sum + lane.getBBox().height;
       }, 0);
-      const heightDiff = poolHeight - lanesHeight;
+      const heightDiff = remove
+        ? resizingLane.get('size').height
+        : poolHeight - lanesHeight;
 
       let resizeDirection;
       switch (direction) {
@@ -277,17 +278,17 @@ export default {
         case 'bottom-left': resizeDirection = 'top-left'; break;
       }
 
-      const resizingLaneIndex = this.sortedLanes.indexOf(resizingLane);
+      const resizingLaneIndex = this.sortedLanes().indexOf(resizingLane);
       const { width: resizingLaneWidth } = resizingLane.getBBox();
-      const laneToResize = this.sortedLanes[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
+      const laneToResize = this.sortedLanes()[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
 
       laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, { direction: resizeDirection });
       this.shape.resize(resizingLaneWidth, poolHeight, { direction: resizeDirection });
 
-      this.sortedLanes.forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
+      this.sortedLanes().forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
     },
     resizeLanes() {
-      this.sortedLanes.forEach((laneShape, index, lanes) => {
+      this.sortedLanes().forEach((laneShape, index, lanes) => {
         const { width, height } = this.shape.get('size');
         const { height: laneHeight } = laneShape.get('size');
         const { y: laneY } = laneShape.position({ parentRelative: true });
