@@ -9,7 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane from '../poolLane';
 import { id as poolId } from './index';
-import {poolPadding, labelWidth} from './poolSizes';
+import { poolPadding, labelWidth } from './poolSizes';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
@@ -18,18 +18,19 @@ import pull from 'lodash/pull';
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
-    ...joint.shapes.standard.Rectangle.prototype.markup,
     { tagName: 'polyline', selector: 'polyline' },
+    ...joint.shapes.standard.Rectangle.prototype.markup,
   ],
   attrs: {
     label: {
       fill: 'black',
       transform: 'rotate(-90)',
+      refX: -(labelWidth / 2),
     },
     polyline: {
-      refPoints: '0,0 0,1',
-      pointerEvents: 'none',
+      refPointsKeepOffset: `0,0 -${labelWidth},0 -${labelWidth},200 0,200`,
       stroke: '#000',
+      fill: '#fff',
       strokeWidth: 2,
     },
   },
@@ -72,14 +73,6 @@ export default {
         process.id === this.node.definition.get('processRef').id
       );
     },
-    sortedLanes() {
-      return  this.shape.getEmbeddedCells().filter(({ component }) => {
-        return component && component.node.type === laneId;
-      }).sort((shape1, shape2) => {
-        /* Sort by y position ascending */
-        return shape1.position().y - shape2.position().y;
-      });
-    },
   },
   watch: {
     'node.definition.name'(name) {
@@ -87,6 +80,14 @@ export default {
     },
   },
   methods: {
+    sortedLanes() {
+      return this.shape.getEmbeddedCells().filter(({ component }) => {
+        return component && component.node.type === laneId;
+      }).sort((shape1, shape2) => {
+        /* Sort by y position ascending */
+        return shape1.position().y - shape2.position().y;
+      });
+    },
     getElementsUnderArea(element) {
       const { x, y, width, height} = element.getBBox();
       const area = { x, y, width, height };
@@ -149,6 +150,7 @@ export default {
       });
     },
     addToPool(element) {
+      this.shape.unembed(element);
       this.shape.embed(element);
 
       /* If there are lanes, add the element to the lane it's above */
@@ -164,7 +166,7 @@ export default {
     },
     expandToFixElement(element) {
       const { width, height } = this.shape.get('size');
-      const { x, y } = this.shape.findView(this.paper).getBBox();
+      const { x, y } = this.shape.position();
 
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
@@ -181,9 +183,9 @@ export default {
         }).length === 1;
 
         const laneHeight = isFirstLane ? height : elementBounds.height;
-        element.resize(width - labelWidth, laneHeight);
+        element.resize(width, laneHeight);
         element.position(
-          labelWidth,
+          0,
           isFirstLane
             ? 0
             : this.addLaneAbove ? -laneHeight : height,
@@ -211,12 +213,8 @@ export default {
         return;
       }
 
-      const {
-        x: elementX,
-        y: elementY,
-        width: elementWidth,
-        height: elementHeight,
-      } = element.findView(this.paper).getBBox();
+      const { width: elementWidth, height: elementHeight } = element.get('size');
+      const { x: elementX, y: elementY } = element.position();
 
       const relativeX = elementX - x;
       const relativeY = elementY - y;
@@ -235,8 +233,8 @@ export default {
         newWidth = rightEdge + poolPadding;
       }
 
-      if (leftEdge < labelWidth + poolPadding) {
-        newWidth = width + ((labelWidth + poolPadding) - leftEdge);
+      if (leftEdge < poolPadding) {
+        newWidth = width + (poolPadding - leftEdge);
         directionWidth = 'left';
       }
 
@@ -263,12 +261,14 @@ export default {
         }
       }
     },
-    fillLanes(resizingLane, direction) {
+    fillLanes(resizingLane, direction, remove) {
       const poolHeight = this.shape.get('size').height;
-      const lanesHeight = this.sortedLanes.reduce((sum, lane) => {
+      const lanesHeight = this.sortedLanes().reduce((sum, lane) => {
         return sum + lane.getBBox().height;
       }, 0);
-      const heightDiff = poolHeight - lanesHeight;
+      const heightDiff = remove
+        ? resizingLane.get('size').height
+        : poolHeight - lanesHeight;
 
       let resizeDirection;
       switch (direction) {
@@ -278,47 +278,43 @@ export default {
         case 'bottom-left': resizeDirection = 'top-left'; break;
       }
 
-      const resizingLaneIndex = this.sortedLanes.indexOf(resizingLane);
+      const resizingLaneIndex = this.sortedLanes().indexOf(resizingLane);
       const { width: resizingLaneWidth } = resizingLane.getBBox();
-      const laneToResize = this.sortedLanes[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
+      const laneToResize = this.sortedLanes()[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
 
       laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, { direction: resizeDirection });
-      this.shape.resize(resizingLaneWidth + labelWidth, poolHeight, { direction: resizeDirection });
+      this.shape.resize(resizingLaneWidth, poolHeight, { direction: resizeDirection });
 
-      this.sortedLanes.forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
+      this.sortedLanes().forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
     },
     resizeLanes() {
-      this.sortedLanes.forEach((laneShape, index, lanes) => {
+      this.sortedLanes().forEach((laneShape, index, lanes) => {
         const { width, height } = this.shape.get('size');
         const { height: laneHeight } = laneShape.get('size');
         const { y: laneY } = laneShape.position({ parentRelative: true });
 
         if (index === 0) {
           /* Expand the height of the fist lane up */
-          laneShape.resize(width - labelWidth, laneHeight + laneShape.position({ parentRelative: true }).y, {
+          laneShape.resize(width, laneHeight + laneShape.position({ parentRelative: true }).y, {
             direction: 'top-right',
           });
-          laneShape.position(labelWidth, 0, { parentRelative: true });
+          laneShape.position(0, 0, { parentRelative: true });
           return;
         }
 
         if (index === lanes.length - 1) {
           /* Expand the height of the last lane down */
           const addedHeight = height - (laneShape.position({ parentRelative: true }).y + laneHeight);
-          laneShape.resize(width - labelWidth, laneHeight + addedHeight);
-          laneShape.position(labelWidth, laneY, { parentRelative: true });
+          laneShape.resize(width, laneHeight + addedHeight);
+          laneShape.position(0, laneY, { parentRelative: true });
           return;
         }
 
-        laneShape.resize(width - labelWidth, laneHeight);
-        laneShape.position(labelWidth, laneY, { parentRelative: true });
+        laneShape.resize(width, laneHeight);
+        laneShape.position(0, laneY, { parentRelative: true });
       });
     },
     captureChildren() {
-      if (this.processNode.definition.get('flowElements').length === 0) {
-        return;
-      }
-
       this.graph
         .getElements()
         .filter(({ component }) => component && component !== this)
@@ -336,7 +332,7 @@ export default {
       const bounds = this.node.diagram.bounds;
 
       this.shape.resize(
-        Math.max(width, bounds.width) + labelWidth,
+        Math.max(width, bounds.width),
         Math.max(height, bounds.height)
       );
 
@@ -356,6 +352,9 @@ export default {
         model.component.node.type !== laneId &&
         model.getParentCell() && model.getParentCell().component === this;
     },
+    validateElementMove() {
+
+    },
   },
   mounted() {
     this.$emit('setPools', this.node.definition);
@@ -365,9 +364,6 @@ export default {
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-
-    this.shape.attr('label/refX', labelWidth / 2);
-    this.shape.attr('polyline/refX', labelWidth);
     this.shape.attr('label/text', joint.util.breakText(this.node.definition.get('name'), {
       width: bounds.width,
     }));
@@ -388,7 +384,7 @@ export default {
       let invalidPool;
 
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
-        if (!this.isPoolChild(element)) {
+        if (!this.isPoolChild(element) || !draggingElement) {
           return;
         }
 
@@ -437,6 +433,7 @@ export default {
         if (!this.isPoolChild(cellView.model)) {
           return;
         }
+
         if (
           (!draggingElement || draggingElement !== cellView.model) &&
           cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
