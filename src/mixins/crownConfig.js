@@ -23,27 +23,47 @@ export default {
       }
     },
     'node.diagram.bounds': {
-      handler({ x, y }) {
+      handler({ x, y, width, height, direction }) {
+        /* Only trigger this for undo/redo */
+        if (!store.state.updateOnChange) {
+          return;
+        }
+
         const { x: shapeX, y: shapeY } = this.shape.position();
-        if (x === shapeX && y === shapeY) {
+        const { width: shapeWidth, height: shapeHeight } = this.shape.get('size');
+
+        const sizeChanged = direction && (width !== shapeWidth || height !== shapeHeight);
+        const positionChanged = x !== shapeX || y !== shapeY;
+
+        if (!sizeChanged && !positionChanged) {
+          store.commit('setUpdateOnChange', false);
           return;
         }
 
         /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
-        this.shape.off('change:position change:size', this.updateNodeBounds);
+        this.shape.off('change:position', this.updateNodePosition);
+        this.shape.off('change:size', this.updateNodeSize);
         if (this.isPool) {
           this.shape.off('change:position change:size', this.startBatch);
           this.shape.off('change:position change:size', this.commitBatch);
         }
 
-        this.shape.position(x, y);
+        if (sizeChanged) {
+          sizeChanged && this.shape.resize(width, height, { direction });
+        } else if (positionChanged) {
+          this.shape.position(x, y);
+        }
+
         this.updateCrownPosition();
 
-        this.shape.on('change:position change:size', this.updateNodeBounds);
+        this.shape.on('change:position', this.updateNodePosition);
+        this.shape.on('change:size', this.updateNodeSize);
         if (this.isPool) {
           this.shape.on('change:position change:size', this.startBatch);
           this.shape.on('change:position change:size', this.commitBatch);
         }
+
+        store.commit('setUpdateOnChange', false);
       },
       deep: true,
     },
@@ -202,28 +222,35 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
-    updateNodeBounds(element, newBounds) {
-      const { x, y, width, height } = this.node.diagram.bounds;
-      if (
-        (x === newBounds.x && y === newBounds.y) ||
-        (width === newBounds.width && height === newBounds.height)
-      ) {
+    updateNodePosition(element, newPosition) {
+      const { x, y } = this.node.diagram.bounds;
+      if (x === Math.round(newPosition.x) && y === Math.round(newPosition.y)) {
         return;
       }
 
-      store.dispatch('updateNodeBounds', { node: this.node, bounds: newBounds });
+      store.dispatch('updateNodeBounds', { node: this.node, bounds: newPosition });
+    },
+    updateNodeSize(element, newSize, opt) {
+      const { width, height } = this.node.diagram.bounds;
+      if (width === newSize.width && height === newSize.height) {
+        return;
+      }
+
+      store.dispatch('updateNodeBounds', { node: this.node, bounds: { ...newSize, direction: opt.direction} });
     },
     startBatch() {
       store.commit('startBatchAction');
     },
     commitBatch() {
       this.startBatch.flush();
-      this.updateNodeBounds.flush();
+      this.updateNodePosition.flush();
+      this.updateNodeSize.flush();
       store.commit('commitBatchAction');
     },
   },
   created() {
-    this.updateNodeBounds = debounce(this.updateNodeBounds, saveDebounce);
+    this.updateNodePosition = debounce(this.updateNodePosition, saveDebounce);
+    this.updateNodeSize = debounce(this.updateNodeSize, saveDebounce);
     this.startBatch = debounce(this.startBatch, saveDebounce - debounceOffset);
     this.commitBatch = debounce(this.commitBatch, saveDebounce + debounceOffset);
   },
@@ -242,7 +269,8 @@ export default {
         this.shape.on('change:position change:size', this.commitBatch);
       }
 
-      this.shape.on('change:position change:size', this.updateNodeBounds);
+      this.shape.on('change:position', this.updateNodePosition);
+      this.shape.on('change:size', this.updateNodeSize);
     });
   },
   beforeDestroy() {
@@ -260,7 +288,8 @@ export default {
 
     if (this.isPool || this.isLane) {
       this.startBatch.flush();
-      this.updateNodeBounds.flush();
+      this.updateNodePosition.flush();
+      this.updateNodeSize.flush();
       store.commit('commitBatchAction');
     }
   },
