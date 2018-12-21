@@ -146,9 +146,11 @@ export default {
       this.collaboration = null;
     },
     undo() {
+      store.commit('setUpdateOnChange', true);
       store.commit('undo');
     },
     redo() {
+      store.commit('setUpdateOnChange', true);
       store.commit('redo');
     },
     highlightNode(node) {
@@ -360,7 +362,7 @@ export default {
       context.references.forEach((ref)=>{
         const ma = ref.id.match(/^node_(\d+)$/),
           index = ma && ma[1] * 1;
-        while(last < index) last = uniqueId() * 1;
+        while (last < index) last = uniqueId() * 1;
       });
     },
     removeNode(node) {

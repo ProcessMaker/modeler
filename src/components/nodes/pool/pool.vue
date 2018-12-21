@@ -341,7 +341,7 @@ export default {
       });
 
       const { x, y } = this.shape.position();
-      const { width: newWidth, height: newHeight }=  this.shape.get('size');
+      const { width: newWidth, height: newHeight } = this.shape.get('size');
       this.node.diagram.bounds.x = x;
       this.node.diagram.bounds.y = y;
       this.node.diagram.bounds.width = newWidth;

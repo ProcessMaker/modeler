@@ -18,6 +18,7 @@ export default new Vuex.Store({
     nodes: [],
     batch: false,
     batchActions: [],
+    updateOnChange: false,
   },
   getters: {
     nodes: state => state.nodes,
@@ -29,6 +30,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setUpdateOnChange(state, updateOnChange) {
+      state.updateOnChange = updateOnChange;
+    },
     undo(state) {
       if (state.undoList.length > 0) {
         state.highlightedNodeIndex = null;
@@ -53,6 +57,11 @@ export default new Vuex.Store({
       }
     },
     updateNodeBounds(state, { node, bounds }) {
+      if (bounds.direction) {
+        /* This is required for undoing/redoing resizing in non-default direction */
+        node.diagram.bounds.direction = bounds.direction;
+      }
+
       for (const key in bounds) {
         node.diagram.bounds.set(key, bounds[key]);
       }
@@ -73,7 +82,6 @@ export default new Vuex.Store({
     },
     addNode(state, node) {
       state.nodes.push(node);
-      console.log('Added', node.type);
     },
     unembedNodes(state, nodeShape) {
       nodeShape.getEmbeddedCells().forEach(cell => {
@@ -102,18 +110,15 @@ export default new Vuex.Store({
     },
     startBatchAction(state) {
       state.batch = true;
-      console.log('start batch!');
     },
     commitBatchAction(state) {
       if (!state.batch) {
-        console.log('Tried to commit when batch is false');
         return;
       }
 
       state.batch = false;
       state.undoList.push(state.batchActions);
       state.batchActions = [];
-      console.log('commit batch!');
     },
     setGraph(state, graph) {
       state.graph = graph;
@@ -154,7 +159,6 @@ export default new Vuex.Store({
       const undo = () => commit('updateNodeBounds', { node, bounds: previousBounds });
       const redo = () => commit('updateNodeBounds', { node, bounds });
       redo();
-      console.log(`updated bounds for ${node.type}`);
 
       state.batch
         ? state.batchActions.push({ undo, redo })
