@@ -105,7 +105,7 @@ export default {
     defaultInspectorHandler(value, node, setNodeProp) {
       /* Go through each property and rebind it to our data */
       for (const key in value) {
-        if (node.definition[key] !== value[key]) {
+        if (node.definition.get(key) !== value[key]) {
           setNodeProp(node, key, value[key]);
         }
       }
