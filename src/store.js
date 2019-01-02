@@ -155,7 +155,11 @@ export default new Vuex.Store({
       commit('clearRedoList');
     },
     updateNodeBounds({ commit, state }, { node, bounds }) {
-      const previousBounds = { ...node.diagram.bounds };
+      /* Nodes may aquire properties that are not 'watched' by undo/redo. So, it's important to
+       * spread the old bounds over the previous bounds to ensure this data is not lost during
+       * undo. */
+      const previousBounds = { ...bounds, ...node.diagram.bounds, direction: bounds.direction };
+
       const undo = () => commit('updateNodeBounds', { node, bounds: previousBounds });
       const redo = () => commit('updateNodeBounds', { node, bounds });
       redo();
