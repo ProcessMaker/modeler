@@ -24,11 +24,6 @@ export default {
     },
     'node.diagram.bounds': {
       handler({ x, y, width, height, direction }) {
-        /* Only trigger this for undo/redo */
-        if (!store.state.updateOnChange) {
-          return;
-        }
-
         const { x: shapeX, y: shapeY } = this.shape.position();
         const { width: shapeWidth, height: shapeHeight } = this.shape.get('size');
 
@@ -36,7 +31,6 @@ export default {
         const positionChanged = x !== shapeX || y !== shapeY;
 
         if (!sizeChanged && !positionChanged) {
-          store.commit('setUpdateOnChange', false);
           return;
         }
 
@@ -62,8 +56,6 @@ export default {
           this.shape.on('change:position change:size', this.startBatch);
           this.shape.on('change:position change:size', this.commitBatch);
         }
-
-        store.commit('setUpdateOnChange', false);
       },
       deep: true,
     },
