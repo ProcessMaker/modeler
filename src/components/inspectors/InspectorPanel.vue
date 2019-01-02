@@ -24,6 +24,7 @@ import store, { saveDebounce } from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import debounce from 'lodash/debounce';
+import omit from 'lodash/omit';
 import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
 
@@ -76,7 +77,7 @@ export default {
       }
 
       if (this.highlightedNode === this.processNode) {
-        return value => this.defaultInspectorHandler(value, this.processNode, this.setNodeProp);
+        return value => this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp);
       }
 
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler
