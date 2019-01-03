@@ -146,11 +146,9 @@ export default {
       this.collaboration = null;
     },
     undo() {
-      store.commit('setUpdateOnChange', true);
       store.commit('undo');
     },
     redo() {
-      store.commit('setUpdateOnChange', true);
       store.commit('redo');
     },
     highlightNode(node) {

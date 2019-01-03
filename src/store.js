@@ -18,7 +18,6 @@ export default new Vuex.Store({
     nodes: [],
     batch: false,
     batchActions: [],
-    updateOnChange: false,
   },
   getters: {
     nodes: state => state.nodes,
@@ -30,9 +29,6 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    setUpdateOnChange(state, updateOnChange) {
-      state.updateOnChange = updateOnChange;
-    },
     undo(state) {
       if (state.undoList.length > 0) {
         state.highlightedNodeIndex = null;
