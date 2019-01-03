@@ -11,7 +11,7 @@ export default new Vuex.Store({
   state: {
     graph: null,
     useTemp: false,
-    highlightedNodeIndex: null,
+    highlightedNode: null,
     undoList: [],
     redoList: [],
     tempAction: null,
@@ -23,7 +23,7 @@ export default new Vuex.Store({
     nodes: state => state.nodes,
     canUndo: state => state.undoList.length > 0,
     canRedo: state => state.redoList.length > 0,
-    highlightedNode: state => state.nodes && state.nodes[state.highlightedNodeIndex],
+    highlightedNode: state => state.highlightedNode,
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
@@ -31,7 +31,7 @@ export default new Vuex.Store({
   mutations: {
     undo(state) {
       if (state.undoList.length > 0) {
-        state.highlightedNodeIndex = null;
+        state.highlightedNode = null;
         const undoRedo = state.undoList.pop();
 
         Array.isArray(undoRedo)
@@ -74,7 +74,7 @@ export default new Vuex.Store({
       state.redoList = [];
     },
     highlightNode(state, node) {
-      state.highlightedNodeIndex = state.nodes && state.nodes.indexOf(node);
+      state.highlightedNode = node;
     },
     addNode(state, node) {
       state.nodes.push(node);
