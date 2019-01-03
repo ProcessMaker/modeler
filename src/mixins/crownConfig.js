@@ -236,7 +236,7 @@ export default {
         return;
       }
 
-      store.dispatch('updateNodeBounds', { node: this.node, bounds: { ...newSize, direction: opt.direction} });
+      store.dispatch('updateNodeBounds', { node: this.node, bounds: { ...newSize, direction: opt.direction } });
     },
     startBatch() {
       store.commit('startBatchAction');

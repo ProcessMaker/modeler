@@ -112,6 +112,22 @@ export default {
         this.updateAnchorPointPosition();
       });
 
+      /* Resize triggers a position change, which will cause issues with undo/redo.
+       * Disabled the position change listener when resizing. */
+      if (this.updateNodePosition) {
+        const points = [pointBottomRight, pointBottomLeft, pointTopRight, pointTopLeft];
+        const enablePositionUpdate = () => {
+          this.shape.on('change:position', this.updateNodePosition);
+        };
+        const disablePositionUpdate = cellView => {
+          if (points.includes(cellView.model)) {
+            this.shape.off('change:position', this.updateNodePosition);
+            this.paper.once('element:pointerup', enablePositionUpdate);
+          }
+        };
+
+        this.paper.on('element:pointerdown', disablePositionUpdate);
+      }
     },
     getYLimit() {
       const lowestShapeY = this.poolComponent.shape.getEmbeddedCells().filter(element => {
