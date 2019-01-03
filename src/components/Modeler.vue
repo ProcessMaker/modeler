@@ -528,6 +528,24 @@ export default {
           cellView.model.component.node.pool.component.shape.toFront({ deep: true });
         }
 
+        /* If we brought a lane to the front, ensure it doesn't overlap its children */
+        if (cellView.model.component.node.type === laneId) {
+          const { x, y, width, height } = cellView.model.getBBox();
+          const area = { x, y, width, height };
+
+          this.graph
+            .findModelsInArea(area)
+            .filter(element => {
+              return this.isPoolOrLane(element, cellView);
+            })
+            .forEach(element => {
+              element.toFront({ deep: true });
+              this.graph
+                .getConnectedLinks(element)
+                .forEach(link => link.toFront());
+            });
+        }
+
         this.graph
           .getElements()
           .filter(element => {
