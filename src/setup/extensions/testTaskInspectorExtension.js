@@ -16,17 +16,17 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
       name: 'dueIn',
     },
   });
-
   registerInspectorExtension(task, {
-    id: 'pm-assigned-user',
+    id: 'pm-assigned-users',
     component: 'FormSelect',
     config: {
       label: 'Users',
       placeholder: 'Select a user',
       helper: 'Assign user to task',
-      name: 'user',
+      name: 'assignedUsers',
       options: [
-        {value: 'John Smith', content: 'John Smith'},
+        { value: 'John Smith', content: 'John Smith' },
+        { value: 'Jane Smith', content: 'Jane Smith' },
       ],
     },
   });
