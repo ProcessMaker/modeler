@@ -8,8 +8,7 @@ import joint from 'jointjs';
 import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
-
-const labelPadding = 15;
+import { textAnnotationWidth, labelPadding } from './index';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -39,15 +38,15 @@ export default {
         body: { refPoints },
         label: {
           text: joint.util.breakText(text, {
-            width: bounds.width,
+            width: textAnnotationWidth,
           }),
           fill: 'black',
+          textAnchor: 'left',
         },
       });
 
       const shapeView = this.shape.findView(this.paper);
       const labelHeight = shapeView.selectors.label.getBBox().height;
-
       if (labelHeight + labelPadding !== height) {
         height = labelHeight + labelPadding;
         this.shape.resize(this.nodeWidth, height - highlightPadding);
