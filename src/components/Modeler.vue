@@ -370,9 +370,13 @@ export default {
       store.dispatch('removeNode', node);
     },
     handleResize() {
-      let parent = this.$el.parentElement;
-      this.$refs['paper-container'].style.width = parent.clientWidth + 'px';
-      this.$refs['paper-container'].style.height = parent.clientHeight + 'px';
+      const { clientWidth, clientHeight } = this.$el.parentElement;
+      this.$refs['paper-container'].style.width = clientWidth + 'px';
+      this.$refs['paper-container'].style.height = clientHeight + 'px';
+
+      if (this.paper) {
+        this.paper.setDimensions(clientWidth, clientHeight);
+      }
     },
     validateDropTarget(transferData, { clientX, clientY }) {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
