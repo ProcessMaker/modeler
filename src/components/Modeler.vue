@@ -439,6 +439,11 @@ export default {
         type: startEvent.id,
       });
     },
+    isPoolOrLane(element, cellView) {
+      return element.component &&
+                ![poolId, laneId].includes(element.component.node.type) &&
+                element.component.node.pool === cellView.model.component.node.pool;
+    },
   },
   created() {
     /* Initialize the BpmnModdle and its extensions */
@@ -523,27 +528,14 @@ export default {
           cellView.model.component.node.pool.component.shape.toFront({ deep: true });
         }
 
-        /* If we brought a lane to the front, ensure it doesn't overlap its children */
-        if (cellView.model.component.node.type === laneId) {
-          const { x, y, width, height } = cellView.model.getBBox();
-          const area = { x, y, width, height };
-
-          this.graph
-            .findModelsInArea(area)
-            .filter(element => {
-              return (
-                element.component &&
-                ![poolId, laneId].includes(element.component.node.type) &&
-                element.component.node.pool === cellView.model.component.node.pool
-              );
-            })
-            .forEach(element => {
-              element.toFront({ deep: true });
-              this.graph
-                .getConnectedLinks(element)
-                .forEach(link => link.toFront());
-            });
-        }
+        this.graph
+          .getElements()
+          .filter(element => {
+            return this.isPoolOrLane(element, cellView);
+          })
+          .forEach(element => {
+            element.toFront({ deep: true });
+          });
 
         cellView.model.component.$emit('click');
       }
