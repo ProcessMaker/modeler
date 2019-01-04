@@ -441,6 +441,11 @@ export default {
         type: startEvent.id,
       });
     },
+    isPoolOrLane(element, cellView) {
+      return element.component &&
+                ![poolId, laneId].includes(element.component.node.type) &&
+                element.component.node.pool === cellView.model.component.node.pool;
+    },
   },
   created() {
     /* Initialize the BpmnModdle and its extensions */
@@ -533,11 +538,7 @@ export default {
           this.graph
             .findModelsInArea(area)
             .filter(element => {
-              return (
-                element.component &&
-                ![poolId, laneId].includes(element.component.node.type) &&
-                element.component.node.pool === cellView.model.component.node.pool
-              );
+              return this.isPoolOrLane(element, cellView);
             })
             .forEach(element => {
               element.toFront({ deep: true });
@@ -546,6 +547,15 @@ export default {
                 .forEach(link => link.toFront());
             });
         }
+
+        this.graph
+          .getElements()
+          .filter(element => {
+            return this.isPoolOrLane(element, cellView);
+          })
+          .forEach(element => {
+            element.toFront({ deep: true });
+          });
 
         cellView.model.component.$emit('click');
       }
