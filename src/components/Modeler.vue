@@ -125,6 +125,14 @@ export default {
         this.plane.set('bpmnElement', this.collaboration);
       }
 
+      if (poolDefinition.get('processRef')) {
+        if (!this.collaboration.get('participants').includes(poolDefinition)) {
+          this.collaboration.get('participants').push(poolDefinition);
+        }
+
+        return;
+      }
+
       let process;
       if (this.collaboration.get('participants').length === 0) {
         process = this.processNode.definition;
