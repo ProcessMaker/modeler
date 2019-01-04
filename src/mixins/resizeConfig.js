@@ -17,6 +17,10 @@ export default {
   },
   watch: {
     highlighted(highlighted) {
+      if (this.anchorPoints.length === 0) {
+        return;
+      }
+
       if (highlighted) {
         this.addResizeAnchors();
       } else {
@@ -46,20 +50,23 @@ export default {
         pointTopLeft
       );
 
-      pointBottomRight.set('isDrag', true);
-      pointBottomLeft.set('isDrag', true);
-      pointTopRight.set('isDrag', true);
-      pointTopLeft.set('isDrag', true);
+      this.anchorPoints.forEach(point => {
+        point.set('isDrag', true);
 
-      this.pointAttributes(pointBottomRight, 'nwse-resize');
-      this.pointAttributes(pointBottomLeft, 'nesw-resize');
-      this.pointAttributes(pointTopRight, 'nesw-resize');
-      this.pointAttributes(pointTopLeft, 'nwse-resize	');
+        try {
+          this.shape.embed(point);
+        } catch (error) {
+          /* There is an error when re-adding points after removing/re-adding the pool.
+           * Ignore it for now. */
+        }
 
-      this.renderPointToGraph(pointBottomRight);
-      this.renderPointToGraph(pointBottomLeft);
-      this.renderPointToGraph(pointTopRight);
-      this.renderPointToGraph(pointTopLeft);
+        point.addTo(this.graph);
+      });
+
+      this.setPointAttributes(pointBottomRight, 'nwse-resize');
+      this.setPointAttributes(pointBottomLeft, 'nesw-resize');
+      this.setPointAttributes(pointTopRight, 'nesw-resize');
+      this.setPointAttributes(pointTopLeft, 'nwse-resize');
 
       const { width, height } = this.shape.get('size');
       const { x, y } = this.shape.position();
@@ -385,7 +392,7 @@ export default {
       excludePoint !== 2 && this.anchorPoints[2].position(x + width, y - this.pointHeight); // Top Right Point
       excludePoint !== 3 && this.anchorPoints[3].position(leftEdge - this.pointWidth, y - this.pointWidth); //Top Left Point
     },
-    pointAttributes(point, cursorDirection) {
+    setPointAttributes(point, cursorDirection) {
       point.attr({
         root: { display: 'none' },
         body: {
@@ -403,16 +410,17 @@ export default {
         },
       });
     },
-    renderPointToGraph(pointLocation) {
-      this.shape.embed(pointLocation);
-      pointLocation.addTo(this.graph);
-    },
   },
   mounted() {
     this.$nextTick(() => {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
       this.configureResize();
+    });
+  },
+  beforeDestroy() {
+    this.anchorPoints.forEach(point => {
+      this.shape.unembed(point);
     });
   },
 };

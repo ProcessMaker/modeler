@@ -15,6 +15,7 @@ import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
+import store from '@/store';
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -119,9 +120,7 @@ export default {
        * Get the current laneSet element or create a new one. */
 
       if (!this.laneSet) {
-        const laneSet = this.moddle.create('bpmn:LaneSet');
-        this.laneSet = laneSet;
-        this.containingProcess.get('laneSets').push(laneSet);
+        this.createLaneSet();
 
         const definition = Lane.definition(this.moddle);
 
@@ -137,12 +136,18 @@ export default {
 
       this.pushNewLane();
     },
+    createLaneSet() {
+      const laneSet = this.moddle.create('bpmn:LaneSet');
+      this.laneSet = laneSet;
+      this.containingProcess.get('laneSets').push(laneSet);
+    },
     pushNewLane(definition = Lane.definition(this.moddle)) {
       this.$emit('set-pool-target', this.shape);
 
       const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
 
+      store.commit('startBatchAction');
       this.$emit('add-node', {
         type: Lane.id,
         definition,
@@ -209,6 +214,12 @@ export default {
 
           laneElement.toFront({ deep: true });
         });
+
+        const { x, y } = element.position();
+        elementBounds.set('x', x);
+        elementBounds.set('y', y);
+        elementBounds.set('width', element.get('size').width);
+        elementBounds.set('height', element.get('size').height);
 
         return;
       }
