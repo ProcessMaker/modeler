@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import pull from 'lodash/pull';
+import omit from 'lodash/omit';
 
 Vue.use(Vuex);
 
@@ -58,7 +59,7 @@ export default new Vuex.Store({
         node.diagram.bounds.direction = bounds.direction;
       }
 
-      for (const key in bounds) {
+      for (const key in omit(bounds, ['direction', '$type'])) {
         node.diagram.bounds.set(key, bounds[key]);
       }
     },
