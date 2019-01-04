@@ -2,6 +2,7 @@ import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import debounce from 'lodash/debounce';
 import store, { saveDebounce, debounceOffset } from '@/store';
+import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
 
@@ -204,6 +205,7 @@ export default {
 
         return;
       }
+
       /* If we are over a pool or lane, add the shape to the pool or lane */
       const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
         return model.component && model.component.node.type === 'processmaker-modeler-pool';
@@ -228,6 +230,7 @@ export default {
         return;
       }
 
+      /* Set direction on bounds to ensure it resizes in the correct direction during undo/redo */
       store.dispatch('updateNodeBounds', { node: this.node, bounds: { ...newSize, direction: opt.direction } });
     },
     startBatch() {
@@ -278,10 +281,12 @@ export default {
     this.shape.stopListening();
     this.shape.remove();
 
+    pull(this.processNode.definition.get('flowElements'), this.node.definition);
+    pull(this.planeElements, this.node.diagram);
+    pull(this.processNode.definition.get('artifacts'), this.node.definition);
+
     if (this.isPool || this.isLane) {
       this.startBatch.flush();
-      this.updateNodePosition.flush();
-      this.updateNodeSize.flush();
       store.commit('commitBatchAction');
     }
   },

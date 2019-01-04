@@ -49,6 +49,7 @@
 
 <script>
 import Vue from 'vue';
+import joint from 'jointjs';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
@@ -65,10 +66,6 @@ import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane/';
 
 const version = '1.0';
-
-if (!window.joint) {
-  window.joint = require('jointjs');
-}
 
 export default {
   components: {
@@ -364,9 +361,6 @@ export default {
       });
     },
     removeNode(node) {
-      pull(this.processNode.definition.get('flowElements'), node.definition);
-      pull(this.planeElements, node.diagram);
-      pull(this.processNode.definition.get('artifacts'), node.definition);
       store.dispatch('removeNode', node);
     },
     handleResize() {
@@ -462,7 +456,7 @@ export default {
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    this.graph = new window.joint.dia.Graph();
+    this.graph = new joint.dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
       if (
@@ -477,7 +471,7 @@ export default {
 
       return { labelMove: false };
     });
-    this.paper = new window.joint.dia.Paper({
+    this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
