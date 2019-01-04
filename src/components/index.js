@@ -15,6 +15,8 @@ import {
   task,
   scriptTask,
   textAnnotation,
+  pool,
+  poolLane,
 } from './nodes/index';
 
 export {
@@ -30,4 +32,6 @@ export {
   task,
   scriptTask,
   textAnnotation,
+  pool,
+  poolLane,
 };
