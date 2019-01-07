@@ -84,7 +84,7 @@ export default new Vuex.Store({
       nodeShape.getEmbeddedCells().forEach(cell => {
         if (cell.component) {
           cell.component.node.pool = null;
-          cell.component && nodeShape.unembed(cell);
+          nodeShape.unembed(cell);
         }
       });
     },
