@@ -1,12 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import pull from 'lodash/pull';
-import omit from 'lodash/omit';
 
 Vue.use(Vuex);
 
 export const saveDebounce = 300;
-export const debounceOffset = 100;
 
 export default new Vuex.Store({
   state: {
@@ -54,14 +52,13 @@ export default new Vuex.Store({
       }
     },
     updateNodeBounds(state, { node, bounds }) {
-      if (bounds.direction) {
-        /* This is required for undoing/redoing resizing in non-default direction */
-        node.diagram.bounds.direction = bounds.direction;
-      }
+      Object.entries(bounds).forEach(([key, val]) => {
+        if (key === '$type') {
+          return;
+        }
 
-      for (const key in omit(bounds, ['direction', '$type'])) {
-        node.diagram.bounds.set(key, bounds[key]);
-      }
+        node.diagram.bounds.set(key, val);
+      });
     },
     updateNodeProp(state, { node, key, value }) {
       node.definition.set(key, value);
@@ -114,7 +111,11 @@ export default new Vuex.Store({
       }
 
       state.batch = false;
-      state.undoList.push(state.batchActions);
+
+      if (state.batchActions.length > 0) {
+        state.undoList.push(state.batchActions);
+      }
+
       state.batchActions = [];
     },
     setGraph(state, graph) {
@@ -155,7 +156,7 @@ export default new Vuex.Store({
       /* Nodes may aquire properties that are not 'watched' by undo/redo. So, it's important to
        * spread the old bounds over the previous bounds to ensure this data is not lost during
        * undo. */
-      const previousBounds = { ...bounds, ...node.diagram.bounds, direction: bounds.direction };
+      const previousBounds = { ...bounds, ...node.diagram.bounds };
 
       const undo = () => commit('updateNodeBounds', { node, bounds: previousBounds });
       const redo = () => commit('updateNodeBounds', { node, bounds });

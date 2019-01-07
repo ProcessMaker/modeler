@@ -55,6 +55,7 @@ export default {
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
 
+    this.shape.set('elementMove', false);
     this.shape.attr('body/cursor', 'default');
     this.shape.attr('label', {
       text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.height }),

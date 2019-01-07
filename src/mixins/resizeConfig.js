@@ -3,6 +3,8 @@ import resizeIcon from '@/assets/highlight-shape.svg';
 import { minPoolHeight, minPoolWidth, poolPadding, labelWidth, labelHeight } from '@/components/nodes/pool/poolSizes';
 import { minLaneWidth, minLaneHeight, minLanePoolHeight } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
+import store from '@/store';
+import { id as laneId } from '@/components/nodes/poolLane';
 
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
@@ -34,20 +36,19 @@ export default {
   },
   methods: {
     configureResize() {
-      if (!this.resizeConfig) {
-        this.resizeConfig = [];
-      }
       const pointBottomRight = new joint.shapes.standard.EmbeddedImage();
       const pointBottomLeft = new joint.shapes.standard.EmbeddedImage();
       const pointTopRight = new joint.shapes.standard.EmbeddedImage();
       const pointTopLeft = new joint.shapes.standard.EmbeddedImage();
 
-      this.anchorPoints.push(
+      this.anchorPoints = [
         pointBottomRight,
         pointBottomLeft,
         pointTopRight,
-        pointTopLeft
-      );
+        pointTopLeft,
+      ];
+
+      const { x, y, width, height } = this.shape.getBBox();
 
       this.anchorPoints.forEach(point => {
         point.set('isDrag', true);
@@ -60,6 +61,7 @@ export default {
         }
 
         point.addTo(this.graph);
+        point.set('previousPosition', point.position());
       });
 
       this.setPointAttributes(pointBottomRight, 'nwse-resize');
@@ -67,25 +69,19 @@ export default {
       this.setPointAttributes(pointTopRight, 'nesw-resize');
       this.setPointAttributes(pointTopLeft, 'nwse-resize');
 
-      const { width, height } = this.shape.get('size');
-      const { x, y } = this.shape.position();
-
       pointBottomRight.position(x + width, y + height);
-      pointBottomRight.set('previousPosition', pointBottomRight.position());
-
       pointBottomLeft.position(x - this.pointWidth, y + height);
-      pointBottomLeft.set('previousPosition', pointBottomLeft.position());
-
       pointTopRight.position(x + width, y - this.pointHeight);
-      pointTopRight.set('previousPosition', pointTopRight.position());
-
       pointTopLeft.position(x - this.pointWidth, y - this.pointHeight);
-      pointTopLeft.set('previousPosition', pointTopLeft.position());
 
       pointBottomRight.listenTo(this.paper, 'element:pointerdown', cellView => {
         /* Only listen to position change when dragging the point. */
         if (cellView.model === pointBottomRight) {
           pointBottomRight.on('change:position', this.resizeBottomRight);
+          this.shape.listenToOnce(this.paper, 'element:pointerup', () => {
+            pointBottomRight.off('change:position', this.resizeBottomRight);
+            this.resizeUpdate();
+          });
         }
       });
 
@@ -93,6 +89,10 @@ export default {
         /* Only listen to position change when dragging the point. */
         if (cellView.model === pointBottomLeft) {
           pointBottomLeft.on('change:position', this.resizeBottomLeft);
+          this.shape.listenToOnce(this.paper, 'element:pointerup', () => {
+            pointBottomLeft.off('change:position', this.resizeBottomLeft);
+            this.resizeUpdate();
+          });
         }
       });
 
@@ -100,6 +100,10 @@ export default {
         /* Only listen to position change when dragging the point. */
         if (cellView.model === pointTopRight) {
           pointTopRight.on('change:position', this.resizeTopRight);
+          this.shape.listenToOnce(this.paper, 'element:pointerup', () => {
+            pointTopRight.off('change:position', this.resizeTopRight);
+            this.resizeUpdate();
+          });
         }
       });
 
@@ -107,32 +111,38 @@ export default {
         /* Only listen to position change when dragging the point. */
         if (cellView.model === pointTopLeft) {
           pointTopLeft.on('change:position', this.resizeTopLeft);
+          this.shape.listenToOnce(this.paper, 'element:pointerup', () => {
+            pointTopLeft.off('change:position', this.resizeTopLeft);
+            this.resizeUpdate();
+          });
         }
       });
+    },
+    resizeUpdate() {
+      const { width, height } = this.node.diagram.bounds;
+      const bbox = this.shape.getBBox();
+      if (width !== bbox.width || height !== bbox.height) {
+        if (this.node.type === laneId) {
+          store.commit('startBatchAction');
+          setTimeout(() => store.commit('commitBatchAction'));
 
-      this.paper.on('element:pointerup', () => {
-        pointBottomRight.off('change:position', this.resizeBottomRight);
-        pointBottomLeft.off('change:position', this.resizeBottomLeft);
-        pointTopRight.off('change:position', this.resizeTopRight);
-        pointTopLeft.off('change:position', this.resizeTopLeft);
-        this.updateAnchorPointPosition();
-      });
+          store.dispatch('updateNodeBounds', {
+            node: this.poolComponent.node,
+            bounds: this.poolComponent.shape.getBBox(),
+          });
 
-      /* Resize triggers a position change, which will cause issues with undo/redo.
-       * Disabled the position change listener when resizing. */
-      if (this.updateNodePosition) {
-        const points = [pointBottomRight, pointBottomLeft, pointTopRight, pointTopLeft];
-        const enablePositionUpdate = () => {
-          this.shape.on('change:position', this.updateNodePosition);
-        };
-        const disablePositionUpdate = cellView => {
-          if (points.includes(cellView.model)) {
-            this.shape.off('change:position', this.updateNodePosition);
-            this.paper.once('element:pointerup', enablePositionUpdate);
-          }
-        };
-
-        this.paper.on('element:pointerdown', disablePositionUpdate);
+          this.poolComponent.sortedLanes().forEach(lane => {
+            store.dispatch('updateNodeBounds', {
+              node: lane.component.node,
+              bounds: lane.component.shape.getBBox(),
+            });
+          });
+        } else {
+          store.dispatch('updateNodeBounds', {
+            node: this.node,
+            bounds: this.shape.getBBox(),
+          });
+        }
       }
     },
     getYLimit() {
@@ -144,7 +154,7 @@ export default {
           ? y + minPoolHeight
           : y + height + poolPadding;
         return Math.max(elementY, highestY);
-      },0);
+      }, 0);
 
       return lowestShapeY;
     },
@@ -158,7 +168,7 @@ export default {
           : x + width + poolPadding;
 
         return Math.max(elementX, highestY);
-      },0);
+      }, 0);
 
       return lowestShapeX;
     },
@@ -227,7 +237,7 @@ export default {
     },
     resizeTopRight(point, newPosition, source) {
       const direction = 'top-right';
-      const laneShape = this.node.type === 'processmaker-modeler-lane';
+      const isLane = this.node.type === 'processmaker-modeler-lane';
       const { x, y } = newPosition;
       const { x: poolX, y: poolY, height: poolHeight} = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, height: laneHeight } = this.shape.getBBox();
@@ -254,7 +264,7 @@ export default {
           point.off('change:position', this.resizeTopRight);
         }
 
-        if (!laneShape) {
+        if (!isLane) {
           this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.updateAnchorPointPosition();
@@ -411,8 +421,7 @@ export default {
       });
     },
     updateAnchorPointPosition(excludePoint) {
-      const { x, y } = this.shape.position();
-      const { width, height } = this.shape.get('size');
+      const { x, y, width, height } = this.shape.getBBox();
       let leftEdge = x;
 
       if (this.node.type === 'processmaker-modeler-pool') {
@@ -450,11 +459,6 @@ export default {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
       this.configureResize();
-    });
-  },
-  beforeDestroy() {
-    this.anchorPoints.forEach(point => {
-      this.shape.unembed(point);
     });
   },
 };

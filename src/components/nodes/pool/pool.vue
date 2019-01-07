@@ -135,6 +135,7 @@ export default {
       }
 
       this.pushNewLane();
+      setTimeout(() => store.commit('commitBatchAction'));
     },
     createLaneSet() {
       const laneSet = this.moddle.create('bpmn:LaneSet');
@@ -180,6 +181,12 @@ export default {
 
         if (elementBounds.x && elementBounds.y) {
           /* If lane already has a position, don't re-position or re-size it. */
+          this.shape.getEmbeddedCells()
+            .filter(cell => {
+              return cell.component && cell.component.node.type !== laneId;
+            })
+            .forEach(cell => cell.toFront());
+
           return;
         }
 
@@ -220,6 +227,11 @@ export default {
         elementBounds.set('y', y);
         elementBounds.set('width', element.get('size').width);
         elementBounds.set('height', element.get('size').height);
+
+        store.dispatch('updateNodeBounds', {
+          node: this.node,
+          bounds: this.shape.getBBox(),
+        });
 
         return;
       }
@@ -270,6 +282,13 @@ export default {
           /* Expand any lanes within the pool */
           this.resizeLanes();
         }
+
+        store.dispatch('updateNodeBounds', {
+          node: this.node,
+          bounds: this.shape.getBBox(),
+        });
+
+        store.commit('commitBatchAction');
       }
     },
     fillLanes(resizingLane, direction, remove) {
@@ -304,25 +323,28 @@ export default {
         const { height: laneHeight } = laneShape.get('size');
         const { y: laneY } = laneShape.position({ parentRelative: true });
 
+        let newHeight = laneHeight;
+        let newY = laneY;
+
         if (index === 0) {
           /* Expand the height of the fist lane up */
-          laneShape.resize(width, laneHeight + laneShape.position({ parentRelative: true }).y, {
-            direction: 'top-right',
-          });
-          laneShape.position(0, 0, { parentRelative: true });
-          return;
+          newHeight = laneHeight + laneShape.position({ parentRelative: true }).y;
+          newY = 0;
         }
 
         if (index === lanes.length - 1) {
           /* Expand the height of the last lane down */
           const addedHeight = height - (laneShape.position({ parentRelative: true }).y + laneHeight);
-          laneShape.resize(width, laneHeight + addedHeight);
-          laneShape.position(0, laneY, { parentRelative: true });
-          return;
+          newHeight = laneHeight + addedHeight;
         }
 
-        laneShape.resize(width, laneHeight);
-        laneShape.position(0, laneY, { parentRelative: true });
+        laneShape.resize(width, newHeight);
+        laneShape.position(0, newY, { parentRelative: true });
+
+        store.dispatch('updateNodeBounds', {
+          node: laneShape.component.node,
+          bounds: laneShape.getBBox(),
+        });
       });
     },
     captureChildren() {
@@ -418,6 +440,7 @@ export default {
           }
 
           this.paper.drawBackground({ color: invalidNodeColor });
+          element.component.allowSetNodePosition = false;
         } else if (pool.component !== this && this.graph.getConnectedLinks(element).length > 0) {
           if (!previousValidPosition) {
             previousValidPosition = newPosition;
@@ -425,6 +448,8 @@ export default {
 
           invalidPool = pool.component.shape;
           invalidPool.attr('body/fill', invalidNodeColor);
+          element.component.allowSetNodePosition = false;
+
         } else {
           this.paper.drawBackground({ color: defaultNodeColor });
           previousValidPosition = null;
@@ -437,6 +462,8 @@ export default {
           newPool = pool !== this.shape
             ? pool
             : null;
+
+          element.component.allowSetNodePosition = true;
         }
       });
 
@@ -464,7 +491,13 @@ export default {
         }
 
         if (previousValidPosition) {
+          store.commit('startBatchAction');
+
           draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
+          store.dispatch('updateNodeBounds', {
+            node: draggingElement.component.node,
+            bounds: previousValidPosition,
+          });
         }
 
         if (invalidPool) {
