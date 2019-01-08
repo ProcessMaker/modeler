@@ -443,11 +443,6 @@ export default {
         type: startEvent.id,
       });
     },
-    isPoolOrLane(element, cellView) {
-      return element.component &&
-                ![poolId, laneId].includes(element.component.node.type) &&
-                element.component.node.pool === cellView.model.component.node.pool;
-    },
   },
   created() {
     /* Initialize the BpmnModdle and its extensions */
@@ -467,17 +462,9 @@ export default {
     this.graph = new joint.dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
-      if (
-        cellView.model.getParentCell() &&
-        !cellView.model.get('isDrag') &&
-        (!cellView.model.component ||
-          cellView.model.component.node.type === laneId)
-      ) {
-        /* Prevent dragging crown icons and lanes */
-        return false;
-      }
-
-      return { labelMove: false };
+      return {
+        elementMove: cellView.model.get('elementMove'),
+      };
     });
     this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
@@ -529,35 +516,23 @@ export default {
 
         /* If the element belongs to a pool, bring the pool to the front as well */
         if (cellView.model.component.node.pool) {
-          cellView.model.component.node.pool.component.shape.toFront({ deep: true });
-        }
+          const poolShape = cellView.model.component.node.pool;
 
-        /* If we brought a lane to the front, ensure it doesn't overlap its children */
-        if (cellView.model.component.node.type === laneId) {
-          const { x, y, width, height } = cellView.model.getBBox();
-          const area = { x, y, width, height };
-
-          this.graph
-            .findModelsInArea(area)
-            .filter(element => {
-              return this.isPoolOrLane(element, cellView);
+          poolShape.toFront({ deep: true });
+          poolShape.getEmbeddedCells()
+            .filter(cell => {
+              return cell.component && cell.component.node.type !== laneId;
             })
-            .forEach(element => {
-              element.toFront({ deep: true });
-              this.graph
-                .getConnectedLinks(element)
-                .forEach(link => link.toFront());
-            });
+            .forEach(cell => cell.toFront());
         }
 
-        this.graph
-          .getElements()
-          .filter(element => {
-            return this.isPoolOrLane(element, cellView);
-          })
-          .forEach(element => {
-            element.toFront({ deep: true });
-          });
+        if (cellView.model.component.node.type === poolId) {
+          cellView.model.getEmbeddedCells()
+            .filter(cell => {
+              return cell.component && cell.component.node.type !== laneId;
+            })
+            .forEach(cell => cell.toFront());
+        }
 
         cellView.model.component.$emit('click');
       }

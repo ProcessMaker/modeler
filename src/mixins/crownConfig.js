@@ -1,7 +1,6 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
-import debounce from 'lodash/debounce';
-import store, { saveDebounce, debounceOffset } from '@/store';
+import store from '@/store';
 import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
@@ -11,6 +10,7 @@ export default {
   data() {
     return {
       buttons: [],
+      allowSetNodePosition: true,
     };
   },
   watch: {
@@ -24,39 +24,20 @@ export default {
       }
     },
     'node.diagram.bounds': {
-      handler({ x, y, width, height, direction }) {
+      handler({ x, y, width, height }) {
         const { x: shapeX, y: shapeY } = this.shape.position();
         const { width: shapeWidth, height: shapeHeight } = this.shape.get('size');
-
-        const sizeChanged = direction && (width !== shapeWidth || height !== shapeHeight);
+        const sizeChanged = width !== shapeWidth || height !== shapeHeight;
         const positionChanged = x !== shapeX || y !== shapeY;
 
         if (!sizeChanged && !positionChanged) {
           return;
         }
 
-        /* Temporarily disable the event listener so it doesn't record a new history for undo/redo */
-        this.shape.off('change:position', this.updateNodePosition);
-        this.shape.off('change:size', this.updateNodeSize);
-        if (this.isPool) {
-          this.shape.off('change:position change:size', this.startBatch);
-          this.shape.off('change:position change:size', this.commitBatch);
-        }
-
-        if (sizeChanged) {
-          sizeChanged && this.shape.resize(width, height, { direction });
-        } else if (positionChanged) {
-          this.shape.position(x, y);
-        }
+        sizeChanged && this.shape.resize(width, height);
+        positionChanged && this.shape.position(x, y, { deep: !sizeChanged });
 
         this.updateCrownPosition();
-
-        this.shape.on('change:position', this.updateNodePosition);
-        this.shape.on('change:size', this.updateNodeSize);
-        if (this.isPool) {
-          this.shape.on('change:position change:size', this.startBatch);
-          this.shape.on('change:position change:size', this.commitBatch);
-        }
       },
       deep: true,
     },
@@ -139,6 +120,7 @@ export default {
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);
+        button.set('elementMove', false);
         button.attr({
           root: { display: 'none' },
           body: {
@@ -222,38 +204,23 @@ export default {
         this.node.pool.component.addToPool(this.shape);
       }
     },
-    updateNodePosition(element, newPosition) {
+    setNodePosition() {
+      if (!this.allowSetNodePosition) {
+        return;
+      }
+
       const { x, y } = this.node.diagram.bounds;
-      if (x === Math.round(newPosition.x) && y === Math.round(newPosition.y)) {
+      const bbox = this.shape.getBBox();
+
+      if (x === bbox.x && y === bbox.y) {
         return;
       }
 
-      store.dispatch('updateNodeBounds', { node: this.node, bounds: newPosition });
+      store.dispatch('updateNodeBounds', {
+        node: this.node,
+        bounds: bbox,
+      });
     },
-    updateNodeSize(element, newSize, opt) {
-      const { width, height } = this.node.diagram.bounds;
-      if (width === newSize.width && height === newSize.height) {
-        return;
-      }
-
-      /* Set direction on bounds to ensure it resizes in the correct direction during undo/redo */
-      store.dispatch('updateNodeBounds', { node: this.node, bounds: { ...newSize, direction: opt.direction } });
-    },
-    startBatch() {
-      store.commit('startBatchAction');
-    },
-    commitBatch() {
-      this.startBatch.flush();
-      this.updateNodePosition.flush();
-      this.updateNodeSize.flush();
-      store.commit('commitBatchAction');
-    },
-  },
-  created() {
-    this.updateNodePosition = debounce(this.updateNodePosition, saveDebounce);
-    this.updateNodeSize = debounce(this.updateNodeSize, saveDebounce);
-    this.startBatch = debounce(this.startBatch, saveDebounce - debounceOffset);
-    this.commitBatch = debounce(this.commitBatch, saveDebounce + debounceOffset);
   },
   mounted() {
     this.$nextTick(() => {
@@ -262,16 +229,11 @@ export default {
       this.configureCrown();
       this.configurePoolLane();
 
-      if (this.isPool) {
-        /* Changes to pools always triggers batch actions. Because of this, ensure batch
-         * changs are enabled just before node update, and commited just after, using
-         * debounceOffset as the buffer. */
-        this.shape.on('change:position change:size', this.startBatch);
-        this.shape.on('change:position change:size', this.commitBatch);
-      }
-
-      this.shape.on('change:position', this.updateNodePosition);
-      this.shape.on('change:size', this.updateNodeSize);
+      this.shape.listenTo(this.paper, 'element:pointerdown', cellView => {
+        if (cellView.model === this.shape) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+        }
+      });
     });
   },
   beforeDestroy() {
@@ -292,7 +254,6 @@ export default {
     pull(this.processNode.definition.get('artifacts'), this.node.definition);
 
     if (this.isPool || this.isLane) {
-      this.startBatch.flush();
       store.commit('commitBatchAction');
     }
   },
