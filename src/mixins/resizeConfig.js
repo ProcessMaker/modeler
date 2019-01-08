@@ -1,6 +1,6 @@
 import joint from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
-import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
+import { minPoolHeight, minPoolWidth, poolPadding, labelWidth, labelHeight } from '@/components/nodes/pool/poolSizes';
 import { minLaneWidth, minLaneHeight, minLanePoolHeight } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
 
@@ -10,7 +10,6 @@ export default {
     return {
       anchorPoints: [],
       isResizing: true,
-      elementPadding: 5,
       pointWidth: 15,
       pointHeight: 15,
     };
@@ -144,7 +143,6 @@ export default {
         const elementY = element.component.node.type === 'processmaker-modeler-lane'
           ? y + minPoolHeight
           : y + height + poolPadding;
-
         return Math.max(elementY, highestY);
       },0);
 
@@ -184,6 +182,19 @@ export default {
         return;
       }
 
+      this.graph.getElements().filter(element => {
+        return element.component;
+      }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
+        const { y: elementY, x: elementX } = element.component.shape.getBBox();
+        if (elementY < poolY + poolPadding + labelHeight) {
+          point.off('change:position', this.resizeTopLeft);
+        }
+
+        if (elementX < poolX) {
+          point.off('change:position', this.resizeTopLeft);
+        }
+      });
+
       if (!laneShape) {
         this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
         point.set('previousPosition', { x, y });
@@ -218,11 +229,11 @@ export default {
       const direction = 'top-right';
       const laneShape = this.node.type === 'processmaker-modeler-lane';
       const { x, y } = newPosition;
-      const { x: poolX, y: poolY, height: poolHeight } = this.poolComponent.shape.getBBox();
+      const { x: poolX, y: poolY, height: poolHeight} = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, height: laneHeight } = this.shape.getBBox();
 
       const maxPoolWidth = Math.max(x - poolX, this.getXLimit() - poolX, minPoolWidth);
-      const maxPoolHeight = Math.max((poolY + poolHeight) - (y + this.pointWidth), minPoolHeight);
+      const maxPoolHeight = Math.max((poolY + poolHeight) - (y + this.pointWidth), this.getYLimit() - poolY, minPoolHeight);
 
       const maxLaneWidth = x - laneX;
       const maxLaneHeight = laneHeight + (laneY - y - this.pointHeight);
@@ -235,33 +246,42 @@ export default {
         return;
       }
 
-      if (!laneShape) {
-        this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
-        point.set('previousPosition', { x, y });
-        this.updateAnchorPointPosition();
-        if (this.laneSet) {
-          this.poolComponent.resizeLanes();
+      this.graph.getElements().filter(element => {
+        return element.component;
+      }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
+        const { y: elementY } = element.component.shape.getBBox();
+        if (elementY < poolY + poolPadding) {
+          point.off('change:position', this.resizeTopRight);
         }
-      } else {
-        if (this.shape === this.poolComponent.sortedLanes()[0]) {
-          if (maxPoolHeight < minLanePoolHeight) {
-            return;
-          }
 
-          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+        if (!laneShape) {
+          this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
-          this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition(2);
-        } else {
-          if (maxLaneHeight < minLaneHeight) {
-            return;
+          this.updateAnchorPointPosition();
+          if (this.laneSet) {
+            this.poolComponent.resizeLanes();
           }
-          this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
-          point.set('previousPosition', { x, y });
-          this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition(2);
+        } else {
+          if (this.shape === this.poolComponent.sortedLanes()[0]) {
+            if (maxPoolHeight < minLanePoolHeight) {
+              return;
+            }
+
+            this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+            point.set('previousPosition', { x, y });
+            this.poolComponent.resizeLanes();
+            this.updateAnchorPointPosition(2);
+          } else {
+            if (maxLaneHeight < minLaneHeight) {
+              return;
+            }
+            this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
+            point.set('previousPosition', { x, y });
+            this.poolComponent.fillLanes(this.shape, direction);
+            this.updateAnchorPointPosition(2);
+          }
         }
-      }
+      });
 
       this.updateCrownPosition();
     },
@@ -287,31 +307,45 @@ export default {
         return;
       }
 
-      if (!laneShape) {
-        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
-        point.set('previousPosition', { x, y });
-        this.updateAnchorPointPosition();
-        if (this.laneSet) {
-          this.poolComponent.resizeLanes();
+      this.graph.getElements().filter(element => {
+        return element.component;
+      }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
+        const {x: elementX, y: elementY, height: elementHeight } = element.component.shape.getBBox();
+        if ((elementY + elementHeight + labelHeight + poolPadding) > poolY + poolHeight) {
+          point.off('change:position', this.resizeBottomLeft);
         }
-      } else {
-        const sortedLanes = this.poolComponent.sortedLanes();
-        if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-          if (maxPoolHeight < minLanePoolHeight) {
-            return;
-          }
 
-          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
-          point.set('previousPosition', { x, y });
-          this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition(1);
-        } else {
-          this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
-          point.set('previousPosition', { x, y });
-          this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition(1);
+        if (elementX < poolX) {
+          point.off('change:position', this.resizeBottomLeft);
         }
-      }
+
+        if (!laneShape) {
+          this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
+          point.set('previousPosition', { x, y });
+          this.updateAnchorPointPosition();
+          if (this.laneSet) {
+            this.poolComponent.resizeLanes();
+          }
+        } else {
+          const sortedLanes = this.poolComponent.sortedLanes();
+          if (this.shape === sortedLanes[sortedLanes.length - 1]) {
+            if (maxPoolHeight < minLanePoolHeight) {
+              return;
+            }
+
+            this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+            point.set('previousPosition', { x, y });
+            this.poolComponent.resizeLanes();
+            this.updateAnchorPointPosition(1);
+          } else {
+            this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
+            point.set('previousPosition', { x, y });
+            this.poolComponent.fillLanes(this.shape, direction);
+            this.updateAnchorPointPosition(1);
+          }
+        }
+      });
+
       this.updateCrownPosition();
     },
     resizeBottomRight(point, newPosition, source) {
