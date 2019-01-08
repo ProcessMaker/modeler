@@ -196,13 +196,13 @@ export default {
         return element.component;
       }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
         const { y: elementY, x: elementX } = element.component.shape.getBBox();
-        if (elementY < poolY + poolPadding + labelHeight) {
-          point.off('change:position', this.resizeTopLeft);
-        }
+        // if (elementY < poolY + poolPadding + labelHeight) {
+        //   point.off('change:position', this.resizeTopLeft);
+        // }
 
-        if (elementX < poolX) {
-          point.off('change:position', this.resizeTopLeft);
-        }
+        // if (elementX < poolX) {
+        //   point.off('change:position', this.resizeTopLeft);
+        // }
       });
 
       if (!laneShape) {
@@ -237,7 +237,7 @@ export default {
     },
     resizeTopRight(point, newPosition, source) {
       const direction = 'top-right';
-      const isLane = this.node.type === 'processmaker-modeler-lane';
+      const isLane = this.node.type === laneId;
       const { x, y } = newPosition;
       const { x: poolX, y: poolY, height: poolHeight} = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, height: laneHeight } = this.shape.getBBox();
@@ -257,12 +257,13 @@ export default {
       }
 
       this.graph.getElements().filter(element => {
-        return element.component;
-      }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
-        const { y: elementY } = element.component.shape.getBBox();
-        if (elementY < poolY + poolPadding) {
-          point.off('change:position', this.resizeTopRight);
-        }
+        return element.component && element.component.node.type !== 'processmaker-modeler-pool';
+      }).forEach(element => {
+        const { y: elementY } = element.getBBox();
+
+        // if (poolY > elementY - poolPadding) {
+        //   point.off('change:position', this.resizeTopRight);
+        // }
 
         if (!isLane) {
           this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
@@ -321,13 +322,13 @@ export default {
         return element.component;
       }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
         const {x: elementX, y: elementY, height: elementHeight } = element.component.shape.getBBox();
-        if ((elementY + elementHeight + labelHeight + poolPadding) > poolY + poolHeight) {
-          point.off('change:position', this.resizeBottomLeft);
-        }
+        // if ((elementY + elementHeight + labelHeight + poolPadding) > poolY + poolHeight) {
+        //   point.off('change:position', this.resizeBottomLeft);
+        // }
 
-        if (elementX < poolX) {
-          point.off('change:position', this.resizeBottomLeft);
-        }
+        // if (elementX < poolX) {
+        //   point.off('change:position', this.resizeBottomLeft);
+        // }
 
         if (!laneShape) {
           this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
