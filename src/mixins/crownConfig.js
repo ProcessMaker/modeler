@@ -201,6 +201,12 @@ export default {
       }
 
       if (this.node.pool) {
+        if (!this.graph.getCell(this.node.pool)) {
+          this.node.pool = this.graph.getElements().find(element => {
+            return element.component && element.component.node === this.node.pool.component.node;
+          });
+        }
+
         this.node.pool.component.addToPool(this.shape);
 
         return;
