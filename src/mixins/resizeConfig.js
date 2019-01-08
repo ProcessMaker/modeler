@@ -186,7 +186,7 @@ export default {
         return element.component;
       }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
         const { y: elementY, x: elementX } = element.component.shape.getBBox();
-        if (elementY < poolY + poolPadding) {
+        if (elementY < poolY + poolPadding + labelHeight) {
           point.off('change:position', this.resizeTopLeft);
         }
 
