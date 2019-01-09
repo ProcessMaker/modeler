@@ -50,7 +50,7 @@ export default {
       this.elementTopY = Math.min(...this.elementBounds.map(({ y }) => y - poolPadding));
       this.elementRightX = Math.max(...this.elementBounds.map(({ x, width }) => x + width + poolPadding));
 
-      this.elementBottom = Math.min(...this.elementBounds.map(({ y, height }) => (y + height) - poolPadding));
+      this.elementBottomY = Math.min(...this.elementBounds.map(({ y, height }) => (y + height) - poolPadding));
       this.elementLeftX = Math.max(...this.elementBounds.map(({ x }) => x - poolPadding));
     },
     configureResize() {
@@ -316,7 +316,7 @@ export default {
       const laneShape = this.node.type === 'processmaker-modeler-lane';
 
       const maxPoolWidth = Math.max((poolX + poolWidth) - ( x + this.pointWidth), this.getXLimit() + poolX,  minPoolWidth);
-      const maxPoolHeight = Math.max(y - poolY, this.getYLimit() - poolY, minPoolHeight);
+      const maxPoolHeight = Math.max(y - poolY, this.elementBottomY - poolY + (poolPadding + this.pointHeight), minPoolHeight);
 
       const maxLaneWidth = Math.max(laneWidth + (laneX - (x + this.pointWidth)), this.getXLimit() + laneX, minLaneWidth);
       const maxLaneHeight = Math.max(y - laneY, this.getYLimit() - poolY, minLaneHeight);
@@ -354,7 +354,6 @@ export default {
           this.updateAnchorPointPosition(1);
         }
       }
-
 
       this.updateCrownPosition();
     },
