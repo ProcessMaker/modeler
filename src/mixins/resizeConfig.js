@@ -17,6 +17,8 @@ export default {
       elementBounds: [],
       elementTopY: null,
       elementRightX: null,
+      elementBottomY: null,
+      elementLeftX: null,
     };
   },
   watch: {
@@ -47,6 +49,9 @@ export default {
 
       this.elementTopY = Math.min(...this.elementBounds.map(({ y }) => y - poolPadding));
       this.elementRightX = Math.max(...this.elementBounds.map(({ x, width }) => x + width + poolPadding));
+
+      this.elementBottom = Math.min(...this.elementBounds.map(({ y, height }) => (y + height) - poolPadding));
+      this.elementLeftX = Math.max(...this.elementBounds.map(({ x }) => x - poolPadding));
     },
     configureResize() {
       const pointBottomRight = new joint.shapes.standard.EmbeddedImage();
@@ -191,8 +196,13 @@ export default {
       const { x, y } = newPosition;
       const { x: poolX, y: poolY, width: poolWidth, height: poolHeight } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, width: laneWidth, height: laneHeight } = this.shape.getBBox();
-      const maxPoolWidth = Math.max((poolX + poolWidth) - (x + this.pointWidth),  minPoolWidth);
-      const maxPoolHeight = Math.max((poolY + poolHeight) - (y + this.pointWidth), minPoolHeight);
+
+      const maxPoolWidth = Math.max((poolX + poolWidth) - (x + this.pointWidth), this.elementLeftX - (x + this.pointWidth), minPoolWidth);
+      const maxPoolHeight = Math.max(
+        (poolY + poolHeight) - (y + this.pointWidth),
+        poolY + poolHeight - this.elementTopY,
+        minPoolHeight
+      );
 
       const maxLaneWidth = laneWidth + (laneX - (x + this.pointWidth));
       const maxLaneHeight = laneHeight + (laneY - y - this.pointHeight);
@@ -204,19 +214,6 @@ export default {
       if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
         return;
       }
-
-      this.graph.getElements().filter(element => {
-        return element.component;
-      }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
-        const { y: elementY, x: elementX } = element.component.shape.getBBox();
-        // if (elementY < poolY + poolPadding + labelHeight) {
-        //   point.off('change:position', this.resizeTopLeft);
-        // }
-
-        // if (elementX < poolX) {
-        //   point.off('change:position', this.resizeTopLeft);
-        // }
-      });
 
       if (!laneShape) {
         this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
@@ -318,11 +315,11 @@ export default {
 
       const laneShape = this.node.type === 'processmaker-modeler-lane';
 
-      const maxPoolWidth = Math.max((poolX + poolWidth) - (x + this.pointWidth), this.getXLimit() - poolX,  minPoolWidth);
-      const maxPoolHeight = Math.max(y - poolY, this.getYLimit() - poolHeight, minPoolHeight);
+      const maxPoolWidth = Math.max((poolX + poolWidth) - ( x + this.pointWidth), this.getXLimit() + poolX,  minPoolWidth);
+      const maxPoolHeight = Math.max(y - poolY, this.getYLimit() - poolY, minPoolHeight);
 
-      const maxLaneWidth = Math.max(laneWidth + (laneX - (x + this.pointWidth)), minLaneWidth);
-      const maxLaneHeight = Math.max(y - laneY, minLaneHeight);
+      const maxLaneWidth = Math.max(laneWidth + (laneX - (x + this.pointWidth)), this.getXLimit() + laneX, minLaneWidth);
+      const maxLaneHeight = Math.max(y - laneY, this.getYLimit() - poolY, minLaneHeight);
 
       if (!source.ui) {
         return;
@@ -332,44 +329,32 @@ export default {
         return;
       }
 
-      this.graph.getElements().filter(element => {
-        return element.component;
-      }).filter(element => element.component.node.type != 'processmaker-modeler-pool').forEach(element => {
-        const {x: elementX, y: elementY, height: elementHeight } = element.component.shape.getBBox();
-        // if ((elementY + elementHeight + labelHeight + poolPadding) > poolY + poolHeight) {
-        //   point.off('change:position', this.resizeBottomLeft);
-        // }
-
-        // if (elementX < poolX) {
-        //   point.off('change:position', this.resizeBottomLeft);
-        // }
-
-        if (!laneShape) {
-          this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
-          point.set('previousPosition', { x, y });
-          this.updateAnchorPointPosition();
-          if (this.laneSet) {
-            this.poolComponent.resizeLanes();
-          }
-        } else {
-          const sortedLanes = this.poolComponent.sortedLanes();
-          if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-            if (maxPoolHeight < minLanePoolHeight) {
-              return;
-            }
-
-            this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
-            point.set('previousPosition', { x, y });
-            this.poolComponent.resizeLanes();
-            this.updateAnchorPointPosition(1);
-          } else {
-            this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
-            point.set('previousPosition', { x, y });
-            this.poolComponent.fillLanes(this.shape, direction);
-            this.updateAnchorPointPosition(1);
-          }
+      if (!laneShape) {
+        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
+        point.set('previousPosition', { x, y });
+        this.updateAnchorPointPosition();
+        if (this.laneSet) {
+          this.poolComponent.resizeLanes();
         }
-      });
+      } else {
+        const sortedLanes = this.poolComponent.sortedLanes();
+        if (this.shape === sortedLanes[sortedLanes.length - 1]) {
+          if (maxPoolHeight < minLanePoolHeight) {
+            return;
+          }
+
+          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+          point.set('previousPosition', { x, y });
+          this.poolComponent.resizeLanes();
+          this.updateAnchorPointPosition(1);
+        } else {
+          this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
+          point.set('previousPosition', { x, y });
+          this.poolComponent.fillLanes(this.shape, direction);
+          this.updateAnchorPointPosition(1);
+        }
+      }
+
 
       this.updateCrownPosition();
     },
