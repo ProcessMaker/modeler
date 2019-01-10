@@ -1,6 +1,6 @@
 import joint from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
-import { minPoolHeight, minPoolWidth, poolPadding, labelWidth, labelHeight } from '@/components/nodes/pool/poolSizes';
+import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
 import { minLaneWidth, minLaneHeight, minLanePoolHeight } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
 import store from '@/store';
@@ -30,6 +30,7 @@ export default {
       if (highlighted) {
         this.addResizeAnchors();
         this.calculateElementLimits();
+        this.updateAnchorPointPosition();
       } else {
         this.removeResizeAnchors();
       }
@@ -42,15 +43,13 @@ export default {
   },
   methods: {
     calculateElementLimits() {
-      console.log('calculateElementLimits');
       this.elementBounds = this.poolComponent.shape.getEmbeddedCells()
         .filter(element => element.component && element.component.node.type !== laneId)
         .map(element => element.getBBox());
 
       this.elementTopY = Math.min(...this.elementBounds.map(({ y }) => y - poolPadding));
-      this.elementRightX = Math.max(...this.elementBounds.map(({ x, width }) => x + width + poolPadding));
-
       this.elementBottomY = Math.max(...this.elementBounds.map(({ y, height }) => y + height + poolPadding));
+      this.elementRightX = Math.max(...this.elementBounds.map(({ x, width }) => x + width + poolPadding));
       this.elementLeftX = Math.min(...this.elementBounds.map(({ x }) => x - poolPadding));
     },
     configureResize() {
@@ -170,39 +169,16 @@ export default {
         }
       }
     },
-    getYLimit() {
-      const lowestShapeY = this.poolComponent.shape.getEmbeddedCells().filter(element => {
-        return element.component;
-      }).reduce((highestY, element) => {
-        const { y, height } = element.findView(this.paper).getBBox();
-        const elementY = element.component.node.type === 'processmaker-modeler-lane'
-          ? y + minPoolHeight
-          : y + height + poolPadding;
-        return Math.max(elementY, highestY);
-      }, 0);
-
-      return lowestShapeY;
-    },
-    getXLimit() {
-      const lowestShapeX = this.poolComponent.shape.getEmbeddedCells().filter(element => {
-        return element.component;
-      }).reduce((highestY, element) => {
-        const { x, width } = element.findView(this.paper).getBBox();
-        const elementX = element.component.node.type === 'processmaker-modeler-lane'
-          ? x + minPoolWidth
-          : x + width + poolPadding;
-
-        return Math.max(elementX, highestY);
-      }, 0);
-
-      return lowestShapeX;
-    },
     resizeTopLeft(point, newPosition, source) {
+      if (!source.ui) { return; }
+
       const direction = 'top-left';
       const { x, y } = newPosition;
+
+      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) { return; }
+
       const { x: poolX, y: poolY, width: poolWidth, height: poolHeight } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, width: laneWidth, height: laneHeight } = this.shape.getBBox();
-
       const maxPoolWidth = Math.max(
         (poolX + poolWidth) - (x + this.pointWidth),
         (poolX + poolWidth) - this.elementLeftX + poolPadding + labelWidth,
@@ -213,17 +189,12 @@ export default {
         poolY + poolHeight - this.elementTopY,
         minPoolHeight
       );
-
-      const maxLaneWidth = laneWidth + (laneX - (x + this.pointWidth));
+      const maxLaneWidth = Math.max(
+        (laneX + laneWidth) - (x + this.pointWidth),
+        (laneX + laneWidth) - this.elementLeftX + poolPadding + labelWidth,
+        minLaneWidth
+      );
       const maxLaneHeight = laneHeight + (laneY - y - this.pointHeight);
-
-      if (!source.ui) {
-        return;
-      }
-
-      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
-        return;
-      }
 
       if (this.isLane) {
         if (this.shape === this.poolComponent.sortedLanes()[0]) {
@@ -233,7 +204,7 @@ export default {
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition(3);
+          this.updateAnchorPointPosition();
         } else {
           if (maxLaneHeight < minLaneHeight) {
             return;
@@ -241,7 +212,7 @@ export default {
           this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition(3);
+          this.updateAnchorPointPosition();
         }
       } else {
         this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
@@ -252,43 +223,34 @@ export default {
           this.poolComponent.resizeLanes();
         }
       }
-
       this.updateCrownPosition();
     },
     resizeTopRight(point, newPosition, source) {
+      if (!source.ui) { return; }
+
       const direction = 'top-right';
       const { x, y } = newPosition;
+
+      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) { return; }
+
       const { x: poolX, y: poolY, height: poolHeight} = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, height: laneHeight } = this.shape.getBBox();
-
       const maxPoolWidth = Math.max(x - poolX, this.elementRightX - poolX, minPoolWidth);
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
         minPoolHeight
       );
-
-      const maxLaneWidth = x - laneX;
-      const maxLaneHeight = laneHeight + (laneY - y - this.pointHeight);
-
-      if (!source.ui) {
-        return;
-      }
-
-      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
-        return;
-      }
+      const maxLaneWidth = Math.max(x - laneX, this.elementRightX - laneX, minLaneWidth);
+      const maxLaneHeight = (laneY + laneHeight) - (y + this.pointHeight);
 
       if (this.isLane) {
         /* When resizing a lane, we only have to consider the lane's min size,
          * and the min size of the lane above (if any) */
-
-        // TODO
         if (this.shape === this.poolComponent.sortedLanes()[0]) {
           if (maxPoolHeight < minLanePoolHeight) {
             return;
           }
-
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
@@ -300,7 +262,7 @@ export default {
           this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition(2);
+          this.updateAnchorPointPosition();
         }
       } else {
         /* When resizing a pool, we have to consider the pool's min size,
@@ -319,11 +281,15 @@ export default {
       this.updateCrownPosition();
     },
     resizeBottomLeft(point, newPosition, source) {
+      if (!source.ui) { return; }
+
       const direction = 'bottom-left';
       const { x, y } = newPosition;
+
+      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) { return; }
+
       const { x: poolX, y: poolY, width: poolWidth } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, width: laneWidth } = this.shape.getBBox();
-
       const maxPoolWidth = Math.max(
         (poolX + poolWidth) - (x + this.pointWidth),
         (poolX + poolWidth) - this.elementLeftX + poolPadding + labelWidth,
@@ -332,19 +298,18 @@ export default {
       const maxPoolHeight = Math.max(
         y - poolY,
         this.elementBottomY - poolY,
-        minPoolHeight
+        minLaneHeight
       );
-
-      const maxLaneWidth = Math.max(laneWidth + (laneX - (x + this.pointWidth)), this.getXLimit() + laneX, minLaneWidth);
-      const maxLaneHeight = Math.max(y - laneY, this.getYLimit() - poolY, minLaneHeight);
-
-      if (!source.ui) {
-        return;
-      }
-
-      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
-        return;
-      }
+      const maxLaneWidth = Math.max(
+        (laneX + laneWidth) - (x + this.pointWidth),
+        (laneX + laneWidth) - this.elementLeftX + poolPadding + labelWidth,
+        minLaneWidth
+      );
+      const maxLaneHeight = Math.max(
+        y - laneY,
+        this.elementBottomY - laneY,
+        minLaneHeight
+      );
 
       if (this.isLane) {
         const sortedLanes = this.poolComponent.sortedLanes();
@@ -352,16 +317,15 @@ export default {
           if (maxPoolHeight < minLanePoolHeight) {
             return;
           }
-
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition(1);
+          this.updateAnchorPointPosition();
         } else {
           this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition(1);
+          this.updateAnchorPointPosition();
         }
       } else {
         this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
@@ -376,45 +340,47 @@ export default {
       this.updateCrownPosition();
     },
     resizeBottomRight(point, newPosition, source) {
+      if (!source.ui) { return; }
+
       const direction = 'bottom-right';
       const { x, y } = newPosition;
+
+      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) { return; }
+
       const { x: poolX, y: poolY } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY } = this.shape.getBBox();
-
       const maxPoolWidth = Math.max(x - poolX, this.elementRightX - poolX, minPoolWidth);
       const maxPoolHeight = Math.max(
         y - poolY,
         this.elementBottomY - poolY,
-        minPoolHeight
+        minLaneHeight
       );
-
-      const maxLaneWidth = x - laneX;
-      const maxLaneHeight = y - laneY;
-
-      if (!source.ui) {
-        return;
-      }
-
-      if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) {
-        return;
-      }
+      const maxLaneWidth = Math.max(
+        x - laneX,
+        this.elementRightX - laneX,
+        minLaneWidth
+      );
+      const maxLaneHeight = Math.max(
+        y - laneY,
+        this.elementBottomY - laneY,
+        minLaneHeight
+      );
 
       if (this.isLane) {
         const sortedLanes = this.poolComponent.sortedLanes();
         if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
-          point.set('previousPosition', { x, y });
-          this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition(0);
-        } else {
           if (maxLaneHeight < minLaneHeight) {
             return;
           }
-
+          this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+          point.set('previousPosition', { x, y });
+          this.poolComponent.resizeLanes();
+          this.updateAnchorPointPosition();
+        } else {
           this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition(0);
+          this.updateAnchorPointPosition();
         }
       } else {
         this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
@@ -432,8 +398,6 @@ export default {
       this.anchorPoints.forEach(button => {
         button.attr('root/display', 'initial');
       });
-
-      this.updateAnchorPointPosition();
     },
     removeResizeAnchors() {
       this.anchorPoints.forEach(button => {
