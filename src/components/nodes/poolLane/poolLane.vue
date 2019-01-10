@@ -67,15 +67,18 @@ export default {
     this.shape.component = this;
     this.shape.addTo(this.graph);
 
-    const poolComponent = this.node.pool.component;
-    if (!poolComponent.laneSet) {
-      poolComponent.createLaneSet();
-    }
+    this.$nextTick(() => {
+      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
+      const poolComponent = this.node.pool.component;
+      if (!poolComponent.laneSet) {
+        poolComponent.createLaneSet();
+      }
 
-    const lanes = poolComponent.laneSet.get('lanes');
-    if (!lanes.includes(this.node.definition)) {
-      lanes.push(this.node.definition);
-    }
+      const lanes = poolComponent.laneSet.get('lanes');
+      if (!lanes.includes(this.node.definition)) {
+        lanes.push(this.node.definition);
+      }
+    });
 
     if (!this.planeElements.includes(this.node.diagram)) {
       this.planeElements.push(this.node.diagram);
@@ -83,7 +86,7 @@ export default {
   },
   beforeDestroy() {
     /* Resize the parent pool to fill in the space where the lane was deleted.
-     * If this was the 2nd last lane, remove all lanes and rever the pool back to normal. */
+     * If this was the 2nd last lane, remove all lanes and revert the pool back to normal. */
 
     const poolComponent = this.node.pool.component;
     const sortedLanes = poolComponent.sortedLanes();

@@ -55,6 +55,7 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
+import throttle from 'lodash/throttle';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
@@ -150,12 +151,8 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    undo() {
-      store.commit('undo');
-    },
-    redo() {
-      store.commit('redo');
-    },
+    undo: throttle(() => store.commit('undo'), 500, { leading: true }),
+    redo: throttle(() => store.commit('redo'), 500, { leading: true }),
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
