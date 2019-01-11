@@ -1,9 +1,8 @@
 import joint from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
 import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
-import { minLaneWidth, minLaneHeight, minLanePoolHeight } from '@/components/nodes/poolLane/laneSizes';
+import { minLaneWidth, minLaneHeight } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
-import clamp from 'lodash/clamp';
 import store from '@/store';
 import { id as laneId } from '@/components/nodes/poolLane';
 
@@ -192,7 +191,7 @@ export default {
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
-        this.poolComponent.laneSet ? minHeight : minLanePoolHeight
+        this.poolComponent.laneSet ? minHeight : minPoolHeight
       );
       const maxLaneWidth = Math.max(
         (laneX + laneWidth) - (x + this.pointWidth),
@@ -255,7 +254,7 @@ export default {
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
-        this.poolComponent.laneSet ? minHeight : minLanePoolHeight
+        this.poolComponent.laneSet ? minHeight : minPoolHeight
       );
       const maxLaneWidth = Math.max(x - laneX, this.elementRightX - laneX, minLaneWidth);
       const maxLaneHeight = Math.max(
@@ -355,7 +354,7 @@ export default {
          * the min size of the top and bottom lanes (if any), and the
          * location of elements around the pools edge (if any) */
 
-        this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
+        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
         point.set('previousPosition', { x, y });
 
         if (this.laneSet) {
