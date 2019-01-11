@@ -3,6 +3,7 @@ import resizeIcon from '@/assets/highlight-shape.svg';
 import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
 import { minLaneWidth, minLaneHeight, minLanePoolHeight } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
+import clamp from 'lodash/clamp';
 import store from '@/store';
 import { id as laneId } from '@/components/nodes/poolLane';
 
@@ -179,51 +180,61 @@ export default {
 
       const { x: poolX, y: poolY, width: poolWidth, height: poolHeight } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, width: laneWidth, height: laneHeight } = this.shape.getBBox();
+      const sortedLanes = this.poolComponent.sortedLanes();
+      const minHeight = sortedLanes.slice(1).reduce((height, lane) => {
+        return height + lane.getBBox().height;
+      }, minLaneHeight);
       const maxPoolWidth = Math.max(
         (poolX + poolWidth) - (x + this.pointWidth),
-        (poolX + poolWidth) - this.elementLeftX + poolPadding + labelWidth,
+        (poolX + poolWidth) - this.elementLeftX + poolPadding,
         minPoolWidth
       );
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
-        minPoolHeight
+        this.poolComponent.laneSet ? minHeight : minLanePoolHeight
       );
       const maxLaneWidth = Math.max(
         (laneX + laneWidth) - (x + this.pointWidth),
         (laneX + laneWidth) - this.elementLeftX + poolPadding + labelWidth,
         minLaneWidth
       );
-      const maxLaneHeight = laneHeight + (laneY - y - this.pointHeight);
+      const maxLaneHeight = Math.max(
+        (laneY + laneHeight) - (y + this.pointHeight),
+        minLaneHeight
+      );
 
       if (this.isLane) {
-        if (this.shape === this.poolComponent.sortedLanes()[0]) {
-          if (maxPoolHeight < minLanePoolHeight) {
-            return;
-          }
+        /* When resizing a lane, we only have to consider the lane's min size,
+         * and the min size of the lane above (if any) */
+        if (this.shape === sortedLanes[0]) {
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition();
         } else {
-          if (maxLaneHeight < minLaneHeight) {
-            return;
-          }
-          this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
+          const aboveLane = sortedLanes[sortedLanes.indexOf(this.shape) - 1];
+          this.shape.resize(
+            maxLaneWidth,
+            Math.min(laneY + laneHeight - (aboveLane.getBBox().y + minLaneHeight), maxLaneHeight),
+            { direction });
+
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition();
         }
       } else {
-        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
+        /* When resizing a pool, we have to consider the pool's min size,
+         * the min size of the top and bottom lanes (if any), and the
+         * location of elements around the pools edge (if any) */
         point.set('previousPosition', { x, y });
-        this.updateAnchorPointPosition();
+        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
 
         if (this.laneSet) {
           this.poolComponent.resizeLanes();
         }
       }
+
       this.updateCrownPosition();
+      this.updateAnchorPointPosition();
     },
     resizeTopRight(point, newPosition, source) {
       if (!source.ui) { return; }
@@ -235,11 +246,16 @@ export default {
 
       const { x: poolX, y: poolY, height: poolHeight} = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, height: laneHeight } = this.shape.getBBox();
+      const sortedLanes = this.poolComponent.sortedLanes();
+      const minHeight = sortedLanes.slice(1).reduce((height, lane) => {
+        return height + lane.getBBox().height;
+      }, minLaneHeight);
+
       const maxPoolWidth = Math.max(x - poolX, this.elementRightX - poolX, minPoolWidth);
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
-        minPoolHeight
+        this.poolComponent.laneSet ? minHeight : minLanePoolHeight
       );
       const maxLaneWidth = Math.max(x - laneX, this.elementRightX - laneX, minLaneWidth);
       const maxLaneHeight = Math.max(
@@ -251,25 +267,16 @@ export default {
         /* When resizing a lane, we only have to consider the lane's min size,
          * and the min size of the lane above (if any) */
 
-        const sortedLanes = this.poolComponent.sortedLanes();
-
         if (this.shape === sortedLanes[0]) {
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
         } else {
           const aboveLane = sortedLanes[sortedLanes.indexOf(this.shape) - 1];
-          if (aboveLane.getBBox().height < minLaneHeight) {
-            /* Stop resizing if lane above has reached min size */
-            aboveLane.resize(maxLaneWidth, minLaneHeight);
-            this.shape.resize(
-              maxLaneWidth,
-              (laneY + laneHeight) - (aboveLane.getBBox().y + aboveLane.getBBox().height),
-              { direction }
-            );
-          } else {
-            this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
-          }
+          this.shape.resize(
+            maxLaneWidth,
+            Math.min(laneY + laneHeight - (aboveLane.getBBox().y + minLaneHeight), maxLaneHeight),
+            { direction });
 
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
@@ -300,6 +307,11 @@ export default {
 
       const { x: poolX, y: poolY, width: poolWidth } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, width: laneWidth } = this.shape.getBBox();
+      const sortedLanes = this.poolComponent.sortedLanes();
+      const minHeight = sortedLanes.slice(0, sortedLanes.length -1).reduce((height, lane) => {
+        return height + lane.getBBox().height;
+      }, minLaneHeight);
+
       const maxPoolWidth = Math.max(
         (poolX + poolWidth) - (x + this.pointWidth),
         (poolX + poolWidth) - this.elementLeftX + poolPadding + labelWidth,
@@ -308,7 +320,7 @@ export default {
       const maxPoolHeight = Math.max(
         y - poolY,
         this.elementBottomY - poolY,
-        minPoolHeight
+        minHeight
       );
       const maxLaneWidth = Math.max(
         (laneX + laneWidth) - (x + this.pointWidth),
@@ -317,30 +329,34 @@ export default {
       );
       const maxLaneHeight = Math.max(
         y - laneY,
-        this.elementBottomY - laneY,
         minLaneHeight
       );
 
       if (this.isLane) {
-        const sortedLanes = this.poolComponent.sortedLanes();
-        if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-          if (maxPoolHeight < minLanePoolHeight) {
-            return;
-          }
+        /* When resizing a lane, we only have to consider the lane's min size,
+         * and the min size of the lane above (if any) */
+
+        if (this.shape === sortedLanes[sortedLanes.length -1]) {
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition();
         } else {
-          this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
+          const belowLane = sortedLanes[sortedLanes.indexOf(this.shape) + 1];
+          this.shape.resize(
+            maxLaneWidth,
+            Math.min(((belowLane.getBBox().y + belowLane.getBBox().height) - minLaneHeight) - laneY, maxLaneHeight ),
+            { direction });
+
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition();
         }
       } else {
-        this.shape.resize(maxPoolWidth - labelWidth, maxPoolHeight, { direction });
+        /* When resizing a pool, we have to consider the pool's min size,
+         * the min size of the top and bottom lanes (if any), and the
+         * location of elements around the pools edge (if any) */
+
+        this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
         point.set('previousPosition', { x, y });
-        this.updateAnchorPointPosition();
 
         if (this.laneSet) {
           this.poolComponent.resizeLanes();
@@ -348,6 +364,7 @@ export default {
       }
 
       this.updateCrownPosition();
+      this.updateAnchorPointPosition();
     },
     resizeBottomRight(point, newPosition, source) {
       if (!source.ui) { return; }
@@ -359,11 +376,15 @@ export default {
 
       const { x: poolX, y: poolY } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY } = this.shape.getBBox();
+      const sortedLanes = this.poolComponent.sortedLanes();
+      const minHeight = sortedLanes.slice(0, sortedLanes.length -1).reduce((height, lane) => {
+        return height + lane.getBBox().height;
+      }, minLaneHeight);
       const maxPoolWidth = Math.max(x - poolX, this.elementRightX - poolX, minPoolWidth);
       const maxPoolHeight = Math.max(
         y - poolY,
         this.elementBottomY - poolY,
-        minPoolHeight
+        minHeight
       );
       const maxLaneWidth = Math.max(
         x - laneX,
@@ -372,30 +393,34 @@ export default {
       );
       const maxLaneHeight = Math.max(
         y - laneY,
-        this.elementBottomY - laneY,
         minLaneHeight
       );
 
       if (this.isLane) {
-        const sortedLanes = this.poolComponent.sortedLanes();
-        if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-          if (maxLaneHeight < minLaneHeight) {
-            return;
-          }
+        /* When resizing a lane, we only have to consider the lane's min size,
+         * and the min size of the lane above (if any) */
+
+        if (this.shape === sortedLanes[sortedLanes.length -1]) {
           this.poolComponent.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
           point.set('previousPosition', { x, y });
           this.poolComponent.resizeLanes();
-          this.updateAnchorPointPosition();
         } else {
-          this.shape.resize(maxLaneWidth, maxLaneHeight, { direction });
+          const belowLane = sortedLanes[sortedLanes.indexOf(this.shape) + 1];
+          this.shape.resize(
+            maxLaneWidth,
+            Math.min(((belowLane.getBBox().y + belowLane.getBBox().height) - minLaneHeight) - laneY, maxLaneHeight ),
+            { direction });
+
           point.set('previousPosition', { x, y });
           this.poolComponent.fillLanes(this.shape, direction);
-          this.updateAnchorPointPosition();
         }
       } else {
+        /* When resizing a pool, we have to consider the pool's min size,
+         * the min size of the top and bottom lanes (if any), and the
+         * location of elements around the pools edge (if any) */
+
         this.shape.resize(maxPoolWidth, maxPoolHeight, { direction });
         point.set('previousPosition', { x, y });
-        this.updateAnchorPointPosition();
 
         if (this.laneSet) {
           this.poolComponent.resizeLanes();
@@ -403,6 +428,7 @@ export default {
       }
 
       this.updateCrownPosition();
+      this.updateAnchorPointPosition();
     },
     addResizeAnchors() {
       this.anchorPoints.forEach(button => {
