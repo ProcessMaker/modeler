@@ -152,6 +152,8 @@ export default {
             store.commit('commitBatchAction');
           });
 
+          this.poolComponent.updateLaneChildren();
+
           store.dispatch('updateNodeBounds', {
             node: this.poolComponent.node,
             bounds: this.poolComponent.shape.getBBox(),

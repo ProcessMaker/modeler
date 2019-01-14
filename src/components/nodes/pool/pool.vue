@@ -161,11 +161,7 @@ export default {
 
       /* If there are lanes, add the element to the lane it's above */
       if (element.component.node.type !== laneId && this.laneSet) {
-        const lane = this.getElementsUnderArea(element).find(element => {
-          return element.component.node.type === laneId;
-        });
-
-        lane.component.node.definition.get('flowNodeRef').push(element.component.node.definition);
+        this.updateLaneChildren();
       }
 
       this.expandToFixElement(element);
@@ -387,6 +383,45 @@ export default {
         model.component.node.type !== laneId &&
         model.getParentCell() && model.getParentCell().component === this;
     },
+    updateLaneChildren() {
+      /* Ensure elements in the pool are added to the lanes they are above */
+
+      const newLaneRefs = {};
+
+      this.shape
+        .getEmbeddedCells()
+        .filter(element =>
+          element.component &&
+          element.component.node.pool === this.shape &&
+          element.component.node.type !== laneId
+        )
+        .forEach(element => {
+          const lane = this.graph
+            .findModelsUnderElement(element, { searchBy: 'center' })
+            .find(element => element.component.node.type === laneId);
+
+          newLaneRefs[lane.id]
+            ? newLaneRefs[lane.id].push(element.component.node.definition)
+            : newLaneRefs[lane.id] = [element.component.node.definition];
+        });
+
+      this.sortedLanes().forEach(laneShape => {
+        const newRefs = newLaneRefs[laneShape.id];
+        const currentRefs = laneShape.component.node.definition.get('flowNodeRef');
+
+        const hasChanged = newRefs
+          ? newRefs.length !== currentRefs.length
+          : currentRefs.length > 0;
+
+        if (hasChanged) {
+          store.dispatch('updateNodeProp', {
+            node: laneShape.component.node,
+            key: 'flowNodeRef',
+            value: newRefs || [],
+          });
+        }
+      });
+    },
   },
   mounted() {
     this.$emit('setPools', this.node.definition);
@@ -509,25 +544,7 @@ export default {
           this.moveElement(draggingElement, newPool);
         } else {
           this.expandToFixElement(draggingElement);
-
-          /* If there are lanes, add the element to the lane it's above */
-          const lane = this.getElementsUnderArea(cellView).find(model => {
-            return model.component &&
-              model.component.node.type === laneId &&
-              model.component.node.pool.component === this;
-          });
-
-          if (lane) {
-            const elementDefinition = cellView.model.component.node.definition;
-
-            /* Remove references to the element from the current Lane */
-            const containingLane = this.laneSet.get('lanes').find(lane => {
-              return lane.get('flowNodeRef').includes(elementDefinition);
-            });
-
-            pull(containingLane.get('flowNodeRef'), elementDefinition);
-            lane.component.node.definition.get('flowNodeRef').push(cellView.model.component.node.definition);
-          }
+          this.laneSet && this.updateLaneChildren();
         }
 
         this.paper.drawBackground({ color: defaultNodeColor });
