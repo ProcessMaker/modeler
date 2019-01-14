@@ -281,6 +281,13 @@ export default {
         if (this.laneSet) {
           /* Expand any lanes within the pool */
           this.resizeLanes();
+
+          this.sortedLanes().forEach(laneShape => {
+            store.dispatch('updateNodeBounds', {
+              node: laneShape.component.node,
+              bounds: laneShape.getBBox(),
+            });
+          });
         }
 
         store.dispatch('updateNodeBounds', {
@@ -340,11 +347,6 @@ export default {
 
         laneShape.resize(width, newHeight);
         laneShape.position(0, newY, { parentRelative: true });
-
-        store.dispatch('updateNodeBounds', {
-          node: laneShape.component.node,
-          bounds: laneShape.getBBox(),
-        });
       });
     },
     captureChildren() {
