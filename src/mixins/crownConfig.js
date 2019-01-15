@@ -234,6 +234,23 @@ export default {
           this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
         }
       });
+
+      if (!this.planeElements.includes(this.node.diagram)) {
+        this.planeElements.push(this.node.diagram);
+      }
+
+      const process = this.node.pool
+        ? this.node.pool.component.containingProcess
+        : this.processNode.definition;
+      const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
+
+      if (nodeTypes.includes('bpmn:FlowElement') && !process.get('flowElements').includes(this.node.definition)) {
+        process.get('flowElements').push(this.node.definition);
+      }
+
+      if (nodeTypes.includes('bpmn:Artifact') && !process.get('artifacts').includes(this.node.definition)) {
+        process.get('artifacts').push(this.node.definition);
+      }
     });
   },
   beforeDestroy() {
@@ -249,9 +266,13 @@ export default {
     this.shape.stopListening();
     this.shape.remove();
 
-    pull(this.processNode.definition.get('flowElements'), this.node.definition);
+    const process = this.node.pool
+      ? this.node.pool.component.containingProcess
+      : this.processNode.definition;
+
+    pull(process.get('flowElements'), this.node.definition);
     pull(this.planeElements, this.node.diagram);
-    pull(this.processNode.definition.get('artifacts'), this.node.definition);
+    pull(process.get('artifacts'), this.node.definition);
 
     if (this.isPool || this.isLane) {
       store.commit('commitBatchAction');

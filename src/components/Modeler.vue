@@ -348,6 +348,11 @@ export default {
 
       this.planeElements.push(diagram);
 
+      if (this.poolTarget && type !== laneId) {
+        store.commit('startBatchAction');
+        setTimeout(() => store.commit('commitBatchAction'));
+      }
+
       store.dispatch('addNode', {
         type,
         definition,
