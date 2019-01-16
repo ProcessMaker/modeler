@@ -64,9 +64,11 @@ export default new Vuex.Store({
       node.definition.set(key, value);
     },
     clearNodes(state) {
+      state.nodes = [];
+    },
+    clearHistory(state) {
       state.undoList = [];
       state.redoList = [];
-      state.nodes = [];
     },
     clearRedoList(state) {
       state.redoList = [];

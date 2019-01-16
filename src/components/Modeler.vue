@@ -283,6 +283,7 @@ export default {
           this.initializeUniqueId(context);
           this.parse();
           this.$emit('parsed');
+          setTimeout(() => store.commit('clearHistory'));
         }
       });
     },
