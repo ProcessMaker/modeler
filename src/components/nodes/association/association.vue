@@ -218,6 +218,7 @@ export default {
       const targetShape = this.graph.getElements().find(element => {
         return element.component && element.component.node.definition === targetRef;
       });
+
       this.shape.target(targetShape, {
         anchor: {
           name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
@@ -237,6 +238,7 @@ export default {
 
       this.$emit('set-cursor', 'not-allowed');
     }
+
     this.updateRouter();
   },
   destroyed() {
