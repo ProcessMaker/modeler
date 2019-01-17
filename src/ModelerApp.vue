@@ -16,7 +16,7 @@
     </statusbar>
 
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
-      <file-upload ref="upload" @input="handleUpload">
+      <file-upload @input-file="handleUpload">
         Upload file
       </file-upload>
     </b-modal>
@@ -30,6 +30,8 @@ import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+const reader = new FileReader();
 
 export default {
   name: 'ModelerApp',
@@ -57,16 +59,20 @@ export default {
         }
       });
     },
-    handleUpload(files) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        this.$refs.modeler.loadXML(reader.result);
-        this.$refs.uploadmodal.hide();
-      };
-      reader.readAsText(files[0].file);
+    handleUpload(fileObject) {
+      if (!fileObject) {
+        return;
+      }
+
+      reader.readAsText(fileObject.file);
     },
   },
   mounted() {
+    reader.onloadend = () => {
+      this.$refs.modeler.loadXML(reader.result);
+      this.$refs.uploadmodal.hide();
+    };
+
     /* Add a start event on initial load */
     this.$refs.modeler.$once('parsed', this.$refs.modeler.addStartEvent);
   },
