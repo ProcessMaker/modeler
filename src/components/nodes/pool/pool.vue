@@ -19,17 +19,17 @@ import store from '@/store';
 
 joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
-    { tagName: 'polyline', selector: 'polyline' },
     ...joint.shapes.standard.Rectangle.prototype.markup,
+    { tagName: 'polyline', selector: 'polyline' },
   ],
   attrs: {
     label: {
       fill: 'black',
       transform: 'rotate(-90)',
-      refX: -(labelWidth / 2),
+      refX: labelWidth / 2,
     },
     polyline: {
-      refPointsKeepOffset: `0,0 -${labelWidth},0 -${labelWidth},200 0,200`,
+      refPointsKeepOffset: `${labelWidth},0 ${labelWidth},200`,
       stroke: '#000',
       fill: '#fff',
       strokeWidth: 2,
@@ -164,9 +164,9 @@ export default {
         this.updateLaneChildren();
       }
 
-      this.expandToFixElement(element);
+      this.expandToFitElement(element);
     },
-    expandToFixElement(element) {
+    expandToFitElement(element) {
       const { width, height } = this.shape.get('size');
       const { x, y } = this.shape.position();
 
@@ -191,9 +191,9 @@ export default {
         }).length === 1;
 
         const laneHeight = isFirstLane ? height : elementBounds.height;
-        element.resize(width, laneHeight);
+        element.resize(width - labelWidth, laneHeight);
         element.position(
-          0,
+          labelWidth,
           isFirstLane
             ? 0
             : this.addLaneAbove ? -laneHeight : height,
@@ -252,8 +252,8 @@ export default {
         newWidth = rightEdge + poolPadding;
       }
 
-      if (leftEdge < poolPadding) {
-        newWidth = width + (poolPadding - leftEdge);
+      if (leftEdge < labelWidth + poolPadding) {
+        newWidth = width + ((labelWidth + poolPadding) - leftEdge);
         directionWidth = 'left';
       }
 
@@ -316,7 +316,7 @@ export default {
       const laneToResize = this.sortedLanes()[resizingLaneIndex + (direction.includes('top') ? -1 : 1)];
 
       laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, { direction: resizeDirection });
-      this.shape.resize(resizingLaneWidth, poolHeight, { direction: resizeDirection });
+      this.shape.resize(resizingLaneWidth + labelWidth, poolHeight, { direction: resizeDirection });
 
       this.sortedLanes().forEach(lane => lane.resize(resizingLaneWidth, lane.getBBox().height, { direction: resizeDirection }));
     },
@@ -341,8 +341,8 @@ export default {
           newHeight = laneHeight + addedHeight;
         }
 
-        laneShape.resize(width, newHeight);
-        laneShape.position(0, newY, { parentRelative: true });
+        laneShape.resize(width - labelWidth, newHeight);
+        laneShape.position(labelWidth, newY, { parentRelative: true });
       });
     },
     captureChildren() {
@@ -359,16 +359,18 @@ export default {
     },
     resizePool() {
       this.shape.fitEmbeds({ padding: poolPadding });
+
       const { width, height } = this.shape.get('size');
       const bounds = this.node.diagram.bounds;
 
       this.shape.resize(
-        Math.max(width, bounds.width),
+        /* Add labelWidth to ensure elements don't overlap with the pool label */
+        Math.max(width, bounds.width) + labelWidth,
         Math.max(height, bounds.height)
       );
 
       this.shape.getEmbeddedCells().forEach(cell => {
-        this.expandToFixElement(cell);
+        this.expandToFitElement(cell);
       });
 
       const { x, y } = this.shape.position();
@@ -543,7 +545,7 @@ export default {
           /* Remove the shape from its current pool */
           this.moveElement(draggingElement, newPool);
         } else {
-          this.expandToFixElement(draggingElement);
+          this.expandToFitElement(draggingElement);
           this.laneSet && this.updateLaneChildren();
         }
 
