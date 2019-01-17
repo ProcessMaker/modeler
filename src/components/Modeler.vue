@@ -235,26 +235,58 @@ export default {
         }
 
         /* Add all other elements */
-        // First load the flow elements
-        process.get('flowElements').filter(node => node.$type !== 'bpmn:SequenceFlow').forEach(this.setNode);
-        // Then the sequence flows
-        process.get('flowElements').filter(node => node.$type === 'bpmn:SequenceFlow').forEach(this.setNode);
-        // Then the artifacts
-        process.get('artifacts').filter(node => node.$type !== 'bpmn:Association').forEach(this.setNode);
-        // Then the associations
-        process.get('artifacts').filter(node => node.$type === 'bpmn:Association').forEach(this.setNode);
+
+        /* First load the flow elements */
+        process.get('flowElements')
+          .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
+          .forEach(this.setNode);
+
+        /* Then the sequence flows */
+        process
+          .get('flowElements')
+          .filter(definition => {
+            if (definition.$type !== 'bpmn:SequenceFlow') {
+              return false;
+            }
+
+            return this.hasSourceAndTarget(definition);
+          })
+          .forEach(this.setNode);
+
+        /* Then the artifacts */
+        process
+          .get('artifacts')
+          .filter(definition => definition.$type !== 'bpmn:Association')
+          .forEach(this.setNode);
+
+        /* Then the associations */
+        process
+          .get('artifacts')
+          .filter(definition => {
+            if (definition.$type !== 'bpmn:Association') {
+              return false;
+            }
+
+            return this.hasSourceAndTarget(definition);
+          })
+          .forEach(this.setNode);
       });
 
       store.commit('highlightNode', this.processNode);
     },
     setNode(definition) {
+      if (!this.parsers[definition.$type]) {
+        if (process.env.NODE_ENV !== 'production') {
+          /* eslint-disable-next-line no-console */
+          console.warn(`Unsupported element type in parse: ${definition.$type}`);
+        }
+
+        return;
+      }
+
       const type = this.parsers[definition.$type].reduce((type, parser) => {
         return parser(definition) || type;
       }, null);
-
-      if (!type) {
-        throw new Error(`Unsupported element type in parse: ${definition.$type}`);
-      }
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;
@@ -270,6 +302,12 @@ export default {
         definition,
         diagram,
       });
+    },
+    hasSourceAndTarget(definition) {
+      const hasSource = this.parsers[definition.sourceRef.$type];
+      const hasTarget = this.parsers[definition.targetRef.$type];
+
+      return hasSource && hasTarget;
     },
     loadXML(xml) {
       store.commit('clearNodes');
