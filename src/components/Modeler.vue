@@ -236,14 +236,17 @@ export default {
 
         /* Add all other elements */
 
+        const flowElements = process.get('flowElements');
+        const artifacts = process.get('artifacts');
+
+
         /* First load the flow elements */
-        process.get('flowElements')
+        flowElements
           .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
 
         /* Then the sequence flows */
-        process
-          .get('flowElements')
+        flowElements
           .filter(definition => {
             if (definition.$type !== 'bpmn:SequenceFlow') {
               return false;
@@ -251,17 +254,15 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
 
         /* Then the artifacts */
-        process
-          .get('artifacts')
+        artifacts
           .filter(definition => definition.$type !== 'bpmn:Association')
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
 
         /* Then the associations */
-        process
-          .get('artifacts')
+        artifacts
           .filter(definition => {
             if (definition.$type !== 'bpmn:Association') {
               return false;
@@ -269,17 +270,28 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
       });
 
       store.commit('highlightNode', this.processNode);
     },
-    setNode(definition) {
+    setNode(definition, flowElements, artifacts) {
+      /* Get the diagram element for the corresponding flow element node. */
+      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+
       if (!this.parsers[definition.$type]) {
         if (process.env.NODE_ENV !== 'production') {
           /* eslint-disable-next-line no-console */
           console.warn(`Unsupported element type in parse: ${definition.$type}`);
         }
+
+        pull(flowElements, [
+          definition,
+          ...definition.get('incoming'),
+          ...definition.get('outgoing'),
+        ]);
+        pull(artifacts, definition);
+        pull(this.planeElements, diagram);
 
         return;
       }
@@ -293,9 +305,6 @@ export default {
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
       }
-
-      /* Get the diagram element for the corresponding flow element node. */
-      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
       store.dispatch('addNode', {
         type,
