@@ -180,7 +180,7 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNode(nodeType, parser) {
+    registerNode(nodeType, customParser) {
       const defaultParser = () => nodeType.id;
 
       this.nodeRegistry[nodeType.id] = nodeType;
@@ -200,9 +200,17 @@ export default {
         });
       }
 
-      this.parsers[nodeType.bpmnType]
-        ? this.parsers[nodeType.bpmnType].push(parser || defaultParser)
-        : this.parsers[nodeType.bpmnType] = [parser || defaultParser];
+      const types = Array.isArray(nodeType.bpmnType)
+        ? nodeType.bpmnType
+        : [nodeType.bpmnType];
+
+      types.forEach(bpmnType => {
+        const parser = customParser || defaultParser;
+
+        this.parsers[bpmnType]
+          ? this.parsers[bpmnType].push(parser)
+          : this.parsers[bpmnType] = [parser];
+      });
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
