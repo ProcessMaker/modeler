@@ -404,7 +404,7 @@ export default {
 
       this.planeElements.push(diagram);
 
-      if (this.poolTarget && type !== laneId) {
+      if ((this.poolTarget && type !== laneId) || type === poolId) {
         store.commit('startBatchAction');
         setTimeout(() => store.commit('commitBatchAction'));
       }
