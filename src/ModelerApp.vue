@@ -4,7 +4,7 @@
       <div>ProcessMaker Modeler</div>
       <div class="actions">
         <b-btn v-b-modal="'uploadmodal'">Upload XML</b-btn>
-        <button class="button" @click="download">Download XML</button>
+        <button class="button" data-test="downloadXMLBtn" @click="download">Download XML</button>
       </div>
     </div>
     <div class="modeler-container">
@@ -54,6 +54,7 @@ export default {
         } else {
           let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
+          window.xml = xml.replace(/[^\x20-\x7E]/gmi, '');
         }
       });
     },
