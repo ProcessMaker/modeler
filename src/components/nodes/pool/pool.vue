@@ -9,7 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane from '../poolLane';
 import { id as poolId } from './index';
-import { poolPadding, labelWidth, labelHeight } from './poolSizes';
+import { poolPadding, labelWidth } from './poolSizes';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
