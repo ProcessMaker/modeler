@@ -4,7 +4,7 @@
       <div>ProcessMaker Modeler</div>
       <div class="actions">
         <b-btn v-b-modal="'uploadmodal'">Upload XML</b-btn>
-        <button class="button" @click="download">Download XML</button>
+        <button class="button" data-test="downloadXMLBtn" @click="download">Download XML</button>
       </div>
     </div>
     <div class="modeler-container">
