@@ -54,6 +54,7 @@ export default {
         } else {
           let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
+          window.xml = xml.replace(/[^\x20-\x7E]/gmi, '');
         }
       });
     },
