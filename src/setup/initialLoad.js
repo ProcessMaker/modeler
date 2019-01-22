@@ -17,5 +17,3 @@ const blank = `
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
   loadXML(blank);
 });
-
-

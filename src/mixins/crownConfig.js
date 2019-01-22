@@ -55,10 +55,6 @@ export default {
   },
   methods: {
     removeShape() {
-      if (this.isPool || this.isLane) {
-        store.commit('startBatchAction');
-      }
-
       this.$emit('remove-node', this.node);
     },
     removeCrown() {
@@ -80,13 +76,15 @@ export default {
         targetRef: { x, y },
       });
 
-      if (sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' || sequenceLink.sourceRef.$type === 'bpmn:InclusiveGateway') {
+      if (
+        sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' ||
+        sequenceLink.sourceRef.$type === 'bpmn:InclusiveGateway')
+      {
         sequenceLink.conditionExpression = this.moddle.create('bpmn:FormalExpression', {
           body: '',
         });
       }
 
-      store.commit('useTemp');
       this.$emit('add-node', {
         type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
@@ -178,7 +176,12 @@ export default {
       });
     },
     configurePoolLane() {
-      if (['processmaker-modeler-pool', 'processmaker-modeler-sequence-flow', 'processmaker-modeler-association'].includes(this.node.type)) {
+      if ([
+        'processmaker-modeler-pool',
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+      ].includes(this.node.type))
+      {
         return;
       }
 
@@ -216,10 +219,12 @@ export default {
         return;
       }
 
-      store.dispatch('updateNodeBounds', {
+      store.commit('updateNodeBounds', {
         node: this.node,
         bounds: bbox,
       });
+
+      this.$emit('save-state');
     },
   },
   mounted() {
@@ -273,9 +278,6 @@ export default {
     pull(process.get('flowElements'), this.node.definition);
     pull(this.planeElements, this.node.diagram);
     pull(process.get('artifacts'), this.node.definition);
-
-    if (this.isPool || this.isLane) {
-      store.commit('commitBatchAction');
-    }
+    console.log('destroyed');
   },
 };

@@ -147,26 +147,25 @@ export default {
       const bbox = this.shape.getBBox();
       if (width !== bbox.width || height !== bbox.height) {
         if (this.poolComponent.laneSet) {
-          store.commit('startBatchAction');
           setTimeout(() => {
-            store.commit('commitBatchAction');
+            this.$emit('save-state');
           });
 
           this.poolComponent.updateLaneChildren();
 
-          store.dispatch('updateNodeBounds', {
+          store.commit('updateNodeBounds', {
             node: this.poolComponent.node,
             bounds: this.poolComponent.shape.getBBox(),
           });
 
           this.poolComponent.sortedLanes().forEach(laneShape => {
-            store.dispatch('updateNodeBounds', {
+            store.commit('updateNodeBounds', {
               node: laneShape.component.node,
               bounds: laneShape.getBBox(),
             });
           });
         } else {
-          store.dispatch('updateNodeBounds', {
+          store.commit('updateNodeBounds', {
             node: this.node,
             bounds: this.shape.getBBox(),
           });

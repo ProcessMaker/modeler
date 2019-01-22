@@ -135,7 +135,9 @@ export default {
       }
 
       this.pushNewLane();
-      setTimeout(() => store.commit('commitBatchAction'));
+      this.$nextTick(() => {
+        this.$emit('save-state');
+      });
     },
     createLaneSet() {
       const laneSet = this.moddle.create('bpmn:LaneSet');
@@ -148,7 +150,6 @@ export default {
       const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
 
-      store.commit('startBatchAction');
       this.$emit('add-node', {
         type: Lane.id,
         definition,
@@ -224,7 +225,7 @@ export default {
         elementBounds.set('width', element.get('size').width);
         elementBounds.set('height', element.get('size').height);
 
-        store.dispatch('updateNodeBounds', {
+        store.commit('updateNodeBounds', {
           node: this.node,
           bounds: this.shape.getBBox(),
         });
@@ -279,19 +280,19 @@ export default {
           this.resizeLanes();
 
           this.sortedLanes().forEach(laneShape => {
-            store.dispatch('updateNodeBounds', {
+            store.commit('updateNodeBounds', {
               node: laneShape.component.node,
               bounds: laneShape.getBBox(),
             });
           });
         }
 
-        store.dispatch('updateNodeBounds', {
+        store.commit('updateNodeBounds', {
           node: this.node,
           bounds: this.shape.getBBox(),
         });
 
-        store.commit('commitBatchAction');
+        this.$emit('save-state');
       }
     },
     fillLanes(resizingLane, direction, remove) {
@@ -428,7 +429,7 @@ export default {
           : currentRefs.length > 0;
 
         if (hasChanged) {
-          store.dispatch('updateNodeProp', {
+          store.commit('updateNodeProp', {
             node: laneShape.component.node,
             key: 'flowNodeRef',
             value: newRefs || [],
@@ -539,10 +540,8 @@ export default {
         }
 
         if (previousValidPosition) {
-          store.commit('startBatchAction');
-
           draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
-          store.dispatch('updateNodeBounds', {
+          store.commit('updateNodeBounds', {
             node: draggingElement.component.node,
             bounds: previousValidPosition,
           });

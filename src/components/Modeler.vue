@@ -18,6 +18,7 @@
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
         :processNode="processNode"
+        @save-state="pushToUndoStack"
       />
     </div>
 
@@ -43,6 +44,7 @@
       @click="highlightNode(node)"
       @unsetPools="unsetPools"
       @setPools="setPools"
+      @save-state="pushToUndoStack"
     />
   </div>
 </template>
@@ -55,16 +57,20 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
-import throttle from 'lodash/throttle';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import undoRedoStore from '@/undoRedoStore';
+
+window.undoRedoStore = undoRedoStore;
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
 
 import { id as poolId } from './nodes/pool';
-import { id as laneId } from './nodes/poolLane/';
+import { id as laneId } from './nodes/poolLane';
+import { id as sequenceFlowId } from './nodes/sequenceFlow';
+import { setTimeout } from 'timers';
 
 const version = '1.0';
 
@@ -110,11 +116,34 @@ export default {
   },
   computed: {
     nodes: () => store.getters.nodes,
-    canUndo: () => store.getters.canUndo,
-    canRedo: () => store.getters.canRedo,
+    canUndo() {
+      return undoRedoStore.getters.canUndo;
+    },
+    canRedo() {
+      return undoRedoStore.getters.canRedo;
+    },
+    currentXML() {
+      return undoRedoStore.getters.currentState;
+    },
     highlightedNode: () => store.getters.highlightedNode,
   },
   methods: {
+    pushToUndoStack() {
+      console.log('pushToUndoStack');
+      this.toXML((err,xml) => {
+        undoRedoStore.dispatch('pushState', xml);
+      });
+    },
+    undo() {
+      undoRedoStore.dispatch('undo').then(() => {
+        this.loadXML(this.currentXML);
+      });
+    },
+    redo() {
+      undoRedoStore.dispatch('redo').then(() => {
+        this.loadXML(this.currentXML);
+      });
+    },
     setPools(poolDefinition) {
       if (!this.collaboration) {
         this.collaboration = this.moddle.create('bpmn:Collaboration');
@@ -151,8 +180,6 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    undo: throttle(() => store.commit('undo'), 500, { leading: true }),
-    redo: throttle(() => store.commit('redo'), 500, { leading: true }),
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
@@ -314,7 +341,7 @@ export default {
         definition.set('name', '');
       }
 
-      store.dispatch('addNode', {
+      store.commit('addNode', {
         type,
         definition,
         diagram,
@@ -327,7 +354,6 @@ export default {
       return hasSource && hasTarget;
     },
     loadXML(xml) {
-      store.commit('clearNodes');
       this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
@@ -336,9 +362,13 @@ export default {
           this.definitions = definitions;
           this.context = context;
           this.initializeUniqueId(context);
-          this.parse();
-          this.$emit('parsed');
-          setTimeout(() => store.commit('clearHistory'));
+
+          store.commit('clearNodes');
+
+          this.$nextTick(() => {
+            this.parse();
+            this.$emit('parsed');
+          });
         }
       });
     },
@@ -404,17 +434,16 @@ export default {
 
       this.planeElements.push(diagram);
 
-      if ((this.poolTarget && type !== laneId) || type === poolId) {
-        store.commit('startBatchAction');
-        setTimeout(() => store.commit('commitBatchAction'));
-      }
-
-      store.dispatch('addNode', {
+      store.commit('addNode', {
         type,
         definition,
         diagram,
         pool: this.poolTarget,
       });
+
+      if (type !== sequenceFlowId) {
+        setTimeout(() => this.pushToUndoStack());
+      }
 
       this.poolTarget = null;
     },
@@ -427,7 +456,10 @@ export default {
       });
     },
     removeNode(node) {
-      store.dispatch('removeNode', node);
+      store.commit('removeNode', node);
+      this.$nextTick(() => {
+        this.pushToUndoStack();
+      });
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
@@ -513,6 +545,8 @@ export default {
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
+    // this.saveInterval = setInterval(this.logXml, 1000);
+
     // Handle window resize
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
