@@ -357,15 +357,27 @@ export default {
 
       this.resizePool();
     },
+    fitEmbeds() {
+      this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
+      this.shape.resize(
+        this.shape.getBBox().width - labelWidth,
+        this.shape.getBBox().height - labelWidth
+      );
+      this.shape.resize(
+        this.shape.getBBox().width,
+        this.shape.getBBox().height - labelWidth,
+        { direction: 'top' }
+      );
+    },
     resizePool() {
-      this.shape.fitEmbeds({ padding: poolPadding });
+      this.fitEmbeds();
 
       const { width, height } = this.shape.get('size');
       const bounds = this.node.diagram.bounds;
 
       this.shape.resize(
         /* Add labelWidth to ensure elements don't overlap with the pool label */
-        Math.max(width, bounds.width) + labelWidth,
+        Math.max(width, bounds.width),
         Math.max(height, bounds.height)
       );
 
@@ -400,7 +412,7 @@ export default {
         .forEach(element => {
           const lane = this.graph
             .findModelsUnderElement(element, { searchBy: 'center' })
-            .find(element => element.component.node.type === laneId);
+            .find(element => element.component && element.component.node.type === laneId);
 
           newLaneRefs[lane.id]
             ? newLaneRefs[lane.id].push(element.component.node.definition)
