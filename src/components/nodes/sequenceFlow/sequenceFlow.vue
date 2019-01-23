@@ -24,7 +24,7 @@ export default {
       definition: null,
       sourceShape: null,
       target: null,
-      anchorPadding: 25,
+      anchorPadding: 30,
     };
   },
   computed: {
@@ -128,7 +128,7 @@ export default {
       this.updateCrownPosition();
     },
     updateRouter() {
-      this.shape.router('orthogonal', { elementPadding: this.elementPadding });
+      this.shape.router('orthogonal', { padding: this.anchorPadding });
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
@@ -216,7 +216,7 @@ export default {
       router: {
         name: 'orthogonal',
         args: {
-          elementPadding: this.elementPadding,
+          padding: this.anchorPadding,
         },
       },
     });
