@@ -24,7 +24,7 @@ export default {
       definition: null,
       sourceShape: null,
       target: null,
-      anchorPadding: 30,
+      anchorPadding: 40,
     };
   },
   computed: {
@@ -128,7 +128,11 @@ export default {
       this.updateCrownPosition();
     },
     updateRouter() {
-      this.shape.router('orthogonal', { padding: this.anchorPadding });
+      this.shape.router('manhattan', {
+        padding: this.anchorPadding,
+        maximumLoops: 1,
+        maxAllowedDirectionChange: 1,
+      });
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
@@ -214,9 +218,11 @@ export default {
   mounted() {
     this.shape = new joint.shapes.standard.Link({
       router: {
-        name: 'orthogonal',
+        name: 'manhattan',
         args: {
           padding: this.anchorPadding,
+          maximumLoops: 1,
+          maxAllowedDirectionChange: 1,
         },
       },
     });
