@@ -38,6 +38,12 @@ export default new Vuex.Store({
           : undoRedo.undo();
 
         state.redoList.unshift(undoRedo);
+
+        setTimeout(() => {
+          state.graph.getLinks().forEach(element => {
+            element.toFront();
+          });
+        });
       }
     },
     redo(state) {
