@@ -55,6 +55,14 @@ export default {
   },
   methods: {
     removeShape() {
+      this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
+      this.shape.getEmbeddedCells().forEach(cell => {
+        if (cell.component) {
+          this.shape.unembed(cell);
+          this.$emit('remove-node', cell.component.node);
+        }
+      });
+
       this.$emit('remove-node', this.node);
     },
     removeCrown() {
@@ -258,15 +266,6 @@ export default {
       }
     });
   },
-  beforeDestroy() {
-    this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
-    this.shape.getEmbeddedCells().forEach(cell => {
-      if (cell.component) {
-        this.shape.unembed(cell);
-        this.$emit('remove-node', cell.component.node);
-      }
-    });
-  },
   destroyed() {
     this.shape.stopListening();
     this.shape.remove();
@@ -278,6 +277,5 @@ export default {
     pull(process.get('flowElements'), this.node.definition);
     pull(this.planeElements, this.node.diagram);
     pull(process.get('artifacts'), this.node.definition);
-    console.log('destroyed');
   },
 };

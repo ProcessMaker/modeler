@@ -62,15 +62,12 @@ import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 
-window.undoRedoStore = undoRedoStore;
-
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
-import { setTimeout } from 'timers';
 
 const version = '1.0';
 
@@ -129,7 +126,6 @@ export default {
   },
   methods: {
     pushToUndoStack() {
-      console.log('pushToUndoStack');
       this.toXML((err,xml) => {
         undoRedoStore.dispatch('pushState', xml);
       });
@@ -348,8 +344,8 @@ export default {
       });
     },
     hasSourceAndTarget(definition) {
-      const hasSource = this.parsers[definition.sourceRef.$type];
-      const hasTarget = this.parsers[definition.targetRef.$type];
+      const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
+      const hasTarget = definition.targetRef && this.parsers[definition.targetRef.$type];
 
       return hasSource && hasTarget;
     },
@@ -441,7 +437,7 @@ export default {
         pool: this.poolTarget,
       });
 
-      if (type !== sequenceFlowId) {
+      if (![sequenceFlowId, laneId].includes(type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
@@ -545,8 +541,6 @@ export default {
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
-    // this.saveInterval = setInterval(this.logXml, 1000);
-
     // Handle window resize
     this.handleResize();
     window.addEventListener('resize', this.handleResize);

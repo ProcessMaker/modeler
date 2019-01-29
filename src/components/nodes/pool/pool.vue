@@ -115,9 +115,11 @@ export default {
       this.shape.unembed(element);
       toPool.component.addToPool(element);
     },
-    addLane() {
+    async addLane() {
       /* A Lane element must be contained in a LaneSet element.
        * Get the current laneSet element or create a new one. */
+
+      const lanes = [];
 
       if (!this.laneSet) {
         this.createLaneSet();
@@ -131,13 +133,13 @@ export default {
           definition.get('flowNodeRef').push(element.component.node.definition);
         });
 
-        this.pushNewLane(definition);
+        lanes.push(this.pushNewLane(definition));
       }
 
-      this.pushNewLane();
-      this.$nextTick(() => {
-        this.$emit('save-state');
-      });
+      lanes.push(this.pushNewLane());
+
+      await Promise.all(lanes);
+      this.$emit('save-state');
     },
     createLaneSet() {
       const laneSet = this.moddle.create('bpmn:LaneSet');
@@ -155,6 +157,8 @@ export default {
         definition,
         diagram,
       });
+
+      return this.$nextTick();
     },
     addToPool(element) {
       this.shape.unembed(element);
@@ -168,8 +172,7 @@ export default {
       this.expandToFitElement(element);
     },
     expandToFitElement(element) {
-      const { width, height } = this.shape.get('size');
-      const { x, y } = this.shape.position();
+      const { x: poolX, y: poolY, width, height } = this.shape.getBBox();
 
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
@@ -203,6 +206,7 @@ export default {
         this.shape.resize(width, isFirstLane ? height : height + laneHeight, {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
+        this.shape.position(poolX, poolY);
         this.updateCrownPosition();
         this.updateAnchorPointPosition();
 
@@ -236,8 +240,8 @@ export default {
       const { width: elementWidth, height: elementHeight } = element.get('size');
       const { x: elementX, y: elementY } = element.position();
 
-      const relativeX = elementX - x;
-      const relativeY = elementY - y;
+      const relativeX = elementX - poolX;
+      const relativeY = elementY - poolY;
 
       const rightEdge = relativeX + elementWidth;
       const leftEdge = relativeX;
