@@ -207,14 +207,7 @@ export default {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
 
-        /* Resizing causes rounding errors.
-         * E.g. Setting 180.0000000000001 instead of 180.
-         * Re-position pool based on rounded values.
-         */
-        this.shape.position(
-          Math.round(this.shape.getBBox().x),
-          Math.round(this.shape.getBBox().y)
-        );
+        this.fixResizeRounding();
 
         this.updateCrownPosition();
         this.updateAnchorPointPosition();
@@ -284,6 +277,8 @@ export default {
         this.shape.resize(Math.max(newWidth, width), Math.max(newHeight, height), {
           direction: `${directionHeight}-${directionWidth}`,
         });
+
+        this.fixResizeRounding();
 
         this.updateCrownPosition();
         this.updateAnchorPointPosition();

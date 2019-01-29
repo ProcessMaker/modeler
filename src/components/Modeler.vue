@@ -57,6 +57,7 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
+import debounce from 'lodash/debounce';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
@@ -131,14 +132,16 @@ export default {
       });
     },
     undo() {
-      undoRedoStore.dispatch('undo').then(() => {
-        this.loadXML(this.currentXML);
-      });
+      undoRedoStore
+        .dispatch('undo')
+        .then(this.loadXML.cancel)
+        .then(this.loadXML);
     },
     redo() {
-      undoRedoStore.dispatch('redo').then(() => {
-        this.loadXML(this.currentXML);
-      });
+      undoRedoStore
+        .dispatch('redo')
+        .then(this.loadXML.cancel)
+        .then(this.loadXML);
     },
     setPools(poolDefinition) {
       if (!this.collaboration) {
@@ -349,7 +352,7 @@ export default {
 
       return hasSource && hasTarget;
     },
-    loadXML(xml) {
+    loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
@@ -531,6 +534,8 @@ export default {
     },
   },
   created() {
+    this.loadXML = debounce(this.loadXML.bind(this), 0, { leading: false });
+
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
       registerInspectorExtension: this.registerInspectorExtension,

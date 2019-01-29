@@ -23,24 +23,6 @@ export default {
         this.removeCrown();
       }
     },
-    'node.diagram.bounds': {
-      handler({ x, y, width, height }) {
-        const { x: shapeX, y: shapeY } = this.shape.position();
-        const { width: shapeWidth, height: shapeHeight } = this.shape.get('size');
-        const sizeChanged = width !== shapeWidth || height !== shapeHeight;
-        const positionChanged = x !== shapeX || y !== shapeY;
-
-        if (!sizeChanged && !positionChanged) {
-          return;
-        }
-
-        sizeChanged && this.shape.resize(width, height);
-        positionChanged && this.shape.position(x, y, { deep: !sizeChanged });
-
-        this.updateCrownPosition();
-      },
-      deep: true,
-    },
   },
   computed: {
     shapeView() {
@@ -166,6 +148,11 @@ export default {
           shapeView.unhighlight();
           shapeView.highlight();
         }
+      });
+
+      this.shape.on('change:position', (element, newPosition) => {
+        this.node.diagram.bounds.x = newPosition.x;
+        this.node.diagram.bounds.y = newPosition.y;
       });
     },
     updateCrownPosition() {
