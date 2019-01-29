@@ -206,7 +206,16 @@ export default {
         this.shape.resize(width, isFirstLane ? height : height + laneHeight, {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
-        this.shape.position(poolX, poolY);
+
+        /* Resizing causes rounding errors.
+         * E.g. Setting 180.0000000000001 instead of 180.
+         * Re-position pool based on rounded values.
+         */
+        this.shape.position(
+          Math.round(this.shape.getBBox().x),
+          Math.round(this.shape.getBBox().y)
+        );
+
         this.updateCrownPosition();
         this.updateAnchorPointPosition();
 
