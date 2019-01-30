@@ -1,6 +1,4 @@
 /// <reference types="Cypress" />
-// const mountVue = require('cypress-vue-unit-test');
-// import ModelerApp from '../../../src/ModelerApp';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -25,6 +23,15 @@ const dragFromSourceToDest = (source, dest, position) => {
   cy.get(dest).trigger('drop', { offsetX: position.x, offsetY: position.y });
 };
 
+const nodeTypes = [
+  '.processmaker-modeler-task',
+  '.processmaker-modeler-end-event',
+  '.processmaker-modeler-script-task',
+  '.processmaker-modeler-exclusive-gateway',
+  '.processmaker-modeler-text-annotation',
+  '.processmaker-modeler-pool',
+];
+
 describe('Modeler', () => {
   beforeEach(()=> {
     cy.visit('/');
@@ -35,28 +42,18 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  it('Drags and drops an task element', () => {
-    cy.get('.modeler').children().should('have.length', 2);
+  nodeTypes.forEach((type) => {
+    it('Renders list of nodes', () => {
+      cy.get('.modeler').children().should('have.length', 2);
 
-    dragFromSourceToDest(
-      '.processmaker-modeler-task',
-      '.paper-container',
-      { x: 400, y: 200 },
-    );
+      dragFromSourceToDest(
+        type,
+        '.paper-container',
+        { x: 400, y: 200 },
+      );
 
-    cy.get('.modeler').children().should('have.length', 3);
-  });
-
-  it('Drags and drops an end element', () => {
-    cy.get('.modeler').children().should('have.length', 2);
-
-    dragFromSourceToDest(
-      '.processmaker-modeler-end-event',
-      '.paper-container',
-      { x: 400, y: 200 },
-    );
-
-    cy.get('.modeler').children().should('have.length', 3);
+      cy.get('.modeler').children().should('have.length', 3);
+    });
   });
 
   xit('Updates element name', ()=> {
