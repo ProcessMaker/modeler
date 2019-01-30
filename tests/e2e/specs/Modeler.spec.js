@@ -26,8 +26,11 @@ const dragFromSourceToDest = (source, dest, position) => {
 };
 
 describe('Modeler', () => {
-  it('Renders the application without errors', () => {
+  before(()=> {
     cy.visit('/');
+  });
+
+  it('Renders the application without errors', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
