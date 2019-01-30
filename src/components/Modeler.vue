@@ -598,6 +598,12 @@ export default {
       }
     });
 
+    this.paper.on('all', () => {
+      this.graph.getLinks().forEach(element => {
+        element.toFront();
+      });
+    });
+
     this.paper.on('cell:pointerdown', cellView => {
       if (cellView.model.component) {
         cellView.model.toFront({ deep: true });
