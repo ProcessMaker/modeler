@@ -42,19 +42,22 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  nodeTypes.forEach((type) => {
-    it('Renders list of nodes', () => {
-      cy.get('.modeler').children().should('have.length', 2);
+  it('Renders list of nodes', () => {
+    cy.get('.modeler').children().should('have.length', 2);
 
+    nodeTypes.forEach(type => {
       dragFromSourceToDest(
         type,
         '.paper-container',
-        { x: 400, y: 200 },
+        {
+          x: Math.floor(Math.random() * 700) + 200,
+          y: Math.floor(Math.random() * 700) + 200,
+        },
       );
-
-      cy.get('.modeler').children().should('have.length', 3);
     });
+    cy.get('.modeler').children().should('have.length', 8);
   });
+
 
   xit('Updates element name', ()=> {
     // Check if element is on the paper
@@ -69,14 +72,14 @@ describe('Modeler', () => {
     // Assert - check if name is updated on paper
     cy.get('.joint-viewport').contains('testing');
 
-    // Assert - Valid XML
-    cy.get('[data-test="downloadXMLBtn"]').click();
+    // // Assert - Valid XML
+    // cy.get('[data-test="downloadXMLBtn"]').click();
 
-    const validXML = generateXML('testing');
+    // const validXML = generateXML('testing');
 
-    cy.get('[data-test="downloadXMLBtn"]').click();
+    // cy.get('[data-test="downloadXMLBtn"]').click();
 
-    cy.window().its('xml').should('eq', validXML);
+    // cy.window().its('xml').should('eq', validXML);
   });
 
   xit('Exports a xml file', () => {
