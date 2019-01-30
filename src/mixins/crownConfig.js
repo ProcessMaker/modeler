@@ -207,16 +207,9 @@ export default {
         return;
       }
 
-      const { x, y } = this.node.diagram.bounds;
-      const bbox = this.shape.getBBox();
-
-      if (x === bbox.x && y === bbox.y) {
-        return;
-      }
-
       store.commit('updateNodeBounds', {
         node: this.node,
-        bounds: bbox,
+        bounds: this.shape.getBBox(),
       });
 
       this.$emit('save-state');
