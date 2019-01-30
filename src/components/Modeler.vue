@@ -359,8 +359,9 @@ export default {
       const diagram = this.nodeRegistry[type].diagram(this.moddle);
 
       // Handle transform
-      diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
-      diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
+      const paperOrigin = this.paper.localToPagePoint(0, 0);
+      diagram.bounds.x = event.clientX - paperOrigin.x;
+      diagram.bounds.y = event.clientY - paperOrigin.y;
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
