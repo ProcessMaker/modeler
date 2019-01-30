@@ -26,15 +26,40 @@ const dragFromSourceToDest = (source, dest, position) => {
 };
 
 describe('Modeler', () => {
-  before(()=> {
+  beforeEach(()=> {
     cy.visit('/');
+    cy.reload();
   });
 
   it('Renders the application without errors', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  it('Updates element name', ()=> {
+  it('Drags and drops an task element', () => {
+    cy.get('.modeler').children().should('have.length', 2);
+
+    dragFromSourceToDest(
+      '.processmaker-modeler-task',
+      '.paper-container',
+      { x: 400, y: 200 },
+    );
+
+    cy.get('.modeler').children().should('have.length', 3);
+  });
+
+  it('Drags and drops an end element', () => {
+    cy.get('.modeler').children().should('have.length', 2);
+
+    dragFromSourceToDest(
+      '.processmaker-modeler-end-event',
+      '.paper-container',
+      { x: 400, y: 200 },
+    );
+
+    cy.get('.modeler').children().should('have.length', 3);
+  });
+
+  xit('Updates element name', ()=> {
     // Check if element is on the paper
     cy.get('.modeler').children().should('have.length', 2);
 
@@ -57,20 +82,8 @@ describe('Modeler', () => {
     cy.window().its('xml').should('eq', validXML);
   });
 
-  it('Drags and drops an element', () => {
-    cy.get('.modeler').children().should('have.length', 2);
-
-    dragFromSourceToDest(
-      '.processmaker-modeler-task',
-      '.paper-container',
-      { x: 400, y: 200 },
-    );
-
-    cy.get('.modeler').children().should('have.length', 3);
-  });
-
   xit('Exports a xml file', () => {
-    cy.get('[data-test="downloadXMLBtn"]').click();
+    // cy.get('[data-test="downloadXMLBtn"]').click();
     const validXML = generateXML('Start Event');
     cy.window().its('xml').should('eq', validXML);
   });
