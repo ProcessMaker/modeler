@@ -120,4 +120,15 @@ describe('Modeler', () => {
     cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
     cy.get('[name=\'name\']').should('have.value', 'testing');
   });
+
+  it('Updates element name and validates xml', () => {
+    cy.get('.modeler').children().should('have.length', 2);
+    cy.get('.joint-viewport').click();
+    cy.get('[name=\'name\']').focus().clear().type('testing');
+    cy.get('.joint-viewport').contains('testing');
+    cy.get('[data-test="downloadXMLBtn"]').click();
+
+    const validXML = generateXML('testing');
+    cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
+  });
 });
