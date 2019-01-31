@@ -47,6 +47,19 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
+  it('Connect elements with a sequence flow', () => {
+    cy.get('.modeler').children().should('have.length', 2);
+    dragFromSourceToDest(
+      '.processmaker-modeler-task',
+      '.paper-container',
+      { x: 300, y: 200},
+    );
+
+    cy.get('.joint-type-standard-circle').click();
+    cy.get('#j_2').click().trigger('mousemove', { x: 300, y: 200, force: true});
+    cy.get('.modeler').children().should('have.length', 4);
+  });
+
   it('Renders list of nodes', () => {
     cy.get('.modeler').children().should('have.length', 2);
 
@@ -54,10 +67,7 @@ describe('Modeler', () => {
       dragFromSourceToDest(
         type,
         '.paper-container',
-        {
-          x: coordinateGenerator(),
-          y: coordinateGenerator(),
-        },
+        { x: coordinateGenerator(), y: coordinateGenerator()},
       );
     });
     cy.get('.modeler').children().should('have.length', 8);
@@ -67,10 +77,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       '.processmaker-modeler-task',
       '.paper-container',
-      {
-        x: coordinateGenerator(),
-        y: coordinateGenerator(),
-      },
+      { x: coordinateGenerator(), y: coordinateGenerator()},
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
@@ -82,10 +89,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       '.processmaker-modeler-exclusive-gateway',
       '.paper-container',
-      {
-        x: coordinateGenerator(),
-        y: coordinateGenerator(),
-      },
+      { x: coordinateGenerator(), y: coordinateGenerator()},
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
@@ -97,10 +101,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       '.processmaker-modeler-text-annotation',
       '.paper-container',
-      {
-        x: coordinateGenerator(),
-        y: coordinateGenerator(),
-      },
+      { x: coordinateGenerator(), y: coordinateGenerator()},
     );
 
     cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
@@ -112,10 +113,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       '.processmaker-modeler-pool',
       '.paper-container',
-      {
-        x: coordinateGenerator(),
-        y: coordinateGenerator(),
-      },
+      { x: coordinateGenerator(), y: coordinateGenerator()},
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
