@@ -43,11 +43,11 @@ describe('Modeler', () => {
     cy.reload();
   });
 
-  it('Renders the application without errors', () => {
+  xit('Renders the application without errors', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  it('Renders list of nodes', () => {
+  xit('Renders list of nodes', () => {
     cy.get('.modeler').children().should('have.length', 2);
 
     nodeTypes.forEach(type => {
@@ -81,19 +81,5 @@ describe('Modeler', () => {
 
     // const validXML = generateXML('testing');
     // cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
-  });
-
-  it('Drags and drops an element', () => {
-    cy.get('.modeler').children().should('have.length', 2);
-
-    // cy.get('[data-test="downloadXMLBtn"]').click();
-
-    // cy.window().its('xml').should('eq', validXML);
-  });
-
-  xit('Exports a xml file', () => {
-    // cy.get('[data-test="downloadXMLBtn"]').click();
-    const validXML = generateXML('Start Event');
-    cy.window().its('xml').should('eq', validXML);
   });
 });
