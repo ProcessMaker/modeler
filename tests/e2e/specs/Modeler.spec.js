@@ -14,7 +14,7 @@ const generateXML = (nodeName) => {
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn:definitions>`.replace(/[^\x20-\x7E]/gmi, '');
+</bpmn:definitions>`;
 };
 
 const dragFromSourceToDest = (source, dest, position) => {
@@ -30,7 +30,7 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  it('Updates element name', ()=> {
+  it('Updates element name', () => {
     // Check if element is on the paper
     cy.get('.modeler').children().should('have.length', 2);
 
@@ -50,7 +50,7 @@ describe('Modeler', () => {
 
     cy.get('[data-test="downloadXMLBtn"]').click();
 
-    cy.window().its('xml').should('eq', validXML);
+    cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
   });
 
   it('Drags and drops an element', () => {
