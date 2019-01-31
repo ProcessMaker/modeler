@@ -1,4 +1,3 @@
-/// <reference types="Cypress" />
 // const mountVue = require('cypress-vue-unit-test');
 // import ModelerApp from '../../../src/ModelerApp';
 
