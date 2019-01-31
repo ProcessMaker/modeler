@@ -101,7 +101,8 @@ export default {
   },
   methods: {
     setNodeProp: debounce(function(node, key, value) {
-      store.dispatch('updateNodeProp', { node, key, value });
+      store.commit('updateNodeProp', { node, key, value });
+      this.$emit('save-state');
     }, saveDebounce),
     defaultInspectorHandler(value, node, setNodeProp) {
       /* Go through each property and rebind it to our data */

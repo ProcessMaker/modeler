@@ -142,35 +142,45 @@ export default {
         }
       });
     },
-    resizeUpdate() {
-      const { width, height } = this.node.diagram.bounds;
-      const bbox = this.shape.getBBox();
-      if (width !== bbox.width || height !== bbox.height) {
-        if (this.poolComponent.laneSet) {
-          store.commit('startBatchAction');
-          setTimeout(() => {
-            store.commit('commitBatchAction');
-          });
+    fixResizeRounding() {
+      /* Resizing causes rounding errors.
+       * E.g. Setting 180.0000000000001 instead of 180.
+       * Re-position pool based on rounded values.
+       */
+      const { x, y, width, height } = this.poolComponent.shape.getBBox();
 
+      this.poolComponent.shape.resize(
+        Math.round(width),
+        Math.round(height)
+      );
+      this.poolComponent.shape.position(
+        Math.round(x),
+        Math.round(y)
+      );
+    },
+    resizeUpdate() {
+      this.fixResizeRounding();
+
+      const { width, height } = this.shape.getBBox();
+      const bounds = this.node.diagram.bounds;
+      if (width !== bounds.width || height !== bounds.height) {
+        if (this.poolComponent.laneSet) {
           this.poolComponent.updateLaneChildren();
 
-          store.dispatch('updateNodeBounds', {
-            node: this.poolComponent.node,
-            bounds: this.poolComponent.shape.getBBox(),
-          });
-
           this.poolComponent.sortedLanes().forEach(laneShape => {
-            store.dispatch('updateNodeBounds', {
+            store.commit('updateNodeBounds', {
               node: laneShape.component.node,
               bounds: laneShape.getBBox(),
             });
           });
-        } else {
-          store.dispatch('updateNodeBounds', {
-            node: this.node,
-            bounds: this.shape.getBBox(),
-          });
         }
+
+        store.commit('updateNodeBounds', {
+          node: this.poolComponent.node,
+          bounds: this.poolComponent.shape.getBBox(),
+        });
+
+        this.$emit('save-state');
       }
     },
     resizeTopLeft(point, newPosition, source) {

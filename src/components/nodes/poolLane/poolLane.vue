@@ -9,7 +9,6 @@ import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
-import store from '@/store';
 
 export default {
   props: ['graph', 'node', 'nodes', 'id', 'collaboration'],
@@ -27,7 +26,6 @@ export default {
   },
   methods: {
     removeShape() {
-      store.commit('startBatchAction');
       this.$emit('remove-node', this.node);
 
       const poolComponent = this.node.pool.component;

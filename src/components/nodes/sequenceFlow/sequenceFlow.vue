@@ -13,7 +13,6 @@ import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import { id as laneId } from '../poolLane';
-import store from '@/store';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -169,7 +168,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
         this.updateDefinitionLinks();
-        store.commit('commitTemp');
+        this.$emit('save-state');
       });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
@@ -181,7 +180,7 @@ export default {
     },
     removeLink() {
       this.resetPaper();
-      store.commit('purgeTemp');
+      this.$emit('remove-node', this.node);
     },
     resetPaper() {
       this.$emit('set-cursor', null);
