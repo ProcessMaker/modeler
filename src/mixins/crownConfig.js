@@ -1,6 +1,5 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
-import store from '@/store';
 import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
@@ -82,6 +81,7 @@ export default {
       });
     },
     addAssociation(cellView, evt, x, y) {
+      this.removeCrown();
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
@@ -128,7 +128,6 @@ export default {
 
         this.shape.embed(button);
         button.addTo(this.graph);
-        this.updateCrownPosition();
       });
 
       this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
@@ -203,14 +202,15 @@ export default {
       }
     },
     setNodePosition() {
-      if (!this.allowSetNodePosition) {
+      const { x, y } = this.shape.getBBox();
+      const { x: nodeX, y: nodeY } = this.node.diagram.bounds;
+
+      if (!this.allowSetNodePosition || (x === nodeX && y === nodeY)) {
         return;
       }
 
-      store.commit('updateNodeBounds', {
-        node: this.node,
-        bounds: this.shape.getBBox(),
-      });
+      this.node.diagram.bounds.set('x', x);
+      this.node.diagram.bounds.set('y', y);
 
       this.$emit('save-state');
     },
