@@ -207,7 +207,9 @@ export default {
     },
     // This registers a node to use in the bpmn modeler
     registerNode(nodeType, customParser) {
-      const defaultParser = () => nodeType.id;
+      const defaultParser = nodeType.implementation
+        ? definition => definition.get('implementation') === nodeType.implementation && nodeType.id
+        : () => nodeType.id;
 
       this.nodeRegistry[nodeType.id] = nodeType;
 
@@ -330,9 +332,10 @@ export default {
         return;
       }
 
-      const type = this.parsers[definition.$type].reduce((type, parser) => {
-        return parser(definition) || type;
-      }, null);
+      const type = this.parsers[definition.$type]
+        .reduce((type, parser) => {
+          return parser(definition, this.moddle) || type;
+        }, null);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;

@@ -3,6 +3,8 @@ import './globals';
 // Import Extensions for Testing Modeler
 import './defaultNodes';
 import './extensions/testTaskInspectorExtension';
+import './extensions/twitterConnector';
+import './extensions/testCustomConnector';
 
 const blank = `
 <?xml version="1.0" encoding="UTF-8"?>

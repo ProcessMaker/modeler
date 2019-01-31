@@ -1,15 +1,19 @@
 import {
   task,
 } from '@/components/nodes';
+import testIcon from '@/assets/connect-artifacts.svg';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
 
-  const implementation = 'processmaker-social-twitter-send';
-  const nodeId = 'processmaker-connectors-social-twitter-send';
+  const implementation = 'test-message';
+  const nodeId = 'connectors-test-message';
 
   const component = {
     extends: task.component,
+    mounted() {
+      this.shape.attr('image/xlink:href', testIcon);
+    },
   };
 
   const nodeType = {
@@ -19,13 +23,13 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     control: true,
     category: 'Social',
     icon: require('@/assets/toolpanel/task.svg'),
-    label: 'Send Tweet',
+    label: 'Test',
     implementation,
     definition(moddle) {
       return moddle.create('bpmn:ServiceTask', {
-        name: 'Send Tweet',
+        name: 'Test Connector',
         implementation,
-        config: JSON.stringify({ tweet: '' }),
+        config: JSON.stringify({ testMessage: '' }),
       });
     },
     diagram(moddle) {
@@ -73,12 +77,12 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     },
     inspectorConfig: [
       {
-        name: 'Send Tweet',
+        name: 'Test Connector',
         items: [
           {
             component: 'FormText',
             config: {
-              label: 'Send Tweet',
+              label: 'Test Connector',
               fontSize: '2em',
             },
           },
@@ -93,9 +97,9 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
           {
             component: 'FormTextArea',
             config: {
-              label: 'Tweet Body',
-              helper: 'The Body Of The Tweet to Send',
-              name: 'tweet',
+              label: 'Test Message',
+              helper: 'The Body of The Message to Send',
+              name: 'testMessage',
             },
           },
         ],
