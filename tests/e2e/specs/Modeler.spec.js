@@ -24,6 +24,10 @@ const dragFromSourceToDest = (source, dest, position) => {
   cy.get(dest).trigger('drop', { offsetX: position.x, offsetY: position.y });
 };
 
+function coordinateGenerator() {
+  return Math.floor(Math.random() * 500) + 150;
+}
+
 const nodeTypes = [
   '.processmaker-modeler-task',
   '.processmaker-modeler-end-event',
@@ -51,8 +55,8 @@ describe('Modeler', () => {
         type,
         '.paper-container',
         {
-          x: Math.floor(Math.random() * 700) + 200,
-          y: Math.floor(Math.random() * 700) + 200,
+          x: coordinateGenerator(),
+          y: coordinateGenerator(),
         },
       );
     });
