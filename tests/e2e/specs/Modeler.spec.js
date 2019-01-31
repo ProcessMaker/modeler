@@ -43,11 +43,11 @@ describe('Modeler', () => {
     cy.reload();
   });
 
-  xit('Renders the application without errors', () => {
+  it('Renders the application without errors', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  xit('Renders list of nodes', () => {
+  it('Renders list of nodes', () => {
     cy.get('.modeler').children().should('have.length', 2);
 
     nodeTypes.forEach(type => {
@@ -64,22 +64,13 @@ describe('Modeler', () => {
   });
 
   it('Updates element name', () => {
-    // Check if element is on the paper
     cy.get('.modeler').children().should('have.length', 2);
-
-    // Select element
     cy.get('.joint-viewport').click();
-
-    // focus name input + Add value (type event)
     cy.get('[name=\'name\']').focus().clear().type('testing');
-
-    // Assert - check if name is updated on paper
     cy.get('.joint-viewport').contains('testing');
+    cy.get('[data-test="downloadXMLBtn"]').click();
 
-    // // Assert - Valid XML
-    // cy.get('[data-test="downloadXMLBtn"]').click();
-
-    // const validXML = generateXML('testing');
-    // cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
+    const validXML = generateXML('testing');
+    cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
   });
 });
