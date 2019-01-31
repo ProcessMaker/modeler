@@ -1,4 +1,5 @@
-/// <reference types="Cypress" />
+// const mountVue = require('cypress-vue-unit-test');
+// import ModelerApp from '../../../src/ModelerApp';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -13,7 +14,7 @@ const generateXML = (nodeName) => {
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn:definitions>`.replace(/[^\x20-\x7E]/gmi, '');
+</bpmn:definitions>`;
 };
 
 const dragFromSourceToDest = (source, dest, position) => {
@@ -58,8 +59,7 @@ describe('Modeler', () => {
     cy.get('.modeler').children().should('have.length', 8);
   });
 
-
-  xit('Updates element name', ()=> {
+  it('Updates element name', () => {
     // Check if element is on the paper
     cy.get('.modeler').children().should('have.length', 2);
 
@@ -76,6 +76,11 @@ describe('Modeler', () => {
     // cy.get('[data-test="downloadXMLBtn"]').click();
 
     // const validXML = generateXML('testing');
+    // cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
+  });
+
+  it('Drags and drops an element', () => {
+    cy.get('.modeler').children().should('have.length', 2);
 
     // cy.get('[data-test="downloadXMLBtn"]').click();
 
