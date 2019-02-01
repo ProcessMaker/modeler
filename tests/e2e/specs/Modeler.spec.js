@@ -28,6 +28,16 @@ function coordinateGenerator() {
   return Math.floor(Math.random() * 500) + 150;
 }
 
+function typeIntoTextInput(selector, value) {
+  cy.wait(500);
+  cy.get(selector).focus().clear().type(value, {force: true});
+  cy.wait(500);
+}
+
+function connectNode(source, postionX, positionY) {
+  cy.get(source).click().trigger('mousemove', { x: postionX, y: positionY, force: true});
+}
+
 const nodeTypes = [
   '.processmaker-modeler-task',
   '.processmaker-modeler-end-event',
@@ -48,28 +58,72 @@ describe('Modeler', () => {
   });
 
   it('Create a simple process', () => {
+    const startEventSelector = '#v-11';
+    const startEventConnectorSelector = '#v-14';
+    const taskSelector = '#v-23';
+    const taskConnectorSelector = '#v-26';
+    const taskSelectorTwo = '#v-47';
+    const taskConnectorSelectorTwo = '#v-50';
+    const taskSelectorThree = '#v-68';
+    const taskConnectorSelectorThree = '#v-71';
+    const endEventSelector = '#v-85';
+    const poolSelector = '#v-101';
+
     cy.get('.modeler').children().should('have.length', 2);
+
     dragFromSourceToDest(
       '.processmaker-modeler-task',
       '.paper-container',
       { x: 300, y: 200},
     );
 
-    cy.get('.joint-type-standard-circle').click();
-    cy.get('#j_2').click().trigger('mousemove', { x: 300, y: 200, force: true});
+    cy.get(startEventSelector).click();
+    typeIntoTextInput('[name=\'name\']', 'testing');
+    connectNode(startEventConnectorSelector, 300, 200);
+
+    cy.get(taskSelector).click({ force: true });
+    typeIntoTextInput('[name=\'name\']', 'testing');
 
     dragFromSourceToDest(
-      '.processmaker-modeler-exclusive-gateway',
+      '.processmaker-modeler-task',
       '.paper-container',
-      { x: 300, y: 400},
+      { x: 300, y: 350},
     );
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
-    cy.get('#v-26').click().trigger('mousemove', { x: 300, y: 400, force: true});
+    connectNode(taskConnectorSelector, 300, 350);
+    cy.get(taskSelectorTwo).click({force: true});
+    typeIntoTextInput('[name=\'name\']', 'testing two');
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
+    dragFromSourceToDest(
+      '.processmaker-modeler-task',
+      '.paper-container',
+      { x: 100, y: 350},
+    );
 
-    cy.get('.modeler').children().should('have.length', 6);
+    connectNode(taskConnectorSelectorTwo, 100, 350);
+    cy.get(taskSelectorThree).click({force: true});
+    typeIntoTextInput('[name=\'name\']', 'testing three');
+
+    dragFromSourceToDest(
+      '.processmaker-modeler-end-event',
+      '.paper-container',
+      { x: 100, y: 500},
+    );
+
+    connectNode(taskConnectorSelectorThree, 100, 500);
+    cy.get(endEventSelector).click();
+
+    dragFromSourceToDest(
+      '.processmaker-modeler-pool',
+      '.paper-container',
+      { x: 100, y: 100 },
+    );
+
+    cy.get(poolSelector).click();
+    typeIntoTextInput('[name=\'name\']', 'testing pools');
+
+    cy.get('[data-test="downloadXMLBtn"]').click();
+    cy.get('.modeler').children().should('have.length', 11);
   });
 
   it('Renders list of nodes', () => {
@@ -138,8 +192,8 @@ describe('Modeler', () => {
     cy.get('.joint-viewport').click();
     cy.get('[name=\'name\']').focus().clear().type('testing');
     cy.get('.joint-viewport').contains('testing');
-    cy.get('[data-test="downloadXMLBtn"]').click();
 
+    cy.get('[data-test="downloadXMLBtn"]').click();
     const validXML = generateXML('testing');
     cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
   });
