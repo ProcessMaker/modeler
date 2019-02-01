@@ -47,7 +47,7 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  it('Connect elements with a sequence flow', () => {
+  it('Create a simple process', () => {
     cy.get('.modeler').children().should('have.length', 2);
     dragFromSourceToDest(
       '.processmaker-modeler-task',
@@ -57,7 +57,19 @@ describe('Modeler', () => {
 
     cy.get('.joint-type-standard-circle').click();
     cy.get('#j_2').click().trigger('mousemove', { x: 300, y: 200, force: true});
-    cy.get('.modeler').children().should('have.length', 4);
+
+    dragFromSourceToDest(
+      '.processmaker-modeler-exclusive-gateway',
+      '.paper-container',
+      { x: 300, y: 400},
+    );
+
+    cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
+    cy.get('#v-26').click().trigger('mousemove', { x: 300, y: 400, force: true});
+
+    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
+
+    cy.get('.modeler').children().should('have.length', 6);
   });
 
   it('Renders list of nodes', () => {
