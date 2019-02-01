@@ -57,6 +57,83 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
+  it('Renders list of nodes', () => {
+    cy.get('.modeler').children().should('have.length', 2);
+
+    nodeTypes.forEach(type => {
+      dragFromSourceToDest(
+        type,
+        '.paper-container',
+        { x: coordinateGenerator(), y: coordinateGenerator()},
+      );
+    });
+    cy.get('.modeler').children().should('have.length', 8);
+  });
+
+  it('Creates top and bottom lane', () => {
+    const poolSelector = '#v-24';
+    const topLaneSeletor = '#v-26';
+    const bottomLaneSeletor = '#v-29';
+
+    dragFromSourceToDest(
+      '.processmaker-modeler-pool',
+      '.paper-container',
+      { x: 100, y: 100},
+    );
+    cy.get(poolSelector).click();
+    cy.get(topLaneSeletor).click({ force: true });
+    cy.get(bottomLaneSeletor).click({ force: true });
+
+  });
+
+  it('Update task name', ()=> {
+    dragFromSourceToDest(
+      '.processmaker-modeler-task',
+      '.paper-container',
+      { x: coordinateGenerator(), y: coordinateGenerator()},
+    );
+
+    cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
+    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
+    cy.get('[name=\'name\']').should('have.value', 'testing');
+  });
+
+  it('Update exclusive gateway name', ()=> {
+    dragFromSourceToDest(
+      '.processmaker-modeler-exclusive-gateway',
+      '.paper-container',
+      { x: coordinateGenerator(), y: coordinateGenerator()},
+    );
+
+    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
+    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
+    cy.get('[name=\'name\']').should('have.value', 'testing');
+  });
+
+  it('Update text annotation name', ()=> {
+    dragFromSourceToDest(
+      '.processmaker-modeler-text-annotation',
+      '.paper-container',
+      { x: coordinateGenerator(), y: coordinateGenerator()},
+    );
+
+    cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
+    cy.get('[name=\'text\']').focus().clear().type('testing', {force: true});
+    cy.get('[name=\'text\']').should('have.value', 'testing');
+  });
+
+  it('Update pool name', ()=> {
+    dragFromSourceToDest(
+      '.processmaker-modeler-pool',
+      '.paper-container',
+      { x: coordinateGenerator(), y: coordinateGenerator()},
+    );
+
+    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
+    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
+    cy.get('[name=\'name\']').should('have.value', 'testing');
+  });
+
   it('Create a simple process', () => {
     const startEventSelector = '#v-11';
     const startEventConnectorSelector = '#v-14';
@@ -124,67 +201,6 @@ describe('Modeler', () => {
 
     cy.get('[data-test="downloadXMLBtn"]').click();
     cy.get('.modeler').children().should('have.length', 11);
-  });
-
-  it('Renders list of nodes', () => {
-    cy.get('.modeler').children().should('have.length', 2);
-
-    nodeTypes.forEach(type => {
-      dragFromSourceToDest(
-        type,
-        '.paper-container',
-        { x: coordinateGenerator(), y: coordinateGenerator()},
-      );
-    });
-    cy.get('.modeler').children().should('have.length', 8);
-  });
-
-  it('Update task name', ()=> {
-    dragFromSourceToDest(
-      '.processmaker-modeler-task',
-      '.paper-container',
-      { x: coordinateGenerator(), y: coordinateGenerator()},
-    );
-
-    cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
-    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
-    cy.get('[name=\'name\']').should('have.value', 'testing');
-  });
-
-  it('Update exclusive gateway name', ()=> {
-    dragFromSourceToDest(
-      '.processmaker-modeler-exclusive-gateway',
-      '.paper-container',
-      { x: coordinateGenerator(), y: coordinateGenerator()},
-    );
-
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
-    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
-    cy.get('[name=\'name\']').should('have.value', 'testing');
-  });
-
-  it('Update text annotation name', ()=> {
-    dragFromSourceToDest(
-      '.processmaker-modeler-text-annotation',
-      '.paper-container',
-      { x: coordinateGenerator(), y: coordinateGenerator()},
-    );
-
-    cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
-    cy.get('[name=\'text\']').focus().clear().type('testing', {force: true});
-    cy.get('[name=\'text\']').should('have.value', 'testing');
-  });
-
-  it('Update pool name', ()=> {
-    dragFromSourceToDest(
-      '.processmaker-modeler-pool',
-      '.paper-container',
-      { x: coordinateGenerator(), y: coordinateGenerator()},
-    );
-
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
-    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
-    cy.get('[name=\'name\']').should('have.value', 'testing');
   });
 
   it('Updates element name and validates xml', () => {
