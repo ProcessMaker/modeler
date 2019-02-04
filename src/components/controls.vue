@@ -8,7 +8,7 @@
         :key="index"
         :transfer-data="{type: control.type}"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
-        :class="[ control.type ]"
+        :data-test="control.type"
       >
         <div class="tool" >
           <div class="img-container">

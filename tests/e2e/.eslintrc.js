@@ -6,7 +6,23 @@ module.exports = {
     mocha: true,
     'cypress/globals': true
   },
+  extends: [
+    'plugin:vue/essential',
+    'eslint:recommended',
+  ],
   rules: {
-    strict: 'off'
-  }
+    strict: 'off',
+    semi: ['error', 'always'],
+    'comma-dangle': ['error', 'always-multiline'],
+    indent: ['error', 2, { SwitchCase: 1 }],
+    'vue/html-indent': 'error',
+    quotes: ['error', 'single'],
+    'no-debugger': 'off',
+    'object-shorthand': 'error',
+    'space-before-function-paren': ['error', 'never'],
+    'keyword-spacing': 'error'
+  },
+  parserOptions: {
+    parser: 'babel-eslint',
+  },
 }
