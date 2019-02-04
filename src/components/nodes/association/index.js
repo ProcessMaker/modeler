@@ -9,7 +9,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create('bpmn:Association', {
-      name: 'New Association Flow',
+      default: 'None',
     });
   },
   inspectorConfig: [
@@ -29,22 +29,6 @@ export default {
             label: 'Identifier',
             helper: 'The id field should be unique across all elements in the diagram',
             name: 'id',
-          },
-        },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Name',
-            helper: 'The Name of the Association',
-            name: 'name',
-          },
-        },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Expression',
-            helper: 'Shows relationships between artifacts and flow objects.',
-            name: 'conditionExpression.body',
           },
         },
       ],
