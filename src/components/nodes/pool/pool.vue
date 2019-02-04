@@ -164,12 +164,12 @@ export default {
       this.shape.unembed(element);
       this.shape.embed(element);
 
+      this.expandToFitElement(element);
+
       /* If there are lanes, add the element to the lane it's above */
       if (element.component.node.type !== laneId && this.laneSet) {
         this.updateLaneChildren();
       }
-
-      this.expandToFitElement(element);
     },
     expandToFitElement(element) {
       const { x: poolX, y: poolY, width, height } = this.shape.getBBox();
