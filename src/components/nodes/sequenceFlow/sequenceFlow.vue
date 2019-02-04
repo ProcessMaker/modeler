@@ -13,7 +13,6 @@ import data from './index';
 import { gatewayDirectionOptions } from '../exclusiveGateway/index';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 import { id as laneId } from '../poolLane';
-import store from '@/store';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -24,7 +23,6 @@ export default {
       definition: null,
       sourceShape: null,
       target: null,
-      anchorPadding: 25,
     };
   },
   computed: {
@@ -128,7 +126,7 @@ export default {
       this.updateCrownPosition();
     },
     updateRouter() {
-      this.shape.router('orthogonal', { elementPadding: this.elementPadding });
+      this.shape.router('orthogonal');
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
@@ -170,7 +168,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
         this.updateDefinitionLinks();
-        store.commit('commitTemp');
+        this.$emit('save-state');
       });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
@@ -182,7 +180,7 @@ export default {
     },
     removeLink() {
       this.resetPaper();
-      store.commit('purgeTemp');
+      this.$emit('remove-node', this.node);
     },
     resetPaper() {
       this.$emit('set-cursor', null);
@@ -215,9 +213,6 @@ export default {
     this.shape = new joint.shapes.standard.Link({
       router: {
         name: 'orthogonal',
-        args: {
-          elementPadding: this.elementPadding,
-        },
       },
     });
 

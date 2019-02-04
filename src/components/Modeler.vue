@@ -18,6 +18,7 @@
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
         :processNode="processNode"
+        @save-state="pushToUndoStack"
       />
     </div>
 
@@ -43,6 +44,7 @@
       @click="highlightNode(node)"
       @unsetPools="unsetPools"
       @setPools="setPools"
+      @save-state="pushToUndoStack"
     />
   </div>
 </template>
@@ -55,16 +57,18 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
-import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import undoRedoStore from '@/undoRedoStore';
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
 
 import { id as poolId } from './nodes/pool';
-import { id as laneId } from './nodes/poolLane/';
+import { id as laneId } from './nodes/poolLane';
+import { id as sequenceFlowId } from './nodes/sequenceFlow';
 
 const version = '1.0';
 
@@ -110,11 +114,35 @@ export default {
   },
   computed: {
     nodes: () => store.getters.nodes,
-    canUndo: () => store.getters.canUndo,
-    canRedo: () => store.getters.canRedo,
+    canUndo() {
+      return undoRedoStore.getters.canUndo;
+    },
+    canRedo() {
+      return undoRedoStore.getters.canRedo;
+    },
+    currentXML() {
+      return undoRedoStore.getters.currentState;
+    },
     highlightedNode: () => store.getters.highlightedNode,
   },
   methods: {
+    pushToUndoStack() {
+      this.toXML((err,xml) => {
+        undoRedoStore.dispatch('pushState', xml);
+      });
+    },
+    undo() {
+      undoRedoStore
+        .dispatch('undo')
+        .then(this.loadXML.cancel)
+        .then(this.loadXML);
+    },
+    redo() {
+      undoRedoStore
+        .dispatch('redo')
+        .then(this.loadXML.cancel)
+        .then(this.loadXML);
+    },
     setPools(poolDefinition) {
       if (!this.collaboration) {
         this.collaboration = this.moddle.create('bpmn:Collaboration');
@@ -151,8 +179,6 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    undo: throttle(() => store.commit('undo'), 500, { leading: true }),
-    redo: throttle(() => store.commit('redo'), 500, { leading: true }),
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
@@ -180,8 +206,10 @@ export default {
       this.extensions[namespace] = extension;
     },
     // This registers a node to use in the bpmn modeler
-    registerNode(nodeType, parser) {
-      const defaultParser = () => nodeType.id;
+    registerNode(nodeType, customParser) {
+      const defaultParser = nodeType.implementation
+        ? definition => definition.get('implementation') === nodeType.implementation && nodeType.id
+        : () => nodeType.id;
 
       this.nodeRegistry[nodeType.id] = nodeType;
 
@@ -200,9 +228,17 @@ export default {
         });
       }
 
-      this.parsers[nodeType.bpmnType]
-        ? this.parsers[nodeType.bpmnType].push(parser || defaultParser)
-        : this.parsers[nodeType.bpmnType] = [parser || defaultParser];
+      const types = Array.isArray(nodeType.bpmnType)
+        ? nodeType.bpmnType
+        : [nodeType.bpmnType];
+
+      types.forEach(bpmnType => {
+        const parser = customParser || defaultParser;
+
+        this.parsers[bpmnType]
+          ? this.parsers[bpmnType].push(parser)
+          : this.parsers[bpmnType] = [parser];
+      });
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
@@ -236,14 +272,17 @@ export default {
 
         /* Add all other elements */
 
+        const flowElements = process.get('flowElements');
+        const artifacts = process.get('artifacts');
+
+
         /* First load the flow elements */
-        process.get('flowElements')
+        flowElements
           .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
 
         /* Then the sequence flows */
-        process
-          .get('flowElements')
+        flowElements
           .filter(definition => {
             if (definition.$type !== 'bpmn:SequenceFlow') {
               return false;
@@ -251,17 +290,15 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
 
         /* Then the artifacts */
-        process
-          .get('artifacts')
+        artifacts
           .filter(definition => definition.$type !== 'bpmn:Association')
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
 
         /* Then the associations */
-        process
-          .get('artifacts')
+        artifacts
           .filter(definition => {
             if (definition.$type !== 'bpmn:Association') {
               return false;
@@ -269,24 +306,36 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach(this.setNode);
+          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
       });
 
       store.commit('highlightNode', this.processNode);
     },
-    setNode(definition) {
+    setNode(definition, flowElements, artifacts) {
+      /* Get the diagram element for the corresponding flow element node. */
+      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+
       if (!this.parsers[definition.$type]) {
         if (process.env.NODE_ENV !== 'production') {
           /* eslint-disable-next-line no-console */
           console.warn(`Unsupported element type in parse: ${definition.$type}`);
         }
 
+        pull(flowElements, [
+          definition,
+          ...definition.get('incoming'),
+          ...definition.get('outgoing'),
+        ]);
+        pull(artifacts, definition);
+        pull(this.planeElements, diagram);
+
         return;
       }
 
-      const type = this.parsers[definition.$type].reduce((type, parser) => {
-        return parser(definition) || type;
-      }, null);
+      const type = this.parsers[definition.$type]
+        .reduce((type, parser) => {
+          return parser(definition, this.moddle) || type;
+        }, null);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;
@@ -294,23 +343,19 @@ export default {
         definition.set('name', '');
       }
 
-      /* Get the diagram element for the corresponding flow element node. */
-      const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
-
-      store.dispatch('addNode', {
+      store.commit('addNode', {
         type,
         definition,
         diagram,
       });
     },
     hasSourceAndTarget(definition) {
-      const hasSource = this.parsers[definition.sourceRef.$type];
-      const hasTarget = this.parsers[definition.targetRef.$type];
+      const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
+      const hasTarget = definition.targetRef && this.parsers[definition.targetRef.$type];
 
       return hasSource && hasTarget;
     },
-    loadXML(xml) {
-      store.commit('clearNodes');
+    loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions, context) => {
         if (!err) {
           // Update definitions export to our own information
@@ -319,9 +364,13 @@ export default {
           this.definitions = definitions;
           this.context = context;
           this.initializeUniqueId(context);
-          this.parse();
-          this.$emit('parsed');
-          setTimeout(() => store.commit('clearHistory'));
+
+          store.commit('clearNodes');
+
+          this.$nextTick(() => {
+            this.parse();
+            this.$emit('parsed');
+          });
         }
       });
     },
@@ -342,8 +391,9 @@ export default {
       const diagram = this.nodeRegistry[type].diagram(this.moddle);
 
       // Handle transform
-      diagram.bounds.x = event.offsetX - this.paper.options.origin.x;
-      diagram.bounds.y = event.offsetY - this.paper.options.origin.y;
+      const paperOrigin = this.paper.localToPagePoint(0, 0);
+      diagram.bounds.x = event.clientX - paperOrigin.x;
+      diagram.bounds.y = event.clientY - paperOrigin.y;
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
@@ -387,17 +437,16 @@ export default {
 
       this.planeElements.push(diagram);
 
-      if (this.poolTarget && type !== laneId) {
-        store.commit('startBatchAction');
-        setTimeout(() => store.commit('commitBatchAction'));
-      }
-
-      store.dispatch('addNode', {
+      store.commit('addNode', {
         type,
         definition,
         diagram,
         pool: this.poolTarget,
       });
+
+      if (![sequenceFlowId, laneId].includes(type)) {
+        setTimeout(() => this.pushToUndoStack());
+      }
 
       this.poolTarget = null;
     },
@@ -410,7 +459,10 @@ export default {
       });
     },
     removeNode(node) {
-      store.dispatch('removeNode', node);
+      store.commit('removeNode', node);
+      this.$nextTick(() => {
+        this.pushToUndoStack();
+      });
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
@@ -486,6 +538,8 @@ export default {
     },
   },
   created() {
+    this.loadXML = debounce(this.loadXML.bind(this), 0, { leading: false });
+
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
       registerInspectorExtension: this.registerInspectorExtension,
@@ -546,6 +600,12 @@ export default {
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
+    });
+
+    this.paper.on('all', () => {
+      this.graph.getLinks().forEach(element => {
+        element.toFront();
+      });
     });
 
     this.paper.on('cell:pointerdown', cellView => {

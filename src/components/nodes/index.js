@@ -1,27 +1,14 @@
-import association from './association';
-import endEvent from './endEvent';
-import exclusiveGateway from './exclusiveGateway';
-import inclusiveGateway from './inclusiveGateway';
-import parallelGateway from './parallelGateway/';
-import sequenceFlow from './sequenceFlow';
-import startEvent from './startEvent';
-import task from './task';
-import scriptTask from './scriptTask';
-import textAnnotation from './textAnnotation';
-import pool from './pool';
-import poolLane from './poolLane';
-
-export {
-  association,
-  endEvent,
-  exclusiveGateway,
-  inclusiveGateway,
-  parallelGateway,
-  sequenceFlow,
-  startEvent,
-  task,
-  scriptTask,
-  textAnnotation,
-  pool,
-  poolLane,
-};
+export { default as association } from './association';
+export { default as endEvent } from './endEvent';
+export { default as exclusiveGateway } from './exclusiveGateway';
+export { default as inclusiveGateway } from './inclusiveGateway';
+export { default as parallelGateway } from './parallelGateway/';
+export { default as sequenceFlow } from './sequenceFlow';
+export { default as startEvent } from './startEvent';
+export { default as task } from './task';
+export { default as scriptTask } from './scriptTask';
+export { default as serviceTask } from './serviceTask';
+export { default as textAnnotation } from './textAnnotation';
+export { default as pool } from './pool';
+export { default as poolLane } from './poolLane';
+export { default as Modeler } from '../Modeler';

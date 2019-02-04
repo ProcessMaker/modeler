@@ -115,9 +115,11 @@ export default {
       this.shape.unembed(element);
       toPool.component.addToPool(element);
     },
-    addLane() {
+    async addLane() {
       /* A Lane element must be contained in a LaneSet element.
        * Get the current laneSet element or create a new one. */
+
+      const lanes = [];
 
       if (!this.laneSet) {
         this.createLaneSet();
@@ -131,11 +133,13 @@ export default {
           definition.get('flowNodeRef').push(element.component.node.definition);
         });
 
-        this.pushNewLane(definition);
+        lanes.push(this.pushNewLane(definition));
       }
 
-      this.pushNewLane();
-      setTimeout(() => store.commit('commitBatchAction'));
+      lanes.push(this.pushNewLane());
+
+      await Promise.all(lanes);
+      this.$emit('save-state');
     },
     createLaneSet() {
       const laneSet = this.moddle.create('bpmn:LaneSet');
@@ -148,12 +152,13 @@ export default {
       const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
 
-      store.commit('startBatchAction');
       this.$emit('add-node', {
         type: Lane.id,
         definition,
         diagram,
       });
+
+      return this.$nextTick();
     },
     addToPool(element) {
       this.shape.unembed(element);
@@ -167,8 +172,7 @@ export default {
       this.expandToFitElement(element);
     },
     expandToFitElement(element) {
-      const { width, height } = this.shape.get('size');
-      const { x, y } = this.shape.position();
+      const { x: poolX, y: poolY, width, height } = this.shape.getBBox();
 
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
@@ -202,6 +206,9 @@ export default {
         this.shape.resize(width, isFirstLane ? height : height + laneHeight, {
           direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
         });
+
+        this.fixResizeRounding();
+
         this.updateCrownPosition();
         this.updateAnchorPointPosition();
 
@@ -224,7 +231,7 @@ export default {
         elementBounds.set('width', element.get('size').width);
         elementBounds.set('height', element.get('size').height);
 
-        store.dispatch('updateNodeBounds', {
+        store.commit('updateNodeBounds', {
           node: this.node,
           bounds: this.shape.getBBox(),
         });
@@ -235,8 +242,8 @@ export default {
       const { width: elementWidth, height: elementHeight } = element.get('size');
       const { x: elementX, y: elementY } = element.position();
 
-      const relativeX = elementX - x;
-      const relativeY = elementY - y;
+      const relativeX = elementX - poolX;
+      const relativeY = elementY - poolY;
 
       const rightEdge = relativeX + elementWidth;
       const leftEdge = relativeX;
@@ -271,6 +278,8 @@ export default {
           direction: `${directionHeight}-${directionWidth}`,
         });
 
+        this.fixResizeRounding();
+
         this.updateCrownPosition();
         this.updateAnchorPointPosition();
 
@@ -279,19 +288,19 @@ export default {
           this.resizeLanes();
 
           this.sortedLanes().forEach(laneShape => {
-            store.dispatch('updateNodeBounds', {
+            store.commit('updateNodeBounds', {
               node: laneShape.component.node,
               bounds: laneShape.getBBox(),
             });
           });
         }
 
-        store.dispatch('updateNodeBounds', {
+        store.commit('updateNodeBounds', {
           node: this.node,
           bounds: this.shape.getBBox(),
         });
 
-        store.commit('commitBatchAction');
+        this.$emit('save-state');
       }
     },
     fillLanes(resizingLane, direction, remove) {
@@ -357,15 +366,27 @@ export default {
 
       this.resizePool();
     },
+    fitEmbeds() {
+      this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
+      this.shape.resize(
+        this.shape.getBBox().width - labelWidth,
+        this.shape.getBBox().height - labelWidth
+      );
+      this.shape.resize(
+        this.shape.getBBox().width,
+        this.shape.getBBox().height - labelWidth,
+        { direction: 'top' }
+      );
+    },
     resizePool() {
-      this.shape.fitEmbeds({ padding: poolPadding });
+      this.fitEmbeds();
 
       const { width, height } = this.shape.get('size');
       const bounds = this.node.diagram.bounds;
 
       this.shape.resize(
         /* Add labelWidth to ensure elements don't overlap with the pool label */
-        Math.max(width, bounds.width) + labelWidth,
+        Math.max(width, bounds.width),
         Math.max(height, bounds.height)
       );
 
@@ -400,7 +421,7 @@ export default {
         .forEach(element => {
           const lane = this.graph
             .findModelsUnderElement(element, { searchBy: 'center' })
-            .find(element => element.component.node.type === laneId);
+            .find(element => element.component && element.component.node.type === laneId);
 
           newLaneRefs[lane.id]
             ? newLaneRefs[lane.id].push(element.component.node.definition)
@@ -416,7 +437,7 @@ export default {
           : currentRefs.length > 0;
 
         if (hasChanged) {
-          store.dispatch('updateNodeProp', {
+          store.commit('updateNodeProp', {
             node: laneShape.component.node,
             key: 'flowNodeRef',
             value: newRefs || [],
@@ -527,10 +548,8 @@ export default {
         }
 
         if (previousValidPosition) {
-          store.commit('startBatchAction');
-
           draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
-          store.dispatch('updateNodeBounds', {
+          store.commit('updateNodeBounds', {
             node: draggingElement.component.node,
             bounds: previousValidPosition,
           });
