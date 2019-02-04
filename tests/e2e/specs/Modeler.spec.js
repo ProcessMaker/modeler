@@ -94,7 +94,7 @@ describe('Modeler', () => {
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
-    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
+    typeIntoTextInput('[name=\'name\']', 'testing');
     cy.get('[name=\'name\']').should('have.value', 'testing');
   });
 
@@ -106,7 +106,7 @@ describe('Modeler', () => {
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
-    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
+    typeIntoTextInput('[name=\'name\']', 'testing');
     cy.get('[name=\'name\']').should('have.value', 'testing');
   });
 
@@ -118,7 +118,7 @@ describe('Modeler', () => {
     );
 
     cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
-    cy.get('[name=\'text\']').focus().clear().type('testing', {force: true});
+    typeIntoTextInput('[name=\'text\']', 'testing');
     cy.get('[name=\'text\']').should('have.value', 'testing');
   });
 
@@ -130,7 +130,7 @@ describe('Modeler', () => {
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
-    cy.get('[name=\'name\']').focus().clear().type('testing', {force: true});
+    typeIntoTextInput('[name=\'name\']', 'testing');
     cy.get('[name=\'name\']').should('have.value', 'testing');
   });
 
