@@ -17,15 +17,11 @@ const generateXML = (nodeName) => {
 </bpmn:definitions>`;
 };
 
-function dragFromSourceToDest(source, dest, positionX, positionY){
+function dragFromSourceToDest(source, dest, position) {
   const dataTransfer = new DataTransfer();
   cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
   cy.get(dest).trigger('dragenter', { force: true });
-  cy.get(dest).trigger('drop', positionX, positionY);
-}
-
-function generateRandomPoint() {
-  return Math.floor(Math.random() * 500) + 150;
+  cy.get(dest).trigger('drop', { x: position.x, y: position.y });
 }
 
 function typeIntoTextInput(selector, value) {
@@ -51,6 +47,7 @@ describe('Modeler', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.reload();
+    cy.viewport(1280, 720);
   });
 
   it('Renders the application without errors', () => {
@@ -66,8 +63,7 @@ describe('Modeler', () => {
       dragFromSourceToDest(
         type,
         '.paper-container',
-        generateRandomPoint(),
-        generateRandomPoint(),
+        200, 200
       );
     });
     cy.get('.modeler').children().should('have.length', emptyChildrenCount + nodeTypes.length);
@@ -95,7 +91,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      { x: generateRandomPoint(), y: generateRandomPoint()},
+      200, 200
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
@@ -109,7 +105,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       'processmaker-modeler-exclusive-gateway',
       '.paper-container',
-      { x: generateRandomPoint(), y: generateRandomPoint()},
+      200, 200
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
@@ -123,7 +119,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       'processmaker-modeler-text-annotation',
       '.paper-container',
-      { x: generateRandomPoint(), y: generateRandomPoint()},
+      200, 200
     );
 
     cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
@@ -137,7 +133,7 @@ describe('Modeler', () => {
     dragFromSourceToDest(
       'processmaker-modeler-pool',
       '.paper-container',
-      { x: generateRandomPoint(), y: generateRandomPoint()},
+      200, 200
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
