@@ -1,7 +1,9 @@
 import component from './association.vue';
 
+export const id  = 'processmaker-modeler-association';
+
 export default {
-  id: 'processmaker-modeler-association',
+  id,
   component,
   bpmnType: 'bpmn:Association',
   control: false,

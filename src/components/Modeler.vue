@@ -69,6 +69,7 @@ import { Drop } from 'vue-drag-drop';
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
+import { id as associationId } from './nodes/association';
 
 const version = '1.0';
 
@@ -444,7 +445,7 @@ export default {
         pool: this.poolTarget,
       });
 
-      if (![sequenceFlowId, laneId].includes(type)) {
+      if (![sequenceFlowId, laneId, associationId].includes(type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
