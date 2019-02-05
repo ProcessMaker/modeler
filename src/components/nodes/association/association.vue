@@ -8,6 +8,8 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
+import associationHead from '@/assets/association-head.svg';
+import { direction } from './associationConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -15,6 +17,7 @@ export default {
   data() {
     return {
       shape: null,
+      associationDirection: direction,
     };
   },
   computed: {
@@ -46,6 +49,36 @@ export default {
       return true;
     },
   },
+  watch: {
+    'node.definition.associationDirection'(direction) {
+      switch (direction) {
+        case this.associationDirection.none:
+          this.shape.attr({
+            line: {
+              targetMarker: this.removeMarker(),
+              sourceMarker: this.removeMarker(),
+            },
+          });
+          break;
+        case this.associationDirection.one:
+          this.shape.attr({
+            line: {
+              targetMarker: this.addMarker(),
+              sourceMarker: this.removeMarker(),
+            },
+          });
+          break;
+        case this.associationDirection.both:
+          this.shape.attr({
+            line: {
+              targetMarker: this.addMarker(),
+              sourceMarker: this.addMarker(),
+            },
+          });
+          break;
+      }
+    },
+  },
   methods: {
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
@@ -53,6 +86,22 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
+    },
+    addMarker() {
+      return {
+        'type': 'image',
+        'xlink:href': associationHead,
+        'width': 20,
+        'height': 20,
+        'y': -10,
+      };
+    },
+    removeMarker() {
+      return {
+        'width': 1,
+        'height': 1,
+        'stroke': 'none',
+      };
     },
   },
   mounted() {
@@ -65,6 +114,12 @@ export default {
         strokeDasharray: '1, 8',
         strokeDashoffset: '5',
         targetMarker: {
+          'type': 'rect',
+          'width': 1,
+          'height': 1,
+          'stroke': 'none',
+        },
+        sourceMarker: {
           'type': 'rect',
           'width': 1,
           'height': 1,

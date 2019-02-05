@@ -9,7 +9,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create('bpmn:Association', {
-      associationDirection: 'None',
+      associationDirection: 'none',
     });
   },
   inspectorConfig: [
@@ -34,13 +34,13 @@ export default {
         {
           component: 'FormSelect',
           config: {
-            label: 'Association Direction',
+            label: 'Direction',
             helper: 'Select Direction',
             name: 'associationDirection',
             options: [
-              { value: 'None', content: 'None' },
-              { value: 'One', content: 'One' },
-              { value: 'Both', content: 'Both' },
+              { value: 'none', content: 'None' },
+              { value: 'one', content: 'One' },
+              { value: 'both', content: 'Both' },
             ],
           },
         },
