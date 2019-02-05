@@ -262,6 +262,4 @@ describe('Modeler', () => {
     const validXML = generateXML(testString);
     cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
   });
-
-
 });
