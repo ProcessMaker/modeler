@@ -3,6 +3,7 @@ import trashIcon from '@/assets/trash-alt-solid.svg';
 import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
+import { direction } from '../components/nodes/association/associationConfig';
 
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
@@ -85,7 +86,7 @@ export default {
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
-        associationDirection: 'none',
+        associationDirection: direction.none,
       });
 
       this.$emit('add-node', {

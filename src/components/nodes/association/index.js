@@ -1,4 +1,5 @@
 import component from './association.vue';
+import { direction } from './associationConfig';
 
 export const id  = 'processmaker-modeler-association';
 
@@ -38,9 +39,9 @@ export default {
             helper: 'Select Direction',
             name: 'associationDirection',
             options: [
-              { value: 'none', content: 'None' },
-              { value: 'one', content: 'One' },
-              { value: 'both', content: 'Both' },
+              { value: `${ direction.none }`, content: 'None' },
+              { value: `${ direction.one }`, content: 'One' },
+              { value: `${ direction.both }`, content: 'Both' },
             ],
           },
         },
