@@ -9,7 +9,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create('bpmn:Association', {
-      default: 'None',
+      associationDirection: 'None',
     });
   },
   inspectorConfig: [
@@ -29,6 +29,19 @@ export default {
             label: 'Identifier',
             helper: 'The id field should be unique across all elements in the diagram',
             name: 'id',
+          },
+        },
+        {
+          component: 'FormSelect',
+          config: {
+            label: 'Association Direction',
+            helper: 'Select Direction',
+            name: 'associationDirection',
+            options: [
+              { value: 'None', content: 'None' },
+              { value: 'One', content: 'One' },
+              { value: 'Both', content: 'Both' },
+            ],
           },
         },
       ],

@@ -85,7 +85,7 @@ export default {
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
-        default: 'None',
+        associationDirection: 'None',
       });
 
       this.$emit('add-node', {
