@@ -87,11 +87,11 @@ export default {
      * If this was the 2nd last lane, remove all lanes and revert the pool back to normal. */
 
     const poolComponent = this.node.pool.component;
-    const sortedLanes = poolComponent.sortedLanes();
+    const lanes = poolComponent.laneSet.get('lanes');
 
-    pull(poolComponent.laneSet.get('lanes'), this.node.definition);
+    pull(lanes, this.node.definition);
 
-    if (sortedLanes.length === 1) {
+    if (lanes.length === 0) {
       /* Last lane being removed; remove laneSet */
       poolComponent.containingProcess.set('laneSets', []);
       poolComponent.laneSet = null;
