@@ -1,9 +1,13 @@
 <template>
   <div class="modeler">
     <div class="modeler-container">
-      <controls :controls="controls"/>
+      <controls :controls="controls" :style="{ height: parentHeight }"/>
 
-      <div ref="paper-container" class="paper-container" :class="cursor">
+      <div
+        class="paper-container"
+        :class="cursor"
+        :style="{ width: parentWidth, height: parentHeight }"
+      >
         <div class="history-buttons">
           <button @click="undo" :disabled="!canUndo">Undo</button>
           <button @click="redo" :disabled="!canRedo">Redo</button>
@@ -111,6 +115,8 @@ export default {
       poolTarget: null,
       processes: [],
       cursor: null,
+      parentHeight: null,
+      parentWidth: null,
     };
   },
   computed: {
@@ -467,12 +473,10 @@ export default {
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
-      this.$refs['paper-container'].style.width = clientWidth + 'px';
-      this.$refs['paper-container'].style.height = clientHeight + 'px';
+      this.parentWidth = clientWidth + 'px';
+      this.parentHeight = clientHeight + 'px';
 
-      if (this.paper) {
-        this.paper.setDimensions(clientWidth, clientHeight);
-      }
+      this.paper.setDimensions(clientWidth, clientHeight);
     },
     validateDropTarget(transferData, { clientX, clientY }) {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
@@ -551,10 +555,6 @@ export default {
     this.moddle = new BpmnModdle(this.extensions);
   },
   mounted() {
-    // Handle window resize
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
-
     this.graph = new joint.dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -566,8 +566,6 @@ export default {
       el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
-      width: this.$refs['paper-container'].clientWidth,
-      height: this.$refs['paper-container'].clientHeight,
       drawGrid: true,
       clickThreshold: 10,
       perpendicularLinks: true,
@@ -576,6 +574,10 @@ export default {
         default: { options: { padding: highlightPadding } },
       },
     });
+
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
+
     this.paper.on('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
     });
