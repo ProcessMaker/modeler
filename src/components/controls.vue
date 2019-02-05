@@ -16,6 +16,7 @@
           :key="index"
           :transfer-data="{type: control.type}"
           v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+          :data-test="control.type"
         >
           <div class="tool">
             <div class="img-container">
@@ -91,6 +92,5 @@ export default {
       }
     }
   }
-
 }
 </style>

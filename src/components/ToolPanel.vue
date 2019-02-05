@@ -1,7 +1,7 @@
 <template>
   <div class="tool-panel" ref="panel">
     <div class="header" @mousedown="startDrag"></div>
-    <drag :transfer-data="{type: 'task'}">
+    <drag :transfer-data="{ type: 'task' }">
       <div class="tool">
         <img src="../assets/toolpanel/task.svg">
       </div>
