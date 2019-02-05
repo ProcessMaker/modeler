@@ -23,7 +23,10 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import { defaultViewportDimensions } from './constants';
 
-import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
-
-addMatchImageSnapshotCommand();
+Cypress.Commands.add('loadModeler', () => {
+  cy.viewport(defaultViewportDimensions.width, defaultViewportDimensions.height);
+  cy.visit('/');
+  cy.reload();
+});

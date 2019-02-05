@@ -1,4 +1,5 @@
 import { direction } from '../../../src/components/nodes/association/associationConfig';
+import { dragFromSourceToDest } from '../support/utils';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -15,13 +16,6 @@ const generateXML = (nodeName) => {
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 };
-
-function dragFromSourceToDest(source, dest, position) {
-  const dataTransfer = new DataTransfer();
-  cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
-  cy.get(dest).trigger('dragenter', { force: true });
-  cy.get(dest).trigger('drop', { x: position.x, y: position.y });
-}
 
 function typeIntoTextInput(selector, value) {
   cy.wait(500);
@@ -44,9 +38,7 @@ const nodeTypes = [
 
 describe('Modeler', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.reload();
-    cy.viewport(1280, 720);
+    cy.loadModeler();
   });
 
   it('Renders the application without errors', () => {
