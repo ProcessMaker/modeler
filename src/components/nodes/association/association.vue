@@ -51,30 +51,30 @@ export default {
   },
   watch: {
     'node.definition.associationDirection'(direction) {
+      const addMarker = {
+        'type': 'image',
+        'xlink:href': associationHead,
+        'width': 20,
+        'height': 20,
+        'y': -10,
+      };
+
+      const removeMarker = {
+        'width': 1,
+        'height': 1,
+        'stroke': 'none',
+      };
+
       switch (direction) {
         case this.associationDirection.none:
           this.shape.attr({
-            line: {
-              targetMarker: this.removeMarker(),
-              sourceMarker: this.removeMarker(),
-            },
-          });
+            line: { targetMarker: removeMarker, sourceMarker: removeMarker }});
           break;
         case this.associationDirection.one:
-          this.shape.attr({
-            line: {
-              targetMarker: this.addMarker(),
-              sourceMarker: this.removeMarker(),
-            },
-          });
+          this.shape.attr({ line: { targetMarker: addMarker, sourceMarker: removeMarker }});
           break;
         case this.associationDirection.both:
-          this.shape.attr({
-            line: {
-              targetMarker: this.addMarker(),
-              sourceMarker: this.addMarker(),
-            },
-          });
+          this.shape.attr({ line: { targetMarker: addMarker, sourceMarker: addMarker }});
           break;
       }
     },
@@ -86,22 +86,6 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
-    },
-    addMarker() {
-      return {
-        'type': 'image',
-        'xlink:href': associationHead,
-        'width': 20,
-        'height': 20,
-        'y': -10,
-      };
-    },
-    removeMarker() {
-      return {
-        'width': 1,
-        'height': 1,
-        'stroke': 'none',
-      };
     },
   },
   mounted() {

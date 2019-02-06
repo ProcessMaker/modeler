@@ -1,5 +1,4 @@
-// const mountVue = require('cypress-vue-unit-test');
-// import ModelerApp from '../../../src/ModelerApp';
+import { direction } from '../../../src/components/nodes/association/associationConfig';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -218,9 +217,9 @@ describe('Modeler', () => {
     const directionSelectSelector = '[name=\'associationDirection\']';
 
     const testDirection = {
-      none: 'none',
-      one: 'one',
-      both: 'both',
+      none:`${ direction.none }`,
+      one: `${ direction.one }`,
+      both:`${ direction.both }`,
     };
 
     dragFromSourceToDest(
