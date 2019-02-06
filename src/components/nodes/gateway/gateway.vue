@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import GatewayShape from '@/components/nodes/gateway/shape';
@@ -47,8 +46,3 @@ export default {
   },
 };
 </script>
-</script>
-
-<style>
-
-</style>
