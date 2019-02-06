@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       shape: null,
+      initialAssociationDirection: this.node.definition.associationDirection,
       associationDirection: direction,
     };
   },
@@ -51,32 +52,7 @@ export default {
   },
   watch: {
     'node.definition.associationDirection'(direction) {
-      const addMarker = {
-        'type': 'image',
-        'xlink:href': associationHead,
-        'width': 20,
-        'height': 20,
-        'y': -10,
-      };
-
-      const removeMarker = {
-        'width': 1,
-        'height': 1,
-        'stroke': 'none',
-      };
-
-      switch (direction) {
-        case this.associationDirection.none:
-          this.shape.attr({
-            line: { targetMarker: removeMarker, sourceMarker: removeMarker }});
-          break;
-        case this.associationDirection.one:
-          this.shape.attr({ line: { targetMarker: addMarker, sourceMarker: removeMarker }});
-          break;
-        case this.associationDirection.both:
-          this.shape.attr({ line: { targetMarker: addMarker, sourceMarker: addMarker }});
-          break;
-      }
+      this.updateAssociationMarker(direction);
     },
   },
   methods: {
@@ -86,6 +62,22 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
+    },
+    updateAssociationMarker(direction) {
+      if (direction === this.associationDirection.none) {
+        this.shape.attr('line/targetMarker/display', 'none');
+        this.shape.attr('line/sourceMarker/display', 'none');
+      }
+
+      if (direction === this.associationDirection.one) {
+        this.shape.attr('line/targetMarker/display', 'block');
+        this.shape.attr('line/sourceMarker/display', 'none');
+      }
+
+      if (direction === this.associationDirection.both) {
+        this.shape.attr('line/targetMarker/display', 'block');
+        this.shape.attr('line/sourceMarker/display', 'block');
+      }
     },
   },
   mounted() {
@@ -98,19 +90,23 @@ export default {
         strokeDasharray: '1, 8',
         strokeDashoffset: '5',
         targetMarker: {
-          'type': 'rect',
-          'width': 1,
-          'height': 1,
-          'stroke': 'none',
+          'type': 'image',
+          'xlink:href': associationHead,
+          'width': 20,
+          'height': 20,
+          'y': -10,
         },
         sourceMarker: {
-          'type': 'rect',
-          'width': 1,
-          'height': 1,
-          'stroke': 'none',
+          'type': 'image',
+          'xlink:href': associationHead,
+          'width': 20,
+          'height': 20,
+          'y': -10,
         },
       },
     });
+
+    this.updateAssociationMarker(this.initialAssociationDirection);
   },
 };
 </script>
