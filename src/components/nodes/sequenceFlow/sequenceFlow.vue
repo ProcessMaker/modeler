@@ -26,14 +26,11 @@ export default {
         return false;
       }
 
-      if (this.isTargetTypeALane(targetType)) {
-        return false;
-      }
-
       const targetPool = this.target.component.node.pool;
       const sourcePool = this.sourceShape.component.node.pool;
 
-      if (this.isNotSamePool(sourcePool, targetPool) ||
+      if (this.isTargetTypeALane(targetType) ||
+        this.isNotSamePool(sourcePool, targetPool) ||
         this.isIncomingInvalid(this.sourceNode) ||
         this.isOutgoingInvalid(this.targetNode)) {
           return false;
