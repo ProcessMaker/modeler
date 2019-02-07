@@ -26,9 +26,7 @@ export default {
       // target is valid
       // target is in the same pool
 
-      return this.isValidTarget() && ! (
-        this.isIncomingInvalid()
-      );
+      return this.isValidTarget() && this.isValidSource();
     },
     targetType() {
       return get(this.target, 'component.node.type');
@@ -45,8 +43,12 @@ export default {
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
     },
-    isIncomingInvalid() {
-      return this.targetConfig.validateIncoming && !this.targetConfig.validateIncoming(this.sourceNode);
+    isValidSource() {
+      return this.validateIncoming();
+    },
+    validateIncoming() {
+      return typeof this.targetConfig.validateIncoming === 'undefined' ||
+        this.targetConfig.validateIncoming(this.sourceNode);
     },
     isValidTarget() {
       return this.hasTargetType() &&
