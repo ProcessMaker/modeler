@@ -24,7 +24,7 @@ export default {
     },
     targetType() {
       return get(this.target, 'component.node.type');
-    }
+    },
   },
   methods: {
     updateRouter() {
@@ -61,7 +61,7 @@ export default {
       const targetPool = this.target.component.node.pool;
       const sourcePool = this.sourceShape.component.node.pool;
 
-      return !sourcePool || sourcePool === targetPool
+      return !sourcePool || sourcePool === targetPool;
     },
     targetIsNotSource() {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
@@ -69,7 +69,7 @@ export default {
     validateOutgoing() {
       return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
         this.sourceConfig.validateOutgoing(this.targetNode);
-    }
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({
