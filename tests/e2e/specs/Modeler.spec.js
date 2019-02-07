@@ -1,5 +1,4 @@
-// const mountVue = require('cypress-vue-unit-test');
-// import ModelerApp from '../../../src/ModelerApp';
+import { direction } from '../../../src/components/nodes/association/associationConfig';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -31,7 +30,7 @@ function typeIntoTextInput(selector, value) {
 }
 
 function connectNode(source, postionX, positionY) {
-  cy.get(source).click().trigger('mousemove', { x: postionX, y: positionY, force: true});
+  cy.get(source).click({ force: true }).trigger('mousemove', { x: postionX, y: positionY, force: true});
 }
 
 const nodeTypes = [
@@ -69,7 +68,7 @@ describe('Modeler', () => {
     cy.get('.modeler').children().should('have.length', emptyChildrenCount + nodeTypes.length);
   });
 
-  it('Can top and bottom lane', () => {
+  it('Can add top and bottom lane', () => {
     const poolSelector = '#v-24';
     const topLaneSeletor = '#v-26';
     const bottomLaneSeletor = '#v-29';
@@ -209,6 +208,45 @@ describe('Modeler', () => {
 
     cy.get('[data-test="downloadXMLBtn"]').click();
     cy.get('.modeler').children().should('have.length', 11);
+  });
+
+  it('Change direction of association to none, one and both', () => {
+    const textAnnotation = '#j_4';
+    const associationButton = '#v-25';
+    const associationNode = '#v-56';
+    const directionSelectSelector = '[name=\'associationDirection\']';
+
+    const testDirection = {
+      none:`${ direction.none }`,
+      one: `${ direction.one }`,
+      both:`${ direction.both }`,
+    };
+
+    dragFromSourceToDest(
+      'processmaker-modeler-text-annotation',
+      '.paper-container',
+      { x: 400, y: 100 },
+    );
+
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      { x: 400, y: 300 },
+    );
+
+    cy.get(textAnnotation).click();
+    cy.get(associationButton).click();
+    connectNode(associationButton, 400, 300);
+    cy.get(associationNode).click();
+
+    cy.get(directionSelectSelector).select('none');
+    cy.get(directionSelectSelector).should('have.value', testDirection.none);
+
+    cy.get(directionSelectSelector).select('one');
+    cy.get(directionSelectSelector).should('have.value', testDirection.one);
+
+    cy.get(directionSelectSelector).select('both');
+    cy.get(directionSelectSelector).should('have.value', testDirection.both);
   });
 
   it('Updates element name and validates xml', () => {

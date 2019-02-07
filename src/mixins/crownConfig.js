@@ -1,5 +1,6 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
@@ -85,6 +86,7 @@ export default {
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
+        associationDirection: direction.none,
       });
 
       this.$emit('add-node', {

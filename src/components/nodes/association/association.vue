@@ -8,6 +8,8 @@ import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
+import associationHead from '@/assets/association-head.svg';
+import { direction } from './associationConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -15,6 +17,8 @@ export default {
   data() {
     return {
       shape: null,
+      initialAssociationDirection: this.node.definition.associationDirection,
+      associationDirection: direction,
     };
   },
   computed: {
@@ -46,6 +50,11 @@ export default {
       return true;
     },
   },
+  watch: {
+    'node.definition.associationDirection'(direction) {
+      this.updateAssociationMarker(direction);
+    },
+  },
   methods: {
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
@@ -53,6 +62,22 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
+    },
+    updateAssociationMarker(direction) {
+      if (direction === this.associationDirection.none) {
+        this.shape.attr('line/targetMarker/display', 'none');
+        this.shape.attr('line/sourceMarker/display', 'none');
+      }
+
+      if (direction === this.associationDirection.one) {
+        this.shape.attr('line/targetMarker/display', 'block');
+        this.shape.attr('line/sourceMarker/display', 'none');
+      }
+
+      if (direction === this.associationDirection.both) {
+        this.shape.attr('line/targetMarker/display', 'block');
+        this.shape.attr('line/sourceMarker/display', 'block');
+      }
     },
   },
   mounted() {
@@ -65,13 +90,23 @@ export default {
         strokeDasharray: '1, 8',
         strokeDashoffset: '5',
         targetMarker: {
-          'type': 'rect',
-          'width': 1,
-          'height': 1,
-          'stroke': 'none',
+          'type': 'image',
+          'xlink:href': associationHead,
+          'width': 20,
+          'height': 20,
+          'y': -10,
+        },
+        sourceMarker: {
+          'type': 'image',
+          'xlink:href': associationHead,
+          'width': 20,
+          'height': 20,
+          'y': -10,
         },
       },
     });
+
+    this.updateAssociationMarker(this.initialAssociationDirection);
   },
 };
 </script>

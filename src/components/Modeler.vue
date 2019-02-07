@@ -19,6 +19,7 @@
       </div>
 
       <InspectorPanel
+        :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
         :processNode="processNode"
@@ -603,12 +604,6 @@ export default {
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
-    });
-
-    this.paper.on('all', () => {
-      this.graph.getLinks().forEach(element => {
-        element.toFront();
-      });
     });
 
     this.paper.on('cell:pointerdown', cellView => {

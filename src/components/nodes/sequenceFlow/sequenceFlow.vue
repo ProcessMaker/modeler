@@ -26,6 +26,10 @@ export default {
         return false;
       }
 
+      if (targetType === targetType) {
+        return false;
+      }
+
       if (targetType === laneId) {
         return false;
       }

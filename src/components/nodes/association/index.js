@@ -1,4 +1,5 @@
 import component from './association.vue';
+import { direction } from './associationConfig';
 
 export const id  = 'processmaker-modeler-association';
 
@@ -9,7 +10,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create('bpmn:Association', {
-      name: 'New Association Flow',
+      associationDirection: `${ direction.none }`,
     });
   },
   inspectorConfig: [
@@ -32,19 +33,16 @@ export default {
           },
         },
         {
-          component: 'FormInput',
+          component: 'FormSelect',
           config: {
-            label: 'Name',
-            helper: 'The Name of the Association',
-            name: 'name',
-          },
-        },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Expression',
-            helper: 'Shows relationships between artifacts and flow objects.',
-            name: 'conditionExpression.body',
+            label: 'Direction',
+            helper: 'Select Direction',
+            name: 'associationDirection',
+            options: [
+              { value: `${ direction.none }`, content: 'None' },
+              { value: `${ direction.one }`, content: 'One' },
+              { value: `${ direction.both }`, content: 'Both' },
+            ],
           },
         },
       ],
