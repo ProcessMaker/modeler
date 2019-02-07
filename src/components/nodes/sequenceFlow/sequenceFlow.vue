@@ -26,7 +26,7 @@ export default {
         return false;
       }
 
-      if (targetType === laneId) {
+      if (this.isTargetTypeALane(targetType)) {
         return false;
       }
 
@@ -61,6 +61,9 @@ export default {
     },
     isNotSamePool(sourcePool, targetPool) {
       return sourcePool && sourcePool !== targetPool
+    },
+    isTargetTypeALane(targetType) {
+      return targetType === laneId;
     }
   },
   mounted() {
