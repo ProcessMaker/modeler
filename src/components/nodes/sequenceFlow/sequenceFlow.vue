@@ -42,8 +42,7 @@ export default {
       const invalidIncoming = this.targetConfig.validateIncoming
         && !this.targetConfig.validateIncoming(this.sourceNode);
 
-      const invalidOutgoing = this.sourceConfig.validateOutgoing
-        && !this.sourceConfig.validateOutgoing(this.targetNode);
+      const invalidOutgoing = this.isOutgoingInvalid(this.targetNode);
 
       if (invalidIncoming || invalidOutgoing) {
         return false;
@@ -63,6 +62,9 @@ export default {
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
     },
+    isOutgoingInvalid(targetNode) {
+      return this.sourceConfig.validateOutgoing && !this.sourceConfig.validateOutgoing(targetNode);
+    }
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({
