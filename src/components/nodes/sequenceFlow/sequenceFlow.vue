@@ -20,17 +20,10 @@ export default {
   },
   computed: {
     isValidConnection() {
-      const targetType = get(this.target, 'component.node.type');
 
-      if (!targetType) {
-        return false;
-      }
-
-      const targetPool = this.target.component.node.pool;
-      const sourcePool = this.sourceShape.component.node.pool;
-
-      if (this.isTargetTypeALane(targetType) ||
-        this.isNotSamePool(sourcePool, targetPool) ||
+      if (this.doesNotHaveTargetType() ||
+        this.isTargetTypeALane() ||
+        this.isNotSamePool() ||
         this.isIncomingInvalid(this.sourceNode) ||
         this.isOutgoingInvalid(this.targetNode)) {
           return false;
@@ -38,6 +31,9 @@ export default {
 
       return true;
     },
+    targetType() {
+      return get(this.target, 'component.node.type');
+    }
   },
   methods: {
     updateRouter() {
@@ -56,11 +52,17 @@ export default {
     isOutgoingInvalid(targetNode) {
       return this.sourceConfig.validateOutgoing && !this.sourceConfig.validateOutgoing(targetNode);
     },
-    isNotSamePool(sourcePool, targetPool) {
+    isNotSamePool() {
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
       return sourcePool && sourcePool !== targetPool
     },
-    isTargetTypeALane(targetType) {
-      return targetType === laneId;
+    doesNotHaveTargetType() {
+      return !this.targetType;
+    },
+    isTargetTypeALane() {
+      return this.targetType === laneId;
     }
   },
   mounted() {
