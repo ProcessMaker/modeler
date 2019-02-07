@@ -33,14 +33,10 @@ export default {
       const targetPool = this.target.component.node.pool;
       const sourcePool = this.sourceShape.component.node.pool;
 
-      /* If the link source is part of a pool, only allow sequence
-       * flows to the target if the target is also in the same pool  */
-      if (this.isNotSamePool(sourcePool, targetPool)) {
-        return false;
-      }
-
-      if (this.isIncomingInvalid(this.sourceNode) || this.isOutgoingInvalid(this.targetNode)) {
-        return false;
+      if (this.isNotSamePool(sourcePool, targetPool) ||
+        this.isIncomingInvalid(this.sourceNode) ||
+        this.isOutgoingInvalid(this.targetNode)) {
+          return false;
       }
 
       return true;
