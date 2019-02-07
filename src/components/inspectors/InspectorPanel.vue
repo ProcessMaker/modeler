@@ -118,6 +118,7 @@ export default {
 
 <style>
 .inspector-container {
+  overflow-y: auto;
   font-size: 0.75em;
   text-align: left;
   padding: 8px;

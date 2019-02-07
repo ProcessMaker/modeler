@@ -19,6 +19,7 @@
       </div>
 
       <InspectorPanel
+        :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
         :processNode="processNode"
