@@ -35,7 +35,7 @@ export default {
 
       /* If the link source is part of a pool, only allow sequence
        * flows to the target if the target is also in the same pool  */
-      if (sourcePool && sourcePool !== targetPool) {
+      if (this.isNotSamePool(sourcePool, targetPool)) {
         return false;
       }
 
@@ -62,6 +62,9 @@ export default {
     },
     isOutgoingInvalid(targetNode) {
       return this.sourceConfig.validateOutgoing && !this.sourceConfig.validateOutgoing(targetNode);
+    },
+    isNotSamePool(sourcePool, targetPool) {
+      return sourcePool && sourcePool !== targetPool
     }
   },
   mounted() {
