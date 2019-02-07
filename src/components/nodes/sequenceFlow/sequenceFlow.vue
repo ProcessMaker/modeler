@@ -48,6 +48,7 @@ export default {
       return this.hasTargetType() &&
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
+        this.targetIsNotSource() &&
         this.validateOutgoing();
     },
     hasTargetType() {
@@ -61,6 +62,9 @@ export default {
       const sourcePool = this.sourceShape.component.node.pool;
 
       return !sourcePool || sourcePool === targetPool
+    },
+    targetIsNotSource() {
+      return this.targetNode.definition.id !== this.sourceNode.definition.id;
     },
     validateOutgoing() {
       return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
