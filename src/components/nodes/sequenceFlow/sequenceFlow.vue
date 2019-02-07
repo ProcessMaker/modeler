@@ -26,10 +26,9 @@ export default {
       // target is valid
       // target is in the same pool
 
-      return this.isValidTarget() && ! (this.isTargetTypeALane() ||
-        this.isNotSamePool() ||
-        this.isIncomingInvalid() ||
-        this.isOutgoingInvalid());;
+      return this.isValidTarget() && ! (
+        this.isIncomingInvalid()
+      );
     },
     targetType() {
       return get(this.target, 'component.node.type');
@@ -46,26 +45,30 @@ export default {
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
     },
-    isValidTarget() {
-      return this.hasTargetType();
-    },
     isIncomingInvalid() {
       return this.targetConfig.validateIncoming && !this.targetConfig.validateIncoming(this.sourceNode);
     },
-    isOutgoingInvalid() {
-      return this.sourceConfig.validateOutgoing && !this.sourceConfig.validateOutgoing(this.targetNode);
-    },
-    isNotSamePool() {
-      const targetPool = this.target.component.node.pool;
-      const sourcePool = this.sourceShape.component.node.pool;
-
-      return sourcePool && sourcePool !== targetPool
+    isValidTarget() {
+      return this.hasTargetType() &&
+        this.targetIsNotALane() &&
+        this.targetIsInSamePool() &&
+        this.validateOutgoing();
     },
     hasTargetType() {
       return !!this.targetType;
     },
-    isTargetTypeALane() {
-      return this.targetType === laneId;
+    targetIsNotALane() {
+      return this.targetType !== laneId;
+    },
+    targetIsInSamePool() {
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      return !sourcePool || sourcePool === targetPool
+    },
+    validateOutgoing() {
+      return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
+        this.sourceConfig.validateOutgoing(this.targetNode);
     }
   },
   mounted() {
