@@ -20,12 +20,11 @@ export default {
   },
   computed: {
     isValidConnection() {
-
       if (this.doesNotHaveTargetType() ||
         this.isTargetTypeALane() ||
         this.isNotSamePool() ||
-        this.isIncomingInvalid(this.sourceNode) ||
-        this.isOutgoingInvalid(this.targetNode)) {
+        this.isIncomingInvalid() ||
+        this.isOutgoingInvalid()) {
           return false;
       }
 
@@ -46,11 +45,11 @@ export default {
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
     },
-    isIncomingInvalid(sourceNode) {
-      return this.targetConfig.validateIncoming && !this.targetConfig.validateIncoming(sourceNode);
+    isIncomingInvalid() {
+      return this.targetConfig.validateIncoming && !this.targetConfig.validateIncoming(this.sourceNode);
     },
-    isOutgoingInvalid(targetNode) {
-      return this.sourceConfig.validateOutgoing && !this.sourceConfig.validateOutgoing(targetNode);
+    isOutgoingInvalid() {
+      return this.sourceConfig.validateOutgoing && !this.sourceConfig.validateOutgoing(this.targetNode);
     },
     isNotSamePool() {
       const targetPool = this.target.component.node.pool;
