@@ -20,6 +20,12 @@ export default {
   },
   computed: {
     isValidConnection() {
+      // source is valid
+      // has a target
+      // target is not a lane
+      // target is valid
+      // target is in the same pool
+
       if (this.doesNotHaveTargetType() ||
         this.isTargetTypeALane() ||
         this.isNotSamePool() ||
