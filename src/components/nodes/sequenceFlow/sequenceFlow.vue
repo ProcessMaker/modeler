@@ -39,11 +39,7 @@ export default {
         return false;
       }
 
-      const invalidIncoming = this.isIncomingInvalid(this.sourceNode);
-
-      const invalidOutgoing = this.isOutgoingInvalid(this.targetNode);
-
-      if (invalidIncoming || invalidOutgoing) {
+      if (this.isIncomingInvalid(this.sourceNode) || this.isOutgoingInvalid(this.targetNode)) {
         return false;
       }
 
