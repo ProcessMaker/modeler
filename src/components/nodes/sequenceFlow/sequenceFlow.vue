@@ -9,6 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
+import { expressionPosition } from './sequenceFlowConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -28,22 +29,15 @@ export default {
   },
   watch: {
     'node.definition.conditionExpression.body'(conditionExpression) {
-
-      this.shape.appendLabel({
+      this.shape.labels([{
         attrs: {
           text: {
             text: conditionExpression,
             textAnchor: 'left',
           },
         },
-        position: {
-          distance: 0.25,
-          offset: {
-            x: -40,
-            y: -20,
-          },
-        },
-      });
+        position: expressionPosition,
+      }]);
     },
   },
 
@@ -99,21 +93,16 @@ export default {
       },
     });
 
-    this.shape.appendLabel({
+    const conditionExpress = this.node.definition.conditionExpression.body;
+    this.shape.labels([{
       attrs: {
         text: {
-          text: this.node.definition.conditionExpression.body,
+          text: conditionExpress,
           textAnchor: 'left',
         },
       },
-      position: {
-        distance: 0.25,
-        offset: {
-          x: -40,
-          y: -20,
-        },
-      },
-    });
+      position: expressionPosition,
+    }]);
   },
 };
 </script>

@@ -282,4 +282,32 @@ describe('Modeler', () => {
     cy.get(taskSelector).click({ force: true });
     cy.get('.modeler').children().should('have.length', finalElementCount);
   });
+
+  it('Update Condition expression', () => {
+    const exclusiveGatewayCoordinates = { x: 400, y: 300 };
+    const excluiveConnectorSelector =  '#v-25';
+    const taskCoordinates = { x: 400, y: 500 };
+    const sequenceFlowSelector = '#v-50';
+    const taskSelector = '#v-34';
+    const testString = 'foo > 7';
+
+    dragFromSourceToDest(
+      'processmaker-modeler-exclusive-gateway',
+      '.paper-container',
+      exclusiveGatewayCoordinates
+    );
+
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      taskCoordinates
+    );
+
+    connectNode(excluiveConnectorSelector, 400, 520);
+    cy.get(taskSelector).click({ force: true });
+    cy.get(sequenceFlowSelector).click({ force: true });
+
+    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
+    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+  });
 });
