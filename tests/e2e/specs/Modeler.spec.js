@@ -261,4 +261,25 @@ describe('Modeler', () => {
     const validXML = generateXML(testString);
     cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
   });
+
+  it('Prevent element to connect to self', () => {
+    const taskCoordinates = { x: 400, y: 300 };
+    const taskSelector = '#v-23';
+    const connectorSelector = '#v-26';
+    const emptyChildrenCount = 2;
+    const finalElementCount = 3;
+
+    cy.get('.modeler').children().should('have.length', emptyChildrenCount);
+
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      taskCoordinates
+    );
+
+    cy.get(taskSelector).click({ force: true });
+    connectNode(connectorSelector, 400, 300);
+    cy.get(taskSelector).click({ force: true });
+    cy.get('.modeler').children().should('have.length', finalElementCount);
+  });
 });
