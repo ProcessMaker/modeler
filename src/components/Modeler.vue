@@ -134,9 +134,19 @@ export default {
     highlightedNode: () => store.getters.highlightedNode,
   },
   methods: {
-    pushToUndoStack() {
-      this.toXML((err,xml) => {
-        undoRedoStore.dispatch('pushState', xml);
+    async pushToUndoStack() {
+      const xml = await this.getXmlFromDiagram();
+      undoRedoStore.dispatch('pushState', xml);
+    },
+    getXmlFromDiagram() {
+      return new Promise((resolve, reject) => {
+        this.toXML((error, xml) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(xml);
+          }
+        });
       });
     },
     undo() {
