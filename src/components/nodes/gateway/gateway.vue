@@ -9,7 +9,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import GatewayShape from '@/components/nodes/gateway/shape';
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id'],
+  props: ['graph', 'node'],
   mixins: [crownConfig],
   data() {
     return {
