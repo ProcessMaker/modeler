@@ -17,5 +17,17 @@ module.exports = {
           : 'jointjs',
       },
     },
+    module: {
+      rules: [
+        {
+          test: /\.bpmnlintrc$/,
+          use: [
+            {
+              loader: 'bpmnlint-loader',
+            },
+          ],
+        },
+      ],
+    },
   },
 };

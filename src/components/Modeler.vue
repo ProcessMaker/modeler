@@ -13,6 +13,8 @@
           <button @click="redo" :disabled="!canRedo">Redo</button>
         </div>
 
+        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
+
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper"/>
         </drop>
@@ -67,6 +69,8 @@ import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
+import { Linter } from 'bpmnlint';
+import linterConfig from '../../.bpmnlintrc';
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
@@ -118,6 +122,7 @@ export default {
       cursor: null,
       parentHeight: null,
       parentWidth: null,
+      linter: null,
     };
   },
   computed: {
@@ -148,6 +153,12 @@ export default {
           }
         });
       });
+    },
+    async validateBpmnDiagram() {
+      const results = await this.linter.lint(this.definitions);
+
+      /* eslint-disable-next-line no-console */
+      console.log(results);
     },
     undo() {
       undoRedoStore
@@ -564,6 +575,8 @@ export default {
     });
 
     this.moddle = new BpmnModdle(this.extensions);
+
+    this.linter = new Linter(linterConfig);
   },
   mounted() {
     this.graph = new joint.dia.Graph();
@@ -690,6 +703,14 @@ $cursors: default, not-allowed;
         > button {
           cursor: pointer;
         }
+      }
+
+      .validate-button {
+        position: absolute;
+        z-index: 1;
+        top: 1rem;
+        right: 1rem;
+        cursor: pointer;
       }
     }
 
