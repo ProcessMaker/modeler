@@ -29,18 +29,15 @@ export default {
   },
   watch: {
     'node.definition.conditionExpression.body'(conditionExpression) {
-      this.shape.labels([{
+      this.shape.label(0, {
         attrs: {
           text: {
             text: conditionExpression,
-            textAnchor: 'left',
           },
         },
-        position: expressionPosition,
-      }]);
+      });
     },
   },
-
   methods: {
     updateRouter() {
       this.shape.router('orthogonal');
@@ -93,11 +90,10 @@ export default {
       },
     });
 
-    const conditionExpress = this.node.definition.conditionExpression.body;
     this.shape.labels([{
       attrs: {
         text: {
-          text: conditionExpress,
+          text: '',
           textAnchor: 'left',
         },
       },
