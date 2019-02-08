@@ -26,6 +26,27 @@ export default {
       return get(this.target, 'component.node.type');
     },
   },
+  watch: {
+    'node.definition.conditionExpression.body'(conditionExpression) {
+
+      this.shape.appendLabel({
+        attrs: {
+          text: {
+            text: conditionExpression,
+            textAnchor: 'left',
+          },
+        },
+        position: {
+          distance: 0.25,
+          offset: {
+            x: -40,
+            y: -20,
+          },
+        },
+      });
+    },
+  },
+
   methods: {
     updateRouter() {
       this.shape.router('orthogonal');
@@ -75,6 +96,22 @@ export default {
     this.shape = new joint.shapes.standard.Link({
       router: {
         name: 'orthogonal',
+      },
+    });
+
+    this.shape.appendLabel({
+      attrs: {
+        text: {
+          text: this.node.definition.conditionExpression.body,
+          textAnchor: 'left',
+        },
+      },
+      position: {
+        distance: 0.25,
+        offset: {
+          x: -40,
+          y: -20,
+        },
       },
     });
   },
