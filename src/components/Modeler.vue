@@ -30,7 +30,7 @@
     <component
       v-for="node in nodes"
       :is="node.type"
-      :key="node.definition.id"
+      :key="node._modelerId"
       :graph="graph"
       :paper="paper"
       :node="node"
