@@ -26,8 +26,6 @@ import Modeler from './components/Modeler.vue';
 import statusbar from './components/statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import validationStatus from '@/components/validationStatus';
 
 const reader = new FileReader();
@@ -39,41 +37,11 @@ export default {
     FileUpload,
     validationStatus,
     statusbar,
-    FontAwesomeIcon,
   },
   data() {
     return {
       validationErrors: null,
     };
-  },
-  computed: {
-    statusIcon() {
-      return this.hasValidationErrors
-        ? faTimesCircle
-        : faCheckCircle;
-    },
-    statusColor() {
-      return this.hasValidationErrors
-        ? 'red'
-        : 'green';
-    },
-    hasValidationErrors() {
-      return this.numberOfValidationErrors > 0;
-    },
-    numberOfValidationErrors() {
-      if (!this.validationErrors) {
-        return 0;
-      }
-
-      return Object.entries(this.validationErrors).reduce((numberOfErrors, [,errors]) => {
-        return numberOfErrors + errors.length;
-      }, 0);
-    },
-    statusText() {
-      return this.hasValidationErrors
-        ? `${this.numberOfValidationErrors} error${this.numberOfValidationErrors === 1 ? '' : 's'} detected`
-        : 'No errors detected';
-    },
   },
   methods: {
     download() {
