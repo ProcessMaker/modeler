@@ -11,7 +11,7 @@
       <modeler ref="modeler" @validate="validationErrors = $event" />
     </div>
     <statusbar>
-      <validationStatus :validationErrors="validationErrors"/>
+      <validationStatus :validation-errors="validationErrors"/>
     </statusbar>
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload @input-file="handleUpload">
