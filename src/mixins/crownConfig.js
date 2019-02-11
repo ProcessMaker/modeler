@@ -5,8 +5,20 @@ import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
 
+const errorHighlighter = {
+  name: 'stroke',
+  options: {
+    padding: 12,
+    attrs: {
+      stroke: 'red',
+      'stroke-width': 3,
+      opacity: 0.6,
+    },
+  },
+};
+
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError'],
   data() {
     return {
       buttons: [],
@@ -21,6 +33,13 @@ export default {
       } else {
         this.shapeView.unhighlight();
         this.removeCrown();
+      }
+    },
+    hasError(hasError) {
+      if (hasError) {
+        this.shapeView.highlight(null, { highlighter: errorHighlighter });
+      } else {
+        this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
       }
     },
   },
