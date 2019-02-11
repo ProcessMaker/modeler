@@ -49,6 +49,9 @@ export default {
     };
   },
   computed: {
+    hasValidationErrors() {
+      return this.numberOfValidationErrors > 0;
+    },
     numberOfValidationErrors() {
       if (!this.validationErrors) {
         return 0;
@@ -59,7 +62,7 @@ export default {
       }, 0);
     },
     statusText() {
-      return this.numberOfValidationErrors > 0
+      return this.hasValidationErrors
         ? `${this.numberOfValidationErrors} error${this.numberOfValidationErrors === 1 ? '' : 's'} detected`
         : 'No errors detected';
     },
