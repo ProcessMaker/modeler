@@ -11,10 +11,10 @@
       <modeler ref="modeler" @validate="validationErrors = $event" />
     </div>
     <statusbar>
-      {{statusText}}
+      <validation-bar />
+      {{ statusText }}
       <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
     </statusbar>
-
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload @input-file="handleUpload">
         Upload file
@@ -30,6 +30,7 @@ import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import validationBar from '@/components/validationBar';
 
 const reader = new FileReader();
 
@@ -38,6 +39,7 @@ export default {
   components: {
     Modeler,
     FileUpload,
+    validationBar,
     statusbar,
     FontAwesomeIcon,
   },
