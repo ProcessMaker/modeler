@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" />
+      <modeler ref="modeler" @validate="validationErrors = $event" />
     </div>
     <statusbar>
       {{statusText}}
@@ -43,10 +43,26 @@ export default {
   },
   data() {
     return {
-      statusText: 'No errors detected',
       statusIcon: faCheckCircle,
       statusColor: 'green',
+      validationErrors: null,
     };
+  },
+  computed: {
+    numberOfValidationErrors() {
+      if (!this.validationErrors) {
+        return 0;
+      }
+
+      return Object.entries(this.validationErrors).reduce((numberOfErrors, [,errors]) => {
+        return numberOfErrors + errors.length;
+      }, 0);
+    },
+    statusText() {
+      return this.numberOfValidationErrors > 0
+        ? `${this.numberOfValidationErrors} error${this.numberOfValidationErrors === 1 ? '' : 's'} detected`
+        : 'No errors detected';
+    },
   },
   methods: {
     download() {

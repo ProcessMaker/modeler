@@ -156,9 +156,7 @@ export default {
     },
     async validateBpmnDiagram() {
       const results = await this.linter.lint(this.definitions);
-
-      /* eslint-disable-next-line no-console */
-      console.log(results);
+      this.$emit('validate', results);
     },
     undo() {
       undoRedoStore
