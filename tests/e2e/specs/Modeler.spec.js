@@ -101,6 +101,7 @@ describe('Modeler', () => {
 
   it('Update exclusive gateway name', () => {
     const testString = 'testing';
+    const exclusiveGatewaySelector = '#v-19';
 
     dragFromSourceToDest(
       'processmaker-modeler-exclusive-gateway',
@@ -108,7 +109,7 @@ describe('Modeler', () => {
       200, 200
     );
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
+    cy.get(exclusiveGatewaySelector).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
     cy.get('[name=\'name\']').should('have.value', testString);
   });

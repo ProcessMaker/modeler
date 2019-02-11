@@ -1,7 +1,5 @@
 import component from './exclusiveGateway.vue';
 
-export const gatewayDirectionOptions = { Diverging: 'Diverging', Converging: 'Converging' };
-
 export default {
   id: 'processmaker-modeler-exclusive-gateway',
   component,
