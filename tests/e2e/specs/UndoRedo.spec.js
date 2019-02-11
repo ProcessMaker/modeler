@@ -25,7 +25,7 @@ describe.only('Undo/redo', () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it.only('Can undo and redo deleting a task', () => {
+  it('Can undo and redo deleting a task', () => {
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
     /* Wait for jointjs to render the shape */
