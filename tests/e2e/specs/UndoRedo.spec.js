@@ -4,6 +4,10 @@ import {
   getGraphElements,
 } from '../support/utils';
 
+function getDeleteButtonForElement($element) {
+  return cy.get(`#${$element.attr('id')} ~ [data-test=delete-button]`);
+}
+
 describe.only('Undo/redo', () => {
   const taskPosition = { x: 300, y: 500 };
 
@@ -34,7 +38,7 @@ describe.only('Undo/redo', () => {
     getElementAtPosition(taskPosition)
       .click()
       .then($task => {
-        cy.get(`#${$task.attr('id')} ~ [data-test=delete-button]`).click();
+        getDeleteButtonForElement($task).click();
       });
 
     /* Only the start element should remain */
