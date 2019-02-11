@@ -44,11 +44,15 @@ export default {
   data() {
     return {
       statusIcon: faCheckCircle,
-      statusColor: 'green',
       validationErrors: null,
     };
   },
   computed: {
+    statusColor() {
+      return this.hasValidationErrors
+        ? 'red'
+        : 'green';
+    },
     hasValidationErrors() {
       return this.numberOfValidationErrors > 0;
     },
