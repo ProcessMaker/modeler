@@ -1,12 +1,11 @@
 <template>
   <div class="statusbar">
-    <div>
-      <slot name="secondary"></slot>
-    </div>
-    <div>
+    <div class="validation-container">
+      <div class="validation-container__header">Problems</div>
       {{ statusText }}
-      <font-awesome-icon :style="{ color: statusColor }" :icon="statusIcon" />
     </div>
+    {{ statusText }}
+    <font-awesome-icon :style="{ color: statusColor }" :icon="statusIcon" />
   </div>
 </template>
 
@@ -56,7 +55,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .statusbar {
   display: flex;
   justify-content: space-between;
@@ -68,5 +67,21 @@ export default {
   font-size: 14px;
   color: #555555;
   font-weight: normal;
+}
+
+.validation-container {
+  height: 20rem;
+  width: 28rem;
+  background-color: #F0F3F7;
+
+  &__header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 1rem;
+    font-size: 1rem;
+    height: 3rem;
+    background-color: #fff;
+  }
 }
 </style>
