@@ -174,7 +174,7 @@ describe('Modeler', () => {
       { x: 300, y: 350},
     );
 
-    connectNode(taskConnectorSelector, 300, 350);
+    connectNode(taskConnectorSelector, 350, 400);
     cy.get(taskSelectorTwo).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
 
@@ -184,7 +184,7 @@ describe('Modeler', () => {
       { x: 100, y: 350},
     );
 
-    connectNode(taskConnectorSelectorTwo, 100, 350);
+    connectNode(taskConnectorSelectorTwo, 150, 400);
     cy.get(taskSelectorThree).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
 
@@ -194,7 +194,7 @@ describe('Modeler', () => {
       { x: 100, y: 500},
     );
 
-    connectNode(taskConnectorSelectorThree, 100, 500);
+    connectNode(taskConnectorSelectorThree, 110, 510);
     cy.get(endEventSelector).click();
 
     dragFromSourceToDest(
