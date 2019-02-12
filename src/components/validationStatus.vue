@@ -82,11 +82,6 @@ export default {
         return numberOfErrors + errors.length;
       }, 0);
     },
-    statusText() {
-      return this.hasValidationErrors
-        ? `${this.numberOfValidationErrors} error${this.numberOfValidationErrors === 1 ? '' : 's'} detected`
-        : 'No errors detected';
-    },
   },
 };
 </script>
