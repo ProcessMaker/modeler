@@ -9,7 +9,9 @@
           <span>{{ error.message }}</span>
         </span>
         <span class="validation-container__list--errorCategory"
-              :style="[ error.category === 'error' ? { 'background-color': `${ errorColor }` } : { 'background-color': `${ warningColor }` } ]">
+              :style="[ error.category === 'error'
+              ? { 'background-color': `${ errorColor }` }
+              : { 'background-color': `${ warningColor }` }]">
               {{ error.category }}
         </span>
       </div>
@@ -36,6 +38,7 @@ export default {
       toggleValidationPanel: false,
       errorColor: '#D9534F',
       warningColor: '#F0AD4E',
+      validColor: '#40C057',
     };
   },
   computed: {
@@ -65,7 +68,7 @@ export default {
     statusColor() {
       return this.hasValidationErrors
         ? `${ this.errorColor }`
-        : 'green';
+        : `${ this.validColor }`;
     },
     hasValidationErrors() {
       return this.numberOfValidationErrors > 0;
@@ -96,17 +99,11 @@ $errorColor: #D9534F;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 1rem 0 1rem;
   font-size: 0.85rem;
-
   color: #555555;
   height: 2.5rem;
   cursor: pointer;
-  width: 10rem;
-
-  &__status-text {
-    padding-left: 0.5rem;
-  }
+  width: 8rem;
 }
 
 .validation-container {
