@@ -106,8 +106,20 @@ export default {
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
-    addMessageFlow() {
+    addMessageFlow(cellView, evt, x, y) {
+      this.removeCrown();
 
+      const messageFlowDefinition = this.moddle.create('bpmn:MessageFlow', {
+        name: '',
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
+      });
+
+      this.$emit('add-node', {
+        type: 'processmaker-modeler-message-flow',
+        definition: messageFlowDefinition,
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
+      });
     },
     addMessageFlowButton() {
       this.crownConfig.push({
@@ -202,6 +214,7 @@ export default {
         'processmaker-modeler-pool',
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
+        'processmaker-modeler-message-flow',
       ].includes(this.node.type))
       {
         return;
