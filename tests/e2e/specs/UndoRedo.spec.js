@@ -2,13 +2,10 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getGraphElements,
+  getCrownButtonForElement,
 } from '../support/utils';
 
-function getDeleteButtonForElement($element) {
-  return cy.get(`#${$element.attr('id')} ~ [data-test=delete-button]`);
-}
-
-describe.only('Undo/redo', () => {
+describe('Undo/redo', () => {
   const taskPosition = { x: 300, y: 500 };
 
   beforeEach(() => {
@@ -38,7 +35,7 @@ describe.only('Undo/redo', () => {
     getElementAtPosition(taskPosition)
       .click()
       .then($task => {
-        getDeleteButtonForElement($task).click();
+        getCrownButtonForElement($task, 'delete').click();
       });
 
     /* Only the start element should remain */
