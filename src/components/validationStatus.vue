@@ -97,8 +97,8 @@ $border-color: #aaaaaa;
   font-size: 0.85rem;
   color: #555555;
   height: 2.5rem;
-  cursor: pointer;
   width: 8rem;
+  cursor: pointer;
 }
 
 .validation-container {
@@ -124,21 +124,23 @@ $border-color: #aaaaaa;
     display: flex;
     justify-content: space-between;
     padding: 1rem;
-    text-transform: capitalize;
 
     &--message {
       display: flex;
       align-items: flex-start;
       flex-direction: column;
+      text-transform: capitalize;
     }
 
     &--errorCategory {
       display: flex;
+      align-items: center;
       justify-content: center;
       color: $primary-white;
       border-radius: 0.75rem;
       height: 1.5rem;
       width: 4rem;
+      font-size: 0.85rem;
     }
 
     &--key {
