@@ -27,6 +27,10 @@ import statusbar from './components/statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import validationStatus from '@/components/validationStatus';
+import store from '@/store';
+
+/* Add reference to store on window–this is used in testing to verify rendered nodes */
+window.store = store;
 
 const reader = new FileReader();
 
