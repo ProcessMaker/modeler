@@ -46,6 +46,7 @@ export default {
       definition: null,
       crownConfig: [
         {
+          id: 'lane-above',
           icon: laneAboveIcon,
           clickHandler: () => {
             this.addLaneAbove = true;
@@ -53,6 +54,7 @@ export default {
           },
         },
         {
+          id: 'lane-below',
           icon: laneBelowIcon,
           clickHandler: () => {
             this.addLaneAbove = false;

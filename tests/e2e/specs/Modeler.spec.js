@@ -1,5 +1,9 @@
 import { direction } from '../../../src/components/nodes/association/associationConfig';
-import { dragFromSourceToDest } from '../support/utils';
+import {
+  dragFromSourceToDest,
+  getElementAtPosition,
+  getCrownButtonForElement,
+} from '../support/utils';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -61,18 +65,23 @@ describe('Modeler', () => {
   });
 
   it('Can add top and bottom lane', () => {
-    const poolSelector = '#v-24';
-    const topLaneSeletor = '#v-26';
-    const bottomLaneSeletor = '#v-29';
+    const poolPosition = { x: 200, y: 200 };
 
     dragFromSourceToDest(
       'processmaker-modeler-pool',
       '.paper-container',
-      { x: 100, y: 100},
+      poolPosition,
     );
-    cy.get(poolSelector).click();
-    cy.get(topLaneSeletor).click({ force: true });
-    cy.get(bottomLaneSeletor).click({ force: true });
+
+    /* Wait for jointjs to render the shape */
+    cy.wait(100);
+
+    getElementAtPosition(poolPosition)
+      .click()
+      .then($pool => {
+        getCrownButtonForElement($pool, 'lane-above').click();
+        getCrownButtonForElement($pool, 'lane-below').click();
+      });
 
   });
 
