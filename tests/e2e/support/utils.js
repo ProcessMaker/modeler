@@ -35,3 +35,7 @@ export function dragFromSourceToDest(source, dest, position) {
   cy.get(dest).trigger('dragenter', { force: true });
   cy.get(dest).trigger('drop', { x: position.x, y: position.y });
 }
+
+export function getCrownButtonForElement($element, crownButton) {
+  return cy.get(`#${$element.attr('id')} ~ [data-test=${crownButton}-button]`);
+}
