@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      validationErrors: null,
+      validationErrors: {},
     };
   },
   methods: {

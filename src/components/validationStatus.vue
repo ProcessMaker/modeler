@@ -1,8 +1,9 @@
 <template>
   <div class="statusbar">
     <div class="validation-container">
-      <div class="validation-container__header">Problems</div>
-      {{ statusText }}
+      <div class="validation-container__header">Problems {{ numberOfValidationErrors }}</div>
+
+
     </div>
     {{ statusText }}
     <font-awesome-icon :style="{ color: statusColor }" :icon="statusIcon" />
@@ -23,6 +24,11 @@ export default {
     };
   },
   computed: {
+    errorList() {
+      return Object.entries(this.validationErrors).reduce((numberOfErrors, [,errors]) => {
+        return numberOfErrors + errors.length;
+      }, 0);
+    },
     statusIcon() {
       return this.hasValidationErrors
         ? faTimesCircle
