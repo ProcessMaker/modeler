@@ -1,5 +1,6 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
 
@@ -95,6 +96,16 @@ export default {
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
+    addMessageFlow() {
+
+    },
+    addMessageFlowButton() {
+      this.crownConfig.push({
+        id: 'message-flow-button',
+        icon: messageFlowIcon,
+        clickHandler: this.addMessageFlow,
+      });
+    },
     configureCrown() {
       if (!this.crownConfig) {
         this.crownConfig = [];
@@ -105,6 +116,8 @@ export default {
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
+
+      this.addMessageFlowButton();
 
       this.crownConfig.forEach(({ id, icon, clickHandler }) => {
         const button = new joint.shapes.standard.EmbeddedImage();
