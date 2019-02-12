@@ -87,8 +87,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$warningColor: #F0AD4E;
-$errorColor: #D9534F;
+$primary-white: #F0F3F7;
+$border-color: #aaaaaa;
 
 .statusBar-container {
   display: flex;
@@ -107,10 +107,10 @@ $errorColor: #D9534F;
   right:0;
   height: 20rem;
   width: 28rem;
-  background-color: #F0F3F7;
+  background-color: $primary-white;
   overflow: scroll;
   margin-bottom: 2.5rem;
-  border: 1px solid #aaaaaa;
+  border: 1px solid $border-color;
 
   &__defaultMessage {
     display: flex;
@@ -123,7 +123,7 @@ $errorColor: #D9534F;
   &__list {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 1rem 1rem 1rem;
+    padding: 1rem;
     text-transform: capitalize;
 
     &--message {
@@ -135,7 +135,7 @@ $errorColor: #D9534F;
     &--errorCategory {
       display: flex;
       justify-content: center;
-      color: #fff;
+      color: $primary-white;
       border-radius: 0.75rem;
       height: 1.5rem;
       width: 4rem;
