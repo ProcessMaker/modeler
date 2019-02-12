@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="validation-bar-container">
     <div class="validation-container" v-if="toggleValidationPanel">
       <span class="validation-container__defaultMessage" v-if="!numberOfValidationErrors">no problems to report</span>
       <div class="validation-container__list"  v-for="error in errorList" :key="error.id">
@@ -89,6 +89,7 @@ export default {
 <style scoped lang="scss">
 $primary-white: #F0F3F7;
 $seconadry-grey: #555555;
+$validation-bar-color: #eeeeee;
 $border-color: #aaaaaa;
 $text-size-sm: 0.85rem;
 $validation-container-height: 20rem;
@@ -96,7 +97,15 @@ $validation-container-width: 28rem;
 $statusBar-container-height: 2.5rem;
 $statusBar-container-width: 8rem;
 $message-label-pill-width: 1.5rem;
-$message-label-pill-height: 4rem;;
+$message-label-pill-height: 4rem;
+
+.validation-bar-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 1px solid $border-color;
+  background-color: $validation-bar-color;
+}
 
 .statusBar-container {
   display: flex;
