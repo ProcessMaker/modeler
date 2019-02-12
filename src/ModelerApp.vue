@@ -30,6 +30,10 @@ import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import store from '@/store';
+
+/* Add reference to store on window–this is used in testing to verify rendered nodes */
+window.store = store;
 
 const reader = new FileReader();
 

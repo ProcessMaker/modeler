@@ -9,12 +9,12 @@
         :style="{ width: parentWidth, height: parentHeight }"
       >
         <div class="history-buttons">
-          <button @click="undo" :disabled="!canUndo">Undo</button>
-          <button @click="redo" :disabled="!canRedo">Redo</button>
+          <button @click="undo" :disabled="!canUndo" data-test="undo">Undo</button>
+          <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
         </div>
 
         <drop @drop="handleDrop" @dragover="validateDropTarget">
-          <div ref="paper"/>
+          <div ref="paper" data-test="paper"/>
         </drop>
       </div>
 
@@ -578,6 +578,8 @@ export default {
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
+
+    store.commit('setPaper', this.paper);
 
     this.paper.on('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
