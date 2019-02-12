@@ -88,16 +88,24 @@ export default {
 
 <style scoped lang="scss">
 $primary-white: #F0F3F7;
+$seconadry-grey: #555555;
 $border-color: #aaaaaa;
+$text-size-sm: 0.85rem;
+$validation-container-height: 20rem;
+$validation-container-width: 28rem;
+$statusBar-container-height: 2.5rem;
+$statusBar-container-width: 8rem;
+$message-label-pill-width: 1.5rem;
+$message-label-pill-height: 4rem;;
 
 .statusBar-container {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  font-size: 0.85rem;
-  color: #555555;
-  height: 2.5rem;
-  width: 8rem;
+  font-size: $text-size-sm;
+  color: $seconadry-grey;
+  height: $statusBar-container-height;
+  width: $statusBar-container-width;
   cursor: pointer;
 }
 
@@ -105,8 +113,8 @@ $border-color: #aaaaaa;
   position:absolute;
   bottom:0;
   right:0;
-  height: 20rem;
-  width: 28rem;
+  height: $validation-container-height;
+  width: $validation-container-width;
   background-color: $primary-white;
   overflow: scroll;
   margin-bottom: 2.5rem;
@@ -138,9 +146,9 @@ $border-color: #aaaaaa;
       justify-content: center;
       color: $primary-white;
       border-radius: 0.75rem;
-      height: 1.5rem;
-      width: 4rem;
-      font-size: 0.85rem;
+      height: $message-label-pill-width;
+      width: $message-label-pill-height;
+      font-size: $text-size-sm;
     }
 
     &--key {
@@ -148,6 +156,7 @@ $border-color: #aaaaaa;
     }
 
     &--id {
+      color: $seconadry-grey;
       text-transform: none;
     }
   }
