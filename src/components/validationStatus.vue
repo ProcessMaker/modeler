@@ -9,7 +9,7 @@
           <span>{{ error.message }}</span>
         </span>
         <span class="validation-container__list--errorCategory"
-              :style="[ error.category === 'warning' ? { 'background-color': '#F0AD4E' } : { 'background-color': '#D9534F' } ]">
+              :style="[ error.category === 'error' ? { 'background-color': `${ errorColor }` } : { 'background-color': `${ warningColor }` } ]">
               {{ error.category }}
         </span>
       </div>
@@ -17,12 +17,13 @@
      <div class="statusBar-container" @click="toggleValidationPanel = !toggleValidationPanel">
       <span class="statusBar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
       <font-awesome-icon class="statusBar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
+      <font-awesome-icon class="statusBar-container__status-ellipsis" :icon="ellipsisIcon" />
     </div>
   </div>
 </template>
 
 <script>
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faTimesCircle, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
@@ -33,6 +34,8 @@ export default {
   data() {
     return {
       toggleValidationPanel: false,
+      errorColor: '#D9534F',
+      warningColor: '#F0AD4E',
     };
   },
   computed: {
@@ -51,6 +54,9 @@ export default {
         return errorList;
       }, []);
     },
+    ellipsisIcon() {
+      return faEllipsisV;
+    },
     statusIcon() {
       return this.hasValidationErrors
         ? faTimesCircle
@@ -58,7 +64,7 @@ export default {
     },
     statusColor() {
       return this.hasValidationErrors
-        ? 'red'
+        ? `${ this.errorColor }`
         : 'green';
     },
     hasValidationErrors() {
@@ -88,15 +94,18 @@ $errorColor: #D9534F;
 
 .statusBar-container {
   display: flex;
+  justify-content: space-around;
   align-items: center;
   padding: 0 1rem 0 1rem;
   font-size: 0.85rem;
+
   color: #555555;
   height: 2.5rem;
   cursor: pointer;
+  width: 10rem;
 
   &__status-text {
-    padding-right: 0.5rem;
+    padding-left: 0.5rem;
   }
 }
 
