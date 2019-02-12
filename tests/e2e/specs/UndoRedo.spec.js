@@ -35,7 +35,7 @@ describe('Undo/redo', () => {
     getElementAtPosition(taskPosition)
       .click()
       .then($task => {
-        getCrownButtonForElement($task, 'delete').click();
+        getCrownButtonForElement($task, 'delete-button').click();
       });
 
     /* Only the start element should remain */

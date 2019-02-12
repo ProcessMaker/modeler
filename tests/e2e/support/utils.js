@@ -37,5 +37,5 @@ export function dragFromSourceToDest(source, dest, position) {
 }
 
 export function getCrownButtonForElement($element, crownButton) {
-  return cy.get(`#${$element.attr('id')} ~ [data-test=${crownButton}-button]`);
+  return cy.get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`);
 }
