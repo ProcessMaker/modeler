@@ -35,7 +35,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
   registerNode(startEvent);
   registerNode(startTimerEvent, definition => {
     const eventDefinitions = definition.get('eventDefinitions');
-    if (eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === "bpmn:TimerEventDefinition") {
+    if (eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
       return 'processmaker-modeler-start-timer-event';
     }
   });

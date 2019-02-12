@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import StartEventShape from '@/components/nodes/startEvent/shape';
@@ -45,10 +44,10 @@ export default {
         refY: '130%',
       },
       image: {
-          'ref-x': 5,
-          'ref-y': 5,
-          'width': bounds.get('width') - 10,
-          'height': bounds.get('height') - 10,
+        'ref-x': 5,
+        'ref-y': 5,
+        'width': bounds.get('width') - 10,
+        'height': bounds.get('height') - 10,
       },
     });
     this.shape.addTo(this.graph);
