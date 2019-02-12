@@ -108,7 +108,11 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
-        this.updateDefinitionLinks();
+
+        if (this.updateDefinitionLinks) {
+          this.updateDefinitionLinks();
+        }
+
         this.$emit('save-state');
       });
 

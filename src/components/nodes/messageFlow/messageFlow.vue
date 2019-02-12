@@ -8,6 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
+import { id as poolId } from '../pool';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -19,7 +20,7 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return this.isValidTarget() && this.isValidSource();
+      return this.isValidTarget();
     },
     targetType() {
       return get(this.target, 'component.node.type');
@@ -29,38 +30,35 @@ export default {
     updateRouter() {
       this.shape.router('orthogonal');
     },
-    updateDefinitionLinks() {
-      const targetShape = this.shape.getTargetElement();
-
-      this.node.definition.targetRef = targetShape.component.node.definition;
-      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition);
-    },
-    isValidSource() {
-      return this.validateIncoming();
-    },
-    validateIncoming() {
-      return typeof this.targetConfig.validateIncoming === 'undefined' ||
-        this.targetConfig.validateIncoming(this.sourceNode);
-    },
     isValidTarget() {
       return this.hasTargetType() &&
         this.targetIsNotALane() &&
-        this.targetIsInSamePool() &&
+        this.targetIsNotContainingPool() &&
+        this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
         this.validateOutgoing();
     },
     hasTargetType() {
-      return !!this.targetType;
+      return this.targetType != null;
     },
     targetIsNotALane() {
       return this.targetType !== laneId;
     },
-    targetIsInSamePool() {
+    targetIsNotContainingPool() {
+      return this.target !== this.sourceNode.pool;
+    },
+    targetIsPool() {
+      return this.targetType === poolId;
+    },
+    targetIsInDifferentPool() {
+      if (this.targetIsPool()) {
+        return true;
+      }
+
       const targetPool = this.target.component.node.pool;
       const sourcePool = this.sourceShape.component.node.pool;
 
-      return !sourcePool || sourcePool === targetPool;
+      return sourcePool != null && sourcePool !== targetPool;
     },
     targetIsNotSource() {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
