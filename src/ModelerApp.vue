@@ -10,7 +10,9 @@
     <div class="modeler-container">
       <modeler ref="modeler" @validate="validationErrors = $event" />
     </div>
-    <validationStatus :validation-errors="validationErrors"/>
+    <statusbar>
+      <validationStatus :validation-errors="validationErrors"/>
+    </statusbar>
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload @input-file="handleUpload">
         Upload file
@@ -21,6 +23,7 @@
 
 <script>
 import Modeler from './components/Modeler.vue';
+import statusbar from './components/statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import validationStatus from '@/components/validationStatus';
@@ -37,6 +40,7 @@ export default {
     Modeler,
     FileUpload,
     validationStatus,
+    statusbar,
   },
   data() {
     return {
