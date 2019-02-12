@@ -1,12 +1,23 @@
 <template>
-  <div class="statusbar">
-    <div class="validation-container">
-      <div class="validation-container__header">Problems {{ numberOfValidationErrors }}</div>
-
-
+  <div>
+    <div class="validation-container" v-if="toggleValidationPanel">
+      <span class="validation-container__defaultMessage" v-if="!numberOfValidationErrors">no problems to report</span>
+      <div class="validation-container__list"  v-for="error in errorList" :key="error.id">
+        <span class="validation-container__list--id">{{ error.id }}</span>
+        <span class="validation-container__list--message">
+          <span class="validation-container__list--key">{{ error.errorKey }}</span>
+          <span>{{ error.message }}</span>
+        </span>
+        <span class="validation-container__list--errorCategory"
+              :style="[ error.category === 'warning' ? { 'background-color': '#F0AD4E' } : { 'background-color': '#D9534F' } ]">
+              {{ error.category }}
+        </span>
+      </div>
     </div>
-    {{ statusText }}
-    <font-awesome-icon :style="{ color: statusColor }" :icon="statusIcon" />
+     <div class="statusBar-container" @click="toggleValidationPanel = !toggleValidationPanel">
+      <span class="statusBar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
+      <font-awesome-icon class="statusBar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
+    </div>
   </div>
 </template>
 
@@ -21,13 +32,24 @@ export default {
   props: ['validationErrors'],
   data() {
     return {
+      toggleValidationPanel: false,
     };
   },
   computed: {
     errorList() {
-      return Object.entries(this.validationErrors).reduce((numberOfErrors, [,errors]) => {
-        return numberOfErrors + errors.length;
-      }, 0);
+      return Object.entries(this.validationErrors).reduce((errorList, [ errorKey, errors ]) => {
+        const errorListItems = errors.map((error) => {
+          return  {
+            id: error.id,
+            errorKey,
+            category: error.category,
+            message: error.message,
+          };
+        });
+
+        errorList.push(...errorListItems);
+        return errorList;
+      }, []);
     },
     statusIcon() {
       return this.hasValidationErrors
@@ -57,37 +79,74 @@ export default {
         : 'No errors detected';
     },
   },
-
 };
 </script>
 
 <style scoped lang="scss">
-.statusbar {
+$warningColor: #F0AD4E;
+$errorColor: #D9534F;
+
+.statusBar-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #aaaaaa;
-  background-color: #eeeeee;
-  padding-left: 16px;
-  padding-right: 16px;
-  font-size: 14px;
+  padding: 0 1rem 0 1rem;
+  font-size: 0.85rem;
   color: #555555;
-  font-weight: normal;
+  height: 2.5rem;
+  cursor: pointer;
+
+  &__status-text {
+    padding-right: 0.5rem;
+  }
 }
 
 .validation-container {
+  position:absolute;
+  bottom:0;
+  right:0;
   height: 20rem;
   width: 28rem;
   background-color: #F0F3F7;
+  overflow: scroll;
+  margin-bottom: 2.5rem;
+  border: 1px solid #aaaaaa;
 
-  &__header {
+  &__defaultMessage {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    padding-left: 1rem;
-    font-size: 1rem;
-    height: 3rem;
-    background-color: #fff;
+    height: 100%;
+    text-transform: capitalize;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1rem 1rem 1rem;
+    text-transform: capitalize;
+
+    &--message {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    &--errorCategory {
+      display: flex;
+      justify-content: center;
+      color: #fff;
+      border-radius: 0.75rem;
+      height: 1.5rem;
+      width: 4rem;
+    }
+
+    &--key {
+      font-weight: 700;
+    }
+
+    &--id {
+      text-transform: none;
+    }
   }
 }
 </style>
