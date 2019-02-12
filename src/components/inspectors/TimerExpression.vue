@@ -4,13 +4,7 @@
     <div>
     <datepicker calendar-class="calendar" format="yyyy-MM-dd" input-class="form-control start-date" class="start-date-div"></datepicker>
     <select class="form-control control time">
-      <option value="00:00">00:00</option>
-      <option value="01:00">01:00</option>
-      <option value="02:00">02:00</option>
-      <option value="03:00">03:00</option>
-      <option value="04:00">04:00</option>
-      <option value="05:00">05:00</option>
-      <option value="06:00">06:00</option>
+      <option v-for="hour in hours" :value="hour">{{hour}}</option>
     </select>
     </div>
     <label>Repeat every</label>
@@ -23,13 +17,40 @@
         <option value="year">year</option>
       </select>
     </div>
+    <label>Repeat on</label>
     <div>
-      <label>Repeat on</label>
-      <div>
-        <span v-for="(day, index) in weekdays" :key="index" 
-              class="badge badge-pill weekday"
-              :class="{'badge-primary': day.selected, 'badge-light': !day.selected}"
-              @click="clickWeekDay(day)">{{day.initial}}</span>
+      <span v-for="(day, index) in weekdays" :key="index" 
+            class="badge badge-pill weekday"
+            :class="{'badge-primary': day.selected, 'badge-light': !day.selected}"
+            @click="clickWeekDay(day)">{{day.initial}}</span>
+    </div>
+    <label>Ends</label>
+    <table width="100%">
+      <tr>
+      </tr>
+    </table>
+    <div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">Never
+        </label>
+      </div>
+      <div class="form-check check-input">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="on" v-model="ends">On &nbsp;
+          </label>
+            <datepicker calendar-class="calendar calendaron" :disabled="ends!=='on'" format="yyyy-MM-dd"
+                        input-class="form-control end-date"
+                        class=" control float-right"
+                        :class="{'date-disabled' : ends!=='on'}"></datepicker>
+      </div>
+      <div class="form-check check-input">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">After &nbsp;
+        </label>
+        <input type="number" min="0" :disabled="ends!=='after'" 
+               class="form-control control after float-right">
+        <label class="occurrences">occurrences</label>
       </div>
     </div>
   </div>
@@ -37,13 +58,22 @@
 
 <script>
 import Datepicker from 'vuejs-datepicker';
+import moment from 'moment';
 
 export default {
   components: {
     Datepicker
   },
   data() {
+    const date = moment().set('hour', 0).set('minutes', 0);
+    const hours =[];
+    for(let i=0;i<48;i++) {
+      hours.push(date.format('HH:mm'));
+      date.add(30, 'minutes');
+    }
     return {
+      ends: 'never',
+      hours,
       weekdays: [
         {
           initial: 'S',
@@ -102,6 +132,7 @@ export default {
   .weekday {
       padding: 1em;
       margin-left: 0.2em;
+      margin-bottom: 0.5em;
       cursor: pointer;
   }
   .time {
@@ -113,11 +144,34 @@ export default {
       vertical-align: middle;
       display: inline-block;
   }
+  .after {
+      width: 10em;
+      height: 38px;
+      font-size: 16px;
+      padding-right: 5em;
+  }
+  .check-input {
+      margin-top: 4px;
+  }
+  .check-input > .form-check-label {
+    line-height:3em;
+  }
+  .check-input .form-check-input {
+      margin-top: 1em;
+  }
+  .occurrences {
+      position:absolute;
+      right:1em;
+      line-height: 3em;
+  }
 </style>
 
 <style>
   .calendar {
       width: 16em;
+  }
+  .calendaron {
+      margin-left: -2em;
   }
   .calendar .cell {
       height: 2em;
@@ -126,5 +180,12 @@ export default {
   .start-date {
       background-color: white!important;
       width: 8em;
+  }
+  .end-date {
+      background-color: white!important;
+      width: 10em;
+  }
+  .date-disabled .end-date {
+      background-color: #e9ecef!important;
   }
 </style>
