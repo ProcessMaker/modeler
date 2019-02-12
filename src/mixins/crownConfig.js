@@ -6,6 +6,13 @@ import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
 
+const validMessageFlowSources = [
+  'processmaker-modeler-start-event',
+  'processmaker-modeler-end-event',
+  'processmaker-modeler-task',
+  'processmaker-modeler-pool',
+];
+
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
   data() {
@@ -34,6 +41,9 @@ export default {
     },
     isLane() {
       return this.node.type === 'processmaker-modeler-lane';
+    },
+    isValidMessageFlowSource() {
+      return validMessageFlowSources.includes(this.node.type);
     },
   },
   methods: {
@@ -117,7 +127,9 @@ export default {
         clickHandler: this.removeShape,
       });
 
-      this.addMessageFlowButton();
+      if (this.isValidMessageFlowSource) {
+        this.addMessageFlowButton();
+      }
 
       this.crownConfig.forEach(({ id, icon, clickHandler }) => {
         const button = new joint.shapes.standard.EmbeddedImage();
