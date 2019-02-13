@@ -6,7 +6,7 @@
         <span class="validation-container__list--id">{{ error.id }}</span>
         <span class="validation-container__list--message">
           <span class="validation-container__list--key">{{ error.errorKey }}</span>
-          <span>{{ error.message }}</span>
+          <div>{{ error.message }}</div>
         </span>
         <span class="validation-container__list--errorCategory"
               :style="[ error.category === 'error'
@@ -85,6 +85,8 @@ $primary-white: #F0F3F7;
 $seconadry-grey: #555555;
 $border-color: #aaaaaa;
 $text-size-sm: 0.85rem;
+$id-container-width: 5rem;
+$message-container-width: 18rem;
 $validation-container-height: 20rem;
 $validation-container-width: 28rem;
 $status-bar-container-height: 2.5rem;
@@ -115,6 +117,7 @@ $warning-color: #F0AD4E;
   overflow: scroll;
   margin-bottom: 2.5rem;
   border: 1px solid $border-color;
+  text-align: left;
 
   &__defaultMessage {
     display: flex;
@@ -125,21 +128,21 @@ $warning-color: #F0AD4E;
   }
 
   &__list {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: $id-container-width $message-container-width 1fr;
     padding: 1rem;
 
+    &--id {
+      color: $seconadry-grey;
+      text-transform: none;
+    }
+
     &--message {
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
       text-transform: capitalize;
     }
 
     &--errorCategory {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      justify-self: center;
       color: $primary-white;
       border-radius: 0.75rem;
       height: $message-label-pill-width;
@@ -151,10 +154,6 @@ $warning-color: #F0AD4E;
       font-weight: 700;
     }
 
-    &--id {
-      color: $seconadry-grey;
-      text-transform: none;
-    }
   }
   .label-background-warning {
     background-color: $warning-color;
