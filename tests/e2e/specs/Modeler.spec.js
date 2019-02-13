@@ -42,7 +42,7 @@ function connectNodesWithSequenceFlow(startPosition, endPosition) {
     .then(() => {
       getElementAtPosition(endPosition)
         .trigger('mousemove')
-        .click();
+        .click({ force: true });
     });
 }
 
@@ -278,23 +278,23 @@ describe('Modeler', () => {
   });
 
   it('Prevent element to connect to self', () => {
-    const taskCoordinates = { x: 400, y: 300 };
-    const taskSelector = '#v-23';
-    const connectorSelector = '#v-26';
-    const emptyChildrenCount = 2;
-    const finalElementCount = 3;
+    /* Only the initial start element should exist */
+    const initialNumberOfElements = 1;
 
-    cy.get('.modeler').children().should('have.length', emptyChildrenCount);
+    waitToRenderAllShapes();
+    getGraphElements().should('have.length', initialNumberOfElements);
 
+    const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      taskCoordinates
+      taskPosition
     );
+    waitToRenderAllShapes();
 
-    cy.get(taskSelector).click({ force: true });
-    connectNode(connectorSelector, 400, 300);
-    cy.get(taskSelector).click({ force: true });
-    cy.get('.modeler').children().should('have.length', finalElementCount);
+    connectNodesWithSequenceFlow(taskPosition, taskPosition);
+
+    const numberOfNewElementsAdded = 1;
+    getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 });
