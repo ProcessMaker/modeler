@@ -94,7 +94,6 @@ export default {
       attrs: {
         text: {
           text: '',
-          textAnchor: 'left',
         },
       },
       position: expressionPosition,
