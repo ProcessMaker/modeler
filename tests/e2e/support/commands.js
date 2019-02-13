@@ -30,3 +30,12 @@ Cypress.Commands.add('loadModeler', () => {
   cy.visit('/');
   cy.reload();
 });
+
+Cypress.Commands.add('moveTo', {
+  prevSubject: true,
+}, (element, x, y) => {
+  console.log(element, x, y);
+  element.trigger('mousedown', { which: 1 })
+    .trigger('mousemove', { x, y })
+    .trigger('mouseup', { force: true });
+});

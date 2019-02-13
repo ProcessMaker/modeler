@@ -8,7 +8,7 @@ function getDeleteButtonForElement($element) {
   return cy.get(`#${$element.attr('id')} ~ [data-test=delete-button]`);
 }
 
-describe.only('Undo/redo', () => {
+describe('Undo/redo', () => {
   const taskPosition = { x: 300, y: 500 };
 
   beforeEach(() => {
@@ -48,5 +48,13 @@ describe.only('Undo/redo', () => {
 
     /* The task should now be re-added */
     getGraphElements().should('have.length', 2);
+  });
+
+  it('Can undo a position changes', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    cy.wait(100);
+    getElementAtPosition(startEventPosition)
+      .click()
+      .moveTo(500, 500);
   });
 });
