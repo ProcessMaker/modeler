@@ -31,6 +31,30 @@ export default {
       }),
     });
   },
+  inspectorHandler(value, node, setNodeProp, moddle) {
+    const definition = node.definition;
+
+    // Go through each property and rebind it to our data
+    for (const key in value) {
+      if (definition[key] === value[key]) {
+        continue;
+      }
+
+      if (key === 'eventDefinitions') {
+        // Set the timer event definition
+        const eventDefinitions = [
+          moddle.create('bpmn:TimerEventDefinition', {
+            timeCycle: moddle.create('bpmn:Expression', {
+              body: value[key][0].timeCycle.body,
+            }),
+          }),
+        ];
+        setNodeProp(node, 'eventDefinitions', eventDefinitions);
+      } else {
+        setNodeProp(node, key, value[key]);
+      }
+    }
+  },
   /**
    * Validate whether to accept an incoming flow from the node
    *
