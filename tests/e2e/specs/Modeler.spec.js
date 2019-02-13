@@ -3,6 +3,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getCrownButtonForElement,
+  getGraphElements,
 } from '../support/utils';
 
 const generateXML = (nodeName) => {
@@ -29,6 +30,23 @@ function typeIntoTextInput(selector, value) {
 
 function connectNode(source, postionX, positionY) {
   cy.get(source).click({ force: true }).trigger('mousemove', { x: postionX, y: positionY, force: true});
+}
+
+function connectNodesWithSequenceFlow(startPosition, endPosition) {
+  getElementAtPosition(startPosition)
+    .click()
+    .then($element => {
+      getCrownButtonForElement($element, 'sequence-flow-button').click();
+    })
+    .then(() => {
+      getElementAtPosition(endPosition)
+        .trigger('mousemove')
+        .click();
+    });
+}
+
+function waitToRenderAllShapes() {
+  cy.wait(100);
 }
 
 const nodeTypes = [
@@ -73,14 +91,13 @@ describe('Modeler', () => {
       poolPosition,
     );
 
-    /* Wait for jointjs to render the shape */
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(poolPosition)
       .click()
       .then($pool => {
-        getCrownButtonForElement($pool, 'lane-above').click();
-        getCrownButtonForElement($pool, 'lane-below').click();
+        getCrownButtonForElement($pool, 'lane-above-button').click();
+        getCrownButtonForElement($pool, 'lane-below-button').click();
       });
 
   });
@@ -142,61 +159,45 @@ describe('Modeler', () => {
   });
 
   it('Create a simple process', () => {
-    const startEventSelector = '#v-11';
-    const startEventConnectorSelector = '#v-14';
-    const taskSelector = '#v-23';
-    const taskConnectorSelector = '#v-26';
-    const taskSelectorTwo = '#v-47';
-    const taskConnectorSelectorTwo = '#v-50';
-    const taskSelectorThree = '#v-68';
-    const taskConnectorSelectorThree = '#v-71';
-    const endEventSelector = '#v-85';
-    const poolSelector = '#v-101';
-    const testString = 'testing';
-    const emptyChildrenCount = 2;
+    /* Only the initial start element should exist */
+    const initialNumberOfElements = 1;
 
-    cy.get('.modeler').children().should('have.length', emptyChildrenCount);
+    waitToRenderAllShapes();
+    getGraphElements().should('have.length', initialNumberOfElements);
 
+    const taskPosition = { x: 300, y: 200 };
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      { x: 300, y: 200},
+      taskPosition,
     );
 
-    cy.get(startEventSelector).click();
-    typeIntoTextInput('[name=\'name\']', testString);
-    connectNode(startEventConnectorSelector, 350, 250);
-    cy.get(taskSelector).click({ force: true });
-    typeIntoTextInput('[name=\'name\']', testString);
+    const startEventPosition = { x: 150, y: 150 };
+    connectNodesWithSequenceFlow(startEventPosition, taskPosition);
 
+    const task2Position = { x: 300, y: 350 };
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      { x: 300, y: 350},
+      task2Position,
     );
+    connectNodesWithSequenceFlow(taskPosition, task2Position);
 
-    connectNode(taskConnectorSelector, 350, 400);
-    cy.get(taskSelectorTwo).click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-
+    const task3Position = { x: 100, y: 350 };
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      { x: 100, y: 350},
+      task3Position,
     );
+    connectNodesWithSequenceFlow(task2Position, task3Position);
 
-    connectNode(taskConnectorSelectorTwo, 150, 400);
-    cy.get(taskSelectorThree).click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-
+    const endEventPosition = { x: 100, y: 500 };
     dragFromSourceToDest(
       'processmaker-modeler-end-event',
       '.paper-container',
-      { x: 100, y: 500},
+      endEventPosition,
     );
-
-    connectNode(taskConnectorSelectorThree, 110, 510);
-    cy.get(endEventSelector).click();
+    connectNodesWithSequenceFlow(task3Position, endEventPosition);
 
     dragFromSourceToDest(
       'processmaker-modeler-pool',
@@ -204,11 +205,10 @@ describe('Modeler', () => {
       { x: 100, y: 100 },
     );
 
-    cy.get(poolSelector).click();
-    typeIntoTextInput('[name=\'name\']', testString);
+    waitToRenderAllShapes();
 
-    cy.get('[data-test="downloadXMLBtn"]').click();
-    cy.get('.modeler').children().should('have.length', 11);
+    const numberOfNewElementsAdded = 9;
+    getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
   it('Change direction of association to none, one and both', () => {
