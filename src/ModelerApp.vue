@@ -117,6 +117,7 @@ html {
     justify-content: space-between;
     background-color: #3397e1;
     color: white;
+    height: 3.5rem;
     border-bottom: 1px solid grey;
     padding-right: 16px;
     padding-left: 16px;
