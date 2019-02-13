@@ -8,6 +8,7 @@ export const saveDebounce = 300;
 export default new Vuex.Store({
   state: {
     graph: null,
+    paper: null,
     highlightedNode: null,
     nodes: [],
   },
@@ -49,6 +50,9 @@ export default new Vuex.Store({
     },
     setGraph(state, graph) {
       state.graph = graph;
+    },
+    setPaper(state, paper) {
+      state.paper = paper;
     },
   },
 });

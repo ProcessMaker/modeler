@@ -6,7 +6,8 @@
     "build": "vue-cli-service build",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "lint": "vue-cli-service lint",
-    "test": "vue-cli-service test:e2e"
+    "test": "vue-cli-service test:e2e",
+    "test:update": "vue-cli-service test:e2e --env updateSnapshots=true"
   },
   "main": "./dist/modeler.common.js",
   "files": [
@@ -38,13 +39,14 @@
   "devDependencies": {
     "@processmaker/processmaker-bpmn-moddle": "^0.1.4",
     "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-e2e-cypress": "^3.3.0",
+    "@vue/cli-plugin-e2e-cypress": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.0.5",
     "@vue/cli-plugin-unit-jest": "^3.0.5",
     "@vue/cli-service": "^3.0.5",
     "@vue/test-utils": "^1.0.0-beta.20",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.0.1",
+    "cypress": "^3.1.5",
     "cypress-vue-unit-test": "^1.11.0",
     "node-sass": "^4.9.4",
     "sass-loader": "^7.0.1",
