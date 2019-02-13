@@ -611,9 +611,6 @@ export default {
     this.paper.on('cell:pointerdown', cellView => {
       if (cellView.model.component) {
         cellView.model.toFront({ deep: true });
-        this.graph
-          .getConnectedLinks(cellView.model)
-          .forEach(link => link.toFront());
 
         /* If the element belongs to a pool, bring the pool to the front as well */
         if (cellView.model.component.node.pool) {
@@ -634,6 +631,10 @@ export default {
             })
             .forEach(cell => cell.toFront());
         }
+
+        this.graph
+          .getLinks()
+          .forEach(link => link.toFront());
 
         cellView.model.component.$emit('click');
       }
