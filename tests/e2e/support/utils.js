@@ -48,5 +48,12 @@ export function dragFromSourceToDest(source, dest, position) {
 }
 
 export function getCrownButtonForElement($element, crownButton) {
-  return cy.get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`);
+  return cy
+    .get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`)
+    .then(crownButtons => crownButtons.filter((index, button) => Cypress.$(button).is(':visible')))
+    .then(crownButtons => crownButtons[0]);
+}
+
+export function waitToRenderAllShapes() {
+  cy.wait(100);
 }

@@ -5,6 +5,7 @@ import {
   getCrownButtonForElement,
   getGraphElements,
   getLinksConnectedToElement,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 const generateXML = (nodeName) => {
@@ -27,10 +28,6 @@ function typeIntoTextInput(selector, value) {
   cy.wait(500);
   cy.get(selector).focus().clear().type(value, {force: true});
   cy.wait(500);
-}
-
-function connectNode(source, postionX, positionY) {
-  cy.get(source).click({ force: true }).trigger('mousemove', { x: postionX, y: positionY, force: true});
 }
 
 function connectNodesWithSequenceFlow(startPosition, endPosition) {
@@ -57,10 +54,6 @@ function connectNodesWithAssociationFlow(startPosition, endPosition) {
         .trigger('mousemove')
         .click();
     });
-}
-
-function waitToRenderAllShapes() {
-  cy.wait(100);
 }
 
 const nodeTypes = [
@@ -272,7 +265,7 @@ describe('Modeler', () => {
     cy.get('[name=\'name\']').focus().clear().type(testString);
     cy.get('.joint-viewport').contains(testString);
 
-    cy.get('[data-test="downloadXMLBtn"]').click();
+    cy.get('[data-test=downloadXMLBtn]').click();
     const validXML = generateXML(testString);
     cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
   });
