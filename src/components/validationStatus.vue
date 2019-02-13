@@ -8,11 +8,8 @@
           <span class="validation-container__list--key">{{ error.errorKey }}</span>
           <div>{{ error.message }}</div>
         </span>
-        <span class="validation-container__list--errorCategory"
-              :style="[ error.category === 'error'
-              ? { 'background-color': `${ errorColor }` }
-              : { 'background-color': `${ warningColor }` }]">
-              {{ error.category }}
+        <span class="validation-container__list--errorCategory">
+              <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="valditionIcon" />
         </span>
       </div>
     </div>
@@ -25,7 +22,7 @@
 </template>
 
 <script>
-import { faCheckCircle, faTimesCircle, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faTimesCircle, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
@@ -57,6 +54,12 @@ export default {
         return errorList;
       }, []);
     },
+    getCategory() {
+      const errorCategory = this.errorList.find((category) => {
+        return category;
+      });
+      return errorCategory;
+    },
     ellipsisIcon() {
       return faEllipsisV;
     },
@@ -64,6 +67,19 @@ export default {
       return this.hasValidationErrors
         ? faTimesCircle
         : faCheckCircle;
+    },
+    valditionIcon() {
+      return this.isErrorOrWarning
+        ? faTimesCircle
+        : faExclamationTriangle;
+    },
+    isErrorOrWarning() {
+      return this.getCategory.category === 'error' ? true : false;
+    },
+    iconColor() {
+      return this.isErrorOrWarning
+        ? `${ this.errorColor }`
+        : `${ this.warningColor }`;
     },
     statusColor() {
       return this.hasValidationErrors
@@ -85,7 +101,7 @@ $primary-white: #F0F3F7;
 $seconadry-grey: #555555;
 $border-color: #aaaaaa;
 $text-size-sm: 0.85rem;
-$id-container-width: 5rem;
+$id-container-width: 6rem;
 $message-container-width: 18rem;
 $validation-container-height: 20rem;
 $validation-container-width: 28rem;
@@ -131,10 +147,12 @@ $warning-color: #F0AD4E;
     display: grid;
     grid-template-columns: $id-container-width $message-container-width 1fr;
     padding: 1rem;
+    word-wrap: break-word;
 
     &--id {
       color: $seconadry-grey;
       text-transform: none;
+      margin-right: 1rem;
     }
 
     &--message {
@@ -143,11 +161,7 @@ $warning-color: #F0AD4E;
 
     &--errorCategory {
       justify-self: center;
-      color: $primary-white;
-      border-radius: 0.75rem;
-      height: $message-label-pill-width;
-      width: $message-label-pill-height;
-      font-size: $text-size-sm;
+      align-self: center;
     }
 
     &--key {
