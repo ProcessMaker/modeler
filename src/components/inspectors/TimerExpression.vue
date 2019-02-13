@@ -12,7 +12,7 @@
     </div>
     <label>Repeat every</label>
     <div>
-      <input type="number" min="1" class="form-control control repeat">
+      <input type="number" min="1" class="form-control control repeat" v-model="repeat">
       <select v-model="periodicity" class="form-control control periodicity">
         <option value="day">day</option>
         <option value="week">week</option>
@@ -80,6 +80,8 @@ export default {
       today: moment().format('YYYY-MM-DD'),
       hours,
       weekdays: [
+        //  ISO week date weekday number, from 1 through 7,
+        //  beginning with Monday and ending with Sunday.
         {
           day: 7,
           initial: 'S',
@@ -127,6 +129,10 @@ export default {
   },
   computed: {
     expression() {
+      this.startDate;this.startTime;
+      this.repeat;this.periodicity;
+      this.selectedWeekdays;this.ends;
+      this.endDate;this.times;
       return this.makeTimerConfig();
     },
     selectedWeekdays() {
@@ -145,15 +151,27 @@ export default {
       const expression = [];
       if (this.periodicity === 'week' && this.selectedWeekdays.length > 0) {
           expression.push(this.getDateTime(this.startDate, this.startTime));
+          this.selectedWeekdays.forEach(day => {
+            expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
+          });
       } else {
-        expression.push(this.makeCycle(
-          (this.ends === 'times' ? this.times : ''),
-          this.getDateTime(this.startDate, this.startTime),
-          this.getPeriod(),
-          (this.ends === 'ondate' ? this.getDateTime(this.endDate, this.startTime) : '')
-        ));
+        expression.push(this.getCycle(this.startDate));
       }
       return expression.join('|');
+    },
+    getCycle(startDate) {
+      return this.makeCycle(
+        (this.ends === 'after' ? this.times : ''),
+        this.getDateTime(startDate, this.startTime),
+        this.getPeriod(),
+        (this.ends === 'ondate' ? this.getDateTime(this.endDate, this.startTime) : '')
+      );
+    },
+    getWeekDayDate(date, isoWeekDay) {
+      const day = isoWeekDay % 7;
+      const mdate = moment(date);
+      const current = mdate.get('day');
+      return mdate.add((7 + day - current) % 7,'day');
     },
     getDateTime(date, time) {
       const [hour, minutes] = time.split(":");
@@ -182,7 +200,8 @@ export default {
       font-size: 1em;
   }
   .repeat {
-      width: 4em;
+      width: 6em!important;
+      text-align: right;
   }
   .periodicity {
       width: 6em;
