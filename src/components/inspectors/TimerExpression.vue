@@ -5,15 +5,16 @@
       <datepicker v-model="startDate"
                   calendar-class="calendar" format="yyyy-MM-dd"
                   input-class="form-control start-date" 
-                  class="start-date-div"></datepicker>
-      <select v-model="startTime" class="form-control control time">
+                  class="start-date-div"
+                  @selected="update"></datepicker>
+      <select v-model="startTime" class="form-control control time" @change="update">
         <option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</option>
       </select>
     </div>
     <label>Repeat every</label>
     <div>
-      <input type="number" min="1" class="form-control control repeat" v-model="repeat">
-      <select v-model="periodicity" class="form-control control periodicity">
+      <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
+      <select v-model="periodicity" class="form-control control periodicity" @change="update">
         <option value="day">day</option>
         <option value="week">week</option>
         <option value="month">month</option>
@@ -25,8 +26,8 @@
       <div>
         <span v-for="(day, index) in weekdays" :key="index + 'week'" 
               class="badge badge-pill weekday"
-              :class="{'badge-primary': day.selected, 'badge-light': !day.selected}"
-              @click="clickWeekDay(day)">{{day.initial}}</span>
+              :class="{'badge-primary': day.selected && !sameDay, 'badge-light': !(day.selected && !sameDay), 'border border-primary': currentDaySelected(day)}"
+              @click="clickWeekDay(day);update()">{{day.initial}}</span>
       </div>
     </div>
     <label>Ends</label>
@@ -37,24 +38,25 @@
     <div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">Never
+          <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends" @change="update">Never
         </label>
       </div>
       <div class="form-check check-input">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">On &nbsp;
+          <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On &nbsp;
         </label>
         <datepicker v-model="endDate" calendar-class="calendar calendaron" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
                     input-class="form-control end-date"
                     class=" control float-right"
-                    :class="{'date-disabled' : ends!=='ondate'}"></datepicker>
+                    :class="{'date-disabled' : ends!=='ondate'}"
+                    @selected="update"></datepicker>
       </div>
       <div class="form-check check-input">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">After &nbsp;
+          <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After &nbsp;
         </label>
         <input v-model="times" type="number" min="0" :disabled="ends!=='after'" 
-               class="form-control control after float-right">
+               class="form-control control after float-right" @change="update">
         <label class="occurrences">occurrences</label>
       </div>
     </div>
@@ -133,8 +135,8 @@ export default {
       repeat: '1',
       periodicity: 'week',
       ends: 'never',
-      endDate: '',
-      times: '',
+      endDate: new Date(),
+      times: '1',
     };
   },
   computed: {
@@ -148,7 +150,6 @@ export default {
       this.endDate;
       this.times;
       const expression = this.makeTimerConfig();
-      this.$emit('input', expression);
       return expression;
     },
     selectedWeekdays() {
@@ -158,6 +159,9 @@ export default {
       });
       return selected;
     },
+    sameDay() {
+      return this.selectedWeekdays.length === 1 && this.weekdays[this.startDate.getDay()].selected;
+    },
   },
   watch: {
     value(value) {
@@ -165,6 +169,12 @@ export default {
     },
   },
   methods: {
+    currentDaySelected(day) {
+      return this.startDate.getDay() === (day.day % 7);
+    },
+    update() {
+      this.$emit('input', this.expression);
+    },
     parseDateExpression(exp) {
       const date = new Date(exp);
       if (isNaN(date.getTime())) {
@@ -188,14 +198,14 @@ export default {
           } else {
             let match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
             if (match) {
-              this.times = match[1];
+              this.times = match[1] || '1';
               date = this.parseDateExpression(match[2]);
               hasStartDate ? null : this.startDate = date.toDate();
               hasStartDate ? null : this.startTime = date.format('HH:mm');
               this.repeat = match[3];
               this.periodicity = Object.keys(periods).find(key => periods[key] === match[4]);
-              this.endDate = match[5] ? this.parseDateExpression(match[5]).toDate() : '';
-              this.ends = !this.endDate ? !this.times ? 'never' : 'after' : 'ondate';
+              this.endDate = match[5] ? this.parseDateExpression(match[5]).toDate() : new Date();
+              this.ends = !match[5] ? !match[1] ? 'never' : 'after' : 'ondate';
               if (this.periodicity === 'week') {
                 // Note this.weekday array must start with Sunday
                 this.weekdays[date.get('day')].selected = true;
@@ -211,20 +221,19 @@ export default {
     resetTimerExpression() {
       this.startDate = new Date();
       this.startTime = '00:00';
-      this.times = '';
+      this.times = '1';
       this.repeat = '1';
       this.periodicity = 'week';
       this.endDate = new Date();
       this.ends = 'never';
-      this.weekdays.forEach(() => false);
+      this.weekdays.forEach(weekday => weekday.selected = false);
     },
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
     },
     makeTimerConfig() {
       const expression = [];
-      const sameDay = this.selectedWeekdays.length === 1 && this.weekdays[this.startDate.getDay()].selected;
-      if (this.periodicity === 'week' && this.selectedWeekdays.length > 0 && !sameDay) {
+      if (this.periodicity === 'week' && this.selectedWeekdays.length > 0 && !this.sameDay) {
         expression.push(this.getDateTime(this.startDate, this.startTime));
         this.selectedWeekdays.forEach(day => {
           expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
@@ -316,6 +325,9 @@ export default {
       position:absolute;
       right:1em;
       line-height: 3em;
+  }
+  .same-day {
+      opacity: 0.7;
   }
 </style>
 
