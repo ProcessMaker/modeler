@@ -1,5 +1,5 @@
-// const mountVue = require('cypress-vue-unit-test');
-// import ModelerApp from '../../../src/ModelerApp';
+import { direction } from '../../../src/components/nodes/association/associationConfig';
+import { dragFromSourceToDest } from '../support/utils';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -17,13 +17,6 @@ const generateXML = (nodeName) => {
 </bpmn:definitions>`;
 };
 
-function dragFromSourceToDest(source, dest, position) {
-  const dataTransfer = new DataTransfer();
-  cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
-  cy.get(dest).trigger('dragenter', { force: true });
-  cy.get(dest).trigger('drop', { x: position.x, y: position.y });
-}
-
 function typeIntoTextInput(selector, value) {
   cy.wait(500);
   cy.get(selector).focus().clear().type(value, {force: true});
@@ -31,7 +24,7 @@ function typeIntoTextInput(selector, value) {
 }
 
 function connectNode(source, postionX, positionY) {
-  cy.get(source).click().trigger('mousemove', { x: postionX, y: positionY, force: true});
+  cy.get(source).click({ force: true }).trigger('mousemove', { x: postionX, y: positionY, force: true});
 }
 
 const nodeTypes = [
@@ -45,9 +38,7 @@ const nodeTypes = [
 
 describe('Modeler', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.reload();
-    cy.viewport(1280, 720);
+    cy.loadModeler();
   });
 
   it('Renders the application without errors', () => {
@@ -69,7 +60,7 @@ describe('Modeler', () => {
     cy.get('.modeler').children().should('have.length', emptyChildrenCount + nodeTypes.length);
   });
 
-  it('Can top and bottom lane', () => {
+  it('Can add top and bottom lane', () => {
     const poolSelector = '#v-24';
     const topLaneSeletor = '#v-26';
     const bottomLaneSeletor = '#v-29';
@@ -175,7 +166,7 @@ describe('Modeler', () => {
       { x: 300, y: 350},
     );
 
-    connectNode(taskConnectorSelector, 300, 350);
+    connectNode(taskConnectorSelector, 350, 400);
     cy.get(taskSelectorTwo).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
 
@@ -185,7 +176,7 @@ describe('Modeler', () => {
       { x: 100, y: 350},
     );
 
-    connectNode(taskConnectorSelectorTwo, 100, 350);
+    connectNode(taskConnectorSelectorTwo, 150, 400);
     cy.get(taskSelectorThree).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
 
@@ -195,7 +186,7 @@ describe('Modeler', () => {
       { x: 100, y: 500},
     );
 
-    connectNode(taskConnectorSelectorThree, 100, 500);
+    connectNode(taskConnectorSelectorThree, 110, 510);
     cy.get(endEventSelector).click();
 
     dragFromSourceToDest(
@@ -211,6 +202,45 @@ describe('Modeler', () => {
     cy.get('.modeler').children().should('have.length', 11);
   });
 
+  it('Change direction of association to none, one and both', () => {
+    const textAnnotation = '#j_4';
+    const associationButton = '#v-25';
+    const associationNode = '#v-56';
+    const directionSelectSelector = '[name=\'associationDirection\']';
+
+    const testDirection = {
+      none:`${ direction.none }`,
+      one: `${ direction.one }`,
+      both:`${ direction.both }`,
+    };
+
+    dragFromSourceToDest(
+      'processmaker-modeler-text-annotation',
+      '.paper-container',
+      { x: 400, y: 100 },
+    );
+
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      { x: 400, y: 300 },
+    );
+
+    cy.get(textAnnotation).click();
+    cy.get(associationButton).click();
+    connectNode(associationButton, 400, 300);
+    cy.get(associationNode).click();
+
+    cy.get(directionSelectSelector).select('none');
+    cy.get(directionSelectSelector).should('have.value', testDirection.none);
+
+    cy.get(directionSelectSelector).select('one');
+    cy.get(directionSelectSelector).should('have.value', testDirection.one);
+
+    cy.get(directionSelectSelector).select('both');
+    cy.get(directionSelectSelector).should('have.value', testDirection.both);
+  });
+
   it('Updates element name and validates xml', () => {
     const testString = 'testing';
 
@@ -222,5 +252,26 @@ describe('Modeler', () => {
     cy.get('[data-test="downloadXMLBtn"]').click();
     const validXML = generateXML(testString);
     cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
+  });
+
+  it('Prevent element to connect to self', () => {
+    const taskCoordinates = { x: 400, y: 300 };
+    const taskSelector = '#v-23';
+    const connectorSelector = '#v-26';
+    const emptyChildrenCount = 2;
+    const finalElementCount = 3;
+
+    cy.get('.modeler').children().should('have.length', emptyChildrenCount);
+
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      taskCoordinates
+    );
+
+    cy.get(taskSelector).click({ force: true });
+    connectNode(connectorSelector, 400, 300);
+    cy.get(taskSelector).click({ force: true });
+    cy.get('.modeler').children().should('have.length', finalElementCount);
   });
 });

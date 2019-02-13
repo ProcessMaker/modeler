@@ -20,36 +20,10 @@ export default {
   },
   computed: {
     isValidConnection() {
-      const targetType = get(this.target, 'component.node.type');
-
-      if (!targetType) {
-        return false;
-      }
-
-      if (targetType === laneId) {
-        return false;
-      }
-
-      const targetPool = this.target.component.node.pool;
-      const sourcePool = this.sourceShape.component.node.pool;
-
-      /* If the link source is part of a pool, only allow sequence
-       * flows to the target if the target is also in the same pool  */
-      if (sourcePool && sourcePool !== targetPool) {
-        return false;
-      }
-
-      const invalidIncoming = this.targetConfig.validateIncoming
-        && !this.targetConfig.validateIncoming(this.sourceNode);
-
-      const invalidOutgoing = this.sourceConfig.validateOutgoing
-        && !this.sourceConfig.validateOutgoing(this.targetNode);
-
-      if (invalidIncoming || invalidOutgoing) {
-        return false;
-      }
-
-      return true;
+      return this.isValidTarget() && this.isValidSource();
+    },
+    targetType() {
+      return get(this.target, 'component.node.type');
     },
   },
   methods: {
@@ -62,6 +36,39 @@ export default {
       this.node.definition.targetRef = targetShape.component.node.definition;
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
+    },
+    isValidSource() {
+      return this.validateIncoming();
+    },
+    validateIncoming() {
+      return typeof this.targetConfig.validateIncoming === 'undefined' ||
+        this.targetConfig.validateIncoming(this.sourceNode);
+    },
+    isValidTarget() {
+      return this.hasTargetType() &&
+        this.targetIsNotALane() &&
+        this.targetIsInSamePool() &&
+        this.targetIsNotSource() &&
+        this.validateOutgoing();
+    },
+    hasTargetType() {
+      return !!this.targetType;
+    },
+    targetIsNotALane() {
+      return this.targetType !== laneId;
+    },
+    targetIsInSamePool() {
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      return !sourcePool || sourcePool === targetPool;
+    },
+    targetIsNotSource() {
+      return this.targetNode.definition.id !== this.sourceNode.definition.id;
+    },
+    validateOutgoing() {
+      return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
+        this.sourceConfig.validateOutgoing(this.targetNode);
     },
   },
   mounted() {

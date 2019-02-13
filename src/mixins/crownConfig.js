@@ -1,5 +1,6 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
@@ -85,6 +86,7 @@ export default {
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
+        associationDirection: direction.none,
       });
 
       this.$emit('add-node', {
@@ -99,18 +101,19 @@ export default {
       }
 
       this.crownConfig.push({
+        id: 'delete-button',
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
 
-      this.crownConfig.forEach(({ icon, clickHandler }) => {
+      this.crownConfig.forEach(({ id, icon, clickHandler }) => {
         const button = new joint.shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);
         button.set('elementMove', false);
         button.attr({
-          root: { display: 'none' },
+          root: { display: 'none', 'data-test': id },
           body: {
             fill: '#fff',
             stroke: ' #fff',
