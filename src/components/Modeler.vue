@@ -75,6 +75,7 @@ import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
+import { id as messageFlowId } from './nodes/messageFlow';
 
 const version = '1.0';
 
@@ -286,7 +287,7 @@ export default {
         /* First load the flow elements */
         flowElements
           .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
 
         /* Then the sequence flows */
         flowElements
@@ -297,12 +298,12 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
 
         /* Then the artifacts */
         artifacts
           .filter(definition => definition.$type !== 'bpmn:Association')
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
 
         /* Then the associations */
         artifacts
@@ -313,8 +314,15 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
       });
+
+      /* Add any message flows */
+      if (this.collaboration) {
+        this.collaboration
+          .get('messageFlows')
+          .forEach(definition => this.setNode(definition));
+      }
 
       store.commit('highlightNode', this.processNode);
     },
@@ -335,6 +343,7 @@ export default {
         ]);
         pull(artifacts, definition);
         pull(this.planeElements, diagram);
+        pull(this.collaboration.get('messageFlows'), definition);
 
         return;
       }
@@ -450,7 +459,7 @@ export default {
         pool: this.poolTarget,
       });
 
-      if (![sequenceFlowId, laneId, associationId].includes(type)) {
+      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
