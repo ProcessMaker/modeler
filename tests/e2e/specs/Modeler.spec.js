@@ -4,6 +4,7 @@ import {
   getElementAtPosition,
   getCrownButtonForElement,
   getGraphElements,
+  getLinksConnectedToElement,
 } from '../support/utils';
 
 const generateXML = (nodeName) => {
@@ -37,6 +38,19 @@ function connectNodesWithSequenceFlow(startPosition, endPosition) {
     .click()
     .then($element => {
       getCrownButtonForElement($element, 'sequence-flow-button').click();
+    })
+    .then(() => {
+      getElementAtPosition(endPosition)
+        .trigger('mousemove')
+        .click();
+    });
+}
+
+function connectNodesWithAssociationFlow(startPosition, endPosition) {
+  getElementAtPosition(startPosition)
+    .click()
+    .then($element => {
+      getCrownButtonForElement($element, 'association-flow-button').click();
     })
     .then(() => {
       getElementAtPosition(endPosition)
@@ -212,33 +226,33 @@ describe('Modeler', () => {
   });
 
   it('Change direction of association to none, one and both', () => {
-    const textAnnotation = '#j_4';
-    const associationButton = '#v-25';
-    const associationNode = '#v-56';
     const directionSelectSelector = '[name=\'associationDirection\']';
-
     const testDirection = {
       none:`${ direction.none }`,
       one: `${ direction.one }`,
       both:`${ direction.both }`,
     };
 
+    const textAnnotationPosition = { x: 400, y: 100 };
     dragFromSourceToDest(
       'processmaker-modeler-text-annotation',
       '.paper-container',
-      { x: 400, y: 100 },
+      textAnnotationPosition,
     );
 
+    const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      { x: 400, y: 300 },
+      taskPosition,
     );
 
-    cy.get(textAnnotation).click();
-    cy.get(associationButton).click();
-    connectNode(associationButton, 400, 300);
-    cy.get(associationNode).click();
+    connectNodesWithAssociationFlow(textAnnotationPosition, taskPosition);
+
+    getElementAtPosition(textAnnotationPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click();
 
     cy.get(directionSelectSelector).select('none');
     cy.get(directionSelectSelector).should('have.value', testDirection.none);

@@ -29,6 +29,17 @@ export function getElementAtPosition(position) {
     .should('have.length', 1);
 }
 
+export function getLinksConnectedToElement($element) {
+  return cy.window()
+    .its('store.state.graph')
+    .invoke('getConnectedLinks', { id: $element.attr('model-id') })
+    .then(links => {
+      return cy.window().its('store.state.paper').then(paper => {
+        return links.map(link => link.findView(paper).$el);
+      });
+    });
+}
+
 export function dragFromSourceToDest(source, dest, position) {
   const dataTransfer = new DataTransfer();
   cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
