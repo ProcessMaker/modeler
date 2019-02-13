@@ -30,6 +30,10 @@ export default {
     updateRouter() {
       this.shape.router('orthogonal');
     },
+    updateDefinitionLinks() {
+      const targetShape = this.shape.getTargetElement();
+      this.node.definition.targetRef = targetShape.component.node.definition;
+    },
     isValidTarget() {
       return this.hasTargetType() &&
         this.targetIsNotALane() &&

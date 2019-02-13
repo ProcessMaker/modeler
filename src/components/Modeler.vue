@@ -283,7 +283,6 @@ export default {
         const flowElements = process.get('flowElements');
         const artifacts = process.get('artifacts');
 
-
         /* First load the flow elements */
         flowElements
           .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
@@ -413,9 +412,8 @@ export default {
        * if one exists.
        *
        * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
-       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
-       *
-       * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
+       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow
+       * elements to it.
        */
       if (type !== poolId) {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
@@ -430,7 +428,7 @@ export default {
             .push(definition);
         } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
           targetProcess.get('artifacts').push(definition);
-        } else {
+        } else if (definition.$type !== 'bpmn:MessageFlow') {
           targetProcess.get('flowElements').push(definition);
         }
       }

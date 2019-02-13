@@ -14,7 +14,7 @@ const validMessageFlowSources = [
 ];
 
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'collaboration'],
   data() {
     return {
       buttons: [],
@@ -284,6 +284,10 @@ export default {
 
       if (nodeTypes.includes('bpmn:Artifact') && !process.get('artifacts').includes(this.node.definition)) {
         process.get('artifacts').push(this.node.definition);
+      }
+
+      if (nodeTypes.includes('bpmn:MessageFlow') && !this.collaboration.get('messageFlows').includes(this.node.definition)) {
+        this.collaboration.get('messageFlows').push(this.node.definition);
       }
     });
   },
