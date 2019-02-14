@@ -52,6 +52,7 @@ describe('Undo/redo', () => {
 
   it('Can undo position changes', () => {
     const startEventPosition = { x: 150, y: 150 };
+    const startEventMoveToPosition = { x: 300, y: 300 };
 
     cy.get('[data-test=undo]')
       .should('be.disabled');
@@ -59,8 +60,7 @@ describe('Undo/redo', () => {
     cy.wait(100);
 
     getElementAtPosition(startEventPosition)
-      .moveTo(300, 300)
-      .getPosition()
+      .moveTo(startEventMoveToPosition.x, startEventMoveToPosition.y)
       .should(position => {
         expect(position).to.not.deep.equal(startEventPosition);
       });
@@ -70,5 +70,24 @@ describe('Undo/redo', () => {
       .click();
 
     getElementAtPosition(startEventPosition).should('exist');
+    getElementAtPosition(startEventMoveToPosition).should('not.exist');
+
+    const taskPosition1 = { x: 50, y: 400 };
+    const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
+    const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
+    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition1);
+
+    cy.wait(100);
+
+    getElementAtPosition(taskPosition1)
+      .moveTo(taskPosition2.x, taskPosition2.y)
+      .moveTo(taskPosition3.x, taskPosition3.y);
+
+    cy.get('[data-test=undo]').click();
+
+    cy.wait(100);
+
+    getElementAtPosition(taskPosition2).should('exist');
+    getElementAtPosition(taskPosition3).should('not.exist');
   });
 });
