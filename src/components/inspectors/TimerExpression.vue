@@ -6,12 +6,13 @@
                   calendar-class="calendar" format="yyyy-MM-dd"
                   input-class="form-control start-date" 
                   class="start-date-div"
-                  @selected="update"></datepicker>
+                  @selected="updateStartDate"></datepicker>
       <select v-model="startTime" class="form-control control time" @change="update">
         <option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</option>
       </select>
     </div>
-    <label>Repeat every</label>
+    <template v-if="hasRepeat">
+    <label>{{repeatLabel}}</label>
     <div>
       <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
       <select v-model="periodicity" class="form-control control periodicity" @change="update">
@@ -21,8 +22,9 @@
         <option value="year">year</option>
       </select>
     </div>
+    </template>
     <div v-if="periodicity==='week'">
-      <label>Repeat on</label>
+      <label>{{weekLabel}}</label>
       <div>
         <span v-for="(day, index) in weekdays" :key="index + 'week'" 
               class="badge badge-pill weekday"
@@ -30,36 +32,34 @@
               @click="clickWeekDay(day);update()">{{day.initial}}</span>
       </div>
     </div>
-    <label>Ends</label>
-    <table width="100%">
-      <tr>
-      </tr>
-    </table>
-    <div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends" @change="update">Never
-        </label>
+    <template v-if="hasEnds">
+      <label>Ends</label>
+      <div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends" @change="update">Never
+          </label>
+        </div>
+        <div class="form-check check-input">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On &nbsp;
+          </label>
+          <datepicker v-model="endDate" calendar-class="calendar calendaron" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
+                      input-class="form-control end-date"
+                      class=" control float-right"
+                      :class="{'date-disabled' : ends!=='ondate'}"
+                      @selected="updateEndDate"></datepicker>
+        </div>
+        <div class="form-check check-input">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After &nbsp;
+          </label>
+          <input v-model="times" type="number" min="0" :disabled="ends!=='after'" 
+                 class="form-control control after float-right" @change="update">
+          <label class="occurrences">occurrences</label>
+        </div>
       </div>
-      <div class="form-check check-input">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On &nbsp;
-        </label>
-        <datepicker v-model="endDate" calendar-class="calendar calendaron" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
-                    input-class="form-control end-date"
-                    class=" control float-right"
-                    :class="{'date-disabled' : ends!=='ondate'}"
-                    @selected="update"></datepicker>
-      </div>
-      <div class="form-check check-input">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After &nbsp;
-        </label>
-        <input v-model="times" type="number" min="0" :disabled="ends!=='after'" 
-               class="form-control control after float-right" @change="update">
-        <label class="occurrences">occurrences</label>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -80,6 +80,22 @@ export default {
   },
   props: {
     value: String,
+    hasEnds: {
+      type: Boolean,
+      default: true,
+    },
+    hasRepeat: {
+      type: Boolean,
+      default: true,
+    },
+    repeatLabel: {
+      type: String,
+      default: 'Repeat every',
+    },
+    weekLabel: {
+      type: String,
+      default: 'Repeat on',
+    },
   },
   data() {
     const date = moment().set('hour', 0).set('minutes', 0);
@@ -171,6 +187,14 @@ export default {
   methods: {
     currentDaySelected(day) {
       return this.startDate.getDay() === (day.day % 7);
+    },
+    updateStartDate(date) {
+      this.startDate = date;
+      this.update();
+    },
+    updateEndDate(date) {
+      this.endDate = date;
+      this.update();
     },
     update() {
       this.$emit('input', this.expression);
