@@ -4,9 +4,9 @@
 </template>
 
 <script>
-import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
+import StartEventShape from '@/components/nodes/startEvent/shape';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
-    this.shape = new joint.shapes.standard.Circle();
+    this.shape = new StartEventShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
@@ -42,6 +42,12 @@ export default {
       label: {
         text: this.node.definition.get('name'),
         refY: '130%',
+      },
+      image: {
+        'ref-x': 5,
+        'ref-y': 5,
+        'width': bounds.get('width') - 10,
+        'height': bounds.get('height') - 10,
       },
     });
     this.shape.addTo(this.graph);
