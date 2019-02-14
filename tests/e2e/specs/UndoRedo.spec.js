@@ -8,7 +8,7 @@ function getDeleteButtonForElement($element) {
   return cy.get(`#${$element.attr('id')} ~ [data-test=delete-button]`);
 }
 
-describe.only('Undo/redo', () => {
+describe('Undo/redo', () => {
   const taskPosition = { x: 300, y: 500 };
 
   beforeEach(() => {
