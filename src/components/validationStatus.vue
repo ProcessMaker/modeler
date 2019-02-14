@@ -3,20 +3,25 @@
     <div class="validation-container position-absolute text-left" v-if="toggleValidationPanel">
       <span class="validation-container__defaultMessage d-flex justify-content-center align-items-center h-100" v-if="!numberOfValidationErrors">no problems to report</span>
       <div class="validation-container__list d-flex justify-content-between" v-for="error in errorList" :key="error.id">
-        <span class="validation-container__list--id">{{ error.id }}</span>
+        <span class="validation-container__list--errorCategory d-flex justify-content-center">
+          <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="valditionIcon" />
+        </span>
+        <span class="validation-container__list--id">
+          {{ error.id }}
+        </span>
         <span class="validation-container__list--message">
           <span class="validation-container__list--key">{{ error.errorKey }}</span>
           <div>{{ error.message }}</div>
         </span>
-        <span class="validation-container__list--errorCategory d-flex justify-content-center align-items-center">
-              <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="valditionIcon" />
-        </span>
       </div>
     </div>
-     <div class="status-bar-container d-flex align-items-center justify-content-around" @click="toggleValidationPanel = !toggleValidationPanel">
-      <span class="statusBar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
-      <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
-      <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
+     <div class="status-bar-container d-flex align-items-center justify-content-around">
+      <button class="status-bar-container__validate-button btn-sm btn-info" @click="validateDiagram">Validate BPMN</button>
+      <span class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
+        <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
+        <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
+        <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
+      </span>
     </div>
   </div>
 </template>
@@ -37,6 +42,11 @@ export default {
       warningColor: '#F0AD4E',
       validColor: '#40C057',
     };
+  },
+  methods: {
+    validateDiagram() {
+      this.$root.$emit('Modeler');
+    },
   },
   computed: {
     errorList() {
@@ -102,15 +112,16 @@ $seconadry-grey: #555555;
 $secondary-blue: #3397e1;
 $border-color: #aaaaaa;
 $text-size-sm: 0.85rem;
-$id-container-width: 6rem;
+$id-container-width: 6.5rem;
 $message-container-width: 18rem;
 $error-category-width: 1rem;
 $validation-container-height: 20rem;
 $validation-container-width: 28rem;
-$status-bar-container-height: 2.5rem;
-$status-bar-container-width: 8rem;
+$status-bar-container-height: 3rem;
+$status-bar-container-width: 16rem;
 $error-color: #D9534F;
 $warning-color: #F0AD4E;
+$button-color: #3BD7FF;
 
 .status-bar-container {
   font-size: $text-size-sm;
@@ -119,11 +130,25 @@ $warning-color: #F0AD4E;
   width: $status-bar-container-width;
   cursor: pointer;
 
-  &__status-ellipsis {
+  &__validate-button {
+    background-color: $button-color;
+    border: none;
+    border-radius: 1.25rem;
+    cursor: pointer;
+  }
 
+  &__status {
+    cursor: pointer;
+  }
+
+  &__status-ellipsis {
     &:hover {
       color: $secondary-blue;
     }
+  }
+
+  &__status-icon {
+    margin: 0 0.75rem;
   }
 }
 
@@ -149,16 +174,16 @@ $warning-color: #F0AD4E;
       width: $id-container-width;
       color: $seconadry-grey;
       text-transform: none;
-      margin-right: 1rem;
     }
 
     &--message {
       width: $message-container-width;
-      margin-right: 1rem;
       text-transform: capitalize;
     }
 
     &--errorCategory {
+      width: 2rem;
+      padding: 0.25rem 1rem 0 0.5rem;
       width: $error-category-width;
     }
 
