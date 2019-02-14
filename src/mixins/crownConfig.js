@@ -133,15 +133,15 @@ export default {
         this.crownConfig = [];
       }
 
+      if (this.isValidMessageFlowSource) {
+        this.addMessageFlowButton();
+      }
+
       this.crownConfig.push({
         id: 'delete-button',
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
-
-      if (this.isValidMessageFlowSource) {
-        this.addMessageFlowButton();
-      }
 
       this.crownConfig.forEach(({ id, icon, clickHandler }) => {
         const button = new joint.shapes.standard.EmbeddedImage();
