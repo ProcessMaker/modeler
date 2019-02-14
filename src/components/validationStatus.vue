@@ -159,7 +159,7 @@ $button-color: #3BD7FF;
   width: $validation-container-width;
   background-color: $primary-white;
   overflow: scroll;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   border: 1px solid $border-color;
 
   &__defaultMessage {
