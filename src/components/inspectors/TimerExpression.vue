@@ -156,18 +156,15 @@ export default {
     };
   },
   computed: {
+    /**
+     * ISO 8601 expression that represents the timer configuration
+     */
     expression() {
-      this.startDate;
-      this.startTime;
-      this.repeat;
-      this.periodicity;
-      this.selectedWeekdays;
-      this.ends;
-      this.endDate;
-      this.times;
-      const expression = this.makeTimerConfig();
-      return expression;
+      return this.makeTimerConfig();
     },
+    /**
+     * Array of week days the user selected
+     */
     selectedWeekdays() {
       const selected = [];
       this.weekdays.forEach(weekday => {
@@ -175,13 +172,19 @@ export default {
       });
       return selected;
     },
+    /**
+     * True if the selected day is the same of the start date
+     */
     sameDay() {
       return this.selectedWeekdays.length === 1 && this.weekdays[this.startDate.getDay()].selected;
     },
   },
   watch: {
-    value(value) {
-      this.parseTimerConfig(value);
+    value: {
+      handler(value) {
+        return this.parseTimerConfig(value);
+      },
+      immediate: true,
     },
   },
   methods: {
@@ -206,6 +209,9 @@ export default {
       }
       return moment(date);
     },
+    /**
+     * Parse an ISO8601 expression to get the timer configuration
+     */
     parseTimerConfig(value) {
       this.resetTimerExpression();
       if (!value) {
@@ -255,6 +261,9 @@ export default {
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
     },
+    /**
+     * Build a ISO8601 expression from the timer configuration
+     */
     makeTimerConfig() {
       const expression = [];
       if (this.periodicity === 'week' && this.selectedWeekdays.length > 0 && !this.sameDay) {
@@ -291,9 +300,6 @@ export default {
     makeCycle(times, datetime, period, end) {
       return `R${times}/${datetime}/${period}` + (end ? '/' + end : '');
     },
-  },
-  mounted() {
-    this.parseTimerConfig(this.value);
   },
 };
 </script>

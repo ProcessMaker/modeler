@@ -43,34 +43,34 @@ export default {
 };
 </script>
 
-<style scoped="scoped">
+<style scoped>
   .control {
-      vertical-align: middle;
-      display: inline-block;
-      height: 3em;
-      font-size: 1em;
+    vertical-align: middle;
+    display: inline-block;
+    height: 3em;
+    font-size: 1em;
   }
   .start-date-div {
-      vertical-align: middle;
-      display: inline-block;
+    vertical-align: middle;
+    display: inline-block;
   }
   .time {
-      width: 5em;
-      height: 38px;
-      font-size: 16px;
+    width: 5em;
+    height: 38px;
+    font-size: 16px;
   }
 </style>
 
 <style>
   .calendar {
-      width: 16em;
+    width: 16em;
   }
   .calendar .cell {
-      height: 2em;
-      line-height: 2em;
+    height: 2em;
+    line-height: 2em;
   }
   .start-date {
-      background-color: white!important;
-      width: 8em!important;
+    background-color: white!important;
+    width: 8em!important;
   }
 </style>

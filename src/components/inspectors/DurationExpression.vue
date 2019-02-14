@@ -15,7 +15,6 @@
 
 <script>
 import TimerExpression from './TimerExpression';
-import moment from 'moment';
 
 const periods = {
   'day': 'D',
