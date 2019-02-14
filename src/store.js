@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import uniqueId from 'lodash/uniqueId';
 
 Vue.use(Vuex);
 
@@ -39,6 +40,12 @@ export default new Vuex.Store({
       state.highlightedNode = node;
     },
     addNode(state, node) {
+      /* Add an unchanging ID that Vue can use to track the component
+       * (used in v-for when rendering the node). Relying on the
+       * definition ID will cause issues as the user can change the
+       * ID of elements. */
+      node._modelerId = uniqueId();
+
       state.nodes.push(node);
     },
     removeNode(state, node) {
