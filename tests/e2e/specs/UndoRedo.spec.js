@@ -59,13 +59,16 @@ describe('Undo/redo', () => {
     cy.wait(100);
 
     getElementAtPosition(startEventPosition)
-      .click()
-      .moveTo(500, 500);
-
-    cy.wait(100);
+      .moveTo(300, 300)
+      .getPosition()
+      .should(position => {
+        expect(position).to.not.deep.equal(startEventPosition);
+      });
 
     cy.get('[data-test=undo]')
       .should('not.be.disabled')
       .click();
+
+    getElementAtPosition(startEventPosition).should('exist');
   });
 });

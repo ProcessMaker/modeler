@@ -25,8 +25,7 @@ export function getElementAtPosition(position) {
       return view2.model.get('z') - view1.model.get('z');
     }))
     .then(views => views[0])
-    .then(view => view.$el)
-    .should('have.length', 1);
+    .then(view => view.$el);
 }
 
 export function dragFromSourceToDest(source, dest, position) {
