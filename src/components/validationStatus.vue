@@ -99,6 +99,7 @@ export default {
 <style scoped lang="scss">
 $primary-white: #F0F3F7;
 $seconadry-grey: #555555;
+$secondary-blue: #3397e1;
 $border-color: #aaaaaa;
 $text-size-sm: 0.85rem;
 $id-container-width: 6rem;
@@ -121,6 +122,12 @@ $warning-color: #F0AD4E;
   height: $status-bar-container-height;
   width: $status-bar-container-width;
   cursor: pointer;
+
+  &__status-ellipsis {
+    &:hover {
+      color: $secondary-blue;
+    }
+  }
 }
 
 .validation-container {
