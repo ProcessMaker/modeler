@@ -50,11 +50,22 @@ describe('Undo/redo', () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it('Can undo a position changes', () => {
+  it('Can undo position changes', () => {
     const startEventPosition = { x: 150, y: 150 };
+
+    cy.get('[data-test=undo]')
+      .should('be.disabled');
+
     cy.wait(100);
+
     getElementAtPosition(startEventPosition)
       .click()
       .moveTo(500, 500);
+
+    cy.wait(100);
+
+    cy.get('[data-test=undo]')
+      .should('not.be.disabled')
+      .click();
   });
 });
