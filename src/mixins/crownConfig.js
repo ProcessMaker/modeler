@@ -286,7 +286,11 @@ export default {
         process.get('artifacts').push(this.node.definition);
       }
 
-      if (nodeTypes.includes('bpmn:MessageFlow') && !this.collaboration.get('messageFlows').includes(this.node.definition)) {
+      if (
+        this.collaboration &&
+        nodeTypes.includes('bpmn:MessageFlow') &&
+        !this.collaboration.get('messageFlows').includes(this.node.definition)
+      ) {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     });
