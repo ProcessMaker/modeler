@@ -9,6 +9,7 @@ import {
   sequenceFlow,
   startEvent,
   startTimerEvent,
+  intermediateTimerEvent,
   task,
   scriptTask,
   serviceTask,
@@ -35,8 +36,14 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
   registerNode(startEvent);
   registerNode(startTimerEvent, definition => {
     const eventDefinitions = definition.get('eventDefinitions');
-    if (eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
+    if (definition.$type === 'bpmn:StartEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
       return 'processmaker-modeler-start-timer-event';
+    }
+  });
+  registerNode(intermediateTimerEvent, definition => {
+    const eventDefinitions = definition.get('eventDefinitions');
+    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
+      return 'processmaker-modeler-intermediate-catch-timer-event';
     }
   });
   /* Register basic node types */

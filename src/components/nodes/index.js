@@ -6,6 +6,7 @@ export { default as parallelGateway } from './parallelGateway/';
 export { default as sequenceFlow } from './sequenceFlow';
 export { default as startEvent } from './startEvent';
 export { default as startTimerEvent } from './startTimerEvent';
+export { default as intermediateTimerEvent } from './intermediateTimerEvent';
 export { default as task } from './task';
 export { default as scriptTask } from './scriptTask';
 export { default as serviceTask } from './serviceTask';
