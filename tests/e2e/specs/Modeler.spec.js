@@ -1,4 +1,5 @@
 import { direction } from '../../../src/components/nodes/association/associationConfig';
+import { dragFromSourceToDest } from '../support/utils';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -15,13 +16,6 @@ const generateXML = (nodeName) => {
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 };
-
-function dragFromSourceToDest(source, dest, position) {
-  const dataTransfer = new DataTransfer();
-  cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
-  cy.get(dest).trigger('dragenter', { force: true });
-  cy.get(dest).trigger('drop', { x: position.x, y: position.y });
-}
 
 function typeIntoTextInput(selector, value) {
   cy.wait(500);
@@ -44,9 +38,7 @@ const nodeTypes = [
 
 describe('Modeler', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.reload();
-    cy.viewport(1280, 720);
+    cy.loadModeler();
   });
 
   it('Renders the application without errors', () => {
@@ -174,7 +166,7 @@ describe('Modeler', () => {
       { x: 300, y: 350},
     );
 
-    connectNode(taskConnectorSelector, 300, 350);
+    connectNode(taskConnectorSelector, 350, 400);
     cy.get(taskSelectorTwo).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
 
@@ -184,7 +176,7 @@ describe('Modeler', () => {
       { x: 100, y: 350},
     );
 
-    connectNode(taskConnectorSelectorTwo, 100, 350);
+    connectNode(taskConnectorSelectorTwo, 150, 400);
     cy.get(taskSelectorThree).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
 
@@ -194,7 +186,7 @@ describe('Modeler', () => {
       { x: 100, y: 500},
     );
 
-    connectNode(taskConnectorSelectorThree, 100, 500);
+    connectNode(taskConnectorSelectorThree, 110, 510);
     cy.get(endEventSelector).click();
 
     dragFromSourceToDest(
