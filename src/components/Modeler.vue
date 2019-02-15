@@ -38,6 +38,7 @@
       :node="node"
       :id="node.definition.id"
       :highlighted="highlightedNode === node"
+      :has-error="invalidNodes.includes(node.definition.id)"
       :collaboration="collaboration"
       :process-node="processNode"
       :processes="processes"
@@ -123,6 +124,7 @@ export default {
       parentHeight: null,
       parentWidth: null,
       linter: null,
+      validationErrors: {},
     };
   },
   computed: {
@@ -137,6 +139,12 @@ export default {
       return undoRedoStore.getters.currentState;
     },
     highlightedNode: () => store.getters.highlightedNode,
+    invalidNodes() {
+      return Object.entries(this.validationErrors).reduce((invalidIds, [,errors]) => {
+        invalidIds.push(...errors.map(error => error.id));
+        return invalidIds;
+      }, []);
+    },
   },
   methods: {
     async pushToUndoStack() {
@@ -155,8 +163,9 @@ export default {
       });
     },
     async validateBpmnDiagram() {
-      const results = await this.linter.lint(this.definitions);
-      this.$emit('validate', results);
+      const validationErrors = await this.linter.lint(this.definitions);
+      this.validationErrors = validationErrors;
+      this.$emit('validate', validationErrors);
     },
     undo() {
       undoRedoStore
