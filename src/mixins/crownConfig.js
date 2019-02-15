@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       buttons: [],
+      /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
       allowSetNodePosition: true,
     };
   },
@@ -224,15 +225,9 @@ export default {
       }
     },
     setNodePosition() {
-      const { x, y } = this.shape.getBBox();
-      const { x: nodeX, y: nodeY } = this.node.diagram.bounds;
-
-      if (!this.allowSetNodePosition || (x === nodeX && y === nodeY)) {
+      if (!this.allowSetNodePosition) {
         return;
       }
-
-      this.node.diagram.bounds.set('x', x);
-      this.node.diagram.bounds.set('y', y);
 
       this.$emit('save-state');
     },

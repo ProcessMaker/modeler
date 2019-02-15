@@ -30,3 +30,38 @@ Cypress.Commands.add('loadModeler', () => {
   cy.visit('/');
   cy.reload();
 });
+
+Cypress.Commands.add('moveTo', {
+  prevSubject: 'element',
+}, (element, x, y) => {
+  cy.window()
+    .its('store.state.paper')
+    .then(paper => {
+      const paperOrigin = paper.localToPagePoint(0, 0);
+
+      cy.wrap(element)
+        .trigger('mousedown')
+        .trigger('mousemove', {
+          clientX: paperOrigin.x + x,
+          clientY: paperOrigin.y + y,
+        })
+        .trigger('mouseup');
+    });
+});
+
+Cypress.Commands.add('getPosition', {
+  prevSubject: 'element',
+}, element => {
+  cy.window()
+    .its('store.state.paper')
+    .then(paper => {
+      const paperOrigin = paper.localToPagePoint(0, 0);
+      const { left, top } = element.position();
+      const { x, y } = element[0].getBBox();
+
+      return {
+        x: left - paperOrigin.x - x,
+        y: top - paperOrigin.y - y,
+      };
+    });
+});
