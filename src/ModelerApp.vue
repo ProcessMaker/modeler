@@ -11,10 +11,8 @@
       <modeler ref="modeler" @validate="validationErrors = $event" />
     </div>
     <statusbar>
-      {{statusText}}
-      <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
+      <validation-status :validation-errors="validationErrors"/>
     </statusbar>
-
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload @input-file="handleUpload">
         Upload file
@@ -28,8 +26,7 @@ import Modeler from './components/Modeler.vue';
 import statusbar from './components/statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import validationStatus from '@/components/validationStatus';
 import store from '@/store';
 
 /* Add reference to store on window–this is used in testing to verify rendered nodes */
@@ -42,42 +39,13 @@ export default {
   components: {
     Modeler,
     FileUpload,
+    validationStatus,
     statusbar,
-    FontAwesomeIcon,
   },
   data() {
     return {
-      validationErrors: null,
+      validationErrors: {},
     };
-  },
-  computed: {
-    statusIcon() {
-      return this.hasValidationErrors
-        ? faTimesCircle
-        : faCheckCircle;
-    },
-    statusColor() {
-      return this.hasValidationErrors
-        ? 'red'
-        : 'green';
-    },
-    hasValidationErrors() {
-      return this.numberOfValidationErrors > 0;
-    },
-    numberOfValidationErrors() {
-      if (!this.validationErrors) {
-        return 0;
-      }
-
-      return Object.entries(this.validationErrors).reduce((numberOfErrors, [,errors]) => {
-        return numberOfErrors + errors.length;
-      }, 0);
-    },
-    statusText() {
-      return this.hasValidationErrors
-        ? `${this.numberOfValidationErrors} error${this.numberOfValidationErrors === 1 ? '' : 's'} detected`
-        : 'No errors detected';
-    },
   },
   methods: {
     download() {
@@ -144,8 +112,6 @@ html {
 
   .navbar {
     font-weight: bold;
-    height: 42px;
-    min-height: 42px;
     display: flex;
     align-items: center;
     justify-content: space-between;

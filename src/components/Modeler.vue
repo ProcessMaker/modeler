@@ -673,6 +673,10 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
     });
+
+    this.$root.$on('Modeler', () => {
+      this.validateBpmnDiagram();
+    });
   },
 };
 </script>
@@ -716,7 +720,6 @@ $cursors: default, not-allowed;
 
       .validate-button {
         position: absolute;
-        z-index: 1;
         top: 1rem;
         right: 1rem;
         cursor: pointer;
