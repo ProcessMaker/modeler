@@ -8,13 +8,11 @@
       </div>
     </div>
     <div class="modeler-container">
-      <modeler ref="modeler" />
+      <modeler ref="modeler" @validate="validationErrors = $event" />
     </div>
     <statusbar>
-      {{statusText}}
-      <font-awesome-icon :style="{color: statusColor}" :icon="statusIcon" />
+      <validation-status :validation-errors="validationErrors"/>
     </statusbar>
-
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload @input-file="handleUpload">
         Upload file
@@ -28,8 +26,7 @@ import Modeler from './components/Modeler.vue';
 import statusbar from './components/statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import validationStatus from '@/components/validationStatus';
 import store from '@/store';
 
 /* Add reference to store on window–this is used in testing to verify rendered nodes */
@@ -42,14 +39,12 @@ export default {
   components: {
     Modeler,
     FileUpload,
+    validationStatus,
     statusbar,
-    FontAwesomeIcon,
   },
   data() {
     return {
-      statusText: 'No errors detected',
-      statusIcon: faCheckCircle,
-      statusColor: 'green',
+      validationErrors: {},
     };
   },
   methods: {
@@ -117,8 +112,6 @@ html {
 
   .navbar {
     font-weight: bold;
-    height: 42px;
-    min-height: 42px;
     display: flex;
     align-items: center;
     justify-content: space-between;
