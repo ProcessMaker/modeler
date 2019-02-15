@@ -357,13 +357,19 @@ export default {
           console.warn(`Unsupported element type in parse: ${definition.$type}`);
         }
 
-        pull(flowElements, [
-          definition,
-          ...definition.get('incoming'),
-          ...definition.get('outgoing'),
-        ]);
+        pull(flowElements, definition);
         pull(artifacts, definition);
         pull(this.planeElements, diagram);
+
+        const incomingFlows = definition.get('incoming');
+        if (incomingFlows) {
+          pull(flowElements, incomingFlows);
+        }
+
+        const outgoingFlows = definition.get('outgoing');
+        if (outgoingFlows) {
+          pull(flowElements, outgoingFlows);
+        }
 
         return;
       }
