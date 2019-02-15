@@ -6,7 +6,7 @@
 <script>
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
-import StartEventShape from '@/components/nodes/startEvent/shape';
+import EventShape from '@/components/nodes/intermediateEvent/shape';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -17,7 +17,6 @@ export default {
       definition: null,
       crownConfig: [
         {
-          id: 'sequence-flow-button',
           icon: connectIcon,
           clickHandler: this.addSequence,
         },
@@ -31,14 +30,18 @@ export default {
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
-    this.shape = new StartEventShape();
+    this.shape = new EventShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       body: {
-        stroke: '#00bf9c',
-        fill: '#EDFFFC',
+        stroke: '#FBBE02',
+        fill: '#FFF4D1',
+      },
+      body2: {
+        stroke: '#FBBE02',
+        fill: '#FFF4D1',
       },
       label: {
         text: this.node.definition.get('name'),

@@ -6,9 +6,12 @@ import {
   association,
   endEvent,
   exclusiveGateway,
+  parallelGateway,
   sequenceFlow,
   messageFlow,
   startEvent,
+  startTimerEvent,
+  intermediateTimerEvent,
   task,
   scriptTask,
   serviceTask,
@@ -18,12 +21,12 @@ import {
 } from '@/components/nodes';
 
 const nodeTypes = [
-  startEvent,
   endEvent,
   task,
   scriptTask,
   serviceTask,
   exclusiveGateway,
+  parallelGateway,
   sequenceFlow,
   messageFlow,
   textAnnotation,
@@ -33,6 +36,20 @@ const nodeTypes = [
 ];
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
+  // Register start events
+  registerNode(startEvent);
+  registerNode(startTimerEvent, definition => {
+    const eventDefinitions = definition.get('eventDefinitions');
+    if (definition.$type === 'bpmn:StartEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
+      return 'processmaker-modeler-start-timer-event';
+    }
+  });
+  registerNode(intermediateTimerEvent, definition => {
+    const eventDefinitions = definition.get('eventDefinitions');
+    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
+      return 'processmaker-modeler-intermediate-catch-timer-event';
+    }
+  });
   /* Register basic node types */
   nodeTypes.forEach(config => registerNode(config));
 

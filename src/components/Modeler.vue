@@ -13,6 +13,8 @@
           <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
         </div>
 
+        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
+
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper" data-test="paper"/>
         </drop>
@@ -30,12 +32,13 @@
     <component
       v-for="node in nodes"
       :is="node.type"
-      :key="node.definition.id"
+      :key="node._modelerId"
       :graph="graph"
       :paper="paper"
       :node="node"
       :id="node.definition.id"
       :highlighted="highlightedNode === node"
+      :has-error="invalidNodes.includes(node.definition.id)"
       :collaboration="collaboration"
       :process-node="processNode"
       :processes="processes"
@@ -67,6 +70,8 @@ import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
+import { Linter } from 'bpmnlint';
+import linterConfig from '../../.bpmnlintrc';
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
@@ -119,6 +124,8 @@ export default {
       cursor: null,
       parentHeight: null,
       parentWidth: null,
+      linter: null,
+      validationErrors: {},
     };
   },
   computed: {
@@ -133,12 +140,33 @@ export default {
       return undoRedoStore.getters.currentState;
     },
     highlightedNode: () => store.getters.highlightedNode,
+    invalidNodes() {
+      return Object.entries(this.validationErrors).reduce((invalidIds, [,errors]) => {
+        invalidIds.push(...errors.map(error => error.id));
+        return invalidIds;
+      }, []);
+    },
   },
   methods: {
-    pushToUndoStack() {
-      this.toXML((err,xml) => {
-        undoRedoStore.dispatch('pushState', xml);
+    async pushToUndoStack() {
+      const xml = await this.getXmlFromDiagram();
+      undoRedoStore.dispatch('pushState', xml);
+    },
+    getXmlFromDiagram() {
+      return new Promise((resolve, reject) => {
+        this.toXML((error, xml) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(xml);
+          }
+        });
       });
+    },
+    async validateBpmnDiagram() {
+      const validationErrors = await this.linter.lint(this.definitions);
+      this.validationErrors = validationErrors;
+      this.$emit('validate', validationErrors);
     },
     undo() {
       undoRedoStore
@@ -561,6 +589,8 @@ export default {
     });
 
     this.moddle = new BpmnModdle(this.extensions);
+
+    this.linter = new Linter(linterConfig);
   },
   mounted() {
     this.graph = new joint.dia.Graph();
@@ -651,6 +681,10 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
     });
+
+    this.$root.$on('Modeler', () => {
+      this.validateBpmnDiagram();
+    });
   },
 };
 </script>
@@ -690,6 +724,13 @@ $cursors: default, not-allowed;
         > button {
           cursor: pointer;
         }
+      }
+
+      .validate-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        cursor: pointer;
       }
     }
 

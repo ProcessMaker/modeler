@@ -61,6 +61,7 @@ const nodeTypes = [
   'processmaker-modeler-end-event',
   'processmaker-modeler-script-task',
   'processmaker-modeler-exclusive-gateway',
+  'processmaker-modeler-parallel-gateway',
   'processmaker-modeler-text-annotation',
   'processmaker-modeler-pool',
 ];
@@ -125,6 +126,7 @@ describe('Modeler', () => {
 
   it('Update exclusive gateway name', () => {
     const testString = 'testing';
+    const exclusiveGatewaySelector = '#v-19';
 
     dragFromSourceToDest(
       'processmaker-modeler-exclusive-gateway',
@@ -132,7 +134,22 @@ describe('Modeler', () => {
       200, 200
     );
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
+    cy.get(exclusiveGatewaySelector).click({force: true});
+    typeIntoTextInput('[name=\'name\']', testString);
+    cy.get('[name=\'name\']').should('have.value', testString);
+  });
+
+  it('Update parallel gateway name', () => {
+    const testString = 'testing';
+    const parallelGatewaySelector = '#v-21';
+
+    dragFromSourceToDest(
+      'processmaker-modeler-parallel-gateway',
+      '.paper-container',
+      200, 200
+    );
+
+    cy.get(parallelGatewaySelector).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
     cy.get('[name=\'name\']').should('have.value', testString);
   });
@@ -289,5 +306,33 @@ describe('Modeler', () => {
 
     const numberOfNewElementsAdded = 1;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
+  });
+
+  it('Update Condition expression', () => {
+    const exclusiveGatewayCoordinates = { x: 400, y: 300 };
+    const excluiveConnectorSelector =  '#v-25';
+    const taskCoordinates = { x: 400, y: 500 };
+    const sequenceFlowSelector = '#v-50';
+    const taskSelector = '#v-34';
+    const testString = 'foo > 7';
+
+    dragFromSourceToDest(
+      'processmaker-modeler-exclusive-gateway',
+      '.paper-container',
+      exclusiveGatewayCoordinates
+    );
+
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      taskCoordinates
+    );
+
+    connectNode(excluiveConnectorSelector, 400, 520);
+    cy.get(taskSelector).click({ force: true });
+    cy.get(sequenceFlowSelector).click({ force: true });
+
+    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
+    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
   });
 });
