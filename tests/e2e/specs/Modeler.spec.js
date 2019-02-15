@@ -32,6 +32,7 @@ const nodeTypes = [
   'processmaker-modeler-end-event',
   'processmaker-modeler-script-task',
   'processmaker-modeler-exclusive-gateway',
+  'processmaker-modeler-parallel-gateway',
   'processmaker-modeler-text-annotation',
   'processmaker-modeler-pool',
 ];
@@ -92,6 +93,7 @@ describe('Modeler', () => {
 
   it('Update exclusive gateway name', () => {
     const testString = 'testing';
+    const exclusiveGatewaySelector = '#v-19';
 
     dragFromSourceToDest(
       'processmaker-modeler-exclusive-gateway',
@@ -99,7 +101,22 @@ describe('Modeler', () => {
       200, 200
     );
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-exclusivegateway').click({force: true});
+    cy.get(exclusiveGatewaySelector).click({force: true});
+    typeIntoTextInput('[name=\'name\']', testString);
+    cy.get('[name=\'name\']').should('have.value', testString);
+  });
+
+  it('Update parallel gateway name', () => {
+    const testString = 'testing';
+    const parallelGatewaySelector = '#v-21';
+
+    dragFromSourceToDest(
+      'processmaker-modeler-parallel-gateway',
+      '.paper-container',
+      200, 200
+    );
+
+    cy.get(parallelGatewaySelector).click({force: true});
     typeIntoTextInput('[name=\'name\']', testString);
     cy.get('[name=\'name\']').should('have.value', testString);
   });

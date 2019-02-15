@@ -1,16 +1,16 @@
-import component from './exclusiveGateway.vue';
+import component from './gateway.vue';
+
 
 export default {
-  id: 'processmaker-modeler-exclusive-gateway',
+  id: 'processmaker-modeler-gateway',
   component,
-  bpmnType: 'bpmn:ExclusiveGateway',
+  bpmnType: ['bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway'],
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/exclusive-gateway.svg'),
-  label: 'Exclusive Gateway',
+  label: 'Gateway',
   definition(moddle) {
-    return moddle.create('bpmn:ExclusiveGateway', {
-      name: 'New Exclusive Gateway',
+    return moddle.create('bpmn:Gateway', {
+      name: 'New Gateway',
     });
   },
   diagram(moddle) {
@@ -23,12 +23,12 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Exclusive Gateway',
+      name: 'Gateway',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Exclusive Gateway',
+            label: 'Gateway',
             fontSize: '2em',
           },
         },
