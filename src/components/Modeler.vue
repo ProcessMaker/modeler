@@ -80,6 +80,7 @@ import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
+import { id as messageFlowId } from './nodes/messageFlow';
 
 const version = '1.0';
 
@@ -311,11 +312,10 @@ export default {
         const flowElements = process.get('flowElements');
         const artifacts = process.get('artifacts');
 
-
         /* First load the flow elements */
         flowElements
           .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
 
         /* Then the sequence flows */
         flowElements
@@ -326,12 +326,12 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
 
         /* Then the artifacts */
         artifacts
           .filter(definition => definition.$type !== 'bpmn:Association')
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
 
         /* Then the associations */
         artifacts
@@ -342,8 +342,15 @@ export default {
 
             return this.hasSourceAndTarget(definition);
           })
-          .forEach((definition) => this.setNode(definition, flowElements, artifacts));
+          .forEach(definition => this.setNode(definition, flowElements, artifacts));
       });
+
+      /* Add any message flows */
+      if (this.collaboration) {
+        this.collaboration
+          .get('messageFlows')
+          .forEach(definition => this.setNode(definition));
+      }
 
       store.commit('highlightNode', this.processNode);
     },
@@ -360,6 +367,7 @@ export default {
         pull(flowElements, definition);
         pull(artifacts, definition);
         pull(this.planeElements, diagram);
+        pull(this.collaboration.get('messageFlows'), definition);
 
         const incomingFlows = definition.get('incoming');
         if (incomingFlows) {
@@ -447,9 +455,8 @@ export default {
        * if one exists.
        *
        * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
-       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow elements to it.
-       *
-       * For lanes, it will be bpmn:laneSet > bpmn:lanes (TODO).
+       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow
+       * elements to it.
        */
       if (type !== poolId) {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
@@ -464,7 +471,7 @@ export default {
             .push(definition);
         } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
           targetProcess.get('artifacts').push(definition);
-        } else {
+        } else if (definition.$type !== 'bpmn:MessageFlow') {
           targetProcess.get('flowElements').push(definition);
         }
       }
@@ -486,7 +493,7 @@ export default {
         pool: this.poolTarget,
       });
 
-      if (![sequenceFlowId, laneId, associationId].includes(type)) {
+      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
@@ -647,9 +654,6 @@ export default {
     this.paper.on('cell:pointerdown', cellView => {
       if (cellView.model.component) {
         cellView.model.toFront({ deep: true });
-        this.graph
-          .getConnectedLinks(cellView.model)
-          .forEach(link => link.toFront());
 
         /* If the element belongs to a pool, bring the pool to the front as well */
         if (cellView.model.component.node.pool) {
@@ -670,6 +674,10 @@ export default {
             })
             .forEach(cell => cell.toFront());
         }
+
+        this.graph
+          .getLinks()
+          .forEach(link => link.toFront());
 
         cellView.model.component.$emit('click');
       }

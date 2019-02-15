@@ -4,6 +4,7 @@ export { default as exclusiveGateway } from './exclusiveGateway';
 export { default as inclusiveGateway } from './inclusiveGateway';
 export { default as parallelGateway } from './parallelGateway/';
 export { default as sequenceFlow } from './sequenceFlow';
+export { default as messageFlow } from './messageFlow';
 export { default as startEvent } from './startEvent';
 export { default as startTimerEvent } from './startTimerEvent';
 export { default as intermediateTimerEvent } from './intermediateTimerEvent';

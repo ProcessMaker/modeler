@@ -28,9 +28,31 @@ export function getElementAtPosition(position) {
     .then(view => view.$el ? view.$el : null);
 }
 
+export function getLinksConnectedToElement($element) {
+  return cy.window()
+    .its('store.state.graph')
+    .invoke('getConnectedLinks', { id: $element.attr('model-id') })
+    .then(links => {
+      return cy.window().its('store.state.paper').then(paper => {
+        return links.map(link => link.findView(paper).$el);
+      });
+    });
+}
+
 export function dragFromSourceToDest(source, dest, position) {
   const dataTransfer = new DataTransfer();
   cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
   cy.get(dest).trigger('dragenter', { force: true });
   cy.get(dest).trigger('drop', { x: position.x, y: position.y });
+}
+
+export function getCrownButtonForElement($element, crownButton) {
+  return cy
+    .get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`)
+    .then(crownButtons => crownButtons.filter((index, button) => Cypress.$(button).is(':visible')))
+    .then(crownButtons => crownButtons[0]);
+}
+
+export function waitToRenderAllShapes() {
+  cy.wait(100);
 }

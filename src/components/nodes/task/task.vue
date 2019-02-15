@@ -21,6 +21,7 @@ export default {
       definition: null,
       crownConfig: [
         {
+          id: 'sequence-flow-button',
           icon: connectIcon,
           clickHandler: this.addSequence,
         },

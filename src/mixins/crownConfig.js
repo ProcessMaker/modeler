@@ -1,9 +1,17 @@
 import joint from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
 
 export const highlightPadding = 3;
+
+const validMessageFlowSources = [
+  'processmaker-modeler-start-event',
+  'processmaker-modeler-end-event',
+  'processmaker-modeler-task',
+  'processmaker-modeler-pool',
+];
 
 const errorHighlighter = {
   name: 'stroke',
@@ -18,7 +26,7 @@ const errorHighlighter = {
 };
 
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError', 'collaboration'],
   data() {
     return {
       buttons: [],
@@ -53,6 +61,9 @@ export default {
     },
     isLane() {
       return this.node.type === 'processmaker-modeler-lane';
+    },
+    isValidMessageFlowSource() {
+      return validMessageFlowSources.includes(this.node.type);
     },
   },
   methods: {
@@ -115,9 +126,35 @@ export default {
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
+    addMessageFlow(cellView, evt, x, y) {
+      this.removeCrown();
+
+      const messageFlowDefinition = this.moddle.create('bpmn:MessageFlow', {
+        name: '',
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
+      });
+
+      this.$emit('add-node', {
+        type: 'processmaker-modeler-message-flow',
+        definition: messageFlowDefinition,
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
+      });
+    },
+    addMessageFlowButton() {
+      this.crownConfig.push({
+        id: 'message-flow-button',
+        icon: messageFlowIcon,
+        clickHandler: this.addMessageFlow,
+      });
+    },
     configureCrown() {
       if (!this.crownConfig) {
         this.crownConfig = [];
+      }
+
+      if (this.isValidMessageFlowSource) {
+        this.addMessageFlowButton();
       }
 
       this.crownConfig.push({
@@ -197,6 +234,7 @@ export default {
         'processmaker-modeler-pool',
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
+        'processmaker-modeler-message-flow',
       ].includes(this.node.type))
       {
         return;
@@ -260,6 +298,14 @@ export default {
 
       if (nodeTypes.includes('bpmn:Artifact') && !process.get('artifacts').includes(this.node.definition)) {
         process.get('artifacts').push(this.node.definition);
+      }
+
+      if (
+        this.collaboration &&
+        nodeTypes.includes('bpmn:MessageFlow') &&
+        !this.collaboration.get('messageFlows').includes(this.node.definition)
+      ) {
+        this.collaboration.get('messageFlows').push(this.node.definition);
       }
     });
   },

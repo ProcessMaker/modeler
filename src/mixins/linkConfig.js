@@ -108,7 +108,11 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
-        this.updateDefinitionLinks();
+
+        if (this.updateDefinitionLinks) {
+          this.updateDefinitionLinks();
+        }
+
         this.$emit('save-state');
       });
 
@@ -149,8 +153,6 @@ export default {
       anchor: { name: 'modelCenter' },
       connectionPoint: { name: 'boundary' },
     });
-
-    this.sourceShape.embed(this.shape);
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
