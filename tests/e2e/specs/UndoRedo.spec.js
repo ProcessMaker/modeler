@@ -6,13 +6,13 @@ import {
 } from '../support/utils';
 
 describe('Undo/redo', () => {
-  const taskPosition = { x: 300, y: 500 };
-
   beforeEach(() => {
     cy.loadModeler();
   });
 
   it('Can undo and redo adding a task', () => {
+    const taskPosition = { x: 300, y: 500 };
+
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
     cy.get('[data-test=undo]').click();
@@ -27,6 +27,8 @@ describe('Undo/redo', () => {
   });
 
   it('Can undo and redo deleting a task', () => {
+    const taskPosition = { x: 300, y: 500 };
+
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
     /* Wait for jointjs to render the shape */
@@ -77,6 +79,8 @@ describe('Undo/redo', () => {
     cy.wait(100);
 
     getElementAtPosition(taskPosition1)
+      .click()
+      .wait(100)
       .moveTo(taskPosition2.x, taskPosition2.y)
       .moveTo(taskPosition3.x, taskPosition3.y);
 
