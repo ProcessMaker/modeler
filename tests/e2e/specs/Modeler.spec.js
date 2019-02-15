@@ -26,7 +26,7 @@ const generateXML = (nodeName) => {
 
 function typeIntoTextInput(selector, value) {
   cy.wait(500);
-  cy.get(selector).focus().clear().type(value, {force: true});
+  cy.get(selector).focus().clear().type(value, { force: true });
   cy.wait(500);
 }
 
@@ -309,29 +309,28 @@ describe('Modeler', () => {
   });
 
   it('Update Condition expression', () => {
-    const exclusiveGatewayCoordinates = { x: 400, y: 300 };
-    const excluiveConnectorSelector =  '#v-25';
-    const taskCoordinates = { x: 400, y: 500 };
-    const sequenceFlowSelector = '#v-50';
-    const taskSelector = '#v-34';
-    const testString = 'foo > 7';
-
+    const exclusiveGatewayPosition = { x: 400, y: 300 };
     dragFromSourceToDest(
       'processmaker-modeler-exclusive-gateway',
       '.paper-container',
-      exclusiveGatewayCoordinates
+      exclusiveGatewayPosition
     );
 
+    const taskPosition = { x: 400, y: 500 };
     dragFromSourceToDest(
       'processmaker-modeler-task',
       '.paper-container',
-      taskCoordinates
+      taskPosition
     );
 
-    connectNode(excluiveConnectorSelector, 400, 520);
-    cy.get(taskSelector).click({ force: true });
-    cy.get(sequenceFlowSelector).click({ force: true });
+    connectNodesWithSequenceFlow(exclusiveGatewayPosition, taskPosition);
 
+    getElementAtPosition(exclusiveGatewayPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click({ force: true });
+
+    const testString = 'foo > 7';
     typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
     cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
   });

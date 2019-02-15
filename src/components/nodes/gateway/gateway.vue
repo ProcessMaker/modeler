@@ -18,6 +18,7 @@ export default {
       labelWidth: 175,
       crownConfig: [
         {
+          id: 'sequence-flow-button',
           icon: connectIcon,
           clickHandler: this.addSequence,
         },
