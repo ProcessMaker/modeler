@@ -1,7 +1,5 @@
 import {
   dragFromSourceToDest,
-  getElementAtPosition,
-  getCrownButtonForElement,
   getGraphElements,
   waitToRenderAllShapes,
   typeIntoTextInput,
@@ -33,20 +31,6 @@ describe('Modeler', () => {
       );
     });
     cy.get('.modeler').children().should('have.length', emptyChildrenCount + nodeTypes.length);
-  });
-
-  it('Update task name', () => {
-    const testString = 'testing';
-
-    dragFromSourceToDest(
-      'processmaker-modeler-task',
-      '.paper-container',
-      200, 200
-    );
-
-    cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
   });
 
   it('Update parallel gateway name', () => {
