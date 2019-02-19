@@ -1,4 +1,3 @@
-import { direction } from '../../../src/components/nodes/association/associationConfig';
 import {
   dragFromSourceToDest,
   getElementAtPosition,
@@ -8,6 +7,9 @@ import {
   waitToRenderAllShapes,
   typeIntoTextInput,
 } from '../support/utils';
+
+import { direction } from '../../../src/components/nodes/association/associationConfig';
+import { nodeTypes } from '../support/constants';
 
 const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -50,16 +52,6 @@ function connectNodesWithAssociationFlow(startPosition, endPosition) {
         .click();
     });
 }
-
-const nodeTypes = [
-  'processmaker-modeler-task',
-  'processmaker-modeler-end-event',
-  'processmaker-modeler-script-task',
-  'processmaker-modeler-exclusive-gateway',
-  'processmaker-modeler-parallel-gateway',
-  'processmaker-modeler-text-annotation',
-  'processmaker-modeler-pool',
-];
 
 describe('Modeler', () => {
   beforeEach(() => {
