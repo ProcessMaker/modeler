@@ -364,6 +364,7 @@ export default {
           this.shape.embed(component.shape);
           component.shape.toFront({ deep: true });
           component.node.pool = this.shape;
+          component.node.pool.toBack();
         });
 
       this.resizePool();
