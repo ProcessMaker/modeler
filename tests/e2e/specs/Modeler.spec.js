@@ -6,8 +6,8 @@ import {
   getLinksConnectedToElement,
   waitToRenderAllShapes,
   typeIntoTextInput,
-  connectNodesWithSequenceFlow,
   generateXML,
+  connectNodesWithFlow,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -143,7 +143,8 @@ describe('Modeler', () => {
     );
 
     const startEventPosition = { x: 150, y: 150 };
-    connectNodesWithSequenceFlow(startEventPosition, taskPosition);
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+
 
     const task2Position = { x: 300, y: 350 };
     dragFromSourceToDest(
@@ -151,7 +152,7 @@ describe('Modeler', () => {
       '.paper-container',
       task2Position,
     );
-    connectNodesWithSequenceFlow(taskPosition, task2Position);
+    connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
 
     const task3Position = { x: 100, y: 350 };
     dragFromSourceToDest(
@@ -159,7 +160,7 @@ describe('Modeler', () => {
       '.paper-container',
       task3Position,
     );
-    connectNodesWithSequenceFlow(task2Position, task3Position);
+    connectNodesWithFlow('sequence-flow-button', task2Position, task3Position);
 
     const endEventPosition = { x: 100, y: 500 };
     dragFromSourceToDest(
@@ -167,7 +168,7 @@ describe('Modeler', () => {
       '.paper-container',
       endEventPosition,
     );
-    connectNodesWithSequenceFlow(task3Position, endEventPosition);
+    connectNodesWithFlow('sequence-flow-button', task3Position, endEventPosition);
 
     dragFromSourceToDest(
       'processmaker-modeler-pool',
@@ -209,7 +210,7 @@ describe('Modeler', () => {
     );
     waitToRenderAllShapes();
 
-    connectNodesWithSequenceFlow(taskPosition, taskPosition);
+    connectNodesWithFlow('sequence-flow-button', taskPosition, taskPosition);
 
     const numberOfNewElementsAdded = 1;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
@@ -230,7 +231,7 @@ describe('Modeler', () => {
       taskPosition
     );
 
-    connectNodesWithSequenceFlow(exclusiveGatewayPosition, taskPosition);
+    connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
 
     getElementAtPosition(exclusiveGatewayPosition)
       .then(getLinksConnectedToElement)
