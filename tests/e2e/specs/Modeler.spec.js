@@ -6,24 +6,12 @@ import {
   getLinksConnectedToElement,
   waitToRenderAllShapes,
   typeIntoTextInput,
+  connectNodesWithSequenceFlow,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 import { nodeTypes } from '../support/constants';
 import { generateXML } from '../support/constants';
-
-function connectNodesWithSequenceFlow(startPosition, endPosition) {
-  getElementAtPosition(startPosition)
-    .click()
-    .then($element => {
-      getCrownButtonForElement($element, 'sequence-flow-button').click();
-    })
-    .then(() => {
-      getElementAtPosition(endPosition)
-        .trigger('mousemove')
-        .click({ force: true });
-    });
-}
 
 function connectNodesWithAssociationFlow(startPosition, endPosition) {
   getElementAtPosition(startPosition)

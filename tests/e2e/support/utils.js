@@ -59,6 +59,19 @@ export function typeIntoTextInput(selector, value) {
   cy.wait(100);
 }
 
+export function connectNodesWithSequenceFlow(startPosition, endPosition) {
+  getElementAtPosition(startPosition)
+    .click()
+    .then($element => {
+      getCrownButtonForElement($element, 'sequence-flow-button').click();
+    })
+    .then(() => {
+      getElementAtPosition(endPosition)
+        .trigger('mousemove')
+        .click({ force: true });
+    });
+}
+
 export function waitToRenderAllShapes() {
   cy.wait(100);
 }
