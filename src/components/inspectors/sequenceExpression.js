@@ -29,7 +29,7 @@ export default [
         component: 'FormInput',
         config: {
           label: 'Expression',
-          helper: 'The Name of Expression',
+          helper: 'Enter the expression that describes the workflow condition',
           name: 'conditionExpression.body',
         },
       },
