@@ -81,7 +81,7 @@ export function waitToRenderAllShapes() {
   cy.wait(100);
 }
 
-export function connectNodesWithFlow(flowType,startPosition, endPosition,) {
+export function connectNodesWithFlow(flowType, startPosition, endPosition,) {
   getElementAtPosition(startPosition)
     .click()
     .then($element => {
