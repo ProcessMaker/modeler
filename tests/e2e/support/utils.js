@@ -53,6 +53,12 @@ export function getCrownButtonForElement($element, crownButton) {
     .then(crownButtons => crownButtons[0]);
 }
 
+export function typeIntoTextInput(selector, value) {
+  cy.wait(100);
+  cy.get(selector).focus().clear().type(value, { force: true });
+  cy.wait(100);
+}
+
 export function waitToRenderAllShapes() {
   cy.wait(100);
 }

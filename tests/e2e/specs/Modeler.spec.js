@@ -6,6 +6,7 @@ import {
   getGraphElements,
   getLinksConnectedToElement,
   waitToRenderAllShapes,
+  typeIntoTextInput,
 } from '../support/utils';
 
 const generateXML = (nodeName) => {
@@ -23,12 +24,6 @@ const generateXML = (nodeName) => {
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 };
-
-function typeIntoTextInput(selector, value) {
-  cy.wait(500);
-  cy.get(selector).focus().clear().type(value, { force: true });
-  cy.wait(500);
-}
 
 function connectNodesWithSequenceFlow(startPosition, endPosition) {
   getElementAtPosition(startPosition)
