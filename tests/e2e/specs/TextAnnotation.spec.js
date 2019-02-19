@@ -22,4 +22,3 @@ describe('Text Annotation', () => {
     cy.get('[name=\'text\']').should('have.value', testString);
   });
 });
-

@@ -6,7 +6,7 @@ import {
   typeIntoTextInput,
 } from '../support/utils';
 
-describe('Pool', () => {
+describe('Pools', () => {
   beforeEach(() => {
     cy.loadModeler();
   });

@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   getGraphElements,
   waitToRenderAllShapes,
-  typeIntoTextInput,
   generateXML,
   connectNodesWithFlow,
 } from '../support/utils';
@@ -31,21 +30,6 @@ describe('Modeler', () => {
       );
     });
     cy.get('.modeler').children().should('have.length', emptyChildrenCount + nodeTypes.length);
-  });
-
-  it('Update parallel gateway name', () => {
-    const testString = 'testing';
-    const parallelGatewaySelector = '#v-21';
-
-    dragFromSourceToDest(
-      'processmaker-modeler-parallel-gateway',
-      '.paper-container',
-      200, 200
-    );
-
-    cy.get(parallelGatewaySelector).click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
   });
 
   it('Create a simple process', () => {

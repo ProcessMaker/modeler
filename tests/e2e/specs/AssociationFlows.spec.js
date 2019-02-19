@@ -7,7 +7,7 @@ import {
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 
-describe('Association Flow', () => {
+describe('Association Flows', () => {
   beforeEach(() => {
     cy.loadModeler();
   });
