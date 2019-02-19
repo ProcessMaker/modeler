@@ -7,24 +7,12 @@ import {
   waitToRenderAllShapes,
   typeIntoTextInput,
   connectNodesWithSequenceFlow,
+  connectNodesWithAssociationFlow,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 import { nodeTypes } from '../support/constants';
 import { generateXML } from '../support/constants';
-
-function connectNodesWithAssociationFlow(startPosition, endPosition) {
-  getElementAtPosition(startPosition)
-    .click()
-    .then($element => {
-      getCrownButtonForElement($element, 'association-flow-button').click();
-    })
-    .then(() => {
-      getElementAtPosition(endPosition)
-        .trigger('mousemove')
-        .click();
-    });
-}
 
 describe('Modeler', () => {
   beforeEach(() => {

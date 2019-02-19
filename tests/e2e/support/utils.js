@@ -72,6 +72,19 @@ export function connectNodesWithSequenceFlow(startPosition, endPosition) {
     });
 }
 
+export function connectNodesWithAssociationFlow(startPosition, endPosition) {
+  getElementAtPosition(startPosition)
+    .click()
+    .then($element => {
+      getCrownButtonForElement($element, 'association-flow-button').click();
+    })
+    .then(() => {
+      getElementAtPosition(endPosition)
+        .trigger('mousemove')
+        .click();
+    });
+}
+
 export function waitToRenderAllShapes() {
   cy.wait(100);
 }
