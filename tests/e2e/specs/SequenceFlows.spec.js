@@ -1,6 +1,8 @@
 import {
   dragFromSourceToDest,
   connectNodesWithFlow,
+  getElementAtPosition,
+  getLinksConnectedToElement,
 } from '../support/utils';
 
 describe('Sequence Flows', () => {
@@ -15,5 +17,13 @@ describe('Sequence Flows', () => {
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+
+    const numberOfSequenceFlowsAdded = 1;
+
+    getElementAtPosition(taskPosition)
+      .then(getLinksConnectedToElement)
+      .should($links => {
+        expect($links.length).to.eq(numberOfSequenceFlowsAdded);
+      });
   });
 });
