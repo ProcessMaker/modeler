@@ -57,11 +57,11 @@ export function waitToRenderAllShapes() {
   cy.wait(100);
 }
 
-export function connectNodesWithMessageFlow(startPosition, endPosition) {
+export function connectNodesWithFlow(flowType,startPosition, endPosition,) {
   getElementAtPosition(startPosition)
     .click()
     .then($element => {
-      getCrownButtonForElement($element, 'message-flow-button')
+      getCrownButtonForElement($element, flowType)
         .click();
     })
     .then(() => {
