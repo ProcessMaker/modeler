@@ -54,9 +54,11 @@ export function getCrownButtonForElement($element, crownButton) {
 }
 
 export function typeIntoTextInput(selector, value) {
-  cy.wait(100);
+  const timeToUpdateInspectorInput = 100;
+
+  cy.wait(timeToUpdateInspectorInput);
   cy.get(selector).focus().clear().type(value, { force: true });
-  cy.wait(100);
+  cy.wait(timeToUpdateInspectorInput);
 }
 
 export function connectNodesWithSequenceFlow(startPosition, endPosition) {
