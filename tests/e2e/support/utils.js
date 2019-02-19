@@ -56,3 +56,17 @@ export function getCrownButtonForElement($element, crownButton) {
 export function waitToRenderAllShapes() {
   cy.wait(100);
 }
+
+export function connectNodesWithMessageFlow(startPosition, endPosition) {
+  getElementAtPosition(startPosition)
+    .click()
+    .then($element => {
+      getCrownButtonForElement($element, 'message-flow-button')
+        .click();
+    })
+    .then(() => {
+      getElementAtPosition(endPosition)
+        .trigger('mousemove')
+        .click();
+    });
+}

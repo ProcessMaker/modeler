@@ -1,23 +1,9 @@
 import {
   dragFromSourceToDest,
   getElementAtPosition,
-  getCrownButtonForElement,
+  connectNodesWithMessageFlow,
   getLinksConnectedToElement,
 } from '../support/utils';
-
-function connectNodesWithMessageFlow(startPosition, endPosition) {
-  getElementAtPosition(startPosition)
-    .click()
-    .then($element => {
-      getCrownButtonForElement($element, 'message-flow-button')
-        .click();
-    })
-    .then(() => {
-      getElementAtPosition(endPosition)
-        .trigger('mousemove')
-        .click();
-    });
-}
 
 describe('Message Flows', () => {
   beforeEach(() => {
