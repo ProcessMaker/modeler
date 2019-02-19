@@ -48,20 +48,6 @@ describe('Modeler', () => {
     cy.get('[name=\'name\']').should('have.value', testString);
   });
 
-  it('Update text annotation name', () => {
-    const testString = 'testing';
-
-    dragFromSourceToDest(
-      'processmaker-modeler-text-annotation',
-      '.paper-container',
-      200, 200
-    );
-
-    cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
-    typeIntoTextInput('[name=\'text\']', testString);
-    cy.get('[name=\'text\']').should('have.value', testString);
-  });
-
   it('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
