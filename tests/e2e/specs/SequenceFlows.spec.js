@@ -1,8 +1,6 @@
 import {
   dragFromSourceToDest,
-  getElementAtPosition,
-  getCrownButtonForElement,
-  getLinksConnectedToElement,
+  connectNodesWithFlow,
 } from '../support/utils';
 
 describe('Sequence Flows', () => {
@@ -14,6 +12,8 @@ describe('Sequence Flows', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest('processmaker-modeler-tast', '.paper-container', taskPosition);
+    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
   });
 });
