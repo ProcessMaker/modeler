@@ -4,6 +4,9 @@ module.exports = {
   css: {
     extract: false,
   },
+  transpileDependencies: [
+      /node_modules\/(?:bpmnlint|bpmnlint-loader\bpmnlint-utils)/,
+  ],
   configureWebpack: {
     resolve: {
       modules: [
