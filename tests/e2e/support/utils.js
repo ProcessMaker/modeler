@@ -61,19 +61,6 @@ export function typeIntoTextInput(selector, value) {
   cy.wait(timeToUpdateInspectorInput);
 }
 
-export function connectNodesWithAssociationFlow(startPosition, endPosition) {
-  getElementAtPosition(startPosition)
-    .click()
-    .then($element => {
-      getCrownButtonForElement($element, 'association-flow-button').click();
-    })
-    .then(() => {
-      getElementAtPosition(endPosition)
-        .trigger('mousemove')
-        .click();
-    });
-}
-
 export const generateXML = (nodeName) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">

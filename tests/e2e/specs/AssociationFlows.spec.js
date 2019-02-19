@@ -2,7 +2,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
-  connectNodesWithAssociationFlow,
+  connectNodesWithFlow,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
@@ -34,7 +34,7 @@ describe('Association Flow', () => {
       taskPosition,
     );
 
-    connectNodesWithAssociationFlow(textAnnotationPosition, taskPosition);
+    connectNodesWithFlow('association-flow-button', textAnnotationPosition, taskPosition);
 
     getElementAtPosition(textAnnotationPosition)
       .then(getLinksConnectedToElement)
