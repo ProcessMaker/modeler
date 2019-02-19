@@ -107,7 +107,6 @@ export default {
       }
 
       this.$emit('add-node', {
-        id: 'sequence-flow-button',
         type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
