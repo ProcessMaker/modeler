@@ -4,7 +4,7 @@
     <div>
       <datepicker v-model="startDate"
                   calendar-class="calendar" format="yyyy-MM-dd"
-                  input-class="form-control start-date" 
+                  input-class="form-control start-date"
                   class="start-date-div"
                   @selected="updateStartDate" />
       <select v-model="startTime" class="form-control control time" @change="update">
@@ -26,7 +26,7 @@
     <div v-if="periodicity==='week'">
       <label>{{weekLabel}}</label>
       <div>
-        <span v-for="(day, index) in weekdays" :key="index + 'week'" 
+        <span v-for="(day, index) in weekdays" :key="index + 'week'"
               class="badge badge-pill weekday"
               :class="weekdayStyle(day)"
               @click="clickWeekDay(day);update()">{{day.initial}}</span>
@@ -54,7 +54,7 @@
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
           </label>
-          <input v-model="times" type="number" min="0" :disabled="ends!=='after'" 
+          <input v-model="times" type="number" min="0" :disabled="ends!=='after'"
                  class="form-control control after float-right" @change="update">
           <label class="occurrences">occurrences</label>
         </div>
@@ -236,7 +236,7 @@ export default {
             //   start: datetime when the cycle starts. Ex. 2018-10-02T15:00:00-04:00
             //   period: Or duration, intervening time between repetitions. Ex. P7D (7 days)
             //   end: (optional) datetime when the cycle ends. Ex. 2018-12-01T00:00:00-04:00
-            //   
+            //
             //  Ex. R5/2008-03-01T13:00:00Z/P2M
             let match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
             if (match) {
@@ -322,83 +322,83 @@ export default {
 </script>
 
 <style scoped="scoped">
-  .control {
-      vertical-align: middle;
-      display: inline-block;
-      height: 3em;
-      font-size: 1em;
-  }
-  .repeat {
-      width: 6em!important;
-      text-align: right;
-  }
-  .periodicity {
-      width: 6em;
-  }
-  .weekday {
-      padding: 1em;
-      margin-left: 0.2em;
-      margin-bottom: 0.5em;
-      cursor: pointer;
-  }
-  .time {
-      width: 5em;
-      height: 38px;
-      font-size: 16px;
-  }
-  .start-date-div {
-      vertical-align: middle;
-      display: inline-block;
-  }
-  .after {
-      width: 10em;
-      height: 38px;
-      font-size: 16px;
-      padding-right: 5em;
-  }
-  .after:disabled {
-      color: transparent;
-  }
-  .check-input {
-      margin-top: 4px;
-  }
-  .check-input > .form-check-label {
-      line-height:3em;
-  }
-  .check-input .form-check-input {
-      margin-top: 1em;
-  }
-  .occurrences {
-      position:absolute;
-      right:1em;
-      line-height: 3em;
-  }
-  .same-day {
-      opacity: 0.7;
-  }
+.control {
+  vertical-align: middle;
+  display: inline-block;
+  height: 3em;
+  font-size: 1em;
+}
+.repeat {
+  width: 6em !important;
+  text-align: right;
+}
+.periodicity {
+  width: 6em;
+}
+.weekday {
+  padding: 1em;
+  margin-left: 0.2em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+.time {
+  width: 5em;
+  height: 38px;
+  font-size: 16px;
+}
+.start-date-div {
+  vertical-align: middle;
+  display: inline-block;
+}
+.after {
+  width: 10em;
+  height: 38px;
+  font-size: 16px;
+  padding-right: 5em;
+}
+.after:disabled {
+  color: transparent;
+}
+.check-input {
+  margin-top: 4px;
+}
+.check-input > .form-check-label {
+  line-height: 3em;
+}
+.check-input .form-check-input {
+  margin-top: 1em;
+}
+.occurrences {
+  position: absolute;
+  right: 1em;
+  line-height: 3em;
+}
+.same-day {
+  opacity: 0.7;
+}
 </style>
 
 <style>
-  .calendar {
-      width: 16em;
-  }
-  .calendaron {
-      margin-left: -2em;
-  }
-  .calendar .cell {
-      height: 2em;
-      line-height: 2em;
-  }
-  .start-date {
-      background-color: white!important;
-      width: 8em!important;
-  }
-  .end-date {
-      background-color: white!important;
-      width: 10em!important;
-  }
-  .date-disabled .end-date {
-      background-color: #e9ecef!important;
-      color: transparent;
-  }
+.calendar {
+  width: 16em;
+}
+.calendaron {
+  margin-left: -2em;
+}
+.calendar .cell {
+  height: 2em;
+  line-height: 2em;
+}
+.start-date {
+  background-color: white !important;
+  width: 8em !important;
+}
+.end-date {
+  background-color: white !important;
+  width: 10em !important;
+}
+.date-disabled .end-date {
+  background-color: #e9ecef !important;
+  color: transparent;
+}
 </style>
