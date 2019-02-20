@@ -50,9 +50,9 @@
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On
           </label>
-          <datepicker v-model="endDate" calendar-class="calendar calendaron" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
+          <datepicker v-model="endDate" calendar-class="calendar" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
             input-class="form-control end-date"
-            class=" control float-right"
+            class="control calendaron"
             :class="{'date-disabled' : ends!=='ondate'}"
             @selected="updateEndDate"
           />
@@ -62,7 +62,7 @@
             <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
           </label>
           <input v-model="times" type="number" min="0" :disabled="ends!=='after'"
-            class="form-control control after float-right" @change="update"
+            class="form-control control after" @change="update"
           >
           <label class="occurrences">occurrences</label>
         </div>
@@ -359,16 +359,19 @@ export default {
   display: inline-block;
 }
 .after {
-  width: 10em;
   height: 38px;
   font-size: 16px;
-  padding-right: 5em;
+  margin-left: 0.75rem;
 }
 .after:disabled {
   color: transparent;
 }
 .check-input {
   margin-top: 4px;
+}
+.form-check {
+  display: flex;
+  justify-content: space-between;
 }
 .check-input > .form-check-label {
   line-height: 3em;
@@ -391,7 +394,7 @@ export default {
   width: 16em;
 }
 .calendaron {
-  margin-left: -2em;
+  margin-left: 0.75rem;
 }
 .calendar .cell {
   height: 2em;
@@ -403,7 +406,6 @@ export default {
 }
 .end-date {
   background-color: white !important;
-  width: 10em !important;
 }
 .date-disabled .end-date {
   background-color: #e9ecef !important;
