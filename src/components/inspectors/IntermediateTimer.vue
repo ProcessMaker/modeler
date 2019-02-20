@@ -53,17 +53,17 @@ export default {
 </script>
 
 <style scoped="scoped">
-  .control {
-      vertical-align: middle;
-      display: inline-block;
-      height: 3em;
-      font-size: 1em;
-  }
-  .repeat {
-      width: 6em!important;
-      text-align: right;
-  }
-  .periodicity {
-      width: 6em;
-  }
+.control {
+  vertical-align: middle;
+  display: inline-block;
+  height: 3em;
+  font-size: 1em;
+}
+.repeat {
+  width: 6em !important;
+  text-align: right;
+}
+.periodicity {
+  width: 6em;
+}
 </style>
