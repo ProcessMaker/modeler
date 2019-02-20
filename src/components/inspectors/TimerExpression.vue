@@ -2,36 +2,42 @@
   <div class="form-group">
     <label>Start Date</label>
     <div>
-      <datepicker v-model="startDate"
-                  calendar-class="calendar" format="yyyy-MM-dd"
-                  input-class="form-control start-date"
-                  class="start-date-div"
-                  @selected="updateStartDate" />
+      <datepicker
+        v-model="startDate"
+        calendar-class="calendar" format="yyyy-MM-dd"
+        input-class="form-control start-date"
+        class="start-date-div"
+        @selected="updateStartDate"
+      />
       <select v-model="startTime" class="form-control control time" @change="update">
-        <option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</option>
+        <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
       </select>
     </div>
+
     <template v-if="hasRepeat">
-    <label>{{repeatLabel}}</label>
-    <div>
-      <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
-      <select v-model="periodicity" class="form-control control periodicity" @change="update">
-        <option value="day">day</option>
-        <option value="week">week</option>
-        <option value="month">month</option>
-        <option value="year">year</option>
-      </select>
-    </div>
+      <label>{{ repeatLabel }}</label>
+      <div>
+        <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
+        <select v-model="periodicity" class="form-control control periodicity" @change="update">
+          <option value="day">day</option>
+          <option value="week">week</option>
+          <option value="month">month</option>
+          <option value="year">year</option>
+        </select>
+      </div>
     </template>
+
     <div v-if="periodicity==='week'">
-      <label>{{weekLabel}}</label>
+      <label>{{ weekLabel }}</label>
       <div>
         <span v-for="(day, index) in weekdays" :key="index + 'week'"
-              class="badge badge-pill weekday"
-              :class="weekdayStyle(day)"
-              @click="clickWeekDay(day);update()">{{day.initial}}</span>
+          class="badge badge-pill weekday"
+          :class="weekdayStyle(day)"
+          @click="clickWeekDay(day);update()"
+        >{{ day.initial }}</span>
       </div>
     </div>
+
     <template v-if="hasEnds">
       <label>Ends</label>
       <div>
@@ -45,17 +51,19 @@
             <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On
           </label>
           <datepicker v-model="endDate" calendar-class="calendar calendaron" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
-                      input-class="form-control end-date"
-                      class=" control float-right"
-                      :class="{'date-disabled' : ends!=='ondate'}"
-                      @selected="updateEndDate"></datepicker>
+            input-class="form-control end-date"
+            class=" control float-right"
+            :class="{'date-disabled' : ends!=='ondate'}"
+            @selected="updateEndDate"
+          />
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
           </label>
           <input v-model="times" type="number" min="0" :disabled="ends!=='after'"
-                 class="form-control control after float-right" @change="update">
+            class="form-control control after float-right" @change="update"
+          >
           <label class="occurrences">occurrences</label>
         </div>
       </div>
