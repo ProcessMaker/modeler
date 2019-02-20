@@ -53,11 +53,35 @@ export function getCrownButtonForElement($element, crownButton) {
     .then(crownButtons => crownButtons[0]);
 }
 
+export function typeIntoTextInput(selector, value) {
+  const timeToUpdateInspectorInput = 100;
+
+  cy.wait(timeToUpdateInspectorInput);
+  cy.get(selector).focus().clear().type(value, { force: true });
+  cy.wait(timeToUpdateInspectorInput);
+}
+
+export const generateXML = (nodeName) => {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="node_2" name="${nodeName}" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
+        <dc:Bounds x="150" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>`;
+};
+
 export function waitToRenderAllShapes() {
   cy.wait(100);
 }
 
-export function connectNodesWithFlow(flowType,startPosition, endPosition,) {
+export function connectNodesWithFlow(flowType, startPosition, endPosition,) {
   getElementAtPosition(startPosition)
     .click()
     .then($element => {

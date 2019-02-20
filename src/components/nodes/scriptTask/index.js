@@ -30,7 +30,7 @@ export default {
         {
           component: 'FormText',
           config: {
-            label: 'Task',
+            label: 'Script Task',
             fontSize: '2em',
           },
         },
@@ -46,7 +46,7 @@ export default {
           component: 'FormInput',
           config: {
             label: 'Name',
-            helper: 'The Name of the Task',
+            helper: 'The name of the script task',
             name: 'name',
           },
         },
