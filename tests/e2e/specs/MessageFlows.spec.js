@@ -1,23 +1,9 @@
 import {
   dragFromSourceToDest,
   getElementAtPosition,
-  getCrownButtonForElement,
+  connectNodesWithFlow,
   getLinksConnectedToElement,
 } from '../support/utils';
-
-function connectNodesWithMessageFlow(startPosition, endPosition) {
-  getElementAtPosition(startPosition)
-    .click()
-    .then($element => {
-      getCrownButtonForElement($element, 'message-flow-button')
-        .click();
-    })
-    .then(() => {
-      getElementAtPosition(endPosition)
-        .trigger('mousemove')
-        .click();
-    });
-}
 
 describe('Message Flows', () => {
   beforeEach(() => {
@@ -31,7 +17,7 @@ describe('Message Flows', () => {
     const pool2Position = { x: 250, y: 500 };
     dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool2Position);
 
-    connectNodesWithMessageFlow(pool1Position, pool2Position);
+    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
 
     const numberOfMessageFlowsAdded = 1;
     getElementAtPosition(pool2Position)
@@ -53,7 +39,7 @@ describe('Message Flows', () => {
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
-    connectNodesWithMessageFlow(startEventPosition, taskPosition);
+    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
 
     const numberOfMessageFlowsAdded = 1;
     getElementAtPosition(taskPosition)
