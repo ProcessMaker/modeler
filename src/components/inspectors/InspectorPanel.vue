@@ -11,7 +11,10 @@
 
 <script>
 import Vue from 'vue';
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+
+// import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder/src/components';
+
 import {
   FormInput,
   FormSelect,
@@ -35,6 +38,7 @@ Vue.component('FormTextArea', FormTextArea);
 Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormCodeEditor', FormCodeEditor);
+Vue.component('FormAccordion', renderer.FormAccordion);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 export default {
