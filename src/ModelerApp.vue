@@ -23,10 +23,10 @@
 
 <script>
 import Modeler from './components/Modeler.vue';
-import statusbar from './components/statusbar.vue';
+import Statusbar from './components/Statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-import validationStatus from '@/components/validationStatus';
+import ValidationStatus from '@/components/ValidationStatus';
 import store from '@/store';
 
 /* Add reference to store on window–this is used in testing to verify rendered nodes */
@@ -39,8 +39,8 @@ export default {
   components: {
     Modeler,
     FileUpload,
-    validationStatus,
-    statusbar,
+    ValidationStatus,
+    Statusbar,
   },
   data() {
     return {
