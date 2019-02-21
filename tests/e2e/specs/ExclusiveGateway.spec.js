@@ -13,17 +13,19 @@ describe('Exclusive Gateway', () => {
 
   it('Update exclusive gateway name', () => {
     const testString = 'testing';
-    const exclusiveGatewaySelector = '#v-19';
+    const exclusiveGatewayPosition = { x: 200, y: 200 };
 
     dragFromSourceToDest(
       'processmaker-modeler-exclusive-gateway',
       '.paper-container',
-      200, 200
+      exclusiveGatewayPosition
     );
 
-    cy.get(exclusiveGatewaySelector).click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    getElementAtPosition(exclusiveGatewayPosition)
+      .then(() => {
+        typeIntoTextInput('[name=\'name\']', testString);
+        cy.get('[name=\'name\']').should('have.value', testString);
+      });
   });
 
   it('Update Condition expression', () => {
