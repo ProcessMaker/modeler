@@ -48,16 +48,22 @@ export default {
     };
   },
   methods: {
+    runningInCypressTest() {
+      return !!window.Cypress;
+    },
     download() {
-      this.$refs.modeler.toXML(function(err, xml) {
+      this.$refs.modeler.toXML((err, xml) => {
         if (err) {
           alert(err);
         } else {
+          if (this.runningInCypressTest()) {
+            /* Save XML string to window–this is used in testing to compare against known valid XML */
+            window.xml = xml;
+            return;
+          }
+
           let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
-
-          /* Save XML string to window–this is used in testing to compare against known valid XML */
-          window.xml = xml;
         }
       });
     },
