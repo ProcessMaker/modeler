@@ -4,6 +4,7 @@ module.exports = {
   css: {
     extract: false,
   },
+  transpileDependencies: ['bpmnlint'],
   configureWebpack: {
     resolve: {
       modules: [
@@ -21,11 +22,7 @@ module.exports = {
       rules: [
         {
           test: /\.bpmnlintrc$/,
-          use: [
-            {
-              loader: 'bpmnlint-loader',
-            },
-          ],
+          use: 'bpmnlint-loader',
         },
       ],
     },

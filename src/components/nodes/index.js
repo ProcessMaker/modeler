@@ -14,4 +14,6 @@ export { default as serviceTask } from './serviceTask';
 export { default as textAnnotation } from './textAnnotation';
 export { default as pool } from './pool';
 export { default as poolLane } from './poolLane';
+export { default as Statusbar } from '../Statusbar';
+export { default as ValidationStatus } from '../ValidationStatus';
 export { default as Modeler } from '../Modeler';
