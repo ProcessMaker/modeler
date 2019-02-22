@@ -10,16 +10,17 @@ export default {
   icon: require('@/assets/toolpanel/start-timer-event.svg'),
   label: 'Start Timer Event',
   definition(moddle) {
-    return moddle.create('bpmn:StartEvent', {
+    let startEventDefinition = moddle.create('bpmn:StartEvent', {
       name: 'Start Timer Event',
-      eventDefinitions: [
-        moddle.create('bpmn:TimerEventDefinition', {
-          timeCycle: moddle.create('bpmn:Expression', {
-            body: '',
-          }),
-        }),
-      ],
     });
+
+    startEventDefinition.eventDefinitions = moddle.create('bpmn:TimerEventDefinition', {
+      timeCycle: moddle.create('bpmn:Expression', {
+        body: '',
+      }),
+    });
+
+    return startEventDefinition;
   },
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {

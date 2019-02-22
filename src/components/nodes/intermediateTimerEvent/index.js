@@ -37,6 +37,7 @@ export default {
     // Go through each property and rebind it to our data
     for (const key in value) {
       if (definition[key] === value[key]) {
+        definition.set('name', value.name);
         continue;
       }
 

@@ -6,3 +6,13 @@ export const defaultViewportDimensions = {
   width: 1366,
   height: 768,
 };
+
+export const nodeTypes = [
+  'processmaker-modeler-task',
+  'processmaker-modeler-end-event',
+  'processmaker-modeler-script-task',
+  'processmaker-modeler-exclusive-gateway',
+  'processmaker-modeler-parallel-gateway',
+  'processmaker-modeler-text-annotation',
+  'processmaker-modeler-pool',
+];
