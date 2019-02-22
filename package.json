@@ -66,6 +66,7 @@
   "browserslist": [
     "> 2%",
     "last 2 versions",
-    "not ie <= 8"
+    "not ie <= 8",
+    "chrome >= 69"
   ]
 }

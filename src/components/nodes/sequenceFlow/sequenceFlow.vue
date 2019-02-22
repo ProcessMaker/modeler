@@ -82,6 +82,9 @@ export default {
       return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
         this.sourceConfig.validateOutgoing(this.targetNode);
     },
+    renderConditionExpression() {
+      return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({
@@ -93,7 +96,7 @@ export default {
     this.shape.labels([{
       attrs: {
         text: {
-          text: '',
+          text: this.renderConditionExpression(),
         },
       },
       position: expressionPosition,

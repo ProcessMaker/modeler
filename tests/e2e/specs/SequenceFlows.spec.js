@@ -3,6 +3,7 @@ import {
   connectNodesWithFlow,
   getElementAtPosition,
   getLinksConnectedToElement,
+  typeIntoTextInput,
 } from '../support/utils';
 
 describe('Sequence Flows', () => {
@@ -45,5 +46,32 @@ describe('Sequence Flows', () => {
         const sequenceFlow = 'processmaker-modeler-sequence-flow';
         expect(cell.component.node.type).to.eq(sequenceFlow);
       });
+  });
+
+  it('Update Condition expression', () => {
+    const exclusiveGatewayPosition = { x: 400, y: 300 };
+    dragFromSourceToDest(
+      'processmaker-modeler-exclusive-gateway',
+      '.paper-container',
+      exclusiveGatewayPosition
+    );
+
+    const taskPosition = { x: 400, y: 500 };
+    dragFromSourceToDest(
+      'processmaker-modeler-task',
+      '.paper-container',
+      taskPosition
+    );
+
+    connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
+
+    getElementAtPosition(exclusiveGatewayPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click({ force: true });
+
+    const testString = 'foo > 7';
+    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
+    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
   });
 });
