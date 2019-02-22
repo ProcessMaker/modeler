@@ -139,7 +139,7 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
   });
