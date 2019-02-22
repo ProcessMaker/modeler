@@ -14,7 +14,7 @@ describe('Undo/redo', () => {
     cy.loadModeler();
   });
 
-  it('Can undo and redo sequence flow condition expression', () => {
+  xit('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest('processmaker-modeler-exclusive-gateway', '.paper-container', exclusiveGatewayPosition);
 
@@ -143,6 +143,4 @@ describe('Undo/redo', () => {
     getElementAtPosition(taskPosition2).should('exist');
     getElementAtPosition(taskPosition3).should('not.exist');
   });
-
-
 });
