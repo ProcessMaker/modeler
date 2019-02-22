@@ -1,10 +1,16 @@
+# testing using CircleCI orb
+# see https://on.cypress.io/circleci-orb
+
+# to use CircleCI orbs need to use version >= 2.1
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@1
+  # use Cypress orb from CircleCI registry
+  cypress: cypress-io/cypress@1.5.1
 workflows:
   build:
     jobs:
+      # runs tests using Chrome browser in custom executor (Cypress docker image)
       - cypress/run:
-          executor: cypress/browsers-chrome69 # runs tests using Chrome browser in custom executor (Cypress docker image)
+          executor: cypress/browsers-chrome69
           browser: chrome
           command: 'npm run test-ci'
