@@ -6,6 +6,7 @@ import {
   connectNodesWithFlow,
   getLinksConnectedToElement,
   typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 describe('Undo/redo', () => {
@@ -115,6 +116,7 @@ describe('Undo/redo', () => {
     cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
 
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
@@ -125,6 +127,7 @@ describe('Undo/redo', () => {
     cy.get('[name=\'conditionExpression.body\']').should('have.value', emptyString);
 
     cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
 
     getElementAtPosition(exclusiveGatewayPosition)
       .then(getLinksConnectedToElement)
