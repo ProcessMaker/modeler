@@ -3,6 +3,7 @@ import {
   getElementAtPosition,
   getGraphElements,
   getCrownButtonForElement,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 describe('Undo/redo', () => {
@@ -32,7 +33,7 @@ describe('Undo/redo', () => {
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
     /* Wait for jointjs to render the shape */
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition)
       .click()
@@ -56,7 +57,7 @@ describe('Undo/redo', () => {
     cy.get('[data-test=undo]')
       .should('be.disabled');
 
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition)
       .moveTo(startEventMoveToPosition.x, startEventMoveToPosition.y)
@@ -68,6 +69,8 @@ describe('Undo/redo', () => {
       .should('not.be.disabled')
       .click();
 
+    waitToRenderAllShapes();
+
     getElementAtPosition(startEventPosition).should('exist');
     getElementAtPosition(startEventMoveToPosition).should('not.exist');
 
@@ -76,7 +79,7 @@ describe('Undo/redo', () => {
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition1);
 
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition1)
       .click()
@@ -86,7 +89,7 @@ describe('Undo/redo', () => {
 
     cy.get('[data-test=undo]').click();
 
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition2).should('exist');
     getElementAtPosition(taskPosition3).should('not.exist');
