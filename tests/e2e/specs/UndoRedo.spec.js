@@ -32,7 +32,6 @@ describe('Undo/redo', () => {
 
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
-    /* Wait for jointjs to render the shape */
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition)
@@ -45,6 +44,8 @@ describe('Undo/redo', () => {
     getGraphElements().should('have.length', 1);
 
     cy.get('[data-test=undo]').click();
+
+    waitToRenderAllShapes();
 
     /* The task should now be re-added */
     getGraphElements().should('have.length', 2);
@@ -82,8 +83,6 @@ describe('Undo/redo', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition1)
-      .click()
-      .wait(100)
       .moveTo(taskPosition2.x, taskPosition2.y)
       .moveTo(taskPosition3.x, taskPosition3.y);
 
