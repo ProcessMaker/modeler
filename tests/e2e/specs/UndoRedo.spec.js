@@ -131,7 +131,7 @@ describe('Undo/redo', () => {
     cy.get('[name=\'conditionExpression.body\']').should('have.value', emptyString);
 
     waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click();
+    cy.get('[data-test=redo]').click({ force: true });
     waitToRenderAllShapes();
 
     getElementAtPosition(exclusiveGatewayPosition)
