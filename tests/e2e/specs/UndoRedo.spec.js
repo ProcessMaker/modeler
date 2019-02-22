@@ -3,6 +3,9 @@ import {
   getElementAtPosition,
   getGraphElements,
   getCrownButtonForElement,
+  connectNodesWithFlow,
+  getLinksConnectedToElement,
+  typeIntoTextInput,
 } from '../support/utils';
 
 describe('Undo/redo', () => {
@@ -90,5 +93,44 @@ describe('Undo/redo', () => {
 
     getElementAtPosition(taskPosition2).should('exist');
     getElementAtPosition(taskPosition3).should('not.exist');
+  });
+
+  it('Can undo and redo sequence flow condition expression', () => {
+    const exclusiveGatewayPosition = { x: 250, y: 250  };
+    dragFromSourceToDest('processmaker-modeler-exclusive-gateway', '.paper-container', exclusiveGatewayPosition);
+
+    const taskPosition = { x: 400, y: 500 };
+    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+
+    connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
+
+    getElementAtPosition(exclusiveGatewayPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click({ force: true });
+
+    const testString = 'foo > 7';
+    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
+
+    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+
+    cy.get('[data-test=undo]').click();
+
+    getElementAtPosition(taskPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click({ force: true });
+
+    const emptyString = '';
+    cy.get('[name=\'conditionExpression.body\']').should('have.value', emptyString);
+
+    cy.get('[data-test=redo]').click();
+
+    getElementAtPosition(exclusiveGatewayPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click({ force: true });
+
+    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
   });
 });
