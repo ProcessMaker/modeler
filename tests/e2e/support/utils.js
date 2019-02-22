@@ -91,6 +91,6 @@ export function connectNodesWithFlow(flowType, startPosition, endPosition,) {
     .then(() => {
       getElementAtPosition(endPosition)
         .trigger('mousemove')
-        .click();
+        .click({ force: true });
     });
 }
