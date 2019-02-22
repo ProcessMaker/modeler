@@ -46,6 +46,8 @@ describe('Undo/redo', () => {
 
     cy.get('[data-test=undo]').click();
 
+    waitToRenderAllShapes();
+
     /* The task should now be re-added */
     getGraphElements().should('have.length', 2);
   });
@@ -69,6 +71,8 @@ describe('Undo/redo', () => {
       .should('not.be.disabled')
       .click();
 
+    waitToRenderAllShapes();
+
     getElementAtPosition(startEventPosition).should('exist');
     getElementAtPosition(startEventMoveToPosition).should('not.exist');
 
@@ -80,8 +84,6 @@ describe('Undo/redo', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition1)
-      .click()
-      .wait(100)
       .moveTo(taskPosition2.x, taskPosition2.y)
       .moveTo(taskPosition3.x, taskPosition3.y);
 
