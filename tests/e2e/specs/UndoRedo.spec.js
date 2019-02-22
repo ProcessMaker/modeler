@@ -116,17 +116,21 @@ describe('Undo/redo', () => {
 
     cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
 
-    cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
+
+    cy.get('[data-test=undo]').click();
 
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click({ force: true });
 
+    waitToRenderAllShapes();
+
     const emptyString = '';
     cy.get('[name=\'conditionExpression.body\']').should('have.value', emptyString);
 
+    waitToRenderAllShapes();
     cy.get('[data-test=redo]').click();
     waitToRenderAllShapes();
 

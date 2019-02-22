@@ -1,6 +1,7 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
+  getElementAtPosition,
 } from '../support/utils';
 
 describe('Exclusive Gateway', () => {
