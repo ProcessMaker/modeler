@@ -3,6 +3,8 @@ import {
   getElementAtPosition,
   getGraphElements,
   getCrownButtonForElement,
+  connectNodesWithFlow,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 describe('Undo/redo', () => {
@@ -31,8 +33,7 @@ describe('Undo/redo', () => {
 
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
 
-    /* Wait for jointjs to render the shape */
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition)
       .click()
@@ -56,7 +57,7 @@ describe('Undo/redo', () => {
     cy.get('[data-test=undo]')
       .should('be.disabled');
 
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition)
       .moveTo(startEventMoveToPosition.x, startEventMoveToPosition.y)
@@ -76,7 +77,7 @@ describe('Undo/redo', () => {
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
     dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition1);
 
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition1)
       .click()
@@ -86,9 +87,31 @@ describe('Undo/redo', () => {
 
     cy.get('[data-test=undo]').click();
 
-    cy.wait(100);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition2).should('exist');
     getElementAtPosition(taskPosition3).should('not.exist');
+  });
+
+  it('Can undo and redo adding message flows', () => {
+    const pool1Position = { x: 250, y: 250 };
+    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool1Position);
+
+    const pool2Position = { x: 250, y: 500 };
+    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool2Position);
+
+    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
+
+    getGraphElements().then(elements => {
+      const numberOfElements = elements.length;
+
+      cy.get('[data-test=undo]').click();
+      waitToRenderAllShapes();
+      getGraphElements().should('have.length', numberOfElements - 1);
+
+      cy.get('[data-test=redo]').click();
+      waitToRenderAllShapes();
+      getGraphElements().should('have.length', numberOfElements);
+    });
   });
 });
