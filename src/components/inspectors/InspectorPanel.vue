@@ -80,7 +80,7 @@ export default {
       }
 
       if (this.isProcessNodeActive) {
-        return value => this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp);
+        return this.processNodeInspectorHandler;
       }
 
       return this.hasCustomInspectorHandler
@@ -109,6 +109,9 @@ export default {
     },
   },
   methods: {
+    processNodeInspectorHandler(value) {
+      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp)
+    },
     setNodeProp: debounce(function(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
       this.$emit('save-state');
