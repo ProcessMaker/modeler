@@ -34,7 +34,6 @@ describe('Modeler', () => {
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
-
     const task2Position = { x: 300, y: 350 };
     dragFromSourceToDest(
       nodeTypes.task,
