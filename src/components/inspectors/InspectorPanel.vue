@@ -83,9 +83,11 @@ export default {
         return this.processNodeInspectorHandler;
       }
 
-      return this.hasCustomInspectorHandler
-        ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle)
-        : value => this.defaultInspectorHandler(value, this.highlightedNode, this.setNodeProp);
+      if (this.hasCustomInspectorHandler) {
+        return this.customInspectorHandler;
+      }
+
+      return this.defaultInspectorHandler;
     },
     hasCustomInspectorHandler() {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler;
@@ -109,18 +111,21 @@ export default {
     },
   },
   methods: {
+    customInspectorHandler(value) {
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
+    },
     processNodeInspectorHandler(value) {
-      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp)
+      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']))
     },
     setNodeProp: debounce(function(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
       this.$emit('save-state');
     }, saveDebounce),
-    defaultInspectorHandler(value, node, setNodeProp) {
+    defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
-        if (node.definition.get(key) !== value[key]) {
-          setNodeProp(node, key, value[key]);
+        if (this.highlightedNode.definition.get(key) !== value[key]) {
+          this.setNodeProp(this.highlightedNode, key, value[key]);
         }
       }
     },
