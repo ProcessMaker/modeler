@@ -117,10 +117,23 @@ export default {
     processNodeInspectorHandler(value) {
       return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
     },
-    setNodeProp: debounce(function(node, key, value) {
+    setNodeProp(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
       this.$emit('save-state');
-    }, saveDebounce),
+    },
+    debounceIfSameKey(func) {
+      const debouncedFunction = debounce(func, saveDebounce);
+      let lastKey;
+
+      return (node, key, value) => {
+        if (key !== lastKey) {
+          debouncedFunction.flush();
+        }
+
+        lastKey = key;
+        debouncedFunction(node, key, value);
+      };
+    },
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
@@ -129,6 +142,9 @@ export default {
         }
       }
     },
+  },
+  created() {
+    this.setNodeProp = this.debounceIfSameKey(this.setNodeProp);
   },
 };
 </script>
