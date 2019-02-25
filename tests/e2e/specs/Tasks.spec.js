@@ -3,6 +3,8 @@ import {
   typeIntoTextInput,
 } from '../support/utils';
 
+import { nodeTypes } from '../support/constants';
+
 describe('Tasks', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -12,7 +14,7 @@ describe('Tasks', () => {
     const testString = 'testing';
 
     dragFromSourceToDest(
-      'processmaker-modeler-task',
+      nodeTypes.task,
       '.paper-container',
       200, 200
     );

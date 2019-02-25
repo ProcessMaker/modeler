@@ -6,6 +6,8 @@ import {
   typeIntoTextInput,
 } from '../support/utils';
 
+import { nodeTypes } from '../support/constants';
+
 describe('Sequence Flows', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -15,7 +17,7 @@ describe('Sequence Flows', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
@@ -33,11 +35,11 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 250, y: 250 };
     const poolPosition = { x: 150, y: 150 };
 
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', poolPosition);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', poolPosition);
 
     // getLastCell - will get the highest cell (element or link) with the highest z property
     cy.window().its('store.state.graph')
@@ -58,7 +60,7 @@ describe('Sequence Flows', () => {
 
     const taskPosition = { x: 400, y: 500 };
     dragFromSourceToDest(
-      'processmaker-modeler-task',
+      nodeTypes.task,
       '.paper-container',
       taskPosition
     );

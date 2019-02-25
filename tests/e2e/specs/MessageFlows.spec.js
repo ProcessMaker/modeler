@@ -5,6 +5,8 @@ import {
   getLinksConnectedToElement,
 } from '../support/utils';
 
+import { nodeTypes } from '../support/constants';
+
 describe('Message Flows', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -12,10 +14,10 @@ describe('Message Flows', () => {
 
   it('Can connect two pools with a message flow', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool1Position);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool2Position);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool2Position);
 
     connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
 
@@ -29,14 +31,14 @@ describe('Message Flows', () => {
 
   it('Can connect elements in pools with a message flow', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool1Position);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool2Position);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool2Position);
 
     const offset = 100;
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
