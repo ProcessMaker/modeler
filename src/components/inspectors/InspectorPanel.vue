@@ -12,8 +12,8 @@
 <script>
 import Vue from 'vue';
 
-// import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder/src/components';
+import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+// import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder/src/components';
 
 import {
   FormInput,
@@ -22,7 +22,9 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormCodeEditor,
+  // FormAccordion,
 } from '@processmaker/vue-form-elements';
+import { FormAccordion } from '../../../../vue-form-elements/src/components';
 import store, { saveDebounce } from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
@@ -38,7 +40,7 @@ Vue.component('FormTextArea', FormTextArea);
 Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormCodeEditor', FormCodeEditor);
-Vue.component('FormAccordion', renderer.FormAccordion);
+Vue.component('FormAccordion', FormAccordion);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 export default {
