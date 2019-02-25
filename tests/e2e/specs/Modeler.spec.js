@@ -17,21 +17,6 @@ describe('Modeler', () => {
     cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
   });
 
-  it('Renders list of nodes', () => {
-    const emptyChildrenCount = 2;
-
-    cy.get('.modeler').children().should('have.length', emptyChildrenCount);
-
-    nodeTypes.forEach(type => {
-      dragFromSourceToDest(
-        type,
-        '.paper-container',
-        200, 200
-      );
-    });
-    cy.get('.modeler').children().should('have.length', emptyChildrenCount + nodeTypes.length);
-  });
-
   it('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
