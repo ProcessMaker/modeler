@@ -14,5 +14,7 @@ export const nodeTypes = {
   exclusiveGateway: 'processmaker-modeler-exclusive-gateway',
   parallelGateway: 'processmaker-modeler-parallel-gateway',
   textAnnotation: 'processmaker-modeler-text-annotation',
-  pool :'processmaker-modeler-pool',
+  pool:'processmaker-modeler-pool',
+  startTimerEvent: 'processmaker-modeler-start-timer-event',
+  intermediateCatchEvent: 'processmaker-modeler-intermediate-catch-timer-event',
 };
