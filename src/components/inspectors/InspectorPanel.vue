@@ -76,13 +76,16 @@ export default {
         return noop;
       }
 
-      if (this.highlightedNode === this.processNode) {
+      if (this.isProcessNodeActive) {
         return value => this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp);
       }
 
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler
         ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle)
         : value => this.defaultInspectorHandler(value, this.highlightedNode, this.setNodeProp);
+    },
+    isProcessNodeActive() {
+      return this.highlightedNode === this.processNode;
     },
     data() {
       if (!this.highlightedNode) {
