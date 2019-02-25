@@ -85,6 +85,20 @@ export default {
     renderConditionExpression() {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
     },
+    createLabel() {
+      if (typeof this.node.definition.conditionExpression === 'undefined') {
+        return;
+      }
+
+      this.shape.labels([{
+        attrs: {
+          text: {
+            text: this.renderConditionExpression(),
+          },
+        },
+        position: expressionPosition,
+      }]);
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({
@@ -92,15 +106,7 @@ export default {
         name: 'orthogonal',
       },
     });
-
-    this.shape.labels([{
-      attrs: {
-        text: {
-          text: this.renderConditionExpression(),
-        },
-      },
-      position: expressionPosition,
-    }]);
+    this.createLabel();
   },
 };
 </script>
