@@ -83,9 +83,12 @@ export default {
         return value => this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp);
       }
 
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler
+      return this.hasCustomInspectorHandler
         ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle)
         : value => this.defaultInspectorHandler(value, this.highlightedNode, this.setNodeProp);
+    },
+    hasCustomInspectorHandler() {
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler;
     },
     isProcessNodeActive() {
       return this.highlightedNode === this.processNode;
