@@ -71,8 +71,11 @@ export default {
 
       return this.nodeRegistry[type].inspectorConfig;
     },
+    isAnyNodeActive() {
+      return this.highlightedNode;
+    },
     updateDefinition() {
-      if (!this.highlightedNode) {
+      if (!this.isAnyNodeActive) {
         return noop;
       }
 
