@@ -115,7 +115,7 @@ export default {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
     },
     processNodeInspectorHandler(value) {
-      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']))
+      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
     },
     setNodeProp: debounce(function(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
