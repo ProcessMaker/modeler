@@ -86,7 +86,7 @@ export default {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
     },
     createLabel() {
-      if (typeof this.node.definition.conditionExpression === 'undefined') {
+      if (!this.node.definition.conditionExpression) {
         return;
       }
 
