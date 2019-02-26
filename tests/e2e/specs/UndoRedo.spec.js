@@ -29,9 +29,9 @@ describe('Undo/redo', () => {
       .click({ force: true });
 
     const testString = 'foo > 7';
-    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
+    typeIntoTextInput('[name=conditionExpression.body]', testString);
 
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+    cy.get('[name=conditionExpression.body]').should('have.value', testString);
 
     waitToRenderAllShapes();
 
@@ -45,7 +45,7 @@ describe('Undo/redo', () => {
     waitToRenderAllShapes();
 
     const emptyString = '';
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', emptyString);
+    cy.get('[name=conditionExpression.body]').should('have.value', emptyString);
 
     waitToRenderAllShapes();
     cy.get('[data-test=redo]').click({ force: true });
@@ -58,7 +58,7 @@ describe('Undo/redo', () => {
 
     cy.wait(500);
 
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+    cy.get('[name=conditionExpression.body]').should('have.value', testString);
   });
 
   it('Can undo and redo adding a task', () => {
