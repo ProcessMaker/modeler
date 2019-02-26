@@ -201,4 +201,18 @@ describe('Undo/redo', () => {
       .its('xml')
       .then(xml => xml.trim()).should('eq', validMessageFlowXML.trim());
   });
+
+  it('Can update start event name after undo', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const testString = 'foo bar';
+
+    waitToRenderAllShapes();
+    getElementAtPosition(startEventPosition)
+      .moveTo(startEventPosition.x + 50, startEventPosition.y + 50);
+    cy.get('[data-test=undo]').click();
+
+    getElementAtPosition(startEventPosition).click();
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
+  });
 });
