@@ -448,6 +448,9 @@ export default {
         }
       });
     },
+    hasPools() {
+      return this.collaboration.get('participants').length > 0;
+    },
   },
   mounted() {
     this.$emit('setPools', this.node.definition);
@@ -580,7 +583,7 @@ export default {
     const participants = this.collaboration.get('participants');
     pull(participants, this.node.definition);
 
-    if (participants.length === 0) {
+    if (! this.hasPools()) {
       this.$emit('unsetPools');
     } else {
       pull(this.rootElements, this.containingProcess);
