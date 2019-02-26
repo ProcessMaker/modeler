@@ -56,8 +56,7 @@ export function getCrownButtonForElement($element, crownButton) {
 }
 
 export function typeIntoTextInput(selector, value) {
-  cy.wait(saveDebounce);
-  cy.get(selector).focus().clear().type(value, { force: true });
+  cy.get(selector).clear().type(value);
   cy.wait(saveDebounce);
 }
 
