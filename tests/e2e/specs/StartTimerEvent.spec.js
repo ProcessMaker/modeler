@@ -5,7 +5,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe.only('Start Timer Event', () => {
+describe('Start Timer Event', () => {
   beforeEach(() => {
     cy.loadModeler();
   });
