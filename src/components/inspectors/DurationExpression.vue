@@ -2,7 +2,7 @@
   <div class="form-group">
     <label>Delay</label>
     <div>
-      <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
+      <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat" @change="update">
       <select v-model="periodicity" class="form-control control periodicity" @change="update">
         <option value="day">day</option>
         <option value="week">week</option>

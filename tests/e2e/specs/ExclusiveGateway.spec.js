@@ -4,6 +4,8 @@ import {
   getElementAtPosition,
 } from '../support/utils';
 
+import { nodeTypes } from '../support/constants';
+
 describe('Exclusive Gateway', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -14,7 +16,7 @@ describe('Exclusive Gateway', () => {
     const exclusiveGatewayPosition = { x: 200, y: 200 };
 
     dragFromSourceToDest(
-      'processmaker-modeler-exclusive-gateway',
+      nodeTypes.exclusiveGateway,
       '.paper-container',
       exclusiveGatewayPosition
     );

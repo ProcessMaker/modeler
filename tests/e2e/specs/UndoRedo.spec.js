@@ -9,6 +9,8 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 
+import { nodeTypes } from '../support/constants';
+
 describe('Undo/redo', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -16,10 +18,10 @@ describe('Undo/redo', () => {
 
   xit('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
-    dragFromSourceToDest('processmaker-modeler-exclusive-gateway', '.paper-container', exclusiveGatewayPosition);
+    dragFromSourceToDest(nodeTypes.exclusiveGateway, '.paper-container', exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
 
@@ -64,7 +66,7 @@ describe('Undo/redo', () => {
   it('Can undo and redo adding a task', () => {
     const taskPosition = { x: 300, y: 500 };
 
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
 
     cy.get('[data-test=undo]').click();
 
@@ -80,7 +82,7 @@ describe('Undo/redo', () => {
   it('Can undo and redo deleting a task', () => {
     const taskPosition = { x: 300, y: 500 };
 
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
 
     waitToRenderAllShapes();
 
@@ -146,10 +148,10 @@ describe('Undo/redo', () => {
 
   it('Can undo and redo adding message flows', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool1Position);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', pool2Position);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool2Position);
 
     connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
 
@@ -188,7 +190,7 @@ describe('Undo/redo', () => {
 </bpmn:definitions>`;
 
     const poolPosition = { x: 250, y: 250 };
-    dragFromSourceToDest('processmaker-modeler-pool', '.paper-container', poolPosition);
+    dragFromSourceToDest(nodeTypes.pool, '.paper-container', poolPosition);
 
     waitToRenderAllShapes();
 
