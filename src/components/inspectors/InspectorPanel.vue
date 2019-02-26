@@ -20,13 +20,14 @@ import {
   FormRadioButtonGroup,
   FormCodeEditor,
 } from '@processmaker/vue-form-elements';
-import store, { saveDebounce } from '@/store';
+import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import debounce from 'lodash/debounce';
 import omit from 'lodash/omit';
 import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
+import { saveDebounce } from './inspectorConstants';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);

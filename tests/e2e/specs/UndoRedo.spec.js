@@ -14,7 +14,7 @@ describe('Undo/redo', () => {
     cy.loadModeler();
   });
 
-  xit('Can undo and redo sequence flow condition expression', () => {
+  it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest('processmaker-modeler-exclusive-gateway', '.paper-container', exclusiveGatewayPosition);
 
@@ -28,27 +28,26 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
+    const defaultExpressionValue = '';
     const testString = 'foo > 7';
-    typeIntoTextInput('[name=conditionExpression.body]', testString);
 
-    cy.get('[name=conditionExpression.body]').should('have.value', testString);
-
-    waitToRenderAllShapes();
+    cy.get('[name="conditionExpression.body"]').should('have.value', defaultExpressionValue);
+    typeIntoTextInput('[name="conditionExpression.body"]', testString);
+    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
 
     cy.get('[data-test=undo]').click();
+
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click({ force: true });
 
-    waitToRenderAllShapes();
+    cy.get('[name="conditionExpression.body"]').should('have.value', defaultExpressionValue);
 
-    const emptyString = '';
-    cy.get('[name=conditionExpression.body]').should('have.value', emptyString);
+    cy.get('[data-test=redo]').click();
 
-    waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click({ force: true });
     waitToRenderAllShapes();
 
     getElementAtPosition(exclusiveGatewayPosition)
@@ -56,9 +55,7 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
-    cy.wait(500);
-
-    cy.get('[name=conditionExpression.body]').should('have.value', testString);
+    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
   });
 
   it('Can undo and redo adding a task', () => {
