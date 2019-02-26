@@ -61,7 +61,6 @@ export default {
             window.xml = xml;
             return;
           }
-
           let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
           FilerSaver.saveAs(file);
         }
