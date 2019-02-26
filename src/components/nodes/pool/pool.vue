@@ -579,10 +579,11 @@ export default {
   beforeDestroy() {
     const participants = this.collaboration.get('participants');
     pull(participants, this.node.definition);
-    pull(this.rootElements, this.containingProcess);
 
     if (participants.length === 0) {
       this.$emit('unsetPools');
+    } else {
+      pull(this.rootElements, this.containingProcess);
     }
   },
 };
