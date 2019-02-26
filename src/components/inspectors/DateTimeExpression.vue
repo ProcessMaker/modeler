@@ -4,10 +4,10 @@
     <div>
       <datepicker v-model="startDate"
                   calendar-class="calendar" format="yyyy-MM-dd"
-                  input-class="form-control start-date" 
+                  input-class="form-control start-date"
                   class="start-date-div"
                   @selected="updateStartDate"></datepicker>
-      <select v-model="startTime" class="form-control control time" @change="update">
+      <select v-model="startTime" class="form-control control time" data-test="startTime" @change="update">
         <option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</option>
       </select>
     </div>
