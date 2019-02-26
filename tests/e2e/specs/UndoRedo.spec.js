@@ -8,6 +8,7 @@ import {
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
+import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 
 describe('Undo/redo', () => {
   beforeEach(() => {
@@ -211,5 +212,22 @@ describe('Undo/redo', () => {
     getElementAtPosition(startEventPosition).click();
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
+  });
+
+  it('Can update two properties at the same time', () => {
+    const startEventPosition = { x: 150, y: 150 };
+
+    waitToRenderAllShapes();
+    getElementAtPosition(startEventPosition).click();
+
+    const newId = '1234';
+    const newName = 'foobar';
+    cy.get('[name=id]').clear().type(newId);
+    cy.get('[name=name]').clear().type(newName);
+
+    cy.wait(saveDebounce);
+
+    cy.get('[name=id]').should('have.value', newId);
+    cy.get('[name=name]').should('have.value', newName);
   });
 });
