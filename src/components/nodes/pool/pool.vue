@@ -38,7 +38,7 @@ joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
 });
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes', 'moddle', 'processNode'],
+  props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes', 'moddle', 'processNode', 'rootElements'],
   mixins: [crownConfig, resizeConfig],
   data() {
     return {
@@ -579,6 +579,7 @@ export default {
   beforeDestroy() {
     const participants = this.collaboration.get('participants');
     pull(participants, this.node.definition);
+    pull(this.rootElements, this.containingProcess);
 
     if (participants.length === 0) {
       this.$emit('unsetPools');
