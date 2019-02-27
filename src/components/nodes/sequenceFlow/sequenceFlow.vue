@@ -61,7 +61,22 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing();
+        this.validateOutgoing() &&
+        this.targetInclusiveGateway();
+    },
+    targetInclusiveGateway() {
+      const isTargetInclusiveGateway = this.target.component.node.type === 'processmaker-modeler-inclusive-gateway';
+      const isDiverging = this.target.component.node.definition.get('incoming').length === 0;
+
+      if (isTargetInclusiveGateway) {
+        if (isDiverging) {
+          this.target.component.node.definition.set('gatewayDirection', 'diverging');
+        } else {
+          this.target.component.node.definition.set('gatewayDirection', 'converging');
+        }
+      }
+
+      return true;
     },
     hasTargetType() {
       return !!this.targetType;
