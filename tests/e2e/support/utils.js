@@ -1,3 +1,5 @@
+import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
+
 export function getGraphElements() {
   return cy.window()
     .its('store.state.graph')
@@ -54,11 +56,8 @@ export function getCrownButtonForElement($element, crownButton) {
 }
 
 export function typeIntoTextInput(selector, value) {
-  const timeToUpdateInspectorInput = 100;
-
-  cy.wait(timeToUpdateInspectorInput);
-  cy.get(selector).focus().clear().type(value, { force: true });
-  cy.wait(timeToUpdateInspectorInput);
+  cy.get(selector).clear().type(value);
+  cy.wait(saveDebounce);
 }
 
 export const generateXML = (nodeName) => {
@@ -81,7 +80,7 @@ export function waitToRenderAllShapes() {
   cy.wait(100);
 }
 
-export function connectNodesWithFlow(flowType, startPosition, endPosition,) {
+export function connectNodesWithFlow(flowType, startPosition, endPosition) {
   getElementAtPosition(startPosition)
     .click()
     .then($element => {

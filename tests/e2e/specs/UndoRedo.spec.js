@@ -8,6 +8,7 @@ import {
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
+import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 
 import { nodeTypes } from '../support/constants';
 
@@ -16,7 +17,7 @@ describe('Undo/redo', () => {
     cy.loadModeler();
   });
 
-  xit('Can undo and redo sequence flow condition expression', () => {
+  it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, '.paper-container', exclusiveGatewayPosition);
 
@@ -30,27 +31,26 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
+    const defaultExpressionValue = '';
     const testString = 'foo > 7';
-    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
 
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
-
-    waitToRenderAllShapes();
+    cy.get('[name="conditionExpression.body"]').should('have.value', defaultExpressionValue);
+    typeIntoTextInput('[name="conditionExpression.body"]', testString);
+    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
 
     cy.get('[data-test=undo]').click();
+
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click({ force: true });
 
-    waitToRenderAllShapes();
+    cy.get('[name="conditionExpression.body"]').should('have.value', defaultExpressionValue);
 
-    const emptyString = '';
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', emptyString);
+    cy.get('[data-test=redo]').click();
 
-    waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click({ force: true });
     waitToRenderAllShapes();
 
     getElementAtPosition(exclusiveGatewayPosition)
@@ -58,9 +58,7 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
-    cy.wait(500);
-
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
   });
 
   it('Can undo and redo adding a task', () => {
@@ -202,5 +200,36 @@ describe('Undo/redo', () => {
     cy.window()
       .its('xml')
       .then(xml => xml.trim()).should('eq', validMessageFlowXML.trim());
+  });
+
+  it('Can update start event name after undo', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const testString = 'foo bar';
+
+    waitToRenderAllShapes();
+    getElementAtPosition(startEventPosition)
+      .moveTo(startEventPosition.x + 50, startEventPosition.y + 50);
+    cy.get('[data-test=undo]').click();
+
+    getElementAtPosition(startEventPosition).click();
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
+  });
+
+  it('Can update two properties at the same time', () => {
+    const startEventPosition = { x: 150, y: 150 };
+
+    waitToRenderAllShapes();
+    getElementAtPosition(startEventPosition).click();
+
+    const newId = '1234';
+    const newName = 'foobar';
+    cy.get('[name=id]').clear().type(newId);
+    cy.get('[name=name]').clear().type(newName);
+
+    cy.wait(saveDebounce);
+
+    cy.get('[name=id]').should('have.value', newId);
+    cy.get('[name=name]').should('have.value', newName);
   });
 });

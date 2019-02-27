@@ -20,13 +20,14 @@ import {
   FormRadioButtonGroup,
   FormCodeEditor,
 } from '@processmaker/vue-form-elements';
-import store, { saveDebounce } from '@/store';
+import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import debounce from 'lodash/debounce';
 import omit from 'lodash/omit';
 import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
+import { saveDebounce } from './inspectorConstants';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -71,18 +72,29 @@ export default {
 
       return this.nodeRegistry[type].inspectorConfig;
     },
+    isAnyNodeActive() {
+      return this.highlightedNode;
+    },
     updateDefinition() {
-      if (!this.highlightedNode) {
+      if (!this.isAnyNodeActive) {
         return noop;
       }
 
-      if (this.highlightedNode === this.processNode) {
-        return value => this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), this.processNode, this.setNodeProp);
+      if (this.isProcessNodeActive) {
+        return this.processNodeInspectorHandler;
       }
 
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler
-        ? value => this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle)
-        : value => this.defaultInspectorHandler(value, this.highlightedNode, this.setNodeProp);
+      if (this.hasCustomInspectorHandler) {
+        return this.customInspectorHandler;
+      }
+
+      return this.defaultInspectorHandler;
+    },
+    hasCustomInspectorHandler() {
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler;
+    },
+    isProcessNodeActive() {
+      return this.highlightedNode === this.processNode;
     },
     data() {
       if (!this.highlightedNode) {
@@ -100,18 +112,40 @@ export default {
     },
   },
   methods: {
-    setNodeProp: debounce(function(node, key, value) {
+    customInspectorHandler(value) {
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
+    },
+    processNodeInspectorHandler(value) {
+      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
+    },
+    setNodeProp(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
       this.$emit('save-state');
-    }, saveDebounce),
-    defaultInspectorHandler(value, node, setNodeProp) {
+    },
+    debounceIfSameKey(func) {
+      const debouncedFunction = debounce(func, saveDebounce);
+      let lastKey;
+
+      return (node, key, value) => {
+        if (key !== lastKey) {
+          debouncedFunction.flush();
+        }
+
+        lastKey = key;
+        debouncedFunction(node, key, value);
+      };
+    },
+    defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
-        if (node.definition.get(key) !== value[key]) {
-          setNodeProp(node, key, value[key]);
+        if (this.highlightedNode.definition.get(key) !== value[key]) {
+          this.setNodeProp(this.highlightedNode, key, value[key]);
         }
       }
     },
+  },
+  created() {
+    this.setNodeProp = this.debounceIfSameKey(this.setNodeProp);
   },
 };
 </script>
