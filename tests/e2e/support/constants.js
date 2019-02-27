@@ -13,6 +13,7 @@ export const nodeTypes = {
   scriptTask:'processmaker-modeler-script-task',
   exclusiveGateway: 'processmaker-modeler-exclusive-gateway',
   parallelGateway: 'processmaker-modeler-parallel-gateway',
+  inclusiveGateway: 'processmaker-modeler-inclusive-gateway',
   textAnnotation: 'processmaker-modeler-text-annotation',
   pool:'processmaker-modeler-pool',
   startTimerEvent: 'processmaker-modeler-start-timer-event',
