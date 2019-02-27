@@ -107,7 +107,7 @@ export default {
     },
     isSourceElementGateway() {
       const sourceShape = this.shape.getSourceElement();
-      return ['bpmn:ExclusiveGateway', 'bpmn:parellelGateway'].includes(sourceShape.component.node.definition.$type);
+      return ['bpmn:ExclusiveGateway', 'bpmn:parellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       if (!this.node.definition.conditionExpression) {
