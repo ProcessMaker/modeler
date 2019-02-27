@@ -30,11 +30,16 @@
     <div v-if="periodicity==='week'">
       <label>{{ weekLabel }}</label>
       <div>
-        <span v-for="(day, index) in weekdays" :key="index + 'week'"
+        <span
+          v-for="(day, index) in weekdays"
+          :key="index + 'week'"
           class="badge badge-pill weekday"
           :class="weekdayStyle(day)"
+          :data-test="`day-${ index }`"
           @click="clickWeekDay(day);update()"
-        >{{ day.initial }}</span>
+        >
+          {{ day.initial }}
+        </span>
       </div>
     </div>
 
@@ -61,9 +66,7 @@
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
           </label>
-          <input v-model="times" type="number" min="0" :disabled="ends!=='after'"
-            class="form-control control after" @change="update"
-          >
+          <input v-model="times" type="number" min="0" :disabled="ends!=='after'" class="form-control control after" @change="update">
           <label class="occurrences">occurrences</label>
         </div>
       </div>

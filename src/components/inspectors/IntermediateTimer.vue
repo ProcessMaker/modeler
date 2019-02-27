@@ -2,7 +2,7 @@
   <div>
     <div class="form-group">
       <label>Type</label>
-      <select :value="timerPropertyName" class="form-control" @change="changeType">
+      <select :value="timerPropertyName" data-test="intermediateTypeSelect" class="form-control" @change="changeType">
         <option value="timeDuration">Delay</option>
         <option value="timeDate">Date/Time</option>
       </select>

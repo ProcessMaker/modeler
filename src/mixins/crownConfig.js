@@ -32,6 +32,7 @@ export default {
       buttons: [],
       /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
       allowSetNodePosition: true,
+      savePositionOnPointerupEventSet: false,
     };
   },
   watch: {
@@ -212,6 +213,11 @@ export default {
       this.shape.on('change:position', (element, newPosition) => {
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
+
+        if (!this.savePositionOnPointerupEventSet) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+          this.savePositionOnPointerupEventSet = true;
+        }
       });
     },
     updateCrownPosition() {
@@ -263,6 +269,9 @@ export default {
       }
     },
     setNodePosition() {
+      this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
+      this.savePositionOnPointerupEventSet = false;
+
       if (!this.allowSetNodePosition) {
         return;
       }
@@ -276,12 +285,6 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
-
-      this.shape.listenTo(this.paper, 'element:pointerdown', cellView => {
-        if (cellView.model === this.shape) {
-          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
-        }
-      });
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
@@ -320,5 +323,9 @@ export default {
     pull(process.get('flowElements'), this.node.definition);
     pull(this.planeElements, this.node.diagram);
     pull(process.get('artifacts'), this.node.definition);
+
+    if (this.collaboration) {
+      pull(this.collaboration.get('messageFlows'), this.node.definition);
+    }
   },
 };

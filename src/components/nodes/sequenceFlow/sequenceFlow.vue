@@ -82,6 +82,23 @@ export default {
       return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
         this.sourceConfig.validateOutgoing(this.targetNode);
     },
+    renderConditionExpression() {
+      return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
+    },
+    createLabel() {
+      if (!this.node.definition.conditionExpression) {
+        return;
+      }
+
+      this.shape.labels([{
+        attrs: {
+          text: {
+            text: this.renderConditionExpression(),
+          },
+        },
+        position: expressionPosition,
+      }]);
+    },
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link({
@@ -89,15 +106,7 @@ export default {
         name: 'orthogonal',
       },
     });
-
-    this.shape.labels([{
-      attrs: {
-        text: {
-          text: '',
-        },
-      },
-      position: expressionPosition,
-    }]);
+    this.createLabel();
   },
 };
 </script>
