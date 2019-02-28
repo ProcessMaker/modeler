@@ -5,6 +5,7 @@
       :data="data"
       @update="updateDefinition"
       :config="config"
+      @focusout.native="updateState"
     />
   </div>
 </template>
@@ -27,11 +28,9 @@ import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
-import debounce from 'lodash/debounce';
 import omit from 'lodash/omit';
 import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
-import { saveDebounce } from './inspectorConstants';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -49,6 +48,11 @@ export default {
     return {
       inspectorHandler: null,
     };
+  },
+  watch: {
+    highlightedNode() {
+      this.updateState();
+    },
   },
   computed: {
     highlightedNode() {
@@ -125,20 +129,6 @@ export default {
     },
     setNodeProp(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
-      this.$emit('save-state');
-    },
-    debounceIfSameKey(func) {
-      const debouncedFunction = debounce(func, saveDebounce);
-      let lastKey;
-
-      return (node, key, value) => {
-        if (key !== lastKey) {
-          debouncedFunction.flush();
-        }
-
-        lastKey = key;
-        debouncedFunction(node, key, value);
-      };
     },
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
@@ -148,9 +138,9 @@ export default {
         }
       }
     },
-  },
-  created() {
-    this.setNodeProp = this.debounceIfSameKey(this.setNodeProp);
+    updateState() {
+      this.$emit('save-state');
+    },
   },
 };
 </script>
