@@ -44,6 +44,7 @@ export default {
       if (this.isSourceElementGateway()) {
         this.shape.router('manhattan',{
           excludeEnds: ['source'],
+          excludeTypes: ['standard.EmbeddedImage'],
           padding: 20,
         });
       }
