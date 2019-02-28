@@ -15,7 +15,14 @@ module.exports = {
     'no-debugger': 'off',
     'object-shorthand': 'error',
     'space-before-function-paren': ['error', 'never'],
-    'keyword-spacing': 'error'
+    'keyword-spacing': 'error',
+    'vue/html-indent': ['error', 2, { alignAttributesVertically: false }],
+    'vue/html-closing-bracket-newline': ['error', {
+      singleline: 'never',
+      multiline: 'always',
+    }],
+    'vue/html-self-closing': 'error',
+    'vue/mustache-interpolation-spacing': 'error',
   },
   parserOptions: {
     parser: 'babel-eslint',

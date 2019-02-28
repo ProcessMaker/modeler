@@ -25,25 +25,37 @@ export default {
           },
         },
         {
-          component: 'FormInput',
+          component: 'FormAccordion',
+          container: true,
           config: {
-            label: 'Identifier',
-            helper: 'The id field should be unique across all elements in the diagram',
-            name: 'id',
+            initiallyOpen: true,
+            label: 'Configuration',
+            icon: 'cog',
+            name: 'confifuration',
           },
-        },
-        {
-          component: 'FormSelect',
-          config: {
-            label: 'Direction',
-            helper: 'Select Direction',
-            name: 'associationDirection',
-            options: [
-              { value: `${ direction.none }`, content: 'None' },
-              { value: `${ direction.one }`, content: 'One' },
-              { value: `${ direction.both }`, content: 'Both' },
-            ],
-          },
+          items: [
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Direction',
+                helper: 'Select Direction',
+                name: 'associationDirection',
+                options: [
+                  { value: `${ direction.none }`, content: 'None' },
+                  { value: `${ direction.one }`, content: 'One' },
+                  { value: `${ direction.both }`, content: 'Both' },
+                ],
+              },
+            },
+          ],
         },
       ],
     },

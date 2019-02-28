@@ -33,20 +33,32 @@ export default {
           },
         },
         {
-          component: 'FormInput',
+          component: 'FormAccordion',
+          container: true,
           config: {
-            label: 'Identifier',
-            helper: 'The id field should be unique across all elements in the diagram',
-            name: 'id',
+            initiallyOpen: true,
+            label: 'Configuration',
+            icon: 'cog',
+            name: 'confifuration',
           },
-        },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Name',
-            helper: 'The Name of the Gateway',
-            name: 'name',
-          },
+          items: [
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Name',
+                helper: 'The Name of the Gateway',
+                name: 'name',
+              },
+            },
+          ],
         },
       ],
     },

@@ -11,7 +11,9 @@
 
 <script>
 import Vue from 'vue';
+
 import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+
 import {
   FormInput,
   FormSelect,
@@ -19,7 +21,9 @@ import {
   FormCheckbox,
   FormRadioButtonGroup,
   FormCodeEditor,
+  FormAccordion,
 } from '@processmaker/vue-form-elements';
+import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
@@ -36,6 +40,7 @@ Vue.component('FormTextArea', FormTextArea);
 Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormCodeEditor', FormCodeEditor);
+Vue.component('FormAccordion', FormAccordion);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 export default {

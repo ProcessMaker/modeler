@@ -7,7 +7,8 @@
         <option value="timeDate">Date/Time</option>
       </select>
     </div>
-    <component :is="component" v-model="timerProperty.body" :has-ends="false" repeat-label="Wait for" week-label="Every"/>
+
+    <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every"/>
   </div>
 </template>
 
@@ -16,7 +17,14 @@ import TimerExpression from './TimerExpression';
 import DurationExpression from './DurationExpression';
 import DateTimeExpression from './DateTimeExpression';
 
+const types = {
+  timeDuration: 'DurationExpression',
+  timeCycle : 'TimerExpression',
+  timeDate : 'DateTimeExpression',
+};
+
 export default {
+  props: ['options', 'value'],
   components: {
     TimerExpression,
     DurationExpression,
@@ -24,46 +32,43 @@ export default {
   },
   computed: {
     component() {
-      const types = {
-        'timeDuration': 'DurationExpression',
-        'timeCycle' : 'TimerExpression',
-        'timeDate' : 'DateTimeExpression',
-      };
       return types[this.timerPropertyName];
     },
-    timerProperty() {
-      return this.value[this.timerPropertyName];
+    timerProperty: {
+      get() {
+        return this.value.body;
+      },
+      set(timerProperty) {
+        this.emitChange(this.value.type, timerProperty);
+      },
     },
     timerPropertyName() {
-      return Object.keys(this.value)[1];
+      return this.value.type;
     },
-  },
-  props: {
-    value: Object,
   },
   methods: {
     changeType(event) {
-      const value = this.timerProperty;
-      const currentType = this.timerPropertyName;
-      delete this.value[currentType];
-      this.$set(this.value, event.target.value, value);
+      this.emitChange(event.target.value, this.timerProperty);
+    },
+    emitChange(type, body) {
+      this.$emit('input', { type, body });
     },
   },
 };
 </script>
 
 <style scoped="scoped">
-  .control {
-      vertical-align: middle;
-      display: inline-block;
-      height: 3em;
-      font-size: 1em;
-  }
-  .repeat {
-      width: 6em!important;
-      text-align: right;
-  }
-  .periodicity {
-      width: 6em;
-  }
+.control {
+  vertical-align: middle;
+  display: inline-block;
+  height: 3em;
+  font-size: 1em;
+}
+.repeat {
+  width: 6em !important;
+  text-align: right;
+}
+.periodicity {
+  width: 6em;
+}
 </style>

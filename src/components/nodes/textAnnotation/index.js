@@ -52,21 +52,33 @@ export default {
           },
         },
         {
-          component: 'FormInput',
+          component: 'FormAccordion',
+          container: true,
           config: {
-            label: 'Identifier',
-            helper: 'The id field should be unique across all elements in the diagram',
-            name: 'id',
+            initiallyOpen: true,
+            label: 'Configuration',
+            icon: 'cog',
+            name: 'confifuration',
           },
-        },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Annotation Description',
-            helper: 'Body of the text annotation',
-            name: 'text',
-            placeholder: 'New Text Annotation',
-          },
+          items: [
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Annotation Description',
+                helper: 'Body of the text annotation',
+                name: 'text',
+                placeholder: 'New Text Annotation',
+              },
+            },
+          ],
         },
       ],
     },

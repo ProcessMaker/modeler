@@ -35,32 +35,44 @@ export default {
           },
         },
         {
-          component: 'FormInput',
+          component: 'FormAccordion',
+          container: true,
           config: {
-            label: 'Identifier',
-            helper: 'The id field should be unique across all elements in the diagram',
-            name: 'id',
+            initiallyOpen: true,
+            label: 'Configuration',
+            icon: 'cog',
+            name: 'confifuration',
           },
-        },
-        {
-          component: 'FormInput',
-          config: {
-            label: 'Name',
-            helper: 'The Name of the Gateway',
-            name: 'name',
-          },
-        },
-        {
-          component: 'FormSelect',
-          config: {
-            label: 'Direction',
-            helper: 'Select direction of gateway',
-            name: 'gatewayDirection',
-            options: [
-              { value: gatewayDirection.diverging , content: 'Diverging' },
-              { value: gatewayDirection.converging , content: 'Converging' },
-            ],
-          },
+          items: [
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Name',
+                helper: 'The Name of the Gateway',
+                name: 'name',
+              },
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Direction',
+                helper: 'Select direction of gateway',
+                name: 'gatewayDirection',
+                options: [
+                  { value: gatewayDirection.diverging , content: 'Diverging' },
+                  { value: gatewayDirection.converging , content: 'Converging' },
+                ],
+              },
+            },
+          ],
         },
       ],
     },

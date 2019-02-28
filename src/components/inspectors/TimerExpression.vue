@@ -2,37 +2,47 @@
   <div class="form-group">
     <label>Start Date</label>
     <div>
-      <datepicker v-model="startDate"
-                  calendar-class="calendar" format="yyyy-MM-dd"
-                  input-class="form-control start-date"
-                  class="start-date-div"
-                  @selected="updateStartDate" />
+      <datepicker
+        v-model="startDate"
+        calendar-class="calendar" format="yyyy-MM-dd"
+        input-class="form-control start-date"
+        class="start-date-div"
+        @selected="updateStartDate"
+      />
       <select v-model="startTime" class="form-control control time" @change="update">
-        <option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</option>
+        <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
       </select>
     </div>
+
     <template v-if="hasRepeat">
-    <label>{{repeatLabel}}</label>
-    <div>
-      <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
-      <select v-model="periodicity" class="form-control control periodicity" @change="update">
-        <option value="day">day</option>
-        <option value="week">week</option>
-        <option value="month">month</option>
-        <option value="year">year</option>
-      </select>
-    </div>
-    </template>
-    <div v-if="periodicity==='week'">
-      <label>{{weekLabel}}</label>
+      <label>{{ repeatLabel }}</label>
       <div>
-        <span v-for="(day, index) in weekdays" :key="index + 'week'"
-              class="badge badge-pill weekday"
-              :class="weekdayStyle(day)"
-              :data-test="`day-${ index }`"
-              @click="clickWeekDay(day);update()">{{day.initial}}</span>
+        <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
+        <select v-model="periodicity" class="form-control control periodicity" @change="update">
+          <option value="day">day</option>
+          <option value="week">week</option>
+          <option value="month">month</option>
+          <option value="year">year</option>
+        </select>
+      </div>
+    </template>
+
+    <div v-if="periodicity==='week'">
+      <label>{{ weekLabel }}</label>
+      <div>
+        <span
+          v-for="(day, index) in weekdays"
+          :key="index + 'week'"
+          class="badge badge-pill weekday"
+          :class="weekdayStyle(day)"
+          :data-test="`day-${ index }`"
+          @click="clickWeekDay(day);update()"
+        >
+          {{ day.initial }}
+        </span>
       </div>
     </div>
+
     <template v-if="hasEnds">
       <label>Ends</label>
       <div>
@@ -45,18 +55,18 @@
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On
           </label>
-          <datepicker v-model="endDate" calendar-class="calendar calendaron" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
-                      input-class="form-control end-date"
-                      class=" control float-right"
-                      :class="{'date-disabled' : ends!=='ondate'}"
-                      @selected="updateEndDate"></datepicker>
+          <datepicker v-model="endDate" calendar-class="calendar" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
+            input-class="form-control end-date"
+            class="control calendaron"
+            :class="{'date-disabled' : ends!=='ondate'}"
+            @selected="updateEndDate"
+          />
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
           </label>
-          <input v-model="times" type="number" min="0" :disabled="ends!=='after'"
-                 class="form-control control after float-right" @change="update">
+          <input v-model="times" type="number" min="0" :disabled="ends!=='after'" class="form-control control after" @change="update">
           <label class="occurrences">occurrences</label>
         </div>
       </div>
@@ -323,83 +333,85 @@ export default {
 </script>
 
 <style scoped="scoped">
-  .control {
-      vertical-align: middle;
-      display: inline-block;
-      height: 3em;
-      font-size: 1em;
-  }
-  .repeat {
-      width: 6em!important;
-      text-align: right;
-  }
-  .periodicity {
-      width: 6em;
-  }
-  .weekday {
-      padding: 1em;
-      margin-left: 0.2em;
-      margin-bottom: 0.5em;
-      cursor: pointer;
-  }
-  .time {
-      width: 5em;
-      height: 38px;
-      font-size: 16px;
-  }
-  .start-date-div {
-      vertical-align: middle;
-      display: inline-block;
-  }
-  .after {
-      width: 10em;
-      height: 38px;
-      font-size: 16px;
-      padding-right: 5em;
-  }
-  .after:disabled {
-      color: transparent;
-  }
-  .check-input {
-      margin-top: 4px;
-  }
-  .check-input > .form-check-label {
-      line-height:3em;
-  }
-  .check-input .form-check-input {
-      margin-top: 1em;
-  }
-  .occurrences {
-      position:absolute;
-      right:1em;
-      line-height: 3em;
-  }
-  .same-day {
-      opacity: 0.7;
-  }
+.control {
+  vertical-align: middle;
+  display: inline-block;
+  height: 3em;
+  font-size: 1em;
+}
+.repeat {
+  width: 6em !important;
+  text-align: right;
+}
+.periodicity {
+  width: 6em;
+}
+.weekday {
+  padding: 1em;
+  margin-left: 0.2em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+.time {
+  width: 5em;
+  height: 38px;
+  font-size: 16px;
+}
+.start-date-div {
+  vertical-align: middle;
+  display: inline-block;
+}
+.after {
+  height: 38px;
+  font-size: 16px;
+  margin-left: 0.75rem;
+}
+.after:disabled {
+  color: transparent;
+}
+.check-input {
+  margin-top: 4px;
+}
+.form-check {
+  display: flex;
+  justify-content: space-between;
+}
+.check-input > .form-check-label {
+  line-height: 3em;
+}
+.check-input .form-check-input {
+  margin-top: 1em;
+}
+.occurrences {
+  position: absolute;
+  right: 1em;
+  line-height: 3em;
+}
+.same-day {
+  opacity: 0.7;
+}
 </style>
 
 <style>
-  .calendar {
-      width: 16em;
-  }
-  .calendaron {
-      margin-left: -2em;
-  }
-  .calendar .cell {
-      height: 2em;
-      line-height: 2em;
-  }
-  .start-date {
-      background-color: white!important;
-      width: 8em!important;
-  }
-  .end-date {
-      background-color: white!important;
-      width: 10em!important;
-  }
-  .date-disabled .end-date {
-      background-color: #e9ecef!important;
-      color: transparent;
-  }
+.calendar {
+  width: 16em;
+}
+.calendaron {
+  margin-left: 0.75rem;
+}
+.calendar .cell {
+  height: 2em;
+  line-height: 2em;
+}
+.start-date {
+  background-color: white !important;
+  width: 8em !important;
+}
+.end-date {
+  background-color: white !important;
+}
+.date-disabled .end-date {
+  background-color: #e9ecef !important;
+  color: transparent;
+}
 </style>
