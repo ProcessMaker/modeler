@@ -3,6 +3,7 @@ import {
   typeIntoTextInput,
   connectNodesWithFlow,
   waitToRenderAllShapes,
+  getElementAtPosition,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -20,8 +21,8 @@ describe.only('Inclusive Gateway', () => {
       inclusivePosition
     );
 
-    const parallelGatewaySelector = '#v-23';
-    cy.get(parallelGatewaySelector).click({force: true});
+    waitToRenderAllShapes();
+    getElementAtPosition(inclusivePosition).click();
 
     const testString = 'testing';
     typeIntoTextInput('[name=\'name\']', testString);
@@ -55,10 +56,10 @@ describe.only('Inclusive Gateway', () => {
       taskPosition
     );
 
-    const taskSelector = '#v-45';
-    cy.get(taskSelector).click({ force: true });
-
+    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, inclusivePosition);
+
+    getElementAtPosition(taskPosition).click();
 
     const convergingString = 'gatewayDirection="converging"';
     cy.get('[data-test=downloadXMLBtn]').click();

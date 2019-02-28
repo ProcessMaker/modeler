@@ -2,6 +2,7 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   getElementAtPosition,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -21,10 +22,10 @@ describe('Exclusive Gateway', () => {
       exclusiveGatewayPosition
     );
 
-    getElementAtPosition(exclusiveGatewayPosition)
-      .then(() => {
-        typeIntoTextInput('[name=\'name\']', testString);
-        cy.get('[name=\'name\']').should('have.value', testString);
-      });
+    waitToRenderAllShapes();
+    getElementAtPosition(exclusiveGatewayPosition).click();
+
+    typeIntoTextInput('[name=\'name\']', testString);
+    cy.get('[name=\'name\']').should('have.value', testString);
   });
 });
