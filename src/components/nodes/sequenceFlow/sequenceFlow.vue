@@ -40,7 +40,12 @@ export default {
   },
   methods: {
     updateRouter() {
-      this.shape.router('orthogonal');
+      if (this.isSourceElementGateway()) {
+        this.shape.router('manhattan',{
+          excludeEnds: ['source'],
+          padding: 20,
+        });
+      }
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
@@ -84,6 +89,10 @@ export default {
     },
     renderConditionExpression() {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
+    },
+    isSourceElementGateway() {
+      const sourceShape = this.shape.getSourceElement();
+      return ['bpmn:ExclusiveGateway', 'bpmn:parellelGateway'].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       if (!this.node.definition.conditionExpression) {
