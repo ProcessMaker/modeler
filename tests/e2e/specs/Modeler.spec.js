@@ -52,7 +52,7 @@ describe('Modeler', () => {
 
     const endEventPosition = { x: 100, y: 500 };
     dragFromSourceToDest(
-      nodeTypes.evenEvent,
+      nodeTypes.endEvent,
       '.paper-container',
       endEventPosition,
     );

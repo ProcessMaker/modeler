@@ -9,7 +9,7 @@ export const defaultViewportDimensions = {
 
 export const nodeTypes = {
   task: 'processmaker-modeler-task',
-  evenEvent:'processmaker-modeler-end-event',
+  endEvent:'processmaker-modeler-end-event',
   scriptTask:'processmaker-modeler-script-task',
   exclusiveGateway: 'processmaker-modeler-exclusive-gateway',
   parallelGateway: 'processmaker-modeler-parallel-gateway',

@@ -3,7 +3,6 @@ import {
   typeIntoTextInput,
   connectNodesWithFlow,
   waitToRenderAllShapes,
-  getElementAtPosition,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
