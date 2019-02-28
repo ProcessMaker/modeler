@@ -31,23 +31,40 @@ export default {
       }),
     });
   },
+  inspectorData(node) {
+    return Object.entries(node.definition).reduce((data, [key, value]) => {
+      if (key === 'eventDefinitions') {
+        const type = Object.keys(value[0])[1];
+        const body = value[0][type].body;
+        data[key] = { type, body };
+      } else {
+        data[key] = value;
+      }
+
+      return data;
+    }, {});
+  },
   inspectorHandler(value, node, setNodeProp, moddle) {
     const definition = node.definition;
 
     // Go through each property and rebind it to our data
     for (const key in value) {
       if (definition[key] === value[key]) {
-        definition.set('name', value.name);
         continue;
       }
 
       if (key === 'eventDefinitions') {
-        // Set the timer event definition
-        const type = Object.keys(value[key][0])[1];
-        const eventDefinition = {};
-        eventDefinition[type] = moddle.create('bpmn:Expression', {
-          body: value[key][0][type].body,
-        });
+        const { type, body } = value[key];
+
+        const expression = definition.get(key)[0][type];
+        if (expression && expression.body === body) {
+          continue;
+        }
+
+        const eventDefinition = {
+          [type]: moddle.create('bpmn:Expression', { body }),
+        };
+
         const eventDefinitions = [
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
@@ -69,28 +86,51 @@ export default {
           },
         },
         {
-          component: 'FormInput',
+          component: 'FormAccordion',
+          container: true,
           config: {
-            label: 'Identifier',
-            helper: 'The id field should be unique across all elements in the diagram',
-            name: 'id',
+            initiallyOpen: true,
+            label: 'Configuration',
+            icon: 'cog',
+            name: 'confifuration',
           },
+          items: [
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Name',
+                helper: 'The Name of the Intermediate Event',
+                name: 'name',
+              },
+            },
+          ],
         },
         {
-          component: 'FormInput',
+          component: 'FormAccordion',
+          container: true,
           config: {
-            label: 'Name',
-            helper: 'The Name of the Intermediate Event',
-            name: 'name',
+            label: 'Timing Control',
+            icon: 'clock',
+            name: 'timing-control',
           },
-        },
-        {
-          component: IntermediateTimer,
-          config: {
-            label: 'Name',
-            helper: 'Time expression',
-            name: 'eventDefinitions.0',
-          },
+          items: [
+            {
+              component: IntermediateTimer,
+              config: {
+                label: 'Name',
+                helper: 'Time expression',
+                name: 'eventDefinitions',
+              },
+            },
+          ],
         },
       ],
     },

@@ -30,6 +30,7 @@ describe('Modeler', () => {
       '.paper-container',
       taskPosition,
     );
+    waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
@@ -40,6 +41,7 @@ describe('Modeler', () => {
       '.paper-container',
       task2Position,
     );
+    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
 
     const task3Position = { x: 100, y: 350 };
@@ -48,6 +50,7 @@ describe('Modeler', () => {
       '.paper-container',
       task3Position,
     );
+    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task2Position, task3Position);
 
     const endEventPosition = { x: 100, y: 500 };
@@ -56,6 +59,7 @@ describe('Modeler', () => {
       '.paper-container',
       endEventPosition,
     );
+    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task3Position, endEventPosition);
 
     dragFromSourceToDest(

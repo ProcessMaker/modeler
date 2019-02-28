@@ -1,6 +1,8 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
+  getElementAtPosition,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -17,15 +19,15 @@ describe('Intermediate Catch Event', () => {
       '.paper-container',
       intermediateCatchEventPosition
     );
+    waitToRenderAllShapes();
 
-    cy.get('.joint-viewport').find('#j_5').click({force: true});
+    getElementAtPosition(intermediateCatchEventPosition).click();
 
-    const nameInput = '[name=\'name\']';
     const testString = 'testing';
-    typeIntoTextInput(nameInput, testString);
-
-    const delayRepeatInput = '.repeat';
-    typeIntoTextInput(delayRepeatInput, 4);
+    const testDurationDelayValue = 4;
+    typeIntoTextInput('[name=name]', testString);
+    cy.contains('Timing Control').click();
+    typeIntoTextInput('.repeat', testDurationDelayValue);
 
     const validIntermediateCatchEventXML = `
     <bpmn:intermediateCatchEvent id="node_4" name="testing">
@@ -37,7 +39,8 @@ describe('Intermediate Catch Event', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => { xml.trim(); }).should('have', validIntermediateCatchEventXML.trim());
+      .then(xml => xml.trim())
+      .should('have', validIntermediateCatchEventXML.trim());
   });
 
   it('Update date/time field on Intermediate Catch Event', () => {
@@ -48,19 +51,21 @@ describe('Intermediate Catch Event', () => {
       intermediateCatchEventPosition
     );
 
-    cy.get('.joint-viewport').find('#j_5').click({force: true});
+    waitToRenderAllShapes();
 
-    const nameInput = '[name=\'name\']';
+    getElementAtPosition(intermediateCatchEventPosition).click();
+
+    const nameInput = '[name=name]';
     const testString = 'testing';
     typeIntoTextInput(nameInput, testString);
 
+    cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
-    const startDateInput = '.start-date';
     const startDateValue = '2019-02-27';
-    typeIntoTextInput(startDateInput, startDateValue);
+    typeIntoTextInput('.start-date', startDateValue);
 
     const startTimeValue = '00:30';
-    cy.get('[data-test=startTime]').select(startTimeValue);
+    cy.get('[data-test=startTime]').select(startTimeValue, { force: true });
 
     const validIntermediateCatchEventXML = `
     <bpmn:intermediateCatchEvent id="node_4" name="testing">
@@ -72,6 +77,7 @@ describe('Intermediate Catch Event', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => { xml.trim(); }).should('have', validIntermediateCatchEventXML.trim());
+      .then(xml => xml.trim())
+      .should('have', validIntermediateCatchEventXML.trim());
   });
 });

@@ -25,6 +25,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
       helper: 'Assign user to task',
       name: 'assignedUsers',
       options: [
+        {},
         { value: 'John Smith', content: 'John Smith' },
         { value: 'Jane Smith', content: 'Jane Smith' },
       ],

@@ -11,7 +11,7 @@ module.exports = {
         path.resolve(__dirname, 'node_modules'),
         'node_modules',
       ],
-      symlinks: false,
+      // symlinks: false,
       alias: {
         jointjs$: process.env.NODE_ENV === 'development'
           ? 'jointjs/dist/joint.js'

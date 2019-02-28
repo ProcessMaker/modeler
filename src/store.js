@@ -4,8 +4,6 @@ import uniqueId from 'lodash/uniqueId';
 
 Vue.use(Vuex);
 
-export const saveDebounce = 300;
-
 export default new Vuex.Store({
   state: {
     graph: null,
