@@ -10,6 +10,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
+import  inclusiveGateway from '../inclusiveGateway/index';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -70,7 +71,7 @@ export default {
         this.targetInclusiveGateway();
     },
     targetInclusiveGateway() {
-      const isTargetInclusiveGateway = this.target.component.node.type === 'processmaker-modeler-inclusive-gateway';
+      const isTargetInclusiveGateway = this.target.component.node.type === inclusiveGateway.id;
       const isDiverging = this.target.component.node.definition.get('incoming').length === 0;
 
       if (isTargetInclusiveGateway) {
