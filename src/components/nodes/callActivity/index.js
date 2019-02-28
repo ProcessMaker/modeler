@@ -1,4 +1,5 @@
 import component from './callActivity';
+import CallActivityFormSelect from './CallActivityFormSelect';
 
 export const taskHeight = 76;
 
@@ -13,6 +14,7 @@ export default {
   definition(moddle) {
     return moddle.create('bpmn:CallActivity', {
       name: 'New Call Activity',
+      calledElement: '',
     });
   },
   diagram(moddle) {
@@ -58,6 +60,14 @@ export default {
                 label: 'Name',
                 helper: 'The Name of the Call Activity',
                 name: 'name',
+              },
+            },
+            {
+              component: CallActivityFormSelect,
+              config: {
+                label: 'Called Element',
+                helper: 'Select the process to call',
+                name: 'calledElement',
               },
             },
           ],
