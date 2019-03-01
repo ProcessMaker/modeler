@@ -67,22 +67,7 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing() &&
-        this.targetInclusiveGateway();
-    },
-    targetInclusiveGateway() {
-      const isTargetInclusiveGateway = this.target.component.node.type === inclusiveGateway.id;
-      const isDiverging = this.target.component.node.definition.get('incoming').length === 0;
-
-      if (isTargetInclusiveGateway) {
-        if (isDiverging) {
-          this.target.component.node.definition.set('gatewayDirection', 'diverging');
-        } else {
-          this.target.component.node.definition.set('gatewayDirection', 'converging');
-        }
-      }
-
-      return true;
+        this.validateOutgoing();
     },
     hasTargetType() {
       return !!this.targetType;
