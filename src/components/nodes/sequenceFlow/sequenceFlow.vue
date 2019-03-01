@@ -58,7 +58,7 @@ export default {
       return this.validateIncoming();
     },
     validateIncoming() {
-      return typeof this.targetConfig.validateIncoming === 'undefined' ||
+      return this.targetConfig.validateIncoming == null ||
         this.targetConfig.validateIncoming(this.sourceNode);
     },
     isValidTarget() {
@@ -84,7 +84,7 @@ export default {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
     },
     validateOutgoing() {
-      return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
+      return this.sourceConfig.validateOutgoing == null ||
         this.sourceConfig.validateOutgoing(this.targetNode);
     },
     renderConditionExpression() {
@@ -92,7 +92,7 @@ export default {
     },
     isSourceElementGateway() {
       const sourceShape = this.shape.getSourceElement();
-      return ['bpmn:ExclusiveGateway', 'bpmn:parellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
+      return ['bpmn:ExclusiveGateway', 'bpmn:ParellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       if (!this.node.definition.conditionExpression) {
