@@ -26,6 +26,6 @@ describe('Exclusive Gateway', () => {
     getElementAtPosition(exclusiveGatewayPosition).click();
 
     typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });

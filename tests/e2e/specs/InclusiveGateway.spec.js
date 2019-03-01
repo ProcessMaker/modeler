@@ -8,7 +8,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe.only('Inclusive Gateway', () => {
+describe('Inclusive Gateway', () => {
   beforeEach(() => {
     cy.loadModeler();
   });
@@ -25,8 +25,8 @@ describe.only('Inclusive Gateway', () => {
     getElementAtPosition(inclusivePosition).click();
 
     const testString = 'testing';
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
 
     waitToRenderAllShapes();
   });
