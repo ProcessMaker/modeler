@@ -59,7 +59,8 @@ export default {
       return this.validateIncoming();
     },
     validateIncoming() {
-      return !this.targetConfig.validateIncoming || this.targetConfig.validateIncoming(this.sourceNode);
+      return typeof this.targetConfig.validateIncoming === 'undefined' ||
+        this.targetConfig.validateIncoming(this.sourceNode);
     },
     isValidTarget() {
       return this.hasTargetType() &&
@@ -99,14 +100,15 @@ export default {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
     },
     validateOutgoing() {
-      return this.sourceConfig.validateOutgoing || this.sourceConfig.validateOutgoing(this.targetNode);
+      return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
+        this.sourceConfig.validateOutgoing(this.targetNode);
     },
     renderConditionExpression() {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
     },
     isSourceElementGateway() {
       const sourceShape = this.shape.getSourceElement();
-      return ['bpmn:ExclusiveGateway', 'bpmn:ParellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
+      return ['bpmn:ExclusiveGateway', 'bpmn:parellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       if (!this.node.definition.conditionExpression) {
