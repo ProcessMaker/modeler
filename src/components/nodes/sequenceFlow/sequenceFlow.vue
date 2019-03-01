@@ -9,7 +9,6 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
-import  inclusiveGateway from '../inclusiveGateway/index';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
