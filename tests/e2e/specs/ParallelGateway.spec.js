@@ -21,7 +21,7 @@ describe('Parallel Gateway', () => {
     );
 
     cy.get(parallelGatewaySelector).click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });

@@ -20,7 +20,7 @@ describe('Text Annotation', () => {
     );
 
     cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
-    typeIntoTextInput('[name=\'text\']', testString);
-    cy.get('[name=\'text\']').should('have.value', testString);
+    typeIntoTextInput('[name=text]', testString);
+    cy.get('[name=text]').should('have.value', testString);
   });
 });

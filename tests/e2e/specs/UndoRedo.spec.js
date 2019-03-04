@@ -128,7 +128,7 @@ describe('Undo/redo', () => {
     const taskPosition1 = { x: 50, y: 400 };
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition1);
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition1);
 
     waitToRenderAllShapes();
 

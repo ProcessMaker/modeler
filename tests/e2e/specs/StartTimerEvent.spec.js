@@ -50,7 +50,7 @@ describe.skip('Start Timer Event', () => {
 
     cy.get('.joint-viewport').find('#j_5').click({force: true});
 
-    typeIntoTextInput('[name=\'name\']', testString);
+    typeIntoTextInput('[name=name]', testString);
 
     typeIntoTextInput(startDateInput, '2019-02-06');
     cy.get(timeInput).select('00:30');

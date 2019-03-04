@@ -20,7 +20,7 @@ describe('Tasks', () => {
     );
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });

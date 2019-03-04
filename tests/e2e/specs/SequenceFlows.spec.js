@@ -53,7 +53,7 @@ describe('Sequence Flows', () => {
   it('Update Condition expression', () => {
     const exclusiveGatewayPosition = { x: 400, y: 300 };
     dragFromSourceToDest(
-      'processmaker-modeler-exclusive-gateway',
+      nodeTypes.exclusiveGateway,
       '.paper-container',
       exclusiveGatewayPosition
     );
@@ -73,7 +73,7 @@ describe('Sequence Flows', () => {
       .click({ force: true });
 
     const testString = 'foo > 7';
-    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+    typeIntoTextInput('[name="conditionExpression.body"]', testString);
+    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
   });
 });

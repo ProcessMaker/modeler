@@ -14,7 +14,7 @@ describe('Association Flows', () => {
   });
 
   it('Change direction of association to none, one and both', () => {
-    const directionSelectSelector = '[name=\'associationDirection\']';
+    const directionSelectSelector = '[name=associationDirection]';
     const testDirection = {
       none:`${ direction.none }`,
       one: `${ direction.one }`,
