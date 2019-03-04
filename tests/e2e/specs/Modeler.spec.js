@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   getGraphElements,
   waitToRenderAllShapes,
-  generateXML,
   connectNodesWithFlow,
   getElementAtPosition,
   typeIntoTextInput,
@@ -77,16 +76,34 @@ describe('Modeler', () => {
   });
 
   it('Updates element name and validates xml', () => {
-    const testString = 'testing';
+    waitToRenderAllShapes();
 
-    cy.get('.modeler').children().should('have.length', 2);
-    cy.get('.joint-viewport').click();
-    cy.get('[name=\'name\']').focus().clear().type(testString);
-    cy.get('.joint-viewport').contains(testString);
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+
+    const testString = 'testing';
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
 
     cy.get('[data-test=downloadXMLBtn]').click();
-    const validXML = generateXML(testString);
-    cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
+
+    const validXML = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="node_1" name="${testString}" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+        <dc:Bounds x="150" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>`;
+
+    cy.window().its('xml')
+      .then(xml => xml.trim())
+      .should('eq', validXML.trim());
   });
 
   it('Prevent element to connect to self', () => {
