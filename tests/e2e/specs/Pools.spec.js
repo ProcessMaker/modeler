@@ -16,9 +16,12 @@ describe('Pools', () => {
   it('Update pool name', () => {
     const testString = 'testing';
 
-    dragFromSourceToDest(nodeTypes.pool, 200, 200);
+    const poolPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
+    waitToRenderAllShapes();
+    getElementAtPosition(poolPosition).click();
+
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
   });
