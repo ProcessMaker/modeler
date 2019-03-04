@@ -14,11 +14,7 @@ describe('Parallel Gateway', () => {
     const testString = 'testing';
     const parallelGatewaySelector = '#v-21';
 
-    dragFromSourceToDest(
-      nodeTypes.parallelGateway,
-      '.paper-container',
-      200, 200
-    );
+    dragFromSourceToDest(nodeTypes.parallelGateway, 200, 200);
 
     cy.get(parallelGatewaySelector).click({force: true});
     typeIntoTextInput('[name=name]', testString);

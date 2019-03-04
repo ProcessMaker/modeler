@@ -16,11 +16,7 @@ describe('Exclusive Gateway', () => {
     const testString = 'testing';
     const exclusiveGatewayPosition = { x: 200, y: 200 };
 
-    dragFromSourceToDest(
-      nodeTypes.exclusiveGateway,
-      '.paper-container',
-      exclusiveGatewayPosition
-    );
+    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     waitToRenderAllShapes();
     getElementAtPosition(exclusiveGatewayPosition).click();

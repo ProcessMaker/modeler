@@ -15,11 +15,7 @@ describe('Inclusive Gateway', () => {
 
   it('Update inclusive gateway name', () => {
     const inclusivePosition = { x: 250, y: 250 };
-    dragFromSourceToDest(
-      nodeTypes.inclusiveGateway,
-      '.paper-container',
-      inclusivePosition
-    );
+    dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
 
     waitToRenderAllShapes();
     getElementAtPosition(inclusivePosition).click();
@@ -33,11 +29,7 @@ describe('Inclusive Gateway', () => {
 
   it('Detects gateway direction of converging or diverging', () => {
     const inclusivePosition = { x: 250, y: 250 };
-    dragFromSourceToDest(
-      nodeTypes.inclusiveGateway,
-      '.paper-container',
-      inclusivePosition
-    );
+    dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
 
     const startEventPosition = { x: 150, y: 150 };
 
@@ -50,11 +42,7 @@ describe('Inclusive Gateway', () => {
       .then(xml => xml.trim()).should('have', divergingString);
 
     const taskPosition = { x: 350, y: 350 };
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      taskPosition
-    );
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, inclusivePosition);

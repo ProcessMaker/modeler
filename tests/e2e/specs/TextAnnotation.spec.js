@@ -13,11 +13,7 @@ describe('Text Annotation', () => {
   it('Update text annotation name', () => {
     const testString = 'testing';
 
-    dragFromSourceToDest(
-      nodeTypes.textAnnotation,
-      '.paper-container',
-      200, 200
-    );
+    dragFromSourceToDest(nodeTypes.textAnnotation, 200, 200);
 
     cy.get('.joint-viewport').find('.joint-type-standard-polyline').click({force: true});
     typeIntoTextInput('[name=text]', testString);

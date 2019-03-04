@@ -42,11 +42,7 @@ describe.skip('Start Timer Event', () => {
     </bpmn:definitions>
     `;
 
-    dragFromSourceToDest(
-      nodeTypes.startTimerEvent,
-      '.paper-container',
-      startTimerEventPosition
-    );
+    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
 
     cy.get('.joint-viewport').find('#j_5').click({force: true});
 

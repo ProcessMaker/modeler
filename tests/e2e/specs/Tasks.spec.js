@@ -13,11 +13,7 @@ describe('Tasks', () => {
   it('Update task name', () => {
     const testString = 'testing';
 
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      200, 200
-    );
+    dragFromSourceToDest(nodeTypes.task, 200, 200);
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
     typeIntoTextInput('[name=name]', testString);

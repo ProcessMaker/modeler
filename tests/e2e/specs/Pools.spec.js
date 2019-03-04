@@ -16,11 +16,7 @@ describe('Pools', () => {
   it('Update pool name', () => {
     const testString = 'testing';
 
-    dragFromSourceToDest(
-      nodeTypes.pool,
-      '.paper-container',
-      200, 200
-    );
+    dragFromSourceToDest(nodeTypes.pool, 200, 200);
 
     cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
     typeIntoTextInput('[name=name]', testString);
@@ -30,11 +26,7 @@ describe('Pools', () => {
   it('Can add top and bottom lane', () => {
     const poolPosition = { x: 200, y: 200 };
 
-    dragFromSourceToDest(
-      nodeTypes.pool,
-      '.paper-container',
-      poolPosition,
-    );
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     waitToRenderAllShapes();
 

@@ -25,48 +25,28 @@ describe('Modeler', () => {
     getGraphElements().should('have.length', initialNumberOfElements);
 
     const taskPosition = { x: 300, y: 200 };
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      taskPosition,
-    );
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
     const task2Position = { x: 300, y: 350 };
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      task2Position,
-    );
+    dragFromSourceToDest(nodeTypes.task, task2Position);
     waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
 
     const task3Position = { x: 100, y: 350 };
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      task3Position,
-    );
+    dragFromSourceToDest(nodeTypes.task, task3Position);
     waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task2Position, task3Position);
 
     const endEventPosition = { x: 100, y: 500 };
-    dragFromSourceToDest(
-      nodeTypes.endEvent,
-      '.paper-container',
-      endEventPosition,
-    );
+    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
     waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task3Position, endEventPosition);
 
-    dragFromSourceToDest(
-      nodeTypes.pool,
-      '.paper-container',
-      { x: 100, y: 100 },
-    );
+    dragFromSourceToDest(nodeTypes.pool, { x: 100, y: 100 });
 
     waitToRenderAllShapes();
 
@@ -95,11 +75,7 @@ describe('Modeler', () => {
     getGraphElements().should('have.length', initialNumberOfElements);
 
     const taskPosition = { x: 400, y: 300 };
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      taskPosition
-    );
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
 
     connectNodesWithFlow('sequence-flow-button', taskPosition, taskPosition);
