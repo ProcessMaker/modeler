@@ -4,6 +4,8 @@ import {
   waitToRenderAllShapes,
   generateXML,
   connectNodesWithFlow,
+  getElementAtPosition,
+  typeIntoTextInput,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -106,5 +108,64 @@ describe('Modeler', () => {
 
     const numberOfNewElementsAdded = 1;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
+  });
+
+  it('Generates sequential, unique node IDs', () => {
+    waitToRenderAllShapes();
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+
+    cy.get('[name=id]').should('have.value', 'node_1');
+
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    waitToRenderAllShapes();
+    getElementAtPosition(taskPosition).click();
+
+    cy.get('[name=id]').should('have.value', 'node_2');
+
+    typeIntoTextInput('[name=id]', 'node_3');
+
+    const task2Position = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', task2Position);
+    waitToRenderAllShapes();
+    getElementAtPosition(task2Position).click();
+
+    cy.get('[name=id]').should('have.value', 'node_4');
+
+    const task3Position = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', task3Position);
+    waitToRenderAllShapes();
+    getElementAtPosition(task3Position).click();
+
+    cy.get('[name=id]').should('have.value', 'node_5');
+
+    cy.contains('Upload XML').click();
+
+    /* Wait for modal to open */
+    cy.wait(300);
+
+    cy.fixture('../../../src/blank.bpmn', 'base64').then(blankProcess => {
+      cy.get('input[type=file]').then($input => {
+        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+          .then((blob) => {
+            const testfile = new File([blob], 'blank.bpmn', { type: 'text/xml' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(testfile);
+            const input = $input[0];
+            input.files = dataTransfer.files;
+          });
+      });
+    });
+
+    /* Wait for modal to close */
+    cy.wait(300);
+
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    waitToRenderAllShapes();
+    getElementAtPosition(taskPosition).click();
+
+    cy.get('[name=id]').should('have.value', 'node_1');
   });
 });
