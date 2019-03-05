@@ -45,6 +45,7 @@
       :plane-elements="planeElements"
       :moddle="moddle"
       :nodeRegistry="nodeRegistry"
+      :root-elements="definitions.get('rootElements')"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
