@@ -13,8 +13,6 @@
           <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
         </div>
 
-        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
-
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper" data-test="paper"/>
         </drop>
@@ -727,13 +725,6 @@ $cursors: default, not-allowed;
         > button {
           cursor: pointer;
         }
-      }
-
-      .validate-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        cursor: pointer;
       }
     }
 
