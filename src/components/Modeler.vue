@@ -129,6 +129,11 @@ export default {
       validationErrors: {},
     };
   },
+  watch: {
+    currentXML() {
+      this.validateBpmnDiagram();
+    },
+  },
   computed: {
     nodes: () => store.getters.nodes,
     canUndo() {
