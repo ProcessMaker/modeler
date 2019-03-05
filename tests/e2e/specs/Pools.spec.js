@@ -16,25 +16,20 @@ describe('Pools', () => {
   it('Update pool name', () => {
     const testString = 'testing';
 
-    dragFromSourceToDest(
-      nodeTypes.pool,
-      '.paper-container',
-      200, 200
-    );
+    const poolPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-modeler-bpmn-pool').click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    waitToRenderAllShapes();
+    getElementAtPosition(poolPosition).click();
+
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 
   it('Can add top and bottom lane', () => {
     const poolPosition = { x: 200, y: 200 };
 
-    dragFromSourceToDest(
-      nodeTypes.pool,
-      '.paper-container',
-      poolPosition,
-    );
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     waitToRenderAllShapes();
 

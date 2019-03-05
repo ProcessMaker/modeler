@@ -17,7 +17,7 @@ describe('Sequence Flows', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
@@ -35,11 +35,11 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 250, y: 250 };
     const poolPosition = { x: 150, y: 150 };
 
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
-    dragFromSourceToDest(nodeTypes.pool, '.paper-container', poolPosition);
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     // getLastCell - will get the highest cell (element or link) with the highest z property
     cy.window().its('store.state.graph')
@@ -53,17 +53,11 @@ describe('Sequence Flows', () => {
   it('Update Condition expression', () => {
     const exclusiveGatewayPosition = { x: 400, y: 300 };
     dragFromSourceToDest(
-      'processmaker-modeler-exclusive-gateway',
-      '.paper-container',
-      exclusiveGatewayPosition
-    );
+      nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
     dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      taskPosition
-    );
+      nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
 
@@ -73,7 +67,7 @@ describe('Sequence Flows', () => {
       .click({ force: true });
 
     const testString = 'foo > 7';
-    typeIntoTextInput('[name=\'conditionExpression.body\']', testString);
-    cy.get('[name=\'conditionExpression.body\']').should('have.value', testString);
+    typeIntoTextInput('[name="conditionExpression.body"]', testString);
+    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
   });
 });
