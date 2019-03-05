@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import uniqueId from 'lodash/uniqueId';
 
 Vue.use(Vuex);
 
@@ -42,7 +41,7 @@ export default new Vuex.Store({
        * (used in v-for when rendering the node). Relying on the
        * definition ID will cause issues as the user can change the
        * ID of elements. */
-      node._modelerId = uniqueId();
+      node._modelerId = '_modelerId_' + node.definition.get('id');
 
       state.nodes.push(node);
     },

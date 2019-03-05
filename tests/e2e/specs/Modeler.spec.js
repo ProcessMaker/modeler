@@ -2,8 +2,9 @@ import {
   dragFromSourceToDest,
   getGraphElements,
   waitToRenderAllShapes,
-  generateXML,
   connectNodesWithFlow,
+  getElementAtPosition,
+  typeIntoTextInput,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -55,16 +56,34 @@ describe('Modeler', () => {
   });
 
   it('Updates element name and validates xml', () => {
-    const testString = 'testing';
+    waitToRenderAllShapes();
 
-    cy.get('.modeler').children().should('have.length', 2);
-    cy.get('.joint-viewport').click();
-    cy.get('[name=\'name\']').focus().clear().type(testString);
-    cy.get('.joint-viewport').contains(testString);
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+
+    const testString = 'testing';
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
 
     cy.get('[data-test=downloadXMLBtn]').click();
-    const validXML = generateXML(testString);
-    cy.window().its('xml').then(xml => xml.trim()).should('eq', validXML.trim());
+
+    const validXML = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="node_1" name="${testString}" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+        <dc:Bounds x="150" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>`;
+
+    cy.window().its('xml')
+      .then(xml => xml.trim())
+      .should('eq', validXML.trim());
   });
 
   it('Prevent element to connect to self', () => {
@@ -82,5 +101,64 @@ describe('Modeler', () => {
 
     const numberOfNewElementsAdded = 1;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
+  });
+
+  it('Generates sequential, unique node IDs', () => {
+    waitToRenderAllShapes();
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+
+    cy.get('[name=id]').should('have.value', 'node_1');
+
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    waitToRenderAllShapes();
+    getElementAtPosition(taskPosition).click();
+
+    cy.get('[name=id]').should('have.value', 'node_2');
+
+    typeIntoTextInput('[name=id]', 'node_3');
+
+    const task2Position = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', task2Position);
+    waitToRenderAllShapes();
+    getElementAtPosition(task2Position).click();
+
+    cy.get('[name=id]').should('have.value', 'node_4');
+
+    const task3Position = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', task3Position);
+    waitToRenderAllShapes();
+    getElementAtPosition(task3Position).click();
+
+    cy.get('[name=id]').should('have.value', 'node_5');
+
+    cy.contains('Upload XML').click();
+
+    /* Wait for modal to open */
+    cy.wait(300);
+
+    cy.fixture('../../../src/blank.bpmn', 'base64').then(blankProcess => {
+      cy.get('input[type=file]').then($input => {
+        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+          .then((blob) => {
+            const testfile = new File([blob], 'blank.bpmn', { type: 'text/xml' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(testfile);
+            const input = $input[0];
+            input.files = dataTransfer.files;
+          });
+      });
+    });
+
+    /* Wait for modal to close */
+    cy.wait(300);
+
+    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    waitToRenderAllShapes();
+    getElementAtPosition(taskPosition).click();
+
+    cy.get('[name=id]').should('have.value', 'node_1');
   });
 });

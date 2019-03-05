@@ -64,7 +64,6 @@ import joint from 'jointjs';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
-import uniqueId from 'lodash/uniqueId';
 import pull from 'lodash/pull';
 import debounce from 'lodash/debounce';
 import { startEvent } from '@/components/nodes';
@@ -73,6 +72,7 @@ import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../.bpmnlintrc';
+import NodeIdGenerator from '../NodeIdGenerator';
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
@@ -112,7 +112,7 @@ export default {
       paper: null,
 
       definitions: null,
-      context: null,
+      nodeIdGenerator: null,
       planeElements: null,
       canvasDragPosition: null,
       processNode: null,
@@ -407,14 +407,13 @@ export default {
       return hasSource && hasTarget;
     },
     loadXML(xml = this.currentXML) {
-      this.moddle.fromXML(xml, (err, definitions, context) => {
+      this.moddle.fromXML(xml, (err, definitions) => {
         if (!err) {
           // Update definitions export to our own information
           definitions.exporter = 'ProcessMaker Modeler';
           definitions.exporterVersion = version;
           this.definitions = definitions;
-          this.context = context;
-          this.initializeUniqueId(context);
+          this.nodeIdGenerator = new NodeIdGenerator(definitions);
 
           store.commit('clearNodes');
 
@@ -477,7 +476,7 @@ export default {
         }
       }
 
-      const id = uniqueId('node_');
+      const id = this.nodeIdGenerator.generateUniqueNodeId();
       definition.id = id;
 
       if (diagram) {
@@ -499,14 +498,6 @@ export default {
       }
 
       this.poolTarget = null;
-    },
-    initializeUniqueId(context) {
-      let last = uniqueId() * 1;
-      context.references.forEach((ref)=>{
-        const ma = ref.id.match(/^node_(\d+)$/),
-          index = ma && ma[1] * 1;
-        while (last < index) last = uniqueId() * 1;
-      });
     },
     removeNode(node) {
       store.commit('removeNode', node);
