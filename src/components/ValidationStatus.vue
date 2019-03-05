@@ -16,7 +16,6 @@
       </div>
     </div>
      <div class="status-bar-container d-flex align-items-center justify-content-around">
-      <button class="status-bar-container__validate-button btn-sm btn-info" @click="validateDiagram">Validate BPMN</button>
       <span class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
         <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
         <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
@@ -42,11 +41,6 @@ export default {
       warningColor: '#F0AD4E',
       validColor: '#40C057',
     };
-  },
-  methods: {
-    validateDiagram() {
-      this.$root.$emit('Modeler');
-    },
   },
   computed: {
     errorList() {
@@ -129,13 +123,6 @@ $button-color: #3BD7FF;
   height: $status-bar-container-height;
   width: $status-bar-container-width;
   cursor: pointer;
-
-  &__validate-button {
-    background-color: $button-color;
-    border: none;
-    border-radius: 1.25rem;
-    cursor: pointer;
-  }
 
   &__status {
     cursor: pointer;

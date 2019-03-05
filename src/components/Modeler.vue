@@ -682,10 +682,6 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
     });
-
-    this.$root.$on('Modeler', () => {
-      this.validateBpmnDiagram();
-    });
   },
 };
 </script>
