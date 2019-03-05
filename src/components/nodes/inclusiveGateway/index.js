@@ -1,4 +1,5 @@
 import component from './inclusiveGateway.vue';
+import { gatewayDirection } from '../gateway/gatewayConfig';
 
 export default {
   id: 'processmaker-modeler-inclusive-gateway',
@@ -10,7 +11,8 @@ export default {
   label: 'Inclusive Gateway',
   definition(moddle) {
     return moddle.create('bpmn:InclusiveGateway', {
-      name: 'New Inclusive Gateway',
+      name: null,
+      gatewayDirection: gatewayDirection.diverging,
     });
   },
   diagram(moddle) {
@@ -59,6 +61,18 @@ export default {
               },
             },
           ],
+        },
+        {
+          component: 'FormSelect',
+          config: {
+            label: 'Direction',
+            helper: 'Select direction of gateway',
+            name: 'gatewayDirection',
+            options: [
+              { value: gatewayDirection.diverging , content: 'Diverging' },
+              { value: gatewayDirection.converging , content: 'Converging' },
+            ],
+          },
         },
       ],
     },

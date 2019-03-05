@@ -14,7 +14,7 @@ describe('Association Flows', () => {
   });
 
   it('Change direction of association to none, one and both', () => {
-    const directionSelectSelector = '[name=\'associationDirection\']';
+    const directionSelectSelector = '[name=associationDirection]';
     const testDirection = {
       none:`${ direction.none }`,
       one: `${ direction.one }`,
@@ -22,18 +22,10 @@ describe('Association Flows', () => {
     };
 
     const textAnnotationPosition = { x: 400, y: 100 };
-    dragFromSourceToDest(
-      nodeTypes.textAnnotation,
-      '.paper-container',
-      textAnnotationPosition,
-    );
+    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
 
     const taskPosition = { x: 400, y: 300 };
-    dragFromSourceToDest(
-      'processmaker-modeler-task',
-      '.paper-container',
-      taskPosition,
-    );
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, taskPosition);
 

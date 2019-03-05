@@ -1,6 +1,8 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
+  getElementAtPosition,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -12,16 +14,14 @@ describe('Parallel Gateway', () => {
 
   it('Update parallel gateway name', () => {
     const testString = 'testing';
-    const parallelGatewaySelector = '#v-21';
+    const parallelGatewayPosition = { x: 200, y: 200 };
 
-    dragFromSourceToDest(
-      nodeTypes.parallelGateway,
-      '.paper-container',
-      200, 200
-    );
+    dragFromSourceToDest(nodeTypes.parallelGateway, parallelGatewayPosition);
 
-    cy.get(parallelGatewaySelector).click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    waitToRenderAllShapes();
+    getElementAtPosition(parallelGatewayPosition).click();
+
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });

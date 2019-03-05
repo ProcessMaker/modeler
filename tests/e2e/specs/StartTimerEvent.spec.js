@@ -37,16 +37,11 @@ describe('Start Timer Event', () => {
     `;
 
     const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(
-      nodeTypes.startTimerEvent,
-      '.paper-container',
-      startTimerEventPosition
-    );
+    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
 
     waitToRenderAllShapes();
 
     getElementAtPosition(startTimerEventPosition).click();
-    // cy.get('.joint-viewport').find('#j_5').click({force: true});
 
     const testString = 'testing';
     typeIntoTextInput('[name=name]', testString);

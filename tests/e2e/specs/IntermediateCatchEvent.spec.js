@@ -14,11 +14,7 @@ describe('Intermediate Catch Event', () => {
 
   it('Update delay field on Intermediate Catch Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(
-      nodeTypes.intermediateCatchEvent,
-      '.paper-container',
-      intermediateCatchEventPosition
-    );
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
     waitToRenderAllShapes();
 
     getElementAtPosition(intermediateCatchEventPosition).click();
@@ -45,11 +41,7 @@ describe('Intermediate Catch Event', () => {
 
   it('Update date/time field on Intermediate Catch Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(
-      nodeTypes.intermediateCatchEvent,
-      '.paper-container',
-      intermediateCatchEventPosition
-    );
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
     waitToRenderAllShapes();
 

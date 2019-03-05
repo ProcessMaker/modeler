@@ -41,11 +41,12 @@ export function getLinksConnectedToElement($element) {
     });
 }
 
-export function dragFromSourceToDest(source, dest, position) {
+export function dragFromSourceToDest(source, position) {
   const dataTransfer = new DataTransfer();
+  const paper = '.paper-container';
   cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
-  cy.get(dest).trigger('dragenter', { force: true });
-  cy.get(dest).trigger('drop', { x: position.x, y: position.y });
+  cy.get(paper).trigger('dragenter', { force: true });
+  cy.get(paper).trigger('drop', { x: position.x, y: position.y });
 }
 
 export function getCrownButtonForElement($element, crownButton) {
