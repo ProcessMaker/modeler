@@ -6,8 +6,8 @@ export default {
   bpmnType: 'bpmn:EventBasedGateway',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/inclusive-gateway.svg'),
-  label: 'Inclusive Gateway',
+  icon: require('@/assets/toolpanel/event-based-gateway.svg'),
+  label: 'Event-based Gateway',
   definition(moddle) {
     return moddle.create('bpmn:EventBasedGateway', {
       name: '',
