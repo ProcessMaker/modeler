@@ -74,9 +74,9 @@ export default {
       const isTargetIntermediateTimerEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
       const isOneIntermediateTimerEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent'
       && this.sourceNode.definition.get('outgoing').length === 0;
+      const oneIncomingFlow = this.targetNode.definition.get('incoming').length > 0;
 
-      return !isEventBasedGateway || isTargetIntermediateTimerEvent && isOneIntermediateTimerEvent;
-
+      return (!isEventBasedGateway && !oneIncomingFlow) || isTargetIntermediateTimerEvent && isOneIntermediateTimerEvent;
     },
     hasTargetType() {
       return !!this.targetType;
