@@ -1,6 +1,8 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
+  waitToRenderAllShapes,
+  getElementAtPosition,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -13,14 +15,13 @@ describe('Tasks', () => {
   it('Update task name', () => {
     const testString = 'testing';
 
-    dragFromSourceToDest(
-      nodeTypes.task,
-      '.paper-container',
-      200, 200
-    );
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task,taskPosition);
 
-    cy.get('.joint-viewport').find('.joint-type-processmaker-components-nodes-task').click({force: true});
-    typeIntoTextInput('[name=\'name\']', testString);
-    cy.get('[name=\'name\']').should('have.value', testString);
+    waitToRenderAllShapes();
+    getElementAtPosition(taskPosition).click();
+
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });
