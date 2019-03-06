@@ -13,6 +13,7 @@ import {
   startEvent,
   startTimerEvent,
   intermediateTimerEvent,
+  intermediateMessageCatchEvent,
   task,
   scriptTask,
   serviceTask,
@@ -22,6 +23,7 @@ import {
 } from '@/components/nodes';
 
 const nodeTypes = [
+  intermediateMessageCatchEvent,
   endEvent,
   task,
   scriptTask,
