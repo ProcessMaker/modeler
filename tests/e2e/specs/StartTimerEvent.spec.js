@@ -1,24 +1,18 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
+  waitToRenderAllShapes,
+  getElementAtPosition,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
-/* @TODO Skip until Start Timer Event is fixed:
- * https://github.com/ProcessMaker/modeler/issues/256 */
-describe.skip('Start Timer Event', () => {
+describe('Start Timer Event', () => {
   beforeEach(() => {
     cy.loadModeler();
   });
 
   it('Update properties on Start Timer Event', () => {
-    const testString = 'testing';
-    const startTimerEventPosition = { x: 250, y: 250 };
-    const startDateInput = '.start-date';
-    const repeatInput = '.repeat';
-    const timeInput = '.time';
-
     const validStartEventTimerXML = `<?xml version="1.0" encoding="UTF-8"?>
     <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
       <bpmn:process id="Process_1" isExecutable="true">
@@ -42,25 +36,27 @@ describe.skip('Start Timer Event', () => {
     </bpmn:definitions>
     `;
 
-    dragFromSourceToDest(
-      nodeTypes.startTimerEvent,
-      '.paper-container',
-      startTimerEventPosition
-    );
+    const startTimerEventPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
 
-    cy.get('.joint-viewport').find('#j_5').click({force: true});
+    waitToRenderAllShapes();
 
-    typeIntoTextInput('[name=\'name\']', testString);
+    getElementAtPosition(startTimerEventPosition).click();
 
-    typeIntoTextInput(startDateInput, '2019-02-06');
-    cy.get(timeInput).select('00:30');
-    typeIntoTextInput(repeatInput, 2);
+    const testString = 'testing';
+    typeIntoTextInput('[name=name]', testString);
+
+    cy.contains('Timing Control').click();
+    typeIntoTextInput('.start-date', '2019-02-06');
+    cy.get('.time').select('00:30', { force: true });
+    typeIntoTextInput('.repeat', 2);
 
     cy.get('[data-test=day-1]').click();
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => { xml.trim(); }).should('have', validStartEventTimerXML.trim());
+      .then(xml => xml.trim())
+      .should('have', validStartEventTimerXML.trim());
   });
 });

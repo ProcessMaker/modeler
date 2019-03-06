@@ -1,5 +1,6 @@
 import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
+import moment from 'moment';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -10,15 +11,16 @@ export default {
   icon: require('@/assets/toolpanel/start-timer-event.svg'),
   label: 'Start Timer Event',
   definition(moddle) {
+    let datetime = moment().set('hour', 0).set('minutes', 0).format('YYYY-MM-DDTHH:mmZ');
     let startEventDefinition = moddle.create('bpmn:StartEvent', {
       name: 'Start Timer Event',
     });
 
-    startEventDefinition.eventDefinitions = moddle.create('bpmn:TimerEventDefinition', {
+    startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {
       timeCycle: moddle.create('bpmn:Expression', {
-        body: '',
+        body: 'R/' + datetime + '/P1W',
       }),
-    });
+    })];
 
     return startEventDefinition;
   },

@@ -19,10 +19,10 @@ describe('Undo/redo', () => {
 
   it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, '.paper-container', exclusiveGatewayPosition);
+    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
 
@@ -64,7 +64,7 @@ describe('Undo/redo', () => {
   it('Can undo and redo adding a task', () => {
     const taskPosition = { x: 300, y: 500 };
 
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     cy.get('[data-test=undo]').click();
 
@@ -80,7 +80,7 @@ describe('Undo/redo', () => {
   it('Can undo and redo deleting a task', () => {
     const taskPosition = { x: 300, y: 500 };
 
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     waitToRenderAllShapes();
 
@@ -128,7 +128,7 @@ describe('Undo/redo', () => {
     const taskPosition1 = { x: 50, y: 400 };
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
-    dragFromSourceToDest('processmaker-modeler-task', '.paper-container', taskPosition1);
+    dragFromSourceToDest(nodeTypes.task, taskPosition1);
 
     waitToRenderAllShapes();
 
@@ -146,10 +146,10 @@ describe('Undo/redo', () => {
 
   it('Can undo and redo adding message flows', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool1Position);
+    dragFromSourceToDest(nodeTypes.pool, pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest(nodeTypes.pool, '.paper-container', pool2Position);
+    dragFromSourceToDest(nodeTypes.pool, pool2Position);
 
     connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
 
@@ -170,17 +170,17 @@ describe('Undo/redo', () => {
     const validMessageFlowXML = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
   <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:startEvent id="node_2" name="Start Event" />
+    <bpmn:startEvent id="node_1" name="Start Event" />
   </bpmn:process>
   <bpmn:collaboration id="collaboration_0">
-    <bpmn:participant id="node_4" name="New Pool" processRef="Process_1" />
+    <bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />
   </bpmn:collaboration>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_0">
-      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
         <dc:Bounds x="150" y="150" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="node_4_di" bpmnElement="node_4">
+      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
         <dc:Bounds x="100" y="130" width="600" height="300" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
@@ -188,7 +188,7 @@ describe('Undo/redo', () => {
 </bpmn:definitions>`;
 
     const poolPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, '.paper-container', poolPosition);
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     waitToRenderAllShapes();
 
