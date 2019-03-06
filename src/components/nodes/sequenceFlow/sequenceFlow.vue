@@ -70,13 +70,13 @@ export default {
         this.eventBasedGatewayTarget();
     },
     eventBasedGatewayTarget() {
-      const isEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetEventBasedGateway = this.targetNode.definition.$type === 'bpmn:EventBasedGateway';
       const isTargetIntermediateTimerEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
-      const isOneIntermediateTimerEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent'
-      && this.sourceNode.definition.get('outgoing').length === 0;
-      const oneIncomingFlow = this.targetNode.definition.get('incoming').length > 0;
+      const isOneIntermediateTimerEvent = isTargetIntermediateTimerEvent && this.sourceNode.definition.get('outgoing').length === 0;
+      const oneIncomingFlow = isTargetEventBasedGateway && this.targetNode.definition.get('incoming').length > 0;
 
-      return (!isEventBasedGateway && !oneIncomingFlow) || isTargetIntermediateTimerEvent && isOneIntermediateTimerEvent;
+      return (!isSourceEventBasedGateway && !oneIncomingFlow ) || isTargetIntermediateTimerEvent && isOneIntermediateTimerEvent;
     },
     hasTargetType() {
       return !!this.targetType;
