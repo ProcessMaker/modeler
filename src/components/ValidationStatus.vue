@@ -15,7 +15,7 @@
         </span>
       </div>
     </div>
-     <div class="status-bar-container d-flex align-items-center justify-content-around">
+    <div class="status-bar-container d-flex align-items-center justify-content-around">
       <button class="status-bar-container__validate-button btn-sm btn-info" @click="validateDiagram">Validate BPMN</button>
       <span class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
         <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
@@ -178,17 +178,16 @@ $button-color: #3BD7FF;
 
     &--message {
       width: $message-container-width;
-      text-transform: capitalize;
     }
 
     &--errorCategory {
-      width: 2rem;
       padding: 0.25rem 1rem 0 0.5rem;
       width: $error-category-width;
     }
 
     &--key {
       font-weight: 700;
+      text-transform: capitalize;
     }
   }
 
