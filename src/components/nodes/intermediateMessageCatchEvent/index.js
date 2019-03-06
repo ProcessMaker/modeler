@@ -6,7 +6,7 @@ export default {
   bpmnType: 'bpmn:IntermediateCatchEvent',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/intermediate-time-event.svg'),
+  icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
