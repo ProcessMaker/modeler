@@ -1,5 +1,5 @@
 import component from './callActivity';
-import CallActivityFormSelect from './CallActivityFormSelect';
+import CallActivityFormGroup from './CallActivityFormGroup';
 
 export const taskHeight = 76;
 
@@ -24,6 +24,20 @@ export default {
         width: 116,
       }),
     });
+  },
+  inspectorHandler(value, node, setNodeProp) {
+    for (const key in value) {
+      if (node.definition[key] === value[key]) {
+        continue;
+      }
+
+      if (key === 'callActivityExpression') {
+        this.inspectorHandler(value[key], node, setNodeProp);
+        continue;
+      }
+
+      setNodeProp(node, key, value[key]);
+    }
   },
   inspectorConfig: [
     {
@@ -55,19 +69,9 @@ export default {
               },
             },
             {
-              component: 'FormInput',
+              component: CallActivityFormGroup,
               config: {
-                label: 'Name',
-                helper: 'The Name of the Call Activity',
-                name: 'name',
-              },
-            },
-            {
-              component: CallActivityFormSelect,
-              config: {
-                label: 'Called Element',
-                helper: 'Select the process to call',
-                name: 'calledElement',
+                name: 'callActivityExpression',
               },
             },
           ],
