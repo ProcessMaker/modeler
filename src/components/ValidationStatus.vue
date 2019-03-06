@@ -158,7 +158,7 @@ $button-color: #3BD7FF;
   height: $validation-container-height;
   width: $validation-container-width;
   background-color: $primary-white;
-  overflow: scroll;
+  overflow: auto;
   margin-bottom: 3rem;
   border: 1px solid $border-color;
 
