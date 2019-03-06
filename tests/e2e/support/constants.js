@@ -18,4 +18,5 @@ export const nodeTypes = {
   pool:'processmaker-modeler-pool',
   startTimerEvent: 'processmaker-modeler-start-timer-event',
   intermediateCatchEvent: 'processmaker-modeler-intermediate-catch-timer-event',
+  callActivity: 'processmaker-modeler-call-activity',
 };
