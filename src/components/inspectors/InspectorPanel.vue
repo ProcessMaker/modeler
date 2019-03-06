@@ -51,7 +51,7 @@ export default {
   },
   watch: {
     highlightedNode() {
-      this.updateState();
+      document.activeElement.blur();
     },
   },
   computed: {
