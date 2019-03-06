@@ -72,7 +72,7 @@ describe('Event-based Gateway', () => {
     getGraphElements().should('have.length', totalNumberOfValidElements);
   });
 
-  it('Only connect to intermdiate timer event', () => {
+  it('Only connect to intermediate timer event', () => {
     const eventBasedGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.eventBasedGateway, eventBasedGatewayPosition);
 
