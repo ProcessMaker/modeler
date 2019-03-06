@@ -113,7 +113,7 @@ describe('Modeler', () => {
     cy.get('[name=id]').should('have.value', 'node_1');
 
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
@@ -122,14 +122,14 @@ describe('Modeler', () => {
     typeIntoTextInput('[name=id]', 'node_3');
 
     const task2Position = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', task2Position);
+    dragFromSourceToDest(nodeTypes.task, task2Position);
     waitToRenderAllShapes();
     getElementAtPosition(task2Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_4');
 
     const task3Position = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', task3Position);
+    dragFromSourceToDest(nodeTypes.task, task3Position);
     waitToRenderAllShapes();
     getElementAtPosition(task3Position).click();
 
@@ -156,7 +156,7 @@ describe('Modeler', () => {
     /* Wait for modal to close */
     cy.wait(300);
 
-    dragFromSourceToDest(nodeTypes.task, '.paper-container', taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
