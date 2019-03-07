@@ -1,11 +1,13 @@
 <template>
   <div class="web-hook">
+    <label for="webHook">Web Hook</label>
     <input
-      class="web-book__input form-control"
       v-model="webHook"
-      label="Web Hook"
+      class="web-hook__input form-control"
+      name="webHook"
+      readonly
     >
-    <button class="web-hook__button">Copy to clipboard</button>
+    <button class="web-hook__button" @click="copyToClipboard">Copy to clipboard</button>
   </div>
 </template>
 
@@ -14,17 +16,13 @@
 export default {
   data() {
     return {
-      webHook: 'You copied',
+      webHook: 'https://www.google.com/',
     };
   },
-  computed: {
-    calledElementLabel() {
-      return 'Processes';
-    },
-  },
   methods: {
-    onChange(key, value) {
-      this.$emit('input', { [key]: value });
+    copyToClipboard() {
+      document.querySelector('.web-hook__input').select();
+      document.execCommand('copy');
     },
   },
 };
@@ -32,18 +30,12 @@ export default {
 
 <style lang="scss">
 .web-hook {
-    &__input {
-      margin-bottom: 0 !important;
-    }
-
     &__button {
       cursor: pointer;
       margin: 0;
       background: none;
       border: 0;
       color: #3397e1;
-      /* cursor: default; */
-      font: inherit;
       line-height: normal;
       overflow: visible;
       padding-bottom: 1rem;
