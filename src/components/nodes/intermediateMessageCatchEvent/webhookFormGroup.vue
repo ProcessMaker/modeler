@@ -16,7 +16,7 @@
 export default {
   data() {
     return {
-      webHook: 'https://www.google.com/',
+      webHook: 'https://processmaker.com/events/253223535435',
     };
   },
   methods: {
