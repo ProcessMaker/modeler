@@ -1,5 +1,5 @@
 import component from './callActivity';
-import CallActivityFormGroup from './CallActivityFormGroup';
+import CallActivityFormSelect from './CallActivityFormSelect';
 
 export const taskHeight = 76;
 
@@ -69,9 +69,10 @@ export default {
               },
             },
             {
-              component: CallActivityFormGroup,
+              component: CallActivityFormSelect,
               config: {
-                name: 'callActivityExpression',
+                label: 'Processes',
+                name: 'calledElement',
               },
             },
           ],

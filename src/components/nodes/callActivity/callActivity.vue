@@ -8,7 +8,6 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task';
-import squarePlusIcon from './squarePlus.svg';
 
 const labelPadding = 15;
 
@@ -63,13 +62,6 @@ export default {
         text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
         fill: 'black',
       },
-    });
-
-    const iconSize = 16;
-    this.shape.attr('image', {
-      xlinkHref:squarePlusIcon,
-      x: (bounds.width / 2) - (iconSize / 2),
-      y: bounds.height - 25,
     });
 
     this.shape.addTo(this.graph);
