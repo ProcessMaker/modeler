@@ -65,7 +65,6 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
-import debounce from 'lodash/debounce';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
@@ -577,8 +576,6 @@ export default {
     },
   },
   created() {
-    this.loadXML = debounce(this.loadXML.bind(this), 0, { leading: false });
-
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
       registerInspectorExtension: this.registerInspectorExtension,
