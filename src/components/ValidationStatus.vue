@@ -15,7 +15,7 @@
         </span>
       </div>
     </div>
-     <div class="status-bar-container d-flex align-items-center justify-content-end">
+    <div class="status-bar-container d-flex align-items-center justify-content-end">
       <span class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
         <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
         <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
