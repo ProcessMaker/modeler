@@ -60,6 +60,13 @@ export default {
                 name: 'name',
               },
             },
+            {
+              component: 'FormCheckbox',
+              config: {
+                label: 'Declare as global',
+                name: 'global',
+              },
+            },
           ],
         },
       ],

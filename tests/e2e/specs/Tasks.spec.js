@@ -24,4 +24,14 @@ describe('Tasks', () => {
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
   });
+
+  it('Can create call activity', () => {
+    const callActivityPosition = { x: 250, y: 250 };
+
+    dragFromSourceToDest(nodeTypes.callActivity, callActivityPosition);
+
+    waitToRenderAllShapes();
+
+    getElementAtPosition(callActivityPosition).should('exist');
+  });
 });

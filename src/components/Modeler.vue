@@ -203,7 +203,6 @@ export default {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
         process.set('id', `process_${this.processes.length}`);
-        process.set('isExecutable', false);
 
         this.definitions.get('rootElements').push(process);
       }
@@ -285,6 +284,8 @@ export default {
 
       this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
       this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
+
+      store.commit('setRootElements', this.definitions.rootElements);
 
       /* Get the diagram; there should only be one diagram. */
       this.plane = this.definitions.diagrams[0].plane;

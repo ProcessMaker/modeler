@@ -9,6 +9,7 @@ export { default as startEvent } from './startEvent';
 export { default as startTimerEvent } from './startTimerEvent';
 export { default as intermediateTimerEvent } from './intermediateTimerEvent';
 export { default as task } from './task';
+export { default as callActivity } from './callActivity';
 export { default as scriptTask } from './scriptTask';
 export { default as serviceTask } from './serviceTask';
 export { default as textAnnotation } from './textAnnotation';
