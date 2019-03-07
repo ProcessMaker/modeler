@@ -1,4 +1,5 @@
 import component from './intermediateMessageCatchEvent.vue';
+import webhookFormGroup from './webhookFormGroup.vue';
 
 export default {
   id: 'processmaker-modeler-intermediate-message-catch-timer-event',
@@ -10,7 +11,7 @@ export default {
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: 'Intermediate Message Catch Event',
+      name: '',
     });
   },
   diagram(moddle) {
@@ -58,6 +59,20 @@ export default {
                 label: 'Name',
                 helper: 'The Name of the Intermediate Message Catch Event',
                 name: 'name',
+              },
+            },
+            {
+              component: webhookFormGroup,
+              config: {
+                name: 'webhook',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Condition',
+                helper: 'Expression to be evaluated on webhook to activate event. Leave blank to accept always.',
+                condition: 'condition',
               },
             },
           ],
