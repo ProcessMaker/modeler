@@ -66,7 +66,17 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing();
+        this.validateOutgoing() &&
+        this.eventBasedGatewayTarget();
+    },
+    eventBasedGatewayTarget() {
+      const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetEventBasedGateway = this.targetNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetIntermediateTimerEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+      const isOneIntermediateTimerEvent = isTargetIntermediateTimerEvent && this.sourceNode.definition.get('outgoing').length === 0;
+      const oneIncomingFlow = isTargetEventBasedGateway && this.targetNode.definition.get('incoming').length > 0;
+
+      return (!isSourceEventBasedGateway && !oneIncomingFlow ) || isTargetIntermediateTimerEvent && isOneIntermediateTimerEvent;
     },
     hasTargetType() {
       return !!this.targetType;
