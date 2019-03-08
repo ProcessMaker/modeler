@@ -8,7 +8,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Message Catch Event', () => {
-
   beforeEach(() => {
     cy.loadModeler();
   });

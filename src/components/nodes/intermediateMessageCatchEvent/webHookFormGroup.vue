@@ -30,16 +30,15 @@ export default {
 
 <style lang="scss">
 .web-hook {
-    &__button {
-      cursor: pointer;
-      margin: 0;
-      background: none;
-      border: 0;
-      color: #3397e1;
-      line-height: normal;
-      overflow: visible;
-      padding-bottom: 1rem;
-    }
+  &__button {
+    cursor: pointer;
+    margin: 0;
+    background: none;
+    border: 0;
+    color: #3397e1;
+    line-height: normal;
+    overflow: visible;
+    padding-bottom: 1rem;
+  }
 }
 </style>
-
