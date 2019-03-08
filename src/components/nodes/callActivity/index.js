@@ -1,18 +1,20 @@
-import component from './task.vue';
+import component from './callActivity';
+import CallActivityFormSelect from './CallActivityFormSelect';
 
 export const taskHeight = 76;
 
 export default {
-  id: 'processmaker-modeler-task',
+  id: 'processmaker-modeler-call-activity',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask'],
+  bpmnType: ['bpmn:Task', 'bpmn:CallActivity'],
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/task.svg'),
-  label: 'Task',
+  icon: require('@/assets/toolpanel/callActivity.svg'),
+  label: 'Call Activity',
   definition(moddle) {
-    return moddle.create('bpmn:Task', {
-      name: 'New Task',
+    return moddle.create('bpmn:CallActivity', {
+      name: 'New Call Activity',
+      calledElement: '',
     });
   },
   diagram(moddle) {
@@ -23,14 +25,28 @@ export default {
       }),
     });
   },
+  inspectorHandler(value, node, setNodeProp) {
+    for (const key in value) {
+      if (node.definition[key] === value[key]) {
+        continue;
+      }
+
+      if (key === 'callActivityExpression') {
+        this.inspectorHandler(value[key], node, setNodeProp);
+        continue;
+      }
+
+      setNodeProp(node, key, value[key]);
+    }
+  },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Call Activity',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Task',
+            label: 'Call Activity',
             fontSize: '2em',
           },
         },
@@ -53,18 +69,10 @@ export default {
               },
             },
             {
-              component: 'FormInput',
+              component: CallActivityFormSelect,
               config: {
-                label: 'Name',
-                helper: 'The Name of the Task',
-                name: 'name',
-              },
-            },
-            {
-              component: 'FormCheckbox',
-              config: {
-                label: 'Declare as global',
-                name: 'global',
+                label: 'Processes',
+                name: 'calledElement',
               },
             },
           ],

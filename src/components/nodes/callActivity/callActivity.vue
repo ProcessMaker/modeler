@@ -7,7 +7,7 @@ import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import TaskShape from '@/components/nodes/task/shape';
-import { taskHeight } from './index';
+import { taskHeight } from '@/components/nodes/task';
 
 const labelPadding = 15;
 
@@ -42,6 +42,9 @@ export default {
         this.shape.resize(width, newHeight);
       }
     },
+    'node.definition.callActivityType'(callActivityType) {
+      this.shape.attr('image/display', callActivityType === 'globalTask' ? 'none' : 'initial');
+    },
   },
   mounted() {
     this.shape = new TaskShape();
@@ -53,6 +56,7 @@ export default {
       body: {
         rx: 8,
         ry: 8,
+        strokeWidth: 4,
       },
       label: {
         text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),

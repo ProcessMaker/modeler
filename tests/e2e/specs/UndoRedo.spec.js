@@ -38,6 +38,7 @@ describe('Undo/redo', () => {
     typeIntoTextInput('[name="conditionExpression.body"]', testString);
     cy.get('[name="conditionExpression.body"]').should('have.value', testString);
 
+    cy.get('.paper-container').click({ force: true });
     cy.get('[data-test=undo]').click();
 
     waitToRenderAllShapes();

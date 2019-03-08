@@ -5,6 +5,7 @@ import {
   connectNodesWithFlow,
   getElementAtPosition,
   typeIntoTextInput,
+  waitToRenderNodeUpdates,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -160,5 +161,34 @@ describe('Modeler', () => {
     getElementAtPosition(taskPosition).click();
 
     cy.get('[name=id]').should('have.value', 'node_1');
+  });
+
+  it('Validates gateway direction', () => {
+    const gatewayPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
+    waitToRenderAllShapes();
+
+    cy.contains('Validate BPMN').click();
+    cy.get('[data-test=validation-list-toggle]').click();
+
+    cy.get('[data-test=validation-list]').then($lsit => {
+      expect($lsit).to.contain('Gateway must have multiple outgoing Sequence Flows');
+    });
+
+    cy.get('[data-test=validation-list-toggle]').click();
+
+    getElementAtPosition(gatewayPosition).click();
+
+    cy.get('[name=gatewayDirection]').select('converging');
+
+    waitToRenderNodeUpdates();
+
+    cy.contains('Validate BPMN').click();
+
+    cy.get('[data-test=validation-list-toggle]').click();
+
+    cy.get('[data-test=validation-list]').then($lsit => {
+      expect($lsit).to.contain('Gateway must have multiple incoming Sequence Flows');
+    });
   });
 });

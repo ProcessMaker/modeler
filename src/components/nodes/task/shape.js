@@ -1,7 +1,6 @@
 import joint from 'jointjs';
 
 export default joint.shapes.standard.Rectangle.extend({
-
   markup: [{
     tagName: 'rect',
     selector: 'body',
@@ -14,7 +13,6 @@ export default joint.shapes.standard.Rectangle.extend({
   }],
 
   defaults: joint.util.deepSupplement({
-
     type: 'processmaker.components.nodes.task.Shape',
     size: { width: 100, height: 60 },
     attrs: {
@@ -22,4 +20,4 @@ export default joint.shapes.standard.Rectangle.extend({
     },
 
   }, joint.shapes.standard.Rectangle.prototype.defaults),
-}); 
+});
