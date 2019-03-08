@@ -14,6 +14,7 @@ import {
   startTimerEvent,
   intermediateTimerEvent,
   task,
+  callActivity,
   scriptTask,
   serviceTask,
   textAnnotation,
@@ -24,6 +25,7 @@ import {
 const nodeTypes = [
   endEvent,
   task,
+  callActivity,
   scriptTask,
   serviceTask,
   exclusiveGateway,

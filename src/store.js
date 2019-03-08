@@ -9,6 +9,7 @@ export default new Vuex.Store({
     paper: null,
     highlightedNode: null,
     nodes: [],
+    rootElements: [],
   },
   getters: {
     nodes: state => state.nodes,
@@ -16,8 +17,12 @@ export default new Vuex.Store({
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
+    rootElements: state => state.rootElements,
   },
   mutations: {
+    setRootElements(state, rootElements) {
+      state.rootElements = rootElements;
+    },
     updateNodeBounds(state, { node, bounds }) {
       Object.entries(bounds).forEach(([key, val]) => {
         if (key === '$type') {

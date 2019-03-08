@@ -63,7 +63,6 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
-import debounce from 'lodash/debounce';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
@@ -207,7 +206,6 @@ export default {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
         process.set('id', `process_${this.processes.length}`);
-        process.set('isExecutable', false);
 
         this.definitions.get('rootElements').push(process);
       }
@@ -289,6 +287,8 @@ export default {
 
       this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
       this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
+
+      store.commit('setRootElements', this.definitions.rootElements);
 
       /* Get the diagram; there should only be one diagram. */
       this.plane = this.definitions.diagrams[0].plane;
@@ -580,8 +580,6 @@ export default {
     },
   },
   created() {
-    this.loadXML = debounce(this.loadXML.bind(this), 0, { leading: false });
-
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
       registerInspectorExtension: this.registerInspectorExtension,

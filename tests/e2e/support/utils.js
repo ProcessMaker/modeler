@@ -58,11 +58,15 @@ export function getCrownButtonForElement($element, crownButton) {
 
 export function typeIntoTextInput(selector, value) {
   cy.get(selector).clear().type(value);
-  cy.wait(saveDebounce);
+  waitToRenderNodeUpdates();
 }
 
 export function waitToRenderAllShapes() {
   cy.wait(100);
+}
+
+export function waitToRenderNodeUpdates() {
+  cy.wait(saveDebounce);
 }
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition) {
