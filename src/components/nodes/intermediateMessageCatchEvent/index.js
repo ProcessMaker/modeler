@@ -1,7 +1,7 @@
 import component from './intermediateMessageCatchEvent.vue';
 
 export default {
-  id: 'processmaker-modeler-intermediate-message-catch-timer-event',
+  id: 'processmaker-modeler-intermediate-message-catch-event',
   component,
   bpmnType: 'bpmn:IntermediateCatchEvent',
   control: true,
