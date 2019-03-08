@@ -3,8 +3,9 @@
     <label for="webHook">Web Hook</label>
     <input
       v-model="webHook"
-      class="web-hook__input form-control"
+      class="form-control"
       name="webHook"
+      ref="text"
       readonly
     >
     <button class="web-hook__button" @click="copyToClipboard">Copy to clipboard</button>
@@ -21,7 +22,7 @@ export default {
   },
   methods: {
     copyToClipboard() {
-      document.querySelector('.web-hook__input').select();
+      this.$refs.text.select();
       document.execCommand('copy');
     },
   },
