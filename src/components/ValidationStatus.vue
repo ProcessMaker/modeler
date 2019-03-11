@@ -15,12 +15,17 @@
         </span>
       </div>
     </div>
+
     <div class="status-bar-container d-flex align-items-center justify-content-end">
-      <span class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
+      <b-form-checkbox switch v-model="autoValidate">Auto validate</b-form-checkbox>
+
+      <div class="divider"/>
+
+      <div class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
         <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
         <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
         <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -28,6 +33,7 @@
 <script>
 import { faCheckCircle, faTimesCircle, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import store from '@/store';
 
 export default {
   components : {
@@ -43,6 +49,14 @@ export default {
     };
   },
   computed: {
+    autoValidate: {
+      get() {
+        return store.getters.autoValidate;
+      },
+      set(autoValidate) {
+        store.commit('setAutoValidate', autoValidate);
+      },
+    },
     errorList() {
       return Object.entries(this.validationErrors).reduce((errorList, [ errorKey, errors ]) => {
         const errorListItems = errors.map((error) => {
@@ -112,7 +126,6 @@ $error-category-width: 1rem;
 $validation-container-height: 20rem;
 $validation-container-width: 28rem;
 $status-bar-container-height: 3rem;
-$status-bar-container-width: 16rem;
 $error-color: #D9534F;
 $warning-color: #F0AD4E;
 $button-color: #3BD7FF;
@@ -121,22 +134,26 @@ $button-color: #3BD7FF;
   font-size: $text-size-sm;
   color: $seconadry-grey;
   height: $status-bar-container-height;
-  width: $status-bar-container-width;
   cursor: pointer;
 
   &__status {
     cursor: pointer;
   }
 
-  &__status-ellipsis {
-    &:hover {
-      color: $secondary-blue;
-    }
+  &__status-ellipsis:hover {
+    color: $secondary-blue;
   }
 
   &__status-icon {
     margin: 0 0.75rem;
   }
+}
+
+.divider {
+  height: 1.25rem;
+  width: 2px;
+  background: #d4d4d4;
+  margin: 0 1rem;
 }
 
 .validation-container {

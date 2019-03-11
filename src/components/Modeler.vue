@@ -127,11 +127,19 @@ export default {
     };
   },
   watch: {
+    autoValidate(autoValidate) {
+      if (autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
     currentXML() {
-      this.validateBpmnDiagram();
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
     },
   },
   computed: {
+    autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
     canUndo() {
       return undoRedoStore.getters.canUndo;
