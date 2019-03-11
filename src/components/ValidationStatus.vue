@@ -21,7 +21,7 @@
 
       <div class="divider"/>
 
-      <div class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
+      <div data-test="validation-list-toggle" class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
         <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
         <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
         <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />

@@ -168,7 +168,6 @@ describe('Modeler', () => {
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
     waitToRenderAllShapes();
 
-    cy.contains('Validate BPMN').click();
     cy.get('[data-test=validation-list-toggle]').click();
 
     cy.get('[data-test=validation-list]').then($lsit => {
@@ -182,8 +181,6 @@ describe('Modeler', () => {
     cy.get('[name=gatewayDirection]').select('converging');
 
     waitToRenderNodeUpdates();
-
-    cy.contains('Validate BPMN').click();
 
     cy.get('[data-test=validation-list-toggle]').click();
 
