@@ -30,7 +30,7 @@ describe('Sequence Flows', () => {
       });
   });
 
-  it('Have the highest z-index', () => {
+  it.skip('Have the highest z-index', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
     const poolPosition = { x: 150, y: 150 };
