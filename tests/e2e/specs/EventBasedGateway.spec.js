@@ -47,31 +47,6 @@ describe('Event-based Gateway', () => {
     getGraphElements().should('have.length', totalNumberOfElements);
   });
 
-  it('Only can connect to intermediate timer event', () => {
-    const eventBasedGatewayPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.eventBasedGateway, eventBasedGatewayPosition);
-
-    const startEventPosition = { x: 150, y: 150 };
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, eventBasedGatewayPosition);
-
-    const intermediateCatchEventPosition = { x: 500, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-
-    connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, intermediateCatchEventPosition);
-
-    const secondIntermediateCatchEventPosition = { x: 500, y: 350 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, secondIntermediateCatchEventPosition);
-
-    waitToRenderAllShapes();
-
-    const totalNumberOfValidElements = 6;
-    getGraphElements().should('have.length', totalNumberOfValidElements);
-
-    connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, secondIntermediateCatchEventPosition);
-
-    getGraphElements().should('have.length', totalNumberOfValidElements);
-  });
-
   it('Only connect to intermdiate catch events', () => {
     const eventBasedGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.eventBasedGateway, eventBasedGatewayPosition);
