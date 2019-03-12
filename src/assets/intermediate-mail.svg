@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="18px" viewBox="0 0 30 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>intermediate-mail</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="intermediate-mail" stroke="#000000">
+            <rect id="Rectangle" x="0.5" y="0.5" width="29" height="17"></rect>
+            <path d="M1.23333333,1.26470588 L15,10" id="Line" stroke-linecap="square"></path>
+            <path d="M15.2333333,1.26470588 L29,10" id="Line-Copy" stroke-linecap="square" transform="translate(22.000000, 5.500000) scale(-1, 1) translate(-22.000000, -5.500000) "></path>
+        </g>
+    </g>
+</svg>
