@@ -6,6 +6,9 @@ import {
   getElementAtPosition,
   typeIntoTextInput,
   waitToRenderNodeUpdates,
+  getLinksConnectedToElement,
+  isElementCovered,
+  getCrownButtonForElement,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -190,5 +193,35 @@ describe('Modeler', () => {
     cy.get('[data-test=validation-list]').then($lsit => {
       expect($lsit).to.contain('Gateway must have multiple incoming Sequence Flows');
     });
+  });
+
+  it('Adding a pool and lanes does not overlap sequence flow', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const taskPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
+
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+
+    const poolPosition = { x: 150, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .then(isElementCovered)
+      .should(isCovered => expect(isCovered).to.be.false);
+
+    getElementAtPosition(poolPosition)
+      .click({ force: true })
+      .then($pool => getCrownButtonForElement($pool, 'lane-above-button'))
+      .click();
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .then(isElementCovered)
+      .should(isCovered => expect(isCovered).to.be.false);
   });
 });
