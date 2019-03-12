@@ -80,7 +80,6 @@ export default {
       const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
       const isTargetEventBasedGateway = this.targetNode.definition.$type === 'bpmn:EventBasedGateway';
       const isTargetIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
-      const isOneIntermediateTimerEvent = isTargetIntermediateCatchEvent && this.sourceNode.definition.get('outgoing').length === 0;
       const isOneIncomingFlow = isTargetEventBasedGateway && this.targetNode.definition.get('incoming').length > 0;
 
       return (!isSourceEventBasedGateway && !isOneIncomingFlow ) || isTargetIntermediateCatchEvent;
