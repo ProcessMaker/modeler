@@ -47,14 +47,14 @@ describe('Event-based Gateway', () => {
     getGraphElements().should('have.length', totalNumberOfElements);
   });
 
-  it('Only can connect to one intermediate timer event', () => {
+  it('Only can connect to intermediate timer event', () => {
     const eventBasedGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.eventBasedGateway, eventBasedGatewayPosition);
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, eventBasedGatewayPosition);
 
-    const intermediateCatchEventPosition = { x: 350, y: 250 };
+    const intermediateCatchEventPosition = { x: 500, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
     connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, intermediateCatchEventPosition);
@@ -72,23 +72,26 @@ describe('Event-based Gateway', () => {
     getGraphElements().should('have.length', totalNumberOfValidElements);
   });
 
-  it('Only connect to intermdiate timer event', () => {
+  it('Only connect to intermdiate catch events', () => {
     const eventBasedGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.eventBasedGateway, eventBasedGatewayPosition);
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, eventBasedGatewayPosition);
 
-    const intermediateCatchEventPosition = { x: 350, y: 250 };
+    const intermediateCatchEventPosition = { x: 500, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-
     connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, intermediateCatchEventPosition);
 
-    const endEventPosition = { x: 450, y: 350 };
+    const intermediateMessageCatchEventPosition = { x: 500, y: 100 };
+    dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
+    connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, intermediateMessageCatchEventPosition);
+
+    const endEventPosition = { x: 500, y: 350 };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
     connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, endEventPosition);
 
-    const totalNumberOfValidElements = 6;
+    const totalNumberOfValidElements = 8;
     getGraphElements().should('have.length', totalNumberOfValidElements);
 
     getElementAtPosition(endEventPosition)
