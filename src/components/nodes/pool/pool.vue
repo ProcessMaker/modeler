@@ -1,6 +1,5 @@
 <template>
-  <div>
-  </div>
+  <div/>
 </template>
 
 <script>
@@ -141,6 +140,7 @@ export default {
       lanes.push(this.pushNewLane());
 
       await Promise.all(lanes);
+      this.$emit('set-shape-stacking', this.shape);
       this.$emit('save-state');
     },
     createLaneSet() {
@@ -183,12 +183,6 @@ export default {
 
         if (elementBounds.x && elementBounds.y) {
           /* If lane already has a position, don't re-position or re-size it. */
-          this.shape.getEmbeddedCells()
-            .filter(cell => {
-              return cell.component && cell.component.node.type !== laneId;
-            })
-            .forEach(cell => cell.toFront());
-
           return;
         }
 
@@ -223,8 +217,6 @@ export default {
             this.shape.unembed(laneElement);
             this.shape.embed(laneElement);
           }
-
-          laneElement.toFront({ deep: true });
         });
 
         const { x, y } = element.position();
@@ -362,11 +354,10 @@ export default {
         .filter(({ component }) => component && component !== this)
         .forEach(({ component }) => {
           this.shape.embed(component.shape);
-          component.shape.toFront({ deep: true });
           component.node.pool = this.shape;
-          component.node.pool.toBack();
         });
 
+      this.$emit('set-shape-stacking', this.shape);
       this.resizePool();
     },
     fitEmbeds() {
@@ -540,7 +531,6 @@ export default {
           cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
         ) {
           draggingElement = cellView.model;
-          draggingElement.toFront({ deep: true });
         }
       });
 

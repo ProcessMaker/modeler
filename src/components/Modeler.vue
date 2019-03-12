@@ -54,6 +54,7 @@
       @unsetPools="unsetPools"
       @setPools="setPools"
       @save-state="pushToUndoStack"
+      @set-shape-stacking="setShapeStacking"
     />
   </div>
 </template>
@@ -575,6 +576,45 @@ export default {
         type: startEvent.id,
       });
     },
+    isBpmnNode(shape) {
+      return shape.component != null;
+    },
+    isNotLane(shape) {
+      return shape.component.node.type !== laneId;
+    },
+    bringPoolToFront(poolShape) {
+      this.bringShapeToFront(poolShape);
+      poolShape.getEmbeddedCells()
+        .filter(this.isBpmnNode)
+        .filter(this.isNotLane)
+        .forEach(this.bringShapeToFront);
+    },
+    bringShapeToFront(shape) {
+      shape.toFront({ deep: true });
+
+      this.graph.getConnectedLinks(shape)
+        .forEach(link => link.toFront());
+    },
+    getElementPool(shape) {
+      return shape.component.node.pool;
+    },
+    isPool(shape) {
+      return shape.component.node.type === poolId;
+    },
+    setShapeStacking(shape) {
+      if (this.isPool(shape)) {
+        this.bringPoolToFront(shape);
+      }
+
+      const parentPool = this.getElementPool(shape);
+      if (parentPool) {
+        this.bringPoolToFront(parentPool);
+      }
+
+      if (this.isNotLane(shape) && !this.isPool(shape)) {
+        this.bringShapeToFront(shape);
+      }
+    },
   },
   created() {
     /* Initialize the BpmnModdle and its extensions */
@@ -642,35 +682,15 @@ export default {
     });
 
     this.paper.on('cell:pointerdown', cellView => {
-      if (cellView.model.component) {
-        cellView.model.toFront({ deep: true });
+      const shape = cellView.model;
 
-        /* If the element belongs to a pool, bring the pool to the front as well */
-        if (cellView.model.component.node.pool) {
-          const poolShape = cellView.model.component.node.pool;
-
-          poolShape.toFront({ deep: true });
-          poolShape.getEmbeddedCells()
-            .filter(cell => {
-              return cell.component && cell.component.node.type !== laneId;
-            })
-            .forEach(cell => cell.toFront());
-        }
-
-        if (cellView.model.component.node.type === poolId) {
-          cellView.model.getEmbeddedCells()
-            .filter(cell => {
-              return cell.component && cell.component.node.type !== laneId;
-            })
-            .forEach(cell => cell.toFront());
-        }
-
-        this.graph
-          .getLinks()
-          .forEach(link => link.toFront());
-
-        cellView.model.component.$emit('click');
+      if (!this.isBpmnNode(shape)) {
+        return;
       }
+
+      this.setShapeStacking(shape);
+
+      shape.component.$emit('click');
     });
 
     /* Register custom nodes */
