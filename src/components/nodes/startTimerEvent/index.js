@@ -44,7 +44,7 @@ export default {
       }
 
       if (key === 'eventDefinitions') {
-        const { body } = value[key];
+        const body = value[key];
 
         const expression = definition.get(key)[0].timeCycle;
         if (expression && expression.body === body) {

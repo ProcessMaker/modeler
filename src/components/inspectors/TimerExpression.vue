@@ -90,7 +90,7 @@ export default {
     Datepicker,
   },
   props: {
-    value: String,
+    value: Array,
     hasEnds: {
       type: Boolean,
       default: true,
@@ -234,7 +234,7 @@ export default {
       }
       try {
         let date, hasStartDate = false;
-        const expression = value.split('|');
+        const expression = value[0].timeCycle.body.split('|');
         expression.forEach(exp => {
           if (exp.substr(0, 1) !== 'R') {
             date = this.parseDateExpression(exp);
