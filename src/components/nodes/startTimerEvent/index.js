@@ -44,15 +44,22 @@ export default {
       }
 
       if (key === 'eventDefinitions') {
-        // Set the timer event definition
+        const { body } = value[key];
+
+        const expression = definition.get(key)[0].timeCycle;
+        if (expression && expression.body === body) {
+          continue;
+        }
+
+        const eventDefinition = {
+          timeCycle: moddle.create('bpmn:Expression', { body }),
+        };
+
         const eventDefinitions = [
-          moddle.create('bpmn:TimerEventDefinition', {
-            timeCycle: moddle.create('bpmn:Expression', {
-              body: value[key][0].timeCycle.body,
-            }),
-          }),
+          moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
+
       } else {
         setNodeProp(node, key, value[key]);
       }
