@@ -193,7 +193,7 @@ export default {
   watch: {
     value: {
       handler(value) {
-        return this.parseTimerConfig(value);
+        this.parseTimerConfig(value);
       },
       immediate: true,
     },
