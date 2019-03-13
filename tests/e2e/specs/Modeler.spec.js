@@ -179,7 +179,7 @@ describe('Modeler', () => {
 
     getElementAtPosition(gatewayPosition).click();
 
-    cy.get('[name=gatewayDirection]').select('converging');
+    cy.get('[name=gatewayDirection]').select('Converging');
 
     waitToRenderNodeUpdates();
 
