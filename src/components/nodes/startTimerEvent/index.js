@@ -119,7 +119,7 @@ export default {
               config: {
                 label: 'Name',
                 helper: 'The Name of the Start Event',
-                name: 'eventDefinitions.0.timeCycle.body',
+                name: 'eventDefinitions',
               },
             },
           ],
