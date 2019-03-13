@@ -167,11 +167,17 @@ export default {
     };
   },
   computed: {
-    /**
-     * ISO 8601 expression that represents the timer configuration
-     */
-    expression() {
-      return this.makeTimerConfig();
+    iso8606Expression() {
+      const expression = [];
+      if (this.hasMultipleWeekdaySelected()) {
+        expression.push(this.getDateTime(this.startDate, this.startTime));
+        this.selectedWeekdays.forEach(day => {
+          expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
+        });
+      } else {
+        expression.push(this.getCycle(this.startDate));
+      }
+      return expression.join('|');
     },
     /**
      * Array of week days the user selected
@@ -215,7 +221,7 @@ export default {
       this.update();
     },
     update() {
-      this.$emit('input', this.expression);
+      this.$emit('input', this.iso8606Expression);
     },
     parseDateExpression(exp) {
       const date = new Date(exp);
@@ -288,21 +294,6 @@ export default {
       return this.periodicity === 'week'
         && this.selectedWeekdays.length > 0
         && !this.sameDay;
-    },
-    /**
-     * Build a ISO8601 expression from the timer configuration
-     */
-    makeTimerConfig() {
-      const expression = [];
-      if (this.hasMultipleWeekdaySelected()) {
-        expression.push(this.getDateTime(this.startDate, this.startTime));
-        this.selectedWeekdays.forEach(day => {
-          expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
-        });
-      } else {
-        expression.push(this.getCycle(this.startDate));
-      }
-      return expression.join('|');
     },
     getCycle(startDate) {
       return this.makeCycle(
