@@ -383,10 +383,9 @@ export default {
         return;
       }
 
-      const type = this.parsers[definition.$type]
-        .reduce((type, parser) => {
-          return parser(definition, this.moddle) || type;
-        }, null);
+      const type = this.parsers[definition.$type].reduce((type, parser) => {
+        return parser(definition, this.moddle) || type;
+      }, null);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;
