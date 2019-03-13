@@ -65,3 +65,12 @@ Cypress.Commands.add('getPosition', {
       };
     });
 });
+
+Cypress.Commands.add('getType', {
+  prevSubject: 'element',
+}, element => {
+  cy.window()
+    .its('store.state.paper')
+    .invoke('getModelById', element.attr('model-id'))
+    .then(shape => shape.component.node.type);
+});
