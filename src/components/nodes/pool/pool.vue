@@ -444,7 +444,7 @@ export default {
     },
   },
   mounted() {
-    this.$emit('setPools', this.node.definition);
+    this.$emit('set-pools', this.node.definition);
     this.laneSet = this.containingProcess.get('laneSets')[0];
 
     this.shape = new joint.shapes.processmaker.modeler.bpmn.pool();
@@ -574,7 +574,7 @@ export default {
     pull(participants, this.node.definition);
 
     if (! this.hasPools()) {
-      this.$emit('unsetPools');
+      this.$emit('unset-pools');
     } else {
       pull(this.rootElements, this.containingProcess);
     }

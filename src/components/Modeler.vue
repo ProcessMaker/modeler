@@ -51,8 +51,8 @@
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
       @click="highlightNode(node)"
-      @unsetPools="unsetPools"
-      @setPools="setPools"
+      @unset-pools="unsetPools"
+      @set-pools="setPools"
       @save-state="pushToUndoStack"
       @set-shape-stacking="setShapeStacking"
     />
