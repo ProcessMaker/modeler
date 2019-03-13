@@ -58,8 +58,8 @@ export default {
         const eventDefinitions = [
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
-        setNodeProp(node, 'eventDefinitions', eventDefinitions);
 
+        setNodeProp(node, 'eventDefinitions', eventDefinitions);
       } else {
         setNodeProp(node, key, value[key]);
       }

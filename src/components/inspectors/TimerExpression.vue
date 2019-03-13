@@ -4,12 +4,12 @@
     <div>
       <datepicker
         v-model="startDate"
-        calendar-class="calendar" format="yyyy-MM-dd"
+        calendar-class="calendar"
+        format="yyyy-MM-dd"
         input-class="form-control start-date"
         class="start-date-div"
-        @selected="updateStartDate"
       />
-      <select v-model="startTime" class="form-control control time" @change="update">
+      <select v-model="startTime" class="form-control control time">
         <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
       </select>
     </div>
@@ -17,8 +17,8 @@
     <template v-if="hasRepeat">
       <label>{{ repeatLabel }}</label>
       <div>
-        <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
-        <select v-model="periodicity" class="form-control control periodicity" @change="update">
+        <input type="number" min="1" class="form-control control repeat" v-model="repeat">
+        <select v-model="periodicity" class="form-control control periodicity">
           <option value="day">day</option>
           <option value="week">week</option>
           <option value="month">month</option>
@@ -27,7 +27,7 @@
       </div>
     </template>
 
-    <div v-if="periodicity==='week'">
+    <div v-if="periodicity === 'week'">
       <label>{{ weekLabel }}</label>
       <div>
         <span
@@ -36,7 +36,7 @@
           class="badge badge-pill weekday"
           :class="weekdayStyle(day)"
           :data-test="`day-${ index }`"
-          @click="clickWeekDay(day);update()"
+          @click="clickWeekDay(day)"
         >
           {{ day.initial }}
         </span>
@@ -48,25 +48,24 @@
       <div>
         <div class="form-check">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends" @change="update">Never
+            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">Never
           </label>
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On
+            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">On
           </label>
-          <datepicker v-model="endDate" calendar-class="calendar" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
+          <datepicker v-model="endDate" calendar-class="calendar" :disabled="ends !== 'ondate'" format="yyyy-MM-dd"
             input-class="form-control end-date"
             class="control calendaron"
-            :class="{'date-disabled' : ends!=='ondate'}"
-            @selected="updateEndDate"
+            :class="{'date-disabled' : ends !== 'ondate'}"
           />
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
+            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">After
           </label>
-          <input v-model="times" type="number" min="0" :disabled="ends!=='after'" class="form-control control after" @change="update">
+          <input v-model="times" type="number" min="0" :disabled="ends !== 'after'" class="form-control control after">
           <label class="occurrences">occurrences</label>
         </div>
       </div>
@@ -203,6 +202,9 @@ export default {
       },
       immediate: true,
     },
+    iso8606Expression() {
+      this.update();
+    },
   },
   methods: {
     weekdayStyle(day) {
@@ -211,14 +213,6 @@ export default {
         'badge-light': !(day.selected && !this.sameDay),
         'border border-primary': this.startDate.getDay() === (day.day % 7),
       };
-    },
-    updateStartDate(date) {
-      this.startDate = date;
-      this.update();
-    },
-    updateEndDate(date) {
-      this.endDate = date;
-      this.update();
     },
     update() {
       this.$emit('input', this.iso8606Expression);
