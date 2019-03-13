@@ -93,9 +93,9 @@ export function isElementCovered($element) {
 
       return cy.window()
         .its('store.state.paper')
-        .invoke('findViewByModel', { id: $element.attr('model-id') })
-        .then(shapeView => {
-          const shapeZIndex = shapeView.model.get('z');
+        .invoke('getModelById', $element.attr('model-id'))
+        .then(shape => {
+          const shapeZIndex = shape.get('z');
 
           return zIndexes.some(zIndex => shapeZIndex < zIndex);
         });
