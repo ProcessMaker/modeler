@@ -14,6 +14,7 @@ export default {
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {
           id: '',
+          ['pm:dataName']: '',
         }),
       ],
     });
@@ -63,6 +64,22 @@ export default {
                 label: 'Name',
                 helper: 'The Name of the Intermediate Message Catch Event',
                 name: 'name',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Message Event Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'id',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Data Name',
+                helper: 'The Name of the data name',
+                name: 'pm:dataName',
               },
             },
           ],
