@@ -1,26 +1,44 @@
 import {
   intermediateMessageCatchEvent,
 } from '@/components/nodes';
-import webHookFormGroup from '../../components/nodes/intermediateMessageCatchEvent/webHookFormGroup.vue';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }) => {
 
-  /* Add custom properties to inspector */
   registerInspectorExtension(intermediateMessageCatchEvent, {
-    id: 'pm-web-hook',
-    component: webHookFormGroup,
+    id: 'pm-allowed-users',
+    component: 'FormSelect',
     config: {
-      name: 'pm:webHook',
+      label: 'Allowed Users',
+      helper: 'Select allowed users',
+      name: 'pm:allowedUsers',
+      options: [
+        {},
+        { value: '1,10', content: '1,10' },
+      ],
     },
   });
 
   registerInspectorExtension(intermediateMessageCatchEvent, {
-    id: 'pm-condition',
+    id: 'pm-allowed-groups',
+    component: 'FormSelect',
+    config: {
+      label: 'Allowed Groups',
+      helper: 'Select allowed groups',
+      name: 'pm:allowedGroups',
+      options: [
+        {},
+        { value: '20,30', content: '20,30' },
+      ],
+    },
+  });
+
+  registerInspectorExtension(intermediateMessageCatchEvent, {
+    id: 'pm-whitelist',
     component: 'FormInput',
     config: {
-      label: 'Condition',
-      helper: 'Expression to be evaluated on webhook to activate event. Leave blank to accept always.',
-      name: 'pm:condition',
+      label: 'Whitelist',
+      helper: 'IP/Domain whitelist',
+      name: 'pm:whitelist',
     },
   });
 });

@@ -9,11 +9,12 @@ export default {
   icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
-    let intermediateCatchEventDefinition = moddle.create('bpmn:IntermediateCatchEvent', {
+    return moddle.create('bpmn:IntermediateCatchEvent', {
       name: '',
+      // messageEventDefinition:  moddle.create('bpmn:MessageEventDefinition', {
+      //   id: 'something',
+      // }),
     });
-
-    return intermediateCatchEventDefinition;
   },
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
