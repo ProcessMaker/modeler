@@ -1,6 +1,6 @@
 <template>
   <div class="tool-panel" ref="panel">
-    <div class="header" @mousedown="startDrag"></div>
+    <div class="header" @mousedown="startDrag"/>
     <drag :transfer-data="{ type: 'task' }">
       <div class="tool">
         <img src="../assets/toolpanel/task.svg">
