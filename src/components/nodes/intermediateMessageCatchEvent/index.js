@@ -10,10 +10,12 @@ export default {
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: '',
-      // messageEventDefinition:  moddle.create('bpmn:MessageEventDefinition', {
-      //   id: 'something',
-      // }),
+      name: 'Intermediate Timer Event',
+      eventDefinitions: [
+        moddle.create('bpmn:MessageEventDefinition', {
+          id: '',
+        }),
+      ],
     });
   },
   diagram(moddle) {
