@@ -10,6 +10,7 @@
   - [Global event bus](#global-event-bus)
     - [`modeler-init`](#modeler-init)
     - [`modeler-start`](#modeler-start)
+  - [Undo/redo store](#undoredo-store)
 
 ## Project setup
 
@@ -101,3 +102,7 @@ window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
 ```
 
 For the modeler to function correctly, `loadXML` must be called when the application loads.
+
+### Undo/redo store
+
+The undo/redo feature is implemented using [Vuex](https://vuex.vuejs.org/), with the undo/redo Vuex store initialized in `src/undoRedoStore.js`. The undo/redo store keeps track of every change in the underlying BPMN XML, recording a copy of the XML string in a stack. Traversing the undo/redo stack simply uses the `loadXML` function to load the XML string from the current position in the stack.
