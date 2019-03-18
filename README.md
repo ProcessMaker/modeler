@@ -25,7 +25,7 @@ npm run build
 # Compile the app to be distributed as an npm package
 npm run build-bundle
 
-# Report and fixe ESLint errors
+# Report and fix ESLint errors
 npm run lint
 ```
 
@@ -52,5 +52,33 @@ The [entry point](https://webpack.js.org/configuration/entry-context/#entry) for
 `window.ProcessMaker.EventBus` points to an independent Vue instance which acts as the application's global event bus. The modeler currently emits two events on the event bus which can be listened to in application code to hook into, customize, and extend the modeler's behaviour: `modeler-init`, and `modeler-start`.
 
 #### `modeler-init`
+
+This event is fired before the modeler and [BpmnModdle](https://github.com/bpmn-io/bpmn-moddle) are set up and mounted. Listeners to this event are passed an object with three methods: `registerInspectorExtension`, `registerBpmnExtension`, and `registerNode`.
+
+```javascript
+import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker.json';
+import { intermediateMessageCatchEvent } from '@/components/nodes';
+
+window.ProcessMaker.EventBus.$on('modeler-init', ({ registerBpmnExtension, registerNode, registerInspectorExtension }) => {
+
+  /* Add a BPMN extension */
+  registerBpmnExtension('pm', bpmnExtension);
+
+  /* Register a component to be used in the modeler */
+  registerNode(intermediateMessageCatchEvent);
+
+  /* Add custom properties to inspector */
+  registerInspectorExtension(intermediateMessageCatchEvent, {
+    id: 'pm-condition',
+    component: 'FormInput',
+    config: {
+      label: 'Condition',
+      helper: 'Expression to be evaluated on webhook to activate event. Leave blank to accept always.',
+      name: 'pm:condition',
+    },
+  });
+
+});
+```
 
 #### `modeler-start`
