@@ -12,7 +12,7 @@
     - [`modeler-start`](#modeler-start)
   - [Undo/redo store](#undoredo-store)
 - [Examples](#examples)
-  - [Adding a new component](#adding_a_new_component)
+  - [Adding a new component](#adding-a-new-component)
 
 ## Project setup
 
