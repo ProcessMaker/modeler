@@ -89,3 +89,15 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerBpmnExtension, regis
 ```
 
 #### `modeler-start`
+
+This event is fired after the modeler has been set up and mounted. Listeners to this event are passed an object with a single  method, `loadXML`.
+
+```javascript
+window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
+
+  loadXML('<?xml version="1.0" encoding="UTF-8"?> ... </bpmn:definitions>');
+
+});
+```
+
+For the modeler to function correctly, `loadXML` must be called when the application loads.
