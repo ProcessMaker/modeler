@@ -4,6 +4,13 @@
 
 `@processmaker/modeler` is a Vue.js based BPMN modeler scaffolded using [Vue CLI 3](https://cli.vuejs.org/).
 
+- [Project setup](#project-setup)
+- [Testing](#testing)
+- [Architecture](#architecture)
+  - [Global event bus](#global-event-bus)
+    - [`modeler-init`](#modeler-init)
+    - [`modeler-start`](#modeler-start)
+
 ## Project setup
 
 Clone the repository and `cd` into the `modeler` directory:
