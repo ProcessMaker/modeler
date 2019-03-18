@@ -30,26 +30,6 @@ describe('Sequence Flows', () => {
       });
   });
 
-  it('Have the highest z-index', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 250, y: 250 };
-    const poolPosition = { x: 150, y: 150 };
-
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
-
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
-
-    // getLastCell - will get the highest cell (element or link) with the highest z property
-    cy.window().its('store.state.graph')
-      .invoke('getLastCell').
-      then(cell => {
-        const sequenceFlow = 'processmaker-modeler-sequence-flow';
-        expect(cell.component.node.type).to.eq(sequenceFlow);
-      });
-  });
-
   it('Update Condition expression', () => {
     const exclusiveGatewayPosition = { x: 400, y: 300 };
     dragFromSourceToDest(
