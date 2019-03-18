@@ -11,6 +11,8 @@
     - [`modeler-init`](#modeler-init)
     - [`modeler-start`](#modeler-start)
   - [Undo/redo store](#undoredo-store)
+- [Examples](#examples)
+  - [Adding a new component](#adding_a_new_component)
 
 ## Project setup
 
@@ -106,3 +108,106 @@ For the modeler to function correctly, `loadXML` must be called when the applica
 ### Undo/redo store
 
 The undo/redo feature is implemented using [Vuex](https://vuex.vuejs.org/), with the undo/redo Vuex store initialized in `src/undoRedoStore.js`. The undo/redo store keeps track of every change in the underlying BPMN XML, recording a copy of the XML string in a stack. Traversing the undo/redo stack simply uses the `loadXML` function to load the XML string from the current position in the stack.
+
+## Examples
+
+### Adding a new component
+
+Creating a new modeler component requires creating a Vue component, a component config, and calling the `registerNode` method to register your component.
+
+First, create your component config, and save it in a `.js` file:
+
+```javascript
+// CustomComponentConfig.js
+
+export default {
+  // A unique ID that will be used to identify your component
+  id: 'unique-custom-component-id',
+
+  // A reference to the Vue component representing your component
+  component: CustomComponent,
+
+  // The bpmn type for your component, which will be used to save the component under in XML
+  // It has the form prefix:name
+  bpmnType: 'custom-namespace:CustomComponent',
+
+  // A toggle to show/hide the component in the controls panel
+  control: true,
+
+  // The category to place the component under in the controls panel
+  category: 'BPMN',
+
+  // The icon representing the component in the controls panel
+  icon: require('@/assets/toolpanel/scriptTask.svg'),
+
+  // The label for the component in the controls panel
+  label: 'Script Task',
+
+
+  // The function used to create the BPMN definition object for the component in the XML
+  // moddle is a reference to an instance of bpmn-moddle: https://github.com/bpmn-io/bpmn-moddle
+  definition(moddle) {
+    return moddle.create('bpmn:ScriptTask', {
+      name: 'New Script Task',
+    });
+  },
+
+  // The function used to create the BPMN diagram object for the component in the XML
+  // moddle is a reference to an instance of bpmn-moddle: https://github.com/bpmn-io/bpmn-moddle
+  diagram(moddle) {
+    return moddle.create('bpmndi:BPMNShape', {
+      bounds: moddle.create('dc:Bounds', {
+        height: taskHeight,
+        width: 116,
+      }),
+    });
+  },
+
+  // The configuration for the inspector panel
+  inspectorConfig: [
+    {
+      name: 'CustomComponent',
+      items: [
+        // Each item corresponds to a form element. 
+        {
+          // Component can be a custom Vue component or a reference to a form component from @processmaker/vue-form-elements
+          component: 'FormText',
+          config: {
+            label: 'Custom Component Label',
+            fontSize: '2em',
+          },
+        },
+        // ...
+      ],
+    },
+    // ...
+  ],
+};
+```
+
+Then, create a [Vue component](https://vuejs.org/v2/guide/components.html) for your custom element:
+
+```vue
+// CustomComponent.vue
+
+<template>
+  <div />
+</template>
+
+<script>
+import Task from '@/components/nodes/task/task';
+
+export default {
+  extends: Task,
+  mounted() {
+    // Do things with this.shape
+  },
+};
+</script>
+```
+
+Finally, register your custom component:
+
+```javascript
+registerNode(CustomComponentConfig);
+```
