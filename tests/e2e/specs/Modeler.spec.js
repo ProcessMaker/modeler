@@ -159,7 +159,7 @@ describe('Modeler', () => {
     /* Wait for modal to close */
     cy.wait(300);
     const uploadModalCloseSelector = '.close';
-    cy.get(uploadModalCloseSelector).click();
+    cy.get(uploadModalCloseSelector).click({ force: true });
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
