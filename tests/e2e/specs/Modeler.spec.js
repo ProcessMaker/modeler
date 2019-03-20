@@ -158,12 +158,13 @@ describe('Modeler', () => {
 
     /* Wait for modal to close */
     cy.wait(300);
+    cy.get('.close').click();
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
-    cy.get('[name=id]').should('have.value', 'node_1');
+    cy.get('[name=id]').should('have.value', 'node_6');
   });
 
   it('Validates gateway direction', () => {
