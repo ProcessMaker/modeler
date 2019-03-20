@@ -165,7 +165,7 @@ describe('Modeler', () => {
     waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
-    cy.get('[name=id]').should('have.value', 'node_6');
+    cy.get('[name=id]').should('have.value', 'node_1');
   });
 
   it('Validates gateway direction', () => {
