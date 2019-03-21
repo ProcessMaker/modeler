@@ -10,6 +10,7 @@
   - [Global event bus](#global-event-bus)
     - [`modeler-init`](#modeler-init)
     - [`modeler-start`](#modeler-start)
+    - [`modeler-validate`](#modeler-validate)
   - [Undo/redo store](#undoredo-store)
   - [Validation](#validation)
     - [Adding a new lint rule](#adding-a-new-lint-rule)
@@ -108,6 +109,10 @@ window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
 
 For the modeler to function correctly, `loadXML` must be called when the application loads.
 
+#### `modeler-validate`
+
+This event is fired during validation, and can be used to add custom validation rules. See [Adding validation rules during runtime](#adding-validation-rules-during-runtime).
+
 ### Undo/redo store
 
 The undo/redo feature is implemented using [Vuex](https://vuex.vuejs.org/), with the undo/redo Vuex store initialized in `src/undoRedoStore.js`. The undo/redo store keeps track of every change in the underlying BPMN XML, recording a copy of the XML string in a stack. Traversing the undo/redo stack simply uses the `loadXML` function to load the XML string from the current position in the stack.
@@ -144,7 +149,7 @@ module.exports = {
   configs: {
     all: {
       rules: {
-        'processmaker/global-validation': 'error',
+        'processmaker/custom-validation': 'error',
         'processmaker/gateway-direction': 'error',
         'processmaker/node-id': 'error',
       },
@@ -157,7 +162,14 @@ For more examples, see the list of default rules at https://github.com/bpmn-io/b
 
 #### Adding validation rules during runtime
 
-TODO
+To add custom validation when the liner runs, use the global event bus:
+```javascript
+window.ProcessMaker.EventBus.$on('modeler-validate', (node, reporter) => {
+  if (typeof node.id === 'string' && !node.id.startsWith('node_')) {
+    reporter.report(node.id, 'Node ID must start with the string "node_"');
+  }
+});
+```
 
 ## Examples
 
