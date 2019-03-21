@@ -1,52 +1,34 @@
-import component from './callActivity';
-import CallActivityFormSelect from './CallActivityFormSelect';
-
-export const taskHeight = 76;
+import component from './eventBasedGateway.vue';
 
 export default {
-  id: 'processmaker-modeler-call-activity',
+  id: 'processmaker-modeler-event-based-gateway',
   component,
-  bpmnType: 'bpmn:CallActivity',
+  bpmnType: 'bpmn:EventBasedGateway',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/callActivity.svg'),
-  label: 'Call Activity',
+  icon: require('@/assets/toolpanel/event-based-gateway.svg'),
+  label: 'Event-based Gateway',
   definition(moddle) {
-    return moddle.create('bpmn:CallActivity', {
-      name: 'New Call Activity',
-      calledElement: '',
+    return moddle.create('bpmn:EventBasedGateway', {
+      name: '',
     });
   },
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: taskHeight,
-        width: 116,
+        height: 36,
+        width: 36,
       }),
     });
   },
-  inspectorHandler(value, node, setNodeProp) {
-    for (const key in value) {
-      if (node.definition[key] === value[key]) {
-        continue;
-      }
-
-      if (key === 'callActivityExpression') {
-        this.inspectorHandler(value[key], node, setNodeProp);
-        continue;
-      }
-
-      setNodeProp(node, key, value[key]);
-    }
-  },
   inspectorConfig: [
     {
-      name: 'Call Activity',
+      name: 'Event-based Gateway',
       items: [
         {
           component: 'FormText',
           config: {
-            label: 'Call Activity',
+            label: 'Event-based Gateway',
             fontSize: '2em',
           },
         },
@@ -69,10 +51,11 @@ export default {
               },
             },
             {
-              component: CallActivityFormSelect,
+              component: 'FormInput',
               config: {
-                label: 'Processes',
-                name: 'calledElement',
+                label: 'Name',
+                helper: 'The Name of the Gateway',
+                name: 'name',
               },
             },
           ],

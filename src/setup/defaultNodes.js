@@ -8,11 +8,13 @@ import {
   exclusiveGateway,
   parallelGateway,
   inclusiveGateway,
+  eventBasedGateway,
   sequenceFlow,
   messageFlow,
   startEvent,
   startTimerEvent,
   intermediateTimerEvent,
+  intermediateMessageCatchEvent,
   task,
   callActivity,
   scriptTask,
@@ -23,6 +25,7 @@ import {
 } from '@/components/nodes';
 
 const nodeTypes = [
+  intermediateMessageCatchEvent,
   endEvent,
   task,
   callActivity,
@@ -31,6 +34,7 @@ const nodeTypes = [
   exclusiveGateway,
   parallelGateway,
   inclusiveGateway,
+  eventBasedGateway,
   sequenceFlow,
   messageFlow,
   textAnnotation,

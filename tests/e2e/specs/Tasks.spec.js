@@ -16,13 +16,26 @@ describe('Tasks', () => {
     const testString = 'testing';
 
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task,taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
+  });
+
+  it('Correctly renders task after undo/redo', () => {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    waitToRenderAllShapes();
+    cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
+
+    getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
   });
 
   it('Can create call activity', () => {

@@ -66,7 +66,22 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing();
+        this.validateOutgoing() &&
+        this.eventBasedGatewayTarget() &&
+        this.validateIntermediateCatchEvent();
+    },
+    validateIntermediateCatchEvent() {
+      const isSourceIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+
+      return !isSourceIntermediateCatchEvent || !this.invalidIntermediateCatchEventSources();
+    },
+    eventBasedGatewayTarget() {
+      const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetEventBasedGateway = this.targetNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+      const isOneIncomingFlow = isTargetEventBasedGateway && this.targetNode.definition.get('incoming').length > 0;
+
+      return (!isSourceEventBasedGateway && !isOneIncomingFlow ) || isTargetIntermediateCatchEvent;
     },
     hasTargetType() {
       return !!this.targetType;
@@ -90,9 +105,22 @@ export default {
     renderConditionExpression() {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
     },
+    invalidIntermediateCatchEventSources() {
+      const sourceShape = this.shape.getSourceElement();
+      const invalidSources = [
+        'bpmn:CallActivity',
+      ].includes(sourceShape.component.node.definition.$type);
+
+      return invalidSources;
+    },
     isSourceElementGateway() {
       const sourceShape = this.shape.getSourceElement();
-      return ['bpmn:ExclusiveGateway', 'bpmn:ParellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
+      return [
+        'bpmn:ExclusiveGateway',
+        'bpmn:ParallelGateway',
+        'bpmn:InclusiveGateway',
+        'bpmn:EventBasedGateway',
+      ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       if (!this.node.definition.conditionExpression) {

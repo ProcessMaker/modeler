@@ -14,9 +14,11 @@ export const nodeTypes = {
   exclusiveGateway: 'processmaker-modeler-exclusive-gateway',
   parallelGateway: 'processmaker-modeler-parallel-gateway',
   inclusiveGateway: 'processmaker-modeler-inclusive-gateway',
+  eventBasedGateway: 'processmaker-modeler-event-based-gateway',
   textAnnotation: 'processmaker-modeler-text-annotation',
   pool:'processmaker-modeler-pool',
   startTimerEvent: 'processmaker-modeler-start-timer-event',
   intermediateCatchEvent: 'processmaker-modeler-intermediate-catch-timer-event',
+  intermediateMessageCatchEvent: 'processmaker-modeler-intermediate-message-catch-event',
   callActivity: 'processmaker-modeler-call-activity',
 };
