@@ -13,4 +13,4 @@ workflows:
       - cypress/run:
           executor: cypress/browsers-chrome69
           browser: chrome
-          command: 'npm run test-ci'
+          command: 'npm run lint && npm run test-ci'

@@ -1,10 +1,10 @@
 <template>
   <div class="statusbar">
     <div>
-      <slot name="secondary"></slot>
+      <slot name="secondary"/>
     </div>
     <div>
-      <slot></slot>
+      <slot/>
     </div>
   </div>
 </template>
