@@ -152,6 +152,7 @@ describe('Modeler', () => {
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
+            cy.wrap(input).trigger('change', { force: true });
           });
       });
     });
