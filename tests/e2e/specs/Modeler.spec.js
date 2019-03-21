@@ -152,14 +152,13 @@ describe('Modeler', () => {
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
+            cy.wrap(input).trigger('change', { force: true });
           });
       });
     });
 
     /* Wait for modal to close */
     cy.wait(300);
-    const uploadModalCloseSelector = '.close';
-    cy.get(uploadModalCloseSelector).click({ force: true });
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
