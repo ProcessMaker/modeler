@@ -1,1 +1,1 @@
-export const gatewayDirection = { diverging: 'diverging', converging: 'converging' };
+export const gatewayDirection = { diverging: 'Diverging', converging: 'Converging' };
