@@ -42,6 +42,9 @@ export default {
         this.targetIsNotSource() &&
         this.validateOutgoing();
     },
+    targetIsIntermediateCatchEvent(){
+      return this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+    },
     hasTargetType() {
       return this.targetType != null;
     },
@@ -56,6 +59,10 @@ export default {
     },
     targetIsInDifferentPool() {
       if (this.targetIsPool()) {
+        return true;
+      }
+
+      if (this.targetIsIntermediateCatchEvent()) {
         return true;
       }
 

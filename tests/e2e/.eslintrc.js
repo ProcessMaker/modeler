@@ -1,6 +1,6 @@
 module.exports = {
   plugins: [
-    'cypress'
+    'cypress',
   ],
   env: {
     mocha: true,
@@ -21,9 +21,9 @@ module.exports = {
     'no-debugger': 'off',
     'object-shorthand': 'error',
     'space-before-function-paren': ['error', 'never'],
-    'keyword-spacing': 'error'
+    'keyword-spacing': 'error',
   },
   parserOptions: {
     parser: 'babel-eslint',
   },
-}
+};

@@ -13,11 +13,11 @@ module.exports = function() {
   let gateway = null;
 
   function isDiverging() {
-    return gateway.gatewayDirection === 'diverging';
+    return gateway.gatewayDirection === 'Diverging';
   }
 
   function isConverging() {
-    return gateway.gatewayDirection === 'converging';
+    return gateway.gatewayDirection === 'Converging';
   }
 
   function hasMultipleIncomingFlows() {

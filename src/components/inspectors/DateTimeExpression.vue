@@ -3,12 +3,13 @@
     <label>Wait until specific date/time</label>
     <div>
       <datepicker v-model="startDate"
-                  calendar-class="calendar" format="yyyy-MM-dd"
-                  input-class="form-control start-date"
-                  class="start-date-div"
-                  @selected="updateStartDate"></datepicker>
+        calendar-class="calendar" format="yyyy-MM-dd"
+        input-class="form-control start-date"
+        class="start-date-div"
+        @selected="updateStartDate"
+      />
       <select v-model="startTime" class="form-control control time" data-test="startTime" @change="update">
-        <option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</option>
+        <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
       </select>
     </div>
   </div>
