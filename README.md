@@ -11,6 +11,9 @@
     - [`modeler-init`](#modeler-init)
     - [`modeler-start`](#modeler-start)
   - [Undo/redo store](#undoredo-store)
+  - [Validation](#validation)
+    - [Adding a new lint rule](#adding-a-new-lint-rule)
+    - [Adding validation rules during runtime](#adding-validation-rules-during-runtime)
 - [Examples](#examples)
   - [Adding a new component](#adding-a-new-component)
 
@@ -108,6 +111,53 @@ For the modeler to function correctly, `loadXML` must be called when the applica
 ### Undo/redo store
 
 The undo/redo feature is implemented using [Vuex](https://vuex.vuejs.org/), with the undo/redo Vuex store initialized in `src/undoRedoStore.js`. The undo/redo store keeps track of every change in the underlying BPMN XML, recording a copy of the XML string in a stack. Traversing the undo/redo stack simply uses the `loadXML` function to load the XML string from the current position in the stack.
+
+### Validation
+
+#### Adding a new lint rule
+
+By default, the modeler automatically validates your diagram as you create it. This validation can be toggled on and off using the switch in the status bar. Validation is handled using https://github.com/bpmn-io/bpmnlint.
+
+To add a new validation rule, create a new file in `processmaker-plugin/rules` named after your rule, for example, `node-id.js`. This file should export a function that returns an object with a `check` method. The `check` method will receive two arguments—`node` and `reporter`—and must return `undefined` if validation passes, or `reporter.report` to raise an error. For exmaple:
+
+```javascript
+// processmaker-plugin/rules/node-id.js
+
+/**
+ * Rule that checks node IDs start with "node_"
+ */
+module.exports = function() {
+  function check(node, reporter) {
+    if (typeof node.id === 'string' && !node.id.startsWith('node_')) {
+      reporter.report(node.id, 'Node ID must start with the string "node_"');
+    }
+  }
+
+  return { check };
+};
+```
+
+When you are done writing the rule, add it to `processmaker-plugin/index.js`:
+
+```javascript
+module.exports = {
+  configs: {
+    all: {
+      rules: {
+        'processmaker/global-validation': 'error',
+        'processmaker/gateway-direction': 'error',
+        'processmaker/node-id': 'error',
+      },
+    },
+  },
+};
+```
+
+For more examples, see the list of default rules at https://github.com/bpmn-io/bpmnlint/tree/master/rules.
+
+#### Adding validation rules during runtime
+
+TODO
 
 ## Examples
 
