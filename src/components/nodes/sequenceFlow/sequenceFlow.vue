@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     updateRouter() {
-      if (this.isSourceElementGateway()) {
+      if (this.isSourceFlowElementOrGateway()) {
         this.shape.router('manhattan',{
           excludeEnds: ['source'],
           excludeTypes: ['standard.EmbeddedImage'],
@@ -113,13 +113,14 @@ export default {
 
       return invalidSources;
     },
-    isSourceElementGateway() {
+    isSourceFlowElementOrGateway() {
       const sourceShape = this.shape.getSourceElement();
       return [
         'bpmn:ExclusiveGateway',
         'bpmn:ParallelGateway',
         'bpmn:InclusiveGateway',
         'bpmn:EventBasedGateway',
+        'bpmn:StartEvent',
       ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
@@ -152,6 +153,9 @@ export default {
       },
     });
     this.createLabel();
+    this.shape.on('change:vertices', (stuff) => {
+      this.$emit('save-state');
+    });
   },
 };
 </script>
