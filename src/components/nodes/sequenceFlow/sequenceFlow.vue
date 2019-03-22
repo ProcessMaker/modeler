@@ -138,9 +138,19 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Link({
+    const arrowheadShape = 'M 10 0 L 0 5 L 10 10 z';
+
+    this.shape = new joint.dia.Link({
       router: {
         name: 'orthogonal',
+      },
+      attrs: {
+        '.connection': { stroke: 'black', strokeWidth: 2 },
+        '.marker-arrowhead[end="source"]': { display: 'none' },
+        '.marker-arrowhead[end="target"]': { d: arrowheadShape },
+        '.marker-target': { d: arrowheadShape },
+        '.tool-remove': { display: 'none' },
+        '.marker-vertex': { r: 5 },
       },
     });
     this.createLabel();
