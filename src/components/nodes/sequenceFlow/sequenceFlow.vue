@@ -8,7 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { expressionPosition } from './sequenceFlowConfig';
+import { expressionPosition, arrowheadShape } from './sequenceFlowConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -138,8 +138,6 @@ export default {
     },
   },
   mounted() {
-    const arrowheadShape = 'M 10 0 L 0 5 L 10 10 z';
-
     this.shape = new joint.dia.Link({
       router: {
         name: 'orthogonal',
