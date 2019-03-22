@@ -4,7 +4,9 @@ module.exports = {
   css: {
     extract: false,
   },
+
   transpileDependencies: ['bpmnlint'],
+
   configureWebpack: {
     resolve: {
       modules: [
@@ -27,4 +29,13 @@ module.exports = {
       ],
     },
   },
+
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: false
+    }
+  }
 };
