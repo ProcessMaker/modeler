@@ -167,12 +167,13 @@ describe('Modeler', () => {
     cy.get('[name=id]').should('have.value', 'node_1');
   });
 
-  it('Validates gateway direction', () => {
+  it.only('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
     waitToRenderAllShapes();
 
     cy.get('[data-test=validation-list-toggle]').click();
+    cy.get('[type=checkbox]').check({ force: true });
 
     cy.get('[data-test=validation-list]').then($lsit => {
       expect($lsit).to.contain('Gateway must have multiple outgoing Sequence Flows');
