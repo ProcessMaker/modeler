@@ -167,7 +167,7 @@ describe('Modeler', () => {
     cy.get('[name=id]').should('have.value', 'node_1');
   });
 
-  it.only('Validates gateway direction', () => {
+  it('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
     waitToRenderAllShapes();
