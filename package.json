@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -26,7 +26,8 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "@processmaker/vue-form-builder": "^0.12.0",
     "@processmaker/vue-form-elements": "^0.7.0",
-    "bootstrap-vue": "^2.0.0-rc.11",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.14",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
     "bpmnlint-plugin-processmaker": "file:processmaker-plugin",
@@ -51,6 +52,7 @@
     "@vue/cli-plugin-unit-jest": "^3.0.5",
     "@vue/cli-service": "^3.0.5",
     "@vue/test-utils": "^1.0.0-beta.20",
+    "axios": "^0.18.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.0.1",
     "bpmnlint-loader": "^0.1.3",
