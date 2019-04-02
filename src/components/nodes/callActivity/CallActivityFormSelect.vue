@@ -18,22 +18,21 @@ export default {
         : null;
     },
     processList() {
-      return store.getters.rootElements
-        .filter(this.isProcess)
+      return store.getters.globalProcesses
         .filter(this.containsStartEvent)
         .map(this.toDropdownFormat);
     },
   },
   methods: {
-    isProcess(element) {
-      return element.$type === 'bpmn:Process';
-    },
     containsStartEvent(process) {
-      return process.get('flowElements').some(element => element.$type === 'bpmn:StartEvent');
+      return process.events.length > 0;
     },
-    toDropdownFormat(element) {
-      return { value: element.id, content: element.name || element.id };
+    toDropdownFormat(process) {
+      return { value: process.id, content: process.name || process.id };
     },
+  },
+  created() {
+    store.dispatch('fetchGlobalProcesses');
   },
 };
 </script>
