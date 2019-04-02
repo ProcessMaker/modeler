@@ -153,9 +153,6 @@ export default {
       },
     });
     this.createLabel();
-    this.shape.on('change:vertices', (stuff) => {
-      this.$emit('save-state');
-    });
   },
 };
 </script>

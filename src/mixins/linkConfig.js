@@ -54,18 +54,16 @@ export default {
 
       this.resetPaper();
 
-      this.updateWaypoints();
-
       const targetShape = this.shape.getTargetElement();
       this.setBodyColor(defaultNodeColor, targetShape);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+      this.shape.on('change:vertices', this.updateWaypoints, this.$emit('save-state'));
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();
       const points = connections.segments.map(segment => segment.end);
-
       this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
     },
@@ -108,6 +106,7 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
+        this.updateWaypoints();
 
         if (this.updateDefinitionLinks) {
           this.updateDefinitionLinks();
@@ -164,6 +163,11 @@ export default {
         return element.component && element.component.node.definition === targetRef;
       });
 
+      // Remove the first and last vertices
+      const sequenceVertices = this.node.diagram.waypoint
+        .slice(1, this.node.diagram.waypoint.length - 1)
+        .map(({x, y}) => ({ x, y }));
+
       this.shape.target(targetShape, {
         anchor: {
           name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
@@ -172,7 +176,9 @@ export default {
         connectionPoint: { name: 'boundary' },
       });
 
+      this.shape.vertices(sequenceVertices);
       this.completeLink();
+
     } else {
       this.shape.target(targetRef, {
         connectionPoint: { name: 'boundary' },
