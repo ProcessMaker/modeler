@@ -46,6 +46,10 @@ export default {
           padding: 20,
         });
       }
+
+      this.shape.on('change:vertices', () => {
+        this.$emit('save-state');
+      });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
