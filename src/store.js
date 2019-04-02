@@ -10,7 +10,7 @@ export default new Vuex.Store({
     highlightedNode: null,
     nodes: [],
     rootElements: [],
-    autoValidate: true,
+    autoValidate: false,
   },
   getters: {
     nodes: state => state.nodes,
