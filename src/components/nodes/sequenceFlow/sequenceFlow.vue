@@ -47,8 +47,12 @@ export default {
         });
       }
 
-      this.shape.on('change:vertices', () => {
-        this.$emit('save-state');
+      this.shape.listenTo(this.paper, 'link:pointerdown', cellView => {
+        if (cellView.model === this.shape) {
+          this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
+            this.$emit('save-state');
+          });
+        }
       });
     },
     updateDefinitionLinks() {
