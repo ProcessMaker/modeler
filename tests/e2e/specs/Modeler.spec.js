@@ -173,6 +173,7 @@ describe('Modeler', () => {
     waitToRenderAllShapes();
 
     cy.get('[data-test=validation-list-toggle]').click();
+    cy.get('[type=checkbox]').check({ force: true });
 
     cy.get('[data-test=validation-list]').then($lsit => {
       expect($lsit).to.contain('Gateway must have multiple outgoing Sequence Flows');
