@@ -8,7 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { expressionPosition } from './sequenceFlowConfig';
+import { expressionPosition, arrowheadShape } from './sequenceFlowConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -39,13 +39,21 @@ export default {
   },
   methods: {
     updateRouter() {
-      if (this.isSourceElementGateway()) {
+      if (this.isSourceFlowElementOrGateway()) {
         this.shape.router('manhattan',{
           excludeEnds: ['source'],
           excludeTypes: ['standard.EmbeddedImage'],
           padding: 20,
         });
       }
+
+      this.shape.listenTo(this.paper, 'link:pointerdown', cellView => {
+        if (cellView.model === this.shape) {
+          this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
+            this.$emit('save-state');
+          });
+        }
+      });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
@@ -113,13 +121,14 @@ export default {
 
       return invalidSources;
     },
-    isSourceElementGateway() {
+    isSourceFlowElementOrGateway() {
       const sourceShape = this.shape.getSourceElement();
       return [
         'bpmn:ExclusiveGateway',
         'bpmn:ParallelGateway',
         'bpmn:InclusiveGateway',
         'bpmn:EventBasedGateway',
+        'bpmn:StartEvent',
       ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
@@ -138,9 +147,17 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Link({
+    this.shape = new joint.dia.Link({
       router: {
         name: 'orthogonal',
+      },
+      attrs: {
+        '.connection': { stroke: 'black', strokeWidth: 2 },
+        '.marker-arrowhead[end="source"]': { display: 'none' },
+        '.marker-arrowhead[end="target"]': { d: arrowheadShape },
+        '.marker-target': { d: arrowheadShape },
+        '.tool-remove': { display: 'none' },
+        '.marker-vertex': { r: 5 },
       },
     });
     this.createLabel();
