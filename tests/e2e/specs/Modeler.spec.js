@@ -172,8 +172,8 @@ describe('Modeler', () => {
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
     waitToRenderAllShapes();
 
-    cy.contains('Validate BPMN').click();
     cy.get('[data-test=validation-list-toggle]').click();
+    cy.get('[type=checkbox]').check({ force: true });
 
     cy.get('[data-test=validation-list]').then($lsit => {
       expect($lsit).to.contain('Gateway must have multiple outgoing Sequence Flows');
@@ -186,8 +186,6 @@ describe('Modeler', () => {
     cy.get('[name=gatewayDirection]').select('Converging');
 
     waitToRenderNodeUpdates();
-
-    cy.contains('Validate BPMN').click();
 
     cy.get('[data-test=validation-list-toggle]').click();
 

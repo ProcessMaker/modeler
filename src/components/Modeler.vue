@@ -13,8 +13,6 @@
           <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
         </div>
 
-        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
-
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper" data-test="paper"/>
         </drop>
@@ -129,7 +127,20 @@ export default {
       validationErrors: {},
     };
   },
+  watch: {
+    autoValidate(autoValidate) {
+      if (autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
+    currentXML() {
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
+  },
   computed: {
+    autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
     canUndo() {
       return undoRedoStore.getters.canUndo;
@@ -696,10 +707,6 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
     });
-
-    this.$root.$on('Modeler', () => {
-      this.validateBpmnDiagram();
-    });
   },
 };
 </script>
@@ -739,13 +746,6 @@ $cursors: default, not-allowed;
         > button {
           cursor: pointer;
         }
-      }
-
-      .validate-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        cursor: pointer;
       }
     }
 
