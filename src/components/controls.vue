@@ -2,7 +2,7 @@
   <div class="controls">
     <input
       ref="filter"
-      placeholder="Filter..."
+      :placeholder="$t('Filter...')"
       class="form-control form-control-sm"
       type="text"
       v-model="filterQuery"
