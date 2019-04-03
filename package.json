@@ -62,7 +62,13 @@
     "stylelint": "^9.7.0",
     "stylelint-config-recommended-scss": "^3.2.0",
     "stylelint-scss": "^3.3.2",
-    "vue-template-compiler": "^2.5.17"
+    "vue-template-compiler": "^2.5.17",
+    "@panter/vue-i18next": "^0.15.0",
+    "i18next": "^15.0.9"
+  },
+  "peerDependencies": {
+    "@panter/vue-i18next": "^0.15.0",
+    "i18next": "^15.0.9"
   },
   "postcss": {
     "plugins": {

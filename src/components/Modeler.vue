@@ -9,8 +9,8 @@
         :style="{ width: parentWidth, height: parentHeight }"
       >
         <div class="history-buttons">
-          <button @click="undo" :disabled="!canUndo" data-test="undo">Undo</button>
-          <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
+          <button @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('undo') }}</button>
+          <button @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('redo') }}</button>
         </div>
 
         <drop @drop="handleDrop" @dragover="validateDropTarget">
@@ -84,6 +84,7 @@ import { id as messageFlowId } from './nodes/messageFlow';
 const version = '1.0';
 
 export default {
+  props: ['translations'],
   components: {
     Drop,
     controls,
@@ -128,6 +129,10 @@ export default {
     };
   },
   watch: {
+    translations(translations) {
+      console.log('translations', translations);
+      console.log('$i18next', $i18next);
+    },
     autoValidate(autoValidate) {
       if (autoValidate) {
         this.validateBpmnDiagram();
