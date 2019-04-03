@@ -1,4 +1,5 @@
 import component from './intermediateMessageCatchEvent.vue';
+import set from 'lodash/set';
 
 export default {
   id: 'processmaker-modeler-intermediate-message-catch-event',
@@ -9,11 +10,18 @@ export default {
   icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
-    let intermediateCatchEventDefinition = moddle.create('bpmn:IntermediateCatchEvent', {
-      name: '',
+    return moddle.create('bpmn:IntermediateCatchEvent', {
+      name: 'Intermediate Timer Event',
+      ['pm:allowedUsers']: '',
+      ['pm:allowedGroups']: '',
+      ['pm:whitelist']: '',
+      eventDefinitions: [
+        moddle.create('bpmn:MessageEventDefinition', {
+          id: '',
+          ['pm:dataName']: '',
+        }),
+      ],
     });
-
-    return intermediateCatchEventDefinition;
   },
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
@@ -24,6 +32,21 @@ export default {
         y: null,
       }),
     });
+  },
+  inspectorHandler(value, node) {
+    const definition = node.definition;
+
+    // Go through each property and rebind it to our data
+    for (const key in value) {
+      if (definition[key] === value[key]) {
+        set(definition.$attrs, 'pm:allowedUsers', value.allowedUsers);
+        set(definition.$attrs, 'pm:allowedGroups', value.allowedUsers);
+        set(definition.$attrs, 'pm:whitelist', value.whitelist);
+        set(definition.eventDefinitions[0], 'id', value.eventDefinitionId);
+        set(definition.eventDefinitions[0].$attrs, 'pm:dataName', value.dataName );
+        continue;
+      }
+    }
   },
   inspectorConfig: [
     {
@@ -60,6 +83,54 @@ export default {
                 label: 'Name',
                 helper: 'The Name of the Intermediate Message Catch Event',
                 name: 'name',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Message Event Identifier',
+                helper: 'The id field should be unique across all elements in the diagram',
+                name: 'eventDefinitionId',
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Data Name',
+                helper: 'The Name of the data name',
+                name: 'dataName',
+              },
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Allowed Users',
+                helper: 'Select allowed users',
+                name: 'allowedUsers',
+                options: [
+                  {},
+                  { value: '1,10', content: '1,10' },
+                ],
+              },
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Allowed Groups',
+                helper: 'Select allowed groups',
+                name: 'allowedGroups',
+                options: [
+                  {},
+                  { value: '20,30', content: '20,30' },
+                ],
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Whitelist',
+                helper: 'IP/Domain whitelist',
+                name: 'whitelist',
               },
             },
           ],

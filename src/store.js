@@ -10,6 +10,7 @@ export default new Vuex.Store({
     highlightedNode: null,
     nodes: [],
     rootElements: [],
+    autoValidate: false,
   },
   getters: {
     nodes: state => state.nodes,
@@ -18,8 +19,12 @@ export default new Vuex.Store({
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
     rootElements: state => state.rootElements,
+    autoValidate: state => state.autoValidate,
   },
   mutations: {
+    setAutoValidate(state, autoValidate) {
+      state.autoValidate = autoValidate;
+    },
     setRootElements(state, rootElements) {
       state.rootElements = rootElements;
     },

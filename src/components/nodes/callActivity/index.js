@@ -6,7 +6,7 @@ export const taskHeight = 76;
 export default {
   id: 'processmaker-modeler-call-activity',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:CallActivity'],
+  bpmnType: 'bpmn:CallActivity',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/callActivity.svg'),

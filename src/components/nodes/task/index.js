@@ -12,7 +12,7 @@ export default {
   label: 'Task',
   definition(moddle) {
     return moddle.create('bpmn:Task', {
-      name: 'New Task',
+      name: 'Task',
     });
   },
   diagram(moddle) {

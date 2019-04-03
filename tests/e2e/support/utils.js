@@ -82,3 +82,22 @@ export function connectNodesWithFlow(flowType, startPosition, endPosition) {
         .click({ force: true });
     });
 }
+
+export function isElementCovered($element) {
+  return cy.window()
+    .its('store.state.paper')
+    .invoke('findViewsInArea', $element[0].getBBox())
+    .then(shapeViews => {
+      const zIndexes = shapeViews.filter(shapeView => shapeView.model.component)
+        .map(shapeView => shapeView.model.get('z'));
+
+      return cy.window()
+        .its('store.state.paper')
+        .invoke('getModelById', $element.attr('model-id'))
+        .then(shape => {
+          const shapeZIndex = shape.get('z');
+
+          return zIndexes.some(zIndex => shapeZIndex < zIndex);
+        });
+    });
+}

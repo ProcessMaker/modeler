@@ -13,8 +13,6 @@
           <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
         </div>
 
-        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
-
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper" data-test="paper"/>
         </drop>
@@ -51,9 +49,10 @@
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
       @click="highlightNode(node)"
-      @unsetPools="unsetPools"
-      @setPools="setPools"
+      @unset-pools="unsetPools"
+      @set-pools="setPools"
       @save-state="pushToUndoStack"
+      @set-shape-stacking="setShapeStacking"
     />
   </div>
 </template>
@@ -128,7 +127,20 @@ export default {
       validationErrors: {},
     };
   },
+  watch: {
+    autoValidate(autoValidate) {
+      if (autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
+    currentXML() {
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
+  },
   computed: {
+    autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
     canUndo() {
       return undoRedoStore.getters.canUndo;
@@ -383,10 +395,9 @@ export default {
         return;
       }
 
-      const type = this.parsers[definition.$type]
-        .reduce((type, parser) => {
-          return parser(definition, this.moddle) || type;
-        }, null);
+      const type = this.parsers[definition.$type].reduce((type, parser) => {
+        return parser(definition, this.moddle) || type;
+      }, null);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;
@@ -575,6 +586,45 @@ export default {
         type: startEvent.id,
       });
     },
+    isBpmnNode(shape) {
+      return shape.component != null;
+    },
+    isNotLane(shape) {
+      return shape.component.node.type !== laneId;
+    },
+    bringPoolToFront(poolShape) {
+      this.bringShapeToFront(poolShape);
+      poolShape.getEmbeddedCells()
+        .filter(this.isBpmnNode)
+        .filter(this.isNotLane)
+        .forEach(this.bringShapeToFront);
+    },
+    bringShapeToFront(shape) {
+      shape.toFront({ deep: true });
+
+      this.graph.getConnectedLinks(shape)
+        .forEach(link => link.toFront());
+    },
+    getElementPool(shape) {
+      return shape.component.node.pool;
+    },
+    isPool(shape) {
+      return shape.component.node.type === poolId;
+    },
+    setShapeStacking(shape) {
+      if (this.isPool(shape)) {
+        this.bringPoolToFront(shape);
+      }
+
+      const parentPool = this.getElementPool(shape);
+      if (parentPool) {
+        this.bringPoolToFront(parentPool);
+      }
+
+      if (this.isNotLane(shape) && !this.isPool(shape)) {
+        this.bringShapeToFront(shape);
+      }
+    },
   },
   created() {
     /* Initialize the BpmnModdle and its extensions */
@@ -642,44 +692,20 @@ export default {
     });
 
     this.paper.on('cell:pointerdown', cellView => {
-      if (cellView.model.component) {
-        cellView.model.toFront({ deep: true });
+      const shape = cellView.model;
 
-        /* If the element belongs to a pool, bring the pool to the front as well */
-        if (cellView.model.component.node.pool) {
-          const poolShape = cellView.model.component.node.pool;
-
-          poolShape.toFront({ deep: true });
-          poolShape.getEmbeddedCells()
-            .filter(cell => {
-              return cell.component && cell.component.node.type !== laneId;
-            })
-            .forEach(cell => cell.toFront());
-        }
-
-        if (cellView.model.component.node.type === poolId) {
-          cellView.model.getEmbeddedCells()
-            .filter(cell => {
-              return cell.component && cell.component.node.type !== laneId;
-            })
-            .forEach(cell => cell.toFront());
-        }
-
-        this.graph
-          .getLinks()
-          .forEach(link => link.toFront());
-
-        cellView.model.component.$emit('click');
+      if (!this.isBpmnNode(shape)) {
+        return;
       }
+
+      this.setShapeStacking(shape);
+
+      shape.component.$emit('click');
     });
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
-    });
-
-    this.$root.$on('Modeler', () => {
-      this.validateBpmnDiagram();
     });
   },
 };
@@ -720,13 +746,6 @@ $cursors: default, not-allowed;
         > button {
           cursor: pointer;
         }
-      }
-
-      .validate-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        cursor: pointer;
       }
     }
 
