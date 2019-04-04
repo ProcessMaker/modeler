@@ -10,7 +10,7 @@
 
     <div class="list">
       <div v-for="(items, category) in controls" :key="category">
-        <h2>{{ category }}</h2>
+        <h2>{{ $t(category) }}</h2>
         <drag
           v-for="(control, index) in items"
           :key="index"
@@ -22,7 +22,7 @@
             <div class="img-container">
               <img :src="control.icon">
             </div>
-            <div>{{ control.label }}</div>
+            <div>{{ $t(control.label) }}</div>
           </div>
         </drag>
       </div>

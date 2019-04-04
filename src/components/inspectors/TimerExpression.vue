@@ -1,8 +1,8 @@
 <template>
   <div class="form-group">
     <form-date-picker
-      label="Start date"
-      placeholder="Start date"
+      :label="$t('Start date')"
+      :placeholder="$t('Start date')"
       control-class="form-control"
       :format="DateTime.DATETIME_SHORT"
       :minuteStep="30"
@@ -12,20 +12,20 @@
     />
 
     <template v-if="hasRepeat">
-      <label>{{ repeatLabel }}</label>
+      <label>{{ $t(repeatLabel) }}</label>
       <div>
         <input type="number" min="1" class="form-control control repeat" v-model="repeat">
         <select v-model="periodicity" class="form-control control periodicity">
-          <option value="day">day</option>
-          <option value="week">week</option>
-          <option value="month">month</option>
-          <option value="year">year</option>
+          <option value="day">{{ $t('day') }}</option>
+          <option value="week">{{ $t('week') }}</option>
+          <option value="month">{{ $t('month') }}</option>
+          <option value="year">{{ $t('year') }}</option>
         </select>
       </div>
     </template>
 
     <div v-if="periodicity === 'week'">
-      <label>{{ weekLabel }}</label>
+      <label>{{ $t(weekLabel) }}</label>
       <div>
         <span
           v-for="day in weekdays"
@@ -35,22 +35,22 @@
           :data-test="`day-${ day.day }`"
           @click="clickWeekDay(day)"
         >
-          {{ day.initial }}
+          {{ $t(day.initial) }}
         </span>
       </div>
     </div>
 
     <template v-if="hasEnds">
-      <label>Ends</label>
+      <label>{{ $t('Ends') }}</label>
       <div>
         <div class="form-check">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">Never
+            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">{{ $t('Never') }}
           </label>
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">On
+            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">{{ $t('On') }}
           </label>
 
           <form-date-picker
@@ -58,20 +58,20 @@
             class="control calendaron"
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
-            placeholder="End date"
+            :placeholder="$t('End date')"
             control-class="form-control"
             :format="DateTime.DATE_SHORT"
-            phrases='{ok: "Save", cancel: "Cancel"}'
+            phrases='{ok: $t("Save"), cancel: $t("Cancel")}'
             :vaue="endDate"
             @input="endDate = $event"
           />
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">After
+            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">{{ $t('After') }}
           </label>
           <input v-model="times" type="number" min="0" :disabled="ends !== 'after'" class="form-control control after">
-          <label class="occurrences">occurrences</label>
+          <label class="occurrences">{{ $t('occurrences') }}</label>
         </div>
       </div>
     </template>

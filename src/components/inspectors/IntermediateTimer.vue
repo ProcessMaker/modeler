@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="form-group">
-      <label>Type</label>
+      <label>{{ $t('Type') }}</label>
       <select :value="timerPropertyName" data-test="intermediateTypeSelect" class="form-control" @change="changeType">
-        <option value="timeDuration">Delay</option>
-        <option value="timeDate">Date/Time</option>
+        <option value="timeDuration">{{ $t('Delay') }}</option>
+        <option value="timeDate">{{ $t('Date/Time') }}</option>
       </select>
     </div>
 
