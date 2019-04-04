@@ -3,8 +3,8 @@
     <div class="navbar">
       <div>ProcessMaker Modeler</div>
       <div class="actions">
-        <b-btn v-b-modal="'uploadmodal'">{{ $t('uploadXML') }}</b-btn>
-        <button class="button" data-test="downloadXMLBtn" @click="download">{{ $t('downloadXML') }}</button>
+        <b-btn v-b-modal="'uploadmodal'">{{ $t('Upload XML') }}</b-btn>
+        <button class="button" data-test="downloadXMLBtn" @click="download">{{ $t('Download XML') }}</button>
       </div>
     </div>
     <div class="modeler-container">
@@ -15,7 +15,7 @@
     </statusbar>
     <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
       <file-upload @input-file="handleUpload">
-        Upload file
+        {{ $t('Upload file') }}
       </file-upload>
     </b-modal>
   </div>

@@ -1,18 +1,11 @@
 {
-  "en": {
-    "translation": {
-      "uploadXML": "Upload XML",
-      "downloadXML": "Download XML",
-      "undo": "Undo",
-      "redo": "Redo"
-    }
-  },
-  "fr": {
-    "translation": {
-      "uploadXML": "Télécharger du XML",
-      "downloadXML": "Télécharger le XML",
-      "undo": "Défaire",
-      "redo": "Refaire"
-    }
-  }
+  "Upload XML": "Upload XML",
+  "Download XML": "Download XML",
+  "Undo": "Undo",
+  "Redo": "Redo",
+  "Upload file": "Upload file",
+  "Filter": "Filter",
+  "Auto validate": "Auto validate",
+  "Problems": "Problems",
+  "no problems to report": "no problems to report"
 }

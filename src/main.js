@@ -22,7 +22,7 @@ Vue.use(VueI18Next);
 
 i18next.init({
   lng: 'en',
-  resources: translations,
+  resources: { en: { translation: translations } },
 });
 
 const i18n = new VueI18Next(i18next);
