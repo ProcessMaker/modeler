@@ -1,24 +1,21 @@
 <template>
   <div class="form-group">
-    <label>Start Date</label>
-    <div>
-      <datepicker
-        v-model="startDate"
-        calendar-class="calendar" format="yyyy-MM-dd"
-        input-class="form-control start-date"
-        class="start-date-div"
-        @selected="updateStartDate"
-      />
-      <select v-model="startTime" class="form-control control time" @change="update">
-        <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
-      </select>
-    </div>
+    <form-date-picker
+      label="Start date"
+      placeholder="Start date"
+      control-class="form-control"
+      :format="DateTime.DATETIME_SHORT"
+      :minuteStep="30"
+      :phrases="{ ok: 'Save', cancel: 'Cancel' }"
+      :value="startDate"
+      @input="startDate = $event"
+    />
 
     <template v-if="hasRepeat">
       <label>{{ repeatLabel }}</label>
       <div>
-        <input type="number" min="1" class="form-control control repeat" v-model="repeat" @change="update">
-        <select v-model="periodicity" class="form-control control periodicity" @change="update">
+        <input type="number" min="1" class="form-control control repeat" v-model="repeat">
+        <select v-model="periodicity" class="form-control control periodicity">
           <option value="day">day</option>
           <option value="week">week</option>
           <option value="month">month</option>
@@ -27,16 +24,16 @@
       </div>
     </template>
 
-    <div v-if="periodicity==='week'">
+    <div v-if="periodicity === 'week'">
       <label>{{ weekLabel }}</label>
       <div>
         <span
-          v-for="(day, index) in weekdays"
-          :key="index + 'week'"
+          v-for="day in weekdays"
+          :key="day.day"
           class="badge badge-pill weekday"
           :class="weekdayStyle(day)"
-          :data-test="`day-${ index }`"
-          @click="clickWeekDay(day);update()"
+          :data-test="`day-${ day.day }`"
+          @click="clickWeekDay(day)"
         >
           {{ day.initial }}
         </span>
@@ -48,25 +45,32 @@
       <div>
         <div class="form-check">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends" @change="update">Never
+            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">Never
           </label>
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends" @change="update">On
+            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">On
           </label>
-          <datepicker v-model="endDate" calendar-class="calendar" :disabled="ends!=='ondate'" format="yyyy-MM-dd"
-            input-class="form-control end-date"
+
+          <form-date-picker
+            type="date"
             class="control calendaron"
-            :class="{'date-disabled' : ends!=='ondate'}"
-            @selected="updateEndDate"
+            :class="{'date-disabled' : ends !== 'ondate'}"
+            :disabled="ends !== 'ondate'"
+            placeholder="End date"
+            control-class="form-control"
+            :format="DateTime.DATE_SHORT"
+            phrases='{ok: "Save", cancel: "Cancel"}'
+            :vaue="endDate"
+            @input="endDate = $event"
           />
         </div>
         <div class="form-check check-input">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends" @change="update">After
+            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">After
           </label>
-          <input v-model="times" type="number" min="0" :disabled="ends!=='after'" class="form-control control after" @change="update">
+          <input v-model="times" type="number" min="0" :disabled="ends !== 'after'" class="form-control control after">
           <label class="occurrences">occurrences</label>
         </div>
       </div>
@@ -75,22 +79,18 @@
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 const periods = {
-  'day': 'D',
-  'week': 'W',
-  'month': 'M',
-  'year': 'Y',
+  day: 'D',
+  week: 'W',
+  month: 'M',
+  year: 'Y',
 };
 
 export default {
-  components: {
-    Datepicker,
-  },
   props: {
-    value: String,
+    value: Array,
     hasEnds: {
       type: Boolean,
       default: true,
@@ -109,15 +109,9 @@ export default {
     },
   },
   data() {
-    const date = moment().set('hour', 0).set('minutes', 0);
-    const hours = [];
-    for (let i = 0; i < 48; i++) {
-      hours.push(date.format('HH:mm'));
-      date.add(30, 'minutes');
-    }
     return {
-      today: moment().format('YYYY-MM-DD'),
-      hours,
+      DateTime,
+      data: { sampleDatePicker: DateTime.local().toISO() },
       weekdays: [
         //  ISO week date weekday number, from 1 through 7,
         //  beginning with Monday and ending with Sunday.
@@ -157,45 +151,56 @@ export default {
           selected: false,
         },
       ],
-      startDate: new Date(),
-      startTime: '00:00',
+      startDate: DateTime.local().toISO(),
       repeat: '1',
       periodicity: 'week',
       ends: 'never',
-      endDate: new Date(),
+      endDate: DateTime.local().toISO(),
       times: '1',
     };
   },
   computed: {
-    /**
-     * ISO 8601 expression that represents the timer configuration
-     */
-    expression() {
-      return this.makeTimerConfig();
+    iso8606Expression() {
+      const expression = [];
+
+      if (this.hasMultipleWeekdaySelected()) {
+        expression.push(this.startDate);
+
+        this.selectedWeekdays.forEach(day => {
+          expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
+        });
+      } else {
+        expression.push(this.getCycle(this.startDate));
+      }
+
+      return expression.join('|');
     },
     /**
      * Array of week days the user selected
      */
     selectedWeekdays() {
-      const selected = [];
-      this.weekdays.forEach(weekday => {
-        weekday.selected ? selected.push(weekday.day) : null;
-      });
-      return selected;
+      return this.weekdays.filter(({ selected }) => selected)
+        .map(({ day }) => day);
     },
     /**
      * True if the selected day is the same of the start date
      */
     sameDay() {
-      return this.selectedWeekdays.length === 1 && this.weekdays[this.startDate.getDay()].selected;
+      const currentWeekday = DateTime.fromISO(this.startDate).weekday;
+
+      return this.selectedWeekdays.length === 1 &&
+        this.weekdays.find(({ day }) => day === currentWeekday).selected;
     },
   },
   watch: {
     value: {
       handler(value) {
-        return this.parseTimerConfig(value);
+        this.parseTimerConfig(value);
       },
       immediate: true,
+    },
+    iso8606Expression() {
+      this.update();
     },
   },
   methods: {
@@ -203,43 +208,27 @@ export default {
       return {
         'badge-primary': day.selected && !this.sameDay,
         'badge-light': !(day.selected && !this.sameDay),
-        'border border-primary': this.startDate.getDay() === (day.day % 7),
+        'border border-primary': DateTime.fromISO(this.startDate).weekday === day.day,
       };
     },
-    updateStartDate(date) {
-      this.startDate = date;
-      this.update();
-    },
-    updateEndDate(date) {
-      this.endDate = date;
-      this.update();
-    },
     update() {
-      this.$emit('input', this.expression);
-    },
-    parseDateExpression(exp) {
-      const date = new Date(exp);
-      if (isNaN(date.getTime())) {
-        throw 'Invalid Date';
-      }
-      return moment(date);
+      this.$emit('input', this.iso8606Expression);
     },
     /**
      * Parse an ISO8601 expression to get the timer configuration
      */
     parseTimerConfig(value) {
-      this.resetTimerExpression();
       if (!value) {
         return;
       }
+
       try {
-        let date, hasStartDate = false;
-        const expression = value.split('|');
+        let hasStartDate = false;
+        const expression = value[0].timeCycle.body.split('|');
+
         expression.forEach(exp => {
           if (exp.substr(0, 1) !== 'R') {
-            date = this.parseDateExpression(exp);
-            this.startDate = date.toDate();
-            this.startTime = date.format('HH:mm');
+            this.startDate = exp;
           } else {
             // ISO 8601 Repeating time intervals format
             // R[n?]/[start]/[period]/[end?]
@@ -249,35 +238,41 @@ export default {
             //   end: (optional) datetime when the cycle ends. Ex. 2018-12-01T00:00:00-04:00
             //
             //  Ex. R5/2008-03-01T13:00:00Z/P2M
-            let match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
+            const match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
             if (match) {
               this.times = match[1] || '1';
-              date = this.parseDateExpression(match[2]);
-              hasStartDate ? null : this.startDate = date.toDate();
-              hasStartDate ? null : this.startTime = date.format('HH:mm');
+              hasStartDate ? null : this.startDate = match[2];
+
               this.repeat = match[3];
               this.periodicity = Object.keys(periods).find(key => periods[key] === match[4]);
-              this.endDate = match[5] ? this.parseDateExpression(match[5]).toDate() : new Date();
-              this.ends = !match[5] ? !match[1] ? 'never' : 'after' : 'ondate';
+              this.endDate = match[5] ? match[5] : DateTime.local().toISO();
+              this.ends = !match[5]
+                ? !match[1]
+                  ? 'never'
+                  : 'after'
+                : 'ondate';
+
               if (this.periodicity === 'week') {
                 // Note this.weekday array must start with Sunday
-                this.weekdays[date.get('day')].selected = true;
+                const currentWeekday = DateTime.fromISO(this.startDate).weekday;
+                this.weekdays.find(({ day }) => day === currentWeekday).selected = true;
+                // this.weekdays[DateTime.fromISO(this.startDate).weekday - 1].selected = true;
               }
             }
           }
+
           hasStartDate = true;
         });
-      } catch (invalidExpression) {
+      } catch (error) {
         this.resetTimerExpression();
       }
     },
     resetTimerExpression() {
-      this.startDate = new Date();
-      this.startTime = '00:00';
+      this.startDate = DateTime.local().toISO();
       this.times = '1';
       this.repeat = '1';
       this.periodicity = 'week';
-      this.endDate = new Date();
+      this.endDate = DateTime.local();
       this.ends = 'never';
       this.weekdays.forEach(weekday => weekday.selected = false);
     },
@@ -285,42 +280,23 @@ export default {
       weekday.selected = !weekday.selected;
     },
     hasMultipleWeekdaySelected(){
-      return this.periodicity === 'week'
-        && this.selectedWeekdays.length > 0
-        && !this.sameDay;
-    },
-    /**
-     * Build a ISO8601 expression from the timer configuration
-     */
-    makeTimerConfig() {
-      const expression = [];
-      if (this.hasMultipleWeekdaySelected()) {
-        expression.push(this.getDateTime(this.startDate, this.startTime));
-        this.selectedWeekdays.forEach(day => {
-          expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
-        });
-      } else {
-        expression.push(this.getCycle(this.startDate));
-      }
-      return expression.join('|');
+      return this.periodicity === 'week' &&
+        this.selectedWeekdays.length > 0 &&
+        !this.sameDay;
     },
     getCycle(startDate) {
       return this.makeCycle(
         (this.ends === 'after' ? this.times : ''),
-        this.getDateTime(startDate, this.startTime),
+        startDate,
         this.getPeriod(),
-        (this.ends === 'ondate' ? this.getDateTime(this.endDate, this.startTime) : '')
+        (this.ends === 'ondate' ? this.endDate : '')
       );
     },
     getWeekDayDate(date, isoWeekDay) {
       const day = isoWeekDay % 7;
-      const mdate = moment(date);
-      const current = mdate.get('day');
-      return mdate.add((7 + day - current) % 7, 'day');
-    },
-    getDateTime(date, time) {
-      const [hour, minutes] = time.split(':');
-      return moment(date).set('hour', hour).set('minutes', minutes).format('YYYY-MM-DDTHH:mmZ');
+      const mdate = DateTime.fromISO(date);
+      const current = mdate.weekday - 1;
+      return mdate.plus({ days: (7 + day - current) % 7 });
     },
     getPeriod() {
       return `P${this.repeat}` + periods[this.periodicity];
