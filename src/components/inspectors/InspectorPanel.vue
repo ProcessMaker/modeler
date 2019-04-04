@@ -23,6 +23,7 @@ import {
   FormRadioButtonGroup,
   FormCodeEditor,
   FormAccordion,
+  FormDatePicker,
 } from '@processmaker/vue-form-elements';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
@@ -40,6 +41,7 @@ Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormCodeEditor', FormCodeEditor);
 Vue.component('FormAccordion', FormAccordion);
+Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 export default {

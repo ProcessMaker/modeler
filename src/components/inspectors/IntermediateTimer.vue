@@ -13,20 +13,17 @@
 </template>
 
 <script>
-import TimerExpression from './TimerExpression';
 import DurationExpression from './DurationExpression';
 import DateTimeExpression from './DateTimeExpression';
 
 const types = {
   timeDuration: 'DurationExpression',
-  timeCycle : 'TimerExpression',
   timeDate : 'DateTimeExpression',
 };
 
 export default {
   props: ['options', 'value'],
   components: {
-    TimerExpression,
     DurationExpression,
     DateTimeExpression,
   },

@@ -1,6 +1,6 @@
 import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -11,14 +11,13 @@ export default {
   icon: require('@/assets/toolpanel/start-timer-event.svg'),
   label: 'Start Timer Event',
   definition(moddle) {
-    let datetime = moment().set('hour', 0).set('minutes', 0).format('YYYY-MM-DDTHH:mmZ');
     let startEventDefinition = moddle.create('bpmn:StartEvent', {
       name: 'Start Timer Event',
     });
 
     startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {
       timeCycle: moddle.create('bpmn:Expression', {
-        body: 'R/' + datetime + '/P1W',
+        body: 'R/' + DateTime.local().startOf('day').toISO() + '/P1W',
       }),
     })];
 
@@ -44,14 +43,21 @@ export default {
       }
 
       if (key === 'eventDefinitions') {
-        // Set the timer event definition
+        const body = value[key];
+
+        const expression = definition.get(key)[0].timeCycle;
+        if (expression && expression.body === body) {
+          continue;
+        }
+
+        const eventDefinition = {
+          timeCycle: moddle.create('bpmn:Expression', { body }),
+        };
+
         const eventDefinitions = [
-          moddle.create('bpmn:TimerEventDefinition', {
-            timeCycle: moddle.create('bpmn:Expression', {
-              body: value[key][0].timeCycle.body,
-            }),
-          }),
+          moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
+
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
       } else {
         setNodeProp(node, key, value[key]);
@@ -119,7 +125,7 @@ export default {
               config: {
                 label: 'Name',
                 helper: 'The Name of the Start Event',
-                name: 'eventDefinitions.0.timeCycle.body',
+                name: 'eventDefinitions',
               },
             },
           ],
