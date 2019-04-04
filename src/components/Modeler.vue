@@ -9,8 +9,8 @@
         :style="{ width: parentWidth, height: parentHeight }"
       >
         <div class="history-buttons">
-          <button @click="undo" :disabled="!canUndo" data-test="undo">{{$t('Undo')}}</button>
-          <button @click="redo" :disabled="!canRedo" data-test="redo">{{$t('Redo')}}</button>
+          <button @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
+          <button @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
         </div>
 
         <drop @drop="handleDrop" @dragover="validateDropTarget">

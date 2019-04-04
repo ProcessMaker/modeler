@@ -145,12 +145,12 @@ export default {
       if (item.config && item.config.options) {
         item.config.options.forEach(elements => {
           elements.content = this.$t(elements.content);
-        })
+        });
       }
       if (item.items) {
         item.items.forEach(component => {
-          this.translatedLabels(component)
-        })
+          this.translatedLabels(component);
+        });
       }
     },
     customInspectorHandler(value) {
