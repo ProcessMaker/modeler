@@ -39,7 +39,7 @@ describe('Intermediate Catch Event', () => {
       .should('have', validIntermediateCatchEventXML.trim());
   });
 
-  it('Update date/time field on Intermediate Catch Event', () => {
+  it.skip('Update date/time field on Intermediate Catch Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 

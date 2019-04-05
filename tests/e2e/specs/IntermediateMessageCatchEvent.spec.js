@@ -28,7 +28,7 @@ describe('Intermediate Message Catch Event', () => {
     cy.get('[name=allowedGroups]').select('20,30');
     typeIntoTextInput('[name=whitelist]', testString);
 
-    const validXML = `<bpmn:intermediateCatchEvent id="node_2" name="Intermediate Timer Event" pm:allowedUsers="1,10" pm:allowedGroups="1,10" pm:whitelist="testing">
+    const validXML = `<bpmn:intermediateCatchEvent id="node_2" name="testing" pm:allowedUsers="1,10" pm:allowedGroups="1,10" pm:whitelist="testing">
       <bpmn:messageEventDefinition id="testing" pm:dataName="testing" />
     </bpmn:intermediateCatchEvent>`;
 

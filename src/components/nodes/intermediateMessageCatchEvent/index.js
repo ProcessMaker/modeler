@@ -36,17 +36,12 @@ export default {
   inspectorHandler(value, node) {
     const definition = node.definition;
 
-    // Go through each property and rebind it to our data
-    for (const key in value) {
-      if (definition[key] === value[key]) {
-        set(definition.$attrs, 'pm:allowedUsers', value.allowedUsers);
-        set(definition.$attrs, 'pm:allowedGroups', value.allowedUsers);
-        set(definition.$attrs, 'pm:whitelist', value.whitelist);
-        set(definition.eventDefinitions[0], 'id', value.eventDefinitionId);
-        set(definition.eventDefinitions[0].$attrs, 'pm:dataName', value.dataName );
-        continue;
-      }
-    }
+    definition.set('name', value.name);
+    set(definition.$attrs, 'pm:allowedUsers', value.allowedUsers);
+    set(definition.$attrs, 'pm:allowedGroups', value.allowedUsers);
+    set(definition.$attrs, 'pm:whitelist', value.whitelist);
+    set(definition.eventDefinitions[0], 'id', value.eventDefinitionId);
+    set(definition.eventDefinitions[0].$attrs, 'pm:dataName', value.dataName );
   },
   inspectorConfig: [
     {
