@@ -30,7 +30,6 @@ import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
-import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
 
 Vue.component('FormText', renderer.FormText);
@@ -71,19 +70,12 @@ export default {
 
       const { type, definition } = this.highlightedNode;
 
-      if (this.highlightedNode === this.processNode) {
-        this.searchLabels(processInspectorConfig[0], this.processNode.definition.$type);
-        return processInspectorConfig;
-      }
-
       if (
         type === sequenceFlowId &&
         ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
       ) {
-        this.searchLabels(sequenceExpressionInspectorConfig[0], definition.sourceRef.$type);
         return sequenceExpressionInspectorConfig;
       }
-      this.searchLabels(this.nodeRegistry[type].inspectorConfig[0], type);
       return this.nodeRegistry[type].inspectorConfig;
     },
     isAnyNodeActive() {
@@ -126,33 +118,6 @@ export default {
     },
   },
   methods: {
-    searchLabels(source, type) {
-      if (this.translated.indexOf(type) === -1) {
-        //Add translations
-        source.items.forEach(item => {
-          this.translatedLabels(item);
-        });
-        this.translated.push(type);
-      }
-    },
-    translatedLabels(item) {
-      if (item.config && item.config.label) {
-        item.config.label = this.$t(item.config.label);
-      }
-      if (item.config && item.config.helper) {
-        item.config.helper = this.$t(item.config.helper);
-      }
-      if (item.config && item.config.options) {
-        item.config.options.forEach(elements => {
-          elements.content = this.$t(elements.content);
-        });
-      }
-      if (item.items) {
-        item.items.forEach(component => {
-          this.translatedLabels(component);
-        });
-      }
-    },
     customInspectorHandler(value) {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
     },
