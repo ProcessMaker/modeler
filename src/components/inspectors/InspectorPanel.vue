@@ -30,7 +30,8 @@ import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
 import processInspectorConfig from './process';
-import sequenceExpressionInspectorConfig from './sequenceExpression';
+import sequenceExpression from './sequenceExpression';
+import sequenceCallActivity from './sequenceCallActivity';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -72,11 +73,16 @@ export default {
         return processInspectorConfig;
       }
 
-      if (
-        type === sequenceFlowId &&
-        ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
-      ) {
-        return sequenceExpressionInspectorConfig;
+      if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
+        return sequenceExpression;
+      }
+
+      if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
+        sequenceCallActivity[0].items.find(item => {
+          return item.config.name === 'calledElementStartEvent';
+        }).config.targetCallActivity = definition.targetRef;
+
+        return sequenceCallActivity;
       }
 
       return this.nodeRegistry[type].inspectorConfig;
@@ -121,6 +127,15 @@ export default {
     },
   },
   methods: {
+    isSequenceFlow(type) {
+      return type === sequenceFlowId;
+    },
+    isConnectedToGateway(definition) {
+      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
+    },
+    isConnectedToCallActivity(definition) {
+      return definition.targetRef.$type === 'bpmn:CallActivity';
+    },
     customInspectorHandler(value) {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
     },
