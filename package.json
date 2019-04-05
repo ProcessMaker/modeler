@@ -30,12 +30,13 @@
     "bootstrap-vue": "^2.0.0-rc.14",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
-    "bpmnlint-plugin-processmaker": "file:processmaker-plugin",
+    "bpmnlint-plugin-spark": "file:../bpmnlint-plugin-spark/bpmnlint-plugin-spark-1.0.0.tgz",
     "file-saver": "^2.0.0-rc.4",
     "i": "^0.3.6",
     "jointjs": "^2.2.1",
     "lodash": "^4.17.11",
     "luxon": "^1.11.4",
+    "modeler-plugin-spark": "file:../modeler-plugin-spark/modeler-plugin-spark-1.0.0.tgz",
     "npm": "^6.4.1",
     "vue": "^2.5.17",
     "vue-deepset": "^0.6.3",
@@ -65,6 +66,9 @@
     "stylelint-scss": "^3.3.2",
     "vue-template-compiler": "^2.5.17"
   },
+  "bundledDependencies": [
+    "modeler-plugin-spark"
+  ],
   "postcss": {
     "plugins": {
       "autoprefixer": {}
