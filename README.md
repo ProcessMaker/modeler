@@ -1,4 +1,4 @@
-# Vue.js based BPMN modeler
+# ProcessMaker Spark BPMN modeler
 
 [![CircleCI](https://circleci.com/gh/ProcessMaker/modeler.svg?style=svg)](https://circleci.com/gh/ProcessMaker/modeler)
 
