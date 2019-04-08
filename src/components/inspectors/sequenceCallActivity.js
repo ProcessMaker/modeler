@@ -33,6 +33,7 @@ export default [
           label: 'Start Event',
           name: 'calledElementStartEvent',
           targetCallActivity: null,
+          helper: '',
         },
       },
     ],
