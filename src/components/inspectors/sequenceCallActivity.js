@@ -30,7 +30,7 @@ export default [
       {
         component: SequenceFlowFormSelect,
         config: {
-          label: 'Start Event',
+          label: 'Call Activity Start Event',
           name: 'calledElementStartEvent',
           targetCallActivity: null,
           helper: '',
