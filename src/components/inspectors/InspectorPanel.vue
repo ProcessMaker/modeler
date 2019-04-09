@@ -30,7 +30,7 @@ import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
-import processInspectorConfig from './process';
+import Process from './process';
 import sequenceExpression from './sequenceExpression';
 import sequenceCallActivity from './sequenceCallActivity';
 
@@ -73,7 +73,7 @@ export default {
       const { type, definition } = this.highlightedNode;
 
       if (this.highlightedNode === this.processNode) {
-        return processInspectorConfig;
+        return Process.inspectorConfig;
       }
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
