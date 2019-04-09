@@ -5,7 +5,7 @@
     <div>
       <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat">
       <select v-model="periodicity" class="form-control control periodicity">
-        <option value="Y">{{ $t('hour') }}</option>
+        <option value="H">{{ $t('hour') }}</option>
         <option value="D">{{ $t('day') }}</option>
         <option value="M">{{ $t('month') }}</option>
       </select>

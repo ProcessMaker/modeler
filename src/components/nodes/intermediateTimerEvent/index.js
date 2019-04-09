@@ -15,7 +15,7 @@ export default {
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
-            body: 'P1H',
+            body: 'PT1H',
           }),
         }),
       ],
