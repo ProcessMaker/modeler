@@ -13,7 +13,7 @@
 <script>
 import Vue from 'vue';
 
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+import { VueFormRenderer, renderer } from '@processmaker/spark-screen-builder';
 
 import {
   FormInput,
