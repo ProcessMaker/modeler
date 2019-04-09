@@ -78,12 +78,12 @@ export default {
       }
 
       if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
-        const calledElementStartEventConfig = sequenceCallActivity[0].items.find(item => {
-          return item.config.name === 'calledElementStartEvent';
+        const startEventConfig = sequenceCallActivity[0].items.find(item => {
+          return item.config.name === 'startEvent';
         }).config;
 
-        calledElementStartEventConfig.targetCallActivity = definition.targetRef;
-        calledElementStartEventConfig.helper = definition.targetRef.calledElement
+        startEventConfig.targetCallActivity = definition.targetRef;
+        startEventConfig.helper = definition.targetRef.calledElement
           ? ''
           : 'Please select a valid process on the connected call activity.';
 
