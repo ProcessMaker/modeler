@@ -5,10 +5,9 @@
     <div>
       <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat">
       <select v-model="periodicity" class="form-control control periodicity">
+        <option value="H">hour</option>
         <option value="D">day</option>
-        <option value="W">week</option>
         <option value="M">month</option>
-        <option value="Y">year</option>
       </select>
     </div>
   </div>
@@ -26,7 +25,7 @@ export default {
   watch: {
     value: {
       handler(value) {
-        this.repeat = parseInt(value.substring(1));
+        this.repeat = parseInt(value[value.length - 2]);
         this.periodicity = value[value.length - 1];
       },
       immediate: true,
@@ -37,6 +36,9 @@ export default {
   },
   computed: {
     durationExpression() {
+      if (this.periodicity === 'H') {
+        return `PT${this.repeat}${this.periodicity}`;
+      }
       return `P${this.repeat}${this.periodicity}`;
     },
   },
@@ -58,3 +60,4 @@ export default {
   width: 6em;
 }
 </style>
+
