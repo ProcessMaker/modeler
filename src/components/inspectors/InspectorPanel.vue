@@ -30,7 +30,6 @@ import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
-import processInspectorConfig from './process';
 import sequenceExpressionInspectorConfig from './sequenceExpression';
 
 Vue.component('FormText', renderer.FormText);
@@ -49,6 +48,7 @@ export default {
   data() {
     return {
       inspectorHandler: null,
+      translated: [],
     };
   },
   watch: {
@@ -70,17 +70,12 @@ export default {
 
       const { type, definition } = this.highlightedNode;
 
-      if (this.highlightedNode === this.processNode) {
-        return processInspectorConfig;
-      }
-
       if (
         type === sequenceFlowId &&
         ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
       ) {
         return sequenceExpressionInspectorConfig;
       }
-
       return this.nodeRegistry[type].inspectorConfig;
     },
     isAnyNodeActive() {

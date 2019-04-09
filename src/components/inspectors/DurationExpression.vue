@@ -1,13 +1,13 @@
 <template>
   <div class="form-group">
-    <label>Delay</label>
+    <label>{{ $t('Delay') }}</label>
     <pre>{{ value }}</pre>
     <div>
       <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat">
       <select v-model="periodicity" class="form-control control periodicity">
-        <option value="H">hour</option>
-        <option value="D">day</option>
-        <option value="M">month</option>
+        <option value="Y">{{ $t('hour') }}</option>
+        <option value="D">{{ $t('day') }}</option>
+        <option value="M">{{ $t('month') }}</option>
       </select>
     </div>
   </div>

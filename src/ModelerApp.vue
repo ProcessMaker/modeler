@@ -1,10 +1,10 @@
 <template>
   <div id="modeler-app">
     <div class="navbar">
-      <div>ProcessMaker Modeler</div>
+      <div>{{ $t('ProcessMaker Modeler') }}</div>
       <div class="actions">
-        <b-btn v-b-modal="'uploadmodal'">Upload XML</b-btn>
-        <button class="button" data-test="downloadXMLBtn" @click="download">Download XML</button>
+        <b-btn v-b-modal="'uploadmodal'">{{ $t('Upload XML') }}</b-btn>
+        <button class="button" data-test="downloadXMLBtn" @click="download">{{ $t('Download XML') }}</button>
       </div>
     </div>
     <div class="modeler-container">
@@ -13,9 +13,9 @@
     <statusbar>
       <validation-status :validation-errors="validationErrors"/>
     </statusbar>
-    <b-modal ref="uploadmodal" id="uploadmodal" title="Upload BPMN File">
+    <b-modal ref="uploadmodal" id="uploadmodal" :title="$t('Upload BPMN File')">
       <file-upload @input-file="handleUpload">
-        Upload file
+        {{ $t('Upload file') }}
       </file-upload>
     </b-modal>
   </div>
