@@ -62,18 +62,5 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnEx
   nodeTypes.forEach(config => registerNode(config));
 
   /* Add a BPMN extension */
-  bpmnExtension.types.push({
-    'name': 'SequenceFlow',
-    'extends': [
-      'bpmn:SequenceFlow',
-    ],
-    'properties': [
-      {
-        'name': 'startEvent',
-        'type': 'String',
-        'isAttr': true,
-      },
-    ],
-  });
   registerBpmnExtension('pm', bpmnExtension);
 });
