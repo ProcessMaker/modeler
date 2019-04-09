@@ -69,6 +69,8 @@ describe('Tasks', () => {
       .then($links => $links[0])
       .click({ force: true });
 
+    waitToRenderAllShapes();
+
     cy.get('#startEvent').should('not.contain', 'A process has not been configred in the connnected Call Acitivty task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
