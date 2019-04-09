@@ -200,7 +200,8 @@ describe('Undo/redo', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => xml.trim()).should('eq', validMessageFlowXML.trim());
+      .then(xml => xml.trim())
+      .should('eq', validMessageFlowXML.trim());
   });
 
   it('Can update start event name after undo', () => {

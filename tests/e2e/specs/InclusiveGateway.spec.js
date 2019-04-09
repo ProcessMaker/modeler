@@ -39,7 +39,8 @@ describe('Inclusive Gateway', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => xml.trim()).should('have', divergingString);
+      .then(xml => xml.trim())
+      .should('have', divergingString);
 
     const taskPosition = { x: 350, y: 350 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -53,6 +54,7 @@ describe('Inclusive Gateway', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => xml.trim()).should('to.contain', convergingString);
+      .then(xml => xml.trim())
+      .should('to.contain', convergingString);
   });
 });

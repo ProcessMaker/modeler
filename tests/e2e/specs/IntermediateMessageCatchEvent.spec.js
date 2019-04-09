@@ -35,6 +35,7 @@ describe('Intermediate Message Catch Event', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => xml.trim()).should('to.contain', validXML.trim());
+      .then(xml => xml.trim())
+      .should('to.contain', validXML.trim());
   });
 });
