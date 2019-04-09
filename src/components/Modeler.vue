@@ -9,8 +9,8 @@
         :style="{ width: parentWidth, height: parentHeight }"
       >
         <div class="history-buttons">
-          <button @click="undo" :disabled="!canUndo" data-test="undo">Undo</button>
-          <button @click="redo" :disabled="!canRedo" data-test="redo">Redo</button>
+          <button @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
+          <button @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
         </div>
 
         <drop @drop="handleDrop" @dragover="validateDropTarget">
@@ -71,6 +71,7 @@ import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
+import Process from './inspectors/process';
 
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
@@ -160,6 +161,19 @@ export default {
     },
   },
   methods: {
+    translateConfig(inspectorConfig) {
+      if (inspectorConfig.config) {
+        const config = inspectorConfig.config;
+
+        config.label = this.$t(config.label);
+        config.helper = this.$t(config.helper);
+        config.name = this.$t(config.name);
+      }
+
+      if (inspectorConfig.items) {
+        inspectorConfig.items.forEach(this.translateConfig);
+      }
+    },
     async pushToUndoStack() {
       const xml = await this.getXmlFromDiagram();
       undoRedoStore.dispatch('pushState', xml);
@@ -259,6 +273,7 @@ export default {
         ? definition => definition.get('implementation') === nodeType.implementation && nodeType.id
         : () => nodeType.id;
 
+      this.translateConfig(nodeType.inspectorConfig[0]);
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
@@ -304,6 +319,7 @@ export default {
       this.planeElements = this.plane.get('planeElement');
 
       this.processNode = {
+        type: 'processmaker-modeler-process',
         definition: this.processes[0],
         diagram: this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
       };
@@ -627,6 +643,8 @@ export default {
     },
   },
   created() {
+    this.registerNode(Process);
+
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
       registerInspectorExtension: this.registerInspectorExtension,

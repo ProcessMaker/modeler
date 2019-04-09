@@ -1,6 +1,6 @@
 {
-  "name": "@processmaker/modeler",
-  "version": "0.7.0",
+  "name": "@processmaker/spark-modeler",
+  "version": "0.8.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -30,11 +30,12 @@
     "bootstrap-vue": "^2.0.0-rc.14",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
-    "bpmnlint-plugin-processmaker": "file:processmaker-plugin",
+    "bpmnlint-plugin-spark": "^1.0.0",
     "file-saver": "^2.0.0-rc.4",
     "i": "^0.3.6",
     "jointjs": "^2.2.1",
     "lodash": "^4.17.11",
+    "luxon": "^1.11.4",
     "npm": "^6.4.1",
     "vue": "^2.5.17",
     "vue-deepset": "^0.6.3",
@@ -63,7 +64,13 @@
     "stylelint": "^9.7.0",
     "stylelint-config-recommended-scss": "^3.2.0",
     "stylelint-scss": "^3.3.2",
-    "vue-template-compiler": "^2.5.17"
+    "vue-template-compiler": "^2.5.17",
+    "@panter/vue-i18next": "^0.15.0",
+    "i18next": "^15.0.9"
+  },
+  "peerDependencies": {
+    "@panter/vue-i18next": "^0.15.0",
+    "i18next": "^15.0.9"
   },
   "postcss": {
     "plugins": {

@@ -1,45 +1,45 @@
 <template>
   <div class="form-group">
-    <label>Delay</label>
+    <label>{{ $t('Delay') }}</label>
+    <pre>{{ value }}</pre>
     <div>
-      <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat" @change="update">
-      <select v-model="periodicity" class="form-control control periodicity" @change="update">
-        <option value="day">day</option>
-        <option value="week">week</option>
-        <option value="month">month</option>
-        <option value="year">year</option>
+      <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat">
+      <select v-model="periodicity" class="form-control control periodicity">
+        <option value="Y">{{ $t('hour') }}</option>
+        <option value="D">{{ $t('day') }}</option>
+        <option value="M">{{ $t('month') }}</option>
       </select>
     </div>
   </div>
 </template>
 
 <script>
-import TimerExpression from './TimerExpression';
-
-const periods = {
-  'day': 'D',
-  'week': 'W',
-  'month': 'M',
-  'year': 'Y',
-};
-
 export default {
-  extends: TimerExpression,
   props: ['value', 'repeatInput'],
-  methods: {
-    parseTimerConfig(value) {
-      this.resetTimerExpression();
-      if (!value) {
-        return;
-      }
-      let match = value.match(/^P(\d+)(\w)$/);
-      if (match) {
-        this.periodicity = Object.keys(periods).find(key => periods[key] === match[2]);
-        this.repeat = match[1];
-      }
+  data() {
+    return {
+      repeat: null,
+      periodicity: null,
+    };
+  },
+  watch: {
+    value: {
+      handler(value) {
+        this.repeat = parseInt(value[value.length - 2]);
+        this.periodicity = value[value.length - 1];
+      },
+      immediate: true,
     },
-    makeTimerConfig() {
-      return this.getPeriod();
+    durationExpression(durationExpression) {
+      this.$emit('input', durationExpression);
+    },
+  },
+  computed: {
+    durationExpression() {
+      if (this.periodicity === 'H') {
+        return `PT${this.repeat}${this.periodicity}`;
+      }
+      return `P${this.repeat}${this.periodicity}`;
     },
   },
 };
@@ -60,3 +60,4 @@ export default {
   width: 6em;
 }
 </style>
+

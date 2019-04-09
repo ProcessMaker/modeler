@@ -1,7 +1,11 @@
 <template>
   <div>
     <div data-test="validation-list" class="validation-container position-absolute text-left" v-if="toggleValidationPanel">
-      <span class="validation-container__defaultMessage d-flex justify-content-center align-items-center h-100" v-if="!numberOfValidationErrors">no problems to report</span>
+      <span
+        class="validation-container__defaultMessage d-flex justify-content-center align-items-center h-100"
+        v-if="!numberOfValidationErrors"
+      >{{ $t('no problems to report') }}</span>
+
       <div class="validation-container__list d-flex justify-content-between" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
         <span class="validation-container__list--errorCategory d-flex justify-content-center">
           <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="valditionIcon" />
@@ -11,18 +15,18 @@
         </span>
         <span class="validation-container__list--message">
           <span class="validation-container__list--key">{{ error.errorKey }}</span>
-          <div>{{ error.message }}</div>
+          <div>{{ $t(error.message) }}</div>
         </span>
       </div>
     </div>
 
     <div class="status-bar-container d-flex align-items-center justify-content-end">
-      <b-form-checkbox switch v-model="autoValidate">Auto validate</b-form-checkbox>
+      <b-form-checkbox switch v-model="autoValidate">{{ $t('Auto validate') }}</b-form-checkbox>
 
       <div class="divider"/>
 
       <div data-test="validation-list-toggle" class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
-        <span class="status-bar-container__status-text">Problems {{ numberOfValidationErrors }}</span>
+        <span class="status-bar-container__status-text">{{ $t('Problems') }} {{ numberOfValidationErrors }}</span>
         <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
         <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
       </div>
