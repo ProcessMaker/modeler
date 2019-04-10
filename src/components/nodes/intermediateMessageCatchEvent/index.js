@@ -1,5 +1,5 @@
 import component from './intermediateMessageCatchEvent.vue';
-import set from 'lodash/set';
+import omit from 'lodash/omit';
 
 export default {
   id: 'processmaker-modeler-intermediate-message-catch-event',
@@ -12,13 +12,13 @@ export default {
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
       name: 'Intermediate Timer Event',
-      ['pm:allowedUsers']: '',
-      ['pm:allowedGroups']: '',
-      ['pm:whitelist']: '',
+      allowedUsers: '',
+      allowedGroups: '',
+      whitelist: '',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {
           id: '',
-          ['pm:dataName']: '',
+          dataName: '',
         }),
       ],
     });
@@ -33,15 +33,38 @@ export default {
       }),
     });
   },
-  inspectorHandler(value, node) {
-    const definition = node.definition;
+  inspectorData(node) {
+    return Object.entries(node.definition).reduce((data, [key, value]) => {
+      if (key === 'eventDefinitions') {
+        data.eventDefinitionId = value[0].get('id');
+        data.dataName = value[0].get('dataName');
+      } else {
+        data[key] = value;
+      }
 
-    definition.set('name', value.name);
-    set(definition.$attrs, 'pm:allowedUsers', value.allowedUsers);
-    set(definition.$attrs, 'pm:allowedGroups', value.allowedUsers);
-    set(definition.$attrs, 'pm:whitelist', value.whitelist);
-    set(definition.eventDefinitions[0], 'id', value.eventDefinitionId);
-    set(definition.eventDefinitions[0].$attrs, 'pm:dataName', value.dataName );
+      return data;
+    }, {});
+  },
+  inspectorHandler(value, node, setNodeProp, moddle) {
+    for (const key in omit(value, ['$type', 'eventDefinitionId', 'dataName'])) {
+      if (node.definition[key] === value[key]) {
+        continue;
+      }
+
+      setNodeProp(node, key, value[key]);
+    }
+
+    if (
+      node.definition.eventDefinitions[0].get('id') !== value.dataName ||
+      node.definition.eventDefinitions[0].get('dataName') !== value.eventDefinitionId
+    ) {
+      setNodeProp(node, 'eventDefinitions', [
+        moddle.create('bpmn:MessageEventDefinition', {
+          id: value['eventDefinitionId'],
+          dataName: value['dataName'],
+        }),
+      ]);
+    }
   },
   inspectorConfig: [
     {

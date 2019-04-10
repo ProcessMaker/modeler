@@ -13,7 +13,6 @@ describe('Intermediate Message Catch Event', () => {
   });
 
   it('Update properties', () => {
-    const testString = 'testing';
     const intermediateMessageCatchEventPosition = { x: 200, y: 200 };
 
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
@@ -21,21 +20,29 @@ describe('Intermediate Message Catch Event', () => {
     waitToRenderAllShapes();
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
 
-    typeIntoTextInput('[name=name]', testString);
-    typeIntoTextInput('[name=eventDefinitionId]', testString);
-    typeIntoTextInput('[name=dataName]', testString);
+    const name = 'Test name';
+    typeIntoTextInput('[name=name]', name);
+
+    const eventId = '1234';
+    typeIntoTextInput('[name=eventDefinitionId]', eventId);
+
+    const dataName = 'test dataname';
+    typeIntoTextInput('[name=dataName]', dataName);
+
     cy.get('[name=allowedUsers]').select('1,10');
     cy.get('[name=allowedGroups]').select('20,30');
-    typeIntoTextInput('[name=whitelist]', testString);
 
-    const validXML = `<bpmn:intermediateCatchEvent id="node_2" name="testing" pm:allowedUsers="1,10" pm:allowedGroups="1,10" pm:whitelist="testing">
-      <bpmn:messageEventDefinition id="testing" pm:dataName="testing" />
+    const whiteList = 'example.com';
+    typeIntoTextInput('[name=whitelist]', whiteList);
+
+    const validXML = `<bpmn:intermediateCatchEvent id="node_2" name="${name}" pm:allowedUsers="1,10" pm:allowedGroups="20,30" pm:whitelist="${whiteList}">
+      <bpmn:messageEventDefinition id="${eventId}" pm:dataName="${dataName}" />
     </bpmn:intermediateCatchEvent>`;
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(xml => xml.trim())
-      .should('to.contain', validXML.trim());
+      .should('contain', validXML.trim());
   });
 });
