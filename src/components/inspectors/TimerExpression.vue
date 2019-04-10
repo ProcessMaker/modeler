@@ -90,7 +90,7 @@ const periods = {
 
 export default {
   props: {
-    value: Array,
+    value: [ Array, String ],
     hasEnds: {
       type: Boolean,
       default: true,
