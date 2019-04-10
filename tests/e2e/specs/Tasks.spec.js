@@ -47,6 +47,7 @@ describe('Tasks', () => {
     dragFromSourceToDest(nodeTypes.callActivity, callActivityPosition);
 
     waitToRenderAllShapes();
+
     getElementAtPosition(callActivityPosition).should('exist');
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, callActivityPosition);
@@ -63,6 +64,8 @@ describe('Tasks', () => {
     getElementAtPosition(callActivityPosition).click();
 
     cy.get('select[name=calledElement]').select('Process with start event');
+
+    waitToRenderAllShapes();
 
     getElementAtPosition(callActivityPosition)
       .then(getLinksConnectedToElement)
