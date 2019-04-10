@@ -11,6 +11,7 @@
     - [`modeler-init`](#modeler-init)
     - [`modeler-start`](#modeler-start)
     - [`modeler-validate`](#modeler-validate)
+    - [`modeler-change`](#modeler-change)
   - [Undo/redo store](#undoredo-store)
   - [Validation](#validation)
     - [Adding a new lint rule](#adding-a-new-lint-rule)
@@ -97,7 +98,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerBpmnExtension, regis
 
 #### `modeler-start`
 
-This event is fired after the modeler has been set up and mounted. Listeners to this event are passed an object with a single  method, `loadXML`.
+This event is fired after the modeler has been set up and mounted. Listeners to this event are passed an object with a single method, `loadXML`.
 
 ```javascript
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
@@ -112,6 +113,16 @@ For the modeler to function correctly, `loadXML` must be called when the applica
 #### `modeler-validate`
 
 This event is fired during validation, and can be used to add custom validation rules. See [Adding validation rules during runtime](#adding-validation-rules-during-runtime).
+
+#### `modeler-change`
+
+This event is fired anytime a change is made to the modeler that causes the underlying XML to change. This event is fired immediately after new state is pushed to the undo/redo stack.
+
+```javascript
+window.ProcessMaker.EventBus.$on('modeler-change', () => {
+  console.log('The diagram has changed');
+});
+```
 
 ### Undo/redo store
 

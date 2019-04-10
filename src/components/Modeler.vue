@@ -177,6 +177,7 @@ export default {
     async pushToUndoStack() {
       const xml = await this.getXmlFromDiagram();
       undoRedoStore.dispatch('pushState', xml);
+      window.ProcessMaker.EventBus.$emit('modeler-change');
     },
     getXmlFromDiagram() {
       return new Promise((resolve, reject) => {
