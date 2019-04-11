@@ -13,7 +13,7 @@
 <script>
 import Vue from 'vue';
 
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+import { VueFormRenderer, renderer } from '@processmaker/spark-screen-builder';
 
 import {
   FormInput,
@@ -30,7 +30,9 @@ import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
-import sequenceExpressionInspectorConfig from './sequenceExpression';
+import Process from './process';
+import sequenceExpression from './sequenceExpression';
+import sequenceCallActivity from './sequenceCallActivity';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -70,12 +72,27 @@ export default {
 
       const { type, definition } = this.highlightedNode;
 
-      if (
-        type === sequenceFlowId &&
-        ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
-      ) {
-        return sequenceExpressionInspectorConfig;
+      if (this.highlightedNode === this.processNode) {
+        return Process.inspectorConfig;
       }
+
+      if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
+        return sequenceExpression;
+      }
+
+      if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
+        const startEventConfig = sequenceCallActivity[0].items.find(item => {
+          return item.config.name === 'startEvent';
+        }).config;
+
+        startEventConfig.targetCallActivity = definition.targetRef;
+        startEventConfig.helper = definition.targetRef.calledElement
+          ? ''
+          : 'Please select a valid process on the connected call activity.';
+
+        return sequenceCallActivity;
+      }
+
       return this.nodeRegistry[type].inspectorConfig;
     },
     isAnyNodeActive() {
@@ -118,6 +135,15 @@ export default {
     },
   },
   methods: {
+    isSequenceFlow(type) {
+      return type === sequenceFlowId;
+    },
+    isConnectedToGateway(definition) {
+      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
+    },
+    isConnectedToCallActivity(definition) {
+      return definition.targetRef.$type === 'bpmn:CallActivity';
+    },
     customInspectorHandler(value) {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
     },

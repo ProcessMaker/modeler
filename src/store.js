@@ -11,6 +11,7 @@ export default new Vuex.Store({
     nodes: [],
     rootElements: [],
     autoValidate: false,
+    globalProcesses: [],
   },
   getters: {
     nodes: state => state.nodes,
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     },
     rootElements: state => state.rootElements,
     autoValidate: state => state.autoValidate,
+    globalProcesses: state => state.globalProcesses,
   },
   mutations: {
     setAutoValidate(state, autoValidate) {
@@ -67,6 +69,26 @@ export default new Vuex.Store({
     },
     setPaper(state, paper) {
       state.paper = paper;
+    },
+    setGlobalProcesses(state, globalProcesses) {
+      state.globalProcesses = globalProcesses;
+    },
+  },
+  actions: {
+    async fetchGlobalProcesses({ commit }) {
+      try {
+        const { data } = await window.ProcessMaker.apiClient.get('processes', {
+          params: {
+            order_direction: 'asc',
+            per_page: 15,
+            status: 'active',
+            include: 'events',
+          },
+        });
+        commit('setGlobalProcesses', data.data);
+      } catch (error) {
+        /* Ignore error */
+      }
     },
   },
 });

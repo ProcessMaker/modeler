@@ -97,6 +97,7 @@ describe('Sequence Flows', () => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
-      .then(xml => xml.trim()).should('have', validXML.trim());
+      .then(xml => xml.trim())
+      .should('have', validXML.trim());
   });
 });

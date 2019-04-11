@@ -71,7 +71,7 @@ export default {
             {
               component: CallActivityFormSelect,
               config: {
-                label: 'Processes',
+                label: 'Processe',
                 name: 'calledElement',
               },
             },

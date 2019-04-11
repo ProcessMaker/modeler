@@ -24,7 +24,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.6",
     "@fortawesome/free-solid-svg-icons": "^5.4.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
-    "@processmaker/vue-form-builder": "^0.12.0",
+    "@processmaker/spark-screen-builder": "^0.12.1",
     "@processmaker/vue-form-elements": "^0.7.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.14",
@@ -45,7 +45,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@processmaker/processmaker-bpmn-moddle": "^0.1.4",
+    "@panter/vue-i18next": "^0.15.0",
+    "@processmaker/processmaker-bpmn-moddle": "^0.3.0",
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-plugin-e2e-cypress": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.0.5",
@@ -53,19 +54,19 @@
     "@vue/cli-service": "^3.0.5",
     "@vue/test-utils": "^1.0.0-beta.20",
     "axios": "^0.18.0",
+    "axios-mock-adapter": "^1.16.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.0.1",
     "bpmnlint-loader": "^0.1.3",
     "cypress": "^3.1.5",
     "cypress-vue-unit-test": "^1.11.0",
+    "i18next": "^15.0.9",
     "node-sass": "^4.9.4",
     "sass-loader": "^7.0.1",
     "stylelint": "^9.7.0",
     "stylelint-config-recommended-scss": "^3.2.0",
     "stylelint-scss": "^3.3.2",
-    "vue-template-compiler": "^2.5.17",
-    "@panter/vue-i18next": "^0.15.0",
-    "i18next": "^15.0.9"
+    "vue-template-compiler": "^2.5.17"
   },
   "peerDependencies": {
     "@panter/vue-i18next": "^0.15.0",
