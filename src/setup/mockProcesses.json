@@ -19,7 +19,9 @@
           "outgoing": {},
           "incoming": {},
           "id": "node_1",
-          "name": "Start Event"
+          "name": "Start Event",
+          "ownerProcessId": "ProcessId",
+          "ownerProcessName": "Process Name"
         }
       ]
     },
@@ -28,7 +30,7 @@
       "process_category_id": 1,
       "user_id": 1,
       "description": "A process with a start event.",
-      "name": "Process with start event",
+      "name": "Process with multiple start events",
       "cancel_screen_id": null,
       "status": "ACTIVE",
       "pause_timer_start": 0,
@@ -42,7 +44,29 @@
           "outgoing": {},
           "incoming": {},
           "id": "node_1",
-          "name": "awesome start event"
+          "name": "Start Event One",
+          "ownerProcessId": "Subprocess1",
+          "ownerProcessName": "Subprocess One"
+        },
+        {
+          "eventDefinitions": {},
+          "parallelMultiple": false,
+          "outgoing": {},
+          "incoming": {},
+          "id": "node_10",
+          "name": "Start Event Two",
+          "ownerProcessId": "Subprocess1",
+          "ownerProcessName": "Subprocess One"
+        },
+        {
+          "eventDefinitions": {},
+          "parallelMultiple": false,
+          "outgoing": {},
+          "incoming": {},
+          "id": "node_15",
+          "name": "Start Event Three",
+          "ownerProcessId": "Subprocess2",
+          "ownerProcessName": "Subprocess Two"
         }
       ]
     },

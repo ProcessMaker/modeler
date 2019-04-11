@@ -17,18 +17,41 @@ export default {
         ? [{ value: '', content: 'Select Active Process' }, ...this.processList]
         : null;
     },
+    /**
+     * Get the list of processes and subprocesses
+     * [
+     *   {value:'ProcessBpmnId-DBProcessId' , content: 'ProcessName'}, ...
+     * ]
+     */
     processList() {
-      return store.getters.globalProcesses
-        .filter(this.containsStartEvent)
-        .map(this.toDropdownFormat);
+      const list = [];
+      store.getters.globalProcesses.forEach((process) => {
+        const subprocessList = [];
+        process.events.forEach((event) => {
+          if (subprocessList.indexOf(event.ownerProcessId)===-1) {
+            subprocessList.push(event.ownerProcessId);
+            list.push(this.toDropdownFormat(process, event));
+          }
+        });
+      });
+      return list;
     },
   },
   methods: {
-    containsStartEvent(process) {
-      return process.events.length > 0;
+    containsMultipleProcesses(process) {
+      const subprocessList = [];
+      process.events.forEach((event) => {
+        if (subprocessList.indexOf(event.ownerProcessId)===-1) {
+          subprocessList.push(event.ownerProcessId);
+        }
+      });
+      return subprocessList.length > 1;
     },
-    toDropdownFormat(process) {
-      return { value: process.id, content: process.name || process.id };
+    toDropdownFormat(process, event) {
+      return {
+        value: event.ownerProcessId + '-' + process.id,
+        content: (process.name || process.id) + ( this.containsMultipleProcesses(process) ? '(' + event.ownerProcessName + ')' : '')
+      };
     },
   },
   created() {
