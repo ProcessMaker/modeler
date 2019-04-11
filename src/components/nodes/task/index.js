@@ -12,7 +12,7 @@ export default {
   label: 'Task',
   definition(moddle) {
     return moddle.create('bpmn:Task', {
-      name: 'New Task',
+      name: 'Task',
     });
   },
   diagram(moddle) {
@@ -58,6 +58,13 @@ export default {
                 label: 'Name',
                 helper: 'The Name of the Task',
                 name: 'name',
+              },
+            },
+            {
+              component: 'FormCheckbox',
+              config: {
+                label: 'Declare as global',
+                name: 'global',
               },
             },
           ],

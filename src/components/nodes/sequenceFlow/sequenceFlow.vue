@@ -8,7 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { expressionPosition } from './sequenceFlowConfig';
+import { expressionPosition, arrowheadShape } from './sequenceFlowConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -39,13 +39,21 @@ export default {
   },
   methods: {
     updateRouter() {
-      if (this.isSourceElementGateway()) {
+      if (this.isSourceFlowElementOrGateway()) {
         this.shape.router('manhattan',{
           excludeEnds: ['source'],
           excludeTypes: ['standard.EmbeddedImage'],
           padding: 20,
         });
       }
+
+      this.shape.listenTo(this.paper, 'link:pointerdown', cellView => {
+        if (cellView.model === this.shape) {
+          this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
+            this.$emit('save-state');
+          });
+        }
+      });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
@@ -66,7 +74,22 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing();
+        this.validateOutgoing() &&
+        this.eventBasedGatewayTarget() &&
+        this.validateIntermediateCatchEvent();
+    },
+    validateIntermediateCatchEvent() {
+      const isSourceIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+
+      return !isSourceIntermediateCatchEvent || !this.invalidIntermediateCatchEventSources();
+    },
+    eventBasedGatewayTarget() {
+      const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetEventBasedGateway = this.targetNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isTargetIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+      const isOneIncomingFlow = isTargetEventBasedGateway && this.targetNode.definition.get('incoming').length > 0;
+
+      return (!isSourceEventBasedGateway && !isOneIncomingFlow ) || isTargetIntermediateCatchEvent;
     },
     hasTargetType() {
       return !!this.targetType;
@@ -90,9 +113,23 @@ export default {
     renderConditionExpression() {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
     },
-    isSourceElementGateway() {
+    invalidIntermediateCatchEventSources() {
       const sourceShape = this.shape.getSourceElement();
-      return ['bpmn:ExclusiveGateway', 'bpmn:ParellelGateway', 'bpmn:InclusiveGateway'].includes(sourceShape.component.node.definition.$type);
+      const invalidSources = [
+        'bpmn:CallActivity',
+      ].includes(sourceShape.component.node.definition.$type);
+
+      return invalidSources;
+    },
+    isSourceFlowElementOrGateway() {
+      const sourceShape = this.shape.getSourceElement();
+      return [
+        'bpmn:ExclusiveGateway',
+        'bpmn:ParallelGateway',
+        'bpmn:InclusiveGateway',
+        'bpmn:EventBasedGateway',
+        'bpmn:StartEvent',
+      ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       if (!this.node.definition.conditionExpression) {
@@ -110,9 +147,17 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Link({
+    this.shape = new joint.dia.Link({
       router: {
         name: 'orthogonal',
+      },
+      attrs: {
+        '.connection': { stroke: 'black', strokeWidth: 2 },
+        '.marker-arrowhead[end="source"]': { display: 'none' },
+        '.marker-arrowhead[end="target"]': { d: arrowheadShape },
+        '.marker-target': { d: arrowheadShape },
+        '.tool-remove': { display: 'none' },
+        '.marker-vertex': { r: 5 },
       },
     });
     this.createLabel();

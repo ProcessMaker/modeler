@@ -11,6 +11,7 @@ const validMessageFlowSources = [
   'processmaker-modeler-end-event',
   'processmaker-modeler-task',
   'processmaker-modeler-pool',
+  'processmaker-modeler-intermediate-message-catch-event',
 ];
 
 const errorHighlighter = {

@@ -9,6 +9,9 @@ export default new Vuex.Store({
     paper: null,
     highlightedNode: null,
     nodes: [],
+    rootElements: [],
+    autoValidate: false,
+    globalProcesses: [],
   },
   getters: {
     nodes: state => state.nodes,
@@ -16,8 +19,17 @@ export default new Vuex.Store({
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
+    rootElements: state => state.rootElements,
+    autoValidate: state => state.autoValidate,
+    globalProcesses: state => state.globalProcesses,
   },
   mutations: {
+    setAutoValidate(state, autoValidate) {
+      state.autoValidate = autoValidate;
+    },
+    setRootElements(state, rootElements) {
+      state.rootElements = rootElements;
+    },
     updateNodeBounds(state, { node, bounds }) {
       Object.entries(bounds).forEach(([key, val]) => {
         if (key === '$type') {
@@ -57,6 +69,26 @@ export default new Vuex.Store({
     },
     setPaper(state, paper) {
       state.paper = paper;
+    },
+    setGlobalProcesses(state, globalProcesses) {
+      state.globalProcesses = globalProcesses;
+    },
+  },
+  actions: {
+    async fetchGlobalProcesses({ commit }) {
+      try {
+        const { data } = await window.ProcessMaker.apiClient.get('processes', {
+          params: {
+            order_direction: 'asc',
+            per_page: 15,
+            status: 'active',
+            include: 'events',
+          },
+        });
+        commit('setGlobalProcesses', data.data);
+      } catch (error) {
+        /* Ignore error */
+      }
     },
   },
 });

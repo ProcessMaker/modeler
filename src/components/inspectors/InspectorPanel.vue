@@ -5,6 +5,7 @@
       :data="data"
       @update="updateDefinition"
       :config="config"
+      @focusout.native="updateState"
     />
   </div>
 </template>
@@ -12,7 +13,7 @@
 <script>
 import Vue from 'vue';
 
-import { VueFormRenderer, renderer } from '@processmaker/vue-form-builder';
+import { VueFormRenderer, renderer } from '@processmaker/spark-screen-builder';
 
 import {
   FormInput,
@@ -22,16 +23,16 @@ import {
   FormRadioButtonGroup,
   FormCodeEditor,
   FormAccordion,
+  FormDatePicker,
 } from '@processmaker/vue-form-elements';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
-import debounce from 'lodash/debounce';
 import omit from 'lodash/omit';
-import processInspectorConfig from './process';
-import sequenceExpressionInspectorConfig from './sequenceExpression';
-import { saveDebounce } from './inspectorConstants';
+import Process from './process';
+import sequenceExpression from './sequenceExpression';
+import sequenceCallActivity from './sequenceCallActivity';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -41,6 +42,7 @@ Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormCodeEditor', FormCodeEditor);
 Vue.component('FormAccordion', FormAccordion);
+Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('VueFormRenderer', VueFormRenderer);
 
 export default {
@@ -48,7 +50,13 @@ export default {
   data() {
     return {
       inspectorHandler: null,
+      translated: [],
     };
+  },
+  watch: {
+    highlightedNode() {
+      document.activeElement.blur();
+    },
   },
   computed: {
     highlightedNode() {
@@ -65,14 +73,24 @@ export default {
       const { type, definition } = this.highlightedNode;
 
       if (this.highlightedNode === this.processNode) {
-        return processInspectorConfig;
+        return Process.inspectorConfig;
       }
 
-      if (
-        type === sequenceFlowId &&
-        ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type)
-      ) {
-        return sequenceExpressionInspectorConfig;
+      if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
+        return sequenceExpression;
+      }
+
+      if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
+        const startEventConfig = sequenceCallActivity[0].items.find(item => {
+          return item.config.name === 'startEvent';
+        }).config;
+
+        startEventConfig.targetCallActivity = definition.targetRef;
+        startEventConfig.helper = definition.targetRef.calledElement
+          ? ''
+          : 'Please select a valid process on the connected call activity.';
+
+        return sequenceCallActivity;
       }
 
       return this.nodeRegistry[type].inspectorConfig;
@@ -117,6 +135,15 @@ export default {
     },
   },
   methods: {
+    isSequenceFlow(type) {
+      return type === sequenceFlowId;
+    },
+    isConnectedToGateway(definition) {
+      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
+    },
+    isConnectedToCallActivity(definition) {
+      return definition.targetRef.$type === 'bpmn:CallActivity';
+    },
     customInspectorHandler(value) {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle);
     },
@@ -125,20 +152,6 @@ export default {
     },
     setNodeProp(node, key, value) {
       store.commit('updateNodeProp', { node, key, value });
-      this.$emit('save-state');
-    },
-    debounceIfSameKey(func) {
-      const debouncedFunction = debounce(func, saveDebounce);
-      let lastKey;
-
-      return (node, key, value) => {
-        if (key !== lastKey) {
-          debouncedFunction.flush();
-        }
-
-        lastKey = key;
-        debouncedFunction(node, key, value);
-      };
     },
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
@@ -148,9 +161,9 @@ export default {
         }
       }
     },
-  },
-  created() {
-    this.setNodeProp = this.debounceIfSameKey(this.setNodeProp);
+    updateState() {
+      this.$emit('save-state');
+    },
   },
 };
 </script>
