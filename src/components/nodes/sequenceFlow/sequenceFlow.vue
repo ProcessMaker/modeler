@@ -8,7 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { expressionPosition, arrowheadShape } from './sequenceFlowConfig';
+import { expressionPosition } from './sequenceFlowConfig';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
@@ -146,19 +146,8 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.dia.Link({
-      router: {
-        name: 'orthogonal',
-      },
-      attrs: {
-        '.connection': { stroke: 'black', strokeWidth: 2 },
-        '.marker-arrowhead[end="source"]': { display: 'none' },
-        '.marker-arrowhead[end="target"]': { d: arrowheadShape },
-        '.marker-target': { d: arrowheadShape },
-        '.tool-remove': { display: 'none' },
-        '.marker-vertex': { r: 5 },
-      },
-    });
+    this.shape = new joint.shapes.standard.Link();
+
     this.createLabel();
   },
 };
