@@ -36,16 +36,19 @@ export default {
   computed: {
     dropdownList() {
       return this.eventList.length > 0
-        ? [{ value: '', content: 'Select Start Event' }, ...this.eventList]
+        ? [{ value: '', content: '[Select Start Event]' }, ...this.eventList]
         : null;
     },
     eventList() {
-      const targetProcess = store.getters.globalProcesses
-        .find(process => process.id === Number(this.targetCallActivity.calledElement));
-
-      return targetProcess
-        ? targetProcess.events.map(this.toDropdownFormat)
-        : [];
+      const list = [];
+      store.getters.globalProcesses.forEach((process) => {
+        process.events.forEach((event) => {
+          if (this.targetCallActivity.calledElement === event.ownerProcessId + '-' + String(process.id)) {
+            list.push(this.toDropdownFormat(event));
+          }
+        });
+      });
+      return list;
     },
   },
   methods: {
