@@ -50,7 +50,7 @@ export default {
     toDropdownFormat(process, event) {
       return {
         value: event.ownerProcessId + '-' + process.id,
-        content: (process.name || process.id) + ( this.containsMultipleProcesses(process) ? '(' + event.ownerProcessName + ')' : '')
+        content: (process.name || process.id) + ( this.containsMultipleProcesses(process) ? '(' + event.ownerProcessName + ')' : ''),
       };
     },
   },
