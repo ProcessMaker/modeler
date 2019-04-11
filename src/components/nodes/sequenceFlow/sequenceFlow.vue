@@ -85,11 +85,10 @@ export default {
     },
     eventBasedGatewayTarget() {
       const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
-      const isTargetEventBasedGateway = this.targetNode.definition.$type === 'bpmn:EventBasedGateway';
+      const isSourceIntermediateCatchEvent = this.sourceNode.definition.$type === 'bpmn:IntermediateCatchEvent';
       const isTargetIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
-      const isOneIncomingFlow = isTargetEventBasedGateway && this.targetNode.definition.get('incoming').length > 0;
 
-      return (!isSourceEventBasedGateway && !isOneIncomingFlow ) || isTargetIntermediateCatchEvent;
+      return (!isSourceEventBasedGateway && !isSourceIntermediateCatchEvent) || isTargetIntermediateCatchEvent;
     },
     hasTargetType() {
       return !!this.targetType;
