@@ -8,6 +8,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task';
+import store from '@/store';
 
 const labelPadding = 15;
 
@@ -41,6 +42,18 @@ export default {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
       }
+    },
+    'node.definition.calledElement'(calledElement) {
+      const calledElementName = store.getters.globalProcesses
+        .find(process => process.id == calledElement)
+        .name;
+
+      store.commit('updateNodeProp', {
+        node: this.node,
+        key: 'name',
+        value: calledElementName,
+      });
+      this.$emit('save-state');
     },
     'node.definition.callActivityType'(callActivityType) {
       this.shape.attr('image/display', callActivityType === 'globalTask' ? 'none' : 'initial');

@@ -69,6 +69,14 @@ export default {
               },
             },
             {
+              component: 'FormInput',
+              config: {
+                label: 'Name',
+                helper: 'The Name of the Call Activity',
+                name: 'name',
+              },
+            },
+            {
               component: CallActivityFormSelect,
               config: {
                 label: 'Processe',
