@@ -8,10 +8,19 @@
         :class="cursor"
         :style="{ width: parentWidth, height: parentHeight }"
       >
-        <div class="history-buttons">
+        <div class="top-buttons history-buttons">
           <button @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
         </div>
+
+        <div class="top-buttons zoom-buttons">
+          <span class="scale-value">{{ Math.round(scale*100) }}%</span>
+          <button @click="scale = Math.max(0.2, scale -= 0.1)" data-test="zoom-out">-</button>
+          <button @click="scale += 0.1" data-test="zoom-in">+</button>
+          <button @click="scale = 1" :disabled="scale === 1" data-test="zoom-reset">{{ $t('Reset') }}</button>
+        </div>
+
+        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
 
         <drop @drop="handleDrop" @dragover="validateDropTarget">
           <div ref="paper" data-test="paper"/>
@@ -126,9 +135,13 @@ export default {
       parentWidth: null,
       linter: null,
       validationErrors: {},
+      scale: 1,
     };
   },
   watch: {
+    scale(scale) {
+      this.paper.scale(scale);
+    },
     autoValidate(autoValidate) {
       if (autoValidate) {
         this.validateBpmnDiagram();
@@ -756,15 +769,33 @@ $cursors: default, not-allowed;
       overflow: hidden;
       position: relative;
 
-      .history-buttons {
+      .top-buttons {
         position: absolute;
         z-index: 1;
-        left: 1rem;
         top: 1rem;
 
         > button {
           cursor: pointer;
         }
+      }
+
+      .history-buttons {
+        left: 1rem;
+      }
+
+      .zoom-buttons {
+        right: 1rem;
+
+        .scale-value {
+          margin-right: 1rem;
+        }
+      }
+
+      .validate-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        cursor: pointer;
       }
     }
 
