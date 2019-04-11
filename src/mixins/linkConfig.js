@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
 
 export default {
+  props: ['highlighted'],
   data() {
     return {
       sourceShape: null,
@@ -23,6 +24,13 @@ export default {
         this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
       } else {
         this.shape.listenToOnce(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
+      }
+    },
+    highlighted(highlighted) {
+      if (highlighted) {
+        this.shapeView.showTools();
+      } else {
+        this.shapeView.hideTools();
       }
     },
   },
@@ -135,6 +143,17 @@ export default {
         this.setBodyColor(defaultNodeColor);
       }
     },
+    setupLinkTools() {
+      const verticesTool = new joint.linkTools.Vertices();
+      const segmentsTool = new joint.linkTools.Segments();
+
+      const toolsView = new joint.dia.ToolsView({
+        tools: [verticesTool, segmentsTool],
+      });
+
+      this.shapeView.addTools(toolsView);
+      this.shapeView.hideTools();
+    },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
@@ -155,6 +174,8 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.setupLinkTools();
 
     const targetRef = this.node.definition.get('targetRef');
 

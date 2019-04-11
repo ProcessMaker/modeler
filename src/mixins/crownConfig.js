@@ -34,6 +34,7 @@ export default {
       /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
       allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
+      shape: null,
     };
   },
   watch: {
