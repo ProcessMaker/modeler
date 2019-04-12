@@ -15,9 +15,9 @@
 
         <div class="top-buttons zoom-buttons">
           <span class="scale-value">{{ Math.round(scale*100) }}%</span>
-          <button @click="scale = Math.max(0.2, scale -= 0.1)" data-test="zoom-out">-</button>
-          <button @click="scale += 0.1" data-test="zoom-in">+</button>
-          <button @click="scale = 1" :disabled="scale === 1" data-test="zoom-reset">{{ $t('Reset') }}</button>
+          <button @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">-</button>
+          <button @click="scale += scaleStep" data-test="zoom-in">+</button>
+          <button @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
         </div>
 
         <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
@@ -136,6 +136,9 @@ export default {
       linter: null,
       validationErrors: {},
       scale: 1,
+      initialScale: 1,
+      minimumScale: 0.2,
+      scaleStep: 0.1,
     };
   },
   watch: {
