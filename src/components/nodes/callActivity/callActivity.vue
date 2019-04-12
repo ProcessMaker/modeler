@@ -9,6 +9,7 @@ import crownConfig from '@/mixins/crownConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task';
 import store from '@/store';
+import uniqBy from 'lodash/uniqBy';
 
 const labelPadding = 15;
 
@@ -42,9 +43,18 @@ export default {
       }
     },
     'node.definition.calledElement'(calledElement) {
-      const calledElementName = store.getters.globalProcesses
-        .find(process => process.id == calledElement)
-        .name;
+      const [ownerProcessId, processId] = calledElement.split('-');
+
+      const calledProcess = store.getters.globalProcesses
+        .find(process => process.id == processId);
+
+      console.log(calledProcess.name, calledProcess.events);
+
+      let calledElementName = calledProcess.name;
+      if (uniqBy(calledProcess.events, 'ownerProcessName').length > 1) {
+        const calledSubProcess = calledProcess.events.find(event => event.ownerProcessId == ownerProcessId);
+        calledElementName += ` (${calledSubProcess.ownerProcessName})`;
+      }
 
       store.commit('updateNodeProp', {
         node: this.node,
