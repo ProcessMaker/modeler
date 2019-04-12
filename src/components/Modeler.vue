@@ -704,7 +704,8 @@ export default {
     });
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
-      this.canvasDragPosition = { x, y };
+      const scale = this.paper.scale();
+      this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy};
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
