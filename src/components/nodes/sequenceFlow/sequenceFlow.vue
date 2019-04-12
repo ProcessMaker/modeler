@@ -9,15 +9,12 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
+import store from '@/store';
+import { id as callActivityId } from '@/components/nodes/callActivity';
 
 export default {
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
   mixins: [crownConfig, linkConfig],
-  data() {
-    return {
-      shape: null,
-    };
-  },
   computed: {
     isValidConnection() {
       return this.isValidTarget() && this.isValidSource();
@@ -25,16 +22,40 @@ export default {
     targetType() {
       return get(this.target, 'component.node.type');
     },
+    label: {
+      get() {
+        return this.shape.label(0).attrs.text.text;
+      },
+      set(text) {
+        this.shape.label(0, {
+          attrs: {
+            text: { text },
+          },
+        });
+      },
+    },
+    sourceIsGateway() {
+      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(this.node.definition.sourceRef.$type);
+    },
+    targetIsCallActivity() {
+      return this.targetType === callActivityId;
+    },
   },
   watch: {
-    'node.definition.conditionExpression.body'(conditionExpression) {
-      this.shape.label(0, {
-        attrs: {
-          text: {
-            text: conditionExpression,
-          },
-        },
-      });
+    'node.definition': {
+      handler({ startEvent: startEventId, conditionExpression }) {
+        if (!this.sourceIsGateway || !this.targetIsCallActivity) {
+          return;
+        }
+
+        const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
+        const newLabel = get(startEvent, 'name') || conditionExpression.body;
+
+        if (newLabel !== this.label) {
+          this.label = newLabel;
+        }
+      },
+      deep: true,
     },
   },
   methods: {
@@ -109,9 +130,6 @@ export default {
       return this.sourceConfig.validateOutgoing == null ||
         this.sourceConfig.validateOutgoing(this.targetNode);
     },
-    renderConditionExpression() {
-      return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
-    },
     invalidIntermediateCatchEventSources() {
       const sourceShape = this.shape.getSourceElement();
       const invalidSources = [
@@ -131,14 +149,16 @@ export default {
       ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
-      if (!this.node.definition.conditionExpression) {
+      const conditionExpression = this.node.definition.conditionExpression;
+
+      if (!conditionExpression) {
         return;
       }
 
       this.shape.labels([{
         attrs: {
           text: {
-            text: this.renderConditionExpression(),
+            text: conditionExpression.body || '',
           },
         },
         position: expressionPosition,

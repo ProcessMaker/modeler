@@ -30,9 +30,9 @@ import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
+import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
-import sequenceExpression from './sequenceExpression';
-import sequenceCallActivity from './sequenceCallActivity';
+import SequenceFlowFormSelect from './SequenceFlowFormSelect.vue';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -76,24 +76,38 @@ export default {
         return Process.inspectorConfig;
       }
 
+      const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
+
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
-        return sequenceExpression;
+        const expressionConfig = {
+          component: 'FormInput',
+          config: {
+            label: 'Expression',
+            helper: 'Enter the expression that describes the workflow condition',
+            name: 'conditionExpression',
+          },
+        };
+
+        inspectorConfig[0].items[1].items.push(expressionConfig);
       }
 
       if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
-        const startEventConfig = sequenceCallActivity[0].items.find(item => {
-          return item.config.name === 'startEvent';
-        }).config;
+        const startEventConfig = {
+          component: SequenceFlowFormSelect,
+          config: {
+            label: 'Call Activity Start Event',
+            name: 'startEvent',
+            targetCallActivity: definition.targetRef,
+            helper: definition.targetRef.calledElement
+              ? ''
+              : 'Please select a valid process on the connected call activity.',
+          },
+        };
 
-        startEventConfig.targetCallActivity = definition.targetRef;
-        startEventConfig.helper = definition.targetRef.calledElement
-          ? ''
-          : 'Please select a valid process on the connected call activity.';
-
-        return sequenceCallActivity;
+        inspectorConfig[0].items[1].items.push(startEventConfig);
       }
 
-      return this.nodeRegistry[type].inspectorConfig;
+      return inspectorConfig;
     },
     isAnyNodeActive() {
       return this.highlightedNode;

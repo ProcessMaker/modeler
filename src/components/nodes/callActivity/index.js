@@ -2,9 +2,10 @@ import component from './callActivity';
 import CallActivityFormSelect from './CallActivityFormSelect';
 
 export const taskHeight = 76;
+export const id = 'processmaker-modeler-call-activity';
 
 export default {
-  id: 'processmaker-modeler-call-activity',
+  id,
   component,
   bpmnType: 'bpmn:CallActivity',
   control: true,

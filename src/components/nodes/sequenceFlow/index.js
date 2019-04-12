@@ -8,14 +8,23 @@ export default {
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
   definition(moddle) {
-    let sequenceFlow = moddle.create('bpmn:SequenceFlow', {
+    return moddle.create('bpmn:SequenceFlow', {
       name: 'New Sequence Flow',
     });
-    sequenceFlow.conditionExpression = moddle.create('bpmn:FormalExpression', {
-      body: 'Expression',
-    });
+  },
+  diagram(moddle) {
+    return moddle.create('bpmndi:BPMNEdge');
+  },
+  inspectorData(node) {
+    return Object.entries(node.definition).reduce((data, [key, value]) => {
+      if (key === 'conditionExpression') {
+        data[key] = value.body;
+      } else {
+        data[key] = value;
+      }
 
-    return sequenceFlow.conditionExpression;
+      return data;
+    }, {});
   },
   inspectorHandler(value, node, setNodeProp, moddle) {
     const definition = node.definition;
@@ -31,7 +40,7 @@ export default {
 
       if (key === 'conditionExpression' && hasCondition) {
         // Set the condition expression
-        const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key].body });
+        const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
         setNodeProp(node, 'conditionExpression', conditionExpression);
       } else {
         setNodeProp(node, key, value[key]);

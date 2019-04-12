@@ -17,8 +17,6 @@ export default {
   mixins: [crownConfig],
   data() {
     return {
-      shape: null,
-      definition: null,
       crownConfig: [
         {
           id: 'sequence-flow-button',
