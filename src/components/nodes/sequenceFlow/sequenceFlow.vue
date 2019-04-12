@@ -75,20 +75,13 @@ export default {
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
         this.validateOutgoing() &&
-        this.eventBasedGatewayTarget() &&
-        this.validateIntermediateCatchEvent();
-    },
-    validateIntermediateCatchEvent() {
-      const isSourceIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
-
-      return !isSourceIntermediateCatchEvent || !this.invalidIntermediateCatchEventSources();
+        this.eventBasedGatewayTarget();
     },
     eventBasedGatewayTarget() {
       const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
-      const isSourceIntermediateCatchEvent = this.sourceNode.definition.$type === 'bpmn:IntermediateCatchEvent';
       const isTargetIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
 
-      return (!isSourceEventBasedGateway && !isSourceIntermediateCatchEvent) || isTargetIntermediateCatchEvent;
+      return !isSourceEventBasedGateway || isTargetIntermediateCatchEvent;
     },
     hasTargetType() {
       return !!this.targetType;
@@ -111,14 +104,6 @@ export default {
     },
     renderConditionExpression() {
       return !this.node.definition.conditionExpression.body ? '' : this.node.definition.conditionExpression.body;
-    },
-    invalidIntermediateCatchEventSources() {
-      const sourceShape = this.shape.getSourceElement();
-      const invalidSources = [
-        'bpmn:CallActivity',
-      ].includes(sourceShape.component.node.definition.$type);
-
-      return invalidSources;
     },
     isSourceFlowElementOrGateway() {
       const sourceShape = this.shape.getSourceElement();

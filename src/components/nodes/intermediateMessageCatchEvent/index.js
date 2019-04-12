@@ -11,7 +11,7 @@ export default {
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: 'Intermediate Timer Event',
+      name: 'Intermediate Message Catch Event',
       allowedUsers: '',
       allowedGroups: '',
       whitelist: '',
