@@ -49,7 +49,7 @@ export default {
         }
 
         const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newLabel = get(startEvent, 'name') || conditionExpression.body;
+        const newLabel = conditionExpression.body || get(startEvent, 'name');
 
         if (newLabel !== this.label) {
           this.label = newLabel;
