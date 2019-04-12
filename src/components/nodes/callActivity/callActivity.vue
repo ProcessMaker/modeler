@@ -48,8 +48,6 @@ export default {
       const calledProcess = store.getters.globalProcesses
         .find(process => process.id == processId);
 
-      console.log(calledProcess.name, calledProcess.events);
-
       let calledElementName = calledProcess.name;
       if (uniqBy(calledProcess.events, 'ownerProcessName').length > 1) {
         const calledSubProcess = calledProcess.events.find(event => event.ownerProcessId == ownerProcessId);
