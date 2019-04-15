@@ -49,7 +49,7 @@ export default {
         }
 
         const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newLabel = conditionExpression.body || get(startEvent, 'name');
+        const newLabel = get(conditionExpression, 'body') || get(startEvent, 'name');
 
         if (newLabel !== this.label) {
           this.label = newLabel;
@@ -134,16 +134,10 @@ export default {
       ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
-      const conditionExpression = this.node.definition.conditionExpression;
-
-      if (!conditionExpression) {
-        return;
-      }
-
       this.shape.labels([{
         attrs: {
           text: {
-            text: conditionExpression.body || '',
+            text: '',
           },
         },
         position: expressionPosition,
@@ -152,8 +146,12 @@ export default {
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link();
-
     this.createLabel();
+
+    const conditionExpression = this.node.definition.conditionExpression;
+    if (conditionExpression) {
+      this.label = conditionExpression.body;
+    }
   },
 };
 </script>

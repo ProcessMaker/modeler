@@ -10,6 +10,7 @@ export default {
   definition(moddle) {
     return moddle.create('bpmn:SequenceFlow', {
       name: 'New Sequence Flow',
+      startEvent: '',
     });
   },
   diagram(moddle) {
