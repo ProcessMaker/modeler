@@ -58,7 +58,7 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('#startEvent').should('contain', 'A process has not been configred in the connnected Call Acitivty task.');
+    cy.get('.inspector-container').should('contain', 'A process has not been configred in the connnected Call Acitivty task.');
     cy.get('[name=startEvent]').should('not.exist');
 
     getElementAtPosition(callActivityPosition).click();
@@ -74,11 +74,11 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('#startEvent').should('not.contain', 'A process has not been configred in the connnected Call Acitivty task.');
+    cy.get('.inspector-container').should('not.contain', 'A process has not been configred in the connnected Call Acitivty task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
-    const sequneceFlowML = '<bpmn:sequenceFlow id="node_3" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_1" />';
-    const callActivityXML = `<bpmn:callActivity id="node_2" name="New Call Activity" calledElement="ProcessId-3">
+    const sequneceFlowML = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
+    const callActivityXML = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
 
