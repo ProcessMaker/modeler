@@ -30,6 +30,7 @@ import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
+import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
 import SequenceFlowFormSelect from './SequenceFlowFormSelect.vue';
@@ -77,6 +78,7 @@ export default {
       }
 
       const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
+      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[1].items');
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         const expressionConfig = {
@@ -88,7 +90,7 @@ export default {
           },
         };
 
-        inspectorConfig[0].items[1].items.push(expressionConfig);
+        sequenceFlowConfigurationFormElements.push(expressionConfig);
       }
 
       if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
@@ -104,7 +106,7 @@ export default {
           },
         };
 
-        inspectorConfig[0].items[1].items.push(startEventConfig);
+        sequenceFlowConfigurationFormElements.push(startEventConfig);
       }
 
       return inspectorConfig;
