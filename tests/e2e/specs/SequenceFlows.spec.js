@@ -32,12 +32,10 @@ describe('Sequence Flows', () => {
 
   it('Update Condition expression', () => {
     const exclusiveGatewayPosition = { x: 400, y: 300 };
-    dragFromSourceToDest(
-      nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
+    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest(
-      nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
 
@@ -47,7 +45,7 @@ describe('Sequence Flows', () => {
       .click({ force: true });
 
     const testString = 'foo > 7';
-    typeIntoTextInput('[name="conditionExpression.body"]', testString);
-    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
+    typeIntoTextInput('[name=conditionExpression]', testString);
+    cy.get('[name=conditionExpression]').should('have.value', testString);
   });
 });

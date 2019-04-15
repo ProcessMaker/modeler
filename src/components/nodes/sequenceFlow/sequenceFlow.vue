@@ -26,7 +26,7 @@ export default {
       get() {
         return this.shape.label(0).attrs.text.text;
       },
-      set(text) {
+      set(text = '') {
         this.shape.label(0, {
           attrs: {
             text: { text },
@@ -44,7 +44,7 @@ export default {
   watch: {
     'node.definition': {
       handler({ startEvent: startEventId, conditionExpression }) {
-        if (!this.sourceIsGateway || !this.targetIsCallActivity) {
+        if (!this.sourceIsGateway && !this.targetIsCallActivity) {
           return;
         }
 
