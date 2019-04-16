@@ -15,7 +15,7 @@ export default {
   computed: {
     dropdownList() {
       return this.processList.length > 0
-        ? [{ value: '', content: '[Select Active Process]' }, ...this.processList]
+        ? [{ value: '', content: this.$t('[Select Active Process]') }, ...this.processList]
         : null;
     },
     processList() {
