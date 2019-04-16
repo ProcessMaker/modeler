@@ -68,6 +68,7 @@ export default {
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
       this.shape.on('change:vertices', this.updateWaypoints);
+      this.shape.getSourceElement().embed(this.shape);
     },
     updateWaypoints() {
       const connections = this.shape.findView(this.paper).getConnection();

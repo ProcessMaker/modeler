@@ -60,13 +60,11 @@ export default {
   },
   methods: {
     updateRouter() {
-      if (this.isSourceFlowElementOrGateway()) {
-        this.shape.router('manhattan',{
-          excludeEnds: ['source'],
-          excludeTypes: ['standard.EmbeddedImage'],
-          padding: 20,
-        });
-      }
+      this.shape.router('manhattan',{
+        excludeEnds: ['source'],
+        excludeTypes: ['standard.EmbeddedImage'],
+        padding: 20,
+      });
 
       this.shape.listenTo(this.paper, 'link:pointerdown', cellView => {
         if (cellView.model === this.shape) {
@@ -122,16 +120,6 @@ export default {
     validateOutgoing() {
       return this.sourceConfig.validateOutgoing == null ||
         this.sourceConfig.validateOutgoing(this.targetNode);
-    },
-    isSourceFlowElementOrGateway() {
-      const sourceShape = this.shape.getSourceElement();
-      return [
-        'bpmn:ExclusiveGateway',
-        'bpmn:ParallelGateway',
-        'bpmn:InclusiveGateway',
-        'bpmn:EventBasedGateway',
-        'bpmn:StartEvent',
-      ].includes(sourceShape.component.node.definition.$type);
     },
     createLabel() {
       this.shape.labels([{
