@@ -27,7 +27,7 @@ const errorHighlighter = {
 };
 
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError', 'collaboration'],
+  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError', 'collaboration', 'nodeRegistry'],
   data() {
     return {
       buttons: [],
@@ -95,10 +95,10 @@ export default {
     },
     addSequence(cellView, evt, x, y) {
       this.removeCrown();
-      const sequenceLink = this.moddle.create('bpmn:SequenceFlow', {
-        sourceRef: this.node.definition,
-        targetRef: { x, y },
-      });
+      const sequenceFlowConfig = this.nodeRegistry['processmaker-modeler-sequence-flow'];
+      const sequenceLink = sequenceFlowConfig.definition(this.moddle);
+      sequenceLink.set('sourceRef', this.node.definition);
+      sequenceLink.set('targetRef', { x, y });
 
       if (
         sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' ||
@@ -112,7 +112,7 @@ export default {
       this.$emit('add-node', {
         type: 'processmaker-modeler-sequence-flow',
         definition: sequenceLink,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
+        diagram: sequenceFlowConfig.diagram(this.moddle),
       });
     },
     addAssociation(cellView, evt, x, y) {

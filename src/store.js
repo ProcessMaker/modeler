@@ -22,6 +22,7 @@ export default new Vuex.Store({
     rootElements: state => state.rootElements,
     autoValidate: state => state.autoValidate,
     globalProcesses: state => state.globalProcesses,
+    globalProcessEvents: (state, getters) => getters.globalProcesses.map(process => process.events).flat(),
   },
   mutations: {
     setAutoValidate(state, autoValidate) {

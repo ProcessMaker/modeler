@@ -9,48 +9,37 @@
 
 <script>
 import store from '@/store';
+import uniqBy from 'lodash/uniqBy';
 
 export default {
   computed: {
     dropdownList() {
       return this.processList.length > 0
-        ? [{ value: '', content: 'Select Active Process' }, ...this.processList]
+        ? [{ value: '', content: this.$t('[Select Active Process]') }, ...this.processList]
         : null;
     },
-    /**
-     * Get the list of processes and subprocesses
-     * [
-     *   {value:'ProcessBpmnId-DBProcessId' , content: 'ProcessName'}, ...
-     * ]
-     */
     processList() {
       const list = [];
-      store.getters.globalProcesses.forEach((process) => {
-        const subprocessList = [];
-        process.events.forEach((event) => {
-          if (subprocessList.indexOf(event.ownerProcessId)===-1) {
-            subprocessList.push(event.ownerProcessId);
-            list.push(this.toDropdownFormat(process, event));
-          }
+
+      store.getters.globalProcesses.forEach(process => {
+        uniqBy(process.events, 'ownerProcessId').forEach(event => {
+          list.push(this.toDropdownFormat(process, event));
         });
       });
+
       return list;
     },
   },
   methods: {
     containsMultipleProcesses(process) {
-      const subprocessList = [];
-      process.events.forEach((event) => {
-        if (subprocessList.indexOf(event.ownerProcessId)===-1) {
-          subprocessList.push(event.ownerProcessId);
-        }
-      });
-      return subprocessList.length > 1;
+      return uniqBy(process.events, 'ownerProcessId').length > 1;
     },
     toDropdownFormat(process, event) {
       return {
-        value: event.ownerProcessId + '-' + process.id,
-        content: (process.name || process.id) + ( this.containsMultipleProcesses(process) ? '(' + event.ownerProcessName + ')' : ''),
+        value: `${event.ownerProcessId}-${process.id}`,
+        content: this.containsMultipleProcesses(process)
+          ? `${process.name} (${event.ownerProcessName})`
+          : process.name,
       };
     },
   },

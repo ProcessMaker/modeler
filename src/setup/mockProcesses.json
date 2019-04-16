@@ -43,7 +43,7 @@
           "parallelMultiple": false,
           "outgoing": {},
           "incoming": {},
-          "id": "node_1",
+          "id": "node_2",
           "name": "awesome start event",
           "ownerProcessId": "ProcessId",
           "ownerProcessName": "Process Name"
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": 5,
       "process_category_id": 1,
       "user_id": 1,
       "description": "A process with a start event.",

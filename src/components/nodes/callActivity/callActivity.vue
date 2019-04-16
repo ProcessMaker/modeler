@@ -8,6 +8,8 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task';
+import store from '@/store';
+import uniqBy from 'lodash/uniqBy';
 
 const labelPadding = 15;
 
@@ -16,8 +18,6 @@ export default {
   mixins: [crownConfig],
   data() {
     return {
-      shape: null,
-      definition: null,
       crownConfig: [
         {
           id: 'sequence-flow-button',
@@ -41,6 +41,25 @@ export default {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
       }
+    },
+    'node.definition.calledElement'(calledElement) {
+      const [ownerProcessId, processId] = calledElement.split('-');
+
+      const calledProcess = store.getters.globalProcesses
+        .find(process => process.id == processId);
+
+      let calledElementName = calledProcess.name;
+      if (uniqBy(calledProcess.events, 'ownerProcessName').length > 1) {
+        const calledSubProcess = calledProcess.events.find(event => event.ownerProcessId == ownerProcessId);
+        calledElementName += ` (${calledSubProcess.ownerProcessName})`;
+      }
+
+      store.commit('updateNodeProp', {
+        node: this.node,
+        key: 'name',
+        value: calledElementName,
+      });
+      this.$emit('save-state');
     },
     'node.definition.callActivityType'(callActivityType) {
       this.shape.attr('image/display', callActivityType === 'globalTask' ? 'none' : 'initial');
