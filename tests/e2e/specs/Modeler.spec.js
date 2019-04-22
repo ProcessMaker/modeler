@@ -223,4 +223,20 @@ describe('Modeler', () => {
       .then(isElementCovered)
       .should(isCovered => expect(isCovered).to.be.false);
   });
+
+  it('Selects process node after deleting an element', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+    cy.get('#renderer-container').should('to.contain', 'Start Event');
+
+    getElementAtPosition(startEventPosition)
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+
+    waitToRenderAllShapes();
+
+    cy.get('#renderer-container').should('to.not.contain', 'Start Event');
+    cy.get('#renderer-container').should('to.contain', 'Process');
+  });
 });
