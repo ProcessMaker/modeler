@@ -28,8 +28,17 @@ export default {
     },
     highlighted(highlighted) {
       if (highlighted) {
+        this.shape.attr({
+          line: { stroke: 'orange' },
+          '.joint-highlight-stroke': {'display': 'none'},
+        });
+
         this.shapeView.showTools();
       } else {
+        this.shape.attr({
+          line: { stroke: 'black' },
+        });
+
         this.shapeView.hideTools();
       }
     },
