@@ -545,6 +545,7 @@ export default {
     },
     removeNode(node) {
       store.commit('removeNode', node);
+      store.commit('highlightNode', this.processNode);
       this.$nextTick(() => {
         this.pushToUndoStack();
       });
