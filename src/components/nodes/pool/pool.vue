@@ -8,6 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane from '../poolLane';
 import { id as poolId } from './index';
+import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { poolPadding, labelWidth } from './poolSizes';
 import { id as laneId } from '../poolLane';
 import laneAboveIcon from '@/assets/lane-above.svg';
@@ -174,6 +175,10 @@ export default {
       }
     },
     expandToFitElement(element) {
+      if (element.component.node.type === messageFlowId) {
+        return;
+      }
+
       const { x: poolX, y: poolY, width, height } = this.shape.getBBox();
 
       if (element.component.node.type === laneId) {

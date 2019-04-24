@@ -43,6 +43,12 @@ export default {
   },
   methods: {
     calculateElementLimits() {
+      const isMessageFlowConnected = this.elementBounds.length > 0;
+
+      if (isMessageFlowConnected) {
+        return;
+      }
+
       this.elementBounds = this.poolComponent.shape.getEmbeddedCells()
         .filter(element => element.component && element.component.node.type !== laneId)
         .map(element => element.getBBox());
