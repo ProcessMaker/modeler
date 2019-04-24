@@ -13,9 +13,8 @@
         <h2>{{ $t(category) }}</h2>
         <div
           v-for="(control, index) in items"
-          :key="index"
-          :transfer-data="{type: control.type}"
           v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+          :key="index"
           :data-test="control.type"
           @dragstart="$event.preventDefault()"
           @mousedown="startDrag($event, control.type)"
