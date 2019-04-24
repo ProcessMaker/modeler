@@ -101,3 +101,10 @@ export function isElementCovered($element) {
         });
     });
 }
+
+export function moveElement(elementPosition, x, y) {
+  getElementAtPosition(elementPosition)
+    .trigger('mousedown', { which: 1 })
+    .trigger('mousemove', { clientX: x, clientY: y })
+    .trigger('mouseup', {force: true});
+}
