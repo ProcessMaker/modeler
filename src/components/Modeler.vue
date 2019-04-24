@@ -486,8 +486,10 @@ export default {
 
       // Handle transform
       const paperOrigin = this.paper.localToPagePoint(0, 0);
-      diagram.bounds.x = event.clientX - paperOrigin.x;
-      diagram.bounds.y = event.clientY - paperOrigin.y;
+      const scale = this.paper.scale();
+
+      diagram.bounds.x = event.clientX - paperOrigin.x / scale.sx;
+      diagram.bounds.y = event.clientY - paperOrigin.y / scale.sy;
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
