@@ -30,9 +30,7 @@
 
         <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
 
-        <!-- <drop @drop="handleDrop" @dragover="validateDropTarget"> -->
         <div ref="paper" data-test="paper"/>
-        <!-- </drop> -->
       </div>
 
       <InspectorPanel
@@ -89,10 +87,6 @@ import { Linter } from 'bpmnlint';
 import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
-
-// Our renderer for our inspector
-import { Drop } from 'vue-drag-drop';
-
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
@@ -103,7 +97,6 @@ const version = '1.0';
 
 export default {
   components: {
-    Drop,
     controls,
     InspectorPanel,
   },

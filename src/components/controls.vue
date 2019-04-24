@@ -33,13 +33,8 @@
 </template>
 
 <script>
-// import { Drag } from 'vue-drag-drop';
-
 export default {
   props: ['controls', 'allowDrop'],
-  // components: {
-  //   Drag,
-  // },
   watch: {
     allowDrop(allowDrop) {
       if (this.draggingElement) {
