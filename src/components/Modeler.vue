@@ -31,6 +31,15 @@
         <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
 
         <div ref="paper" data-test="paper"/>
+
+
+        <div v-show="toggleMiniMap" class="miniPaper"/>
+
+        <div class="mini-map-btn">
+          <button @click="toggleMiniMap = !toggleMiniMap">
+            <font-awesome-icon class="" :icon="mapIcon" />
+          </button>
+        </div>
       </div>
 
       <InspectorPanel
@@ -87,6 +96,11 @@ import { Linter } from 'bpmnlint';
 import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
+
+
+import { faMap } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
@@ -99,6 +113,7 @@ export default {
   components: {
     controls,
     InspectorPanel,
+    FontAwesomeIcon,
   },
   data() {
     return {
@@ -119,6 +134,7 @@ export default {
 
       // Our jointjs paper
       paper: null,
+      miniPaper: null,
 
       definitions: null,
       nodeIdGenerator: null,
@@ -140,6 +156,7 @@ export default {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
+      toggleMiniMap: false,
     };
   },
   watch: {
@@ -175,6 +192,9 @@ export default {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
+    },
+    mapIcon() {
+      return faMap;
     },
   },
   methods: {
@@ -695,6 +715,7 @@ export default {
         elementMove: cellView.model.get('elementMove'),
       };
     });
+
     this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
@@ -707,6 +728,20 @@ export default {
         default: { options: { padding: highlightPadding } },
       },
     });
+
+    this.miniPaper = new joint.dia.Paper({
+      el: document.getElementsByClassName('miniPaper'),
+      model: this.graph,
+      width: 300,
+      height: 200,
+      gridSize: 1,
+      interactive: this.graph.get('interactiveFunc'),
+      highlighting: {
+        default: { options: { padding: highlightPadding } },
+      },
+    });
+
+    this.miniPaper.scale(0.15);
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
@@ -775,6 +810,7 @@ $cursors: default, not-allowed;
   overflow: hidden;
 
   .modeler-container {
+    position: relative;
     max-width: 100%;
     width: 100%;
     display: flex;
@@ -809,11 +845,26 @@ $cursors: default, not-allowed;
         }
       }
 
+
       .validate-button {
         position: absolute;
         top: 1rem;
         right: 1rem;
         cursor: pointer;
+      }
+
+      .mini-map-btn {
+        position: absolute;
+        left: 0.5rem;
+        bottom: 0.25rem;
+      }
+
+      .miniPaper {
+        position: absolute;
+        bottom: 2.25rem;
+        left: 0.5rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        border: 1px solid #e9ecef;
       }
     }
 
