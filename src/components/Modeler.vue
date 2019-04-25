@@ -36,7 +36,8 @@
 
         <div class="mini-map-btn">
           <button class="btn btn-sm btn-secondary" @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon :icon="mapIcon" />
+            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+            <font-awesome-icon v-else :icon="mapIcon" />
           </button>
         </div>
       </div>
@@ -99,7 +100,7 @@ import Process from './inspectors/process';
 // Our renderer for our inspector
 import { Drop } from 'vue-drag-drop';
 
-import { faMap, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -196,7 +197,7 @@ export default {
       }, []);
     },
     mapIcon() {
-      return faMap;
+      return faMapMarked;
     },
     plusIcon() {
       return faPlus;
