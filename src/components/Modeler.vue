@@ -23,8 +23,8 @@
 
         <div class="top-buttons zoom-buttons">
           <span class="scale-value">{{ Math.round(scale*100) }}%</span>
-          <button @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">-</button>
-          <button @click="scale += scaleStep" data-test="zoom-in">+</button>
+          <button @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out"><font-awesome-icon class="" :icon="minusIcon" /></button>
+          <button @click="scale += scaleStep" data-test="zoom-in"><font-awesome-icon class="" :icon="plusIcon" /></button>
           <button @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
         </div>
 
@@ -98,7 +98,7 @@ import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 
 
-import { faMap } from '@fortawesome/free-solid-svg-icons';
+import { faMap, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -195,6 +195,12 @@ export default {
     },
     mapIcon() {
       return faMap;
+    },
+    plusIcon() {
+      return faPlus;
+    },
+    minusIcon() {
+      return faMinus;
     },
   },
   methods: {
