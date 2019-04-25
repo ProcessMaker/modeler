@@ -35,8 +35,8 @@
         <div v-show="toggleMiniMap" class="miniPaper"/>
 
         <div class="mini-map-btn">
-          <button @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon class="" :icon="mapIcon" />
+          <button class="btn btn-sm btn-secondary" @click="toggleMiniMap = !toggleMiniMap">
+            <font-awesome-icon :icon="mapIcon" />
           </button>
         </div>
       </div>
@@ -839,14 +839,14 @@ $cursors: default, not-allowed;
 
       .mini-map-btn {
         position: absolute;
-        left: 0.5rem;
-        bottom: 0.25rem;
+        right: 1rem;
+        top: 1rem;
       }
 
       .miniPaper {
         position: absolute;
-        bottom: 2.25rem;
-        left: 0.5rem;
+        top: 3.5rem;
+        right: 1rem;
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         border: 1px solid #e9ecef;
       }
