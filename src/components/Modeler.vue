@@ -16,16 +16,22 @@
         :class="cursor"
         :style="{ width: parentWidth, height: parentHeight }"
       >
-        <div class="top-buttons history-buttons">
-          <button @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
-          <button @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
-        </div>
+        <div class="btn-toolbar tool-buttons" role="toolbar" aria-label="Toolbar">
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
+          </div>
 
-        <div class="top-buttons zoom-buttons">
-          <span class="scale-value">{{ Math.round(scale*100) }}%</span>
-          <button @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out"><font-awesome-icon class="" :icon="minusIcon" /></button>
-          <button @click="scale += scaleStep" data-test="zoom-in"><font-awesome-icon class="" :icon="plusIcon" /></button>
-          <button @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
+              <font-awesome-icon class="" :icon="plusIcon" />
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
+              <font-awesome-icon class="" :icon="minusIcon" />
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+            <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          </div>
         </div>
 
         <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
@@ -829,28 +835,16 @@ $cursors: default, not-allowed;
       overflow: hidden;
       position: relative;
 
-      .top-buttons {
+      .tool-buttons {
         position: absolute;
         z-index: 1;
         top: 1rem;
+        left: 1rem;
 
         > button {
           cursor: pointer;
         }
       }
-
-      .history-buttons {
-        left: 1rem;
-      }
-
-      .zoom-buttons {
-        right: 1rem;
-
-        .scale-value {
-          margin-right: 1rem;
-        }
-      }
-
 
       .validate-button {
         position: absolute;
