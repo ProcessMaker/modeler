@@ -1,5 +1,5 @@
 <template>
-  <div class="inspector-container">
+  <div class="inspector-container" id="inspector-container">
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
