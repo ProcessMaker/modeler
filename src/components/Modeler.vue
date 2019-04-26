@@ -797,14 +797,15 @@ export default {
       shape.component.$emit('click');
     });
 
-    this.miniPaper.on('blank:pointerclick', event => {
+    this.miniPaper.on('blank:pointerclick cell:pointerclick', event => {
       const { x, y } = this.miniPaper.pageToLocalPoint(event.pageX, event.pageY);
       const { width, height } = this.paper.options;
       const inspectorWidth =  document.getElementById('inspector-container').offsetWidth;
+      const scale = this.paper.scale();
 
       this.paper.translate(
-        event.offsetX - x + (width / 2 - inspectorWidth),
-        event.offsetY - y + (height / 2)
+        event.offsetX - x * scale.sx + (width / 2 - inspectorWidth),
+        event.offsetY - y * scale.sy + (height / 2)
       );
     });
 
@@ -873,6 +874,7 @@ $cursors: default, not-allowed;
         right: 1rem;
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         border: 1px solid #e9ecef;
+        cursor: pointer;
       }
     }
 
