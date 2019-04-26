@@ -731,11 +731,7 @@ export default {
       model: this.graph,
       width: 300,
       height: 200,
-      gridSize: 1,
-      interactive: this.graph.get('interactiveFunc'),
-      highlighting: {
-        default: { options: { padding: highlightPadding } },
-      },
+      interactive: false,
     });
 
     this.miniPaper.scale(0.15);
@@ -783,6 +779,17 @@ export default {
       this.setShapeStacking(shape);
 
       shape.component.$emit('click');
+    });
+
+    this.miniPaper.on('blank:pointerclick', event => {
+      const { x, y } = this.miniPaper.pageToLocalPoint(event.pageX, event.pageY);
+      const { width, height } = this.paper.options;
+      const inspectorWidth =  document.getElementById('inspector-container').offsetWidth;
+
+      this.paper.translate(
+        event.offsetX - x + (width / 2 - inspectorWidth),
+        event.offsetY - y + (height / 2)
+      );
     });
 
     /* Register custom nodes */
