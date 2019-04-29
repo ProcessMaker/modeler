@@ -1,10 +1,18 @@
 <template>
   <div class="modeler">
     <div class="modeler-container">
-      <controls :controls="controls" :style="{ height: parentHeight }"/>
+      <controls
+        :controls="controls"
+        :style="{ height: parentHeight }"
+        :invalidDrop="validateDropTarget"
+        :allowDrop="allowDrop"
+        @drag="validateDropTarget"
+        @handleDrop="handleDrop"
+      />
 
       <div
         class="paper-container"
+        ref="paper-container"
         :class="cursor"
         :style="{ width: parentWidth, height: parentHeight }"
       >
@@ -28,9 +36,9 @@
 
         <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
 
-        <drop @drop="handleDrop" @dragover="validateDropTarget">
-          <div ref="paper" data-test="paper"/>
-        </drop>
+
+        <div ref="paper" data-test="paper"/>
+
 
         <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
 
@@ -97,9 +105,6 @@ import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 
-// Our renderer for our inspector
-import { Drop } from 'vue-drag-drop';
-
 import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -113,7 +118,6 @@ const version = '1.0';
 
 export default {
   components: {
-    Drop,
     controls,
     InspectorPanel,
     FontAwesomeIcon,
@@ -501,12 +505,12 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop(transferData, event) {
+    handleDrop({ clientX, clientY, type }) {
+      this.validateDropTarget({ clientX, clientY, type });
+
       if (!this.allowDrop) {
         return;
       }
-
-      const type = transferData.type;
 
       // Add to our processNode
       const definition = this.nodeRegistry[type].definition(this.moddle);
@@ -516,8 +520,8 @@ export default {
 
       // Handle transform
       const paperOrigin = this.paper.localToPagePoint(0, 0);
-      diagram.bounds.x = event.clientX - paperOrigin.x;
-      diagram.bounds.y = event.clientY - paperOrigin.y;
+      diagram.bounds.x = clientX - paperOrigin.x;
+      diagram.bounds.y = clientY - paperOrigin.y;
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
@@ -587,9 +591,21 @@ export default {
 
       this.paper.setDimensions(clientWidth, clientHeight);
     },
-    validateDropTarget(transferData, { clientX, clientY }) {
+    isPointOverPool(mouseX, mouseY) {
+      const { x, y, width, height } = this.$refs['paper-container'].getBoundingClientRect();
+      const rect = new joint.g.rect(x, y, width, height);
+      const point = new joint.g.point(mouseX, mouseY);
+
+      return rect.containsPoint(point);
+    },
+    validateDropTarget({ clientX, clientY, type }) {
+      if (!this.isPointOverPool(clientX, clientY)) {
+        this.allowDrop = false;
+        return;
+      }
+
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
-      if (transferData.type === poolId) {
+      if (type === poolId) {
         this.allowDrop = true;
         return;
       }
