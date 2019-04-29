@@ -163,7 +163,7 @@ export default {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
-      toggleMiniMap: false,
+      toggleMiniMap: true,
     };
   },
   watch: {
