@@ -50,6 +50,7 @@
       </div>
 
       <InspectorPanel
+        ref="inspector-panel"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -800,7 +801,7 @@ export default {
     this.miniPaper.on('blank:pointerclick cell:pointerclick', event => {
       const { x, y } = this.miniPaper.pageToLocalPoint(event.pageX, event.pageY);
       const { width, height } = this.paper.options;
-      const inspectorWidth =  document.getElementById('inspector-container').offsetWidth;
+      const inspectorWidth =  this.$refs['inspector-panel'].$el.offsetWidth;
       const scale = this.paper.scale();
 
       this.paper.translate(
