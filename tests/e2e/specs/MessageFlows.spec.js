@@ -3,6 +3,7 @@ import {
   getElementAtPosition,
   connectNodesWithFlow,
   getLinksConnectedToElement,
+  moveElement,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -20,6 +21,9 @@ describe('Message Flows', () => {
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
 
     connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
+
+    moveElement(pool1Position, 300, 300);
+    moveElement(pool1Position, 250, 250);
 
     const numberOfMessageFlowsAdded = 1;
     getElementAtPosition(pool2Position)

@@ -44,7 +44,7 @@ export default {
   methods: {
     calculateElementLimits() {
       this.elementBounds = this.poolComponent.shape.getEmbeddedCells()
-        .filter(element => element.component && element.component.node.type !== laneId)
+        .filter(element => element.component && element.component.node.type !== laneId && element.component.node.type !== 'processmaker-modeler-message-flow')
         .map(element => element.getBBox());
 
       this.elementTopY = Math.min(...this.elementBounds.map(({ y }) => y - poolPadding));
