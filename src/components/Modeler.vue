@@ -34,11 +34,7 @@
           </div>
         </div>
 
-        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
-
-
         <div ref="paper" data-test="paper"/>
-
 
         <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
 
