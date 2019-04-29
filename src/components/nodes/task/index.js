@@ -5,7 +5,7 @@ export const taskHeight = 76;
 export default {
   id: 'processmaker-modeler-task',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask'],
+  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:ManualTask'],
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/task.svg'),
