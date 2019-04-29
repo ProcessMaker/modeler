@@ -42,7 +42,7 @@
         <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
 
         <div class="mini-map-btn">
-          <button class="btn btn-sm btn-secondary" @click="toggleMiniMap = !toggleMiniMap">
+          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
             <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
             <font-awesome-icon v-else :icon="mapIcon" />
           </button>
