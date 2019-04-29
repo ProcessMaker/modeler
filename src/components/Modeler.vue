@@ -39,7 +39,7 @@
         <div ref="paper" data-test="paper"/>
 
 
-        <div v-show="toggleMiniMap" class="miniPaper"/>
+        <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
 
         <div class="mini-map-btn">
           <button class="btn btn-sm btn-secondary" @click="toggleMiniMap = !toggleMiniMap">
@@ -743,7 +743,7 @@ export default {
     });
 
     this.miniPaper = new joint.dia.Paper({
-      el: document.getElementsByClassName('miniPaper'),
+      el: this.$refs.miniPaper,
       model: this.graph,
       width: 300,
       height: 200,
