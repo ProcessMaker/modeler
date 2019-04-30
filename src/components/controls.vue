@@ -1,6 +1,6 @@
 <template>
   <b-card no-body>
-    <b-input-group size="sm" class="">
+    <b-input-group size="sm" class="p-2">
       <b-input-group-prepend>
         <span class="input-group-text"><i class="fas fa-filter"/></span>
       </b-input-group-prepend>
@@ -14,16 +14,17 @@
     </b-input-group>
 
     <b-list-group v-for="(items, category) in controls" :key="category" class="overflow-auto">
-      <b-card-header class="border card-header sticky-top">{{ $t(category) }}</b-card-header>
+      <b-card-header class="border bg-light sticky-top p-2">{{ $t(category) }}</b-card-header>
       <b-list-group-item v-for="(control, index) in items"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
+        class=""
         :data-test="control.type"
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control.type)"
       >
-        <div class="tool">
-          <div class="img-container">
+        <div class="tool d-flex align-items-center">
+          <div class="img-container text-break">
             <img :src="control.icon">
           </div>
           {{ $t(control.label) }}
@@ -134,6 +135,12 @@ export default {
   background: #f7f7f7;
 }
 
+.tool {
+  font-size: 0.75em;
+  cursor: grab;
+  user-select: none;
+}
+
 .is-dragging {
   background: #3397e1;
   color: white;
@@ -142,6 +149,7 @@ export default {
   box-shadow: 5px 5px 8px 0px #0000004a;
   cursor: grabbing;
   text-align: left;
+  padding: 1.25rem;
 
   &.no-drop {
     opacity: 0.8;
