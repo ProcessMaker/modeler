@@ -19,7 +19,7 @@ describe('Modeler', () => {
   });
 
   it('Renders the application without errors', () => {
-    cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
+    cy.get('.header').should('contain', 'ProcessMaker Modeler');
   });
 
   it('Create a simple process', () => {
