@@ -1,24 +1,34 @@
 <template>
-  <div id="modeler-app">
-    <div class="navbar">
-      <div>{{ $t('ProcessMaker Modeler') }}</div>
-      <div class="actions">
-        <b-btn v-b-modal="'uploadmodal'">{{ $t('Upload XML') }}</b-btn>
-        <button class="button" data-test="downloadXMLBtn" @click="download">{{ $t('Download XML') }}</button>
-      </div>
-    </div>
-    <div class="modeler-container">
-      <modeler ref="modeler" @validate="validationErrors = $event" />
-    </div>
-    <statusbar>
-      <validation-status :validation-errors="validationErrors"/>
-    </statusbar>
+  <b-container id="modeler-app" class="h-100 mw-100 p-0">
+    <b-card no-body class="h-100">
+      <b-card-header class="d-flex align-items-center">
+        <b-card-text class="m-0 font-weight-bolder">
+          {{ $t('ProcessMaker Modeler') }}
+        </b-card-text>
+
+        <div class="ml-auto">
+          <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">{{ $t('Upload XML') }}</b-btn>
+          <b-btn variant="secondary" size="sm" data-test="downloadXMLBtn" @click="download">{{ $t('Download XML') }}</b-btn>
+        </div>
+      </b-card-header>
+
+      <b-card-body class="overflow-hidden p-0">
+        <modeler ref="modeler" @validate="validationErrors = $event" />
+      </b-card-body>
+
+      <b-card-footer class="p-0 border-0">
+        <statusbar>
+          <validation-status :validation-errors="validationErrors"/>
+        </statusbar>
+      </b-card-footer>
+    </b-card>
+
     <b-modal ref="uploadmodal" id="uploadmodal" :title="$t('Upload BPMN File')">
       <file-upload @input-file="handleUpload">
         {{ $t('Upload file') }}
       </file-upload>
     </b-modal>
-  </div>
+  </b-container>
 </template>
 
 <script>
@@ -95,53 +105,5 @@ html {
   max-width: 100vw;
   height: 100vh;
   max-height: 100vh;
-}
-
-#modeler-app {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-
-  .modeler-container {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-
-  .navbar {
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #3397e1;
-    color: white;
-    border-bottom: 1px solid grey;
-    padding-right: 16px;
-    padding-left: 16px;
-
-    .actions {
-      button {
-        border-radius: 4px;
-        display: inline-block;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        padding-left: 8px;
-        padding-right: 8px;
-        background-color: grey;
-        color: white;
-        border-width: 1px;
-        border-color: darkgrey;
-        margin-right: 8px;
-        font-weight: bold;
-      }
-    }
-  }
 }
 </style>
