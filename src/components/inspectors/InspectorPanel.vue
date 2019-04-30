@@ -1,5 +1,5 @@
 <template>
-  <div class="inspector-container" id="inspector-container">
+  <b-card no-body class="inspector-container p-3">
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
@@ -7,7 +7,7 @@
       :config="config"
       @focusout.native="updateState"
     />
-  </div>
+  </b-card>
 </template>
 
 <script>
