@@ -26,8 +26,8 @@ describe('Intermediate Message Catch Event', () => {
     const eventId = '1234';
     typeIntoTextInput('[name=eventDefinitionId]', eventId);
 
-    const dataName = 'test dataname';
-    typeIntoTextInput('[name=dataName]', dataName);
+    const dataName = 'test variablename';
+    typeIntoTextInput('[name=variableName]', dataName);
 
     cy.get('[name=allowedUsers]').select('1,10');
     cy.get('[name=allowedGroups]').select('20,30');
