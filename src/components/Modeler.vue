@@ -34,13 +34,9 @@
           </div>
         </div>
 
-        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
-
         <div ref="paper" data-test="paper"/>
 
-
         <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
-
         <div class="mini-map-btn">
           <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
             <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />

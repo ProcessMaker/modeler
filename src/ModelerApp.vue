@@ -7,8 +7,14 @@
         </b-card-text>
 
         <div class="ml-auto">
-          <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">{{ $t('Upload XML') }}</b-btn>
-          <b-btn variant="secondary" size="sm" data-test="downloadXMLBtn" @click="download">{{ $t('Download XML') }}</b-btn>
+          <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">
+            <i class="fas fa-upload mr-1"/>
+            {{ $t('Upload XML') }}
+          </b-btn>
+          <b-btn variant="secondary" size="sm" data-test="downloadXMLBtn" @click="download">
+            <i class="fas fa-download mr-1"/>
+            {{ $t('Download XML') }}
+          </b-btn>
         </div>
       </b-card-header>
 
