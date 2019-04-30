@@ -1,5 +1,37 @@
 <template>
-  <div class="controls">
+  <b-card no-body>
+    <b-input-group size="sm" class="">
+      <b-input-group-prepend>
+        <span class="input-group-text"><i class="fas fa-filter"/></span>
+      </b-input-group-prepend>
+
+      <b-form-input ref="filter"
+        :placeholder="`${$t('Filter')}...`"
+        class="sticky-top"
+        type="text"
+        v-model="filterQuery"
+      />
+    </b-input-group>
+
+    <b-list-group v-for="(items, category) in controls" :key="category" class="overflow-auto">
+      <b-card-header class="border card-header sticky-top">{{ $t(category) }}</b-card-header>
+      <b-list-group-item v-for="(control, index) in items"
+        v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+        :key="index"
+        :data-test="control.type"
+        @dragstart="$event.preventDefault()"
+        @mousedown="startDrag($event, control.type)"
+      >
+        <div class="tool">
+          <div class="img-container">
+            <img :src="control.icon">
+          </div>
+          {{ $t(control.label) }}
+        </div>
+      </b-list-group-item>
+    </b-list-group>
+  </b-card>
+  <!-- <div class="controls">
     <input
       ref="filter"
       :placeholder="`${$t('Filter')}...`"
@@ -28,7 +60,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -98,68 +130,100 @@ export default {
 </script>
 
 <style lang="scss">
-.tool {
-  display: flex;
-  align-items: center;
-  font-size: 0.75em;
-  padding: 4px;
-  font-weight: bold;
-  color: #333;
-  cursor: grab;
-  user-select: none;
+.card-header {
+  background: #f7f7f7;
+}
 
-  &.is-dragging {
-    background: #3397e1;
-    color: white;
-    position: absolute;
-    z-index: 10;
-    box-shadow: 5px 5px 8px 0px #0000004a;
-    cursor: grabbing;
-    text-align: left;
+.is-dragging {
+  background: #3397e1;
+  color: white;
+  position: absolute;
+  z-index: 10;
+  box-shadow: 5px 5px 8px 0px #0000004a;
+  cursor: grabbing;
+  text-align: left;
 
-    &.no-drop {
-      opacity: 0.8;
-      cursor: no-drop;
-    }
+  &.no-drop {
+    opacity: 0.8;
+    cursor: no-drop;
   }
 
   &:hover {
     background-color: #3397e1;
     color: white;
   }
-
-  .img-container {
-    pointer-events: none;
-    margin-right: 8px;
-    width: 32px;
-    text-align: center;
-  }
 }
 
-.controls {
-  background-color: #eee;
-  border-right: 1px solid #aaa;
-  width: 320px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-
-  .list {
-    overflow: auto;
-    height: 100%;
-    position: relative;
-
-    h2 {
-      background-color: #aaa;
-      border-top: 1px solid #999;
-      border-bottom: 1px solid #999;
-      padding-left: 8px;
-      margin-bottom: 0px;
-      font-size: 0.75em;
-      font-weight: bold;
-      padding-bottom: 8px;
-      padding-top: 8px;
-    }
-  }
+.img-container {
+  pointer-events: none;
+  margin-right: 8px;
+  width: 32px;
+  text-align: center;
 }
+
+
+// .tool {
+//   display: flex;
+//   align-items: center;
+//   font-size: 0.75em;
+//   padding: 4px;
+//   font-weight: bold;
+//   color: #333;
+//   cursor: grab;
+//   user-select: none;
+
+//   &.is-dragging {
+//     background: #3397e1;
+//     color: white;
+//     position: absolute;
+//     z-index: 10;
+//     box-shadow: 5px 5px 8px 0px #0000004a;
+//     cursor: grabbing;
+//     text-align: left;
+
+//     &.no-drop {
+//       opacity: 0.8;
+//       cursor: no-drop;
+//     }
+//   }
+
+//   &:hover {
+//     background-color: #3397e1;
+//     color: white;
+//   }
+
+//   .img-container {
+//     pointer-events: none;
+//     margin-right: 8px;
+//     width: 32px;
+//     text-align: center;
+//   }
+// }
+
+// .controls {
+//   background-color: #eee;
+//   border-right: 1px solid #aaa;
+//   width: 320px;
+//   text-align: left;
+//   display: flex;
+//   flex-direction: column;
+
+//   .list {
+//     overflow: auto;
+//     height: 100%;
+//     position: relative;
+
+//     h2 {
+//       background-color: #aaa;
+//       border-top: 1px solid #999;
+//       border-bottom: 1px solid #999;
+//       padding-left: 8px;
+//       margin-bottom: 0px;
+//       font-size: 0.75em;
+//       font-weight: bold;
+//       padding-bottom: 8px;
+//       padding-top: 8px;
+//     }
+//   }
+// }
 </style>
