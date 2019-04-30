@@ -16,24 +16,41 @@
         :class="cursor"
         :style="{ width: parentWidth, height: parentHeight }"
       >
-        <div class="top-buttons history-buttons">
-          <button @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
-          <button @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
-        </div>
+        <div class="btn-toolbar tool-buttons" role="toolbar" aria-label="Toolbar">
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
+          </div>
 
-        <div class="top-buttons zoom-buttons">
-          <span class="scale-value">{{ Math.round(scale*100) }}%</span>
-          <button @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">-</button>
-          <button @click="scale += scaleStep" data-test="zoom-in">+</button>
-          <button @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
+              <font-awesome-icon class="" :icon="plusIcon" />
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
+              <font-awesome-icon class="" :icon="minusIcon" />
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+            <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          </div>
         </div>
 
         <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
 
         <div ref="paper" data-test="paper"/>
+
+
+        <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
+
+        <div class="mini-map-btn">
+          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
+            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+            <font-awesome-icon v-else :icon="mapIcon" />
+          </button>
+        </div>
       </div>
 
       <InspectorPanel
+        ref="inspector-panel"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -87,6 +104,11 @@ import { Linter } from 'bpmnlint';
 import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
+
+
+import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
@@ -99,6 +121,7 @@ export default {
   components: {
     controls,
     InspectorPanel,
+    FontAwesomeIcon,
   },
   data() {
     return {
@@ -119,6 +142,7 @@ export default {
 
       // Our jointjs paper
       paper: null,
+      miniPaper: null,
 
       definitions: null,
       nodeIdGenerator: null,
@@ -140,6 +164,7 @@ export default {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
+      toggleMiniMap: true,
     };
   },
   watch: {
@@ -175,6 +200,15 @@ export default {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
+    },
+    mapIcon() {
+      return faMapMarked;
+    },
+    plusIcon() {
+      return faPlus;
+    },
+    minusIcon() {
+      return faMinus;
     },
   },
   methods: {
@@ -695,6 +729,7 @@ export default {
         elementMove: cellView.model.get('elementMove'),
       };
     });
+
     this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
@@ -707,6 +742,16 @@ export default {
         default: { options: { padding: highlightPadding } },
       },
     });
+
+    this.miniPaper = new joint.dia.Paper({
+      el: this.$refs.miniPaper,
+      model: this.graph,
+      width: 300,
+      height: 200,
+      interactive: false,
+    });
+
+    this.miniPaper.scale(0.15);
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
@@ -753,6 +798,18 @@ export default {
       shape.component.$emit('click');
     });
 
+    this.miniPaper.on('blank:pointerclick cell:pointerclick', event => {
+      const { x, y } = this.miniPaper.pageToLocalPoint(event.pageX, event.pageY);
+      const { width, height } = this.paper.options;
+      const inspectorWidth =  this.$refs['inspector-panel'].$el.offsetWidth;
+      const scale = this.paper.scale();
+
+      this.paper.translate(
+        event.offsetX - x * scale.sx + (width / 2 - inspectorWidth),
+        event.offsetY - y * scale.sy + (height / 2)
+      );
+    });
+
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
@@ -775,6 +832,7 @@ $cursors: default, not-allowed;
   overflow: hidden;
 
   .modeler-container {
+    position: relative;
     max-width: 100%;
     width: 100%;
     display: flex;
@@ -787,25 +845,14 @@ $cursors: default, not-allowed;
       overflow: hidden;
       position: relative;
 
-      .top-buttons {
+      .tool-buttons {
         position: absolute;
         z-index: 1;
         top: 1rem;
+        left: 1rem;
 
         > button {
           cursor: pointer;
-        }
-      }
-
-      .history-buttons {
-        left: 1rem;
-      }
-
-      .zoom-buttons {
-        right: 1rem;
-
-        .scale-value {
-          margin-right: 1rem;
         }
       }
 
@@ -814,6 +861,25 @@ $cursors: default, not-allowed;
         top: 1rem;
         right: 1rem;
         cursor: pointer;
+      }
+
+      .mini-map-btn {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+      }
+
+      .miniPaper {
+        position: absolute;
+        top: 3.5rem;
+        right: 1rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        border: 1px solid #e9ecef;
+        cursor: pointer;
+
+        svg g{
+          cursor: pointer;
+        }
       }
     }
 
