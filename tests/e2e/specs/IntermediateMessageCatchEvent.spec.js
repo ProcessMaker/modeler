@@ -26,8 +26,8 @@ describe('Intermediate Message Catch Event', () => {
     const eventId = '1234';
     typeIntoTextInput('[name=eventDefinitionId]', eventId);
 
-    const dataName = 'test variablename';
-    typeIntoTextInput('[name=variableName]', dataName);
+    const variableName = 'test variablename';
+    typeIntoTextInput('[name=variableName]', variableName);
 
     cy.get('[name=allowedUsers]').select('1,10');
     cy.get('[name=allowedGroups]').select('20,30');
@@ -36,7 +36,7 @@ describe('Intermediate Message Catch Event', () => {
     typeIntoTextInput('[name=whitelist]', whiteList);
 
     const validXML = `<bpmn:intermediateCatchEvent id="node_2" name="${name}" pm:allowedUsers="1,10" pm:allowedGroups="20,30" pm:whitelist="${whiteList}">
-      <bpmn:messageEventDefinition id="${eventId}" pm:dataName="${dataName}" />
+      <bpmn:messageEventDefinition id="${eventId}" pm:variableName="${variableName}" />
     </bpmn:intermediateCatchEvent>`;
 
     cy.get('[data-test=downloadXMLBtn]').click();
