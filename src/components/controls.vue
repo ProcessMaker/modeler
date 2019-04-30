@@ -32,36 +32,6 @@
       </b-list-group-item>
     </b-list-group>
   </b-card>
-  <!-- <div class="controls">
-    <input
-      ref="filter"
-      :placeholder="`${$t('Filter')}...`"
-      class="form-control form-control-sm"
-      type="text"
-      v-model="filterQuery"
-    >
-
-    <div class="list">
-      <div v-for="(items, category) in controls" :key="category">
-        <h2>{{ $t(category) }}</h2>
-        <div
-          v-for="(control, index) in items"
-          v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
-          :key="index"
-          :data-test="control.type"
-          @dragstart="$event.preventDefault()"
-          @mousedown="startDrag($event, control.type)"
-        >
-          <div class="tool">
-            <div class="img-container">
-              <img :src="control.icon">
-            </div>
-            {{ $t(control.label) }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </template>
 
 <script>
@@ -168,70 +138,4 @@ export default {
   width: 32px;
   text-align: center;
 }
-
-
-// .tool {
-//   display: flex;
-//   align-items: center;
-//   font-size: 0.75em;
-//   padding: 4px;
-//   font-weight: bold;
-//   color: #333;
-//   cursor: grab;
-//   user-select: none;
-
-//   &.is-dragging {
-//     background: #3397e1;
-//     color: white;
-//     position: absolute;
-//     z-index: 10;
-//     box-shadow: 5px 5px 8px 0px #0000004a;
-//     cursor: grabbing;
-//     text-align: left;
-
-//     &.no-drop {
-//       opacity: 0.8;
-//       cursor: no-drop;
-//     }
-//   }
-
-//   &:hover {
-//     background-color: #3397e1;
-//     color: white;
-//   }
-
-//   .img-container {
-//     pointer-events: none;
-//     margin-right: 8px;
-//     width: 32px;
-//     text-align: center;
-//   }
-// }
-
-// .controls {
-//   background-color: #eee;
-//   border-right: 1px solid #aaa;
-//   width: 320px;
-//   text-align: left;
-//   display: flex;
-//   flex-direction: column;
-
-//   .list {
-//     overflow: auto;
-//     height: 100%;
-//     position: relative;
-
-//     h2 {
-//       background-color: #aaa;
-//       border-top: 1px solid #999;
-//       border-bottom: 1px solid #999;
-//       padding-left: 8px;
-//       margin-bottom: 0px;
-//       font-size: 0.75em;
-//       font-weight: bold;
-//       padding-bottom: 8px;
-//       padding-top: 8px;
-//     }
-//   }
-// }
 </style>
