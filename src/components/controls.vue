@@ -18,7 +18,7 @@
       <b-list-group-item v-for="(control, index) in items"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
-        class=""
+        class="p-2"
         :data-test="control.type"
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control.type)"
