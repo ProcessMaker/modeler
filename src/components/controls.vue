@@ -14,28 +14,22 @@
     </b-input-group>
 
     <b-list-group v-for="(items, category) in controls" :key="category" class="overflow-auto">
-      <b-card-header class="border bg-light sticky-top p-2">
-        <b-button v-b-toggle="category" variant="outline-none" block class="text-left">
-          {{ $t(category) }}
-        </b-button>
-      </b-card-header>
-      <b-collapse :id="category" visible>
-        <b-list-group-item v-for="(control, index) in items"
-          v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
-          :key="index"
-          class=""
-          :data-test="control.type"
-          @dragstart="$event.preventDefault()"
-          @mousedown="startDrag($event, control.type)"
-        >
-          <div class="tool d-flex align-items-center">
-            <div class="img-container text-break">
-              <img :src="control.icon">
-            </div>
-            {{ $t(control.label) }}
+      <b-card-header class="border bg-light sticky-top p-2">{{ $t(category) }}</b-card-header>
+      <b-list-group-item v-for="(control, index) in items"
+        v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+        :key="index"
+        class=""
+        :data-test="control.type"
+        @dragstart="$event.preventDefault()"
+        @mousedown="startDrag($event, control.type)"
+      >
+        <div class="tool d-flex align-items-center">
+          <div class="img-container text-break">
+            <img :src="control.icon">
           </div>
-        </b-list-group-item>
-      </b-collapse>
+          {{ $t(control.label) }}
+        </div>
+      </b-list-group-item>
     </b-list-group>
   </b-card>
 </template>
@@ -125,7 +119,7 @@ export default {
   box-shadow: 5px 5px 8px 0px #0000004a;
   cursor: grabbing;
   text-align: left;
-  padding: 1.75rem 1rem;
+  padding: 1.25rem;
 
   &.no-drop {
     opacity: 0.8;
