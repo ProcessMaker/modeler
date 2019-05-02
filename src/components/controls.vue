@@ -119,7 +119,7 @@ export default {
   box-shadow: 5px 5px 8px 0px #0000004a;
   cursor: grabbing;
   text-align: left;
-  padding: 1.25rem;
+  padding: 1.75rem 1.25rem;
 
   &.no-drop {
     opacity: 0.8;
