@@ -1,11 +1,13 @@
 <template>
-  <b-card no-body class="inspector-container p-3">
+  <b-card no-body class="inspector-container">
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
       @update="updateDefinition"
       :config="config"
+      :class="inspectorStyles"
       @focusout.native="updateState"
+      ref="formRenderer"
     />
   </b-card>
 </template>
@@ -62,6 +64,14 @@ export default {
   computed: {
     highlightedNode() {
       return store.getters.highlightedNode;
+    },
+    inspectorStyles() {
+      this.$nextTick(() => {
+        const inspectorHeader = this.$refs.formRenderer.$children[0].$el;
+        inspectorHeader.classList.add('card-header', 'text-xs');
+      });
+
+      return 'card-body p-0';
     },
     config() {
       if (!this.highlightedNode) {
@@ -184,14 +194,18 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .inspector-container {
   overflow-y: auto;
   font-size: 0.75em;
   text-align: left;
-  padding: 8px;
   width: 320px;
   background-color: #eee;
   border-left: 1px solid #aaa;
+  user-select: none;
+}
+
+.form-accordtion-container {
+  padding: 1.25rem 1.5rem;
 }
 </style>
