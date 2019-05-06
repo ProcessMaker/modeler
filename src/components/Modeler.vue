@@ -1,5 +1,16 @@
 <template>
   <div class="modeler">
+    <div class="alert-container">
+      <b-alert
+        v-for="element in unsupportedElements"
+        :key="element"
+        show
+        dismissible
+        fade
+        variant="warning"
+      >Unsupported element type in parse:  <strong>{{ element }}</strong></b-alert>
+    </div>
+
     <div class="modeler-container">
       <controls
         :controls="controls"
@@ -165,6 +176,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       toggleMiniMap: true,
+      unsupportedElements: [],
     };
   },
   watch: {
@@ -444,6 +456,8 @@ export default {
           /* eslint-disable-next-line no-console */
           console.warn(`Unsupported element type in parse: ${definition.$type}`);
         }
+
+        this.unsupportedElements.push(definition.$type);
 
         pull(flowElements, definition);
         pull(artifacts, definition);
@@ -830,6 +844,16 @@ $cursors: default, not-allowed;
   height: inherit;
   max-height: inherit;
   overflow: hidden;
+
+  .alert-container {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    bottom: 1rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 
   .modeler-container {
     position: relative;
