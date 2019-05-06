@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body class="inspector-container">
+  <b-card no-body class="inspector-container border-top-0">
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
@@ -207,5 +207,9 @@ export default {
 
 .form-accordtion-container {
   padding: 0;
+}
+
+.form-group {
+  padding: 0 0.5rem;
 }
 </style>

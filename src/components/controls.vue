@@ -1,6 +1,6 @@
 <template>
-  <b-card no-body>
-    <b-input-group size="sm" class="p-2">
+  <b-card no-body class="border-top-0">
+    <b-input-group size="sm" class="p-2 border-bottom">
       <b-input-group-prepend>
         <span class="input-group-text"><i class="fas fa-filter"/></span>
       </b-input-group-prepend>
@@ -14,11 +14,11 @@
     </b-input-group>
 
     <b-list-group v-for="(items, category) in controls" :key="category" class="overflow-auto">
-      <b-card-header class="border bg-light sticky-top p-2">{{ $t(category) }}</b-card-header>
+      <b-card-header class="border border-bottom-0 border-right-0 border-top-0 bg-light sticky-top p-2">{{ $t(category) }}</b-card-header>
       <b-list-group-item v-for="(control, index) in items"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
-        class="p-2"
+        class="control-item p-2 border-right-0"
         :data-test="control.type"
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control.type)"
