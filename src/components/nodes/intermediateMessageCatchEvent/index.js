@@ -18,7 +18,7 @@ export default {
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {
           id: '',
-          dataName: '',
+          variableName: '',
         }),
       ],
     });
@@ -37,7 +37,7 @@ export default {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'eventDefinitions') {
         data.eventDefinitionId = value[0].get('id');
-        data.dataName = value[0].get('dataName');
+        data.variableName = value[0].get('variableName');
       } else {
         data[key] = value;
       }
@@ -46,7 +46,7 @@ export default {
     }, {});
   },
   inspectorHandler(value, node, setNodeProp, moddle) {
-    for (const key in omit(value, ['$type', 'eventDefinitionId', 'dataName'])) {
+    for (const key in omit(value, ['$type', 'eventDefinitionId', 'variableName'])) {
       if (node.definition[key] === value[key]) {
         continue;
       }
@@ -55,13 +55,13 @@ export default {
     }
 
     if (
-      node.definition.eventDefinitions[0].get('id') !== value.dataName ||
-      node.definition.eventDefinitions[0].get('dataName') !== value.eventDefinitionId
+      node.definition.eventDefinitions[0].get('id') !== value.variableName ||
+      node.definition.eventDefinitions[0].get('variableName') !== value.eventDefinitionId
     ) {
       setNodeProp(node, 'eventDefinitions', [
         moddle.create('bpmn:MessageEventDefinition', {
           id: value['eventDefinitionId'],
-          dataName: value['dataName'],
+          variableName: value['variableName'],
         }),
       ]);
     }
@@ -114,9 +114,9 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Data Name',
-                helper: 'The Name of the data name',
-                name: 'dataName',
+                label: 'Variable Name',
+                helper: 'The Name of the variable name',
+                name: 'variableName',
               },
             },
             {

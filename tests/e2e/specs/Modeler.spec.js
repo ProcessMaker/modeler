@@ -197,6 +197,9 @@ describe('Modeler', () => {
   it('Adding a pool and lanes does not overlap sequence flow', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
+
+    cy.get('[data-test=mini-map-btn]').click({ force: true});
+
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
 

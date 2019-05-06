@@ -42,11 +42,14 @@ export function getLinksConnectedToElement($element) {
 }
 
 export function dragFromSourceToDest(source, position) {
-  const dataTransfer = new DataTransfer();
-  const paper = '.paper-container';
-  cy.get(`[data-test=${ source }]`).trigger('dragstart', { dataTransfer });
-  cy.get(paper).trigger('dragenter', { force: true });
-  cy.get(paper).trigger('drop', { x: position.x, y: position.y });
+  cy.get('.paper-container').then($paperContainer => {
+    const { x, y } = $paperContainer[0].getBoundingClientRect();
+    const mouseEvent = { clientX: position.x + x, clientY: position.y + y };
+
+    cy.get(`[data-test=${ source }]`).trigger('mousedown');
+    cy.document().trigger('mousemove', mouseEvent);
+    cy.document().trigger('mouseup', mouseEvent);
+  });
 }
 
 export function getCrownButtonForElement($element, crownButton) {
@@ -100,4 +103,11 @@ export function isElementCovered($element) {
           return zIndexes.some(zIndex => shapeZIndex < zIndex);
         });
     });
+}
+
+export function moveElement(elementPosition, x, y) {
+  getElementAtPosition(elementPosition)
+    .trigger('mousedown', { which: 1 })
+    .trigger('mousemove', { clientX: x, clientY: y })
+    .trigger('mouseup', {force: true});
 }

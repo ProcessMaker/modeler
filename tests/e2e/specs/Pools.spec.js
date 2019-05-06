@@ -29,6 +29,8 @@ describe('Pools', () => {
   it('Can add top and bottom lane', () => {
     const poolPosition = { x: 200, y: 200 };
 
+    cy.get('[data-test=mini-map-btn]').click({ force: true});
+
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     waitToRenderAllShapes();
