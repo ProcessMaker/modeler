@@ -210,6 +210,6 @@ export default {
 }
 
 .form-accordtion-container {
-  padding: 0.75rem;
+  padding: 0;
 }
 </style>
