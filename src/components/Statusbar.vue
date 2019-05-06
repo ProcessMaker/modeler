@@ -1,5 +1,5 @@
 <template>
-  <div class="statusbar">
+  <div class="statusbar border border-bottom-0">
     <div>
       <slot name="secondary"/>
     </div>
@@ -8,12 +8,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-
-};
-</script>
 
 <style scoped>
 .statusbar {
