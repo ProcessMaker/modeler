@@ -1,14 +1,20 @@
 <template>
   <div class="modeler">
-    <div class="alert-container">
-      <b-alert
-        v-for="element in unsupportedElements"
-        :key="element"
-        show
-        dismissible
-        fade
-        variant="warning"
-      >Unsupported element type in parse:  <strong>{{ element }}</strong></b-alert>
+    <div class="alert-container position-absolute w-100">
+      <b-row class="justify-content-center">
+        <b-col cols="6">
+          <b-alert
+            v-for="element in unsupportedElements"
+            :key="element"
+            show
+            dismissible
+            fade
+            variant="warning"
+          >
+            Unsupported element type in parse:  <strong>{{ element }}</strong>
+          </b-alert>
+        </b-col>
+      </b-row>
     </div>
 
     <div class="modeler-container">
@@ -457,7 +463,9 @@ export default {
         pull(flowElements, definition);
         pull(artifacts, definition);
         pull(this.planeElements, diagram);
-        pull(this.collaboration.get('messageFlows'), definition);
+        if (this.collaboration) {
+          pull(this.collaboration.get('messageFlows'), definition);
+        }
 
         const incomingFlows = definition.get('incoming');
         if (incomingFlows) {
@@ -841,13 +849,8 @@ $cursors: default, not-allowed;
   overflow: hidden;
 
   .alert-container {
-    position: absolute;
     z-index: 2;
-    display: flex;
-    bottom: 1rem;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
+    bottom: 0;
   }
 
   .modeler-container {
