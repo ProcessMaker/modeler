@@ -8,6 +8,7 @@
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
+        class="controls"
       />
 
       <div
@@ -877,6 +878,10 @@ $cursors: default, not-allowed;
           cursor: pointer;
         }
       }
+    }
+
+    .controls {
+      width: 18rem;
     }
 
     @each $cursor in $cursors {

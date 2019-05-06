@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body class="w-25">
+  <b-card no-body>
     <b-input-group size="sm" class="p-2">
       <b-input-group-prepend>
         <span class="input-group-text"><i class="fas fa-filter"/></span>
