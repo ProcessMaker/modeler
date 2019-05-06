@@ -452,11 +452,6 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
       if (!this.parsers[definition.$type]) {
-        if (process.env.NODE_ENV !== 'production') {
-          /* eslint-disable-next-line no-console */
-          console.warn(`Unsupported element type in parse: ${definition.$type}`);
-        }
-
         this.unsupportedElements.push(definition.$type);
 
         pull(flowElements, definition);
