@@ -69,7 +69,11 @@ export default {
       this.$nextTick(() => {
         const inspectorHeader = this.$refs.formRenderer.$children[0].$el;
         inspectorHeader.classList.add('card-header', 'text-xs');
+        this.$refs.formRenderer.$children.forEach((item) => {
+          item.$el.classList.add('p-2');
+        });
       });
+
 
       return 'card-body p-0';
     },
@@ -206,6 +210,6 @@ export default {
 }
 
 .form-accordtion-container {
-  padding: 1.25rem 1.5rem;
+  padding: 0.75rem;
 }
 </style>
