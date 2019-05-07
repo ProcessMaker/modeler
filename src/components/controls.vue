@@ -14,8 +14,8 @@
       />
     </b-input-group>
 
-    <b-list-group v-for="(items, category) in controls" :key="category" class="">
-      <b-list-group-item v-for="(control, index) in items"
+    <div class="overflow-auto">
+      <b-list-group-item v-for="(control, index) in controlItems"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
         class="control-item p-2 border-right-0"
@@ -30,7 +30,8 @@
           <span class="text-md">{{ $t(control.label) }}</span>
         </div>
       </b-list-group-item>
-    </b-list-group>
+    </div>
+
   </b-card>
 </template>
 
@@ -52,6 +53,11 @@ export default {
       xOffset: null,
       yOffset: null,
     };
+  },
+  computed: {
+    controlItems() {
+      return Object.values(this.controls).flat();
+    },
   },
   methods: {
     startDrag(event, controlType) {

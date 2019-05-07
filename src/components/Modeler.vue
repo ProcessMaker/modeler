@@ -1,6 +1,6 @@
 <template>
-  <div class="modeler m-4">
-    <div class="modeler-container row ml-0">
+  <b-row class="modeler h-100">
+    <b-col cols="3" class="h-100 overflow-hidden">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -8,44 +8,47 @@
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
-        class="controls h-100 col-2 p-0"
+        class="controls h-100"
       />
+    </b-col>
 
-      <div
-        class="paper-container h-100 col row"
-        ref="paper-container"
-        :class="cursor"
-        :style="{ width: parentWidth, height: parentHeight }"
-      >
-        <div class="btn-toolbar tool-buttons" role="toolbar" aria-label="Toolbar">
-          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
-            <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
-          </div>
-
-          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
-            <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
-              <font-awesome-icon class="" :icon="plusIcon" />
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
-              <font-awesome-icon class="" :icon="minusIcon" />
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
-            <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
-          </div>
+    <b-col
+      cols="6"
+      class="paper-container h-100"
+      ref="paper-container"
+      :class="cursor"
+      :style="{ width: parentWidth, height: parentHeight }"
+    >
+      <div class="btn-toolbar tool-buttons" role="toolbar" aria-label="Toolbar">
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+          <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
         </div>
 
-        <div ref="paper" data-test="paper" class="col"/>
-
-        <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
-        <div class="mini-map-btn">
-          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
-            <font-awesome-icon v-else :icon="mapIcon" />
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+          <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
+            <font-awesome-icon class="" :icon="plusIcon" />
           </button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
+            <font-awesome-icon class="" :icon="minusIcon" />
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
       </div>
 
+      <div ref="paper" data-test="paper" class="col"/>
+
+      <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
+      <div class="mini-map-btn">
+        <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
+          <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+          <font-awesome-icon v-else :icon="mapIcon" />
+        </button>
+      </div>
+    </b-col>
+
+    <b-col cols="3">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -53,9 +56,9 @@
         :moddle="moddle"
         :processNode="processNode"
         @save-state="pushToUndoStack"
-        class="h-100 col-3"
+        class="h-100"
       />
-    </div>
+    </b-col>
 
     <component
       v-for="node in nodes"
@@ -84,7 +87,7 @@
       @save-state="pushToUndoStack"
       @set-shape-stacking="setShapeStacking"
     />
-  </div>
+  </b-row>
 </template>
 
 <script>
@@ -830,17 +833,17 @@ $cursors: default, not-allowed;
   // overflow: hidden;
 
   .modeler-container {
-    position: relative;
+    /* position: relative;
     max-width: 100%;
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: row; */
 
     .paper-container {
-      height: 100%;
+      /* height: 100%;
       max-height: 100%;
-      min-height: 100%;
-      overflow: hidden;
+      min-height: 100%; */
+      /* overflow: hidden; */
       position: relative;
 
       .tool-buttons {
