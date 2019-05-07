@@ -8,7 +8,7 @@
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
-        class="controls"
+        class="controls d-flex"
       />
 
       <div

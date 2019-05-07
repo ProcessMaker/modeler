@@ -138,4 +138,12 @@ export default {
   width: 32px;
   text-align: center;
 }
+
+.list-group {
+  flex: 3;
+
+  &:last-child {
+    flex: 1;
+  }
+}
 </style>
