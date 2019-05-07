@@ -27,7 +27,7 @@
           <div class="img-container text-break">
             <img :src="control.icon">
           </div>
-          <span class="text-md">{{ $t(control.label) }}</span>
+          {{ $t(control.label) }}
         </div>
       </b-list-group-item>
     </b-list-group>
@@ -65,8 +65,6 @@ export default {
       const duplicateElement = sourceElement.cloneNode(true);
       duplicateElement.classList.add('is-dragging');
       duplicateElement.classList.toggle('no-drop', !this.allowDrop);
-      duplicateElement.style.width = `${sourceElement.clientWidth}px`;
-      duplicateElement.style.height = `${sourceElement.clientHeight}px`;
 
       this.$root.$el.appendChild(duplicateElement);
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
@@ -127,8 +125,7 @@ export default {
   z-index: 10;
   box-shadow: 5px 5px 8px 0px #0000004a;
   cursor: grabbing;
-  text-align: left;
-  padding: 1.75rem 1.25rem;
+  padding: 0.5rem;
 
   &.no-drop {
     opacity: 0.8;
