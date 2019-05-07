@@ -19,7 +19,7 @@
       :class="cursor"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons" role="toolbar" aria-label="Toolbar">
+      <div class="btn-toolbar tool-buttons d-flex mb-1" role="toolbar" aria-label="Toolbar">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -35,17 +35,18 @@
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
+
+        <div class="mini-map-btn ml-auto">
+          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
+            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+            <font-awesome-icon v-else :icon="mapIcon" />
+          </button>
+        </div>
       </div>
+      <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
 
       <div ref="paper" data-test="paper" class="col"/>
 
-      <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
-      <div class="mini-map-btn">
-        <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
-          <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
-          <font-awesome-icon v-else :icon="mapIcon" />
-        </button>
-      </div>
     </b-col>
 
     <b-col cols="3">
@@ -824,6 +825,20 @@ export default {
 
 $cursors: default, not-allowed;
 
+.miniPaper {
+  position: absolute;
+  top: 2.5rem;
+  right: 1rem;
+  z-index: 2;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+
+  svg g{
+    cursor: pointer;
+  }
+}
+
 .modeler {
   // position: relative;
   // width: inherit;
@@ -870,18 +885,6 @@ $cursors: default, not-allowed;
         top: 1rem;
       }
 
-      .miniPaper {
-        position: absolute;
-        top: 3.5rem;
-        right: 1rem;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-        border: 1px solid #e9ecef;
-        cursor: pointer;
-
-        svg g{
-          cursor: pointer;
-        }
-      }
     }
 
     @each $cursor in $cursors {
