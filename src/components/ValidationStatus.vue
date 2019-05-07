@@ -21,14 +21,16 @@
     </div>
 
     <div class="status-bar-container d-flex align-items-center justify-content-end">
-      <b-form-checkbox switch v-model="autoValidate">{{ $t('Auto validate') }}</b-form-checkbox>
+      <b-form-checkbox class="h-100 d-flex align-items-center" v-model="autoValidate" switch>{{ $t('Auto validate') }}</b-form-checkbox>
 
       <div class="divider"/>
 
       <div data-test="validation-list-toggle" class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
-        <span class="status-bar-container__status-text">{{ $t('Problems') }} {{ numberOfValidationErrors }}</span>
-        <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: statusColor }" :icon="statusIcon" />
-        <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
+        <div class="d-flex align-items-center">
+          <span class="status-bar-container__status-text">{{ $t('Problems') }} {{ numberOfValidationErrors }}</span>
+          <font-awesome-icon class="status-bar-container__status-icon h-100" :style="{ color: statusColor }" :icon="statusIcon" />
+          <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
+        </div>
       </div>
     </div>
   </div>
@@ -123,7 +125,6 @@ $primary-white: #F0F3F7;
 $seconadry-grey: #555555;
 $secondary-blue: #3397e1;
 $border-color: #aaaaaa;
-$text-size-sm: 0.85rem;
 $id-container-width: 6.5rem;
 $message-container-width: 18rem;
 $error-category-width: 1rem;
@@ -135,7 +136,6 @@ $warning-color: #F0AD4E;
 $button-color: #3BD7FF;
 
 .status-bar-container {
-  font-size: $text-size-sm;
   color: $seconadry-grey;
   height: $status-bar-container-height;
   cursor: pointer;
