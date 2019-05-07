@@ -19,7 +19,7 @@
       :class="cursor"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-flex mb-1" role="toolbar" aria-label="Toolbar">
+      <div class="btn-toolbar tool-buttons d-flex mb-1 position-relative" role="toolbar" aria-label="Toolbar">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -36,20 +36,21 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <div class="mini-map-btn ml-auto">
+        <div class="ml-auto">
           <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
             <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
             <font-awesome-icon v-else :icon="mapIcon" />
           </button>
         </div>
-      </div>
-      <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
 
-      <div ref="paper" data-test="paper" class="col"/>
+        <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
+      </div>
+
+      <div ref="paper" data-test="paper" class="main-paper"/>
 
     </b-col>
 
-    <b-col cols="3" class="pl-0">
+    <b-col cols="3" class="pl-0 h-100 overflow-hidden">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -745,6 +746,8 @@ export default {
       },
     });
 
+    this.paper.translate(168, 20);
+
     this.miniPaper = new joint.dia.Paper({
       el: this.$refs.miniPaper,
       model: this.graph,
@@ -828,7 +831,7 @@ $cursors: default, not-allowed;
 .miniPaper {
   position: absolute;
   top: 2.5rem;
-  right: 1rem;
+  right: 0;
   z-index: 2;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   border: 1px solid #e9ecef;
@@ -840,59 +843,36 @@ $cursors: default, not-allowed;
 }
 
 .modeler {
-  // position: relative;
-  // width: inherit;
-  // max-width: inherit;
-  // height: inherit;
-  // max-height: inherit;
-  // overflow: hidden;
+  .main-paper {
+    position: absolute;
+    height: 100%;
+    max-height: 100%;
+    min-height: 100%;
+    left: 0;
+    top: 0;
+  }
 
-  .modeler-container {
-    /* position: relative;
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row; */
+  .controls {
+    z-index: 1;
+  }
 
-    .paper-container {
-      /* height: 100%;
-      max-height: 100%;
-      min-height: 100%; */
-      /* overflow: hidden; */
-      position: relative;
+  .paper-container {
+    position: initial !important;
 
-      .tool-buttons {
-        position: absolute;
-        z-index: 1;
-        top: 1rem;
-        left: 1rem;
+    .tool-buttons {
+      z-index: 1;
 
-        > button {
-          cursor: pointer;
-        }
-      }
-
-      .validate-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
+      > button {
         cursor: pointer;
       }
-
-      .mini-map-btn {
-        position: absolute;
-        right: 1rem;
-        top: 1rem;
-      }
-
     }
+  }
 
-    @each $cursor in $cursors {
-      .paper-container.#{$cursor} {
-        .joint-paper,
-        .joint-paper * {
-          cursor: #{$cursor} !important;
-        }
+  @each $cursor in $cursors {
+    .paper-container.#{$cursor} {
+      .joint-paper,
+      .joint-paper * {
+        cursor: #{$cursor} !important;
       }
     }
   }
