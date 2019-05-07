@@ -1,6 +1,6 @@
 <template>
   <b-row class="modeler h-100">
-    <b-col cols="3" class="h-100 overflow-hidden">
+    <b-col cols="2" class="h-100 overflow-hidden">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -13,7 +13,7 @@
     </b-col>
 
     <b-col
-      cols="6"
+      cols="7"
       class="paper-container h-100"
       ref="paper-container"
       :class="cursor"
