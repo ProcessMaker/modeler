@@ -49,7 +49,7 @@
 
     </b-col>
 
-    <b-col cols="3">
+    <b-col cols="3" class="pl-0">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"

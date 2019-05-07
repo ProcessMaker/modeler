@@ -1,6 +1,6 @@
 <template>
-  <b-card no-body class="border-top-0">
-    <b-card-header class="border sticky-top">Controls</b-card-header>
+  <b-card no-body>
+    <b-card-header class="border-bottom-0">Controls</b-card-header>
     <b-input-group size="sm">
       <b-input-group-prepend>
         <span class="input-group-text"><i class="fas fa-filter"/></span>
@@ -14,7 +14,7 @@
       />
     </b-input-group>
 
-    <div class="overflow-auto">
+    <b-list-group flush class="overflow-auto">
       <b-list-group-item v-for="(control, index) in controlItems"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
@@ -30,7 +30,7 @@
           <span class="text-md">{{ $t(control.label) }}</span>
         </div>
       </b-list-group-item>
-    </div>
+    </b-list-group>
 
   </b-card>
 </template>
@@ -109,6 +109,10 @@ export default {
 <style lang="scss">
 .card-header {
   background: #f7f7f7;
+}
+
+.list-group-item:first-child {
+  border-top: 0;
 }
 
 .tool {
