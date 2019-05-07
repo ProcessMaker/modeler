@@ -1,11 +1,11 @@
 <template>
   <b-card no-body class="inspector-container p-0">
+    <div class="card-header">Inspector</div>
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
       @update="updateDefinition"
       :config="config"
-      :class="inspectorStyles"
       class="h-100"
       @focusout.native="updateState"
       ref="formRenderer"

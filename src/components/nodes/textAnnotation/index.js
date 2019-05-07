@@ -44,13 +44,12 @@ export default {
     {
       name: 'Text Annotation',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Text Annotation',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Text Annotation',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

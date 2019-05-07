@@ -7,13 +7,12 @@ export default {
     {
       name: 'Process Information',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Process',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Process',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

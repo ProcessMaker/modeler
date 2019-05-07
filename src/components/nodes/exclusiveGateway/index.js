@@ -25,13 +25,12 @@ export default {
     {
       name: 'Exclusive Gateway',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Exclusive Gateway',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Exclusive Gateway',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

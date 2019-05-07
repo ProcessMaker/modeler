@@ -52,13 +52,12 @@ export default {
     {
       name: 'Sequence Flow',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Sequence Flow',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Sequence Flow',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

@@ -27,13 +27,12 @@ export default {
     {
       name: 'Task',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Task',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Task',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

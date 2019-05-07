@@ -23,13 +23,12 @@ export default {
     {
       name: 'Lane',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Lane',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Lane',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

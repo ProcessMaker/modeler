@@ -27,13 +27,12 @@ export default {
     {
       name: 'Pool',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Pool',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Pool',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

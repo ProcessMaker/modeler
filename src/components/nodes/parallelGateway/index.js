@@ -27,13 +27,12 @@ export default {
     {
       name: 'Parallel Gateway',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Parallel Gateway',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Parallel Gateway',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

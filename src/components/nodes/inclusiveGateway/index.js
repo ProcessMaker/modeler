@@ -27,13 +27,12 @@ export default {
     {
       name: 'Inclusive Gateway',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Inclusive Gateway',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Inclusive Gateway',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,
