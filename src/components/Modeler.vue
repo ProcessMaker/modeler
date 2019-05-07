@@ -1,5 +1,22 @@
 <template>
   <div class="modeler">
+    <div class="alert-container position-absolute w-100">
+      <b-row class="justify-content-center">
+        <b-col cols="6">
+          <b-alert
+            v-for="element in unsupportedElements"
+            :key="element"
+            show
+            dismissible
+            fade
+            variant="warning"
+          >
+            Unsupported element type in parse:  <strong>{{ element }}</strong>
+          </b-alert>
+        </b-col>
+      </b-row>
+    </div>
+
     <div class="modeler-container">
       <controls
         :controls="controls"
@@ -165,6 +182,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       toggleMiniMap: true,
+      unsupportedElements: [],
     };
   },
   watch: {
@@ -440,15 +458,14 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
       if (!this.parsers[definition.$type]) {
-        if (process.env.NODE_ENV !== 'production') {
-          /* eslint-disable-next-line no-console */
-          console.warn(`Unsupported element type in parse: ${definition.$type}`);
-        }
+        this.unsupportedElements.push(definition.$type);
 
         pull(flowElements, definition);
         pull(artifacts, definition);
         pull(this.planeElements, diagram);
-        pull(this.collaboration.get('messageFlows'), definition);
+        if (this.collaboration) {
+          pull(this.collaboration.get('messageFlows'), definition);
+        }
 
         const incomingFlows = definition.get('incoming');
         if (incomingFlows) {
@@ -832,6 +849,11 @@ $cursors: default, not-allowed;
   height: inherit;
   max-height: inherit;
   overflow: hidden;
+
+  .alert-container {
+    z-index: 2;
+    bottom: 0;
+  }
 
   .modeler-container {
     position: relative;
