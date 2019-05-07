@@ -14,7 +14,7 @@
 
     <b-col
       cols="7"
-      class="paper-container h-100"
+      class="paper-container h-100 pr-4"
       ref="paper-container"
       :class="cursor"
       :style="{ width: parentWidth, height: parentHeight }"
