@@ -1,6 +1,6 @@
 <template>
-  <div class="modeler">
-    <div class="modeler-container">
+  <div class="modeler m-4">
+    <div class="modeler-container row ml-0">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -8,11 +8,11 @@
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
-        class="controls d-flex"
+        class="controls h-100 col-2 p-0"
       />
 
       <div
-        class="paper-container"
+        class="paper-container h-100 col row"
         ref="paper-container"
         :class="cursor"
         :style="{ width: parentWidth, height: parentHeight }"
@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <div ref="paper" data-test="paper"/>
+        <div ref="paper" data-test="paper" class="col"/>
 
         <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
         <div class="mini-map-btn">
@@ -53,6 +53,7 @@
         :moddle="moddle"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        class="h-100 col-3"
       />
     </div>
 
@@ -821,12 +822,12 @@ export default {
 $cursors: default, not-allowed;
 
 .modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+  // position: relative;
+  // width: inherit;
+  // max-width: inherit;
+  // height: inherit;
+  // max-height: inherit;
+  // overflow: hidden;
 
   .modeler-container {
     position: relative;
@@ -878,10 +879,6 @@ $cursors: default, not-allowed;
           cursor: pointer;
         }
       }
-    }
-
-    .controls {
-      width: 18rem;
     }
 
     @each $cursor in $cursors {

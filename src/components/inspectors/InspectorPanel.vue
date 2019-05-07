@@ -1,11 +1,12 @@
 <template>
-  <b-card no-body class="inspector-container border-top-0">
+  <b-card no-body class="inspector-container p-0">
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
       @update="updateDefinition"
       :config="config"
       :class="inspectorStyles"
+      class="h-100"
       @focusout.native="updateState"
       ref="formRenderer"
     />
@@ -68,7 +69,7 @@ export default {
     inspectorStyles() {
       this.$nextTick(() => {
         const inspectorHeader = this.$refs.formRenderer.$children[0].$el;
-        inspectorHeader.classList.add('card-header', 'text-xs');
+        inspectorHeader.classList.add('card-header', 'text-sm');
       });
 
       return 'card-body p-0';
@@ -196,12 +197,8 @@ export default {
 
 <style lang="scss">
 .inspector-container {
-  overflow-y: auto;
-  font-size: 0.75em;
+  // overflow-y: auto;
   text-align: left;
-  width: 320px;
-  background-color: #eee;
-  border-left: 1px solid #aaa;
   user-select: none;
 }
 
