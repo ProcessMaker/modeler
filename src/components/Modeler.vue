@@ -43,7 +43,9 @@
           </button>
         </div>
 
-        <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
+        <div class="mini-paper-container" @click="movePaper">
+          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper"/>
+        </div>
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper"/>
@@ -709,6 +711,15 @@ export default {
         this.bringShapeToFront(shape);
       }
     },
+    movePaper({ offsetX, offsetY }) {
+      const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
+      const scale = this.paper.scale();
+
+      this.paper.translate(
+        (this.$refs.paper.clientWidth / 2) - (x * scale.sx),
+        (this.$refs.paper.clientHeight / 2) - (y * scale.sy)
+      );
+    },
   },
   created() {
     this.registerNode(Process);
@@ -803,18 +814,6 @@ export default {
       shape.component.$emit('click');
     });
 
-    this.miniPaper.on('blank:pointerclick cell:pointerclick', event => {
-      const { x, y } = this.miniPaper.pageToLocalPoint(event.pageX, event.pageY);
-      const { width, height } = this.paper.options;
-      const inspectorWidth =  this.$refs['inspector-panel'].$el.offsetWidth;
-      const scale = this.paper.scale();
-
-      this.paper.translate(
-        event.offsetX - x * scale.sx + (width / 2 - inspectorWidth),
-        event.offsetY - y * scale.sy + (height / 2)
-      );
-    });
-
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: this.loadXML,
@@ -828,7 +827,7 @@ export default {
 
 $cursors: default, not-allowed;
 
-.miniPaper {
+.mini-paper-container {
   position: absolute;
   top: 2.5rem;
   right: 0;
@@ -837,8 +836,8 @@ $cursors: default, not-allowed;
   border: 1px solid #e9ecef;
   cursor: pointer;
 
-  svg g{
-    cursor: pointer;
+  .mini-paper {
+    pointer-events: none;
   }
 }
 
