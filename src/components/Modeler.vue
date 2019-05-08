@@ -234,8 +234,6 @@ export default {
       const xml = await this.getXmlFromDiagram();
       undoRedoStore.dispatch('pushState', xml);
 
-      this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
-
       window.ProcessMaker.EventBus.$emit('modeler-change');
     },
     getXmlFromDiagram() {
@@ -257,14 +255,14 @@ export default {
     undo() {
       undoRedoStore
         .dispatch('undo')
-        .then(this.loadXML.cancel)
-        .then(this.loadXML);
+        .then(this.loadXML)
+        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     redo() {
       undoRedoStore
         .dispatch('redo')
-        .then(this.loadXML.cancel)
-        .then(this.loadXML);
+        .then(this.loadXML)
+        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     setPools(poolDefinition) {
       if (!this.collaboration) {
@@ -825,6 +823,12 @@ export default {
         this.loadXML(xml);
         undoRedoStore.dispatch('pushState', xml);
       },
+    });
+
+    window.ProcessMaker.EventBus.$on('modeler-change', () => {
+      setTimeout(() => {
+        this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
+      });
     });
   },
 };
