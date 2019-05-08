@@ -236,7 +236,7 @@ export default {
 
         config.label = this.$t(config.label);
         config.helper = this.$t(config.helper);
-        config.name = this.$t(config.name);
+        config.name = config.name;
       }
 
       if (inspectorConfig.items) {
