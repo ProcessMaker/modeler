@@ -14,11 +14,11 @@
       />
     </b-input-group>
 
-    <b-list-group flush class="overflow-auto">
+    <b-list-group flush class="overflow-auto w-auto">
       <b-list-group-item v-for="(control, index) in controlItems"
         v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
-        class="control-item p-2 border-right-0"
+        class="control-item p-2 border-right-0 flex-grow-1"
         :data-test="control.type"
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control.type)"
