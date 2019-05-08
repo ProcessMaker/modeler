@@ -233,6 +233,9 @@ export default {
     async pushToUndoStack() {
       const xml = await this.getXmlFromDiagram();
       undoRedoStore.dispatch('pushState', xml);
+
+      this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
+
       window.ProcessMaker.EventBus.$emit('modeler-change');
     },
     getXmlFromDiagram() {
