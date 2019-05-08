@@ -66,7 +66,7 @@ export default {
       duplicateElement.classList.add('is-dragging');
       duplicateElement.classList.toggle('no-drop', !this.allowDrop);
 
-      this.$root.$el.appendChild(duplicateElement);
+      document.body.appendChild(duplicateElement);
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
       this.draggingElement = duplicateElement;
@@ -87,7 +87,7 @@ export default {
       document.removeEventListener('mouseup', this.dropElement);
       document.removeEventListener('keyup', this.stopDrag);
 
-      this.$root.$el.removeChild(this.draggingElement);
+      document.body.removeChild(this.draggingElement);
       this.draggingElement = null;
       this.draggingControlType = null;
     },
