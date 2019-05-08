@@ -674,6 +674,8 @@ export default {
         diagram,
         type: startEvent.id,
       });
+
+      setTimeout(() => undoRedoStore.dispatch('resetHistory'));
     },
     isBpmnNode(shape) {
       return shape.component != null;
@@ -819,7 +821,10 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
-      loadXML: this.loadXML,
+      loadXML: xml => {
+        this.loadXML(xml);
+        undoRedoStore.dispatch('pushState', xml);
+      },
     });
   },
 };

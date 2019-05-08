@@ -27,6 +27,9 @@ export default new Vuex.Store( {
       state.stack = state.stack.slice(0, state.position + 1);
       state.stack.push(newState);
     },
+    clearStack(state) {
+      state.stack = [state.stack[state.stack.length - 1]];
+    },
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
@@ -50,6 +53,10 @@ export default new Vuex.Store( {
       }
 
       commit('setPosition', state.position + 1);
+    },
+    resetHistory({ commit }) {
+      commit('setPosition', 0);
+      commit('clearStack');
     },
   },
 });
