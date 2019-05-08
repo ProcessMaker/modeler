@@ -115,7 +115,7 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Variable Name',
-                helper: 'The Name of the variable name',
+                helper: 'The Name of the variable',
                 name: 'variableName',
               },
             },
