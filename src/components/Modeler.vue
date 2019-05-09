@@ -1,5 +1,22 @@
 <template>
   <b-row class="modeler h-100">
+    <div class="alert-container position-absolute w-100">
+      <b-row class="justify-content-center">
+        <b-col cols="6">
+          <b-alert
+            v-for="element in unsupportedElements"
+            :key="element"
+            show
+            dismissible
+            fade
+            variant="warning"
+          >
+            Unsupported element type in parse:  <strong>{{ element }}</strong>
+          </b-alert>
+        </b-col>
+      </b-row>
+    </div>
+
     <b-col cols="2" class="h-100 overflow-hidden">
       <controls
         :controls="controls"
@@ -170,6 +187,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       toggleMiniMap: true,
+      unsupportedElements: [],
     };
   },
   watch: {
@@ -223,7 +241,7 @@ export default {
 
         config.label = this.$t(config.label);
         config.helper = this.$t(config.helper);
-        config.name = this.$t(config.name);
+        config.name = config.name;
       }
 
       if (inspectorConfig.items) {
@@ -446,15 +464,14 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
       if (!this.parsers[definition.$type]) {
-        if (process.env.NODE_ENV !== 'production') {
-          /* eslint-disable-next-line no-console */
-          console.warn(`Unsupported element type in parse: ${definition.$type}`);
-        }
+        this.unsupportedElements.push(definition.$type);
 
         pull(flowElements, definition);
         pull(artifacts, definition);
         pull(this.planeElements, diagram);
-        pull(this.collaboration.get('messageFlows'), definition);
+        if (this.collaboration) {
+          pull(this.collaboration.get('messageFlows'), definition);
+        }
 
         const incomingFlows = definition.get('incoming');
         if (incomingFlows) {
@@ -527,8 +544,10 @@ export default {
 
       // Handle transform
       const paperOrigin = this.paper.localToPagePoint(0, 0);
-      diagram.bounds.x = clientX - paperOrigin.x;
-      diagram.bounds.y = clientY - paperOrigin.y;
+      const scale = this.paper.scale();
+
+      diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
+      diagram.bounds.y = (clientY - paperOrigin.y) / scale.sy;
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
@@ -861,6 +880,11 @@ $cursors: default, not-allowed;
     min-height: 100%;
     left: 0;
     top: 0;
+  }
+
+  .alert-container {
+    z-index: 2;
+    bottom: 0;
   }
 
   .controls {
