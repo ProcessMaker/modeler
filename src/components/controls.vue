@@ -23,10 +23,8 @@
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control.type)"
       >
-        <div class="tool d-flex align-items-center">
-          <div class="img-container text-break">
-            <img :src="control.icon">
-          </div>
+        <div class="tool text-truncate ml-1" data-toggle="tooltip" data-placement="right" :title="control.label">
+          <img :src="control.icon" class="tool-icon mr-1">
           {{ $t(control.label) }}
         </div>
       </b-list-group-item>
@@ -139,10 +137,12 @@ export default {
 }
 
 .img-container {
+  width: 1rem;
   pointer-events: none;
-  margin-right: 8px;
-  width: 32px;
-  text-align: center;
+}
+
+.tool-icon {
+  width: 1.5rem;
 }
 
 </style>
