@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body>
+  <b-card no-body class="controls">
     <b-card-header class="border-bottom-0">Controls</b-card-header>
     <b-input-group size="sm">
       <b-input-group-prepend>

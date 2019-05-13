@@ -197,7 +197,6 @@ export default {
 
 <style lang="scss">
 .inspector-container {
-  // overflow-y: auto;
   text-align: left;
   user-select: none;
 }
