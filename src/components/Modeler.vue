@@ -17,7 +17,7 @@
       </b-row>
     </div>
 
-    <b-col cols="2" class="h-100 overflow-hidden controls-column">
+    <b-col class="h-100 overflow-hidden controls-column">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -30,8 +30,7 @@
     </b-col>
 
     <b-col
-      cols="7"
-      class="paper-container h-100 pr-4 flex-grow-1 mw-100"
+      class="paper-container h-100 pr-4"
       ref="paper-container"
       :class="cursor"
       :style="{ width: parentWidth, height: parentHeight }"
@@ -69,7 +68,7 @@
 
     </b-col>
 
-    <b-col cols="3" class="pl-0 h-100 overflow-hidden inspector-column">
+    <b-col class="pl-0 h-100 overflow-hidden inspector-column">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -872,9 +871,15 @@ $cursors: default, not-allowed;
   }
 }
 
-
-
 .modeler {
+  .inspector-column {
+    max-width: 265px;
+  }
+
+  .controls-column {
+    max-width: 185px;
+  }
+
   .main-paper {
     position: absolute;
     height: 100%;
@@ -912,12 +917,6 @@ $cursors: default, not-allowed;
         cursor: #{$cursor} !important;
       }
     }
-  }
-  .inspector-column {
-    width: 265px;
-  }
-  .controls-column {
-    width: 165px;
   }
 }
 </style>
