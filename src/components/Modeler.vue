@@ -1,22 +1,5 @@
 <template>
   <b-row class="modeler h-100">
-    <div class="alert-container position-absolute w-100">
-      <b-row class="justify-content-center">
-        <b-col cols="6">
-          <b-alert
-            v-for="element in unsupportedElements"
-            :key="element"
-            show
-            dismissible
-            fade
-            variant="warning"
-          >
-            Unsupported element type in parse:  <strong>{{ element }}</strong>
-          </b-alert>
-        </b-col>
-      </b-row>
-    </div>
-
     <b-col class="h-100 overflow-hidden controls-column">
       <controls
         :controls="controls"
@@ -186,7 +169,6 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       toggleMiniMap: true,
-      unsupportedElements: [],
     };
   },
   watch: {
@@ -463,7 +445,7 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
       if (!this.parsers[definition.$type]) {
-        this.unsupportedElements.push(definition.$type);
+        window.ProcessMaker.alert(`Unsupported element type in parse:  ${definition.$type}`, 'warning');
 
         pull(flowElements, definition);
         pull(artifacts, definition);
@@ -887,11 +869,6 @@ $cursors: default, not-allowed;
     min-height: 100%;
     left: 0;
     top: 0;
-  }
-
-  .alert-container {
-    z-index: 2;
-    bottom: 0;
   }
 
   .controls {

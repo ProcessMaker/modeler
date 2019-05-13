@@ -1,5 +1,23 @@
 <template>
-  <b-container id="modeler-app" class="h-100 container">
+  <b-container id="modeler-app" class="h-100 container position-relative">
+    <div class="alert-container position-absolute w-100">
+      <b-row class="justify-content-center">
+        <b-col cols="6">
+          <b-alert
+            v-for="(item, index) in alerts"
+            :key="index"
+            class="d-none d-lg-block alertBox"
+            :show="item.alertShow"
+            :variant="item.alertVariant"
+            dismissible
+            fade
+          >
+            {{ item.alertText }}
+          </b-alert>
+        </b-col>
+      </b-row>
+    </div>
+
     <b-card no-body class="h-100">
       <b-card-header class="d-flex align-items-center header">
         <b-card-text class="m-0 font-weight-bolder">
@@ -44,6 +62,7 @@ import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import ValidationStatus from '@/components/ValidationStatus';
 import store from '@/store';
+import get from 'lodash/get';
 
 /* Add reference to store on window–this is used in testing to verify rendered nodes */
 window.store = store;
@@ -61,6 +80,7 @@ export default {
   data() {
     return {
       validationErrors: {},
+      alerts: [],
     };
   },
   methods: {
@@ -98,6 +118,8 @@ export default {
 
     /* Add a start event on initial load */
     this.$refs.modeler.$once('parsed', this.$refs.modeler.addStartEvent);
+
+    window.ProcessMaker.EventBus.$on('alert', alerts => this.alerts = alerts);
   },
 };
 </script>
@@ -111,5 +133,11 @@ html {
   max-width: 100vw;
   height: 100vh;
   max-height: 100vh;
+}
+
+.alert-container {
+  z-index: 2;
+  top: 4rem;
+  left: 0;
 }
 </style>
