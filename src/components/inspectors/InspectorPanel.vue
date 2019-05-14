@@ -89,7 +89,7 @@ export default {
       }
 
       const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
-      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[1].items');
+      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[0].items');
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         const expressionConfig = {
