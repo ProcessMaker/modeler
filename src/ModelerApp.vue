@@ -36,7 +36,7 @@
         </div>
       </b-card-header>
 
-      <b-card-body class="overflow-hidden position-relative">
+      <b-card-body class="overflow-hidden position-relative" data-test="body-container">
         <modeler ref="modeler" @validate="validationErrors = $event" />
       </b-card-body>
 

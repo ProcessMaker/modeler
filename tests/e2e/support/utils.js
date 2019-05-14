@@ -42,13 +42,17 @@ export function getLinksConnectedToElement($element) {
 }
 
 export function dragFromSourceToDest(source, position) {
-  cy.get('.paper-container').then($paperContainer => {
-    const { x, y } = $paperContainer[0].getBoundingClientRect();
-    const mouseEvent = { clientX: position.x + x, clientY: position.y + y };
+  cy.window().its('store.state.paper').then(paper => {
+    const { tx, ty } = paper.translate();
 
-    cy.get(`[data-test=${ source }]`).trigger('mousedown');
-    cy.document().trigger('mousemove', mouseEvent);
-    cy.document().trigger('mouseup', mouseEvent);
+    cy.get('.main-paper').then($paperContainer => {
+      const { x, y } = $paperContainer[0].getBoundingClientRect();
+      const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
+
+      cy.get(`[data-test=${ source }]`).trigger('mousedown');
+      cy.document().trigger('mousemove', mouseEvent);
+      cy.document().trigger('mouseup', mouseEvent);
+    });
   });
 }
 
@@ -74,14 +78,17 @@ export function waitToRenderNodeUpdates() {
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition) {
   getElementAtPosition(startPosition)
+    .then(startPosition => {
+      return startPosition;
+    })
     .click()
     .then($element => {
       getCrownButtonForElement($element, flowType)
-        .click();
+        .click({ force: true });
     })
     .then(() => {
       getElementAtPosition(endPosition)
-        .trigger('mousemove')
+        .trigger('mousemove', { force: true })
         .click({ force: true });
     });
 }
@@ -107,7 +114,7 @@ export function isElementCovered($element) {
 
 export function moveElement(elementPosition, x, y) {
   getElementAtPosition(elementPosition)
-    .trigger('mousedown', { which: 1 })
-    .trigger('mousemove', { clientX: x, clientY: y })
-    .trigger('mouseup', {force: true});
+    .trigger('mousedown', { which: 1,force: true })
+    .trigger('mousemove', { clientX: x, clientY: y, force: true })
+    .trigger('mouseup', { force: true });
 }

@@ -198,7 +198,7 @@ describe('Modeler', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    cy.get('[data-test=mini-map-btn]').click({ force: true});
+    // cy.get('[data-test=mini-map-btn]').click({ force: true});
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
@@ -218,7 +218,7 @@ describe('Modeler', () => {
     getElementAtPosition(poolPosition)
       .click({ force: true })
       .then($pool => getCrownButtonForElement($pool, 'lane-above-button'))
-      .click();
+      .click({ force: true });
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)

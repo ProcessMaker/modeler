@@ -29,7 +29,7 @@ describe('Pools', () => {
   it('Can add top and bottom lane', () => {
     const poolPosition = { x: 200, y: 200 };
 
-    cy.get('[data-test=mini-map-btn]').click({ force: true});
+    // cy.get('[data-test=mini-map-btn]').click({ force: true});
 
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -38,8 +38,8 @@ describe('Pools', () => {
     getElementAtPosition(poolPosition)
       .click()
       .then($pool => {
-        getCrownButtonForElement($pool, 'lane-above-button').click();
-        getCrownButtonForElement($pool, 'lane-below-button').click();
+        getCrownButtonForElement($pool, 'lane-above-button').click({ force: true });
+        getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
       });
   });
 });
