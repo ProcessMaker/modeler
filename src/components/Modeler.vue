@@ -35,12 +35,12 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <div class="ml-auto">
+        <!-- <div class="ml-auto">
           <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
             <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
             <font-awesome-icon v-else :icon="mapIcon" />
           </button>
-        </div>
+        </div> -->
 
         <div class="mini-paper-container" @click="movePaper">
           <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper"/>
@@ -168,7 +168,7 @@ export default {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
-      toggleMiniMap: true,
+      toggleMiniMap: false,
     };
   },
   watch: {
