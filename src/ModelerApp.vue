@@ -62,7 +62,6 @@ import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import ValidationStatus from '@/components/ValidationStatus';
 import store from '@/store';
-import get from 'lodash/get';
 
 /* Add reference to store on window–this is used in testing to verify rendered nodes */
 window.store = store;
