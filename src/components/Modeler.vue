@@ -327,7 +327,7 @@ export default {
     // This registers a node to use in the bpmn modeler
     registerNode(nodeType, customParser) {
       const defaultParser = nodeType.implementation
-        ? definition => definition.get('implementation') === nodeType.implementation && nodeType.id
+        ? definition => definition.get('implementation') === nodeType.implementation
         : () => nodeType.id;
 
       this.translateConfig(nodeType.inspectorConfig[0]);
@@ -353,11 +353,15 @@ export default {
         : [nodeType.bpmnType];
 
       types.forEach(bpmnType => {
-        const parser = customParser || defaultParser;
+        if (!this.parsers[bpmnType]) {
+          this.parsers[bpmnType] = { custom: [], default: [] };
+        }
 
-        this.parsers[bpmnType]
-          ? this.parsers[bpmnType].push(parser)
-          : this.parsers[bpmnType] = [parser];
+        if (customParser) {
+          this.parsers[bpmnType].custom.push(customParser);
+        } else {
+          this.parsers[bpmnType].default.push(defaultParser);
+        }
       });
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
@@ -467,9 +471,12 @@ export default {
         return;
       }
 
-      const type = this.parsers[definition.$type].reduce((type, parser) => {
-        return parser(definition, this.moddle) || type;
-      }, null);
+      const parsers = this.parsers[definition.$type];
+      const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
+      const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
+      const type = customParser
+        ? customParser(definition, this.moddle)
+        : defaultParser(definition, this.moddle);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;
