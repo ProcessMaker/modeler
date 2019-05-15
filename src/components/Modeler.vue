@@ -1,6 +1,6 @@
 <template>
   <b-row class="modeler h-100">
-    <b-col class="h-100 overflow-hidden controls-column">
+    <b-col class="h-100 overflow-hidden controls-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -18,7 +18,7 @@
       :class="cursor"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-flex mb-1 position-relative" role="toolbar" aria-label="Toolbar">
+      <div class="btn-toolbar tool-buttons d-flex mb-1 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -51,7 +51,7 @@
 
     </b-col>
 
-    <b-col class="pl-0 h-100 overflow-hidden inspector-column">
+    <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -845,6 +845,10 @@ export default {
 @import '~jointjs/dist/joint.css';
 
 $cursors: default, not-allowed;
+
+.ignore-pointer {
+  pointer-events: none;
+}
 
 .mini-paper-container {
   position: absolute;
