@@ -311,9 +311,9 @@ export default {
         return config.id && config.id === item.id;
       });
       if (registeredIndex === -1) {
-        node.inspectorConfig[0].items.push(config);
+        node.inspectorConfig[0].items[0].items.push(config);
       } else {
-        node.inspectorConfig[0].items[registeredIndex] = config;
+        node.inspectorConfig[0].items[0].items[registeredIndex] = config;
       }
     },
     /**
