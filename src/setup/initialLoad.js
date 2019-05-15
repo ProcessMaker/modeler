@@ -2,7 +2,6 @@ import './globals';
 
 // Import Extensions for Testing Modeler
 import './defaultNodes';
-import './extensions/testTaskInspectorExtension';
 import './extensions/twitterConnector';
 import './extensions/testCustomConnector';
 
