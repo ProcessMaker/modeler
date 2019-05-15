@@ -1,13 +1,16 @@
 <template>
-  <div class="inspector-container" id="inspector-container">
+  <b-card no-body class="inspector-container">
+    <div class="card-header">Inspector</div>
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
       @update="updateDefinition"
       :config="config"
+      class="overflow-auto"
       @focusout.native="updateState"
+      ref="formRenderer"
     />
-  </div>
+  </b-card>
 </template>
 
 <script>
@@ -63,6 +66,14 @@ export default {
     highlightedNode() {
       return store.getters.highlightedNode;
     },
+    inspectorStyles() {
+      this.$nextTick(() => {
+        const inspectorHeader = this.$refs.formRenderer.$children[0].$el;
+        inspectorHeader.classList.add('card-header', 'text-sm');
+      });
+
+      return 'card-body p-0';
+    },
     config() {
       if (!this.highlightedNode) {
         return {
@@ -78,7 +89,7 @@ export default {
       }
 
       const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
-      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[1].items');
+      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[0].items');
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         const expressionConfig = {
@@ -184,14 +195,17 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .inspector-container {
-  overflow-y: auto;
-  font-size: 0.75em;
   text-align: left;
-  padding: 8px;
-  width: 320px;
-  background-color: #eee;
-  border-left: 1px solid #aaa;
+  user-select: none;
+}
+
+.form-accordtion-container {
+  padding: 0;
+}
+
+.form-group {
+  padding: 0 0.5rem;
 }
 </style>

@@ -10,4 +10,24 @@ axios.defaults.timeout = 5000;
 const mock = new MockAdapter(axios);
 mock.onGet('processes').reply(200, mockProcesses);
 
-window.ProcessMaker = { EventBus: new Vue(), apiClient: axios };
+window.ProcessMaker = {
+  navbar: {
+    alerts: [],
+  },
+  EventBus: new Vue(),
+  apiClient: axios,
+  alert(msg, variant, showValue = 60, stayNextScreen = false) {
+    if (showValue === 0) {
+      showValue = true;
+    }
+
+    window.ProcessMaker.navbar.alerts.push({
+      alertText: msg,
+      alertShow: showValue,
+      alertVariant: String(variant),
+      stayNextScreen,
+    });
+
+    window.ProcessMaker.EventBus.$emit('alert', window.ProcessMaker.navbar.alerts);
+  },
+};

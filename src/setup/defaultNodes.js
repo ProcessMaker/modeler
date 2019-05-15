@@ -25,7 +25,6 @@ import {
 } from '@/components/nodes';
 
 const nodeTypes = [
-  intermediateMessageCatchEvent,
   endEvent,
   task,
   callActivity,
@@ -44,20 +43,28 @@ const nodeTypes = [
 ];
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
-  // Register start events
   registerNode(startEvent);
   registerNode(startTimerEvent, definition => {
     const eventDefinitions = definition.get('eventDefinitions');
     if (definition.$type === 'bpmn:StartEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
-      return 'processmaker-modeler-start-timer-event';
+      return startTimerEvent.id;
     }
   });
+
   registerNode(intermediateTimerEvent, definition => {
     const eventDefinitions = definition.get('eventDefinitions');
     if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
-      return 'processmaker-modeler-intermediate-catch-timer-event';
+      return intermediateTimerEvent.id;
     }
   });
+
+  registerNode(intermediateMessageCatchEvent, definition => {
+    const eventDefinitions = definition.get('eventDefinitions');
+    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:MessageEventDefinition') {
+      return intermediateMessageCatchEvent.id;
+    }
+  });
+
   /* Register basic node types */
   nodeTypes.forEach(config => registerNode(config));
 

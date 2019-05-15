@@ -76,13 +76,12 @@ export default {
     {
       name: 'Start Timer Event',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Start Timer Event',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Start Timer Event',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

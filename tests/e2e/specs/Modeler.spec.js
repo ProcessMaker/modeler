@@ -19,7 +19,7 @@ describe('Modeler', () => {
   });
 
   it('Renders the application without errors', () => {
-    cy.get('.navbar').should('contain', 'ProcessMaker Modeler');
+    cy.get('.header').should('contain', 'ProcessMaker Modeler');
   });
 
   it('Create a simple process', () => {
@@ -198,8 +198,6 @@ describe('Modeler', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    cy.get('[data-test=mini-map-btn]').click({ force: true});
-
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
 
@@ -218,7 +216,7 @@ describe('Modeler', () => {
     getElementAtPosition(poolPosition)
       .click({ force: true })
       .then($pool => getCrownButtonForElement($pool, 'lane-above-button'))
-      .click();
+      .click({ force: true });
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
@@ -241,5 +239,47 @@ describe('Modeler', () => {
 
     cy.get('#renderer-container').should('to.not.contain', 'Start Event');
     cy.get('#renderer-container').should('to.contain', 'Process');
+  });
+
+  it('runs custom parser before default parser', function() {
+    cy.contains('Upload XML').click();
+
+    /* Wait for modal to open */
+    cy.wait(300);
+
+    /* Wait for modal to close */
+    cy.wait(300);
+
+    cy.fixture('parser.xml', 'base64').then(blankProcess => {
+      cy.get('input[type=file]').then($input => {
+        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+          .then((blob) => {
+            const testfile = new File([blob], 'parser.xml', { type: 'text/xml' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(testfile);
+            const input = $input[0];
+            input.files = dataTransfer.files;
+            cy.wrap(input).trigger('change', { force: true });
+          });
+      });
+    });
+
+    cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then((sourceXML) =>{
+      cy.get('[data-test=downloadXMLBtn]').click();
+      cy.window()
+        .its('xml')
+        .then(xml => xml.trim())
+        .then(xml => {
+          expect(xml).to.contain(sourceXML.trim());
+        });
+    });
+  });
+
+  it('holds element position after dragging canvas over panels', () =>{
+    cy.get('.paper-container').trigger('mousedown');
+    cy.get('.ignore-pointer').should('have.length', 3);
+
+    cy.get('.paper-container').trigger('mouseup');
+    cy.get('.ignore-pointer').should('have.length', 0);
   });
 });

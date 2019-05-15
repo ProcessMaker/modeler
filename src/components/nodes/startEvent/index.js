@@ -35,13 +35,12 @@ export default {
     {
       name: 'Start Event',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Start Event',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Start Event',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

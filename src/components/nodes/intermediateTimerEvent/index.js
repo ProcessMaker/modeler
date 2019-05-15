@@ -78,13 +78,12 @@ export default {
     {
       name: 'Intermediate Timer Event',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Intermediate Timer Event',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Intermediate Timer Event',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

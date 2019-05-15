@@ -15,13 +15,12 @@ export default {
     {
       name: 'ServiceTask',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Service Task',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Service Task',
+        //   },
+        // },
       ],
     },
   ],

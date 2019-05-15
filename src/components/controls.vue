@@ -1,34 +1,36 @@
 <template>
-  <div class="controls">
-    <input
-      ref="filter"
-      :placeholder="`${$t('Filter')}...`"
-      class="form-control form-control-sm"
-      type="text"
-      v-model="filterQuery"
-    >
+  <b-card no-body class="controls">
+    <b-card-header class="border-bottom-0">Controls</b-card-header>
+    <b-input-group size="sm">
+      <b-input-group-prepend>
+        <span class="input-group-text"><i class="fas fa-filter"/></span>
+      </b-input-group-prepend>
 
-    <div class="list">
-      <div v-for="(items, category) in controls" :key="category">
-        <h2>{{ $t(category) }}</h2>
-        <div
-          v-for="(control, index) in items"
-          v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
-          :key="index"
-          :data-test="control.type"
-          @dragstart="$event.preventDefault()"
-          @mousedown="startDrag($event, control.type)"
-        >
-          <div class="tool">
-            <div class="img-container">
-              <img :src="control.icon">
-            </div>
-            {{ $t(control.label) }}
-          </div>
+      <b-form-input ref="filter"
+        :placeholder="`${$t('Filter')}...`"
+        class="sticky-top"
+        type="text"
+        v-model="filterQuery"
+      />
+    </b-input-group>
+
+    <b-list-group flush class="overflow-auto w-auto">
+      <b-list-group-item v-for="(control, index) in controlItems"
+        v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
+        :key="index"
+        class="control-item p-2 border-right-0 flex-grow-1"
+        :data-test="control.type"
+        @dragstart="$event.preventDefault()"
+        @mousedown="startDrag($event, control.type)"
+      >
+        <div class="tool text-truncate ml-1" v-b-tooltip.hover :title="control.label">
+          <img :src="control.icon" class="tool-icon mr-1">
+          {{ $t(control.label) }}
         </div>
-      </div>
-    </div>
-  </div>
+      </b-list-group-item>
+    </b-list-group>
+
+  </b-card>
 </template>
 
 <script>
@@ -50,16 +52,19 @@ export default {
       yOffset: null,
     };
   },
+  computed: {
+    controlItems() {
+      return Object.values(this.controls).flat();
+    },
+  },
   methods: {
     startDrag(event, controlType) {
       const sourceElement = event.target;
       const duplicateElement = sourceElement.cloneNode(true);
       duplicateElement.classList.add('is-dragging');
       duplicateElement.classList.toggle('no-drop', !this.allowDrop);
-      duplicateElement.style.width = `${sourceElement.clientWidth}px`;
-      duplicateElement.style.height = `${sourceElement.clientHeight}px`;
 
-      this.$root.$el.appendChild(duplicateElement);
+      document.body.appendChild(duplicateElement);
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
       this.draggingElement = duplicateElement;
@@ -80,7 +85,7 @@ export default {
       document.removeEventListener('mouseup', this.dropElement);
       document.removeEventListener('keyup', this.stopDrag);
 
-      this.$root.$el.removeChild(this.draggingElement);
+      document.body.removeChild(this.draggingElement);
       this.draggingElement = null;
       this.draggingControlType = null;
     },
@@ -98,68 +103,47 @@ export default {
 </script>
 
 <style lang="scss">
+.card-header {
+  background: #f7f7f7;
+}
+
+.list-group-item:first-child {
+  border-top: 0;
+}
+
 .tool {
-  display: flex;
-  align-items: center;
-  font-size: 0.75em;
-  padding: 4px;
-  font-weight: bold;
-  color: #333;
   cursor: grab;
   user-select: none;
+}
 
-  &.is-dragging {
-    background: #3397e1;
-    color: white;
-    position: absolute;
-    z-index: 10;
-    box-shadow: 5px 5px 8px 0px #0000004a;
-    cursor: grabbing;
-    text-align: left;
+.is-dragging {
+  background: #3397e1;
+  color: white;
+  position: absolute;
+  z-index: 10;
+  box-shadow: 5px 5px 8px 0px #0000004a;
+  cursor: grabbing;
+  padding: 0.5rem;
 
-    &.no-drop {
-      opacity: 0.8;
-      cursor: no-drop;
-    }
+  &.no-drop {
+    opacity: 0.8;
+    cursor: no-drop;
   }
 
   &:hover {
     background-color: #3397e1;
     color: white;
   }
-
-  .img-container {
-    pointer-events: none;
-    margin-right: 8px;
-    width: 32px;
-    text-align: center;
-  }
 }
 
-.controls {
-  background-color: #eee;
-  border-right: 1px solid #aaa;
-  width: 320px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-
-  .list {
-    overflow: auto;
-    height: 100%;
-    position: relative;
-
-    h2 {
-      background-color: #aaa;
-      border-top: 1px solid #999;
-      border-bottom: 1px solid #999;
-      padding-left: 8px;
-      margin-bottom: 0px;
-      font-size: 0.75em;
-      font-weight: bold;
-      padding-bottom: 8px;
-      padding-top: 8px;
-    }
-  }
+.img-container {
+  width: 1rem;
+  pointer-events: none;
 }
+
+.tool-icon {
+  width: 1.5rem;
+  pointer-events: none;
+}
+
 </style>

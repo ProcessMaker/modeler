@@ -25,13 +25,12 @@ export default {
     {
       name: 'Gateway',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Gateway',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Gateway',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

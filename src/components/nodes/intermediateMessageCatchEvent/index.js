@@ -70,13 +70,12 @@ export default {
     {
       name: 'Intermediate Message Catch Event',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Intermediate Message Catch Event',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Intermediate Message Catch Event',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

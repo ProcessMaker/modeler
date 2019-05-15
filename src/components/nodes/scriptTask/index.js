@@ -27,13 +27,12 @@ export default {
     {
       name: 'ScriptTask',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Script Task',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Script Task',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,
@@ -58,13 +57,6 @@ export default {
                 label: 'Name',
                 helper: 'The name of the script task',
                 name: 'name',
-              },
-            },
-            {
-              component: 'FormCheckbox',
-              config: {
-                label: 'Declare as global',
-                name: 'global',
               },
             },
           ],

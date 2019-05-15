@@ -1,23 +1,6 @@
 <template>
-  <div class="modeler">
-    <div class="alert-container position-absolute w-100">
-      <b-row class="justify-content-center">
-        <b-col cols="6">
-          <b-alert
-            v-for="element in unsupportedElements"
-            :key="element"
-            show
-            dismissible
-            fade
-            variant="warning"
-          >
-            Unsupported element type in parse:  <strong>{{ element }}</strong>
-          </b-alert>
-        </b-col>
-      </b-row>
-    </div>
-
-    <div class="modeler-container">
+  <b-row class="modeler h-100">
+    <b-col class="h-100 overflow-hidden controls-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -25,47 +8,50 @@
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
+        class="controls h-100"
       />
+    </b-col>
 
-      <div
-        class="paper-container"
-        ref="paper-container"
-        :class="cursor"
-        :style="{ width: parentWidth, height: parentHeight }"
-      >
-        <div class="btn-toolbar tool-buttons" role="toolbar" aria-label="Toolbar">
-          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
-            <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
-          </div>
-
-          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
-            <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
-              <font-awesome-icon class="" :icon="plusIcon" />
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
-              <font-awesome-icon class="" :icon="minusIcon" />
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
-            <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
-          </div>
+    <b-col
+      class="paper-container h-100 pr-4"
+      ref="paper-container"
+      :class="cursor"
+      :style="{ width: parentWidth, height: parentHeight }"
+    >
+      <div class="btn-toolbar tool-buttons d-flex mb-1 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+          <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
         </div>
 
-        <button class="validate-button" @click="validateBpmnDiagram">Validate Diagram</button>
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+          <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
+            <font-awesome-icon class="" :icon="plusIcon" />
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
+            <font-awesome-icon class="" :icon="minusIcon" />
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+        </div>
 
-        <div ref="paper" data-test="paper"/>
-
-
-        <div v-show="toggleMiniMap" ref="miniPaper" class="miniPaper"/>
-
-        <div class="mini-map-btn">
+        <!-- <div class="ml-auto">
           <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
             <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
             <font-awesome-icon v-else :icon="mapIcon" />
           </button>
+        </div> -->
+
+        <div class="mini-paper-container" @click="movePaper">
+          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper"/>
         </div>
       </div>
 
+      <div ref="paper" data-test="paper" class="main-paper"/>
+
+    </b-col>
+
+    <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -73,8 +59,9 @@
         :moddle="moddle"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        class="h-100"
       />
-    </div>
+    </b-col>
 
     <component
       v-for="node in nodes"
@@ -103,7 +90,7 @@
       @save-state="pushToUndoStack"
       @set-shape-stacking="setShapeStacking"
     />
-  </div>
+  </b-row>
 </template>
 
 <script>
@@ -181,8 +168,7 @@ export default {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
-      toggleMiniMap: true,
-      unsupportedElements: [],
+      toggleMiniMap: false,
     };
   },
   watch: {
@@ -246,6 +232,7 @@ export default {
     async pushToUndoStack() {
       const xml = await this.getXmlFromDiagram();
       undoRedoStore.dispatch('pushState', xml);
+
       window.ProcessMaker.EventBus.$emit('modeler-change');
     },
     getXmlFromDiagram() {
@@ -267,14 +254,14 @@ export default {
     undo() {
       undoRedoStore
         .dispatch('undo')
-        .then(this.loadXML.cancel)
-        .then(this.loadXML);
+        .then(this.loadXML)
+        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     redo() {
       undoRedoStore
         .dispatch('redo')
-        .then(this.loadXML.cancel)
-        .then(this.loadXML);
+        .then(this.loadXML)
+        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     setPools(poolDefinition) {
       if (!this.collaboration) {
@@ -324,9 +311,9 @@ export default {
         return config.id && config.id === item.id;
       });
       if (registeredIndex === -1) {
-        node.inspectorConfig[0].items.push(config);
+        node.inspectorConfig[0].items[0].items.push(config);
       } else {
-        node.inspectorConfig[0].items[registeredIndex] = config;
+        node.inspectorConfig[0].items[0].items[registeredIndex] = config;
       }
     },
     /**
@@ -340,7 +327,7 @@ export default {
     // This registers a node to use in the bpmn modeler
     registerNode(nodeType, customParser) {
       const defaultParser = nodeType.implementation
-        ? definition => definition.get('implementation') === nodeType.implementation && nodeType.id
+        ? definition => definition.get('implementation') === nodeType.implementation
         : () => nodeType.id;
 
       this.translateConfig(nodeType.inspectorConfig[0]);
@@ -366,11 +353,15 @@ export default {
         : [nodeType.bpmnType];
 
       types.forEach(bpmnType => {
-        const parser = customParser || defaultParser;
+        if (!this.parsers[bpmnType]) {
+          this.parsers[bpmnType] = { custom: [], default: [] };
+        }
 
-        this.parsers[bpmnType]
-          ? this.parsers[bpmnType].push(parser)
-          : this.parsers[bpmnType] = [parser];
+        if (customParser) {
+          this.parsers[bpmnType].custom.push(customParser);
+        } else {
+          this.parsers[bpmnType].default.push(defaultParser);
+        }
       });
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
@@ -458,7 +449,7 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
 
       if (!this.parsers[definition.$type]) {
-        this.unsupportedElements.push(definition.$type);
+        window.ProcessMaker.alert(`Unsupported element type in parse:  ${definition.$type}`, 'warning');
 
         pull(flowElements, definition);
         pull(artifacts, definition);
@@ -480,9 +471,12 @@ export default {
         return;
       }
 
-      const type = this.parsers[definition.$type].reduce((type, parser) => {
-        return parser(definition, this.moddle) || type;
-      }, null);
+      const parsers = this.parsers[definition.$type];
+      const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
+      const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
+      const type = customParser
+        ? customParser(definition, this.moddle)
+        : defaultParser(definition, this.moddle);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
       const requireName = unnamedElements.indexOf(definition.$type) === -1;
@@ -685,6 +679,8 @@ export default {
         diagram,
         type: startEvent.id,
       });
+
+      setTimeout(() => undoRedoStore.dispatch('resetHistory'));
     },
     isBpmnNode(shape) {
       return shape.component != null;
@@ -725,6 +721,15 @@ export default {
         this.bringShapeToFront(shape);
       }
     },
+    movePaper({ offsetX, offsetY }) {
+      const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
+      const scale = this.paper.scale();
+
+      this.paper.translate(
+        (this.$refs.paper.clientWidth / 2) - (x * scale.sx),
+        (this.$refs.paper.clientHeight / 2) - (y * scale.sy)
+      );
+    },
   },
   created() {
     this.registerNode(Process);
@@ -761,6 +766,8 @@ export default {
         default: { options: { padding: highlightPadding } },
       },
     });
+
+    this.paper.translate(168, 20);
 
     this.miniPaper = new joint.dia.Paper({
       el: this.$refs.miniPaper,
@@ -817,21 +824,18 @@ export default {
       shape.component.$emit('click');
     });
 
-    this.miniPaper.on('blank:pointerclick cell:pointerclick', event => {
-      const { x, y } = this.miniPaper.pageToLocalPoint(event.pageX, event.pageY);
-      const { width, height } = this.paper.options;
-      const inspectorWidth =  this.$refs['inspector-panel'].$el.offsetWidth;
-      const scale = this.paper.scale();
-
-      this.paper.translate(
-        event.offsetX - x * scale.sx + (width / 2 - inspectorWidth),
-        event.offsetY - y * scale.sy + (height / 2)
-      );
-    });
-
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
-      loadXML: this.loadXML,
+      loadXML: xml => {
+        this.loadXML(xml);
+        undoRedoStore.dispatch('pushState', xml);
+      },
+    });
+
+    window.ProcessMaker.EventBus.$on('modeler-change', () => {
+      setTimeout(() => {
+        this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
+      });
     });
   },
 };
@@ -842,77 +846,63 @@ export default {
 
 $cursors: default, not-allowed;
 
-.modeler {
-  position: relative;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  overflow: hidden;
+.ignore-pointer {
+  pointer-events: none;
+}
 
-  .alert-container {
-    z-index: 2;
-    bottom: 0;
+.mini-paper-container {
+  position: absolute;
+  top: 2.5rem;
+  right: 0;
+  z-index: 2;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+
+  .mini-paper {
+    pointer-events: none;
+  }
+}
+
+.modeler {
+  .inspector-column {
+    max-width: 265px;
   }
 
-  .modeler-container {
-    position: relative;
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+  .controls-column {
+    max-width: 185px;
+  }
 
-    .paper-container {
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
-      overflow: hidden;
-      position: relative;
+  .main-paper {
+    position: absolute;
+    height: 100%;
+    max-height: 100%;
+    min-height: 100%;
+    left: 0;
+    top: 0;
+  }
 
-      .tool-buttons {
-        position: absolute;
-        z-index: 1;
-        top: 1rem;
-        left: 1rem;
+  .controls {
+    z-index: 1;
+  }
 
-        > button {
-          cursor: pointer;
-        }
-      }
+  .paper-container {
+    position: initial !important;
 
-      .validate-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
+    .tool-buttons {
+      z-index: 1;
+
+      > button {
         cursor: pointer;
-      }
-
-      .mini-map-btn {
-        position: absolute;
-        right: 1rem;
-        top: 1rem;
-      }
-
-      .miniPaper {
-        position: absolute;
-        top: 3.5rem;
-        right: 1rem;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-        border: 1px solid #e9ecef;
-        cursor: pointer;
-
-        svg g{
-          cursor: pointer;
-        }
       }
     }
+  }
 
-    @each $cursor in $cursors {
-      .paper-container.#{$cursor} {
-        .joint-paper,
-        .joint-paper * {
-          cursor: #{$cursor} !important;
-        }
+  @each $cursor in $cursors {
+    .paper-container.#{$cursor} {
+      .joint-paper,
+      .joint-paper * {
+        cursor: #{$cursor} !important;
       }
     }
   }

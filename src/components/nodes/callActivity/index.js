@@ -44,13 +44,12 @@ export default {
     {
       name: 'Call Activity',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Call Activity',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Call Activity',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

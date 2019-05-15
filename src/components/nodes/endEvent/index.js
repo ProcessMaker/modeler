@@ -36,13 +36,12 @@ export default {
     {
       name: 'End Event',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'End Event',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'End Event',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

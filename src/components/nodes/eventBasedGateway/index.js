@@ -25,13 +25,12 @@ export default {
     {
       name: 'Event-based Gateway',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Event-based Gateway',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Event-based Gateway',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,

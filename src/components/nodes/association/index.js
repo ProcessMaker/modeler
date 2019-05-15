@@ -17,13 +17,12 @@ export default {
     {
       name: 'Association',
       items: [
-        {
-          component: 'FormText',
-          config: {
-            label: 'Association',
-            fontSize: '2em',
-          },
-        },
+        // {
+        //   component: 'FormText',
+        //   config: {
+        //     label: 'Association',
+        //   },
+        // },
         {
           component: 'FormAccordion',
           container: true,
