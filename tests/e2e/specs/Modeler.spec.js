@@ -274,4 +274,12 @@ describe('Modeler', () => {
         });
     });
   });
+
+  it('holds element position after dragging canvas over panels', () =>{
+    cy.get('.paper-container').trigger('mousedown');
+    cy.get('.ignore-pointer').should('have.length', 3);
+
+    cy.get('.paper-container').trigger('mouseup');
+    cy.get('.ignore-pointer').should('have.length', 0);
+  });
 });
