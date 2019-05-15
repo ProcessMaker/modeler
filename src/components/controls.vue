@@ -143,6 +143,7 @@ export default {
 
 .tool-icon {
   width: 1.5rem;
+  pointer-events: none;
 }
 
 </style>
