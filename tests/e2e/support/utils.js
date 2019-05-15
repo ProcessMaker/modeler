@@ -114,7 +114,7 @@ export function isElementCovered($element) {
 
 export function moveElement(elementPosition, x, y) {
   getElementAtPosition(elementPosition)
-    .trigger('mousedown', { which: 1,force: true })
+    .trigger('mousedown', { which: 1, force: true })
     .trigger('mousemove', { clientX: x, clientY: y, force: true })
     .trigger('mouseup', { force: true });
 }
