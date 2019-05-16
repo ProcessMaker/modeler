@@ -144,21 +144,23 @@ describe('Modeler', () => {
     cy.wait(300);
 
     cy.fixture('../../../src/blank.bpmn', 'base64').then(blankProcess => {
-      cy.get('input[type=file]').then($input => {
-        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+      return cy.get('input[type=file]').then($input => {
+        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
           .then((blob) => {
             const testfile = new File([blob], 'blank.bpmn', { type: 'text/xml' });
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
+            return cy.wrap(input).trigger('change', { force: true });
           });
       });
     });
 
     /* Wait for modal to close */
     cy.wait(300);
+
+    cy.screenshot();
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
@@ -241,28 +243,28 @@ describe('Modeler', () => {
     cy.get('#renderer-container').should('to.contain', 'Process');
   });
 
-  it('runs custom parser before default parser', function() {
+  it('Runs custom parser before default parser', function() {
     cy.contains('Upload XML').click();
 
     /* Wait for modal to open */
     cy.wait(300);
 
-    /* Wait for modal to close */
-    cy.wait(300);
-
     cy.fixture('parser.xml', 'base64').then(blankProcess => {
-      cy.get('input[type=file]').then($input => {
-        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+      return cy.get('input[type=file]').then($input => {
+        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
           .then((blob) => {
             const testfile = new File([blob], 'parser.xml', { type: 'text/xml' });
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
+            return cy.wrap(input).trigger('change', { force: true });
           });
       });
     });
+
+    /* Wait for modal to close */
+    cy.wait(300);
 
     cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then((sourceXML) =>{
       cy.get('[data-test=downloadXMLBtn]').click();
@@ -275,7 +277,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('holds element position after dragging canvas over panels', () =>{
+  it('holds element position after dragging canvas over panels', () => {
     cy.get('.paper-container').trigger('mousedown');
     cy.get('.ignore-pointer').should('have.length', 3);
 

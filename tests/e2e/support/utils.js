@@ -1,5 +1,7 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 
+const renderTime = 100;
+
 export function getGraphElements() {
   return cy.window()
     .its('store.state.graph')
@@ -54,6 +56,8 @@ export function dragFromSourceToDest(source, position) {
       cy.document().trigger('mouseup', mouseEvent);
     });
   });
+
+  return waitToRenderAllShapes();
 }
 
 export function getCrownButtonForElement($element, crownButton) {
@@ -69,7 +73,7 @@ export function typeIntoTextInput(selector, value) {
 }
 
 export function waitToRenderAllShapes() {
-  cy.wait(100);
+  cy.wait(renderTime);
 }
 
 export function waitToRenderNodeUpdates() {
@@ -78,9 +82,6 @@ export function waitToRenderNodeUpdates() {
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition) {
   getElementAtPosition(startPosition)
-    .then(startPosition => {
-      return startPosition;
-    })
     .click()
     .then($element => {
       getCrownButtonForElement($element, flowType)
@@ -89,6 +90,7 @@ export function connectNodesWithFlow(flowType, startPosition, endPosition) {
     .then(() => {
       getElementAtPosition(endPosition)
         .trigger('mousemove', { force: true })
+        .wait(renderTime)
         .click({ force: true });
     });
 }
