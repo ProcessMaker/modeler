@@ -31,29 +31,23 @@ describe('Modeler', () => {
 
     const taskPosition = { x: 300, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
     const task2Position = { x: 300, y: 350 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
 
     const task3Position = { x: 100, y: 350 };
     dragFromSourceToDest(nodeTypes.task, task3Position);
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task2Position, task3Position);
 
     const endEventPosition = { x: 100, y: 500 };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task3Position, endEventPosition);
 
     dragFromSourceToDest(nodeTypes.pool, { x: 100, y: 100 });
-
-    waitToRenderAllShapes();
 
     const numberOfNewElementsAdded = 9;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
@@ -99,7 +93,6 @@ describe('Modeler', () => {
 
     const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
 
     connectNodesWithFlow('sequence-flow-button', taskPosition, taskPosition);
 
@@ -117,7 +110,6 @@ describe('Modeler', () => {
 
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
     cy.get('[name=id]').should('have.value', 'node_2');
@@ -126,14 +118,12 @@ describe('Modeler', () => {
 
     const task2Position = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
-    waitToRenderAllShapes();
     getElementAtPosition(task2Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_4');
 
     const task3Position = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, task3Position);
-    waitToRenderAllShapes();
     getElementAtPosition(task3Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_5');
@@ -160,10 +150,7 @@ describe('Modeler', () => {
     /* Wait for modal to close */
     cy.wait(300);
 
-    cy.screenshot();
-
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
     cy.get('[name=id]').should('have.value', 'node_1');
@@ -172,7 +159,6 @@ describe('Modeler', () => {
   it('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
-    waitToRenderAllShapes();
 
     cy.get('[data-test=validation-list-toggle]').click();
     cy.get('[type=checkbox]').check({ force: true });
@@ -201,13 +187,11 @@ describe('Modeler', () => {
     const taskPosition = { x: 250, y: 250 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
     const poolPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-    waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)

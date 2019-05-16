@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   getElementAtPosition,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -17,7 +16,6 @@ describe('Intermediate Message Catch Event', () => {
 
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
 
     const name = 'Test name';

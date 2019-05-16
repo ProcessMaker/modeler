@@ -1,7 +1,6 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
-  waitToRenderAllShapes,
   getElementAtPosition,
 } from '../support/utils';
 
@@ -18,7 +17,6 @@ describe('Text Annotation', () => {
     const textAnnotationPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(textAnnotationPosition).click();
 
     typeIntoTextInput('[name=text]', testString);
