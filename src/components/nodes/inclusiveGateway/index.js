@@ -11,7 +11,7 @@ export default {
   label: 'Inclusive Gateway',
   definition(moddle) {
     return moddle.create('bpmn:InclusiveGateway', {
-      name: null,
+      name: 'New Inclusive Gateway',
       gatewayDirection: gatewayDirection.diverging,
     });
   },
