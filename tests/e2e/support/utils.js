@@ -1,6 +1,6 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 
-const renderTime = 300;
+const renderTime = 100;
 
 export function getGraphElements() {
   return cy.window()
