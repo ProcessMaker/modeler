@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import flatten from 'lodash/flatten';
+
 export default {
   props: ['controls', 'allowDrop'],
   watch: {
@@ -54,7 +56,7 @@ export default {
   },
   computed: {
     controlItems() {
-      return Object.values(this.controls).flat();
+      return flatten(Object.values(this.controls));
     },
   },
   methods: {
