@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getCrownButtonForElement,
-  waitToRenderAllShapes,
   typeIntoTextInput,
 } from '../support/utils';
 
@@ -19,7 +18,6 @@ describe('Pools', () => {
     const poolPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(poolPosition).click();
 
     typeIntoTextInput('[name=name]', testString);
@@ -32,8 +30,6 @@ describe('Pools', () => {
     // cy.get('[data-test=mini-map-btn]').click({ force: true});
 
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-
-    waitToRenderAllShapes();
 
     getElementAtPosition(poolPosition)
       .click()

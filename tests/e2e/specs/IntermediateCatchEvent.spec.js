@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   getElementAtPosition,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -15,7 +14,6 @@ describe('Intermediate Catch Event', () => {
   it('Update delay field on Intermediate Catch Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-    waitToRenderAllShapes();
 
     getElementAtPosition(intermediateCatchEventPosition).click();
 
@@ -42,8 +40,6 @@ describe('Intermediate Catch Event', () => {
   it.skip('Update date/time field on Intermediate Catch Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-
-    waitToRenderAllShapes();
 
     getElementAtPosition(intermediateCatchEventPosition).click();
 

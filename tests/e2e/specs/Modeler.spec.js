@@ -31,29 +31,23 @@ describe('Modeler', () => {
 
     const taskPosition = { x: 300, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
     const task2Position = { x: 300, y: 350 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
 
     const task3Position = { x: 100, y: 350 };
     dragFromSourceToDest(nodeTypes.task, task3Position);
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task2Position, task3Position);
 
     const endEventPosition = { x: 100, y: 500 };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', task3Position, endEventPosition);
 
     dragFromSourceToDest(nodeTypes.pool, { x: 100, y: 100 });
-
-    waitToRenderAllShapes();
 
     const numberOfNewElementsAdded = 9;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
@@ -99,7 +93,6 @@ describe('Modeler', () => {
 
     const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
 
     connectNodesWithFlow('sequence-flow-button', taskPosition, taskPosition);
 
@@ -117,7 +110,6 @@ describe('Modeler', () => {
 
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
     cy.get('[name=id]').should('have.value', 'node_2');
@@ -126,14 +118,12 @@ describe('Modeler', () => {
 
     const task2Position = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
-    waitToRenderAllShapes();
     getElementAtPosition(task2Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_4');
 
     const task3Position = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, task3Position);
-    waitToRenderAllShapes();
     getElementAtPosition(task3Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_5');
@@ -144,15 +134,15 @@ describe('Modeler', () => {
     cy.wait(300);
 
     cy.fixture('../../../src/blank.bpmn', 'base64').then(blankProcess => {
-      cy.get('input[type=file]').then($input => {
-        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+      return cy.get('input[type=file]').then($input => {
+        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
           .then((blob) => {
             const testfile = new File([blob], 'blank.bpmn', { type: 'text/xml' });
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
+            return cy.wrap(input).trigger('change', { force: true });
           });
       });
     });
@@ -161,7 +151,6 @@ describe('Modeler', () => {
     cy.wait(300);
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
     cy.get('[name=id]').should('have.value', 'node_1');
@@ -170,7 +159,6 @@ describe('Modeler', () => {
   it('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
-    waitToRenderAllShapes();
 
     cy.get('[data-test=validation-list-toggle]').click();
     cy.get('[type=checkbox]').check({ force: true });
@@ -199,13 +187,11 @@ describe('Modeler', () => {
     const taskPosition = { x: 250, y: 250 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
     const poolPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-    waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
@@ -241,28 +227,28 @@ describe('Modeler', () => {
     cy.get('#renderer-container').should('to.contain', 'Process');
   });
 
-  it('runs custom parser before default parser', function() {
+  it('Runs custom parser before default parser', function() {
     cy.contains('Upload XML').click();
 
     /* Wait for modal to open */
     cy.wait(300);
 
-    /* Wait for modal to close */
-    cy.wait(300);
-
     cy.fixture('parser.xml', 'base64').then(blankProcess => {
-      cy.get('input[type=file]').then($input => {
-        Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
+      return cy.get('input[type=file]').then($input => {
+        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
           .then((blob) => {
             const testfile = new File([blob], 'parser.xml', { type: 'text/xml' });
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
+            return cy.wrap(input).trigger('change', { force: true });
           });
       });
     });
+
+    /* Wait for modal to close */
+    cy.wait(300);
 
     cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then((sourceXML) =>{
       cy.get('[data-test=downloadXMLBtn]').click();
@@ -275,7 +261,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('holds element position after dragging canvas over panels', () =>{
+  it('holds element position after dragging canvas over panels', () => {
     cy.get('.paper-container').trigger('mousedown');
     cy.get('.ignore-pointer').should('have.length', 3);
 

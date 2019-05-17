@@ -1,7 +1,6 @@
 import {
   dragFromSourceToDest,
   typeIntoTextInput,
-  waitToRenderAllShapes,
   getElementAtPosition,
 } from '../support/utils';
 
@@ -15,8 +14,6 @@ describe('Start Timer Event', () => {
   it.skip('Update properties on Start Timer Event', () => {
     const startTimerEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
-
-    waitToRenderAllShapes();
 
     getElementAtPosition(startTimerEventPosition).click();
 

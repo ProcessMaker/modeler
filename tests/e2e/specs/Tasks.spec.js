@@ -20,7 +20,6 @@ describe('Tasks', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).click();
 
     typeIntoTextInput('[name=name]', testString);
@@ -31,7 +30,6 @@ describe('Tasks', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    waitToRenderAllShapes();
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
     cy.get('[data-test=redo]').click();
@@ -46,7 +44,6 @@ describe('Tasks', () => {
 
     dragFromSourceToDest(nodeTypes.callActivity, callActivityPosition);
 
-    waitToRenderAllShapes();
 
     getElementAtPosition(callActivityPosition).should('exist');
 
