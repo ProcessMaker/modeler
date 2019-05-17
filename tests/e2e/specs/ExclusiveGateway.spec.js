@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   getElementAtPosition,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -18,7 +17,6 @@ describe('Exclusive Gateway', () => {
 
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(exclusiveGatewayPosition).click();
 
     typeIntoTextInput('[name=name]', testString);

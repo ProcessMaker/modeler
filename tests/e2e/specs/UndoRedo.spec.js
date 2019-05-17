@@ -83,8 +83,6 @@ describe('Undo/redo', () => {
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    waitToRenderAllShapes();
-
     getElementAtPosition(taskPosition)
       .click()
       .then($task => {
@@ -130,8 +128,6 @@ describe('Undo/redo', () => {
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
     dragFromSourceToDest(nodeTypes.task, taskPosition1);
-
-    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition1)
       .moveTo(taskPosition2.x, taskPosition2.y)
@@ -190,8 +186,6 @@ describe('Undo/redo', () => {
 
     const poolPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-
-    waitToRenderAllShapes();
 
     connectNodesWithFlow('message-flow-button', poolPosition, poolPosition);
 

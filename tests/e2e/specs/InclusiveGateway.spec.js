@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   connectNodesWithFlow,
-  waitToRenderAllShapes,
   getElementAtPosition,
 } from '../support/utils';
 
@@ -17,14 +16,11 @@ describe('Inclusive Gateway', () => {
     const inclusivePosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(inclusivePosition).click();
 
     const testString = 'testing';
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
-
-    waitToRenderAllShapes();
   });
 
   it('Detects gateway direction of converging or diverging', () => {
@@ -45,7 +41,6 @@ describe('Inclusive Gateway', () => {
     const taskPosition = { x: 350, y: 350 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    waitToRenderAllShapes();
     connectNodesWithFlow('sequence-flow-button', taskPosition, inclusivePosition);
 
     getElementAtPosition(taskPosition).click();

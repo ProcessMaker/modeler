@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   getElementAtPosition,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -18,7 +17,6 @@ describe('Parallel Gateway', () => {
 
     dragFromSourceToDest(nodeTypes.parallelGateway, parallelGatewayPosition);
 
-    waitToRenderAllShapes();
     getElementAtPosition(parallelGatewayPosition).click();
 
     typeIntoTextInput('[name=name]', testString);
