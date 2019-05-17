@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import flatten from 'lodash/flatten';
 
 Vue.use(Vuex);
 
@@ -22,7 +23,7 @@ export default new Vuex.Store({
     rootElements: state => state.rootElements,
     autoValidate: state => state.autoValidate,
     globalProcesses: state => state.globalProcesses,
-    globalProcessEvents: (state, getters) => getters.globalProcesses.map(process => process.events).flat(),
+    globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
   },
   mutations: {
     setAutoValidate(state, autoValidate) {
