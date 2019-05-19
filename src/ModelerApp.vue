@@ -1,5 +1,7 @@
 <template>
-  <b-container id="modeler-app" class="h-100 container position-relative">
+  <b-container id="modeler-app" fluid class="h-100 p-0 position-relative">
+
+    <!-- Alert container -->
     <div class="alert-container position-absolute w-100">
       <b-row class="justify-content-center">
         <b-col cols="6">
@@ -18,8 +20,8 @@
       </b-row>
     </div>
 
-    <b-card no-body class="h-100">
-      <b-card-header class="d-flex align-items-center header">
+    <b-card no-body class="h-100 border-0">
+      <b-card-header class="d-flex align-items-center header bg-primary text-white rounded-0">
         <b-card-text class="m-0 font-weight-bolder">
           {{ $t('ProcessMaker Modeler') }}
         </b-card-text>
@@ -36,7 +38,7 @@
         </div>
       </b-card-header>
 
-      <b-card-body class="overflow-hidden position-relative" data-test="body-container">
+      <b-card-body class="position-relative p-0" data-test="body-container">
         <modeler ref="modeler" @validate="validationErrors = $event" />
       </b-card-body>
 
@@ -132,6 +134,7 @@ html {
   max-width: 100vw;
   height: 100vh;
   max-height: 100vh;
+  overflow: hidden;
 }
 
 .alert-container {

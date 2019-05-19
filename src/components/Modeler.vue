@@ -1,6 +1,6 @@
 <template>
-  <b-row class="modeler h-100">
-    <b-col class="h-100 overflow-hidden controls-column" :class="{ 'ignore-pointer': canvasDragPosition }">
+  <div class="d-flex modeler h-100 p-0 m-0">
+    <div class="h-100 overflow-hidden mr-0 pr-0" :class="{ 'ignore-pointer': canvasDragPosition }">
       <controls
         :controls="controls"
         :style="{ height: parentHeight }"
@@ -10,15 +10,15 @@
         @handleDrop="handleDrop"
         class="controls h-100"
       />
-    </b-col>
+    </div>
 
-    <b-col
-      class="paper-container h-100 pr-4"
+    <div 
+      class="paper-container h-100 position-absolute pr-0 pl-0"
       ref="paper-container"
       :class="cursor"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-flex mb-1 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="btn-toolbar tool-buttons d-flex mb-1 position-relative mt-3 ml-3" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -49,9 +49,9 @@
 
       <div ref="paper" data-test="paper" class="main-paper"/>
 
-    </b-col>
+    </div>
 
-    <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
+    <div class="pl-0 h-100 overflow-hidden inspector-column ml-0 pl-0" :class="{ 'ignore-pointer': canvasDragPosition }">
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -61,7 +61,7 @@
         @save-state="pushToUndoStack"
         class="h-100"
       />
-    </b-col>
+    </div>
 
     <component
       v-for="node in nodes"
@@ -90,7 +90,7 @@
       @save-state="pushToUndoStack"
       @set-shape-stacking="setShapeStacking"
     />
-  </b-row>
+  </div>
 </template>
 
 <script>
@@ -865,12 +865,11 @@ $cursors: default, not-allowed;
 }
 
 .modeler {
-  .inspector-column {
-    max-width: 265px;
-  }
 
-  .controls-column {
-    max-width: 185px;
+  .controls-column, .inspector-column {
+    width: 18rem;
+    max-width: 18rem;
+
   }
 
   .main-paper {

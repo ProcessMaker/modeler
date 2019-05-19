@@ -1,6 +1,6 @@
 <template>
-  <b-card no-body class="inspector-container">
-    <div class="card-header">Inspector</div>
+  <b-card no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0">
+    <div class="card-header font-weight-bold rounded-0">Inspector</div>
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
