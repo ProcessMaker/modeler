@@ -27,12 +27,6 @@ export default {
     {
       name: 'ManualTask',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Manual Task',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,
@@ -40,7 +34,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'confifuration',
+            name: 'configuration',
           },
           items: [
             {
