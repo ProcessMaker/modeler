@@ -4,7 +4,7 @@
 
 <script>
 import TaskComponent from '@/components/nodes/task/task';
-import scriptIcon from '@/assets/script.svg';
+import scriptIcon from '@/assets/manual-task.svg';
 
 export default {
   extends: TaskComponent,

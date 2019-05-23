@@ -19,10 +19,10 @@ import {
   callActivity,
   scriptTask,
   serviceTask,
+  manualTask,
   textAnnotation,
   pool,
   poolLane,
-  manualTask,
 } from '@/components/nodes';
 
 const nodeTypes = [
@@ -30,6 +30,7 @@ const nodeTypes = [
   task,
   callActivity,
   scriptTask,
+  manualTask,
   serviceTask,
   exclusiveGateway,
   parallelGateway,
@@ -41,7 +42,6 @@ const nodeTypes = [
   association,
   pool,
   poolLane,
-  manualTask,
 ];
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
