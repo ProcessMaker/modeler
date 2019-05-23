@@ -10,7 +10,7 @@ export default {
   label: 'Event-based Gateway',
   definition(moddle) {
     return moddle.create('bpmn:EventBasedGateway', {
-      name: '',
+      name: 'New Event-Based Gateway',
     });
   },
   diagram(moddle) {
@@ -25,12 +25,6 @@ export default {
     {
       name: 'Event-based Gateway',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Event-based Gateway',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

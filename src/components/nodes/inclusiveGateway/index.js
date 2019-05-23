@@ -11,7 +11,7 @@ export default {
   label: 'Inclusive Gateway',
   definition(moddle) {
     return moddle.create('bpmn:InclusiveGateway', {
-      name: null,
+      name: 'New Inclusive Gateway',
       gatewayDirection: gatewayDirection.diverging,
     });
   },
@@ -27,12 +27,6 @@ export default {
     {
       name: 'Inclusive Gateway',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Inclusive Gateway',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,
@@ -59,19 +53,19 @@ export default {
                 name: 'name',
               },
             },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Direction',
+                helper: 'Select direction of gateway',
+                name: 'gatewayDirection',
+                options: [
+                  { value: gatewayDirection.diverging , content: 'Diverging' },
+                  { value: gatewayDirection.converging , content: 'Converging' },
+                ],
+              },
+            },
           ],
-        },
-        {
-          component: 'FormSelect',
-          config: {
-            label: 'Direction',
-            helper: 'Select direction of gateway',
-            name: 'gatewayDirection',
-            options: [
-              { value: gatewayDirection.diverging , content: 'Diverging' },
-              { value: gatewayDirection.converging , content: 'Converging' },
-            ],
-          },
         },
       ],
     },
