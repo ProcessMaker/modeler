@@ -20,3 +20,4 @@ export { default as poolLane } from './poolLane';
 export { default as Statusbar } from '../Statusbar';
 export { default as ValidationStatus } from '../ValidationStatus';
 export { default as Modeler } from '../Modeler';
+export { default as manualTask } from './manualTask';

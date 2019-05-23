@@ -11,6 +11,7 @@ export const nodeTypes = {
   task: 'processmaker-modeler-task',
   endEvent:'processmaker-modeler-end-event',
   scriptTask:'processmaker-modeler-script-task',
+  manualTask:'processmaker-modeler-manual-task',
   exclusiveGateway: 'processmaker-modeler-exclusive-gateway',
   parallelGateway: 'processmaker-modeler-parallel-gateway',
   inclusiveGateway: 'processmaker-modeler-inclusive-gateway',

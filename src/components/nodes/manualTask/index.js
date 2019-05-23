@@ -1,18 +1,18 @@
-import component from './task.vue';
+import component from './manualTask.vue';
 
 export const taskHeight = 76;
 
 export default {
-  id: 'processmaker-modeler-task',
+  id: 'processmaker-modeler-manual-task',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
+  bpmnType: 'bpmn:ManualTask',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/task.svg'),
-  label: 'Task',
+  icon: require('@/assets/toolpanel/manualTask.svg'),
+  label: 'Manual Task',
   definition(moddle) {
-    return moddle.create('bpmn:Task', {
-      name: 'Task',
+    return moddle.create('bpmn:ManualTask', {
+      name: 'New Manual Task',
     });
   },
   diagram(moddle) {
@@ -25,14 +25,8 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'ManualTask',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Task',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,
@@ -40,7 +34,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'confifuration',
+            name: 'configuration',
           },
           items: [
             {
@@ -55,7 +49,7 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Name',
-                helper: 'The Name of the Task',
+                helper: 'The name of the manual task',
                 name: 'name',
               },
             },
