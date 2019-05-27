@@ -43,19 +43,15 @@
     <template v-if="hasEnds">
       <label>{{ $t('Ends') }}</label>
       <div>
-        <div class="form-check">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">{{ $t('Never') }}
-          </label>
-        </div>
-        <div class="form-check check-input">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">{{ $t('On') }}
-          </label>
+        <b-form-group class="m-0 mb-3">
+          <b-form-radio v-model="ends" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
+        </b-form-group>
 
+        <b-form-group class="p-0" description="Please select date.">
+          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate">{{ $t('On') }}</b-form-radio>
           <form-date-picker
             type="date"
-            class="control calendaron"
+            class="form-date-picker p-0 m-0"
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
@@ -65,14 +61,13 @@
             :vaue="endDate"
             @input="endDate = $event"
           />
-        </div>
-        <div class="form-check check-input">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">{{ $t('After') }}
-          </label>
-          <input v-model="times" type="number" min="0" :disabled="ends !== 'after'" class="form-control control after">
-          <label class="occurrences">{{ $t('occurrences') }}</label>
-        </div>
+        </b-form-group>
+
+        <b-form-group class="mt-0 p-0">
+          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{ $t('After') }}</b-form-radio>
+          <b-form-input v-model="times" type="number" min="0" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block"/>
+          <b-form-input :readonly="ends !== 'after'" v-model="occurrences" class=" w-75 d-inline-block occurrences-text" />
+        </b-form-group>
       </div>
     </template>
   </div>
@@ -111,6 +106,7 @@ export default {
   data() {
     return {
       DateTime,
+      occurrences: 'occurrences',
       data: { sampleDatePicker: DateTime.local().toISO() },
       weekdays: [
         //  ISO week date weekday number, from 1 through 7,
@@ -157,6 +153,7 @@ export default {
       ends: 'never',
       endDate: DateTime.local().toISO(),
       times: '1',
+      yo: true
     };
   },
   computed: {
@@ -390,4 +387,13 @@ export default {
   background-color: #e9ecef !important;
   color: transparent;
 }
+
+.form-date-picker label {
+  display: none;
+}
+
+.occurrences-text {
+  pointer-events: none;
+}
+
 </style>
