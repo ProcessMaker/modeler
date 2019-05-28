@@ -21,14 +21,21 @@
 <script>
 import last from 'lodash/last';
 
+const periodNames = {
+  minute: 'minute',
+  hour: 'hour',
+  day: 'day',
+  month: 'month',
+};
+
 export default {
   props: ['value', 'repeatInput'],
   data() {
     const periods = [
-      { name: 'minute', value: 'M', max: 60, isTime: true },
-      { name: 'hour', value: 'H', max: 24, isTime: true },
-      { name: 'day', value: 'D', max: 365 },
-      { name: 'month', value: 'M', max: 12 },
+      { name: periodNames.minute, value: 'M', max: 60, isTime: true },
+      { name: periodNames.hour, value: 'H', max: 24, isTime: true },
+      { name: periodNames.day, value: 'D', max: 365 },
+      { name: periodNames.month, value: 'M', max: 12 },
     ];
 
     return {
@@ -64,7 +71,10 @@ export default {
       const periodicity = last(delayString);
 
       if (periodicity === 'M') {
-        const periodName = isTimePeriod ? 'minute' : 'month';
+        const periodName = isTimePeriod
+          ? periodNames.minute
+          : periodNames.month;
+
         return this.periods.find(({ name }) => name === periodName);
       }
 
