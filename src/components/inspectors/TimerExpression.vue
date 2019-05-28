@@ -67,7 +67,7 @@
         <b-form-group class="mt-0 p-0">
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{ $t('After') }}</b-form-radio>
           <b-form-input v-model="times" type="number" min="0" max="99" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block"/>
-          <b-form-input :readonly="ends !== 'after'" v-model="occurrences" class=" w-75 d-inline-block occurrences-text" />
+          <b-form-input :readonly="ends !== 'after'" :value="$t('occurrences')" class=" w-75 d-inline-block occurrences-text" />
         </b-form-group>
       </div>
     </template>
@@ -107,7 +107,6 @@ export default {
   data() {
     return {
       DateTime,
-      occurrences: 'occurrences',
       data: { sampleDatePicker: DateTime.local().toISO() },
       weekdays: [
         //  ISO week date weekday number, from 1 through 7,
@@ -154,7 +153,6 @@ export default {
       ends: 'never',
       endDate: DateTime.local().toISO(),
       times: '1',
-      yo: true,
     };
   },
   computed: {
