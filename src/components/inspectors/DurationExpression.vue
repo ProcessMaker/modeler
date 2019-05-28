@@ -6,7 +6,6 @@
       <input
         type="number"
         min="1"
-        :max="periodicity.max"
         class="form-control control repeat"
         :data-test="repeatInput"
         v-model="repeat"
@@ -32,10 +31,10 @@ export default {
   props: ['value', 'repeatInput'],
   data() {
     const periods = [
-      { name: periodNames.minute, value: 'M', max: 60, isTime: true },
-      { name: periodNames.hour, value: 'H', max: 24, isTime: true },
-      { name: periodNames.day, value: 'D', max: 365 },
-      { name: periodNames.month, value: 'M', max: 12 },
+      { name: periodNames.minute, value: 'M', isTime: true },
+      { name: periodNames.hour, value: 'H', isTime: true },
+      { name: periodNames.day, value: 'D' },
+      { name: periodNames.month, value: 'M' },
     ];
 
     return {
@@ -48,7 +47,7 @@ export default {
     value: {
       handler(value) {
         this.periodicity = this.getPeriodFromDelayString(value);
-        this.repeat = parseInt(value[value.length - 2]);
+        this.repeat = this.getRepeatNumberFromDelayString(value);
       },
       immediate: true,
     },
@@ -82,6 +81,10 @@ export default {
     },
     isTimePeriod(delayString) {
       return delayString[1] === 'T';
+    },
+    getRepeatNumberFromDelayString(delayString) {
+      const match = delayString.match(/\d+/);
+      return match && match[0];
     },
   },
 };
