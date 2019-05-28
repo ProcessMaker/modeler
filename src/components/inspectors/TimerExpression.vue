@@ -48,7 +48,7 @@
           <b-form-radio v-model="ends" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
         </b-form-group>
 
-        <b-form-group class="p-0 mb-1" description="Please select date.">
+        <b-form-group class="p-0 mb-1" description="Please click On to select a date.">
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate">{{ $t('On') }}</b-form-radio>
           <form-date-picker
             type="date"
