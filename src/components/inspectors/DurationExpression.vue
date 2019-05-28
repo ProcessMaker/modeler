@@ -3,9 +3,16 @@
     <label>{{ $t('Delay') }}</label>
     <pre>{{ value }}</pre>
     <div>
-      <input type="number" min="1" class="form-control control repeat" :data-test="repeatInput" v-model="repeat">
+      <input
+        type="number"
+        min="1"
+        :max="periodicity.max"
+        class="form-control control repeat"
+        :data-test="repeatInput"
+        v-model="repeat"
+      >
       <select v-model="periodicity" class="form-control control periodicity">
-        <option v-for="(value, name) in periods" :key="name" :value="name">{{ $t(name) }}</option>
+        <option v-for="period in periods" :key="period.name" :value="period">{{ $t(period.name) }}</option>
       </select>
     </div>
   </div>
@@ -17,16 +24,16 @@ import last from 'lodash/last';
 export default {
   props: ['value', 'repeatInput'],
   data() {
-    const periods = {
-      minute: 'M',
-      hour: 'H',
-      day: 'D',
-      month: 'M',
-    };
+    const periods = [
+      { name: 'minute', value: 'M', max: 60, isTime: true },
+      { name: 'hour', value: 'H', max: 24, isTime: true },
+      { name: 'day', value: 'D', max: 365 },
+      { name: 'month', value: 'M', max: 12 },
+    ];
 
     return {
       repeat: null,
-      periodicity: Object.keys(periods)[0],
+      periodicity: null,
       periods,
     };
   },
@@ -44,30 +51,26 @@ export default {
   },
   computed: {
     durationExpression() {
-      const periodicityString = this.periods[this.periodicity];
-
-      if (this.isTimePeriod(this.periodicity)) {
-        return `PT${this.repeat}${periodicityString}`;
+      if (this.periodicity.isTime) {
+        return `PT${this.repeat}${this.periodicity.value}`;
       }
 
-      return `P${this.repeat}${periodicityString}`;
+      return `P${this.repeat}${this.periodicity.value}`;
     },
   },
   methods: {
-    isTimePeriod(periodicity) {
-      return ['minute', 'hour'].includes(periodicity);
-    },
     getPeriodFromDelayString(delayString) {
-      const isTimePeriod = this.isTimePeriodString(delayString);
+      const isTimePeriod = this.isTimePeriod(delayString);
       const periodicity = last(delayString);
 
       if (periodicity === 'M') {
-        return isTimePeriod ? 'minute' : 'month';
+        const periodName = isTimePeriod ? 'minute' : 'month';
+        return this.periods.find(({ name }) => name === periodName);
       }
 
-      return Object.keys(this.periods).find(period => this.periods[period] === periodicity);
+      return this.periods.find(({ value }) => value === periodicity);
     },
-    isTimePeriodString(delayString) {
+    isTimePeriod(delayString) {
       return delayString[1] === 'T';
     },
   },
