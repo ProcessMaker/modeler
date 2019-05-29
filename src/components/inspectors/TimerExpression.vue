@@ -4,6 +4,7 @@
       :label="$t('Start date')"
       :placeholder="$t('Start date')"
       control-class="form-control"
+      class="p-0"
       :format="DateTime.DATETIME_SHORT"
       :minuteStep="30"
       :phrases="{ ok: 'Save', cancel: 'Cancel' }"
@@ -12,25 +13,25 @@
     />
 
     <template v-if="hasRepeat">
-      <label>{{ $t(repeatLabel) }}</label>
-      <div>
-        <input type="number" min="1" class="form-control control repeat" v-model="repeat">
-        <select v-model="periodicity" class="form-control control periodicity">
+      <label class="">{{ $t(repeatLabel) }}</label>
+      <b-form-group class="m-0 mb-3 p-0">
+        <b-form-input type="number" min="1" max="99" class="d-inline-block w-50" v-model="repeat"/>
+        <b-form-select v-model="periodicity" class="d-inline-block w-50 periodicity">
           <option value="day">{{ $t('day') }}</option>
           <option value="week">{{ $t('week') }}</option>
           <option value="month">{{ $t('month') }}</option>
           <option value="year">{{ $t('year') }}</option>
-        </select>
-      </div>
+        </b-form-select>
+      </b-form-group>
     </template>
 
-    <div v-if="periodicity === 'week'">
-      <label>{{ $t(weekLabel) }}</label>
+    <div v-if="periodicity === 'week'" class="mb-2">
+      <label class="">{{ $t(weekLabel) }}</label>
       <div>
         <span
           v-for="day in weekdays"
           :key="day.day"
-          class="badge badge-pill weekday"
+          class="badge badge-pill weekday mb-1"
           :class="weekdayStyle(day)"
           :data-test="`day-${ day.day }`"
           @click="clickWeekDay(day)"
@@ -41,21 +42,17 @@
     </div>
 
     <template v-if="hasEnds">
-      <label>{{ $t('Ends') }}</label>
+      <label class="mt-1 ">{{ $t('Ends') }}</label>
       <div>
-        <div class="form-check">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="never" v-model="ends">{{ $t('Never') }}
-          </label>
-        </div>
-        <div class="form-check check-input">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="ondate" v-model="ends">{{ $t('On') }}
-          </label>
+        <b-form-group class="m-0 mb-2">
+          <b-form-radio v-model="ends" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
+        </b-form-group>
 
+        <b-form-group class="p-0 mb-1" description="Please click On to select a date.">
+          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate">{{ $t('On') }}</b-form-radio>
           <form-date-picker
             type="date"
-            class="control calendaron"
+            class="form-date-picker p-0 m-0"
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
@@ -65,14 +62,13 @@
             :vaue="endDate"
             @input="endDate = $event"
           />
-        </div>
-        <div class="form-check check-input">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" name="optradio" value="after" v-model="ends">{{ $t('After') }}
-          </label>
-          <input v-model="times" type="number" min="0" :disabled="ends !== 'after'" class="form-control control after">
-          <label class="occurrences">{{ $t('occurrences') }}</label>
-        </div>
+        </b-form-group>
+
+        <b-form-group class="mt-0 p-0">
+          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{ $t('After') }}</b-form-radio>
+          <b-form-input v-model="times" type="number" min="0" max="99" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block"/>
+          <b-form-input :readonly="ends !== 'after'" :value="$t('occurrences')" class=" w-75 d-inline-block occurrences-text" />
+        </b-form-group>
       </div>
     </template>
   </div>
@@ -309,85 +305,50 @@ export default {
 </script>
 
 <style scoped="scoped">
-.control {
-  vertical-align: middle;
-  display: inline-block;
-  height: 3em;
-  font-size: 1em;
-}
-.repeat {
-  width: 6em !important;
-  text-align: right;
-}
-.periodicity {
-  width: 6em;
-}
-.weekday {
-  padding: 1em;
-  margin-left: 0.2em;
-  margin-bottom: 0.5em;
-  cursor: pointer;
-}
-.time {
-  width: 5em;
-  height: 38px;
-  font-size: 16px;
-}
-.start-date-div {
-  vertical-align: middle;
-  display: inline-block;
-}
-.after {
-  height: 38px;
-  font-size: 16px;
-  margin-left: 0.75rem;
-}
-.after:disabled {
-  color: transparent;
-}
-.check-input {
-  margin-top: 4px;
-}
-.form-check {
-  display: flex;
-  justify-content: space-between;
-}
-.check-input > .form-check-label {
-  line-height: 3em;
-}
-.check-input .form-check-input {
-  margin-top: 1em;
-}
-.occurrences {
-  position: absolute;
-  right: 1em;
-  line-height: 3em;
-}
-.same-day {
-  opacity: 0.7;
-}
+  .periodicity {
+    margin-top: -3px;
+  }
+  .weekday {
+    padding: 1em;
+    margin-left: 0.2em;
+    margin-bottom: 0.5em;
+    cursor: pointer;
+  }
 </style>
 
 <style>
-.calendar {
-  width: 16em;
-}
-.calendaron {
-  margin-left: 0.75rem;
-}
-.calendar .cell {
-  height: 2em;
-  line-height: 2em;
-}
-.start-date {
-  background-color: white !important;
-  width: 8em !important;
-}
-.end-date {
-  background-color: white !important;
-}
-.date-disabled .end-date {
-  background-color: #e9ecef !important;
-  color: transparent;
-}
+  .calendar {
+    width: 16em;
+  }
+
+  .calendaron {
+    margin-left: 0.75rem;
+  }
+
+  .calendar .cell {
+    height: 2em;
+    line-height: 2em;
+  }
+
+  .start-date {
+    background-color: white !important;
+    width: 8em !important;
+  }
+
+  .end-date {
+    background-color: white !important;
+  }
+
+  .date-disabled .end-date {
+    background-color: #e9ecef !important;
+    color: transparent;
+  }
+
+  .form-date-picker label {
+    display: none;
+  }
+
+  .occurrences-text {
+    pointer-events: none;
+  }
 </style>
