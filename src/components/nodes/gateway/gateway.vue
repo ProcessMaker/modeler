@@ -37,7 +37,7 @@ export default {
     this.shape.resize(bounds.width, bounds.height);
     this.shape.attr({
       '.label': {
-        text: this.$(defaultName),
+        text: this.$t(defaultName),
         fill: 'black',
       },
     });
