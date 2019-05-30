@@ -1,4 +1,5 @@
 import taskConfig from '@/components/nodes/task';
+import i18next from 'i18next';
 
 export default {
   ...taskConfig,
@@ -8,19 +9,13 @@ export default {
   label: 'Service Task',
   definition(moddle) {
     return moddle.create('bpmn:ServiceTask', {
-      name: 'New Service Task',
+      name: i18next.t('New Service Task'),
     });
   },
   inspectorConfig: [
     {
       name: 'ServiceTask',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Service Task',
-        //   },
-        // },
       ],
     },
   ],

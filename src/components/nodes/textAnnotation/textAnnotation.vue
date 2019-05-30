@@ -60,7 +60,6 @@ export default {
   },
   mounted() {
     this.shape = new joint.shapes.standard.Polyline();
-    const defaultName = this.node.definition.get('text');
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);
@@ -69,7 +68,7 @@ export default {
         refPoints: '25 10 3 10 3 3 25 3',
       },
       label: {
-        text: joint.util.breakText(this.$t(defaultName), {
+        text: joint.util.breakText(this.node.definition.get('text'), {
           width: bounds.width,
         }),
         fill: 'black',

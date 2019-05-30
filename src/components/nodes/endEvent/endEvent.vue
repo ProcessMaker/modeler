@@ -26,14 +26,13 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
-    const defaultName = this.node.definition.get('name');
     this.shape.attr({
       body: {
         fill: '#FFF1F2',
         stroke: '#ED4757',
       },
       label: {
-        text: this.$t(defaultName),
+        text: this.node.definition.get('name'),
         refY: '130%',
       },
     });

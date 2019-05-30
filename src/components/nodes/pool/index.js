@@ -1,4 +1,5 @@
 import component from './pool';
+import i18next from 'i18next';
 
 export const id = 'processmaker-modeler-pool';
 
@@ -12,7 +13,7 @@ export default {
   label: 'Pool',
   definition(moddle) {
     return moddle.create('bpmn:Participant', {
-      name: 'New Pool',
+      name: i18next.t('New Pool'),
     });
   },
   diagram(moddle) {
@@ -27,12 +28,6 @@ export default {
     {
       name: 'Pool',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Pool',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

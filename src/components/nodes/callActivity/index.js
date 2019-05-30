@@ -1,8 +1,8 @@
 import component from './callActivity';
 import CallActivityFormSelect from './CallActivityFormSelect';
-
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-call-activity';
+import i18next from 'i18next';
 
 export default {
   id,
@@ -14,7 +14,7 @@ export default {
   label: 'Call Activity',
   definition(moddle) {
     return moddle.create('bpmn:CallActivity', {
-      name: 'New Call Activity',
+      name: i18next.t('New Call Activity'),
       calledElement: '',
     });
   },
@@ -44,12 +44,6 @@ export default {
     {
       name: 'Call Activity',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Call Activity',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

@@ -1,4 +1,5 @@
 import component from './exclusiveGateway.vue';
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-exclusive-gateway',
@@ -10,7 +11,7 @@ export default {
   label: 'Exclusive Gateway',
   definition(moddle) {
     return moddle.create('bpmn:ExclusiveGateway', {
-      name: 'New Exclusive Gateway',
+      name: i18next.t('New Exclusive Gateway'),
     });
   },
   diagram(moddle) {
@@ -25,12 +26,6 @@ export default {
     {
       name: 'Exclusive Gateway',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Exclusive Gateway',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

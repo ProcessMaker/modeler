@@ -31,13 +31,12 @@ export default {
   },
   mounted() {
     this.shape = new GatewayShape();
-    const defaultName = this.node.definition.get('name');
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
     this.shape.attr({
       '.label': {
-        text: this.$t(defaultName),
+        text: this.node.definition.get('name'),
         fill: 'black',
       },
     });

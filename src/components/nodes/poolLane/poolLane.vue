@@ -49,14 +49,13 @@ export default {
     this.shape = new joint.shapes.standard.Rectangle();
 
     const bounds = this.node.diagram.bounds;
-    const defaultName = this.node.definition.get('name');
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
 
     this.shape.set('elementMove', false);
     this.shape.attr('body/cursor', 'default');
     this.shape.attr('label', {
-      text: joint.util.breakText(this.$t(defaultName), { width: bounds.height }),
+      text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.height }),
       fill: 'black',
       transform: 'rotate(-90)',
       refX: labelWidth / 2,

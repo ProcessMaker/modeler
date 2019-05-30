@@ -1,5 +1,6 @@
 
 import component from './endEvent.vue';
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-end-event',
@@ -11,7 +12,7 @@ export default {
   label: 'End Event',
   definition(moddle) {
     return moddle.create('bpmn:EndEvent', {
-      name: 'End Event',
+      name: i18next.t('End Event'),
     });
   },
   diagram(moddle) {
@@ -36,12 +37,6 @@ export default {
     {
       name: 'End Event',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'End Event',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

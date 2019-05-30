@@ -1,4 +1,5 @@
 import component from './scriptTask.vue';
+import i18next from 'i18next';
 
 export const taskHeight = 76;
 
@@ -12,7 +13,7 @@ export default {
   label: 'Script Task',
   definition(moddle) {
     return moddle.create('bpmn:ScriptTask', {
-      name: 'New Script Task',
+      name: i18next.t('New Script Task'),
     });
   },
   diagram(moddle) {
@@ -27,12 +28,6 @@ export default {
     {
       name: 'ScriptTask',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Script Task',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

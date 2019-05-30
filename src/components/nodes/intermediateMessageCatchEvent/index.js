@@ -1,5 +1,6 @@
 import component from './intermediateMessageCatchEvent.vue';
 import omit from 'lodash/omit';
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-intermediate-message-catch-event',
@@ -11,7 +12,7 @@ export default {
   label: 'Intermediate Message Catch Event',
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: 'Intermediate Message Catch Event',
+      name: i18next.t('Intermediate Message Catch Event'),
       allowedUsers: '',
       allowedGroups: '',
       whitelist: '',
@@ -70,12 +71,6 @@ export default {
     {
       name: 'Intermediate Message Catch Event',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Intermediate Message Catch Event',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

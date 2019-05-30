@@ -1,4 +1,5 @@
 import component from './textAnnotation.vue';
+import i18next from 'i18next';
 
 export const textAnnotationWidth = 150;
 export const labelPadding = 15;
@@ -13,7 +14,7 @@ export default {
   label: 'Text Annotation',
   definition(moddle) {
     return moddle.create('bpmn:TextAnnotation', {
-      text: 'New Text Annotation',
+      text: i18next.t('New Text Annotation'),
     });
   },
   diagram(moddle) {
@@ -44,12 +45,6 @@ export default {
     {
       name: 'Text Annotation',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Text Annotation',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

@@ -45,8 +45,6 @@ export default {
   },
   mounted() {
     this.shape = new TaskShape();
-    const defaultTaskName = this.node.definition.get('name');
-
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
@@ -56,7 +54,7 @@ export default {
         ry: 8,
       },
       label: {
-        text: joint.util.breakText(this.$t(defaultTaskName), { width: bounds.width }),
+        text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
         fill: 'black',
       },
     });
