@@ -7,8 +7,8 @@ import {
   getLinksConnectedToElement,
   typeIntoTextInput,
   waitToRenderAllShapes,
+  waitToRenderNodeUpdates,
 } from '../support/utils';
-import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 
 import { nodeTypes } from '../support/constants';
 
@@ -223,7 +223,7 @@ describe('Undo/redo', () => {
     cy.get('[name=id]').clear().type(newId);
     cy.get('[name=name]').clear().type(newName);
 
-    cy.wait(saveDebounce);
+    waitToRenderNodeUpdates();
 
     cy.get('[name=id]').should('have.value', newId);
     cy.get('[name=name]').should('have.value', newName);
