@@ -27,7 +27,7 @@
     "@processmaker/spark-screen-builder": "^0.15.0",
     "@processmaker/vue-form-elements": "^0.9.0",
     "bootstrap": "^4.3.1",
-    "bootstrap-vue": "^2.0.0-rc.14",
+    "bootstrap-vue": "^2.0.0-rc.21",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
     "bpmnlint-plugin-spark": "^1.0.0",
