@@ -13,6 +13,8 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
+const modalAnimationTime = 300;
+
 describe('Modeler', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -131,7 +133,7 @@ describe('Modeler', () => {
     cy.contains('Upload XML').click();
 
     /* Wait for modal to open */
-    cy.wait(300);
+    cy.wait(modalAnimationTime);
 
     cy.fixture('../../../src/blank.bpmn', 'base64').then(blankProcess => {
       return cy.get('input[type=file]').then($input => {
@@ -142,13 +144,14 @@ describe('Modeler', () => {
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
-            return cy.wrap(input).trigger('change', { force: true });
+            cy.wrap(input).trigger('change', { force: true });
+            return cy.get('#uploadmodal button').contains('Upload').click();
           });
       });
     });
 
     /* Wait for modal to close */
-    cy.wait(300);
+    cy.wait(modalAnimationTime);
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     getElementAtPosition(taskPosition).click();
@@ -231,7 +234,7 @@ describe('Modeler', () => {
     cy.contains('Upload XML').click();
 
     /* Wait for modal to open */
-    cy.wait(300);
+    cy.wait(modalAnimationTime);
 
     cy.fixture('parser.xml', 'base64').then(blankProcess => {
       return cy.get('input[type=file]').then($input => {
@@ -242,13 +245,14 @@ describe('Modeler', () => {
             dataTransfer.items.add(testfile);
             const input = $input[0];
             input.files = dataTransfer.files;
-            return cy.wrap(input).trigger('change', { force: true });
+            cy.wrap(input).trigger('change', { force: true });
+            return cy.get('#uploadmodal button').contains('Upload').click();
           });
       });
     });
 
     /* Wait for modal to close */
-    cy.wait(300);
+    cy.wait(modalAnimationTime);
 
     cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then((sourceXML) =>{
       cy.get('[data-test=downloadXMLBtn]').click();
