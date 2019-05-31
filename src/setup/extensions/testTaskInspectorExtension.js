@@ -14,6 +14,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
       placeholder: '72 hours',
       helper: 'Time when the task will due (hours)',
       name: 'dueIn',
+      validation: 'numeric|min:1',
     },
   });
   registerInspectorExtension(task, {
