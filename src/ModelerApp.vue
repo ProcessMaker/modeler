@@ -47,10 +47,23 @@
       </b-card-footer>
     </b-card>
 
-    <b-modal ref="uploadmodal" id="uploadmodal" :title="$t('Upload BPMN File')">
-      <file-upload @input-file="handleUpload">
-        {{ $t('Upload file') }}
+    <b-modal
+      ref="uploadmodal"
+      id="uploadmodal"
+      :title="$t('Upload BPMN File')"
+      :cancel-title="$t('Cancel')"
+      :ok-title="$t('Upload')"
+      :ok-disabled="!uploadedXml"
+      cancel-variant="outline-secondary"
+      ok-variant="secondary"
+      @hidden="this.clearUpload"
+      @ok="this.loadXmlIntoModeler"
+    >
+      <file-upload class="btn btn-primary" v-model="xmlFile">
+        {{ $t('Select file') }}
       </file-upload>
+
+      <span class="ml-3" v-if="xmlFile[0]">{{ xmlFile[0].name }}</span>
     </b-modal>
   </b-container>
 </template>
@@ -80,7 +93,16 @@ export default {
     return {
       validationErrors: {},
       alerts: [],
+      uploadedXml: null,
+      xmlFile: [],
     };
+  },
+  watch: {
+    xmlFile([fileObject]) {
+      if (fileObject) {
+        reader.readAsText(fileObject.file);
+      }
+    },
   },
   methods: {
     runningInCypressTest() {
@@ -101,20 +123,21 @@ export default {
         }
       });
     },
-    handleUpload(fileObject) {
-      if (!fileObject) {
-        return;
-      }
-
-      reader.readAsText(fileObject.file);
+    loadXmlIntoModeler() {
+      this.$refs.modeler.loadXML(this.uploadedXml);
+    },
+    clearUpload() {
+      this.uploadedXml = null;
+      this.xmlFile = [];
+    },
+    setUploadedXml(event) {
+      this.uploadedXml = event.target.result;
     },
   },
+  created() {
+    reader.onload = this.setUploadedXml;
+  },
   mounted() {
-    reader.onloadend = () => {
-      this.$refs.modeler.loadXML(reader.result);
-      this.$refs.uploadmodal.hide();
-    };
-
     /* Add a start event on initial load */
     this.$refs.modeler.$once('parsed', this.$refs.modeler.addStartEvent);
 
