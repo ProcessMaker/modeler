@@ -14,12 +14,6 @@ export default {
     {
       name: 'Message Flow',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Message Flow',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

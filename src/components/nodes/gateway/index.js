@@ -1,5 +1,5 @@
 import component from './gateway.vue';
-
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-gateway',
@@ -10,7 +10,7 @@ export default {
   label: 'Gateway',
   definition(moddle) {
     return moddle.create('bpmn:Gateway', {
-      name: 'New Gateway',
+      name: i18next.t('New Gateway'),
     });
   },
   diagram(moddle) {
@@ -25,12 +25,6 @@ export default {
     {
       name: 'Gateway',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Gateway',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

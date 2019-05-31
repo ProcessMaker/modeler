@@ -1,6 +1,6 @@
 <template>
   <b-card no-body class="controls">
-    <b-card-header class="border-bottom-0">Controls</b-card-header>
+    <b-card-header class="border-bottom-0">{{ $t('Controls') }}</b-card-header>
     <b-input-group size="sm">
       <b-input-group-prepend>
         <span class="input-group-text"><i class="fas fa-filter"/></span>
@@ -23,7 +23,7 @@
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control.type)"
       >
-        <div class="tool text-truncate ml-1" v-b-tooltip.hover :title="control.label">
+        <div class="tool text-truncate ml-1" v-b-tooltip.hover :title="$t(control.label)">
           <img :src="control.icon" class="tool-icon mr-1">
           {{ $t(control.label) }}
         </div>

@@ -1,4 +1,5 @@
 import component from './startEvent.vue';
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-start-event',
@@ -10,7 +11,7 @@ export default {
   label: 'Start Event',
   definition(moddle) {
     return moddle.create('bpmn:StartEvent', {
-      name: 'Start Event',
+      name: i18next.t('Start Event'),
     });
   },
   diagram(moddle) {
@@ -35,12 +36,6 @@ export default {
     {
       name: 'Start Event',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Start Event',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

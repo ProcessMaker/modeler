@@ -1,5 +1,6 @@
 import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
@@ -11,7 +12,7 @@ export default {
   label: 'Parallel Gateway',
   definition(moddle) {
     return moddle.create('bpmn:ParallelGateway', {
-      name: 'New Parallel Gateway',
+      name: i18next.t('New Parallel Gateway'),
       gatewayDirection: gatewayDirection.diverging,
     });
   },
@@ -27,12 +28,6 @@ export default {
     {
       name: 'Parallel Gateway',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Parallel Gateway',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

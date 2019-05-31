@@ -1,4 +1,5 @@
 import component from './task.vue';
+import i18next from 'i18next';
 
 export const taskHeight = 76;
 
@@ -12,7 +13,7 @@ export default {
   label: 'Task',
   definition(moddle) {
     return moddle.create('bpmn:Task', {
-      name: 'Task',
+      name: i18next.t('Task'),
     });
   },
   diagram(moddle) {
@@ -27,12 +28,6 @@ export default {
     {
       name: 'Task',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Task',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,

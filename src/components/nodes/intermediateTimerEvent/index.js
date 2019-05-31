@@ -1,5 +1,6 @@
 import component from './intermediateTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
+import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-intermediate-catch-timer-event',
@@ -11,7 +12,7 @@ export default {
   label: 'Intermediate Timer Event',
   definition(moddle) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: 'Intermediate Timer Event',
+      name: i18next.t('Intermediate Timer Event'),
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {

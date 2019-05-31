@@ -45,7 +45,6 @@ export default {
   },
   mounted() {
     this.shape = new TaskShape();
-
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
