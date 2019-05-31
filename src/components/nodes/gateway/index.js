@@ -1,5 +1,4 @@
 import component from './gateway.vue';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-gateway',
@@ -8,9 +7,9 @@ export default {
   control: true,
   category: 'BPMN',
   label: 'Gateway',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:Gateway', {
-      name: i18next.t('New Gateway'),
+      name: $t('New Gateway'),
     });
   },
   diagram(moddle) {

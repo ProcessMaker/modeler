@@ -1,5 +1,4 @@
 import component from './manualTask.vue';
-import i18next from 'i18next';
 
 export const taskHeight = 76;
 
@@ -11,9 +10,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/manualTask.svg'),
   label: 'Manual Task',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:ManualTask', {
-      name: i18next.t('New Manual Task'),
+      name: $t('New Manual Task'),
     });
   },
   diagram(moddle) {

@@ -1,5 +1,4 @@
 import component from './eventBasedGateway.vue';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-event-based-gateway',
@@ -9,9 +8,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/event-based-gateway.svg'),
   label: 'Event-based Gateway',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:EventBasedGateway', {
-      name: i18next.t('New Event-Based Gateway'),
+      name: $t('New Event-Based Gateway'),
     });
   },
   diagram(moddle) {

@@ -1,5 +1,4 @@
 import component from './pool';
-import i18next from 'i18next';
 
 export const id = 'processmaker-modeler-pool';
 
@@ -11,9 +10,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/pool.svg'),
   label: 'Pool',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:Participant', {
-      name: i18next.t('New Pool'),
+      name: $t('New Pool'),
     });
   },
   diagram(moddle) {

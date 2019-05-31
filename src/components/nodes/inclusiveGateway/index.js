@@ -1,6 +1,5 @@
 import component from './inclusiveGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-inclusive-gateway',
@@ -10,9 +9,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/inclusive-gateway.svg'),
   label: 'Inclusive Gateway',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:InclusiveGateway', {
-      name: i18next.t('New Inclusive Gateway'),
+      name: $t('New Inclusive Gateway'),
       gatewayDirection: gatewayDirection.diverging,
     });
   },

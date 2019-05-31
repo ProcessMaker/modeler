@@ -1,6 +1,5 @@
 
 import component from './endEvent.vue';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-end-event',
@@ -10,9 +9,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/end-event.svg'),
   label: 'End Event',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
-      name: i18next.t('End Event'),
+      name: $t('End Event'),
     });
   },
   diagram(moddle) {

@@ -1,7 +1,6 @@
 import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import { DateTime } from 'luxon';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -11,9 +10,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/start-timer-event.svg'),
   label: 'Start Timer Event',
-  definition(moddle) {
+  definition(moddle, $t) {
     let startEventDefinition = moddle.create('bpmn:StartEvent', {
-      name: i18next.t('Start Timer Event'),
+      name: $t('Start Timer Event'),
     });
 
     startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {
