@@ -175,16 +175,9 @@ export default {
     scale(scale) {
       this.paper.scale(scale);
     },
-    autoValidate(autoValidate) {
-      if (autoValidate) {
-        this.validateBpmnDiagram();
-      }
-    },
-    currentXML() {
-      if (this.autoValidate) {
-        this.validateBpmnDiagram();
-      }
-    },
+    currentXML() { this.validateIfAutoValidateIsOn(); },
+    definitions() { this.validateIfAutoValidateIsOn(); },
+    autoValidate() { this.validateIfAutoValidateIsOn(); },
   },
   computed: {
     autoValidate: () => store.getters.autoValidate,
@@ -216,6 +209,11 @@ export default {
     },
   },
   methods: {
+    validateIfAutoValidateIsOn() {
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
     translateConfig(inspectorConfig) {
       if (inspectorConfig.config) {
         const config = inspectorConfig.config;
