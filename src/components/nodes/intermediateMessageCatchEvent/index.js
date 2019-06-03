@@ -102,6 +102,7 @@ export default {
                 label: 'Message Event Identifier',
                 helper: 'The id field should be unique across all elements in the diagram',
                 name: 'eventDefinitionId',
+                validation: 'required',
               },
             },
             {
