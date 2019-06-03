@@ -272,4 +272,51 @@ describe('Modeler', () => {
     cy.get('.paper-container').trigger('mouseup');
     cy.get('.ignore-pointer').should('have.length', 0);
   });
+
+  it.only('updates validation after undo/redo', () => {
+    cy.get('[data-test=validation-toggle]').click();
+    cy.get('[data-test=validation-list-toggle]').click();
+
+    cy.get('[data-test=validation-list]').children().should('have.length', 2);
+
+    const startEventPosition = { x: 150, y: 150 };
+
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+    });
+
+    const taskPosition = { x: 150, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+
+    cy.get('[data-test=validation-list]').children()
+      .should('have.length', 3)
+      .should('contain', 'node_2');
+
+    cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
+
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+    });
+
+    cy.get('[data-test=validation-list]').children()
+      .should('have.length', 2)
+      .should('not.contain', 'node_2');
+
+    cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=validation-list]').children()
+      .should('have.length', 3)
+      .should('contain', 'node_2');
+
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+    });
+
+    getElementAtPosition(taskPosition).then($task => {
+      cy.wrap($task).get('[stroke=red]').should('exist');
+    });
+  });
 });
