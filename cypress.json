@@ -1,6 +1,6 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
-  "baseUrl": "http://localhost:8080",
+  "baseUrl": "https://spark.local.processmaker.com/modeler/2",
   "video": false,
   "numTestsKeptInMemory": 0
 }

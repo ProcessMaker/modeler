@@ -21,3 +21,9 @@ import './commands';
 
 // Disable saving screenshots
 Cypress.Screenshot.defaults({ screenshotOnRunFailure: false });
+
+Cypress.Cookies.defaults({
+  whitelist: ['processmaker_session', /remember_web_.*/],
+});
+
+before(() => cy.login());
