@@ -1,5 +1,4 @@
 import component from './exclusiveGateway.vue';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-exclusive-gateway',
@@ -9,9 +8,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/exclusive-gateway.svg'),
   label: 'Exclusive Gateway',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:ExclusiveGateway', {
-      name: i18next.t('New Exclusive Gateway'),
+      name: $t('New Exclusive Gateway'),
     });
   },
   diagram(moddle) {

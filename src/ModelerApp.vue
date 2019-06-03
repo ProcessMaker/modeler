@@ -139,7 +139,7 @@ export default {
   },
   mounted() {
     /* Add a start event on initial load */
-    this.$refs.modeler.$once('parsed', this.$refs.modeler.addStartEvent);
+    this.$refs.modeler.$once('parsed', () => this.$refs.modeler.addStartEvent());
 
     window.ProcessMaker.EventBus.$on('alert', alerts => this.alerts = alerts);
   },

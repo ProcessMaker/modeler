@@ -1,5 +1,4 @@
 import component from './scriptTask.vue';
-import i18next from 'i18next';
 
 export const taskHeight = 76;
 
@@ -11,9 +10,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/scriptTask.svg'),
   label: 'Script Task',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:ScriptTask', {
-      name: i18next.t('New Script Task'),
+      name: $t('New Script Task'),
     });
   },
   diagram(moddle) {

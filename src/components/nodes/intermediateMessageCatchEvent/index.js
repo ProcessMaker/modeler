@@ -1,6 +1,5 @@
 import component from './intermediateMessageCatchEvent.vue';
 import omit from 'lodash/omit';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-intermediate-message-catch-event',
@@ -10,9 +9,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: i18next.t('Intermediate Message Catch Event'),
+      name: $t('Intermediate Message Catch Event'),
       allowedUsers: '',
       allowedGroups: '',
       whitelist: '',

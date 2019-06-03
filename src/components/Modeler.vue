@@ -532,7 +532,7 @@ export default {
       }
 
       // Add to our processNode
-      const definition = this.nodeRegistry[type].definition(this.moddle);
+      const definition = this.nodeRegistry[type].definition(this.moddle, this.$t);
 
       // Now, let's modify planeElement
       const diagram = this.nodeRegistry[type].diagram(this.moddle);
@@ -675,7 +675,7 @@ export default {
         return;
       }
 
-      const definition = startEvent.definition(this.moddle);
+      const definition = startEvent.definition(this.moddle, this.$t);
       const diagram = startEvent.diagram(this.moddle);
 
       diagram.bounds.x = 150;
@@ -739,6 +739,7 @@ export default {
     },
   },
   created() {
+    this.$t = this.$t.bind(this);
     this.registerNode(Process);
 
     /* Initialize the BpmnModdle and its extensions */
