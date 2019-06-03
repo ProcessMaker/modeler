@@ -17,8 +17,8 @@ export default {
       whitelist: '',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {
-          id: '',
-          variableName: '',
+          id: 'message_event_1',
+          variableName: 'message',
         }),
       ],
     });
