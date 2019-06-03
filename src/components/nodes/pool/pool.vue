@@ -126,7 +126,7 @@ export default {
       if (!this.laneSet) {
         this.createLaneSet();
 
-        const definition = Lane.definition(this.moddle);
+        const definition = Lane.definition(this.moddle, this.$t);
 
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
@@ -149,7 +149,7 @@ export default {
       this.laneSet = laneSet;
       this.containingProcess.get('laneSets').push(laneSet);
     },
-    pushNewLane(definition = Lane.definition(this.moddle)) {
+    pushNewLane(definition = Lane.definition(this.moddle, this.$t)) {
       this.$emit('set-pool-target', this.shape);
 
       const diagram = Lane.diagram(this.moddle);
@@ -583,6 +583,9 @@ export default {
     } else {
       pull(this.rootElements, this.containingProcess);
     }
+  },
+  created() {
+    this.$t = this.$t.bind(this);
   },
 };
 </script>

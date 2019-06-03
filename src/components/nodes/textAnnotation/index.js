@@ -1,5 +1,4 @@
 import component from './textAnnotation.vue';
-import i18next from 'i18next';
 
 export const textAnnotationWidth = 150;
 export const labelPadding = 15;
@@ -12,9 +11,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/text-annotation.svg'),
   label: 'Text Annotation',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:TextAnnotation', {
-      text: i18next.t('New Text Annotation'),
+      text: $t('New Text Annotation'),
     });
   },
   diagram(moddle) {

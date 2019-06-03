@@ -1,5 +1,4 @@
 import component from './startEvent.vue';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-start-event',
@@ -9,9 +8,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/start-event.svg'),
   label: 'Start Event',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
-      name: i18next.t('Start Event'),
+      name: $t('Start Event'),
     });
   },
   diagram(moddle) {

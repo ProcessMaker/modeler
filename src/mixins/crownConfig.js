@@ -96,7 +96,7 @@ export default {
     addSequence(cellView, evt, x, y) {
       this.removeCrown();
       const sequenceFlowConfig = this.nodeRegistry['processmaker-modeler-sequence-flow'];
-      const sequenceLink = sequenceFlowConfig.definition(this.moddle);
+      const sequenceLink = sequenceFlowConfig.definition(this.moddle, this.$t);
       sequenceLink.set('sourceRef', this.node.definition);
       sequenceLink.set('targetRef', { x, y });
 
@@ -312,6 +312,9 @@ export default {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     });
+  },
+  created() {
+    this.$t = this.$t.bind(this);
   },
   destroyed() {
     this.shape.stopListening();

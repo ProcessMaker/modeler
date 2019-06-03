@@ -1,5 +1,4 @@
 import component from './task.vue';
-import i18next from 'i18next';
 
 export const taskHeight = 76;
 
@@ -11,9 +10,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/task.svg'),
   label: 'Task',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
-      name: i18next.t('Task'),
+      name: $t('Task'),
     });
   },
   diagram(moddle) {

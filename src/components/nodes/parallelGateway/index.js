@@ -1,6 +1,5 @@
 import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
-import i18next from 'i18next';
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
@@ -10,9 +9,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/parallel-gateway.svg'),
   label: 'Parallel Gateway',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:ParallelGateway', {
-      name: i18next.t('New Parallel Gateway'),
+      name: $t('New Parallel Gateway'),
       gatewayDirection: gatewayDirection.diverging,
     });
   },

@@ -2,7 +2,6 @@ import component from './callActivity';
 import CallActivityFormSelect from './CallActivityFormSelect';
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-call-activity';
-import i18next from 'i18next';
 
 export default {
   id,
@@ -12,9 +11,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/callActivity.svg'),
   label: 'Call Activity',
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:CallActivity', {
-      name: i18next.t('New Call Activity'),
+      name: $t('New Call Activity'),
       calledElement: '',
     });
   },

@@ -1,5 +1,4 @@
 import component from './sequenceFlow.vue';
-import i18next from 'i18next';
 
 export const id = 'processmaker-modeler-sequence-flow';
 
@@ -8,9 +7,9 @@ export default {
   component,
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
-  definition(moddle) {
+  definition(moddle, $t) {
     return moddle.create('bpmn:SequenceFlow', {
-      name: i18next.t('New Sequence Flow'),
+      name: $t('New Sequence Flow'),
       startEvent: '',
     });
   },
