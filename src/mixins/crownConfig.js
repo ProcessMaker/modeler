@@ -47,12 +47,8 @@ export default {
         this.removeCrown();
       }
     },
-    hasError(hasError) {
-      if (hasError) {
-        this.shapeView.highlight(null, { highlighter: errorHighlighter });
-      } else {
-        this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
-      }
+    hasError() {
+      this.setErrorHighlight();
     },
   },
   computed: {
@@ -70,6 +66,13 @@ export default {
     },
   },
   methods: {
+    setErrorHighlight() {
+      if (this.hasError) {
+        this.shapeView.highlight(null, { highlighter: errorHighlighter });
+      } else {
+        this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
+      }
+    },
     removeShape() {
       this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
       this.shape.getEmbeddedCells().forEach(cell => {
@@ -311,6 +314,8 @@ export default {
       ) {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
+
+      this.setErrorHighlight();
     });
   },
   created() {
