@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/processmaker-bpmn-moddle": "^0.4.0",
+    "@processmaker/processmaker-bpmn-moddle": "^0.4.1",
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-plugin-e2e-cypress": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.0.5",
