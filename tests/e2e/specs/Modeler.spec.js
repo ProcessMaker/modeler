@@ -273,7 +273,7 @@ describe('Modeler', () => {
     cy.get('.ignore-pointer').should('have.length', 0);
   });
 
-  it.only('updates validation after undo/redo', () => {
+  it('updates validation after undo/redo', () => {
     cy.get('[data-test=validation-toggle]').click();
     cy.get('[data-test=validation-list-toggle]').click();
 
