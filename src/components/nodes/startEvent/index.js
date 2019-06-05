@@ -50,7 +50,7 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
+                helper: configId.helper,
                 name: configId.id,
                 validation: configId.validation,
               },
