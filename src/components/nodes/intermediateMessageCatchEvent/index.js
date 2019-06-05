@@ -18,8 +18,8 @@ export default {
       whitelist: '',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {
-          id: '',
-          variableName: '',
+          id: 'message_event_1',
+          variableName: 'message',
         }),
       ],
     });
@@ -104,6 +104,7 @@ export default {
                 label: 'Message Event Identifier',
                 helper: 'The id field should be unique across all elements in the diagram',
                 name: 'eventDefinitionId',
+                validation: 'required',
               },
             },
             {

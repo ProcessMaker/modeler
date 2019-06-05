@@ -175,16 +175,9 @@ export default {
     scale(scale) {
       this.paper.scale(scale);
     },
-    autoValidate(autoValidate) {
-      if (autoValidate) {
-        this.validateBpmnDiagram();
-      }
-    },
-    currentXML() {
-      if (this.autoValidate) {
-        this.validateBpmnDiagram();
-      }
-    },
+    currentXML() { this.validateIfAutoValidateIsOn(); },
+    definitions() { this.validateIfAutoValidateIsOn(); },
+    autoValidate() { this.validateIfAutoValidateIsOn(); },
   },
   computed: {
     autoValidate: () => store.getters.autoValidate,
@@ -216,6 +209,11 @@ export default {
     },
   },
   methods: {
+    validateIfAutoValidateIsOn() {
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
     translateConfig(inspectorConfig) {
       if (inspectorConfig.config) {
         const config = inspectorConfig.config;
@@ -448,7 +446,8 @@ export default {
       if (this.collaboration) {
         this.collaboration
           .get('messageFlows')
-          .forEach(definition => this.setNode(definition));
+          .filter(this.hasSourceAndTarget)
+          .forEach(this.setNode);
       }
 
       store.commit('highlightNode', this.processNode);
@@ -456,9 +455,11 @@ export default {
     setNode(definition, flowElements, artifacts) {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
+      const bpmnType = definition.$type;
+      const parsers = this.parsers[bpmnType];
 
-      if (!this.parsers[definition.$type]) {
-        window.ProcessMaker.alert(`Unsupported element type in parse:  ${definition.$type}`, 'warning');
+      if (!parsers) {
+        window.ProcessMaker.alert(`Unsupported element type in parse:  ${bpmnType}`, 'warning');
 
         pull(flowElements, definition);
         pull(artifacts, definition);
@@ -480,7 +481,6 @@ export default {
         return;
       }
 
-      const parsers = this.parsers[definition.$type];
       const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
       const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
       const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
@@ -488,7 +488,7 @@ export default {
       const type = (customParser || implementationParser || defaultParser)(definition, this.moddle);
 
       const unnamedElements = ['bpmn:TextAnnotation'];
-      const requireName = unnamedElements.indexOf(definition.$type) === -1;
+      const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
       }

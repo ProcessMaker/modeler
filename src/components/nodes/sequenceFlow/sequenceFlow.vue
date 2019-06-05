@@ -141,6 +141,9 @@ export default {
     if (conditionExpression) {
       this.label = conditionExpression.body;
     }
+
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
   },
 };
 </script>

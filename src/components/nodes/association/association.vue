@@ -105,6 +105,8 @@ export default {
       },
     });
 
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
     this.updateAssociationMarker(this.initialAssociationDirection);
   },
 };

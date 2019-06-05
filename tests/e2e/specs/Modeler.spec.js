@@ -286,4 +286,52 @@ describe('Modeler', () => {
 
     cy.get('.invalid-feedback').should('not.have.value', 'The id format is invalid.');
   });
+
+  it('updates validation after undo/redo', () => {
+    cy.get('[data-test=validation-toggle]').click();
+    cy.get('[data-test=validation-list-toggle]').click();
+
+    const initialNumberOfValidationErrors = 2;
+    cy.get('[data-test=validation-list]').children().should('have.length', initialNumberOfValidationErrors);
+
+    const startEventPosition = { x: 150, y: 150 };
+
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+    });
+
+    const taskPosition = { x: 150, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const numberOfNewValidationErrors = 1;
+    cy.get('[data-test=validation-list]').children()
+      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors)
+      .should('contain', 'node_2');
+
+    cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
+
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+    });
+
+    cy.get('[data-test=validation-list]').children()
+      .should('have.length', initialNumberOfValidationErrors)
+      .should('not.contain', 'node_2');
+
+    cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=validation-list]').children()
+      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors)
+      .should('contain', 'node_2');
+
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+    });
+
+    getElementAtPosition(taskPosition).then($task => {
+      cy.wrap($task).get('[stroke=red]').should('exist');
+    });
+  });
 });
