@@ -182,9 +182,6 @@ export default {
       connectionPoint: { name: 'boundary' },
     });
 
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-
     this.setupLinkTools();
 
     const targetRef = this.node.definition.get('targetRef');

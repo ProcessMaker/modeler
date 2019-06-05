@@ -21,7 +21,14 @@
     </div>
 
     <div class="status-bar-container d-flex align-items-center justify-content-end">
-      <b-form-checkbox class="h-100 d-flex align-items-center" v-model="autoValidate" switch>{{ $t('Auto validate') }}</b-form-checkbox>
+      <b-form-checkbox
+        data-test="validation-toggle"
+        class="h-100 d-flex align-items-center"
+        v-model="autoValidate"
+        switch
+      >
+        {{ $t('Auto validate') }}
+      </b-form-checkbox>
 
       <div class="divider"/>
 

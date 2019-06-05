@@ -101,6 +101,9 @@ export default {
         d: 'M 10 -5 0 0 10 5 Z',
       },
     });
+
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
   },
 };
 </script>
