@@ -1,4 +1,5 @@
 import component from './pool';
+import { configId } from '@/components/inspectors/configId';
 
 export const id = 'processmaker-modeler-pool';
 
@@ -42,8 +43,8 @@ export default {
               config: {
                 label: 'Identifier',
                 helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
-                validation: ['required', 'regex:/^[a-zA-Z][^\\s][a-zA-Z0-9_]+$/'],
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

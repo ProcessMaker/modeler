@@ -1,5 +1,6 @@
 import component from './inclusiveGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
+import { configId } from '@/components/inspectors/configId';
 
 export default {
   id: 'processmaker-modeler-inclusive-gateway',
@@ -42,8 +43,8 @@ export default {
               config: {
                 label: 'Identifier',
                 helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
-                validation: ['required', 'regex:/^[a-zA-Z][^\\s][a-zA-Z0-9_]+$/'],
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

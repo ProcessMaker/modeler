@@ -1,5 +1,6 @@
 import component from './intermediateTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
+import { configId } from '@/components/inspectors/configId';
 
 export default {
   id: 'processmaker-modeler-intermediate-catch-timer-event',
@@ -78,12 +79,6 @@ export default {
     {
       name: 'Intermediate Timer Event',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Intermediate Timer Event',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,
@@ -99,8 +94,8 @@ export default {
               config: {
                 label: 'Identifier',
                 helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
-                validation: ['required', 'regex:/^[a-zA-Z][^\\s][a-zA-Z0-9_]+$/'],
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {
