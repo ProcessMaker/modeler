@@ -13,7 +13,7 @@
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="node_4" name="Intermediate Message Catch Event" pm:whitelist="">
-      <bpmn:messageEventDefinition id="" variableName="" />
+      <bpmn:messageEventDefinition id="" pm:variableName="" />
     </bpmn:intermediateCatchEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
