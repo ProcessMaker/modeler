@@ -1,6 +1,7 @@
 import component from './sequenceFlow.vue';
 
 export const id = 'processmaker-modeler-sequence-flow';
+import { configId } from '@/components/inspectors/configId';
 
 export default {
   id,
@@ -66,8 +67,9 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
+                helper: configId.helper,
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

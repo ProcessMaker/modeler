@@ -1,4 +1,5 @@
 import component from './messageFlow.vue';
+import { configId } from '@/components/inspectors/configId';
 
 export const id = 'processmaker-modeler-message-flow';
 
@@ -28,8 +29,9 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
+                helper: configId.helper,
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

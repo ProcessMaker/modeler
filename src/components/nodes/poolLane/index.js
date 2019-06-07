@@ -2,6 +2,7 @@ import component from './poolLane';
 
 export const id = 'processmaker-modeler-lane';
 export const minLaneHeight = 100;
+import { configId } from '@/components/inspectors/configId';
 
 export default {
   id,
@@ -36,9 +37,10 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
+                label: configId.helper,
+                helper: configId.helper,
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

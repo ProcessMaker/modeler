@@ -1,5 +1,6 @@
 import component from './association.vue';
 import { direction } from './associationConfig';
+import { configId } from '@/components/inspectors/configId';
 
 export const id  = 'processmaker-modeler-association';
 
@@ -31,8 +32,9 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
+                helper: configId.helper,
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

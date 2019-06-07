@@ -1,6 +1,7 @@
 import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import { DateTime } from 'luxon';
+import { configId } from '@/components/inspectors/configId';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -76,12 +77,6 @@ export default {
     {
       name: 'Start Timer Event',
       items: [
-        // {
-        //   component: 'FormText',
-        //   config: {
-        //     label: 'Start Timer Event',
-        //   },
-        // },
         {
           component: 'FormAccordion',
           container: true,
@@ -96,8 +91,9 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
-                name: 'id',
+                helper: configId.helper,
+                name: configId.id,
+                validation: configId.validation,
               },
             },
             {

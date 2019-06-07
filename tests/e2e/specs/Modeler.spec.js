@@ -273,6 +273,20 @@ describe('Modeler', () => {
     cy.get('.ignore-pointer').should('have.length', 0);
   });
 
+  it('check if process id is a valid QName', () => {
+    cy.get('[name=id]').clear();
+
+    const invalidId = '12 id!';
+    typeIntoTextInput('[name=id]', invalidId);
+
+    cy.get('.invalid-feedback').should('contain', 'The id format is invalid.');
+
+    const validId = 'Process_1';
+    typeIntoTextInput('[name=id]', validId);
+
+    cy.get('.invalid-feedback').should('not.have.value', 'The id format is invalid.');
+  });
+
   it('updates validation after undo/redo', () => {
     cy.get('[data-test=validation-toggle]').click();
     cy.get('[data-test=validation-list-toggle]').click();
