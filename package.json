@@ -8,8 +8,7 @@
     "lint": "vue-cli-service lint --no-fix",
     "lint-fix": "vue-cli-service lint",
     "test": "vue-cli-service test:e2e",
-    "test-ci": "vue-cli-service test:e2e --headless --browser chrome",
-    "postinstall": "npm run build-bundle"
+    "test-ci": "vue-cli-service test:e2e --headless --browser chrome"
   },
   "main": "./dist/modeler.common.js",
   "files": [
