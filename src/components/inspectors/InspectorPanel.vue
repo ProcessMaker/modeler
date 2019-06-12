@@ -6,7 +6,7 @@
       :data="data"
       @update="updateDefinition"
       :config="config"
-      class="overflow-auto"
+      class="overflow-auto h-100"
       @focusout.native="updateState"
       ref="formRenderer"
     />
