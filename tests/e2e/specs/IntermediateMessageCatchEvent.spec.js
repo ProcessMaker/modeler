@@ -44,4 +44,26 @@ describe('Intermediate Message Catch Event', () => {
       .then(xml => xml.trim())
       .should('contain', validXML.trim());
   });
+
+  it('Message Event Definition Ids are unique on render', () => {
+    const intermediateMessageCatchEventPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
+
+    const intermediateMessageCatchEventSecondPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventSecondPosition);
+
+    const validXML =
+    `<bpmn:intermediateCatchEvent id="node_2" name="Intermediate Message Catch Event" pm:allowedUsers="" pm:allowedGroups="" pm:whitelist="">
+      <bpmn:messageEventDefinition id="message_event_1" pm:variableName="message" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="node_3" name="Intermediate Message Catch Event" pm:allowedUsers="" pm:allowedGroups="" pm:whitelist="">
+      <bpmn:messageEventDefinition id="message_event_2" pm:variableName="message" />
+    </bpmn:intermediateCatchEvent>`;
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(xml => xml.trim())
+      .should('contain', validXML.trim());
+  });
 });
