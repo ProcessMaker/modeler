@@ -16,8 +16,8 @@ export default class NodeIdGenerator {
     return id;
   }
 
-  generateNewNodeId() {
-    const id = nodeIdPrefix + this.counter;
+  generateNewNodeId(prefix = nodeIdPrefix) {
+    const id = prefix + this.counter;
     this.counter++;
 
     return id;
