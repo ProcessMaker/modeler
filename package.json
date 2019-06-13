@@ -7,7 +7,7 @@
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "lint": "vue-cli-service lint --no-fix",
     "lint-fix": "vue-cli-service lint",
-    "test": "vue-cli-service test:e2e",
+    "test": "cypress open",
     "test-ci": "vue-cli-service test:e2e --headless --browser chrome"
   },
   "main": "./dist/modeler.common.js",
