@@ -508,7 +508,6 @@ export default {
           invalidPool = pool.component.shape;
           invalidPool.attr('body/fill', invalidNodeColor);
           element.component.allowSetNodePosition = false;
-
         } else {
           this.paper.drawBackground({ color: defaultNodeColor });
           previousValidPosition = null;
@@ -564,6 +563,7 @@ export default {
         if (newPool) {
           /* Remove the shape from its current pool */
           this.moveElement(draggingElement, newPool);
+          newPool = null;
         } else {
           this.expandToFitElement(draggingElement);
           this.laneSet && this.updateLaneChildren();

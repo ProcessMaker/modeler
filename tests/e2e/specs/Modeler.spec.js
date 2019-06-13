@@ -254,7 +254,7 @@ describe('Modeler', () => {
     /* Wait for modal to close */
     cy.wait(modalAnimationTime);
 
-    cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then((sourceXML) =>{
+    cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then(sourceXML => {
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()
         .its('xml')
