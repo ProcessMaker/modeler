@@ -2,11 +2,6 @@ import  NodeIdGenerator from './NodeIdGenerator';
 import store from '@/store';
 
 export default class MessageEventIdGenerator extends NodeIdGenerator {
-  constructor(definitions) {
-    super(definitions);
-  }
-
-
   generateNewMessageEventId() {
     let id = super.generateNewNodeId('message_event_');
 
