@@ -24,10 +24,6 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.6",
     "@fortawesome/free-solid-svg-icons": "^5.4.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
-    "@processmaker/spark-screen-builder": "^0.15.0",
-    "@processmaker/vue-form-elements": "^0.9.0",
-    "bootstrap": "^4.3.1",
-    "bootstrap-vue": "^2.0.0-rc.21",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
     "bpmnlint-plugin-spark": "^1.0.0",
@@ -44,6 +40,8 @@
   "devDependencies": {
     "@panter/vue-i18next": "^0.15.0",
     "@processmaker/processmaker-bpmn-moddle": "^0.4.1",
+    "@processmaker/spark-screen-builder": "^0.16.3",
+    "@processmaker/vue-form-elements": "^0.10.2",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-e2e-cypress": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
@@ -54,6 +52,8 @@
     "axios-mock-adapter": "^1.16.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.0.1",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.21",
     "bpmnlint-loader": "^0.1.3",
     "cypress": "^3.3.1",
     "cypress-vue-unit-test": "^1.11.0",
@@ -66,8 +66,12 @@
     "vue-template-compiler": "^2.5.17"
   },
   "peerDependencies": {
+    "@processmaker/spark-screen-builder": "^0.16.3",
+    "@processmaker/vue-form-elements": "^0.10.2",
     "@panter/vue-i18next": "^0.15.0",
-    "i18next": "^15.0.9"
+    "i18next": "^15.0.9",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.21"
   },
   "postcss": {
     "plugins": {
