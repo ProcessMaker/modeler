@@ -115,8 +115,12 @@ export function isElementCovered($element) {
 }
 
 export function moveElement(elementPosition, x, y) {
-  getElementAtPosition(elementPosition)
-    .trigger('mousedown', { which: 1, force: true })
-    .trigger('mousemove', { clientX: x, clientY: y, force: true })
-    .trigger('mouseup', { force: true });
+  return cy.window().its('store.state.paper').then(paper => {
+    const newPosition = paper.localToPagePoint(x, y);
+
+    return getElementAtPosition(elementPosition)
+      .trigger('mousedown', { which: 1, force: true })
+      .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
+      .trigger('mouseup', { force: true });
+  });
 }
