@@ -1,9 +1,9 @@
 import component from './intermediateMessageCatchEvent.vue';
 import omit from 'lodash/omit';
 import { configId } from '@/components/inspectors/configId';
-import NodeIdGenerator from '../../../NodeIdGenerator';
+import MessageEventIdGenerator from '../../../MessageEventIdGenerator';
 
-const generateMessageEventId = new NodeIdGenerator();
+const messageEventIdGenerator = new MessageEventIdGenerator();
 
 export default {
   id: 'processmaker-modeler-intermediate-message-catch-event',
@@ -21,7 +21,7 @@ export default {
       whitelist: '',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {
-          id: generateMessageEventId.generateNewNodeId('message_event_'),
+          id: messageEventIdGenerator.generateNewMessageEventId(),
           variableName: 'message',
         }),
       ],
