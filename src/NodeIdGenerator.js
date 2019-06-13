@@ -16,16 +16,18 @@ export default class NodeIdGenerator {
     return id;
   }
 
-  generateNewNodeId() {
-    const id = nodeIdPrefix + this.counter;
+  generateNewNodeId(prefix = nodeIdPrefix) {
+    const id = prefix + this.counter;
     this.counter++;
 
     return id;
   }
 
   isIdUnique(id) {
-    const planeElements = this.definitions.diagrams[0].plane.get('planeElement');
+    const planeElementIds = this.definitions.diagrams[0].plane
+      .get('planeElement')
+      .map(planeElement => planeElement.get('bpmnElement').id);
 
-    return planeElements.every(planeElement => id !== planeElement.get('bpmnElement').id);
+    return !planeElementIds.includes(id);
   }
 }
