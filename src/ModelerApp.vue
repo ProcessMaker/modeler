@@ -74,10 +74,7 @@ import Statusbar from './components/Statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import ValidationStatus from '@/components/ValidationStatus';
-import store from '@/store';
-
-/* Add reference to store on window–this is used in testing to verify rendered nodes */
-window.store = store;
+import runningInCypressTest from '@/runningInCypressTest';
 
 const reader = new FileReader();
 
@@ -105,15 +102,12 @@ export default {
     },
   },
   methods: {
-    runningInCypressTest() {
-      return !!window.Cypress;
-    },
     download() {
       this.$refs.modeler.toXML((err, xml) => {
         if (err) {
           alert(err);
         } else {
-          if (this.runningInCypressTest()) {
+          if (runningInCypressTest()) {
             /* Save XML string to window–this is used in testing to compare against known valid XML */
             window.xml = xml;
             return;

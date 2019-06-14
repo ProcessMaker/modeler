@@ -14,6 +14,10 @@ module.exports = (on, config) => {
   //  watchOptions: {}
   // }))
 
+  if (config.env.spark) {
+    config.baseUrl = 'https://spark.local.processmaker.com/modeler/1';
+  }
+
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',
     integrationFolder: 'tests/e2e/specs',
