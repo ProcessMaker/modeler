@@ -3,6 +3,8 @@ import trashIcon from '@/assets/trash-alt-solid.svg';
 import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
+import startCase from 'lodash/startCase';
+import JQuery from 'jquery';
 
 export const highlightPadding = 3;
 
@@ -170,13 +172,23 @@ export default {
       });
 
       this.crownConfig.forEach(({ id, icon, clickHandler }) => {
+        const $ = JQuery;
+        $(document).ready(() => $('[data-toggle="tooltip"]').tooltip());
+        const removeButtonString = id.replace('button', '');
+        const formatId = startCase(removeButtonString);
+
         const button = new joint.shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);
         button.set('elementMove', false);
         button.attr({
-          root: { display: 'none', 'data-test': id },
+          root: {
+            display: 'none',
+            'data-test': id,
+            'dataToggle': 'tooltip',
+            'dataTitle': formatId,
+          },
           body: {
             fill: '#fff',
             stroke: ' #fff',

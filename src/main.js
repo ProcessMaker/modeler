@@ -5,6 +5,7 @@ import ModelerApp from './ModelerApp.vue';
 import BootstrapVue from 'bootstrap-vue';
 import './setup/initialLoad';
 import translations from '@/setup/translations.json';
+require('bootstrap');
 
 Vue.use(BootstrapVue);
 
