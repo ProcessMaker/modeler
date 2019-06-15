@@ -4,7 +4,10 @@ import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
 import startCase from 'lodash/startCase';
-import $ from 'jquery';
+import jquery from 'jquery';
+require('bootstrap');
+
+const $ = jquery;
 
 export const highlightPadding = 3;
 
@@ -173,7 +176,6 @@ export default {
       });
 
       this.crownConfig.forEach(({ id, icon, clickHandler }) => {
-        $(document).ready(() => $('[data-toggle="tooltip"]').tooltip());
         const removeButtonString = id.replace('button', '');
         const formatId = startCase(removeButtonString);
 
@@ -301,6 +303,7 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
+      $(document).ready(() => $('[data-toggle="tooltip"]').tooltip());
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
