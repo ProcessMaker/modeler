@@ -128,15 +128,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$primary-white: #F0F3F7;
+$primary-white: #f7f7f7;
 $seconadry-grey: #555555;
 $secondary-blue: #3397e1;
-$border-color: #aaaaaa;
+$border-color: rgba(0, 0, 0, 0.125);
 $id-container-width: 6.5rem;
 $message-container-width: 18rem;
 $error-category-width: 1rem;
-$validation-container-height: 20rem;
-$validation-container-width: 28rem;
+$validation-container-height: 14rem;
+$validation-container-width: 25rem;
 $status-bar-container-height: 3rem;
 $error-color: #D9534F;
 $warning-color: #F0AD4E;
@@ -174,8 +174,10 @@ $button-color: #3BD7FF;
   width: $validation-container-width;
   background-color: $primary-white;
   overflow: auto;
-  margin-bottom: 3rem;
+  margin-bottom: 4.30rem;
   border: 1px solid $border-color;
+  margin-right: 1.20rem;
+  border-radius: 0.25rem;
 
   &__defaultMessage {
     text-transform: capitalize;
