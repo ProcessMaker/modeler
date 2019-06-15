@@ -4,7 +4,7 @@ import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
 import startCase from 'lodash/startCase';
-import JQuery from 'jquery';
+import $ from 'jquery';
 
 export const highlightPadding = 3;
 
@@ -84,6 +84,7 @@ export default {
         }
       });
 
+      $('[data-toggle="tooltip"]').tooltip('hide');
       this.$emit('remove-node', this.node);
     },
     removeCrown() {
@@ -172,7 +173,6 @@ export default {
       });
 
       this.crownConfig.forEach(({ id, icon, clickHandler }) => {
-        const $ = JQuery;
         $(document).ready(() => $('[data-toggle="tooltip"]').tooltip());
         const removeButtonString = id.replace('button', '');
         const formatId = startCase(removeButtonString);
