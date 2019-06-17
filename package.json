@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint --no-fix",
     "lint-fix": "vue-cli-service lint",
     "test": "cypress open",
-    "test-ci": "vue-cli-service test:e2e --headless --browser chrome"
+    "test-ci": "vue-cli-service test:e2e --mode test --headless --browser chrome"
   },
   "main": "./dist/modeler.common.js",
   "files": [
