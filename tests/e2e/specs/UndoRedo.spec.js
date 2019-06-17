@@ -8,6 +8,7 @@ import {
   typeIntoTextInput,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
+  removeIndentationAndLinebreaks,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -227,5 +228,41 @@ describe('Undo/redo', () => {
 
     cy.get('[name=id]').should('have.value', newId);
     cy.get('[name=name]').should('have.value', newName);
+  });
+
+  it('Correctly parses elements after redo', function() {
+    const testConnectorPosition = { x: 150, y: 300 };
+    dragFromSourceToDest(nodeTypes.testConnector, testConnectorPosition);
+
+    const sendTweetPosition = { x: 150, y: 450 };
+    dragFromSourceToDest(nodeTypes.sendTweet, sendTweetPosition);
+
+    const testConnector = '<bpmn:serviceTask id="node_2" name="Test Connector" implementation="test-message" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" />';
+    const sendTweet = '<bpmn:serviceTask id="node_3" name="Send Tweet" implementation="processmaker-social-twitter-send" pm:config="{&#34;tweet&#34;:&#34;&#34;}" />';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(testConnector);
+        expect(xml).to.contain(sendTweet);
+      });
+
+    cy.get('[data-test=undo]').click();
+    cy.get('[data-test=undo]').click();
+    cy.get('[data-test=redo]').click();
+    cy.get('[data-test=redo]').click();
+
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(testConnector);
+        expect(xml).to.contain(sendTweet);
+      });
   });
 });

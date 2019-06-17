@@ -124,3 +124,7 @@ export function moveElement(elementPosition, x, y) {
       .trigger('mouseup', { force: true });
   });
 }
+
+export function removeIndentationAndLinebreaks(string) {
+  return string.replace(/(^\s+)|(\n)/gim, '');
+}

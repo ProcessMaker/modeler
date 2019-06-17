@@ -22,4 +22,6 @@ export const nodeTypes = {
   intermediateCatchEvent: 'processmaker-modeler-intermediate-catch-timer-event',
   intermediateMessageCatchEvent: 'processmaker-modeler-intermediate-message-catch-event',
   callActivity: 'processmaker-modeler-call-activity',
+  testConnector: 'connectors-test-message',
+  sendTweet: 'processmaker-connectors-social-twitter-send',
 };

@@ -5,13 +5,10 @@ import {
   typeIntoTextInput,
   moveElement,
   waitToRenderAllShapes,
+  removeIndentationAndLinebreaks,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
-
-function removeIndentationAndLinebreaks(string) {
-  return string.replace(/(^\s+)|(\n)/gim, '');
-}
 
 describe('Pools', () => {
   beforeEach(() => {
