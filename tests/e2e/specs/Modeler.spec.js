@@ -20,10 +20,6 @@ describe('Modeler', () => {
     cy.loadModeler();
   });
 
-  it('Renders the application without errors', () => {
-    cy.get('.header').should('contain', 'ProcessMaker Modeler');
-  });
-
   it('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
@@ -55,7 +51,7 @@ describe('Modeler', () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it('Updates element name and validates xml', () => {
+  it('Updates element name and validates xml', function() {
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
@@ -64,6 +60,10 @@ describe('Modeler', () => {
     const testString = 'testing';
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
+
+    if (Cypress.env('spark')) {
+      this.skip();
+    }
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -102,7 +102,7 @@ describe('Modeler', () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it('Generates sequential, unique node IDs', () => {
+  it('Generates sequential, unique node IDs', function() {
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
@@ -129,6 +129,10 @@ describe('Modeler', () => {
     getElementAtPosition(task3Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_5');
+
+    if (Cypress.env('spark')) {
+      this.skip();
+    }
 
     cy.contains('Upload XML').click();
 
@@ -231,6 +235,10 @@ describe('Modeler', () => {
   });
 
   it('Runs custom parser before default parser', function() {
+    if (Cypress.env('spark')) {
+      this.skip();
+    }
+
     cy.contains('Upload XML').click();
 
     /* Wait for modal to open */

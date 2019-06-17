@@ -23,7 +23,11 @@ describe('Inclusive Gateway', () => {
     cy.get('[name=name]').should('have.value', testString);
   });
 
-  it('Detects gateway direction of converging or diverging', () => {
+  it('Detects gateway direction of converging or diverging', function() {
+    if (Cypress.env('spark')) {
+      this.skip();
+    }
+
     const inclusivePosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
 
