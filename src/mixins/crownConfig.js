@@ -3,11 +3,6 @@ import trashIcon from '@/assets/trash-alt-solid.svg';
 import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
-import startCase from 'lodash/startCase';
-import jquery from 'jquery';
-require('bootstrap');
-
-const $ = jquery;
 
 export const highlightPadding = 3;
 
@@ -87,7 +82,6 @@ export default {
         }
       });
 
-      $('[data-toggle="tooltip"]').tooltip('hide');
       this.$emit('remove-node', this.node);
     },
     removeCrown() {
@@ -156,6 +150,7 @@ export default {
     addMessageFlowButton() {
       this.crownConfig.push({
         id: 'message-flow-button',
+        title: 'Message Flow',
         icon: messageFlowIcon,
         clickHandler: this.addMessageFlow,
       });
@@ -171,14 +166,12 @@ export default {
 
       this.crownConfig.push({
         id: 'delete-button',
+        title: 'Delete',
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
 
-      this.crownConfig.forEach(({ id, icon, clickHandler }) => {
-        const removeButtonString = id.replace('button', '');
-        const formatId = startCase(removeButtonString);
-
+      this.crownConfig.forEach(({ id, title, icon, clickHandler }) => {
         const button = new joint.shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
@@ -188,8 +181,7 @@ export default {
           root: {
             display: 'none',
             'data-test': id,
-            'dataToggle': 'tooltip',
-            'dataTitle': formatId,
+            'data-title': title,
           },
           body: {
             fill: '#fff',
@@ -212,6 +204,7 @@ export default {
 
       this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
         if (this.buttons.includes(cellView.model)) {
+          this.$emit('setTooltip', cellView);
           cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } });
           this.shape.listenTo(this.paper, 'cell:mouseleave', () => {
             cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } });
@@ -303,7 +296,6 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
-      $('[data-toggle="tooltip"]').tooltip();
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);

@@ -20,6 +20,7 @@ export default {
       crownConfig: [
         {
           id: 'association-flow-button',
+          title: 'Association Flow',
           icon: connectIcon,
           clickHandler: this.addAssociation,
         },

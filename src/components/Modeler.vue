@@ -1,5 +1,12 @@
 <template>
   <b-row class="modeler h-100">
+    <b-tooltip
+      v-if="tooltipTarget"
+      :key="tooltipTarget.id"
+      :target="getTooltipTarget"
+      :title="tooltipTitle"
+    />
+
     <b-col class="h-100 overflow-hidden controls-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <controls
         :controls="controls"
@@ -89,6 +96,7 @@
       @set-pools="setPools"
       @save-state="pushToUndoStack"
       @set-shape-stacking="setShapeStacking"
+      @setTooltip="tooltipTarget = $event"
     />
   </b-row>
 </template>
@@ -109,7 +117,6 @@ import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 
-
 import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -129,6 +136,8 @@ export default {
   },
   data() {
     return {
+      tooltipTarget: null,
+
       /* Custom parsers for handling certain bpmn node types */
       parsers: {},
 
@@ -180,6 +189,11 @@ export default {
     autoValidate() { this.validateIfAutoValidateIsOn(); },
   },
   computed: {
+    tooltipTitle() {
+      if (this.tooltipTarget) {
+        return this.tooltipTarget.$el.data('title');
+      }
+    },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
     canUndo() {
@@ -209,6 +223,9 @@ export default {
     },
   },
   methods: {
+    getTooltipTarget() {
+      return this.tooltipTarget.$el[0];
+    },
     validateIfAutoValidateIsOn() {
       if (this.autoValidate) {
         this.validateBpmnDiagram();
