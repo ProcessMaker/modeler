@@ -14,7 +14,7 @@ module.exports = (on, config) => {
   //  watchOptions: {}
   // }))
 
-  if (config.env.spark) {
+  if (config.env.inProcessmaker) {
     config.baseUrl = 'https://spark.local.processmaker.com/modeler/1';
   }
 

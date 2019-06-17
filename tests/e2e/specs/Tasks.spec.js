@@ -73,7 +73,7 @@ describe('Tasks', () => {
     cy.get('.inspector-container').should('not.contain', 'A process has not been configred in the connnected Call Acitivty task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 

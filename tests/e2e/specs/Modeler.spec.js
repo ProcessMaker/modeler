@@ -61,7 +61,7 @@ describe('Modeler', () => {
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
 
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 
@@ -130,7 +130,7 @@ describe('Modeler', () => {
 
     cy.get('[name=id]').should('have.value', 'node_5');
 
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 
@@ -235,7 +235,7 @@ describe('Modeler', () => {
   });
 
   it('Runs custom parser before default parser', function() {
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 

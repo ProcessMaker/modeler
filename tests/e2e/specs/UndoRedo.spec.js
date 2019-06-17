@@ -164,7 +164,7 @@ describe('Undo/redo', () => {
   });
 
   it('Does not include intermediate message flow definition in XML', function() {
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 

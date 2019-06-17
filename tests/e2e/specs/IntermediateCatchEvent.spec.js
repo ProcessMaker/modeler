@@ -12,7 +12,7 @@ describe('Intermediate Catch Event', () => {
   });
 
   it('Update delay field on Intermediate Catch Event', function() {
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 

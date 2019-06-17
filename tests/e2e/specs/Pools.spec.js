@@ -46,7 +46,7 @@ describe('Pools', () => {
   });
 
   it('Can drag elements between pools', function() {
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 

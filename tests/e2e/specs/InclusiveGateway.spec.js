@@ -24,7 +24,7 @@ describe('Inclusive Gateway', () => {
   });
 
   it('Detects gateway direction of converging or diverging', function() {
-    if (Cypress.env('spark')) {
+    if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 
