@@ -303,7 +303,7 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureCrown();
       this.configurePoolLane();
-      $(document).ready(() => $('[data-toggle="tooltip"]').tooltip());
+      $('[data-toggle="tooltip"]').tooltip();
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
