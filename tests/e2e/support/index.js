@@ -26,4 +26,6 @@ Cypress.Cookies.defaults({
   whitelist: ['processmaker_session', /remember_web_.*/],
 });
 
-before(() => cy.login());
+if (Cypress.env('spark')) {
+  before(() => cy.login());
+}
