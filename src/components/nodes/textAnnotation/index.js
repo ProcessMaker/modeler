@@ -1,7 +1,4 @@
 import component from './textAnnotation.vue';
-
-export const textAnnotationWidth = 150;
-export const labelPadding = 15;
 import { configId } from '@/components/inspectors/configId';
 
 export default {

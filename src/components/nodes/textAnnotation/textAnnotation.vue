@@ -7,7 +7,9 @@ import joint from 'jointjs';
 import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
-import { textAnnotationWidth, labelPadding } from './index';
+
+export const maxTextAnnotationWidth = 160;
+export const textAnnotationLabelPadding = 15;
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -28,6 +30,11 @@ export default {
   },
   watch: {
     'node.definition.text'(text) {
+      this.updateNodeText(text);
+    },
+  },
+  methods: {
+    updateNodeText(text) {
       let { height } = this.shape.findView(this.paper).getBBox();
       const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
@@ -38,7 +45,7 @@ export default {
         body: { refPoints },
         label: {
           text: joint.util.breakText(text, {
-            width: textAnnotationWidth,
+            width: maxTextAnnotationWidth,
           }),
           fill: 'black',
           textAnchor: 'left',
@@ -47,20 +54,22 @@ export default {
 
       const shapeView = this.shape.findView(this.paper);
       const labelHeight = shapeView.selectors.label.getBBox().height;
-      if (labelHeight + labelPadding !== height) {
-        height = labelHeight + labelPadding;
+      if (labelHeight + textAnnotationLabelPadding !== height) {
+        height = labelHeight + textAnnotationLabelPadding;
         this.shape.resize(this.nodeWidth, height - highlightPadding);
       }
 
       if (textAnnotationLength === 0) {
         this.shape.resize(this.nodeWidth, bounds.height);
-        this.updateCrownPosition();
       }
+
+      this.updateCrownPosition();
     },
   },
   mounted() {
+    const bounds = this.node.diagram.bounds;
+
     this.shape = new joint.shapes.standard.Polyline();
-    let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
@@ -68,9 +77,6 @@ export default {
         refPoints: '25 10 3 10 3 3 25 3',
       },
       label: {
-        text: joint.util.breakText(this.node.definition.get('text'), {
-          width: bounds.width,
-        }),
         fill: 'black',
         yAlignment: 'left',
         xAlignment: 'left',
@@ -85,6 +91,7 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+    this.updateNodeText(this.node.definition.get('text'));
   },
 };
 </script>
