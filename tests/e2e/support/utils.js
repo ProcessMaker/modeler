@@ -10,19 +10,9 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position) {
-  /* clickOffset is used to ensure click happens inside of element;
-   * clicking right at the element boundry may result in clicking
-   * just outside of the element. 10 is the current paper grid size. */
-  const clickOffset = 10;
-
-  const offsetPosition = {
-    x: position.x + clickOffset,
-    y: position.y + clickOffset,
-  };
-
   return cy.window()
     .its('store.state.paper')
-    .invoke('findViewsFromPoint', offsetPosition)
+    .invoke('findViewsFromPoint', position)
     .then(views => views.filter(view => view.model.component))
     .then(views => views.sort((view1, view2) => {
       /* Sort shape views by z-index descending; the shape "on top" will be first in array. */
@@ -84,7 +74,7 @@ export function connectNodesWithFlow(flowType, startPosition, endPosition) {
   getElementAtPosition(startPosition)
     .click()
     .then($element => {
-      getCrownButtonForElement($element, flowType)
+      return getCrownButtonForElement($element, flowType)
         .click({ force: true });
     })
     .then(() => {

@@ -1,1 +1,1 @@
-export const direction = { none: 'none', one: 'one', both: 'both' };
+export const direction = { none: 'None', one: 'One', both: 'Both' };
