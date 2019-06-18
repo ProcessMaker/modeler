@@ -174,10 +174,10 @@ $button-color: #3BD7FF;
   width: $validation-container-width;
   background-color: $primary-white;
   overflow: auto;
-  margin-bottom: 4.3rem;
+  margin-bottom: 3rem;
   border: 1px solid $border-color;
-  margin-right: 1.2rem;
   border-radius: 0.25rem;
+  border-right: none;
 
   &__defaultMessage {
     text-transform: capitalize;
