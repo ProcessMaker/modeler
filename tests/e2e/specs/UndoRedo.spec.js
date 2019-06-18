@@ -64,7 +64,7 @@ describe('Undo/redo', () => {
   });
 
   it('Can undo and redo adding a task', () => {
-    const taskPosition = { x: 300, y: 500 };
+    const taskPosition = { x: 300, y: 300 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -80,7 +80,7 @@ describe('Undo/redo', () => {
   });
 
   it('Can undo and redo deleting a task', () => {
-    const taskPosition = { x: 300, y: 500 };
+    const taskPosition = { x: 300, y: 300 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -164,7 +164,11 @@ describe('Undo/redo', () => {
     });
   });
 
-  it('Does not include intermediate message flow definition in XML', () => {
+  it('Does not include intermediate message flow definition in XML', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
     const validMessageFlowXML = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
   <bpmn:process id="Process_1" isExecutable="true">

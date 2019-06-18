@@ -34,13 +34,13 @@ describe('Association Flows', () => {
       .then($links => $links[0])
       .click();
 
-    cy.get(directionSelectSelector).select('none');
+    cy.get(directionSelectSelector).select('None');
     cy.get(directionSelectSelector).should('have.value', testDirection.none);
 
-    cy.get(directionSelectSelector).select('one');
+    cy.get(directionSelectSelector).select('One');
     cy.get(directionSelectSelector).should('have.value', testDirection.one);
 
-    cy.get(directionSelectSelector).select('both');
+    cy.get(directionSelectSelector).select('Both');
     cy.get(directionSelectSelector).should('have.value', testDirection.both);
   });
 });

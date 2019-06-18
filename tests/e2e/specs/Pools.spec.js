@@ -28,7 +28,7 @@ describe('Pools', () => {
   });
 
   it('Can add top and bottom lane', () => {
-    const poolPosition = { x: 200, y: 200 };
+    const poolPosition = { x: 300, y: 300 };
 
     // cy.get('[data-test=mini-map-btn]').click({ force: true});
 
@@ -42,7 +42,11 @@ describe('Pools', () => {
       });
   });
 
-  it('Can drag elements between pools', () => {
+  it('Can drag elements between pools', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
     const startEventPosition = { x: 150, y: 150 };
 
     const pool1Position = { x: 200, y: 200 };
