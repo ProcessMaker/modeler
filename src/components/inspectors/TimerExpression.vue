@@ -48,7 +48,7 @@
           <b-form-radio v-model="ends" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
         </b-form-group>
 
-        <b-form-group class="p-0 mb-1" description="Please click On to select a date.">
+        <b-form-group class="p-0 mb-1" :description="`${$t('Please click On to select a date')}.`">
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate">{{ $t('On') }}</b-form-radio>
           <form-date-picker
             type="date"
@@ -305,50 +305,50 @@ export default {
 </script>
 
 <style scoped="scoped">
-  .periodicity {
-    margin-top: -3px;
-  }
-  .weekday {
-    padding: 1em;
-    margin-left: 0.2em;
-    margin-bottom: 0.5em;
-    cursor: pointer;
-  }
+.periodicity {
+  margin-top: -3px;
+}
+.weekday {
+  padding: 1em;
+  margin-left: 0.2em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
 </style>
 
 <style>
-  .calendar {
-    width: 16em;
-  }
+.calendar {
+  width: 16em;
+}
 
-  .calendaron {
-    margin-left: 0.75rem;
-  }
+.calendaron {
+  margin-left: 0.75rem;
+}
 
-  .calendar .cell {
-    height: 2em;
-    line-height: 2em;
-  }
+.calendar .cell {
+  height: 2em;
+  line-height: 2em;
+}
 
-  .start-date {
-    background-color: white !important;
-    width: 8em !important;
-  }
+.start-date {
+  background-color: white !important;
+  width: 8em !important;
+}
 
-  .end-date {
-    background-color: white !important;
-  }
+.end-date {
+  background-color: white !important;
+}
 
-  .date-disabled .end-date {
-    background-color: #e9ecef !important;
-    color: transparent;
-  }
+.date-disabled .end-date {
+  background-color: #e9ecef !important;
+  color: transparent;
+}
 
-  .form-date-picker label {
-    display: none;
-  }
+.form-date-picker label {
+  display: none;
+}
 
-  .occurrences-text {
-    pointer-events: none;
-  }
+.occurrences-text {
+  pointer-events: none;
+}
 </style>
