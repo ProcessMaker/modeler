@@ -74,3 +74,15 @@ Cypress.Commands.add('getType', {
     .invoke('getModelById', element.attr('model-id'))
     .then(shape => shape.component.node.type);
 });
+
+Cypress.Commands.add('login', () => {
+  cy.request({
+    method: 'POST',
+    url: 'https://spark.local.processmaker.com/login',
+    body: {
+      username: 'admin',
+      password: 'admin',
+      remember: 'on',
+    },
+  });
+});

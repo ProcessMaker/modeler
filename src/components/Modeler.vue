@@ -108,7 +108,7 @@ import { Linter } from 'bpmnlint';
 import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
-
+import runningInCypressTest from '@/runningInCypressTest';
 
 import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -487,7 +487,7 @@ export default {
 
       const type = (customParser || implementationParser || defaultParser)(definition, this.moddle);
 
-      const unnamedElements = ['bpmn:TextAnnotation'];
+      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
@@ -741,6 +741,11 @@ export default {
     },
   },
   created() {
+    if (runningInCypressTest()) {
+      /* Add reference to store on window; this is used in testing to verify rendered nodes */
+      window.store = store;
+    }
+
     this.$t = this.$t.bind(this);
     this.registerNode(Process);
 
