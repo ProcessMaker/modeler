@@ -487,7 +487,7 @@ export default {
 
       const type = (customParser || implementationParser || defaultParser)(definition, this.moddle);
 
-      const unnamedElements = ['bpmn:TextAnnotation'];
+      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
