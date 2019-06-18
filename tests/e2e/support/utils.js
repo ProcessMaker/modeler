@@ -1,4 +1,5 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
+import path from 'path';
 
 const renderTime = 100;
 
@@ -127,4 +128,31 @@ export function moveElement(elementPosition, x, y) {
 
 export function removeIndentationAndLinebreaks(string) {
   return string.replace(/(^\s+)|(\n)/gim, '');
+}
+
+export const modalAnimationTime = 300;
+
+export function uploadXml(filepath) {
+  cy.contains('Upload XML').click();
+
+  /* Wait for modal to open */
+  cy.wait(modalAnimationTime);
+
+  cy.fixture(filepath, 'base64').then(bpmnProcess => {
+    return cy.get('input[type=file]').then($input => {
+      return Cypress.Blob.base64StringToBlob(bpmnProcess, 'text/xml')
+        .then((blob) => {
+          const file = new File([blob], path.basename(filepath), { type: 'text/xml' });
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          const input = $input[0];
+          input.files = dataTransfer.files;
+          cy.wrap(input).trigger('change', { force: true });
+          return cy.get('#uploadmodal button').contains('Upload').click();
+        });
+    });
+  });
+
+  /* Wait for modal to close */
+  cy.wait(modalAnimationTime);
 }

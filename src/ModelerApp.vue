@@ -4,6 +4,7 @@
       <b-row class="justify-content-center">
         <b-col cols="6">
           <b-alert
+            data-test="alert-modal"
             v-for="(item, index) in alerts"
             :key="index"
             class="d-none d-lg-block alertBox"

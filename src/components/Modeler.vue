@@ -459,7 +459,7 @@ export default {
       const parsers = this.parsers[bpmnType];
 
       if (!parsers) {
-        window.ProcessMaker.alert(`Unsupported element type in parse:  ${bpmnType}`, 'warning');
+        window.ProcessMaker.alert(`Unsupported element type in parse: ${bpmnType}`, 'warning');
 
         pull(flowElements, definition);
         pull(artifacts, definition);
