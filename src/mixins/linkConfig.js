@@ -163,10 +163,18 @@ export default {
 
       this.shapeView.addTools(toolsView);
       this.shapeView.hideTools();
+
+      document.addEventListener('mouseup', this.emitSave);
+    },
+    emitSave() {
+      if (this.highlighted) {
+        this.$emit('save-state');
+      }
     },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
+    this.emitSave.bind(this);
   },
   async mounted() {
     await this.$nextTick();
@@ -228,6 +236,9 @@ export default {
     }
 
     this.updateRouter();
+  },
+  beforeDestroy() {
+    document.removeEventListener('mouseup', this.emitSave);
   },
   destroyed() {
     /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
