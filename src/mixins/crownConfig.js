@@ -181,7 +181,7 @@ export default {
           root: {
             display: 'none',
             'data-test': id,
-            'data-title': title,
+            'data-title': title || 'Crown Button',
           },
           body: {
             fill: '#fff',
