@@ -18,7 +18,7 @@ describe('Undo/redo', () => {
     cy.loadModeler();
   });
 
-  xit('Can undo and redo sequence flow condition expression', () => {
+  it.skip('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
