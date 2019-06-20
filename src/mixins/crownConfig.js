@@ -150,6 +150,7 @@ export default {
     addMessageFlowButton() {
       this.crownConfig.push({
         id: 'message-flow-button',
+        title: 'Message Flow',
         icon: messageFlowIcon,
         clickHandler: this.addMessageFlow,
       });
@@ -165,18 +166,23 @@ export default {
 
       this.crownConfig.push({
         id: 'delete-button',
+        title: 'Delete',
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
 
-      this.crownConfig.forEach(({ id, icon, clickHandler }) => {
+      this.crownConfig.forEach(({ id, title, icon, clickHandler }) => {
         const button = new joint.shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);
         button.set('elementMove', false);
         button.attr({
-          root: { display: 'none', 'data-test': id },
+          root: {
+            display: 'none',
+            'data-test': id,
+            'data-title': title || 'Crown Button',
+          },
           body: {
             fill: '#fff',
             stroke: ' #fff',
@@ -198,6 +204,7 @@ export default {
 
       this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
         if (this.buttons.includes(cellView.model)) {
+          this.$emit('setTooltip', cellView);
           cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } });
           this.shape.listenTo(this.paper, 'cell:mouseleave', () => {
             cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } });
