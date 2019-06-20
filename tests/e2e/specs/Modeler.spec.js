@@ -9,11 +9,11 @@ import {
   getLinksConnectedToElement,
   isElementCovered,
   getCrownButtonForElement,
+  uploadXml,
+  modalAnimationTime,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
-
-const modalAnimationTime = 300;
 
 describe('Modeler', () => {
   beforeEach(() => {
@@ -134,28 +134,7 @@ describe('Modeler', () => {
       this.skip();
     }
 
-    cy.contains('Upload XML').click();
-
-    /* Wait for modal to open */
-    cy.wait(modalAnimationTime);
-
-    cy.fixture('../../../src/blank.bpmn', 'base64').then(blankProcess => {
-      return cy.get('input[type=file]').then($input => {
-        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
-          .then((blob) => {
-            const testfile = new File([blob], 'blank.bpmn', { type: 'text/xml' });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(testfile);
-            const input = $input[0];
-            input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
-            return cy.get('#uploadmodal button').contains('Upload').click();
-          });
-      });
-    });
-
-    /* Wait for modal to close */
-    cy.wait(modalAnimationTime);
+    uploadXml('../../../src/blank.bpmn');
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     getElementAtPosition(taskPosition).click();
@@ -170,7 +149,7 @@ describe('Modeler', () => {
     cy.get('[data-test=validation-list-toggle]').click();
     cy.get('[type=checkbox]').check({ force: true });
 
-    cy.get('[data-test=validation-list]').then($lsit => {
+    cy.get('[data-test=validation-list]').should($lsit => {
       expect($lsit).to.contain('Gateway must have multiple outgoing Sequence Flows');
     });
 
@@ -184,7 +163,7 @@ describe('Modeler', () => {
 
     cy.get('[data-test=validation-list-toggle]').click();
 
-    cy.get('[data-test=validation-list]').then($lsit => {
+    cy.get('[data-test=validation-list]').should($lsit => {
       expect($lsit).to.contain('Gateway must have multiple incoming Sequence Flows');
     });
   });
@@ -239,35 +218,14 @@ describe('Modeler', () => {
       this.skip();
     }
 
-    cy.contains('Upload XML').click();
-
-    /* Wait for modal to open */
-    cy.wait(modalAnimationTime);
-
-    cy.fixture('parser.xml', 'base64').then(blankProcess => {
-      return cy.get('input[type=file]').then($input => {
-        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
-          .then((blob) => {
-            const testfile = new File([blob], 'parser.xml', { type: 'text/xml' });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(testfile);
-            const input = $input[0];
-            input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
-            return cy.get('#uploadmodal button').contains('Upload').click();
-          });
-      });
-    });
-
-    /* Wait for modal to close */
-    cy.wait(modalAnimationTime);
+    uploadXml('parser.xml');
 
     cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then(sourceXML => {
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()
         .its('xml')
         .then(xml => xml.trim())
-        .then(xml => {
+        .should(xml => {
           expect(xml).to.contain(sourceXML.trim());
         });
     });
@@ -340,6 +298,17 @@ describe('Modeler', () => {
 
     getElementAtPosition(taskPosition).then($task => {
       cy.wrap($task).get('[stroke=red]').should('exist');
+    });
+  });
+
+  it('shows warning for unknown element during parsing', function() {
+    uploadXml('unknownElement.xml');
+    const warning = 'Unsupported element type in parse: bpmn:IntermediateThrowEvent';
+
+    cy.wait(modalAnimationTime);
+
+    cy.get('[data-test="alert-modal"]').should($modal => {
+      expect($modal).to.contain(warning);
     });
   });
 });

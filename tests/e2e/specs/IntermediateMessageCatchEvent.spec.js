@@ -3,11 +3,10 @@ import {
   typeIntoTextInput,
   getElementAtPosition,
   waitToRenderAllShapes,
+  uploadXml,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
-
-const modalAnimationTime = 300;
 
 describe('Intermediate Message Catch Event', () => {
   beforeEach(() => {
@@ -105,28 +104,7 @@ describe('Intermediate Message Catch Event', () => {
       this.skip();
     }
 
-    cy.contains('Upload XML').click();
-
-    /* Wait for modal to open */
-    cy.wait(modalAnimationTime);
-
-    cy.fixture('../fixtures/messageFlow.xml', 'base64').then(blankProcess => {
-      return cy.get('input[type=file]').then($input => {
-        return Cypress.Blob.base64StringToBlob(blankProcess, 'text/xml')
-          .then((blob) => {
-            const testfile = new File([blob], 'messageFlow.xml', { type: 'text/xml' });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(testfile);
-            const input = $input[0];
-            input.files = dataTransfer.files;
-            cy.wrap(input).trigger('change', { force: true });
-            return cy.get('#uploadmodal button').contains('Upload').click();
-          });
-      });
-    });
-
-    /* Wait for modal to close */
-    cy.wait(modalAnimationTime);
+    uploadXml('messageFlow.xml');
 
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
