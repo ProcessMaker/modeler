@@ -28,7 +28,7 @@ describe('Undo/redo', () => {
     cy.loadModeler();
   });
 
-  it.skip('Can undo and redo sequence flow condition expression', () => {
+  it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
@@ -45,9 +45,10 @@ describe('Undo/redo', () => {
     const defaultExpressionValue = '';
     const testString = 'foo > 7';
 
-    cy.get('[name="conditionExpression.body"]').should('have.value', defaultExpressionValue);
-    typeIntoTextInput('[name="conditionExpression.body"]', testString);
-    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
+    const conditionExpressionSelector = '[name=conditionExpression]';
+    cy.get(conditionExpressionSelector).should('have.value', defaultExpressionValue);
+    typeIntoTextInput(conditionExpressionSelector, testString);
+    cy.get(conditionExpressionSelector).should('have.value', testString);
 
     cy.get('.paper-container').click({ force: true });
     cy.get('[data-test=undo]').click();
@@ -59,7 +60,7 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
-    cy.get('[name="conditionExpression.body"]').should('have.value', defaultExpressionValue);
+    cy.get(conditionExpressionSelector).should('have.value', defaultExpressionValue);
 
     cy.get('[data-test=redo]').click();
 
@@ -70,7 +71,7 @@ describe('Undo/redo', () => {
       .then($links => $links[0])
       .click({ force: true });
 
-    cy.get('[name="conditionExpression.body"]').should('have.value', testString);
+    cy.get(conditionExpressionSelector).should('have.value', testString);
   });
 
   it('Can undo and redo adding a task', () => {
