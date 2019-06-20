@@ -11,6 +11,7 @@ export default {
       sourceShape: null,
       target: null,
       anchorPadding: 25,
+      listeningToMouseup: false,
     };
   },
   watch: {
@@ -84,6 +85,11 @@ export default {
       const points = connections.segments.map(segment => segment.end);
       this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
+
+      if (!this.listeningToMouseup) {
+        this.listeningToMouseup = true;
+        document.addEventListener('mouseup', this.emitSave);
+      }
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
@@ -125,6 +131,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
         this.completeLink();
         this.updateWaypoints();
+        this.updateWaypoints.flush();
 
         if (this.updateDefinitionLinks) {
           this.updateDefinitionLinks();
@@ -163,12 +170,13 @@ export default {
 
       this.shapeView.addTools(toolsView);
       this.shapeView.hideTools();
-
-      document.addEventListener('mouseup', this.emitSave);
     },
     emitSave() {
       if (this.highlighted) {
+        this.updateWaypoints.flush();
         this.$emit('save-state');
+        document.removeEventListener('mouseup', this.emitSave);
+        this.listeningToMouseup = false;
       }
     },
   },

@@ -40,14 +40,14 @@ export default new Vuex.Store( {
       commit('setState', newState);
       commit('setPosition', state.stack.length - 1);
     },
-    async undo({ state, getters, commit }) {
+    undo({ state, getters, commit }) {
       if (!getters.canUndo) {
         return;
       }
 
       commit('setPosition', state.position - 1);
     },
-    async redo({ state, getters, commit }) {
+    redo({ state, getters, commit }) {
       if (!getters.canRedo) {
         return;
       }

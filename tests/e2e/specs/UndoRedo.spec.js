@@ -10,8 +10,18 @@ import {
   waitToRenderNodeUpdates,
   removeIndentationAndLinebreaks,
 } from '../support/utils';
-
 import { nodeTypes } from '../support/constants';
+
+function testNumberOfVertices(numberOfVertices) {
+  cy.get('[data-test=downloadXMLBtn]').click();
+  cy.window()
+    .its('xml')
+    .then(removeIndentationAndLinebreaks)
+    .then(xml => {
+      const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
+      expect(waypoints).to.have.length(numberOfVertices);
+    });
+}
 
 describe('Undo/redo', () => {
   beforeEach(() => {
@@ -268,5 +278,69 @@ describe('Undo/redo', () => {
         expect(xml).to.contain(testConnector);
         expect(xml).to.contain(sendTweet);
       });
+  });
+
+  it('Can undo/redo modifying sequence flow vertices', function() {
+    const startEventPosition = { x: 150, y: 150 };
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+
+    const initialNumberOfWaypoints = 3;
+    testNumberOfVertices(initialNumberOfWaypoints);
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click('topRight');
+
+    waitToRenderAllShapes();
+
+    cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
+    cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
+    cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
+
+    waitToRenderAllShapes();
+
+    const updatedNumberOfWaypoints = 5;
+    testNumberOfVertices(updatedNumberOfWaypoints);
+
+    cy.get('[data-test=undo]').click({ force: true });
+
+    waitToRenderAllShapes();
+
+    testNumberOfVertices(initialNumberOfWaypoints);
+  });
+
+  it('Can undo/redo modifying association flow vertices', function() {
+    const startEventPosition = { x: 150, y: 150 };
+    const textAnnotationPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    connectNodesWithFlow('association-flow-button', textAnnotationPosition, startEventPosition);
+
+    const initialNumberOfWaypoints = 2;
+    testNumberOfVertices(initialNumberOfWaypoints);
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click();
+
+    waitToRenderAllShapes();
+
+    cy.get('[data-tool-name=vertices]').trigger('mousedown');
+    cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
+    cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
+
+    waitToRenderAllShapes();
+
+    const updatedNumberOfWaypoints = 3;
+    testNumberOfVertices(updatedNumberOfWaypoints);
+
+    cy.get('[data-test=undo]').click({ force: true });
+
+    waitToRenderAllShapes();
+
+    testNumberOfVertices(initialNumberOfWaypoints);
   });
 });
