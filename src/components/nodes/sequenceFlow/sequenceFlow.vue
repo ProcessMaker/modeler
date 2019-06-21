@@ -66,14 +66,6 @@ export default {
         excludeTypes: ['standard.EmbeddedImage'],
         padding: 20,
       });
-
-      this.shape.listenTo(this.paper, 'link:pointerdown', cellView => {
-        if (cellView.model === this.shape) {
-          this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
-            this.$emit('save-state');
-          });
-        }
-      });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();

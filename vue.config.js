@@ -26,5 +26,12 @@ module.exports = {
         },
       ],
     },
+    externals: process.env.NODE_ENV === 'production' ? [
+      'vue',
+      /^bootstrap\/.+$/,
+      /^@processmaker\/.+$/,
+      'i18next',
+      '@panter/vue-i18next',
+    ] : [],
   },
 };
