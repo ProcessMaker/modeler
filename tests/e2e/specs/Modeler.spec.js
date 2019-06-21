@@ -302,6 +302,10 @@ describe('Modeler', () => {
   });
 
   it('shows warning for unknown element during parsing', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
     uploadXml('unknownElement.xml');
     const warning = 'Unsupported element type in parse: bpmn:IntermediateThrowEvent';
 

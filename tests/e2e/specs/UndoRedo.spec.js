@@ -13,6 +13,19 @@ import {
 import { nodeTypes } from '../support/constants';
 
 function testNumberOfVertices(numberOfVertices) {
+  cy.window()
+    .its('store.state')
+    .then(state => {
+      const { graph, paper } = state;
+      const waypoints = graph.getLinks()[0].findView(paper).getConnectionSubdivisions();
+      expect(waypoints).to.have.length(numberOfVertices);
+    });
+
+
+  if (Cypress.env('inProcessmaker')) {
+    return;
+  }
+
   cy.get('[data-test=downloadXMLBtn]').click();
   cy.window()
     .its('xml')
@@ -246,6 +259,10 @@ describe('Undo/redo', () => {
   });
 
   it('Correctly parses elements after redo', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
     const testConnectorPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.testConnector, testConnectorPosition);
 
@@ -284,6 +301,7 @@ describe('Undo/redo', () => {
   it('Can undo/redo modifying sequence flow vertices', function() {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 300, y: 300 };
+
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
