@@ -25,7 +25,11 @@ describe('Text Annotation', () => {
     cy.get('[name=text]').should('have.value', testString);
   });
 
-  it('save a process with text annotation, pool and lane ', function() {
+  it('Save a process with text annotation, pool and lane', function() {
+    if (!Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
     const poolPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -44,9 +48,7 @@ describe('Text Annotation', () => {
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, taskPosition);
 
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
+
 
     cy.get('[data-test=save-process]').click();
 
