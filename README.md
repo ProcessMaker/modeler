@@ -1,6 +1,6 @@
 # ProcessMaker Spark BPMN modeler
 
-[![CircleCI](https://circleci.com/gh/ProcessMaker/spark-modeler.svg?style=svg)](https://circleci.com/gh/ProcessMaker/spark-modeler)
+[![CircleCI](https://circleci.com/gh/ProcessMaker/modeler.svg?style=svg)](https://circleci.com/gh/ProcessMaker/modeler)
 
 `@processmaker/modeler` is a Vue.js based BPMN modeler scaffolded using [Vue CLI 3](https://cli.vuejs.org/).
 
