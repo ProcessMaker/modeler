@@ -200,7 +200,7 @@ describe('Modeler', () => {
   it('Selects process node after deleting an element', () => {
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
-    cy.get('#renderer-container').should('to.contain', 'Start Event');
+    cy.get('[data-test=inspector-container]').should('to.contain', 'Start Event');
 
     getElementAtPosition(startEventPosition)
       .then($startEvent => {
@@ -209,8 +209,8 @@ describe('Modeler', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('#renderer-container').should('to.not.contain', 'Start Event');
-    cy.get('#renderer-container').should('to.contain', 'Process');
+    cy.get('[data-test=inspector-container]').should('to.not.contain', 'Start Event');
+    cy.get('[data-test=inspector-container]').should('to.contain', 'Process');
   });
 
   it('Runs custom parser before default parser', function() {
@@ -220,7 +220,7 @@ describe('Modeler', () => {
 
     uploadXml('parser.xml');
 
-    cy.readFile('/tests/e2e/fixtures/parser.xml', 'utf8').then(sourceXML => {
+    cy.readFile('tests/e2e/fixtures/parser.xml', 'utf8').then(sourceXML => {
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()
         .its('xml')
