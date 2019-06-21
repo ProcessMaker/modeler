@@ -25,7 +25,7 @@ describe('Text Annotation', () => {
     cy.get('[name=text]').should('have.value', testString);
   });
 
-  it('save a process with text annotation, pool and lane ', () => {
+  it('save a process with text annotation, pool and lane ', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
