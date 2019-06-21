@@ -11,6 +11,7 @@ import { id as poolId } from './index';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { poolPadding, labelWidth } from './poolSizes';
 import { id as laneId } from '../poolLane';
+import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
 import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
@@ -132,7 +133,9 @@ export default {
 
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
-          return element.component && element.component.node.type !== laneId;
+          return element.component &&
+            element.component.node.type !== laneId &&
+            element.component.node.type !== textAnnotationId;
         }).forEach(element => {
           definition.get('flowNodeRef').push(element.component.node.definition);
         });
@@ -417,7 +420,8 @@ export default {
         .filter(element =>
           element.component &&
           element.component.node.pool === this.shape &&
-          element.component.node.type !== laneId
+          element.component.node.type !== laneId &&
+          element.component.node.type !==  textAnnotationId
         )
         .forEach(element => {
           const lane = this.graph
