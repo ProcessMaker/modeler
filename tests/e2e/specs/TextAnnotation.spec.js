@@ -48,8 +48,6 @@ describe('Text Annotation', () => {
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, taskPosition);
 
-
-
     cy.get('[data-test=save-process]').click();
 
     const successMessage = 'The process was saved.';

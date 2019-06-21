@@ -134,8 +134,8 @@ export default {
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
           return element.component &&
-          element.component.node.type !== laneId &&
-          element.component.node.type !== textAnnotationId;
+            element.component.node.type !== laneId &&
+            element.component.node.type !== textAnnotationId;
         }).forEach(element => {
           definition.get('flowNodeRef').push(element.component.node.definition);
         });

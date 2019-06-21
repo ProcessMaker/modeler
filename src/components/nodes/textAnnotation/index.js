@@ -3,7 +3,7 @@ import { configId } from '@/components/inspectors/configId';
 export const id = 'processmaker-modeler-text-annotation';
 
 export default {
-  id: 'processmaker-modeler-text-annotation',
+  id,
   component,
   bpmnType: 'bpmn:TextAnnotation',
   control: true,
