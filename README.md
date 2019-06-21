@@ -1,4 +1,4 @@
-# ProcessMaker Spark BPMN modeler
+# ProcessMaker BPMN modeler
 
 [![CircleCI](https://circleci.com/gh/ProcessMaker/modeler.svg?style=svg)](https://circleci.com/gh/ProcessMaker/modeler)
 
@@ -21,11 +21,11 @@
 
 ## Project setup
 
-Clone the repository and `cd` into the `spark-modeler` directory:
+Clone the repository and `cd` into the `modeler` directory:
 
 ```bash
-git clone git@github.com:ProcessMaker/spark-modeler.git
-cd spark-modeler
+git clone git@github.com:ProcessMaker/modeler.git
+cd modeler
 ```
 
 You can now run any of the below commands. Most commands make calls `vue-cli-service`. You can read more about those commands at https://cli.vuejs.org/guide/cli-service.html#cli-service.
