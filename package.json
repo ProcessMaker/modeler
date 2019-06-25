@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@panter/vue-i18next": "^0.15.0",
-    "@processmaker/processmaker-bpmn-moddle": "^0.4.1",
+    "@processmaker/processmaker-bpmn-moddle": "^0.4.2",
     "@processmaker/spark-screen-builder": "^0.16.3",
     "@processmaker/vue-form-elements": "^0.10.2",
     "@vue/cli-plugin-babel": "^3.8.0",
