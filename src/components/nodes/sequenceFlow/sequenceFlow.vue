@@ -129,6 +129,13 @@ export default {
     this.shape = new joint.shapes.standard.Link();
     this.createLabel();
 
+    this.shape.connector('rounded');
+    this.shape.attr('line', {
+      strokeLinejoin:'round',
+      strokeWidth: 2,
+      strokeDasharray: 10000,
+    });
+
     const conditionExpression = this.node.definition.conditionExpression;
     if (conditionExpression) {
       this.label = conditionExpression.body;
