@@ -64,9 +64,6 @@ export default {
     isValidMessageFlowSource() {
       return validMessageFlowSources.includes(this.node.type);
     },
-    hideTooltip() {
-      return this.tooltipTitle === false;
-    },
   },
   methods: {
     setErrorHighlight() {
@@ -184,7 +181,7 @@ export default {
           root: {
             display: 'none',
             'data-test': id,
-            'data-title': title || this.hideTooltip,
+            'data-title': title || '',
           },
           body: {
             fill: '#fff',

@@ -4,7 +4,7 @@
       v-if="tooltipTarget"
       :key="tooltipTarget.id"
       :target="getTooltipTarget"
-      :title="tooltipTitle || ''"
+      :title="tooltipTitle"
     />
 
     <b-col class="h-100 overflow-hidden controls-column" :class="{ 'ignore-pointer': canvasDragPosition }">
