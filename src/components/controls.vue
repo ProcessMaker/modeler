@@ -116,6 +116,7 @@ export default {
 .tool {
   cursor: grab;
   user-select: none;
+  font-size: 0.875rem;
 }
 
 .is-dragging {
