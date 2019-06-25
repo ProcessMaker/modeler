@@ -269,8 +269,8 @@ describe('Undo/redo', () => {
     const sendTweetPosition = { x: 150, y: 450 };
     dragFromSourceToDest(nodeTypes.sendTweet, sendTweetPosition);
 
-    const testConnector = '<bpmn:serviceTask id="node_2" name="Test Connector" implementation="test-message" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" />';
-    const sendTweet = '<bpmn:serviceTask id="node_3" name="Send Tweet" implementation="processmaker-social-twitter-send" pm:config="{&#34;tweet&#34;:&#34;&#34;}" />';
+    const testConnector = '<bpmn:serviceTask id="node_2" name="Test Connector" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" implementation="test-message" />';
+    const sendTweet = '<bpmn:serviceTask id="node_3" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
