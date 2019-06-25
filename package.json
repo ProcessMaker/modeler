@@ -41,8 +41,8 @@
   "devDependencies": {
     "@panter/vue-i18next": "^0.15.0",
     "@processmaker/processmaker-bpmn-moddle": "^0.4.2",
-    "@processmaker/spark-screen-builder": "^0.16.3",
-    "@processmaker/vue-form-elements": "^0.10.2",
+    "@processmaker/screen-builder": "^0.17.3",
+    "@processmaker/vue-form-elements": "^0.10.3",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-e2e-cypress": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
@@ -67,8 +67,8 @@
     "vue-template-compiler": "^2.5.17"
   },
   "peerDependencies": {
-    "@processmaker/spark-screen-builder": "^0.16.3",
-    "@processmaker/vue-form-elements": "^0.10.2",
+    "@processmaker/screen-builder": "^0.17.3",
+    "@processmaker/vue-form-elements": "^0.10.3",
     "@panter/vue-i18next": "^0.15.0",
     "i18next": "^15.0.9",
     "bootstrap": "^4.3.1",
