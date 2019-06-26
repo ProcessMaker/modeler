@@ -1,11 +1,15 @@
 <template>
   <div>
     <label>{{ $t('Type') }}</label>
-    <b-input-group class="mb-3">
-      <b-form-select :value="timerPropertyName" data-test="intermediateTypeSelect" class="form-control" @change="changeType">
+    <b-input-group>
+      <b-form-select :value="timerPropertyName" data-test="intermediateTypeSelect" @change="changeType">
         <option value="timeDuration">{{ $t('Delay') }}</option>
         <option value="timeDate">{{ $t('Date/Time') }}</option>
       </b-form-select>
+      <!-- <select :value="timerPropertyName" data-test="intermediateTypeSelect" class="form-control" @change="changeType">
+        <option value="timeDuration">{{ $t('Delay') }}</option>
+        <option value="timeDate">{{ $t('Date/Time') }}</option>
+      </select> -->
     </b-input-group>
 
     <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every"/>
@@ -44,8 +48,8 @@ export default {
     },
   },
   methods: {
-    changeType(event) {
-      this.emitChange(event.target.value, this.timerProperty);
+    changeType(value) {
+      this.emitChange(value, this.timerProperty);
     },
     emitChange(type, body) {
       this.$emit('input', { type, body });

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-3">
     <label>{{ $t('Delay') }}</label>
     <b-input-group>
       <b-form-input
