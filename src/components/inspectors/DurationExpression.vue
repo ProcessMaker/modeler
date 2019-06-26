@@ -22,6 +22,7 @@
 
 <script>
 import last from 'lodash/last';
+import { defaultDurationValue } from '@/components/nodes/intermediateTimerEvent';
 
 const periodNames = {
   minute: 'minute',
@@ -49,13 +50,16 @@ export default {
   watch: {
     value: {
       handler(value) {
-        this.periodicity = this.getPeriodFromDelayString(value);
-        this.repeat = this.getRepeatNumberFromDelayString(value);
+        this.periodicity = this.getPeriodFromDelayString(value || defaultDurationValue);
+        this.repeat = this.getRepeatNumberFromDelayString(value || defaultDurationValue);
       },
       immediate: true,
     },
-    durationExpression(durationExpression) {
-      this.$emit('input', durationExpression);
+    durationExpression: {
+      handler(durationExpression) {
+        this.$emit('input', durationExpression);
+      },
+      immediate: true,
     },
   },
   computed: {
