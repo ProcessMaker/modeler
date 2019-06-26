@@ -6,10 +6,6 @@
         <option value="timeDuration">{{ $t('Delay') }}</option>
         <option value="timeDate">{{ $t('Date/Time') }}</option>
       </b-form-select>
-      <!-- <select :value="timerPropertyName" data-test="intermediateTypeSelect" class="form-control" @change="changeType">
-        <option value="timeDuration">{{ $t('Delay') }}</option>
-        <option value="timeDate">{{ $t('Date/Time') }}</option>
-      </select> -->
     </b-input-group>
 
     <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every"/>
