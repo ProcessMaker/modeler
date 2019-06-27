@@ -15,6 +15,8 @@
 <script>
 import DurationExpression from './DurationExpression';
 import DateTimeExpression from './DateTimeExpression';
+import { DateTime } from 'luxon';
+import { defaultDurationValue } from '@/components/nodes/intermediateTimerEvent';
 
 const types = {
   timeDuration: 'DurationExpression',
@@ -44,8 +46,15 @@ export default {
     },
   },
   methods: {
-    changeType(value) {
-      this.emitChange(value, this.timerProperty);
+    changeType(type) {
+      const defaultValue = this.isDelayType(type)
+        ? defaultDurationValue
+        : DateTime.local();
+
+      this.emitChange(type, defaultValue);
+    },
+    isDelayType(type) {
+      return types[type] === types.timeDuration;
     },
     emitChange(type, body) {
       this.$emit('input', { type, body });

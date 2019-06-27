@@ -54,8 +54,11 @@ export default {
       },
       immediate: true,
     },
-    durationExpression(durationExpression) {
-      this.$emit('input', durationExpression);
+    durationExpression: {
+      handler(durationExpression) {
+        this.$emit('input', durationExpression);
+      },
+      immediate: true,
     },
   },
   computed: {

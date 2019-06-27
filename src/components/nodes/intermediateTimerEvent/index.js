@@ -2,6 +2,8 @@ import component from './intermediateTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import { configId } from '@/components/inspectors/configId';
 
+export const defaultDurationValue = 'PT1H';
+
 export default {
   id: 'processmaker-modeler-intermediate-catch-timer-event',
   component,
@@ -16,7 +18,7 @@ export default {
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
-            body: 'PT1H',
+            body: defaultDurationValue,
           }),
         }),
       ],
