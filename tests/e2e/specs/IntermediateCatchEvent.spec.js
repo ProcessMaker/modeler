@@ -2,8 +2,8 @@ import {
   dragFromSourceToDest,
   typeIntoTextInput,
   getElementAtPosition,
+  removeIndentationAndLinebreaks,
 } from '../support/utils';
-
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Catch Event', () => {
@@ -71,5 +71,43 @@ describe('Intermediate Catch Event', () => {
       .its('xml')
       .then(xml => xml.trim())
       .should('have', validIntermediateCatchEventXML.trim());
+  });
+
+  it('Sets default values when switching between types', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
+    cy.clock();
+
+    const intermediateCatchEventPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+
+    getElementAtPosition(intermediateCatchEventPosition).click();
+    cy.contains('Timing Control').click();
+    cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
+
+    const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00.000Z</bpmn:timeDate>';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .should(xml => {
+        expect(xml).to.contain(defaultTimeDate);
+      });
+
+    cy.get('[data-test=intermediateTypeSelect]').select('Delay');
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+
+    const defaultTimeDuration = '<bpmn:timeDuration>PT1H</bpmn:timeDuration>';
+
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .should(xml => {
+        expect(xml).to.contain(defaultTimeDuration);
+      });
   });
 });
