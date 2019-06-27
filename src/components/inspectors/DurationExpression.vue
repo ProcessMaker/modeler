@@ -1,19 +1,22 @@
 <template>
-  <div class="form-group">
+  <div class="mt-3">
     <label>{{ $t('Delay') }}</label>
-    <pre>{{ value }}</pre>
-    <div>
-      <input
+    <b-input-group>
+      <b-form-input
         type="number"
         min="1"
         class="form-control control repeat"
         :data-test="repeatInput"
         v-model="repeat"
-      >
-      <select v-model="periodicity" class="form-control control periodicity">
-        <option v-for="period in periods" :key="period.name" :value="period">{{ $t(period.name) }}</option>
-      </select>
-    </div>
+      />
+
+      <b-input-group-append>
+        <b-form-select v-model="periodicity">
+          <option v-for="period in periods" :key="period.name" :value="period">{{ $t(period.name) }}</option>
+        </b-form-select>
+      </b-input-group-append>
+
+    </b-input-group>
   </div>
 </template>
 
@@ -89,20 +92,3 @@ export default {
   },
 };
 </script>
-
-<style scoped="scoped">
-.control {
-  vertical-align: middle;
-  display: inline-block;
-  height: 3em;
-  font-size: 1em;
-}
-.repeat {
-  width: 6em !important;
-  text-align: right;
-}
-.periodicity {
-  width: 6em;
-}
-</style>
-

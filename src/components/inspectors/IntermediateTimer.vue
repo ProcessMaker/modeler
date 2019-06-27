@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="form-group">
-      <label>{{ $t('Type') }}</label>
-      <select :value="timerPropertyName" data-test="intermediateTypeSelect" class="form-control" @change="changeType">
+    <label>{{ $t('Type') }}</label>
+    <b-input-group>
+      <b-form-select :value="timerPropertyName" data-test="intermediateTypeSelect" @change="changeType">
         <option value="timeDuration">{{ $t('Delay') }}</option>
         <option value="timeDate">{{ $t('Date/Time') }}</option>
-      </select>
-    </div>
+      </b-form-select>
+    </b-input-group>
 
     <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every"/>
   </div>
@@ -44,8 +44,8 @@ export default {
     },
   },
   methods: {
-    changeType(event) {
-      this.emitChange(event.target.value, this.timerProperty);
+    changeType(value) {
+      this.emitChange(value, this.timerProperty);
     },
     emitChange(type, body) {
       this.$emit('input', { type, body });
@@ -53,19 +53,3 @@ export default {
   },
 };
 </script>
-
-<style scoped="scoped">
-.control {
-  vertical-align: middle;
-  display: inline-block;
-  height: 3em;
-  font-size: 1em;
-}
-.repeat {
-  width: 6em !important;
-  text-align: right;
-}
-.periodicity {
-  width: 6em;
-}
-</style>
