@@ -41,7 +41,7 @@
   "devDependencies": {
     "@panter/vue-i18next": "^0.15.0",
     "@processmaker/processmaker-bpmn-moddle": "^0.4.2",
-    "@processmaker/screen-builder": "^0.17.3",
+    "@processmaker/screen-builder": "^0.17.4",
     "@processmaker/vue-form-elements": "^0.10.3",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-e2e-cypress": "^3.8.0",
