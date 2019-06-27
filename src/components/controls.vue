@@ -1,14 +1,13 @@
 <template>
   <b-card no-body class="controls">
-    <b-card-header class="border-bottom-0">{{ $t('Controls') }}</b-card-header>
     <b-input-group size="sm">
       <b-input-group-prepend>
-        <span class="input-group-text"><i class="fas fa-filter"/></span>
+        <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter"/></span>
       </b-input-group-prepend>
 
       <b-form-input ref="filter"
-        :placeholder="`${$t('Filter')}...`"
-        class="sticky-top"
+        :placeholder="`${$t('Filter Controls')}`"
+        class="sticky-top border-top-0 border-right-0 rounded-0"
         type="text"
         v-model="filterQuery"
       />
