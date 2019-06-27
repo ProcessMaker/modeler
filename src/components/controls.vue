@@ -7,7 +7,7 @@
 
       <b-form-input ref="filter"
         :placeholder="`${$t('Filter Controls')}`"
-        class="sticky-top border-top-0 border-right-0 rounded-0"
+        class="border-top-0 border-right-0 rounded-0"
         type="text"
         v-model="filterQuery"
       />
