@@ -8,6 +8,7 @@ import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
+import { poolColor } from '@/components/nodeColors';
 
 export default {
   props: ['graph', 'node', 'nodes', 'id', 'collaboration'],
@@ -55,7 +56,7 @@ export default {
     this.shape.set('elementMove', false);
     this.shape.attr('body/cursor', 'default');
     this.shape.attr('body', {
-      fill: '#ebebeb',
+      fill: poolColor,
     });
     this.shape.attr('label', {
       text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.height }),

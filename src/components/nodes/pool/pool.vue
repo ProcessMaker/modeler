@@ -14,7 +14,7 @@ import { id as laneId } from '../poolLane';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
 import laneAboveIcon from '@/assets/lane-above.svg';
 import laneBelowIcon from '@/assets/lane-below.svg';
-import { invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
+import { invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
 import store from '@/store';
 
@@ -466,7 +466,7 @@ export default {
       width: bounds.width,
     }));
     this.shape.attr('body', {
-      fill: '#ebebeb',
+      fill: poolColor,
     });
 
     this.shape.addTo(this.graph);
@@ -503,7 +503,7 @@ export default {
           }
 
           if (invalidPool) {
-            invalidPool.attr('body/fill', defaultNodeColor);
+            invalidPool.attr('body/fill', poolColor);
             invalidPool = null;
           }
 
@@ -522,7 +522,7 @@ export default {
           previousValidPosition = null;
 
           if (invalidPool) {
-            invalidPool.attr('body/fill', defaultNodeColor);
+            invalidPool.attr('body/fill', poolColor);
             invalidPool = null;
           }
 
@@ -565,7 +565,7 @@ export default {
         }
 
         if (invalidPool) {
-          invalidPool.attr('body/fill', defaultNodeColor);
+          invalidPool.attr('body/fill', poolColor);
           invalidPool = null;
         }
 

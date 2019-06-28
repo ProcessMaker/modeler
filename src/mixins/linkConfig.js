@@ -2,7 +2,7 @@ import joint from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { validNodeColor, invalidNodeColor, defaultNodeColor } from '@/components/nodeColors';
+import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
 
 export default {
   props: ['highlighted'],
@@ -17,7 +17,7 @@ export default {
   watch: {
     target(target, previousTarget) {
       if (previousTarget && previousTarget !== target) {
-        this.setBodyColor(defaultNodeColor, previousTarget);
+        this.setBodyColor(poolColor, previousTarget);
       }
     },
     isValidConnection(isValid) {
@@ -60,6 +60,9 @@ export default {
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
+    isPoolOrLane() {
+      return ['processmaker-modeler-lane', 'processmaker-modeler-pool'].includes(this.target.component.node.type);
+    },
   },
   methods: {
     setBodyColor(color, target = this.target) {
@@ -73,7 +76,12 @@ export default {
       this.resetPaper();
 
       const targetShape = this.shape.getTargetElement();
+
       this.setBodyColor(defaultNodeColor, targetShape);
+
+      if (this.isPoolOrLane)  {
+        this.setBodyColor(poolColor);
+      }
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -155,9 +163,12 @@ export default {
       this.$emit('set-cursor', null);
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
-
       if (this.target) {
         this.setBodyColor(defaultNodeColor);
+      }
+
+      if (this.isPoolOrLane)  {
+        this.setBodyColor(poolColor);
       }
     },
     setupLinkTools() {
