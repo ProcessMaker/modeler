@@ -61,6 +61,9 @@ export default {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
     isPoolOrLane() {
+      if (!this.target) {
+        return;
+      }
       return ['processmaker-modeler-lane', 'processmaker-modeler-pool'].includes(this.target.component.node.type);
     },
   },
