@@ -88,7 +88,6 @@ export default {
 
     this.shape.attr('line', {
       strokeDasharray: '10 10',
-      strokeLinejoin:'round',
       sourceMarker: {
         type: 'circle',
         r: 5,
