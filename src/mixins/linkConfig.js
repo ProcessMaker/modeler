@@ -92,9 +92,9 @@ export default {
       this.shape.getSourceElement().embed(this.shape);
     },
     updateWaypoints() {
-      const connections = this.shape.findView(this.paper).getConnection();
-      const points = connections.segments.map(segment => segment.end);
-      this.node.diagram.waypoint = points.map(point => this.moddle.create('dc:Point', point));
+      const { start, end } = this.shape.findView(this.paper).getConnection();
+
+      this.node.diagram.waypoint = [start, ...this.shape.vertices(), end].map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
 
       if (!this.listeningToMouseup) {
