@@ -1,6 +1,6 @@
 import component from './intermediateMessageCatchEvent.vue';
 import omit from 'lodash/omit';
-import { configId } from '@/components/inspectors/configId';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import MessageEventIdGenerator from '../../../MessageEventIdGenerator';
 
 const messageEventIdGenerator = new MessageEventIdGenerator();
@@ -86,12 +86,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',
@@ -105,7 +100,7 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Message Event Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
+                helper: idConfigSettings.helper,
                 name: 'eventDefinitionId',
                 validation: 'required',
               },

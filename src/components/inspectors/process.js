@@ -1,4 +1,4 @@
-import { configId } from './configId';
+import idConfigSettings from './idConfigSettings';
 
 export default {
   id: 'processmaker-modeler-process',
@@ -21,12 +21,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',

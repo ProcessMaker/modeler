@@ -1,6 +1,7 @@
 import {
   task,
 } from '@/components/nodes';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
@@ -48,12 +49,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
           },
           {
             component: 'FormInput',
-            config: {
-              label: 'Identifier',
-              helper: 'The id field should be unique across all elements in the diagram',
-              name: 'id',
-              validation: ['required', 'regex:/^[a-zA-Z][^\\s][a-zA-Z0-9_]+$/'],
-            },
+            config: idConfigSettings,
           },
           {
             component: 'FormTextArea',

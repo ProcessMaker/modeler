@@ -1,8 +1,9 @@
 import component from './callActivity';
 import CallActivityFormSelect from './CallActivityFormSelect';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
+
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-call-activity';
-import { configId } from '@/components/inspectors/configId';
 
 export default {
   id,
@@ -56,12 +57,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',

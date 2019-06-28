@@ -1,7 +1,7 @@
 import component from './task.vue';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const taskHeight = 76;
-import { configId } from '@/components/inspectors/configId';
 
 export default {
   id: 'processmaker-modeler-task',
@@ -40,12 +40,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',
