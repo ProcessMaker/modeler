@@ -5,6 +5,7 @@
 <script>
 import GatewayComponent from '@/components/nodes/gateway/gateway';
 import inclusiveGatewaySymbol from '@/assets/inclusive-gatway-symbol.svg';
+import { gatewayDirection } from '@/components/nodes/gateway/gatewayConfig';
 
 export default {
   extends: GatewayComponent,
@@ -19,9 +20,9 @@ export default {
       const incomingCount = incoming.length;
 
       if (incomingCount <= 1 ) {
-        this.node.definition.set('gatewayDirection', 'diverging');
+        this.node.definition.set('gatewayDirection', gatewayDirection.diverging);
       } else {
-        this.node.definition.set('gatewayDirection', 'converging');
+        this.node.definition.set('gatewayDirection', gatewayDirection.converging);
       }
     },
   },
