@@ -36,7 +36,7 @@ describe('Inclusive Gateway', () => {
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, inclusivePosition);
 
-    const divergingString = `gatewayDirection=${gatewayDirection.diverging}`;
+    const divergingString = `gatewayDirection="${gatewayDirection.diverging}"`;
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
@@ -50,7 +50,7 @@ describe('Inclusive Gateway', () => {
 
     getElementAtPosition(taskPosition).click();
 
-    const convergingString = `gatewayDirection=${gatewayDirection.converging}`;
+    const convergingString = `gatewayDirection="${gatewayDirection.converging}"`;
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
