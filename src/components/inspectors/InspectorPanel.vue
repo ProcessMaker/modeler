@@ -1,6 +1,5 @@
 <template>
-  <b-card no-body class="inspector-container" data-test="inspector-container">
-    <div class="card-header">{{ $t('Inspector') }}</div>
+  <b-card no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0" data-test="inspector-container">
     <vue-form-renderer
       v-if="highlightedNode"
       :data="data"
