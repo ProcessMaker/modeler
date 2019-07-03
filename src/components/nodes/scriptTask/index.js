@@ -1,7 +1,7 @@
 import component from './scriptTask.vue';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const taskHeight = 76;
-import { configId } from '@/components/inspectors/configId';
 
 export default {
   id: 'processmaker-modeler-script-task',
@@ -40,12 +40,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: 'The id field should be unique across all elements in the diagram',
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',

@@ -1,8 +1,8 @@
 import component from './poolLane';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const id = 'processmaker-modeler-lane';
 export const minLaneHeight = 100;
-import { configId } from '@/components/inspectors/configId';
 
 export default {
   id,
@@ -36,12 +36,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: configId.helper,
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',

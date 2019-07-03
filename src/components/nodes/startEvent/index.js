@@ -1,5 +1,5 @@
 import component from './startEvent.vue';
-import { configId } from '@/components/inspectors/configId';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export default {
   id: 'processmaker-modeler-start-event',
@@ -48,12 +48,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',

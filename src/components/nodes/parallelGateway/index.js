@@ -1,6 +1,6 @@
 import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
-import { configId } from '@/components/inspectors/configId';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
@@ -40,12 +40,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Identifier',
-                helper: configId.helper,
-                name: configId.id,
-                validation: configId.validation,
-              },
+              config: idConfigSettings,
             },
             {
               component: 'FormInput',
