@@ -5,7 +5,7 @@
       :data="data"
       @update="updateDefinition"
       :config="config"
-      class="overflow-auto h-100"
+      class="overflow-auto h-100 inspector-font-size"
       @focusout.native="updateState"
       ref="formRenderer"
     />
@@ -206,5 +206,9 @@ export default {
 
 .form-group {
   padding: 0 0.5rem;
+}
+
+.inspector-font-size {
+  font-size: 0.875rem;
 }
 </style>

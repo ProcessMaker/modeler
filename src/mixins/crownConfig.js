@@ -184,8 +184,8 @@ export default {
             'data-title': title || '',
           },
           body: {
-            fill: '#fff',
-            stroke: ' #fff',
+            fill: 'none',
+            stroke: 'none',
             opacity: 0.8,
             cursor: 'pointer',
           },
@@ -207,7 +207,7 @@ export default {
           this.$emit('setTooltip', cellView);
           cellView.model.attr({ body: { fill: '#fffbb4', stroke: '#fffbb4' } });
           this.shape.listenTo(this.paper, 'cell:mouseleave', () => {
-            cellView.model.attr({ body: { fill: '#fff', stroke: '#fff' } });
+            cellView.model.attr({ body: { fill: 'none', stroke: 'none' } });
           });
         }
       });
