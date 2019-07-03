@@ -26,8 +26,12 @@
 import { defaultViewportDimensions } from './constants';
 
 Cypress.Commands.add('loadModeler', () => {
+  const url = Cypress.env('inProcessmaker')
+    ? '/modeler/1'
+    : '/';
+
   cy.viewport(defaultViewportDimensions.width, defaultViewportDimensions.height);
-  cy.visit('/');
+  cy.visit(url);
   cy.reload();
 });
 
@@ -78,7 +82,7 @@ Cypress.Commands.add('getType', {
 Cypress.Commands.add('login', () => {
   cy.request({
     method: 'POST',
-    url: 'https://spark.local.processmaker.com/login',
+    url: '/login',
     body: {
       username: 'admin',
       password: 'admin',

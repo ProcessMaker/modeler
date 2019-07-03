@@ -91,4 +91,25 @@ describe('Tasks', () => {
         expect(xml).to.contain(callActivityXML.trim());
       });
   });
+
+  it('Shows secondary dropdown for task user assignment', function() {
+    if (!Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    getElementAtPosition(taskPosition).click();
+
+    cy.contains('Task Assignment').next().select('User');
+    cy.contains('Assigned User')
+      .should('exist')
+      .next().find('.multiselect').should('exist');
+
+    cy.contains('Task Assignment').next().select('Group');
+    cy.contains('Assigned Group')
+      .should('exist')
+      .next().find('.multiselect').should('exist');
+  });
 });
