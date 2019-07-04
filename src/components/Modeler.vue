@@ -22,7 +22,7 @@
     <b-col
       class="paper-container h-100 pr-4"
       ref="paper-container"
-      :class="[cursor, { 'dragging-cursor' : isDragging }]"
+      :class="[cursor, { 'dragging-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
       <div class="btn-toolbar tool-buttons d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
@@ -179,7 +179,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       toggleMiniMap: false,
-      isDragging: false,
+      isGrabbing: false,
     };
   },
   watch: {
@@ -825,11 +825,11 @@ export default {
     this.paper.on('blank:pointerdown', (event, x, y) => {
       const scale = this.paper.scale();
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy};
-      this.isDragging = true;
+      this.isGrabbing = true;
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
-      this.isDragging = false;
+      this.isGrabbing = false;
     });
 
     this.$el.addEventListener('mousemove', event => {
