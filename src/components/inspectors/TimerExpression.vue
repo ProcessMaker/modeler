@@ -309,7 +309,7 @@ export default {
   margin-top: -3px;
 }
 .weekday {
-  padding: 1em;
+  padding: 0.75em;
   margin-left: 0.2em;
   margin-bottom: 0.5em;
   cursor: pointer;
