@@ -22,7 +22,7 @@
     <b-col
       class="paper-container h-100 pr-4"
       ref="paper-container"
-      :class="[cursor, { 'dragging-cursor' : isGrabbing }]"
+      :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
       <div class="btn-toolbar tool-buttons d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
@@ -922,7 +922,7 @@ $cursors: default, not-allowed;
     z-index: 1;
   }
 
-  .dragging-cursor {
+  .grabbing-cursor {
     cursor: grabbing !important;
   }
 
