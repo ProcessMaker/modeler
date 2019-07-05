@@ -9,7 +9,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Event-based Gateway', () => {
+describe('Event-Based Gateway', () => {
   beforeEach(() => {
     cy.loadModeler();
   });

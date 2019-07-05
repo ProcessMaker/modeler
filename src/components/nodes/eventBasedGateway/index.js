@@ -8,7 +8,7 @@ export default {
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/event-based-gateway.svg'),
-  label: 'Event-based Gateway',
+  label: 'Event-Based Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:EventBasedGateway', {
       name: $t('New Event-Based Gateway'),
@@ -24,7 +24,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Event-based Gateway',
+      name: 'Event-Based Gateway',
       items: [
         {
           component: 'FormAccordion',
