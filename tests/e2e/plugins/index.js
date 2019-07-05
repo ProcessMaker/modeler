@@ -15,7 +15,7 @@ module.exports = (on, config) => {
   // }))
 
   if (config.env.inProcessmaker) {
-    config.baseUrl = 'https://spark.local.processmaker.com/modeler/1';
+    config.baseUrl = 'https://processmaker.local.processmaker.com';
   }
 
   return Object.assign({}, config, {
