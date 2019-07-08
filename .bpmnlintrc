@@ -4,6 +4,7 @@
     "plugin:spark/all"
   ],
   "rules": {
-    "no-inclusive-gateway": "off"
+    "no-inclusive-gateway": "off",
+    "fake-join": "off"
   }
 }
