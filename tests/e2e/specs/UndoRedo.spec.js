@@ -17,22 +17,31 @@ function testNumberOfVertices(numberOfVertices) {
     .its('store.state')
     .then(state => {
       const { graph, paper } = state;
-      const waypoints = graph.getLinks()[0].findView(paper).getConnectionSubdivisions();
+      const link = graph.getLinks()[0];
+      const waypoints = link.findView(paper).getConnection().segments;
       expect(waypoints).to.have.length(numberOfVertices);
-    });
 
+      if (Cypress.env('inProcessmaker')) {
+        return;
+      }
 
-  if (Cypress.env('inProcessmaker')) {
-    return;
-  }
+      cy.get('[data-test=downloadXMLBtn]').click();
+      cy.window()
+        .its('xml')
+        .then(removeIndentationAndLinebreaks)
+        .then(xml => {
+          const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
 
-  cy.get('[data-test=downloadXMLBtn]').click();
-  cy.window()
-    .its('xml')
-    .then(removeIndentationAndLinebreaks)
-    .then(xml => {
-      const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
-      expect(waypoints).to.have.length(numberOfVertices);
+          const numberOfCustomVertices = link.vertices().length;
+          const hasCustomVertices = numberOfCustomVertices > 0;
+          const numberOfStartAndEndVertices = 2;
+
+          if (hasCustomVertices) {
+            expect(waypoints).to.have.length(numberOfStartAndEndVertices + numberOfCustomVertices);
+          } else {
+            expect(waypoints).to.have.length(numberOfStartAndEndVertices);
+          }
+        });
     });
 }
 
@@ -305,7 +314,7 @@ describe('Undo/redo', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
 
-    const initialNumberOfWaypoints = 3;
+    const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);
 
     getElementAtPosition(startEventPosition)
@@ -321,7 +330,7 @@ describe('Undo/redo', () => {
 
     waitToRenderAllShapes();
 
-    const updatedNumberOfWaypoints = 5;
+    const updatedNumberOfWaypoints = 8;
     testNumberOfVertices(updatedNumberOfWaypoints);
 
     cy.get('[data-test=undo]').click({ force: true });

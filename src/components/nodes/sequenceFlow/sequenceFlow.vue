@@ -127,6 +127,7 @@ export default {
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link();
+    this.shape.connector('rounded', { radius: 5 });
     this.createLabel();
 
     const conditionExpression = this.node.definition.conditionExpression;
