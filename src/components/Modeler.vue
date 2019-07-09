@@ -225,6 +225,16 @@ export default {
     },
   },
   methods: {
+    validateAndCleanPlaneElements() {
+      this.planeElements = this.planeElements.filter(diagram => {
+        if (!diagram.bpmnElement) {
+          window.ProcessMaker.alert(`bpmndi:BPMNShape ${diagram.id} references a non-existant element and was not parsed`, 'warning');
+          return false;
+        }
+
+        return true;
+      });
+    },
     getTooltipTarget() {
       return this.tooltipTarget.$el[0];
     },
@@ -404,6 +414,8 @@ export default {
       /* Get the diagram; there should only be one diagram. */
       this.plane = this.definitions.diagrams[0].plane;
       this.planeElements = this.plane.get('planeElement');
+
+      this.validateAndCleanPlaneElements();
 
       this.processNode = {
         type: 'processmaker-modeler-process',
