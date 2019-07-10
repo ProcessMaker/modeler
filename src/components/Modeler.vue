@@ -108,6 +108,7 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
+import remove from 'lodash/remove';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
@@ -226,13 +227,11 @@ export default {
   },
   methods: {
     validateAndCleanPlaneElements() {
-      this.planeElements = this.planeElements.filter(diagram => {
+      remove(this.planeElements, diagram => {
         if (!diagram.bpmnElement) {
           window.ProcessMaker.alert(`bpmndi:BPMNShape ${diagram.id} references a non-existant element and was not parsed`, 'warning');
-          return false;
+          return true;
         }
-
-        return true;
       });
     },
     getTooltipTarget() {
