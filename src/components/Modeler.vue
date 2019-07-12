@@ -952,5 +952,14 @@ $cursors: default, not-allowed;
     fill:#ED4757;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
   }
+
+  .link-tool-helper {
+    font-size: 12px;
+    color: #adb5bd;
+
+    &__title {
+      font-weight: 600;
+    }
+  }
 }
 </style>

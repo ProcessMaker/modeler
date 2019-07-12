@@ -1,5 +1,6 @@
 import component from './sequenceFlow.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import linkToolHelper from '@/components/inspectors/linkToolHelper';
 
 export const id = 'processmaker-modeler-sequence-flow';
 
@@ -74,6 +75,10 @@ export default {
                 helper: 'The Name of the Sequence Flow',
                 name: 'name',
               },
+            },
+            {
+              component: 'FormText',
+              config: linkToolHelper,
             },
           ],
         },
