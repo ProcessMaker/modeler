@@ -3,18 +3,31 @@ import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
+import store from '@/store';
 
 function getPointFromGroup(view, group) {
-  // return paper.localToPagePoint(Object.values(view.model.getPortsPositions(group)));
   const { x: shapeX, y: shapeY } = view.model.position();
   const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
+
   return joint.g.Point(shapeX + x, shapeY + y);
-  // return joint.g.Point(x, y);
+}
+
+function getPortPoints(view) {
+  return ['top', 'right', 'bottom', 'left'].map(group => getPointFromGroup(view, group));
 }
 
 function closestPort(endView, endMagnet, anchorReference) {
-  const points = ['top', 'right', 'bottom', 'left'].map(group => getPointFromGroup(endView, group));
-  return anchorReference.chooseClosest(points);
+  return getPortPoints(endView).sort((p1, p2) => {
+    const referencePoint = anchorReference.distance
+      ? anchorReference
+      : store.state.graph.getCell(anchorReference.getAttribute('model-id')).position();
+
+    return referencePoint.distance(p1) - referencePoint.distance(p2);
+  })[0];
+}
+
+function snapToAnchor(coords, endView) {
+  return closestPort(endView, null, coords);
 }
 
 export default {
@@ -84,7 +97,8 @@ export default {
   methods: {
     setSource(targetShape) {
       this.shape.source(targetShape, {
-        anchor: { name: 'modelCenter' },
+        // anchor: { name: 'modelCenter' },
+        anchor: closestPort,
         connectionPoint: { name: 'boundary' },
       });
     },
@@ -209,14 +223,8 @@ export default {
     },
     setupLinkTools() {
       const verticesTool = new joint.linkTools.Vertices();
-      const sourceAnchorTool = new joint.linkTools.SourceAnchor();
-      const targetAnchorTool = new joint.linkTools.TargetAnchor({ snapRadius: 20 });
-      // const targetAnchorTool = new joint.linkTools.TargetAnchor({
-      //   snap(coords, endView, endMagnet) {
-      //     // console.log(coords, endView, endMagnet);
-      //     return new joint.g.Point(150, 150);
-      //   },
-      // });
+      const sourceAnchorTool = new joint.linkTools.SourceAnchor({ snap: snapToAnchor });
+      const targetAnchorTool = new joint.linkTools.TargetAnchor({ snap: snapToAnchor });
       const segmentsTool = new joint.linkTools.Segments();
 
       const toolsView = new joint.dia.ToolsView({

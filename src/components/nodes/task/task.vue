@@ -52,7 +52,7 @@ export default {
       left: { position: { name: 'left' } },
     };
 
-    const markup = '<rect width="3" height="3" fill="blue"/>';
+    const markup = '<rect width="1" height="1" fill="none"/>';
 
     this.shape = new TaskShape({ ports: { groups }});
     this.shape.addPorts([

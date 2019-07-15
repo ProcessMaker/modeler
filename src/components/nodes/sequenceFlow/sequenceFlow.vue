@@ -62,10 +62,9 @@ export default {
     updateRouter() {
       this.shape.router('orthogonal');
       // this.shape.router('manhattan',{
-      //   maximumLoops: 1,
       //   excludeEnds: ['source'],
       //   excludeTypes: ['standard.EmbeddedImage', 'basic.Text', 'standard.TextBlock', 'standard.Polyline'],
-      //   padding: 0,
+      //   // padding: 0,
       // });
     },
     updateDefinitionLinks() {
