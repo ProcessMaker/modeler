@@ -1,6 +1,5 @@
 import component from './messageFlow.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import linkToolHelper from '@/components/inspectors/linkToolHelper';
 
 export const id = 'processmaker-modeler-message-flow';
 
@@ -37,10 +36,6 @@ export default {
                 helper: 'The Name of the Message Flow',
                 name: 'name',
               },
-            },
-            {
-              component: 'FormText',
-              config: linkToolHelper,
             },
           ],
         },

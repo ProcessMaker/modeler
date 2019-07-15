@@ -222,7 +222,6 @@ export default {
       });
     });
 
-
     const targetRef = this.node.definition.get('targetRef');
 
     if (targetRef.id) {
