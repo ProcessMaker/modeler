@@ -60,12 +60,13 @@ export default {
   },
   methods: {
     updateRouter() {
-      this.shape.router('manhattan',{
-        maximumLoops: 1,
-        excludeEnds: ['source'],
-        excludeTypes: ['standard.EmbeddedImage'],
-        padding: 20,
-      });
+      this.shape.router('orthogonal');
+      // this.shape.router('manhattan',{
+      //   maximumLoops: 1,
+      //   excludeEnds: ['source'],
+      //   excludeTypes: ['standard.EmbeddedImage', 'basic.Text', 'standard.TextBlock', 'standard.Polyline'],
+      //   padding: 0,
+      // });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
@@ -127,7 +128,7 @@ export default {
   },
   mounted() {
     this.shape = new joint.shapes.standard.Link();
-    this.shape.connector('rounded', { radius: 5 });
+    // this.shape.connector('rounded', { radius: 5 });
     this.createLabel();
 
     const conditionExpression = this.node.definition.conditionExpression;

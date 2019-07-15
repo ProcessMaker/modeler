@@ -45,7 +45,22 @@ export default {
     },
   },
   mounted() {
-    this.shape = new TaskShape();
+    const groups = {
+      top: { position: { name: 'top' } },
+      right: { position: { name: 'right' } },
+      bottom: { position: { name: 'bottom' } },
+      left: { position: { name: 'left' } },
+    };
+
+    const markup = '<rect width="3" height="3" fill="blue"/>';
+
+    this.shape = new TaskShape({ ports: { groups }});
+    this.shape.addPorts([
+      { group: 'top', markup },
+      { group: 'right', markup },
+      { group: 'bottom', markup },
+      { group: 'left', markup },
+    ]);
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);

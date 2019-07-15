@@ -4,13 +4,26 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
 
+function getPointFromGroup(view, group) {
+  // return paper.localToPagePoint(Object.values(view.model.getPortsPositions(group)));
+  const { x: shapeX, y: shapeY } = view.model.position();
+  const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
+  return joint.g.Point(shapeX + x, shapeY + y);
+  // return joint.g.Point(x, y);
+}
+
+function closestPort(endView, endMagnet, anchorReference) {
+  const points = ['top', 'right', 'bottom', 'left'].map(group => getPointFromGroup(endView, group));
+  return anchorReference.chooseClosest(points);
+}
+
 export default {
   props: ['highlighted'],
   data() {
     return {
       sourceShape: null,
       target: null,
-      anchorPadding: 25,
+      // anchorPadding: 25,
       listeningToMouseup: false,
       vertices: null,
     };
@@ -69,6 +82,33 @@ export default {
     },
   },
   methods: {
+    setSource(targetShape) {
+      this.shape.source(targetShape, {
+        anchor: { name: 'modelCenter' },
+        connectionPoint: { name: 'boundary' },
+      });
+    },
+    setTarget(targetShape) {
+      this.shape.target(targetShape, {
+        // anchor: { name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter' },
+        anchor: closestPort,
+        connectionPoint: { name: 'boundary' },
+      });
+    },
+    // setTarget(targetShape) {
+    // this.shape.target(this.target, {
+    //   anchor: {
+    //     // name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+    //     // args: { padding: this.anchorPadding },
+    //     name: 'modelCenter',
+    //   },
+    //   // connectionPoint: { name: 'boundary' },
+    //   connectionPoint: {
+    //     name: 'boundary',
+    //     args: { offset: 0 },
+    //   },
+    // });
+    // },
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);
@@ -126,16 +166,8 @@ export default {
         return;
       }
 
-      this.shape.target(this.target, {
-        anchor: {
-          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: this.anchorPadding },
-        },
-        connectionPoint: { name: 'boundary' },
-      });
-
+      this.setTarget(this.target);
       this.updateRouter();
-
       this.$emit('set-cursor', 'default');
       this.setBodyColor(validNodeColor);
 
@@ -177,10 +209,18 @@ export default {
     },
     setupLinkTools() {
       const verticesTool = new joint.linkTools.Vertices();
+      const sourceAnchorTool = new joint.linkTools.SourceAnchor();
+      const targetAnchorTool = new joint.linkTools.TargetAnchor({ snapRadius: 20 });
+      // const targetAnchorTool = new joint.linkTools.TargetAnchor({
+      //   snap(coords, endView, endMagnet) {
+      //     // console.log(coords, endView, endMagnet);
+      //     return new joint.g.Point(150, 150);
+      //   },
+      // });
       const segmentsTool = new joint.linkTools.Segments();
 
       const toolsView = new joint.dia.ToolsView({
-        tools: [verticesTool, segmentsTool],
+        tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
       });
 
       this.shapeView.addTools(toolsView);
@@ -208,11 +248,7 @@ export default {
       return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
     });
 
-    this.shape.source(this.sourceShape, {
-      anchor: { name: 'modelCenter' },
-      connectionPoint: { name: 'boundary' },
-    });
-
+    this.setSource(this.sourceShape);
     this.setupLinkTools();
 
     const targetRef = this.node.definition.get('targetRef');
@@ -231,21 +267,10 @@ export default {
         this.shape.vertices(sequenceVertices);
       }
 
-      this.shape.target(targetShape, {
-        anchor: {
-          name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: this.anchorPadding },
-        },
-        connectionPoint: { name: 'boundary' },
-      });
-
+      this.setTarget(targetShape);
       this.completeLink();
-
     } else {
-      this.shape.target(targetRef, {
-        connectionPoint: { name: 'boundary' },
-      });
-
+      this.setTarget(targetRef);
       this.paper.setInteractivity(false);
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
 
