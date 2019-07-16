@@ -57,7 +57,7 @@ describe('Tasks', () => {
     cy.get('.inspector-container').should('contain', 'A process has not been configred in the connnected Call Acitivty task.');
     cy.get('[name=startEvent]').should('not.exist');
 
-    getElementAtPosition(callActivityPosition).click();
+    getElementAtPosition(callActivityPosition).click({ force: true });
 
     cy.get('select[name=calledElement]').select('Process with start event');
 
