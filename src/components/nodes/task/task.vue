@@ -6,6 +6,7 @@
 import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
+import portGroups from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './index';
 
@@ -13,7 +14,7 @@ const labelPadding = 15;
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portGroups],
   data() {
     return {
       shape: null,
@@ -45,22 +46,7 @@ export default {
     },
   },
   mounted() {
-    const groups = {
-      top: { position: { name: 'top' } },
-      right: { position: { name: 'right' } },
-      bottom: { position: { name: 'bottom' } },
-      left: { position: { name: 'left' } },
-    };
-
-    const markup = '<rect width="1" height="1" fill="none"/>';
-
-    this.shape = new TaskShape({ ports: { groups }});
-    this.shape.addPorts([
-      { group: 'top', markup },
-      { group: 'right', markup },
-      { group: 'bottom', markup },
-      { group: 'left', markup },
-    ]);
+    this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);

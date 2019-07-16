@@ -3,8 +3,7 @@ import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
-
-const portGroups = ['top', 'right', 'bottom', 'left'];
+import { portGroups } from '@/mixins/portsConfig';
 
 function getPointFromGroup(view, group) {
   const { x: shapeX, y: shapeY } = view.model.position();
@@ -42,6 +41,8 @@ const endpoints = {
   source: 'source',
   target: 'target',
 };
+
+const anchorPadding = 25;
 
 export default {
   props: ['highlighted'],
@@ -111,7 +112,7 @@ export default {
       this.shape[endpoint](shape, {
         anchor: {
           name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: 25 },
+          args: { padding: anchorPadding },
         },
         connectionPoint: { name: 'boundary' },
       });
