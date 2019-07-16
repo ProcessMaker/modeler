@@ -36,7 +36,6 @@ export default {
     return {
       sourceShape: null,
       target: null,
-      // anchorPadding: 25,
       listeningToMouseup: false,
       vertices: null,
     };
@@ -97,32 +96,16 @@ export default {
   methods: {
     setSource(targetShape) {
       this.shape.source(targetShape, {
-        // anchor: { name: 'modelCenter' },
         anchor: closestPort,
         connectionPoint: { name: 'boundary' },
       });
     },
     setTarget(targetShape) {
       this.shape.target(targetShape, {
-        // anchor: { name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter' },
         anchor: closestPort,
         connectionPoint: { name: 'boundary' },
       });
     },
-    // setTarget(targetShape) {
-    // this.shape.target(this.target, {
-    //   anchor: {
-    //     // name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-    //     // args: { padding: this.anchorPadding },
-    //     name: 'modelCenter',
-    //   },
-    //   // connectionPoint: { name: 'boundary' },
-    //   connectionPoint: {
-    //     name: 'boundary',
-    //     args: { offset: 0 },
-    //   },
-    // });
-    // },
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);
