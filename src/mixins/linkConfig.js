@@ -30,6 +30,11 @@ function snapToAnchor(coords, endView) {
   return closestPort(endView, null, coords);
 }
 
+const endpoints = {
+  source: 'source',
+  target: 'target',
+};
+
 export default {
   props: ['highlighted'],
   data() {
@@ -94,17 +99,17 @@ export default {
     },
   },
   methods: {
-    setSource(targetShape) {
-      this.shape.source(targetShape, {
+    setEndpoint(shape, endpoint) {
+      this.shape[endpoint](shape, {
         anchor: closestPort,
         connectionPoint: { name: 'boundary' },
       });
     },
+    setSource(sourceShape) {
+      this.setEndpoint(sourceShape, endpoints.source);
+    },
     setTarget(targetShape) {
-      this.shape.target(targetShape, {
-        anchor: closestPort,
-        connectionPoint: { name: 'boundary' },
-      });
+      this.setEndpoint(targetShape, endpoints.target);
     },
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
