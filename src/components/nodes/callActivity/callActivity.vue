@@ -6,6 +6,7 @@
 import joint from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task';
 import store from '@/store';
@@ -15,7 +16,7 @@ const labelPadding = 15;
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       crownConfig: [
