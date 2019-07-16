@@ -3,7 +3,8 @@ import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
-import store from '@/store';
+
+const portGroups = ['top', 'right', 'bottom', 'left'];
 
 function getPointFromGroup(view, group) {
   const { x: shapeX, y: shapeY } = view.model.position();
@@ -13,21 +14,28 @@ function getPointFromGroup(view, group) {
 }
 
 function getPortPoints(view) {
-  return ['top', 'right', 'bottom', 'left'].map(group => getPointFromGroup(view, group));
+  return portGroups.map(group => getPointFromGroup(view, group));
 }
 
-function closestPort(endView, endMagnet, anchorReference) {
+function closestPort(endView, anchorReference) {
   return getPortPoints(endView).sort((p1, p2) => {
-    const referencePoint = anchorReference.distance
-      ? anchorReference
-      : store.state.graph.getCell(anchorReference.getAttribute('model-id')).position();
-
-    return referencePoint.distance(p1) - referencePoint.distance(p2);
+    return anchorReference.distance(p1) - anchorReference.distance(p2);
   })[0];
 }
 
+function hasPorts(view) {
+  return Object.values(view.model.getPortsPositions(portGroups[0])).length > 0;
+}
+
 function snapToAnchor(coords, endView) {
-  return closestPort(endView, null, coords);
+  if (!hasPorts(endView)) {
+    const { x, y } = endView.model.position();
+    const { width, height } = endView.model.size();
+
+    return new joint.g.Point(x + (width / 2), y + (height / 2));
+  }
+
+  return closestPort(endView, coords);
 }
 
 const endpoints = {
@@ -101,7 +109,10 @@ export default {
   methods: {
     setEndpoint(shape, endpoint) {
       this.shape[endpoint](shape, {
-        anchor: closestPort,
+        anchor: {
+          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: 25 },
+        },
         connectionPoint: { name: 'boundary' },
       });
     },
