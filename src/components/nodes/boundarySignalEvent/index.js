@@ -1,17 +1,17 @@
-import component from './boundaryTimerEvent.vue';
+import component from './boundarySignalEvent';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export default {
-  id: 'processmaker-modeler-boundary-timer-event',
+  id: 'processmaker-modeler-boundary-signal-event',
   component,
-  bpmnType: ['bpmn:BoundaryTimerEvent'],
+  bpmnType: ['bpmn:BoundaryEvent'],
   control: true,
   category: 'BPMN',
-  label: 'Boundary Timer Event',
-  icon: require('@/assets/clock.svg'),
+  label: 'Boundary Signal Event',
+  icon: require('@/assets/triangle.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Timer Event'),
+      name: $t('New Boundary Signal Event'),
     });
   },
   diagram(moddle) {
