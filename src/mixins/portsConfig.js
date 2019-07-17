@@ -1,7 +1,13 @@
-export const portGroups = ['top', 'right', 'bottom', 'left'];
+export const portGroups = ['top', 'right', 'bottom', 'left', 'absolute'];
 
 const groups = portGroups.reduce((groups, group) => {
-  groups[group] = { position: { name: group } };
+  groups[group] = {
+    position: {
+      name: group,
+      args: group === 'absolute' ? { x: '50%', y: '50%' } : null,
+    },
+  };
+
   return groups;
 }, {});
 const markup = '<rect width="1" height="1" fill="none"/>';
