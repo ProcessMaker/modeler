@@ -214,13 +214,6 @@ export default {
     });
 
     this.setupLinkTools();
-    this.shape.on('change:vertices', () => {
-      this.vertices = document.querySelectorAll('[data-tool-name="vertices"]');
-
-      this.vertices.forEach(vertex => {
-        vertex.classList.add('vertex');
-      });
-    });
 
     const targetRef = this.node.definition.get('targetRef');
 
