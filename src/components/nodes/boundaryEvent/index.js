@@ -47,6 +47,18 @@ export default {
                 name: 'name',
               },
             },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Boundary Type',
+                helper: 'Select Boundary Type',
+                name: 'boundaryType',
+                options: [
+                  { value: 'Message Event', content: 'Message Event' },
+                  { value: 'Timer Event', content: 'Timer Event' },
+                ],
+              },
+            },
           ],
         },
       ],
