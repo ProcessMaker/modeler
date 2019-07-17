@@ -79,9 +79,8 @@ export default {
     let draggingElement;
     let newTask;
     let task;
-    let invalidTask;
 
-    this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
+    this.shape.listenTo(this.graph, 'change:position', (element) => {
       task = this.getElementsUnderArea(element).find(model => {
         return model.component && model.component.node.type === 'processmaker-modeler-task';
       });
