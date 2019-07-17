@@ -11,7 +11,6 @@ import {
   getCrownButtonForElement,
   uploadXml,
   modalAnimationTime,
-  testNumberOfVertices,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
