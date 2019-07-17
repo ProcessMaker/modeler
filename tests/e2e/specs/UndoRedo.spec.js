@@ -9,41 +9,10 @@ import {
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
   removeIndentationAndLinebreaks,
+  testNumberOfVertices,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-function testNumberOfVertices(numberOfVertices) {
-  cy.window()
-    .its('store.state')
-    .then(state => {
-      const { graph, paper } = state;
-      const link = graph.getLinks()[0];
-      const waypoints = link.findView(paper).getConnection().segments;
-      expect(waypoints).to.have.length(numberOfVertices);
-
-      if (Cypress.env('inProcessmaker')) {
-        return;
-      }
-
-      cy.get('[data-test=downloadXMLBtn]').click();
-      cy.window()
-        .its('xml')
-        .then(removeIndentationAndLinebreaks)
-        .then(xml => {
-          const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
-
-          const numberOfCustomVertices = link.vertices().length;
-          const hasCustomVertices = numberOfCustomVertices > 0;
-          const numberOfStartAndEndVertices = 2;
-
-          if (hasCustomVertices) {
-            expect(waypoints).to.have.length(numberOfStartAndEndVertices + numberOfCustomVertices);
-          } else {
-            expect(waypoints).to.have.length(numberOfStartAndEndVertices);
-          }
-        });
-    });
-}
 
 describe('Undo/redo', () => {
   beforeEach(() => {

@@ -12,6 +12,7 @@ export default {
       target: null,
       anchorPadding: 25,
       listeningToMouseup: false,
+      vertices: null,
     };
   },
   watch: {

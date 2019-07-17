@@ -947,5 +947,10 @@ $cursors: default, not-allowed;
       }
     }
   }
+
+  .joint-marker-vertex:hover {
+    fill:#ED4757;
+    cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+  }
 }
 </style>

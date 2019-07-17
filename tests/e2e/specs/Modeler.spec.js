@@ -315,4 +315,23 @@ describe('Modeler', () => {
       expect($modal).to.contain(warning);
     });
   });
+
+  it('check for joint marker class on linkTools', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const taskPosition = { x: 300, y: 300 };
+
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click('topRight');
+
+    cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
+    cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
+    cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
+    cy.get('[data-tool-name=vertices]').trigger('mouseover', 'bottomLeft', { force: true });
+    cy.get('.joint-marker-vertex').should('be.visible');
+  });
 });
