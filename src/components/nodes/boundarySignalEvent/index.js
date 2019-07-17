@@ -8,7 +8,7 @@ export default {
   control: true,
   category: 'BPMN',
   label: 'Boundary Signal Event',
-  icon: require('@/assets/triangle.svg'),
+  icon: require('@/assets/toolpanel/boundary-signal-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Signal Event'),

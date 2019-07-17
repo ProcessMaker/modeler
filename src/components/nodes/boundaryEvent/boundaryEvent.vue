@@ -37,12 +37,14 @@ export default {
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       body: {
-        stroke: '#6c757d',
+        stroke: '#212529',
+        strokeWidth: 0.85,
         fill: '#FFF',
       },
       body2: {
-        stroke: '#6c757d',
+        stroke: '#212529',
         fill: '#FFF',
+        strokeWidth: 0.85,
       },
       label: {
         text: this.node.definition.get('name'),

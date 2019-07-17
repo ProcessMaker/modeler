@@ -8,7 +8,7 @@ export default {
   control: true,
   category: 'BPMN',
   label: 'Boundary Error Event',
-  icon: require('@/assets/error-bolt.svg'),
+  icon: require('@/assets/toolpanel/boundary-error-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Error Event'),

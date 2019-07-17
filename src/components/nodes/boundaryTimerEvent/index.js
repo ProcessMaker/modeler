@@ -8,7 +8,7 @@ export default {
   control: true,
   category: 'BPMN',
   label: 'Boundary Timer Event',
-  icon: require('@/assets/clock.svg'),
+  icon: require('@/assets/toolpanel/boundary-timer-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Timer Event'),
