@@ -6,6 +6,7 @@
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
+import portsConfig from '@/mixins/portsConfig';
 import Lane from '../poolLane';
 import { id as poolId } from './index';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
@@ -40,7 +41,7 @@ joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
 
 export default {
   props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes', 'moddle', 'processNode', 'rootElements'],
-  mixins: [crownConfig, resizeConfig],
+  mixins: [crownConfig, resizeConfig, portsConfig],
   data() {
     return {
       shape: null,

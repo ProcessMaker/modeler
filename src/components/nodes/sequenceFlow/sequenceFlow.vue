@@ -60,12 +60,7 @@ export default {
   },
   methods: {
     updateRouter() {
-      this.shape.router('manhattan',{
-        maximumLoops: 1,
-        excludeEnds: ['source'],
-        excludeTypes: ['standard.EmbeddedImage'],
-        padding: 20,
-      });
+      this.shape.router('orthogonal');
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();

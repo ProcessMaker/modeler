@@ -3,6 +3,46 @@ import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
+import { portGroups } from '@/mixins/portsConfig';
+
+function getPointFromGroup(view, group) {
+  const { x: shapeX, y: shapeY } = view.model.position();
+  const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
+
+  return joint.g.Point(shapeX + x, shapeY + y);
+}
+
+function getPortPoints(view) {
+  return portGroups.map(group => getPointFromGroup(view, group));
+}
+
+function closestPort(endView, anchorReference) {
+  return getPortPoints(endView).sort((p1, p2) => {
+    return anchorReference.distance(p1) - anchorReference.distance(p2);
+  })[0];
+}
+
+function hasPorts(view) {
+  return Object.values(view.model.getPortsPositions(portGroups[0])).length > 0;
+}
+
+function snapToAnchor(coords, endView) {
+  if (!hasPorts(endView)) {
+    const { x, y } = endView.model.position();
+    const { width, height } = endView.model.size();
+
+    return new joint.g.Point(x + (width / 2), y + (height / 2));
+  }
+
+  return closestPort(endView, coords);
+}
+
+const endpoints = {
+  source: 'source',
+  target: 'target',
+};
+
+const anchorPadding = 25;
 
 export default {
   props: ['highlighted'],
@@ -10,7 +50,6 @@ export default {
     return {
       sourceShape: null,
       target: null,
-      anchorPadding: 25,
       listeningToMouseup: false,
       vertices: null,
     };
@@ -69,6 +108,21 @@ export default {
     },
   },
   methods: {
+    setEndpoint(shape, endpoint) {
+      this.shape[endpoint](shape, {
+        anchor: {
+          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          args: { padding: anchorPadding },
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+    },
+    setSource(sourceShape) {
+      this.setEndpoint(sourceShape, endpoints.source);
+    },
+    setTarget(targetShape) {
+      this.setEndpoint(targetShape, endpoints.target);
+    },
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
       target.attr('.body/fill', color);
@@ -126,16 +180,8 @@ export default {
         return;
       }
 
-      this.shape.target(this.target, {
-        anchor: {
-          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: this.anchorPadding },
-        },
-        connectionPoint: { name: 'boundary' },
-      });
-
+      this.setTarget(this.target);
       this.updateRouter();
-
       this.$emit('set-cursor', 'default');
       this.setBodyColor(validNodeColor);
 
@@ -177,10 +223,12 @@ export default {
     },
     setupLinkTools() {
       const verticesTool = new joint.linkTools.Vertices();
+      const sourceAnchorTool = new joint.linkTools.SourceAnchor({ snap: snapToAnchor });
+      const targetAnchorTool = new joint.linkTools.TargetAnchor({ snap: snapToAnchor });
       const segmentsTool = new joint.linkTools.Segments();
 
       const toolsView = new joint.dia.ToolsView({
-        tools: [verticesTool, segmentsTool],
+        tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
       });
 
       this.shapeView.addTools(toolsView);
@@ -208,11 +256,7 @@ export default {
       return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
     });
 
-    this.shape.source(this.sourceShape, {
-      anchor: { name: 'modelCenter' },
-      connectionPoint: { name: 'boundary' },
-    });
-
+    this.setSource(this.sourceShape);
     this.setupLinkTools();
 
     const targetRef = this.node.definition.get('targetRef');
@@ -231,21 +275,10 @@ export default {
         this.shape.vertices(sequenceVertices);
       }
 
-      this.shape.target(targetShape, {
-        anchor: {
-          name: targetShape instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: this.anchorPadding },
-        },
-        connectionPoint: { name: 'boundary' },
-      });
-
+      this.setTarget(targetShape);
       this.completeLink();
-
     } else {
-      this.shape.target(targetRef, {
-        connectionPoint: { name: 'boundary' },
-      });
-
+      this.setTarget(targetRef);
       this.paper.setInteractivity(false);
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
 
