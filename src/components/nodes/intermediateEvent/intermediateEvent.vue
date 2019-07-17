@@ -4,12 +4,13 @@
 
 <script>
 import crownConfig from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/intermediateEvent/shape';
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       shape: null,
