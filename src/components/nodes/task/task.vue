@@ -8,7 +8,6 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './index';
-import pull from 'lodash/pull';
 
 const labelPadding = 15;
 
