@@ -1,18 +1,7 @@
 <svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M23.5 40C32.6127 40 40 32.6127 40 23.5C40 14.3873 32.6127 7 23.5 7C14.3873 7 7 14.3873 7 23.5C7 32.6127 14.3873 40 23.5 40Z" stroke="#788793"/>
-<path d="M23.5 23.5V14.2188" stroke="#788793" stroke-linecap="square"/>
-<path d="M23.5 23.5H30.7188" stroke="#788793" stroke-linecap="square"/>
-<path d="M23.5 7V10.0938" stroke="#788793" stroke-linecap="square"/>
-<path d="M23.5 36.9062V40" stroke="#788793" stroke-linecap="square"/>
-<path d="M31.75 9.21057L30.2031 11.8898" stroke="#788793" stroke-linecap="square"/>
-<path d="M16.7969 35.1102L15.25 37.7895" stroke="#788793" stroke-linecap="square"/>
-<path d="M37.7894 15.25L35.1102 16.7969" stroke="#788793" stroke-linecap="square"/>
-<path d="M11.8898 30.2031L9.21057 31.75" stroke="#788793" stroke-linecap="square"/>
-<path d="M40 23.5H36.9062" stroke="#788793" stroke-linecap="square"/>
-<path d="M10.0938 23.5H7" stroke="#788793" stroke-linecap="square"/>
-<path d="M37.7894 31.75L35.1102 30.2031" stroke="#788793" stroke-linecap="square"/>
-<path d="M11.8898 16.7969L9.21057 15.25" stroke="#788793" stroke-linecap="square"/>
-<path d="M31.75 37.7894L30.2031 35.1102" stroke="#788793" stroke-linecap="square"/>
-<path d="M16.7969 11.8898L15.25 9.2105" stroke="#788793" stroke-linecap="square"/>
-<circle cx="23.5" cy="23.5" r="22.5" stroke="#788793" stroke-width="2"/>
+<path d="M23.5 38C31.5081 38 38 31.5081 38 23.5C38 15.4919 31.5081 9 23.5 9C15.4919 9 9 15.4919 9 23.5C9 31.5081 15.4919 38 23.5 38Z" stroke="#788793"/>
+<path d="M22.2785 22.9177L26.4792 15.9265" stroke="#212529" stroke-linecap="square"/>
+<path d="M21.7424 23.5H29.8438" stroke="#212529" stroke-linecap="square"/>
+<circle cx="23.5" cy="23.5" r="20" stroke="#212529"/>
+<circle cx="23.5" cy="23.5" r="23" stroke="#212529"/>
 </svg>
