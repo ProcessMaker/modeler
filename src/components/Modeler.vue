@@ -633,7 +633,7 @@ export default {
 
       this.paper.setDimensions(clientWidth, clientHeight);
     },
-    isPointOverPool(mouseX, mouseY) {
+    isPointOverPaper(mouseX, mouseY) {
       const { x, y, width, height } = this.$refs['paper-container'].getBoundingClientRect();
       const rect = new joint.g.rect(x, y, width, height);
       const point = new joint.g.point(mouseX, mouseY);
@@ -641,7 +641,7 @@ export default {
       return rect.containsPoint(point);
     },
     validateDropTarget({ clientX, clientY, type }) {
-      if (!this.isPointOverPool(clientX, clientY)) {
+      if (!this.isPointOverPaper(clientX, clientY)) {
         this.allowDrop = false;
         return;
       }
