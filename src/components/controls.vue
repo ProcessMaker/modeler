@@ -20,7 +20,7 @@
         class="control-item p-2 border-right-0 flex-grow-1"
         :data-test="control.type"
         @dragstart="$event.preventDefault()"
-        @mousedown="startDrag($event, control.type)"
+        @mousedown="startDrag($event, control)"
       >
         <div class="tool text-truncate ml-1" v-b-tooltip.hover :title="$t(control.label)">
           <img :src="control.icon" class="tool-icon mr-1">
@@ -48,7 +48,7 @@ export default {
     return {
       filterQuery: '',
       draggingElement: null,
-      draggingControlType: null,
+      draggingControl: null,
       xOffset: null,
       yOffset: null,
     };
@@ -59,7 +59,7 @@ export default {
     },
   },
   methods: {
-    startDrag(event, controlType) {
+    startDrag(event, control) {
       const sourceElement = event.target;
       const duplicateElement = sourceElement.cloneNode(true);
       duplicateElement.classList.add('is-dragging');
@@ -69,7 +69,7 @@ export default {
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
       this.draggingElement = duplicateElement;
-      this.draggingControlType = controlType;
+      this.draggingControl = control;
 
       document.addEventListener('mousemove', this.setDraggingPosition);
       document.addEventListener('mouseup', this.dropElement);
@@ -88,16 +88,16 @@ export default {
 
       document.body.removeChild(this.draggingElement);
       this.draggingElement = null;
-      this.draggingControlType = null;
+      this.draggingControl = null;
     },
     dropElement({ clientX, clientY }) {
-      this.$emit('handleDrop', { clientX, clientY, type: this.draggingControlType });
+      this.$emit('handleDrop', { clientX, clientY, control: this.draggingControl });
       this.stopDrag();
     },
     setDraggingPosition({ pageX, pageY, clientX, clientY }) {
       this.draggingElement.style.left = pageX - this.xOffset + 'px';
       this.draggingElement.style.top = pageY - this.yOffset + 'px';
-      this.$emit('drag', { clientX, clientY, type: this.draggingControlType });
+      this.$emit('drag', { clientX, clientY, control: this.draggingControl });
     },
   },
 };

@@ -4,7 +4,7 @@ import idConfigSettings from '@/components/inspectors/idConfigSettings';
 export default {
   id: 'processmaker-modeler-boundary-timer-event',
   component,
-  bpmnType: ['bpmn:BoundaryTimerEvent'],
+  bpmnType: 'bpmn:BoundaryEvent',
   control: true,
   category: 'BPMN',
   label: 'Boundary Timer Event',

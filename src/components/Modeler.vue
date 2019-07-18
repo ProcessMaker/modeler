@@ -365,6 +365,7 @@ export default {
           type: nodeType.id,
           icon: nodeType.icon,
           label: nodeType.label,
+          bpmnType: nodeType.bpmnType,
         });
       }
 
@@ -545,18 +546,18 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, type }) {
-      this.validateDropTarget({ clientX, clientY, type });
+    handleDrop({ clientX, clientY, control }) {
+      this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
         return;
       }
 
       // Add to our processNode
-      const definition = this.nodeRegistry[type].definition(this.moddle, this.$t);
+      const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
       // Now, let's modify planeElement
-      const diagram = this.nodeRegistry[type].diagram(this.moddle);
+      const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       // Handle transform
       const paperOrigin = this.paper.localToPagePoint(0, 0);
@@ -567,7 +568,7 @@ export default {
 
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
-      this.addNode({ type, definition, diagram });
+      this.addNode({ type: control.type, definition, diagram });
     },
     addNode({ type, definition, diagram }) {
       /*
@@ -640,14 +641,25 @@ export default {
 
       return rect.containsPoint(point);
     },
-    validateDropTarget({ clientX, clientY, type }) {
+    validateDropTarget({ clientX, clientY, control }) {
+
       if (!this.isPointOverPaper(clientX, clientY)) {
         this.allowDrop = false;
         return;
       }
 
+      const localMousePosition = this.paper.clientToLocalPoint({
+        x: clientX,
+        y: clientY,
+      });
+
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
-      if (type === poolId) {
+      if (control.type === poolId) {
+        this.allowDrop = true;
+        return;
+      }
+
+      if (control.bpmnType === 'bpmn:Task') {
         this.allowDrop = true;
         return;
       }
@@ -657,6 +669,18 @@ export default {
         !this.collaboration ||
         this.collaboration.get('participants').length === 0
       ) {
+        const task = this.graph
+          .findModelsFromPoint(localMousePosition)
+          .find(({ component }) => {
+            return component && component.node.type === 'processmaker-modeler-task';
+          });
+
+        if (!task) {
+          this.allowDrop = false;
+        } else {
+          console.log('hovering task...');
+          this.allowDrop = true;
+        }
         this.allowDrop = true;
         return;
       }
@@ -672,10 +696,6 @@ export default {
 
       /* Determine if we are over a pool, and only allow dropping elements over a pool */
 
-      const localMousePosition = this.paper.clientToLocalPoint({
-        x: clientX,
-        y: clientY,
-      });
       const pool = this.graph
         .findModelsFromPoint(localMousePosition)
         .find(({ component }) => {

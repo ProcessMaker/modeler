@@ -75,48 +75,6 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    let draggingElement;
-    let newTask;
-    let task;
-
-    this.shape.listenTo(this.graph, 'change:position', (element) => {
-      task = this.getElementsUnderArea(element).find(model => {
-        return model.component && model.component.node.type === 'processmaker-modeler-task';
-      });
-
-      if (!task) {
-        return;
-      }
-
-      newTask = task !== this.shape
-        ? newTask
-        : null;
-    });
-
-    this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
-      if (
-        (!draggingElement || draggingElement !== cellView.model) &&
-        cellView.model.component && !['processmaker-modeler-task'].includes(cellView.model.component.node.type)
-      ) {
-        draggingElement = cellView.model;
-      }
-    });
-
-
-
-    this.shape.listenTo(this.paper, 'cell:pointerup', cellView => {
-      // if (!this.isPoolChild(cellView.model)) {
-      //   return;
-      // }
-
-      if (!draggingElement || draggingElement !== cellView.model) {
-        return;
-      }
-
-      this.shape.embed(draggingElement);
-
-      draggingElement = null;
-    });
   },
 };
 </script>

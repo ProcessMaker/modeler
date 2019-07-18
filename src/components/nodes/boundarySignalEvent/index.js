@@ -4,7 +4,7 @@ import idConfigSettings from '@/components/inspectors/idConfigSettings';
 export default {
   id: 'processmaker-modeler-boundary-signal-event',
   component,
-  bpmnType: ['bpmn:BoundaryEvent'],
+  bpmnType: 'bpmn:BoundaryEvent',
   control: true,
   category: 'BPMN',
   label: 'Boundary Signal Event',
