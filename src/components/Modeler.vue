@@ -929,6 +929,7 @@ $cursors: default, not-allowed;
   .paper-container {
     position: initial !important;
     cursor: grab;
+    user-select: none;
 
     .tool-buttons {
       z-index: 1;
