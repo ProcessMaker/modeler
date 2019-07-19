@@ -5,10 +5,11 @@
 <script>
 import joint from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       shape: null,
