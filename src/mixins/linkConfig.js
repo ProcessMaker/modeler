@@ -156,7 +156,9 @@ export default {
       this.shape.getSourceElement().embed(this.shape);
     },
     updateWaypoints() {
-      const { start, end } = this.shape.findView(this.paper).getConnection();
+      const linkView = this.shape.findView(this.paper);
+      const start = linkView.sourceAnchor;
+      const end = linkView.targetAnchor;
 
       this.node.diagram.waypoint = [start, ...this.shape.vertices(), end].map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
