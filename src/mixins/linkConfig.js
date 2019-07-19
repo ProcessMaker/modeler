@@ -9,7 +9,7 @@ function getPointFromGroup(view, group) {
   const { x: shapeX, y: shapeY } = view.model.position();
   const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
 
-  return joint.g.Point(shapeX + x, shapeY + y);
+  return new joint.g.Point(shapeX + x, shapeY + y);
 }
 
 function getPortPoints(view) {
@@ -18,7 +18,8 @@ function getPortPoints(view) {
 
 function closestPort(endView, anchorReference) {
   return getPortPoints(endView).sort((p1, p2) => {
-    return anchorReference.distance(p1) - anchorReference.distance(p2);
+    const referencePoint = new joint.g.Point(anchorReference.x, anchorReference.y);
+    return referencePoint.distance(p1) - referencePoint.distance(p2);
   })[0];
 }
 
@@ -45,7 +46,7 @@ const endpoints = {
 const anchorPadding = 25;
 
 export default {
-  props: ['highlighted'],
+  props: ['highlighted', 'paper'],
   data() {
     return {
       sourceShape: null,
@@ -108,20 +109,28 @@ export default {
     },
   },
   methods: {
-    setEndpoint(shape, endpoint) {
-      this.shape[endpoint](shape, {
-        anchor: {
+    setEndpoint(shape, endpoint, connectionPoint) {
+      let anchor;
+
+      if (connectionPoint) {
+        anchor = () => closestPort(shape.findView(this.paper), connectionPoint);
+      } else {
+        anchor = {
           name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
           args: { padding: anchorPadding },
-        },
+        };
+      }
+
+      this.shape[endpoint](shape, {
+        anchor,
         connectionPoint: { name: 'boundary' },
       });
     },
-    setSource(sourceShape) {
-      this.setEndpoint(sourceShape, endpoints.source);
+    setSource(sourceShape, connectionPoint) {
+      this.setEndpoint(sourceShape, endpoints.source, connectionPoint);
     },
-    setTarget(targetShape) {
-      this.setEndpoint(targetShape, endpoints.target);
+    setTarget(targetShape, connectionPoint) {
+      this.setEndpoint(targetShape, endpoints.target, connectionPoint);
     },
     setBodyColor(color, target = this.target) {
       target.attr('body/fill', color);
@@ -143,11 +152,13 @@ export default {
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
-      this.shape.on('change:vertices', this.updateWaypoints);
+      this.shape.on('change:vertices change:source change:target', this.updateWaypoints);
       this.shape.getSourceElement().embed(this.shape);
     },
     updateWaypoints() {
-      const { start, end } = this.shape.findView(this.paper).getConnection();
+      const linkView = this.shape.findView(this.paper);
+      const start = linkView.sourceAnchor;
+      const end = linkView.targetAnchor;
 
       this.node.diagram.waypoint = [start, ...this.shape.vertices(), end].map(point => this.moddle.create('dc:Point', point));
       this.updateCrownPosition();
@@ -266,16 +277,20 @@ export default {
         return element.component && element.component.node.definition === targetRef;
       });
 
-      const sequenceFlowWaypoint = this.node.diagram.waypoint;
+      const sequenceFlowWaypoints = this.node.diagram.waypoint;
+      const sourceAnchorPoint = this.node.diagram.waypoint[0];
+      const targetAnchorPoint = sequenceFlowWaypoints[sequenceFlowWaypoints.length - 1];
 
-      if (sequenceFlowWaypoint) {
-        const sequenceVertices = this.node.diagram.waypoint
-          .slice(1, this.node.diagram.waypoint.length - 1)
+      if (sequenceFlowWaypoints) {
+        const sequenceVertices = sequenceFlowWaypoints
+          .slice(1, sequenceFlowWaypoints.length - 1)
           .map(({x, y}) => ({ x, y }));
+
         this.shape.vertices(sequenceVertices);
       }
 
-      this.setTarget(targetShape);
+      this.setSource(this.sourceShape, sourceAnchorPoint);
+      this.setTarget(targetShape, targetAnchorPoint);
       this.completeLink();
     } else {
       this.setTarget(targetRef);
