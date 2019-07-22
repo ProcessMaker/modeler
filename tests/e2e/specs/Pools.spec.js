@@ -6,6 +6,7 @@ import {
   moveElement,
   waitToRenderAllShapes,
   removeIndentationAndLinebreaks,
+  connectNodesWithFlow,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -92,5 +93,32 @@ describe('Pools', () => {
       });
 
     waitToRenderAllShapes();
+  });
+
+  it('remove all references of flows when deleting a pool with a process', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const taskPosition = { x: 350, y: 350 };
+
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+
+    getElementAtPosition(poolPosition)
+      .click()
+      .then($pool => {
+        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+      });
+
+    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="" />';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.not.contain(sequenceFlowReference);
+      });
   });
 });
