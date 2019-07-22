@@ -29,6 +29,24 @@ export default {
       this.shape.attr('label/text', name);
     },
   },
+  methods: {
+    constrainToBottomEdge(element, { x: newX }) {
+      const parentShaope = this.graph.getCell(this.shape.get('parent'));
+      const { x, y } = parentShaope.position();
+      const { width: parentShapeWidth, height: parentShapeHeight } = parentShaope.size();
+      const { width, height } = this.shape.size();
+
+      let restrictedX = newX;
+      if (newX < (x - width / 2)) {
+        restrictedX = x - width / 2;
+      } else if (newX > (x + parentShapeWidth - width / 2)) {
+        restrictedX = x + parentShapeWidth - width / 2;
+      }
+
+      this.shape.position(restrictedX, y + parentShapeHeight - (height / 2));
+      this.updateCrownPosition();
+    },
+  },
   mounted() {
     // Now, let's add a rounded rect to the graph
     this.shape = new EventShape();
@@ -61,6 +79,9 @@ export default {
     this.shape.component = this;
 
     this.node.boundaryEventTarget.embed(this.shape);
+
+    this.shape.on('change:position', this.constrainToBottomEdge);
+    this.constrainToBottomEdge(null, this.shape.position());
   },
 };
 </script>
