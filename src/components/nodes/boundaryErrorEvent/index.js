@@ -11,7 +11,13 @@ export default {
   icon: require('@/assets/toolpanel/boundary-error-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Error Event'),
+      name: $t('New Boundary Timer Event'),
+      attachedToRef: '',
+      eventDefinitions: [
+        moddle.create('bpmn:ErrorEventDefinition', {
+          id: null,
+        }),
+      ],
     });
   },
   diagram(moddle) {
