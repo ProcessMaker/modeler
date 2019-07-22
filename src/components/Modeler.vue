@@ -123,6 +123,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
+import { id as taskId } from './nodes/task';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';
@@ -659,8 +660,14 @@ export default {
         return;
       }
 
-      if (control.bpmnType === 'bpmn:Task') {
-        this.allowDrop = true;
+      if (control.bpmnType.includes('BoundaryEvent')) {
+        const task = this.graph
+          .findModelsFromPoint(localMousePosition)
+          .find(({ component }) => {
+            return component && component.node.type === taskId;
+          });
+
+        this.allowDrop = !!task;
         return;
       }
 
@@ -669,18 +676,6 @@ export default {
         !this.collaboration ||
         this.collaboration.get('participants').length === 0
       ) {
-        const task = this.graph
-          .findModelsFromPoint(localMousePosition)
-          .find(({ component }) => {
-            return component && component.node.type === 'processmaker-modeler-task';
-          });
-
-        if (!task) {
-          this.allowDrop = false;
-        } else {
-          console.log('hovering task...');
-          this.allowDrop = true;
-        }
         this.allowDrop = true;
         return;
       }

@@ -2,6 +2,7 @@ import component from './task.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const taskHeight = 76;
+export const id = 'processmaker-modeler-task';
 
 export default {
   id: 'processmaker-modeler-task',
