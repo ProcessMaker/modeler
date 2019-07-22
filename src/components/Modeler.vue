@@ -108,6 +108,7 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
+import remove from 'lodash/remove';
 import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
@@ -225,6 +226,14 @@ export default {
     },
   },
   methods: {
+    validateAndCleanPlaneElements() {
+      remove(this.planeElements, diagram => {
+        if (!diagram.bpmnElement) {
+          window.ProcessMaker.alert(`bpmndi:BPMNShape ${diagram.id} references a non-existant element and was not parsed`, 'warning');
+          return true;
+        }
+      });
+    },
     getTooltipTarget() {
       return this.tooltipTarget.$el[0];
     },
@@ -404,6 +413,8 @@ export default {
       /* Get the diagram; there should only be one diagram. */
       this.plane = this.definitions.diagrams[0].plane;
       this.planeElements = this.plane.get('planeElement');
+
+      this.validateAndCleanPlaneElements();
 
       this.processNode = {
         type: 'processmaker-modeler-process',
