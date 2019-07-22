@@ -77,6 +77,7 @@ export default {
       this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
       this.shape.getEmbeddedCells().forEach(cell => {
         if (cell.component) {
+          this.graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
           this.shape.unembed(cell);
           this.$emit('remove-node', cell.component.node);
         }
