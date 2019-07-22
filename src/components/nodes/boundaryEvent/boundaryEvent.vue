@@ -59,6 +59,8 @@ export default {
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.node.boundaryEventTarget.embed(this.shape);
   },
 };
 </script>

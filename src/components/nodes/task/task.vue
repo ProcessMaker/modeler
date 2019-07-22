@@ -51,10 +51,10 @@ export default {
 
       return this.graph.findModelsInArea(area);
     },
-    addToTask(element) {
-      // this.shape.unembed(element);
-      this.shape.embed(element);
-    },
+    // addToTask(element) {
+    //   // this.shape.unembed(element);
+    //   this.shape.embed(element);
+    // },
   },
   mounted() {
     this.shape = new TaskShape();

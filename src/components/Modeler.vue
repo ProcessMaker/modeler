@@ -181,6 +181,7 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
+      boundaryEventTarget: null,
     };
   },
   watch: {
@@ -613,6 +614,7 @@ export default {
         definition,
         diagram,
         pool: this.poolTarget,
+        boundaryEventTarget: this.boundaryEventTarget,
       });
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
@@ -620,6 +622,7 @@ export default {
       }
 
       this.poolTarget = null;
+      this.boundaryEventTarget = null;
     },
     removeNode(node) {
       store.commit('removeNode', node);
@@ -668,6 +671,7 @@ export default {
           });
 
         this.allowDrop = !!task;
+        this.boundaryEventTarget = task;
         return;
       }
 
