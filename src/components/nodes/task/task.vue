@@ -45,6 +45,18 @@ export default {
       }
     },
   },
+  methods: {
+    getElementsUnderArea(element) {
+      const { x, y, width, height} = element.getBBox();
+      const area = { x, y, width, height };
+
+      return this.graph.findModelsInArea(area);
+    },
+    // addToTask(element) {
+    //   // this.shape.unembed(element);
+    //   this.shape.embed(element);
+    // },
+  },
   mounted() {
     this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
@@ -63,6 +75,7 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
   },
 };
 </script>

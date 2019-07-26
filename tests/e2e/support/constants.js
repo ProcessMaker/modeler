@@ -24,4 +24,7 @@ export const nodeTypes = {
   callActivity: 'processmaker-modeler-call-activity',
   testConnector: 'connectors-test-message',
   sendTweet: 'processmaker-connectors-social-twitter-send',
+  boundaryErrorEvent: 'processmaker-modeler-boundary-error-event',
+  boundaryTimerEvent: 'processmaker-modeler-boundary-timer-event',
+  boundarySignalEvent: 'processmaker-modeler-boundary-signal-event',
 };

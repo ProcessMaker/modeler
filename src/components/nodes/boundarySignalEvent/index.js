@@ -1,33 +1,36 @@
-import component from './task.vue';
+import component from './boundarySignalEvent';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
-export const taskHeight = 76;
-export const id = 'processmaker-modeler-task';
-
 export default {
-  id: 'processmaker-modeler-task',
+  id: 'processmaker-modeler-boundary-signal-event',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
+  bpmnType: 'bpmn:BoundaryEvent',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/task.svg'),
-  label: 'Task',
+  label: 'Boundary Signal Event',
+  icon: require('@/assets/toolpanel/boundary-signal-event.svg'),
   definition(moddle, $t) {
-    return moddle.create('bpmn:Task', {
-      name: $t('Task'),
+    return moddle.create('bpmn:BoundaryEvent', {
+      name: $t('New Boundary Timer Event'),
+      attachedToRef: '',
+      eventDefinitions: [
+        moddle.create('bpmn:SignalEventDefinition', {
+          id: null,
+        }),
+      ],
     });
   },
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: taskHeight,
-        width: 116,
+        height: 36,
+        width: 36,
       }),
     });
   },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Boundary Event',
       items: [
         {
           component: 'FormAccordion',
@@ -47,7 +50,7 @@ export default {
               component: 'FormInput',
               config: {
                 label: 'Name',
-                helper: 'The Name of the Task',
+                helper: 'The Name of the Boundary Timer Event',
                 name: 'name',
               },
             },
