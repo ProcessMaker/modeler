@@ -5,7 +5,7 @@ export default {
   id: 'processmaker-modeler-boundary-timer-event',
   component,
   bpmnType: 'bpmn:BoundaryEvent',
-  control: true,
+  control: false,
   category: 'BPMN',
   label: 'Boundary Timer Event',
   icon: require('@/assets/toolpanel/boundary-timer-event.svg'),

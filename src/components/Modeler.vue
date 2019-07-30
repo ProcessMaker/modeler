@@ -89,6 +89,7 @@
       :root-elements="definitions.get('rootElements')"
       @add-node="addNode"
       @remove-node="removeNode"
+      @add-boundary-event="addBoundaryEvent"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
       @click="highlightNode(node)"
@@ -109,7 +110,7 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
-import { startEvent } from '@/components/nodes';
+import { startEvent, boundaryTimerEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
@@ -642,6 +643,28 @@ export default {
         this.pushToUndoStack();
       });
     },
+    addBoundaryEvent(shape) {
+      const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
+      const diagram = boundaryTimerEvent.diagram(this.moddle);
+
+      diagram.bounds.x = shape.component.node.diagram.bounds.x;
+      diagram.bounds.y = shape.component.node.diagram.bounds.y;
+
+      this.addNode({
+        definition,
+        diagram,
+        type: boundaryTimerEvent.id,
+      });
+
+      const task = this.graph
+        .findModelsUnderElement(shape)
+        .find(({ component }) => {
+          return component && component.node.type === taskId;
+        });
+
+      const boundaryElements = this.graph.findModelsInArea(task);
+      //this.node.boundaryEventTarget.embed(this);
+    },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
       this.parentWidth = clientWidth + 'px';
@@ -674,15 +697,22 @@ export default {
         return;
       }
 
-      if (control.bpmnType.includes('BoundaryEvent')) {
+      if (control.bpmnType.includes('bpmn:IntermediateCatchEvent')) {
         const task = this.graph
           .findModelsFromPoint(localMousePosition)
           .find(({ component }) => {
             return component && component.node.type === taskId;
           });
 
-        this.allowDrop = !!task;
-        this.boundaryEventTarget = task;
+        // Embed over a task
+        if (task) {
+          this.allowDrop = !!task;
+          this.boundaryEventTarget = task;
+        } else {
+          this.allowDrop = true;
+          this.boundaryEventTarget = task;
+        }
+
         return;
       }
 
