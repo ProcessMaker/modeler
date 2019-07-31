@@ -14,7 +14,6 @@ export default {
     this.shape.attr('image/xlink:href', clockIcon);
 
     if (isShapeEmbedded) {
-      this.shape.remove();
       this.$emit('add-boundary-event', this.shape);
     }
   },
