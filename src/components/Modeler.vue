@@ -643,6 +643,12 @@ export default {
         this.pushToUndoStack();
       });
     },
+    getElementsUnderArea(element) {
+      const { x, y, width, height} = element.getBBox();
+      const area = { x, y, width, height };
+
+      return this.graph.findModelsInArea(area);
+    },
     addBoundaryEvent(shape) {
       const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
       const diagram = boundaryTimerEvent.diagram(this.moddle);
@@ -662,8 +668,20 @@ export default {
           return component && component.node.type === taskId;
         });
 
-      const boundaryElements = this.graph.findModelsInArea(task);
-      //this.node.boundaryEventTarget.embed(this);
+      this.$nextTick(() => {
+        const boundaryEvent = this.getElementsUnderArea(task)
+          .find(({ component }) => {
+            return component && component.node.type === 'processmaker-modeler-boundary-timer-event';
+          });
+
+        task.embed(boundaryEvent);
+
+        boundaryEvent.on('change:position', (element) => {
+          const isOverlapping = task.getBBox().intersect(boundaryEvent.getBBox());
+
+          isOverlapping ? task.embed(element) : task.unembed(element);
+        });
+      });
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
