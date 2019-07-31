@@ -14,32 +14,8 @@ export default {
     this.shape.attr('image/xlink:href', clockIcon);
 
     if (isShapeEmbedded) {
+      this.shape.remove();
       this.$emit('add-boundary-event', this.shape);
-      this.shape.on('change:position', (element) => {
-        const task = this.graph
-          .findModelsUnderElement(element)
-          .find(({ component }) => {
-            return component && component.node.type === 'processmaker-modeler-task';
-          });
-
-        if (task) {
-          this.node.boundaryEventTarget.embed(element);
-        }
-
-        if (!task) {
-          this.shape.attr({
-            body: {
-              stroke: 'black',
-              fill: 'hotpink',
-            },
-            body2: {
-              stroke: 'black',
-              fill: 'hotpink',
-            },
-          });
-          this.node.boundaryEventTarget.unembed(element);
-        }
-      });
     }
   },
 };
