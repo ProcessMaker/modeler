@@ -5,7 +5,7 @@ export default {
   id: 'processmaker-modeler-boundary-error-event',
   component,
   bpmnType: 'bpmn:BoundaryEvent',
-  control: true,
+  control: false,
   category: 'BPMN',
   label: 'Boundary Error Event',
   icon: require('@/assets/toolpanel/boundary-error-event.svg'),
