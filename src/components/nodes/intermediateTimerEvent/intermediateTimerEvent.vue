@@ -10,11 +10,11 @@ export default {
   extends: IntermediateEvent,
   props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
   mounted() {
-    const isShapeEmbedded = this.node.boundaryEventTarget.embed(this.shape);
     this.shape.attr('image/xlink:href', clockIcon);
 
-    if (isShapeEmbedded) {
-      this.$emit('add-boundary-event', this.shape);
+    if (this.node.boundaryEventTarget) {
+      this.$emit('remove-node', this.node);
+      this.$emit('add-boundary-event', this.node.boundaryEventTarget, this.node.diagram.bounds);
     }
   },
 };

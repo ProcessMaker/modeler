@@ -649,12 +649,12 @@ export default {
 
       return this.graph.findModelsInArea(area);
     },
-    addBoundaryEvent(shape) {
+    addBoundaryEvent(shape, bounds) {
       const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
       const diagram = boundaryTimerEvent.diagram(this.moddle);
 
-      diagram.bounds.x = shape.component.node.diagram.bounds.x;
-      diagram.bounds.y = shape.component.node.diagram.bounds.y;
+      diagram.bounds.x = bounds.x;
+      diagram.bounds.y = bounds.y;
 
       this.addNode({
         definition,
@@ -662,11 +662,7 @@ export default {
         type: boundaryTimerEvent.id,
       });
 
-      const task = this.graph
-        .findModelsUnderElement(shape)
-        .find(({ component }) => {
-          return component && component.node.type === taskId;
-        });
+      const task = shape;
 
       this.$nextTick(() => {
         const boundaryEvent = this.getElementsUnderArea(task)
