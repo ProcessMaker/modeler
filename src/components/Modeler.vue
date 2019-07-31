@@ -89,7 +89,6 @@
       :root-elements="definitions.get('rootElements')"
       @add-node="addNode"
       @remove-node="removeNode"
-      @add-boundary-event="addBoundaryEvent"
       @set-cursor="cursor = $event"
       @set-pool-target="poolTarget = $event"
       @click="highlightNode(node)"
@@ -183,7 +182,6 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
-      boundaryEventTarget: null,
     };
   },
   watch: {
@@ -626,7 +624,6 @@ export default {
         definition,
         diagram,
         pool: this.poolTarget,
-        boundaryEventTarget: this.boundaryEventTarget,
       });
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
@@ -634,7 +631,6 @@ export default {
       }
 
       this.poolTarget = null;
-      this.boundaryEventTarget = null;
     },
     removeNode(node) {
       store.commit('removeNode', node);
@@ -648,36 +644,6 @@ export default {
       const area = { x, y, width, height };
 
       return this.graph.findModelsInArea(area);
-    },
-    addBoundaryEvent(shape, bounds) {
-      const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
-      const diagram = boundaryTimerEvent.diagram(this.moddle);
-
-      diagram.bounds.x = bounds.x;
-      diagram.bounds.y = bounds.y;
-
-      this.addNode({
-        definition,
-        diagram,
-        type: boundaryTimerEvent.id,
-      });
-
-      const task = shape;
-
-      this.$nextTick(() => {
-        const boundaryEvent = this.getElementsUnderArea(task)
-          .find(({ component }) => {
-            return component && component.node.type === 'processmaker-modeler-boundary-timer-event';
-          });
-
-        task.embed(boundaryEvent);
-
-        boundaryEvent.on('change:position', (element) => {
-          const isOverlapping = task.getBBox().intersect(boundaryEvent.getBBox());
-
-          isOverlapping ? task.embed(element) : task.unembed(element);
-        });
-      });
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
@@ -708,25 +674,6 @@ export default {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
       if (control.type === poolId) {
         this.allowDrop = true;
-        return;
-      }
-
-      if (control.bpmnType.includes('bpmn:IntermediateCatchEvent')) {
-        const task = this.graph
-          .findModelsFromPoint(localMousePosition)
-          .find(({ component }) => {
-            return component && component.node.type === taskId;
-          });
-
-        // Embed over a task
-        if (task) {
-          this.allowDrop = !!task;
-          this.boundaryEventTarget = task;
-        } else {
-          this.allowDrop = true;
-          this.boundaryEventTarget = task;
-        }
-
         return;
       }
 
