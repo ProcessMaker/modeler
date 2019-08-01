@@ -39,6 +39,7 @@
           {{ $t(day.initial) }}
         </span>
       </div>
+      <small v-if="repeatOnValidationError" class="text-danger">{{ repeatOnValidationError }}</small>
     </div>
 
     <template v-if="hasEnds">
@@ -156,6 +157,15 @@ export default {
     };
   },
   computed: {
+    repeatOnValidationError() {
+      const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
+
+      if (this.periodicity !== 'week' || numberOfSelectedWeekdays > 0) {
+        return null;
+      }
+
+      return 'You must select at least one day.';
+    },
     iso8606Expression() {
       const expression = [];
 
