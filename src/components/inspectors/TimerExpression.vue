@@ -247,13 +247,6 @@ export default {
                   ? 'never'
                   : 'after'
                 : 'ondate';
-
-              if (this.periodicity === 'week') {
-                // Note this.weekday array must start with Sunday
-                const currentWeekday = DateTime.fromISO(this.startDate).weekday;
-                this.weekdays.find(({ day }) => day === currentWeekday).selected = true;
-                // this.weekdays[DateTime.fromISO(this.startDate).weekday - 1].selected = true;
-              }
             }
           }
 
