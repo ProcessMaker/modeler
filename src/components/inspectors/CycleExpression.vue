@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <label>{{ $t('Duration') }}</label>
+    <label>{{ $t('Recurring loop will repeat at time interval set below') }}</label>
     <b-input-group>
       <b-form-input
         type="number"
@@ -34,8 +34,8 @@ export default {
   props: ['value', 'repeatInput'],
   data() {
     const periods = [
-      { name: periodNames.minute, value: 'M', isTime: true },
-      { name: periodNames.hour, value: 'H', isTime: true },
+      { name: periodNames.minute, value: 'M' },
+      { name: periodNames.hour, value: 'H' },
       { name: periodNames.day, value: 'D' },
       { name: periodNames.month, value: 'M' },
     ];
@@ -54,20 +54,16 @@ export default {
       },
       immediate: true,
     },
-    durationExpression: {
-      handler(durationExpression) {
-        this.$emit('input', durationExpression);
+    cycyleExpression: {
+      handler(cycyleExpression) {
+        this.$emit('input', cycyleExpression);
       },
       immediate: true,
     },
   },
   computed: {
-    durationExpression() {
-      if (this.periodicity.isTime) {
-        return `PT${this.repeat}${this.periodicity.value}`;
-      }
-
-      return `P${this.repeat}${this.periodicity.value}`;
+    cycyleExpression() {
+      return `R${this.repeat}${this.periodicity.value}`;
     },
   },
   methods: {
