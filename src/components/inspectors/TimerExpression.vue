@@ -237,7 +237,10 @@ export default {
             const match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
             if (match) {
               this.times = match[1] || '1';
-              hasStartDate ? null : this.startDate = match[2];
+
+              if (!hasStartDate) {
+                this.startDate = match[2];
+              }
 
               this.repeat = match[3];
               this.periodicity = Object.keys(periods).find(key => periods[key] === match[4]);
