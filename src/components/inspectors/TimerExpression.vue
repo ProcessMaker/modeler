@@ -201,11 +201,12 @@ export default {
   },
   methods: {
     weekdayStyle(day) {
-      return {
-        'badge-primary': day.selected && !this.sameDay,
-        'badge-light': !(day.selected && !this.sameDay),
-        'border border-primary': DateTime.fromISO(this.startDate).weekday === day.day,
-      };
+      const currentDay = DateTime.fromISO(this.startDate).weekday;
+
+      return [
+        day.selected ? 'badge-primary' : 'badge-light',
+        { 'border border-primary': currentDay === day.day },
+      ];
     },
     update() {
       this.$emit('input', this.iso8606Expression);
