@@ -23,6 +23,10 @@ export default {
     },
     addTimerEvent() {
       const definition = intermediateTimerEvent.definition(this.moddle, this.$t);
+      definition.set('id', this.node.definition.id);
+      definition.set('name', this.node.definition.name);
+      definition.set('eventDefinitions', this.node.definition.eventDefinitions);
+
       const diagram = intermediateTimerEvent.diagram(this.moddle);
 
       diagram.bounds.x = this.node.diagram.bounds.x;
@@ -36,6 +40,10 @@ export default {
     },
     addBoundaryEvent() {
       const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
+      definition.set('id', this.node.definition.id);
+      definition.set('name', this.node.definition.name);
+      definition.set('eventDefinitions', this.node.definition.eventDefinitions);
+
       const diagram = boundaryTimerEvent.diagram(this.moddle);
       const task = this.getTaskUnderShape();
 
