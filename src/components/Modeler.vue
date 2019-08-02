@@ -109,7 +109,7 @@ import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
-import { startEvent, boundaryTimerEvent } from '@/components/nodes';
+import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
@@ -124,7 +124,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
-import { id as taskId } from './nodes/task';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';

@@ -26,6 +26,7 @@ export default {
     addBoundaryEvent() {
       const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
       const diagram = boundaryTimerEvent.diagram(this.moddle);
+      const task = this.getTaskUnderShape();
 
       diagram.bounds.x = this.node.diagram.bounds.x;
       diagram.bounds.y = this.node.diagram.bounds.y;
@@ -35,6 +36,8 @@ export default {
         diagram,
         type: boundaryTimerEvent.id,
       });
+
+      this.node.definition.set('attachedToRef', task.component.node.definition.id);
     },
     addBoundaryOrTimerEvent() {
       const task = this.getTaskUnderShape();
@@ -47,7 +50,9 @@ export default {
         return;
       }
 
-      this.$emit('remove-node', this.node);
+      this.$nextTick(() => {
+        this.$emit('remove-node', this.node);
+      });
 
       if (selfIsBoundaryEvent) {
         this.addTimerEvent();
