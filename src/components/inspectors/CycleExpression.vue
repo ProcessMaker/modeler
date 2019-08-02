@@ -85,7 +85,7 @@ export default {
       return this.periods.find(({ value }) => value === periodicity);
     },
     isTimePeriod(delayString) {
-      return delayString[1] === 'T';
+      return delayString[3] === 'T';
     },
     getRepeatNumberFromDelayString(delayString) {
       const match = delayString.match(/\d+/);
