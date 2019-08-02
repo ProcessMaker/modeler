@@ -69,9 +69,7 @@ export default {
         return;
       }
 
-      this.$nextTick(() => {
-        this.$emit('remove-node', this.node);
-      });
+      this.$emit('remove-node', this.node);
 
       if (selfIsBoundaryEvent) {
         this.addTimerEvent();

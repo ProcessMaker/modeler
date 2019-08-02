@@ -608,7 +608,7 @@ export default {
         }
       }
 
-      const id = this.nodeIdGenerator.generateUniqueNodeId();
+      const id = definition.id || this.nodeIdGenerator.generateUniqueNodeId();
       definition.id = id;
 
       if (diagram) {
