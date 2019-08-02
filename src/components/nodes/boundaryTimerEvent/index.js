@@ -14,8 +14,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Timer Event'),
-      nonInterrupting: false,
-      attachedToRef: '',
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
@@ -42,7 +40,6 @@ export default {
       } else {
         data[key] = value;
       }
-
       return data;
     }, {});
   },

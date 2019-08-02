@@ -12,7 +12,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Timer Event'),
-      attachedToRef: '',
       eventDefinitions: [
         moddle.create('bpmn:ErrorEventDefinition', {
           id: null,

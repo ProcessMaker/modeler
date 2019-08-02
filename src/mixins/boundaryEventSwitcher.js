@@ -31,13 +31,13 @@ export default {
       diagram.bounds.x = this.node.diagram.bounds.x;
       diagram.bounds.y = this.node.diagram.bounds.y;
 
+      definition.set('attachedToRef', task.component.node.definition);
+
       this.$emit('add-node', {
         definition,
         diagram,
         type: boundaryTimerEvent.id,
       });
-
-      this.node.definition.set('attachedToRef', task.component.node.definition.id);
     },
     addBoundaryOrTimerEvent() {
       const task = this.getTaskUnderShape();
