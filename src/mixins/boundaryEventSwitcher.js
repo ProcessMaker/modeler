@@ -1,14 +1,21 @@
 import { id as taskId } from '@/components/nodes/task';
+import { id as callActivityId } from '@/components/nodes/callActivity/';
 import { boundaryTimerEvent, intermediateTimerEvent } from '@/components/nodes';
+
 
 export default {
   props: ['graph', 'paper', 'node', 'id', 'moddle', 'nodeRegistry'],
   methods: {
     getTaskUnderShape() {
+      const foo = [
+        taskId,
+        callActivityId,
+      ];
+
       return this.graph
         .findModelsUnderElement(this.shape)
         .filter(model => model.component)
-        .find(model => model.component.node.type === taskId);
+        .find(model => foo.includes(model.component.node.type));
     },
     addTimerEvent() {
       const definition = intermediateTimerEvent.definition(this.moddle, this.$t);
@@ -42,6 +49,8 @@ export default {
     addBoundaryOrTimerEvent() {
       const task = this.getTaskUnderShape();
       const selfIsBoundaryEvent = this.node.type === boundaryTimerEvent.id;
+
+      console.log(task);
 
       if (
         (selfIsBoundaryEvent && task) ||
