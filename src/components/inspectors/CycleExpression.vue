@@ -34,8 +34,8 @@ export default {
   props: ['value', 'repeatInput'],
   data() {
     const periods = [
-      { name: periodNames.minute, value: 'M' },
-      { name: periodNames.hour, value: 'H' },
+      { name: periodNames.minute, value: 'M', isTime: true },
+      { name: periodNames.hour, value: 'H', isTime: true },
       { name: periodNames.day, value: 'D' },
       { name: periodNames.month, value: 'M' },
     ];
@@ -54,16 +54,19 @@ export default {
       },
       immediate: true,
     },
-    cycyleExpression: {
-      handler(cycyleExpression) {
-        this.$emit('input', cycyleExpression);
+    cycleExpression: {
+      handler(cycleExpression) {
+        this.$emit('input', cycleExpression);
       },
       immediate: true,
     },
   },
   computed: {
-    cycyleExpression() {
-      return `R${this.repeat}${this.periodicity.value}`;
+    cycleExpression() {
+      if (this.periodicity.isTime) {
+        return `R/PT${this.repeat}${this.periodicity.value}`;
+      }
+      return `R/P${this.repeat}${this.periodicity.value}`;
     },
   },
   methods: {
@@ -82,7 +85,7 @@ export default {
       return this.periods.find(({ value }) => value === periodicity);
     },
     isTimePeriod(delayString) {
-      return delayString[1] === 'T';
+      return delayString[3] === 'T';
     },
     getRepeatNumberFromDelayString(delayString) {
       const match = delayString.match(/\d+/);
