@@ -67,6 +67,9 @@ export default {
   },
   methods: {
     setErrorHighlight() {
+      if (!this.shapeView) {
+        return;
+      }
       if (this.hasError) {
         this.shapeView.highlight(null, { highlighter: errorHighlighter });
       } else {
