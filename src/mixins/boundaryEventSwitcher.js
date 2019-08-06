@@ -4,9 +4,13 @@ import { id as manualTaskId } from '@/components/nodes/manualTask';
 import { id as scriptTaskId } from '@/components/nodes/scriptTask';
 import { boundaryTimerEvent, intermediateTimerEvent } from '@/components/nodes';
 
-
 export default {
-  props: ['graph', 'paper', 'node', 'id', 'moddle', 'nodeRegistry'],
+  props: ['graph', 'paper', 'node', 'moddle'],
+  watch: {
+    'node.definition.cancelActivity'(value) {
+      value ? this.updateBoundaryShape(0) : this.updateBoundaryShape(5);
+    },
+  },
   methods: {
     getTaskUnderShape() {
       const taskIds = [
@@ -84,28 +88,15 @@ export default {
 
       this.addBoundaryOrTimerEvent();
     },
-  },
-  watch: {
-    'node.definition.cancelActivity'(value) {
-      if (!value) {
-        this.shape.attr({
-          body: {
-            'strokeDasharray': 4,
-          },
-          body2: {
-            'strokeDasharray': 4,
-          },
-        });
-      } else {
-        this.shape.attr({
-          body: {
-            'strokeDasharray': 0,
-          },
-          body2: {
-            'strokeDasharray': 0,
-          },
-        });
-      }
+    updateBoundaryShape(dashLength) {
+      this.shape.attr({
+        body: {
+          'strokeDasharray': dashLength,
+        },
+        body2: {
+          'strokeDasharray': dashLength,
+        },
+      });
     },
   },
   async mounted() {
