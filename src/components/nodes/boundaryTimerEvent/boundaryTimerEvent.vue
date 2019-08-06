@@ -49,6 +49,8 @@ export default {
       const { x, y } = closestPort(task, this.shape.position());
       const { width } = this.shape.size();
       this.shape.position(x - (width / 2), y - (width / 2));
+
+      this.shape.set('elementMove', false);
     } else {
       this.$emit('remove-node', this.node);
     }
