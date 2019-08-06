@@ -9,19 +9,19 @@ import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
 import { portGroups } from '@/mixins/portsConfig';
 import joint from 'jointjs';
 
-function getPointFromGroup(view, group) {
-  const { x: shapeX, y: shapeY } = view.position();
-  const { x, y } = Object.values(view.getPortsPositions(group))[0];
+function getPointFromGroup(model, group) {
+  const { x: shapeX, y: shapeY } = model.position();
+  const { x, y } = Object.values(model.getPortsPositions(group))[0];
 
   return new joint.g.Point(shapeX + x, shapeY + y);
 }
 
-function getPortPoints(view) {
-  return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(view, group));
+function getPortPoints(model) {
+  return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(model, group));
 }
 
-function closestPort(endView, anchorReference) {
-  return getPortPoints(endView).sort((p1, p2) => {
+function closestPort(model, anchorReference) {
+  return getPortPoints(model).sort((p1, p2) => {
     const referencePoint = new joint.g.Point(anchorReference.x, anchorReference.y);
     return referencePoint.distance(p1) - referencePoint.distance(p2);
   })[0];
