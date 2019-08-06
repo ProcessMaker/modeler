@@ -50,6 +50,7 @@ export default {
       diagram.bounds.y = this.node.diagram.bounds.y;
 
       definition.set('attachedToRef', task.component.node.definition);
+      definition.set('cancelActivity', true);
 
       this.$emit('add-node', {
         definition,

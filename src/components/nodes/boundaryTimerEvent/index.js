@@ -103,7 +103,7 @@ export default {
               component: 'FormCheckbox',
               config: {
                 label: 'Non-interrupting',
-                name: 'nonInterrupting',
+                name: 'cancelActivity',
                 helper: 'Boundary Event Type',
               },
             },
