@@ -17,7 +17,7 @@ function getPointFromGroup(view, group) {
 }
 
 function getPortPoints(view) {
-  return portGroups.map(group => getPointFromGroup(view, group));
+  return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(view, group));
 }
 
 function closestPort(endView, anchorReference) {
