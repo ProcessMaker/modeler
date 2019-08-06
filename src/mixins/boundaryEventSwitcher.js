@@ -68,6 +68,7 @@ export default {
 
       if (
         (selfIsBoundaryEvent && task) ||
+        (selfIsBoundaryEvent && !task) ||
         (!selfIsBoundaryEvent && !task)
       ) {
         return;
