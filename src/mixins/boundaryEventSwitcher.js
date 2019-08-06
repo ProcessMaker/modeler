@@ -41,7 +41,6 @@ export default {
     addBoundaryEvent() {
       const definition = boundaryTimerEvent.definition(this.moddle, this.$t);
       definition.set('id', this.node.definition.id);
-      definition.set('name', this.node.definition.name);
       definition.set('eventDefinitions', this.node.definition.eventDefinitions);
 
       const diagram = boundaryTimerEvent.diagram(this.moddle);
