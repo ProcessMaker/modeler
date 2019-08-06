@@ -85,6 +85,29 @@ export default {
       this.addBoundaryOrTimerEvent();
     },
   },
+  watch: {
+    'node.definition.cancelActivity'(value) {
+      if (!value) {
+        this.shape.attr({
+          body: {
+            'strokeDasharray': 4,
+          },
+          body2: {
+            'strokeDasharray': 4,
+          },
+        });
+      } else {
+        this.shape.attr({
+          body: {
+            'strokeDasharray': 0,
+          },
+          body2: {
+            'strokeDasharray': 0,
+          },
+        });
+      }
+    },
+  },
   async mounted() {
     await this.$nextTick();
     this.shape.listenTo(this.paper, 'element:pointerup', this.pointerupOverSelf);
