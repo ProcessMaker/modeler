@@ -7,6 +7,7 @@ import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import timerEventIcon from '@/assets/timer-event-icon.svg';
 import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
 import { portGroups } from '@/mixins/portsConfig';
+import portsConfig from '@/mixins/portsConfig';
 import joint from 'jointjs';
 
 function getPointFromGroup(model, group) {
@@ -26,9 +27,47 @@ function closestPort(model, anchorReference) {
     return referencePoint.distance(p1) - referencePoint.distance(p2);
   })[0];
 }
+
+function hasPorts(model) {
+  return Object.values(model.getPortsPositions(portGroups[0])).length > 0;
+}
+
+function snapToAnchor(coords, model) {
+  if (!hasPorts(model)) {
+    const { x, y } = model.position();
+    const { width, height } = model.size();
+
+    return new joint.g.Point(x - (width / 2), y - (height / 2));
+  }
+
+  return closestPort(model, coords);
+}
+
 export default {
   extends: BoundaryEvent,
-  mixins: [boundaryEventSwitcher],
+  mixins: [boundaryEventSwitcher, portsConfig],
+  watch: {
+    'node.definition.cancelActivity'(value) {
+      this.dashed(value);
+    },
+  },
+  methods: {
+    updateBoundaryShape(dashLength) {
+      this.shape.attr({
+        body: {
+          'strokeDasharray': dashLength,
+        },
+        body2: {
+          'strokeDasharray': dashLength,
+        },
+      });
+    },
+    renderBoundaryTimer(isCancelActivity) {
+      const dashedLine = 5;
+      const solidLine = 0;
+      isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
+    },
+  },
   mounted() {
     this.shape.attr('image/xlink:href', timerEventIcon);
     let bounds = this.node.diagram.bounds;
@@ -46,10 +85,11 @@ export default {
 
     if (task) {
       task.embed(this.shape);
-      const { x, y } = closestPort(task, this.shape.position());
+      const { x, y } = snapToAnchor(this.shape.position(), task);
       const { width } = this.shape.size();
-      this.shape.position(x - (width / 2), y - (width / 2));
 
+      this.shape.position(x - (width / 2), y - (width / 2));
+      this.renderBoundaryTimer(this.node.definition.cancelActivity);
       this.shape.set('elementMove', false);
     } else {
       this.$emit('remove-node', this.node);

@@ -6,11 +6,6 @@ import { boundaryTimerEvent, intermediateTimerEvent } from '@/components/nodes';
 
 export default {
   props: ['graph', 'paper', 'node', 'moddle'],
-  watch: {
-    'node.definition.cancelActivity'(value) {
-      value ? this.updateBoundaryShape(0) : this.updateBoundaryShape(5);
-    },
-  },
   methods: {
     getTaskUnderShape() {
       const taskIds = [
@@ -83,16 +78,6 @@ export default {
       }
 
       this.addBoundaryOrTimerEvent();
-    },
-    updateBoundaryShape(dashLength) {
-      this.shape.attr({
-        body: {
-          'strokeDasharray': dashLength,
-        },
-        body2: {
-          'strokeDasharray': dashLength,
-        },
-      });
     },
   },
   async mounted() {
