@@ -1,4 +1,4 @@
-import joint from 'jointjs';
+import { shapes } from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
 import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
 import { minLaneWidth, minLaneHeight } from '@/components/nodes/poolLane/laneSizes';
@@ -60,10 +60,10 @@ export default {
         }
       });
 
-      const pointBottomRight = new joint.shapes.standard.EmbeddedImage();
-      const pointBottomLeft = new joint.shapes.standard.EmbeddedImage();
-      const pointTopRight = new joint.shapes.standard.EmbeddedImage();
-      const pointTopLeft = new joint.shapes.standard.EmbeddedImage();
+      const pointBottomRight = new shapes.standard.EmbeddedImage();
+      const pointBottomLeft = new shapes.standard.EmbeddedImage();
+      const pointTopRight = new shapes.standard.EmbeddedImage();
+      const pointTopLeft = new shapes.standard.EmbeddedImage();
 
       this.anchorPoints = [
         pointBottomRight,

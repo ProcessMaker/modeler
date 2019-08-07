@@ -1,6 +1,6 @@
-import joint from 'jointjs';
+import { shapes, util } from 'jointjs';
 
-export default joint.shapes.standard.Circle.extend({
+export default shapes.standard.Circle.extend({
 
   markup: [{
     tagName: 'circle',
@@ -13,7 +13,7 @@ export default joint.shapes.standard.Circle.extend({
     selector: 'image',
   }],
 
-  defaults: joint.util.deepSupplement({
+  defaults: util.deepSupplement({
 
     type: 'processmaker.components.nodes.startEvent.Shape',
     size: { width: 36, height: 36 },
@@ -21,5 +21,5 @@ export default joint.shapes.standard.Circle.extend({
       'image': { 'ref-x': 5, 'ref-y': 5, ref: 'circle', width: 26, height: 26 },
     },
 
-  }, joint.shapes.standard.Circle.prototype.defaults),
+  }, shapes.standard.Circle.prototype.defaults),
 });

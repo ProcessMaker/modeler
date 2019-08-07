@@ -103,7 +103,7 @@
 
 <script>
 import Vue from 'vue';
-import joint from 'jointjs';
+import { dia, g } from 'jointjs';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
@@ -647,8 +647,8 @@ export default {
     },
     isPointOverPaper(mouseX, mouseY) {
       const { left, top, width, height } = this.$refs['paper-container'].getBoundingClientRect();
-      const rect = new joint.g.rect(left, top, width, height);
-      const point = new joint.g.point(mouseX, mouseY);
+      const rect = new g.rect(left, top, width, height);
+      const point = new g.point(mouseX, mouseY);
 
       return rect.containsPoint(point);
     },
@@ -794,7 +794,7 @@ export default {
     this.linter = new Linter(linterConfig);
   },
   mounted() {
-    this.graph = new joint.dia.Graph();
+    this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
       return {
@@ -802,7 +802,7 @@ export default {
       };
     });
 
-    this.paper = new joint.dia.Paper({
+    this.paper = new dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
@@ -817,7 +817,7 @@ export default {
 
     this.paper.translate(168, 20);
 
-    this.miniPaper = new joint.dia.Paper({
+    this.miniPaper = new dia.Paper({
       el: this.$refs.miniPaper,
       model: this.graph,
       width: 300,
@@ -892,7 +892,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~jointjs/dist/joint.css';
+@import '~jointjs/dist/joint.min.css';
 
 $cursors: default, not-allowed;
 

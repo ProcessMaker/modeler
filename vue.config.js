@@ -12,11 +12,11 @@ module.exports = {
         'node_modules',
       ],
       symlinks: false,
-      alias: {
-        jointjs$: process.env.NODE_ENV === 'development'
-          ? 'jointjs/dist/joint.js'
-          : 'jointjs',
-      },
+      // alias: {
+      //   jointjs$: process.env.NODE_ENV === 'development'
+      //     ? 'jointjs/dist/joint.js'
+      //     : 'jointjs',
+      // },
     },
     module: {
       rules: [
