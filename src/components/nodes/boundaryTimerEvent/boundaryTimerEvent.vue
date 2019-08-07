@@ -68,7 +68,7 @@ export default {
       isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
     },
   },
-  mounted() {
+  async mounted() {
     this.shape.attr('image/xlink:href', timerEventIcon);
     let bounds = this.node.diagram.bounds;
     this.shape.resize(bounds.get('width'), bounds.get('height'));
@@ -80,6 +80,8 @@ export default {
         'height': bounds.get('height') - 10,
       },
     });
+
+    await this.$nextTick();
 
     const task = this.getTaskUnderShape();
 
