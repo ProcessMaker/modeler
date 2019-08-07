@@ -48,7 +48,7 @@ export default {
   mixins: [boundaryEventSwitcher, portsConfig],
   watch: {
     'node.definition.cancelActivity'(value) {
-      this.dashed(value);
+      this.renderBoundaryTimer(value);
     },
   },
   methods: {
