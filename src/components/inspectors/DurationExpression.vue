@@ -27,6 +27,7 @@ const periodNames = {
   minute: 'minute',
   hour: 'hour',
   day: 'day',
+  week: 'week',
   month: 'month',
 };
 
@@ -37,6 +38,7 @@ export default {
       { name: periodNames.minute, value: 'M', isTime: true },
       { name: periodNames.hour, value: 'H', isTime: true },
       { name: periodNames.day, value: 'D' },
+      { name: periodNames.week, value: 'W' },
       { name: periodNames.month, value: 'M' },
     ];
 
