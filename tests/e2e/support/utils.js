@@ -116,6 +116,21 @@ export function moveElement(elementPosition, x, y) {
   });
 }
 
+export function moveElementRelativeTo(elementPosition, x, y) {
+  return cy.window().its('store.state.paper').then(paper => {
+
+    return getElementAtPosition(elementPosition)
+      .then($element => {
+        const {left, top} = $element.position();
+        const newPosition = paper.localToPagePoint(left + x, top + y);
+        cy.wrap($element)
+          .trigger('mousedown', 'topLeft', { which: 1, force: true })
+          .trigger('mousemove', 'topLeft', { clientX: newPosition.x, clientY: newPosition.y, force: true })
+          .trigger('mouseup', 'topLeft', { force: true });
+      });
+  });
+}
+
 export function removeIndentationAndLinebreaks(string) {
   return string.replace(/(^\s+)|(\n)/gim, '');
 }
