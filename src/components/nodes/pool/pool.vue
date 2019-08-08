@@ -170,6 +170,9 @@ export default {
       return this.$nextTick();
     },
     addToPool(element) {
+      if (element.component.node.type === 'processmaker-modeler-boundary-timer-event'){
+        return;
+      }
       this.shape.unembed(element);
       this.shape.embed(element);
 
