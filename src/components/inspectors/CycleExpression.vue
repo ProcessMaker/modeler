@@ -11,7 +11,7 @@
       />
 
       <b-input-group-append>
-        <b-form-select v-model="periodicity">
+        <b-form-select v-model="periodicity" data-test="periods">
           <option v-for="period in periods" :key="period.name" :value="period">{{ $t(period.name) }}</option>
         </b-form-select>
       </b-input-group-append>

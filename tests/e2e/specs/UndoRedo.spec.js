@@ -340,4 +340,25 @@ describe('Undo/redo', () => {
 
     testNumberOfVertices(initialNumberOfWaypoints);
   });
+
+  it('undo/redo boundary timer event', () => {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryTimerEventPosition = { x: 260, y: 260 };
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+
+    const initialNumberOfElements = 3;
+    getGraphElements().should('have.length', initialNumberOfElements);
+
+    cy.get('[data-test=undo]').click({ force: true });
+    cy.get('[data-test=undo]').click({ force: true });
+
+    const numberOfElementsAfterUndo = 2;
+    getGraphElements().should('have.length', numberOfElementsAfterUndo);
+
+    cy.get('[data-test=redo]').click({ force: true });
+    const numberOfElementsAfterRedo = 3;
+    getGraphElements().should('have.length', numberOfElementsAfterRedo);
+  });
 });
