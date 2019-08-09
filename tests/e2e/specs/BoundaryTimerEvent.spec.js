@@ -129,24 +129,18 @@ describe('Boundary Timer Event', () => {
         getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
       });
 
-    // place task inside
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    // // attach timer to task
     const boundaryTimerEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
 
-    // drag pool lane
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-
-    // confirm timer moves with task
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        console.log('BEFORE',xml);
         // expect(xml).to.contain(initialPositionXML);
       });
 
@@ -157,7 +151,6 @@ describe('Boundary Timer Event', () => {
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        console.log('AFTER',xml);
         // expect(xml).to.contain(initialPositionXML);
       });
   });
