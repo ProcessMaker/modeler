@@ -10,7 +10,6 @@ import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
 export default {
   extends: IntermediateEvent,
   mixins: [boundaryEventSwitcher],
-  props: ['graph', 'paper', 'node', 'id', 'moddle', 'nodeRegistry'],
   mounted() {
     this.shape.attr('image/xlink:href', clockIcon);
     this.addBoundaryOrTimerEvent();
