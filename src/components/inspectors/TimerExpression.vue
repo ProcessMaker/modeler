@@ -39,6 +39,7 @@
           {{ $t(day.initial) }}
         </span>
       </div>
+      <small v-if="repeatOnValidationError" class="text-danger">{{ repeatOnValidationError }}</small>
     </div>
 
     <template v-if="hasEnds">
@@ -156,6 +157,15 @@ export default {
     };
   },
   computed: {
+    repeatOnValidationError() {
+      const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
+
+      if (this.periodicity !== 'week' || numberOfSelectedWeekdays > 0) {
+        return null;
+      }
+
+      return 'You must select at least one day.';
+    },
     iso8606Expression() {
       const expression = [];
 
@@ -201,11 +211,12 @@ export default {
   },
   methods: {
     weekdayStyle(day) {
-      return {
-        'badge-primary': day.selected && !this.sameDay,
-        'badge-light': !(day.selected && !this.sameDay),
-        'border border-primary': DateTime.fromISO(this.startDate).weekday === day.day,
-      };
+      const currentDay = DateTime.fromISO(this.startDate).weekday;
+
+      return [
+        day.selected ? 'badge-primary' : 'badge-light',
+        { 'border border-primary': currentDay === day.day },
+      ];
     },
     update() {
       this.$emit('input', this.iso8606Expression);
@@ -237,7 +248,10 @@ export default {
             const match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
             if (match) {
               this.times = match[1] || '1';
-              hasStartDate ? null : this.startDate = match[2];
+
+              if (!hasStartDate) {
+                this.startDate = match[2];
+              }
 
               this.repeat = match[3];
               this.periodicity = Object.keys(periods).find(key => periods[key] === match[4]);
@@ -247,13 +261,6 @@ export default {
                   ? 'never'
                   : 'after'
                 : 'ondate';
-
-              if (this.periodicity === 'week') {
-                // Note this.weekday array must start with Sunday
-                const currentWeekday = DateTime.fromISO(this.startDate).weekday;
-                this.weekdays.find(({ day }) => day === currentWeekday).selected = true;
-                // this.weekdays[DateTime.fromISO(this.startDate).weekday - 1].selected = true;
-              }
             }
           }
 
