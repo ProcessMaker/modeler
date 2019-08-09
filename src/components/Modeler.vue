@@ -638,12 +638,6 @@ export default {
         this.pushToUndoStack();
       });
     },
-    getElementsUnderArea(element) {
-      const { x, y, width, height} = element.getBBox();
-      const area = { x, y, width, height };
-
-      return this.graph.findModelsInArea(area);
-    },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
       this.parentWidth = clientWidth + 'px';
