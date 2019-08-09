@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <label>{{ $t('Duration') }}</label>
+    <label>{{ $t('Recurring loop will repeat at time interval set below') }}</label>
     <b-input-group>
       <b-form-input
         type="number"
@@ -11,7 +11,7 @@
       />
 
       <b-input-group-append>
-        <b-form-select v-model="periodicity">
+        <b-form-select v-model="periodicity" data-test="periods">
           <option v-for="period in periods" :key="period.name" :value="period">{{ $t(period.name) }}</option>
         </b-form-select>
       </b-input-group-append>
@@ -56,20 +56,19 @@ export default {
       },
       immediate: true,
     },
-    durationExpression: {
-      handler(durationExpression) {
-        this.$emit('input', durationExpression);
+    cycleExpression: {
+      handler(cycleExpression) {
+        this.$emit('input', cycleExpression);
       },
       immediate: true,
     },
   },
   computed: {
-    durationExpression() {
+    cycleExpression() {
       if (this.periodicity.isTime) {
-        return `PT${this.repeat}${this.periodicity.value}`;
+        return `R/PT${this.repeat}${this.periodicity.value}`;
       }
-
-      return `P${this.repeat}${this.periodicity.value}`;
+      return `R/P${this.repeat}${this.periodicity.value}`;
     },
   },
   methods: {
@@ -88,7 +87,7 @@ export default {
       return this.periods.find(({ value }) => value === periodicity);
     },
     isTimePeriod(delayString) {
-      return delayString[1] === 'T';
+      return delayString[3] === 'T';
     },
     getRepeatNumberFromDelayString(delayString) {
       const match = delayString.match(/\d+/);

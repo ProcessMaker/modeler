@@ -170,6 +170,9 @@ export default {
       return this.$nextTick();
     },
     addToPool(element) {
+      if (element.component.node.type === 'processmaker-modeler-boundary-timer-event'){
+        return;
+      }
       this.shape.unembed(element);
       this.shape.embed(element);
 
@@ -364,6 +367,9 @@ export default {
         .getElements()
         .filter(({ component }) => component && component !== this)
         .forEach(({ component }) => {
+          if (component.node.type === 'processmaker-modeler-boundary-timer-event'){
+            return;
+          }
           this.shape.embed(component.shape);
           component.node.pool = this.shape;
         });

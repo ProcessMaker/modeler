@@ -5,14 +5,13 @@ export default {
   id: 'processmaker-modeler-boundary-signal-event',
   component,
   bpmnType: 'bpmn:BoundaryEvent',
-  control: true,
+  control: false,
   category: 'BPMN',
   label: 'Boundary Signal Event',
   icon: require('@/assets/toolpanel/boundary-signal-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Timer Event'),
-      attachedToRef: '',
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition', {
           id: null,

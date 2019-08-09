@@ -77,7 +77,9 @@ export default {
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
-
+    if (!this.node.boundaryEventTarget) {
+      return;
+    }
     this.node.boundaryEventTarget.embed(this.shape);
 
     this.shape.on('change:position', this.constrainToBottomEdge);

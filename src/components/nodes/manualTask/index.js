@@ -2,9 +2,10 @@ import component from './manualTask.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const taskHeight = 76;
+export const id = 'processmaker-modeler-manual-task';
 
 export default {
-  id: 'processmaker-modeler-manual-task',
+  id,
   component,
   bpmnType: 'bpmn:ManualTask',
   control: true,

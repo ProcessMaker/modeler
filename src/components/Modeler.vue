@@ -124,7 +124,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
-import { id as taskId } from './nodes/task';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';
@@ -182,7 +181,6 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
-      boundaryEventTarget: null,
     };
   },
   watch: {
@@ -610,7 +608,7 @@ export default {
         }
       }
 
-      const id = this.nodeIdGenerator.generateUniqueNodeId();
+      const id = definition.id || this.nodeIdGenerator.generateUniqueNodeId();
       definition.id = id;
 
       if (diagram) {
@@ -625,7 +623,6 @@ export default {
         definition,
         diagram,
         pool: this.poolTarget,
-        boundaryEventTarget: this.boundaryEventTarget,
       });
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
@@ -633,7 +630,6 @@ export default {
       }
 
       this.poolTarget = null;
-      this.boundaryEventTarget = null;
     },
     removeNode(node) {
       store.commit('removeNode', node);
@@ -671,18 +667,6 @@ export default {
       /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
       if (control.type === poolId) {
         this.allowDrop = true;
-        return;
-      }
-
-      if (control.bpmnType.includes('BoundaryEvent')) {
-        const task = this.graph
-          .findModelsFromPoint(localMousePosition)
-          .find(({ component }) => {
-            return component && component.node.type === taskId;
-          });
-
-        this.allowDrop = !!task;
-        this.boundaryEventTarget = task;
         return;
       }
 

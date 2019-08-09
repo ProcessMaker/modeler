@@ -2,9 +2,9 @@ import component from './scriptTask.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const taskHeight = 76;
-
+export const id = 'processmaker-modeler-script-task';
 export default {
-  id: 'processmaker-modeler-script-task',
+  id,
   component,
   bpmnType: 'bpmn:ScriptTask',
   control: true,

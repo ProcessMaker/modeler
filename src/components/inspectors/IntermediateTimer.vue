@@ -3,8 +3,9 @@
     <label>{{ $t('Type') }}</label>
     <b-input-group>
       <b-form-select :value="timerPropertyName" data-test="intermediateTypeSelect" @change="changeType">
-        <option value="timeDuration">{{ $t('Delay') }}</option>
+        <option value="timeDuration">{{ $t('Duration') }}</option>
         <option value="timeDate">{{ $t('Date/Time') }}</option>
+        <option value="timeCycle">{{ $t('Cycle') }}</option>
       </b-form-select>
     </b-input-group>
 
@@ -15,12 +16,14 @@
 <script>
 import DurationExpression from './DurationExpression';
 import DateTimeExpression from './DateTimeExpression';
+import CycleExpression from './CycleExpression';
 import { DateTime } from 'luxon';
 import { defaultDurationValue } from '@/components/nodes/intermediateTimerEvent';
 
 const types = {
   timeDuration: 'DurationExpression',
   timeDate : 'DateTimeExpression',
+  timeCycle: 'CycleExpression',
 };
 
 export default {
@@ -28,6 +31,7 @@ export default {
   components: {
     DurationExpression,
     DateTimeExpression,
+    CycleExpression,
   },
   computed: {
     component() {
@@ -47,14 +51,16 @@ export default {
   },
   methods: {
     changeType(type) {
-      const defaultValue = this.isDelayType(type)
+      const defaultValue = (this.isDelayType(type) || this.isCycleType(type))
         ? defaultDurationValue
         : DateTime.local();
-
       this.emitChange(type, defaultValue);
     },
     isDelayType(type) {
       return types[type] === types.timeDuration;
+    },
+    isCycleType(type) {
+      return types[type] === types.timeCycle;
     },
     emitChange(type, body) {
       this.$emit('input', { type, body });
