@@ -45,7 +45,9 @@ export default {
 
       if (key === 'eventDefinitions') {
         const body = value[key];
-
+        if (typeof body === 'object') {
+          continue;
+        }
         const expression = definition.get(key)[0].timeCycle;
         if (expression && expression.body === body) {
           continue;
@@ -58,7 +60,6 @@ export default {
         const eventDefinitions = [
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
-
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
       } else {
         setNodeProp(node, key, value[key]);
