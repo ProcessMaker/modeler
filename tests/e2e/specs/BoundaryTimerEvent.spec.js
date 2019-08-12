@@ -136,12 +136,14 @@ describe('Boundary Timer Event', () => {
 
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
+    const initialPositionXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        // expect(xml).to.contain(initialPositionXML);
+        expect(xml).to.contain(initialPositionXML);
       });
 
     moveElementRelativeTo({x: 400, y: 400}, 150, 150);
@@ -151,7 +153,7 @@ describe('Boundary Timer Event', () => {
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        // expect(xml).to.contain(initialPositionXML);
+        expect(xml).to.contain(initialPositionXML);
       });
   });
 });
