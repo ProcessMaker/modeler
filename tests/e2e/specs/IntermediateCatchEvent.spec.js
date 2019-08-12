@@ -97,7 +97,7 @@ describe('Intermediate Catch Event', () => {
         expect(xml).to.contain(defaultTimeDate);
       });
 
-    cy.get('[data-test=intermediateTypeSelect]').select('Delay');
+    cy.get('[data-test=intermediateTypeSelect]').select('Duration');
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
