@@ -25,7 +25,7 @@
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="btn-toolbar tool-buttons d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -946,7 +946,6 @@ $cursors: default, not-allowed;
     user-select: none;
 
     .tool-buttons {
-      width: fit-content;
       z-index: 1;
 
       > button {
