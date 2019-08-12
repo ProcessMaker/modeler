@@ -946,6 +946,7 @@ $cursors: default, not-allowed;
     user-select: none;
 
     .tool-buttons {
+      width: fit-content;
       z-index: 1;
 
       > button {
