@@ -18,7 +18,7 @@ export default {
 
     startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {
       timeCycle: moddle.create('bpmn:Expression', {
-        body: 'R/' + DateTime.local().startOf('day').toISO() + '/P1W',
+        body: '',
       }),
     })];
 

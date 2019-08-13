@@ -60,8 +60,8 @@
             control-class="form-control"
             :format="DateTime.DATE_SHORT"
             phrases='{ok: $t("Save"), cancel: $t("Cancel")}'
-            :vaue="endDate"
-            @input="endDate = $event"
+            :value="endDate"
+            @input="setEndDate"
           />
         </b-form-group>
 
@@ -167,17 +167,15 @@ export default {
       return 'You must select at least one day.';
     },
     iso8606Expression() {
-      const expression = [];
-
-      if (this.hasMultipleWeekdaySelected()) {
-        expression.push(this.startDate);
-
-        this.selectedWeekdays.forEach(day => {
-          expression.push(this.getCycle(this.getWeekDayDate(this.startDate, day)));
-        });
-      } else {
-        expression.push(this.getCycle(this.startDate));
+      if (this.selectedWeekdays.length === 1 && this.sameDay) {
+        return this.getCycle(DateTime.fromISO(this.startDate));
       }
+
+      const expression = [];
+      expression.push(this.startDate);
+      this.selectedWeekdays.forEach(day => {
+        expression.push(this.getCycle(this.getWeekDayDate(day)));
+      });
 
       return expression.join('|');
     },
@@ -199,17 +197,24 @@ export default {
     },
   },
   watch: {
-    value: {
-      handler(value) {
-        this.parseTimerConfig(value);
-      },
-      immediate: true,
-    },
     iso8606Expression() {
       this.update();
     },
   },
+  mounted() {
+    this.parseTimerConfig(this.value);
+  },
   methods: {
+    setEndDate(endDateString) {
+      const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
+      const endDate = DateTime.fromISO(endDateString, { zone: 'utc' }).set({
+        hours: startDate.hour,
+        minutes: startDate.minute,
+        seconds: startDate.second,
+      });
+
+      this.endDate = endDate.toUTC().toISO();
+    },
     weekdayStyle(day) {
       const currentDay = DateTime.fromISO(this.startDate).weekday;
 
@@ -225,7 +230,7 @@ export default {
      * Parse an ISO8601 expression to get the timer configuration
      */
     parseTimerConfig(value) {
-      if (!value) {
+      if (!value[0].timeCycle.body) {
         return;
       }
 
@@ -236,6 +241,7 @@ export default {
         expression.forEach(exp => {
           if (exp.substr(0, 1) !== 'R') {
             this.startDate = exp;
+            hasStartDate = true;
           } else {
             // ISO 8601 Repeating time intervals format
             // R[n?]/[start]/[period]/[end?]
@@ -248,13 +254,20 @@ export default {
             const match = exp.match(/R(\d*)\/([^/]+)\/P(\d+)(\w)(?:\/([^/]+))?/);
             if (match) {
               this.times = match[1] || '1';
+              this.repeat = match[3];
+              this.periodicity = Object.keys(periods).find(key => periods[key] === match[4]);
 
               if (!hasStartDate) {
                 this.startDate = match[2];
+                hasStartDate = true;
               }
 
-              this.repeat = match[3];
-              this.periodicity = Object.keys(periods).find(key => periods[key] === match[4]);
+              if (this.periodicity === 'week') {
+                const dayOfWeek = DateTime.fromISO(match[2]).weekday;
+                const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
+                foundDay.selected = true;
+              }
+
               this.endDate = match[5] ? match[5] : DateTime.local().toISO();
               this.ends = !match[5]
                 ? !match[1]
@@ -275,7 +288,7 @@ export default {
       this.times = '1';
       this.repeat = '1';
       this.periodicity = 'week';
-      this.endDate = DateTime.local();
+      this.endDate = DateTime.local().toISO();
       this.ends = 'never';
       this.weekdays.forEach(weekday => weekday.selected = false);
     },
@@ -295,11 +308,15 @@ export default {
         (this.ends === 'ondate' ? this.endDate : '')
       );
     },
-    getWeekDayDate(date, isoWeekDay) {
-      const day = isoWeekDay % 7;
-      const mdate = DateTime.fromISO(date);
-      const current = mdate.weekday - 1;
-      return mdate.plus({ days: (7 + day - current) % 7 });
+    getWeekDayDate(isoWeekDay) {
+      const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
+      let weekDayDate = startDate.set({ weekday: isoWeekDay });
+
+      if (weekDayDate.toMillis() < startDate.toMillis()) {
+        weekDayDate = weekDayDate.plus({ days: 7 });
+      }
+
+      return weekDayDate.toUTC().toISO();
     },
     getPeriod() {
       return `P${this.repeat}` + periods[this.periodicity];
