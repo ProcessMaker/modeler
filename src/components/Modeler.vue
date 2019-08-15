@@ -646,8 +646,8 @@ export default {
       this.paper.setDimensions(clientWidth, clientHeight);
     },
     isPointOverPaper(mouseX, mouseY) {
-      const { x, y, width, height } = this.$refs['paper-container'].getBoundingClientRect();
-      const rect = new joint.g.rect(x, y, width, height);
+      const { left, top, width, height } = this.$refs['paper-container'].getBoundingClientRect();
+      const rect = new joint.g.rect(left, top, width, height);
       const point = new joint.g.point(mouseX, mouseY);
 
       return rect.containsPoint(point);
