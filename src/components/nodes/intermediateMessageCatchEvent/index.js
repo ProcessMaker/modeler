@@ -1,6 +1,7 @@
 import component from './intermediateMessageCatchEvent.vue';
 import omit from 'lodash/omit';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import MessageEventIdGenerator from '../../../MessageEventIdGenerator';
 
 const messageEventIdGenerator = new MessageEventIdGenerator();
@@ -91,9 +92,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Intermediate Message Catch Event',
-                name: 'name',
               },
             },
             {

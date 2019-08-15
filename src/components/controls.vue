@@ -138,11 +138,6 @@ export default {
   }
 }
 
-.img-container {
-  width: 1rem;
-  pointer-events: none;
-}
-
 .tool-icon {
   width: 1.5rem;
   pointer-events: none;

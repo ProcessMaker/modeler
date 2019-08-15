@@ -1,6 +1,7 @@
 import component from './intermediateTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const defaultDurationValue = 'PT1H';
 
@@ -98,9 +99,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Intermediate Event',
-                name: 'name',
               },
             },
           ],

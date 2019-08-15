@@ -115,6 +115,45 @@ describe('Boundary Timer Event', () => {
       });
   });
 
+  it('removes references of itself when inside of a pool and deleting the pool', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
+    const startEventPosition = { x: 150, y: 150 };
+    const poolPosition = { x: 400, y: 300 };
+    const taskPosition = { x: 250, y: 250 };
+
+    getElementAtPosition(startEventPosition)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
+      });
+
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryTimerEventPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition)
+      .click()
+      .then($task => {
+        getCrownButtonForElement($task, 'delete-button').click({ force: true });
+      });
+
+    const boundaryTimerEventInXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.not.contain(boundaryTimerEventInXML);
+      });
+  });
+
   it.skip('can stay anchored to task when moving pool', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
@@ -136,12 +175,14 @@ describe('Boundary Timer Event', () => {
 
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
+    const initialPositionXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        // expect(xml).to.contain(initialPositionXML);
+        expect(xml).to.contain(initialPositionXML);
       });
 
     moveElementRelativeTo({x: 400, y: 400}, 150, 150);
@@ -151,7 +192,7 @@ describe('Boundary Timer Event', () => {
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        // expect(xml).to.contain(initialPositionXML);
+        expect(xml).to.contain(initialPositionXML);
       });
   });
 });

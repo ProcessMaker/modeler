@@ -25,7 +25,7 @@
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="btn-toolbar tool-buttons d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -646,8 +646,8 @@ export default {
       this.paper.setDimensions(clientWidth, clientHeight);
     },
     isPointOverPaper(mouseX, mouseY) {
-      const { x, y, width, height } = this.$refs['paper-container'].getBoundingClientRect();
-      const rect = new joint.g.rect(x, y, width, height);
+      const { left, top, width, height } = this.$refs['paper-container'].getBoundingClientRect();
+      const rect = new joint.g.rect(left, top, width, height);
       const point = new joint.g.point(mouseX, mouseY);
 
       return rect.containsPoint(point);

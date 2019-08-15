@@ -1,5 +1,6 @@
 import component from './endEvent.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-end-event',
@@ -53,9 +54,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the End Event',
-                name: 'name',
               },
             },
           ],

@@ -1,5 +1,6 @@
 import component from './manualTask.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-manual-task';
@@ -46,9 +47,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The name of the manual task',
-                name: 'name',
               },
             },
           ],

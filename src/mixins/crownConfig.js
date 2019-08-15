@@ -78,7 +78,7 @@ export default {
     },
     removeShape() {
       this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
-      this.shape.getEmbeddedCells().forEach(cell => {
+      this.shape.getEmbeddedCells({deep: true}).forEach(cell => {
         if (cell.component) {
           this.graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
           this.shape.unembed(cell);
@@ -154,7 +154,7 @@ export default {
     addMessageFlowButton() {
       this.crownConfig.push({
         id: 'message-flow-button',
-        title: 'Message Flow',
+        title: this.$t('Message Flow'),
         icon: messageFlowIcon,
         clickHandler: this.addMessageFlow,
       });
@@ -170,7 +170,7 @@ export default {
 
       this.crownConfig.push({
         id: 'delete-button',
-        title: 'Delete',
+        title: this.$t('Delete'),
         icon: trashIcon,
         clickHandler: this.removeShape,
       });

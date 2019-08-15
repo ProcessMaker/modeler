@@ -2,6 +2,7 @@ import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import { DateTime } from 'luxon';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -95,9 +96,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Start Event',
-                name: 'name',
               },
             },
           ],
