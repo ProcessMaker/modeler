@@ -336,10 +336,20 @@ export default {
       const registeredIndex = node.inspectorConfig[0].items.findIndex(item => {
         return config.id && config.id === item.id;
       });
-      if (registeredIndex === -1) {
-        node.inspectorConfig[0].items[0].items.push(config);
+        
+      let items;
+      if (config.container) {
+        // if it is a container, don't put it inside the default container
+        items = node.inspectorConfig[0].items;
       } else {
-        node.inspectorConfig[0].items[0].items[registeredIndex] = config;
+        // if it is not a container, put it in the default container
+        items = node.inspectorConfig[0].items[0].items;
+      }
+
+      if (registeredIndex === -1) {
+        items.push(config);
+      } else {
+        items[registeredIndex] = config;
       }
     },
     /**
