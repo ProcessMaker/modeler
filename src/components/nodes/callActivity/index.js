@@ -1,6 +1,7 @@
 import component from './callActivity';
 import CallActivityFormSelect from './CallActivityFormSelect';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-call-activity';
@@ -62,9 +63,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Call Activity',
-                name: 'name',
               },
             },
             {

@@ -1,5 +1,6 @@
 import component from './boundaryEvent.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-boundary-event',
@@ -42,9 +43,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Boundary Event',
-                name: 'name',
               },
             },
             {

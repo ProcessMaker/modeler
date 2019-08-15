@@ -1,5 +1,6 @@
 import component from './scriptTask.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-script-task';
@@ -45,9 +46,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The name of the script task',
-                name: 'name',
               },
             },
           ],

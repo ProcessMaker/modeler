@@ -1,5 +1,6 @@
 import component from './boundaryTimerEvent.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 export const defaultDurationValue = 'PT1H';
 
@@ -94,9 +95,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Boundary Timer Event',
-                name: 'name',
               },
             },
             {
