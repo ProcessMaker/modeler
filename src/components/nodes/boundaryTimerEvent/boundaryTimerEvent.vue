@@ -8,6 +8,7 @@ import timerEventIcon from '@/assets/timer-event-icon.svg';
 import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
 import { portGroups } from '@/mixins/portsConfig';
 import portsConfig from '@/mixins/portsConfig';
+import crownConfig from '@/mixins/crownConfig';
 import joint from 'jointjs';
 
 function getPointFromGroup(model, group) {
@@ -45,7 +46,7 @@ function snapToAnchor(coords, model) {
 
 export default {
   extends: BoundaryEvent,
-  mixins: [boundaryEventSwitcher, portsConfig],
+  mixins: [boundaryEventSwitcher, portsConfig, crownConfig],
   watch: {
     'node.definition.cancelActivity'(value) {
       this.renderBoundaryTimer(value);
@@ -67,6 +68,11 @@ export default {
       const solidLine = 0;
       isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
     },
+    updateSnappingPosition(task) {
+      const { x, y } = snapToAnchor(this.shape.position(), task);
+      const { width } = this.shape.size();
+      this.shape.position(x - (width / 2), y - (width / 2));
+    },
   },
   async mounted() {
     this.shape.attr('image/xlink:href', timerEventIcon);
@@ -87,15 +93,16 @@ export default {
 
     if (task) {
       task.embed(this.shape);
-      const { x, y } = snapToAnchor(this.shape.position(), task);
-      const { width } = this.shape.size();
-
-      this.shape.position(x - (width / 2), y - (width / 2));
+      this.updateSnappingPosition(task);
       this.renderBoundaryTimer(this.node.definition.cancelActivity);
-      this.shape.set('elementMove', false);
     } else {
       this.$emit('remove-node', this.node);
     }
+
+    this.shape.listenTo(this.paper, 'element:pointerup', () => {
+      this.updateSnappingPosition(task);
+      this.updateCrownPosition();
+    });
   },
 };
 </script>
