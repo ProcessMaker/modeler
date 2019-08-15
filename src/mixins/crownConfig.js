@@ -154,7 +154,7 @@ export default {
     addMessageFlowButton() {
       this.crownConfig.push({
         id: 'message-flow-button',
-        title: 'Message Flow',
+        title: this.$t('Message Flow'),
         icon: messageFlowIcon,
         clickHandler: this.addMessageFlow,
       });
@@ -170,7 +170,7 @@ export default {
 
       this.crownConfig.push({
         id: 'delete-button',
-        title: 'Delete',
+        title: this.$t('Delete'),
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
