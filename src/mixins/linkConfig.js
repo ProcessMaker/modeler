@@ -109,11 +109,19 @@ export default {
     },
   },
   methods: {
-    setEndpoint(shape, endpoint, connectionPoint) {
+    setEndpoint(shape, endpoint, connectionOffset) {
       let anchor;
 
-      if (connectionPoint) {
-        anchor = () => closestPort(shape.findView(this.paper), connectionPoint);
+      if (connectionOffset) {
+        anchor = () => {
+          const { x, y } = shape.position();
+          const connectionPoint = {
+            x: x + connectionOffset.x,
+            y: y + connectionOffset.y,
+          };
+
+          return closestPort(shape.findView(this.paper), connectionPoint);
+        };
       } else {
         anchor = {
           name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
@@ -281,6 +289,18 @@ export default {
       const sourceAnchorPoint = this.node.diagram.waypoint[0];
       const targetAnchorPoint = sequenceFlowWaypoints[sequenceFlowWaypoints.length - 1];
 
+      const { x: targetX, y: targetY } = targetShape.position();
+      const targetAnchorOffset = {
+        x: targetAnchorPoint.x - targetX,
+        y: targetAnchorPoint.y - targetY,
+      };
+
+      const { x: sourceX, y: sourceY } = this.sourceShape.position();
+      const sourceAnchorOffset = {
+        x: sourceAnchorPoint.x - sourceX,
+        y: sourceAnchorPoint.y - sourceY,
+      };
+
       if (sequenceFlowWaypoints) {
         const sequenceVertices = sequenceFlowWaypoints
           .slice(1, sequenceFlowWaypoints.length - 1)
@@ -289,8 +309,8 @@ export default {
         this.shape.vertices(sequenceVertices);
       }
 
-      this.setSource(this.sourceShape, sourceAnchorPoint);
-      this.setTarget(targetShape, targetAnchorPoint);
+      this.setSource(this.sourceShape, sourceAnchorOffset);
+      this.setTarget(targetShape, targetAnchorOffset);
       this.completeLink();
     } else {
       this.setTarget(targetRef);
