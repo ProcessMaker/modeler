@@ -95,14 +95,18 @@ export default {
       task.embed(this.shape);
       this.updateSnappingPosition(task);
       this.renderBoundaryTimer(this.node.definition.cancelActivity);
+
+      this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
+        if (cellView.model !== this.shape) {
+          return;
+        }
+
+        this.updateSnappingPosition(task);
+        this.updateCrownPosition();
+      });
     } else {
       this.$emit('remove-node', this.node);
     }
-
-    this.shape.listenTo(this.paper, 'element:pointerup', () => {
-      this.updateSnappingPosition(task);
-      this.updateCrownPosition();
-    });
   },
 };
 </script>
