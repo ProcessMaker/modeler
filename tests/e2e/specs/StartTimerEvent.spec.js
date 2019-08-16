@@ -42,7 +42,7 @@ describe('Start Timer Event', () => {
     cy.get('.vdatetime-popup').contains('22').click();
     cy.get('[data-test=end-date-picker]').should('have.value', '8/22/2019');
 
-    const timerExpression1 = 'R/2019-08-14T09:30:00.000Z/P3W/2019-08-22T09:30:00.000Z';
+    const timerExpression1 = 'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
@@ -53,10 +53,10 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=day-4]').click();
 
     const timerExpression2 = [
-      '2019-08-14T09:30:00.000Z',
-      'R/2019-08-20T09:30:00.000Z/P3W/2019-08-22T09:30:00.000Z',
-      'R/2019-08-14T09:30:00.000Z/P3W/2019-08-22T09:30:00.000Z',
-      'R/2019-08-15T09:30:00.000Z/P3W/2019-08-22T09:30:00.000Z',
+      '2019-08-14T05:30:00.000Z',
+      'R/2019-08-20T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z',
+      'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z',
+      'R/2019-08-15T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z',
     ].join('|');
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
