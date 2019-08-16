@@ -110,7 +110,6 @@ export default {
   data() {
     return {
       DateTime,
-      data: { sampleDatePicker: DateTime.local().toISO() },
       weekdays: [
         //  ISO week date weekday number, from 1 through 7,
         //  beginning with Monday and ending with Sunday.
@@ -150,11 +149,11 @@ export default {
           selected: false,
         },
       ],
-      startDate: DateTime.local().toISO(),
+      startDate: DateTime.local().toUTC().toISO(),
       repeat: '1',
       periodicity: 'week',
       ends: 'never',
-      endDate: DateTime.local().toISO(),
+      endDate: DateTime.local().toUTC().toISO(),
       times: '1',
     };
   },
@@ -278,12 +277,12 @@ export default {
               }
 
               if (this.periodicity === 'week') {
-                const dayOfWeek = DateTime.fromISO(match[2]).weekday;
+                const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).weekday;
                 const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
                 foundDay.selected = true;
               }
 
-              this.endDate = match[5] ? match[5] : DateTime.local().toISO();
+              this.endDate = match[5] || DateTime.local().toUTC().toISO();
               this.ends = !match[5]
                 ? !match[1]
                   ? 'never'
@@ -299,11 +298,11 @@ export default {
       }
     },
     resetTimerExpression() {
-      this.startDate = DateTime.local().toISO();
+      this.startDate = DateTime.local().toUTC().toISO();
       this.times = '1';
       this.repeat = '1';
       this.periodicity = 'week';
-      this.endDate = DateTime.local().toISO();
+      this.endDate = DateTime.local().toUTC().toISO();
       this.ends = 'never';
       this.weekdays.forEach(weekday => weekday.selected = false);
     },
