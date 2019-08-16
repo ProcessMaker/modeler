@@ -191,7 +191,7 @@ export default {
      * True if the selected day is the same of the start date
      */
     sameDay() {
-      const currentWeekday = DateTime.fromISO(this.startDate, { zone: 'utc' }).weekday;
+      const currentWeekday = DateTime.fromISO(this.startDate, { zone: 'utc' }).toLocal().weekday;
 
       return this.selectedWeekdays.length === 1 &&
         this.weekdays.find(({ day }) => day === currentWeekday).selected;
@@ -230,7 +230,7 @@ export default {
         .toISO();
     },
     weekdayStyle(day) {
-      const currentDay = DateTime.fromISO(this.startDate, { zone: 'utc' }).weekday;
+      const currentDay = DateTime.fromISO(this.startDate, { zone: 'utc' }).toLocal().weekday;
 
       return [
         day.selected ? 'badge-primary' : 'badge-light',
@@ -277,7 +277,7 @@ export default {
               }
 
               if (this.periodicity === 'week') {
-                const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).weekday;
+                const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
                 const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
                 foundDay.selected = true;
               }
