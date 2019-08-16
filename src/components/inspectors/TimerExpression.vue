@@ -1,6 +1,7 @@
 <template>
   <div class="form-group">
     <form-date-picker
+      data-test="start-date-picker"
       :label="$t('Start date')"
       :placeholder="$t('Start date')"
       control-class="form-control"
@@ -9,13 +10,13 @@
       :minuteStep="30"
       :phrases="{ ok: 'Save', cancel: 'Cancel' }"
       :value="startDate"
-      @input="startDate = $event"
+      @input="setStartDate"
     />
 
     <template v-if="hasRepeat">
       <label class="">{{ $t(repeatLabel) }}</label>
       <b-form-group class="m-0 mb-3 p-0">
-        <b-form-input type="number" min="1" max="99" class="d-inline-block w-50" v-model="repeat"/>
+        <b-form-input type="number" min="1" max="99" class="d-inline-block w-50" v-model="repeat" data-test="repeat-input"/>
         <b-form-select v-model="periodicity" class="d-inline-block w-50 periodicity">
           <option value="day">{{ $t('day') }}</option>
           <option value="week">{{ $t('week') }}</option>
@@ -50,8 +51,9 @@
         </b-form-group>
 
         <b-form-group class="p-0 mb-1" :description="`${$t('Please click On to select a date')}.`">
-          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate">{{ $t('On') }}</b-form-radio>
+          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on">{{ $t('On') }}</b-form-radio>
           <form-date-picker
+            data-test="end-date-picker"
             type="date"
             class="form-date-picker p-0 m-0"
             :class="{'date-disabled' : ends !== 'ondate'}"
@@ -168,7 +170,7 @@ export default {
     },
     iso8606Expression() {
       if (this.selectedWeekdays.length === 1 && this.sameDay) {
-        return this.getCycle(DateTime.fromISO(this.startDate));
+        return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
       }
 
       const expression = [];
@@ -190,7 +192,7 @@ export default {
      * True if the selected day is the same of the start date
      */
     sameDay() {
-      const currentWeekday = DateTime.fromISO(this.startDate).weekday;
+      const currentWeekday = DateTime.fromISO(this.startDate, { zone: 'utc' }).weekday;
 
       return this.selectedWeekdays.length === 1 &&
         this.weekdays.find(({ day }) => day === currentWeekday).selected;
@@ -205,18 +207,31 @@ export default {
     this.parseTimerConfig(this.value);
   },
   methods: {
+    setStartDate(startDateString) {
+      this.startDate = DateTime
+        .fromISO(startDateString, { zone: 'utc' })
+        .set({
+          seconds: 0,
+          milliseconds: 0,
+        })
+        .toUTC()
+        .toISO();
+    },
     setEndDate(endDateString) {
       const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
-      const endDate = DateTime.fromISO(endDateString, { zone: 'utc' }).set({
-        hours: startDate.hour,
-        minutes: startDate.minute,
-        seconds: startDate.second,
-      });
-
-      this.endDate = endDate.toUTC().toISO();
+      this.endDate = DateTime
+        .fromISO(endDateString, { zone: 'utc' })
+        .set({
+          hours: startDate.hour,
+          minutes: startDate.minute,
+          seconds: 0,
+          milliseconds: 0,
+        })
+        .toUTC()
+        .toISO();
     },
     weekdayStyle(day) {
-      const currentDay = DateTime.fromISO(this.startDate).weekday;
+      const currentDay = DateTime.fromISO(this.startDate, { zone: 'utc' }).weekday;
 
       return [
         day.selected ? 'badge-primary' : 'badge-light',
