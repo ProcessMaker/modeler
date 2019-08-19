@@ -4,8 +4,6 @@ import {
   connectNodesWithFlow,
   getLinksConnectedToElement,
   moveElement,
-  waitToRenderAllShapes,
-  moveElementRelativeTo,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
