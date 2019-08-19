@@ -9,13 +9,13 @@ import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
 import { portGroups } from '@/mixins/portsConfig';
 import portsConfig from '@/mixins/portsConfig';
 import crownConfig from '@/mixins/crownConfig';
-import joint from 'jointjs';
+import { g } from 'jointjs';
 
 function getPointFromGroup(model, group) {
   const { x: shapeX, y: shapeY } = model.position();
   const { x, y } = Object.values(model.getPortsPositions(group))[0];
 
-  return new joint.g.Point(shapeX + x, shapeY + y);
+  return new g.Point(shapeX + x, shapeY + y);
 }
 
 function getPortPoints(model) {
@@ -24,7 +24,7 @@ function getPortPoints(model) {
 
 function closestPort(model, anchorReference) {
   return getPortPoints(model).sort((p1, p2) => {
-    const referencePoint = new joint.g.Point(anchorReference.x, anchorReference.y);
+    const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
     return referencePoint.distance(p1) - referencePoint.distance(p2);
   })[0];
 }
@@ -38,7 +38,7 @@ function snapToAnchor(coords, model) {
     const { x, y } = model.position();
     const { width, height } = model.size();
 
-    return new joint.g.Point(x - (width / 2), y - (height / 2));
+    return new g.Point(x - (width / 2), y - (height / 2));
   }
 
   return closestPort(model, coords);
