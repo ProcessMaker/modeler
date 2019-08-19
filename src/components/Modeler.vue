@@ -462,6 +462,7 @@ export default {
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
+      this.addCancelActivityToBoundaryEvents();
       // Get the top level objects
       // All root elements are either bpmn:process or bpmn:collaboration types
       // There should only be one collaboration
@@ -627,6 +628,42 @@ export default {
         this.nodeIdGenerator = new NodeIdGenerator(definitions);
         store.commit('clearNodes');
         this.renderPaper();
+      });
+    },
+    addCancelActivityToBoundaryEvents() {
+      const boundaryEvents = this.definitions.get('rootElements')[0].flowElements ? this.definitions.get('rootElements')[0].flowElements.filter(({$type}) => $type === 'bpmn:BoundaryEvent') : null;
+      if (!boundaryEvents) {
+        return;
+      }
+      boundaryEvents.forEach(definition => {
+        let boundaryEvent = this.moddle.create('bpmn:BoundaryEvent', {
+          ...definition,
+          cancelActivity: definition.get('cancelActivity'),
+          attachedToRef: definition.get('attachedToRef'),
+        });
+        boundaryEvent.$parent = definition.$parent;
+        if (definition.get('outgoing').length) {
+          boundaryEvent.set('outgoing', definition.get('outgoing'));
+        }
+        if (definition.get('incoming').length) {
+          boundaryEvent.set('incoming', definition.get('incoming'));
+        }
+        // update sourceRefs
+        this.definitions.get('rootElements')[0].flowElements.filter(
+          ({sourceRef}) => sourceRef === definition
+        ).map(node => {
+          return node.set('sourceRef', boundaryEvent);
+        });
+        // update targetRefs
+        this.definitions.get('rootElements')[0].flowElements.filter(
+          ({targetRef}) => targetRef === definition
+        ).map(node => {
+          return node.set('targetRef', boundaryEvent);
+        });
+        // remove original definition and add recreated definition
+        this.definitions.get('rootElements')[0].flowElements = this.definitions.get('rootElements')[0].flowElements
+          .filter(element => element.id !== definition.get('id'));
+        this.definitions.get('rootElements')[0].flowElements.push(boundaryEvent);
       });
     },
     toXML(cb) {
