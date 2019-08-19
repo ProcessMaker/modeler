@@ -803,6 +803,7 @@ export default {
     });
 
     this.paper = new dia.Paper({
+      async: true,
       el: this.$refs.paper,
       model: this.graph,
       gridSize: 10,
