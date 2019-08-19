@@ -1,4 +1,4 @@
-import joint from 'jointjs';
+import { shapes } from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
@@ -176,7 +176,7 @@ export default {
       });
 
       this.crownConfig.forEach(({ id, title, icon, clickHandler }) => {
-        const button = new joint.shapes.standard.EmbeddedImage();
+        const button = new shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);

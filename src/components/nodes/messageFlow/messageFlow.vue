@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import joint from 'jointjs';
+import { shapes } from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
@@ -80,7 +80,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Link({
+    this.shape = new shapes.standard.Link({
       router: {
         name: 'orthogonal',
       },

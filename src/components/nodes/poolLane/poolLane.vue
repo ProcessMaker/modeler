@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import joint from 'jointjs';
+import { shapes, util } from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
@@ -47,7 +47,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Rectangle();
+    this.shape = new shapes.standard.Rectangle();
 
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
@@ -59,7 +59,7 @@ export default {
       fill: poolColor,
     });
     this.shape.attr('label', {
-      text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.height }),
+      text: util.breakText(this.node.definition.get('name'), { width: bounds.height }),
       fill: 'black',
       transform: 'rotate(-90)',
       refX: labelWidth / 2,

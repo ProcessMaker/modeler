@@ -29,7 +29,7 @@
     "bpmnlint": "^5.0.0",
     "bpmnlint-plugin-spark": "^1.0.0",
     "file-saver": "^2.0.0-rc.4",
-    "jointjs": "^2.2.1",
+    "jointjs": "^3.0.4",
     "lodash": "^4.17.11",
     "luxon": "^1.11.4",
     "vue": "^2.5.17",

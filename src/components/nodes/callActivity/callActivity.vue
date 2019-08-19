@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import joint from 'jointjs';
+import { util } from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
@@ -32,7 +32,7 @@ export default {
   watch: {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
-      this.shape.attr('label/text', joint.util.breakText(name, { width }));
+      this.shape.attr('label/text', util.breakText(name, { width }));
 
       /* Update shape height if label text overflows */
       const labelHeight = this.shapeView.selectors.label.getBBox().height;
@@ -80,7 +80,7 @@ export default {
         strokeWidth: 4,
       },
       label: {
-        text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.width }),
+        text: util.breakText(this.node.definition.get('name'), { width: bounds.width }),
         fill: 'black',
       },
     });

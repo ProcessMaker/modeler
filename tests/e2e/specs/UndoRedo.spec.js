@@ -151,7 +151,7 @@ describe('Undo/redo', () => {
     const pool2Position = { x: 250, y: 500 };
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
 
-    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
+    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position, 'top');
 
     getGraphElements().then(elements => {
       const numberOfElements = elements.length;

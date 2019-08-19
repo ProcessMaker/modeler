@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import joint from 'jointjs';
+import { shapes, util } from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import portsConfig from '@/mixins/portsConfig';
@@ -19,9 +19,9 @@ import { invalidNodeColor, defaultNodeColor, poolColor } from '@/components/node
 import pull from 'lodash/pull';
 import store from '@/store';
 
-joint.shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
+const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
-    ...joint.shapes.standard.Rectangle.prototype.markup,
+    ...shapes.standard.Rectangle.prototype.markup,
     { tagName: 'polyline', selector: 'polyline' },
   ],
   attrs: {
@@ -465,11 +465,11 @@ export default {
     this.$emit('set-pools', this.node.definition);
     this.laneSet = this.containingProcess.get('laneSets')[0];
 
-    this.shape = new joint.shapes.processmaker.modeler.bpmn.pool();
+    this.shape = new Pool();
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-    this.shape.attr('label/text', joint.util.breakText(this.node.definition.get('name'), {
+    this.shape.attr('label/text', util.breakText(this.node.definition.get('name'), {
       width: bounds.width,
     }));
     this.shape.attr('body', {

@@ -1,6 +1,6 @@
-import joint from 'jointjs';
+import { dia } from 'jointjs';
 
-export default joint.dia.Element.define(
+export default dia.Element.define(
   'processmaker.components.nodes.gateway.Shape',
   {
     size: {

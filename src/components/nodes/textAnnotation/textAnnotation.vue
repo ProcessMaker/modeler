@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import joint from 'jointjs';
+import { shapes, util } from 'jointjs';
 import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
@@ -45,7 +45,7 @@ export default {
       this.shape.attr({
         body: { refPoints },
         label: {
-          text: joint.util.breakText(text, {
+          text: util.breakText(text, {
             width: maxTextAnnotationWidth,
           }),
           fill: 'black',
@@ -70,7 +70,7 @@ export default {
   mounted() {
     const bounds = this.node.diagram.bounds;
 
-    this.shape = new joint.shapes.standard.Polyline();
+    this.shape = new shapes.standard.Polyline();
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
