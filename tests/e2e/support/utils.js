@@ -71,7 +71,7 @@ export function waitToRenderNodeUpdates() {
   cy.wait(saveDebounce);
 }
 
-export function connectNodesWithFlow(flowType, startPosition, endPosition) {
+export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center') {
   getElementAtPosition(startPosition)
     .click()
     .then($element => {
@@ -82,7 +82,7 @@ export function connectNodesWithFlow(flowType, startPosition, endPosition) {
       getElementAtPosition(endPosition)
         .trigger('mousemove', { force: true })
         .wait(renderTime)
-        .click({ force: true });
+        .click(clickPosition, { force: true });
     });
 }
 
