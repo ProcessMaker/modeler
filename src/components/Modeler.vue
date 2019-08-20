@@ -548,7 +548,9 @@ export default {
           store.commit('clearNodes');
 
           this.$nextTick(() => {
+            this.paper.freeze();
             this.parse();
+            this.paper.unfreeze();
             this.$emit('parsed');
           });
         }
@@ -870,7 +872,9 @@ export default {
         return;
       }
 
+      this.paper.freeze();
       this.setShapeStacking(shape);
+      this.paper.unfreeze();
 
       shape.component.$emit('click');
     });
