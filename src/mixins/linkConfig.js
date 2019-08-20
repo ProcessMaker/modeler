@@ -276,7 +276,10 @@ export default {
     });
 
     this.setSource(this.sourceShape);
-    this.setupLinkTools();
+
+    this.$once('click', () => {
+      this.setupLinkTools();
+    });
 
     const targetRef = this.node.definition.get('targetRef');
 
