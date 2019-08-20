@@ -351,8 +351,7 @@ export default {
         return config.id && config.id === item.id;
       });
     },
-    isContainer(config)
-    {
+    isContainer(config) {
       return typeof config.container !== 'undefined';
     },
     inspectorItemsToAddTo(node, config) {
