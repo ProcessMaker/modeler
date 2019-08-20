@@ -806,6 +806,7 @@ export default {
       async: true,
       el: this.$refs.paper,
       model: this.graph,
+      sorting: 'sorting-approximate',
       gridSize: 10,
       drawGrid: true,
       clickThreshold: 10,
