@@ -298,8 +298,10 @@ export default {
     this.$nextTick(() => {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
-      this.configureCrown();
-      this.configurePoolLane();
+      this.$once('click', () => {
+        this.configureCrown();
+        this.configurePoolLane();
+      });
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
