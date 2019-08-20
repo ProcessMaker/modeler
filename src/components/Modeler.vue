@@ -362,12 +362,10 @@ export default {
         return this.defaultContainerItems(node);
       }
     },
-    defaultContainerItems(node)
-    {
+    defaultContainerItems(node) {
       return this.inspectorItems(node)[0].items;
     },
-    inspectorItems(node)
-    {
+    inspectorItems(node) {
       return node.inspectorConfig[0].items;
     },
     /**
