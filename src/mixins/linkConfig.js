@@ -161,7 +161,10 @@ export default {
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
       this.shape.on('change:vertices change:source change:target', this.updateWaypoints);
-      this.shape.getSourceElement().embed(this.shape);
+
+      const sourceShape = this.shape.getSourceElement();
+      sourceShape.embed(this.shape);
+      this.$emit('set-shape-stacking', sourceShape);
     },
     updateWaypoints() {
       const linkView = this.shape.findView(this.paper);

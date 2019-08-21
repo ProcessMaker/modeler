@@ -738,16 +738,9 @@ export default {
     },
     bringPoolToFront(poolShape) {
       this.bringShapeToFront(poolShape);
-      poolShape.getEmbeddedCells()
-        .filter(this.isBpmnNode)
-        .filter(this.isNotLane)
-        .forEach(this.bringShapeToFront);
     },
     bringShapeToFront(shape) {
       shape.toFront({ deep: true });
-
-      this.graph.getConnectedLinks(shape)
-        .forEach(link => link.toFront());
     },
     getElementPool(shape) {
       return shape.component.node.pool;
@@ -756,6 +749,8 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
+      this.paper.freeze();
+
       if (this.isPool(shape)) {
         this.bringPoolToFront(shape);
       }
@@ -768,6 +763,8 @@ export default {
       if (this.isNotLane(shape) && !this.isPool(shape)) {
         this.bringShapeToFront(shape);
       }
+
+      this.paper.unfreeze();
     },
     movePaper({ offsetX, offsetY }) {
       const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
@@ -877,9 +874,7 @@ export default {
         return;
       }
 
-      this.paper.freeze();
       this.setShapeStacking(shape);
-      this.paper.unfreeze();
 
       shape.component.$emit('click');
     });
