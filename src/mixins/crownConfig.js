@@ -58,6 +58,10 @@ export default {
       }
     },
     hasError() {
+      if (this.isRendering) {
+        return;
+      }
+
       this.setErrorHighlight();
     },
   },
