@@ -27,7 +27,17 @@ const errorHighlighter = {
 };
 
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError', 'collaboration', 'nodeRegistry'],
+  props: [
+    'highlighted',
+    'paper',
+    'processNode',
+    'planeElements',
+    'moddle',
+    'hasError',
+    'collaboration',
+    'nodeRegistry',
+    'isRendering',
+  ],
   data() {
     return {
       buttons: [],
@@ -70,6 +80,7 @@ export default {
       if (!this.shapeView) {
         return;
       }
+
       if (this.hasError) {
         this.shapeView.highlight(null, { highlighter: errorHighlighter });
       } else {
@@ -293,11 +304,7 @@ export default {
 
       this.$emit('save-state');
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
-       * This will ensure this.shape is defined. */
+    setUpCrownConfig() {
       this.$once('click', () => {
         this.configureCrown();
         this.configurePoolLane();
@@ -329,6 +336,18 @@ export default {
       }
 
       this.setErrorHighlight();
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
+       * This will ensure this.shape is defined. */
+
+      if (this.isRendering) {
+        this.paper.once('render:done', this.setUpCrownConfig);
+      } else {
+        this.setUpCrownConfig();
+      }
     });
   },
   created() {
