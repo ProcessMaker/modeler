@@ -333,14 +333,40 @@ export default {
      * component is already registered, it is replaced by the new one.
      */
     registerInspectorExtension(node, config) {
-      const registeredIndex = node.inspectorConfig[0].items.findIndex(item => {
+      this.addToInspector(
+        this.inspectorItemsToAddTo(node, config),
+        this.existingConfigIndex(node, config),
+        config
+      );
+    },
+    addToInspector(inspectorItems, existingIndex, config) {
+      if (existingIndex === -1) {
+        inspectorItems.push(config);
+      } else {
+        inspectorItems[existingIndex] = config;
+      }
+    },
+    existingConfigIndex(node, config) {
+      return this.inspectorItems(node).findIndex(item => {
         return config.id && config.id === item.id;
       });
-      if (registeredIndex === -1) {
-        node.inspectorConfig[0].items[0].items.push(config);
+    },
+    isContainer(config) {
+      return typeof config.container !== 'undefined';
+    },
+    inspectorItemsToAddTo(node, config) {
+      if (this.isContainer(config)) {
+        return this.inspectorItems(node);
       } else {
-        node.inspectorConfig[0].items[0].items[registeredIndex] = config;
+        // if the config we're adding is not a container, put it in the default container
+        return this.defaultContainerItems(node);
       }
+    },
+    defaultContainerItems(node) {
+      return this.inspectorItems(node)[0].items;
+    },
+    inspectorItems(node) {
+      return node.inspectorConfig[0].items;
     },
     /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
