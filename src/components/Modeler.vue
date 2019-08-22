@@ -87,6 +87,7 @@
       :moddle="moddle"
       :nodeRegistry="nodeRegistry"
       :root-elements="definitions.get('rootElements')"
+      :isRendering="isRendering"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -181,6 +182,7 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
+      isRendering: false,
     };
   },
   watch: {
@@ -549,6 +551,8 @@ export default {
 
           this.$nextTick(() => {
             this.paper.freeze();
+            this.isRendering = true;
+            this.paper.once('render:done', () => this.isRendering = false);
             this.parse();
             this.paper.unfreeze();
             this.$emit('parsed');
