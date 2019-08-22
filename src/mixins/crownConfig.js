@@ -240,16 +240,6 @@ export default {
           shapeView.highlight();
         }
       });
-
-      this.shape.on('change:position', (element, newPosition) => {
-        this.node.diagram.bounds.x = newPosition.x;
-        this.node.diagram.bounds.y = newPosition.y;
-
-        if (!this.savePositionOnPointerupEventSet) {
-          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
-          this.savePositionOnPointerupEventSet = true;
-        }
-      });
     },
     updateCrownPosition() {
       const buttonLength = 25;
@@ -285,6 +275,10 @@ export default {
 
         this.node.pool.component.addToPool(this.shape);
 
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
+
         return;
       }
 
@@ -296,6 +290,10 @@ export default {
       if (pool) {
         this.node.pool = pool;
         this.node.pool.component.addToPool(this.shape);
+
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
       }
     },
     setNodePosition() {
@@ -311,7 +309,16 @@ export default {
     setUpCrownConfig() {
       this.$once('click', () => {
         this.configureCrown();
-        this.configurePoolLane();
+      });
+
+      this.shape.on('change:position', (element, newPosition) => {
+        this.node.diagram.bounds.x = newPosition.x;
+        this.node.diagram.bounds.y = newPosition.y;
+
+        if (!this.savePositionOnPointerupEventSet) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+          this.savePositionOnPointerupEventSet = true;
+        }
       });
 
       if (!this.planeElements.includes(this.node.diagram)) {
@@ -346,6 +353,8 @@ export default {
     this.$nextTick(() => {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
+
+      this.configurePoolLane();
 
       if (this.isRendering) {
         this.paper.once('render:done', this.setUpCrownConfig);
