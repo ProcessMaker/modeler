@@ -6,14 +6,12 @@
 import { shapes, util } from 'jointjs';
 import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
-import { highlightPadding } from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 
 export const maxTextAnnotationWidth = 160;
-export const textAnnotationLabelPadding = 15;
-
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       shape: null,
@@ -35,12 +33,24 @@ export default {
     },
   },
   methods: {
+    setElementHeight(previousHeight, currentBoundsHeight, labelText) {
+      const labelPadding = 15;
+      let newHeight = previousHeight;
+      const shapeView = this.shape.findView(this.paper);
+      const newLabelHeight = shapeView.selectors.label.getBBox().height + labelPadding;
+      if (newLabelHeight !== previousHeight) {
+        newHeight = newLabelHeight;
+      }
+      if (labelText.length === 0) {
+        newHeight = currentBoundsHeight;
+      }
+
+      this.shape.resize(this.nodeWidth, newHeight);
+    },
     updateNodeText(text) {
       let { height } = this.shape.findView(this.paper).getBBox();
       const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
-      const textAnnotationLength = text.length;
-
       this.shape.position(bounds.x, bounds.y);
       this.shape.attr({
         body: { refPoints },
@@ -52,19 +62,10 @@ export default {
           textAnchor: 'left',
         },
       });
-
-      const shapeView = this.shape.findView(this.paper);
-      const labelHeight = shapeView.selectors.label.getBBox().height;
-      if (labelHeight + textAnnotationLabelPadding !== height) {
-        height = labelHeight + textAnnotationLabelPadding;
-        this.shape.resize(this.nodeWidth, height - highlightPadding);
-      }
-
-      if (textAnnotationLength === 0) {
-        this.shape.resize(this.nodeWidth, bounds.height);
-      }
-
-      this.updateCrownPosition();
+      this.paper.once('render:done', () => {
+        this.setElementHeight(height, bounds.height, text);
+        this.updateCrownPosition();
+      });
     },
   },
   mounted() {

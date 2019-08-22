@@ -349,16 +349,16 @@ describe('Undo/redo', () => {
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
 
     const initialNumberOfElements = 3;
+    const numberOfElementsToRemove = 1;
+
     getGraphElements().should('have.length', initialNumberOfElements);
 
     cy.get('[data-test=undo]').click({ force: true });
     cy.get('[data-test=undo]').click({ force: true });
 
-    const numberOfElementsAfterUndo = 2;
-    getGraphElements().should('have.length', numberOfElementsAfterUndo);
+    getGraphElements().should('have.length', initialNumberOfElements - numberOfElementsToRemove);
 
     cy.get('[data-test=redo]').click({ force: true });
-    const numberOfElementsAfterRedo = 3;
-    getGraphElements().should('have.length', numberOfElementsAfterRedo);
+    getGraphElements().should('have.length', initialNumberOfElements);
   });
 });

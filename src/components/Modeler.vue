@@ -87,6 +87,7 @@
       :moddle="moddle"
       :nodeRegistry="nodeRegistry"
       :root-elements="definitions.get('rootElements')"
+      :isRendering="isRendering"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -181,6 +182,7 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
+      isRendering: false,
     };
   },
   watch: {
@@ -574,7 +576,11 @@ export default {
           store.commit('clearNodes');
 
           this.$nextTick(() => {
+            this.paper.freeze();
+            this.isRendering = true;
+            this.paper.once('render:done', () => this.isRendering = false);
             this.parse();
+            this.paper.unfreeze();
             this.$emit('parsed');
           });
         }
@@ -758,16 +764,9 @@ export default {
     },
     bringPoolToFront(poolShape) {
       this.bringShapeToFront(poolShape);
-      poolShape.getEmbeddedCells()
-        .filter(this.isBpmnNode)
-        .filter(this.isNotLane)
-        .forEach(this.bringShapeToFront);
     },
     bringShapeToFront(shape) {
       shape.toFront({ deep: true });
-
-      this.graph.getConnectedLinks(shape)
-        .forEach(link => link.toFront());
     },
     getElementPool(shape) {
       return shape.component.node.pool;
@@ -776,6 +775,8 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
+      this.paper.freeze();
+
       if (this.isPool(shape)) {
         this.bringPoolToFront(shape);
       }
@@ -788,6 +789,8 @@ export default {
       if (this.isNotLane(shape) && !this.isPool(shape)) {
         this.bringShapeToFront(shape);
       }
+
+      this.paper.unfreeze();
     },
     movePaper({ offsetX, offsetY }) {
       const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
@@ -829,8 +832,10 @@ export default {
     });
 
     this.paper = new dia.Paper({
+      async: true,
       el: this.$refs.paper,
       model: this.graph,
+      sorting: 'sorting-approximate',
       gridSize: 10,
       drawGrid: true,
       clickThreshold: 10,

@@ -263,7 +263,7 @@ describe('Modeler', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     getElementAtPosition(startEventPosition).then($startEvent => {
-      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+      cy.wrap($startEvent).find('[stroke=red]').should('exist');
     });
 
     const taskPosition = { x: 150, y: 300 };
@@ -278,7 +278,7 @@ describe('Modeler', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition).then($startEvent => {
-      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+      cy.wrap($startEvent).find('[stroke=red]').should('exist');
     });
 
     cy.get('[data-test=validation-list]').children()
@@ -293,11 +293,11 @@ describe('Modeler', () => {
       .should('contain', 'node_2');
 
     getElementAtPosition(startEventPosition).then($startEvent => {
-      cy.wrap($startEvent).get('[stroke=red]').should('exist');
+      cy.wrap($startEvent).find('[stroke=red]').should('exist');
     });
 
     getElementAtPosition(taskPosition).then($task => {
-      cy.wrap($task).get('[stroke=red]').should('exist');
+      cy.wrap($task).find('[stroke=red]').should('exist');
     });
   });
 
