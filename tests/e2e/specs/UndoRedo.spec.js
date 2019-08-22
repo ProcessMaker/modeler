@@ -352,7 +352,6 @@ describe('Undo/redo', () => {
     getGraphElements().should('have.length', initialNumberOfElements);
 
     cy.get('[data-test=undo]').click({ force: true });
-    cy.get('[data-test=undo]').click({ force: true });
 
     const numberOfElementsAfterUndo = 2;
     getGraphElements().should('have.length', numberOfElementsAfterUndo);

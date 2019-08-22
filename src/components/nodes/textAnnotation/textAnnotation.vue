@@ -6,11 +6,12 @@
 import { shapes, util } from 'jointjs';
 import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 
 export const maxTextAnnotationWidth = 160;
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       shape: null,
