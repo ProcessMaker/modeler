@@ -11,12 +11,14 @@ import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task';
 import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
+import hasMarkers from '@/mixins/hasMarkers';
+import {MARKER_SIZE} from '@/mixins/hasMarkers';
 
 const labelPadding = 15;
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig],
+  mixins: [crownConfig, portsConfig, hasMarkers],
   data() {
     return {
       crownConfig: [
@@ -39,9 +41,10 @@ export default {
       const { height } = this.shape.size();
 
       if (labelHeight + labelPadding !== height) {
-        const newHeight = Math.max(labelHeight + 15, taskHeight);
+        const newHeight = Math.max(labelHeight + 15 + 2 * MARKER_SIZE, taskHeight);
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
+        this.refreshMarkers();
       }
     },
     'node.definition.calledElement'(calledElement) {
