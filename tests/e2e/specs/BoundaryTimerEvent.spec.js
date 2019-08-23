@@ -195,4 +195,32 @@ describe('Boundary Timer Event', () => {
         expect(xml).to.contain(initialPositionXML);
       });
   });
+
+  it('it can toggle interrupting on Boundary Timer Events', function() {
+    if (Cypress.env('inProcessmaker')) {
+      this.skip();
+    }
+
+    const taskPosition = {x: 200, y: 200};
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryTimerEventPosition = {x: 260, y: 260};
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+
+    getElementAtPosition(boundaryTimerEventPosition).click();
+
+    const interrupting = '[name=cancelActivity]';
+    cy.get(interrupting).should('be.checked');
+
+    cy.get('[data-test=undo]').click({force: true});
+    cy.get('[data-test=undo]').click({force: true});
+    cy.get('[data-test=redo]').click({force: true});
+
+    getElementAtPosition(boundaryTimerEventPosition).click();
+
+    cy.get(interrupting).should('be.checked');
+    cy.get(interrupting).uncheck({force: true});
+    cy.get(interrupting).should('not.be.checked');
+
+  });
 });
