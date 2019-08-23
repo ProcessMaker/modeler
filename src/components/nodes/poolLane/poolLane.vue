@@ -45,6 +45,18 @@ export default {
 
       poolComponent.fillLanes(this.shape, 'bottom-right', true);
     },
+    configureLaneInParentPool() {
+      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
+      const poolComponent = this.node.pool.component;
+      if (!poolComponent.laneSet) {
+        poolComponent.createLaneSet();
+      }
+
+      const lanes = poolComponent.laneSet.get('lanes');
+      if (!lanes.includes(this.node.definition)) {
+        lanes.push(this.node.definition);
+      }
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Rectangle();
@@ -67,19 +79,6 @@ export default {
 
     this.shape.component = this;
     this.shape.addTo(this.graph);
-
-    this.$nextTick(() => {
-      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
-      const poolComponent = this.node.pool.component;
-      if (!poolComponent.laneSet) {
-        poolComponent.createLaneSet();
-      }
-
-      const lanes = poolComponent.laneSet.get('lanes');
-      if (!lanes.includes(this.node.definition)) {
-        lanes.push(this.node.definition);
-      }
-    });
 
     if (!this.planeElements.includes(this.node.diagram)) {
       this.planeElements.push(this.node.diagram);

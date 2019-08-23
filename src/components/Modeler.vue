@@ -87,6 +87,7 @@
       :moddle="moddle"
       :nodeRegistry="nodeRegistry"
       :root-elements="definitions.get('rootElements')"
+      :isRendering="isRendering"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -181,6 +182,7 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
+      isRendering: false,
     };
   },
   watch: {
@@ -342,14 +344,40 @@ export default {
      * component is already registered, it is replaced by the new one.
      */
     registerInspectorExtension(node, config) {
-      const registeredIndex = node.inspectorConfig[0].items.findIndex(item => {
+      this.addToInspector(
+        this.inspectorItemsToAddTo(node, config),
+        this.existingConfigIndex(node, config),
+        config
+      );
+    },
+    addToInspector(inspectorItems, existingIndex, config) {
+      if (existingIndex === -1) {
+        inspectorItems.push(config);
+      } else {
+        inspectorItems[existingIndex] = config;
+      }
+    },
+    existingConfigIndex(node, config) {
+      return this.inspectorItems(node).findIndex(item => {
         return config.id && config.id === item.id;
       });
-      if (registeredIndex === -1) {
-        node.inspectorConfig[0].items[0].items.push(config);
+    },
+    isContainer(config) {
+      return typeof config.container !== 'undefined';
+    },
+    inspectorItemsToAddTo(node, config) {
+      if (this.isContainer(config)) {
+        return this.inspectorItems(node);
       } else {
-        node.inspectorConfig[0].items[0].items[registeredIndex] = config;
+        // if the config we're adding is not a container, put it in the default container
+        return this.defaultContainerItems(node);
       }
+    },
+    defaultContainerItems(node) {
+      return this.inspectorItems(node)[0].items;
+    },
+    inspectorItems(node) {
+      return node.inspectorConfig[0].items;
     },
     /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
@@ -557,7 +585,11 @@ export default {
           store.commit('clearNodes');
 
           this.$nextTick(() => {
+            this.paper.freeze();
+            this.isRendering = true;
+            this.paper.once('render:done', () => this.isRendering = false);
             this.parse();
+            this.paper.unfreeze();
             this.$emit('parsed');
           });
         }
@@ -741,16 +773,9 @@ export default {
     },
     bringPoolToFront(poolShape) {
       this.bringShapeToFront(poolShape);
-      poolShape.getEmbeddedCells()
-        .filter(this.isBpmnNode)
-        .filter(this.isNotLane)
-        .forEach(this.bringShapeToFront);
     },
     bringShapeToFront(shape) {
       shape.toFront({ deep: true });
-
-      this.graph.getConnectedLinks(shape)
-        .forEach(link => link.toFront());
     },
     getElementPool(shape) {
       return shape.component.node.pool;
@@ -759,6 +784,8 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
+      this.paper.freeze();
+
       if (this.isPool(shape)) {
         this.bringPoolToFront(shape);
       }
@@ -771,6 +798,8 @@ export default {
       if (this.isNotLane(shape) && !this.isPool(shape)) {
         this.bringShapeToFront(shape);
       }
+
+      this.paper.unfreeze();
     },
     movePaper({ offsetX, offsetY }) {
       const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
@@ -822,8 +851,10 @@ export default {
     });
 
     this.paper = new dia.Paper({
+      async: true,
       el: this.$refs.paper,
       model: this.graph,
+      sorting: 'sorting-approximate',
       gridSize: 10,
       drawGrid: true,
       clickThreshold: 10,
