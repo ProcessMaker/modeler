@@ -18,3 +18,6 @@ workflows:
           executor: with-chrome
           browser: chrome
           command: 'npm run lint && npm run test-ci'
+          post-steps:
+            - store_artifacts:
+                path: coverage
