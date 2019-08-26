@@ -330,6 +330,17 @@ export default {
       store.commit('highlightNode', node);
     },
     /**
+     * Register a mixin into a node component.
+     * Used during "modeler-before-init"
+     *
+     */
+    registerComponentMixin(component, mixin) {
+      if (!component.mixins) {
+        component.mixins = [];
+      }
+      component.mixins.push(mixin);
+    },
+    /**
      * Register an inspector component to configure extended attributes and elements
      * for specific bpmn extensions and execution environments. If the inspector
      * component is already registered, it is replaced by the new one.
@@ -809,6 +820,16 @@ export default {
     }
 
     this.$t = this.$t.bind(this);
+    /**
+     * Before Initialize the BpmnModdle and its extensions.
+     * In this stage the node components were not yet registered,
+     * so they could be extended.
+     *
+     */
+    window.ProcessMaker.EventBus.$emit('modeler-before-init', {
+      registerComponentMixin: this.registerComponentMixin,
+    });
+
     this.registerNode(Process);
 
     /* Initialize the BpmnModdle and its extensions */

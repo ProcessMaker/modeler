@@ -7,10 +7,11 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/intermediateEvent/shape';
+import hasMarkers from '@/mixins/hasMarkers';
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig],
+  mixins: [crownConfig, portsConfig, hasMarkers],
   data() {
     return {
       shape: null,

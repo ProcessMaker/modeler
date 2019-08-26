@@ -7,14 +7,17 @@ import { util } from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
+import hasMarkers from '@/mixins/hasMarkers';
+import {markerSize} from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './index';
 
 const labelPadding = 15;
+const topAndBottomMarkersSpace = 2 * markerSize;
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig],
+  mixins: [crownConfig, portsConfig, hasMarkers],
   data() {
     return {
       shape: null,
@@ -29,6 +32,11 @@ export default {
       ],
     };
   },
+  computed: {
+    hasTaskMarker() {
+      return this.shape.attr('image/xlink:href') ? true : false;
+    },
+  },
   watch: {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
@@ -38,10 +46,11 @@ export default {
       const labelHeight = this.shapeView.selectors.label.getBBox().height;
       const { height } = this.shape.size();
 
-      if (labelHeight + labelPadding !== height) {
-        const newHeight = Math.max(labelHeight + 15, taskHeight);
+      if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
+        const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
+        this.recalcMarkersAlignment();
       }
     },
   },
