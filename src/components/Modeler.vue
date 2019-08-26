@@ -335,8 +335,10 @@ export default {
      *
      */
     registerComponentMixin(component, mixin) {
-      const mixins = component.mixins === undefined ? component.mixins = [] : component.mixins;
-      mixins.push(mixin);
+      if (!component.mixins) {
+        component.mixins = [];
+      }
+      component.mixins.push(mixin);
     },
     /**
      * Register an inspector component to configure extended attributes and elements

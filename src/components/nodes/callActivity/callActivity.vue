@@ -12,9 +12,10 @@ import { taskHeight } from '@/components/nodes/task';
 import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
 import hasMarkers from '@/mixins/hasMarkers';
-import {MARKER_SIZE} from '@/mixins/hasMarkers';
+import {markerSize} from '@/mixins/hasMarkers';
 
 const labelPadding = 15;
+const topAndBottomMarkersSpace = 2 * markerSize;
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -40,8 +41,8 @@ export default {
       const labelHeight = this.shapeView.selectors.label.getBBox().height;
       const { height } = this.shape.size();
 
-      if (labelHeight + labelPadding !== height) {
-        const newHeight = Math.max(labelHeight + 15 + 2 * MARKER_SIZE, taskHeight);
+      if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
+        const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
         this.refreshMarkers();
