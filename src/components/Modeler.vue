@@ -179,6 +179,15 @@ export default {
     };
   },
   watch: {
+    isRendering() {
+      if (this.isRendering) {
+        document.body.style.cursor = 'wait !important';
+        this.cursor = 'wait';
+      } else {
+        document.body.style.cursor = 'auto';
+        this.cursor = null;
+      }
+    },
     scale(scale) {
       this.paper.scale(scale);
     },
@@ -579,15 +588,20 @@ export default {
 
       return hasSource && hasTarget;
     },
-    renderPaper() {
-      this.$nextTick(() => {
-        this.paper.freeze();
-        this.isRendering = true;
-        this.paper.once('render:done', () => this.isRendering = false);
-        this.parse();
-        this.paper.unfreeze();
-        this.$emit('parsed');
-      });
+    async waitForCursorToChange() {
+      const cursorWaitTime = 300;
+      await this.$nextTick();
+      return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
+    },
+    async renderPaper() {
+      await this.$nextTick();
+      this.paper.freeze();
+      this.isRendering = true;
+      await this.waitForCursorToChange();
+      this.paper.once('render:done', () => this.isRendering = false);
+      this.parse();
+      this.paper.unfreeze();
+      this.$emit('parsed');
     },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
@@ -951,7 +965,7 @@ export default {
 <style lang="scss">
 @import '~jointjs/dist/joint.min.css';
 
-$cursors: default, not-allowed;
+$cursors: default, not-allowed, wait;
 
 .ignore-pointer {
   pointer-events: none;
