@@ -53,12 +53,12 @@ export default {
       inmediate: true,
       deep: true,
       handler() {
-        this.refreshMarkers();
+        this.recalcMarkersAlignment();
       },
     },
   },
   methods: {
-    refreshMarkers(markers = this.markers) {
+    recalcMarkersAlignment(markers = this.markers) {
       const { width, height } = this.shape.size();
       for (let position in markers) {
 

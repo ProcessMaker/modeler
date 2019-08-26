@@ -50,7 +50,7 @@ export default {
         const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
-        this.refreshMarkers();
+        this.recalcMarkersAlignment();
       }
     },
   },
