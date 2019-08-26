@@ -1,11 +1,13 @@
 import {
   dragFromSourceToDest,
+  connectNodesWithFlow,
   typeIntoTextInput,
   getElementAtPosition,
   removeIndentationAndLinebreaks,
   moveElement,
   moveElementRelativeTo,
   getCrownButtonForElement,
+  getLinksConnectedToElement,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -197,10 +199,6 @@ describe('Boundary Timer Event', () => {
   });
 
   it('it can toggle interrupting on Boundary Timer Events', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const taskPosition = {x: 200, y: 200};
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -223,4 +221,38 @@ describe('Boundary Timer Event', () => {
     cy.get(interrupting).should('not.be.checked');
 
   });
+
+  it('it retains outgoing sequence flows on Boundary Timer Events', function() {
+
+    const taskForTimerPosition = {x: 200, y: 200};
+    dragFromSourceToDest(nodeTypes.task, taskForTimerPosition);
+
+    const outgoingTaskPosition = {x: 400, y: 400};
+    dragFromSourceToDest(nodeTypes.task, outgoingTaskPosition);
+
+    const boundaryTimerEventPosition = {x: 260, y: 260};
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+
+    connectNodesWithFlow('sequence-flow-button', boundaryTimerEventPosition, outgoingTaskPosition);
+
+    const numberOfSequenceFlowsAdded = 1;
+
+    getElementAtPosition(boundaryTimerEventPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links.length).to.eq(numberOfSequenceFlowsAdded);
+    });
+
+    cy.get('[data-test=undo]').click({force: true});
+    cy.get('[data-test=redo]').click({force: true});
+
+    getElementAtPosition(boundaryTimerEventPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links.length).to.eq(numberOfSequenceFlowsAdded);
+    });
+
+
+  });
+
+  it('it cannot attach an incoming sequence flow on Boundary Timer Events');
+
+  it('it can toggle interrupting on Boundary Timer Events in multiple processes');
+
 });
