@@ -630,9 +630,9 @@ export default {
         this.renderPaper();
       });
     },
-    getBoundaryEvents(filterFunction) {
+    getBoundaryEvents() {
       return this.definitions.get('rootElements')[0].flowElements
-        ? this.definitions.get('rootElements')[0].flowElements.filter(filterFunction)
+        ? this.definitions.get('rootElements')[0].flowElements.filter(({$type}) => $type === 'bpmn:BoundaryEvent')
         : [];
     },
     createBoundaryEvent(definition) {
@@ -645,27 +645,16 @@ export default {
       if (definition.get('outgoing').length) {
         boundaryEvent.set('outgoing', definition.get('outgoing'));
       }
-      if (definition.get('incoming').length) {
-        boundaryEvent.set('incoming', definition.get('incoming'));
-      }
       return boundaryEvent;
     },
-    updateRefs(filterFunction, boundaryEvent, property) {
-      this.getBoundaryEvents(filterFunction).map(node => {
-        return node.set(property, boundaryEvent);
-      });
-    },
     replaceDefinition(definition, boundaryEvent) {
-      this.definitions.get('rootElements')[0].flowElements = this.getBoundaryEvents(
-        element => element.id !== definition.get('id')
-      );
-      this.definitions.get('rootElements')[0].flowElements.push(boundaryEvent);
+      const definitionIndex = this.definitions.get('rootElements')[0].flowElements.indexOf(definition);
+      this.definitions.get('rootElements')[0].flowElements[definitionIndex] = boundaryEvent;
     },
     ensureCancelActivityIsAddedToBoundaryEvents() {
-      this.getBoundaryEvents(({$type}) => $type === 'bpmn:BoundaryEvent').forEach(definition => {
+      this.getBoundaryEvents().forEach(definition => {
         const boundaryEvent = this.createBoundaryEvent(definition);
-        this.updateRefs(({sourceRef}) => sourceRef === definition, boundaryEvent, 'sourceRef');
-        this.updateRefs(({targetRef}) => targetRef === definition, boundaryEvent, 'targetRef');
+        definition.get('outgoing').forEach(outgoing => outgoing.set('sourceRef', boundaryEvent));
         this.replaceDefinition(definition, boundaryEvent);
       });
     },
