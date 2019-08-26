@@ -8,7 +8,7 @@ export const markerPadding = 4;
  * @param string selector 
  */
 export function markersMarkup(selector) {
-  let children = [];
+  const children = [];
   for (let i = 0; i < markersLimit; i++) {
     children.push({ tagName: 'image', selector: selector + '.' + i });
   }
@@ -59,41 +59,47 @@ export default {
   },
   methods: {
     refreshMarkers(markers = this.markers) {
-      // Get shape size
       const { width, height } = this.shape.size();
       for (let position in markers) {
-        // Align markers (left-right)
-        let paddingX = this.shape.attr(position + '/ref-padding-x');
-        paddingX = paddingX === undefined ? markerPadding : paddingX;
-        let paddingY = this.shape.attr(position + '/ref-padding-y');
-        paddingY = paddingY === undefined ? markerPadding : paddingY;
 
-        if (position.indexOf('Right') !== -1) {
-          this.shape.attr(position + '/ref-x', (width - markerSize - paddingX));
-        } else if (position.indexOf('Left') !== -1) {
-          this.shape.attr(position + '/ref-x', paddingX + (this.hasTaskMarker ? 16 : 0));
+        this.alignMarkersFromLeftToRight(position, width);
+        this.alignMarkersFromBottom(position, height);
+        this.alignMarkersFromCenter(position, markers, width);
+      }
+    },
+    getPadding(position) {
+      let padding = this.shape.attr(position);
+      return padding === undefined ? markerPadding : padding;
+    },
+    alignMarkersFromLeftToRight(position, width) {
+      let paddingX = this.getPadding(position + '/ref-padding-x');
+      if (position.indexOf('Right') !== -1) {
+        this.shape.attr(position + '/ref-x', (width - markerSize - paddingX));
+      } else if (position.indexOf('Left') !== -1) {
+        this.shape.attr(position + '/ref-x', paddingX + (this.hasTaskMarker ? 16 : 0));
+      }
+    },
+    alignMarkersFromBottom(position, height) {
+      let paddingY = this.getPadding(position + '/ref-padding-y');
+      if (position.indexOf('bottom') !== -1) {
+        this.shape.attr(position + '/ref-y', height - markerSize - paddingY);
+      }
+    },
+    alignMarkersFromCenter(position, markers, width) {
+      let c = 0;
+      for (let i = 0; i < markersLimit; i++) {
+        this.shape.attr(position + '.' + i + '/xlink:href', null);
+      }
+      for (let marker in markers[position]) {
+        this.shape.attr(position + '.' + c + '/xlink:href', markers[position][marker]);
+        c++;
+        if (c >= markersLimit) {
+          break;
         }
-        if (position.indexOf('bottom') !== -1) {
-          this.shape.attr(position + '/ref-y', height - markerSize - paddingY);
-        }
-
-        let c = 0;
-        for (let i = 0; i < markersLimit; i++) {
-          this.shape.attr(position + '.' + i + '/xlink:href', null);
-        }
-        for (let marker in markers[position]) {
-          this.shape.attr(position + '.' + c + '/xlink:href', markers[position][marker]);
-          c++;
-          if (c >= markersLimit) {
-            break;
-          }
-        }
-        this.shape.attr(position + '/ref-width', markerSize * c);
-
-        // Align markers (center)
-        if (position.indexOf('Center') !== -1) {
-          this.shape.attr(position + '/ref-x', (width - c * markerSize) / 2);
-        }
+      }
+      this.shape.attr(position + '/ref-width', markerSize * c);
+      if (position.indexOf('Center') !== -1) {
+        this.shape.attr(position + '/ref-x', (width - c * markerSize) / 2);
       }
     },
   },
