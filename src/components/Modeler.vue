@@ -462,7 +462,7 @@ export default {
     },
     // Parses our definitions and graphs and stores them in our id based lookup model
     parse() {
-      this.addCancelActivityToBoundaryEvents();
+      this.ensureCancelActivityIsAddedToBoundaryEvents();
       // Get the top level objects
       // All root elements are either bpmn:process or bpmn:collaboration types
       // There should only be one collaboration
@@ -630,40 +630,43 @@ export default {
         this.renderPaper();
       });
     },
-    addCancelActivityToBoundaryEvents() {
-      const boundaryEvents = this.definitions.get('rootElements')[0].flowElements ? this.definitions.get('rootElements')[0].flowElements.filter(({$type}) => $type === 'bpmn:BoundaryEvent') : null;
-      if (!boundaryEvents) {
-        return;
+    getBoundaryEvents(filterFunction) {
+      return this.definitions.get('rootElements')[0].flowElements
+        ? this.definitions.get('rootElements')[0].flowElements.filter(filterFunction)
+        : [];
+    },
+    createBoundaryEvent(definition) {
+      let boundaryEvent = this.moddle.create('bpmn:BoundaryEvent', {
+        ...definition,
+        cancelActivity: definition.get('cancelActivity'),
+        attachedToRef: definition.get('attachedToRef'),
+      });
+      boundaryEvent.$parent = definition.$parent;
+      if (definition.get('outgoing').length) {
+        boundaryEvent.set('outgoing', definition.get('outgoing'));
       }
-      boundaryEvents.forEach(definition => {
-        let boundaryEvent = this.moddle.create('bpmn:BoundaryEvent', {
-          ...definition,
-          cancelActivity: definition.get('cancelActivity'),
-          attachedToRef: definition.get('attachedToRef'),
-        });
-        boundaryEvent.$parent = definition.$parent;
-        if (definition.get('outgoing').length) {
-          boundaryEvent.set('outgoing', definition.get('outgoing'));
-        }
-        if (definition.get('incoming').length) {
-          boundaryEvent.set('incoming', definition.get('incoming'));
-        }
-        // update sourceRefs
-        this.definitions.get('rootElements')[0].flowElements.filter(
-          ({sourceRef}) => sourceRef === definition
-        ).map(node => {
-          return node.set('sourceRef', boundaryEvent);
-        });
-        // update targetRefs
-        this.definitions.get('rootElements')[0].flowElements.filter(
-          ({targetRef}) => targetRef === definition
-        ).map(node => {
-          return node.set('targetRef', boundaryEvent);
-        });
-        // remove original definition and add recreated definition
-        this.definitions.get('rootElements')[0].flowElements = this.definitions.get('rootElements')[0].flowElements
-          .filter(element => element.id !== definition.get('id'));
-        this.definitions.get('rootElements')[0].flowElements.push(boundaryEvent);
+      if (definition.get('incoming').length) {
+        boundaryEvent.set('incoming', definition.get('incoming'));
+      }
+      return boundaryEvent;
+    },
+    updateRefs(filterFunction, boundaryEvent, property) {
+      this.getBoundaryEvents(filterFunction).map(node => {
+        return node.set(property, boundaryEvent);
+      });
+    },
+    replaceDefinition(definition, boundaryEvent) {
+      this.definitions.get('rootElements')[0].flowElements = this.getBoundaryEvents(
+        element => element.id !== definition.get('id')
+      );
+      this.definitions.get('rootElements')[0].flowElements.push(boundaryEvent);
+    },
+    ensureCancelActivityIsAddedToBoundaryEvents() {
+      this.getBoundaryEvents(({$type}) => $type === 'bpmn:BoundaryEvent').forEach(definition => {
+        const boundaryEvent = this.createBoundaryEvent(definition);
+        this.updateRefs(({sourceRef}) => sourceRef === definition, boundaryEvent, 'sourceRef');
+        this.updateRefs(({targetRef}) => targetRef === definition, boundaryEvent, 'targetRef');
+        this.replaceDefinition(definition, boundaryEvent);
       });
     },
     toXML(cb) {
