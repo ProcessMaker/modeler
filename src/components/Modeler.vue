@@ -33,21 +33,21 @@
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
           <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
-            <font-awesome-icon class="" :icon="plusIcon"/>
+            <font-awesome-icon class="" :icon="plusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
-            <font-awesome-icon class="" :icon="minusIcon"/>
+            <font-awesome-icon class="" :icon="minusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
         <div class="mini-paper-container" @click="movePaper">
-          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper"/>
+          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper" />
         </div>
       </div>
 
-      <div ref="paper" data-test="paper" class="main-paper"/>
+      <div ref="paper" data-test="paper" class="main-paper" />
 
     </b-col>
 
