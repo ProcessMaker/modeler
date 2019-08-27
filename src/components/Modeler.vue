@@ -568,26 +568,27 @@ export default {
 
       return hasSource && hasTarget;
     },
+    renderPaper() {
+      this.$nextTick(() => {
+        this.paper.freeze();
+        this.isRendering = true;
+        this.paper.once('render:done', () => this.isRendering = false);
+        this.parse();
+        this.paper.unfreeze();
+        this.$emit('parsed');
+      });
+    },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
-        if (!err) {
-          // Update definitions export to our own information
-          definitions.exporter = 'ProcessMaker Modeler';
-          definitions.exporterVersion = version;
-          this.definitions = definitions;
-          this.nodeIdGenerator = new NodeIdGenerator(definitions);
-
-          store.commit('clearNodes');
-
-          this.$nextTick(() => {
-            this.paper.freeze();
-            this.isRendering = true;
-            this.paper.once('render:done', () => this.isRendering = false);
-            this.parse();
-            this.paper.unfreeze();
-            this.$emit('parsed');
-          });
+        if (err) {
+          return;
         }
+        definitions.exporter = 'ProcessMaker Modeler';
+        definitions.exporterVersion = version;
+        this.definitions = definitions;
+        this.nodeIdGenerator = new NodeIdGenerator(definitions);
+        store.commit('clearNodes');
+        this.renderPaper();
       });
     },
     toXML(cb) {
