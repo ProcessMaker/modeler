@@ -928,80 +928,80 @@ export default {
 </script>
 
 <style lang="scss">
-  @import '~jointjs/dist/joint.min.css';
+@import '~jointjs/dist/joint.min.css';
 
-  $cursors: default, not-allowed;
+$cursors: default, not-allowed;
 
-  .ignore-pointer {
+.ignore-pointer {
+  pointer-events: none;
+}
+
+.mini-paper-container {
+  position: absolute;
+  top: 2.5rem;
+  right: 0;
+  z-index: 2;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+
+  .mini-paper {
     pointer-events: none;
   }
+}
 
-  .mini-paper-container {
+.modeler {
+  .inspector-column {
+    max-width: 265px;
+  }
+
+  .controls-column {
+    max-width: 185px;
+  }
+
+  .main-paper {
     position: absolute;
-    top: 2.5rem;
-    right: 0;
-    z-index: 2;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    border: 1px solid #e9ecef;
-    cursor: pointer;
-
-    .mini-paper {
-      pointer-events: none;
-    }
+    height: 100%;
+    max-height: 100%;
+    min-height: 100%;
+    left: 0;
+    top: 0;
   }
 
-  .modeler {
-    .inspector-column {
-      max-width: 265px;
-    }
+  .controls {
+    z-index: 1;
+  }
 
-    .controls-column {
-      max-width: 185px;
-    }
+  .grabbing-cursor {
+    cursor: grabbing !important;
+  }
 
-    .main-paper {
-      position: absolute;
-      height: 100%;
-      max-height: 100%;
-      min-height: 100%;
-      left: 0;
-      top: 0;
-    }
+  .paper-container {
+    position: initial !important;
+    cursor: grab;
+    user-select: none;
 
-    .controls {
+    .tool-buttons {
       z-index: 1;
-    }
 
-    .grabbing-cursor {
-      cursor: grabbing !important;
-    }
-
-    .paper-container {
-      position: initial !important;
-      cursor: grab;
-      user-select: none;
-
-      .tool-buttons {
-        z-index: 1;
-
-        > button {
-          cursor: pointer;
-        }
+      > button {
+        cursor: pointer;
       }
-    }
-
-    @each $cursor in $cursors {
-      .paper-container.#{$cursor} {
-        .joint-paper,
-        .joint-paper * {
-          cursor: #{$cursor} !important;
-        }
-      }
-    }
-
-    .joint-marker-vertex:hover {
-      fill: #ED4757;
-      cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
     }
   }
+
+  @each $cursor in $cursors {
+    .paper-container.#{$cursor} {
+      .joint-paper,
+      .joint-paper * {
+        cursor: #{$cursor} !important;
+      }
+    }
+  }
+
+  .joint-marker-vertex:hover {
+    fill: #ED4757;
+    cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+  }
+}
 </style>
