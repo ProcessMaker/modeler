@@ -71,11 +71,13 @@ describe('Undo/redo', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
 
     /* Only the start element should remain */
     getGraphElements().should('have.length', 1);
 
     cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
 
     /* The task should now be re-added */
     getGraphElements().should('have.length', 2);
@@ -209,10 +211,10 @@ describe('Undo/redo', () => {
     const startEventPosition = { x: 150, y: 150 };
     const testString = 'foo bar';
 
-    waitToRenderAllShapes();
     getElementAtPosition(startEventPosition)
       .moveTo(startEventPosition.x + 50, startEventPosition.y + 50);
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition).click();
     typeIntoTextInput('[name=name]', testString);
@@ -260,10 +262,12 @@ describe('Undo/redo', () => {
       });
 
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
     cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
     cy.get('[data-test=redo]').click();
-
     waitToRenderAllShapes();
 
     cy.get('[data-test=downloadXMLBtn]').click();
@@ -354,11 +358,15 @@ describe('Undo/redo', () => {
     getGraphElements().should('have.length', initialNumberOfElements);
 
     cy.get('[data-test=undo]').click({ force: true });
+    waitToRenderAllShapes();
     cy.get('[data-test=undo]').click({ force: true });
+    waitToRenderAllShapes();
 
     getGraphElements().should('have.length', initialNumberOfElements - numberOfElementsToRemove);
 
     cy.get('[data-test=redo]').click({ force: true });
+    waitToRenderAllShapes();
+
     getGraphElements().should('have.length', initialNumberOfElements);
   });
 });
