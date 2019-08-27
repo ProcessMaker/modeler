@@ -33,21 +33,14 @@
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
           <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
-            <font-awesome-icon class="" :icon="plusIcon" />
+            <font-awesome-icon class="" :icon="plusIcon"/>
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
-            <font-awesome-icon class="" :icon="minusIcon" />
+            <font-awesome-icon class="" :icon="minusIcon"/>
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
-
-        <!-- <div class="ml-auto">
-          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
-            <font-awesome-icon v-else :icon="mapIcon" />
-          </button>
-        </div> -->
 
         <div class="mini-paper-container" @click="movePaper">
           <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper"/>
@@ -120,7 +113,7 @@ import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 
-import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -189,9 +182,15 @@ export default {
     scale(scale) {
       this.paper.scale(scale);
     },
-    currentXML() { this.validateIfAutoValidateIsOn(); },
-    definitions() { this.validateIfAutoValidateIsOn(); },
-    autoValidate() { this.validateIfAutoValidateIsOn(); },
+    currentXML() {
+      this.validateIfAutoValidateIsOn();
+    },
+    definitions() {
+      this.validateIfAutoValidateIsOn();
+    },
+    autoValidate() {
+      this.validateIfAutoValidateIsOn();
+    },
   },
   computed: {
     tooltipTitle() {
@@ -212,7 +211,7 @@ export default {
     },
     highlightedNode: () => store.getters.highlightedNode,
     invalidNodes() {
-      return Object.entries(this.validationErrors).reduce((invalidIds, [,errors]) => {
+      return Object.entries(this.validationErrors).reduce((invalidIds, [, errors]) => {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
@@ -250,7 +249,6 @@ export default {
 
         config.label = this.$t(config.label);
         config.helper = this.$t(config.helper);
-        config.name = config.name;
       }
 
       if (inspectorConfig.items) {
@@ -280,12 +278,18 @@ export default {
       this.$emit('validate', validationErrors);
     },
     undo() {
+      if (this.isRendering) {
+        return;
+      }
       undoRedoStore
         .dispatch('undo')
         .then(this.loadXML)
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     redo() {
+      if (this.isRendering) {
+        return;
+      }
       undoRedoStore
         .dispatch('redo')
         .then(this.loadXML)
@@ -338,7 +342,7 @@ export default {
       this.addToInspector(
         this.inspectorItemsToAddTo(node, config),
         this.existingConfigIndex(node, config),
-        config
+        config,
       );
     },
     addToInspector(inspectorItems, existingIndex, config) {
@@ -633,7 +637,7 @@ export default {
             .get('laneSets')[0]
             .get('lanes')
             .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
+        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association') {
           targetProcess.get('artifacts').push(definition);
         } else if (definition.$type !== 'bpmn:MessageFlow') {
           targetProcess.get('flowElements').push(definition);
@@ -680,7 +684,7 @@ export default {
     isPointOverPaper(mouseX, mouseY) {
       const { left, top, width, height } = this.$refs['paper-container'].getBoundingClientRect();
       const rect = new g.rect(left, top, width, height);
-      const point = new g.point(mouseX, mouseY);
+      const point = new g.Point(mouseX, mouseY);
 
       return rect.containsPoint(point);
     },
@@ -798,7 +802,7 @@ export default {
 
       this.paper.translate(
         (this.$refs.paper.clientWidth / 2) - (x * scale.sx),
-        (this.$refs.paper.clientHeight / 2) - (y * scale.sy)
+        (this.$refs.paper.clientHeight / 2) - (y * scale.sy),
       );
     },
   },
@@ -869,7 +873,7 @@ export default {
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
       const scale = this.paper.scale();
-      this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy};
+      this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
@@ -881,7 +885,7 @@ export default {
       if (this.canvasDragPosition) {
         this.paper.translate(
           event.offsetX - this.canvasDragPosition.x,
-          event.offsetY - this.canvasDragPosition.y
+          event.offsetY - this.canvasDragPosition.y,
         );
       }
     });
@@ -923,80 +927,80 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~jointjs/dist/joint.min.css';
+  @import '~jointjs/dist/joint.min.css';
 
-$cursors: default, not-allowed;
+  $cursors: default, not-allowed;
 
-.ignore-pointer {
-  pointer-events: none;
-}
-
-.mini-paper-container {
-  position: absolute;
-  top: 2.5rem;
-  right: 0;
-  z-index: 2;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  border: 1px solid #e9ecef;
-  cursor: pointer;
-
-  .mini-paper {
+  .ignore-pointer {
     pointer-events: none;
   }
-}
 
-.modeler {
-  .inspector-column {
-    max-width: 265px;
-  }
-
-  .controls-column {
-    max-width: 185px;
-  }
-
-  .main-paper {
+  .mini-paper-container {
     position: absolute;
-    height: 100%;
-    max-height: 100%;
-    min-height: 100%;
-    left: 0;
-    top: 0;
+    top: 2.5rem;
+    right: 0;
+    z-index: 2;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    border: 1px solid #e9ecef;
+    cursor: pointer;
+
+    .mini-paper {
+      pointer-events: none;
+    }
   }
 
-  .controls {
-    z-index: 1;
-  }
+  .modeler {
+    .inspector-column {
+      max-width: 265px;
+    }
 
-  .grabbing-cursor {
-    cursor: grabbing !important;
-  }
+    .controls-column {
+      max-width: 185px;
+    }
 
-  .paper-container {
-    position: initial !important;
-    cursor: grab;
-    user-select: none;
+    .main-paper {
+      position: absolute;
+      height: 100%;
+      max-height: 100%;
+      min-height: 100%;
+      left: 0;
+      top: 0;
+    }
 
-    .tool-buttons {
+    .controls {
       z-index: 1;
+    }
 
-      > button {
-        cursor: pointer;
+    .grabbing-cursor {
+      cursor: grabbing !important;
+    }
+
+    .paper-container {
+      position: initial !important;
+      cursor: grab;
+      user-select: none;
+
+      .tool-buttons {
+        z-index: 1;
+
+        > button {
+          cursor: pointer;
+        }
       }
     }
-  }
 
-  @each $cursor in $cursors {
-    .paper-container.#{$cursor} {
-      .joint-paper,
-      .joint-paper * {
-        cursor: #{$cursor} !important;
+    @each $cursor in $cursors {
+      .paper-container.#{$cursor} {
+        .joint-paper,
+        .joint-paper * {
+          cursor: #{$cursor} !important;
+        }
       }
     }
-  }
 
-  .joint-marker-vertex:hover {
-    fill:#ED4757;
-    cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+    .joint-marker-vertex:hover {
+      fill: #ED4757;
+      cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+    }
   }
-}
 </style>
