@@ -53,7 +53,7 @@ export default {
           component: 'FormAccordion',
           container: true,
           config: {
-            initiallyOpen: true,
+            initiallyOpen: false,
             label: 'Advanced',
             icon: 'cogs',
             name: 'advanced',
