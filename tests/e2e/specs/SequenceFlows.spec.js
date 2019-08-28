@@ -151,6 +151,7 @@ describe('Sequence Flows', () => {
     moveElement(taskPosition, taskPosition.y + 50, taskPosition.y);
 
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
 
     const newTaskPosition = { x: taskPosition.x + 300, y: taskPosition.y };
     moveElement(taskPosition, newTaskPosition.x, newTaskPosition.y);
@@ -198,6 +199,7 @@ describe('Sequence Flows', () => {
     moveElement(startEventPosition, startEventPosition.y + 50, startEventPosition.y);
 
     cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
 
     const newStartEventPosition = { x: startEventPosition.x, y: startEventPosition.y + 200 };
     moveElement(startEventPosition, newStartEventPosition.x, newStartEventPosition.y);
