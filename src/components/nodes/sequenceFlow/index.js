@@ -60,7 +60,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'confifuration',
+            name: 'configuration',
           },
           items: [
             {
