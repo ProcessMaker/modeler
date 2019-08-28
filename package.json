@@ -27,7 +27,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
-    "bpmnlint-plugin-spark": "^1.0.0",
+    "bpmnlint-plugin-processmaker": "1.0.2",
     "file-saver": "^2.0.0-rc.4",
     "jointjs": "^3.0.4",
     "lodash": "^4.17.11",
