@@ -42,19 +42,12 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <!-- <div class="ml-auto">
-          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
-            <font-awesome-icon v-else :icon="mapIcon" />
-          </button>
-        </div> -->
-
         <div class="mini-paper-container" @click="movePaper">
-          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper"/>
+          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper" />
         </div>
       </div>
 
-      <div ref="paper" data-test="paper" class="main-paper"/>
+      <div ref="paper" data-test="paper" class="main-paper" />
 
     </b-col>
 
@@ -87,6 +80,7 @@
       :moddle="moddle"
       :nodeRegistry="nodeRegistry"
       :root-elements="definitions.get('rootElements')"
+      :isRendering="isRendering"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -103,7 +97,7 @@
 
 <script>
 import Vue from 'vue';
-import joint from 'jointjs';
+import { dia, g } from 'jointjs';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
@@ -119,7 +113,7 @@ import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 
-import { faPlus, faMinus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -181,15 +175,31 @@ export default {
       scaleStep: 0.1,
       toggleMiniMap: false,
       isGrabbing: false,
+      isRendering: false,
     };
   },
   watch: {
+    isRendering() {
+      if (this.isRendering) {
+        document.body.style.cursor = 'wait !important';
+        this.cursor = 'wait';
+        return;
+      }
+      document.body.style.cursor = 'auto';
+      this.cursor = null;
+    },
     scale(scale) {
       this.paper.scale(scale);
     },
-    currentXML() { this.validateIfAutoValidateIsOn(); },
-    definitions() { this.validateIfAutoValidateIsOn(); },
-    autoValidate() { this.validateIfAutoValidateIsOn(); },
+    currentXML() {
+      this.validateIfAutoValidateIsOn();
+    },
+    definitions() {
+      this.validateIfAutoValidateIsOn();
+    },
+    autoValidate() {
+      this.validateIfAutoValidateIsOn();
+    },
   },
   computed: {
     tooltipTitle() {
@@ -210,7 +220,7 @@ export default {
     },
     highlightedNode: () => store.getters.highlightedNode,
     invalidNodes() {
-      return Object.entries(this.validationErrors).reduce((invalidIds, [,errors]) => {
+      return Object.entries(this.validationErrors).reduce((invalidIds, [, errors]) => {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
@@ -248,7 +258,6 @@ export default {
 
         config.label = this.$t(config.label);
         config.helper = this.$t(config.helper);
-        config.name = config.name;
       }
 
       if (inspectorConfig.items) {
@@ -278,12 +287,18 @@ export default {
       this.$emit('validate', validationErrors);
     },
     undo() {
+      if (this.isRendering) {
+        return;
+      }
       undoRedoStore
         .dispatch('undo')
         .then(this.loadXML)
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     redo() {
+      if (this.isRendering) {
+        return;
+      }
       undoRedoStore
         .dispatch('redo')
         .then(this.loadXML)
@@ -328,19 +343,56 @@ export default {
       store.commit('highlightNode', node);
     },
     /**
+     * Register a mixin into a node component.
+     * Used during "modeler-before-init"
+     *
+     */
+    registerComponentMixin(component, mixin) {
+      if (!component.mixins) {
+        component.mixins = [];
+      }
+      component.mixins.push(mixin);
+    },
+    /**
      * Register an inspector component to configure extended attributes and elements
      * for specific bpmn extensions and execution environments. If the inspector
      * component is already registered, it is replaced by the new one.
      */
     registerInspectorExtension(node, config) {
-      const registeredIndex = node.inspectorConfig[0].items.findIndex(item => {
+      this.addToInspector(
+        this.inspectorItemsToAddTo(node, config),
+        this.existingConfigIndex(node, config),
+        config,
+      );
+    },
+    addToInspector(inspectorItems, existingIndex, config) {
+      if (existingIndex === -1) {
+        inspectorItems.push(config);
+      } else {
+        inspectorItems[existingIndex] = config;
+      }
+    },
+    existingConfigIndex(node, config) {
+      return this.inspectorItems(node).findIndex(item => {
         return config.id && config.id === item.id;
       });
-      if (registeredIndex === -1) {
-        node.inspectorConfig[0].items[0].items.push(config);
+    },
+    isContainer(config) {
+      return typeof config.container !== 'undefined';
+    },
+    inspectorItemsToAddTo(node, config) {
+      if (this.isContainer(config)) {
+        return this.inspectorItems(node);
       } else {
-        node.inspectorConfig[0].items[0].items[registeredIndex] = config;
+        // if the config we're adding is not a container, put it in the default container
+        return this.defaultContainerItems(node);
       }
+    },
+    defaultContainerItems(node) {
+      return this.inspectorItems(node)[0].items;
+    },
+    inspectorItems(node) {
+      return node.inspectorConfig[0].items;
     },
     /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
@@ -536,22 +588,32 @@ export default {
 
       return hasSource && hasTarget;
     },
+    async waitForCursorToChange() {
+      const cursorWaitTime = 300;
+      await this.$nextTick();
+      return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
+    },
+    async renderPaper() {
+      await this.$nextTick();
+      this.paper.freeze();
+      this.isRendering = true;
+      await this.waitForCursorToChange();
+      this.paper.once('render:done', () => this.isRendering = false);
+      this.parse();
+      this.paper.unfreeze();
+      this.$emit('parsed');
+    },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
-        if (!err) {
-          // Update definitions export to our own information
-          definitions.exporter = 'ProcessMaker Modeler';
-          definitions.exporterVersion = version;
-          this.definitions = definitions;
-          this.nodeIdGenerator = new NodeIdGenerator(definitions);
-
-          store.commit('clearNodes');
-
-          this.$nextTick(() => {
-            this.parse();
-            this.$emit('parsed');
-          });
+        if (err) {
+          return;
         }
+        definitions.exporter = 'ProcessMaker Modeler';
+        definitions.exporterVersion = version;
+        this.definitions = definitions;
+        this.nodeIdGenerator = new NodeIdGenerator(definitions);
+        store.commit('clearNodes');
+        this.renderPaper();
       });
     },
     toXML(cb) {
@@ -601,7 +663,7 @@ export default {
             .get('laneSets')[0]
             .get('lanes')
             .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association' ) {
+        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association') {
           targetProcess.get('artifacts').push(definition);
         } else if (definition.$type !== 'bpmn:MessageFlow') {
           targetProcess.get('flowElements').push(definition);
@@ -646,9 +708,9 @@ export default {
       this.paper.setDimensions(clientWidth, clientHeight);
     },
     isPointOverPaper(mouseX, mouseY) {
-      const { x, y, width, height } = this.$refs['paper-container'].getBoundingClientRect();
-      const rect = new joint.g.rect(x, y, width, height);
-      const point = new joint.g.point(mouseX, mouseY);
+      const { left, top, width, height } = this.$refs['paper-container'].getBoundingClientRect();
+      const rect = new g.rect(left, top, width, height);
+      const point = new g.Point(mouseX, mouseY);
 
       return rect.containsPoint(point);
     },
@@ -732,16 +794,9 @@ export default {
     },
     bringPoolToFront(poolShape) {
       this.bringShapeToFront(poolShape);
-      poolShape.getEmbeddedCells()
-        .filter(this.isBpmnNode)
-        .filter(this.isNotLane)
-        .forEach(this.bringShapeToFront);
     },
     bringShapeToFront(shape) {
       shape.toFront({ deep: true });
-
-      this.graph.getConnectedLinks(shape)
-        .forEach(link => link.toFront());
     },
     getElementPool(shape) {
       return shape.component.node.pool;
@@ -750,6 +805,8 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
+      this.paper.freeze();
+
       if (this.isPool(shape)) {
         this.bringPoolToFront(shape);
       }
@@ -762,6 +819,8 @@ export default {
       if (this.isNotLane(shape) && !this.isPool(shape)) {
         this.bringShapeToFront(shape);
       }
+
+      this.paper.unfreeze();
     },
     movePaper({ offsetX, offsetY }) {
       const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
@@ -769,7 +828,7 @@ export default {
 
       this.paper.translate(
         (this.$refs.paper.clientWidth / 2) - (x * scale.sx),
-        (this.$refs.paper.clientHeight / 2) - (y * scale.sy)
+        (this.$refs.paper.clientHeight / 2) - (y * scale.sy),
       );
     },
   },
@@ -780,6 +839,16 @@ export default {
     }
 
     this.$t = this.$t.bind(this);
+    /**
+     * Before Initialize the BpmnModdle and its extensions.
+     * In this stage the node components were not yet registered,
+     * so they could be extended.
+     *
+     */
+    window.ProcessMaker.EventBus.$emit('modeler-before-init', {
+      registerComponentMixin: this.registerComponentMixin,
+    });
+
     this.registerNode(Process);
 
     /* Initialize the BpmnModdle and its extensions */
@@ -794,7 +863,7 @@ export default {
     this.linter = new Linter(linterConfig);
   },
   mounted() {
-    this.graph = new joint.dia.Graph();
+    this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
       return {
@@ -802,9 +871,11 @@ export default {
       };
     });
 
-    this.paper = new joint.dia.Paper({
+    this.paper = new dia.Paper({
+      async: true,
       el: this.$refs.paper,
       model: this.graph,
+      sorting: 'sorting-approximate',
       gridSize: 10,
       drawGrid: true,
       clickThreshold: 10,
@@ -817,7 +888,7 @@ export default {
 
     this.paper.translate(168, 20);
 
-    this.miniPaper = new joint.dia.Paper({
+    this.miniPaper = new dia.Paper({
       el: this.$refs.miniPaper,
       model: this.graph,
       width: 300,
@@ -838,7 +909,7 @@ export default {
 
     this.paper.on('blank:pointerdown', (event, x, y) => {
       const scale = this.paper.scale();
-      this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy};
+      this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
     });
     this.paper.on('cell:pointerup blank:pointerup', () => {
@@ -850,7 +921,7 @@ export default {
       if (this.canvasDragPosition) {
         this.paper.translate(
           event.offsetX - this.canvasDragPosition.x,
-          event.offsetY - this.canvasDragPosition.y
+          event.offsetY - this.canvasDragPosition.y,
         );
       }
     });
@@ -892,9 +963,9 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~jointjs/dist/joint.css';
+@import '~jointjs/dist/joint.min.css';
 
-$cursors: default, not-allowed;
+$cursors: default, not-allowed, wait;
 
 .ignore-pointer {
   pointer-events: none;
@@ -905,7 +976,7 @@ $cursors: default, not-allowed;
   top: 2.5rem;
   right: 0;
   z-index: 2;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   border: 1px solid #e9ecef;
   cursor: pointer;
 
@@ -964,7 +1035,7 @@ $cursors: default, not-allowed;
   }
 
   .joint-marker-vertex:hover {
-    fill:#ED4757;
+    fill: #ED4757;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
   }
 }

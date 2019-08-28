@@ -1,4 +1,4 @@
-import joint from 'jointjs';
+import { shapes } from 'jointjs';
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
@@ -27,7 +27,17 @@ const errorHighlighter = {
 };
 
 export default {
-  props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle', 'hasError', 'collaboration', 'nodeRegistry'],
+  props: [
+    'highlighted',
+    'paper',
+    'processNode',
+    'planeElements',
+    'moddle',
+    'hasError',
+    'collaboration',
+    'nodeRegistry',
+    'isRendering',
+  ],
   data() {
     return {
       buttons: [],
@@ -48,6 +58,10 @@ export default {
       }
     },
     hasError() {
+      if (this.isRendering) {
+        return;
+      }
+
       this.setErrorHighlight();
     },
   },
@@ -70,6 +84,7 @@ export default {
       if (!this.shapeView) {
         return;
       }
+
       if (this.hasError) {
         this.shapeView.highlight(null, { highlighter: errorHighlighter });
       } else {
@@ -154,7 +169,7 @@ export default {
     addMessageFlowButton() {
       this.crownConfig.push({
         id: 'message-flow-button',
-        title: 'Message Flow',
+        title: this.$t('Message Flow'),
         icon: messageFlowIcon,
         clickHandler: this.addMessageFlow,
       });
@@ -170,13 +185,13 @@ export default {
 
       this.crownConfig.push({
         id: 'delete-button',
-        title: 'Delete',
+        title: this.$t('Delete'),
         icon: trashIcon,
         clickHandler: this.removeShape,
       });
 
       this.crownConfig.forEach(({ id, title, icon, clickHandler }) => {
-        const button = new joint.shapes.standard.EmbeddedImage();
+        const button = new shapes.standard.EmbeddedImage();
         this.buttons.push(button);
 
         button.set('onClick', clickHandler);
@@ -225,16 +240,6 @@ export default {
           shapeView.highlight();
         }
       });
-
-      this.shape.on('change:position', (element, newPosition) => {
-        this.node.diagram.bounds.x = newPosition.x;
-        this.node.diagram.bounds.y = newPosition.y;
-
-        if (!this.savePositionOnPointerupEventSet) {
-          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
-          this.savePositionOnPointerupEventSet = true;
-        }
-      });
     },
     updateCrownPosition() {
       const buttonLength = 25;
@@ -270,6 +275,10 @@ export default {
 
         this.node.pool.component.addToPool(this.shape);
 
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
+
         return;
       }
 
@@ -281,6 +290,10 @@ export default {
       if (pool) {
         this.node.pool = pool;
         this.node.pool.component.addToPool(this.shape);
+
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
       }
     },
     setNodePosition() {
@@ -293,13 +306,20 @@ export default {
 
       this.$emit('save-state');
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
-       * This will ensure this.shape is defined. */
-      this.configureCrown();
-      this.configurePoolLane();
+    setUpCrownConfig() {
+      this.$once('click', () => {
+        this.configureCrown();
+      });
+
+      this.shape.on('change:position', (element, newPosition) => {
+        this.node.diagram.bounds.x = newPosition.x;
+        this.node.diagram.bounds.y = newPosition.y;
+
+        if (!this.savePositionOnPointerupEventSet) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+          this.savePositionOnPointerupEventSet = true;
+        }
+      });
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
@@ -327,6 +347,20 @@ export default {
       }
 
       this.setErrorHighlight();
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
+       * This will ensure this.shape is defined. */
+
+      this.configurePoolLane();
+
+      if (this.isRendering) {
+        this.paper.once('render:done', this.setUpCrownConfig);
+      } else {
+        this.setUpCrownConfig();
+      }
     });
   },
   created() {

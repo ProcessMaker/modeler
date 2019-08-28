@@ -1,7 +1,7 @@
 import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
-import { DateTime } from 'luxon';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -18,7 +18,7 @@ export default {
 
     startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {
       timeCycle: moddle.create('bpmn:Expression', {
-        body: 'R/' + DateTime.local().startOf('day').toISO() + '/P1W',
+        body: '',
       }),
     })];
 
@@ -45,7 +45,9 @@ export default {
 
       if (key === 'eventDefinitions') {
         const body = value[key];
-
+        if (typeof body === 'object') {
+          continue;
+        }
         const expression = definition.get(key)[0].timeCycle;
         if (expression && expression.body === body) {
           continue;
@@ -58,7 +60,6 @@ export default {
         const eventDefinitions = [
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
-
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
       } else {
         setNodeProp(node, key, value[key]);
@@ -94,9 +95,8 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
+                ...nameConfigSettings,
                 helper: 'The Name of the Start Event',
-                name: 'name',
               },
             },
           ],

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import joint from 'jointjs';
+import { shapes, util } from 'jointjs';
 import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
@@ -45,9 +45,21 @@ export default {
 
       poolComponent.fillLanes(this.shape, 'bottom-right', true);
     },
+    configureLaneInParentPool() {
+      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
+      const poolComponent = this.node.pool.component;
+      if (!poolComponent.laneSet) {
+        poolComponent.createLaneSet();
+      }
+
+      const lanes = poolComponent.laneSet.get('lanes');
+      if (!lanes.includes(this.node.definition)) {
+        lanes.push(this.node.definition);
+      }
+    },
   },
   mounted() {
-    this.shape = new joint.shapes.standard.Rectangle();
+    this.shape = new shapes.standard.Rectangle();
 
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
@@ -59,7 +71,7 @@ export default {
       fill: poolColor,
     });
     this.shape.attr('label', {
-      text: joint.util.breakText(this.node.definition.get('name'), { width: bounds.height }),
+      text: util.breakText(this.node.definition.get('name'), { width: bounds.height }),
       fill: 'black',
       transform: 'rotate(-90)',
       refX: labelWidth / 2,
@@ -67,19 +79,6 @@ export default {
 
     this.shape.component = this;
     this.shape.addTo(this.graph);
-
-    this.$nextTick(() => {
-      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
-      const poolComponent = this.node.pool.component;
-      if (!poolComponent.laneSet) {
-        poolComponent.createLaneSet();
-      }
-
-      const lanes = poolComponent.laneSet.get('lanes');
-      if (!lanes.includes(this.node.definition)) {
-        lanes.push(this.node.definition);
-      }
-    });
 
     if (!this.planeElements.includes(this.node.diagram)) {
       this.planeElements.push(this.node.diagram);

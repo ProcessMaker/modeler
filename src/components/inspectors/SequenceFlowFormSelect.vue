@@ -36,8 +36,8 @@ export default {
   computed: {
     dropdownList() {
       return this.eventList.length > 0
-        ? [{ value: '', content: '[Select Start Event]' }, ...this.eventList]
-        : null;
+        ? this.eventList
+        : [];
     },
     eventList() {
       const list = [];

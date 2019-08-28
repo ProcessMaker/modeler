@@ -17,6 +17,7 @@ module.exports = (on, config) => {
   if (config.env.inProcessmaker) {
     config.baseUrl = 'https://processmaker.local.processmaker.com';
   }
+  on('task', require('@cypress/code-coverage/task'));
 
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',

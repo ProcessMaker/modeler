@@ -17,7 +17,7 @@ export default {
       crownConfig: [
         {
           id: 'sequence-flow-button',
-          title: 'Sequence Flow',
+          title: this.$t('Sequence Flow'),
           icon: connectIcon,
           clickHandler: this.addSequence,
         },

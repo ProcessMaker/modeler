@@ -20,7 +20,7 @@ describe('Message Flows', () => {
     const pool2Position = { x: 250, y: 500 };
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
 
-    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position);
+    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position, 'top');
 
     moveElement(pool1Position, 300, 300);
     moveElement(pool1Position, 250, 250);

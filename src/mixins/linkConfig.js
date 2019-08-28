@@ -1,4 +1,4 @@
-import joint from 'jointjs';
+import { shapes, linkTools, dia, g } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
@@ -9,7 +9,7 @@ function getPointFromGroup(view, group) {
   const { x: shapeX, y: shapeY } = view.model.position();
   const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
 
-  return new joint.g.Point(shapeX + x, shapeY + y);
+  return new g.Point(shapeX + x, shapeY + y);
 }
 
 function getPortPoints(view) {
@@ -18,7 +18,7 @@ function getPortPoints(view) {
 
 function closestPort(endView, anchorReference) {
   return getPortPoints(endView).sort((p1, p2) => {
-    const referencePoint = new joint.g.Point(anchorReference.x, anchorReference.y);
+    const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
     return referencePoint.distance(p1) - referencePoint.distance(p2);
   })[0];
 }
@@ -32,7 +32,7 @@ function snapToAnchor(coords, endView) {
     const { x, y } = endView.model.position();
     const { width, height } = endView.model.size();
 
-    return new joint.g.Point(x + (width / 2), y + (height / 2));
+    return new g.Point(x + (width / 2), y + (height / 2));
   }
 
   return closestPort(endView, coords);
@@ -109,14 +109,22 @@ export default {
     },
   },
   methods: {
-    setEndpoint(shape, endpoint, connectionPoint) {
+    setEndpoint(shape, endpoint, connectionOffset) {
       let anchor;
 
-      if (connectionPoint) {
-        anchor = () => closestPort(shape.findView(this.paper), connectionPoint);
+      if (connectionOffset) {
+        anchor = () => {
+          const { x, y } = shape.position();
+          const connectionPoint = {
+            x: x + connectionOffset.x,
+            y: y + connectionOffset.y,
+          };
+
+          return closestPort(shape.findView(this.paper), connectionPoint);
+        };
       } else {
         anchor = {
-          name: this.target instanceof joint.shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
+          name: this.target instanceof shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
           args: { padding: anchorPadding },
         };
       }
@@ -153,7 +161,10 @@ export default {
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
       this.shape.on('change:vertices change:source change:target', this.updateWaypoints);
-      this.shape.getSourceElement().embed(this.shape);
+
+      const sourceShape = this.shape.getSourceElement();
+      sourceShape.embed(this.shape);
+      this.$emit('set-shape-stacking', sourceShape);
     },
     updateWaypoints() {
       const linkView = this.shape.findView(this.paper);
@@ -233,12 +244,12 @@ export default {
       }
     },
     setupLinkTools() {
-      const verticesTool = new joint.linkTools.Vertices();
-      const sourceAnchorTool = new joint.linkTools.SourceAnchor({ snap: snapToAnchor });
-      const targetAnchorTool = new joint.linkTools.TargetAnchor({ snap: snapToAnchor });
-      const segmentsTool = new joint.linkTools.Segments();
+      const verticesTool = new linkTools.Vertices();
+      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: snapToAnchor });
+      const targetAnchorTool = new linkTools.TargetAnchor({ snap: snapToAnchor });
+      const segmentsTool = new linkTools.Segments();
 
-      const toolsView = new joint.dia.ToolsView({
+      const toolsView = new dia.ToolsView({
         tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
       });
 
@@ -268,7 +279,10 @@ export default {
     });
 
     this.setSource(this.sourceShape);
-    this.setupLinkTools();
+
+    this.$once('click', () => {
+      this.setupLinkTools();
+    });
 
     const targetRef = this.node.definition.get('targetRef');
 
@@ -281,6 +295,18 @@ export default {
       const sourceAnchorPoint = this.node.diagram.waypoint[0];
       const targetAnchorPoint = sequenceFlowWaypoints[sequenceFlowWaypoints.length - 1];
 
+      const { x: targetX, y: targetY } = targetShape.position();
+      const targetAnchorOffset = {
+        x: targetAnchorPoint.x - targetX,
+        y: targetAnchorPoint.y - targetY,
+      };
+
+      const { x: sourceX, y: sourceY } = this.sourceShape.position();
+      const sourceAnchorOffset = {
+        x: sourceAnchorPoint.x - sourceX,
+        y: sourceAnchorPoint.y - sourceY,
+      };
+
       if (sequenceFlowWaypoints) {
         const sequenceVertices = sequenceFlowWaypoints
           .slice(1, sequenceFlowWaypoints.length - 1)
@@ -289,8 +315,8 @@ export default {
         this.shape.vertices(sequenceVertices);
       }
 
-      this.setSource(this.sourceShape, sourceAnchorPoint);
-      this.setTarget(targetShape, targetAnchorPoint);
+      this.setSource(this.sourceShape, sourceAnchorOffset);
+      this.setTarget(targetShape, targetAnchorOffset);
       this.completeLink();
     } else {
       this.setTarget(targetRef);

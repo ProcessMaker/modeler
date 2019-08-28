@@ -24,6 +24,7 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 import { defaultViewportDimensions } from './constants';
+import { waitToRenderAllShapes } from './utils';
 
 Cypress.Commands.add('loadModeler', () => {
   const url = Cypress.env('inProcessmaker')
@@ -33,6 +34,7 @@ Cypress.Commands.add('loadModeler', () => {
   cy.viewport(defaultViewportDimensions.width, defaultViewportDimensions.height);
   cy.visit(url);
   cy.reload();
+  waitToRenderAllShapes();
 });
 
 Cypress.Commands.add('moveTo', {
