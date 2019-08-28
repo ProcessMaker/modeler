@@ -41,14 +41,26 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
               config: {
                 ...nameConfigSettings,
-                helper: 'The name of the script task',
+                helper: 'The Name of the Task',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },
