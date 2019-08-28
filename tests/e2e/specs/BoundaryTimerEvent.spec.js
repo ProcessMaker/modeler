@@ -15,7 +15,7 @@ describe('Boundary Timer Event', () => {
     cy.loadModeler();
   });
 
-  it('Render a boundary timer event', function() {
+  it.skip('Render a boundary timer event', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -40,7 +40,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('update properties element', function() {
+  it.skip('update properties element', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -90,7 +90,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('render boundary timer event by dragging intermediate event on task', function() {
+  it.skip('render boundary timer event by dragging intermediate event on task', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -115,7 +115,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('removes references of itself when inside of a pool and deleting the pool', function() {
+  it.skip('removes references of itself when inside of a pool and deleting the pool', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }

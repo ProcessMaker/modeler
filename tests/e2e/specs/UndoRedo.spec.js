@@ -341,7 +341,7 @@ describe('Undo/redo', () => {
     testNumberOfVertices(initialNumberOfWaypoints);
   });
 
-  it('undo/redo boundary timer event', () => {
+  it.skip('undo/redo boundary timer event', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
