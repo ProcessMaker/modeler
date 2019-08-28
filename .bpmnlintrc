@@ -1,7 +1,7 @@
 {
   "extends": [
     "bpmnlint:recommended",
-    "plugin:spark/all"
+    "plugin:processmaker/all"
   ],
   "rules": {
     "no-inclusive-gateway": "off",
