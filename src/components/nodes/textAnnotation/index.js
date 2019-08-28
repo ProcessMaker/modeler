@@ -55,16 +55,28 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
               config: {
                 label: 'Annotation Description',
                 helper: 'Body of the text annotation',
                 name: 'text',
                 placeholder: 'New Text Annotation',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },
