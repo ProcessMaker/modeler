@@ -1,3 +1,4 @@
+//Used only for alias resolution by IDE's such as PHPStorm or Webstorm.
 const path = require('path');
 
 module.exports = {
