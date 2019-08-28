@@ -183,10 +183,10 @@ export default {
       if (this.isRendering) {
         document.body.style.cursor = 'wait !important';
         this.cursor = 'wait';
-      } else {
-        document.body.style.cursor = 'auto';
-        this.cursor = null;
+        return;
       }
+      document.body.style.cursor = 'auto';
+      this.cursor = null;
     },
     scale(scale) {
       this.paper.scale(scale);
