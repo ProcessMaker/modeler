@@ -42,8 +42,8 @@
     "@cypress/code-coverage": "^1.9.0",
     "@panter/vue-i18next": "^0.15.0",
     "@processmaker/processmaker-bpmn-moddle": "0.4.4",
-    "@processmaker/screen-builder": "0.17.82",
-    "@processmaker/vue-form-elements": "0.10.11",
+    "@processmaker/screen-builder": "0.17.83",
+    "@processmaker/vue-form-elements": "0.10.12",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-e2e-cypress": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
@@ -71,8 +71,8 @@
     "vue-template-compiler": "^2.5.17"
   },
   "peerDependencies": {
-    "@processmaker/screen-builder": "0.17.82",
-    "@processmaker/vue-form-elements": "0.10.11",
+    "@processmaker/screen-builder": "0.17.83",
+    "@processmaker/vue-form-elements": "0.10.12",
     "@panter/vue-i18next": "^0.15.0",
     "i18next": "^15.0.9",
     "bootstrap": "^4.3.1",
