@@ -113,6 +113,7 @@ describe('Modeler', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     getElementAtPosition(taskPosition).click();
+    cy.get('#accordion-button-advanced').click();
 
     cy.get('[name=id]').should('have.value', 'node_2');
 

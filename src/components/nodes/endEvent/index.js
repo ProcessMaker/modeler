@@ -44,19 +44,31 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'confifuration',
+            name: 'configuration',
           },
           items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
             {
               component: 'FormInput',
               config: {
                 ...nameConfigSettings,
                 helper: 'The Name of the End Event',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },
