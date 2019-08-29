@@ -23,6 +23,7 @@ import {
   textAnnotation,
   pool,
   poolLane,
+  boundaryEvent,
 } from '@/components/nodes';
 
 const nodeTypes = [
@@ -42,6 +43,7 @@ const nodeTypes = [
   association,
   pool,
   poolLane,
+  boundaryEvent,
 ];
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
