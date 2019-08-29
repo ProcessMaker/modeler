@@ -6,6 +6,10 @@
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
+import { id as taskId } from '@/components/nodes/task';
+import { id as callActivityId } from '@/components/nodes/callActivity';
+import { id as manualTaskId } from '@/components/nodes/manualTask';
+import { id as scriptTaskId } from '@/components/nodes/scriptTask';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -30,21 +34,18 @@ export default {
     },
   },
   methods: {
-    constrainToBottomEdge(element, { x: newX }) {
-      const parentShaope = this.graph.getCell(this.shape.get('parent'));
-      const { x, y } = parentShaope.position();
-      const { width: parentShapeWidth, height: parentShapeHeight } = parentShaope.size();
-      const { width, height } = this.shape.size();
+    getTaskUnderShape() {
+      const taskIds = [
+        taskId,
+        callActivityId,
+        manualTaskId,
+        scriptTaskId,
+      ];
 
-      let restrictedX = newX;
-      if (newX < (x - width / 2)) {
-        restrictedX = x - width / 2;
-      } else if (newX > (x + parentShapeWidth - width / 2)) {
-        restrictedX = x + parentShapeWidth - width / 2;
-      }
-
-      this.shape.position(restrictedX, y + parentShapeHeight - (height / 2));
-      this.updateCrownPosition();
+      return this.graph
+        .findModelsUnderElement(this.shape)
+        .filter(model => model.component)
+        .find(model => taskIds.includes(model.component.node.type));
     },
   },
   mounted() {
@@ -77,13 +78,13 @@ export default {
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    if (!this.node.boundaryEventTarget) {
-      return;
-    }
-    this.node.boundaryEventTarget.embed(this.shape);
 
-    this.shape.on('change:position', this.constrainToBottomEdge);
-    this.constrainToBottomEdge(null, this.shape.position());
+    const task = this.getTaskUnderShape();
+
+    if(task) {
+      task.embed(this.shape);
+      this.node.definition.set('attachedToRef', task.component.node.definition);
+    }
   },
 };
 </script>

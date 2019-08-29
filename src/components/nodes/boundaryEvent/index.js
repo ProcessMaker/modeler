@@ -6,7 +6,7 @@ export default {
   id: 'processmaker-modeler-boundary-event',
   component,
   bpmnType: 'bpmn:BoundaryEvent',
-  control: true,
+  control: false,
   category: 'BPMN',
   label: 'Boundary Event',
   definition(moddle, $t) {
