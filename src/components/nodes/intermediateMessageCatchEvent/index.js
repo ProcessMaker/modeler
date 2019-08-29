@@ -87,10 +87,6 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
               config: {
                 ...nameConfigSettings,
                 helper: 'The Name of the Intermediate Message Catch Event',
@@ -144,6 +140,22 @@ export default {
                 helper: 'IP/Domain whitelist',
                 name: 'whitelist',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },
