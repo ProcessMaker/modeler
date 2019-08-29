@@ -38,15 +38,27 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
               config: {
                 label: 'Name',
                 helper: 'The Name of the Gateway',
                 name: 'name',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },
