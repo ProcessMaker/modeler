@@ -85,13 +85,9 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'confifuration',
+            name: 'configuration',
           },
           items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
             {
               component: 'FormInput',
               config: {
@@ -114,9 +110,25 @@ export default {
               component: TimerExpression,
               config: {
                 label: 'Name',
-                helper: 'The Name of the Start Event',
+                helper: 'Time expression',
                 name: 'eventDefinitions',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },

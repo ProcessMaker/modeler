@@ -60,13 +60,9 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'confifuration',
+            name: 'configuration',
           },
           items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
             {
               component: 'FormInput',
               config: {
@@ -74,6 +70,22 @@ export default {
                 helper: 'The Name of the Sequence Flow',
                 name: 'name',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },
