@@ -22,3 +22,4 @@ export { default as ValidationStatus } from '../ValidationStatus';
 export { default as Modeler } from '../Modeler';
 export { default as manualTask } from './manualTask';
 export { default as boundaryEvent } from './boundaryEvent';
+export { default as boundaryTimerEvent } from './boundaryTimerEvent';
