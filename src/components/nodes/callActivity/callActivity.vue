@@ -49,6 +49,10 @@ export default {
       }
     },
     'node.definition.calledElement'(calledElement) {
+      if (!calledElement) {
+        return;
+      }
+
       const [ownerProcessId, processId] = calledElement.split('-');
 
       const calledProcess = store.getters.globalProcesses
