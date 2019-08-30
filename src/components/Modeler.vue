@@ -652,7 +652,6 @@ export default {
     replaceDefinition(definition, boundaryEvent, process) {
       const definitionIndex = process.flowElements.indexOf(definition);
       this.definitions.get('rootElements').find(currentProcess => currentProcess === process).flowElements[definitionIndex] = boundaryEvent;
-      console.log(this.definitions);
     },
     ensureCancelActivityIsAddedToBoundaryEvents(process) {
       this.getBoundaryEvents(process).forEach(definition => {
