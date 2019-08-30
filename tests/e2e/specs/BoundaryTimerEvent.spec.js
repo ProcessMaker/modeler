@@ -8,6 +8,7 @@ import {
   moveElementRelativeTo,
   getCrownButtonForElement,
   getLinksConnectedToElement,
+  uploadXml,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -254,41 +255,14 @@ describe('Boundary Timer Event', () => {
   it('it cannot attach an incoming sequence flow on Boundary Timer Events');
 
   it('it can toggle interrupting on Boundary Timer Events in multiple processes', function() {
-    const startEventPosition = {x: 150, y: 150};
+    uploadXml('boundaryTimersInPools.xml');
 
-    getElementAtPosition(startEventPosition).click().then($startEvent => {
-      getCrownButtonForElement($startEvent, 'delete-button').click({force: true});
-    });
-
-    const poolPositions = [{x: 100, y: 200}, {x: 100, y: 600}];
-    dragFromSourceToDest(nodeTypes.pool, poolPositions[0]);
-    dragFromSourceToDest(nodeTypes.pool, poolPositions[1]);
-
-
-    const taskPositions = [{x: 160, y: 260}, {x: 160, y: 630}];
-    dragFromSourceToDest(nodeTypes.task, taskPositions[0]);
-    dragFromSourceToDest(nodeTypes.task, taskPositions[1]);
-
-    const boundaryTimerEventPositions = [{x: 180, y: 280}, {x: 180, y: 635}];
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPositions[0]);
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPositions[1]);
+    const boundaryTimerEventPositions = [{x: 277, y: 162}, {x: 225, y: 379}];
 
     getElementAtPosition(boundaryTimerEventPositions[0]).click();
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
-
-    getElementAtPosition(boundaryTimerEventPositions[1]).click({force: true});
-
-    cy.get(interrupting).should('be.checked');
-
-    cy.get('[data-test=undo]').click({force: true});
-    cy.get('[data-test=undo]').click({force: true});
-    cy.get('[data-test=redo]').click({force: true});
-
-    getElementAtPosition(boundaryTimerEventPositions[0]).click();
-
-    cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({force: true});
     cy.get(interrupting).should('not.be.checked');
 
@@ -297,6 +271,7 @@ describe('Boundary Timer Event', () => {
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({force: true});
     cy.get(interrupting).should('not.be.checked');
+
   });
 
 });
