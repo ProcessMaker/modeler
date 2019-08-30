@@ -12,7 +12,7 @@ describe('Start Timer Event', () => {
     cy.loadModeler();
   });
 
-  it('Update properties on Start Timer Event', () => {
+  it('Update properties on Start Timer Event for "week" periodicity', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);
     const startTimerEventPosition = { x: 250, y: 250 };
@@ -63,5 +63,69 @@ describe('Start Timer Event', () => {
       .its('xml')
       .then(xml => xml.trim())
       .should('contain', timerExpression2);
+  });
+
+  it('Updates properties for periodicity other than "week"', function() {
+    const year = 2019;
+    const month = 7;
+    const day = 8;
+    const hour = 14;
+    const currentDate = Date.UTC(year, month, day, hour);
+    const currentDateString = `${year}-0${month + 1}-0${day}T${hour}:00:00.000Z`;
+
+    cy.clock(currentDate);
+    const startTimerEventPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
+    getElementAtPosition(startTimerEventPosition).click();
+    cy.contains('Timing Control').click();
+
+    const repeat = 3;
+    typeIntoTextInput('[data-test=repeat-input]', repeat);
+
+    cy.get('[data-test=ends-on]').click('left');
+    cy.get('[data-test=end-date-picker]').click();
+    cy.wait(modalAnimationTime);
+    const endDay = 22;
+    cy.get('.vdatetime-popup').contains(endDay).click();
+
+    const periods = [
+      { selector: 'day', letter: 'D' },
+      { selector: 'month', letter: 'M' },
+      { selector: 'year', letter: 'Y' },
+    ];
+
+    periods.forEach(({ selector, letter }) => {
+      cy.get('[data-test=repeat-on-select]').select(selector);
+
+      const timerExpression = `R/${currentDateString}/P${repeat}${letter}/2019-0${month + 1}-${endDay}T${hour}:00:00.000Z`;
+      cy.get('[data-test=downloadXMLBtn]').click();
+      cy.window()
+        .its('xml')
+        .then(xml => xml.trim())
+        .should('contain', timerExpression);
+    });
+
+    cy.get('[data-test=ends-after]').click('left');
+    const endsAfter = 4;
+    typeIntoTextInput('[data-test=ends-after-input]', endsAfter);
+
+    periods.forEach(({ selector, letter }) => {
+      cy.get('[data-test=repeat-on-select]').select(selector);
+
+      const timerExpression = `R${endsAfter}/${currentDateString}/P${repeat}${letter}`;
+      cy.get('[data-test=downloadXMLBtn]').click();
+      cy.window()
+        .its('xml')
+        .then(xml => xml.trim())
+        .should('contain', timerExpression);
+    });
+
+    const endsNeverExpression = `R/${currentDateString}/P${repeat}Y`;
+    cy.get('[data-test=ends-never]').click('left');
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(xml => xml.trim())
+      .should('contain', endsNeverExpression);
   });
 });
