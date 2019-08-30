@@ -78,7 +78,7 @@ describe('Tasks', () => {
     }
 
     const sequneceFlowML = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
-    const callActivityXML = `<bpmn:callActivity id="node_2" name="New Call Activity" calledElement="ProcessId-3">
+    const callActivityXML = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
 
