@@ -161,9 +161,6 @@ export default {
     isWeeklyPeriodSelected() {
       return this.periodicity === 'week';
     },
-    isSameDayAndNotWeelyPeriod() {
-      return this.sameDay || !this.isWeeklyPeriodSelected;
-    },
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
 
@@ -174,20 +171,11 @@ export default {
       return 'You must select at least one day.';
     },
     iso8601FormattedDate() {
-      if (this.isSameDayAndNotWeelyPeriod) {
-        return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
-      }
-
-      const expression = [];
-      expression.push(this.startDate);
-
       if (this.isWeeklyPeriodSelected) {
-        this.selectedWeekdays.forEach(day => {
-          expression.push(this.getCycle(this.getWeekDayDate(day)));
-        });
+        return this.getFormattedDateWithWeekdayIntervals();
       }
 
-      return expression.join('|');
+      return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
     },
     /**
      * Array of week days the user selected
@@ -215,6 +203,18 @@ export default {
     this.parseTimerConfig(this.value);
   },
   methods: {
+    getFormattedDateWithWeekdayIntervals() {
+      const dateIntervals = [];
+      dateIntervals.push(this.startDate);
+
+      this.selectedWeekdays.forEach(day => {
+        const weekDayDate = this.getWeekDayDate(day);
+        const cycle = this.getCycle(weekDayDate);
+        dateIntervals.push(cycle);
+      });
+
+      return dateIntervals.join('|');
+    },
     setStartDate(startDateString) {
       this.startDate = DateTime
         .fromISO(startDateString, { zone: 'utc' })
