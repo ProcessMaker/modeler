@@ -158,6 +158,9 @@ export default {
     };
   },
   computed: {
+    isWeeklyPeriodSelected() {
+      return this.periodicity === 'week';
+    },
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
 
@@ -175,7 +178,7 @@ export default {
       const expression = [];
       expression.push(this.startDate);
 
-      if (this.periodicity === 'week') {
+      if (this.isWeeklyPeriodSelected) {
         this.selectedWeekdays.forEach(day => {
           expression.push(this.getCycle(this.getWeekDayDate(day)));
         });
@@ -279,7 +282,7 @@ export default {
                 hasStartDate = true;
               }
 
-              if (this.periodicity === 'week') {
+              if (this.isWeeklyPeriodSelected) {
                 const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
                 const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
                 foundDay.selected = true;
@@ -313,7 +316,7 @@ export default {
       weekday.selected = !weekday.selected;
     },
     hasMultipleWeekdaySelected(){
-      return this.periodicity === 'week' &&
+      return this.isWeeklyPeriodSelected &&
         this.selectedWeekdays.length > 0 &&
         !this.sameDay;
     },
