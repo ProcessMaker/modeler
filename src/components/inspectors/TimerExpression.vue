@@ -168,15 +168,18 @@ export default {
       return 'You must select at least one day.';
     },
     iso8606Expression() {
-      if (this.selectedWeekdays.length === 1 && this.sameDay) {
+      if ((this.selectedWeekdays.length === 1 && this.sameDay) || this.periodicity !== 'week') {
         return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
       }
 
       const expression = [];
       expression.push(this.startDate);
-      this.selectedWeekdays.forEach(day => {
-        expression.push(this.getCycle(this.getWeekDayDate(day)));
-      });
+
+      if (this.periodicity === 'week') {
+        this.selectedWeekdays.forEach(day => {
+          expression.push(this.getCycle(this.getWeekDayDate(day)));
+        });
+      }
 
       return expression.join('|');
     },
