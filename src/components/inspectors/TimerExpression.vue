@@ -161,6 +161,9 @@ export default {
     isWeeklyPeriodSelected() {
       return this.periodicity === 'week';
     },
+    isSameDayAndNotWeelyPeriod() {
+      return this.sameDay || !this.isWeeklyPeriodSelected;
+    },
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
 
@@ -171,7 +174,7 @@ export default {
       return 'You must select at least one day.';
     },
     iso8601FormattedDate() {
-      if ((this.selectedWeekdays.length === 1 && this.sameDay) || this.periodicity !== 'week') {
+      if (this.isSameDayAndNotWeelyPeriod) {
         return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
       }
 
