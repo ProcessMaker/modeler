@@ -5,54 +5,53 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import timerEventIcon from '@/assets/timer-event-icon.svg';
+import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
+import { portGroups } from '@/mixins/portsConfig';
 import portsConfig from '@/mixins/portsConfig';
 import crownConfig from '@/mixins/crownConfig';
+import { g } from 'jointjs';
 
-// import boundaryEventSwitcher from '@/mixins/boundaryEventSwitcher';
-// import { portGroups } from '@/mixins/portsConfig';
-// import { g } from 'jointjs';
+function getPointFromGroup(model, group) {
+  const { x: shapeX, y: shapeY } = model.position();
+  const { x, y } = Object.values(model.getPortsPositions(group))[0];
 
-// function getPointFromGroup(model, group) {
-//   const { x: shapeX, y: shapeY } = model.position();
-//   const { x, y } = Object.values(model.getPortsPositions(group))[0];
+  return new g.Point(shapeX + x, shapeY + y);
+}
 
-//   return new g.Point(shapeX + x, shapeY + y);
-// }
+function getPortPoints(model) {
+  return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(model, group));
+}
 
-// function getPortPoints(model) {
-//   return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(model, group));
-// }
+function closestPort(model, anchorReference) {
+  return getPortPoints(model).sort((p1, p2) => {
+    const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
+    return referencePoint.distance(p1) - referencePoint.distance(p2);
+  })[0];
+}
 
-// function closestPort(model, anchorReference) {
-//   return getPortPoints(model).sort((p1, p2) => {
-//     const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
-//     return referencePoint.distance(p1) - referencePoint.distance(p2);
-//   })[0];
-// }
+function hasPorts(model) {
+  return Object.values(model.getPortsPositions(portGroups[0])).length > 0;
+}
 
-// function hasPorts(model) {
-//   return Object.values(model.getPortsPositions(portGroups[0])).length > 0;
-// }
+function snapToAnchor(coords, model) {
+  if (!hasPorts(model)) {
+    const { x, y } = model.position();
+    const { width, height } = model.size();
 
-// function snapToAnchor(coords, model) {
-//   if (!hasPorts(model)) {
-//     const { x, y } = model.position();
-//     const { width, height } = model.size();
+    return new g.Point(x - (width / 2), y - (height / 2));
+  }
 
-//     return new g.Point(x - (width / 2), y - (height / 2));
-//   }
-
-//   return closestPort(model, coords);
-// }
+  return closestPort(model, coords);
+}
 
 export default {
   extends: BoundaryEvent,
-  mixins: [portsConfig, crownConfig],
-  // watch: {
-  //   'node.definition.cancelActivity'(value) {
-  //     this.renderBoundaryTimer(value);
-  //   },
-  // },
+  mixins: [boundaryEventSwitcher, portsConfig, crownConfig],
+  watch: {
+    'node.definition.cancelActivity'(value) {
+      this.renderBoundaryTimer(value);
+    },
+  },
   methods: {
     updateBoundaryShape(dashLength) {
       this.shape.attr({
@@ -90,24 +89,24 @@ export default {
 
     await this.$nextTick();
 
-    // const task = this.getTaskUnderShape();
+    const task = this.getTaskUnderShape();
 
-    // if (task) {
-    //   task.embed(this.shape);
-    //   this.updateSnappingPosition(task);
-    //   this.renderBoundaryTimer(this.node.definition.cancelActivity);
+    if (task) {
+      task.embed(this.shape);
+      this.updateSnappingPosition(task);
+      this.renderBoundaryTimer(this.node.definition.cancelActivity);
 
-    //   this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
-    //     if (cellView.model !== this.shape) {
-    //       return;
-    //     }
+      this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
+        if (cellView.model !== this.shape) {
+          return;
+        }
 
-    //     this.updateSnappingPosition(task);
-    //     this.updateCrownPosition();
-    //   });
-    // } else {
-    //   this.$emit('remove-node', this.node);
-    // }
+        this.updateSnappingPosition(task);
+        this.updateCrownPosition();
+      });
+    } else {
+      this.$emit('remove-node', this.node);
+    }
   },
 };
 </script>

@@ -6,7 +6,6 @@
 import crownConfig from '@/mixins/crownConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
-import timerEventIcon from '@/assets/timer-event-icon.svg';
 import { id as taskId } from '@/components/nodes/task';
 import { id as callActivityId } from '@/components/nodes/callActivity';
 import { id as manualTaskId } from '@/components/nodes/manualTask';
@@ -33,9 +32,6 @@ export default {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
-    'node.definition.cancelActivity'(value) {
-      this.renderInterruptingShape(value);
-    },
   },
   methods: {
     getTaskUnderShape() {
@@ -51,29 +47,13 @@ export default {
         .filter(model => model.component)
         .find(model => taskIds.includes(model.component.node.type));
     },
-    updateBoundaryShape(dashLength) {
-      this.shape.attr({
-        body: {
-          'strokeDasharray': dashLength,
-        },
-        body2: {
-          'strokeDasharray': dashLength,
-        },
-      });
-    },
-    renderInterruptingShape(isCancelActivity) {
-      const dashedLine = 5;
-      const solidLine = 0;
-      isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
-    },
   },
-  async mounted() {
+  mounted() {
     // Now, let's add a rounded rect to the graph
     this.shape = new EventShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
-
     this.shape.attr({
       body: {
         stroke: '#212529',
@@ -96,18 +76,15 @@ export default {
         'height': bounds.get('height') - 10,
       },
     });
-    await this.$nextTick();
-
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
     const task = this.getTaskUnderShape();
 
-    if (task) {
+    if(task) {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
     }
-
   },
 };
 </script>
