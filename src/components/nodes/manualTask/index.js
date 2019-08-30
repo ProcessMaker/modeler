@@ -42,14 +42,26 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
               config: {
                 ...nameConfigSettings,
                 helper: 'The name of the manual task',
               },
+            },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'advanced',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: idConfigSettings,
             },
           ],
         },

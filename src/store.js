@@ -4,6 +4,14 @@ import flatten from 'lodash/flatten';
 
 Vue.use(Vuex);
 
+function makeDefinitionPropertyReactive(definition, key, value) {
+  if (definition.hasOwnProperty(key)) {
+    return;
+  }
+
+  Vue.set(definition, key, value);
+}
+
 export default new Vuex.Store({
   state: {
     graph: null,
@@ -43,6 +51,9 @@ export default new Vuex.Store({
     },
     updateNodeProp(state, { node, key, value }) {
       node.definition.set(key, value);
+
+
+      makeDefinitionPropertyReactive(node.definition, key, value);
     },
     clearNodes(state) {
       state.nodes = [];
