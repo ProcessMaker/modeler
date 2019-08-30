@@ -167,7 +167,7 @@ export default {
 
       return 'You must select at least one day.';
     },
-    iso8606Expression() {
+    iso8601FormattedDate() {
       if ((this.selectedWeekdays.length === 1 && this.sameDay) || this.periodicity !== 'week') {
         return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
       }
@@ -201,7 +201,7 @@ export default {
     },
   },
   watch: {
-    iso8606Expression() {
+    iso8601FormattedDate() {
       this.update();
     },
   },
@@ -241,7 +241,7 @@ export default {
       ];
     },
     update() {
-      this.$emit('input', this.iso8606Expression);
+      this.$emit('input', this.iso8601FormattedDate);
     },
     /**
      * Parse an ISO8601 expression to get the timer configuration
