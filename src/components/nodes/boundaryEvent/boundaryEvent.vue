@@ -32,6 +32,9 @@ export default {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
+    'node.definition.cancelActivity'(value) {
+      this.renderInterrupting(value);
+    },
   },
   methods: {
     getTaskUnderShape() {
@@ -46,6 +49,21 @@ export default {
         .findModelsUnderElement(this.shape)
         .filter(model => model.component)
         .find(model => taskIds.includes(model.component.node.type));
+    },
+    updateBoundaryShape(dashLength) {
+      this.shape.attr({
+        body: {
+          'strokeDasharray': dashLength,
+        },
+        body2: {
+          'strokeDasharray': dashLength,
+        },
+      });
+    },
+    renderInterrupting(isCancelActivity) {
+      const dashedLine = 5;
+      const solidLine = 0;
+      isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
     },
   },
   mounted() {
@@ -81,9 +99,10 @@ export default {
 
     const task = this.getTaskUnderShape();
 
-    if(task) {
+    if (task) {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
+      this.renderInterrupting(this.node.definition.cancelActivity);
     }
   },
 };
