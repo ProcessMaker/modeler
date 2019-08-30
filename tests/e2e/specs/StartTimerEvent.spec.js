@@ -128,4 +128,30 @@ describe('Start Timer Event', () => {
       .then(xml => xml.trim())
       .should('contain', endsNeverExpression);
   });
+
+  it('Does not include selected weekdays for periods other than "week"', function() {
+    const year = 2019;
+    const month = 7;
+    const day = 8;
+    const hour = 14;
+    const currentDate = Date.UTC(year, month, day, hour);
+    const currentDateString = `${year}-0${month + 1}-0${day}T${hour}:00:00.000Z`;
+
+    cy.clock(currentDate);
+    const startTimerEventPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
+    getElementAtPosition(startTimerEventPosition).click();
+    cy.contains('Timing Control').click();
+    cy.get('[data-test=day-1]').click();
+    cy.get('[data-test=day-2]').click();
+    cy.get('[data-test=day-3]').click();
+    cy.get('[data-test=repeat-on-select]').select('month');
+
+    const dateExpression = `R/${currentDateString}/P1M`;
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(xml => xml.trim())
+      .should('contain', dateExpression);
+  });
 });
