@@ -24,6 +24,7 @@ import {
   pool,
   poolLane,
   boundaryEvent,
+  boundaryTimerEvent,
 } from '@/components/nodes';
 
 const nodeTypes = [
@@ -44,6 +45,7 @@ const nodeTypes = [
   pool,
   poolLane,
   boundaryEvent,
+  boundaryTimerEvent,
 ];
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
