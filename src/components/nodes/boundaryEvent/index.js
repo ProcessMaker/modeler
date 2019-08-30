@@ -6,13 +6,12 @@ export default {
   id: 'processmaker-modeler-boundary-event',
   component,
   bpmnType: 'bpmn:BoundaryEvent',
-  control: true,
+  control: false,
   category: 'BPMN',
   label: 'Boundary Event',
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Event'),
-      cancelActivity: true,
     });
   },
   diagram(moddle) {
@@ -46,14 +45,6 @@ export default {
               config: {
                 ...nameConfigSettings,
                 helper: 'The Name of the Boundary Event',
-              },
-            },
-            {
-              component: 'FormCheckbox',
-              config: {
-                label: 'Interrupting',
-                name: 'cancelActivity',
-                helper: 'Boundary Event Type',
               },
             },
             {
