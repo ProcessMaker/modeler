@@ -26,11 +26,6 @@ export default {
       const solidLine = 0;
       isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
     },
-    updateSnappingPosition(task) {
-      const { x, y } = snapToAnchor(this.shape.position(), task);
-      const { width } = this.shape.size();
-      this.shape.position(x - (width / 2), y - (width / 2));
-    },
   },
   async mounted() {
     this.shape.attr('image/xlink:href', timerEventIcon);
