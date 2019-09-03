@@ -243,8 +243,8 @@ export default {
           let warning  = 
           {
             title: this.$t('Non-existent Element'),
-            text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed')
-          }
+            text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
+          };
           this.allWarnings.push(warning);
           
           this.$emit('warnings', this.allWarnings);
@@ -552,8 +552,8 @@ export default {
       if (!parsers) {
         let warning  = {
           title: this.$t('Unsupported Element'),
-          text: bpmnType + ' is an unsupported element type in parse' 
-        }
+          text: bpmnType + this.$t(' is an unsupported element type in parse'), 
+        };
         this.allWarnings.push(warning);
 
         this.$emit('warnings', this.allWarnings);
