@@ -20,6 +20,31 @@
       </div>
     </div>
 
+    <div
+      data-test="validation-list"
+      class="validation-container position-absolute text-left"
+      v-if="toggleWarningsPanel"
+    >
+      <span
+        class="validation-container__defaultMessage d-flex justify-content-center align-items-center h-100"
+        v-if="warnings.length === 0"
+      >{{ $t('no warnings to report') }}</span>
+
+      <div
+        class="validation-container__list d-flex"
+        v-for="(error, index) in warnings" :key="index"
+      >
+        <span class="validation-container__list--errorCategory d-flex justify-content-center mr-2">
+          <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
+        </span>
+
+        <span class="validation-container__list--message">
+          <span class="validation-container__list--key">{{ error.title }}</span>
+          <div>{{ $t(error.text) }}</div>
+        </span>
+      </div>
+    </div>
+
     <div class="status-bar-container d-flex align-items-center justify-content-end">
       <b-form-checkbox
         data-test="validation-toggle"
@@ -32,10 +57,24 @@
 
       <div class="divider"/>
 
-      <div data-test="validation-list-toggle" class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel">
+      <div data-test="validation-list-toggle" class="status-bar-container__status" @click="toggleValidationPanel = !toggleValidationPanel; toggleWarningsPanel = false">
         <div class="d-flex align-items-center">
           <span class="status-bar-container__status-text">{{ $t('Problems') }} {{ numberOfValidationErrors }}</span>
           <font-awesome-icon class="status-bar-container__status-icon h-100" :style="{ color: statusColor }" :icon="statusIcon" />
+          <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
+        </div>
+      </div>
+
+      <div class="divider"/>
+
+      <div class="status-bar-container__status" @click="toggleWarningsPanel = !toggleWarningsPanel; toggleValidationPanel = false">
+        <div class="d-flex align-items-center">
+          <span class="status-bar-container__status-text">{{ $t('Warnings') }} {{ warnings.length }}</span>
+          <font-awesome-icon
+            class="status-bar-container__status-icon h-100"
+            :style="{ color: warnings.length > 0 ? warningColor : validColor }"
+            :icon="warnings.length > 0 ? faExclamationTriangle : faCheckCircle"
+          />
           <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
         </div>
       </div>
@@ -52,14 +91,22 @@ export default {
   components : {
     FontAwesomeIcon,
   },
-  props: ['validationErrors'],
+  props: ['validationErrors', 'warnings'],
   data() {
     return {
       toggleValidationPanel: false,
       errorColor: '#D9534F',
       warningColor: '#F0AD4E',
       validColor: '#40C057',
+      toggleWarningsPanel: this.warnings.length > 0,
+      faExclamationTriangle,
+      faCheckCircle,
     };
+  },
+  watch: {
+    warnings() {
+      this.toggleWarningsPanel = this.warnings.length > 0;
+    },
   },
   computed: {
     autoValidate: {
