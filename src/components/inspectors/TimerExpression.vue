@@ -175,7 +175,7 @@ export default {
         return this.getFormattedDateWithWeekdayIntervals();
       }
 
-      return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
+      return this.getIso8601FormattedDateString(DateTime.fromISO(this.startDate, { zone: 'utc' }));
     },
     /**
      * Array of week days the user selected
@@ -209,7 +209,7 @@ export default {
 
       this.selectedWeekdays.forEach(day => {
         const weekDayDate = this.getWeekDayDate(day);
-        const cycle = this.getCycle(weekDayDate);
+        const cycle = this.getIso8601FormattedDateString(weekDayDate);
         dateIntervals.push(cycle);
       });
 
@@ -323,7 +323,7 @@ export default {
         this.selectedWeekdays.length > 0 &&
         !this.sameDay;
     },
-    getCycle(startDate) {
+    getIso8601FormattedDateString(startDate) {
       const numberOfRepetition = this.ends === 'after' ? this.times : '';
       const period = this.getPeriod();
       const endDate = this.ends === 'ondate' ? this.endDate : '';
