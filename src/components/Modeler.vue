@@ -176,6 +176,7 @@ export default {
       toggleMiniMap: false,
       isGrabbing: false,
       isRendering: false,
+      allWarnings: [],
     };
   },
   watch: {
@@ -239,7 +240,14 @@ export default {
     validateAndCleanPlaneElements() {
       remove(this.planeElements, diagram => {
         if (!diagram.bpmnElement) {
-          window.ProcessMaker.alert(`bpmndi:BPMNShape ${diagram.id} references a non-existant element and was not parsed`, 'warning');
+          let warning  = 
+          {
+            title: this.$t('Non-existent Element'),
+            text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed')
+          }
+          this.allWarnings.push(warning);
+          
+          this.$emit('warnings', this.allWarnings);
           return true;
         }
       });
@@ -542,7 +550,13 @@ export default {
       const parsers = this.parsers[bpmnType];
 
       if (!parsers) {
-        window.ProcessMaker.alert(`Unsupported element type in parse: ${bpmnType}`, 'warning');
+        let warning  = {
+          title: this.$t('Unsupported Element'),
+          text: bpmnType + ' is an unsupported element type in parse' 
+        }
+        this.allWarnings.push(warning);
+
+        this.$emit('warnings', this.allWarnings);
 
         pull(flowElements, definition);
         pull(artifacts, definition);
