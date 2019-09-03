@@ -17,7 +17,7 @@
       <label class="">{{ $t(repeatLabel) }}</label>
       <b-form-group class="m-0 mb-3 p-0">
         <b-form-input type="number" min="1" max="99" class="d-inline-block w-50" v-model="repeat" data-test="repeat-input"/>
-        <b-form-select v-model="periodicity" class="d-inline-block w-50 periodicity">
+        <b-form-select v-model="periodicity" class="d-inline-block w-50 periodicity" data-test="repeat-on-select">
           <option value="day">{{ $t('day') }}</option>
           <option value="week">{{ $t('week') }}</option>
           <option value="month">{{ $t('month') }}</option>
@@ -47,7 +47,7 @@
       <label class="mt-1 ">{{ $t('Ends') }}</label>
       <div>
         <b-form-group class="m-0 mb-2">
-          <b-form-radio v-model="ends" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
+          <b-form-radio v-model="ends" data-test="ends-never" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
         </b-form-group>
 
         <b-form-group class="p-0 mb-1" :description="`${$t('Please click On to select a date')}.`">
@@ -68,8 +68,8 @@
         </b-form-group>
 
         <b-form-group class="mt-0 p-0">
-          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{ $t('After') }}</b-form-radio>
-          <b-form-input v-model="times" type="number" min="0" max="99" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block"/>
+          <b-form-radio v-model="ends" data-test="ends-after" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{ $t('After') }}</b-form-radio>
+          <b-form-input v-model="times" data-test="ends-after-input" type="number" min="0" max="99" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block"/>
           <b-form-input :readonly="ends !== 'after'" :value="$t('occurrences')" class=" w-75 d-inline-block occurrences-text" />
         </b-form-group>
       </div>
@@ -158,6 +158,9 @@ export default {
     };
   },
   computed: {
+    isWeeklyPeriodSelected() {
+      return this.periodicity === 'week';
+    },
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
 
@@ -167,18 +170,12 @@ export default {
 
       return 'You must select at least one day.';
     },
-    iso8606Expression() {
-      if (this.selectedWeekdays.length === 1 && this.sameDay) {
-        return this.getCycle(DateTime.fromISO(this.startDate, { zone: 'utc' }));
+    dateIntervalString() {
+      if (this.isWeeklyPeriodSelected) {
+        return this.getFormattedDateWithWeekdayIntervals();
       }
 
-      const expression = [];
-      expression.push(this.startDate);
-      this.selectedWeekdays.forEach(day => {
-        expression.push(this.getCycle(this.getWeekDayDate(day)));
-      });
-
-      return expression.join('|');
+      return this.getIso8601FormattedDateString(DateTime.fromISO(this.startDate, { zone: 'utc' }));
     },
     /**
      * Array of week days the user selected
@@ -198,7 +195,7 @@ export default {
     },
   },
   watch: {
-    iso8606Expression() {
+    dateIntervalString() {
       this.update();
     },
   },
@@ -206,6 +203,18 @@ export default {
     this.parseTimerConfig(this.value);
   },
   methods: {
+    getFormattedDateWithWeekdayIntervals() {
+      const dateIntervals = [];
+      dateIntervals.push(this.startDate);
+
+      this.selectedWeekdays.forEach(day => {
+        const weekDayDate = this.getWeekDayDate(day);
+        const isoDateString = this.getIso8601FormattedDateString(weekDayDate);
+        dateIntervals.push(isoDateString);
+      });
+
+      return dateIntervals.join('|');
+    },
     setStartDate(startDateString) {
       this.startDate = DateTime
         .fromISO(startDateString, { zone: 'utc' })
@@ -238,7 +247,7 @@ export default {
       ];
     },
     update() {
-      this.$emit('input', this.iso8606Expression);
+      this.$emit('input', this.dateIntervalString);
     },
     /**
      * Parse an ISO8601 expression to get the timer configuration
@@ -276,7 +285,7 @@ export default {
                 hasStartDate = true;
               }
 
-              if (this.periodicity === 'week') {
+              if (this.isWeeklyPeriodSelected) {
                 const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
                 const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
                 foundDay.selected = true;
@@ -310,17 +319,16 @@ export default {
       weekday.selected = !weekday.selected;
     },
     hasMultipleWeekdaySelected(){
-      return this.periodicity === 'week' &&
+      return this.isWeeklyPeriodSelected &&
         this.selectedWeekdays.length > 0 &&
         !this.sameDay;
     },
-    getCycle(startDate) {
-      return this.makeCycle(
-        (this.ends === 'after' ? this.times : ''),
-        startDate,
-        this.getPeriod(),
-        (this.ends === 'ondate' ? this.endDate : '')
-      );
+    getIso8601FormattedDateString(startDate) {
+      const numberOfRepetition = this.ends === 'after' ? this.times : '';
+      const period = this.getPeriod();
+      const endDate = this.ends === 'ondate' ? this.endDate : '';
+
+      return `R${numberOfRepetition}/${startDate}/${period}` + (endDate ? '/' + endDate : '');
     },
     getWeekDayDate(isoWeekDay) {
       const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
@@ -334,9 +342,6 @@ export default {
     },
     getPeriod() {
       return `P${this.repeat}` + periods[this.periodicity];
-    },
-    makeCycle(times, datetime, period, end) {
-      return `R${times}/${datetime}/${period}` + (end ? '/' + end : '');
     },
   },
 };
