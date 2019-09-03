@@ -951,6 +951,7 @@ export default {
         this.loadXML(xml);
         undoRedoStore.dispatch('pushState', xml);
       },
+      addWarnings: warnings => this.$emit('warnings', warnings),
     });
 
     window.ProcessMaker.EventBus.$on('modeler-change', () => {

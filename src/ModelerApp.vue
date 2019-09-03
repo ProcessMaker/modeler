@@ -43,7 +43,7 @@
 
       <b-card-footer class="p-0 border-0">
         <statusbar>
-          <validation-status :validation-errors="validationErrors"/>
+          <validation-status :validation-errors="validationErrors" :warnings="warnings" />
         </statusbar>
       </b-card-footer>
     </b-card>
@@ -93,6 +93,7 @@ export default {
       alerts: [],
       uploadedXml: null,
       xmlFile: [],
+      warnings: [],
     };
   },
   watch: {
