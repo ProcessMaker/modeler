@@ -170,7 +170,7 @@ export default {
 
       return 'You must select at least one day.';
     },
-    iso8601FormattedDate() {
+    dateIntervalString() {
       if (this.isWeeklyPeriodSelected) {
         return this.getFormattedDateWithWeekdayIntervals();
       }
@@ -195,7 +195,7 @@ export default {
     },
   },
   watch: {
-    iso8601FormattedDate() {
+    dateIntervalString() {
       this.update();
     },
   },
@@ -209,8 +209,8 @@ export default {
 
       this.selectedWeekdays.forEach(day => {
         const weekDayDate = this.getWeekDayDate(day);
-        const cycle = this.getIso8601FormattedDateString(weekDayDate);
-        dateIntervals.push(cycle);
+        const isoDateString = this.getIso8601FormattedDateString(weekDayDate);
+        dateIntervals.push(isoDateString);
       });
 
       return dateIntervals.join('|');
@@ -247,7 +247,7 @@ export default {
       ];
     },
     update() {
-      this.$emit('input', this.iso8601FormattedDate);
+      this.$emit('input', this.dateIntervalString);
     },
     /**
      * Parse an ISO8601 expression to get the timer configuration
