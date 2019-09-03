@@ -324,12 +324,11 @@ export default {
         !this.sameDay;
     },
     getCycle(startDate) {
-      return this.makeCycle(
-        (this.ends === 'after' ? this.times : ''),
-        startDate,
-        this.getPeriod(),
-        (this.ends === 'ondate' ? this.endDate : '')
-      );
+      const numberOfRepetition = this.ends === 'after' ? this.times : '';
+      const period = this.getPeriod();
+      const endDate = this.ends === 'ondate' ? this.endDate : '';
+
+      return this.makeCycle(numberOfRepetition, startDate, period, endDate);
     },
     getWeekDayDate(isoWeekDay) {
       const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
