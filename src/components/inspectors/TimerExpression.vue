@@ -328,7 +328,7 @@ export default {
       const period = this.getPeriod();
       const endDate = this.ends === 'ondate' ? this.endDate : '';
 
-      return this.makeCycle(numberOfRepetition, startDate, period, endDate);
+      return `R${numberOfRepetition}/${startDate}/${period}` + (endDate ? '/' + endDate : '');
     },
     getWeekDayDate(isoWeekDay) {
       const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
@@ -342,9 +342,6 @@ export default {
     },
     getPeriod() {
       return `P${this.repeat}` + periods[this.periodicity];
-    },
-    makeCycle(times, datetime, period, end) {
-      return `R${times}/${datetime}/${period}` + (end ? '/' + end : '');
     },
   },
 };
