@@ -50,7 +50,7 @@ export default {
         .filter(model => model.component)
         .find(model => taskIds.includes(model.component.node.type));
     },
-    updateBoundaryShape(dashLength) {
+    setShapeStrokeDasharry(dashLength) {
       this.shape.attr({
         body: {
           'strokeDasharray': dashLength,
@@ -63,7 +63,7 @@ export default {
     renderInterrupting(isCancelActivity) {
       const dashedLine = 5;
       const solidLine = 0;
-      isCancelActivity ? this.updateBoundaryShape(solidLine) : this.updateBoundaryShape(dashedLine);
+      this.setShapeStrokeDasharry(isCancelActivity ? solidLine : dashedLine);
     },
   },
   mounted() {
