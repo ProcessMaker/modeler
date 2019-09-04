@@ -12,7 +12,7 @@ import { id as manualTaskId } from '@/components/nodes/manualTask';
 import { id as scriptTaskId } from '@/components/nodes/scriptTask';
 
 export default {
-  props: ['graph', 'node', 'id'],
+  props: ['graph', 'node'],
   mixins: [crownConfig],
   data() {
     return {
@@ -67,33 +67,11 @@ export default {
     },
   },
   mounted() {
-    // Now, let's add a rounded rect to the graph
     this.shape = new EventShape();
-    let bounds = this.node.diagram.bounds;
+    const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
-    this.shape.attr({
-      body: {
-        stroke: '#212529',
-        strokeWidth: 0.85,
-        fill: '#FFF',
-      },
-      body2: {
-        stroke: '#212529',
-        fill: '#FFF',
-        strokeWidth: 0.85,
-      },
-      label: {
-        text: this.node.definition.get('name'),
-        refY: '130%',
-      },
-      image: {
-        'ref-x': 5,
-        'ref-y': 5,
-        'width': bounds.get('width') - 10,
-        'height': bounds.get('height') - 10,
-      },
-    });
+    this.shape.attr('label/text', this.node.definition.get('name'));
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
