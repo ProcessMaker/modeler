@@ -98,6 +98,7 @@
 <script>
 import Vue from 'vue';
 import { dia, g } from 'jointjs';
+import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
@@ -638,20 +639,21 @@ export default {
         : [];
     },
     createBoundaryEvent(definition) {
-      let boundaryEvent = this.moddle.create('bpmn:BoundaryEvent', {
-        ...definition,
-        cancelActivity: definition.get('cancelActivity'),
-        attachedToRef: definition.get('attachedToRef'),
-      });
+      const boundaryEvent = boundaryEventConfig.definition(this.moddle, this.$t);
+      boundaryEvent.set('id', definition.get('id'));
+      boundaryEvent.set('name', definition.get('name'));
+      boundaryEvent.set('eventDefinitions', definition.get('eventDefinitions'));
+      boundaryEvent.set('cancelActivity', definition.get('cancelActivity'));
+      boundaryEvent.set('attachedToRef', definition.get('attachedToRef'));
       boundaryEvent.$parent = definition.$parent;
-      if (definition.get('outgoing').length) {
+      if (definition.get('outgoing').length > 0) {
         boundaryEvent.set('outgoing', definition.get('outgoing'));
       }
       return boundaryEvent;
     },
     replaceDefinition(definition, boundaryEvent, process) {
       const definitionIndex = process.flowElements.indexOf(definition);
-      this.definitions.get('rootElements').find(currentProcess => currentProcess === process).flowElements[definitionIndex] = boundaryEvent;
+      process.flowElements[definitionIndex] = boundaryEvent;
     },
     ensureCancelActivityIsAddedToBoundaryEvents(process) {
       this.getBoundaryEvents(process).forEach(definition => {
