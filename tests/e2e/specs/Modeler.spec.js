@@ -10,7 +10,6 @@ import {
   isElementCovered,
   getCrownButtonForElement,
   uploadXml,
-  modalAnimationTime,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
