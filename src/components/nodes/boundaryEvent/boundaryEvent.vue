@@ -71,23 +71,30 @@ export default {
     toggleInterruptingStyle(isCancelActivity) {
       isCancelActivity ? this.setSolidShapeBorder() : this.setDashedShapeBorder();
     },
-  },
-  mounted() {
-    this.shape = new EventShape();
-    const { x, y, width, height } = this.node.diagram.bounds;
-    this.shape.position(x, y);
-    this.shape.resize(width, height);
-    this.shape.attr('label/text', this.node.definition.get('name'));
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
+    setShapeProperties() {
+      const { x, y, width, height } = this.node.diagram.bounds;
+      this.shape.position(x, y);
+      this.shape.resize(width, height);
+      this.shape.attr('label/text', this.node.definition.get('name'));
+      this.shape.component = this;
+    },
+    attachBoundaryEventToTask() {
+      const task = this.getTaskUnderShape();
 
-    const task = this.getTaskUnderShape();
+      if (!task) {
+        return;
+      }
 
-    if (task) {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
       this.toggleInterruptingStyle(this.node.definition.cancelActivity);
-    }
+    },
+  },
+  mounted() {
+    this.shape = new EventShape();
+    this.setShapeProperties();
+    this.shape.addTo(this.graph);
+    this.attachBoundaryEventToTask();
   },
 };
 </script>
