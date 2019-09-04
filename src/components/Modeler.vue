@@ -113,7 +113,7 @@ import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 
-import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -226,9 +226,6 @@ export default {
         return invalidIds;
       }, []);
     },
-    mapIcon() {
-      return faMapMarked;
-    },
     plusIcon() {
       return faPlus;
     },
@@ -237,17 +234,17 @@ export default {
     },
   },
   methods: {
+    addWarning(warning) {
+      this.allWarnings.push(warning);
+      this.$emit('warnings', this.allWarnings);
+    },
     validateAndCleanPlaneElements() {
       remove(this.planeElements, diagram => {
         if (!diagram.bpmnElement) {
-          let warning  = 
-          {
+          this.addWarning({
             title: this.$t('Non-existent Element'),
             text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
-          };
-          this.allWarnings.push(warning);
-          
-          this.$emit('warnings', this.allWarnings);
+          });
           return true;
         }
       });
@@ -550,12 +547,10 @@ export default {
       const parsers = this.parsers[bpmnType];
 
       if (!parsers) {
-        let warning  = {
+        this.addWarning({
           title: this.$t('Unsupported Element'),
-          text: bpmnType + this.$t(' is an unsupported element type in parse'), 
-        };
-        this.allWarnings.push(warning);
-        this.$emit('warnings', this.allWarnings);
+          text: bpmnType + this.$t(' is an unsupported element type in parse'),
+        });
 
         pull(flowElements, definition);
         pull(artifacts, definition);
