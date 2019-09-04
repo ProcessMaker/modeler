@@ -32,8 +32,8 @@ export default {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
-    'node.definition.cancelActivity'(value) {
-      this.renderInterrupting(value);
+    'node.definition.cancelActivity'(isCancelActivity) {
+      this.toggleInterruptingStyle(isCancelActivity);
     },
   },
   methods: {
@@ -53,14 +53,14 @@ export default {
     setShapeStrokeDasharry(dashLength) {
       this.shape.attr({
         body: {
-          'strokeDasharray': dashLength,
+          strokeDasharray: dashLength,
         },
         body2: {
-          'strokeDasharray': dashLength,
+          strokeDasharray: dashLength,
         },
       });
     },
-    renderInterrupting(isCancelActivity) {
+    toggleInterruptingStyle(isCancelActivity) {
       const dashedLine = 5;
       const solidLine = 0;
       this.setShapeStrokeDasharry(isCancelActivity ? solidLine : dashedLine);
@@ -80,7 +80,7 @@ export default {
     if (task) {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
-      this.renderInterrupting(this.node.definition.cancelActivity);
+      this.toggleInterruptingStyle(this.node.definition.cancelActivity);
     }
   },
 };
