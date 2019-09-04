@@ -68,9 +68,9 @@ export default {
   },
   mounted() {
     this.shape = new EventShape();
-    const bounds = this.node.diagram.bounds;
-    this.shape.position(bounds.get('x'), bounds.get('y'));
-    this.shape.resize(bounds.get('width'), bounds.get('height'));
+    const { x, y, width, height } = this.node.diagram.bounds;
+    this.shape.position(x, y);
+    this.shape.resize(width, height);
     this.shape.attr('label/text', this.node.definition.get('name'));
     this.shape.addTo(this.graph);
     this.shape.component = this;
