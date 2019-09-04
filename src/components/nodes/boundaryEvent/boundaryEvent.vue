@@ -50,7 +50,7 @@ export default {
         .filter(model => model.component)
         .find(model => taskIds.includes(model.component.node.type));
     },
-    setShapeStrokeDasharry(dashLength) {
+    setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
         body: {
           strokeDasharray: dashLength,
@@ -60,10 +60,16 @@ export default {
         },
       });
     },
+    setSolidShapeBorder() {
+      const solidLineSpacing = 0;
+      this.setShapeBorderDashSpacing(solidLineSpacing);
+    },
+    setDashedShapeBorder() {
+      const dashedLineSpacing = 5;
+      this.setShapeBorderDashSpacing(dashedLineSpacing);
+    },
     toggleInterruptingStyle(isCancelActivity) {
-      const dashedLine = 5;
-      const solidLine = 0;
-      this.setShapeStrokeDasharry(isCancelActivity ? solidLine : dashedLine);
+      isCancelActivity ? this.setSolidShapeBorder() : this.setDashedShapeBorder();
     },
   },
   mounted() {
