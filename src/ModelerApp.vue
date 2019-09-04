@@ -38,7 +38,7 @@
       </b-card-header>
 
       <b-card-body class="overflow-hidden position-relative p-0 vh-100" data-test="body-container">
-        <modeler ref="modeler" @validate="validationErrors = $event" />
+        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
       </b-card-body>
 
       <b-card-footer class="p-0 border-0">

@@ -308,13 +308,10 @@ describe('Modeler', () => {
     }
 
     uploadXml('unknownElement.xml');
-    const warning = 'Unsupported element type in parse: bpmn:IntermediateThrowEvent';
+    const warning = 'IntermediateThrowEvent is an unsupported element type in parse';
 
-    cy.wait(modalAnimationTime);
-
-    cy.get('[data-test="alert-modal"]').should($modal => {
-      expect($modal).to.contain(warning);
-    });
+    cy.get('.status-bar-container__status').click({multiple: true});
+    cy.get('[data-test="validation-list"]').should('contain', warning);
   });
 
   it('check for joint marker class on linkTools', () => {

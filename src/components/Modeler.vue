@@ -555,7 +555,6 @@ export default {
           text: bpmnType + this.$t(' is an unsupported element type in parse'), 
         };
         this.allWarnings.push(warning);
-
         this.$emit('warnings', this.allWarnings);
 
         pull(flowElements, definition);
