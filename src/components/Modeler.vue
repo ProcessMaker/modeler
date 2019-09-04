@@ -112,7 +112,7 @@ import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
-import { validateDropTarget, getPoolUnderPosition } from '@/validateDropTarget';
+import { validateDropTarget, getPoolUnderPosition } from '@/targetValidationUtils';
 
 import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -722,6 +722,7 @@ export default {
     },
     validateDropTarget({ clientX, clientY, control }) {
       this.allowDrop = validateDropTarget(clientX, clientY, control, this.paper, this.graph, this.collaboration);
+
       this.poolTarget = getPoolUnderPosition(clientX, clientY, this.paper, this.graph);
     },
     addStartEvent() {
