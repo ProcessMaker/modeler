@@ -60,8 +60,8 @@ export default {
       const dashedLineSpacing = 5;
       this.setShapeBorderDashSpacing(dashedLineSpacing);
     },
-    toggleInterruptingStyle(isCancelActivity) {
-      isCancelActivity ? this.setSolidShapeBorder() : this.setDashedShapeBorder();
+    toggleInterruptingStyle() {
+      this.node.definition.cancelActivity ? this.setSolidShapeBorder() : this.setDashedShapeBorder();
     },
     setShapeProperties() {
       const { x, y, width, height } = this.node.diagram.bounds;
@@ -122,6 +122,7 @@ export default {
     this.shape.addTo(this.graph);
     await this.$nextTick();
     this.moveBoundaryEventIfOverTask();
+    this.toggleInterruptingStyle();
 
     const task = this.getTaskUnderShape();
     if (task) {
