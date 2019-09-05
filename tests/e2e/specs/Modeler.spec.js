@@ -336,14 +336,12 @@ describe('Modeler', () => {
   it('persist boundary event with sequence flow in XML', () => {
     uploadXml('../fixtures/boundaryEvent.xml');
 
-    const sequneceFlowXML = '<bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_5" targetRef="node_3" pm:startEvent="" />';
+    const sequenceFlowXML = '<bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_5" targetRef="node_3" pm:startEvent="" />';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(xml => removeIndentationAndLinebreaks(xml))
-      .then(xml => {
-        expect(xml).to.contain(sequneceFlowXML);
-      });
+      .then(xml => expect(xml).to.contain(sequenceFlowXML));
   });
 });
