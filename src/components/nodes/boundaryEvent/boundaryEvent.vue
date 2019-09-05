@@ -4,6 +4,7 @@
 
 <script>
 import crownConfig from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import { id as taskId } from '@/components/nodes/task';
@@ -13,7 +14,7 @@ import { id as scriptTaskId } from '@/components/nodes/scriptTask';
 
 export default {
   props: ['graph', 'node'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       shape: null,
