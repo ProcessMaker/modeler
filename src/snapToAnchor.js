@@ -11,7 +11,7 @@ function getPortPoints(model) {
   return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(model, group));
 }
 
-function closestPort(model, anchorReference) {
+export function closestPort(model, anchorReference) {
   return getPortPoints(model).sort((p1, p2) => {
     const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
     return referencePoint.distance(p1) - referencePoint.distance(p2);
@@ -29,4 +29,8 @@ export function getAnchorCoordinates(coords, model) {
     return new g.Point(x - (width / 2), y - (height / 2));
   }
   return closestPort(model, coords);
+}
+
+export function snapToAnchor(coords, endView) {
+  return getAnchorCoordinates(coords, endView.model);
 }

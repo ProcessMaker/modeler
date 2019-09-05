@@ -1,42 +1,9 @@
-import { shapes, linkTools, dia, g } from 'jointjs';
+import { shapes, linkTools, dia } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
-import { portGroups } from '@/mixins/portsConfig';
-
-function getPointFromGroup(view, group) {
-  const { x: shapeX, y: shapeY } = view.model.position();
-  const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
-
-  return new g.Point(shapeX + x, shapeY + y);
-}
-
-function getPortPoints(view) {
-  return portGroups.map(group => getPointFromGroup(view, group));
-}
-
-function closestPort(endView, anchorReference) {
-  return getPortPoints(endView).sort((p1, p2) => {
-    const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
-    return referencePoint.distance(p1) - referencePoint.distance(p2);
-  })[0];
-}
-
-function hasPorts(view) {
-  return Object.values(view.model.getPortsPositions(portGroups[0])).length > 0;
-}
-
-function snapToAnchor(coords, endView) {
-  if (!hasPorts(endView)) {
-    const { x, y } = endView.model.position();
-    const { width, height } = endView.model.size();
-
-    return new g.Point(x + (width / 2), y + (height / 2));
-  }
-
-  return closestPort(endView, coords);
-}
+import { snapToAnchor, closestPort } from '@/snapToAnchor';
 
 const endpoints = {
   source: 'source',
@@ -120,7 +87,7 @@ export default {
             y: y + connectionOffset.y,
           };
 
-          return closestPort(shape.findView(this.paper), connectionPoint);
+          return closestPort(shape.findView(this.paper).model, connectionPoint);
         };
       } else {
         anchor = {
