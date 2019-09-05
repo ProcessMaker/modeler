@@ -1,16 +1,6 @@
 import { g } from 'jointjs';
 import { id as poolId } from '@/components/nodes/pool';
-export const validBoundaryEventTargets = [
-  'bpmn:Task',
-  'bpmn:ScriptTask',
-  'bpmn:ServiceTask',
-  'bpmn:SendTask',
-  'bpmn:ReceiveTask',
-  'bpmn:UserTask',
-  'bpmn:GlobalTask',
-  'bpmn:ManualTask',
-  'bpmn:CallActivity',
-];
+import validBoundaryEventTargets from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
 
 export function validateDropTarget(clientX, clientY, control, paper, graph, collaboration) {
   if (!isPointOverPaper(clientX, clientY, paper)) {

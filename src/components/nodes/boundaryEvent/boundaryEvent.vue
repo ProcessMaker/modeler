@@ -7,7 +7,7 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
-import { validBoundaryEventTargets } from '@/targetValidationUtils';
+import validBoundaryEventTargets from './validBoundaryEventTargets';
 import { getAnchorCoordinates } from '@/snapToAnchor';
 
 export default {
