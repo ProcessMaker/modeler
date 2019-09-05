@@ -8,7 +8,7 @@ function getPointFromGroup(model, group) {
 }
 
 function getPortPoints(model) {
-  return portGroups.filter(group => group !== 'absolute').map(group => getPointFromGroup(model, group));
+  return portGroups.map(group => getPointFromGroup(model, group));
 }
 
 export function closestPort(model, anchorReference) {
