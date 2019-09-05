@@ -7,7 +7,6 @@ import {
   moveElementRelativeTo,
   getCrownButtonForElement,
   getGraphElements,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
