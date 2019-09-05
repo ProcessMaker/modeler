@@ -106,10 +106,11 @@ export default {
       });
     },
   },
-  mounted() {
+  async mounted() {
     this.shape = new EventShape();
     this.setShapeProperties();
     this.shape.addTo(this.graph);
+    await this.$nextTick();
     this.attachBoundaryEventToTask();
   },
 };
