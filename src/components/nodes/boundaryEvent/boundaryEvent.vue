@@ -4,13 +4,15 @@
 
 <script>
 import crownConfig from '@/mixins/crownConfig';
+import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import { validBoundaryEventTargets } from '@/targetValidationUtils';
+import { getAnchorCoordinates } from '@/snapToAnchor';
 
 export default {
   props: ['graph', 'node'],
-  mixins: [crownConfig],
+  mixins: [crownConfig, portsConfig],
   data() {
     return {
       shape: null,
@@ -68,6 +70,12 @@ export default {
       this.shape.attr('label/text', this.node.definition.get('name'));
       this.shape.component = this;
     },
+    updateShapePosition(task) {
+      const { x, y } = getAnchorCoordinates(this.shape.position(), task);
+      const { width } = this.shape.size();
+      this.shape.position(x - (width / 2), y - (width / 2));
+      this.updateCrownPosition();
+    },
     attachBoundaryEventToTask() {
       const task = this.getTaskUnderShape();
 
@@ -78,12 +86,21 @@ export default {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
       this.toggleInterruptingStyle(this.node.definition.cancelActivity);
+      this.updateShapePosition(task);
+
+      this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
+        if (cellView.model !== this.shape) {
+          return;
+        }
+        this.updateShapePosition(task);
+      });
     },
   },
-  mounted() {
+  async mounted() {
     this.shape = new EventShape();
     this.setShapeProperties();
     this.shape.addTo(this.graph);
+    await this.$nextTick();
     this.attachBoundaryEventToTask();
   },
 };

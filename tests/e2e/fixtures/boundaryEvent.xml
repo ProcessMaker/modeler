@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_5" targetRef="node_3" pm:startEvent="" />
+    <bpmn:task id="node_1" name="Task" />
+    <bpmn:task id="node_2" name="Task">
+      <bpmn:incoming>node_5</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:boundaryEvent id="node_3" name="New Boundary Event" attachedToRef="node_1">
+      <bpmn:outgoing>node_5</bpmn:outgoing>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="node_5" name="New Sequence Flow" sourceRef="node_3" targetRef="node_2" pm:startEvent="" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="node_4_di" bpmnElement="node_4">
+        <di:waypoint x="348" y="228" />
+        <di:waypoint x="310.5" y="430.5" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+        <dc:Bounds x="151" y="239" width="116" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
+        <dc:Bounds x="160" y="440" width="116" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3">
+        <dc:Bounds x="201" y="303" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="node_5_di" bpmnElement="node_5">
+        <di:waypoint x="219" y="321" />
+        <di:waypoint x="219" y="478.5" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
