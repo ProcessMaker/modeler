@@ -634,9 +634,7 @@ export default {
     },
 
     getBoundaryEvents(process) {
-      return process.flowElements
-        ? process.flowElements.filter(({$type}) => $type === 'bpmn:BoundaryEvent')
-        : [];
+      return process.get('flowElements').filter(({$type}) => $type === 'bpmn:BoundaryEvent');
     },
     createBoundaryEvent(definition) {
       const boundaryEvent = boundaryEventConfig.definition(this.moddle, this.$t);
@@ -652,7 +650,7 @@ export default {
       return boundaryEvent;
     },
     replaceDefinition(definition, boundaryEvent, process) {
-      const definitionIndex = process.flowElements.indexOf(definition);
+      const definitionIndex = process.get('flowElements').indexOf(definition);
       process.flowElements[definitionIndex] = boundaryEvent;
     },
     ensureCancelActivityIsAddedToBoundaryEvents(process) {
