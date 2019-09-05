@@ -76,11 +76,11 @@ export default {
       this.shape.position(x - (width / 2), y - (width / 2));
       this.updateCrownPosition();
     },
-    attachBoundaryEventToTask() {
-      const task = this.getTaskUnderShape();
+    attachBoundaryEventToTask(task) {
+      const currentlyAttachedTask = this.shape.getParentCell();
 
-      if (!task) {
-        return;
+      if (currentlyAttachedTask) {
+        currentlyAttachedTask.unembed(this.shape);
       }
 
       task.embed(this.shape);
@@ -95,13 +95,38 @@ export default {
         this.updateShapePosition(task);
       });
     },
+    moveBoundaryEventIfOverTask() {
+      let { x: prevX, y: prevY } = this.shape.position();
+      let savePositionOnPointerUp = true;
+
+      this.shape.on('change:position', () => {
+        if (savePositionOnPointerUp) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', () => {
+            savePositionOnPointerUp = true;
+            const task = this.getTaskUnderShape();
+
+            if (task) {
+              this.attachBoundaryEventToTask(task);
+            } else {
+              this.shape.position(prevX, prevY);
+            }
+          });
+          savePositionOnPointerUp = false;
+        }
+      });
+    },
   },
   async mounted() {
     this.shape = new EventShape();
     this.setShapeProperties();
     this.shape.addTo(this.graph);
     await this.$nextTick();
-    this.attachBoundaryEventToTask();
+    this.moveBoundaryEventIfOverTask();
+
+    const task = this.getTaskUnderShape();
+    if (task) {
+      this.attachBoundaryEventToTask(task);
+    }
   },
 };
 </script>
