@@ -11,7 +11,7 @@ import validBoundaryEventTargets from './validBoundaryEventTargets';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
 
 export default {
-  props: ['graph', 'node'],
+  props: ['graph', 'node', 'paper'],
   mixins: [crownConfig, portsConfig],
   data() {
     return {
@@ -25,6 +25,7 @@ export default {
           clickHandler: this.addSequence,
         },
       ],
+      validPosition: null,
     };
   },
   watch: {
@@ -87,32 +88,30 @@ export default {
       this.node.definition.set('attachedToRef', task.component.node.definition);
       this.toggleInterruptingStyle(this.node.definition.cancelActivity);
       this.updateShapePosition(task);
+    },
+    moveBoundaryEventIfOverTask() {
+      const task = this.getTaskUnderShape();
 
-      this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
+      if (!task) {
+        this.shape.position(this.validPosition.x, this.validPosition.y);
+        this.updateCrownPosition();
+        return;
+      }
+
+      if (task === this.shape.getParentCell()) {
+        this.updateShapePosition(task);
+      }
+
+      this.attachBoundaryEventToTask(task);
+    },
+    listenToShapeMove() {
+      this.shape.listenTo(this.paper, 'element:pointerdown', cellView => {
         if (cellView.model !== this.shape) {
           return;
         }
-        this.updateShapePosition(task);
-      });
-    },
-    moveBoundaryEventIfOverTask() {
-      let { x: prevX, y: prevY } = this.shape.position();
-      let savePositionOnPointerUp = true;
 
-      this.shape.on('change:position', () => {
-        if (savePositionOnPointerUp) {
-          this.shape.listenToOnce(this.paper, 'element:pointerup', () => {
-            savePositionOnPointerUp = true;
-            const task = this.getTaskUnderShape();
-
-            if (task) {
-              this.attachBoundaryEventToTask(task);
-            } else {
-              this.shape.position(prevX, prevY);
-            }
-          });
-          savePositionOnPointerUp = false;
-        }
+        this.validPosition = this.shape.position();
+        this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', this.moveBoundaryEventIfOverTask);
       });
     },
   },
@@ -121,7 +120,7 @@ export default {
     this.setShapeProperties();
     this.shape.addTo(this.graph);
     await this.$nextTick();
-    this.moveBoundaryEventIfOverTask();
+    this.listenToShapeMove();
     this.toggleInterruptingStyle();
 
     const task = this.getTaskUnderShape();
