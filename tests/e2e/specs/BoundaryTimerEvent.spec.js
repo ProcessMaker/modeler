@@ -6,6 +6,8 @@ import {
   moveElement,
   moveElementRelativeTo,
   getCrownButtonForElement,
+  getGraphElements,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -194,5 +196,36 @@ describe('Boundary Timer Event', () => {
       .then(xml => {
         expect(xml).to.contain(initialPositionXML);
       });
+  });
+
+  it('Can drag boundary event over valid targets, but not over invalid targets', function() {
+    const initialNumberOfElements = 1;
+    const startEventPosition = { x: 150, y: 150 };
+
+    dragFromSourceToDest(nodeTypes.boundaryEvent, startEventPosition);
+    getGraphElements().should('have.length', initialNumberOfElements);
+
+    const validBoundaryEventTargets = [
+      { type: nodeTypes.task, position: { x: 100, y: 300 } },
+      { type: nodeTypes.callActivity, position: { x: 240, y: 300 } },
+      { type: nodeTypes.scriptTask, position: { x: 380, y: 300 } },
+      { type: nodeTypes.manualTask, position: { x: 100, y: 400 } },
+      { type: nodeTypes.sendTweet, position: { x: 240, y: 400 } },
+      { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } },
+    ];
+
+    validBoundaryEventTargets.forEach(({ type, position }) => {
+      dragFromSourceToDest(type, position);
+    });
+
+    const numberOfElementsAfterAddingTasks = initialNumberOfElements + validBoundaryEventTargets.length;
+    getGraphElements().should('have.length', numberOfElementsAfterAddingTasks);
+
+    validBoundaryEventTargets.forEach(({ position }) => {
+      dragFromSourceToDest(nodeTypes.boundaryEvent, position);
+    });
+
+    const numberOfElementsAfterAddingTasksAndBoundaryEvents = initialNumberOfElements + validBoundaryEventTargets.length * 2;
+    getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryEvents);
   });
 });
