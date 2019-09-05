@@ -1,9 +1,16 @@
 import { g } from 'jointjs';
 import { id as poolId } from '@/components/nodes/pool';
-import { id as taskId } from '@/components/nodes/task';
-import { id as callActivityId } from '@/components/nodes/callActivity';
-import { id as manualTaskId } from '@/components/nodes/manualTask';
-import { id as scriptTaskId } from '@/components/nodes/scriptTask';
+export const validBoundaryEventTargets = [
+  'bpmn:Task',
+  'bpmn:ScriptTask',
+  'bpmn:ServiceTask',
+  'bpmn:SendTask',
+  'bpmn:ReceiveTask',
+  'bpmn:UserTask',
+  'bpmn:GlobalTask',
+  'bpmn:ManualTask',
+  'bpmn:CallActivity',
+];
 
 export function validateDropTarget(clientX, clientY, control, paper, graph, collaboration) {
   if (!isPointOverPaper(clientX, clientY, paper)) {
@@ -65,16 +72,9 @@ function getLocalMousePosition(clientX, clientY, paper) {
 }
 
 function isOverBoundaryEventTarget(clientX, clientY, paper, graph) {
-  const validBoundaryEventTargetIds = [
-    taskId,
-    callActivityId,
-    manualTaskId,
-    scriptTaskId,
-  ];
-
   return graph
     .findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper))
     .some(({ component }) => {
-      return component && validBoundaryEventTargetIds.includes(component.node.type);
+      return component && validBoundaryEventTargets.includes(component.node.definition.$type);
     });
 }
