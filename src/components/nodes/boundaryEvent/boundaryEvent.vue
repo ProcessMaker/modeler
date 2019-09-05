@@ -11,7 +11,6 @@ import { id as taskId } from '@/components/nodes/task';
 import { id as callActivityId } from '@/components/nodes/callActivity';
 import { id as manualTaskId } from '@/components/nodes/manualTask';
 import { id as scriptTaskId } from '@/components/nodes/scriptTask';
-import portsConfig from '@/mixins/portsConfig';
 import { getAnchorCoordinates } from '@/snapToAnchor';
 
 export default {
