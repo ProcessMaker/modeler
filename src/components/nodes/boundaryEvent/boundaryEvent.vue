@@ -11,6 +11,8 @@ import { id as taskId } from '@/components/nodes/task';
 import { id as callActivityId } from '@/components/nodes/callActivity';
 import { id as manualTaskId } from '@/components/nodes/manualTask';
 import { id as scriptTaskId } from '@/components/nodes/scriptTask';
+import portsConfig from '@/mixins/portsConfig';
+import { getAnchorCoordinates } from '@/snapToAnchor';
 
 export default {
   props: ['graph', 'node'],
@@ -79,6 +81,12 @@ export default {
       this.shape.attr('label/text', this.node.definition.get('name'));
       this.shape.component = this;
     },
+    updateShapePosition(task) {
+      const { x, y } = getAnchorCoordinates(this.shape.position(), task);
+      const { width } = this.shape.size();
+      this.shape.position(x - (width / 2), y - (width / 2));
+      this.updateCrownPosition();
+    },
     attachBoundaryEventToTask() {
       const task = this.getTaskUnderShape();
 
@@ -89,12 +97,21 @@ export default {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
       this.toggleInterruptingStyle(this.node.definition.cancelActivity);
+      this.updateShapePosition(task);
+
+      this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
+        if (cellView.model !== this.shape) {
+          return;
+        }
+        this.updateShapePosition(task);
+      });
     },
   },
-  mounted() {
+  async mounted() {
     this.shape = new EventShape();
     this.setShapeProperties();
     this.shape.addTo(this.graph);
+    await this.$nextTick();
     this.attachBoundaryEventToTask();
   },
 };
