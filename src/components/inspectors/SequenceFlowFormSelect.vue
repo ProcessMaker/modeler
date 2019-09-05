@@ -12,7 +12,7 @@
         <font-awesome-icon :icon="faExclamationTriangle" />
         Call Activity Start Event
       </div>
-      <p>A process has not been configred in the connnected Call Acitivty task.</p>
+      <p>A process has not been configured in the connected Call Activity task.</p>
     </div>
   </div>
 </template>
