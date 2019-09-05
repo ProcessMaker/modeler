@@ -98,6 +98,7 @@
 <script>
 import Vue from 'vue';
 import { dia, g } from 'jointjs';
+import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import { highlightPadding } from '@/mixins/crownConfig';
@@ -469,8 +470,6 @@ export default {
       this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
       this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
 
-      store.commit('setRootElements', this.definitions.rootElements);
-
       /* Get the diagram; there should only be one diagram. */
       this.plane = this.definitions.diagrams[0].plane;
       this.planeElements = this.plane.get('planeElement');
@@ -490,6 +489,8 @@ export default {
 
       /* Iterate through all elements in each process. */
       this.processes.forEach(process => {
+        this.ensureCancelActivityIsAddedToBoundaryEvents(process);
+
         /* Add any lanes */
         if (process.get('laneSets')[0]) {
           process.laneSets[0].lanes.forEach(this.setNode);
@@ -532,6 +533,8 @@ export default {
           })
           .forEach(definition => this.setNode(definition, flowElements, artifacts));
       });
+
+      store.commit('setRootElements', this.definitions.rootElements);
 
       /* Add any message flows */
       if (this.collaboration) {
@@ -627,6 +630,34 @@ export default {
         this.nodeIdGenerator = new NodeIdGenerator(definitions);
         store.commit('clearNodes');
         this.renderPaper();
+      });
+    },
+
+    getBoundaryEvents(process) {
+      return process.get('flowElements').filter(({$type}) => $type === 'bpmn:BoundaryEvent');
+    },
+    createBoundaryEvent(definition) {
+      const boundaryEvent = boundaryEventConfig.definition(this.moddle, this.$t);
+      boundaryEvent.set('id', definition.get('id'));
+      boundaryEvent.set('name', definition.get('name'));
+      boundaryEvent.set('eventDefinitions', definition.get('eventDefinitions'));
+      boundaryEvent.set('cancelActivity', definition.get('cancelActivity'));
+      boundaryEvent.set('attachedToRef', definition.get('attachedToRef'));
+      boundaryEvent.$parent = definition.$parent;
+      if (definition.get('outgoing').length > 0) {
+        boundaryEvent.set('outgoing', definition.get('outgoing'));
+      }
+      return boundaryEvent;
+    },
+    replaceDefinition(definition, boundaryEvent, process) {
+      const definitionIndex = process.get('flowElements').indexOf(definition);
+      process.flowElements[definitionIndex] = boundaryEvent;
+    },
+    ensureCancelActivityIsAddedToBoundaryEvents(process) {
+      this.getBoundaryEvents(process).forEach(definition => {
+        const boundaryEvent = this.createBoundaryEvent(definition);
+        definition.get('outgoing').forEach(outgoing => outgoing.set('sourceRef', boundaryEvent));
+        this.replaceDefinition(definition, boundaryEvent, process);
       });
     },
     toXML(cb) {
