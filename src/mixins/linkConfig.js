@@ -87,7 +87,7 @@ export default {
             y: y + connectionOffset.y,
           };
 
-          return getDefaultAnchorCoordinates(connectionPoint, shape.findView(this.paper).model);
+          return getDefaultAnchorCoordinates(connectionPoint, shape.findView(this.paper));
         };
       } else {
         anchor = {
