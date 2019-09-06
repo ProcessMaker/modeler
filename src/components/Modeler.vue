@@ -97,7 +97,7 @@
 
 <script>
 import Vue from 'vue';
-import { dia, g } from 'jointjs';
+import { dia } from 'jointjs';
 import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
@@ -113,6 +113,7 @@ import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
+import getValidationProperties from '@/targetValidationUtils';
 
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -161,7 +162,6 @@ export default {
       processNode: null,
       collaboration: null,
       moddle: null,
-      dragPoint: { x: null, y: null },
       allowDrop: true,
       poolTarget: null,
       processes: [],
@@ -242,10 +242,11 @@ export default {
     validateAndCleanPlaneElements() {
       remove(this.planeElements, diagram => {
         if (!diagram.bpmnElement) {
-          this.addWarning({
-            title: this.$t('Non-existent Element'),
-            text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
-          });
+          this.addWarning(
+            {
+              title: this.$t('Non-existent Element'),
+              text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
+            });
           return true;
         }
       });
@@ -629,7 +630,7 @@ export default {
     },
 
     getBoundaryEvents(process) {
-      return process.get('flowElements').filter(({$type}) => $type === 'bpmn:BoundaryEvent');
+      return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
     },
     createBoundaryEvent(definition) {
       const boundaryEvent = boundaryEventConfig.definition(this.moddle, this.$t);
@@ -746,64 +747,10 @@ export default {
 
       this.paper.setDimensions(clientWidth, clientHeight);
     },
-    isPointOverPaper(mouseX, mouseY) {
-      const { left, top, width, height } = this.$refs['paper-container'].getBoundingClientRect();
-      const rect = new g.rect(left, top, width, height);
-      const point = new g.Point(mouseX, mouseY);
-
-      return rect.containsPoint(point);
-    },
     validateDropTarget({ clientX, clientY, control }) {
-
-      if (!this.isPointOverPaper(clientX, clientY)) {
-        this.allowDrop = false;
-        return;
-      }
-
-      const localMousePosition = this.paper.clientToLocalPoint({
-        x: clientX,
-        y: clientY,
-      });
-
-      /* You can drop a pool anywhere (a pool will not be embedded into another pool) */
-      if (control.type === poolId) {
-        this.allowDrop = true;
-        return;
-      }
-
-      /* If there are no pools on the grid, allow dragging components anywhere */
-      if (
-        !this.collaboration ||
-        this.collaboration.get('participants').length === 0
-      ) {
-        this.allowDrop = true;
-        return;
-      }
-
-      const { x, y } = this.dragPoint;
-      if (clientX === x && clientY === y) {
-        /* We don't need to re-calcaulte values if mouse position hasn't changed */
-        return;
-      }
-
-      /* The mouse co-ordinates are set so we can compare them above if this function runs again */
-      this.dragPoint = { x: clientX, y: clientY };
-
-      /* Determine if we are over a pool, and only allow dropping elements over a pool */
-
-      const pool = this.graph
-        .findModelsFromPoint(localMousePosition)
-        .find(({ component }) => {
-          return component && component.node.type === poolId;
-        });
-
-      if (!pool) {
-        this.allowDrop = false;
-        this.poolTarget = null;
-      } else {
-        this.allowDrop = true;
-        this.poolTarget = pool;
-      }
+      const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paper, this.graph, this.collaboration, this.$refs['paper-container']);
+      this.allowDrop = allowDrop;
+      this.poolTarget = poolTarget;
     },
     addStartEvent() {
       /* Add an initial startEvent node if the graph is empty */

@@ -3,6 +3,7 @@ import {
   typeIntoTextInput,
   getElementAtPosition,
 } from '../support/utils';
+import { nodeTypes } from '../support/constants';
 
 describe('Markers', () => {
   beforeEach(() => {
@@ -10,11 +11,9 @@ describe('Markers', () => {
   });
 
   it('Add a task with a custom book marker', () => {
-    const testElement = 'processmaker-custom-marker-task-test';
-
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(testElement, taskPosition);
-    getElementAtPosition(taskPosition).getType().should('equal', testElement);
+    dragFromSourceToDest(nodeTypes.taskWithMarker, taskPosition);
+    getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
       .should('have.attr', 'xlink:href')
@@ -22,11 +21,9 @@ describe('Markers', () => {
   });
 
   it('Dynamically remove custom book marker', () => {
-    const testElement = 'processmaker-custom-marker-task-test';
-
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(testElement, taskPosition);
-    getElementAtPosition(taskPosition).getType().should('equal', testElement);
+    dragFromSourceToDest(nodeTypes.taskWithMarker, taskPosition);
+    getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
 
     getElementAtPosition(taskPosition).click();
 
@@ -39,11 +36,9 @@ describe('Markers', () => {
   });
 
   it('A task could have multiple custom markers', () => {
-    const testElement = 'processmaker-custom-marker-task-test';
-
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(testElement, taskPosition);
-    getElementAtPosition(taskPosition).getType().should('equal', testElement);
+    dragFromSourceToDest(nodeTypes.taskWithMarker, taskPosition);
+    getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
 
     getElementAtPosition(taskPosition).click();
 
@@ -58,5 +53,4 @@ describe('Markers', () => {
       .should('have.attr', 'xlink:href')
       .and('match', /^\/img\/clock.*svg$/);
   });
-
 });
