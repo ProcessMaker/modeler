@@ -1,10 +1,10 @@
 import { g } from 'jointjs/dist/joint';
 import { boundaryGroup, defaultGroup } from '@/mixins/portsConfig';
 
-function getPortPoints(model, group = defaultGroup) {
+function getPortPoints(model, group) {
   const { x: shapeX, y: shapeY } = model.position();
-  const portPositions = Object.values(model.getPortsPositions(group));
-  return portPositions.map(({ x, y }) => new g.Point(shapeX + x, shapeY + y));
+  return Object.values(model.getPortsPositions(group))
+    .map(({ x, y }) => new g.Point(shapeX + x, shapeY + y));
 }
 
 function hasPorts(model) {
@@ -17,11 +17,8 @@ function getClosestAnchorPoint(model, coords, group) {
     const { width, height } = model.size();
     return new g.Point(x - (width / 2), y - (height / 2));
   }
-  return getPortPoints(model, group)
-    .sort((p1, p2) => {
-      const referencePoint = new g.Point(coords.x, coords.y);
-      return referencePoint.distance(p1) - referencePoint.distance(p2);
-    })[0];
+  const referencePoint = new g.Point(coords.x, coords.y);
+  return referencePoint.chooseClosest(getPortPoints(model, group));
 }
 
 export function getBoundaryAnchorCoordinates(coords, model) {
