@@ -113,7 +113,7 @@ import linterConfig from '../../.bpmnlintrc';
 import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
-import { validateDropTarget, getPoolUnderPosition } from '@/targetValidationUtils';
+import getValidationProperties from '@/targetValidationUtils';
 
 import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -241,11 +241,11 @@ export default {
     validateAndCleanPlaneElements() {
       remove(this.planeElements, diagram => {
         if (!diagram.bpmnElement) {
-          let warning  =
-          {
-            title: this.$t('Non-existent Element'),
-            text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
-          };
+          let warning =
+            {
+              title: this.$t('Non-existent Element'),
+              text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
+            };
           this.allWarnings.push(warning);
 
           this.$emit('warnings', this.allWarnings);
@@ -553,7 +553,7 @@ export default {
       const parsers = this.parsers[bpmnType];
 
       if (!parsers) {
-        let warning  = {
+        let warning = {
           title: this.$t('Unsupported Element'),
           text: bpmnType + this.$t(' is an unsupported element type in parse'),
         };
@@ -634,7 +634,7 @@ export default {
     },
 
     getBoundaryEvents(process) {
-      return process.get('flowElements').filter(({$type}) => $type === 'bpmn:BoundaryEvent');
+      return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
     },
     createBoundaryEvent(definition) {
       const boundaryEvent = boundaryEventConfig.definition(this.moddle, this.$t);
@@ -752,9 +752,9 @@ export default {
       this.paper.setDimensions(clientWidth, clientHeight);
     },
     validateDropTarget({ clientX, clientY, control }) {
-      this.allowDrop = validateDropTarget(clientX, clientY, control, this.paper, this.graph, this.collaboration);
-
-      this.poolTarget = getPoolUnderPosition(clientX, clientY, this.paper, this.graph);
+      const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paper, this.graph, this.collaboration, this.$refs['paper-container']);
+      this.allowDrop = allowDrop;
+      this.poolTarget = poolTarget;
     },
     addStartEvent() {
       /* Add an initial startEvent node if the graph is empty */
