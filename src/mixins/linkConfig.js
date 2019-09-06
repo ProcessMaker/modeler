@@ -1,9 +1,9 @@
-import { shapes, linkTools, dia } from 'jointjs';
+import { dia, linkTools, shapes } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
-import { snapToAnchor, closestPort } from '@/snapToAnchor';
+import { defaultNodeColor, invalidNodeColor, poolColor, validNodeColor } from '@/components/nodeColors';
+import { getDefaultAnchorCoordinates } from '@/portsUtils';
 
 const endpoints = {
   source: 'source',
@@ -39,7 +39,7 @@ export default {
       if (highlighted) {
         this.shape.attr({
           line: { stroke: 'orange' },
-          '.joint-highlight-stroke': {'display': 'none'},
+          '.joint-highlight-stroke': { 'display': 'none' },
         });
 
         this.shapeView.showTools();
@@ -87,7 +87,7 @@ export default {
             y: y + connectionOffset.y,
           };
 
-          return closestPort(shape.findView(this.paper).model, connectionPoint);
+          return getDefaultAnchorCoordinates(connectionPoint, shape.findView(this.paper).model);
         };
       } else {
         anchor = {
@@ -121,7 +121,7 @@ export default {
 
       this.setBodyColor(defaultNodeColor, targetShape);
 
-      if (this.isPoolOrLane)  {
+      if (this.isPoolOrLane) {
         this.setBodyColor(poolColor);
       }
 
@@ -206,14 +206,14 @@ export default {
         this.setBodyColor(defaultNodeColor);
       }
 
-      if (this.isPoolOrLane)  {
+      if (this.isPoolOrLane) {
         this.setBodyColor(poolColor);
       }
     },
     setupLinkTools() {
       const verticesTool = new linkTools.Vertices();
-      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: snapToAnchor });
-      const targetAnchorTool = new linkTools.TargetAnchor({ snap: snapToAnchor });
+      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorCoordinates });
+      const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorCoordinates });
       const segmentsTool = new linkTools.Segments();
 
       const toolsView = new dia.ToolsView({
@@ -277,7 +277,7 @@ export default {
       if (sequenceFlowWaypoints) {
         const sequenceVertices = sequenceFlowWaypoints
           .slice(1, sequenceFlowWaypoints.length - 1)
-          .map(({x, y}) => ({ x, y }));
+          .map(({ x, y }) => ({ x, y }));
 
         this.shape.vertices(sequenceVertices);
       }

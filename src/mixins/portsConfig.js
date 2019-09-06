@@ -1,4 +1,6 @@
-const markup = '<rect width="5" height="5" fill="blue"/>';
+const markup = '<rect width="1" height="1" fill="none"/>';
+export const defaultGroup = 'default';
+export const boundaryGroup = 'boundary';
 
 const top = { x: '50%', y: '0%' };
 const topLeft = { x: '25%', y: '0%' };
@@ -14,20 +16,36 @@ const leftTop = { x: '0%', y: '25%' };
 const leftBottom = { x: '0%', y: '75%' };
 const center = { x: '50%', y: '50%' };
 
-const portPositions = [top, topLeft, topRight, right, rightTop, rightBottom, bottom, bottomLeft, bottomRight, left, leftTop, leftBottom, center];
-const ports = portPositions.map(position => ({group: 'absolute', args: position, markup}));
+const defaultPorts = [top, right, bottom, left, center]
+  .map(position => ({
+    group: defaultGroup,
+    args: position,
+    markup,
+  }));
+const boundaryPorts = [top, topLeft, topRight, right, rightTop, rightBottom, bottom, bottomLeft, bottomRight, left, leftTop, leftBottom]
+  .map(position => ({
+    group: boundaryGroup,
+    args: position,
+    markup,
+  }));
+
 export default {
   async mounted() {
     await this.$nextTick();
 
     this.shape.attributes.ports = {};
     this.shape.attributes.ports.groups = {
-      absolute: {
+      [defaultGroup]: {
+        position: {
+          name: 'absolute',
+        },
+      },
+      [boundaryGroup]: {
         position: {
           name: 'absolute',
         },
       },
     };
-    this.shape.addPorts(ports);
+    this.shape.addPorts([...defaultPorts, ...boundaryPorts]);
   },
 };
