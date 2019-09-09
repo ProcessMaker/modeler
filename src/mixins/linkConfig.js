@@ -3,7 +3,7 @@ import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { defaultNodeColor, invalidNodeColor, poolColor, validNodeColor } from '@/components/nodeColors';
-import { getDefaultAnchorCoordinates } from '@/portsUtils';
+import { getDefaultAnchorPoint } from '@/portsUtils';
 
 const endpoints = {
   source: 'source',
@@ -87,7 +87,7 @@ export default {
             y: y + connectionOffset.y,
           };
 
-          return getDefaultAnchorCoordinates(connectionPoint, shape.findView(this.paper));
+          return getDefaultAnchorPoint(connectionPoint, shape.findView(this.paper));
         };
       } else {
         anchor = {
@@ -212,8 +212,8 @@ export default {
     },
     setupLinkTools() {
       const verticesTool = new linkTools.Vertices();
-      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorCoordinates });
-      const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorCoordinates });
+      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorPoint });
+      const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorPoint });
       const segmentsTool = new linkTools.Segments();
 
       const toolsView = new dia.ToolsView({

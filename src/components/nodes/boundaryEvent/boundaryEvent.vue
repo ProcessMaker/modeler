@@ -8,7 +8,7 @@ import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import validBoundaryEventTargets from './validBoundaryEventTargets';
-import { getBoundaryAnchorCoordinates } from '@/portsUtils';
+import { getBoundaryAnchorPoint } from '@/portsUtils';
 
 export default {
   props: ['graph', 'node'],
@@ -71,7 +71,7 @@ export default {
       this.shape.component = this;
     },
     updateShapePosition(task) {
-      const { x, y } = getBoundaryAnchorCoordinates(this.shape.position(), task);
+      const { x, y } = getBoundaryAnchorPoint(this.shape.position(), task);
       const { width } = this.shape.size();
       this.shape.position(x - (width / 2), y - (width / 2));
       this.updateCrownPosition();
