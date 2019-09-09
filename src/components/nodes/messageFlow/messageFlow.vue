@@ -38,6 +38,7 @@ export default {
       return this.hasTargetType() &&
         this.targetIsNotALane() &&
         this.targetIsNotContainingPool() &&
+        this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
         this.validateOutgoing();
     },
@@ -55,6 +56,20 @@ export default {
     },
     targetIsPool() {
       return this.targetType === poolId;
+    },
+    targetIsInDifferentPool() {
+      if (this.targetIsPool()) {
+        return true;
+      }
+
+      if (this.targetIsIntermediateCatchEvent()) {
+        return true;
+      }
+
+      const targetPool = this.target.component.node.pool;
+      const sourcePool = this.sourceShape.component.node.pool;
+
+      return sourcePool != null && sourcePool !== targetPool;
     },
     targetIsNotSource() {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
