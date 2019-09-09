@@ -6,9 +6,6 @@
       :placeholder="$t('Start date')"
       control-class="form-control"
       class="p-0"
-      :format="DateTime.DATETIME_SHORT"
-      :minuteStep="30"
-      :phrases="{ ok: 'Save', cancel: 'Cancel' }"
       :value="startDate"
       @input="setStartDate"
     />
@@ -54,14 +51,11 @@
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on">{{ $t('On') }}</b-form-radio>
           <form-date-picker
             data-test="end-date-picker"
-            type="date"
             class="form-date-picker p-0 m-0"
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
             control-class="form-control"
-            :format="DateTime.DATE_SHORT"
-            phrases='{ok: $t("Save"), cancel: $t("Cancel")}'
             :value="endDate"
             @input="setEndDate"
           />
@@ -163,7 +157,7 @@ export default {
     },
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
-
+      
       if (this.periodicity !== 'week' || numberOfSelectedWeekdays > 0) {
         return null;
       }
@@ -189,7 +183,6 @@ export default {
      */
     sameDay() {
       const currentWeekday = DateTime.fromISO(this.startDate, { zone: 'utc' }).toLocal().weekday;
-
       return this.selectedWeekdays.length === 1 &&
         this.weekdays.find(({ day }) => day === currentWeekday).selected;
     },
