@@ -55,7 +55,7 @@ describe('Message Flows', () => {
       });
   });
 
-  it('Can connect to elements in different pools', () => {
+  it('Can connect to task in different pool', () => {
     const pool1Position = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
 
