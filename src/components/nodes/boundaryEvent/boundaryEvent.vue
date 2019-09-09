@@ -1,5 +1,5 @@
 <template>
-  <div/>
+  <div />
 </template>
 
 <script>
@@ -7,11 +7,8 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
-import { id as taskId } from '@/components/nodes/task';
-import { id as callActivityId } from '@/components/nodes/callActivity';
-import { id as manualTaskId } from '@/components/nodes/manualTask';
-import { id as scriptTaskId } from '@/components/nodes/scriptTask';
-import { getAnchorCoordinates } from '@/snapToAnchor';
+import validBoundaryEventTargets from './validBoundaryEventTargets';
+import { getBoundaryAnchorPoint } from '@/portsUtils';
 
 export default {
   props: ['graph', 'node'],
@@ -40,17 +37,10 @@ export default {
   },
   methods: {
     getTaskUnderShape() {
-      const taskIds = [
-        taskId,
-        callActivityId,
-        manualTaskId,
-        scriptTaskId,
-      ];
-
       return this.graph
         .findModelsUnderElement(this.shape)
         .filter(model => model.component)
-        .find(model => taskIds.includes(model.component.node.type));
+        .find(model => validBoundaryEventTargets.includes(model.component.node.definition.$type));
     },
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
@@ -81,7 +71,7 @@ export default {
       this.shape.component = this;
     },
     updateShapePosition(task) {
-      const { x, y } = getAnchorCoordinates(this.shape.position(), task);
+      const { x, y } = getBoundaryAnchorPoint(this.shape.position(), task);
       const { width } = this.shape.size();
       this.shape.position(x - (width / 2), y - (width / 2));
       this.updateCrownPosition();

@@ -1,10 +1,10 @@
 import {
+  connectNodesWithFlow,
   dragFromSourceToDest,
+  getElementAtPosition,
+  getLinksConnectedToElement,
   typeIntoTextInput,
   waitToRenderAllShapes,
-  getElementAtPosition,
-  connectNodesWithFlow,
-  getLinksConnectedToElement,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -54,7 +54,7 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('.inspector-container').should('contain', 'A process has not been configred in the connnected Call Acitivty task.');
+    cy.get('.inspector-container').should('contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').should('not.exist');
 
     getElementAtPosition(callActivityPosition).click({ force: true });
@@ -70,14 +70,14 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('.inspector-container').should('not.contain', 'A process has not been configred in the connnected Call Acitivty task.');
+    cy.get('.inspector-container').should('not.contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
 
-    const sequneceFlowML = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
+    const sequenceFlowML = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
     const callActivityXML = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
@@ -87,7 +87,7 @@ describe('Tasks', () => {
       .its('xml')
       .then(xml => xml.trim())
       .then(xml => {
-        expect(xml).to.contain(sequneceFlowML.trim());
+        expect(xml).to.contain(sequenceFlowML.trim());
         expect(xml).to.contain(callActivityXML.trim());
       });
   });
