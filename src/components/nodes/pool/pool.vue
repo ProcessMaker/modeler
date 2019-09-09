@@ -170,7 +170,7 @@ export default {
       return this.$nextTick();
     },
     addToPool(element) {
-      if (element.component.node.type === 'processmaker-modeler-boundary-timer-event') {
+      if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
         return;
       }
       this.shape.unembed(element);
