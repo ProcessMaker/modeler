@@ -9,6 +9,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import validBoundaryEventTargets from './validBoundaryEventTargets';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
+import { invalidNodeColor, poolColor, defaultNodeColor } from '@/components/nodeColors';
 
 export default {
   props: ['graph', 'node', 'paper'],
@@ -26,6 +27,7 @@ export default {
         },
       ],
       validPosition: null,
+      invalidTargetElement: null,
     };
   },
   watch: {
@@ -40,8 +42,10 @@ export default {
     getTaskUnderShape() {
       return this.graph
         .findModelsUnderElement(this.shape)
-        .filter(model => model.component)
-        .find(model => validBoundaryEventTargets.includes(model.component.node.definition.$type));
+        .find(this.isValidBoundaryEventTarget);
+    },
+    isValidBoundaryEventTarget(model) {
+      return model.component && validBoundaryEventTargets.includes(model.component.node.definition.$type);
     },
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
@@ -104,7 +108,7 @@ export default {
 
       this.attachBoundaryEventToTask(task);
     },
-    listenToShapeMove() {
+    listenForValidDropTargets() {
       this.shape.listenTo(this.paper, 'element:pointerdown', cellView => {
         if (cellView.model !== this.shape) {
           return;
@@ -114,13 +118,44 @@ export default {
         this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', this.moveBoundaryEventIfOverTask);
       });
     },
+    isPoolShape(model) {
+      return model.component.node.type === 'processmaker-modeler-pool';
+    },
+    listenForInvalidDropTargets() {
+      this.shape.on('change:position', () => {
+        const targetElement = this.graph
+          .findModelsUnderElement(this.shape)
+          .filter(model => model.component)[0];
+
+        const targetHasNotChanged = this.invalidTargetElement === targetElement;
+        if (targetHasNotChanged) {
+          return;
+        }
+
+        const targetIsInvalid = targetElement && !this.isValidBoundaryEventTarget(targetElement);
+        if (targetIsInvalid) {
+          targetElement.attr('body/fill', invalidNodeColor);
+        }
+
+        if (this.invalidTargetElement) {
+          this.resetShapeColor(this.invalidTargetElement);
+        }
+
+        this.invalidTargetElement = targetElement;
+      });
+    },
+    resetShapeColor(shape) {
+      const defaultColor = this.isPoolShape(shape) ? poolColor : defaultNodeColor;
+      shape.attr('body/fill', defaultColor);
+    },
   },
   async mounted() {
     this.shape = new EventShape();
     this.setShapeProperties();
     this.shape.addTo(this.graph);
     await this.$nextTick();
-    this.listenToShapeMove();
+    this.listenForValidDropTargets();
+    this.listenForInvalidDropTargets();
     this.toggleInterruptingStyle();
 
     const task = this.getTaskUnderShape();
