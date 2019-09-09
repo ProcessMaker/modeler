@@ -54,4 +54,25 @@ describe('Message Flows', () => {
         expect($links.length).to.eq(numberOfMessageFlowsAdded);
       });
   });
+
+  it('Can connect to elements in different pools', () => {
+    const pool1Position = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+
+    const pool2Position = { x: 250, y: 500 };
+    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+
+    const offset = 100;
+    const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    connectNodesWithFlow('message-flow-button', pool1Position, taskPosition);
+
+    const numberOfMessageFlowsAdded = 1;
+    getElementAtPosition(taskPosition)
+      .then(getLinksConnectedToElement)
+      .should($links => {
+        expect($links.length).to.eq(numberOfMessageFlowsAdded);
+      });
+  });
 });
