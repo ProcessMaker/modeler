@@ -33,6 +33,14 @@ export default {
       }),
     });
   },
+  /**
+   * Validate whether to accept an incoming flow from the node
+   *
+   * @param node
+   */
+  validateIncoming() {
+    return false;
+  },
   inspectorData(node) {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'eventDefinitions') {
