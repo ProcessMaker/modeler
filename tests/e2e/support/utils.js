@@ -34,6 +34,18 @@ export function getLinksConnectedToElement($element) {
     });
 }
 
+export function getElementsEmbeddedInShape($element) {
+  return cy.window()
+    .its('store.state.graph')
+    .invoke('getCell', $element.attr('model-id'))
+    .then(shape => shape.getEmbeddedCells())
+    .then(embeddedCells => {
+      return cy.window().its('store.state.paper').then(paper => {
+        return embeddedCells.map(cell => cell.findView(paper).$el);
+      });
+    });
+}
+
 export function dragFromSourceToDest(source, position) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
@@ -49,6 +61,17 @@ export function dragFromSourceToDest(source, position) {
   });
 
   return waitToRenderAllShapes();
+}
+
+export function getPositionInPaperCoords(position) {
+  return cy.window().its('store.state.paper').then(paper => {
+    const { tx, ty } = paper.translate();
+
+    return cy.get('.main-paper').then($paperContainer => {
+      const { x, y } = $paperContainer[0].getBoundingClientRect();
+      return { x: position.x + x + tx, y: position.y + y + ty };
+    });
+  });
 }
 
 export function getCrownButtonForElement($element, crownButton) {

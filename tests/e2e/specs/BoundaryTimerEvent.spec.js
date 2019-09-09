@@ -11,9 +11,11 @@ import {
   getLinksConnectedToElement,
   uploadXml,
   waitToRenderAllShapes,
+  getPositionInPaperCoords,
+  getElementsEmbeddedInShape,
 } from '../support/utils';
-
 import { nodeTypes } from '../support/constants';
+import { invalidNodeColor, defaultNodeColor } from '../../../src/components/nodeColors';
 
 describe('Boundary Timer Event', () => {
   beforeEach(() => {
@@ -232,7 +234,7 @@ describe('Boundary Timer Event', () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryEvents);
   });
 
-  it.skip('it can toggle interrupting on Boundary Timer Events', function() {
+  it.skip('can toggle interrupting on Boundary Timer Events', function() {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -256,7 +258,7 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it.skip('it retains outgoing sequence flows on Boundary Timer Events', function() {
+  it.skip('retains outgoing sequence flows on Boundary Timer Events', function() {
 
     const taskForTimerPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskForTimerPosition);
@@ -285,9 +287,9 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it('it cannot attach an incoming sequence flow on Boundary Timer Events');
+  it('cannot attach an incoming sequence flow on Boundary Timer Events');
 
-  it('it can toggle interrupting on Boundary Timer Events in multiple processes', function() {
+  it('can toggle interrupting on Boundary Timer Events in multiple processes', function() {
     uploadXml('boundaryTimersInPools.xml');
 
     const boundaryTimerEventPositions = [{ x: 277, y: 162 }, { x: 225, y: 379 }];
@@ -306,4 +308,134 @@ describe('Boundary Timer Event', () => {
     cy.get(interrupting).should('not.be.checked');
   });
 
+  it('turns target red when it is an invalid drop target, and snaps back to original position', function() {
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+
+    const boundaryEventSelector = '.main-paper ' +
+      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+      '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+    const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
+    const startEventPosition = { x: 150, y: 150 };
+
+    return cy.window().its('store.state.paper').then(paper => {
+      const newPosition = paper.localToPagePoint(startEventPosition.x, startEventPosition.y);
+
+      cy.get(boundaryEventSelector).then($boundaryEvent => {
+        const boundaryEventPosition = $boundaryEvent.position();
+
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
+
+        waitToRenderAllShapes();
+
+        cy.get(startEventSelector)
+          .then($el => $el.find('[joint-selector="body"]'))
+          .should('have.attr', 'fill', invalidNodeColor);
+
+        cy.wrap($boundaryEvent).trigger('mouseup');
+
+        waitToRenderAllShapes();
+
+        cy.get(startEventSelector)
+          .then($el => $el.find('[joint-selector="body"]'))
+          .should('have.attr', 'fill', defaultNodeColor);
+
+        cy.wrap($boundaryEvent).should($el => {
+          const { left, top } = $el.position();
+          const positionErrorMargin = 2;
+          expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
+          expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+        });
+      });
+    });
+  });
+
+  it('snaps back to original position when dragged over empty area', function() {
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+
+    const boundaryEventSelector = '.main-paper ' +
+      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+      '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+
+    cy.get(boundaryEventSelector).then($boundaryEvent => {
+      const boundaryEventPosition = $boundaryEvent.position();
+      const emptySpot = { x: 400, y: 400 };
+
+      cy.wrap($boundaryEvent)
+        .trigger('mousedown', { which: 1, force: true })
+        .trigger('mousemove', { clientX: emptySpot.x, clientY: emptySpot.y, force: true })
+        .trigger('mouseup');
+
+      waitToRenderAllShapes();
+
+      cy.wrap($boundaryEvent).should($el => {
+        const { left, top } = $el.position();
+        const positionErrorMargin = 2;
+        expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
+        expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+      });
+    });
+  });
+
+  it('moves to another task when dragged over', function() {
+    const taskPosition = { x: 300, y: 300 };
+    const numberOfBoundaryEventsAdded = 1;
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+
+    const task2Position = { x: 500, y: 500 };
+    dragFromSourceToDest(nodeTypes.task, task2Position);
+
+    const boundaryEventSelector = '.main-paper ' +
+      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+      '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+
+    getPositionInPaperCoords(task2Position).then(newPosition => {
+      cy.get(boundaryEventSelector).then($boundaryEvent => {
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
+          .trigger('mouseup')
+          .then(waitToRenderAllShapes)
+          .then(() => {
+            const initialBoundaryEventPosition = $boundaryEvent.position();
+
+            getElementAtPosition(taskPosition)
+              .then(getElementsEmbeddedInShape)
+              .should($elements => {
+                expect($elements).to.have.lengthOf(0);
+              });
+
+            getElementAtPosition(task2Position)
+              .then(getElementsEmbeddedInShape)
+              .should($elements => {
+                expect($elements).to.have.lengthOf(numberOfBoundaryEventsAdded);
+              });
+
+            moveElement(taskPosition, 200, 400);
+            waitToRenderAllShapes();
+            cy.wrap($boundaryEvent).should($el => {
+              const { left, top } = $el.position();
+              const positionErrorMargin = 2;
+              expect(left).to.be.closeTo(initialBoundaryEventPosition.left, positionErrorMargin);
+              expect(top).to.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
+            });
+
+            moveElement(task2Position, 300, 500);
+            waitToRenderAllShapes();
+            cy.wrap($boundaryEvent).should($el => {
+              const { left, top } = $el.position();
+              const positionErrorMargin = 2;
+              expect(left).to.not.be.closeTo(initialBoundaryEventPosition.left, positionErrorMargin);
+              expect(top).to.not.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
+            });
+          });
+      });
+    });
+  });
 });
