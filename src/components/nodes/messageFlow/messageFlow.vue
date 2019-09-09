@@ -45,6 +45,15 @@ export default {
     targetIsIntermediateCatchEvent(){
       return this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
     },
+    targetTaskTypes(){
+      return [
+        'bpmn:Task', 
+        'bpmn:ScriptTask', 
+        'bpmn:ManualTask',
+        'bpmn:CallActivity',
+        'bpmn:ServiceTask',
+      ].includes(this.targetNode.definition.$type);
+    },
     hasTargetType() {
       return this.targetType != null;
     },
@@ -62,7 +71,7 @@ export default {
         return true;
       }
 
-      if (this.targetIsIntermediateCatchEvent()) {
+      if (this.targetIsIntermediateCatchEvent() || this.targetTaskTypes()) {
         return true;
       }
 
