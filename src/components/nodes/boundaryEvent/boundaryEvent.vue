@@ -88,7 +88,7 @@ export default {
       this.toggleInterruptingStyle(this.node.definition.cancelActivity);
       this.updateShapePosition(task);
 
-      this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
+      this.shape.listenTo(this.paper, 'element:pointermove', cellView => {
         if (cellView.model !== this.shape) {
           return;
         }
