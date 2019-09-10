@@ -42,17 +42,15 @@ export default {
         this.targetIsNotSource() &&
         this.validateOutgoing();
     },
-    targetIsIntermediateCatchEvent(){
-      return this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
-    },
-    targetTaskTypes(){
+    isValidTargetType(type) {
       return [
         'bpmn:Task', 
         'bpmn:ScriptTask', 
         'bpmn:ManualTask',
         'bpmn:CallActivity',
         'bpmn:ServiceTask',
-      ].includes(this.targetNode.definition.$type);
+        'bpmn:IntermediateCatchEvent',
+      ].includes(type);
     },
     hasTargetType() {
       return this.targetType != null;
@@ -67,11 +65,13 @@ export default {
       return this.targetType === poolId;
     },
     targetIsInDifferentPool() {
+      const targetNodeType = this.targetNode.definition.$type;
+      
       if (this.targetIsPool()) {
         return true;
       }
 
-      if (this.targetIsIntermediateCatchEvent() || this.targetTaskTypes()) {
+      if (this.isValidTargetType(targetNodeType)) {
         return true;
       }
 
