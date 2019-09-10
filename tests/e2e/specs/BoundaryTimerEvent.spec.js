@@ -382,11 +382,23 @@ describe('Boundary Timer Event', () => {
     });
   });
 
-  it.only('moves to another task when dragged over', function() {
+  it('moves to another task when dragged over', function() {
     const taskPosition = { x: 300, y: 300 };
     const numberOfBoundaryEventsAdded = 1;
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+
+    const taskXml = '<bpmn:task id="node_2" name="Task" />';
+    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Event" attachedToRef="node_2" />';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(taskXml);
+        expect(xml).to.contain(boundaryEventOnTaskXml);
+      });
 
     const task2Position = { x: 500, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
@@ -403,6 +415,19 @@ describe('Boundary Timer Event', () => {
           .trigger('mouseup')
           .then(waitToRenderAllShapes)
           .then(() => {
+            const task2Xml = '<bpmn:task id="node_4" name="Task" />';
+            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Event" attachedToRef="node_4" />';
+
+            cy.get('[data-test=downloadXMLBtn]').click();
+            cy.window()
+              .its('xml')
+              .then(removeIndentationAndLinebreaks)
+              .then(xml => {
+                expect(xml).to.contain(task2Xml);
+                expect(xml).to.not.contain(boundaryEventOnTaskXml);
+                expect(xml).to.contain(boundaryEventOnTask2Xml);
+              });
+
             const initialBoundaryEventPosition = $boundaryEvent.position();
 
             getElementAtPosition(taskPosition)
