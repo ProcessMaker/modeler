@@ -10,11 +10,16 @@ export function getGraphElements() {
     .then(cells => cells.filter(cell => cell.component));
 }
 
-export function getElementAtPosition(position) {
+export function getElementAtPosition(position, componentType) {
   return cy.window()
     .its('store.state.paper')
     .invoke('findViewsFromPoint', position)
     .then(views => views.filter(view => view.model.component))
+    .then(views => {
+      return componentType
+        ? views.filter(view => view.model.component.node.type === componentType)
+        : views;
+    })
     .then(views => views.sort((view1, view2) => {
       /* Sort shape views by z-index descending; the shape "on top" will be first in array. */
       return view2.model.get('z') - view1.model.get('z');
@@ -34,14 +39,15 @@ export function getLinksConnectedToElement($element) {
     });
 }
 
-export function getElementsEmbeddedInShape($element) {
+export function getComponentsEmbeddedInShape($element) {
   return cy.window()
     .its('store.state.graph')
     .invoke('getCell', $element.attr('model-id'))
     .then(shape => shape.getEmbeddedCells())
-    .then(embeddedCells => {
+    .then(embeddedCells => embeddedCells.filter(cell => cell.component))
+    .then(embeddedComponents => {
       return cy.window().its('store.state.paper').then(paper => {
-        return embeddedCells.map(cell => cell.findView(paper).$el);
+        return embeddedComponents.map(cell => cell.findView(paper).$el);
       });
     });
 }

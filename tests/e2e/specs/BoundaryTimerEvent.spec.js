@@ -12,7 +12,7 @@ import {
   uploadXml,
   waitToRenderAllShapes,
   getPositionInPaperCoords,
-  getElementsEmbeddedInShape,
+  getComponentsEmbeddedInShape,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { invalidNodeColor, defaultNodeColor } from '../../../src/components/nodeColors';
@@ -382,7 +382,7 @@ describe('Boundary Timer Event', () => {
     });
   });
 
-  it('moves to another task when dragged over', function() {
+  it.only('moves to another task when dragged over', function() {
     const taskPosition = { x: 300, y: 300 };
     const numberOfBoundaryEventsAdded = 1;
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -406,13 +406,13 @@ describe('Boundary Timer Event', () => {
             const initialBoundaryEventPosition = $boundaryEvent.position();
 
             getElementAtPosition(taskPosition)
-              .then(getElementsEmbeddedInShape)
+              .then(getComponentsEmbeddedInShape)
               .should($elements => {
                 expect($elements).to.have.lengthOf(0);
               });
 
-            getElementAtPosition(task2Position)
-              .then(getElementsEmbeddedInShape)
+            getElementAtPosition(task2Position, nodeTypes.task)
+              .then(getComponentsEmbeddedInShape)
               .should($elements => {
                 expect($elements).to.have.lengthOf(numberOfBoundaryEventsAdded);
               });
