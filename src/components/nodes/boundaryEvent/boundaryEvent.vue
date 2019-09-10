@@ -82,6 +82,10 @@ export default {
       this.updateCrownPosition();
     },
     attachBoundaryEventToTask(task) {
+      if (!task) {
+        return;
+      }
+
       const currentlyAttachedTask = this.shape.getParentCell();
 
       if (currentlyAttachedTask) {
@@ -91,7 +95,6 @@ export default {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
       this.toggleInterruptingStyle(this.node.definition.cancelActivity);
-      this.updateShapePosition(task);
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -102,11 +105,8 @@ export default {
         return;
       }
 
-      if (task === this.shape.getParentCell()) {
-        this.updateShapePosition(task);
-      }
-
       this.attachBoundaryEventToTask(task);
+      this.updateShapePosition(task);
     },
     listenForValidDropTargets() {
       this.shape.listenTo(this.paper, 'element:pointerdown', cellView => {
@@ -159,9 +159,8 @@ export default {
     this.toggleInterruptingStyle();
 
     const task = this.getTaskUnderShape();
-    if (task) {
-      this.attachBoundaryEventToTask(task);
-    }
+    this.attachBoundaryEventToTask(task);
+    this.updateShapePosition(task);
   },
 };
 </script>
