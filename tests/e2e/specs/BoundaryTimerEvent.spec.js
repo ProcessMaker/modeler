@@ -294,10 +294,6 @@ describe('Boundary Timer Event', () => {
 
     const boundaryEvents = [
       nodeTypes.boundaryEvent,
-      nodeTypes.boundaryTimerEvent,
-      // @todo enable when added to menu
-      //nodeTypes.boundaryErrorEvent,
-      //nodeTypes.boundarySignalEvent,
     ];
 
     boundaryEvents.forEach((event) => {

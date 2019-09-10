@@ -33,9 +33,6 @@ export default {
       }),
     });
   },
-  validateIncoming() {
-    return false;
-  },
   inspectorData(node) {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'eventDefinitions') {
