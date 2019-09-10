@@ -232,7 +232,7 @@ describe('Boundary Timer Event', () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryEvents);
   });
 
-  it.skip('it can toggle interrupting on Boundary Timer Events', function() {
+  it.skip('can toggle interrupting on Boundary Timer Events', function() {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -256,7 +256,7 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it.skip('it retains outgoing sequence flows on Boundary Timer Events', function() {
+  it.skip('retains outgoing sequence flows on Boundary Timer Events', function() {
 
     const taskForTimerPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskForTimerPosition);
@@ -285,7 +285,7 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it('it cannot attach an incoming sequence flow on Boundary Events', function() {
+  it('cannot attach an incoming sequence flow on Boundary Events', function() {
     const taskForBoundaryEventsPosition = { x: 300, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskForBoundaryEventsPosition);
 
@@ -303,16 +303,16 @@ describe('Boundary Timer Event', () => {
       connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
 
       getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-        expect($links.length).to.eq(0);
+        expect($links).to.have.lengthOf(0);
       });
 
-      getElementAtPosition(eventPosition).click().then($endEvent => {
-        getCrownButtonForElement($endEvent, 'delete-button').click();
+      getElementAtPosition(eventPosition).click().then($boundaryEvent => {
+        getCrownButtonForElement($boundaryEvent, 'delete-button').click();
       });
     });
   });
 
-  it('it can toggle interrupting on Boundary Timer Events in multiple processes', function() {
+  it('can toggle interrupting on Boundary Timer Events in multiple processes', function() {
     uploadXml('boundaryTimersInPools.xml');
 
     const boundaryTimerEventPositions = [{ x: 277, y: 162 }, { x: 225, y: 379 }];
