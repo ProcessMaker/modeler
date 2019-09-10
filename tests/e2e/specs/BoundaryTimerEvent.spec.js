@@ -292,22 +292,27 @@ describe('Boundary Timer Event', () => {
     const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    const boundaryEventPosition = { x: 300, y: 210 };
-    dragFromSourceToDest(nodeTypes.boundaryEvent, boundaryEventPosition);
+    const boundaryEvents = [
+      nodeTypes.boundaryEvent,
+      nodeTypes.boundaryTimerEvent,
+      // @todo enable when added to menu
+      //nodeTypes.boundaryErrorEvent,
+      //nodeTypes.boundarySignalEvent,
+    ];
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, boundaryEventPosition);
+    boundaryEvents.forEach((event) => {
+      const eventPosition = { x: 300, y: 210 };
+      dragFromSourceToDest(event, eventPosition);
 
-    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links.length).to.eq(0);
-    });
+      connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
 
-    const boundaryEventTimerPosition = { x: 320, y: 210 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryEventTimerPosition);
+      getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+        expect($links.length).to.eq(0);
+      });
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, boundaryEventTimerPosition);
-
-    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links.length).to.eq(0);
+      getElementAtPosition(eventPosition).click().then($endEvent => {
+        getCrownButtonForElement($endEvent, 'delete-button').click();
+      });
     });
   });
 
