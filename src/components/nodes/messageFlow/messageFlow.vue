@@ -65,12 +65,11 @@ export default {
       return this.targetType === poolId;
     },
     targetIsInDifferentPool() {
-      const targetNodeType = this.targetNode.definition.$type;
-      
       if (this.targetIsPool()) {
         return true;
       }
 
+      const targetNodeType = this.targetNode.definition.$type;
       if (this.isValidTargetType(targetNodeType)) {
         return true;
       }
