@@ -287,7 +287,32 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it('cannot attach an incoming sequence flow on Boundary Timer Events');
+  it('cannot attach an incoming sequence flow on Boundary Events', function() {
+    const taskForBoundaryEventsPosition = { x: 300, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskForBoundaryEventsPosition);
+
+    const taskPosition = { x: 400, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryEvents = [
+      nodeTypes.boundaryEvent,
+    ];
+
+    boundaryEvents.forEach((event) => {
+      const eventPosition = { x: 300, y: 210 };
+      dragFromSourceToDest(event, eventPosition);
+
+      connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
+
+      getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+        expect($links).to.have.lengthOf(0);
+      });
+
+      getElementAtPosition(eventPosition).click().then($boundaryEvent => {
+        getCrownButtonForElement($boundaryEvent, 'delete-button').click();
+      });
+    });
+  });
 
   it('can toggle interrupting on Boundary Timer Events in multiple processes', function() {
     uploadXml('boundaryTimersInPools.xml');
