@@ -18,6 +18,7 @@ export default {
     return {
       shape: null,
       definition: null,
+      previousPoint: null,
       crownConfig: [
         {
           id: 'sequence-flow-button',
@@ -76,10 +77,15 @@ export default {
       this.shape.component = this;
     },
     updateShapePosition(task) {
+      if (this.previousPoint && JSON.stringify(this.previousPoint) === JSON.stringify(this.shape.position())) {
+        return;
+      }
       const { x, y } = getBoundaryAnchorPoint(this.shape.position(), task);
       const { width } = this.shape.size();
       this.shape.position(x - (width / 2), y - (width / 2));
       this.updateCrownPosition();
+
+      this.previousPoint = this.shape.position();
     },
     attachBoundaryEventToTask(task) {
       if (!task) {
