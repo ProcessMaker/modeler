@@ -23,6 +23,9 @@ export default {
       }),
     });
   },
+  validateIncoming() {
+    return false;
+  },
   inspectorConfig: [
     {
       name: 'Boundary Event',

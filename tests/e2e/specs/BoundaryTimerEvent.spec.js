@@ -232,7 +232,7 @@ describe('Boundary Timer Event', () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryEvents);
   });
 
-  it.skip('it can toggle interrupting on Boundary Timer Events', function() {
+  it.skip('can toggle interrupting on Boundary Timer Events', function() {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -256,7 +256,7 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it.skip('it retains outgoing sequence flows on Boundary Timer Events', function() {
+  it.skip('retains outgoing sequence flows on Boundary Timer Events', function() {
 
     const taskForTimerPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskForTimerPosition);
@@ -285,9 +285,34 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it('it cannot attach an incoming sequence flow on Boundary Timer Events');
+  it('cannot attach an incoming sequence flow on Boundary Events', function() {
+    const taskForBoundaryEventsPosition = { x: 300, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskForBoundaryEventsPosition);
 
-  it('it can toggle interrupting on Boundary Timer Events in multiple processes', function() {
+    const taskPosition = { x: 400, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryEvents = [
+      nodeTypes.boundaryEvent,
+    ];
+
+    boundaryEvents.forEach((event) => {
+      const eventPosition = { x: 300, y: 210 };
+      dragFromSourceToDest(event, eventPosition);
+
+      connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
+
+      getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+        expect($links).to.have.lengthOf(0);
+      });
+
+      getElementAtPosition(eventPosition).click().then($boundaryEvent => {
+        getCrownButtonForElement($boundaryEvent, 'delete-button').click();
+      });
+    });
+  });
+
+  it('can toggle interrupting on Boundary Timer Events in multiple processes', function() {
     uploadXml('boundaryTimersInPools.xml');
 
     const boundaryTimerEventPositions = [{ x: 277, y: 162 }, { x: 225, y: 379 }];
