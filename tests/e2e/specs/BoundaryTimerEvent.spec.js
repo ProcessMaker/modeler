@@ -488,4 +488,15 @@ describe('Boundary Timer Event', () => {
       });
     });
   });
+
+  it('does not snap boundary event to new position when selecting', function() {
+    const taskPosition = { x: 300, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryEventPosition = { x: 300, y: 250 };
+    dragFromSourceToDest(nodeTypes.boundaryEvent, boundaryEventPosition);
+    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', { x: 282, y: 239 });
+    getElementAtPosition(boundaryEventPosition).click();
+    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', { x: 282, y: 239 });
+  });
 });
