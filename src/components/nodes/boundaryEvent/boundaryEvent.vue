@@ -94,7 +94,6 @@ export default {
 
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
-      this.toggleInterruptingStyle(this.node.definition.cancelActivity);
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
