@@ -3,6 +3,7 @@ import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/proc
 /* Our initial node types to register with our modeler */
 import {
   association,
+  boundaryEvent,
   boundaryTimerEvent,
   callActivity,
   endEvent,
@@ -42,29 +43,40 @@ const nodeTypes = [
   association,
   pool,
   poolLane,
-  boundaryTimerEvent,
+  boundaryEvent,
 ];
+const eventDefinitions = 'eventDefinitions';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension }) => {
   registerNode(startEvent);
   registerNode(startTimerEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:StartEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
+    const definitions = definition.get(eventDefinitions);
+    if (definition.$type === 'bpmn:StartEvent' && definitions && definitions.length && definitions[0].$type === 'bpmn:TimerEventDefinition') {
       return startTimerEvent.id;
     }
   });
 
   registerNode(intermediateTimerEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
+    const definitions = definition.get(eventDefinitions);
+    if (definition.$type === 'bpmn:IntermediateCatchEvent' && definitions && definitions.length && definitions[0].$type === 'bpmn:TimerEventDefinition') {
       return intermediateTimerEvent.id;
     }
   });
 
   registerNode(intermediateMessageCatchEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:MessageEventDefinition') {
+    const definitions = definition.get(eventDefinitions);
+    if (definition.$type === 'bpmn:IntermediateCatchEvent' && definitions && definitions.length && definitions[0].$type === 'bpmn:MessageEventDefinition') {
       return intermediateMessageCatchEvent.id;
+    }
+  });
+
+  registerNode(boundaryTimerEvent, definition => {
+    const definitions = definition.get(eventDefinitions);
+    if (definition.$type !== 'bpmn:BoundaryEvent' || !definitions) {
+      return false;
+    }
+    if (definitions[0].$type === 'bpmn:TimerEventDefinition') {
+      return boundaryTimerEvent.id;
     }
   });
 
