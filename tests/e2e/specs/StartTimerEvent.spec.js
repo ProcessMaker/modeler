@@ -26,23 +26,26 @@ describe('Start Timer Event', () => {
     cy.get('.border-primary').should('contain', 'T');
 
     cy.get('[data-test=start-date-picker]').click();
-    cy.wait(modalAnimationTime);
-    cy.get('.vdatetime-popup').contains('14').click();
-    cy.get('.vdatetime-time-picker__list--hours').contains('05').click({ force: true });
-    cy.get('.vdatetime-time-picker__list--minutes').contains('30').click();
-    cy.get('.vdatetime-popup').contains('Save').click();
-    cy.get('[data-test=start-date-picker]').should('have.value', '8/14/2019, 5:30 AM');
+    cy.get('.bootstrap-datetimepicker-widget').contains('14').click();
+    cy.get('[data-action="togglePicker"]').click();
+    cy.get('[data-action="decrementHours"]').click();
+    cy.get('[data-action="incrementMinutes"]').click();
+    cy.get('[data-action="close"]').click();
+    cy.get('[data-test=start-date-picker]').should('have.value', '08/14/2019 1:01 PM' );
 
     typeIntoTextInput('[data-test=repeat-input]', 3);
     cy.get('[data-test=day-3]').click();
     cy.contains('You must select at least one day.').should('not.exist');
     cy.get('[data-test=ends-on]').click('left');
     cy.get('[data-test=end-date-picker]').click();
-    cy.wait(modalAnimationTime);
-    cy.get('.vdatetime-popup').contains('22').click();
-    cy.get('[data-test=end-date-picker]').should('have.value', '8/22/2019');
+    cy.get('.bootstrap-datetimepicker-widget').contains('22').click();
+    cy.get('[data-action="togglePicker"]').click();
+    cy.get('[data-action="decrementHours"]').click();
+    cy.get('[data-action="incrementMinutes"]').click();
+    cy.get('[data-action="close"]').click();
+    cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 12:02 PM');
 
-    const timerExpression1 = 'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z';
+    const timerExpression1 = 'R/2019-08-14T13:01:00.000Z/P3W/2019-08-22T13:01:00.000Z';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
@@ -53,10 +56,10 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=day-4]').click();
 
     const timerExpression2 = [
-      '2019-08-14T05:30:00.000Z',
-      'R/2019-08-20T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z',
-      'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z',
-      'R/2019-08-15T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z',
+      '2019-08-14T13:01:00.000Z',
+      'R/2019-08-20T13:01:00.000Z/P3W/2019-08-22T13:01:00.000Z',
+      'R/2019-08-14T13:01:00.000Z/P3W/2019-08-22T13:01:00.000Z',
+      'R/2019-08-15T13:01:00.000Z/P3W/2019-08-22T13:01:00.000Z',
     ].join('|');
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -64,6 +67,8 @@ describe('Start Timer Event', () => {
       .then(xml => xml.trim())
       .should('contain', timerExpression2);
   });
+
+  
 
   it('Updates properties for periodicity other than "week"', function() {
     const year = 2019;
@@ -86,7 +91,8 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=end-date-picker]').click();
     cy.wait(modalAnimationTime);
     const endDay = 22;
-    cy.get('.vdatetime-popup').contains(endDay).click();
+    cy.get('.bootstrap-datetimepicker-widget').contains(endDay).click();
+    cy.get('[data-action="close"]').click();
 
     const periods = [
       { selector: 'day', letter: 'D' },

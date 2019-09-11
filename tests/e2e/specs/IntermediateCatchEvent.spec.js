@@ -53,11 +53,12 @@ describe('Intermediate Catch Event', () => {
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
-    const startDateValue = '2019-02-27';
-    typeIntoTextInput('.start-date', startDateValue);
-
-    const startTimeValue = '00:30';
-    cy.get('[data-test=startTime]').select(startTimeValue, { force: true });
+    cy.get('[data-test=date-time]').click();
+    cy.get('.bootstrap.datetimepicker-widget').contains('27').click();
+    cy.get('[data-action="togglePicker"]').click();
+    cy.get('[data-action="decrementHours"]').click();
+    cy.get('[data-action="incrementMinutes"]').click();
+    cy.get('[data-action="close"]').click();
 
     const validIntermediateCatchEventXML = `
     <bpmn:intermediateCatchEvent id="node_4" name="testing">
@@ -87,7 +88,7 @@ describe('Intermediate Catch Event', () => {
     cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
 
-    const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00.000Z</bpmn:timeDate>';
+    const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00+00:00</bpmn:timeDate>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

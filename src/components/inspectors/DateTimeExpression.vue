@@ -1,12 +1,12 @@
 <template>
   <div class="mt-3">
     <form-date-picker
+      :data-test="'date-time'"
       :label="$t('Wait until specific date/time')"
       control-class="form-control"
-      :format="DateTime.DATETIME_SHORT"
-      :minuteStep="30"
+      :data-format="'datetime'"
+      :format="'MM/DD/YYYY h:mm A'"
       class="p-0"
-      :phrases="{ ok: $t('Save'), cancel: $t('Cancel') }"
       :value="value"
       @input="$emit('input', $event)"
     />

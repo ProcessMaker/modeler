@@ -1,10 +1,12 @@
 <template>
   <div class="form-group">
     <form-date-picker
-      data-test="start-date-picker"
+      :data-test="'start-date-picker'"
       :label="$t('Start date')"
       :placeholder="$t('Start date')"
       control-class="form-control"
+      :data-format="'datetime'"
+      format="MM/DD/YYYY h:mm A"
       class="p-0"
       :value="startDate"
       @input="setStartDate"
@@ -50,12 +52,14 @@
         <b-form-group class="p-0 mb-1" :description="`${$t('Please click On to select a date')}.`">
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on">{{ $t('On') }}</b-form-radio>
           <form-date-picker
-            data-test="end-date-picker"
+            :data-test="'end-date-picker'"
             class="form-date-picker p-0 m-0"
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
             control-class="form-control"
+            :data-format="'datetime'"
+            :format="'MM/DD/YYYY h:mm A'"
             :value="endDate"
             @input="setEndDate"
           />
@@ -199,7 +203,6 @@ export default {
     getFormattedDateWithWeekdayIntervals() {
       const dateIntervals = [];
       dateIntervals.push(this.startDate);
-
       this.selectedWeekdays.forEach(day => {
         const weekDayDate = this.getWeekDayDate(day);
         const isoDateString = this.getIso8601FormattedDateString(weekDayDate);
