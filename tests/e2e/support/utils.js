@@ -72,17 +72,21 @@ export function waitToRenderNodeUpdates() {
 }
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center') {
-  getElementAtPosition(startPosition)
-    .click()
+  return getElementAtPosition(startPosition)
+    .click({ force: true })
     .then($element => {
       return getCrownButtonForElement($element, flowType)
         .click({ force: true });
     })
     .then(() => {
-      getElementAtPosition(endPosition)
-        .trigger('mousemove', { force: true })
-        .wait(renderTime)
-        .click(clickPosition, { force: true });
+      getElementAtPosition(endPosition).then($endElement => {
+        getPositionInPaperCoords(endPosition).then(({ x, y }) => {
+          cy.wrap($endElement)
+            .trigger('mousemove', { clientX: x, clientY: y, force: true })
+            .wait(renderTime)
+            .click(clickPosition, { force: true });
+        });
+      });
     });
 }
 
@@ -193,4 +197,21 @@ export function testNumberOfVertices(numberOfVertices) {
           }
         });
     });
+}
+
+export function getNumberOfLinks() {
+  return cy.window()
+    .its('store.state')
+    .then(({ graph }) => graph.getLinks().length);
+}
+
+export function getPositionInPaperCoords(position) {
+  return cy.window().its('store.state.paper').then(paper => {
+    const { tx, ty } = paper.translate();
+
+    return cy.get('.main-paper').then($paperContainer => {
+      const { x, y } = $paperContainer[0].getBoundingClientRect();
+      return { x: position.x + x + tx, y: position.y + y + ty };
+    });
+  });
 }
