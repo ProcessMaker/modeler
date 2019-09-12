@@ -1,21 +1,21 @@
 import {
-  dragFromSourceToDest,
   connectNodesWithFlow,
-  typeIntoTextInput,
-  getElementAtPosition,
-  removeIndentationAndLinebreaks,
-  moveElement,
-  moveElementRelativeTo,
+  dragFromSourceToDest,
+  getComponentsEmbeddedInShape,
   getCrownButtonForElement,
+  getElementAtPosition,
   getGraphElements,
   getLinksConnectedToElement,
+  getPositionInPaperCoords,
+  moveElement,
+  moveElementRelativeTo,
+  removeIndentationAndLinebreaks,
+  typeIntoTextInput,
   uploadXml,
   waitToRenderAllShapes,
-  getPositionInPaperCoords,
-  getComponentsEmbeddedInShape,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
-import { invalidNodeColor, defaultNodeColor } from '../../../src/components/nodeColors';
+import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
 
 describe('Boundary Timer Event', () => {
   beforeEach(() => {
@@ -203,14 +203,14 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('Can drag boundary event over valid targets, but not over invalid targets', function() {
+  it('Can drag boundary timer events over valid targets, but not over invalid targets', function() {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 150, y: 150 };
 
-    dragFromSourceToDest(nodeTypes.boundaryEvent, startEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, startEventPosition);
     getGraphElements().should('have.length', initialNumberOfElements);
 
-    const validBoundaryEventTargets = [
+    const validBoundaryTimerEventTargets = [
       { type: nodeTypes.task, position: { x: 100, y: 300 } },
       { type: nodeTypes.callActivity, position: { x: 240, y: 300 } },
       { type: nodeTypes.scriptTask, position: { x: 380, y: 300 } },
@@ -219,19 +219,19 @@ describe('Boundary Timer Event', () => {
       { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } },
     ];
 
-    validBoundaryEventTargets.forEach(({ type, position }) => {
+    validBoundaryTimerEventTargets.forEach(({ type, position }) => {
       dragFromSourceToDest(type, position);
     });
 
-    const numberOfElementsAfterAddingTasks = initialNumberOfElements + validBoundaryEventTargets.length;
+    const numberOfElementsAfterAddingTasks = initialNumberOfElements + validBoundaryTimerEventTargets.length;
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasks);
 
-    validBoundaryEventTargets.forEach(({ position }) => {
-      dragFromSourceToDest(nodeTypes.boundaryEvent, position);
+    validBoundaryTimerEventTargets.forEach(({ position }) => {
+      dragFromSourceToDest(nodeTypes.boundaryTimerEvent, position);
     });
 
-    const numberOfElementsAfterAddingTasksAndBoundaryEvents = initialNumberOfElements + validBoundaryEventTargets.length * 2;
-    getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryEvents);
+    const numberOfElementsAfterAddingTasksAndBoundaryTimerEvents = initialNumberOfElements + validBoundaryTimerEventTargets.length * 2;
+    getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
   });
 
   it.skip('can toggle interrupting on Boundary Timer Events', function() {
@@ -287,30 +287,23 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it('cannot attach an incoming sequence flow on Boundary Events', function() {
+  it('cannot attach an incoming sequence flow on Boundary Timer Events', function() {
     const taskForBoundaryEventsPosition = { x: 300, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskForBoundaryEventsPosition);
 
     const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
+    const eventPosition = { x: 300, y: 210 };
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, eventPosition);
 
-    const boundaryEvents = [
-      nodeTypes.boundaryEvent,
-    ];
+    connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
 
-    boundaryEvents.forEach((event) => {
-      const eventPosition = { x: 300, y: 210 };
-      dragFromSourceToDest(event, eventPosition);
+    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links).to.have.lengthOf(0);
+    });
 
-      connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
-
-      getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-        expect($links).to.have.lengthOf(0);
-      });
-
-      getElementAtPosition(eventPosition).click().then($boundaryEvent => {
-        getCrownButtonForElement($boundaryEvent, 'delete-button').click();
-      });
+    getElementAtPosition(eventPosition).click().then($boundaryTimerEvent => {
+      getCrownButtonForElement($boundaryTimerEvent, 'delete-button').click();
     });
   });
 
@@ -336,7 +329,7 @@ describe('Boundary Timer Event', () => {
   it('turns target red when it is an invalid drop target, and snaps back to original position', function() {
     const taskPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const boundaryEventSelector = '.main-paper ' +
       '[data-type="processmaker.components.nodes.task.Shape"] + ' +
@@ -381,14 +374,14 @@ describe('Boundary Timer Event', () => {
   it('snaps back to original position when dragged over empty area', function() {
     const taskPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    const boundaryEventSelector = '.main-paper ' +
+    const boundaryTimerEventSelector = '.main-paper ' +
       '[data-type="processmaker.components.nodes.task.Shape"] + ' +
       '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
-    cy.get(boundaryEventSelector).then($boundaryEvent => {
-      const boundaryEventPosition = $boundaryEvent.position();
+    cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
+      const boundaryTimerEventPosition = $boundaryEvent.position();
       const emptySpot = { x: 400, y: 400 };
 
       cy.wrap($boundaryEvent)
@@ -401,20 +394,20 @@ describe('Boundary Timer Event', () => {
       cy.wrap($boundaryEvent).should($el => {
         const { left, top } = $el.position();
         const positionErrorMargin = 2;
-        expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
-        expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+        expect(left).to.be.closeTo(boundaryTimerEventPosition.left, positionErrorMargin);
+        expect(top).to.be.closeTo(boundaryTimerEventPosition.top, positionErrorMargin);
       });
     });
   });
 
   it('moves to another task when dragged over', function() {
     const taskPosition = { x: 300, y: 300 };
-    const numberOfBoundaryEventsAdded = 1;
+    const numberOfBoundaryTimerEventsAdded = 1;
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryEvent, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const taskXml = '<bpmn:task id="node_2" name="Task" />';
-    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Event" attachedToRef="node_2" />';
+    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2">';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -428,12 +421,12 @@ describe('Boundary Timer Event', () => {
     const task2Position = { x: 500, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
-    const boundaryEventSelector = '.main-paper ' +
+    const boundaryTimerEventSelector = '.main-paper ' +
       '[data-type="processmaker.components.nodes.task.Shape"] + ' +
       '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
     getPositionInPaperCoords(task2Position).then(newPosition => {
-      cy.get(boundaryEventSelector).then($boundaryEvent => {
+      cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
         cy.wrap($boundaryEvent)
           .trigger('mousedown', { which: 1, force: true })
           .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
@@ -441,7 +434,7 @@ describe('Boundary Timer Event', () => {
           .then(waitToRenderAllShapes)
           .then(() => {
             const task2Xml = '<bpmn:task id="node_4" name="Task" />';
-            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Event" attachedToRef="node_4" />';
+            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_4">';
 
             cy.get('[data-test=downloadXMLBtn]').click();
             cy.window()
@@ -464,7 +457,7 @@ describe('Boundary Timer Event', () => {
             getElementAtPosition(task2Position, nodeTypes.task)
               .then(getComponentsEmbeddedInShape)
               .should($elements => {
-                expect($elements).to.have.lengthOf(numberOfBoundaryEventsAdded);
+                expect($elements).to.have.lengthOf(numberOfBoundaryTimerEventsAdded);
               });
 
             moveElement(taskPosition, 200, 400);

@@ -2,6 +2,7 @@ import component from './boundaryTimerEvent.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
+
 export const defaultDurationValue = 'PT1H';
 
 export default {
@@ -74,6 +75,9 @@ export default {
         setNodeProp(node, key, value[key]);
       }
     }
+  },
+  validateIncoming() {
+    return false;
   },
   inspectorConfig: [
     {
