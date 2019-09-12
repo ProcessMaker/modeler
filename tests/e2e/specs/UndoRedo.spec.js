@@ -346,20 +346,18 @@ describe('Undo/redo', () => {
     testNumberOfVertices(initialNumberOfWaypoints);
   });
 
-  it.skip('undo/redo boundary timer event', () => {
+  it('undo/redo boundary timer event', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
 
     const initialNumberOfElements = 3;
     const numberOfElementsToRemove = 1;
 
     getGraphElements().should('have.length', initialNumberOfElements);
 
-    cy.get('[data-test=undo]').click({ force: true });
-    waitToRenderAllShapes();
     cy.get('[data-test=undo]').click({ force: true });
     waitToRenderAllShapes();
 
