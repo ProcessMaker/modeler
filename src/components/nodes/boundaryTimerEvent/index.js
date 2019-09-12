@@ -1,16 +1,14 @@
 import component from './boundaryTimerEvent.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
+import boundaryEventConfig from '../boundaryEvent';
+import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
 
 export const defaultDurationValue = 'PT1H';
 
-export default {
+export default merge(cloneDeep(boundaryEventConfig), {
   id: 'processmaker-modeler-boundary-timer-event',
   component,
-  bpmnType: 'bpmn:BoundaryEvent',
-  control: true,
-  category: 'BPMN',
   label: 'Boundary Timer Event',
   icon: require('@/assets/toolpanel/boundary-timer-event.svg'),
   definition(moddle, $t) {
@@ -24,14 +22,6 @@ export default {
           }),
         }),
       ],
-    });
-  },
-  diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
-        height: 36,
-        width: 36,
-      }),
     });
   },
   inspectorData(node) {
@@ -76,64 +66,28 @@ export default {
       }
     }
   },
-  validateIncoming() {
-    return false;
-  },
-  inspectorConfig: [
-    {
-      name: 'Boundary Event',
-      items: [
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'configuration',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Boundary Timer Event',
-              },
-            },
-            {
-              component: 'FormCheckbox',
-              config: {
-                label: 'Interrupting',
-                name: 'cancelActivity',
-                helper: 'Boundary Event Type',
-              },
-            },
-          ],
+  inspectorConfig: [{
+    items: [
+      {},
+      {
+        component: 'FormAccordion',
+        container: true,
+        config: {
+          label: 'Timing Control',
+          icon: 'clock',
+          name: 'timing-control',
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            label: 'Timing Control',
-            icon: 'clock',
-            name: 'timing-control',
-          },
-          items: [
-            {
-              component: IntermediateTimer,
-              config: {
-                label: 'Name',
-                helper: 'Time expression',
-                name: 'eventDefinitions',
-              },
+        items: [
+          {
+            component: IntermediateTimer,
+            config: {
+              label: 'Name',
+              helper: 'Time expression',
+              name: 'eventDefinitions',
             },
-          ],
-        },
-      ],
-    },
-  ],
-};
+          },
+        ],
+      },
+    ],
+  }],
+});
