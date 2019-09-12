@@ -42,30 +42,27 @@ const nodeTypes = [
   association,
   pool,
   poolLane,
-  boundaryTimerEvent,
 ];
-
+const timerEventNodes = [
+  [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
+  [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
+  [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
+  [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
+];
+const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
+  const definitions = definition.get('eventDefinitions');
+  const validDefinition = definition.$type === primaryIdentifier
+    && definitions
+    && definitions.length
+    && definitions[0].$type === secondaryIdentifier;
+  if (validDefinition) {
+    return nodeType.id;
+  }
+};
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension }) => {
   registerNode(startEvent);
-  registerNode(startTimerEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:StartEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
-      return startTimerEvent.id;
-    }
-  });
-
-  registerNode(intermediateTimerEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
-      return intermediateTimerEvent.id;
-    }
-  });
-
-  registerNode(intermediateMessageCatchEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:MessageEventDefinition') {
-      return intermediateMessageCatchEvent.id;
-    }
+  timerEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
+    registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
 
   /* Register basic node types */

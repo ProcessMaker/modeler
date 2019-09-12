@@ -472,4 +472,25 @@ describe('Boundary Timer Event', () => {
     getElementAtPosition(boundaryEventPosition).click();
     getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
   });
+
+  it('correctly re-renders a boundary timer event on undo and redo', () => {
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+
+    cy.get('[data-test=undo]').click({ force: true });
+    waitToRenderAllShapes();
+    cy.get('[data-test=redo]').click({ force: true });
+    waitToRenderAllShapes();
+
+    getElementAtPosition(taskPosition, nodeTypes.task)
+      .then(getComponentsEmbeddedInShape)
+      .then(events => events[0])
+      .then($event => {
+        cy.window()
+          .its('store.state.graph')
+          .invoke('getCell', $event.attr('model-id'))
+          .should(shape => expect(shape.component.node.type).to.eq(nodeTypes.boundaryTimerEvent));
+      });
+  });
 });
