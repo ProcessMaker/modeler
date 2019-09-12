@@ -495,8 +495,10 @@ describe('Boundary Timer Event', () => {
 
     const boundaryEventPosition = { x: 300, y: 250 };
     dragFromSourceToDest(nodeTypes.boundaryEvent, boundaryEventPosition);
-    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', { x: 282, y: 239 });
+
+    const boundaryEventConnectedPosition = { x: 282, y: 239 };
+    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
     getElementAtPosition(boundaryEventPosition).click();
-    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', { x: 282, y: 239 });
+    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
   });
 });
