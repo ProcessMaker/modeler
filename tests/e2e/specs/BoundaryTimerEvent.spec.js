@@ -465,7 +465,7 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryEventPosition = { x: 300, y: 250 };
-    dragFromSourceToDest(nodeTypes.boundaryEvent, boundaryEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryEventPosition);
 
     const boundaryEventConnectedPosition = { x: 282, y: 239 };
     getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
