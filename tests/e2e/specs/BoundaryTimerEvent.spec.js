@@ -22,7 +22,7 @@ describe('Boundary Timer Event', () => {
     cy.loadModeler();
   });
 
-  it.skip('Render a boundary timer event', function() {
+  it('Render a boundary timer event', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -31,11 +31,11 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
 
     getElementAtPosition(boundaryTimerEventPosition).click();
 
-    const boundaryTimerEventXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const boundaryTimerEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -47,7 +47,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it.skip('update properties element', function() {
+  it('update properties element', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -56,7 +56,7 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
 
     getElementAtPosition(boundaryTimerEventPosition).click();
 
@@ -69,7 +69,7 @@ describe('Boundary Timer Event', () => {
     const durationValue = 4;
     typeIntoTextInput('.repeat', durationValue);
 
-    const durationXML = '<bpmn:boundaryEvent id="node_4" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT4H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const durationXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT4H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -85,7 +85,7 @@ describe('Boundary Timer Event', () => {
     cy.get('[data-test=periods]').select('day');
     typeIntoTextInput('.repeat', cycleValue);
 
-    const cycleXML = '<bpmn:boundaryEvent id="node_4" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeCycle>R/P6D</bpmn:timeCycle></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const cycleXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeCycle>R/P6D</bpmn:timeCycle></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -97,32 +97,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it.skip('render boundary timer event by dragging intermediate event on task', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
-    const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-
-    const intermediateCatchEventPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-
-    moveElement(intermediateCatchEventPosition, 200, 200);
-
-    const boundaryTimerEventXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(boundaryTimerEventXML);
-      });
-  });
-
-  it.skip('removes references of itself when inside of a pool and deleting the pool', function() {
+  it('removes references of itself when inside of a pool and deleting the pool', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -140,7 +115,7 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
 
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -150,7 +125,7 @@ describe('Boundary Timer Event', () => {
         getCrownButtonForElement($task, 'delete-button').click({ force: true });
       });
 
-    const boundaryTimerEventInXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const boundaryTimerEventInXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -161,7 +136,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it.skip('can stay anchored to task when moving pool', function() {
+  it('can stay anchored to task when moving pool', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();
     }
@@ -178,11 +153,11 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, boundaryTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
 
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-    const initialPositionXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const initialPositionXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -234,7 +209,7 @@ describe('Boundary Timer Event', () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
   });
 
-  it.skip('can toggle interrupting on Boundary Timer Events', function() {
+  it('can toggle interrupting on Boundary Timer Events', function() {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -249,8 +224,9 @@ describe('Boundary Timer Event', () => {
     cy.get('[data-test=undo]').click({ force: true });
     waitToRenderAllShapes();
     cy.get('[data-test=redo]').click({ force: true });
+    waitToRenderAllShapes();
 
-    getElementAtPosition(boundaryTimerEventPosition).click({ force: true });
+    getElementAtPosition(boundaryTimerEventPosition).click();
 
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
@@ -258,7 +234,7 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it.skip('retains outgoing sequence flows on Boundary Timer Events', function() {
+  it('retains outgoing sequence flows on Boundary Timer Events', function() {
 
     const taskForTimerPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskForTimerPosition);
@@ -278,7 +254,9 @@ describe('Boundary Timer Event', () => {
     });
 
     cy.get('[data-test=undo]').click({ force: true });
+    waitToRenderAllShapes();
     cy.get('[data-test=redo]').click({ force: true });
+    waitToRenderAllShapes();
 
     getElementAtPosition(boundaryTimerEventPosition).then(getLinksConnectedToElement).should($links => {
       expect($links.length).to.eq(numberOfSequenceFlowsAdded);
