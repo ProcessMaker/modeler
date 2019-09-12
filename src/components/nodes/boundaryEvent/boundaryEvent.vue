@@ -85,13 +85,23 @@ export default {
 
       return x !== prevX || y !== prevY;
     },
+    getCenterPosition() {
+      const { x, y } = this.shape.position();
+      const { width, height } = this.shape.size();
+
+      return {
+        x: x + (width / 2),
+        y: y + (height / 2),
+      };
+    },
     updateShapePosition(task) {
       if (!this.hasPositionChanged()) {
         return;
       }
-      const { x, y } = getBoundaryAnchorPoint(this.shape.position(), task);
-      const { width } = this.shape.size();
-      this.shape.position(x - (width / 2), y - (width / 2));
+
+      const { x, y } = getBoundaryAnchorPoint(this.getCenterPosition(), task);
+      const { width, height } = this.shape.size();
+      this.shape.position(x - (width / 2), y - (height / 2));
       this.updateCrownPosition();
 
       this.previousPosition = this.shape.position();
@@ -135,6 +145,7 @@ export default {
       this.validPosition = this.shape.position();
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
+        this.$emit('save-state');
         this.allowSetNodePosition = true;
       });
     },
