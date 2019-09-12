@@ -17,6 +17,10 @@ import {
 import { nodeTypes } from '../support/constants';
 import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
 
+const boundaryEventSelector = '.main-paper ' +
+    '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+    '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+
 describe('Boundary Timer Event', () => {
   beforeEach(() => {
     cy.loadModeler();
@@ -309,9 +313,6 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    const boundaryEventSelector = '.main-paper ' +
-      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
-      '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
     const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
     const startEventPosition = { x: 150, y: 150 };
 
@@ -491,6 +492,42 @@ describe('Boundary Timer Event', () => {
           .its('store.state.graph')
           .invoke('getCell', $event.attr('model-id'))
           .should(shape => expect(shape.component.node.type).to.eq(nodeTypes.boundaryTimerEvent));
+      });
+  });
+
+  it('can successfully undo/redo after dragging onto invalid (empty) space ', function() {
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+
+    cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
+      const boundaryEventPosition = $boundaryEvent.position();
+
+      cy.wrap($boundaryEvent)
+        .trigger('mousedown', { which: 1, force: true })
+        .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
+        .trigger('mouseup');
+
+      waitToRenderAllShapes();
+
+      cy.get('[data-test=undo]').click({ force: true });
+      waitToRenderAllShapes();
+      cy.get('[data-test=redo]').click({ force: true });
+      waitToRenderAllShapes();
+
+      cy.get('@boundaryEvent').should($boundaryEvent => {
+        const { left, top } = $boundaryEvent.position();
+
+        expect(left).to.equal(boundaryEventPosition.left);
+        expect(top).to.equal(boundaryEventPosition.top);
+      });
+    });
+
+    getElementAtPosition(taskPosition);
+    getElementAtPosition(taskPosition, nodeTypes.task)
+      .then(getComponentsEmbeddedInShape)
+      .should($elements => {
+        expect($elements).to.have.lengthOf(1);
       });
   });
 });
