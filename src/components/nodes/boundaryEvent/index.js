@@ -12,6 +12,7 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Event'),
+      cancelActivity: true,
     });
   },
   diagram(moddle) {
@@ -21,6 +22,9 @@ export default {
         width: 36,
       }),
     });
+  },
+  validateIncoming() {
+    return false;
   },
   inspectorConfig: [
     {
@@ -48,15 +52,11 @@ export default {
               },
             },
             {
-              component: 'FormSelect',
+              component: 'FormCheckbox',
               config: {
-                label: 'Boundary Type',
-                helper: 'Select Boundary Type',
-                name: 'boundaryType',
-                options: [
-                  { value: 'Message Event', content: 'Message Event' },
-                  { value: 'Timer Event', content: 'Timer Event' },
-                ],
+                label: 'Interrupting',
+                name: 'cancelActivity',
+                helper: 'Boundary Event Type',
               },
             },
           ],

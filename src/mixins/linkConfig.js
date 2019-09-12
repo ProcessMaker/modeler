@@ -1,42 +1,9 @@
-import { shapes, linkTools, dia, g } from 'jointjs';
+import { dia, linkTools, shapes } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { validNodeColor, invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
-import { portGroups } from '@/mixins/portsConfig';
-
-function getPointFromGroup(view, group) {
-  const { x: shapeX, y: shapeY } = view.model.position();
-  const { x, y } = Object.values(view.model.getPortsPositions(group))[0];
-
-  return new g.Point(shapeX + x, shapeY + y);
-}
-
-function getPortPoints(view) {
-  return portGroups.map(group => getPointFromGroup(view, group));
-}
-
-function closestPort(endView, anchorReference) {
-  return getPortPoints(endView).sort((p1, p2) => {
-    const referencePoint = new g.Point(anchorReference.x, anchorReference.y);
-    return referencePoint.distance(p1) - referencePoint.distance(p2);
-  })[0];
-}
-
-function hasPorts(view) {
-  return Object.values(view.model.getPortsPositions(portGroups[0])).length > 0;
-}
-
-function snapToAnchor(coords, endView) {
-  if (!hasPorts(endView)) {
-    const { x, y } = endView.model.position();
-    const { width, height } = endView.model.size();
-
-    return new g.Point(x + (width / 2), y + (height / 2));
-  }
-
-  return closestPort(endView, coords);
-}
+import { defaultNodeColor, invalidNodeColor, poolColor, validNodeColor } from '@/components/nodeColors';
+import { getDefaultAnchorPoint } from '@/portsUtils';
 
 const endpoints = {
   source: 'source',
@@ -72,7 +39,7 @@ export default {
       if (highlighted) {
         this.shape.attr({
           line: { stroke: 'orange' },
-          '.joint-highlight-stroke': {'display': 'none'},
+          '.joint-highlight-stroke': { 'display': 'none' },
         });
 
         this.shapeView.showTools();
@@ -120,7 +87,7 @@ export default {
             y: y + connectionOffset.y,
           };
 
-          return closestPort(shape.findView(this.paper), connectionPoint);
+          return getDefaultAnchorPoint(connectionPoint, shape.findView(this.paper));
         };
       } else {
         anchor = {
@@ -154,7 +121,7 @@ export default {
 
       this.setBodyColor(defaultNodeColor, targetShape);
 
-      if (this.isPoolOrLane)  {
+      if (this.isPoolOrLane) {
         this.setBodyColor(poolColor);
       }
 
@@ -239,14 +206,14 @@ export default {
         this.setBodyColor(defaultNodeColor);
       }
 
-      if (this.isPoolOrLane)  {
+      if (this.isPoolOrLane) {
         this.setBodyColor(poolColor);
       }
     },
     setupLinkTools() {
       const verticesTool = new linkTools.Vertices();
-      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: snapToAnchor });
-      const targetAnchorTool = new linkTools.TargetAnchor({ snap: snapToAnchor });
+      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorPoint });
+      const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorPoint });
       const segmentsTool = new linkTools.Segments();
 
       const toolsView = new dia.ToolsView({
@@ -310,7 +277,7 @@ export default {
       if (sequenceFlowWaypoints) {
         const sequenceVertices = sequenceFlowWaypoints
           .slice(1, sequenceFlowWaypoints.length - 1)
-          .map(({x, y}) => ({ x, y }));
+          .map(({ x, y }) => ({ x, y }));
 
         this.shape.vertices(sequenceVertices);
       }

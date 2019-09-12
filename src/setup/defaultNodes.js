@@ -1,28 +1,28 @@
 /* Expression example */
 import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker.json';
-
 /* Our initial node types to register with our modeler */
 import {
   association,
-  endEvent,
-  exclusiveGateway,
-  parallelGateway,
-  inclusiveGateway,
-  eventBasedGateway,
-  sequenceFlow,
-  messageFlow,
-  startEvent,
-  startTimerEvent,
-  intermediateTimerEvent,
-  intermediateMessageCatchEvent,
-  task,
+  boundaryTimerEvent,
   callActivity,
-  scriptTask,
-  serviceTask,
+  endEvent,
+  eventBasedGateway,
+  exclusiveGateway,
+  inclusiveGateway,
+  intermediateMessageCatchEvent,
+  intermediateTimerEvent,
   manualTask,
-  textAnnotation,
+  messageFlow,
+  parallelGateway,
   pool,
   poolLane,
+  scriptTask,
+  sequenceFlow,
+  serviceTask,
+  startEvent,
+  startTimerEvent,
+  task,
+  textAnnotation,
 } from '@/components/nodes';
 
 const nodeTypes = [
@@ -43,28 +43,26 @@ const nodeTypes = [
   pool,
   poolLane,
 ];
-
-window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension })  => {
+const timerEventNodes = [
+  [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
+  [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
+  [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
+  [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
+];
+const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
+  const definitions = definition.get('eventDefinitions');
+  const validDefinition = definition.$type === primaryIdentifier
+    && definitions
+    && definitions.length
+    && definitions[0].$type === secondaryIdentifier;
+  if (validDefinition) {
+    return nodeType.id;
+  }
+};
+window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension }) => {
   registerNode(startEvent);
-  registerNode(startTimerEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:StartEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
-      return startTimerEvent.id;
-    }
-  });
-
-  registerNode(intermediateTimerEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:TimerEventDefinition') {
-      return intermediateTimerEvent.id;
-    }
-  });
-
-  registerNode(intermediateMessageCatchEvent, definition => {
-    const eventDefinitions = definition.get('eventDefinitions');
-    if (definition.$type === 'bpmn:IntermediateCatchEvent' && eventDefinitions && eventDefinitions.length && eventDefinitions[0].$type === 'bpmn:MessageEventDefinition') {
-      return intermediateMessageCatchEvent.id;
-    }
+  timerEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
+    registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
 
   /* Register basic node types */

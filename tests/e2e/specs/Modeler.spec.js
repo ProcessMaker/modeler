@@ -10,6 +10,7 @@ import {
   isElementCovered,
   getCrownButtonForElement,
   uploadXml,
+  removeIndentationAndLinebreaks,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -330,5 +331,17 @@ describe('Modeler', () => {
     cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
     cy.get('[data-tool-name=vertices]').trigger('mouseover', 'bottomLeft', { force: true });
     cy.get('.joint-marker-vertex').should('be.visible');
+  });
+
+  it('persist boundary event with sequence flow in XML', () => {
+    uploadXml('../fixtures/boundaryEvent.xml');
+
+    const sequenceFlowXML = '<bpmn:sequenceFlow id="node_5" name="New Sequence Flow" sourceRef="node_3" targetRef="node_2" pm:startEvent="" />';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(xml => removeIndentationAndLinebreaks(xml))
+      .then(xml => expect(xml).to.contain(sequenceFlowXML));
   });
 });
