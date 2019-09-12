@@ -110,11 +110,15 @@ export default {
       task.embed(this.shape);
       this.node.definition.set('attachedToRef', task.component.node.definition);
     },
+    resetToInitialPosition() {
+      this.shape.position(this.validPosition.x, this.validPosition.y);
+      this.allowSetNodePosition = true;
+    },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
 
       if (!task) {
-        this.shape.position(this.validPosition.x, this.validPosition.y);
+        this.resetToInitialPosition();
         this.updateCrownPosition();
         return;
       }
@@ -127,8 +131,12 @@ export default {
         return;
       }
 
+      this.allowSetNodePosition = false;
       this.validPosition = this.shape.position();
-      this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', this.moveBoundaryEventIfOverTask);
+      this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
+        this.moveBoundaryEventIfOverTask();
+        this.allowSetNodePosition = true;
+      });
     },
     isPoolShape(model) {
       return model.component.node.type === 'processmaker-modeler-pool';
