@@ -60,7 +60,7 @@ export function dragFromSourceToDest(source, position) {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      cy.get(`[data-test=${ source }]`).trigger('mousedown');
+      cy.get(`[data-test=${source}]`).trigger('mousedown');
       cy.document().trigger('mousemove', mouseEvent);
       cy.document().trigger('mouseup', mouseEvent);
     });
@@ -154,7 +154,7 @@ export function moveElementRelativeTo(elementPosition, x, y) {
 
     return getElementAtPosition(elementPosition)
       .then($element => {
-        const {left, top} = $element.position();
+        const { left, top } = $element.position();
         const newPosition = paper.localToPagePoint(left + x, top + y);
         cy.wrap($element)
           .trigger('mousedown', 'topLeft', { which: 1, force: true })
@@ -234,13 +234,3 @@ export function getNumberOfLinks() {
     .then(({ graph }) => graph.getLinks().length);
 }
 
-export function getPositionInPaperCoords(position) {
-  return cy.window().its('store.state.paper').then(paper => {
-    const { tx, ty } = paper.translate();
-
-    return cy.get('.main-paper').then($paperContainer => {
-      const { x, y } = $paperContainer[0].getBoundingClientRect();
-      return { x: position.x + x + tx, y: position.y + y + ty };
-    });
-  });
-}
