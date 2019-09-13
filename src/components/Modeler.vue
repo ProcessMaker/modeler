@@ -42,6 +42,14 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
+        <div class="ml-auto">
+          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
+            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+            <font-awesome-icon v-else :icon="mapIcon" />
+          </button>
+        </div>
+
+
         <div class="mini-paper-container" @click="movePaper">
           <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper" />
         </div>
@@ -115,7 +123,7 @@ import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -226,6 +234,9 @@ export default {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
+    },
+    mapIcon() {
+      return faMapMarked;
     },
     plusIcon() {
       return faPlus;
