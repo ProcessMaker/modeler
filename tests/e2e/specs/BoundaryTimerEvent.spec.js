@@ -530,4 +530,27 @@ describe('Boundary Timer Event', () => {
         expect($elements).to.have.lengthOf(1);
       });
   });
+
+  it('redo positions it in same location as before undo', function() {
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    const boundaryTimerEventPosition = { x: 300, y: 350 };
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
+
+    cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
+      const boundaryEventPosition = $boundaryEvent.position();
+
+      cy.get('[data-test=undo]').click();
+      waitToRenderAllShapes();
+      cy.get('[data-test=redo]').click();
+      waitToRenderAllShapes();
+
+      cy.get('@boundaryEvent').should($boundaryEvent => {
+        const { left, top } = $boundaryEvent.position();
+
+        expect(left).to.equal(boundaryEventPosition.left);
+        expect(top).to.equal(boundaryEventPosition.top);
+      });
+    });
+  });
 });

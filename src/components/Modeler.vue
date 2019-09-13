@@ -679,9 +679,20 @@ export default {
       diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
       diagram.bounds.y = (clientY - paperOrigin.y) / scale.sy;
 
+      if (this.isBoundaryEvent(definition)) {
+        this.setShapeCenterUnderCursor(diagram);
+      }
+
       // Our BPMN models are updated, now add to our nodes
       // @todo come up with random id
       this.addNode({ type: control.type, definition, diagram });
+    },
+    isBoundaryEvent(definition) {
+      return definition.$type === 'bpmn:BoundaryEvent';
+    },
+    setShapeCenterUnderCursor(diagram) {
+      diagram.bounds.x = diagram.bounds.x - (diagram.bounds.width / 2);
+      diagram.bounds.y = diagram.bounds.y - (diagram.bounds.height / 2);
     },
     addNode({ type, definition, diagram }) {
       /*
