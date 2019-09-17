@@ -20,12 +20,12 @@
     </b-col>
 
     <b-col
-      class="paper-container h-100 pr-4"
+      class="paper-container h-100 pr-4 d-flex"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="tool-buttons d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -42,13 +42,10 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <div class="ml-auto">
-          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
-            <font-awesome-icon v-else :icon="mapIcon" />
-          </button>
-        </div>
-
+        <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
+          <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+          <font-awesome-icon v-else :icon="mapIcon" />
+        </button>
 
         <div class="mini-paper-container" @click="movePaper">
           <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper" />
@@ -1027,7 +1024,10 @@ $cursors: default, not-allowed, wait;
 
     .tool-buttons {
       z-index: 1;
-
+      flex: 1;
+      align-content: flex-start;
+      height: 2rem;
+      
       > button {
         cursor: pointer;
       }
