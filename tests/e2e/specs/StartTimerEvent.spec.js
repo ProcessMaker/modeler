@@ -1,7 +1,6 @@
 import {
   dragFromSourceToDest,
   getElementAtPosition,
-  modalAnimationTime,
   typeIntoTextInput,
 } from '../support/utils';
 
@@ -34,7 +33,6 @@ describe('Start Timer Event', () => {
     cy.get('.minute').contains('30').click();
     cy.get('[title="Toggle Period"]').click();
     cy.get('[data-test=start-date-picker]').should('have.value', '08/14/2019 5:30 AM');
-    
 
     cy.get('[data-test=end-date-picker]').click({ force: true });
     typeIntoTextInput('[data-test=repeat-input]', 3);
@@ -50,7 +48,6 @@ describe('Start Timer Event', () => {
     cy.get('.minute').contains('00').click();
     cy.get('[title="Toggle Period"]').click();
 
-    
     cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 12:00 AM');
 
     const timerExpression1 = 'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z';
