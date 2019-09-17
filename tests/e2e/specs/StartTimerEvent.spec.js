@@ -26,21 +26,32 @@ describe('Start Timer Event', () => {
     cy.get('.border-primary').should('contain', 'T');
 
     cy.get('[data-test=start-date-picker]').click();
-    cy.wait(modalAnimationTime);
-    cy.get('.vdatetime-popup').contains('14').click();
-    cy.get('.vdatetime-time-picker__list--hours').contains('05').click({ force: true });
-    cy.get('.vdatetime-time-picker__list--minutes').contains('30').click();
-    cy.get('.vdatetime-popup').contains('Save').click();
-    cy.get('[data-test=start-date-picker]').should('have.value', '8/14/2019, 5:30 AM');
+    cy.get('.day').contains('14').click();
+    cy.get('[title="Select Time"]').click();
+    cy.get('[title="Pick Hour"]').click();
+    cy.get('.hour').contains('05').click();
+    cy.get('[title="Pick Minute"]').click();
+    cy.get('.minute').contains('30').click();
+    cy.get('[title="Toggle Period"]').click();
+    cy.get('[data-test=start-date-picker]').should('have.value', '08/14/2019 5:30 AM');
+    
 
+    cy.get('[data-test=end-date-picker]').click({ force: true });
     typeIntoTextInput('[data-test=repeat-input]', 3);
     cy.get('[data-test=day-3]').click();
     cy.contains('You must select at least one day.').should('not.exist');
     cy.get('[data-test=ends-on]').click('left');
     cy.get('[data-test=end-date-picker]').click();
-    cy.wait(modalAnimationTime);
-    cy.get('.vdatetime-popup').contains('22').click();
-    cy.get('[data-test=end-date-picker]').should('have.value', '8/22/2019');
+    cy.get('.day').contains('22').click();
+    cy.get('[title="Select Time"]').click();
+    cy.get('[title="Pick Hour"]').click();
+    cy.get('.hour').contains('12').click();
+    cy.get('[title="Pick Minute"]').click();
+    cy.get('.minute').contains('00').click();
+    cy.get('[title="Toggle Period"]').click();
+
+    
+    cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 12:00 AM');
 
     const timerExpression1 = 'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z';
     cy.get('[data-test=downloadXMLBtn]').click();
