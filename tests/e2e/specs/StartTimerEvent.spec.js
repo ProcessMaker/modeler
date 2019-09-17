@@ -82,11 +82,15 @@ describe('Start Timer Event', () => {
     const repeat = 3;
     typeIntoTextInput('[data-test=repeat-input]', repeat);
 
-    cy.get('[data-test=ends-on]').click('left');
-    cy.get('[data-test=end-date-picker]').click();
-    cy.wait(modalAnimationTime);
     const endDay = 22;
-    cy.get('.vdatetime-popup').contains(endDay).click();
+    cy.get('[data-test=ends-on]').click('left');
+    cy.get('[data-test=end-date-picker]')
+      .click();
+    cy.get('.form-date-picker')
+      .contains(endDay)
+      .click();
+    cy.get('[data-action="close"]')
+      .click();
 
     const periods = [
       { selector: 'day', letter: 'D' },
