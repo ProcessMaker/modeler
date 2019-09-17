@@ -14,6 +14,9 @@ export default {
       associationDirection: `${ direction.none }`,
     });
   },
+  diagram(moddle) {
+    return moddle.create('bpmndi:BPMNEdge');
+  },
   inspectorConfig: [
     {
       name: 'Association',

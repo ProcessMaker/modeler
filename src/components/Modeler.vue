@@ -116,6 +116,7 @@ import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
+import ModelerNode from '@/ModelerNode';
 
 import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -643,32 +644,19 @@ export default {
         return;
       }
 
-      // Add to our processNode
-      const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+      const node = new ModelerNode(control.type, this.nodeRegistry, this.moddle, this.$t);
+      const position = this.paperManager.clientToGridPoint(clientX, clientY);
+      node.setPosition(position);
 
-      // Now, let's modify planeElement
-      const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
-
-      const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
-      diagram.bounds.x = x;
-      diagram.bounds.y = y;
-
-      if (this.isBoundaryEvent(definition)) {
-        this.setShapeCenterUnderCursor(diagram);
+      if (node.isType(ModelerNode.BpmnTypes.boundaryEvent)) {
+        node.setCenterOnPoint(position);
       }
 
-      // Our BPMN models are updated, now add to our nodes
-      // @todo come up with random id
-      this.addNode({ type: control.type, definition, diagram });
+      this.addNode(node);
     },
-    isBoundaryEvent(definition) {
-      return definition.$type === 'bpmn:BoundaryEvent';
-    },
-    setShapeCenterUnderCursor(diagram) {
-      diagram.bounds.x = diagram.bounds.x - (diagram.bounds.width / 2);
-      diagram.bounds.y = diagram.bounds.y - (diagram.bounds.height / 2);
-    },
-    addNode({ type, definition, diagram }) {
+    addNode(modelerNode) {
+      const { type, definition, diagram } = modelerNode;
+
       /*
        * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
        * if one exists.
@@ -677,7 +665,7 @@ export default {
        * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow
        * elements to it.
        */
-      if (type !== poolId) {
+      if (!modelerNode.isType(ModelerNode.BpmnTypes.pool)) {
         /* Check if this.poolTarget is set, and if so, add to appropriate process. */
         const targetProcess = this.poolTarget
           ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
@@ -705,12 +693,9 @@ export default {
 
       this.planeElements.push(diagram);
 
-      store.commit('addNode', {
-        type,
-        definition,
-        diagram,
-        pool: this.poolTarget,
-      });
+      modelerNode.pool = this.poolTarget;
+
+      store.commit('addNode', modelerNode);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
         setTimeout(() => this.pushToUndoStack());
@@ -756,17 +741,9 @@ export default {
         return;
       }
 
-      const definition = startEvent.definition(this.moddle, this.$t);
-      const diagram = startEvent.diagram(this.moddle);
-
-      diagram.bounds.x = 150;
-      diagram.bounds.y = 150;
-
-      this.addNode({
-        definition,
-        diagram,
-        type: startEvent.id,
-      });
+      const node = new ModelerNode(startEvent.id, this.nodeRegistry, this.moddle, this.$t);
+      node.setPosition({ x: 150, y: 150 });
+      this.addNode(node);
 
       setTimeout(() => undoRedoStore.dispatch('resetHistory'));
     },

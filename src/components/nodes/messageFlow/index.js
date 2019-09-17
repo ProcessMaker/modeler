@@ -8,8 +8,11 @@ export default {
   component,
   bpmnType: 'bpmn:MessageFlow',
   control: false,
-  definition(moddle, $t) {
-    return moddle.create('bpmn:MessageFlow', { name: $t('Message Flow') });
+  definition(moddle) {
+    return moddle.create('bpmn:MessageFlow', { name: '' });
+  },
+  diagram(moddle) {
+    return moddle.create('bpmndi:BPMNEdge');
   },
   inspectorConfig: [
     {

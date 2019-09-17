@@ -3,6 +3,7 @@ import trashIcon from '@/assets/trash-alt-solid.svg';
 import messageFlowIcon from '@/assets/message-flow.svg';
 import { direction } from '@/components/nodes/association/associationConfig';
 import pull from 'lodash/pull';
+import ModelerNode from '@/ModelerNode';
 
 export const highlightPadding = 3;
 
@@ -130,54 +131,37 @@ export default {
     },
     addSequence(cellView, evt, x, y) {
       this.removeCrown();
-      const sequenceFlowConfig = this.nodeRegistry['processmaker-modeler-sequence-flow'];
-      const sequenceLink = sequenceFlowConfig.definition(this.moddle, this.$t);
-      sequenceLink.set('sourceRef', this.node.definition);
-      sequenceLink.set('targetRef', { x, y });
+      const node = new ModelerNode('processmaker-modeler-sequence-flow', this.nodeRegistry, this.moddle, this.$t);
+      node.definition.set('sourceRef', this.node.definition);
+      node.definition.set('targetRef', { x, y });
 
       if (
-        sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' ||
-        sequenceLink.sourceRef.$type === 'bpmn:InclusiveGateway')
+        node.definition.sourceRef.$type === ModelerNode.exclusiveGateway ||
+        node.definition.sourceRef.$type === ModelerNode.inclusiveGateway)
       {
-        sequenceLink.conditionExpression = this.moddle.create('bpmn:FormalExpression', {
+        node.definition.conditionExpression = this.moddle.create('bpmn:FormalExpression', {
           body: '',
         });
       }
 
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-sequence-flow',
-        definition: sequenceLink,
-        diagram: sequenceFlowConfig.diagram(this.moddle),
-      });
+      this.$emit('add-node', node);
     },
     addAssociation(cellView, evt, x, y) {
       this.removeCrown();
-      const associationLink = this.moddle.create('bpmn:Association', {
-        sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
-        associationDirection: direction.none,
-      });
+      const node = new ModelerNode('processmaker-modeler-association', this.nodeRegistry, this.moddle, this.$t);
+      node.definition.set('sourceRef', this.node.definition);
+      node.definition.set('targetRef', { x, y });
+      node.definition.get('associationDirection', direction.none);
 
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-association',
-        definition: associationLink,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
-      });
+      this.$emit('add-node', node);
     },
     addMessageFlow(cellView, evt, x, y) {
       this.removeCrown();
+      const node = new ModelerNode('processmaker-modeler-message-flow', this.nodeRegistry, this.moddle, this.$t);
+      node.definition.set('sourceRef', this.node.definition);
+      node.definition.set('targetRef', { x, y });
 
-      const messageFlowDefinition = this.moddle.create('bpmn:MessageFlow', {
-        name: '',
-        sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
-      });
-
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-message-flow',
-        definition: messageFlowDefinition,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
-      });
+      this.$emit('add-node', node);
     },
     addMessageFlowButton() {
       this.crownConfig.push({

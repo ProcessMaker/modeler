@@ -18,6 +18,7 @@ import laneBelowIcon from '@/assets/lane-below.svg';
 import { invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
 import store from '@/store';
+import ModelerNode from '@/ModelerNode';
 
 const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -137,11 +138,11 @@ export default {
        * Get the current laneSet element or create a new one. */
 
       const lanes = [];
+      const node = new ModelerNode('processmaker-modeler-lane', this.nodeRegistry, this.moddle, this.$t);
+
 
       if (!this.laneSet) {
         this.createLaneSet();
-
-        const definition = Lane.definition(this.moddle, this.$t);
 
         /* If there are currently elements in the pool, add them to the first lane */
         this.shape.getEmbeddedCells().filter(element => {
@@ -149,10 +150,10 @@ export default {
             element.component.node.type !== laneId &&
             element.component.node.type !== textAnnotationId;
         }).forEach(element => {
-          definition.get('flowNodeRef').push(element.component.node.definition);
+          node.definition.get('flowNodeRef').push(element.component.node.definition);
         });
 
-        lanes.push(this.pushNewLane(definition));
+        lanes.push(this.pushNewLane(node.definition));
       }
 
       lanes.push(this.pushNewLane());
