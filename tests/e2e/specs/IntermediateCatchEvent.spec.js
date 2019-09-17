@@ -87,7 +87,7 @@ describe('Intermediate Catch Event', () => {
     cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
 
-    const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00Z</bpmn:timeDate>';
+    const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00.000Z</bpmn:timeDate>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

@@ -46,7 +46,6 @@ describe('Start Timer Event', () => {
     cy.get('.hour').contains('12').click();
     cy.get('[title="Pick Minute"]').click();
     cy.get('.minute').contains('00').click();
-    cy.get('[title="Toggle Period"]').click();
 
     cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 12:00 AM');
 
