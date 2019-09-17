@@ -20,12 +20,12 @@
     </b-col>
 
     <b-col
-      class="paper-container h-100 pr-4"
+      class="paper-container h-100 pr-4 d-flex"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="toolbar d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -42,13 +42,10 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <div class="ml-auto">
-          <button class="btn btn-sm btn-secondary" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
-            <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
-            <font-awesome-icon v-else :icon="mapIcon" />
-          </button>
-        </div>
-
+        <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="toggleMiniMap = !toggleMiniMap">
+          <font-awesome-icon  v-if="toggleMiniMap" :icon="minusIcon" />
+          <font-awesome-icon v-else :icon="mapIcon" />
+        </button>
 
         <div class="mini-paper-container" @click="movePaper">
           <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper" />
@@ -975,6 +972,12 @@ export default {
 @import '~jointjs/dist/joint.min.css';
 
 $cursors: default, not-allowed, wait;
+$mini-paper-container-top-position: 2.5rem;
+$mini-paper-container-right-position: 0;
+$inspector-column-max-width: 265px;
+$controls-column-max-width: 185px;
+$toolbar-height: 2rem;
+$vertex-error-color: #ED4757;
 
 .ignore-pointer {
   pointer-events: none;
@@ -982,8 +985,8 @@ $cursors: default, not-allowed, wait;
 
 .mini-paper-container {
   position: absolute;
-  top: 2.5rem;
-  right: 0;
+  top: $mini-paper-container-top-position;
+  right: $mini-paper-container-right-position;
   z-index: 2;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   border: 1px solid #e9ecef;
@@ -996,11 +999,11 @@ $cursors: default, not-allowed, wait;
 
 .modeler {
   .inspector-column {
-    max-width: 265px;
+    max-width: $inspector-column-max-width;
   }
 
   .controls-column {
-    max-width: 185px;
+    max-width: $controls-column-max-width;
   }
 
   .main-paper {
@@ -1025,9 +1028,12 @@ $cursors: default, not-allowed, wait;
     cursor: grab;
     user-select: none;
 
-    .tool-buttons {
+    .toolbar {
       z-index: 1;
-
+      flex: 1;
+      align-content: flex-start;
+      height: $toolbar-height;
+      
       > button {
         cursor: pointer;
       }
@@ -1044,7 +1050,7 @@ $cursors: default, not-allowed, wait;
   }
 
   .joint-marker-vertex:hover {
-    fill: #ED4757;
+    fill: $vertex-error-color;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
   }
 }
