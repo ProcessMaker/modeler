@@ -6,9 +6,6 @@
       :placeholder="$t('Start date')"
       control-class="form-control"
       class="p-0"
-      :format="DateTime.DATETIME_SHORT"
-      :minuteStep="30"
-      :phrases="{ ok: 'Save', cancel: 'Cancel' }"
       :value="startDate"
       @input="setStartDate"
     />
@@ -60,8 +57,7 @@
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
             control-class="form-control"
-            :format="DateTime.DATE_SHORT"
-            phrases='{ok: $t("Save"), cancel: $t("Cancel")}'
+            dataFormat="date"
             :value="endDate"
             @input="setEndDate"
           />
