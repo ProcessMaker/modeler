@@ -5,17 +5,13 @@
 version: 2.1
 orbs:
   # use Cypress orb from CircleCI registry
-  cypress: cypress-io/cypress@1.7.0
-executors:
-  with-chrome:
-    docker:
-      - image: 'cypress/browsers:node10.16.0-chrome76'
+  cypress: cypress-io/cypress@1.10.0
 workflows:
   build:
     jobs:
       # runs tests using Chrome browser in custom executor (Cypress docker image)
       - cypress/run:
-          executor: with-chrome
+          executor: cypress/browsers-chrome76
           browser: chrome
           command: 'npm run lint && npm run test-ci'
           post-steps:
