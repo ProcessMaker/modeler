@@ -344,4 +344,28 @@ describe('Modeler', () => {
       .then(xml => removeIndentationAndLinebreaks(xml))
       .then(xml => expect(xml).to.contain(sequenceFlowXML));
   });
+
+  it('scales mini-map on load', function() {
+    cy.get('[data-test=mini-map-btn]').click();
+    uploadXml('../fixtures/offscreenProcess.xml');
+    cy.get('.mini-paper .joint-cell')
+      .each($cell => {
+        cy.wrap($cell).should('be.visible');
+      });
+  });
+
+  it('Scales gateways when mini-map is opened', function() {
+    const gatewayPosition = { x: 400, y: 400 };
+    dragFromSourceToDest(nodeTypes.parallelGateway, gatewayPosition);
+    cy.get('[data-test=mini-map-btn]').click();
+
+    cy.get('.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]').then($startEvent => {
+      const { width: startEventWidth, height: startEventHeight } = $startEvent.get(0).getBBox();
+      cy.get('.mini-paper [data-type="processmaker.components.nodes.gateway.Shape"]').should($gateway => {
+        const { width, height } = $gateway.get(0).getBBox();
+        expect(width).to.be.closeTo(startEventWidth, 100);
+        expect(height).to.be.closeTo(startEventHeight, 100);
+      });
+    });
+  });
 });

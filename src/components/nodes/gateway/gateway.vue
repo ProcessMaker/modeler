@@ -28,7 +28,7 @@ export default {
   },
   watch: {
     'node.definition.name'(name) {
-      this.shape.attr('.label/text', name);
+      this.shape.attr('label/text', name);
     },
   },
   mounted() {
@@ -37,7 +37,7 @@ export default {
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
     this.shape.attr({
-      '.label': {
+      label: {
         text: this.node.definition.get('name'),
         fill: 'black',
       },

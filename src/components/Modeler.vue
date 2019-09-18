@@ -20,12 +20,12 @@
     </b-col>
 
     <b-col
-      class="paper-container h-100 pr-4"
+      class="paper-container h-100 pr-4 d-flex"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="btn-toolbar tool-buttons d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="toolbar d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -42,13 +42,15 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <div class="mini-paper-container" @click="movePaper">
-          <div v-show="toggleMiniMap" ref="miniPaper" class="mini-paper" />
-        </div>
+        <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
+          <font-awesome-icon  v-if="miniMapOpen" :icon="minusIcon" />
+          <font-awesome-icon v-else :icon="mapIcon" />
+        </button>
+
+        <mini-paper :isOpen="miniMapOpen" :paper="paper" :graph="graph" />
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
-
     </b-col>
 
     <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
@@ -114,8 +116,9 @@ import NodeIdGenerator from '../NodeIdGenerator';
 import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
+import MiniPaper from '@/components/MiniPaper';
 
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -131,6 +134,7 @@ export default {
     controls,
     InspectorPanel,
     FontAwesomeIcon,
+    MiniPaper,
   },
   data() {
     return {
@@ -153,7 +157,6 @@ export default {
 
       // Our jointjs paper
       paper: null,
-      miniPaper: null,
 
       definitions: null,
       nodeIdGenerator: null,
@@ -174,7 +177,7 @@ export default {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
-      toggleMiniMap: false,
+      miniMapOpen: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -226,6 +229,9 @@ export default {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
+    },
+    mapIcon() {
+      return faMapMarked;
     },
     plusIcon() {
       return faPlus;
@@ -819,15 +825,6 @@ export default {
 
       this.paper.unfreeze();
     },
-    movePaper({ offsetX, offsetY }) {
-      const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
-      const scale = this.paper.scale();
-
-      this.paper.translate(
-        (this.$refs.paper.clientWidth / 2) - (x * scale.sx),
-        (this.$refs.paper.clientHeight / 2) - (y * scale.sy),
-      );
-    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -885,16 +882,6 @@ export default {
 
     this.paper.translate(168, 20);
 
-    this.miniPaper = new dia.Paper({
-      el: this.$refs.miniPaper,
-      model: this.graph,
-      width: 300,
-      height: 200,
-      interactive: false,
-    });
-
-    this.miniPaper.scale(0.15);
-
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
@@ -950,12 +937,6 @@ export default {
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
     });
-
-    window.ProcessMaker.EventBus.$on('modeler-change', () => {
-      setTimeout(() => {
-        this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
-      });
-    });
   },
 };
 </script>
@@ -964,32 +945,22 @@ export default {
 @import '~jointjs/dist/joint.min.css';
 
 $cursors: default, not-allowed, wait;
+$inspector-column-max-width: 265px;
+$controls-column-max-width: 185px;
+$toolbar-height: 2rem;
+$vertex-error-color: #ED4757;
 
 .ignore-pointer {
   pointer-events: none;
 }
 
-.mini-paper-container {
-  position: absolute;
-  top: 2.5rem;
-  right: 0;
-  z-index: 2;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  border: 1px solid #e9ecef;
-  cursor: pointer;
-
-  .mini-paper {
-    pointer-events: none;
-  }
-}
-
 .modeler {
   .inspector-column {
-    max-width: 265px;
+    max-width: $inspector-column-max-width;
   }
 
   .controls-column {
-    max-width: 185px;
+    max-width: $controls-column-max-width;
   }
 
   .main-paper {
@@ -1014,8 +985,11 @@ $cursors: default, not-allowed, wait;
     cursor: grab;
     user-select: none;
 
-    .tool-buttons {
+    .toolbar {
       z-index: 1;
+      flex: 1;
+      align-content: flex-start;
+      height: $toolbar-height;
 
       > button {
         cursor: pointer;
@@ -1033,7 +1007,7 @@ $cursors: default, not-allowed, wait;
   }
 
   .joint-marker-vertex:hover {
-    fill: #ED4757;
+    fill: $vertex-error-color;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
   }
 }
