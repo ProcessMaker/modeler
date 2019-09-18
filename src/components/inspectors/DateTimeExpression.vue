@@ -7,8 +7,8 @@
       :minuteStep="30"
       class="p-0"
       :phrases="{ ok: $t('Save'), cancel: $t('Cancel') }"
-      :value="value"
-      @input="$emit('input', $event)"
+      :value="convertFromUTC(value)"
+      @input="emitValue"
     />
   </div>
 </template>
@@ -24,6 +24,22 @@ export default {
   },
   props: {
     value: String,
+  },
+  methods: {
+    convertFromUTC(utcDatetimeString) {
+      return DateTime
+        .fromISO(utcDatetimeString, { zone: 'utc' })
+        .toLocal()
+        .toISO();
+    },
+    emitValue(localDatetimeString) {
+      const utcDatetimeString = DateTime
+        .fromISO(localDatetimeString)
+        .toUTC()
+        .toISO();
+
+      this.$emit('input', utcDatetimeString);
+    },
   },
 };
 </script>
