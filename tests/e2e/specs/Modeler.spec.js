@@ -344,4 +344,13 @@ describe('Modeler', () => {
       .then(xml => removeIndentationAndLinebreaks(xml))
       .then(xml => expect(xml).to.contain(sequenceFlowXML));
   });
+
+  it('scales mini-map on load', function() {
+    cy.get('[data-test=mini-map-btn]').click();
+    uploadXml('../fixtures/offscreenProcess.xml');
+    cy.get('.mini-paper .joint-cell')
+      .each($cell => {
+        cy.wrap($cell).should('be.visible');
+      });
+  });
 });
