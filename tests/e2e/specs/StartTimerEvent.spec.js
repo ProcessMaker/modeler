@@ -41,13 +41,9 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=ends-on]').click('left');
     cy.get('[data-test=end-date-picker]').click();
     cy.get('.day').contains('22').click();
-    cy.get('[title="Select Time"]').click();
-    cy.get('[title="Pick Hour"]').click();
-    cy.get('.hour').contains('12').click();
-    cy.get('[title="Pick Minute"]').click();
-    cy.get('.minute').contains('00').click();
+    cy.get('[title="Select Time"]').should('not.exist');
 
-    cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 12:00 AM');
+    cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019');
 
     const timerExpression1 = 'R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z';
     cy.get('[data-test=downloadXMLBtn]').click();
@@ -95,8 +91,6 @@ describe('Start Timer Event', () => {
       .click();
     cy.get('.form-date-picker')
       .contains(endDay)
-      .click();
-    cy.get('[data-action="close"]')
       .click();
 
     const periods = [
