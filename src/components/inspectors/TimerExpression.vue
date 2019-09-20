@@ -2,6 +2,7 @@
   <div class="form-group">
     <form-date-picker
       data-test="start-date-picker"
+      data-format="datetime"
       :label="$t('Start date')"
       :placeholder="$t('Start date')"
       control-class="form-control"
@@ -57,7 +58,7 @@
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
             control-class="form-control"
-            dataFormat="date"
+            data-format="date"
             :value="endDate"
             @input="setEndDate"
           />
