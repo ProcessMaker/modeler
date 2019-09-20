@@ -51,9 +51,14 @@
     "luxon": "^1.21.1",
     "mustache": "^3.1.0",
     "vue": "^2.6.10",
+    "canvas": "^2.6.0",
+    "canvg": "^2.0.0",
+    "jsdom": "^13.2.0",
+    "jspdf": "^1.5.3",
     "vue-deepset": "^0.6.3",
     "vue-upload-component": "^2.8.20",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
