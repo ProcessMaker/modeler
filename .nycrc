@@ -1,0 +1,9 @@
+{
+  "extension": [
+    ".js",
+    ".vue"
+  ],
+  "exclude": [
+    "tests/**/*.js"
+  ]
+}

@@ -1,5 +1,9 @@
-module.exports = {
-  plugins: ['istanbul'],
-  presets: ['@vue/app'],
-  sourceType: 'unambiguous',
+module.exports = function(api) {
+  api.cache(true);
+
+  return {
+    presets: ['@vue/app'],
+    plugins: ['istanbul'],
+    sourceType: 'unambiguous',
+  };
 };
