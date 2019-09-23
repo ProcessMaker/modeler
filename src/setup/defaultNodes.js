@@ -4,6 +4,7 @@ import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/proc
 import {
   association,
   boundaryTimerEvent,
+  boundaryErrorEvent,
   callActivity,
   endEvent,
   eventBasedGateway,
@@ -48,6 +49,7 @@ const timerEventNodes = [
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
+  [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
 ];
 const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
   const definitions = definition.get('eventDefinitions');

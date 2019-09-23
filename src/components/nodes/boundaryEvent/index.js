@@ -51,14 +51,6 @@ export default {
                 helper: 'The Name of the Boundary Event',
               },
             },
-            {
-              component: 'FormCheckbox',
-              config: {
-                label: 'Interrupting',
-                name: 'cancelActivity',
-                helper: 'Boundary Event Type',
-              },
-            },
           ],
         },
       ],
