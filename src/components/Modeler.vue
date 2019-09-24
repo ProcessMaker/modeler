@@ -760,11 +760,23 @@ export default {
       this.poolTarget = null;
     },
     removeNode(node) {
+      this.removeNodeFromLane(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
       this.$nextTick(() => {
         this.pushToUndoStack();
       });
+    },
+    removeNodeFromLane(node) {
+      const containingLane = node.pool && node.pool.component.laneSet.get('lanes').find(lane => {
+        return lane.get('flowNodeRef').includes(node.definition);
+      });
+
+      if (!containingLane) {
+        return;
+      }
+
+      pull(containingLane.get('flowNodeRef'), node.definition);
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
