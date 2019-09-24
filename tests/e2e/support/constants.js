@@ -29,4 +29,5 @@ export const nodeTypes = {
   boundaryTimerEvent: 'processmaker-modeler-boundary-timer-event',
   boundarySignalEvent: 'processmaker-modeler-boundary-signal-event',
   taskWithMarker: 'processmaker-custom-marker-task-test',
+  boundaryMessageEvent: 'processmaker-modeler-boundary-message-event',
 };

@@ -23,6 +23,7 @@ import {
   startTimerEvent,
   task,
   textAnnotation,
+  boundaryMessageEvent,
 } from '@/components/nodes';
 
 const nodeTypes = [
@@ -42,6 +43,7 @@ const nodeTypes = [
   association,
   pool,
   poolLane,
+  boundaryMessageEvent,
 ];
 const timerEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
