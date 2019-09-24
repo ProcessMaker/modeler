@@ -3,8 +3,6 @@ import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 
-export const defaultDurationValue = 'PT1H';
-
 export default merge(cloneDeep(boundaryEventConfig), {
   id: 'processmaker-modeler-boundary-message-event',
   component,
