@@ -1,54 +1,54 @@
 import {
-    dragFromSourceToDest,
-    getElementAtPosition,
-    removeIndentationAndLinebreaks,
+  dragFromSourceToDest,
+  getElementAtPosition,
+  removeIndentationAndLinebreaks,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe.only('Boundary Message Event', () => {
-    beforeEach(() => {
-        cy.loadModeler();
-    });
+  beforeEach(() => {
+    cy.loadModeler();
+  });
 
-    it( 'Render a boundary message event', function() {
-        const taskPosition = { x: 200, y: 200 };
-        dragFromSourceToDest(nodeTypes.task, taskPosition);
+  it( 'Render a boundary message event', function() {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-        const boundaryMessageEventPosition = { x: 260, y: 260 };
-        dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);
+    const boundaryMessageEventPosition = { x: 260, y: 260 };
+    dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);
 
-        getElementAtPosition(boundaryMessageEventPosition).click();
+    getElementAtPosition(boundaryMessageEventPosition).click();
 
-        const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
-        cy.get('[data-test=downloadXMLBtn]').click();
-        cy.window()
-          .its('xml')
-          .then(removeIndentationAndLinebreaks)
-          .then(xml => {
-              expect(xml).to.contain(boundaryMessageEventXML);
-          });
-    });
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(boundaryMessageEventXML);
+      }); 
+  });
 
-    it('Render a non-interrupting boundary message event', function() {
-        const taskPosition = { x: 200, y: 200 };
-        dragFromSourceToDest(nodeTypes.task, taskPosition);
+  it('Render a non-interrupting boundary message event', function() {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+  
+    const boundaryMessageEventPosition = { x: 260, y: 260 };
+    dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);
 
-        const boundaryMessageEventPosition = { x: 260, y: 260 };
-        dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);
+    getElementAtPosition(boundaryMessageEventPosition).click();
 
-        getElementAtPosition(boundaryMessageEventPosition).click();
+    const interrupting = '[name=cancelActivity]';
+    cy.get(interrupting).click();
+    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" cancelActivity="false" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
-        const interrupting = '[name=cancelActivity]';
-        cy.get(interrupting).click();
-        const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" cancelActivity="false" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
-
-        cy.get('[data-test=downloadXMLBtn]').click();
-        cy.window()
-          .its('xml')
-          .then(removeIndentationAndLinebreaks)
-          .then(xml => {
-              expect(xml).to.contain(boundaryMessageEventXML);
-        });
-    });
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(boundaryMessageEventXML);
+      });
+  });
 });
