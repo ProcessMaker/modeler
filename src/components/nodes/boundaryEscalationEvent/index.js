@@ -13,14 +13,11 @@ export default merge(cloneDeep(boundaryEventConfig), {
       name: $t('New Boundary Escalation Event'),
       cancelActivity: true,
       eventDefinitions: [
-        moddle.create('bpmn:EscalationEventDefinition', {
-        }),
+        moddle.create('bpmn:EscalationEventDefinition'),
       ],
     });
   },
   inspectorConfig: [{
-    items: [
-      {},
-    ],
+    items: [],
   }],
 });
