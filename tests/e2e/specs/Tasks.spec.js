@@ -10,10 +10,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Tasks', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update task name', () => {
     const testString = 'testing';
 

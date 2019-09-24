@@ -1,21 +1,17 @@
 import {
-  dragFromSourceToDest,
-  getElementAtPosition,
-  getCrownButtonForElement,
-  typeIntoTextInput,
-  moveElement,
-  waitToRenderAllShapes,
-  removeIndentationAndLinebreaks,
   connectNodesWithFlow,
+  dragFromSourceToDest,
+  getCrownButtonForElement,
+  getElementAtPosition,
+  moveElement,
+  removeIndentationAndLinebreaks,
+  typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Pools', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update pool name', () => {
     const testString = 'testing';
 

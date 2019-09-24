@@ -1,24 +1,20 @@
 import {
+  connectNodesWithFlow,
   dragFromSourceToDest,
+  getCrownButtonForElement,
   getElementAtPosition,
   getGraphElements,
-  getCrownButtonForElement,
-  connectNodesWithFlow,
   getLinksConnectedToElement,
+  removeIndentationAndLinebreaks,
+  testNumberOfVertices,
   typeIntoTextInput,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
-  removeIndentationAndLinebreaks,
-  testNumberOfVertices,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 
 describe('Undo/redo', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);

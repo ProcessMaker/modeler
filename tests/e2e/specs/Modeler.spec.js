@@ -1,25 +1,21 @@
 import {
-  dragFromSourceToDest,
-  getGraphElements,
-  waitToRenderAllShapes,
   connectNodesWithFlow,
+  dragFromSourceToDest,
+  getCrownButtonForElement,
   getElementAtPosition,
-  typeIntoTextInput,
-  waitToRenderNodeUpdates,
+  getGraphElements,
   getLinksConnectedToElement,
   isElementCovered,
-  getCrownButtonForElement,
-  uploadXml,
   removeIndentationAndLinebreaks,
+  typeIntoTextInput,
+  uploadXml,
+  waitToRenderAllShapes,
+  waitToRenderNodeUpdates,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Modeler', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
@@ -310,7 +306,7 @@ describe('Modeler', () => {
     uploadXml('unknownElement.xml');
     const warning = 'IntermediateThrowEvent is an unsupported element type in parse';
 
-    cy.get('.status-bar-container__status').click({multiple: true});
+    cy.get('.status-bar-container__status').click({ multiple: true });
     cy.get('[data-test="validation-list"]').should('contain', warning);
   });
 

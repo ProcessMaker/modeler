@@ -1,16 +1,12 @@
 import {
   dragFromSourceToDest,
-  typeIntoTextInput,
   getElementAtPosition,
   removeIndentationAndLinebreaks,
+  typeIntoTextInput,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Catch Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update delay field on Intermediate Catch Event', function() {
     if (Cypress.env('inProcessmaker')) {
       this.skip();

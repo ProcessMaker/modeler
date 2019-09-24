@@ -1,18 +1,9 @@
-import {
-  dragFromSourceToDest,
-  typeIntoTextInput,
-  connectNodesWithFlow,
-  getElementAtPosition,
-} from '../support/utils';
+import { connectNodesWithFlow, dragFromSourceToDest, getElementAtPosition, typeIntoTextInput } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 import { gatewayDirection } from '../../../src/components/nodes/gateway/gatewayConfig';
 
 describe('Inclusive Gateway', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update inclusive gateway name', () => {
     const inclusivePosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);

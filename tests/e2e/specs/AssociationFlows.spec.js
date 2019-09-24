@@ -1,24 +1,20 @@
 import {
+  connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
-  connectNodesWithFlow,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 import { nodeTypes } from '../support/constants';
 
 describe('Association Flows', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Change direction of association to none, one and both', () => {
     const directionSelectSelector = '[name=associationDirection]';
     const testDirection = {
-      none:`${ direction.none }`,
-      one: `${ direction.one }`,
-      both:`${ direction.both }`,
+      none: `${direction.none}`,
+      one: `${direction.one}`,
+      both: `${direction.both}`,
     };
 
     const textAnnotationPosition = { x: 400, y: 100 };
