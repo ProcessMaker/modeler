@@ -17,7 +17,4 @@ export default merge(cloneDeep(boundaryEventConfig), {
       ],
     });
   },
-  inspectorConfig: [{
-    items: [],
-  }],
 });
