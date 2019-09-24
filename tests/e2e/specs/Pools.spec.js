@@ -119,4 +119,41 @@ describe('Pools', () => {
         expect(xml).to.not.contain(sequenceFlowReference);
       });
   });
+
+  it('Removes all references to element from lane', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition)
+      .click()
+      .then($pool => {
+        getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
+      });
+
+    const nonEmptyLane = '<bpmn:lane id="node_3" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(nonEmptyLane);
+      });
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+
+    const emptyLane = '<bpmn:lane id="node_3" name="" />';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(emptyLane);
+        expect(xml).to.not.contain('node_1');
+      });
+  });
 });

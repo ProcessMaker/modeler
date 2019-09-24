@@ -190,6 +190,7 @@ export default {
         this.cursor = 'wait';
         return;
       }
+
       document.body.style.cursor = 'auto';
       this.cursor = null;
     },
@@ -620,6 +621,14 @@ export default {
       this.parse();
       this.paper.unfreeze();
       this.$emit('parsed');
+      this.removeLoaderIfProcessIsEmpty();
+    },
+    removeLoaderIfProcessIsEmpty() {
+      const emptyProcess = store.getters.nodes.length === 0;
+      if (!emptyProcess) {
+        return;
+      }
+      this.isRendering = false;
     },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
@@ -751,11 +760,23 @@ export default {
       this.poolTarget = null;
     },
     removeNode(node) {
+      this.removeNodeFromLane(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
       this.$nextTick(() => {
         this.pushToUndoStack();
       });
+    },
+    removeNodeFromLane(node) {
+      const containingLane = node.pool && node.pool.component.laneSet.get('lanes').find(lane => {
+        return lane.get('flowNodeRef').includes(node.definition);
+      });
+
+      if (!containingLane) {
+        return;
+      }
+
+      pull(containingLane.get('flowNodeRef'), node.definition);
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
