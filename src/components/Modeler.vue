@@ -20,12 +20,12 @@
     </b-col>
 
     <b-col
-      class="paper-container h-100 pr-4 d-flex"
+      class="paper-container h-100 pr-4"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="toolbar d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -46,12 +46,12 @@
           <font-awesome-icon  v-if="miniMapOpen" :icon="minusIcon" />
           <font-awesome-icon v-else :icon="mapIcon" />
         </button>
-
-        <mini-paper :isOpen="miniMapOpen" :paper="paper" :graph="graph" />
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
+    
+    <mini-paper :isOpen="miniMapOpen" :paper="paper" :graph="graph" />
 
     <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <InspectorPanel
