@@ -10,41 +10,12 @@ import {
   uploadXml,
   waitToRenderAllShapes,
 } from '../support/utils';
-import { nodeTypes } from '../support/constants';
+import { boundaryEventSelector, nodeTypes } from '../support/constants';
 import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
-
-const boundaryEventSelector = '.main-paper ' +
-  '[data-type="processmaker.components.nodes.task.Shape"] + ' +
-  '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
 describe('Boundary Timer Event', () => {
   beforeEach(() => {
     cy.loadModeler();
-  });
-
-  it('Render a boundary timer event', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
-    const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-
-    const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
-
-    getElementAtPosition(boundaryTimerEventPosition).click();
-
-    const boundaryTimerEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(boundaryTimerEventXML);
-      });
   });
 
   it('update boundary timer event properties element', function() {
