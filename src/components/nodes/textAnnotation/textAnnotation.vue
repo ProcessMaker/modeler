@@ -7,6 +7,7 @@ import { shapes, util } from 'jointjs';
 import connectIcon from '@/assets/connect-artifacts.svg';
 import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
+import { highlightPadding } from '@/mixins/crownConfig';
 
 export const maxTextAnnotationWidth = 160;
 export default {
@@ -45,7 +46,7 @@ export default {
         newHeight = currentBoundsHeight;
       }
 
-      this.shape.resize(this.nodeWidth, newHeight);
+      this.shape.resize(this.nodeWidth, newHeight - highlightPadding);
     },
     updateNodeText(text) {
       let { height } = this.shape.findView(this.paper).getBBox();
