@@ -368,4 +368,22 @@ describe('Modeler', () => {
       });
     });
   });
+
+  it('Does not show cursor when done loading empty process', function() {
+    const startEventPosition = { x: 150, y: 150 };
+
+    getElementAtPosition(startEventPosition)
+      .click()
+      .then($startEvent => getCrownButtonForElement($startEvent, 'delete-button'))
+      .click();
+
+    uploadXml('../../../src/blank.bpmn');
+
+    cy.get('body')
+      .should('have.css', 'cursor', 'auto')
+      .should('not.have.css', 'cursor', 'wait');
+
+    cy.get('.paper-container').should('not.have.class', 'wait');
+    cy.get('.paper-container .joint-paper').should('not.have.css', 'cursor', 'wait');
+  });
 });
