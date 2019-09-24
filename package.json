@@ -89,5 +89,15 @@
     "last 2 versions",
     "not ie <= 8",
     "chrome >= 69"
-  ]
+  ],
+  "nyc": {
+    "extension": [
+      ".js",
+      ".vue"
+    ],
+    "exclude": [
+      "tests/**/*.js"
+    ],
+    "report-dir": "cypress-coverage"
+  }
 }
