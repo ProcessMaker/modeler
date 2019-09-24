@@ -4,7 +4,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 
 export default merge(cloneDeep(boundaryEventConfig), {
-  id: 'processmaker-modeler-boundary-timer-event',
+  id: 'processmaker-modeler-boundary-escalation-event',
   component,
   label: 'Boundary Escalation Event',
   icon: require('@/assets/toolpanel/boundary-escalation-event.svg'),
