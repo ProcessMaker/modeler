@@ -23,6 +23,10 @@ const boundaryEventData = [{
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+}, {
+  type: 'Boundary Message Event',
+  nodeType: nodeTypes.boundaryMessageEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
 }, {
   type: 'Boundary Escalation Event',
@@ -72,7 +76,7 @@ boundaryEventData.forEach(({ type, nodeType, taskType, eventXMLSnippet }) => {
 
     it('removes references of itself when inside of a pool and deleting the pool', function() {
       const poolPosition = { x: 400, y: 300 };
-      configurePool(poolPosition);
+      configurePool(poolPosition, nodeType);
 
       getElementAtPosition(poolPosition)
         .click()
@@ -90,7 +94,7 @@ boundaryEventData.forEach(({ type, nodeType, taskType, eventXMLSnippet }) => {
     });
 
     it('can stay anchored to task when moving pool', function() {
-      configurePool({ x: 300, y: 300 });
+      configurePool({ x: 300, y: 300 }, nodeType);
 
       const taskSelector = '.main-paper ' +
         '[data-type="processmaker.components.nodes.task.Shape"]';
