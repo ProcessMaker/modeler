@@ -14,262 +14,227 @@ import { nodeTypes } from '../support/constants';
 const boundaryEventSelector = '.main-paper ' +
   '[data-type="processmaker.components.nodes.task.Shape"] + ' +
   '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+const boundaryEventPosition = { x: 250, y: 250 };
+const taskPosition = { x: 250, y: 200 };
 
-describe('Boundary Event Common Behaviour', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
+const boundaryEventData = [
+  {
+    type: 'Boundary Timer Event',
+    nodeType: nodeTypes.boundaryTimerEvent,
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+  },
+];
 
-  it('removes references of itself when inside of a pool and deleting the pool', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
-    const startEventPosition = { x: 150, y: 150 };
-    const poolPosition = { x: 400, y: 300 };
-    const taskPosition = { x: 250, y: 250 };
-
-    getElementAtPosition(startEventPosition)
+boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
+  function configurePool(poolPosition) {
+    getElementAtPosition({ x: 150, y: 150 })
       .click()
       .then($startEvent => {
         getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
       });
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-
-    const boundaryTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
-
+    dragFromSourceToDest(nodeTypes.task, { x: 250, y: 250 });
+    dragFromSourceToDest(nodeType, boundaryEventPosition);
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
+  }
 
-    getElementAtPosition(poolPosition)
-      .click()
-      .then($task => {
-        getCrownButtonForElement($task, 'delete-button').click({ force: true });
-      });
-
-    const boundaryTimerEventInXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.not.contain(boundaryTimerEventInXML);
-      });
-  });
-
-  it('can stay anchored to task when moving pool', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-    const startEventPosition = { x: 150, y: 150 };
-    const poolPosition = { x: 300, y: 300 };
-    const taskPosition = { x: 250, y: 250 };
-
-    getElementAtPosition(startEventPosition)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
-      });
-
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-
-    const boundaryTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
-
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
-
-    const initialPositionXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(initialPositionXML);
-      });
-
-    moveElementRelativeTo({ x: 400, y: 400 }, 150, 150);
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(initialPositionXML);
-      });
-  });
-
-  it('retains outgoing sequence flows on Boundary Events', function() {
-
-    const taskForTimerPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskForTimerPosition);
-
-    const outgoingTaskPosition = { x: 400, y: 400 };
-    dragFromSourceToDest(nodeTypes.task, outgoingTaskPosition);
-
-    const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
-
-    connectNodesWithFlow('sequence-flow-button', boundaryTimerEventPosition, outgoingTaskPosition);
-
-    const numberOfSequenceFlowsAdded = 1;
-
-    getElementAtPosition(boundaryTimerEventPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links.length).to.eq(numberOfSequenceFlowsAdded);
+  describe(`Common behaviour test for boundary event type ${type}`, () => {
+    beforeEach(() => {
+      cy.loadModeler();
     });
 
-    cy.get('[data-test=undo]').click({ force: true });
-    waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click({ force: true });
-    waitToRenderAllShapes();
+    it('removes references of itself when inside of a pool and deleting the pool', function() {
+      const poolPosition = { x: 400, y: 300 };
+      configurePool(poolPosition);
 
-    getElementAtPosition(boundaryTimerEventPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links.length).to.eq(numberOfSequenceFlowsAdded);
+      getElementAtPosition(poolPosition)
+        .click()
+        .then($task => {
+          getCrownButtonForElement($task, 'delete-button').click({ force: true });
+        });
+      cy.get('[data-test=downloadXMLBtn]').click();
+
+      cy.window()
+        .its('xml')
+        .then(removeIndentationAndLinebreaks)
+        .then(xml => {
+          expect(xml).to.not.contain(eventXMLSnippet);
+        });
     });
 
+    it('can stay anchored to task when moving pool', function() {
+      configurePool({ x: 300, y: 300 });
+      cy.get('[data-test=downloadXMLBtn]').click();
+      cy.window()
+        .its('xml')
+        .then(removeIndentationAndLinebreaks)
+        .then(xml => {
+          expect(xml).to.contain(eventXMLSnippet);
+        });
 
-  });
+      moveElementRelativeTo({ x: 400, y: 400 }, 150, 150);
 
-  it('cannot attach an incoming sequence flow on Boundary Events', function() {
-    const taskForBoundaryEventsPosition = { x: 300, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskForBoundaryEventsPosition);
-
-    const taskPosition = { x: 400, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    const eventPosition = { x: 300, y: 210 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, eventPosition);
-
-    connectNodesWithFlow('sequence-flow-button', taskPosition, eventPosition);
-
-    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links).to.have.lengthOf(0);
+      cy.get('[data-test=downloadXMLBtn]').click();
+      cy.window()
+        .its('xml')
+        .then(removeIndentationAndLinebreaks)
+        .then(xml => {
+          expect(xml).to.contain(eventXMLSnippet);
+        });
     });
 
-    getElementAtPosition(eventPosition).click().then($boundaryTimerEvent => {
-      getCrownButtonForElement($boundaryTimerEvent, 'delete-button').click();
-    });
-  });
+    it('retains outgoing sequence flows on Boundary Events', function() {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-  it('snaps back to original position when dragged over empty area', function() {
-    const taskPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+      const outgoingTaskPosition = { x: 400, y: 400 };
+      dragFromSourceToDest(nodeTypes.task, outgoingTaskPosition);
 
-    const boundaryTimerEventSelector = '.main-paper ' +
-      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
-      '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+      dragFromSourceToDest(nodeType, boundaryEventPosition);
 
-    cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
-      const boundaryTimerEventPosition = $boundaryEvent.position();
-      const emptySpot = { x: 400, y: 400 };
+      connectNodesWithFlow('sequence-flow-button', boundaryEventPosition, outgoingTaskPosition);
 
-      cy.wrap($boundaryEvent)
-        .trigger('mousedown', { which: 1, force: true })
-        .trigger('mousemove', { clientX: emptySpot.x, clientY: emptySpot.y, force: true })
-        .trigger('mouseup');
+      const numberOfSequenceFlowsAdded = 1;
 
-      waitToRenderAllShapes();
-
-      cy.wrap($boundaryEvent).should($el => {
-        const { left, top } = $el.position();
-        const positionErrorMargin = 2;
-        expect(left).to.be.closeTo(boundaryTimerEventPosition.left, positionErrorMargin);
-        expect(top).to.be.closeTo(boundaryTimerEventPosition.top, positionErrorMargin);
+      getElementAtPosition(boundaryEventPosition).then(getLinksConnectedToElement).should($links => {
+        expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
-    });
-  });
-
-  it('does not snap boundary event to new position when selecting', function() {
-    const taskPosition = { x: 300, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-
-    const boundaryEventPosition = { x: 300, y: 250 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryEventPosition);
-
-    const boundaryEventConnectedPosition = { x: 282, y: 239 };
-    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
-    getElementAtPosition(boundaryEventPosition).click();
-    getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
-  });
-
-  it('correctly re-renders a boundary event on undo and redo', () => {
-    const taskPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
-
-    cy.get('[data-test=undo]').click({ force: true });
-    waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click({ force: true });
-    waitToRenderAllShapes();
-
-    getElementAtPosition(taskPosition, nodeTypes.task)
-      .then(getComponentsEmbeddedInShape)
-      .then(events => events[0])
-      .then($event => {
-        cy.window()
-          .its('store.state.graph')
-          .invoke('getCell', $event.attr('model-id'))
-          .should(shape => expect(shape.component.node.type).to.eq(nodeTypes.boundaryTimerEvent));
-      });
-  });
-
-  it('can successfully undo/redo after dragging onto invalid (empty) space ', function() {
-    const taskPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
-
-    cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
-      const boundaryEventPosition = $boundaryEvent.position();
-
-      cy.wrap($boundaryEvent)
-        .trigger('mousedown', { which: 1, force: true })
-        .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
-        .trigger('mouseup');
-
-      waitToRenderAllShapes();
 
       cy.get('[data-test=undo]').click({ force: true });
       waitToRenderAllShapes();
       cy.get('[data-test=redo]').click({ force: true });
       waitToRenderAllShapes();
 
-      cy.get('@boundaryEvent').should($boundaryEvent => {
-        const { left, top } = $boundaryEvent.position();
-
-        expect(left).to.equal(boundaryEventPosition.left);
-        expect(top).to.equal(boundaryEventPosition.top);
+      getElementAtPosition(boundaryEventPosition).then(getLinksConnectedToElement).should($links => {
+        expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
     });
 
-    getElementAtPosition(taskPosition);
-    getElementAtPosition(taskPosition, nodeTypes.task)
-      .then(getComponentsEmbeddedInShape)
-      .should($elements => {
-        expect($elements).to.have.lengthOf(1);
+    it('cannot attach an incoming sequence flow on Boundary Events', function() {
+      const firstTaskPosition = { x: 400, y: 400 };
+      dragFromSourceToDest(nodeTypes.task, firstTaskPosition);
+
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+      dragFromSourceToDest(nodeType, boundaryEventPosition);
+
+      connectNodesWithFlow('sequence-flow-button', firstTaskPosition, boundaryEventPosition);
+
+      getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+        expect($links).to.have.lengthOf(0);
       });
-  });
 
-  it('redo positions it in same location as before undo', function() {
-    const taskPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    const boundaryTimerEventPosition = { x: 300, y: 350 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
+      getElementAtPosition(boundaryEventPosition).click().then($boundaryTimerEvent => {
+        getCrownButtonForElement($boundaryTimerEvent, 'delete-button').click();
+      });
+    });
 
-    cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
-      const boundaryEventPosition = $boundaryEvent.position();
+    it('snaps back to original position when dragged over empty area', function() {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+      dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
 
-      cy.get('[data-test=undo]').click();
+      cy.get(boundaryEventSelector).then($boundaryEvent => {
+        const boundaryTimerEventPosition = $boundaryEvent.position();
+        const emptySpot = { x: 400, y: 400 };
+
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: emptySpot.x, clientY: emptySpot.y, force: true })
+          .trigger('mouseup');
+
+        waitToRenderAllShapes();
+
+        cy.wrap($boundaryEvent).should($el => {
+          const { left, top } = $el.position();
+          const positionErrorMargin = 2;
+          expect(left).to.be.closeTo(boundaryTimerEventPosition.left, positionErrorMargin);
+          expect(top).to.be.closeTo(boundaryTimerEventPosition.top, positionErrorMargin);
+        });
+      });
+    });
+
+    it('does not snap boundary event to new position when selecting', function() {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+      dragFromSourceToDest(nodeType, boundaryEventPosition);
+
+      const boundaryEventConnectedPosition = { x: 232, y: 239 };
+      getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
+      getElementAtPosition(boundaryEventPosition).click();
+      getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
+    });
+
+    it('correctly re-renders a boundary event on undo and redo', () => {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+      dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+
+      cy.get('[data-test=undo]').click({ force: true });
       waitToRenderAllShapes();
-      cy.get('[data-test=redo]').click();
+      cy.get('[data-test=redo]').click({ force: true });
       waitToRenderAllShapes();
 
-      cy.get('@boundaryEvent').should($boundaryEvent => {
-        const { left, top } = $boundaryEvent.position();
+      getElementAtPosition(taskPosition, nodeTypes.task)
+        .then(getComponentsEmbeddedInShape)
+        .then(events => events[0])
+        .then($event => {
+          cy.window()
+            .its('store.state.graph')
+            .invoke('getCell', $event.attr('model-id'))
+            .should(shape => expect(shape.component.node.type).to.eq(nodeType));
+        });
+    });
 
-        expect(left).to.equal(boundaryEventPosition.left);
-        expect(top).to.equal(boundaryEventPosition.top);
+    it('can successfully undo/redo after dragging onto invalid (empty) space ', function() {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+      dragFromSourceToDest(nodeType, taskPosition);
+
+      cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
+        const boundaryEventPosition = $boundaryEvent.position();
+
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
+          .trigger('mouseup');
+
+        waitToRenderAllShapes();
+
+        cy.get('[data-test=undo]').click({ force: true });
+        waitToRenderAllShapes();
+        cy.get('[data-test=redo]').click({ force: true });
+        waitToRenderAllShapes();
+
+        cy.get('@boundaryEvent').should($boundaryEvent => {
+          const { left, top } = $boundaryEvent.position();
+
+          expect(left).to.equal(boundaryEventPosition.left);
+          expect(top).to.equal(boundaryEventPosition.top);
+        });
+      });
+
+      getElementAtPosition(taskPosition);
+      getElementAtPosition(taskPosition, nodeTypes.task)
+        .then(getComponentsEmbeddedInShape)
+        .should($elements => {
+          expect($elements).to.have.lengthOf(1);
+        });
+    });
+
+    it('redo positions it in same location as before undo', function() {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+      dragFromSourceToDest(nodeType, boundaryEventPosition);
+
+      cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
+        const boundaryEventPosition = $boundaryEvent.position();
+
+        cy.get('[data-test=undo]').click();
+        waitToRenderAllShapes();
+        cy.get('[data-test=redo]').click();
+        waitToRenderAllShapes();
+
+        cy.get('@boundaryEvent').should($boundaryEvent => {
+          const { left, top } = $boundaryEvent.position();
+
+          expect(left).to.equal(boundaryEventPosition.left);
+          expect(top).to.equal(boundaryEventPosition.top);
+        });
       });
     });
   });
