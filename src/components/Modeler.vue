@@ -190,6 +190,7 @@ export default {
         this.cursor = 'wait';
         return;
       }
+
       document.body.style.cursor = 'auto';
       this.cursor = null;
     },
@@ -620,6 +621,14 @@ export default {
       this.parse();
       this.paper.unfreeze();
       this.$emit('parsed');
+      this.removeLoaderIfProcessIsEmpty();
+    },
+    removeLoaderIfProcessIsEmpty() {
+      const emptyProcess = store.getters.nodes.length === 0;
+      if (!emptyProcess) {
+        return;
+      }
+      this.isRendering = false;
     },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
