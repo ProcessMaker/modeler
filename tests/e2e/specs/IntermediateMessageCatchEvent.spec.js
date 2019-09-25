@@ -10,10 +10,6 @@ import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Message Catch Event', () => {
   it('Update properties', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const intermediateMessageCatchEventPosition = { x: 200, y: 200 };
 
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
@@ -48,10 +44,6 @@ describe('Intermediate Message Catch Event', () => {
   });
 
   it('Message Event Definition Ids are unique on render', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const intermediateMessageCatchEventPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
 
@@ -95,10 +87,6 @@ describe('Intermediate Message Catch Event', () => {
     getElementAtPosition(intermediateMessageCatchEvent3Position).click();
 
     cy.get('[name=eventDefinitionId]').should('have.value', 'message_event_4');
-
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
 
     uploadXml('messageFlow.xml');
 

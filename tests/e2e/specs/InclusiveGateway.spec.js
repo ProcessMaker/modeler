@@ -16,10 +16,6 @@ describe('Inclusive Gateway', () => {
   });
 
   it('Detects gateway direction of converging or diverging', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const inclusivePosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
 

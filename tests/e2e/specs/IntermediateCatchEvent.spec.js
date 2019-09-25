@@ -8,10 +8,6 @@ import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Catch Event', () => {
   it('Update delay field on Intermediate Catch Event', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
@@ -70,10 +66,6 @@ describe('Intermediate Catch Event', () => {
   });
 
   it('Sets default values when switching between types', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     cy.clock();
 
     const intermediateCatchEventPosition = { x: 250, y: 250 };

@@ -57,10 +57,6 @@ describe('Modeler', () => {
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
 
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     cy.get('[data-test=downloadXMLBtn]').click();
 
     const validXML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -126,10 +122,6 @@ describe('Modeler', () => {
     getElementAtPosition(task3Position).click();
 
     cy.get('[name=id]').should('have.value', 'node_5');
-
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
 
     uploadXml('../../../src/blank.bpmn');
 
@@ -211,10 +203,6 @@ describe('Modeler', () => {
   });
 
   it('Runs custom parser before default parser', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     uploadXml('parser.xml');
 
     cy.readFile('tests/e2e/fixtures/parser.xml', 'utf8').then(sourceXML => {
@@ -299,10 +287,6 @@ describe('Modeler', () => {
   });
 
   it('shows warning for unknown element during parsing', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     uploadXml('unknownElement.xml');
     const warning = 'IntermediateThrowEvent is an unsupported element type in parse';
 
