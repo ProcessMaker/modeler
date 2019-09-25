@@ -996,8 +996,6 @@ $vertex-error-color: #ED4757;
 
     .toolbar {
       z-index: 1;
-      flex: 1;
-      align-content: flex-start;
       height: $toolbar-height;
 
       > button {
