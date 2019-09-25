@@ -14,15 +14,7 @@ import { boundaryEventSelector, nodeTypes } from '../support/constants';
 import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
 
 describe('Boundary Timer Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('update boundary timer event properties element', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 

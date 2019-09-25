@@ -1,16 +1,8 @@
-import {
-  dragFromSourceToDest,
-  typeIntoTextInput,
-  getElementAtPosition,
-} from '../support/utils';
+import { dragFromSourceToDest, getElementAtPosition, typeIntoTextInput } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Parallel Gateway', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update parallel gateway name', () => {
     const testString = 'testing';
     const parallelGatewayPosition = { x: 200, y: 200 };

@@ -1,19 +1,15 @@
 import {
-  dragFromSourceToDest,
-  getElementAtPosition,
   connectNodesWithFlow,
-  getLinksConnectedToElement,
-  moveElement,
-  getNumberOfLinks,
+  dragFromSourceToDest,
   getCrownButtonForElement,
+  getElementAtPosition,
+  getLinksConnectedToElement,
+  getNumberOfLinks,
+  moveElement,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Message Flows', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Can connect two pools with a message flow', () => {
     const pool1Position = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, pool1Position);

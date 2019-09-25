@@ -1,18 +1,14 @@
 import {
-  dragFromSourceToDest,
-  typeIntoTextInput,
-  getElementAtPosition,
   connectNodesWithFlow,
+  dragFromSourceToDest,
   getCrownButtonForElement,
+  getElementAtPosition,
+  typeIntoTextInput,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Text Annotation', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update text annotation name', () => {
     const testString = 'testing';
 

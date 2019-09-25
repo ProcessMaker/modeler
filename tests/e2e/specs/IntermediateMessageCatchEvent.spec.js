@@ -1,23 +1,15 @@
 import {
   dragFromSourceToDest,
-  typeIntoTextInput,
   getElementAtPosition,
-  waitToRenderAllShapes,
+  typeIntoTextInput,
   uploadXml,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Message Catch Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update properties', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const intermediateMessageCatchEventPosition = { x: 200, y: 200 };
 
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
@@ -40,7 +32,7 @@ describe('Intermediate Message Catch Event', () => {
     typeIntoTextInput('[name=whitelist]', whiteList);
 
     const validXML =
-    `<bpmn:intermediateCatchEvent id="node_2" name="${name}" pm:allowedUsers="1,10" pm:allowedGroups="20,30" pm:whitelist="${whiteList}">
+      `<bpmn:intermediateCatchEvent id="node_2" name="${name}" pm:allowedUsers="1,10" pm:allowedGroups="20,30" pm:whitelist="${whiteList}">
       <bpmn:messageEventDefinition id="${eventId}" pm:variableName="${variableName}" />
     </bpmn:intermediateCatchEvent>`;
 
@@ -52,10 +44,6 @@ describe('Intermediate Message Catch Event', () => {
   });
 
   it('Message Event Definition Ids are unique on render', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const intermediateMessageCatchEventPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
 
@@ -63,7 +51,7 @@ describe('Intermediate Message Catch Event', () => {
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventSecondPosition);
 
     const validXML =
-    `<bpmn:intermediateCatchEvent id="node_2" name="Intermediate Message Catch Event" pm:allowedUsers="" pm:allowedGroups="" pm:whitelist="">
+      `<bpmn:intermediateCatchEvent id="node_2" name="Intermediate Message Catch Event" pm:allowedUsers="" pm:allowedGroups="" pm:whitelist="">
       <bpmn:messageEventDefinition id="message_event_1" pm:variableName="message" />
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="node_3" name="Intermediate Message Catch Event" pm:allowedUsers="" pm:allowedGroups="" pm:whitelist="">
@@ -99,10 +87,6 @@ describe('Intermediate Message Catch Event', () => {
     getElementAtPosition(intermediateMessageCatchEvent3Position).click();
 
     cy.get('[name=eventDefinitionId]').should('have.value', 'message_event_4');
-
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
 
     uploadXml('messageFlow.xml');
 

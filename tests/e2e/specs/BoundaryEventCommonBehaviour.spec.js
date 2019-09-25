@@ -36,10 +36,6 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
   }
 
   describe(`Common behaviour test for boundary event type ${type}`, () => {
-    beforeEach(() => {
-      cy.loadModeler();
-    });
-
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(nodeTypes.task, taskPosition);
 

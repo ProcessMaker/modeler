@@ -1,17 +1,13 @@
 import {
   dragFromSourceToDest,
+  getElementAtPosition,
   typeIntoTextInput,
   waitToRenderAllShapes,
-  getElementAtPosition,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Manual Task', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update Manual Task name', () => {
     const testString = 'testing';
 

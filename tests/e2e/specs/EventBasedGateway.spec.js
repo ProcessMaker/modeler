@@ -1,19 +1,15 @@
 import {
-  dragFromSourceToDest,
-  typeIntoTextInput,
-  getElementAtPosition,
   connectNodesWithFlow,
-  getGraphElements,
+  dragFromSourceToDest,
   getCrownButtonForElement,
+  getElementAtPosition,
+  getGraphElements,
+  typeIntoTextInput,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Event-Based Gateway', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update event-based gateway name', () => {
     const testString = 'testing';
 
