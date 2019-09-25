@@ -10,15 +10,15 @@ export const defaultViewportDimensions = {
 export const nodeTypes = {
   startEvent: 'processmaker-modeler-start-event',
   task: 'processmaker-modeler-task',
-  endEvent:'processmaker-modeler-end-event',
-  scriptTask:'processmaker-modeler-script-task',
-  manualTask:'processmaker-modeler-manual-task',
+  endEvent: 'processmaker-modeler-end-event',
+  scriptTask: 'processmaker-modeler-script-task',
+  manualTask: 'processmaker-modeler-manual-task',
   exclusiveGateway: 'processmaker-modeler-exclusive-gateway',
   parallelGateway: 'processmaker-modeler-parallel-gateway',
   inclusiveGateway: 'processmaker-modeler-inclusive-gateway',
   eventBasedGateway: 'processmaker-modeler-event-based-gateway',
   textAnnotation: 'processmaker-modeler-text-annotation',
-  pool:'processmaker-modeler-pool',
+  pool: 'processmaker-modeler-pool',
   startTimerEvent: 'processmaker-modeler-start-timer-event',
   intermediateCatchEvent: 'processmaker-modeler-intermediate-catch-timer-event',
   intermediateMessageCatchEvent: 'processmaker-modeler-intermediate-message-catch-event',
@@ -31,3 +31,7 @@ export const nodeTypes = {
   boundarySignalEvent: 'processmaker-modeler-boundary-signal-event',
   taskWithMarker: 'processmaker-custom-marker-task-test',
 };
+
+export const boundaryEventSelector = '.main-paper ' +
+  '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+  '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
