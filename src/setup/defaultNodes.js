@@ -43,13 +43,13 @@ const nodeTypes = [
   association,
   pool,
   poolLane,
-  boundaryMessageEvent,
 ];
-const timerEventNodes = [
+const timerAndBoundaryEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
+  [boundaryMessageEvent, 'bpmn:BoundaryEvent']
 ];
 const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
   const definitions = definition.get('eventDefinitions');
@@ -63,7 +63,7 @@ const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) =
 };
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension }) => {
   registerNode(startEvent);
-  timerEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
+  timerAndBoundaryEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
     registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
 
