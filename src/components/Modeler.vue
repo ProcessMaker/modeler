@@ -959,12 +959,6 @@ $controls-column-max-width: 185px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
 
-$tool-bar-spacer-width: 0.5rem;
-$tool-bar-spacer-height: 2rem;
-$tool-bar-spacer-left-position: 6.4rem;
-$tool-bar-spacer-right-position: 2.1rem;
-
-
 .ignore-pointer {
   pointer-events: none;
 }
@@ -1003,36 +997,11 @@ $tool-bar-spacer-right-position: 2.1rem;
     .toolbar {
       z-index: 1;
       height: $toolbar-height;
-
-      &::before {
-        content: '';
-        background: transparent;
-        position: absolute;
-        width: $tool-bar-spacer-width;
-        height: $tool-bar-spacer-height;
-        cursor: auto;
-        z-index: 2;
-        left: $tool-bar-spacer-left-position;
-      }
-
-      &::after {
-        content: '';
-        background: transparent;
-        position: absolute;
-        width: $tool-bar-spacer-width;
-        height: $tool-bar-spacer-height;
-        cursor: auto;
-        z-index: 2;
-        right: $tool-bar-spacer-right-position;
-      }
+      cursor: auto;
 
       > button {
         cursor: pointer;
       }
-    }
-
-    .scale-value {
-      cursor: auto;
     }
   }
 
