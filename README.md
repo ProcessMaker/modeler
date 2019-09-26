@@ -46,7 +46,7 @@ npm run lint
 
 ## Testing
 
-Unit tests are set up using jest and end-to-end tests are et up using Cypress. Unit and end-to-end tests can be run separately or together. Code coverage is collected for both types of tests and combined into a single coverage report for the entire project. 
+Unit tests are set up using jest and end-to-end tests are set up using Cypress. Unit and end-to-end tests can be run separately or together. Code coverage is collected for both types of tests and combined into a single coverage report for the entire project. 
 
 Tests can be run locally with the following commands:
 
