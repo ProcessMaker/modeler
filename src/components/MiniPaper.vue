@@ -44,7 +44,7 @@ export default {
   async mounted() {
     await this.$nextTick();
 
-    this.miniMapManager = new MiniMapManager(this.graph, this.$refs.miniPaper);
+    this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);
 
     this.paper.on('render:done', () => this.miniMapManager.scaleMiniMap());
     window.ProcessMaker.EventBus.$on('modeler-change', () => this.miniMapManager.scaleMiniMap());

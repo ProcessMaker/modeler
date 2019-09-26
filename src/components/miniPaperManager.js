@@ -1,15 +1,20 @@
 import { dia } from 'jointjs';
 
 export default class {
-  constructor(graph, element) {
-    this.graph = graph;
-    this.miniPaper = new dia.Paper({
+  constructor(miniPaper) {
+    this.miniPaper = miniPaper;
+  }
+
+  static factory(graph, element) {
+    const miniPaper = new dia.Paper({
       el: element,
-      model: this.graph,
+      model: graph,
       width: 300,
       height: 200,
       interactive: false,
     });
+
+    return new this(miniPaper);
   }
 
   get miniMap() {
