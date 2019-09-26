@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-coverage
+*coverage
+reports
 .nyc_output
 
 # local env files

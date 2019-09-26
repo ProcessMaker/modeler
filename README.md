@@ -46,17 +46,29 @@ npm run lint
 
 ## Testing
 
-Tests are set up using Cypress. For more information, visit [https://cli.vuejs.org/config/#cypress](https://cli.vuejs.org/config/#cypress). Tests can be run locally with the following commands:
+Unit tests are set up using jest and end-to-end tests are set up using Cypress. Unit and end-to-end tests can be run separately or together. Code coverage is collected for both types of tests and combined into a single coverage report for the entire project. 
+
+Tests can be run locally with the following commands:
 
 ```bash
-# Run the Cypress end-to-end (e2e) test suite
-npm test
+# Run the Jest unit test suite
+npm run test-unit
+
+# Open Cypress to run the end-to-end (e2e) test suite
+npm open-cypress
 
 # Run the Cypress end-to-end (e2e) test suite in headless mode
 npm run test-ci
+
+# Run the Jest unit test tests and then the Cypress tests in headless mode
+npm test
 ```
 
-Tests are run automatically on CircleCI when new branches are created and updated. The CI uses the `npm run test-ci` command to run tests.
+Tests are run automatically on CircleCI when new branches are created and updated. The CI uses the `npm test` command to run both the unit and e2e test suites and to collect code coverage.
+
+For more information on Cypress, visit [https://cli.vuejs.org/config/#cypress](https://cli.vuejs.org/config/#cypress).
+
+For more information on Jest, visit [https://jestjs.io](https://jestjs.io).
 
 ## Architecture
 
