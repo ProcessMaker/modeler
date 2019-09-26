@@ -768,9 +768,10 @@ export default {
       });
     },
     removeNodeFromLane(node) {
-      const containingLane = node.pool && node.pool.component.laneSet.get('lanes').find(lane => {
-        return lane.get('flowNodeRef').includes(node.definition);
-      });
+      const containingLane = node.pool && node.pool.component.laneSet &&
+        node.pool.component.laneSet.get('lanes').find(lane => {
+          return lane.get('flowNodeRef').includes(node.definition);
+        });
 
       if (!containingLane) {
         return;
