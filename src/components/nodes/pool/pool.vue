@@ -101,6 +101,15 @@ export default {
 
       return this.graph.findModelsInArea(area);
     },
+    moveEmbeddedElements(currentElement, toPool) {
+      this.getElementsUnderArea(currentElement).forEach((element) => {
+        if (element.isEmbeddedIn(currentElement)) {
+          const elementDefinition = element.component.node.definition;
+          pull(this.containingProcess.get('flowElements'), elementDefinition);
+          toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+        }
+      });
+    },
     moveElement(element, toPool) {
       const elementDefinition = element.component.node.definition;
 
@@ -117,13 +126,7 @@ export default {
       pull(this.containingProcess.get('flowElements'), elementDefinition);
 
       toPool.component.containingProcess.get('flowElements').push(elementDefinition);
-      this.getElementsUnderArea(element).forEach(element => {
-        const elementDefinition = element.component.node.definition;
-        if (elementDefinition.$type === 'bpmn:BoundaryEvent') {
-          pull(this.containingProcess.get('flowElements'), elementDefinition);
-          toPool.component.containingProcess.get('flowElements').push(elementDefinition);
-        }
-      });
+      this.moveEmbeddedElements(element, toPool);
 
       element.component.node.pool = toPool;
       this.shape.unembed(element);

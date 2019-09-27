@@ -149,7 +149,6 @@ describe('Pools', () => {
       });
   });
 
-
   it('Removes all references to element from a pool', function() {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -168,7 +167,7 @@ describe('Pools', () => {
     });
   });
 
-  it('boundary event changes process when dragged to another pool', function() {
+  it('moves boundary event to another process when dragged to that pool', function() {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
