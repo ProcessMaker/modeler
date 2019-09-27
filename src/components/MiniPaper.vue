@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import MiniMapManager from './miniPaperManager';
+import MiniMapManager from './miniMapManager';
 
 export default {
   data() {
@@ -29,8 +29,8 @@ export default {
     visibilityClass() {
       return this.isOpen ? 'visible' : 'invisible';
     },
-    miniPaper() {
-      return this.miniMapManager.miniMap;
+    miniMap() {
+      return this.miniMapManager.miniMapPaper;
     },
   },
   methods: {

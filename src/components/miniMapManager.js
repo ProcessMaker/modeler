@@ -1,8 +1,8 @@
 import { dia } from 'jointjs';
 
 export default class {
-  constructor(miniPaper) {
-    this.miniPaper = miniPaper;
+  constructor(miniMap) {
+    this.miniMap = miniMap;
   }
 
   static factory(graph, element) {
@@ -17,16 +17,16 @@ export default class {
     return new this(miniPaper);
   }
 
-  get miniMap() {
-    return this.miniPaper;
+  get miniMapPaper() {
+    return this.miniMap;
   }
 
   scaleMiniMap() {
-    this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
+    this.miniMap.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
   }
 
   calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight) {
-    const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
+    const { x, y } = this.miniMap.paperToLocalPoint(offsetX, offsetY);
 
     return {
       newX: (clientWidth / 2) - (x * scaleX),
