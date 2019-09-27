@@ -149,6 +149,7 @@ describe('Pools', () => {
       });
   });
 
+
   it('Removes all references to element from a pool', function() {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -164,6 +165,34 @@ describe('Pools', () => {
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(emptyPool);
       expect(xml).to.not.contain(startEvent);
+    });
+  });
+
+  it('boundary event changes process when dragged to another pool', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const pool2Position = { x: 100, y: 500 };
+    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryTimerEventPosition = { x: 260, y: 260 };
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
+
+    const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(pool1taskXml);
+    });
+
+    moveElement(taskPosition, 150, 550);
+
+    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(pool2taskXml);
     });
   });
 });
