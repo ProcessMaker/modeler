@@ -6,10 +6,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Escalation Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Render a boundary escalation event', function() {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
