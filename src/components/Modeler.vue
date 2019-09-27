@@ -43,14 +43,14 @@
         </div>
 
         <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
-          <font-awesome-icon  v-if="miniMapOpen" :icon="minusIcon" />
+          <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
           <font-awesome-icon v-else :icon="mapIcon" />
         </button>
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
-    
+
     <mini-paper :isOpen="miniMapOpen" :paper="paper" :graph="graph" />
 
     <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
@@ -103,7 +103,6 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
-import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import { startEvent } from '@/components/nodes';
@@ -118,7 +117,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMinus, faPlus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -126,6 +125,8 @@ import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';
+
+import PaperManager from './paperManager';
 
 const version = '1.0';
 
@@ -887,22 +888,8 @@ export default {
       };
     });
 
-    this.paper = new dia.Paper({
-      async: true,
-      el: this.$refs.paper,
-      model: this.graph,
-      sorting: 'sorting-approximate',
-      gridSize: 10,
-      drawGrid: true,
-      clickThreshold: 10,
-      perpendicularLinks: true,
-      interactive: this.graph.get('interactiveFunc'),
-      highlighting: {
-        default: { options: { padding: highlightPadding } },
-      },
-    });
-
-    this.paper.translate(168, 20);
+    const paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
+    this.paper = paperManager.paper;
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
