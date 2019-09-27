@@ -12,7 +12,7 @@ export default {
   extends: BoundaryEvent,
   methods: {
     doesNotHaveOtherBoundaryEvents(model) {
-      getAttachedErrorBoundaryEvents(model)
+      return getAttachedErrorBoundaryEvents(model)
         .filter(boundaryEvent => {
           return boundaryEvent !== this.shape;
         })
