@@ -148,4 +148,22 @@ describe('Pools', () => {
         expect(xml).to.not.contain('node_1');
       });
   });
+
+  it('Removes all references to element from a pool', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click().then($startEvent => {
+      getCrownButtonForElement($startEvent, 'delete-button').click();
+    });
+
+    const startEvent = '<bpmn:startEvent id="node_1" name="Start Event" />';
+    const emptyPool = '<bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(emptyPool);
+      expect(xml).to.not.contain(startEvent);
+    });
+  });
 });
