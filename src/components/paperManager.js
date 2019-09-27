@@ -35,12 +35,20 @@ export default class {
     return this._paper.scale();
   }
 
-  addOnListener(eventName, callback) {
+  translate(x, y) {
+    this._paper.translate(x, y);
+  }
+
+  addEventHandler(eventName, callback) {
     this._paper.on(eventName, callback);
   }
 
-  addOnceListener(eventName, callback) {
+  addOnceHandler(eventName, callback) {
     this._paper.once(eventName, callback);
+  }
+
+  removeEventHandler(eventName, callback) {
+    this._paper.off(eventName, callback);
   }
 
   freezePaper() {

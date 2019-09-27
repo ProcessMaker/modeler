@@ -15,7 +15,7 @@ export default {
   },
   props: {
     isOpen: { type: Boolean },
-    paper: { type: Object },
+    paperManager: { type: Object },
     graph: { type: Object },
   },
   watch: {
@@ -46,12 +46,12 @@ export default {
 
     this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);
 
-    this.paper.on('render:done', this.miniMapManager.scaleMiniMap, this);
+    this.paperManager.addEventHandler('render:done', this.miniMapManager.scaleMiniMap, this);
     window.ProcessMaker.EventBus.$on('modeler-change', () => this.miniMapManager.scaleMiniMap());
 
   },
   beforeDestroy() {
-    this.paper.off('render:done', this.miniMapManager.scaleMiniMap, this);
+    this.paperManager.removeEventHandler('render:done', this.miniMapManager.scaleMiniMap, this);
   },
 };
 </script>

@@ -617,7 +617,7 @@ export default {
       this.paperManager.freezePaper();
       this.isRendering = true;
       await this.waitForCursorToChange();
-      this.paperManager.addOnceListener('render:done', () => this.isRendering = false);
+      this.paperManager.addOnceHandler('render:done', () => this.isRendering = false);
       this.parse();
       this.paperManager.unfreezePaper();
       this.$emit('parsed');
@@ -893,16 +893,16 @@ export default {
 
     store.commit('setPaper', this.paperManager.paper);
 
-    this.paperManager.addOnListener('blank:pointerclick', () => {
+    this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
     });
 
-    this.paperManager.addOnListener('blank:pointerdown', (event, x, y) => {
+    this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
     });
-    this.paperManager.addOnListener('cell:pointerup blank:pointerup', () => {
+    this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
     });
@@ -916,14 +916,14 @@ export default {
       }
     });
 
-    this.paperManager.addOnListener('cell:pointerclick', (cellView, evt, x, y) => {
+    this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
     });
 
-    this.paperManager.addOnListener('cell:pointerdown', cellView => {
+    this.paperManager.addEventHandler('cell:pointerdown', cellView => {
       const shape = cellView.model;
 
       if (!this.isBpmnNode(shape)) {
