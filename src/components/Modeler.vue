@@ -155,9 +155,8 @@ export default {
 
       // Our jointjs data graph model
       graph: null,
-
-      // Our jointjs paper
       paper: null,
+      paperManager: null,
 
       definitions: null,
       nodeIdGenerator: null,
@@ -196,7 +195,7 @@ export default {
       this.cursor = null;
     },
     scale(scale) {
-      this.paper.scale(scale);
+      this.paperManager.paper.scale(scale);
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -615,12 +614,12 @@ export default {
     },
     async renderPaper() {
       await this.$nextTick();
-      this.paper.freeze();
+      this.paperManager.paper.freeze();
       this.isRendering = true;
       await this.waitForCursorToChange();
-      this.paper.once('render:done', () => this.isRendering = false);
+      this.paperManager.paper.once('render:done', () => this.isRendering = false);
       this.parse();
-      this.paper.unfreeze();
+      this.paperManager.paper.unfreeze();
       this.$emit('parsed');
       this.removeLoaderIfProcessIsEmpty();
     },
@@ -689,8 +688,8 @@ export default {
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       // Handle transform
-      const paperOrigin = this.paper.localToPagePoint(0, 0);
-      const scale = this.paper.scale();
+      const paperOrigin = this.paperManager.paper.localToPagePoint(0, 0);
+      const scale = this.paperManager.paper.scale();
 
       diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
       diagram.bounds.y = (clientY - paperOrigin.y) / scale.sy;
@@ -785,10 +784,10 @@ export default {
       this.parentWidth = clientWidth + 'px';
       this.parentHeight = clientHeight + 'px';
 
-      this.paper.setDimensions(clientWidth, clientHeight);
+      this.paperManager.paper.setDimensions(clientWidth, clientHeight);
     },
     validateDropTarget({ clientX, clientY, control }) {
-      const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paper, this.graph, this.collaboration, this.$refs['paper-container']);
+      const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
       this.poolTarget = poolTarget;
     },
@@ -831,7 +830,7 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
-      this.paper.freeze();
+      this.paperManager.paper.freeze();
 
       if (this.isPool(shape)) {
         this.bringPoolToFront(shape);
@@ -846,7 +845,7 @@ export default {
         this.bringShapeToFront(shape);
       }
 
-      this.paper.unfreeze();
+      this.paperManager.paper.unfreeze();
     },
   },
   created() {
@@ -888,45 +887,45 @@ export default {
       };
     });
 
-    const paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
-    this.paper = paperManager.paper;
+    this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
+    this.paper = this.paperManager.paper;
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    store.commit('setPaper', this.paper);
+    store.commit('setPaper', this.paperManager.paper);
 
-    this.paper.on('blank:pointerclick', () => {
+    this.paperManager.paper.on('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
     });
 
-    this.paper.on('blank:pointerdown', (event, x, y) => {
-      const scale = this.paper.scale();
+    this.paperManager.paper.on('blank:pointerdown', (event, x, y) => {
+      const scale = this.paperManager.paper.scale();
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
     });
-    this.paper.on('cell:pointerup blank:pointerup', () => {
+    this.paperManager.paper.on('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
     });
 
     this.$el.addEventListener('mousemove', event => {
       if (this.canvasDragPosition) {
-        this.paper.translate(
+        this.paperManager.paper.translate(
           event.offsetX - this.canvasDragPosition.x,
           event.offsetY - this.canvasDragPosition.y,
         );
       }
     });
 
-    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
+    this.paperManager.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
     });
 
-    this.paper.on('cell:pointerdown', cellView => {
+    this.paperManager.paper.on('cell:pointerdown', cellView => {
       const shape = cellView.model;
 
       if (!this.isBpmnNode(shape)) {
