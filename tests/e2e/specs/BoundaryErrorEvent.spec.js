@@ -1,36 +1,97 @@
 import {
   dragFromSourceToDest,
   getElementAtPosition,
-  removeIndentationAndLinebreaks,
+  getComponentsEmbeddedInShape,
+  getPositionInPaperCoords,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.only('Boundary Error Event', () => {
+describe('Boundary Error Event', () => {
   beforeEach(() => {
     cy.loadModeler();
   });
 
-  it('Render a boundary error event', function() {
-    const taskPosition = { x: 200, y: 200 };
+  it('Can only have one boundary error event per task', function() {
+    const taskPosition = { x: 250, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    const boundaryErrorEventPosition = { x: 260, y: 260 };
+    getElementAtPosition(taskPosition, nodeTypes.task)
+      .then(getComponentsEmbeddedInShape)
+      .should($elements => {
+        expect($elements).to.have.lengthOf(0);
+      });
+
+    const boundaryErrorEventPosition = { x: taskPosition.x + 10, y: taskPosition.y + 10 };
     dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
 
-    getElementAtPosition(boundaryErrorEventPosition).click();
-
-    const boundaryErrorEventXML = [
-      '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2">',
-      '<bpmn:errorEventDefinition />',
-      '</bpmn:boundaryEvent>',
-    ].join('');
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(boundaryErrorEventXML);
+    getElementAtPosition(taskPosition, nodeTypes.task)
+      .then(getComponentsEmbeddedInShape)
+      .should($elements => {
+        expect($elements).to.have.lengthOf(1);
       });
+
+    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+
+    getElementAtPosition(taskPosition, nodeTypes.task)
+      .then(getComponentsEmbeddedInShape)
+      .should($elements => {
+        expect($elements).to.have.lengthOf(1);
+      });
+
+    const task2Position = { x: 450, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, task2Position);
+
+    const boundaryErrorEvent2Position = { x: task2Position.x + 10, y: task2Position.y + 10 };
+
+    getElementAtPosition(boundaryErrorEventPosition, nodeTypes.boundaryErrorEvent).then($boundaryEvent => {
+      getPositionInPaperCoords(boundaryErrorEvent2Position).then(position => {
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: position.x, clientY: position.y, force: true })
+          .trigger('mouseup')
+          .then(waitToRenderAllShapes)
+          .then(() => {
+            getElementAtPosition(taskPosition, nodeTypes.task)
+              .then(getComponentsEmbeddedInShape)
+              .should($elements => {
+                expect($elements).to.have.lengthOf(0);
+              });
+
+            getElementAtPosition(task2Position, nodeTypes.task)
+              .then(getComponentsEmbeddedInShape)
+              .should($elements => {
+                expect($elements).to.have.lengthOf(1);
+              });
+          });
+      });
+    });
+
+    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+
+    const task2Position2 = { x: task2Position.x + 50, y: task2Position.y + 50 };
+
+    getElementAtPosition(boundaryErrorEventPosition, nodeTypes.boundaryErrorEvent).then($boundaryEvent => {
+      getPositionInPaperCoords(task2Position2).then(position => {
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: position.x, clientY: position.y, force: true })
+          .trigger('mouseup')
+          .then(waitToRenderAllShapes)
+          .then(() => {
+            getElementAtPosition(taskPosition, nodeTypes.task)
+              .then(getComponentsEmbeddedInShape)
+              .should($elements => {
+                expect($elements).to.have.lengthOf(1);
+              });
+
+            getElementAtPosition(task2Position, nodeTypes.task)
+              .then(getComponentsEmbeddedInShape)
+              .should($elements => {
+                expect($elements).to.have.lengthOf(1);
+              });
+          });
+      });
+    });
   });
 });

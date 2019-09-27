@@ -20,6 +20,11 @@ const boundaryEventData = [
     nodeType: nodeTypes.boundaryTimerEvent,
     eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   },
+  {
+    type: 'Boundary Error Event',
+    nodeType: nodeTypes.boundaryErrorEvent,
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+  },
 ];
 
 boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
