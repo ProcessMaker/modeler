@@ -90,7 +90,7 @@ function isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph) {
     .findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper))
     .find(({ component }) => component && validBoundaryEventTargets.includes(component.node.definition.$type));
 
-  if (!target  || hasErrorBoundaryEvent(target)) {
+  if (!target  || getAttachedErrorBoundaryEvents(target).length > 0) {
     return false;
   }
 
@@ -101,9 +101,8 @@ function isBoundaryErrorEvent(type) {
   return type === boundaryErrorEventId;
 }
 
-function hasErrorBoundaryEvent(shape) {
+export function getAttachedErrorBoundaryEvents(shape) {
   return shape
     .getEmbeddedCells()
-    .filter(({ component }) => component && isBoundaryErrorEvent(component.node.type))
-    .length > 0;
+    .filter(({ component }) => component && isBoundaryErrorEvent(component.node.type));
 }
