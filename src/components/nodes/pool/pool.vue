@@ -117,6 +117,14 @@ export default {
       pull(this.containingProcess.get('flowElements'), elementDefinition);
 
       toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+      this.getElementsUnderArea(element).forEach(element => {
+        const elementDefinition = element.component.node.definition;
+        if (elementDefinition.$type === 'bpmn:BoundaryEvent') {
+          pull(this.containingProcess.get('flowElements'), elementDefinition);
+          toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+        }
+      });
+
       element.component.node.pool = toPool;
       this.shape.unembed(element);
       toPool.component.addToPool(element);
