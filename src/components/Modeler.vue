@@ -614,12 +614,12 @@ export default {
     },
     async renderPaper() {
       await this.$nextTick();
-      this.paperManager.paper.freeze();
+      this.paperManager.freezePaper();
       this.isRendering = true;
       await this.waitForCursorToChange();
-      this.paperManager.paper.once('render:done', () => this.isRendering = false);
+      this.paperManager.addOnceListener('render:done', () => this.isRendering = false);
       this.parse();
-      this.paperManager.paper.unfreeze();
+      this.paperManager.unfreezePaper();
       this.$emit('parsed');
       this.removeLoaderIfProcessIsEmpty();
     },
@@ -830,22 +830,20 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
-      this.paperManager.paper.freeze();
+      this.paperManager.performAtomicAction(() => {
+        if (this.isPool(shape)) {
+          this.bringPoolToFront(shape);
+        }
 
-      if (this.isPool(shape)) {
-        this.bringPoolToFront(shape);
-      }
+        const parentPool = this.getElementPool(shape);
+        if (parentPool) {
+          this.bringPoolToFront(parentPool);
+        }
 
-      const parentPool = this.getElementPool(shape);
-      if (parentPool) {
-        this.bringPoolToFront(parentPool);
-      }
-
-      if (this.isNotLane(shape) && !this.isPool(shape)) {
-        this.bringShapeToFront(shape);
-      }
-
-      this.paperManager.paper.unfreeze();
+        if (this.isNotLane(shape) && !this.isPool(shape)) {
+          this.bringShapeToFront(shape);
+        }
+      });
     },
   },
   created() {
@@ -895,16 +893,16 @@ export default {
 
     store.commit('setPaper', this.paperManager.paper);
 
-    this.paperManager.paper.on('blank:pointerclick', () => {
+    this.paperManager.addOnListener('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
     });
 
-    this.paperManager.paper.on('blank:pointerdown', (event, x, y) => {
-      const scale = this.paperManager.paper.scale();
+    this.paperManager.addOnListener('blank:pointerdown', (event, x, y) => {
+      const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
     });
-    this.paperManager.paper.on('cell:pointerup blank:pointerup', () => {
+    this.paperManager.addOnListener('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
     });
@@ -918,14 +916,14 @@ export default {
       }
     });
 
-    this.paperManager.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
+    this.paperManager.addOnListener('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
     });
 
-    this.paperManager.paper.on('cell:pointerdown', cellView => {
+    this.paperManager.addOnListener('cell:pointerdown', cellView => {
       const shape = cellView.model;
 
       if (!this.isBpmnNode(shape)) {

@@ -30,4 +30,30 @@ export default class {
   get paper() {
     return this._paper;
   }
+
+  get scale() {
+    return this._paper.scale();
+  }
+
+  addOnListener(eventName, callback) {
+    this._paper.on(eventName, callback);
+  }
+
+  addOnceListener(eventName, callback) {
+    this._paper.once(eventName, callback);
+  }
+
+  freezePaper() {
+    this._paper.freeze();
+  }
+
+  unfreezePaper() {
+    this._paper.unfreeze();
+  }
+
+  performAtomicAction(callback) {
+    this._paper.freeze();
+    callback(this._paper);
+    this._paper.unfreeze();
+  }
 }
