@@ -46,12 +46,12 @@ export default {
 
     this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);
 
-    this.paper.on('render:done', () => this.miniMapManager.scaleMiniMap());
+    this.paper.on('render:done', this.miniMapManager.scaleMiniMap, this);
     window.ProcessMaker.EventBus.$on('modeler-change', () => this.miniMapManager.scaleMiniMap());
 
   },
   beforeDestroy() {
-    this.paper.off('render:done', () => this.miniMapManager.scaleMiniMap());
+    this.paper.off('render:done', this.miniMapManager.scaleMiniMap, this);
   },
 };
 </script>
