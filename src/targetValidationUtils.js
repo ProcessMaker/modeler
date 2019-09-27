@@ -90,7 +90,7 @@ function isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph) {
     .findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper))
     .find(({ component }) => component && validBoundaryEventTargets.includes(component.node.definition.$type));
 
-  if (!target  || getAttachedErrorBoundaryEvents(target).length > 0) {
+  if (!target || getAttachedErrorBoundaryEvents(target).length > 0) {
     return false;
   }
 

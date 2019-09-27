@@ -8,10 +8,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Error Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Can only have one boundary error event per task', function() {
     const taskPosition = { x: 250, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);

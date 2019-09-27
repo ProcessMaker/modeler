@@ -12,11 +12,11 @@ export default {
   extends: BoundaryEvent,
   methods: {
     doesNotHaveOtherBoundaryEvents(model) {
-      const boundaryEvents = getAttachedErrorBoundaryEvents(model).filter(boundaryEvent => {
-        return boundaryEvent !== this.shape;
-      });
-
-      return boundaryEvents.length === 0;
+      getAttachedErrorBoundaryEvents(model)
+        .filter(boundaryEvent => {
+          return boundaryEvent !== this.shape;
+        })
+        .length === 0;
     },
     isValidBoundaryEventTarget(model) {
       return model.component &&
