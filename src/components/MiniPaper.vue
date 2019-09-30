@@ -57,8 +57,8 @@ export default {
 </script>
 
 <style lang="scss">
-$mini-paper-container-top-position: 2.5rem;
-$mini-paper-container-right-position: 0;
+$mini-paper-container-top-position: 1rem;
+$mini-paper-container-right-position: 17.5rem;
 
 .mini-paper-container {
   position: absolute;

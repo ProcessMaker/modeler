@@ -20,12 +20,12 @@
     </b-col>
 
     <b-col
-      class="paper-container h-100 pr-4 d-flex"
+      class="paper-container h-100 pr-4"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="toolbar d-flex mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+      <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
@@ -48,6 +48,7 @@
         </button>
       </div>
 
+      <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
 
     <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" />
@@ -992,11 +993,8 @@ $vertex-error-color: #ED4757;
 
     .toolbar {
       z-index: 1;
-      flex: 1;
-      align-content: flex-start;
       height: $toolbar-height;
       cursor: auto;
-      background-color: #fff;
 
       > button {
         cursor: pointer;
