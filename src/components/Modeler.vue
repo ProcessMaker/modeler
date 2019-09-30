@@ -51,7 +51,7 @@
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
 
-    <mini-paper :isOpen="miniMapOpen" :paper="paper" :graph="graph" />
+    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" />
 
     <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <InspectorPanel
@@ -895,17 +895,17 @@ export default {
 
     this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
-    });
+    }, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
-    });
+    }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
-    });
+    }, this);
 
     this.$el.addEventListener('mousemove', event => {
       if (this.canvasDragPosition) {
@@ -914,7 +914,7 @@ export default {
           event.offsetY - this.canvasDragPosition.y,
         );
       }
-    });
+    }, this);
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
@@ -933,7 +933,7 @@ export default {
       this.setShapeStacking(shape);
 
       shape.component.$emit('click');
-    });
+    }, this);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {

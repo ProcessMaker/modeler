@@ -39,16 +39,16 @@ export default class {
     this._paper.translate(x, y);
   }
 
-  addEventHandler(eventName, callback) {
-    this._paper.on(eventName, callback);
+  addEventHandler(eventName, callback, objectScope) {
+    this._paper.on(eventName, callback, objectScope);
   }
 
   addOnceHandler(eventName, callback) {
     this._paper.once(eventName, callback);
   }
 
-  removeEventHandler(eventName, callback) {
-    this._paper.off(eventName, callback);
+  removeEventHandler(eventName, callback, objectScope) {
+    this._paper.off(eventName, callback, objectScope);
   }
 
   freezePaper() {
