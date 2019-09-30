@@ -10,10 +10,11 @@ import EventShape from '@/components/nodes/boundaryEvent/shape';
 import validBoundaryEventTargets from './validBoundaryEventTargets';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
 import { invalidNodeColor, poolColor, defaultNodeColor } from '@/components/nodeColors';
+import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
   props: ['graph', 'node', 'paper', 'highlighted'],
-  mixins: [crownConfig, portsConfig],
+  mixins: [crownConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,

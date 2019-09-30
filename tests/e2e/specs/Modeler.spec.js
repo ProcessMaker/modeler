@@ -366,4 +366,46 @@ describe('Modeler', () => {
     cy.get('.paper-container').should('not.have.class', 'wait');
     cy.get('.paper-container .joint-paper').should('not.have.css', 'cursor', 'wait');
   });
+
+  it('Hides element label on drag', function() {
+    const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
+    const nonBreakingSpace = String.fromCharCode(160);
+    const startEventLabelText = `Start${nonBreakingSpace}Event`;
+
+    cy.get(startEventSelector).as('startEvent')
+      .should('have.text', startEventLabelText)
+      .find('>text')
+      .should('have.css', 'display', 'block');
+
+    cy.get('@startEvent')
+      .trigger('mousedown')
+      .then($startEvent => {
+        waitToRenderAllShapes();
+        cy.wrap($startEvent)
+          .find('>text')
+          .should('have.css', 'display', 'block');
+      });
+
+    cy.get('@startEvent')
+      .trigger('mousemove', { clientX: 600, clientY: 600 })
+      .find('>text')
+      .should('have.css', 'display', 'none');
+
+    cy.get('@startEvent')
+      .trigger('mouseup')
+      .find('>text')
+      .should('have.css', 'display', 'block');
+
+    const poolPosition = { x: 150, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    const poolSelector = '.main-paper [data-type="processmaker.modeler.bpmn.pool"]';
+
+    cy.get(poolSelector)
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 580, clientY: 580 })
+      .then(() => waitToRenderAllShapes())
+      .get('@startEvent')
+      .find('>text')
+      .should('have.css', 'display', 'block');
+  });
 });
