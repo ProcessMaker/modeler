@@ -375,7 +375,7 @@ describe('Modeler', () => {
     cy.get(startEventSelector).as('startEvent')
       .should('have.text', startEventLabelText)
       .find('>text')
-      .should('have.css', 'visibility', 'visible');
+      .should('have.css', 'display', 'block');
 
     cy.get('@startEvent')
       .trigger('mousedown')
@@ -383,18 +383,18 @@ describe('Modeler', () => {
         waitToRenderAllShapes();
         cy.wrap($startEvent)
           .find('>text')
-          .should('have.css', 'visibility', 'visible');
+          .should('have.css', 'display', 'block');
       });
 
     cy.get('@startEvent')
       .trigger('mousemove', { clientX: 600, clientY: 600 })
       .find('>text')
-      .should('have.css', 'visibility', 'hidden');
+      .should('have.css', 'display', 'none');
 
     cy.get('@startEvent')
       .trigger('mouseup')
       .find('>text')
-      .should('have.css', 'visibility', 'visible');
+      .should('have.css', 'display', 'block');
 
     const poolPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -406,6 +406,6 @@ describe('Modeler', () => {
       .then(() => waitToRenderAllShapes())
       .get('@startEvent')
       .find('>text')
-      .should('have.css', 'visibility', 'visible');
+      .should('have.css', 'display', 'block');
   });
 });
