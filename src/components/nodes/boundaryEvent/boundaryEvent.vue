@@ -12,7 +12,7 @@ import { getBoundaryAnchorPoint } from '@/portsUtils';
 import { invalidNodeColor, poolColor, defaultNodeColor } from '@/components/nodeColors';
 
 export default {
-  props: ['graph', 'node', 'paper'],
+  props: ['graph', 'node', 'paper', 'highlighted'],
   mixins: [crownConfig, portsConfig],
   data() {
     return {
@@ -153,6 +153,10 @@ export default {
       return model.component.node.type === 'processmaker-modeler-pool';
     },
     turnInvalidTargetRed() {
+      if (!this.highlighted) {
+        return;
+      }
+
       const targetElement = this.graph
         .findModelsUnderElement(this.shape)
         .filter(model => model.component)[0];

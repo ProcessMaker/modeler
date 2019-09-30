@@ -20,6 +20,11 @@ const boundaryEventData = [
     nodeType: nodeTypes.boundaryTimerEvent,
     eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   },
+  {
+    type: 'Boundary Error Event',
+    nodeType: nodeTypes.boundaryErrorEvent,
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+  },
 ];
 
 boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
@@ -132,17 +137,17 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         expect($links).to.have.lengthOf(0);
       });
 
-      getElementAtPosition(boundaryEventPosition).click().then($boundaryTimerEvent => {
-        getCrownButtonForElement($boundaryTimerEvent, 'delete-button').click();
+      getElementAtPosition(boundaryEventPosition).click().then($boundaryEvent => {
+        getCrownButtonForElement($boundaryEvent, 'delete-button').click();
       });
     });
 
     it('snaps back to original position when dragged over empty area', function() {
       dragFromSourceToDest(nodeTypes.task, taskPosition);
-      dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+      dragFromSourceToDest(nodeType, taskPosition);
 
       cy.get(boundaryEventSelector).then($boundaryEvent => {
-        const boundaryTimerEventPosition = $boundaryEvent.position();
+        const boundaryEventPosition = $boundaryEvent.position();
         const emptySpot = { x: 400, y: 400 };
 
         cy.wrap($boundaryEvent)
@@ -155,8 +160,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         cy.wrap($boundaryEvent).should($el => {
           const { left, top } = $el.position();
           const positionErrorMargin = 2;
-          expect(left).to.be.closeTo(boundaryTimerEventPosition.left, positionErrorMargin);
-          expect(top).to.be.closeTo(boundaryTimerEventPosition.top, positionErrorMargin);
+          expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
+          expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
         });
       });
     });
@@ -174,7 +179,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
 
     it('correctly re-renders a boundary event on undo and redo', () => {
       dragFromSourceToDest(nodeTypes.task, taskPosition);
-      dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+      dragFromSourceToDest(nodeType, taskPosition);
 
       cy.get('[data-test=undo]').click({ force: true });
       waitToRenderAllShapes();

@@ -3,8 +3,10 @@ import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 
+export const id = 'processmaker-modeler-boundary-error-event';
+
 export default merge(cloneDeep(boundaryEventConfig), {
-  id: 'processmaker-modeler-boundary-error-event',
+  id,
   component,
   label: 'Boundary Error Event',
   icon: require('@/assets/toolpanel/boundary-error-event.svg'),
