@@ -151,7 +151,10 @@ describe('Boundary Timer Event', () => {
 
         cy.wrap($boundaryEvent)
           .trigger('mousedown', { which: 1, force: true })
-          .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
+          .then($boundaryEvent => {
+            waitToRenderAllShapes();
+            cy.wrap($boundaryEvent).trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
+          });
 
         waitToRenderAllShapes();
 

@@ -13,7 +13,7 @@ import { invalidNodeColor, poolColor, defaultNodeColor } from '@/components/node
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
-  props: ['graph', 'node', 'paper'],
+  props: ['graph', 'node', 'paper', 'highlighted'],
   mixins: [crownConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
@@ -154,6 +154,10 @@ export default {
       return model.component.node.type === 'processmaker-modeler-pool';
     },
     turnInvalidTargetRed() {
+      if (!this.highlighted) {
+        return;
+      }
+
       const targetElement = this.graph
         .findModelsUnderElement(this.shape)
         .filter(model => model.component)[0];
