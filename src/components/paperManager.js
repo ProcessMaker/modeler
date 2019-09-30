@@ -2,8 +2,10 @@ import { dia } from 'jointjs';
 import { highlightPadding } from '@/mixins/crownConfig';
 
 export default class {
+  #paper;
+
   constructor(paper) {
-    this._paper = paper;
+    this.#paper = paper;
   }
 
   static factory(element, interactiveFunc, model) {
@@ -28,40 +30,40 @@ export default class {
   }
 
   get paper() {
-    return this._paper;
+    return this.#paper;
   }
 
   get scale() {
-    return this._paper.scale();
+    return this.#paper.scale();
   }
 
   translate(x, y) {
-    this._paper.translate(x, y);
+    this.#paper.translate(x, y);
   }
 
   addEventHandler(eventName, callback, objectScope) {
-    this._paper.on(eventName, callback, objectScope);
+    this.#paper.on(eventName, callback, objectScope);
   }
 
   addOnceHandler(eventName, callback) {
-    this._paper.once(eventName, callback);
+    this.#paper.once(eventName, callback);
   }
 
   removeEventHandler(eventName, callback, objectScope) {
-    this._paper.off(eventName, callback, objectScope);
+    this.#paper.off(eventName, callback, objectScope);
   }
 
   freezePaper() {
-    this._paper.freeze();
+    this.#paper.freeze();
   }
 
   unfreezePaper() {
-    this._paper.unfreeze();
+    this.#paper.unfreeze();
   }
 
   performAtomicAction(callback) {
-    this._paper.freeze();
-    callback(this._paper);
-    this._paper.unfreeze();
+    this.#paper.freeze();
+    callback(this.#paper);
+    this.#paper.unfreeze();
   }
 }

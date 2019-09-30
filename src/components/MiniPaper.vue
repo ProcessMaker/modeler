@@ -30,7 +30,7 @@ export default {
       return this.isOpen ? 'visible' : 'invisible';
     },
     miniMap() {
-      return this.miniMapManager.miniMapPaper;
+      return this.miniMapManager.miniMap;
     },
   },
   methods: {

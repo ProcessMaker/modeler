@@ -31,6 +31,7 @@
     "blank.bpmn"
   ],
   "dependencies": {
+    "@babel/plugin-proposal-private-methods": "^7.6.0",
     "@fortawesome/fontawesome-free": "^5.7.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.6",
     "@fortawesome/free-solid-svg-icons": "^5.4.1",
