@@ -7,10 +7,11 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import GatewayShape from '@/components/nodes/gateway/shape';
+import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
   props: ['graph', 'node'],
-  mixins: [crownConfig, portsConfig],
+  mixins: [crownConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,

@@ -30,7 +30,3 @@ Cypress.Cookies.defaults({
 beforeEach(() => {
   cy.loadModeler();
 });
-
-if (Cypress.env('inProcessmaker')) {
-  before(() => cy.login());
-}

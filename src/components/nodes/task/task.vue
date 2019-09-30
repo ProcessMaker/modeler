@@ -11,13 +11,14 @@ import hasMarkers from '@/mixins/hasMarkers';
 import {markerSize} from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './index';
+import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig, hasMarkers],
+  mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       shape: null,
