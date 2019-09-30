@@ -28,20 +28,20 @@ import {
 const nodeTypes = [
   endEvent,
   task,
-  callActivity,
   scriptTask,
   manualTask,
+  callActivity,
   serviceTask,
   exclusiveGateway,
-  parallelGateway,
   inclusiveGateway,
   eventBasedGateway,
+  parallelGateway,
   sequenceFlow,
   messageFlow,
-  textAnnotation,
   association,
   pool,
   poolLane,
+  textAnnotation,
 ];
 const timerEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
