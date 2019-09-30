@@ -102,13 +102,13 @@ export default {
       return this.graph.findModelsInArea(area);
     },
     moveEmbeddedElements(currentElement, toPool) {
-      this.getElementsUnderArea(currentElement).forEach((element) => {
-        if (element.isEmbeddedIn(currentElement)) {
-          const elementDefinition = element.component.node.definition;
+      this.getElementsUnderArea(currentElement)
+        .filter(element => element.isEmbeddedIn(currentElement))
+        .map(element => element.component.node.definition)
+        .forEach((elementDefinition) => {
           pull(this.containingProcess.get('flowElements'), elementDefinition);
           toPool.component.containingProcess.get('flowElements').push(elementDefinition);
-        }
-      });
+        });
     },
     moveElement(element, toPool) {
       const elementDefinition = element.component.node.definition;
