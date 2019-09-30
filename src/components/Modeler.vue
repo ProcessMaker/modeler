@@ -195,7 +195,7 @@ export default {
       this.cursor = null;
     },
     scale(scale) {
-      this.paperManager.paper.scale(scale);
+      this.paperManager.scale = scale;
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -614,12 +614,12 @@ export default {
     },
     async renderPaper() {
       await this.$nextTick();
-      this.paperManager.freezePaper();
-      this.isRendering = true;
-      await this.waitForCursorToChange();
-      this.paperManager.addOnceHandler('render:done', () => this.isRendering = false);
-      this.parse();
-      this.paperManager.unfreezePaper();
+      await this.paperManager.performAtomicAction(async() => {
+        this.isRendering = true;
+        await this.waitForCursorToChange();
+        this.paperManager.addOnceHandler('render:done', () => this.isRendering = false);
+        this.parse();
+      });
       this.$emit('parsed');
       this.removeLoaderIfProcessIsEmpty();
     },
@@ -689,7 +689,7 @@ export default {
 
       // Handle transform
       const paperOrigin = this.paperManager.paper.localToPagePoint(0, 0);
-      const scale = this.paperManager.paper.scale();
+      const scale = this.paperManager.scale;
 
       diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
       diagram.bounds.y = (clientY - paperOrigin.y) / scale.sy;
@@ -933,7 +933,7 @@ export default {
       this.setShapeStacking(shape);
 
       shape.component.$emit('click');
-    }, this);
+    });
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {

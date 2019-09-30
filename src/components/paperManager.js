@@ -37,33 +37,29 @@ export default class {
     return this.#paper.scale();
   }
 
+  set scale(scale) {
+    this.#paper.scale(scale);
+  }
+
   translate(x, y) {
     this.#paper.translate(x, y);
   }
 
-  addEventHandler(eventName, callback, objectScope) {
-    this.#paper.on(eventName, callback, objectScope);
+  addEventHandler(eventName, callback, callbackScope) {
+    this.#paper.on(eventName, callback, callbackScope);
   }
 
   addOnceHandler(eventName, callback) {
     this.#paper.once(eventName, callback);
   }
 
-  removeEventHandler(eventName, callback, objectScope) {
-    this.#paper.off(eventName, callback, objectScope);
+  removeEventHandler(eventName, callback, callbackScope) {
+    this.#paper.off(eventName, callback, callbackScope);
   }
-
-  freezePaper() {
+  
+  async performAtomicAction(callback) {
     this.#paper.freeze();
-  }
-
-  unfreezePaper() {
-    this.#paper.unfreeze();
-  }
-
-  performAtomicAction(callback) {
-    this.#paper.freeze();
-    callback(this.#paper);
+    await callback(this.#paper);
     this.#paper.unfreeze();
   }
 }
