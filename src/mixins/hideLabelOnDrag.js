@@ -6,10 +6,10 @@ export default {
         return;
       }
 
-      this.shape.attr('label/visibility', 'hidden');
+      this.shape.attr('label/display', 'none');
     },
     showLabel() {
-      this.shape.attr('label/visibility', 'visible');
+      this.shape.attr('label/display', 'initial');
       this.shape.once('change:position', this.hideLabel);
     },
   },
