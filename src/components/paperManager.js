@@ -56,7 +56,15 @@ export default class {
   removeEventHandler(eventName, callback, callbackScope) {
     this.#paper.off(eventName, callback, callbackScope);
   }
-  
+
+  localToPagePoint(x, y) {
+    return this.#paper.localToPagePoint(x, y);
+  }
+
+  setPaperDimensions(width, height) {
+    this.#paper.setDimensions(width, height);
+  }
+
   async performAtomicAction(callback) {
     this.#paper.freeze();
     await callback(this.#paper);

@@ -688,7 +688,7 @@ export default {
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       // Handle transform
-      const paperOrigin = this.paperManager.paper.localToPagePoint(0, 0);
+      const paperOrigin = this.paperManager.localToPagePoint(0, 0);
       const scale = this.paperManager.scale;
 
       diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
@@ -784,7 +784,7 @@ export default {
       this.parentWidth = clientWidth + 'px';
       this.parentHeight = clientHeight + 'px';
 
-      this.paperManager.paper.setDimensions(clientWidth, clientHeight);
+      this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
     validateDropTarget({ clientX, clientY, control }) {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
@@ -909,7 +909,7 @@ export default {
 
     this.$el.addEventListener('mousemove', event => {
       if (this.canvasDragPosition) {
-        this.paperManager.paper.translate(
+        this.paperManager.translate(
           event.offsetX - this.canvasDragPosition.x,
           event.offsetY - this.canvasDragPosition.y,
         );
