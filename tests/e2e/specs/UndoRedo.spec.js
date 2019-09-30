@@ -125,7 +125,7 @@ describe('Undo/redo', () => {
     getElementAtPosition(startEventPosition).should('exist');
     getElementAtPosition(startEventMoveToPosition).should('not.exist');
 
-    const taskPosition1 = { x: 50, y: 400 };
+    const taskPosition1 = { x: 150, y: 400 };
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
     dragFromSourceToDest(nodeTypes.task, taskPosition1);
