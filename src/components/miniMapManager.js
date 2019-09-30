@@ -1,12 +1,14 @@
 import { dia } from 'jointjs';
 
 export default class {
+  #miniMap;
+
   constructor(miniMap) {
-    this.miniMap = miniMap;
+    this.#miniMap = miniMap;
   }
 
   static factory(graph, element) {
-    const miniPaper = new dia.Paper({
+    const miniMap = new dia.Paper({
       el: element,
       model: graph,
       width: 300,
@@ -14,11 +16,11 @@ export default class {
       interactive: false,
     });
 
-    return new this(miniPaper);
+    return new this(miniMap);
   }
 
-  get miniMapPaper() {
-    return this.miniMap;
+  get miniMap() {
+    return this.#miniMap;
   }
 
   scaleMiniMap() {

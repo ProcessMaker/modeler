@@ -3,7 +3,7 @@ module.exports = function(api) {
 
   return {
     presets: ['@vue/app'],
-    plugins: ['istanbul'],
+    plugins: ['istanbul', '@babel/plugin-proposal-private-methods'],
     sourceType: 'unambiguous',
   };
 };

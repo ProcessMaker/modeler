@@ -43,15 +43,15 @@
         </div>
 
         <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
-          <font-awesome-icon  v-if="miniMapOpen" :icon="minusIcon" />
+          <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
           <font-awesome-icon v-else :icon="mapIcon" />
         </button>
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
-    
-    <mini-paper :isOpen="miniMapOpen" :paper="paper" :graph="graph" />
+
+    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" />
 
     <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
       <InspectorPanel
@@ -103,7 +103,6 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
-import { highlightPadding } from '@/mixins/crownConfig';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import { startEvent } from '@/components/nodes';
@@ -118,7 +117,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMinus, faPlus, faMapMarked } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -126,6 +125,8 @@ import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';
+
+import PaperManager from './paperManager';
 
 const version = '1.0';
 
@@ -154,9 +155,8 @@ export default {
 
       // Our jointjs data graph model
       graph: null,
-
-      // Our jointjs paper
       paper: null,
+      paperManager: null,
 
       definitions: null,
       nodeIdGenerator: null,
@@ -195,7 +195,7 @@ export default {
       this.cursor = null;
     },
     scale(scale) {
-      this.paper.scale(scale);
+      this.paperManager.scale = scale;
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -614,12 +614,12 @@ export default {
     },
     async renderPaper() {
       await this.$nextTick();
-      this.paper.freeze();
-      this.isRendering = true;
-      await this.waitForCursorToChange();
-      this.paper.once('render:done', () => this.isRendering = false);
-      this.parse();
-      this.paper.unfreeze();
+      await this.paperManager.performAtomicAction(async() => {
+        this.isRendering = true;
+        await this.waitForCursorToChange();
+        this.paperManager.addOnceHandler('render:done', () => this.isRendering = false);
+        this.parse();
+      });
       this.$emit('parsed');
       this.removeLoaderIfProcessIsEmpty();
     },
@@ -688,8 +688,8 @@ export default {
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       // Handle transform
-      const paperOrigin = this.paper.localToPagePoint(0, 0);
-      const scale = this.paper.scale();
+      const paperOrigin = this.paperManager.paper.localToPagePoint(0, 0);
+      const scale = this.paperManager.scale;
 
       diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
       diagram.bounds.y = (clientY - paperOrigin.y) / scale.sy;
@@ -784,10 +784,10 @@ export default {
       this.parentWidth = clientWidth + 'px';
       this.parentHeight = clientHeight + 'px';
 
-      this.paper.setDimensions(clientWidth, clientHeight);
+      this.paperManager.paper.setDimensions(clientWidth, clientHeight);
     },
     validateDropTarget({ clientX, clientY, control }) {
-      const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paper, this.graph, this.collaboration, this.$refs['paper-container']);
+      const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
       this.poolTarget = poolTarget;
     },
@@ -830,22 +830,20 @@ export default {
       return shape.component.node.type === poolId;
     },
     setShapeStacking(shape) {
-      this.paper.freeze();
+      this.paperManager.performAtomicAction(() => {
+        if (this.isPool(shape)) {
+          this.bringPoolToFront(shape);
+        }
 
-      if (this.isPool(shape)) {
-        this.bringPoolToFront(shape);
-      }
+        const parentPool = this.getElementPool(shape);
+        if (parentPool) {
+          this.bringPoolToFront(parentPool);
+        }
 
-      const parentPool = this.getElementPool(shape);
-      if (parentPool) {
-        this.bringPoolToFront(parentPool);
-      }
-
-      if (this.isNotLane(shape) && !this.isPool(shape)) {
-        this.bringShapeToFront(shape);
-      }
-
-      this.paper.unfreeze();
+        if (this.isNotLane(shape) && !this.isPool(shape)) {
+          this.bringShapeToFront(shape);
+        }
+      });
     },
   },
   created() {
@@ -887,59 +885,45 @@ export default {
       };
     });
 
-    this.paper = new dia.Paper({
-      async: true,
-      el: this.$refs.paper,
-      model: this.graph,
-      sorting: 'sorting-approximate',
-      gridSize: 10,
-      drawGrid: true,
-      clickThreshold: 10,
-      perpendicularLinks: true,
-      interactive: this.graph.get('interactiveFunc'),
-      highlighting: {
-        default: { options: { padding: highlightPadding } },
-      },
-    });
-
-    this.paper.translate(168, 20);
+    this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
+    this.paper = this.paperManager.paper;
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    store.commit('setPaper', this.paper);
+    store.commit('setPaper', this.paperManager.paper);
 
-    this.paper.on('blank:pointerclick', () => {
+    this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
-    });
+    }, this);
 
-    this.paper.on('blank:pointerdown', (event, x, y) => {
-      const scale = this.paper.scale();
+    this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
+      const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isGrabbing = true;
-    });
-    this.paper.on('cell:pointerup blank:pointerup', () => {
+    }, this);
+    this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
-    });
+    }, this);
 
     this.$el.addEventListener('mousemove', event => {
       if (this.canvasDragPosition) {
-        this.paper.translate(
+        this.paperManager.paper.translate(
           event.offsetX - this.canvasDragPosition.x,
           event.offsetY - this.canvasDragPosition.y,
         );
       }
-    });
+    }, this);
 
-    this.paper.on('cell:pointerclick', (cellView, evt, x, y) => {
+    this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
       if (clickHandler) {
         clickHandler(cellView, evt, x, y);
       }
     });
 
-    this.paper.on('cell:pointerdown', cellView => {
+    this.paperManager.addEventHandler('cell:pointerdown', cellView => {
       const shape = cellView.model;
 
       if (!this.isBpmnNode(shape)) {
