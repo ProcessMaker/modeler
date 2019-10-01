@@ -1,6 +1,6 @@
 import { dia } from 'jointjs';
 
-export default class {
+export default class MiniMapManager {
   #miniMap;
 
   constructor(miniMap) {
