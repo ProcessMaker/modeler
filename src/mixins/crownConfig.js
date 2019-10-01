@@ -26,6 +26,16 @@ const errorHighlighter = {
   },
 };
 
+const defaultHighlighter = {
+  name: 'stroke',
+  options: {
+    attrs: {
+      stroke: '#feb663',
+      'stroke-width': 3,
+    },
+  },
+};
+
 export default {
   props: [
     'highlighted',
@@ -45,15 +55,16 @@ export default {
       allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
       shape: null,
+      highlightShape: null,
     };
   },
   watch: {
     highlighted(highlighted) {
       if (highlighted) {
-        this.shapeView.highlight();
+        this.shapeView.highlight(this.selectShape, { highlighter: defaultHighlighter });
         this.addCrown();
       } else {
-        this.shapeView.unhighlight();
+        this.shapeView.unhighlight(this.selectShape, { highlighter: defaultHighlighter });
         this.removeCrown();
       }
     },
@@ -68,6 +79,9 @@ export default {
   computed: {
     shapeView() {
       return this.shape.findView(this.paper);
+    },
+    selectShape() {
+      return this.shapeView.$el.find('[joint-selector=body]');
     },
     isPool() {
       return this.node.type === 'processmaker-modeler-pool';
@@ -236,8 +250,8 @@ export default {
       this.shape.on('change:size', () => {
         if (this.highlighted) {
           /* Ensure the highlight box expands to fit element */
-          shapeView.unhighlight();
-          shapeView.highlight();
+          shapeView.unhighlight(this.selectShape, { highlighter: defaultHighlighter });
+          shapeView.highlight(this.selectShape, { highlighter: defaultHighlighter });
         }
       });
     },
