@@ -385,6 +385,8 @@ export default {
       } else {
         inspectorItems[existingIndex] = config;
       }
+
+      inspectorItems.push(...inspectorItems.splice(inspectorItems.findIndex(item => item.config.name === 'advanced'), 1));
     },
     existingConfigIndex(node, config) {
       return this.inspectorItems(node).findIndex(item => {
