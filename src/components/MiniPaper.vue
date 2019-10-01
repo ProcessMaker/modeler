@@ -35,10 +35,10 @@ export default {
   },
   methods: {
     movePaper({ offsetX, offsetY }) {
-      const { sx: scaleX, sy: scaleY } = this.paper.scale();
-      const { clientWidth, clientHeight } = this.paper.el;
+      const { sx: scaleX, sy: scaleY } = this.paperManager.scale;
+      const { clientWidth, clientHeight } = this.paperManager.paper.el;
       const { newX, newY } = this.miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
-      this.paper.translate(newX, newY);
+      this.paperManager.translate(newX, newY);
     },
   },
   async mounted() {
