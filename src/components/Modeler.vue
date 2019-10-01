@@ -952,7 +952,7 @@ export default {
 
 $cursors: default, not-allowed, wait;
 $inspector-column-max-width: 265px;
-$controls-column-max-width: 185px;
+$controls-column-max-width: 265px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
 

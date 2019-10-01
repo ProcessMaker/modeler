@@ -1,5 +1,5 @@
 <template>
-  <b-container id="modeler-app" class="h-100 container position-relative">
+  <b-container id="modeler-app" class="h-100 container position-relative p-0">
 
     <b-card no-body class="h-100">
       <b-card-header class="d-flex align-items-center header">
