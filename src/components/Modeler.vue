@@ -687,12 +687,9 @@ export default {
       // Now, let's modify planeElement
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
-      // Handle transform
-      const paperOrigin = this.paperManager.localToPagePoint(0, 0);
-      const scale = this.paperManager.scale;
-
-      diagram.bounds.x = (clientX - paperOrigin.x) / scale.sx;
-      diagram.bounds.y = (clientY - paperOrigin.y) / scale.sy;
+      const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
+      diagram.bounds.x = x;
+      diagram.bounds.y = y;
 
       if (this.isBoundaryEvent(definition)) {
         this.setShapeCenterUnderCursor(diagram);

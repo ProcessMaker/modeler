@@ -1,12 +1,14 @@
 import { dia } from 'jointjs';
 import { highlightPadding } from '@/mixins/crownConfig';
 
-export default class {
+export default class PaperManager {
   #paper;
 
   constructor(paper) {
     this.#paper = paper;
   }
+
+  static gridSize = 10;
 
   static factory(element, interactiveFunc, model) {
     const paper = new dia.Paper({
@@ -14,7 +16,7 @@ export default class {
       el: element,
       model,
       sorting: 'sorting-approximate',
-      gridSize: 10,
+      gridSize: PaperManager.gridSize,
       drawGrid: true,
       clickThreshold: 10,
       perpendicularLinks: true,
@@ -41,6 +43,10 @@ export default class {
     this.#paper.scale(scale);
   }
 
+  roundToNearestGridMultiple(number) {
+    return Math.round(number / PaperManager.gridSize) * PaperManager.gridSize;
+  }
+
   translate(x, y) {
     this.#paper.translate(x, y);
   }
@@ -57,10 +63,6 @@ export default class {
     this.#paper.off(eventName, callback, callbackScope);
   }
 
-  localToPagePoint(x, y) {
-    return this.#paper.localToPagePoint(x, y);
-  }
-
   setPaperDimensions(width, height) {
     this.#paper.setDimensions(width, height);
   }
@@ -69,5 +71,15 @@ export default class {
     this.#paper.freeze();
     await callback(this.#paper);
     this.#paper.unfreeze();
+  }
+
+  clientToGridPoint(clientX, clientY) {
+    const paperOrigin = this.#paper.localToPagePoint(0, 0);
+    const scale = this.scale;
+
+    return {
+      x: this.roundToNearestGridMultiple((clientX - paperOrigin.x) / scale.sx),
+      y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy),
+    };
   }
 }
