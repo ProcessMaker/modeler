@@ -25,6 +25,7 @@ import {
   FormRadioButtonGroup,
   FormAccordion,
   FormDatePicker,
+  FormMultiSelect,
 } from '@processmaker/vue-form-elements';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
@@ -45,6 +46,7 @@ Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormAccordion', FormAccordion);
 Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('VueFormRenderer', VueFormRenderer);
+Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
   props: ['nodeRegistry', 'moddle', 'processNode'],

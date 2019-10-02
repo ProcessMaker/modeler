@@ -56,8 +56,14 @@ describe('Tasks', () => {
     getElementAtPosition(callActivityPosition).click({ force: true });
 
     cy.get('.inspector-container').contains('Open Process').should('not.exist');
-    cy.get('select[name=calledElement]').select('Process with start event');
-    cy.get('.inspector-container').contains('Open Process').should('exist');
+    cy.get('.multiselect')
+      .click()
+      .get('.multiselect__content')
+      .contains('Process with start event')
+      .click()
+      .get('.inspector-container')
+      .contains('Open Process')
+      .should('exist');
 
     waitToRenderAllShapes();
 
