@@ -127,6 +127,7 @@ import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';
 
 import PaperManager from './paperManager';
+import InspectorExtensionManager from '@/components/InspectorExtensionManager';
 
 const version = '1.0';
 
@@ -366,49 +367,6 @@ export default {
         component.mixins = [];
       }
       component.mixins.push(mixin);
-    },
-    /**
-     * Register an inspector component to configure extended attributes and elements
-     * for specific bpmn extensions and execution environments. If the inspector
-     * component is already registered, it is replaced by the new one.
-     */
-    registerInspectorExtension(node, config) {
-      this.addToInspector(
-        this.inspectorItemsToAddTo(node, config),
-        this.existingConfigIndex(node, config),
-        config,
-      );
-    },
-    addToInspector(inspectorItems, existingIndex, config) {
-      if (existingIndex === -1) {
-        inspectorItems.push(config);
-      } else {
-        inspectorItems[existingIndex] = config;
-      }
-
-      inspectorItems.push(...inspectorItems.splice(inspectorItems.findIndex(item => item.config.name === 'advanced'), 1));
-    },
-    existingConfigIndex(node, config) {
-      return this.inspectorItems(node).findIndex(item => {
-        return config.id && config.id === item.id;
-      });
-    },
-    isContainer(config) {
-      return typeof config.container !== 'undefined';
-    },
-    inspectorItemsToAddTo(node, config) {
-      if (this.isContainer(config)) {
-        return this.inspectorItems(node);
-      } else {
-        // if the config we're adding is not a container, put it in the default container
-        return this.defaultContainerItems(node);
-      }
-    },
-    defaultContainerItems(node) {
-      return this.inspectorItems(node)[0].items;
-    },
-    inspectorItems(node) {
-      return node.inspectorConfig[0].items;
     },
     /**
      * Register a BPMN Moddle extension in order to support extensions to the bpmn xml format.
@@ -866,10 +824,9 @@ export default {
     });
 
     this.registerNode(Process);
-
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
-      registerInspectorExtension: this.registerInspectorExtension,
+      registerInspectorExtension: InspectorExtensionManager.registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
     });
