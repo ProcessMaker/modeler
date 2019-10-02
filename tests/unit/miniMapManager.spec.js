@@ -1,14 +1,12 @@
 import MiniMapManager from '@/components/miniMapManager.js';
 
 describe('Mini Map Manager', () => {
-  const scaleX = 1;
-  const scaleY = 1;
   const positionData = [
     [
       71,
       101,
-      scaleX,
-      scaleY,
+      1,
+      1,
       1138,
       871,
       {
@@ -23,8 +21,8 @@ describe('Mini Map Manager', () => {
     [
       71,
       139,
-      scaleX,
-      scaleY,
+      0.5,
+      0.5,
       1138,
       871,
       {
@@ -32,8 +30,8 @@ describe('Mini Map Manager', () => {
         y: 388,
       },
       {
-        newX: 218.86062500000003,
-        newY: 47.5,
+        newX: 393.9303125,
+        newY: 241.5,
       },
     ],
   ];
