@@ -157,6 +157,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
 
         waitToRenderAllShapes();
 
+        getElementAtPosition(taskPosition).click();
+
         cy.wrap($boundaryEvent).should($el => {
           const { left, top } = $el.position();
           const positionErrorMargin = 2;

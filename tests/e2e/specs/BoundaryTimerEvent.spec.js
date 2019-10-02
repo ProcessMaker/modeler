@@ -170,6 +170,8 @@ describe('Boundary Timer Event', () => {
           .then($el => $el.find('[joint-selector="body"]'))
           .should('have.attr', 'fill', defaultNodeColor);
 
+        getElementAtPosition(startEventPosition).click();
+
         cy.wrap($boundaryEvent).should($el => {
           const { left, top } = $el.position();
           const positionErrorMargin = 2;
