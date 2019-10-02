@@ -1,10 +1,23 @@
 <template>
-  <form-select
-    v-bind="$attrs"
-    v-on="$listeners"
-    :disabled="processList.length === 0"
-    :options="dropdownList"
-  />
+  <div>
+    <form-select
+      v-bind="$attrs"
+      v-on="$listeners"
+      :value="value"
+      :disabled="processList.length === 0"
+      :options="dropdownList"
+      class="p-0 mb-2"
+    />
+
+    <a
+      v-if="value"
+      :href="`/modeler/${selectedProcessId}`"
+      target="_blank"
+    >
+      Open Process
+      <i class="ml-1 fas fa-external-link-alt"/>
+    </a>
+  </div>
 </template>
 
 <script>
@@ -12,7 +25,12 @@ import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
 
 export default {
+  inheritAttrs: false,
+  props: ['value'],
   computed: {
+    selectedProcessId() {
+      return this.processList.find(({ value }) => value === this.value).processId;
+    },
     dropdownList() {
       return this.processList.length > 0
         ? this.processList
@@ -36,6 +54,7 @@ export default {
     },
     toDropdownFormat(process, event) {
       return {
+        processId: process.id,
         value: `${event.ownerProcessId}-${process.id}`,
         content: this.containsMultipleProcesses(process)
           ? `${process.name} (${event.ownerProcessName})`
