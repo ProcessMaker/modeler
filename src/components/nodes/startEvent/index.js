@@ -1,6 +1,7 @@
 import component from './startEvent.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import { startEventDiameter } from './startEventConfig';
 
 export default {
   id: 'processmaker-modeler-start-event',
@@ -18,8 +19,8 @@ export default {
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
-        height: 36,
-        width: 36,
+        height: startEventDiameter,
+        width: startEventDiameter,
         x: null,
         y: null,
       }),

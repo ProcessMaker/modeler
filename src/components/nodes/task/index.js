@@ -1,8 +1,8 @@
 import component from './task.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import { taskHeight, taskWidth } from './taskConfig';
 
-export const taskHeight = 76;
 export const id = 'processmaker-modeler-task';
 
 export default {
@@ -22,7 +22,7 @@ export default {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: taskHeight,
-        width: 116,
+        width: taskWidth,
       }),
     });
   },
