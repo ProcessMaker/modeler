@@ -2,7 +2,7 @@
   <div>
     <form-multi-select
       v-bind="$attrs"
-      @input="$emit('input', $event.value)"
+      @input="$emit('input', $event ? $event.value : '')"
       :value="selectValue"
       :disabled="processList.length === 0"
       :options="dropdownList"

@@ -58,10 +58,10 @@ describe('Tasks', () => {
     cy.get('.inspector-container').contains('Open Process').should('not.exist');
     cy.get('.multiselect')
       .click()
-      .get('.multiselect__content')
+      .find('.multiselect__content')
       .contains('Process with start event')
-      .click()
-      .get('.inspector-container')
+      .click();
+    cy.get('.inspector-container')
       .contains('Open Process')
       .should('exist');
 
@@ -77,8 +77,8 @@ describe('Tasks', () => {
     cy.get('.inspector-container').should('not.contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
-    const sequenceFlowML = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
-    const callActivityXML = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
+    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
+    const callActivityXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
 
@@ -87,8 +87,32 @@ describe('Tasks', () => {
       .its('xml')
       .then(xml => xml.trim())
       .then(xml => {
-        expect(xml).to.contain(sequenceFlowML.trim());
-        expect(xml).to.contain(callActivityXML.trim());
+        expect(xml).to.contain(sequenceFlowXml.trim());
+        expect(xml).to.contain(callActivityXml.trim());
+      });
+
+    getElementAtPosition(callActivityPosition).click({ force: true });
+    cy.get('.multiselect')
+      .click()
+      .get('.multiselect__content')
+      .contains('Process with start event')
+      .click();
+
+    getElementAtPosition(callActivityPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .click({ force: true });
+
+    waitToRenderAllShapes();
+    cy.get('.inspector-container').should('contain', 'A process has not been configured in the connected Call Activity task.');
+
+    const emptyCallActivityXml = 'calledElement=""';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(xml => xml.trim())
+      .then(xml => {
+        expect(xml).to.contain(emptyCallActivityXml.trim());
       });
   });
 
