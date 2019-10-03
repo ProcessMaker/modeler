@@ -198,17 +198,17 @@ export default {
 .inspector-container {
   text-align: left;
   user-select: none;
-}
 
-.form-accordtion-container {
-  padding: 0;
-}
+  .form-group {
+    padding: 0 0.5rem;
 
-.form-group {
-  padding: 0 0.5rem;
-}
+    > label {
+      font-size: 0.8125rem;
+    }
+  }
 
-.inspector-font-size {
-  font-size: 0.875rem;
+  .inspector-font-size {
+    font-size: 0.875rem;
+  }
 }
 </style>
