@@ -55,7 +55,6 @@ export default {
       allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
       shape: null,
-      highlightShape: null,
     };
   },
   watch: {
