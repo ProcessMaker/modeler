@@ -8,6 +8,8 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import { taskWidth } from '../../../src/components/nodes/task/taskConfig';
+import { startEventDiameter } from '../../../src/components/nodes/startEvent/startEventConfig';
 
 describe('Sequence Flows', () => {
   it('Can connect two elements', () => {
@@ -215,5 +217,20 @@ describe('Sequence Flows', () => {
         expect(top).to.be.greaterThan(startEventTop);
       });
     });
+  });
+
+  it('connects sequence flows with a stright line', function() {
+    const taskPosition = { x: 250, y: 250 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const endEventPosition = {
+      x: taskPosition.x + (taskWidth / 2) - (startEventDiameter / 2) + 1,
+      y: taskPosition.y + 200,
+    };
+    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+
+    connectNodesWithFlow('sequence-flow-button', taskPosition, endEventPosition);
+
+    cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 308 326 L 308 450');
   });
 });
