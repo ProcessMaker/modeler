@@ -1,71 +1,64 @@
 <template>
-  <div class="mini-paper-container" @click="movePaper">
-    <div v-show="isOpen" ref="miniPaper" class="mini-paper" />
+  <div class="mini-paper-container" @click="movePaper" :class="visibilityClass">
+    <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>
 
 <script>
-import { dia } from 'jointjs';
+import MiniMapManager from './miniMapManager';
 
 export default {
   data() {
     return {
-      miniPaper: null,
+      miniMapManager: null,
     };
   },
   props: {
     isOpen: { type: Boolean },
-    paper: { type: Object },
+    paperManager: { type: Object },
     graph: { type: Object },
   },
   watch: {
     isOpen(isOpen) {
       if (isOpen) {
-        this.scaleMiniMapToFitContent();
+        this.miniMapManager.scaleMiniMap();
       }
     },
   },
-  methods: {
-    scaleMiniMapToFitContent() {
-      setTimeout(() => {
-        this.miniPaper.scaleContentToFit({ padding: 10, maxScaleX: 0.5, maxScaleY: 0.5 });
-      });
+  computed: {
+    visibilityClass() {
+      return this.isOpen ? 'visible' : 'invisible';
     },
+    miniMap() {
+      return this.miniMapManager.miniMap;
+    },
+  },
+  methods: {
     movePaper({ offsetX, offsetY }) {
-      const { x, y } = this.miniPaper.paperToLocalPoint(offsetX, offsetY);
-      const { sx, sy } = this.paper.scale();
-      const { clientWidth, clientHeight } = this.paper.el;
-
-      this.paper.translate(
-        (clientWidth / 2) - (x * sx),
-        (clientHeight / 2) - (y * sy),
-      );
+      const { sx: scaleX, sy: scaleY } = this.paperManager.scale;
+      const { clientWidth, clientHeight } = this.paperManager.paper.el;
+      const { newX, newY } = this.miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
+      this.paperManager.translate(newX, newY);
     },
   },
   async mounted() {
     await this.$nextTick();
 
-    this.miniPaper = new dia.Paper({
-      el: this.$refs.miniPaper,
-      model: this.graph,
-      width: 300,
-      height: 200,
-      interactive: false,
-    });
+    this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);
 
-    this.paper.on('render:done', this.scaleMiniMapToFitContent);
+    this.paperManager.addEventHandler('render:done', this.miniMapManager.scaleMiniMap, this);
+    window.ProcessMaker.EventBus.$on('modeler-change', () => this.miniMapManager.scaleMiniMap());
 
-    window.ProcessMaker.EventBus.$on('modeler-change', this.scaleMiniMapToFitContent);
   },
   beforeDestroy() {
-    this.paper.off('render:done', this.scaleMiniMapToFitContent);
+    this.paperManager.removeEventHandler('render:done', this.miniMapManager.scaleMiniMap, this);
   },
 };
 </script>
 
 <style lang="scss">
-$mini-paper-container-top-position: 2.5rem;
-$mini-paper-container-right-position: 0;
+$mini-paper-container-top-position: 1rem;
+$mini-paper-container-right-position: 17.5rem;
 
 .mini-paper-container {
   position: absolute;

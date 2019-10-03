@@ -1,24 +1,20 @@
 import {
+  connectNodesWithFlow,
   dragFromSourceToDest,
+  getCrownButtonForElement,
   getElementAtPosition,
   getGraphElements,
-  getCrownButtonForElement,
-  connectNodesWithFlow,
   getLinksConnectedToElement,
+  removeIndentationAndLinebreaks,
+  testNumberOfVertices,
   typeIntoTextInput,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
-  removeIndentationAndLinebreaks,
-  testNumberOfVertices,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 
 describe('Undo/redo', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
@@ -129,7 +125,7 @@ describe('Undo/redo', () => {
     getElementAtPosition(startEventPosition).should('exist');
     getElementAtPosition(startEventMoveToPosition).should('not.exist');
 
-    const taskPosition1 = { x: 50, y: 400 };
+    const taskPosition1 = { x: 150, y: 400 };
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
     dragFromSourceToDest(nodeTypes.task, taskPosition1);
@@ -169,10 +165,6 @@ describe('Undo/redo', () => {
   });
 
   it('Does not include intermediate message flow definition in XML', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const validMessageFlowXML = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
   <bpmn:process id="Process_1" isExecutable="true">
@@ -240,10 +232,6 @@ describe('Undo/redo', () => {
   });
 
   it('Correctly parses elements after redo', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const testConnectorPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.testConnector, testConnectorPosition);
 

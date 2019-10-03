@@ -27,6 +27,6 @@ Cypress.Cookies.defaults({
   whitelist: ['processmaker_session', /remember_web_.*/],
 });
 
-if (Cypress.env('inProcessmaker')) {
-  before(() => cy.login());
-}
+beforeEach(() => {
+  cy.loadModeler();
+});

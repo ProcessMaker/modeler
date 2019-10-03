@@ -5,21 +5,27 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import errorBoltIcon from '@/assets/boundary-error-event-icon.svg';
+import validBoundaryEventTargets from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
+import { getAttachedErrorBoundaryEvents } from '@/targetValidationUtils';
 
 export default {
   extends: BoundaryEvent,
+  methods: {
+    doesNotHaveOtherBoundaryEvents(model) {
+      return getAttachedErrorBoundaryEvents(model)
+        .filter(boundaryEvent => {
+          return boundaryEvent !== this.shape;
+        })
+        .length === 0;
+    },
+    isValidBoundaryEventTarget(model) {
+      return model.component &&
+        validBoundaryEventTargets.includes(model.component.node.definition.$type) &&
+        this.doesNotHaveOtherBoundaryEvents(model);
+    },
+  },
   mounted() {
     this.shape.attr('image/xlink:href', errorBoltIcon);
-    let bounds = this.node.diagram.bounds;
-    this.shape.resize(bounds.get('width'), bounds.get('height'));
-    this.shape.attr({
-      image: {
-        'ref-x': 8,
-        'ref-y': 8,
-        'width': bounds.get('width') - 16,
-        'height': bounds.get('height') - 16,
-      },
-    });
   },
 };
 </script>

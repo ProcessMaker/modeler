@@ -1,6 +1,7 @@
 import { g } from 'jointjs';
 import { id as poolId } from '@/components/nodes/pool';
 import validBoundaryEventTargets from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
 
 export default function getValidationProperties(clientX, clientY, control, paper, graph, collaboration, paperContainer) {
   const returnValue = {
@@ -18,6 +19,11 @@ export default function getValidationProperties(clientX, clientY, control, paper
   }
 
   if (isDraggingBoundaryEvent(control.bpmnType)) {
+    if (isBoundaryErrorEvent(control.type)) {
+      returnValue.allowDrop = isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph);
+      return returnValue;
+    }
+
     returnValue.allowDrop = isOverBoundaryEventTarget(clientX, clientY, paper, graph);
     return returnValue;
   }
@@ -77,4 +83,26 @@ function isOverBoundaryEventTarget(clientX, clientY, paper, graph) {
     .some(({ component }) => {
       return component && validBoundaryEventTargets.includes(component.node.definition.$type);
     });
+}
+
+function isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph) {
+  const target = graph
+    .findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper))
+    .find(({ component }) => component && validBoundaryEventTargets.includes(component.node.definition.$type));
+
+  if (!target || getAttachedErrorBoundaryEvents(target).length > 0) {
+    return false;
+  }
+
+  return true;
+}
+
+function isBoundaryErrorEvent(type) {
+  return type === boundaryErrorEventId;
+}
+
+export function getAttachedErrorBoundaryEvents(shape) {
+  return shape
+    .getEmbeddedCells()
+    .filter(({ component }) => component && isBoundaryErrorEvent(component.node.type));
 }

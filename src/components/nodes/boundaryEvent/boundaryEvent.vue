@@ -10,10 +10,11 @@ import EventShape from '@/components/nodes/boundaryEvent/shape';
 import validBoundaryEventTargets from './validBoundaryEventTargets';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
 import { invalidNodeColor, poolColor, defaultNodeColor } from '@/components/nodeColors';
+import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
-  props: ['graph', 'node', 'paper'],
-  mixins: [crownConfig, portsConfig],
+  props: ['graph', 'node', 'paper', 'highlighted'],
+  mixins: [crownConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,
@@ -153,6 +154,10 @@ export default {
       return model.component.node.type === 'processmaker-modeler-pool';
     },
     turnInvalidTargetRed() {
+      if (!this.highlighted) {
+        return;
+      }
+
       const targetElement = this.graph
         .findModelsUnderElement(this.shape)
         .filter(model => model.component)[0];

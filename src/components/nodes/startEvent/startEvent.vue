@@ -8,10 +8,11 @@ import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import StartEventShape from '@/components/nodes/startEvent/shape';
 import hasMarkers from '@/mixins/hasMarkers';
+import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
   props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig, hasMarkers],
+  mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       shape: null,

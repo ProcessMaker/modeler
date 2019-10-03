@@ -1,21 +1,17 @@
 import {
-  dragFromSourceToDest,
-  getElementAtPosition,
-  getCrownButtonForElement,
-  typeIntoTextInput,
-  moveElement,
-  waitToRenderAllShapes,
-  removeIndentationAndLinebreaks,
   connectNodesWithFlow,
+  dragFromSourceToDest,
+  getCrownButtonForElement,
+  getElementAtPosition,
+  moveElement,
+  removeIndentationAndLinebreaks,
+  typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Pools', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update pool name', () => {
     const testString = 'testing';
 
@@ -42,10 +38,6 @@ describe('Pools', () => {
   });
 
   it('Can drag elements between pools', function() {
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const startEventPosition = { x: 150, y: 150 };
 
     const pool1Position = { x: 200, y: 200 };
@@ -155,5 +147,51 @@ describe('Pools', () => {
         expect(xml).to.contain(emptyLane);
         expect(xml).to.not.contain('node_1');
       });
+  });
+
+  it('Removes all references to element from a pool', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click().then($startEvent => {
+      getCrownButtonForElement($startEvent, 'delete-button').click();
+    });
+
+    const startEvent = '<bpmn:startEvent id="node_1" name="Start Event" />';
+    const emptyPool = '<bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(emptyPool);
+      expect(xml).to.not.contain(startEvent);
+    });
+  });
+
+  it('moves boundary event to another process when dragged to that pool', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const pool2Position = { x: 100, y: 500 };
+    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const boundaryTimerEventPosition = { x: 260, y: 260 };
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
+
+    const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(pool1taskXml);
+    });
+
+    moveElement(taskPosition, 150, 550);
+
+    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(pool2taskXml);
+    });
   });
 });

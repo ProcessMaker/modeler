@@ -1,16 +1,8 @@
-import {
-  dragFromSourceToDest,
-  getElementAtPosition,
-  typeIntoTextInput,
-} from '../support/utils';
+import { dragFromSourceToDest, getElementAtPosition, typeIntoTextInput } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Start Timer Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update properties on Start Timer Event for "week" periodicity', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);

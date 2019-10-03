@@ -10,10 +10,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Tasks', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Update task name', () => {
     const testString = 'testing';
 
@@ -59,7 +55,9 @@ describe('Tasks', () => {
 
     getElementAtPosition(callActivityPosition).click({ force: true });
 
+    cy.get('.inspector-container').contains('Open Process').should('not.exist');
     cy.get('select[name=calledElement]').select('Process with start event');
+    cy.get('.inspector-container').contains('Open Process').should('exist');
 
     waitToRenderAllShapes();
 
@@ -72,10 +70,6 @@ describe('Tasks', () => {
 
     cy.get('.inspector-container').should('not.contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').select('awesome start event');
-
-    if (Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
 
     const sequenceFlowML = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
     const callActivityXML = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">

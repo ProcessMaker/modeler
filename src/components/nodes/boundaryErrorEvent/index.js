@@ -1,61 +1,21 @@
 import component from './boundaryErrorEvent.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import boundaryEventConfig from '../boundaryEvent';
+import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
 
-export default {
-  id: 'processmaker-modeler-boundary-error-event',
+export const id = 'processmaker-modeler-boundary-error-event';
+
+export default merge(cloneDeep(boundaryEventConfig), {
+  id,
   component,
-  bpmnType: 'bpmn:BoundaryEvent',
-  control: false,
-  category: 'BPMN',
   label: 'Boundary Error Event',
   icon: require('@/assets/toolpanel/boundary-error-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Timer Event'),
+      name: $t('New Boundary Error Event'),
       eventDefinitions: [
-        moddle.create('bpmn:ErrorEventDefinition', {
-          id: null,
-        }),
+        moddle.create('bpmn:ErrorEventDefinition'),
       ],
     });
   },
-  diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
-        height: 36,
-        width: 36,
-      }),
-    });
-  },
-  inspectorConfig: [
-    {
-      name: 'Boundary Event',
-      items: [
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'configuration',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Boundary Timer Event',
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+});

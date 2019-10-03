@@ -4,12 +4,22 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
+    "open-cypress": "TZ=UTC cypress open",
     "lint": "vue-cli-service lint --no-fix",
+    "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "lint-fix": "vue-cli-service lint",
-    "test": "TZ=UTC cypress open",
-    "test-processmaker": "cypress open --env inProcessmaker=true",
-    "test-ci": "TZ=UTC vue-cli-service test:e2e --mode test --headless --browser chrome"
+    "pretest": "rm -rf .nyc_output || true",
+    "test": "npm run test-unit && npm run test-ci",
+    "posttest": "npm run report:combined",
+    "test-unit": "vue-cli-service test:unit",
+    "test-ci": "TZ=UTC vue-cli-service test:e2e --mode test --headless --browser chrome",
+    "mkdir:reports": "mkdir reports || true",
+    "precopy:reports": "npm run mkdir:reports",
+    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
+    "precombine:reports": "npm run copy:reports && mkdir .nyc_output || true",
+    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
+    "prereport:combined": "npm run combine:reports",
+    "report:combined": "nyc report --reporter lcov --report-dir coverage"
   },
   "main": "./dist/modeler.common.js",
   "files": [
@@ -21,6 +31,7 @@
     "blank.bpmn"
   ],
   "dependencies": {
+    "@babel/plugin-proposal-private-methods": "^7.6.0",
     "@fortawesome/fontawesome-free": "^5.7.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.6",
     "@fortawesome/free-solid-svg-icons": "^5.4.1",
@@ -43,16 +54,16 @@
     "@processmaker/processmaker-bpmn-moddle": "0.4.4",
     "@processmaker/screen-builder": "0.19.0",
     "@processmaker/vue-form-elements": "0.12.0",
-    "@vue/cli-plugin-babel": "^3.8.0",
-    "@vue/cli-plugin-e2e-cypress": "^3.8.0",
-    "@vue/cli-plugin-eslint": "^3.8.0",
-    "@vue/cli-plugin-unit-jest": "^3.8.0",
-    "@vue/cli-service": "^3.8.4",
-    "@vue/test-utils": "^1.0.0-beta.20",
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-e2e-cypress": "^3.11.0",
+    "@vue/cli-plugin-eslint": "^3.11.0",
+    "@vue/cli-plugin-unit-jest": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "@vue/test-utils": "1.0.0-beta.29",
     "axios": "^0.18.0",
     "axios-mock-adapter": "^1.16.0",
     "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^23.0.1",
+    "babel-jest": "^23.6.0",
     "babel-plugin-istanbul": "^5.2.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.21",
@@ -67,8 +78,8 @@
     "stylelint": "^9.7.0",
     "stylelint-config-recommended-scss": "^3.2.0",
     "stylelint-scss": "^3.3.2",
-    "vue-template-compiler": "^2.5.17",
-    "vue-loader": "latest"
+    "vue-loader": "latest",
+    "vue-template-compiler": "^2.5.17"
   },
   "peerDependencies": {
     "@processmaker/screen-builder": "0.19.0",
@@ -88,5 +99,15 @@
     "last 2 versions",
     "not ie <= 8",
     "chrome >= 69"
-  ]
+  ],
+  "nyc": {
+    "extension": [
+      ".js",
+      ".vue"
+    ],
+    "exclude": [
+      "tests/**/*.js"
+    ],
+    "report-dir": "cypress-coverage"
+  }
 }

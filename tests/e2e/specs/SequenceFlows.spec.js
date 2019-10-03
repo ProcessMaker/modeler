@@ -1,19 +1,15 @@
 import {
-  dragFromSourceToDest,
   connectNodesWithFlow,
+  dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
-  typeIntoTextInput,
   moveElement,
+  typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Sequence Flows', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
-
   it('Can connect two elements', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
