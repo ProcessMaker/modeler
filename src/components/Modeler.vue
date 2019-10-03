@@ -127,7 +127,7 @@ import { id as associationId } from './nodes/association';
 import { id as messageFlowId } from './nodes/messageFlow';
 
 import PaperManager from './paperManager';
-import InspectorExtensionManager from '@/components/InspectorExtensionManager';
+import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 const version = '1.0';
 
@@ -826,7 +826,7 @@ export default {
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
-      registerInspectorExtension: InspectorExtensionManager.registerInspectorExtension,
+      registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
     });

@@ -1,4 +1,4 @@
-import InspectorExtensionManager from '@/components/InspectorExtensionManager';
+import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 describe('Inspector Extension Manager', function() {
   let node;
@@ -25,7 +25,7 @@ describe('Inspector Extension Manager', function() {
   });
 
   it('should always sort the advanced accordion to the end when the config is a container', function() {
-    InspectorExtensionManager.registerInspectorExtension(node, config);
+    registerInspectorExtension(node, config);
 
     const [lastItem] = node.inspectorConfig[0].items.slice(-1);
     expect(lastItem).toBe(config);
@@ -36,7 +36,7 @@ describe('Inspector Extension Manager', function() {
     const items = node.inspectorConfig[0].items;
     node.inspectorConfig[0].items = [{ items }];
 
-    InspectorExtensionManager.registerInspectorExtension(node, config);
+    registerInspectorExtension(node, config);
 
     const [lastItem] = node.inspectorConfig[0].items[0].items.slice(-1);
     expect(lastItem).toBe(config);
@@ -45,7 +45,7 @@ describe('Inspector Extension Manager', function() {
   it('should update items that have the same id', function() {
     config.id = 1;
 
-    InspectorExtensionManager.registerInspectorExtension(node, config);
+    registerInspectorExtension(node, config);
 
     const items = node.inspectorConfig[0].items;
     const [lastItem] = node.inspectorConfig[0].items.slice(-1);
@@ -60,8 +60,8 @@ describe('Inspector Extension Manager', function() {
       container: true,
     };
 
-    InspectorExtensionManager.registerInspectorExtension(node, config);
-    InspectorExtensionManager.registerInspectorExtension(node, secondConfig);
+    registerInspectorExtension(node, config);
+    registerInspectorExtension(node, secondConfig);
 
     const [lastItem] = node.inspectorConfig[0].items.slice(-1);
     expect(lastItem).toBe(config);
