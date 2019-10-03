@@ -18,7 +18,7 @@ describe('Paper Manager', () => {
     paperManager = new PaperManager(paper);
   });
 
-  test.each(positionData)(
+  it.each(positionData)(
     'Can convert client position to grid position',
     (scale, paperOrigin, clientX, clientY, expectedPoint) => {
       paper.scale = () => scale;
