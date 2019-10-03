@@ -211,8 +211,4 @@ export default {
     font-size: 0.875rem;
   }
 }
-
-.form-accordtion-container {
-  padding: 0;
-}
 </style>
