@@ -4,7 +4,6 @@ import {
   getElementAtPosition,
   getGraphElements,
   getPositionInPaperCoords,
-  moveElement,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
   uploadXml,
@@ -170,6 +169,8 @@ describe('Boundary Timer Event', () => {
           .then($el => $el.find('[joint-selector="body"]'))
           .should('have.attr', 'fill', defaultNodeColor);
 
+        getElementAtPosition(startEventPosition).click();
+
         cy.wrap($boundaryEvent).should($el => {
           const { left, top } = $el.position();
           const positionErrorMargin = 2;
@@ -226,8 +227,6 @@ describe('Boundary Timer Event', () => {
                 expect(xml).to.contain(boundaryEventOnTask2Xml);
               });
 
-            const initialBoundaryEventPosition = $boundaryEvent.position();
-
             getElementAtPosition(taskPosition)
               .then(getComponentsEmbeddedInShape)
               .should($elements => {
@@ -239,24 +238,6 @@ describe('Boundary Timer Event', () => {
               .should($elements => {
                 expect($elements).to.have.lengthOf(numberOfBoundaryTimerEventsAdded);
               });
-
-            moveElement(taskPosition, 200, 400);
-            waitToRenderAllShapes();
-            cy.wrap($boundaryEvent).should($el => {
-              const { left, top } = $el.position();
-              const positionErrorMargin = 2;
-              expect(left).to.be.closeTo(initialBoundaryEventPosition.left, positionErrorMargin);
-              expect(top).to.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
-            });
-
-            moveElement(task2Position, 300, 500);
-            waitToRenderAllShapes();
-            cy.wrap($boundaryEvent).should($el => {
-              const { left, top } = $el.position();
-              const positionErrorMargin = 2;
-              expect(left).to.not.be.closeTo(initialBoundaryEventPosition.left, positionErrorMargin);
-              expect(top).to.not.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
-            });
           });
       });
     });
