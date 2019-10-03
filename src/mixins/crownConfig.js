@@ -60,12 +60,12 @@ export default {
   watch: {
     highlighted(highlighted) {
       if (highlighted) {
-        this.shapeView.highlight(this.selectShape, { highlighter: defaultHighlighter });
+        this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
         this.addCrown();
-      } else {
-        this.shapeView.unhighlight(this.selectShape, { highlighter: defaultHighlighter });
-        this.removeCrown();
+        return;
       }
+      this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
+      this.removeCrown();
     },
     hasError() {
       if (this.isRendering) {
@@ -79,7 +79,7 @@ export default {
     shapeView() {
       return this.shape.findView(this.paper);
     },
-    selectShape() {
+    shapeBody() {
       return this.shapeView.$el.find('[joint-selector=body]');
     },
     isPool() {
@@ -249,8 +249,8 @@ export default {
       this.shape.on('change:size', () => {
         if (this.highlighted) {
           /* Ensure the highlight box expands to fit element */
-          shapeView.unhighlight(this.selectShape, { highlighter: defaultHighlighter });
-          shapeView.highlight(this.selectShape, { highlighter: defaultHighlighter });
+          shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
+          shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
         }
       });
     },
