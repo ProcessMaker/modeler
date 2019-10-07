@@ -1,4 +1,4 @@
-import { dia, linkTools, shapes } from 'jointjs';
+import { dia, linkTools } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
@@ -10,7 +10,9 @@ const endpoints = {
   target: 'target',
 };
 
-const anchorPadding = 25;
+function isPoint(item) {
+  return item.x && item.y;
+}
 
 export default {
   props: ['highlighted', 'paper'],
@@ -77,27 +79,27 @@ export default {
   },
   methods: {
     setEndpoint(shape, endpoint, connectionOffset) {
-      let anchor;
-
-      if (connectionOffset) {
-        anchor = () => {
-          const { x, y } = shape.position();
-          const connectionPoint = {
-            x: x + connectionOffset.x,
-            y: y + connectionOffset.y,
-          };
-
-          return getDefaultAnchorPoint(connectionPoint, shape.findView(this.paper));
-        };
-      } else {
-        anchor = {
-          name: this.target instanceof shapes.standard.Rectangle ? 'perpendicular' : 'modelCenter',
-          args: { padding: anchorPadding },
-        };
+      if (isPoint(shape)) {
+        return this.shape[endpoint](shape, {
+          anchor: {
+            name: 'modelCenter',
+            args: { padding: 25 },
+          },
+          connectionPoint: { name: 'boundary' },
+        });
       }
 
+      const { x, y } = shape.position();
+      const { width, height } = shape.size();
+      const connectionPoint = connectionOffset
+        ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
+        : { x: x + (width / 2), y: y + (height / 2) };
+
       this.shape[endpoint](shape, {
-        anchor,
+        anchor: {
+          name: 'closestPort',
+          args: { connectionPoint, shape, paper: this.paper },
+        },
         connectionPoint: { name: 'boundary' },
       });
     },

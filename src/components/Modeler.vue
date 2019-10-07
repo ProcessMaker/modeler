@@ -99,7 +99,7 @@
 
 <script>
 import Vue from 'vue';
-import { dia } from 'jointjs';
+import { dia, anchors } from 'jointjs';
 import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
@@ -116,6 +116,7 @@ import Process from './inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
+import { getDefaultAnchorPoint } from '@/portsUtils';
 
 import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -130,6 +131,10 @@ import PaperManager from './paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 const version = '1.0';
+
+anchors.closestPort = (endView, endMagnet, anchorReference, { connectionPoint, shape, paper }) => {
+  return getDefaultAnchorPoint(connectionPoint, shape.findView(paper));
+};
 
 export default {
   components: {
