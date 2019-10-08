@@ -1,6 +1,7 @@
 <template>
   <div class="form-group">
     <form-date-picker
+      :emit-iso="true"
       data-test="start-date-picker"
       data-format="datetime"
       :label="$t('Start date')"
@@ -51,6 +52,7 @@
         <b-form-group class="p-0 mb-1" :description="`${$t('Please click On to select a date')}.`">
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on">{{ $t('On') }}</b-form-radio>
           <form-date-picker
+            :emit-iso="true"
             data-test="end-date-picker"
             type="date"
             class="form-date-picker p-0 m-0"

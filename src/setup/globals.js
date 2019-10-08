@@ -30,4 +30,9 @@ window.ProcessMaker = {
 
     window.ProcessMaker.EventBus.$emit('alert', window.ProcessMaker.navbar.alerts);
   },
+  // user: {
+  //   timezone: 'America/Recife',
+  //   lane: 'en',
+  //   datetime_format: 'MM/DD/YYYY HH:mm',
+  // },
 };

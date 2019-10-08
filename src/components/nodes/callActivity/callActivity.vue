@@ -8,7 +8,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
-import { taskHeight } from '@/components/nodes/task';
+import { taskHeight } from '@/components/nodes/task/taskConfig';
 import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
 import hasMarkers from '@/mixins/hasMarkers';
