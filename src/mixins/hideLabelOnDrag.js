@@ -8,8 +8,9 @@ export default {
 
       this.shape.attr('label/display', 'none');
     },
-    showLabel() {
+    async showLabel() {
       this.shape.attr('label/display', 'initial');
+      await this.$nextTick();
       this.shape.once('change:position', this.hideLabel);
     },
   },
@@ -18,5 +19,6 @@ export default {
 
     this.shape.once('change:position', this.hideLabel);
     this.shape.listenTo(this.paper, 'cell:pointerup blank:pointerup', this.showLabel);
+    this.shape.on('change:parent', this.showLabel);
   },
 };
