@@ -4,6 +4,7 @@ import {
   getElementAtPosition,
   getGraphElements,
   getPositionInPaperCoords,
+  moveElement,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
   uploadXml,
@@ -238,6 +239,49 @@ describe('Boundary Timer Event', () => {
               .should($elements => {
                 expect($elements).to.have.lengthOf(numberOfBoundaryTimerEventsAdded);
               });
+          });
+      });
+    });
+  });
+
+  it('keeps Boundary Timer Event in correct position when dragging and dropping', function() {
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+
+    const task2Position = { x: 500, y: 500 };
+    dragFromSourceToDest(nodeTypes.task, task2Position);
+
+    const boundaryTimerEventSelector = '.main-paper ' +
+      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+      '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+
+    getPositionInPaperCoords(task2Position).then(newPosition => {
+      cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
+        cy.wrap($boundaryEvent).
+          trigger('mousedown', { which: 1, force: true }).
+          trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true }).
+          trigger('mouseup').
+          then(waitToRenderAllShapes).
+          then(() => {
+            const initialBoundaryEventPosition = $boundaryEvent.position();
+            moveElement(taskPosition, 200, 400);
+            waitToRenderAllShapes();
+            cy.wrap($boundaryEvent).should($el => {
+              const { left, top } = $el.position();
+              const positionErrorMargin = 2;
+              expect(left).to.be.closeTo(initialBoundaryEventPosition.left, positionErrorMargin);
+              expect(top).to.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
+            });
+
+            moveElement(task2Position, 300, 500);
+            waitToRenderAllShapes();
+            cy.wrap($boundaryEvent).should($el => {
+              const { left, top } = $el.position();
+              const positionErrorMargin = 2;
+              expect(left).to.not.be.closeTo(initialBoundaryEventPosition.left, positionErrorMargin);
+              expect(top).to.not.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
+            });
           });
       });
     });
