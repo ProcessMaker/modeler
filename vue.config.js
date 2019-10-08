@@ -1,4 +1,6 @@
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const yargs = require('yargs');
 
 module.exports = {
   css: {
@@ -26,12 +28,32 @@ module.exports = {
         },
       ],
     },
-    externals: process.env.NODE_ENV === 'production' ? [
-      'vue',
-      /^bootstrap\/.+$/,
-      /^@processmaker\/.+$/,
-      'i18next',
-      '@panter/vue-i18next',
-    ] : [],
+    externals: (() => {
+      const externals = [];
+      if (process.env.NODE_ENV === 'production') {
+        externals.push(
+          'vue',
+          /^bootstrap\/.+$/,
+          /^@processmaker\/.+$/,
+          'i18next',
+          '@panter/vue-i18next',
+          'jointjs',
+          'luxon',
+          'bpmn-moddle',
+          'lodash',
+        );
+      }
+      return externals;
+    })(),
+    plugins: (() => {
+      const argv = yargs
+        .boolean('analyze')
+        .argv;
+      const plugins = [];
+      if (argv.analyze) {
+        plugins.push(new BundleAnalyzerPlugin());
+      }
+      return plugins;
+    })(),
   },
 };

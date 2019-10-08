@@ -6,7 +6,7 @@
     "build": "vue-cli-service build",
     "open-cypress": "TZ=UTC cypress open",
     "lint": "vue-cli-service lint --no-fix",
-    "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
+    "build-bundle": "vue-cli-service build --modern --target lib --name modeler ./src/components/nodes/index.js",
     "lint-fix": "vue-cli-service lint",
     "pretest": "rm -rf .nyc_output || true",
     "test": "npm run test-unit && npm run test-ci",
@@ -79,7 +79,10 @@
     "stylelint-config-recommended-scss": "^3.2.0",
     "stylelint-scss": "^3.3.2",
     "vue-loader": "latest",
-    "vue-template-compiler": "^2.5.17"
+    "vue-template-compiler": "^2.5.17",
+    "webpack-bundle-analyzer": "^3.5.2",
+    "webpack-cli": "^3.3.9",
+    "yargs": "^14.2.0"
   },
   "peerDependencies": {
     "@processmaker/screen-builder": "0.19.0",
