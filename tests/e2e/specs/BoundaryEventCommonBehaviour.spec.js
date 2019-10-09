@@ -84,7 +84,9 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         .its('xml')
         .then(removeIndentationAndLinebreaks)
         .then(xml => {
+          const boundaryEventPositionXml = 'bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3"><dc:Bounds x="232" y="251"';
           expect(xml).to.contain(eventXMLSnippet);
+          expect(xml).to.contain(boundaryEventPositionXml);
         });
 
       moveElementRelativeTo({ x: 400, y: 400 }, 150, 150);
@@ -94,7 +96,9 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         .its('xml')
         .then(removeIndentationAndLinebreaks)
         .then(xml => {
+          const boundaryEventPositionXml = 'bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3"><dc:Bounds x="662" y="481"';
           expect(xml).to.contain(eventXMLSnippet);
+          expect(xml).to.contain(boundaryEventPositionXml);
         });
     });
 
