@@ -35,12 +35,13 @@ module.exports = {
           'vue',
           /^bootstrap\/.+$/,
           /^@processmaker\/.+$/,
+          /^@fortawesome\/.+$/,
+          'jointjs',
           'i18next',
           '@panter/vue-i18next',
-          'jointjs',
           'luxon',
-          'bpmn-moddle',
           'lodash',
+          'bpmn-moddle',
         );
       }
       return externals;

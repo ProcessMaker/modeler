@@ -34,7 +34,7 @@
     "@babel/plugin-proposal-private-methods": "^7.6.0",
     "@fortawesome/fontawesome-free": "^5.7.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.6",
-    "@fortawesome/free-solid-svg-icons": "^5.4.1",
+    "@fortawesome/free-solid-svg-icons": "^5.6.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "bpmn-moddle": "^5.1.5",
     "bpmnlint": "^5.0.0",
@@ -46,7 +46,8 @@
     "vue": "^2.5.17",
     "vue-deepset": "^0.6.3",
     "vue-upload-component": "^2.8.14",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "webpack": "latest"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^1.9.0",
