@@ -1,4 +1,4 @@
-import { g } from 'jointjs/dist/joint';
+import { g } from 'jointjs';
 import { boundaryGroup, defaultGroup } from '@/mixins/portsConfig';
 
 function getModelPortPoints(model, group) {
