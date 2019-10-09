@@ -19,6 +19,8 @@ import { invalidNodeColor, defaultNodeColor, poolColor } from '@/components/node
 import pull from 'lodash/pull';
 import store from '@/store';
 
+const boundaryEventsPattern = /^processmaker-modeler-boundary-\D*-event$/;
+
 const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
     ...shapes.standard.Rectangle.prototype.markup,
@@ -378,7 +380,7 @@ export default {
         .getElements()
         .filter(({ component }) => component && component !== this)
         .forEach(({ component }) => {
-          if (component.node.type === 'processmaker-modeler-boundary-timer-event'){
+          if (component.node.type.match(boundaryEventsPattern)){
             return;
           }
           this.shape.embed(component.shape);
