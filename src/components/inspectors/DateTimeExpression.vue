@@ -33,12 +33,10 @@ export default {
       return 'local';
     },
     convertFromUTC(utcDatetimeString) {
-      const newDate = DateTime
+      return DateTime
         .fromISO(utcDatetimeString, { zone: 'utc' })
         .setZone(this.getTimezone())
         .toISO();
-
-      return newDate;
     },
     emitValue(localDatetimeString) {
       const utcDatetimeString = DateTime
