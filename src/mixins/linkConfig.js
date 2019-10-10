@@ -4,7 +4,6 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { defaultNodeColor, invalidNodeColor, poolColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
-import linkManager from '@/mixins/linkManager.js';
 
 const endpoints = {
   source: 'source',
@@ -89,16 +88,19 @@ export default {
           connectionPoint: { name: 'boundary' },
         });
       }
-      const { x, y } = shape.position();
-      const { width, height } = shape.size();
-      const connectionPoint = connectionOffset
-        ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
-        : { x: x + (width / 2), y: y + (height / 2) };
+
+      const getConnectionPoint = () => {
+        const { x, y } = shape.position();
+        const { width, height } = shape.size();
+        return connectionOffset
+          ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
+          : { x: x + (width / 2), y: y + (height / 2) };
+      };
 
       this.shape[endpoint](shape, {
         anchor: {
           name: 'closestPort',
-          args: { connectionPoint, shape, paper: this.paper },
+          args: { getConnectionPoint, shape, paper: this.paper },
         },
         connectionPoint: { name: 'boundary' },
       });

@@ -129,6 +129,8 @@ import { id as messageFlowId } from './nodes/messageFlow';
 import PaperManager from './paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
+import initAnchor from '@/mixins/linkManager.js';
+
 const version = '1.0';
 
 export default {
@@ -890,6 +892,8 @@ export default {
 
       shape.component.$emit('click');
     });
+
+    initAnchor();
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
