@@ -14,20 +14,17 @@ import { boundaryEventSelector, nodeTypes } from '../support/constants';
 const boundaryEventPosition = { x: 250, y: 250 };
 const taskPosition = { x: 250, y: 200 };
 
-const boundaryEventData = [
-  {
-    type: 'Boundary Timer Event',
-    nodeType: nodeTypes.boundaryTimerEvent,
-    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2" configuration="null" timing-control="null"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
-    eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
-  },
-  {
-    type: 'Boundary Error Event',
-    nodeType: nodeTypes.boundaryErrorEvent,
-    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2" configuration="null"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
-    eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
-  },
-];
+const boundaryEventData = [{
+  type: 'Boundary Timer Event',
+  nodeType: nodeTypes.boundaryTimerEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2" configuration="null" timing-control="null"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+  eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+}, {
+  type: 'Boundary Error Event',
+  nodeType: nodeTypes.boundaryErrorEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2" configuration="null"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+}];
 
 boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWithoutNullAttributes }) => {
   function configurePool(poolPosition) {
@@ -79,7 +76,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
         });
     });
 
-    it.only('can stay anchored to task when moving pool', function() {
+    it('can stay anchored to task when moving pool', function() {
       configurePool({ x: 300, y: 300 });
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()

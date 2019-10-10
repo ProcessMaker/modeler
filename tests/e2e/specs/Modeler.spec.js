@@ -73,7 +73,8 @@ describe('Modeler', () => {
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 
-    cy.window().its('xml')
+    cy.window()
+      .its('xml')
       .then(xml => xml.trim())
       .should('eq', validXML.trim());
   });
@@ -171,19 +172,16 @@ describe('Modeler', () => {
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .then(isElementCovered)
-      .should(isCovered => expect(isCovered).to.be.false);
+      .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
 
     getElementAtPosition(poolPosition)
       .click({ force: true })
-      .then($pool => getCrownButtonForElement($pool, 'lane-above-button'))
-      .click({ force: true });
+      .then($pool => getCrownButtonForElement($pool, 'lane-above-button')).click({ force: true });
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .then(isElementCovered)
-      .should(isCovered => expect(isCovered).to.be.false);
+      .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 
   it('Selects process node after deleting an element', () => {
@@ -239,7 +237,7 @@ describe('Modeler', () => {
   });
 
   it('updates validation after undo/redo', () => {
-    cy.get('[data-test=validation-toggle]').click();
+    cy.get('[data-test=validation-toggle]').click({ force: true });
     cy.get('[data-test=validation-list-toggle]').click();
 
     const initialNumberOfValidationErrors = 2;
@@ -256,8 +254,7 @@ describe('Modeler', () => {
 
     const numberOfNewValidationErrors = 1;
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors)
-      .should('contain', 'node_2');
+      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors).should('contain', 'node_2');
 
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
