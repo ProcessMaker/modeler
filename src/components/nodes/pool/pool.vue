@@ -378,7 +378,7 @@ export default {
         .getElements()
         .filter(({ component }) => component && component !== this)
         .forEach(({ component }) => {
-          if (component.node.type === 'processmaker-modeler-boundary-timer-event'){
+          if (component.node.definition.$type === 'bpmn:BoundaryEvent'){
             return;
           }
           this.shape.embed(component.shape);
