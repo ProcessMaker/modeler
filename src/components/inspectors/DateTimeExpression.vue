@@ -1,6 +1,7 @@
 <template>
   <div class="mt-3">
     <form-date-picker
+      :emit-iso="true"
       data-format="datetime"
       :label="$t('Wait until specific date/time')"
       control-class="form-control"
@@ -24,10 +25,17 @@ export default {
     value: String,
   },
   methods: {
+    getTimezone() {
+      if (typeof window.ProcessMaker !== 'undefined' && window.ProcessMaker.user) {
+        return window.ProcessMaker.user.timezone || 'local';
+      }
+
+      return 'local';
+    },
     convertFromUTC(utcDatetimeString) {
       return DateTime
         .fromISO(utcDatetimeString, { zone: 'utc' })
-        .toLocal()
+        .setZone(this.getTimezone())
         .toISO();
     },
     emitValue(localDatetimeString) {

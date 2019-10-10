@@ -10,7 +10,7 @@ import portsConfig from '@/mixins/portsConfig';
 import hasMarkers from '@/mixins/hasMarkers';
 import {markerSize} from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
-import { taskHeight } from './index';
+import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 const labelPadding = 15;

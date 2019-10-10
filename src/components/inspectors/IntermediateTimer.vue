@@ -53,7 +53,10 @@ export default {
     changeType(type) {
       const defaultValue = (this.isDelayType(type) || this.isCycleType(type))
         ? defaultDurationValue
-        : DateTime.local();
+        : DateTime
+          .local()
+          .toUTC()
+          .toISO();
       this.emitChange(type, defaultValue);
     },
     isDelayType(type) {
