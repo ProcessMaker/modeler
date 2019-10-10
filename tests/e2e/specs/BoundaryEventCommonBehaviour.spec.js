@@ -110,8 +110,6 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
           const taskPosition2 = $task.position();
           expect(boundaryPosition2.top).to.be.closeTo(taskPosition2.top, 1);
           expect(boundaryPosition2.left).to.be.closeTo(taskPosition2.left, 88);
-          console.log($anchor.position());
-          console.log($task.position());
         });
       });
 
