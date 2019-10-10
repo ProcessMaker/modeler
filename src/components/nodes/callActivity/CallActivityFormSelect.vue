@@ -1,11 +1,13 @@
 <template>
   <div>
-    <form-select
+    <form-multi-select
       v-bind="$attrs"
-      v-on="$listeners"
-      :value="value"
+      @input="$emit('input', $event ? $event.value : '')"
+      :value="selectValue"
       :disabled="processList.length === 0"
       :options="dropdownList"
+      optionValue="value"
+      optionContent="content"
       class="p-0 mb-2"
     />
 
@@ -28,6 +30,9 @@ export default {
   inheritAttrs: false,
   props: ['value'],
   computed: {
+    selectValue() {
+      return this.dropdownList.find(option => option.value === this.value);
+    },
     selectedProcessId() {
       return this.processList.find(({ value }) => value === this.value).processId;
     },
