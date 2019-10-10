@@ -18,12 +18,12 @@ const boundaryEventData = [
   {
     type: 'Boundary Timer Event',
     nodeType: nodeTypes.boundaryTimerEvent,
-    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2" configuration="null" timing-control="null"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   },
   {
     type: 'Boundary Error Event',
     nodeType: nodeTypes.boundaryErrorEvent,
-    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2" configuration="null"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   },
 ];
 

@@ -167,11 +167,11 @@ describe('Undo/redo', () => {
   it('Does not include intermediate message flow definition in XML', function() {
     const validMessageFlowXML = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
-  <bpmn:process id="Process_1" isExecutable="true">
+  <bpmn:process id="Process_1" isExecutable="true" configuration="null">
     <bpmn:startEvent id="node_1" name="Start Event" />
   </bpmn:process>
   <bpmn:collaboration id="collaboration_0">
-    <bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />
+    <bpmn:participant id="node_2" name="New Pool" processRef="Process_1" configuration="null" advanced="null" />
   </bpmn:collaboration>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_0">
