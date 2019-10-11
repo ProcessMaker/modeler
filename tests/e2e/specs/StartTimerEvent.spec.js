@@ -30,7 +30,7 @@ describe('Start Timer Event', () => {
     typeIntoTextInput('[data-test=repeat-input]', 3);
     cy.get('[data-test=day-3]').click();
     cy.contains('You must select at least one day.').should('not.exist');
-    cy.get('[data-test=ends-on]').click('left');
+    cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]').click();
     cy.get('.day').contains('22').click();
     cy.get('[title="Select Time"]').should('not.exist');
@@ -78,7 +78,7 @@ describe('Start Timer Event', () => {
     typeIntoTextInput('[data-test=repeat-input]', repeat);
 
     const endDay = 22;
-    cy.get('[data-test=ends-on]').click('left');
+    cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]')
       .click();
     cy.get('.form-date-picker')
@@ -102,7 +102,7 @@ describe('Start Timer Event', () => {
         .should('contain', timerExpression);
     });
 
-    cy.get('[data-test=ends-after]').click('left');
+    cy.get('[data-test=ends-after]').click('left', { force: true });
     const endsAfter = 4;
     typeIntoTextInput('[data-test=ends-after-input]', endsAfter);
 
@@ -118,7 +118,7 @@ describe('Start Timer Event', () => {
     });
 
     const endsNeverExpression = `R/${currentDateString}/P${repeat}Y`;
-    cy.get('[data-test=ends-never]').click('left');
+    cy.get('[data-test=ends-never]').click('left', { force: true });
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
