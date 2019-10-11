@@ -18,16 +18,18 @@ const boundaryEventData = [
   {
     type: 'Boundary Timer Event',
     nodeType: nodeTypes.boundaryTimerEvent,
-    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2" configuration="null" timing-control="null"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+    eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   },
   {
     type: 'Boundary Error Event',
     nodeType: nodeTypes.boundaryErrorEvent,
-    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+    eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2" configuration="null"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+    eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   },
 ];
 
-boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
+boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWithoutNullAttributes }) => {
   function configurePool(poolPosition) {
     getElementAtPosition({ x: 150, y: 150 })
       .click()
@@ -77,7 +79,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         });
     });
 
-    it('can stay anchored to task when moving pool', function() {
+    it.only('can stay anchored to task when moving pool', function() {
       configurePool({ x: 300, y: 300 });
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()
@@ -85,7 +87,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         .then(removeIndentationAndLinebreaks)
         .then(xml => {
           const boundaryEventPositionXml = 'bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3"><dc:Bounds x="232" y="251"';
-          expect(xml).to.contain(eventXMLSnippet);
+          expect(xml).to.contain(eventXMLSnippetWithoutNullAttributes);
           expect(xml).to.contain(boundaryEventPositionXml);
         });
 
@@ -97,7 +99,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
         .then(removeIndentationAndLinebreaks)
         .then(xml => {
           const boundaryEventPositionXml = 'bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3"><dc:Bounds x="662" y="481"';
-          expect(xml).to.contain(eventXMLSnippet);
+          expect(xml).to.contain(eventXMLSnippetWithoutNullAttributes);
           expect(xml).to.contain(boundaryEventPositionXml);
         });
     });

@@ -77,8 +77,8 @@ describe('Tasks', () => {
     cy.get('.inspector-container').should('not.contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
-    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
-    const callActivityXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
+    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" configuration="null" advanced="null" />';
+    const callActivityXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3" configuration="null" advanced="null">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
 

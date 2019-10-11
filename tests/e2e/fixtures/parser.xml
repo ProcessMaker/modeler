@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
-  <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:startEvent id="node_1" name="Start Event" />
+  <bpmn:process id="Process_1" isExecutable="true" configuration="null">
+    <bpmn:startEvent id="node_1" name="Start Event" configuration="null" advanced="null" />
     <bpmn:intermediateCatchEvent id="node_2" name="Intermediate Timer Event">
       <bpmn:timerEventDefinition>
         <bpmn:timeDuration>PT1H</bpmn:timeDuration>
