@@ -85,12 +85,12 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
       const taskSelector = '.main-paper ' +
         '[data-type="processmaker.components.nodes.task.Shape"]';
 
-      cy.get(boundaryEventSelector).then($anchor => {
+      cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
-          const boundaryPosition1 = $anchor.position();
-          const taskPosition1 = $task.position();
-          expect(boundaryPosition1.top).to.be.closeTo(taskPosition1.top, 1);
-          expect(boundaryPosition1.left).to.be.closeTo(taskPosition1.left, 88);
+          const boundaryPosition = $boundaryEvent.position();
+          const taskPosition = $task.position();
+          expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
+          expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 88);
         });
       });
 
@@ -104,12 +104,12 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
 
       moveElementRelativeTo({ x: 400, y: 400 }, 50, 50);
       waitToRenderAllShapes();
-      cy.get(boundaryEventSelector).then($anchor => {
+      cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
-          const boundaryPosition2 = $anchor.position();
-          const taskPosition2 = $task.position();
-          expect(boundaryPosition2.top).to.be.closeTo(taskPosition2.top, 1);
-          expect(boundaryPosition2.left).to.be.closeTo(taskPosition2.left, 88);
+          const boundaryPosition = $boundaryEvent.position();
+          const taskPosition = $task.position();
+          expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
+          expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 88);
         });
       });
 
