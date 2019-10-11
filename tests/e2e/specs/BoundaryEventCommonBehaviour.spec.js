@@ -79,7 +79,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
         });
     });
 
-    it.only('can stay anchored to task when moving pool', function() {
+    it('can stay anchored to task when moving pool', function() {
       configurePool({ x: 300, y: 300 });
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()
