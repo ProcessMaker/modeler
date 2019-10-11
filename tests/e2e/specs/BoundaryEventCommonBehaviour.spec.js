@@ -42,6 +42,14 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
   }
 
+  function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
+    const boundaryPosition = boundaryEvent.position();
+    const taskPosition = task.position();
+
+    expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
+    expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 88);
+  }
+
   describe(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -87,10 +95,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
 
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
-          const boundaryPosition = $boundaryEvent.position();
-          const taskPosition = $task.position();
-          expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
-          expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 88);
+          testThatBoundaryEventIsCloseToTask($boundaryEvent, $task);
         });
       });
 
@@ -106,10 +111,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, eventXMLSnippetWit
       waitToRenderAllShapes();
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
-          const boundaryPosition = $boundaryEvent.position();
-          const taskPosition = $task.position();
-          expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
-          expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 88);
+          testThatBoundaryEventIsCloseToTask($boundaryEvent, $task);
         });
       });
 
