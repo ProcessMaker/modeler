@@ -7,9 +7,11 @@ export default {
       }
 
       this.shape.attr('label/display', 'none');
-      this.shape.getEmbeddedCells().forEach(element => {
-        element.attr('label/display', 'none');
-      });
+      this.shape.getEmbeddedCells()
+        .filter(element => element.attr('label/text'))
+        .forEach((element) => {
+          element.attr('label/display', 'none');
+        });
     },
     async showLabel() {
       this.shape.attr('label/display', 'initial');
