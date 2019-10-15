@@ -6,9 +6,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Escalation Event', () => {
-  beforeEach(() => {
-    cy.loadModeler();
-  });
 
   it('can toggle interrupting on Boundary Escalation Events', function() {
     const taskPosition = { x: 200, y: 200 };
