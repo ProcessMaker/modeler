@@ -17,4 +17,23 @@ export default merge(cloneDeep(boundaryEventConfig), {
       ],
     });
   },
+  inspectorConfig: [
+    {
+      items: [
+        {
+          items: [
+            {},
+            {},
+            {
+              component: 'FormCheckbox',
+              config: {
+                label: 'Interrupting',
+                name: 'cancelActivity',
+                helper: 'Boundary Event Type',
+              },
+            },
+          ],
+        },
+      ],
+    }],
 });
