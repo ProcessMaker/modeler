@@ -1,7 +1,7 @@
 import {
   dragFromSourceToDest,
   getElementAtPosition,
-  removeIndentationAndLinebreaks,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -10,7 +10,7 @@ describe('Boundary Escalation Event', () => {
     cy.loadModeler();
   });
 
-  it('Render a boundary escalation event', function() {
+  it('can toggle interrupting on Boundary Escalation Events', function() {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -19,15 +19,19 @@ describe('Boundary Escalation Event', () => {
 
     getElementAtPosition(boundaryEscalationEventPosition).click();
 
-    const boundaryEscalationEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>';
+    const interrupting = '[name=cancelActivity]';
+    cy.get(interrupting).should('be.checked');
 
-    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.get('[data-test=undo]').click({ force: true });
+    waitToRenderAllShapes();
+    cy.get('[data-test=redo]').click({ force: true });
+    waitToRenderAllShapes();
 
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(boundaryEscalationEventXML);
-      });
+    getElementAtPosition(boundaryEscalationEventPosition).click();
+
+    cy.get(interrupting).should('be.checked');
+    cy.get(interrupting).uncheck({ force: true });
+    cy.get(interrupting).should('not.be.checked');
+
   });
 });

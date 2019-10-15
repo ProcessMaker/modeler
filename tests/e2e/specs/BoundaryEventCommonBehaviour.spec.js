@@ -22,6 +22,12 @@ const boundaryEventData = [{
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+}, {
+  type: 'Boundary Escalation Event',
+  nodeType: nodeTypes.boundaryEscalationEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
 }];
 
 boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
@@ -42,7 +48,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
     const taskPosition = task.position();
 
     expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
-    expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 88);
+    expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 110);
   }
 
   describe(`Common behaviour test for boundary event type ${type}`, () => {
