@@ -283,9 +283,9 @@ describe('Modeler', () => {
     });
   });
 
-  it('shows warning for unknown element during parsing', function() {
+  it.only('shows warning for unknown element during parsing', function() {
     uploadXml('unknownElement.xml');
-    const warning = 'IntermediateThrowEvent is an unsupported element type in parse';
+    const warning = 'DataStoreReference is an unsupported element type in parse';
 
     cy.get('.status-bar-container__status').click({ multiple: true });
     cy.get('[data-test="validation-list"]').should('contain', warning);
