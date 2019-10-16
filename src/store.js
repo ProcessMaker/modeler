@@ -52,7 +52,6 @@ export default new Vuex.Store({
     updateNodeProp(state, { node, key, value }) {
       node.definition.set(key, value);
 
-
       makeDefinitionPropertyReactive(node.definition, key, value);
     },
     clearNodes(state) {
