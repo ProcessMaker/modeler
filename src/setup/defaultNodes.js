@@ -11,6 +11,7 @@ import {
   exclusiveGateway,
   inclusiveGateway,
   intermediateMessageCatchEvent,
+  intermediateMessageThrowEvent,
   intermediateTimerEvent,
   manualTask,
   messageFlow,
@@ -48,6 +49,7 @@ const timerEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
+  [intermediateMessageThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:MessageEventDefinition'],
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
   [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
 ];
