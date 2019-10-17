@@ -283,7 +283,7 @@ describe('Modeler', () => {
     });
   });
 
-  it.only('shows warning for unknown element during parsing', function() {
+  it('shows warning for unknown element during parsing', function() {
     uploadXml('unknownElement.xml');
     const warning = 'DataStoreReference is an unsupported element type in parse';
 
