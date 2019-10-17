@@ -50,7 +50,8 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('.inspector-container').should('contain', 'A process has not been configured in the connected Call Activity task.');
+    cy.get('.inspector-container')
+      .should('contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').should('not.exist');
 
     getElementAtPosition(callActivityPosition).click({ force: true });
@@ -74,11 +75,12 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('.inspector-container').should('not.contain', 'A process has not been configured in the connected Call Activity task.');
+    cy.get('.inspector-container')
+      .should('not.contain', 'A process has not been configured in the connected Call Activity task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
-    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" configuration="null" advanced="null" />';
-    const callActivityXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3" configuration="null" advanced="null">
+    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
+    const callActivityXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
 
@@ -104,7 +106,8 @@ describe('Tasks', () => {
       .click({ force: true });
 
     waitToRenderAllShapes();
-    cy.get('.inspector-container').should('contain', 'A process has not been configured in the connected Call Activity task.');
+    cy.get('.inspector-container')
+      .should('contain', 'A process has not been configured in the connected Call Activity task.');
 
     const emptyCallActivityXml = 'calledElement=""';
     cy.get('[data-test=downloadXMLBtn]').click();
