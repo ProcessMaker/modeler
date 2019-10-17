@@ -3,6 +3,7 @@ import omit from 'lodash/omit';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import MessageEventIdGenerator from '../../../MessageEventIdGenerator';
+import CatchEventMessageSelect from './CatchEventMessageSelect';
 
 const messageEventIdGenerator = new MessageEventIdGenerator();
 
@@ -51,7 +52,7 @@ export default {
     }, {});
   },
   inspectorHandler(value, node, setNodeProp, moddle) {
-    for (const key in omit(value, ['$type', 'eventDefinitionId', 'variableName'])) {
+    for (const key in omit(value, ['$type', 'eventDefinitionId', 'variableName', 'messageRef'])) {
       if (node.definition[key] === value[key]) {
         continue;
       }
@@ -139,6 +140,13 @@ export default {
                 label: 'Whitelist',
                 helper: 'IP/Domain whitelist',
                 name: 'whitelist',
+              },
+            },
+            {
+              component: CatchEventMessageSelect,
+              config: {
+                label: 'Listen For Message',
+                name: 'messageRef',
               },
             },
           ],
