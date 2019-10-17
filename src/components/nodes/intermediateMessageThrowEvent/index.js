@@ -13,8 +13,28 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     return moddle.create('bpmn:IntermediateThrowEvent', {
       name: $t('Intermediate Message Throw Event'),
       eventDefinitions: [
-        moddle.create('bpmn:MessageEventDefinition', {}),
+        moddle.create('bpmn:MessageEventDefinition', {
+          messageRef: 'message',
+        }),
       ],
     });
   },
+  inspectorConfig: [
+    {
+      items: [
+        {
+          items: [
+            {},
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Message Name',
+                name: 'messageRef',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });
