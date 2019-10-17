@@ -32,7 +32,7 @@ describe('Boundary Timer Event', () => {
     const durationValue = 4;
     typeIntoTextInput('.repeat', durationValue);
 
-    const durationXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2" configuration="null" timing-control="null"><bpmn:timerEventDefinition><bpmn:timeDuration>PT4H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const durationXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT4H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -48,7 +48,7 @@ describe('Boundary Timer Event', () => {
     cy.get('[data-test=periods]').select('day');
     typeIntoTextInput('.repeat', cycleValue);
 
-    const cycleXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2" configuration="null" timing-control="null"><bpmn:timerEventDefinition><bpmn:timeCycle>R/P6D</bpmn:timeCycle></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
+    const cycleXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeCycle>R/P6D</bpmn:timeCycle></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -153,7 +153,8 @@ describe('Boundary Timer Event', () => {
           .trigger('mousedown', { which: 1, force: true })
           .then($boundaryEvent => {
             waitToRenderAllShapes();
-            cy.wrap($boundaryEvent).trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
+            cy.wrap($boundaryEvent)
+              .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
           });
 
         waitToRenderAllShapes();
@@ -216,7 +217,7 @@ describe('Boundary Timer Event', () => {
           .then(waitToRenderAllShapes)
           .then(() => {
             const task2Xml = '<bpmn:task id="node_4" name="Task" />';
-            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_4" configuration="null" timing-control="null">';
+            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_4">';
 
             cy.get('[data-test=downloadXMLBtn]').click();
             cy.window()
@@ -258,12 +259,12 @@ describe('Boundary Timer Event', () => {
 
     getPositionInPaperCoords(task2Position).then(newPosition => {
       cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
-        cy.wrap($boundaryEvent).
-          trigger('mousedown', { which: 1, force: true }).
-          trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true }).
-          trigger('mouseup').
-          then(waitToRenderAllShapes).
-          then(() => {
+        cy.wrap($boundaryEvent)
+          .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
+          .trigger('mouseup')
+          .then(waitToRenderAllShapes)
+          .then(() => {
             const initialBoundaryEventPosition = $boundaryEvent.position();
             moveElement(taskPosition, 200, 400);
             waitToRenderAllShapes();

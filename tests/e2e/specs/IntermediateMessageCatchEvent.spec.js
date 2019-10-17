@@ -32,7 +32,7 @@ describe('Intermediate Message Catch Event', () => {
     typeIntoTextInput('[name=whitelist]', whiteList);
 
     const validXML =
-      `<bpmn:intermediateCatchEvent id="node_2" name="${name}" pm:allowedUsers="1,10" pm:allowedGroups="20,30" pm:whitelist="${whiteList}" configuration="null" advanced="null">
+      `<bpmn:intermediateCatchEvent id="node_2" name="${name}" pm:allowedUsers="1,10" pm:allowedGroups="20,30" pm:whitelist="${whiteList}">
       <bpmn:messageEventDefinition id="${eventId}" pm:variableName="${variableName}" />
     </bpmn:intermediateCatchEvent>`;
 

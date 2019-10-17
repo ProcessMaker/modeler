@@ -44,7 +44,7 @@ describe('Pools', () => {
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
 
     const startEventIn1stPool = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
-    const startEventIn1stPoolWithNullProps = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" configuration="null" advanced="null" /></bpmn:process>';
+    const startEventIn1stPoolWithNullProps = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
@@ -60,7 +60,7 @@ describe('Pools', () => {
     waitToRenderAllShapes();
 
     const empty1stPool = '<bpmn:process id="Process_1" isExecutable="true" />';
-    const startEventIn2ndPool = '<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" configuration="null" advanced="null" /></bpmn:process>';
+    const startEventIn2ndPool = '<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
@@ -189,7 +189,7 @@ describe('Pools', () => {
 
     moveElement(taskPosition, 150, 550);
 
-    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" configuration="null" advanced="null" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(pool2taskXml);
