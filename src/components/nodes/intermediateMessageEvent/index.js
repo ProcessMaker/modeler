@@ -1,4 +1,4 @@
-import component from './intermediateMessageEvent.vue';
+import component from '@/components/nodes/intermediateEvent/intermediateEvent.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
