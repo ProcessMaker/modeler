@@ -1,5 +1,6 @@
 import {
   getMessagesList,
+  getMessage,
 } from '@/components/nodes/intermediateMessageCatchEvent/intermediateMessageCatchEventUtils.js';
 
 function MessageFactory(id, name) {
@@ -42,5 +43,15 @@ describe('intermediateMessageCatchEventUtils', () => {
     const store = StoreFactory([]);
 
     expect(getMessagesList(store)).toEqual([]);
+  });
+
+  it('getMessage returns message', () => {
+    const message = MessageFactory('message_2', 'Message 2');
+    const store = StoreFactory([
+      MessageFactory('message_1', 'Message 1'),
+      message,
+    ]);
+
+    expect(getMessage(store, 'message_2')).toBe(message);
   });
 });

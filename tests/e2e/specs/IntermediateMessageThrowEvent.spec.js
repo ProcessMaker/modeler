@@ -14,7 +14,7 @@ describe('Intermediate Message Throw Event', () => {
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
-    const eventXMLSnippet = '<bpmn:intermediateThrowEvent id="node_2" name="Intermediate Message Throw Event"><bpmn:messageEventDefinition /></bpmn:intermediateThrowEvent>';
+    const eventXMLSnippet = '<bpmn:intermediateThrowEvent id="node_2" name="Intermediate Message Throw Event"><bpmn:messageEventDefinition messageRef="undefined" /></bpmn:intermediateThrowEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
