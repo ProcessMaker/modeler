@@ -1,7 +1,8 @@
 <template>
   <form-select
     v-bind="$attrs"
-    v-on="$listeners"
+    :value="messageId"
+    @input="emitMessage"
     :disabled="messagesList.length === 0"
     :options="messagesList"
     class="p-0 mb-2"
@@ -10,7 +11,7 @@
 
 <script>
 import store from '@/store';
-import { getMessagesList } from './intermediateMessageCatchEventUtils';
+import { getMessagesList, getMessage } from './intermediateMessageCatchEventUtils';
 
 export default {
   inheritAttrs: false,
@@ -18,6 +19,15 @@ export default {
   computed: {
     messagesList() {
       return getMessagesList(store);
+    },
+    messageId() {
+      return this.value ? this.value.id : '';
+    },
+  },
+  methods: {
+    emitMessage(messageId) {
+      const message = getMessage(store, messageId);
+      this.$emit('input', message);
     },
   },
 };

@@ -34,6 +34,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       if (key === 'eventDefinitions') {
         data.eventDefinitionId = value[0].get('id');
         data.variableName = value[0].get('variableName');
+        data.messageRef = value[0].get('messageRef');
       } else {
         data[key] = value;
       }
@@ -52,12 +53,15 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
 
     if (
       node.definition.eventDefinitions[0].get('id') !== value.variableName ||
-      node.definition.eventDefinitions[0].get('variableName') !== value.eventDefinitionId
+      node.definition.eventDefinitions[0].get('variableName') !== value.eventDefinitionId ||
+      node.definition.eventDefinitions[0].get('messageRef') !== value.messageRef
     ) {
+
       setNodeProp(node, 'eventDefinitions', [
         moddle.create('bpmn:MessageEventDefinition', {
-          id: value['eventDefinitionId'],
-          variableName: value['variableName'],
+          id: value.eventDefinitionId,
+          variableName: value.variableName,
+          messageRef: value.messageRef,
         }),
       ]);
     }
