@@ -14,9 +14,6 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
       name: $t('Intermediate Message Catch Event'),
-      allowedUsers: '',
-      allowedGroups: '',
-      whitelist: '',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),
       ],

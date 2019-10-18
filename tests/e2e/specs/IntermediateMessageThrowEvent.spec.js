@@ -84,7 +84,7 @@ describe('Intermediate Message Throw Event', () => {
 
   it('can associate and rename message on intermediate message catch event', function() {
     const intermediateMessageCatchEventPosition = { x: 200, y: 300 };
-    const catchEventXMLSnippet = `<bpmn:intermediateCatchEvent id="node_3" name="Intermediate Message Catch Event" pm:allowedUsers="" pm:allowedGroups="" pm:whitelist=""><bpmn:messageEventDefinition messageRef="${ messageRef }" /></bpmn:intermediateCatchEvent>`;
+    const catchEventXMLSnippet = `<bpmn:intermediateCatchEvent id="node_3" name="Intermediate Message Catch Event"><bpmn:messageEventDefinition messageRef="${ messageRef }" /></bpmn:intermediateCatchEvent>`;
 
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
