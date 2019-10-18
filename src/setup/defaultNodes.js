@@ -11,6 +11,7 @@ import {
   exclusiveGateway,
   inclusiveGateway,
   intermediateMessageCatchEvent,
+  intermediateMessageThrowEvent,
   intermediateTimerEvent,
   manualTask,
   messageFlow,
@@ -44,10 +45,11 @@ const nodeTypes = [
   poolLane,
   textAnnotation,
 ];
-const timerEventNodes = [
+const customEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
+  [intermediateMessageThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:MessageEventDefinition'],
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
   [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
 ];
@@ -63,7 +65,7 @@ const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) =
 };
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension }) => {
   registerNode(startEvent);
-  timerEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
+  customEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
     registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
 

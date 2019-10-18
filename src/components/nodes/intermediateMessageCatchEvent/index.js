@@ -1,18 +1,18 @@
 import component from './intermediateMessageCatchEvent.vue';
-import omit from 'lodash/omit';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import MessageEventIdGenerator from '../../../MessageEventIdGenerator';
 import CatchEventMessageSelect from './CatchEventMessageSelect';
+import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
+import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import omit from 'lodash/omit';
 
 const messageEventIdGenerator = new MessageEventIdGenerator();
 
-export default {
+export default merge(cloneDeep(intermediateMessageEventConfig), {
   id: 'processmaker-modeler-intermediate-message-catch-event',
   component,
   bpmnType: 'bpmn:IntermediateCatchEvent',
-  control: true,
-  category: 'BPMN',
   icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
   definition(moddle, $t) {
@@ -27,16 +27,6 @@ export default {
           variableName: 'message',
         }),
       ],
-    });
-  },
-  diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
-        height: 36,
-        width: 36,
-        x: null,
-        y: null,
-      }),
     });
   },
   inspectorData(node) {
@@ -74,25 +64,10 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Intermediate Message Catch Event',
       items: [
         {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'configuration',
-          },
           items: [
-            {
-              component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Intermediate Message Catch Event',
-              },
-            },
+            {},
             {
               component: 'FormInput',
               config: {
@@ -151,23 +126,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'advanced',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
       ],
     },
   ],
-};
+});
