@@ -1,10 +1,7 @@
-/* Expression example */
-import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker.json';
-/* Our initial node types to register with our modeler */
 import {
   association,
-  boundaryTimerEvent,
   boundaryErrorEvent,
+  boundaryTimerEvent,
   callActivity,
   endEvent,
   eventBasedGateway,
@@ -26,6 +23,7 @@ import {
   task,
   textAnnotation,
 } from '@/components/nodes';
+import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker';
 
 const nodeTypes = [
   endEvent,
@@ -63,15 +61,14 @@ const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) =
     return nodeType.id;
   }
 };
-window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerBpmnExtension }) => {
+
+export function registerNodes({ registerNode, registerBpmnExtension }) {
   registerNode(startEvent);
   customEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
     registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
 
-  /* Register basic node types */
   nodeTypes.forEach(config => registerNode(config));
 
-  /* Add a BPMN extension */
   registerBpmnExtension('pm', bpmnExtension);
-});
+}

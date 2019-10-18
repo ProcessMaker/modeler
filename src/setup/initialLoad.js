@@ -1,11 +1,10 @@
 import './globals';
-
 // Import Extensions for Testing Modeler
-import './defaultNodes';
 import './extensions/testTaskInspectorExtension';
 import './extensions/twitterConnector';
 import './extensions/testCustomConnector';
 import './extensions/customMarker';
+import { registerNodes } from '@/setup/registerNodes';
 
 const blank = `
 <?xml version="1.0" encoding="UTF-8"?>
@@ -17,6 +16,7 @@ const blank = `
 </bpmn:definitions>
 `;
 
+window.ProcessMaker.EventBus.$on('modeler-init', registerNodes);
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
   loadXML(blank);
 });
