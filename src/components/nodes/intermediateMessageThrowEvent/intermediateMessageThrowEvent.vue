@@ -14,6 +14,7 @@ export default {
     return {
       message: this.moddle.create('bpmn:Message', {
         id: `${this.id}_message`,
+        name: `${ this.id }_message`,
       }),
     };
   },

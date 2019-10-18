@@ -31,7 +31,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       return data;
     }, {});
   },
-  inspectorHandler(value, node, setNodeProp, moddle) {
+  inspectorHandler(value, node, setNodeProp) {
     for (const key in omit(value, ['$type', 'eventDefinitions', 'messageName'])) {
       if (node.definition[key] === value[key]) {
         continue;
