@@ -2,6 +2,7 @@ import component from './intermediateMessageThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
+import omit from 'lodash/omit';
 
 export default merge(cloneDeep(intermediateMessageEventConfig), {
   id: 'processmaker-modeler-intermediate-message-throw-event',
@@ -19,6 +20,31 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       ],
     });
   },
+  inspectorData(node) {
+    return Object.entries(node.definition).reduce((data, [key, value]) => {
+      if (key === 'eventDefinitions') {
+        data.messageName = value[0].get('messageRef').name;
+      } else {
+        data[key] = value;
+      }
+
+      return data;
+    }, {});
+  },
+  inspectorHandler(value, node, setNodeProp, moddle) {
+    for (const key in omit(value, ['$type', 'eventDefinitions', 'messageName'])) {
+      if (node.definition[key] === value[key]) {
+        continue;
+      }
+
+      setNodeProp(node, key, value[key]);
+    }
+
+    const message = node.definition.get('eventDefinitions')[0].messageRef;
+    if (message.name !== value.messageName) {
+      message.name = value.messageName;
+    }
+  },
   inspectorConfig: [
     {
       items: [
@@ -29,7 +55,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
               component: 'FormInput',
               config: {
                 label: 'Message Name',
-                name: 'messageRef',
+                name: 'messageName',
               },
             },
           ],
