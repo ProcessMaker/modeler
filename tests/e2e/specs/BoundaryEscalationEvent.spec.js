@@ -9,7 +9,7 @@ describe('Boundary Escalation Event', () => {
 
   it('can toggle interrupting on Boundary Escalation Events', function() {
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.callActivity, taskPosition);
 
     const boundaryEscalationEventPosition = { x: 260, y: 260 };
     dragFromSourceToDest(nodeTypes.boundaryEscalationEvent, boundaryEscalationEventPosition);
@@ -29,6 +29,7 @@ describe('Boundary Escalation Event', () => {
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
     cy.get(interrupting).should('not.be.checked');
-
   });
+
+  it('can only embed onto a call activity');
 });
