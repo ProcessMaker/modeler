@@ -24,3 +24,4 @@ export { default as Modeler } from '../Modeler';
 export { default as manualTask } from './manualTask';
 export { default as boundaryTimerEvent } from './boundaryTimerEvent';
 export { default as boundaryErrorEvent } from './boundaryErrorEvent';
+export { default as registerNodes } from '@/setup/registerNodes';

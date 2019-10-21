@@ -34,7 +34,7 @@ module.exports = {
         externals.push(
           'vue',
           /^bootstrap\/.+$/,
-          /^@processmaker\/.+$/,
+          /^@processmaker\/(?!processmaker-bpmn-moddle).+$/,
           /^@fortawesome\/.+$/,
           'jointjs',
           'i18next',
