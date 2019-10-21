@@ -22,12 +22,10 @@ const boundaryEventData = [{
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
-  eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
 }, {
   type: 'Boundary Escalation Event',
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
-  eventXMLSnippetWithoutNullAttributes: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
 }];
 
 boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet }) => {
