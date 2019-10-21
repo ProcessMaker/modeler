@@ -1,6 +1,7 @@
 import {
   dragFromSourceToDest,
   getElementAtPosition,
+  getGraphElements,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -31,5 +32,30 @@ describe('Boundary Escalation Event', () => {
     cy.get(interrupting).should('not.be.checked');
   });
 
-  it('can only embed onto a call activity');
+  it('can only embed onto a call activity', function() {
+    const initialNumberOfElements = 1;
+    const inValidBoundaryEscalationEventTargets = [
+      { type: nodeTypes.task, position: { x: 100, y: 300 } },
+      { type: nodeTypes.callActivity, position: { x: 240, y: 300 } },
+      { type: nodeTypes.scriptTask, position: { x: 380, y: 300 } },
+      { type: nodeTypes.manualTask, position: { x: 100, y: 400 } },
+      { type: nodeTypes.sendTweet, position: { x: 240, y: 400 } },
+      { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } },
+    ];
+
+    inValidBoundaryEscalationEventTargets.forEach(({ type, position }) => {
+      dragFromSourceToDest(type, position);
+    });
+
+    const numberOfElementsExpected = initialNumberOfElements + inValidBoundaryEscalationEventTargets.length;
+    getGraphElements().should('have.length', numberOfElementsExpected);
+
+    inValidBoundaryEscalationEventTargets.forEach(({ position }) => {
+      dragFromSourceToDest(nodeTypes.boundaryEscalationEvent, position);
+    });
+
+    const callActivityEscalation = 1;
+    getGraphElements().should('have.length', numberOfElementsExpected + callActivityEscalation);
+
+  });
 });
