@@ -20,6 +20,7 @@ import {
   sequenceFlow,
   serviceTask,
   startEvent,
+  messageStartEvent,
   startTimerEvent,
   task,
   textAnnotation,
@@ -46,6 +47,7 @@ const nodeTypes = [
 ];
 const customEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
+  [messageStartEvent, 'bpmn:StartEvent', 'bpmn:MessageEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
   [intermediateMessageThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:MessageEventDefinition'],
