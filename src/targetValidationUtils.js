@@ -1,10 +1,10 @@
 import { g } from 'jointjs';
 import { id as poolId } from '@/components/nodes/pool';
 import validBoundaryEventTargets from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
-import validBoundaryEscalationEventTarget
-  from '@/components/nodes/boundaryEscalationEvent/validBoundaryEscalationEventTargets';
 import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
 import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+
+const validBoundaryEscalationEventTarget = 'bpmn:CallActivity';
 
 export default function getValidationProperties(clientX, clientY, control, paper, graph, collaboration, paperContainer) {
   const returnValue = {
@@ -106,7 +106,11 @@ function isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph) {
 
 function isOverValidBoundaryEscalationEventTarget(clientX, clientY, paper, graph) {
   return graph.findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper)).
-    find(({ component }) => component && validBoundaryEscalationEventTarget.includes(component.node.definition.$type));
+    find(({ component }) => isValidBoundaryEscalationEvent(component));
+}
+
+function isValidBoundaryEscalationEvent(component) {
+  return component && component.node.definition.$type === validBoundaryEscalationEventTarget;
 }
 
 function isBoundaryErrorEvent(type) {
