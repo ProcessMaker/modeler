@@ -1,4 +1,3 @@
 export default function runningInCypressTest() {
-  // return !!window.Cypress;
-  return true;
+  return !!window.Cypress;
 }
