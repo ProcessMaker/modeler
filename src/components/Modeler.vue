@@ -545,6 +545,14 @@ export default {
         return;
       }
 
+      if (definition.get('documentation')) {
+        definition.set('documentation', null);
+      }
+
+      if (definition.get('extensionElements')) {
+        definition.set('extensionElements', null);
+      }
+
       const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
       const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
       const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
