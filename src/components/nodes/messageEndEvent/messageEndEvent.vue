@@ -8,13 +8,18 @@ import portsConfig from '@/mixins/portsConfig';
 import EventShape from '@/components/nodes/intermediateEvent/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import messageEndEventSymbol from '@/assets/message-end-event.svg';
+import pull from 'lodash/pull';
 
 export default {
-  props: ['graph', 'node'],
+  props: ['graph', 'node', 'rootElements', 'id'],
   mixins: [crownConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,
+      message: this.moddle.create('bpmn:Message', {
+        id: `${ this.id }_message`,
+        name: `${ this.id }_message`,
+      }),
     };
   },
   watch: {
@@ -47,8 +52,13 @@ export default {
         x: 2,
       },
     });
+    this.rootElements.push(this.message);
+    this.node.definition.get('eventDefinitions')[0].messageRef = this.message;
     this.shape.addTo(this.graph);
     this.shape.component = this;
+  },
+  destroyed() {
+    pull(this.rootElements, this.message);
   },
 };
 </script>

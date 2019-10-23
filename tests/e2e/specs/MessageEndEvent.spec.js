@@ -6,7 +6,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-const xmlSnippet = '<bpmn:endEvent id="node_2" name="Message End Event"><bpmn:messageEventDefinition /></bpmn:endEvent>';
+const xmlSnippet = '<bpmn:endEvent id="node_2" name="Message End Event"><bpmn:messageEventDefinition messageRef="node_2_message" /></bpmn:endEvent>';
 const messageEndEventPosition = { x: 300, y: 200 };
 
 describe('Message End Event', () => {
