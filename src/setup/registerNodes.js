@@ -5,6 +5,7 @@ import {
   boundaryEscalationEvent,
   callActivity,
   endEvent,
+  errorEndEvent,
   eventBasedGateway,
   exclusiveGateway,
   inclusiveGateway,
@@ -29,6 +30,7 @@ import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/proc
 
 const nodeTypes = [
   endEvent,
+  errorEndEvent,
   task,
   scriptTask,
   manualTask,
@@ -48,6 +50,7 @@ const nodeTypes = [
 const customEventNodes = [
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [messageStartEvent, 'bpmn:StartEvent', 'bpmn:MessageEventDefinition'],
+  [errorEndEvent, 'bpmn:EndEvent'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
   [intermediateMessageThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:MessageEventDefinition'],
