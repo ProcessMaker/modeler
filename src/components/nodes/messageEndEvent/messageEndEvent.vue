@@ -7,7 +7,7 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import EventShape from '@/components/nodes/intermediateEvent/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import intermediateMailSymbol from '@/assets/message-end-event.svg';
+import messageEndEventSymbol from '@/assets/message-end-event.svg';
 
 export default {
   props: ['graph', 'node'],
@@ -27,7 +27,7 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
-    this.shape.attr('image/xlink:href', intermediateMailSymbol);
+    this.shape.attr('image/xlink:href', messageEndEventSymbol);
     this.shape.attr({
       body: {
         fill: '#FFF1F2',
