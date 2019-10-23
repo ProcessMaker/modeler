@@ -1,11 +1,11 @@
 <template>
-  <div/>
+  <div />
 </template>
 
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import errorBoltIcon from '@/assets/boundary-error-event-icon.svg';
-import validBoundaryEventTargets from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
+import isValidBoundaryEventTarget from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
 import { getAttachedErrorBoundaryEvents } from '@/targetValidationUtils';
 
 export default {
@@ -19,8 +19,7 @@ export default {
         .length === 0;
     },
     isValidBoundaryEventTarget(model) {
-      return model.component &&
-        validBoundaryEventTargets.includes(model.component.node.definition.$type) &&
+      return isValidBoundaryEventTarget(model.component) &&
         this.doesNotHaveOtherBoundaryEvents(model);
     },
   },

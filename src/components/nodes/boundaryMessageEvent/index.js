@@ -14,8 +14,9 @@ boundaryEventConfig.inspectorConfig[0].items[0].items.push(
   },
 );
 
+export const id = 'processmaker-modeler-boundary-message-event';
 export default merge(cloneDeep(boundaryEventConfig), {
-  id: 'processmaker-modeler-boundary-message-event',
+  id,
   component,
   label: 'Boundary Message Event',
   icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),

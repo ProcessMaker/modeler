@@ -7,9 +7,9 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
-import validBoundaryEventTargets from './validBoundaryEventTargets';
+import isValidBoundaryEventTarget from './validBoundaryEventTargets';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
-import { invalidNodeColor, poolColor, defaultNodeColor } from '@/components/nodeColors';
+import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
@@ -47,7 +47,7 @@ export default {
         .find(this.isValidBoundaryEventTarget);
     },
     isValidBoundaryEventTarget(model) {
-      return model.component && validBoundaryEventTargets.includes(model.component.node.definition.$type);
+      return isValidBoundaryEventTarget(model.component);
     },
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({

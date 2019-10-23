@@ -23,6 +23,7 @@ const boundaryEventData = [{
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.task,
 }, {
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
@@ -35,27 +36,27 @@ const boundaryEventData = [{
   taskType: nodeTypes.callActivity,
 }];
 
-boundaryEventData.forEach(({ type, nodeType, taskType, eventXMLSnippet }) => {
-  function configurePool(poolPosition) {
-    getElementAtPosition({ x: 150, y: 150 })
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
-      });
+function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
+  const boundaryPosition = boundaryEvent.position();
+  const taskPosition = task.position();
 
-    dragFromSourceToDest(taskType, { x: 250, y: 250 });
-    dragFromSourceToDest(nodeType, boundaryEventPosition);
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
-  }
+  expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
+  expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 95);
+}
 
-  function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
-    const boundaryPosition = boundaryEvent.position();
-    const taskPosition = task.position();
+function configurePool(poolPosition, nodeType, boundaryEventParent) {
+  getElementAtPosition({ x: 150, y: 150 })
+    .click()
+    .then($startEvent => {
+      getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
+    });
 
-    expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
-    expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 110);
-  }
+  dragFromSourceToDest(boundaryEventParent, { x: 250, y: 250 });
+  dragFromSourceToDest(nodeType, boundaryEventPosition);
+  dragFromSourceToDest(nodeTypes.pool, poolPosition);
+}
 
+boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType }) => {
   describe(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(taskType, taskPosition);
@@ -76,7 +77,7 @@ boundaryEventData.forEach(({ type, nodeType, taskType, eventXMLSnippet }) => {
 
     it('removes references of itself when inside of a pool and deleting the pool', function() {
       const poolPosition = { x: 400, y: 300 };
-      configurePool(poolPosition, nodeType);
+      configurePool(poolPosition, nodeType, taskType);
 
       getElementAtPosition(poolPosition)
         .click()
@@ -94,7 +95,7 @@ boundaryEventData.forEach(({ type, nodeType, taskType, eventXMLSnippet }) => {
     });
 
     it('can stay anchored to task when moving pool', function() {
-      configurePool({ x: 300, y: 300 }, nodeType);
+      configurePool({ x: 300, y: 300 }, nodeType, taskType);
 
       const taskSelector = '.main-paper ' +
         '[data-type="processmaker.components.nodes.task.Shape"]';
