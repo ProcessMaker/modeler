@@ -1,5 +1,5 @@
 import {
-  assertDownloadedXMLMatchesExpected,
+  assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
   getElementAtPosition,
 } from '../support/utils';
@@ -16,7 +16,7 @@ describe('Message End Event', () => {
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
-    assertDownloadedXMLMatchesExpected(`
+    assertDownloadedXmlContainsExpected(`
       <bpmn:endEvent id="node_2" name="Message End Event">
         <bpmn:messageEventDefinition messageRef="node_2_message" />
       </bpmn:endEvent>
