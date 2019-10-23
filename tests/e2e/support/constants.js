@@ -30,6 +30,7 @@ export const nodeTypes = {
   boundaryErrorEvent: 'processmaker-modeler-boundary-error-event',
   boundaryTimerEvent: 'processmaker-modeler-boundary-timer-event',
   boundarySignalEvent: 'processmaker-modeler-boundary-signal-event',
+  boundaryEscalationEvent: 'processmaker-modeler-boundary-escalation-event',
   taskWithMarker: 'processmaker-custom-marker-task-test',
 };
 

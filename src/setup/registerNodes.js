@@ -2,6 +2,7 @@ import {
   association,
   boundaryErrorEvent,
   boundaryTimerEvent,
+  boundaryEscalationEvent,
   callActivity,
   endEvent,
   eventBasedGateway,
@@ -50,6 +51,7 @@ const customEventNodes = [
   [intermediateMessageThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:MessageEventDefinition'],
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
   [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
+  [boundaryEscalationEvent, 'bpmn:BoundaryEvent', 'bpmn:EscalationEventDefinition'],
 ];
 const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
   const definitions = definition.get('eventDefinitions');
