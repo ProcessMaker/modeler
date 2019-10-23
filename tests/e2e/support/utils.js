@@ -234,12 +234,22 @@ export function getNumberOfLinks() {
     .then(({ graph }) => graph.getLinks().length);
 }
 
-export function assertDownloadedXMLMatchesExpected(xmlString) {
+export function assertDownloadedXmlContainsExpected(xmlString) {
   cy.get('[data-test=downloadXMLBtn]').click();
   cy.window()
     .its('xml')
     .then(removeIndentationAndLinebreaks)
     .then(xml => {
       expect(xml).to.contain(removeIndentationAndLinebreaks(xmlString));
+    });
+}
+
+export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
+  cy.get('[data-test=downloadXMLBtn]').click();
+  cy.window()
+    .its('xml')
+    .then(removeIndentationAndLinebreaks)
+    .then(xml => {
+      expect(xml).to.not.contain(removeIndentationAndLinebreaks(xmlString));
     });
 }
