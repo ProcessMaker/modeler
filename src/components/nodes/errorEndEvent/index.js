@@ -4,17 +4,17 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import omit from 'lodash/omit';
 
-export const id = 'processmaker-modeler-boundary-error-event';
+export const id = 'processmaker-modeler-error-end-event';
 
 export default merge(cloneDeep(endEventConfig), {
   id,
   component,
   control: true,
   label: 'Error End Event',
-  icon: require('@/assets/toolpanel/boundary-error-event.svg'),
+  icon: require('@/assets/toolpanel/error-end-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
-      name: $t('New Error End Event'),
+      name: $t('Error End Event'),
       eventDefinitions: [
         moddle.create('bpmn:ErrorEventDefinition'),
       ],
@@ -40,9 +40,9 @@ export default merge(cloneDeep(endEventConfig), {
       setNodeProp(node, key, value[key]);
     }
 
-    const message = node.definition.get('eventDefinitions')[0].errorRef;
-    if (message.name !== value.messageName) {
-      message.name = value.messageName;
+    const error = node.definition.get('eventDefinitions')[0].errorRef;
+    if (error.name !== value.errorName) {
+      error.name = value.errorName;
     }
   },
   inspectorConfig: [

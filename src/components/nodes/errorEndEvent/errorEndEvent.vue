@@ -4,7 +4,7 @@
 
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-// import clockIcon from '@/assets/clock.svg';
+import errorIcon from '@/assets/error.svg';
 import pull from 'lodash/pull';
 
 export default {
@@ -19,7 +19,7 @@ export default {
     };
   },
   mounted() {
-    // this.shape.attr('image/xlink:href', clockIcon);
+    this.shape.attr('image/xlink:href', errorIcon);
     this.rootElements.push(this.error);
     this.node.definition.get('eventDefinitions')[0].errorRef = this.error;
   },
