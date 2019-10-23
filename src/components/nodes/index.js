@@ -1,5 +1,6 @@
 export { default as association } from './association';
 export { default as endEvent } from './endEvent';
+export { default as errorEndEvent } from './errorEndEvent';
 export { default as exclusiveGateway } from './exclusiveGateway';
 export { default as inclusiveGateway } from './inclusiveGateway';
 export { default as parallelGateway } from './parallelGateway/';
