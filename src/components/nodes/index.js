@@ -7,6 +7,7 @@ export { default as eventBasedGateway } from './eventBasedGateway';
 export { default as sequenceFlow } from './sequenceFlow';
 export { default as messageFlow } from './messageFlow';
 export { default as startEvent } from './startEvent';
+export { default as messageStartEvent } from './messageStartEvent';
 export { default as startTimerEvent } from './startTimerEvent';
 export { default as intermediateTimerEvent } from './intermediateTimerEvent';
 export { default as intermediateMessageCatchEvent } from './intermediateMessageCatchEvent';
