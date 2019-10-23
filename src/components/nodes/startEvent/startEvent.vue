@@ -6,7 +6,7 @@
 import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
-import StartEventShape from '@/components/nodes/startEvent/shape';
+import EventShape from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
@@ -33,7 +33,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new StartEventShape();
+    this.shape = new EventShape();
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));

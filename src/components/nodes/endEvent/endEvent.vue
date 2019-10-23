@@ -6,7 +6,7 @@
 import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import StartEventShape from '@/components/nodes/startEvent/shape';
+import EventShape from '../startEvent/eventShape';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -23,7 +23,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new StartEventShape();
+    this.shape = new EventShape();
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
