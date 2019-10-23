@@ -25,7 +25,7 @@ export default {
       }),
     });
   },
-  validateOutgoing() {
+  allowOutgoingFlow() {
     return false;
   },
   inspectorConfig: [

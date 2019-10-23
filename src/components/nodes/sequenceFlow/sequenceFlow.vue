@@ -81,7 +81,7 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing() &&
+        this.allowOutgoingFlow() &&
         this.eventBasedGatewayTarget();
     },
     eventBasedGatewayTarget() {
@@ -105,9 +105,9 @@ export default {
     targetIsNotSource() {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
     },
-    validateOutgoing() {
-      return this.sourceConfig.validateOutgoing == null ||
-        this.sourceConfig.validateOutgoing(this.targetNode);
+    allowOutgoingFlow() {
+      return this.sourceConfig.allowOutgoingFlow == null ||
+        this.sourceConfig.allowOutgoingFlow(this.targetNode);
     },
     createLabel() {
       this.shape.labels([{
