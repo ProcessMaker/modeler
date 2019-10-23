@@ -1,12 +1,11 @@
 import {
+  assertDownloadedXMLMatchesExpected,
   dragFromSourceToDest,
   getElementAtPosition,
-  removeIndentationAndLinebreaks,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
-const xmlSnippet = '<bpmn:endEvent id="node_2" name="Message End Event"><bpmn:messageEventDefinition messageRef="node_2_message" /></bpmn:endEvent>';
 const messageEndEventPosition = { x: 300, y: 200 };
 
 describe('Message End Event', () => {
@@ -17,8 +16,10 @@ describe('Message End Event', () => {
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(xmlSnippet);
-    });
+    assertDownloadedXMLMatchesExpected(`
+      <bpmn:endEvent id="node_2" name="Message End Event">
+        <bpmn:messageEventDefinition messageRef="node_2_message" />
+      </bpmn:endEvent>
+    `);
   });
 });
