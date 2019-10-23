@@ -25,11 +25,6 @@ export default {
       }),
     });
   },
-  /**
-   * Validate whether to accept an outgoing flow to the node
-   *
-   * @param node
-   */
   validateOutgoing() {
     return false;
   },
