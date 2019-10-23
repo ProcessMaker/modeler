@@ -10,12 +10,11 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import intermediateMailSymbol from '@/assets/message-end-event.svg';
 
 export default {
-  props: ['graph', 'node', 'id'],
+  props: ['graph', 'node'],
   mixins: [crownConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,
-      definition: null,
     };
   },
   watch: {
@@ -31,7 +30,7 @@ export default {
     this.shape.attr('image/xlink:href', intermediateMailSymbol);
     this.shape.attr({
       body: {
-        fill: '#FFCDD3',
+        fill: '#FFF1F2',
         stroke: '#ED4757',
       },
       body2: {
