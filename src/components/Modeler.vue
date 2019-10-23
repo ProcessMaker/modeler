@@ -513,6 +513,11 @@ export default {
 
       store.commit('highlightNode', this.processNode);
     },
+    removeUnsupportedElementAttributes(definition) {
+      const unsupportedElements = ['documentation', 'extensionElements'];
+      unsupportedElements.filter(name => definition.get(name))
+        .forEach(name => definition.set(name, null));
+    },
     setNode(definition, flowElements, artifacts) {
       /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
@@ -544,6 +549,8 @@ export default {
 
         return;
       }
+
+      this.removeUnsupportedElementAttributes(definition);
 
       const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
       const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
