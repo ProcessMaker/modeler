@@ -3,6 +3,7 @@ import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
+import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 
 export const defaultDurationValue = 'PT1H';
 
@@ -72,14 +73,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         items: [
           {},
           {},
-          {
-            component: 'FormCheckbox',
-            config: {
-              label: 'Interrupting',
-              name: 'cancelActivity',
-              helper: 'Boundary Event Type',
-            },
-          },
+          interruptingToggleConfig,
         ],
       },
       {

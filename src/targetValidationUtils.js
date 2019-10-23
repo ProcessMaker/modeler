@@ -2,6 +2,9 @@ import { g } from 'jointjs';
 import { id as poolId } from '@/components/nodes/pool';
 import validBoundaryEventTargets from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
 import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+
+const validBoundaryEscalationEventTarget = 'bpmn:CallActivity';
 
 export default function getValidationProperties(clientX, clientY, control, paper, graph, collaboration, paperContainer) {
   const returnValue = {
@@ -21,6 +24,10 @@ export default function getValidationProperties(clientX, clientY, control, paper
   if (isDraggingBoundaryEvent(control.bpmnType)) {
     if (isBoundaryErrorEvent(control.type)) {
       returnValue.allowDrop = isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph);
+      return returnValue;
+    }
+    if (isBoundaryEscalationEvent(control.type)) {
+      returnValue.allowDrop = isOverValidBoundaryEscalationEventTarget(clientX, clientY, paper, graph);
       return returnValue;
     }
 
@@ -97,8 +104,21 @@ function isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph) {
   return true;
 }
 
+function isOverValidBoundaryEscalationEventTarget(clientX, clientY, paper, graph) {
+  return graph.findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper)).
+    find(({ component }) => isValidBoundaryEscalationEvent(component));
+}
+
+function isValidBoundaryEscalationEvent(component) {
+  return component && component.node.definition.$type === validBoundaryEscalationEventTarget;
+}
+
 function isBoundaryErrorEvent(type) {
   return type === boundaryErrorEventId;
+}
+
+function isBoundaryEscalationEvent(type) {
+  return type === boundaryEscalationEventId;
 }
 
 export function getAttachedErrorBoundaryEvents(shape) {
