@@ -2,17 +2,7 @@ import component from './boundaryMessageEvent.vue';
 import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
-
-boundaryEventConfig.inspectorConfig[0].items[0].items.push(
-  {
-    component: 'FormCheckbox',
-    config: {
-      label: 'Interrupting',
-      name: 'cancelActivity',
-      helper: 'Boundary Event Type',
-    },
-  },
-);
+import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 
 export const id = 'processmaker-modeler-boundary-message-event';
 export default merge(cloneDeep(boundaryEventConfig), {
@@ -29,4 +19,17 @@ export default merge(cloneDeep(boundaryEventConfig), {
       ],
     });
   },
+  inspectorConfig: [
+    {
+      items: [
+        {
+          items: [
+            {},
+            {},
+            interruptingToggleConfig,
+          ],
+        },
+      ],
+    },
+  ],
 });
