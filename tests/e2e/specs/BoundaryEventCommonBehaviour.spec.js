@@ -10,6 +10,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
+import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
 
 const boundaryEventPosition = { x: 250, y: 250 };
 const taskPosition = { x: 250, y: 200 };
@@ -19,21 +20,25 @@ const boundaryEventData = [{
   nodeType: nodeTypes.boundaryTimerEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
+  invalidTargets: [nodeTypes.startEvent],
 }, {
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
+  invalidTargets: [nodeTypes.startEvent],
 }, {
   type: 'Boundary Escalation Event',
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
+  invalidTargets: [nodeTypes.startEvent, nodeTypes.task],
 }, {
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
+  invalidTargets: [nodeTypes.startEvent],
 }];
 
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
@@ -56,7 +61,7 @@ function configurePool(poolPosition, nodeType, taskType) {
   dragFromSourceToDest(nodeTypes.pool, poolPosition);
 }
 
-boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType }) => {
+boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidTargets }) => {
   describe(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(taskType, taskPosition);
@@ -284,6 +289,59 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType }) => {
 
           expect(left).to.equal(boundaryEventPosition.left);
           expect(top).to.equal(boundaryEventPosition.top);
+        });
+      });
+    });
+
+    it('turns target red when it is an invalid drop target, and snaps back to original position', function() {
+      dragFromSourceToDest(taskType, taskPosition);
+      dragFromSourceToDest(nodeType, taskPosition);
+      const invalidNodeTargetPosition = { x: 450, y: 150 };
+
+      invalidTargets.forEach(invalidTargetNodeType => {
+        dragFromSourceToDest(invalidTargetNodeType, invalidNodeTargetPosition);
+
+        cy.window().its('store.state.paper').then(paper => {
+          const newPosition = paper.localToPagePoint(invalidNodeTargetPosition.x, invalidNodeTargetPosition.y);
+
+          cy.get(boundaryEventSelector).then($boundaryEvent => {
+            const boundaryEventPosition = $boundaryEvent.position();
+
+            cy.wrap($boundaryEvent)
+              .trigger('mousedown', { which: 1, force: true })
+              .then($boundaryEvent => {
+                waitToRenderAllShapes();
+                cy.wrap($boundaryEvent)
+                  .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
+              });
+
+            waitToRenderAllShapes();
+
+            getElementAtPosition(invalidNodeTargetPosition, invalidTargetNodeType)
+              .then($el => $el.find('[joint-selector="body"]'))
+              .should('have.attr', 'fill', invalidNodeColor);
+
+            cy.wrap($boundaryEvent).trigger('mouseup');
+
+            waitToRenderAllShapes();
+
+            getElementAtPosition(invalidNodeTargetPosition, invalidTargetNodeType)
+              .then($el => $el.find('[joint-selector="body"]'))
+              .should('have.attr', 'fill', defaultNodeColor);
+
+            getElementAtPosition(invalidNodeTargetPosition).click();
+
+            cy.wrap($boundaryEvent).should($el => {
+              const { left, top } = $el.position();
+              const positionErrorMargin = 2;
+              expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
+              expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+            });
+          });
+        });
+
+        getElementAtPosition(invalidNodeTargetPosition).then($element => {
+          getCrownButtonForElement($element, 'delete-button').click();
         });
       });
     });
