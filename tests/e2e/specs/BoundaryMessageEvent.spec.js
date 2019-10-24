@@ -2,9 +2,11 @@ import { dragFromSourceToDest, getElementAtPosition, removeIndentationAndLinebre
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Message Event', () => {
-  it.skip('Render a boundary message event', function() {
+  const taskType = nodeTypes.callActivity;
+
+  it('Render an interrupting boundary message event', function() {
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(taskType, taskPosition);
 
     const boundaryMessageEventPosition = { x: 260, y: 260 };
     dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);
@@ -22,9 +24,9 @@ describe('Boundary Message Event', () => {
       });
   });
 
-  it.skip('Render a non-interrupting boundary message event', function() {
+  it('Render a non-interrupting boundary message event', function() {
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(taskType, taskPosition);
 
     const boundaryMessageEventPosition = { x: 260, y: 260 };
     dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);

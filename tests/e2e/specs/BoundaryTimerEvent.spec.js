@@ -60,7 +60,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('Can drag boundary timer events over valid targets, but not over invalid targets', function() {
+  it('Can drag boundary timer events over valid targets', function() {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 150, y: 150 };
 
