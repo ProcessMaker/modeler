@@ -42,7 +42,7 @@ export default {
         this.targetIsNotContainingPool() &&
         this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
-        this.validateOutgoing();
+        this.allowOutgoingFlow();
     },
     targetIsValidType() {
       const targetBpmnType = this.targetNode.definition.$type;
@@ -78,9 +78,9 @@ export default {
     targetIsNotSource() {
       return this.targetNode.definition.id !== this.sourceNode.definition.id;
     },
-    validateOutgoing() {
-      return typeof this.sourceConfig.validateOutgoing === 'undefined' ||
-        this.sourceConfig.validateOutgoing(this.targetNode);
+    allowOutgoingFlow() {
+      return typeof this.sourceConfig.allowOutgoingFlow === 'undefined' ||
+        this.sourceConfig.allowOutgoingFlow(this.targetNode);
     },
   },
   mounted() {
