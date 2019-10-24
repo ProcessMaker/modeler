@@ -25,14 +25,14 @@ const boundaryEventData = [{
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
 }, {
-  type: 'Boundary Message Event',
-  nodeType: nodeTypes.boundaryMessageEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
-  taskType: nodeTypes.task,
-}, {
   type: 'Boundary Escalation Event',
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.callActivity,
+}, {
+  type: 'Boundary Message Event',
+  nodeType: nodeTypes.boundaryMessageEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
 }];
 
@@ -41,17 +41,17 @@ function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
   const taskPosition = task.position();
 
   expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
-  expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 95);
+  expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 118);
 }
 
-function configurePool(poolPosition, nodeType, boundaryEventParent) {
+function configurePool(poolPosition, nodeType, taskType) {
   getElementAtPosition({ x: 150, y: 150 })
     .click()
     .then($startEvent => {
       getCrownButtonForElement($startEvent, 'delete-button').click({ force: true });
     });
 
-  dragFromSourceToDest(boundaryEventParent, { x: 250, y: 250 });
+  dragFromSourceToDest(taskType, { x: 250, y: 250 });
   dragFromSourceToDest(nodeType, boundaryEventPosition);
   dragFromSourceToDest(nodeTypes.pool, poolPosition);
 }
