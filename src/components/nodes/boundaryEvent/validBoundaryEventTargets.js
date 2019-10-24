@@ -10,4 +10,6 @@ const validBoundaryEventTargets = [
   'bpmn:CallActivity',
 ];
 
-export default validBoundaryEventTargets;
+export default function isValidBoundaryEventTarget(component) {
+  return component && validBoundaryEventTargets.includes(component.node.definition.$type);
+}

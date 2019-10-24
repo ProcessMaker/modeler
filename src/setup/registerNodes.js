@@ -1,6 +1,7 @@
 import {
   association,
   boundaryErrorEvent,
+  boundaryMessageEvent,
   boundaryTimerEvent,
   boundaryEscalationEvent,
   callActivity,
@@ -56,6 +57,7 @@ const customEventNodes = [
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
   [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
   [boundaryEscalationEvent, 'bpmn:BoundaryEvent', 'bpmn:EscalationEventDefinition'],
+  [boundaryMessageEvent, 'bpmn:BoundaryEvent', 'bpmn:MessageEventDefinition'],
   [messageEndEvent, 'bpmn:EndEvent', 'bpmn:MessageEventDefinition'],
   [errorEndEvent, 'bpmn:EndEvent', 'bpmn:ErrorEventDefinition'],
 ];

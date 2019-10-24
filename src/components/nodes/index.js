@@ -26,6 +26,7 @@ export { default as ValidationStatus } from '../ValidationStatus';
 export { default as Modeler } from '../Modeler';
 export { default as manualTask } from './manualTask';
 export { default as boundaryTimerEvent } from './boundaryTimerEvent';
+export { default as boundaryMessageEvent } from './boundaryMessageEvent';
 export { default as boundaryErrorEvent } from './boundaryErrorEvent';
 export { default as boundaryEscalationEvent } from './boundaryEscalationEvent';
 export { default as registerNodes } from '@/setup/registerNodes';
