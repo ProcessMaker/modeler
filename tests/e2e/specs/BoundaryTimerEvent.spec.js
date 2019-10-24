@@ -10,8 +10,7 @@ import {
   uploadXml,
   waitToRenderAllShapes,
 } from '../support/utils';
-import { boundaryEventSelector, nodeTypes } from '../support/constants';
-import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
+import { nodeTypes } from '../support/constants';
 
 describe('Boundary Timer Event', () => {
   it('update boundary timer event properties element', function() {
@@ -60,7 +59,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('Can drag boundary timer events over valid targets, but not over invalid targets', function() {
+  it('Can drag boundary timer events over valid targets', function() {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 150, y: 150 };
 
@@ -133,54 +132,6 @@ describe('Boundary Timer Event', () => {
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
     cy.get(interrupting).should('not.be.checked');
-  });
-
-  it('turns target red when it is an invalid drop target, and snaps back to original position', function() {
-    const taskPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
-
-    const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
-    const startEventPosition = { x: 150, y: 150 };
-
-    return cy.window().its('store.state.paper').then(paper => {
-      const newPosition = paper.localToPagePoint(startEventPosition.x, startEventPosition.y);
-
-      cy.get(boundaryEventSelector).then($boundaryEvent => {
-        const boundaryEventPosition = $boundaryEvent.position();
-
-        cy.wrap($boundaryEvent)
-          .trigger('mousedown', { which: 1, force: true })
-          .then($boundaryEvent => {
-            waitToRenderAllShapes();
-            cy.wrap($boundaryEvent)
-              .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true });
-          });
-
-        waitToRenderAllShapes();
-
-        cy.get(startEventSelector)
-          .then($el => $el.find('[joint-selector="body"]'))
-          .should('have.attr', 'fill', invalidNodeColor);
-
-        cy.wrap($boundaryEvent).trigger('mouseup');
-
-        waitToRenderAllShapes();
-
-        cy.get(startEventSelector)
-          .then($el => $el.find('[joint-selector="body"]'))
-          .should('have.attr', 'fill', defaultNodeColor);
-
-        getElementAtPosition(startEventPosition).click();
-
-        cy.wrap($boundaryEvent).should($el => {
-          const { left, top } = $el.position();
-          const positionErrorMargin = 2;
-          expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
-          expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
-        });
-      });
-    });
   });
 
   it('moves to another task when dragged over', function() {
