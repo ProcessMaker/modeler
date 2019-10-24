@@ -119,7 +119,7 @@ function isOverValidBoundaryEscalationEventTarget(clientX, clientY, paper, graph
     find(({ component }) => isValidBoundaryEscalationEvent(component));
 }
 
-function isValidBoundaryEscalationEvent(component) {
+export function isValidBoundaryEscalationEvent(component) {
   return component && component.node.definition.$type === validBoundaryEscalationEventTarget;
 }
 
