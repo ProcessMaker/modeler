@@ -54,7 +54,7 @@ export default {
         return;
       }
 
-      const [ownerProcessId, processId] = calledElement.split('-');
+      const [,ownerProcessId, processId ] = calledElement.match(/(.+)-(\d+)$/);
 
       const calledProcess = store.getters.globalProcesses
         .find(process => process.id == processId);
