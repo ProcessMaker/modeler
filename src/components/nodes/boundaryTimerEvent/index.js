@@ -4,6 +4,7 @@ import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
+import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 export const defaultDurationValue = 'PT1H';
 
@@ -92,6 +93,22 @@ export default merge(cloneDeep(boundaryEventConfig), {
               helper: 'Time expression',
               name: 'eventDefinitions',
             },
+          },
+        ],
+      },
+      {
+        component: 'FormAccordion',
+        container: true,
+        config: {
+          initiallyOpen: false,
+          label: 'Advanced',
+          icon: 'cogs',
+          name: 'advanced',
+        },
+        items: [
+          {
+            component: 'FormInput',
+            config: idConfigSettings,
           },
         ],
       },
