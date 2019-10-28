@@ -1,5 +1,5 @@
 <template>
-  <div/>
+  <div />
 </template>
 
 <script>
@@ -11,9 +11,9 @@ import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task/taskConfig';
 import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
-import hasMarkers from '@/mixins/hasMarkers';
-import {markerSize} from '@/mixins/hasMarkers';
+import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
+import { elementIdParser } from '@/components/nodes/callActivity/elementIdParser';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -54,7 +54,7 @@ export default {
         return;
       }
 
-      const [ownerProcessId, processId] = calledElement.split('-');
+      const { ownerProcessId, processId } = elementIdParser(calledElement);
 
       const calledProcess = store.getters.globalProcesses
         .find(process => process.id == processId);
