@@ -73,7 +73,6 @@ export default merge(cloneDeep(boundaryEventConfig), {
       {
         items: [
           {},
-          {},
           interruptingToggleConfig,
         ],
       },
