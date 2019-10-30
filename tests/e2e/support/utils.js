@@ -1,5 +1,6 @@
-import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
+import {saveDebounce} from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
+import PaperManager from '@/components/paperManager';
 
 const renderTime = 300;
 
@@ -11,10 +12,21 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType) {
+  const searchRectangle = {
+    width: PaperManager.gridSize,
+    height: PaperManager.gridSize,
+    x: position.x - PaperManager.gridSize / 2,
+    y: position.y - PaperManager.gridSize / 2,
+  };
+
   return cy.window()
     .its('store.state.paper')
-    .invoke('findViewsFromPoint', position)
+    .invoke('findViewsInArea', searchRectangle)
     .then(views => views.filter(view => view.model.component))
+    .then(views => {
+      console.log(views);
+      return views;
+    })
     .then(views => {
       return componentType
         ? views.filter(view => view.model.component.node.type === componentType)
@@ -149,10 +161,10 @@ export function moveElement(elementPosition, x, y) {
   });
 }
 
-export function moveElementRelativeTo(elementPosition, x, y) {
+export function moveElementRelativeTo(elementPosition, x, y, componentType) {
   return cy.window().its('store.state.paper').then(paper => {
 
-    return getElementAtPosition(elementPosition)
+    return getElementAtPosition(elementPosition, componentType)
       .then($element => {
         const { left, top } = $element.position();
         const newPosition = paper.localToPagePoint(left + x, top + y);
