@@ -24,7 +24,6 @@ export function getElementAtPosition(position, componentType) {
     .invoke('findViewsInArea', searchRectangle)
     .then(views => views.filter(view => view.model.component))
     .then(views => {
-      console.log(views);
       return views;
     })
     .then(views => {
