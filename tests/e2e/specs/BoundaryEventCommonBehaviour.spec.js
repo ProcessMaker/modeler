@@ -10,7 +10,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
-import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
+import { startColor, invalidNodeColor } from '../../../src/components/nodeColors';
 
 const boundaryEventPosition = { x: 250, y: 250 };
 const taskPosition = { x: 250, y: 200 };
@@ -327,7 +327,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
             getElementAtPosition(invalidNodeTargetPosition, invalidTargetNodeType)
               .then($el => $el.find('[joint-selector="body"]'))
-              .should('have.attr', 'fill', defaultNodeColor);
+              .should('have.attr', 'fill', startColor);
 
             getElementAtPosition(invalidNodeTargetPosition).click();
 

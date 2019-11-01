@@ -180,7 +180,7 @@ export default {
     },
     resetShapeColor(shape) {
       const defaultColor = this.isPoolShape(shape) ? poolColor : defaultNodeColor;
-      shape.attr('body/fill', defaultColor);
+      shape.attr('body/fill', shape.attr('body/originalFill') || defaultColor);
     },
   },
   async mounted() {

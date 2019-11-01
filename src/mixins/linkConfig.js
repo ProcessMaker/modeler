@@ -27,7 +27,8 @@ export default {
   watch: {
     target(target, previousTarget) {
       if (previousTarget && previousTarget !== target) {
-        this.setBodyColor(poolColor, previousTarget);
+        const defaultColor = this.isPoolShape(previousTarget) ? poolColor : defaultNodeColor;
+        this.setBodyColor(previousTarget.attr('body/originalFill') || defaultColor, previousTarget);
       }
     },
     isValidConnection(isValid) {
@@ -234,6 +235,9 @@ export default {
         document.removeEventListener('mouseup', this.emitSave);
         this.listeningToMouseup = false;
       }
+    },
+    isPoolShape(model) {
+      return model.component.node.type === 'processmaker-modeler-pool';
     },
   },
   created() {
