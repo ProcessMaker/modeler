@@ -70,12 +70,6 @@ export default {
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
-    isPoolOrLane() {
-      if (!this.target) {
-        return;
-      }
-      return ['processmaker-modeler-lane', 'processmaker-modeler-pool'].includes(this.target.component.node.type);
-    },
   },
   methods: {
     setEndpoint(shape, endpoint, connectionOffset) {
@@ -122,12 +116,7 @@ export default {
       this.resetPaper();
 
       const targetShape = this.shape.getTargetElement();
-
       this.resetBodyColor(targetShape);
-
-      if (this.isPoolOrLane) {
-        this.setBodyColor(poolColor);
-      }
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -209,10 +198,6 @@ export default {
       if (this.target) {
         this.resetBodyColor(this.target);
       }
-
-      if (this.isPoolOrLane) {
-        this.setBodyColor(poolColor);
-      }
     },
     setupLinkTools() {
       const verticesTool = new linkTools.Vertices();
@@ -235,11 +220,14 @@ export default {
         this.listeningToMouseup = false;
       }
     },
-    isPoolShape(model) {
-      return model.component.node.type === 'processmaker-modeler-pool';
+    isPoolOrLane(model) {
+      if (!model.component) {
+        return false;
+      }
+      return ['processmaker-modeler-lane', 'processmaker-modeler-pool'].includes(model.component.node.type);
     },
     resetBodyColor(shape) {
-      const defaultColor = this.isPoolShape(shape) ? poolColor : defaultNodeColor;
+      const defaultColor = this.isPoolOrLane(shape) ? poolColor : defaultNodeColor;
       this.setBodyColor(shape.attr('body/originalFill') || defaultColor, shape);
     },
   },
