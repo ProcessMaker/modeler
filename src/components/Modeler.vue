@@ -132,6 +132,7 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 
 const version = '1.0';
+const unsupportedElements = ['documentation', 'extensionElements'];
 
 export default {
   components: {
@@ -464,7 +465,6 @@ export default {
         }
 
         /* Add all other elements */
-
         const flowElements = process.get('flowElements');
         const artifacts = process.get('artifacts');
 
@@ -514,9 +514,11 @@ export default {
       store.commit('highlightNode', this.processNode);
     },
     removeUnsupportedElementAttributes(definition) {
-      const unsupportedElements = ['documentation', 'extensionElements'];
       unsupportedElements.filter(name => definition.get(name))
         .forEach(name => definition.set(name, null));
+
+      definition.$descriptor.properties = definition.$descriptor.properties.filter(
+        p => unsupportedElements.indexOf(p.name) === -1);
     },
     setNode(definition, flowElements, artifacts) {
       /* Get the diagram element for the corresponding flow element node. */
