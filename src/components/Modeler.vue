@@ -464,6 +464,7 @@ export default {
         }
 
         /* Add all other elements */
+
         const flowElements = process.get('flowElements');
         const artifacts = process.get('artifacts');
 
