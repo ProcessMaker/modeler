@@ -27,8 +27,7 @@ export default {
   watch: {
     target(target, previousTarget) {
       if (previousTarget && previousTarget !== target) {
-        const defaultColor = this.isPoolShape(previousTarget) ? poolColor : defaultNodeColor;
-        this.setBodyColor(previousTarget.attr('body/originalFill') || defaultColor, previousTarget);
+        this.resetBodyColor(previousTarget);
       }
     },
     isValidConnection(isValid) {
@@ -124,7 +123,7 @@ export default {
 
       const targetShape = this.shape.getTargetElement();
 
-      this.setBodyColor(defaultNodeColor, targetShape);
+      this.resetBodyColor(targetShape);
 
       if (this.isPoolOrLane) {
         this.setBodyColor(poolColor);
@@ -195,7 +194,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick');
-        this.setBodyColor(defaultNodeColor);
+        this.resetBodyColor(this.target);
         this.$emit('set-cursor', 'not-allowed');
       });
     },
@@ -208,7 +207,7 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
       if (this.target) {
-        this.setBodyColor(defaultNodeColor);
+        this.resetBodyColor(this.target);
       }
 
       if (this.isPoolOrLane) {
@@ -238,6 +237,10 @@ export default {
     },
     isPoolShape(model) {
       return model.component.node.type === 'processmaker-modeler-pool';
+    },
+    resetBodyColor(shape) {
+      const defaultColor = this.isPoolShape(shape) ? poolColor : defaultNodeColor;
+      this.setBodyColor(shape.attr('body/originalFill') || defaultColor, shape);
     },
   },
   created() {
