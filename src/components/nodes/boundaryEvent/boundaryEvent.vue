@@ -8,8 +8,9 @@ import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import isValidBoundaryEventTarget from './validBoundaryEventTargets';
+import resetShapeColor from '@/components/resetShapeColor';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
-import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
+import { invalidNodeColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
@@ -170,13 +171,10 @@ export default {
       }
 
       if (this.invalidTargetElement) {
-        this.resetShapeColor(this.invalidTargetElement);
+        resetShapeColor(this.invalidTargetElement);
       }
 
       this.invalidTargetElement = targetElement;
-    },
-    resetShapeColor(shape) {
-      shape.attr('body/fill', shape.attr('body/originalFill') || defaultNodeColor);
     },
   },
   async mounted() {

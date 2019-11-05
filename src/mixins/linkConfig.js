@@ -2,8 +2,9 @@ import { dia, linkTools } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { defaultNodeColor, invalidNodeColor, validNodeColor } from '@/components/nodeColors';
+import { invalidNodeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
+import resetShapeColor from '@/components/resetShapeColor';
 
 const endpoints = {
   source: 'source',
@@ -27,7 +28,7 @@ export default {
   watch: {
     target(target, previousTarget) {
       if (previousTarget && previousTarget !== target) {
-        this.resetBodyColor(previousTarget);
+        resetShapeColor(previousTarget);
       }
     },
     isValidConnection(isValid) {
@@ -116,7 +117,7 @@ export default {
       this.resetPaper();
 
       const targetShape = this.shape.getTargetElement();
-      this.resetBodyColor(targetShape);
+      resetShapeColor(targetShape);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -183,7 +184,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick');
-        this.resetBodyColor(this.target);
+        resetShapeColor(this.target);
         this.$emit('set-cursor', 'not-allowed');
       });
     },
@@ -196,7 +197,7 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
       if (this.target) {
-        this.resetBodyColor(this.target);
+        resetShapeColor(this.target);
       }
     },
     setupLinkTools() {
@@ -219,9 +220,6 @@ export default {
         document.removeEventListener('mouseup', this.emitSave);
         this.listeningToMouseup = false;
       }
-    },
-    resetBodyColor(shape) {
-      this.setBodyColor(shape.attr('body/originalFill') || defaultNodeColor, shape);
     },
   },
   created() {
