@@ -1,6 +1,6 @@
 <template>
   <b-card no-body class="controls">
-    <b-input-group size="sm">
+    <b-input-group size="sm" v-if="panelsOpen">
       <b-input-group-prepend>
         <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter"/></span>
       </b-input-group-prepend>
@@ -36,7 +36,7 @@
 import flatten from 'lodash/flatten';
 
 export default {
-  props: ['controls', 'allowDrop'],
+  props: ['controls', 'allowDrop', 'panelsOpen'],
   watch: {
     allowDrop(allowDrop) {
       if (this.draggingElement) {

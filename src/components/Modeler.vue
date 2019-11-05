@@ -10,6 +10,7 @@
     <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : !panelsOpen }]">
       <controls
         :controls="controls"
+        :panelsOpen="panelsOpen"
         :style="{ height: parentHeight }"
         :invalidDrop="validateDropTarget"
         :allowDrop="allowDrop"
