@@ -139,6 +139,7 @@ import PaperManager from './paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
+import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess } from '@/components/nodeManager';
 
 const version = '1.0';
 
@@ -669,9 +670,10 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      const addedNode = this.addNode({type: control.type, definition, diagram});
+      const node = {type: control.type, definition, diagram};
+      this.addNode(node);
       setTimeout(() => {
-        this.highlightNode(addedNode);
+        this.highlightNode(node);
       });
     },
     isBoundaryEvent(definition) {
@@ -681,59 +683,21 @@ export default {
       diagram.bounds.x = diagram.bounds.x - (diagram.bounds.width / 2);
       diagram.bounds.y = diagram.bounds.y - (diagram.bounds.height / 2);
     },
-    addNode({ type, definition, diagram }) {
-      /*
-       * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
-       * if one exists.
-       *
-       * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
-       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow
-       * elements to it.
-       */
-      if (type !== poolId) {
-        /* Check if this.poolTarget is set, and if so, add to appropriate process. */
-        const targetProcess = this.poolTarget
-          ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
-          : this.processNode.definition;
+    addNode(node) {
+      node.pool = this.poolTarget;
 
-        if (type === laneId) {
-          targetProcess
-            .get('laneSets')[0]
-            .get('lanes')
-            .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association') {
-          targetProcess.get('artifacts').push(definition);
-        } else if (definition.$type !== 'bpmn:MessageFlow') {
-          targetProcess.get('flowElements').push(definition);
-        }
-      }
+      addNodeToProcess(node, this.processes, this.processNode);
+      addIdToNodeAndSetUpDiagramReference(node, this.nodeIdGenerator);
 
-      const id = definition.id || this.nodeIdGenerator.generateUniqueNodeId();
-      definition.id = id;
+      this.planeElements.push(node.diagram);
 
-      if (diagram) {
-        diagram.id = `${id}_di`;
-        diagram.bpmnElement = definition;
-      }
+      store.commit('addNode', node);
 
-      this.planeElements.push(diagram);
-
-
-      const newNode = {
-        type,
-        definition,
-        diagram,
-        pool: this.poolTarget,
-      };
-      store.commit('addNode', newNode);
-
-      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
+      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
       this.poolTarget = null;
-
-      return newNode;
     },
     removeNode(node) {
       this.removeNodeFromLane(node);
