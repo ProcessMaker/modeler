@@ -9,7 +9,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import isValidBoundaryEventTarget from './validBoundaryEventTargets';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
-import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
+import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
