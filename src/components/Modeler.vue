@@ -517,10 +517,7 @@ export default {
       const unsupportedElements = ['documentation', 'extensionElements'];
 
       unsupportedElements.filter(name => definition.get(name))
-        .forEach(name => definition.set(name, null));
-
-      definition.$descriptor.properties = definition.$descriptor.properties.filter(
-        p => !unsupportedElements.includes(p.name));
+        .forEach(name => definition.set(name, undefined));
     },
     setNode(definition, flowElements, artifacts) {
       /* Get the diagram element for the corresponding flow element node. */
