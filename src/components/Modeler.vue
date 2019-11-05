@@ -659,10 +659,7 @@ export default {
         return;
       }
 
-      // Add to our processNode
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
-
-      // Now, let's modify planeElement
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
@@ -673,8 +670,6 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      // Our BPMN models are updated, now add to our nodes
-      // @todo come up with random id
       this.addNode({ type: control.type, definition, diagram });
     },
     isBoundaryEvent(definition) {
