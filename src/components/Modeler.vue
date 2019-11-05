@@ -7,10 +7,10 @@
       :title="tooltipTitle"
     />
 
-    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : !panelsOpen }]" data-test="controls-column">
+    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : panelsCompressed }]" data-test="controls-column">
       <controls
         :controls="controls"
-        :panelsOpen="panelsOpen"
+        :panelsCompressed="panelsCompressed"
         :style="{ height: parentHeight }"
         :invalidDrop="validateDropTarget"
         :allowDrop="allowDrop"
@@ -44,8 +44,8 @@
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Third group">
-          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsOpen = !panelsOpen">
-            <font-awesome-icon v-if="panelsOpen" :icon="expandIcon" />
+          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsCompressed = !panelsCompressed">
+            <font-awesome-icon v-if="panelsCompressed" :icon="expandIcon" />
             <font-awesome-icon v-else :icon="compressIcon" />
           </button>
 
@@ -190,7 +190,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       miniMapOpen: false,
-      panelsOpen: true,
+      panelsCompressed: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
