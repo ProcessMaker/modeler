@@ -220,15 +220,8 @@ export default {
         this.listeningToMouseup = false;
       }
     },
-    isPoolOrLane(model) {
-      if (!model.component) {
-        return false;
-      }
-      return ['processmaker-modeler-lane', 'processmaker-modeler-pool'].includes(model.component.node.type);
-    },
     resetBodyColor(shape) {
-      const defaultColor = this.isPoolOrLane(shape) ? poolColor : defaultNodeColor;
-      this.setBodyColor(shape.attr('body/originalFill') || defaultColor, shape);
+      this.setBodyColor(shape.attr('body/originalFill') || defaultNodeColor, shape);
     },
   },
   created() {

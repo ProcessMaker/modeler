@@ -150,9 +150,6 @@ export default {
         this.allowSetNodePosition = true;
       });
     },
-    isPoolShape(model) {
-      return model.component.node.type === 'processmaker-modeler-pool';
-    },
     turnInvalidTargetRed() {
       if (!this.highlighted) {
         return;
@@ -179,8 +176,7 @@ export default {
       this.invalidTargetElement = targetElement;
     },
     resetShapeColor(shape) {
-      const defaultColor = this.isPoolShape(shape) ? poolColor : defaultNodeColor;
-      shape.attr('body/fill', shape.attr('body/originalFill') || defaultColor);
+      shape.attr('body/fill', shape.attr('body/originalFill') || defaultNodeColor);
     },
   },
   async mounted() {

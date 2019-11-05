@@ -235,18 +235,24 @@ describe('Sequence Flows', () => {
     cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 308 326 L 308 450');
   });
 
-  it('retains original background color when it can and cannot connect to an element', () => {
+  it('retains original background color when it cannot connect to an element', () => {
     const startEventPosition = { x: 150, y: 150 };
-    const endEventPosition = { x: 350, y: 350 };
     const taskPosition = { x: 250, y: 250 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
     connectNodesWithFlow('sequence-flow-button', taskPosition, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).
       then($el => $el.find('[joint-selector="body"]')).
       should('have.attr', 'fill', startColor);
+  });
+
+  it('retains original background color when it can connect to an element', () => {
+    const endEventPosition = { x: 350, y: 350 };
+    const taskPosition = { x: 250, y: 250 };
+
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
     connectNodesWithFlow('sequence-flow-button', taskPosition, endEventPosition);
     getElementAtPosition(endEventPosition, nodeTypes.endEvent).
