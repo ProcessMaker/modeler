@@ -9,6 +9,7 @@ import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
+import { startColor } from '@/components/nodeColors';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -40,7 +41,8 @@ export default {
     this.shape.attr({
       body: {
         stroke: '#00bf9c',
-        fill: '#EDFFFC',
+        fill: startColor,
+        originalFill: startColor,
       },
       label: {
         text: this.node.definition.get('name'),

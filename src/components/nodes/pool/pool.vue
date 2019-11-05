@@ -485,6 +485,7 @@ export default {
     }));
     this.shape.attr('body', {
       fill: poolColor,
+      originalFill: poolColor,
     });
 
     this.shape.addTo(this.graph);

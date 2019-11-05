@@ -8,8 +8,9 @@ import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import isValidBoundaryEventTarget from './validBoundaryEventTargets';
+import resetShapeColor from '@/components/resetShapeColor';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
-import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
+import { invalidNodeColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 
 export default {
@@ -150,9 +151,6 @@ export default {
         this.allowSetNodePosition = true;
       });
     },
-    isPoolShape(model) {
-      return model.component.node.type === 'processmaker-modeler-pool';
-    },
     turnInvalidTargetRed() {
       if (!this.highlighted) {
         return;
@@ -173,14 +171,10 @@ export default {
       }
 
       if (this.invalidTargetElement) {
-        this.resetShapeColor(this.invalidTargetElement);
+        resetShapeColor(this.invalidTargetElement);
       }
 
       this.invalidTargetElement = targetElement;
-    },
-    resetShapeColor(shape) {
-      const defaultColor = this.isPoolShape(shape) ? poolColor : defaultNodeColor;
-      shape.attr('body/fill', defaultColor);
     },
   },
   async mounted() {

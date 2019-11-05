@@ -10,7 +10,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
-import { defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
+import { startColor, defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
 
 const boundaryEventPosition = { x: 250, y: 250 };
 const taskPosition = { x: 250, y: 200 };
@@ -20,25 +20,25 @@ const boundaryEventData = [{
   nodeType: nodeTypes.boundaryTimerEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
-  invalidTargets: [nodeTypes.startEvent],
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 }, {
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
-  invalidTargets: [nodeTypes.startEvent],
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 }, {
   type: 'Boundary Escalation Event',
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
-  invalidTargets: [nodeTypes.startEvent, nodeTypes.task],
+  invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
 }, {
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
-  invalidTargets: [nodeTypes.startEvent],
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 }];
 
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
@@ -298,8 +298,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       dragFromSourceToDest(nodeType, taskPosition);
       const invalidNodeTargetPosition = { x: 450, y: 150 };
 
-      invalidTargets.forEach(invalidTargetNodeType => {
-        dragFromSourceToDest(invalidTargetNodeType, invalidNodeTargetPosition);
+      invalidTargets.forEach(invalidTargetNode => {
+        dragFromSourceToDest(invalidTargetNode.type, invalidNodeTargetPosition);
 
         cy.window().its('store.state.paper').then(paper => {
           const newPosition = paper.localToPagePoint(invalidNodeTargetPosition.x, invalidNodeTargetPosition.y);
@@ -317,7 +317,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
             waitToRenderAllShapes();
 
-            getElementAtPosition(invalidNodeTargetPosition, invalidTargetNodeType)
+            getElementAtPosition(invalidNodeTargetPosition, invalidTargetNode.type)
               .then($el => $el.find('[joint-selector="body"]'))
               .should('have.attr', 'fill', invalidNodeColor);
 
@@ -325,9 +325,9 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
             waitToRenderAllShapes();
 
-            getElementAtPosition(invalidNodeTargetPosition, invalidTargetNodeType)
+            getElementAtPosition(invalidNodeTargetPosition, invalidTargetNode.type)
               .then($el => $el.find('[joint-selector="body"]'))
-              .should('have.attr', 'fill', defaultNodeColor);
+              .should('have.attr', 'fill', invalidTargetNode.color || startColor);
 
             getElementAtPosition(invalidNodeTargetPosition).click();
 
