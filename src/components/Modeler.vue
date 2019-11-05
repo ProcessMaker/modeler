@@ -7,7 +7,7 @@
       :title="tooltipTitle"
     />
 
-    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : !panelsOpen }]">
+    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : !panelsOpen }]" data-test="controls-column">
       <controls
         :controls="controls"
         :panelsOpen="panelsOpen"

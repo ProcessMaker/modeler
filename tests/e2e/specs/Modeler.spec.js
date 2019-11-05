@@ -405,4 +405,16 @@ describe('Modeler', () => {
       .find('>text')
       .should('have.css', 'display', 'block');
   });
+
+  it('Collapse and expand controls panel', () => {
+    cy.get('[data-test=controls-column]').should('not.have.class', 'controls-column-compressed');
+    
+    cy.get('[data-test="panels-btn"]').click();
+    
+    cy.get('[data-test=controls-column]').should('have.class', 'controls-column-compressed');
+    
+    cy.get('[data-test="panels-btn"]').click();
+    
+    cy.get('[data-test=controls-column]').should('not.have.class', 'controls-column-compressed');
+  });
 });
