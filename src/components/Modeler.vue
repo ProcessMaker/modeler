@@ -42,10 +42,18 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
-          <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
-          <font-awesome-icon v-else :icon="mapIcon" />
-        </button>
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Third group">
+          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsOpen = !panelsOpen">
+            <font-awesome-icon v-if="panelsOpen" :icon="expandIcon" />
+            <font-awesome-icon v-else :icon="compressIcon" />
+          </button>
+
+          <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
+            <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
+            <font-awesome-icon v-else :icon="mapIcon" />
+          </button>
+        </div>
+
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
@@ -117,7 +125,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -181,6 +189,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       miniMapOpen: false,
+      panelsOpen: true,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -242,6 +251,12 @@ export default {
     },
     minusIcon() {
       return faMinus;
+    },
+    expandIcon() {
+      return faExpand;
+    },
+    compressIcon() {
+      return faCompress;
     },
   },
   methods: {
