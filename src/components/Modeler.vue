@@ -12,7 +12,6 @@
         :controls="controls"
         :panelsCompressed="panelsCompressed"
         :style="{ height: parentHeight }"
-        :invalidDrop="validateDropTarget"
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
