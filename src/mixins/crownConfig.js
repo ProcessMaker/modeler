@@ -55,10 +55,13 @@ export default {
       allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
       shape: null,
+      crownConfigured: false,
     };
   },
   watch: {
     highlighted(highlighted) {
+      this.configureCrown();
+
       if (highlighted) {
         this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
         this.addCrown();
@@ -188,6 +191,12 @@ export default {
       });
     },
     configureCrown() {
+      if (this.crownConfigured) {
+        return;
+      }
+
+      this.crownConfigured = true;
+
       if (!this.crownConfig) {
         this.crownConfig = [];
       }

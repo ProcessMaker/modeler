@@ -670,7 +670,10 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      this.addNode({ type: control.type, definition, diagram });
+      const addedNode = this.addNode({type: control.type, definition, diagram});
+      setTimeout(() => {
+        this.highlightNode(addedNode);
+      });
     },
     isBoundaryEvent(definition) {
       return definition.$type === 'bpmn:BoundaryEvent';
@@ -716,18 +719,22 @@ export default {
 
       this.planeElements.push(diagram);
 
-      store.commit('addNode', {
+
+      const newNode = {
         type,
         definition,
         diagram,
         pool: this.poolTarget,
-      });
+      };
+      store.commit('addNode', newNode);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
       this.poolTarget = null;
+
+      return newNode;
     },
     removeNode(node) {
       this.removeNodeFromLane(node);
