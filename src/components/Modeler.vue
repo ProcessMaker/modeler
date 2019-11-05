@@ -42,10 +42,17 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
-          <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
-          <font-awesome-icon v-else :icon="mapIcon" />
-        </button>
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Third group">
+          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsCompressed = !panelsCompressed">
+            <font-awesome-icon v-if="panelsCompressed" :icon="compressIcon"/>
+            <font-awesome-icon v-else :icon="expandIcon"/>
+          </button>
+
+          <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
+            <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
+            <font-awesome-icon v-else :icon="mapIcon" />
+          </button>
+        </div>
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
@@ -53,18 +60,24 @@
 
     <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" />
 
-    <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
-      <InspectorPanel
-        ref="inspector-panel"
-        :style="{ height: parentHeight }"
-        :nodeRegistry="nodeRegistry"
-        :moddle="moddle"
-        :processNode="processNode"
-        @save-state="pushToUndoStack"
-        class="h-100"
-      />
-    </b-col>
-
+    <transition name="inspector">
+      <b-col
+        v-show="!panelsCompressed"
+        class="pl-0 h-100 overflow-hidden inspector-column"
+        :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : panelsCompressed }]"
+        data-test="inspector-column"
+      >
+        <InspectorPanel
+          ref="inspector-panel"
+          :style="{ height: parentHeight }"
+          :nodeRegistry="nodeRegistry"
+          :moddle="moddle"
+          :processNode="processNode"
+          @save-state="pushToUndoStack"
+          class="h-100"
+        />
+      </b-col>
+    </transition>
     <component
       v-for="node in nodes"
       :is="node.type"
@@ -117,7 +130,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -181,6 +194,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       miniMapOpen: false,
+      panelsCompressed: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -242,6 +256,12 @@ export default {
     },
     minusIcon() {
       return faMinus;
+    },
+    expandIcon() {
+      return faExpand;
+    },
+    compressIcon() {
+      return faCompress;
     },
   },
   methods: {
@@ -923,6 +943,7 @@ $inspector-column-max-width: 265px;
 $controls-column-max-width: 265px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
+$controls-transition: 0.3s;
 
 .ignore-pointer {
   pointer-events: none;
@@ -931,6 +952,15 @@ $vertex-error-color: #ED4757;
 .modeler {
   .inspector-column {
     max-width: $inspector-column-max-width;
+  }
+
+  .inspector-enter-active, .inspector-leave-active {
+    transition: all $controls-transition ease;
+  }
+
+  .inspector-enter, .inspector-leave-to {
+    transform: translateX(10px);
+    opacity: 0;
   }
 
   .controls-column {
