@@ -952,11 +952,13 @@ $controls-transition: 0.3s;
 
   .controls-column {
     max-width: $controls-column-max-width;
+    transition-timing-function: ease-out;
     transition: $controls-transition;
   }
 
   .controls-column-compressed {
     max-width: $controls-column-compressed-max-width;
+    transition-timing-function: ease-in;
     transition: $controls-transition;  
   }
 
