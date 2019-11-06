@@ -11,7 +11,7 @@ export default class MiniMapManager {
     const miniMap = new dia.Paper({
       el: element,
       model: graph,
-      width: 250,
+      width: 230,
       height: 200,
       interactive: false,
     });

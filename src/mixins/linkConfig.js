@@ -2,8 +2,9 @@ import { dia, linkTools } from 'jointjs';
 import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { defaultNodeColor, invalidNodeColor, poolColor, validNodeColor } from '@/components/nodeColors';
+import { invalidNodeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
+import resetShapeColor from '@/components/resetShapeColor';
 
 const endpoints = {
   source: 'source',
@@ -27,7 +28,7 @@ export default {
   watch: {
     target(target, previousTarget) {
       if (previousTarget && previousTarget !== target) {
-        this.setBodyColor(poolColor, previousTarget);
+        resetShapeColor(previousTarget);
       }
     },
     isValidConnection(isValid) {
@@ -69,12 +70,6 @@ export default {
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
-    },
-    isPoolOrLane() {
-      if (!this.target) {
-        return;
-      }
-      return ['processmaker-modeler-lane', 'processmaker-modeler-pool'].includes(this.target.component.node.type);
     },
   },
   methods: {
@@ -122,12 +117,7 @@ export default {
       this.resetPaper();
 
       const targetShape = this.shape.getTargetElement();
-
-      this.setBodyColor(defaultNodeColor, targetShape);
-
-      if (this.isPoolOrLane) {
-        this.setBodyColor(poolColor);
-      }
+      resetShapeColor(targetShape);
 
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
@@ -194,7 +184,7 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {
         this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
         this.shape.stopListening(this.paper, 'cell:pointerclick');
-        this.setBodyColor(defaultNodeColor);
+        resetShapeColor(this.target);
         this.$emit('set-cursor', 'not-allowed');
       });
     },
@@ -207,11 +197,7 @@ export default {
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.paper.setInteractivity(this.graph.get('interactiveFunc'));
       if (this.target) {
-        this.setBodyColor(defaultNodeColor);
-      }
-
-      if (this.isPoolOrLane) {
-        this.setBodyColor(poolColor);
+        resetShapeColor(this.target);
       }
     },
     setupLinkTools() {

@@ -69,6 +69,7 @@ export default {
     this.shape.attr('body/cursor', 'default');
     this.shape.attr('body', {
       fill: poolColor,
+      originalFill: poolColor,
     });
     this.shape.attr('label', {
       text: util.breakText(this.node.definition.get('name'), { width: bounds.height }),

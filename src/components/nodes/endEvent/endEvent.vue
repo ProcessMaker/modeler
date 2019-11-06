@@ -7,6 +7,7 @@ import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import EventShape from '../startEvent/eventShape';
+import { endColor } from '@/components/nodeColors';
 
 export default {
   props: ['graph', 'node', 'id'],
@@ -29,7 +30,8 @@ export default {
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       body: {
-        fill: '#FFF1F2',
+        fill: endColor,
+        originalFill: endColor,
         stroke: '#ED4757',
       },
       label: {
