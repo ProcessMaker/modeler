@@ -13,7 +13,7 @@ export function addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator) {
 }
 
 export function addNodeToProcess(node, targetProcess) {
-  if (node.type === poolId) {
+  if (node.type === poolId || node.definition.$type === 'bpmn:MessageFlow') {
     return;
   }
 
@@ -22,11 +22,15 @@ export function addNodeToProcess(node, targetProcess) {
       .get('laneSets')[0]
       .get('lanes')
       .push(node.definition);
-  } else if (node.definition.$type === 'bpmn:TextAnnotation' || node.definition.$type === 'bpmn:Association') {
-    targetProcess.get('artifacts').push(node.definition);
-  } else if (node.definition.$type !== 'bpmn:MessageFlow') {
-    targetProcess.get('flowElements').push(node.definition);
+    return;
   }
+
+  if (node.definition.$type === 'bpmn:TextAnnotation' || node.definition.$type === 'bpmn:Association') {
+    targetProcess.get('artifacts').push(node.definition);
+    return;
+  }
+
+  targetProcess.get('flowElements').push(node.definition);
 }
 
 export function getTargetProcess(node, processes, processNode) {

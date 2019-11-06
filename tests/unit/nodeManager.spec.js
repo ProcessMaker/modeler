@@ -61,7 +61,7 @@ describe('nodeManager', () => {
     });
 
     it('should set lane definition on target process lanes', () => {
-      const node = { type: laneId };
+      const node = {type: laneId, definition: {}};
       const targetProcess = {
         laneSets: [{
           lanes: [],
