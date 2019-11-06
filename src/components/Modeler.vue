@@ -26,12 +26,12 @@
       :style="{ width: parentWidth, height: parentHeight }"
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
         </div>
 
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
             <font-awesome-icon class="" :icon="plusIcon" />
           </button>
@@ -42,10 +42,15 @@
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
-        <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
-          <font-awesome-icon v-if="miniMapOpen" :icon="minusIcon" />
-          <font-awesome-icon v-else :icon="mapIcon" />
-        </button>
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
+          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsCompressed = !panelsCompressed">
+            <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
+          </button>
+
+          <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
+            <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
+          </button>
+        </div>
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
@@ -53,7 +58,12 @@
 
     <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" />
 
-    <b-col class="pl-0 h-100 overflow-hidden inspector-column" :class="{ 'ignore-pointer': canvasDragPosition }">
+    <b-col
+      v-show="!panelsCompressed"
+      class="pl-0 h-100 overflow-hidden inspector-column"
+      :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : panelsCompressed }]"
+      data-test="inspector-column"
+    >
       <InspectorPanel
         ref="inspector-panel"
         :style="{ height: parentHeight }"
@@ -64,7 +74,6 @@
         class="h-100"
       />
     </b-col>
-
     <component
       v-for="node in nodes"
       :is="node.type"
@@ -117,7 +126,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarked, faMinus, faPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -181,9 +190,15 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       miniMapOpen: false,
+      panelsCompressed: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
+      mapIcon: faMapMarked,
+      plusIcon: faPlus,
+      minusIcon: faMinus,
+      expandIcon: faExpand,
+      compressIcon: faCompress,
     };
   },
   watch: {
@@ -233,15 +248,6 @@ export default {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
-    },
-    mapIcon() {
-      return faMapMarked;
-    },
-    plusIcon() {
-      return faPlus;
-    },
-    minusIcon() {
-      return faMinus;
     },
   },
   methods: {

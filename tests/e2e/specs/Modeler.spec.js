@@ -405,4 +405,29 @@ describe('Modeler', () => {
       .find('>text')
       .should('have.css', 'display', 'block');
   });
+
+  it('can collapse inspector panel', () => {
+    cy.get('[data-test=inspector-column]').should('not.have.class', 'inspector-column-compressed');
+
+    cy.get('[data-test="panels-btn"]').click();
+    cy.get('[data-test=inspector-column]').should('have.class', 'inspector-column-compressed');
+  });
+
+  it('can expand inspector panel', () => {
+    cy.get('[data-test="panels-btn"]').click();
+
+    cy.get('[data-test="panels-btn"]').click();
+    cy.get('[data-test=inspector-column]').should('not.have.class', 'inspector-column-compressed');
+  });
+
+  it('can drag elements into collapsed inspector panel space', function() {
+    const taskPosition = { x: 745, y: 200 };
+    cy.get('[data-test=panels-btn]').click();
+    cy.wait(700);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).
+      click().
+      getType().
+      should('equal', nodeTypes.task);
+  });
 });
