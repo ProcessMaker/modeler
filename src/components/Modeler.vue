@@ -939,7 +939,6 @@ $controls-column-max-width: 265px;
 $controls-column-compressed-max-width: 95px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
-$controls-transition: 0.3s;
 
 .ignore-pointer {
   pointer-events: none;
@@ -952,14 +951,10 @@ $controls-transition: 0.3s;
 
   .controls-column {
     max-width: $controls-column-max-width;
-    transition-timing-function: ease-out;
-    transition: $controls-transition;
   }
 
   .controls-column-compressed {
     max-width: $controls-column-compressed-max-width;
-    transition-timing-function: ease-in;
-    transition: $controls-transition;  
   }
 
   .main-paper {
