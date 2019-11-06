@@ -196,6 +196,11 @@ export default {
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
+      mapIcon: faMapMarked,
+      plusIcon: faPlus,
+      minusIcon: faMinus,
+      expandIcon: faExpand,
+      compressIcon: faCompress,
     };
   },
   watch: {
@@ -245,21 +250,6 @@ export default {
         invalidIds.push(...errors.map(error => error.id));
         return invalidIds;
       }, []);
-    },
-    mapIcon() {
-      return faMapMarked;
-    },
-    plusIcon() {
-      return faPlus;
-    },
-    minusIcon() {
-      return faMinus;
-    },
-    expandIcon() {
-      return faExpand;
-    },
-    compressIcon() {
-      return faCompress;
     },
   },
   methods: {
