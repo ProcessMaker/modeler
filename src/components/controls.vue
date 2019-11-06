@@ -22,7 +22,7 @@
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control)"
       >
-        <div class="tool text-truncate ml-1" v-b-tooltip.hover.d50 :title="$t(control.label)">
+        <div class="tool text-truncate ml-1" v-b-tooltip.hover.viewport.d50 :title="$t(control.label)">
           <img :src="control.icon" class="tool-icon mr-1">
           {{ $t(control.label) }}
         </div>
