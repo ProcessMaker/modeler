@@ -44,8 +44,8 @@
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Third group">
           <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsCompressed = !panelsCompressed">
-            <font-awesome-icon v-if="panelsCompressed" :icon="compressIcon"/>
-            <font-awesome-icon v-else :icon="expandIcon"/>
+            <font-awesome-icon v-if="panelsCompressed" :icon="expandIcon"/>
+            <font-awesome-icon v-else :icon="compressIcon"/>
           </button>
 
           <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
