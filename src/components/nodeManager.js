@@ -12,14 +12,10 @@ export function addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator) {
   }
 }
 
-export function addNodeToProcess(node, processes, processNode) {
+export function addNodeToProcess(node, targetProcess) {
   if (node.type === poolId) {
     return;
   }
-
-  const targetProcess = node.pool
-    ? processes.find(({id}) => id === node.pool.component.node.definition.get('processRef').id)
-    : processNode.definition;
 
   if (node.type === laneId) {
     targetProcess
@@ -31,4 +27,10 @@ export function addNodeToProcess(node, processes, processNode) {
   } else if (node.definition.$type !== 'bpmn:MessageFlow') {
     targetProcess.get('flowElements').push(node.definition);
   }
+}
+
+export function getTargetProcess(node, processes, processNode) {
+  return node.pool
+    ? processes.find(({id}) => id === node.pool.component.node.definition.get('processRef').id)
+    : processNode.definition;
 }

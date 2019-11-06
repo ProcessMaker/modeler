@@ -139,7 +139,7 @@ import PaperManager from './paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
-import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess } from '@/components/nodeManager';
+import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
 
 const version = '1.0';
 
@@ -686,7 +686,8 @@ export default {
     addNode(node) {
       node.pool = this.poolTarget;
 
-      addNodeToProcess(node, this.processes, this.processNode);
+      const targetProcess = getTargetProcess(node, this.processes, this.processNode);
+      addNodeToProcess(node, targetProcess);
       addIdToNodeAndSetUpDiagramReference(node, this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
