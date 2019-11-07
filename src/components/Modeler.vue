@@ -57,7 +57,7 @@
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
 
-    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" />
+    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" :class="{ 'mini-paper-expanded' : panelsCompressed }" />
 
     <b-col
       v-show="!panelsCompressed"
