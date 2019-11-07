@@ -169,7 +169,7 @@ export default {
       if (targetIsInvalid) {
         targetElement.attr('body/fill', invalidNodeColor);
         this.shape.listenTo(this.paper, 'cell:pointerup', () => {
-          this.resetShapeColor(this.invalidTargetElement);
+          resetShapeColor(this.invalidTargetElement);
         });
       }
 
