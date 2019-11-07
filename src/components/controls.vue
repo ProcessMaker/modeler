@@ -2,7 +2,7 @@
   <b-card no-body class="controls">
     <b-input-group size="sm">
       <b-input-group-prepend>
-        <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter"/></span>
+        <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter" /></span>
       </b-input-group-prepend>
 
       <b-form-input ref="filter"
@@ -15,7 +15,6 @@
 
     <b-list-group flush class="overflow-auto w-auto">
       <b-list-group-item v-for="(control, index) in controlItems"
-        v-if="control.label.toLowerCase().includes(filterQuery.toLowerCase())"
         :key="index"
         class="control-item p-2 border-right-0 flex-grow-1"
         :data-test="control.type"
@@ -55,7 +54,8 @@ export default {
   },
   computed: {
     controlItems() {
-      return flatten(Object.values(this.controls));
+      return flatten(Object.values(this.controls))
+        .filter(control => control.label.toLowerCase().includes(this.filterQuery.toLowerCase()));
     },
   },
   methods: {
