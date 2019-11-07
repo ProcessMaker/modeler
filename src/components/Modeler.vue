@@ -126,7 +126,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMapMarked, faMinus, faPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -671,10 +671,8 @@ export default {
       }
 
       const node = {type: control.type, definition, diagram};
+      this.highlightNode(node);
       this.addNode(node);
-      setTimeout(() => {
-        this.highlightNode(node);
-      });
     },
     isBoundaryEvent(definition) {
       return definition.$type === 'bpmn:BoundaryEvent';
