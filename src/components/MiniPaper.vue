@@ -59,6 +59,7 @@ export default {
 <style lang="scss">
 $mini-paper-container-top-position: 1rem;
 $mini-paper-container-right-position: 17.5rem;
+$mini-paper-container-right-expanded-position: 2rem;
 
 .mini-paper-container {
   position: absolute;
@@ -72,5 +73,8 @@ $mini-paper-container-right-position: 17.5rem;
   .mini-paper {
     pointer-events: none;
   }
+}
+.mini-paper-expanded {
+  right: $mini-paper-container-right-expanded-position;
 }
 </style>
