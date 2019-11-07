@@ -7,9 +7,10 @@
       :title="tooltipTitle"
     />
 
-    <b-col class="h-100 overflow-hidden controls-column" :class="{ 'ignore-pointer': canvasDragPosition }">
+    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : panelsCompressed }]" data-test="controls-column">
       <controls
         :controls="controls"
+        :panelsCompressed="panelsCompressed"
         :style="{ height: parentHeight }"
         :invalidDrop="validateDropTarget"
         :allowDrop="allowDrop"
@@ -928,6 +929,7 @@ export default {
 $cursors: default, not-allowed, wait;
 $inspector-column-max-width: 265px;
 $controls-column-max-width: 265px;
+$controls-column-compressed-max-width: 95px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
 
@@ -942,6 +944,10 @@ $vertex-error-color: #ED4757;
 
   .controls-column {
     max-width: $controls-column-max-width;
+  }
+
+  .controls-column-compressed {
+    max-width: $controls-column-compressed-max-width;
   }
 
   .main-paper {

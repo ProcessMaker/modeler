@@ -406,6 +406,20 @@ describe('Modeler', () => {
       .should('have.css', 'display', 'block');
   });
 
+  it('can collapse the controls panel', () => {
+    cy.get('[data-test=controls-column]').should('not.have.class', 'controls-column-compressed');
+
+    cy.get('[data-test="panels-btn"]').click();
+    cy.get('[data-test=controls-column]').should('have.class', 'controls-column-compressed');
+  });
+
+  it('can expand the controls panel', () => {
+    cy.get('[data-test="panels-btn"]').click();
+    cy.get('[data-test="panels-btn"]').click();
+
+    cy.get('[data-test=controls-column]').should('not.have.class', 'controls-column-compressed');
+  });
+
   it('can collapse inspector panel', () => {
     cy.get('[data-test=inspector-column]').should('not.have.class', 'inspector-column-compressed');
 

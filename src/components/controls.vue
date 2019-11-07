@@ -1,6 +1,6 @@
 <template>
   <b-card no-body class="controls">
-    <b-input-group size="sm">
+    <b-input-group size="sm" v-show="!panelsCompressed">
       <b-input-group-prepend>
         <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter" /></span>
       </b-input-group-prepend>
@@ -16,14 +16,15 @@
     <b-list-group flush class="overflow-auto w-auto">
       <b-list-group-item v-for="(control, index) in controlItems"
         :key="index"
-        class="control-item p-2 border-right-0 flex-grow-1"
+        class="control-item border-right-0 flex-grow-1"
+        :class="{ 'p-2': !panelsCompressed }"
         :data-test="control.type"
         @dragstart="$event.preventDefault()"
         @mousedown="startDrag($event, control)"
       >
-        <div class="tool text-truncate ml-1" v-b-tooltip.hover.d50 :title="$t(control.label)">
+        <div class="tool" :class="{ 'text-truncate ml-1': !panelsCompressed }" v-b-tooltip.hover.viewport.d50 :title="$t(control.label)">
           <img :src="control.icon" class="tool-icon mr-1">
-          {{ $t(control.label) }}
+          {{ !panelsCompressed ? $t(control.label) : '' }}
         </div>
       </b-list-group-item>
     </b-list-group>
@@ -35,7 +36,7 @@
 import flatten from 'lodash/flatten';
 
 export default {
-  props: ['controls', 'allowDrop'],
+  props: ['controls', 'allowDrop', 'panelsCompressed'],
   watch: {
     allowDrop(allowDrop) {
       if (this.draggingElement) {
@@ -142,5 +143,4 @@ export default {
   width: 1.5rem;
   pointer-events: none;
 }
-
 </style>
