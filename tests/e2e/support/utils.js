@@ -1,6 +1,5 @@
-import {saveDebounce} from '../../../src/components/inspectors/inspectorConstants';
+import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
-import PaperManager from '@/components/paperManager';
 
 const renderTime = 300;
 
@@ -12,11 +11,12 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType) {
+  const paperGridSize = 10;
   const searchRectangle = {
-    width: PaperManager.gridSize,
-    height: PaperManager.gridSize,
-    x: position.x - PaperManager.gridSize / 2,
-    y: position.y - PaperManager.gridSize / 2,
+    width: paperGridSize,
+    height: paperGridSize,
+    x: position.x - paperGridSize / 2,
+    y: position.y - paperGridSize / 2,
   };
 
   return cy.window()

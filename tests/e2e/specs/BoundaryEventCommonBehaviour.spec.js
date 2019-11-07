@@ -9,8 +9,8 @@ import {
   removeIndentationAndLinebreaks,
   waitToRenderAllShapes,
 } from '../support/utils';
-import {boundaryEventSelector, nodeTypes} from '../support/constants';
-import {startColor,defaultNodeColor, invalidNodeColor, poolColor} from '../../../src/components/nodeColors';
+import { boundaryEventSelector, nodeTypes } from '../support/constants';
+import { defaultNodeColor, invalidNodeColor, poolColor, startColor } from '../../../src/components/nodeColors';
 
 const boundaryEventPosition = { x: 250, y: 250 };
 const taskPosition = { x: 250, y: 200 };
@@ -346,7 +346,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       });
     });
 
-    it.only('should turn pool red when hovered over and then back to default colour when no longer over pool', function() {
+    it('should turn pool red when hovered over and then back to default colour when no longer over pool', function() {
       dragFromSourceToDest(nodeTypes.pool, taskPosition);
       dragFromSourceToDest(taskType, taskPosition);
       dragFromSourceToDest(nodeType, taskPosition);
