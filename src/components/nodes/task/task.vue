@@ -1,6 +1,8 @@
 <template>
-  <div class="crown-config">
-    <font-awesome-icon class="crown-config__icon" :icon="trashIcon"  @click="removeShape()"/>
+  <div>
+    <div v-if="showCrown" class="crown-config">
+      <font-awesome-icon class="crown-config__icon" :icon="trashIcon"  @click="removeShape()"/>
+    </div>
   </div>
 </template>
 
@@ -24,12 +26,13 @@ export default {
   components: {
     FontAwesomeIcon,
   },
-  props: ['graph', 'node', 'id'],
+  props: ['graph', 'node', 'id', 'highlighted'],
   mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       shape: null,
       definition: null,
+      showCrown: false,
       crownConfig: [
         {
           id: 'sequence-flow-button',
@@ -49,6 +52,9 @@ export default {
     },
   },
   watch: {
+    highlighted(isHighlighted) {
+      isHighlighted ? this.showCrown = true : this.showCrown = false;
+    },
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr('label/text', util.breakText(name, { width }));
@@ -103,7 +109,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-
   },
 };
 </script>
