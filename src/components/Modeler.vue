@@ -12,7 +12,6 @@
         :controls="controls"
         :panelsCompressed="panelsCompressed"
         :style="{ height: parentHeight }"
-        :invalidDrop="validateDropTarget"
         :allowDrop="allowDrop"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
@@ -127,7 +126,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faMapMarked, faMinus, faPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -140,6 +139,7 @@ import PaperManager from './paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
+import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
 
 const version = '1.0';
 
@@ -659,10 +659,7 @@ export default {
         return;
       }
 
-      // Add to our processNode
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
-
-      // Now, let's modify planeElement
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
@@ -673,9 +670,9 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      // Our BPMN models are updated, now add to our nodes
-      // @todo come up with random id
-      this.addNode({ type: control.type, definition, diagram });
+      const node = {type: control.type, definition, diagram};
+      this.highlightNode(node);
+      this.addNode(node);
     },
     isBoundaryEvent(definition) {
       return definition.$type === 'bpmn:BoundaryEvent';
@@ -684,51 +681,18 @@ export default {
       diagram.bounds.x = diagram.bounds.x - (diagram.bounds.width / 2);
       diagram.bounds.y = diagram.bounds.y - (diagram.bounds.height / 2);
     },
-    addNode({ type, definition, diagram }) {
-      /*
-       * If we are adding a pool, first, create a bpmn:Collaboration, or get the current bpmn:Collaboration,
-       * if one exists.
-       *
-       * For each process, bpmn:Collaboration will contain a bpmn:participant (a pool is a graphical represnetation of a participant).
-       * If there are currently no pools, don't create a new process, use the current one instead, and add (embed) all current flow
-       * elements to it.
-       */
-      if (type !== poolId) {
-        /* Check if this.poolTarget is set, and if so, add to appropriate process. */
-        const targetProcess = this.poolTarget
-          ? this.processes.find(({ id }) => id === this.poolTarget.component.node.definition.get('processRef').id)
-          : this.processNode.definition;
+    addNode(node) {
+      node.pool = this.poolTarget;
 
-        if (type === laneId) {
-          targetProcess
-            .get('laneSets')[0]
-            .get('lanes')
-            .push(definition);
-        } else if (definition.$type === 'bpmn:TextAnnotation' || definition.$type === 'bpmn:Association') {
-          targetProcess.get('artifacts').push(definition);
-        } else if (definition.$type !== 'bpmn:MessageFlow') {
-          targetProcess.get('flowElements').push(definition);
-        }
-      }
+      const targetProcess = getTargetProcess(node, this.processes, this.processNode);
+      addNodeToProcess(node, targetProcess);
+      addIdToNodeAndSetUpDiagramReference(node, this.nodeIdGenerator);
 
-      const id = definition.id || this.nodeIdGenerator.generateUniqueNodeId();
-      definition.id = id;
+      this.planeElements.push(node.diagram);
 
-      if (diagram) {
-        diagram.id = `${id}_di`;
-        diagram.bpmnElement = definition;
-      }
+      store.commit('addNode', node);
 
-      this.planeElements.push(diagram);
-
-      store.commit('addNode', {
-        type,
-        definition,
-        diagram,
-        pool: this.poolTarget,
-      });
-
-      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(type)) {
+      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
         setTimeout(() => this.pushToUndoStack());
       }
 
