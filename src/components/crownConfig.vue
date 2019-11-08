@@ -1,6 +1,15 @@
 <template>
-  <div class="crown-config">
-    <svg @click="addSequence()" class="crown-config__icon" width="19px" height="20px" viewBox="0 0 19 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <div class="crown-config" :style="style" v-if="showCrown">
+    <svg @click="addSequence()"
+      class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
+      :title="$t('Sequence Flow')"
+      width="19px"
+      height="20px"
+      viewBox="0 0 19 20"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
       <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="custom/connect-elements" transform="translate(-3.000000, -2.000000)" fill="#000000">
           <path fill="#fff"
@@ -10,7 +19,17 @@
         </g>
       </g>
     </svg>
-    <svg class="crown-config__icon" width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      @click="addMessageFlow()"
+      class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
+      :title="$t('Message Flow')"
+      width="19"
+      height="20"
+      viewBox="0 0 19 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g clip-path="url(#clip0)">
         <circle cx="2.5" cy="2.5" r="2" stroke="#fff"/>
         <path d="M15.5 20L15.5 17.5V15L18.5 17.5L15.5 20Z" fill="#fff"/>
@@ -29,31 +48,51 @@
         </clipPath>
       </defs>
     </svg>
-    <font-awesome-icon class="crown-config__icon" :icon="trashIcon" @click="removeShape()"/>
+    <svg
+      @click="removeShape()"
+      class="crown-config__icon svg-inline--fa fa-trash-alt fa-w-14"
+      v-b-tooltip.hover.viewport.d50
+      :title="$t('Delete')"
+      aria-hidden="true"
+      data-prefix="fas"
+      data-icon="trash-alt"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+    >
+      <path fill="#fff" d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"/>
+    </svg>
   </div>
 </template>
 
 <script>
 
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default {
-  components: {
-    FontAwesomeIcon,
-  },
-  props: ['graph', 'shape', 'node', 'nodeRegistry', 'moddle', 't'],
+  props: ['paper', 'graph', 'shape', 'node', 'nodeRegistry', 'moddle'],
   data() {
     return {
       trashIcon: faTrashAlt,
-      showCrown: false,
+      showCrown: true,
     };
+  },
+  created() {
+    this.$t = this.$t.bind(this);
+  },
+  computed: {
+    style() {
+      const { x, y, width } = this.shape.findView(this.paper).getBBox();
+      return 'top:' +  (y - 45) + 'px;left:' + (x + width - 20) + 'px';
+    },
+    shapeView() {
+      return this.shape.findView(this.paper);
+    },
   },
   methods: {
     addSequence(cellView, evt, x, y) {
-      //this.removeCrown();
+      this.removeCrown();
       const sequenceFlowConfig = this.nodeRegistry['processmaker-modeler-sequence-flow'];
-      const sequenceLink = sequenceFlowConfig.definition(this.moddle, this.t);
+      const sequenceLink = sequenceFlowConfig.definition(this.moddle, this.$t);
       sequenceLink.set('sourceRef', this.node.definition);
       sequenceLink.set('targetRef', { x, y });
 
@@ -71,6 +110,21 @@ export default {
         diagram: sequenceFlowConfig.diagram(this.moddle),
       });
     },
+    addMessageFlow(cellView, evt, x, y) {
+      this.removeCrown();
+
+      const messageFlowDefinition = this.moddle.create('bpmn:MessageFlow', {
+        name: '',
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
+      });
+
+      this.$emit('add-node', {
+        type: 'processmaker-modeler-message-flow',
+        definition: messageFlowDefinition,
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
+      });
+    },
     removeShape() {
       this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
       this.shape.getEmbeddedCells({ deep: true }).forEach(cell => {
@@ -83,6 +137,9 @@ export default {
 
       this.$emit('remove-node', this.node);
     },
+    removeCrown() {
+      this.showCrown = false;
+    },
   },
 };
 </script>
@@ -94,8 +151,6 @@ export default {
   .crown-config {
     background-color: $primary-color;
     position: absolute;
-    top: 10rem;
-    right: 10rem;
     z-index: 5;
     display: flex;
     justify-content: center;

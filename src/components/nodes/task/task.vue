@@ -2,12 +2,12 @@
   <div>
     <crown-config
       v-if="highlighted"
+      :paper="paper"
       :graph="graph"
       :shape="shape"
       :node="node"
       :nodeRegistry="nodeRegistry"
       :moddle="moddle"
-      :t="$t"
       @remove-node="$emit('remove-node', $event)"
       @add-node="$emit('add-node', $event)"
     />
