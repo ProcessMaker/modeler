@@ -1,11 +1,15 @@
 <template>
   <div>
     <crown-config
-      v-if="showCrown"
+      v-if="highlighted"
       :graph="graph"
       :shape="shape"
       :node="node"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :t="$t"
       @remove-node="$emit('remove-node', $event)"
+      @add-node="$emit('add-node', $event)"
     />
   </div>
 </template>
@@ -29,13 +33,12 @@ export default {
   components: {
     CrownConfig,
   },
-  props: ['graph', 'node', 'id', 'highlighted'],
+  props: ['graph', 'node', 'id', 'highlighted', 'nodeRegistry', 'moddle'],
   mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       shape: null,
       definition: null,
-      showCrown: false,
       crownConfig: [
         {
           id: 'sequence-flow-button',
@@ -52,9 +55,6 @@ export default {
     },
   },
   watch: {
-    highlighted(isHighlighted) {
-      isHighlighted ? this.showCrown = true : this.showCrown = false;
-    },
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr('label/text', util.breakText(name, { width }));
