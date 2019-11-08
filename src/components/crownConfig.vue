@@ -82,7 +82,7 @@ export default {
   computed: {
     style() {
       const { x, y, width } = this.shape.findView(this.paper).getBBox();
-      return 'top:' +  (y - 45) + 'px;left:' + (x + width - 20) + 'px';
+      return 'top:' +  (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
     },
     shapeView() {
       return this.shape.findView(this.paper);
