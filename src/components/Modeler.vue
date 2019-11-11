@@ -27,14 +27,14 @@
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <span id="undo-wrapper" class="d-inline-block cursor-pointer" tabindex="0" @click="undo">
+          <span id="undo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="undo">
             <button type="button" class="btn btn-sm btn-secondary"  :disabled="!canUndo" data-test="undo">
               <font-awesome-icon :icon="undoIcon" />
             </button>
           </span>
           <b-tooltip target="undo-wrapper">{{ $t('Undo') }}</b-tooltip>
 
-          <span id="redo-wrapper" class="d-inline-block cursor-pointer" tabindex="0" @click="redo">
+          <span id="redo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="redo">
             <button type="button" class="btn btn-sm btn-secondary" :disabled="!canRedo" data-test="redo">
               <font-awesome-icon :icon="redoIcon" />
             </button>
@@ -958,10 +958,6 @@ $vertex-error-color: #ED4757;
         cursor: pointer;
       }
     }
-  }
-
-  .cursor-pointer {
-    cursor: pointer;
   }
 
   @each $cursor in $cursors {
