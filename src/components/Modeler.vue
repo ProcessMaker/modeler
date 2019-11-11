@@ -27,8 +27,12 @@
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo" v-b-tooltip.hover  :title="`${$t('Undo')}`">
+            <font-awesome-icon class="" :icon="undoIcon" />
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo" v-b-tooltip.hover :title="`${$t('Redo')}`">
+            <font-awesome-icon class="" :icon="redoIcon" />
+          </button>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
@@ -126,7 +130,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faStepBackward, faStepForward } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -200,6 +204,8 @@ export default {
       minusIcon: faMinus,
       expandIcon: faExpand,
       compressIcon: faCompress,
+      undoIcon: faStepBackward,
+      redoIcon: faStepForward,
     };
   },
   watch: {
