@@ -28,14 +28,14 @@
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <span id="undo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="undo">
-            <button type="button" class="btn btn-sm btn-secondary"  :disabled="!canUndo" data-test="undo">
+            <button type="button" class="btn btn-sm btn-secondary btn-undo" :disabled="!canUndo" data-test="undo">
               <font-awesome-icon :icon="undoIcon" />
             </button>
           </span>
           <b-tooltip target="undo-wrapper">{{ $t('Undo') }}</b-tooltip>
 
           <span id="redo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="redo">
-            <button type="button" class="btn btn-sm btn-secondary" :disabled="!canRedo" data-test="redo">
+            <button type="button" class="btn btn-sm btn-secondary btn-redo" :disabled="!canRedo" data-test="redo">
               <font-awesome-icon :icon="redoIcon" />
             </button>
           </span>
@@ -972,6 +972,16 @@ $vertex-error-color: #ED4757;
   .joint-marker-vertex:hover {
     fill: $vertex-error-color;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+  }
+
+  .btn-undo {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .btn-redo {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 </style>
