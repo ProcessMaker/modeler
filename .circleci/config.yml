@@ -13,7 +13,7 @@ workflows:
       - cypress/run:
           executor: cypress/browsers-chrome76
           browser: chrome
-          command: 'npm run lint && npm test'
+          command: 'sudo npm install -g npm@latest && npm run lint && npm test'
           post-steps:
             - store_artifacts:
                 path: coverage
