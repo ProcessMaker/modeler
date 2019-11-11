@@ -1,7 +1,9 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
-    <svg @click="addSequence()"
+    <svg
+      @click="addSequence()"
       class="crown-config__icon"
+      data-test="sequence-flow-button"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
       width="19px"
@@ -22,6 +24,7 @@
     <svg
       @click="addMessageFlow()"
       class="crown-config__icon"
+      data-test="message-flow-button"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
       width="19"
@@ -51,6 +54,7 @@
     <svg
       @click="removeShape()"
       class="crown-config__icon svg-inline--fa fa-trash-alt fa-w-14"
+      data-test="delete-button"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
       aria-hidden="true"
@@ -67,13 +71,33 @@
 <script>
 
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import pull from 'lodash/pull';
 
 export default {
-  props: ['paper', 'graph', 'shape', 'node', 'nodeRegistry', 'moddle'],
+  props: [
+    'paper',
+    'graph',
+    'shape',
+    'node',
+    'nodeRegistry',
+    'moddle',
+    'planeElements',
+    'processNode',
+    'collaboration',
+  ],
   data() {
     return {
       trashIcon: faTrashAlt,
       showCrown: true,
+      defaultHighlighter: {
+        name: 'stroke',
+        options: {
+          attrs: {
+            stroke: '#feb663',
+            'stroke-width': 3,
+          },
+        },
+      },
     };
   },
   created() {
@@ -87,9 +111,6 @@ export default {
       const { x, y } = this.shape.findView(this.paper).getBBox();
       const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
       return 'top:' + (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
-    },
-    shapeView() {
-      return this.shape.findView(this.paper);
     },
   },
   methods: {
@@ -140,6 +161,20 @@ export default {
       });
 
       this.$emit('remove-node', this.node);
+
+      this.shape.stopListening();
+      this.shape.remove();
+      const process = this.node.pool
+        ? this.node.pool.component.containingProcess
+        : this.processNode.definition;
+
+      pull(process.get('flowElements'), this.node.definition);
+      pull(this.planeElements, this.node.diagram);
+      pull(process.get('artifacts'), this.node.definition);
+
+      if (this.collaboration) {
+        pull(this.collaboration.get('messageFlows'), this.node.definition);
+      }
     },
     removeCrown() {
       this.showCrown = false;

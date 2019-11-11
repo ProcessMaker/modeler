@@ -8,6 +8,9 @@
       :node="node"
       :nodeRegistry="nodeRegistry"
       :moddle="moddle"
+      :collaboration="collaboration"
+      :process-node="processNode"
+      :plane-elements="planeElements"
       @remove-node="$emit('remove-node', $event)"
       @add-node="$emit('add-node', $event)"
     />
@@ -17,7 +20,8 @@
 <script>
 import { util } from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
-import crownConfig from '@/mixins/crownConfig';
+//import crownConfig from '@/mixins/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 import portsConfig from '@/mixins/portsConfig';
 import hasMarkers from '@/mixins/hasMarkers';
 import {markerSize} from '@/mixins/hasMarkers';
@@ -33,8 +37,9 @@ export default {
   components: {
     CrownConfig,
   },
-  props: ['graph', 'node', 'id', 'highlighted', 'nodeRegistry', 'moddle'],
-  mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  props: ['graph', 'node', 'id', 'highlighted', 'nodeRegistry', 'moddle', 'paper', 'collaboration', 'processNode', 'planeElements'],
+  //mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       shape: null,
