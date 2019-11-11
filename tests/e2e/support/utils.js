@@ -149,11 +149,11 @@ export function isElementCovered($element) {
     });
 }
 
-export function moveElement(elementPosition, x, y) {
+export function moveElement(elementPosition, x, y, componentType) {
   return cy.window().its('store.state.paper').then(paper => {
     const newPosition = paper.localToPagePoint(x, y);
 
-    return getElementAtPosition(elementPosition)
+    return getElementAtPosition(elementPosition, componentType)
       .trigger('mousedown', { which: 1, force: true })
       .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
       .trigger('mouseup', { force: true });
