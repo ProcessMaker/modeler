@@ -5,6 +5,7 @@
   ],
   "rules": {
     "no-inclusive-gateway": "off",
-    "fake-join": "off"
+    "fake-join": "off",
+    "no-duplicate-sequence-flows": "off"
   }
 }
