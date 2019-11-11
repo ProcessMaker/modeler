@@ -125,6 +125,11 @@ export default {
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
       this.allowSetNodePosition = true;
+
+      if (this.invalidTargetElement) {
+        resetShapeColor(this.invalidTargetElement);
+        this.invalidTargetElement = null;
+      }
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -168,9 +173,6 @@ export default {
       const targetIsInvalid = targetElement && !this.isValidBoundaryEventTarget(targetElement);
       if (targetIsInvalid) {
         targetElement.attr('body/fill', invalidNodeColor);
-        this.shape.listenTo(this.paper, 'cell:pointerup', () => {
-          resetShapeColor(this.invalidTargetElement);
-        });
       }
 
       if (this.invalidTargetElement) {
