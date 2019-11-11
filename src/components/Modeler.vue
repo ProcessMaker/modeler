@@ -28,19 +28,19 @@
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo" v-b-tooltip.hover  :title="`${$t('Undo')}`">
-            <font-awesome-icon class="" :icon="undoIcon" />
+            <font-awesome-icon :icon="undoIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo" v-b-tooltip.hover :title="`${$t('Redo')}`">
-            <font-awesome-icon class="" :icon="redoIcon" />
+            <font-awesome-icon :icon="redoIcon" />
           </button>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
-            <font-awesome-icon class="" :icon="plusIcon" />
+            <font-awesome-icon :icon="plusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
-            <font-awesome-icon class="" :icon="minusIcon" />
+            <font-awesome-icon :icon="minusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
@@ -965,6 +965,10 @@ $vertex-error-color: #ED4757;
   .joint-marker-vertex:hover {
     fill: $vertex-error-color;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+  }
+
+  .foo {
+    pointer-events: all !important;
   }
 }
 </style>
