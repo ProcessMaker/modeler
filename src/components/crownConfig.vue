@@ -81,8 +81,12 @@ export default {
   },
   computed: {
     style() {
-      const { x, y, width } = this.shape.findView(this.paper).getBBox();
-      return 'top:' +  (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
+      if (!this.shape) {
+        return;
+      }
+      const { x, y } = this.shape.findView(this.paper).getBBox();
+      const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
+      return 'top:' + (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
     },
     shapeView() {
       return this.shape.findView(this.paper);
