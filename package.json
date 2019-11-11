@@ -11,7 +11,8 @@
     "bundle-link": "npm run build-bundle",
     "postbundle-link": "npm link",
     "lint-fix": "vue-cli-service lint",
-    "pretest": "rm -rf .nyc_output || true",
+    "pretest": "npm run check-peer-deps",
+    "pretest-unit": "rm -rf .nyc_output || true",
     "test": "npm run test-unit && npm run test-ci",
     "check-peer-deps": "npm ls --depth=0",
     "posttest": "npm run report:combined",
@@ -23,8 +24,7 @@
     "precombine:reports": "npm run copy:reports && mkdir .nyc_output || true",
     "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
     "prereport:combined": "npm run combine:reports",
-    "report:combined": "nyc report --reporter lcov --report-dir coverage",
-    "pretest-ci": "npm run check-peer-deps"
+    "report:combined": "nyc report --reporter lcov --report-dir coverage"
   },
   "main": "./dist/modeler.common.js",
   "files": [
