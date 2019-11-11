@@ -156,7 +156,7 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
     const boundaryTimerEventSelector = '.main-paper ' +
-      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+      '[data-type="processmaker.components.nodes.task.Shape"] ~ ' +
       '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
     getPositionInPaperCoords(task2Position).then(newPosition => {
@@ -205,7 +205,7 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
     const boundaryTimerEventSelector = '.main-paper ' +
-      '[data-type="processmaker.components.nodes.task.Shape"] + ' +
+      '[data-type="processmaker.components.nodes.task.Shape"] ~ ' +
       '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
     getPositionInPaperCoords(task2Position).then(newPosition => {

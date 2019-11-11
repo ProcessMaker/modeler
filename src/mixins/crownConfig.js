@@ -58,14 +58,8 @@ export default {
     };
   },
   watch: {
-    highlighted(highlighted) {
-      if (highlighted) {
-        this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
-        this.addCrown();
-        return;
-      }
-      this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
-      this.removeCrown();
+    highlighted() {
+      this.setHighlight();
     },
     hasError() {
       if (this.isRendering) {
@@ -93,6 +87,16 @@ export default {
     },
   },
   methods: {
+    setHighlight() {
+      if (this.highlighted) {
+        this.shapeView.highlight(this.shapeBody, {highlighter: defaultHighlighter});
+        this.addCrown();
+        return;
+      }
+
+      this.shapeView.unhighlight(this.shapeBody, {highlighter: defaultHighlighter});
+      this.removeCrown();
+    },
     setErrorHighlight() {
       if (!this.shapeView) {
         return;
@@ -231,8 +235,10 @@ export default {
         });
 
         this.shape.embed(button);
-        button.addTo(this.graph);
       });
+
+      this.paper.once('render:done', () => this.setHighlight());
+      this.graph.addCells(this.buttons);
 
       this.shape.listenTo(this.paper, 'cell:mouseenter', cellView => {
         if (this.buttons.includes(cellView.model)) {
@@ -320,9 +326,7 @@ export default {
       this.$emit('save-state');
     },
     setUpCrownConfig() {
-      this.$once('click', () => {
-        this.configureCrown();
-      });
+      this.configureCrown();
 
       this.shape.on('change:position', (element, newPosition) => {
         this.node.diagram.bounds.x = newPosition.x;
