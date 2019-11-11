@@ -27,12 +27,19 @@
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo" v-b-tooltip.hover  :title="`${$t('Undo')}`">
-            <font-awesome-icon :icon="undoIcon" />
-          </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo" v-b-tooltip.hover :title="`${$t('Redo')}`">
-            <font-awesome-icon :icon="redoIcon" />
-          </button>
+          <span id="undo-wrapper" class="d-inline-block cursor-pointer" tabindex="0" @click="undo">
+            <button type="button" class="btn btn-sm btn-secondary"  :disabled="!canUndo" data-test="undo">
+              <font-awesome-icon :icon="undoIcon" />
+            </button>
+          </span>
+          <b-tooltip target="undo-wrapper">{{ $t('Undo') }}</b-tooltip>
+
+          <span id="redo-wrapper" class="d-inline-block cursor-pointer" tabindex="0" @click="redo">
+            <button type="button" class="btn btn-sm btn-secondary" :disabled="!canRedo" data-test="redo">
+              <font-awesome-icon :icon="redoIcon" />
+            </button>
+          </span>
+          <b-tooltip target="redo-wrapper">{{ $t('Redo') }}</b-tooltip>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
@@ -953,6 +960,10 @@ $vertex-error-color: #ED4757;
     }
   }
 
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
   @each $cursor in $cursors {
     .paper-container.#{$cursor} {
       .joint-paper,
@@ -965,10 +976,6 @@ $vertex-error-color: #ED4757;
   .joint-marker-vertex:hover {
     fill: $vertex-error-color;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
-  }
-
-  .foo {
-    pointer-events: all !important;
   }
 }
 </style>
