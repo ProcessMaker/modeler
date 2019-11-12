@@ -10,7 +10,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { taskWidth } from '../../../src/components/nodes/task/taskConfig';
 import { startEventDiameter } from '../../../src/components/nodes/startEvent/startEventConfig';
-import { startColor, endColor } from '../../../src/components/nodeColors';
+import { endColor, startColor } from '../../../src/components/nodeColors';
 
 describe('Sequence Flows', () => {
   it('Can connect two elements', () => {

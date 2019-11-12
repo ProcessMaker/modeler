@@ -226,7 +226,7 @@ describe('Boundary Timer Event', () => {
               expect(top).to.be.closeTo(initialBoundaryEventPosition.top, positionErrorMargin);
             });
 
-            moveElement(task2Position, 300, 500);
+            moveElement(task2Position, 300, 500, nodeTypes.task);
             waitToRenderAllShapes();
             cy.wrap($boundaryEvent).should($el => {
               const { left, top } = $el.position();

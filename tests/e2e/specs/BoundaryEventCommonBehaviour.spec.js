@@ -10,7 +10,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
-import { startColor, defaultNodeColor, invalidNodeColor } from '../../../src/components/nodeColors';
+import { defaultNodeColor, invalidNodeColor, poolColor, startColor } from '../../../src/components/nodeColors';
 
 const boundaryEventPosition = { x: 250, y: 250 };
 const taskPosition = { x: 250, y: 200 };
@@ -119,7 +119,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
           expect(xml).to.contain(eventXMLSnippet);
         });
 
-      moveElementRelativeTo({ x: 400, y: 400 }, 50, 50);
+      moveElementRelativeTo({x: 400, y: 400}, 50, 50);
       waitToRenderAllShapes();
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
@@ -342,6 +342,36 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
         getElementAtPosition(invalidNodeTargetPosition).then($element => {
           getCrownButtonForElement($element, 'delete-button').click();
+        });
+      });
+    });
+
+    it('should turn pool red when hovered over and then back to default colour when no longer over pool', function() {
+      dragFromSourceToDest(nodeTypes.pool, taskPosition);
+      dragFromSourceToDest(taskType, taskPosition);
+      dragFromSourceToDest(nodeType, taskPosition);
+      getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
+        const overPoolPosition = {x: 450, y: 450};
+        const overTaskPosition = {x: 550, y: 350};
+
+        [overPoolPosition, overTaskPosition].forEach(({x, y}) => {
+          cy.wrap($boundaryEvent)
+            .trigger('mousedown', {which: 1, force: true})
+            .trigger('mousemove', {clientX: x, clientY: y, force: true});
+
+          waitToRenderAllShapes();
+
+          getElementAtPosition(taskPosition, nodeTypes.pool)
+            .then($el => $el.find('[joint-selector="body"]'))
+            .should('have.attr', 'fill', invalidNodeColor);
+
+          cy.wrap($boundaryEvent).trigger('mouseup');
+
+          waitToRenderAllShapes();
+
+          getElementAtPosition(taskPosition, nodeTypes.pool)
+            .then($el => $el.find('[joint-selector="body"]'))
+            .should('have.attr', 'fill', poolColor);
         });
       });
     });

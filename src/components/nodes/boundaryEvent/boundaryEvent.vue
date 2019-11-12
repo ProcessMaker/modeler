@@ -138,6 +138,12 @@ export default {
       this.attachBoundaryEventToTask(task);
       this.updateShapePosition(task);
     },
+    resetInvalidTarget() {
+      if (this.invalidTargetElement) {
+        resetShapeColor(this.invalidTargetElement);
+        this.invalidTargetElement = null;
+      }
+    },
     attachToValidTarget(cellView) {
       if (cellView.model !== this.shape) {
         return;
@@ -147,6 +153,7 @@ export default {
       this.validPosition = this.shape.position();
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
+        this.resetInvalidTarget();
         this.$emit('save-state');
         this.allowSetNodePosition = true;
       });

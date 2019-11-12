@@ -11,10 +11,21 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType) {
+  const paperGridSize = 10;
+  const searchRectangle = {
+    width: paperGridSize,
+    height: paperGridSize,
+    x: position.x - paperGridSize / 2,
+    y: position.y - paperGridSize / 2,
+  };
+
   return cy.window()
     .its('store.state.paper')
-    .invoke('findViewsFromPoint', position)
+    .invoke('findViewsInArea', searchRectangle)
     .then(views => views.filter(view => view.model.component))
+    .then(views => {
+      return views;
+    })
     .then(views => {
       return componentType
         ? views.filter(view => view.model.component.node.type === componentType)
@@ -138,21 +149,21 @@ export function isElementCovered($element) {
     });
 }
 
-export function moveElement(elementPosition, x, y) {
+export function moveElement(elementPosition, x, y, componentType) {
   return cy.window().its('store.state.paper').then(paper => {
     const newPosition = paper.localToPagePoint(x, y);
 
-    return getElementAtPosition(elementPosition)
+    return getElementAtPosition(elementPosition, componentType)
       .trigger('mousedown', { which: 1, force: true })
       .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
       .trigger('mouseup', { force: true });
   });
 }
 
-export function moveElementRelativeTo(elementPosition, x, y) {
+export function moveElementRelativeTo(elementPosition, x, y, componentType) {
   return cy.window().its('store.state.paper').then(paper => {
 
-    return getElementAtPosition(elementPosition)
+    return getElementAtPosition(elementPosition, componentType)
       .then($element => {
         const { left, top } = $element.position();
         const newPosition = paper.localToPagePoint(left + x, top + y);
