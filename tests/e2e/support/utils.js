@@ -81,6 +81,9 @@ export function getPositionInPaperCoords(position) {
 }
 
 export function getCrownButtonForElement($element, crownButton) {
+  if ($element.data('type') === 'newCrown') {
+    return cy.get(`#${ crownButton }`);
+  }
   return cy
     .get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`)
     .then(crownButtons => crownButtons.filter((index, button) => Cypress.$(button).is(':visible')))

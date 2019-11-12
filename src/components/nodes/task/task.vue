@@ -1,7 +1,7 @@
 <template>
   <div>
     <crown-config
-      v-if="highlighted"
+      :highlighted="highlighted"
       :paper="paper"
       :graph="graph"
       :shape="shape"
@@ -13,6 +13,7 @@
       :plane-elements="planeElements"
       @remove-node="$emit('remove-node', $event)"
       @add-node="$emit('add-node', $event)"
+      @save-state="$emit('save-state', $event)"
     />
   </div>
 </template>
@@ -86,6 +87,7 @@ export default {
   },
   mounted() {
     this.shape = new TaskShape();
+    this.shape.set('type', 'newCrown');
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);

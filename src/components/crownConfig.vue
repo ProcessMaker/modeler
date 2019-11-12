@@ -42,6 +42,7 @@ export default {
     SequenceFlowButton,
   },
   props: [
+    'highlighted',
     'paper',
     'graph',
     'shape',
@@ -52,10 +53,21 @@ export default {
     'processNode',
     'collaboration',
   ],
+  watch: {
+    highlighted() {
+      this.showCrown = this.highlighted;
+    },
+    shape() {
+      if (this.highlighted) {
+        this.showCrown = true;
+        this.setUpCrownConfig();
+      }
+    },
+  },
   data() {
     return {
       trashIcon: faTrashAlt,
-      showCrown: true,
+      showCrown: false,
       defaultHighlighter: {
         name: 'stroke',
         options: {
@@ -65,6 +77,9 @@ export default {
           },
         },
       },
+      /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
+      allowSetNodePosition: true,
+      savePositionOnPointerupEventSet: false,
     };
   },
   created() {
@@ -128,24 +143,72 @@ export default {
       });
 
       this.$emit('remove-node', this.node);
-
-      this.shape.stopListening();
-      this.shape.remove();
-      const process = this.node.pool
-        ? this.node.pool.component.containingProcess
-        : this.processNode.definition;
-
-      pull(process.get('flowElements'), this.node.definition);
-      pull(this.planeElements, this.node.diagram);
-      pull(process.get('artifacts'), this.node.definition);
-
-      if (this.collaboration) {
-        pull(this.collaboration.get('messageFlows'), this.node.definition);
-      }
     },
     removeCrown() {
       this.showCrown = false;
     },
+    setNodePosition() {
+      this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
+      this.savePositionOnPointerupEventSet = false;
+
+      if (!this.allowSetNodePosition) {
+        return;
+      }
+
+      this.$emit('save-state');
+    },
+    setUpCrownConfig() {
+      this.shape.on('change:position', (element, newPosition) => {
+        this.node.diagram.bounds.x = newPosition.x;
+        this.node.diagram.bounds.y = newPosition.y;
+
+        if (!this.savePositionOnPointerupEventSet) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+          this.savePositionOnPointerupEventSet = true;
+        }
+      });
+
+      if (!this.planeElements.includes(this.node.diagram)) {
+        this.planeElements.push(this.node.diagram);
+      }
+
+      const process = this.node.pool
+        ? this.node.pool.component.containingProcess
+        : this.processNode.definition;
+      const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
+
+      if (nodeTypes.includes('bpmn:FlowElement') && !process.get('flowElements').includes(this.node.definition)) {
+        process.get('flowElements').push(this.node.definition);
+      }
+
+      if (nodeTypes.includes('bpmn:Artifact') && !process.get('artifacts').includes(this.node.definition)) {
+        process.get('artifacts').push(this.node.definition);
+      }
+
+      if (
+        this.collaboration &&
+        nodeTypes.includes('bpmn:MessageFlow') &&
+        !this.collaboration.get('messageFlows').includes(this.node.definition)
+      ) {
+        this.collaboration.get('messageFlows').push(this.node.definition);
+      }
+    },
+  },
+  destroyed() {
+    this.shape.stopListening();
+    this.shape.remove();
+
+    const process = this.node.pool
+      ? this.node.pool.component.containingProcess
+      : this.processNode.definition;
+
+    pull(process.get('flowElements'), this.node.definition);
+    pull(this.planeElements, this.node.diagram);
+    pull(process.get('artifacts'), this.node.definition);
+
+    if (this.collaboration) {
+      pull(this.collaboration.get('messageFlows'), this.node.definition);
+    }
   },
 };
 </script>
