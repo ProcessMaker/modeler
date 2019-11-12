@@ -60,6 +60,7 @@ export default {
     shape() {
       if (this.highlighted) {
         this.showCrown = true;
+        this.configurePoolLane();
         this.setUpCrownConfig();
       }
     },
@@ -191,6 +192,46 @@ export default {
         !this.collaboration.get('messageFlows').includes(this.node.definition)
       ) {
         this.collaboration.get('messageFlows').push(this.node.definition);
+      }
+    },
+    configurePoolLane() {
+      if ([
+        'processmaker-modeler-pool',
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+        'processmaker-modeler-message-flow',
+      ].includes(this.node.type)) {
+        return;
+      }
+
+      if (this.node.pool) {
+        if (!this.graph.getCell(this.node.pool)) {
+          this.node.pool = this.graph.getElements().find(element => {
+            return element.component && element.component.node === this.node.pool.component.node;
+          });
+        }
+
+        this.node.pool.component.addToPool(this.shape);
+
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
+
+        return;
+      }
+
+      /* If we are over a pool or lane, add the shape to the pool or lane */
+      const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
+        return model.component && model.component.node.type === 'processmaker-modeler-pool';
+      })[0];
+
+      if (pool) {
+        this.node.pool = pool;
+        this.node.pool.component.addToPool(this.shape);
+
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
       }
     },
   },
