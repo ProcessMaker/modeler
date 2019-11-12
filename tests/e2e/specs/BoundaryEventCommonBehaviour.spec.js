@@ -351,23 +351,28 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       dragFromSourceToDest(taskType, taskPosition);
       dragFromSourceToDest(nodeType, taskPosition);
       getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
-        cy.wrap($boundaryEvent)
-          .trigger('mousedown', {which: 1, force: true})
-          .trigger('mousemove', {clientX: 450, clientY: 450, force: true});
+        const overPoolPosition = {x: 450, y: 450};
+        const overTaskPosition = {x: 550, y: 350};
 
-        waitToRenderAllShapes();
+        [overPoolPosition, overTaskPosition].forEach(({x, y}) => {
+          cy.wrap($boundaryEvent)
+            .trigger('mousedown', {which: 1, force: true})
+            .trigger('mousemove', {clientX: x, clientY: y, force: true});
 
-        getElementAtPosition(taskPosition, nodeTypes.pool)
-          .then($el => $el.find('[joint-selector="body"]'))
-          .should('have.attr', 'fill', invalidNodeColor);
+          waitToRenderAllShapes();
 
-        cy.wrap($boundaryEvent).trigger('mouseup');
+          getElementAtPosition(taskPosition, nodeTypes.pool)
+            .then($el => $el.find('[joint-selector="body"]'))
+            .should('have.attr', 'fill', invalidNodeColor);
 
-        waitToRenderAllShapes();
+          cy.wrap($boundaryEvent).trigger('mouseup');
 
-        getElementAtPosition(taskPosition, nodeTypes.pool)
-          .then($el => $el.find('[joint-selector="body"]'))
-          .should('have.attr', 'fill', poolColor);
+          waitToRenderAllShapes();
+
+          getElementAtPosition(taskPosition, nodeTypes.pool)
+            .then($el => $el.find('[joint-selector="body"]'))
+            .should('have.attr', 'fill', poolColor);
+        });
       });
     });
   });
