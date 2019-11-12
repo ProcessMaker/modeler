@@ -3,33 +3,22 @@
     <sequence-flow-button
       @click="addSequence()"
       class="crown-config__icon"
-      id="sequence-flow-button"
-      data-test="sequence-flow-button"
-      v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
     />
     <message-flow-button
       @click="addMessageFlow()"
       class="crown-config__icon"
-      id="message-flow-button"
-      data-test="message-flow-button"
-      v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
     />
     <delete-button
       @click="removeShape()"
       class="crown-config__icon svg-inline--fa fa-trash-alt fa-w-14"
-      id="delete-button"
-      data-test="delete-button"
-      v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
     />
   </div>
 </template>
 
 <script>
-
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
@@ -67,7 +56,6 @@ export default {
   },
   data() {
     return {
-      trashIcon: faTrashAlt,
       showCrown: false,
       defaultHighlighter: {
         name: 'stroke',

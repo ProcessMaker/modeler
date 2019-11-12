@@ -1,6 +1,9 @@
 <template>
   <svg
     @click="$emit('click')"
+    id="delete-button"
+    data-test="delete-button"
+    v-b-tooltip.hover.viewport.d50
     aria-hidden="true"
     data-prefix="fas"
     data-icon="trash-alt"

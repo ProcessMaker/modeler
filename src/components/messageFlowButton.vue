@@ -1,6 +1,9 @@
 <template>
   <svg
     @click="$emit('click')"
+    id="message-flow-button"
+    data-test="message-flow-button"
+    v-b-tooltip.hover.viewport.d50
     width="19"
     height="20"
     viewBox="0 0 19 20"

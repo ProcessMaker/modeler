@@ -21,7 +21,6 @@
 <script>
 import { util } from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
-//import crownConfig from '@/mixins/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import portsConfig from '@/mixins/portsConfig';
 import hasMarkers from '@/mixins/hasMarkers';
@@ -39,7 +38,6 @@ export default {
     CrownConfig,
   },
   props: ['graph', 'node', 'id', 'highlighted', 'nodeRegistry', 'moddle', 'paper', 'collaboration', 'processNode', 'planeElements'],
-  //mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
