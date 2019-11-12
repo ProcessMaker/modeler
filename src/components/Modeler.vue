@@ -27,16 +27,27 @@
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <button type="button" class="btn btn-sm btn-secondary" @click="undo" :disabled="!canUndo" data-test="undo">{{ $t('Undo') }}</button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="redo" :disabled="!canRedo" data-test="redo">{{ $t('Redo') }}</button>
+          <span id="undo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="undo">
+            <button type="button" class="btn btn-sm btn-secondary btn-undo" :disabled="!canUndo" data-test="undo">
+              <font-awesome-icon :icon="undoIcon" />
+            </button>
+          </span>
+          <b-tooltip target="undo-wrapper">{{ $t('Undo') }}</b-tooltip>
+
+          <span id="redo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="redo">
+            <button type="button" class="btn btn-sm btn-secondary btn-redo" :disabled="!canRedo" data-test="redo">
+              <font-awesome-icon :icon="redoIcon" />
+            </button>
+          </span>
+          <b-tooltip target="redo-wrapper">{{ $t('Redo') }}</b-tooltip>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
-            <font-awesome-icon class="" :icon="plusIcon" />
+            <font-awesome-icon :icon="plusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
-            <font-awesome-icon class="" :icon="minusIcon" />
+            <font-awesome-icon :icon="minusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
@@ -126,7 +137,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faStepBackward, faStepForward } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -200,6 +211,8 @@ export default {
       minusIcon: faMinus,
       expandIcon: faExpand,
       compressIcon: faCompress,
+      undoIcon: faStepBackward,
+      redoIcon: faStepForward,
     };
   },
   watch: {
@@ -959,6 +972,16 @@ $vertex-error-color: #ED4757;
   .joint-marker-vertex:hover {
     fill: $vertex-error-color;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
+  }
+
+  .btn-undo {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .btn-redo {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 </style>
