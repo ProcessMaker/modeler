@@ -244,7 +244,6 @@ export default {
       if (this.tooltipTarget) {
         return this.tooltipTarget.$el.data('title');
       }
-      return undefined;
     },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
