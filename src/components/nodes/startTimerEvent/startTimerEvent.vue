@@ -1,7 +1,3 @@
-<template>
-  <div/>
-</template>
-
 <script>
 import StartEvent from '@/components/nodes/startEvent/startEvent';
 import clockIcon from '@/assets/clock.svg';
