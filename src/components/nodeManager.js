@@ -2,12 +2,14 @@ import { id as poolId } from './nodes/pool';
 import { id as laneId } from '@/components/nodes/poolLane';
 
 export function addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator) {
-  const id = node.definition.id || nodeIdGenerator.generate();
+  const [nodeId, diagramId] = nodeIdGenerator.generate();
 
-  node.definition.id = id;
+  if (!node.definition.id) {
+    node.definition.id = nodeId;
+  }
 
   if (node.diagram) {
-    node.diagram.id = `${id}_di`;
+    node.diagram.id = diagramId;
     node.diagram.bpmnElement = node.definition;
   }
 }

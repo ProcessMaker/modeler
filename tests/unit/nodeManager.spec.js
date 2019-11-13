@@ -4,17 +4,22 @@ import { id as laneId } from '@/components/nodes/poolLane';
 
 describe('nodeManager', () => {
   describe('addIdToNodeAndSetUpDiagramReference', () => {
-    it('should not change diagram ID if it already has an ID set', () => {
+    it('should not change node ID if it already has an ID set', () => {
       const nodeId = 'foobar';
+      const newNodeId = 'baz';
+      const diagramId = 'diagram_id';
       const node = {
         definition: { id: nodeId },
         diagram: {},
       };
+      const nodeIdGenerator = {
+        generate: () => ([newNodeId, diagramId]),
+      };
 
-      addIdToNodeAndSetUpDiagramReference(node);
+      addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator);
 
       expect(node.definition.id).toBe(nodeId);
-      expect(node.diagram.id).toBe(`${nodeId}_di`);
+      expect(node.diagram.id).toBe(diagramId);
       expect(node.diagram.bpmnElement).toBe(node.definition);
     });
 
@@ -22,13 +27,17 @@ describe('nodeManager', () => {
       const node = {
         definition: { id: 123 },
       };
+      const nodeIdGenerator = {
+        generate: () => ([]),
+      };
 
-      expect(() => addIdToNodeAndSetUpDiagramReference(node)).not.toThrow();
+      expect(() => addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator)).not.toThrow();
     });
 
     it('should use ID generator if definition does not have ID', () => {
       const nodeId = 'foobar';
-      const nodeIdGenerator = { generate: () => nodeId };
+      const diagramId = 'baz';
+      const nodeIdGenerator = { generate: () => [nodeId, diagramId] };
       const node = {
         definition: {},
         diagram: {},
@@ -37,7 +46,7 @@ describe('nodeManager', () => {
       addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator);
 
       expect(node.definition.id).toBe(nodeId);
-      expect(node.diagram.id).toBe(`${nodeId}_di`);
+      expect(node.diagram.id).toBe(diagramId);
     });
   });
 

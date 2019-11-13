@@ -1,6 +1,6 @@
-const nodeIdPrefix = 'node_';
-
 export default class NodeIdGenerator {
+  static prefix = 'node_';
+
   constructor(definitions) {
     this.counter = 1;
     this.definitions = definitions;
@@ -13,15 +13,15 @@ export default class NodeIdGenerator {
       id = this.#generateNewId();
     }
 
-    return id;
+    return [id, `${id}_di`];
   }
 
-  #generateNewId = (prefix = nodeIdPrefix, suffix = '') => {
-    const id = prefix + this.counter + suffix;
+  #generateNewId = () => {
+    const id = NodeIdGenerator.prefix + this.counter;
     this.counter++;
 
     return id;
-  }
+  };
 
   #isIdUnique = id => {
     const planeElementIds = this.definitions.diagrams[0].plane
@@ -29,5 +29,5 @@ export default class NodeIdGenerator {
       .map(planeElement => planeElement.get('bpmnElement').id);
 
     return !planeElementIds.includes(id);
-  }
+  };
 }
