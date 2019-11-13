@@ -28,7 +28,7 @@ describe('nodeManager', () => {
 
     it('should use ID generator if definition does not have ID', () => {
       const nodeId = 'foobar';
-      const nodeIdGenerator = { generateUniqueNodeId: () => nodeId };
+      const nodeIdGenerator = { generate: () => nodeId };
       const node = {
         definition: {},
         diagram: {},

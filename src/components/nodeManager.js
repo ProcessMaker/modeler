@@ -2,7 +2,7 @@ import { id as poolId } from './nodes/pool';
 import { id as laneId } from '@/components/nodes/poolLane';
 
 export function addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator) {
-  const id = node.definition.id || nodeIdGenerator.generateUniqueNodeId();
+  const id = node.definition.id || nodeIdGenerator.generate();
 
   node.definition.id = id;
 
