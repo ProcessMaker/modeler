@@ -56,15 +56,6 @@ export default {
   data() {
     return {
       showCrown: false,
-      defaultHighlighter: {
-        name: 'stroke',
-        options: {
-          attrs: {
-            stroke: '#feb663',
-            'stroke-width': 3,
-          },
-        },
-      },
       /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
       allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
