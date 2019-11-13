@@ -215,7 +215,6 @@ export default {
   },
   async mounted() {
     this.shape = new EventShape();
-    this.shape.set('type', 'newCrown');
     this.setShapeProperties();
     this.shape.addTo(this.graph);
 

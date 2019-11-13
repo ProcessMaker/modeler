@@ -3,6 +3,11 @@ import path from 'path';
 
 const renderTime = 300;
 
+const newCrown = [
+  'processmaker.components.nodes.task.Shape',
+  'processmaker.components.nodes.boundaryEvent.Shape',
+];
+
 export function getGraphElements() {
   return cy.window()
     .its('store.state.graph')
@@ -92,7 +97,7 @@ export function getPositionInPaperCoords(position) {
 }
 
 export function getCrownButtonForElement($element, crownButton) {
-  if ($element.data('type') === 'newCrown') {
+  if (newCrown.includes($element.data('type'))) {
     return cy.get(`#${ crownButton }`);
   }
   return cy
