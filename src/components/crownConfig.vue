@@ -12,7 +12,7 @@
     />
     <delete-button
       @click="removeShape()"
-      class="crown-config__icon svg-inline--fa fa-trash-alt fa-w-14"
+      class="crown-config__icon"
       :title="$t('Delete')"
     />
   </div>
@@ -240,7 +240,6 @@ export default {
 </script>
 
 <style lang="scss">
-  $icon-color: #fff;
   $primary-color: #5096db;
 
   .crown-config {
@@ -269,7 +268,6 @@ export default {
     &__icon {
       margin: 5px 10px;
       font-size: 1rem;
-      color: $icon-color;
     }
   }
 </style>
