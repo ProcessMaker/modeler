@@ -88,9 +88,10 @@ export default {
   },
   computed: {
     style() {
-      const { x, y } = this.shape.findView(this.paper).getBBox();
+      const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
       const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
-      return 'top:' + (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
+      const widthOffsetFromLabel = shapeWidth - width > 3 ? (shapeWidth / 2) - 15 : 0;
+      return 'top:' + (y - 45) + 'px;left:' + ((x + width - 20) + widthOffsetFromLabel) + 'px;cursor:pointer';
     },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
