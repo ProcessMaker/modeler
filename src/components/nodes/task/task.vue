@@ -11,6 +11,7 @@
       :collaboration="collaboration"
       :process-node="processNode"
       :plane-elements="planeElements"
+      :is-rendering="isRendering"
       @remove-node="$emit('remove-node', $event)"
       @add-node="$emit('add-node', $event)"
       @save-state="$emit('save-state', $event)"
@@ -37,7 +38,19 @@ export default {
   components: {
     CrownConfig,
   },
-  props: ['graph', 'node', 'id', 'highlighted', 'nodeRegistry', 'moddle', 'paper', 'collaboration', 'processNode', 'planeElements'],
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {

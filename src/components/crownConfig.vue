@@ -41,6 +41,7 @@ export default {
     'planeElements',
     'processNode',
     'collaboration',
+    'isRendering',
   ],
   watch: {
     highlighted() {
@@ -49,8 +50,6 @@ export default {
     shape() {
       if (this.highlighted) {
         this.showCrown = true;
-        this.configurePoolLane();
-        this.setUpCrownConfig();
       }
     },
   },
@@ -73,6 +72,20 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
+  },
+  mounted() {
+    this.$nextTick(() => {
+      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
+       * This will ensure this.shape is defined. */
+
+      this.configurePoolLane();
+
+      if (this.isRendering) {
+        this.paper.once('render:done', this.setUpCrownConfig);
+      } else {
+        this.setUpCrownConfig();
+      }
+    });
   },
   computed: {
     style() {
