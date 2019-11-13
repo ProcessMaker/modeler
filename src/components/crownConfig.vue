@@ -1,17 +1,17 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
     <sequence-flow-button
-      @click="addSequence()"
+      @click="addSequence"
       class="crown-config__icon"
       :title="$t('Sequence Flow')"
     />
     <message-flow-button
-      @click="addMessageFlow()"
+      @click="addMessageFlow"
       class="crown-config__icon"
       :title="$t('Message Flow')"
     />
     <delete-button
-      @click="removeShape()"
+      @click="removeShape"
       class="crown-config__icon"
       :title="$t('Delete')"
     />
