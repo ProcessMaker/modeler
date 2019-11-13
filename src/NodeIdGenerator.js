@@ -16,14 +16,14 @@ export default class NodeIdGenerator {
     return id;
   }
 
-  #generateNewId(prefix = nodeIdPrefix, suffix = '') {
+  #generateNewId = (prefix = nodeIdPrefix, suffix = '') => {
     const id = prefix + this.counter + suffix;
     this.counter++;
 
     return id;
   }
 
-  #isIdUnique(id) {
+  #isIdUnique = id => {
     const planeElementIds = this.definitions.diagrams[0].plane
       .get('planeElement')
       .map(planeElement => planeElement.get('bpmnElement').id);
