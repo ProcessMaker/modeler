@@ -6,6 +6,7 @@ const renderTime = 300;
 const newCrown = [
   'processmaker.components.nodes.task.Shape',
   'processmaker.components.nodes.boundaryEvent.Shape',
+  'processmaker.components.nodes.gateway.Shape',
 ];
 
 export function getGraphElements() {
