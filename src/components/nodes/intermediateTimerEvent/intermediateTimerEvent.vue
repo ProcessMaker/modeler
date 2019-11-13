@@ -1,7 +1,3 @@
-<template>
-  <div/>
-</template>
-
 <script>
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
 import clockIcon from '@/assets/intermediate-clock.svg';
