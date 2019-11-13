@@ -1,0 +1,31 @@
+<template>
+  <svg
+    @click="$emit('click')"
+    id="message-flow-button"
+    data-test="message-flow-button"
+    v-b-tooltip.hover.viewport.d50
+    width="19"
+    height="20"
+    viewBox="0 0 19 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clip-path="url(#clip0)">
+      <circle cx="2.5" cy="2.5" r="2" stroke="#fff"/>
+      <path d="M15.5 20L15.5 17.5V15L18.5 17.5L15.5 20Z" fill="#fff"/>
+      <line x1="4" y1="2.5" x2="7" y2="2.5" stroke="#fff"/>
+      <line x1="8" y1="2.5" x2="11" y2="2.5" stroke="#fff"/>
+      <line x1="10.5" y1="5" x2="10.5" y2="2" stroke="#fff"/>
+      <line x1="10.5" y1="9" x2="10.5" y2="6" stroke="#fff"/>
+      <line x1="10.5" y1="13" x2="10.5" y2="10" stroke="#fff"/>
+      <line x1="10.5" y1="17" x2="10.5" y2="14" stroke="#fff"/>
+      <line x1="10" y1="17.5" x2="13" y2="17.5" stroke="#fff"/>
+      <line x1="14" y1="17.5" x2="17" y2="17.5" stroke="#fff"/>
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <rect width="19" height="20" fill="white"/>
+      </clipPath>
+    </defs>
+  </svg>
+</template>
