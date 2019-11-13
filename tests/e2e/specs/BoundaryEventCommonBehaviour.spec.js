@@ -21,32 +21,24 @@ const boundaryEventData = [{
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   invalidTargets: [{ type: nodeTypes.startEvent }],
-  taskSelector: '.main-paper ' +
-    '[data-type="newCrown"]',
 }, {
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   invalidTargets: [{ type: nodeTypes.startEvent }],
-  taskSelector: '.main-paper ' +
-    '[data-type="newCrown"]',
 }, {
   type: 'Boundary Escalation Event',
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
-  taskSelector: '.main-paper ' +
-    '[data-type="processmaker.components.nodes.task.Shape"]',
 }, {
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
   invalidTargets: [{ type: nodeTypes.startEvent }],
-  taskSelector: '.main-paper ' +
-    '[data-type="processmaker.components.nodes.task.Shape"]',
 }];
 
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
@@ -69,7 +61,7 @@ function configurePool(poolPosition, nodeType, taskType) {
   dragFromSourceToDest(nodeTypes.pool, poolPosition);
 }
 
-boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidTargets, taskSelector }) => {
+boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidTargets }) => {
   describe(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(taskType, taskPosition);
@@ -109,6 +101,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('can stay anchored to task when moving pool', function() {
       configurePool({ x: 300, y: 300 }, nodeType, taskType);
+      const taskSelector = '.main-paper ' +
+        '[data-type="newCrown"]';
 
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {

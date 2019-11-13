@@ -1,11 +1,27 @@
 <template>
-  <div />
+  <div>
+    <crown-config
+      :highlighted="highlighted"
+      :paper="paper"
+      :graph="graph"
+      :shape="shape"
+      :node="node"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :collaboration="collaboration"
+      :process-node="processNode"
+      :plane-elements="planeElements"
+      :is-rendering="isRendering"
+      @remove-node="$emit('remove-node', $event)"
+      @add-node="$emit('add-node', $event)"
+      @save-state="$emit('save-state', $event)"
+    />
+  </div>
 </template>
 
 <script>
 import { util } from 'jointjs';
 import connectIcon from '@/assets/connect-elements.svg';
-import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task/taskConfig';
@@ -14,13 +30,30 @@ import uniqBy from 'lodash/uniqBy';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { elementIdParser } from '@/components/nodes/callActivity/elementIdParser';
+import CrownConfig from '@/components/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 
 export default {
-  props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       crownConfig: [
@@ -78,7 +111,7 @@ export default {
   },
   mounted() {
     this.shape = new TaskShape();
-
+    this.shape.set('type', 'newCrown');
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
