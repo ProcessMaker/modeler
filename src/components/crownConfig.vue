@@ -13,7 +13,7 @@
       :title="$t('Message Flow')"
     />
     <delete-button
-      @click="removeShape"
+      @click="remove"
       class="crown-config__icon"
       :title="$t('Delete')"
     />
@@ -106,6 +106,9 @@ export default {
     isValidSequenceFlowSource() {
       return !this.invalidSequenceFlowSources.includes(this.node.type);
     },
+    isLane() {
+      return this.node.type === 'processmaker-modeler-lane';
+    },
   },
   methods: {
     addSequence(cellView, evt, x, y) {
@@ -144,6 +147,9 @@ export default {
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
+    remove() {
+      return this.isLane ? this.removePoolLaneShape() : this.removeShape();
+    },
     removeShape() {
       this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
       this.shape.getEmbeddedCells({ deep: true }).forEach(cell => {
@@ -155,6 +161,26 @@ export default {
       });
 
       this.$emit('remove-node', this.node);
+    },
+    removePoolLaneShape() {
+      this.$emit('remove-node', this.node);
+
+      const poolComponent = this.node.pool.component;
+      const sortedLanes = poolComponent.sortedLanes();
+
+      if (sortedLanes.length === 2) {
+        /* Do not allow pool with only one lane;
+         * if removing 2nd last lane, remove the other lane as well */
+        this.$emit('remove-node', sortedLanes.filter(lane => lane !== this.shape)[0].component.node);
+        return;
+      }
+
+      if (this.shape === sortedLanes[sortedLanes.length - 1]) {
+        poolComponent.fillLanes(this.shape, 'top-right', true);
+        return;
+      }
+
+      poolComponent.fillLanes(this.shape, 'bottom-right', true);
     },
     removeCrown() {
       this.showCrown = false;
