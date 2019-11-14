@@ -6,6 +6,7 @@
       :title="$t('Sequence Flow')"
     />
     <message-flow-button
+      v-if="isValidMessageFlowSource"
       @click="addMessageFlow"
       class="crown-config__icon"
       :title="$t('Message Flow')"
@@ -59,6 +60,13 @@ export default {
       /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
       allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
+      validMessageFlowSources: [
+        'processmaker-modeler-start-event',
+        'processmaker-modeler-end-event',
+        'processmaker-modeler-task',
+        'processmaker-modeler-pool',
+        'processmaker-modeler-intermediate-message-catch-event',
+      ],
     };
   },
   created() {
@@ -83,6 +91,9 @@ export default {
       const { x, y } = this.shape.findView(this.paper).getBBox();
       const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
       return 'top:' + (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
+    },
+    isValidMessageFlowSource() {
+      return this.validMessageFlowSources.includes(this.node.type);
     },
   },
   methods: {
