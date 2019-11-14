@@ -106,6 +106,8 @@ function hasNewCrownConfig($element) {
     'processmaker.components.nodes.task.Shape',
     'processmaker.components.nodes.boundaryEvent.Shape',
     'processmaker.components.nodes.intermediateEvent.Shape',
+    'processmaker.components.nodes.startEvent.Shape',
+    'processmaker.components.nodes.gateway.Shape',
   ];
   return newCrown.includes($element.data('type'));
 }
@@ -257,22 +259,21 @@ export function getNumberOfLinks() {
     .then(({ graph }) => graph.getLinks().length);
 }
 
-export function assertDownloadedXmlContainsExpected(xmlString) {
+export function getXml() {
   cy.get('[data-test=downloadXMLBtn]').click();
-  cy.window()
+  return cy.window()
     .its('xml')
-    .then(removeIndentationAndLinebreaks)
-    .then(xml => {
-      expect(xml).to.contain(removeIndentationAndLinebreaks(xmlString));
-    });
+    .then(removeIndentationAndLinebreaks);
+}
+
+export function assertDownloadedXmlContainsExpected(xmlString) {
+  getXml().then(xml => {
+    expect(xml).to.contain(removeIndentationAndLinebreaks(xmlString));
+  });
 }
 
 export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
-  cy.get('[data-test=downloadXMLBtn]').click();
-  cy.window()
-    .its('xml')
-    .then(removeIndentationAndLinebreaks)
-    .then(xml => {
-      expect(xml).to.not.contain(removeIndentationAndLinebreaks(xmlString));
-    });
+  getXml().then(xml => {
+    expect(xml).to.not.contain(removeIndentationAndLinebreaks(xmlString));
+  });
 }

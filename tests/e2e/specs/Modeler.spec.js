@@ -5,6 +5,7 @@ import {
   getElementAtPosition,
   getGraphElements,
   getLinksConnectedToElement,
+  getXml,
   isElementCovered,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
@@ -443,5 +444,14 @@ describe('Modeler', () => {
       click().
       getType().
       should('equal', nodeTypes.task);
+  });
+
+  it('should not generate duplicate diagram IDs', function() {
+    uploadXml('setUpForDuplicateDiagramId.xml');
+    dragFromSourceToDest(nodeTypes.task, { x: 300, y: 300 });
+    getXml().then(xml => {
+      expect(xml.match(/node_1_di/g)).to.have.length(1);
+      expect(xml.match(/node_2_di/g)).to.have.length(1);
+    });
   });
 });
