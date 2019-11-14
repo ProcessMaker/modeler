@@ -96,6 +96,9 @@ export default {
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
     },
+    isValidMessageFlowSource() {
+      return this.validMessageFlowSources.includes(this.node.type);
+    },
   },
   methods: {
     addSequence(cellView, evt, x, y) {
