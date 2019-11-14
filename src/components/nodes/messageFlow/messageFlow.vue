@@ -1,5 +1,20 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
@@ -8,9 +23,25 @@ import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as poolId } from '../pool';
+import CrownConfig from '@/components/crownConfig';
 
 export default {
-  props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
   mixins: [crownConfig, linkConfig],
   data() {
     return {

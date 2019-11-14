@@ -70,6 +70,7 @@ export default {
       ],
       invalidSequenceFlowSources: [
         'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
       ],
     };
   },
