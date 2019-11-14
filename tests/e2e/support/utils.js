@@ -92,13 +92,22 @@ export function getPositionInPaperCoords(position) {
 }
 
 export function getCrownButtonForElement($element, crownButton) {
-  if ($element.data('type') === 'newCrown') {
+  if (hasNewCrownConfig($element)) {
     return cy.get(`#${ crownButton }`);
   }
   return cy
     .get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`)
     .then(crownButtons => crownButtons.filter((index, button) => Cypress.$(button).is(':visible')))
     .then(crownButtons => crownButtons[0]);
+}
+
+function hasNewCrownConfig($element) {
+  const newCrown = [
+    'processmaker.components.nodes.task.Shape',
+    'processmaker.components.nodes.boundaryEvent.Shape',
+    'processmaker.components.nodes.gateway.Shape',
+  ];
+  return newCrown.includes($element.data('type'));
 }
 
 export function typeIntoTextInput(selector, value) {

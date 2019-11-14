@@ -1,9 +1,23 @@
 <template>
-  <div />
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
-import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
@@ -12,10 +26,27 @@ import resetShapeColor from '@/components/resetShapeColor';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
 import { invalidNodeColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
+import CrownConfig from '@/components/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 
 export default {
-  props: ['graph', 'node', 'paper', 'highlighted'],
-  mixins: [crownConfig, portsConfig, hideLabelOnDrag],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,
@@ -104,7 +135,6 @@ export default {
       const { x, y } = getBoundaryAnchorPoint(this.getCenterPosition(), task);
       const { width, height } = this.shape.size();
       this.shape.position(x - (width / 2), y - (height / 2));
-      this.updateCrownPosition();
 
       this.previousPosition = this.shape.position();
     },
@@ -131,7 +161,6 @@ export default {
 
       if (!task) {
         this.resetToInitialPosition();
-        this.updateCrownPosition();
         return;
       }
 

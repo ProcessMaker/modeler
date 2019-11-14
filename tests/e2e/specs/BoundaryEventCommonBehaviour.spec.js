@@ -102,7 +102,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
     it('can stay anchored to task when moving pool', function() {
       configurePool({ x: 300, y: 300 }, nodeType, taskType);
       const taskSelector = '.main-paper ' +
-        '[data-type="newCrown"]';
+        '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
