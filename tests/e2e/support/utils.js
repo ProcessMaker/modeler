@@ -105,6 +105,7 @@ function hasNewCrownConfig($element) {
   const newCrown = [
     'processmaker.components.nodes.task.Shape',
     'processmaker.components.nodes.boundaryEvent.Shape',
+    'processmaker.components.nodes.startEvent.Shape',
     'processmaker.components.nodes.gateway.Shape',
   ];
   return newCrown.includes($element.data('type'));
