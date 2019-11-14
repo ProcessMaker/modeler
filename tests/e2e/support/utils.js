@@ -3,12 +3,6 @@ import path from 'path';
 
 const renderTime = 300;
 
-const newCrown = [
-  'processmaker.components.nodes.task.Shape',
-  'processmaker.components.nodes.boundaryEvent.Shape',
-  'processmaker.components.nodes.startEvent.Shape',
-];
-
 export function getGraphElements() {
   return cy.window()
     .its('store.state.graph')
@@ -98,13 +92,22 @@ export function getPositionInPaperCoords(position) {
 }
 
 export function getCrownButtonForElement($element, crownButton) {
-  if (newCrown.includes($element.data('type'))) {
+  if (hasNewCrownConfig($element)) {
     return cy.get(`#${ crownButton }`);
   }
   return cy
     .get(`#${$element.attr('id')} ~ [data-test=${crownButton}]`)
     .then(crownButtons => crownButtons.filter((index, button) => Cypress.$(button).is(':visible')))
     .then(crownButtons => crownButtons[0]);
+}
+
+function hasNewCrownConfig($element) {
+  const newCrown = [
+    'processmaker.components.nodes.task.Shape',
+    'processmaker.components.nodes.boundaryEvent.Shape',
+    'processmaker.components.nodes.startEvent.Shape',
+  ];
+  return newCrown.includes($element.data('type'));
 }
 
 export function typeIntoTextInput(selector, value) {
