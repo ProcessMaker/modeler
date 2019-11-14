@@ -105,6 +105,7 @@ export default {
     const bounds = this.node.diagram.bounds;
 
     this.shape = new shapes.standard.Polyline();
+    this.shape.set('type', 'textAnnotation');
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({

@@ -1,6 +1,14 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
+    <association-flow-button
+      v-b-tooltip.hover.viewport.d50
+      v-if="isTextAnnotation"
+      @click="addAssociation"
+      class="crown-config__icon"
+      :title="$t('Association Flow')"
+    />
     <sequence-flow-button
+      v-if="!isTextAnnotation"
       @click="addSequence"
       class="crown-config__icon"
       :title="$t('Sequence Flow')"
@@ -23,13 +31,16 @@
 import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
+import AssociationFlowButton from '@/components/associationFlowButton';
 import pull from 'lodash/pull';
+import { direction } from '@/components/nodes/association/associationConfig';
 
 export default {
   components: {
     DeleteButton,
     MessageFlowButton,
     SequenceFlowButton,
+    AssociationFlowButton,
   },
   props: [
     'highlighted',
@@ -101,6 +112,9 @@ export default {
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
     },
+    isTextAnnotation() {
+      return this.node.type === 'processmaker-modeler-text-annotation';
+    },
   },
   methods: {
     addSequence(cellView, evt, x, y) {
@@ -136,6 +150,20 @@ export default {
       this.$emit('add-node', {
         type: 'processmaker-modeler-message-flow',
         definition: messageFlowDefinition,
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
+      });
+    },
+    addAssociation(cellView, evt, x, y) {
+      this.removeCrown();
+      const associationLink = this.moddle.create('bpmn:Association', {
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
+        associationDirection: direction.none,
+      });
+
+      this.$emit('add-node', {
+        type: 'processmaker-modeler-association',
+        definition: associationLink,
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
