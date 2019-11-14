@@ -1,5 +1,20 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
@@ -11,9 +26,25 @@ import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
 import store from '@/store';
 import { id as callActivityId } from '@/components/nodes/callActivity';
+import CrownConfig from '@/components/crownConfig';
 
 export default {
-  props: ['graph', 'node', 'id', 'moddle', 'nodeRegistry'],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
   mixins: [crownConfig, linkConfig],
   computed: {
     isValidConnection() {

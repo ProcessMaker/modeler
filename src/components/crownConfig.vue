@@ -1,6 +1,7 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
     <sequence-flow-button
+      v-if="showSequenceFlow"
       @click="addSequence"
       class="crown-config__icon"
       :title="$t('Sequence Flow')"
@@ -67,6 +68,9 @@ export default {
         'processmaker-modeler-pool',
         'processmaker-modeler-intermediate-message-catch-event',
       ],
+      invalidSequenceFlowSources: [
+        'processmaker-modeler-sequence-flow',
+      ],
     };
   },
   created() {
@@ -89,12 +93,15 @@ export default {
   computed: {
     style() {
       const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
-      const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
+      const width = (this.shape.getBBox().width * this.paper.scale().sx);
       const widthOffsetFromLabel = shapeWidth - width > 3 ? (shapeWidth / 2) - 15 : 0;
       return 'top:' + (y - 45) + 'px;left:' + ((x + width - 20) + widthOffsetFromLabel) + 'px;cursor:pointer';
     },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
+    },
+    showSequenceFlow() {
+      return !this.invalidSequenceFlowSources.includes(this.node.type);
     },
   },
   methods: {
