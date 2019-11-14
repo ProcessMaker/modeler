@@ -1,7 +1,3 @@
-<template>
-  <div/>
-</template>
-
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
 import errorIcon from '@/assets/error.svg';
