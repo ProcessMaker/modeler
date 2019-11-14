@@ -1,6 +1,7 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
     <sequence-flow-button
+      v-if="isValidSequenceFlowSource"
       @click="addSequence"
       class="crown-config__icon"
       :title="$t('Sequence Flow')"
@@ -67,6 +68,11 @@ export default {
         'processmaker-modeler-pool',
         'processmaker-modeler-intermediate-message-catch-event',
       ],
+      invalidSequenceFlowSources: [
+        'processmaker-modeler-end-event',
+        'processmaker-modeler-error-end-event',
+        'processmaker-modeler-message-end-event',
+      ],
     };
   },
   created() {
@@ -95,6 +101,9 @@ export default {
     },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
+    },
+    isValidSequenceFlowSource() {
+      return !this.invalidSequenceFlowSources.includes(this.node.type);
     },
   },
   methods: {

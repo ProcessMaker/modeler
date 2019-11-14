@@ -19,7 +19,6 @@
 
 <script>
 import portsConfig from '@/mixins/portsConfig';
-import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/boundaryEvent/shape';
 import isValidBoundaryEventTarget from './validBoundaryEventTargets';
 import resetShapeColor from '@/components/resetShapeColor';
@@ -52,14 +51,6 @@ export default {
       shape: null,
       definition: null,
       previousPosition: null,
-      crownConfig: [
-        {
-          id: 'sequence-flow-button',
-          title: this.$t('Sequence Flow'),
-          icon: connectIcon,
-          clickHandler: this.addSequence,
-        },
-      ],
       validPosition: null,
       invalidTargetElement: null,
     };
