@@ -3,7 +3,6 @@
     @click="$emit('click')"
     id="sequence-flow-button"
     data-test="sequence-flow-button"
-    v-b-tooltip.hover.viewport.d50
     width="19px"
     height="20px"
     viewBox="0 0 19 20"

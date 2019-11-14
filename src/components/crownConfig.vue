@@ -11,17 +11,20 @@
       v-if="isValidSequenceFlowSource"
       @click="addSequence"
       class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
     />
     <message-flow-button
       v-if="isValidMessageFlowSource"
       @click="addMessageFlow"
       class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
     />
     <delete-button
       @click="removeShape"
       class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
     />
   </div>
