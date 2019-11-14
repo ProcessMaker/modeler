@@ -19,7 +19,6 @@
 
 <script>
 import { shapes, util } from 'jointjs';
-import connectIcon from '@/assets/connect-artifacts.svg';
 import portsConfig from '@/mixins/portsConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
 import CrownConfig from '@/components/crownConfig';
@@ -49,14 +48,6 @@ export default {
       shape: null,
       definition: null,
       nodeWidth: 10,
-      crownConfig: [
-        {
-          id: 'association-flow-button',
-          title: this.$t('Association Flow'),
-          icon: connectIcon,
-          clickHandler: this.addAssociation,
-        },
-      ],
     };
   },
   watch: {
