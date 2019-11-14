@@ -1,17 +1,48 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
-import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import connectIcon from '@/assets/connect-elements.svg';
 import GatewayShape from '@/components/nodes/gateway/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
+import CrownConfig from '@/components/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 
 export default {
-  props: ['graph', 'node'],
-  mixins: [crownConfig, portsConfig, hideLabelOnDrag],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   data() {
     return {
       shape: null,

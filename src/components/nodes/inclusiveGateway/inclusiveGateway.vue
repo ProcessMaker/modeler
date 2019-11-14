@@ -1,7 +1,3 @@
-<template>
-  <div/>
-</template>
-
 <script>
 import GatewayComponent from '@/components/nodes/gateway/gateway';
 import inclusiveGatewaySymbol from '@/assets/inclusive-gatway-symbol.svg';

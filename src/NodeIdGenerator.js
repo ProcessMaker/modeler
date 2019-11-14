@@ -1,33 +1,55 @@
-const nodeIdPrefix = 'node_';
-
 export default class NodeIdGenerator {
+  static prefix = 'node_';
+
+  #counter = 1;
+  #diagramCounter = 1;
+
   constructor(definitions) {
-    this.counter = 1;
     this.definitions = definitions;
   }
 
-  generateUniqueNodeId() {
-    let id = this.generateNewNodeId();
+  generate() {
+    let definitionId = this.#generateDefinitionId();
+    let diagramId = this.#generateDiagramId();
 
-    while (!this.isIdUnique(id)) {
-      id = this.generateNewNodeId();
+    while (!this.#isDefinitionIdUnique(definitionId)) {
+      definitionId = this.#generateDefinitionId();
     }
 
-    return id;
+    while (!this.#isDiagramIdUnique(diagramId)) {
+      diagramId = this.#generateDiagramId();
+    }
+
+    return [definitionId, diagramId];
   }
 
-  generateNewNodeId(prefix = nodeIdPrefix) {
-    const id = prefix + this.counter;
-    this.counter++;
+  #generateDefinitionId = () => {
+    const id = NodeIdGenerator.prefix + this.#counter;
+    this.#counter++;
 
     return id;
-  }
+  };
 
-  isIdUnique(id) {
+  #generateDiagramId = () => {
+    const id = NodeIdGenerator.prefix + this.#diagramCounter + '_di';
+    this.#diagramCounter++;
+
+    return id;
+  };
+
+  #isDefinitionIdUnique = id => {
     const planeElementIds = this.definitions.diagrams[0].plane
       .get('planeElement')
       .map(planeElement => planeElement.get('bpmnElement').id);
 
     return !planeElementIds.includes(id);
-  }
+  };
+
+  #isDiagramIdUnique = id => {
+    const diagramElementIds = this.definitions.diagrams[0].plane
+      .get('planeElement')
+      .map(planeElement => planeElement.id);
+
+    return !diagramElementIds.includes(id);
+  };
 }
