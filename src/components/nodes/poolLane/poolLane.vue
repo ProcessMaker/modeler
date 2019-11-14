@@ -1,18 +1,50 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
 import { shapes, util } from 'jointjs';
-import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
 import { poolColor } from '@/components/nodeColors';
+import CrownConfig from '@/components/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id', 'collaboration'],
-  mixins: [crownConfig, resizeConfig],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'nodes',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, resizeConfig],
   data() {
     return {
       shape: null,
@@ -22,6 +54,11 @@ export default {
   watch: {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
+    },
+  },
+  computed: {
+    isLane() {
+      return this.node.type === 'processmaker-modeler-lane';
     },
   },
   methods: {
@@ -45,8 +82,48 @@ export default {
 
       poolComponent.fillLanes(this.shape, 'bottom-right', true);
     },
+    // @todo check this
+    configurePoolLane() {
+      if ([
+        'processmaker-modeler-pool',
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+        'processmaker-modeler-message-flow',
+      ].includes(this.node.type)) {
+        return;
+      }
+
+      if (this.node.pool) {
+        if (!this.graph.getCell(this.node.pool)) {
+          this.node.pool = this.graph.getElements().find(element => {
+            return element.component && element.component.node === this.node.pool.component.node;
+          });
+        }
+
+        this.node.pool.component.addToPool(this.shape);
+
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
+
+        return;
+      }
+
+      /* If we are over a pool or lane, add the shape to the pool or lane */
+      const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
+        return model.component && model.component.node.type === 'processmaker-modeler-pool';
+      })[0];
+
+      if (pool) {
+        this.node.pool = pool;
+        this.node.pool.component.addToPool(this.shape);
+
+        if (this.isLane) {
+          this.configureLaneInParentPool();
+        }
+      }
+    },
     configureLaneInParentPool() {
-      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
       const poolComponent = this.node.pool.component;
       if (!poolComponent.laneSet) {
         poolComponent.createLaneSet();
@@ -60,7 +137,7 @@ export default {
   },
   mounted() {
     this.shape = new shapes.standard.Rectangle();
-
+    this.shape.set('type', 'PoolLane');
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
@@ -81,6 +158,7 @@ export default {
     this.shape.component = this;
     this.shape.addTo(this.graph);
 
+    this.configurePoolLane();
     if (!this.planeElements.includes(this.node.diagram)) {
       this.planeElements.push(this.node.diagram);
     }
