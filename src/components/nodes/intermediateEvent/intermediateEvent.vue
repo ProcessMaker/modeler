@@ -19,7 +19,6 @@
 
 <script>
 import portsConfig from '@/mixins/portsConfig';
-import connectIcon from '@/assets/connect-elements.svg';
 import EventShape from '@/components/nodes/intermediateEvent/shape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
@@ -48,14 +47,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      crownConfig: [
-        {
-          id: 'sequence-flow-button',
-          title: this.$t('Sequence Flow'),
-          icon: connectIcon,
-          clickHandler: this.addSequence,
-        },
-      ],
     };
   },
   watch: {
