@@ -14,7 +14,7 @@ export { default as startTimerEvent } from './startTimerEvent';
 export { default as intermediateTimerEvent } from './intermediateTimerEvent';
 export { default as intermediateMessageCatchEvent } from './intermediateMessageCatchEvent';
 export { default as intermediateMessageThrowEvent } from './intermediateMessageThrowEvent';
-export { default as task } from './task';
+export { default as task } from './userTask';
 export { default as callActivity } from './callActivity';
 export { default as scriptTask } from './scriptTask';
 export { default as serviceTask } from './serviceTask';
