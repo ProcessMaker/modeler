@@ -19,7 +19,6 @@
 
 <script>
 import { util } from 'jointjs';
-import connectIcon from '@/assets/connect-elements.svg';
 import portsConfig from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task/taskConfig';
@@ -52,18 +51,6 @@ export default {
     'isRendering',
   ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
-  data() {
-    return {
-      crownConfig: [
-        {
-          id: 'sequence-flow-button',
-          title: this.$t('Sequence Flow'),
-          icon: connectIcon,
-          clickHandler: this.addSequence,
-        },
-      ],
-    };
-  },
   watch: {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;

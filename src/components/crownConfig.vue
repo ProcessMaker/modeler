@@ -8,7 +8,7 @@
       :title="$t('Association Flow')"
     />
     <sequence-flow-button
-      v-if="!isTextAnnotation"
+      v-if="isValidSequenceFlowSource"
       @click="addSequence"
       class="crown-config__icon"
       :title="$t('Sequence Flow')"
@@ -78,6 +78,12 @@ export default {
         'processmaker-modeler-pool',
         'processmaker-modeler-intermediate-message-catch-event',
       ],
+      invalidSequenceFlowSources: [
+        'processmaker-modeler-end-event',
+        'processmaker-modeler-error-end-event',
+        'processmaker-modeler-message-end-event',
+        'processmaker-modeler-text-annotation',
+      ],
     };
   },
   created() {
@@ -114,6 +120,9 @@ export default {
     },
     isTextAnnotation() {
       return this.node.type === 'processmaker-modeler-text-annotation';
+    },
+    isValidSequenceFlowSource() {
+      return !this.invalidSequenceFlowSources.includes(this.node.type);
     },
   },
   methods: {
