@@ -110,7 +110,7 @@ export default {
     style() {
       const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
       const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
-      const widthOffsetFromLabel = shapeWidth - width > 3 ? (shapeWidth / 2) - 15 : 0;
+      const widthOffsetFromLabel = shapeWidth - width > 4 ? (shapeWidth / 2) - 15 : 0;
 
       return {
         top: `${y - 45}px`,
