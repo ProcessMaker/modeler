@@ -33,19 +33,23 @@ export default {
     MessageFlowButton,
     SequenceFlowButton,
   },
-  props: [
-    'highlighted',
-    'paper',
-    'graph',
-    'shape',
-    'node',
-    'nodeRegistry',
-    'moddle',
-    'planeElements',
-    'processNode',
-    'collaboration',
-    'isRendering',
-  ],
+  props: {
+    highlighted: Boolean,
+    paper: Object,
+    graph: Object,
+    shape: Object,
+    node: Object,
+    nodeRegistry: Object,
+    moddle: Object,
+    planeElements: Array,
+    processNode: Object,
+    collaboration: Object,
+    isRendering: Boolean,
+    /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
+    allowSetNodePosition: {
+      default: true,
+    },
+  },
   mixins: [poolLaneCrownConfig],
   watch: {
     highlighted() {
@@ -60,8 +64,6 @@ export default {
   data() {
     return {
       showCrown: false,
-      /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
-      allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
       validMessageFlowSources: [
         'processmaker-modeler-start-event',
@@ -83,8 +85,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
-       * This will ensure this.shape is defined. */
       if (this.isRendering) {
         this.paper.once('render:done', this.setUpCrownConfig);
       } else {
