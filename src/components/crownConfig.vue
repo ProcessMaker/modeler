@@ -25,6 +25,7 @@ import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
 import pull from 'lodash/pull';
+import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 
 export default {
   components: {
@@ -45,6 +46,7 @@ export default {
     'collaboration',
     'isRendering',
   ],
+  mixins: [poolLaneCrownConfig],
   watch: {
     highlighted() {
       this.showCrown = this.highlighted;
@@ -83,9 +85,6 @@ export default {
     this.$nextTick(() => {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
-
-      //this.configurePoolLane();
-
       if (this.isRendering) {
         this.paper.once('render:done', this.setUpCrownConfig);
       } else {
@@ -106,8 +105,10 @@ export default {
     isValidSequenceFlowSource() {
       return !this.invalidSequenceFlowSources.includes(this.node.type);
     },
-    isLane() {
-      return this.node.type === 'processmaker-modeler-lane';
+    process() {
+      return this.node.pool
+        ? this.node.pool.component.containingProcess
+        : this.processNode.definition;
     },
   },
   methods: {
@@ -162,26 +163,6 @@ export default {
 
       this.$emit('remove-node', this.node);
     },
-    removePoolLaneShape() {
-      this.$emit('remove-node', this.node);
-
-      const poolComponent = this.node.pool.component;
-      const sortedLanes = poolComponent.sortedLanes();
-
-      if (sortedLanes.length === 2) {
-        /* Do not allow pool with only one lane;
-         * if removing 2nd last lane, remove the other lane as well */
-        this.$emit('remove-node', sortedLanes.filter(lane => lane !== this.shape)[0].component.node);
-        return;
-      }
-
-      if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-        poolComponent.fillLanes(this.shape, 'top-right', true);
-        return;
-      }
-
-      poolComponent.fillLanes(this.shape, 'bottom-right', true);
-    },
     removeCrown() {
       this.showCrown = false;
     },
@@ -210,17 +191,14 @@ export default {
         this.planeElements.push(this.node.diagram);
       }
 
-      const process = this.node.pool
-        ? this.node.pool.component.containingProcess
-        : this.processNode.definition;
       const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
 
-      if (nodeTypes.includes('bpmn:FlowElement') && !process.get('flowElements').includes(this.node.definition)) {
-        process.get('flowElements').push(this.node.definition);
+      if (nodeTypes.includes('bpmn:FlowElement') && !this.process.get('flowElements').includes(this.node.definition)) {
+        this.process.get('flowElements').push(this.node.definition);
       }
 
-      if (nodeTypes.includes('bpmn:Artifact') && !process.get('artifacts').includes(this.node.definition)) {
-        process.get('artifacts').push(this.node.definition);
+      if (nodeTypes.includes('bpmn:Artifact') && !this.process.get('artifacts').includes(this.node.definition)) {
+        this.process.get('artifacts').push(this.node.definition);
       }
 
       if (
@@ -236,13 +214,9 @@ export default {
     this.shape.stopListening();
     this.shape.remove();
 
-    const process = this.node.pool
-      ? this.node.pool.component.containingProcess
-      : this.processNode.definition;
-
-    pull(process.get('flowElements'), this.node.definition);
+    pull(this.process.get('flowElements'), this.node.definition);
     pull(this.planeElements, this.node.diagram);
-    pull(process.get('artifacts'), this.node.definition);
+    pull(this.process.get('artifacts'), this.node.definition);
 
     if (this.collaboration) {
       pull(this.collaboration.get('messageFlows'), this.node.definition);

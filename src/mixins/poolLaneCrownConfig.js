@@ -60,19 +60,30 @@ export default {
         lanes.push(this.node.definition);
       }
     },
+    removePoolLaneShape() {
+      this.$emit('remove-node', this.node);
+
+      const poolComponent = this.node.pool.component;
+      const sortedLanes = poolComponent.sortedLanes();
+
+      if (sortedLanes.length === 2) {
+        /* Do not allow pool with only one lane;
+         * if removing 2nd last lane, remove the other lane as well */
+        this.$emit('remove-node', sortedLanes.filter(lane => lane !== this.shape)[0].component.node);
+        return;
+      }
+
+      if (this.shape === sortedLanes[sortedLanes.length - 1]) {
+        poolComponent.fillLanes(this.shape, 'top-right', true);
+        return;
+      }
+
+      poolComponent.fillLanes(this.shape, 'bottom-right', true);
+    },
   },
   mounted() {
     this.$nextTick(() => {
       this.configurePoolLane();
-
-      const process = this.node.pool
-        ? this.node.pool.component.containingProcess
-        : this.processNode.definition;
-      const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
-
-      if (nodeTypes.includes('bpmn:FlowElement') && !process.get('flowElements').includes(this.node.definition)) {
-        process.get('flowElements').push(this.node.definition);
-      }
     });
   },
 };
