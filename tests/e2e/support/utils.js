@@ -110,6 +110,7 @@ function hasNewCrownConfig($element) {
     'processmaker.components.nodes.endEvent.Shape',
     'processmaker.components.nodes.gateway.Shape',
     'textAnnotation',
+    'standard.Link',
   ];
   return newCrown.includes($element.data('type'));
 }

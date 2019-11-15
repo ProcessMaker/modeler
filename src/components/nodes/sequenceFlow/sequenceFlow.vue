@@ -19,7 +19,6 @@
 
 <script>
 import { shapes } from 'jointjs';
-import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
@@ -45,7 +44,12 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [crownConfig, linkConfig],
+  mixins: [linkConfig],
+  data() {
+    return {
+      shape: null,
+    };
+  },
   computed: {
     isValidConnection() {
       return this.isValidTarget() && this.isValidSource();
