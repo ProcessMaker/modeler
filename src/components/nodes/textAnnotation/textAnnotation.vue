@@ -1,31 +1,53 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
 import { shapes, util } from 'jointjs';
-import connectIcon from '@/assets/connect-artifacts.svg';
-import crownConfig from '@/mixins/crownConfig';
 import portsConfig from '@/mixins/portsConfig';
 import { highlightPadding } from '@/mixins/crownConfig';
+import CrownConfig from '@/components/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 
 export const maxTextAnnotationWidth = 160;
 export default {
-  props: ['graph', 'node', 'id'],
-  mixins: [crownConfig, portsConfig],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, portsConfig],
   data() {
     return {
       shape: null,
       definition: null,
       nodeWidth: 10,
-      crownConfig: [
-        {
-          id: 'association-flow-button',
-          title: this.$t('Association Flow'),
-          icon: connectIcon,
-          clickHandler: this.addAssociation,
-        },
-      ],
     };
   },
   watch: {
@@ -49,9 +71,10 @@ export default {
       this.shape.resize(this.nodeWidth, newHeight - highlightPadding);
     },
     updateNodeText(text) {
-      let { height } = this.shape.findView(this.paper).getBBox();
+      const { height } = this.shape.findView(this.paper).getBBox();
       const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
+
       this.shape.position(bounds.x, bounds.y);
       this.shape.attr({
         body: { refPoints },
@@ -63,9 +86,9 @@ export default {
           textAnchor: 'left',
         },
       });
+
       this.paper.once('render:done', () => {
         this.setElementHeight(height, bounds.height, text);
-        this.updateCrownPosition();
       });
     },
   },
@@ -73,6 +96,7 @@ export default {
     const bounds = this.node.diagram.bounds;
 
     this.shape = new shapes.standard.Polyline();
+    this.shape.set('type', 'textAnnotation');
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
@@ -86,10 +110,6 @@ export default {
         refX: '5',
         refY: '5',
       },
-    });
-
-    this.shape.on('change:size', () => {
-      this.updateCrownPosition();
     });
 
     this.shape.addTo(this.graph);

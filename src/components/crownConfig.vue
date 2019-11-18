@@ -1,21 +1,31 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
     <slot/>
+    <association-flow-button
+      v-b-tooltip.hover.viewport.d50
+      v-if="isTextAnnotation"
+      @click="addAssociation"
+      class="crown-config__icon"
+      :title="$t('Association Flow')"
+    />
     <sequence-flow-button
       v-if="isValidSequenceFlowSource"
       @click="addSequence"
       class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
     />
     <message-flow-button
       v-if="isValidMessageFlowSource"
       @click="addMessageFlow"
       class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
     />
     <delete-button
       @click="removeShape"
       class="crown-config__icon"
+      v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
     />
   </div>
@@ -25,13 +35,16 @@
 import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
+import AssociationFlowButton from '@/components/associationFlowButton';
 import pull from 'lodash/pull';
+import { direction } from '@/components/nodes/association/associationConfig';
 
 export default {
   components: {
     DeleteButton,
     MessageFlowButton,
     SequenceFlowButton,
+    AssociationFlowButton,
   },
   props: [
     'highlighted',
@@ -73,6 +86,7 @@ export default {
         'processmaker-modeler-end-event',
         'processmaker-modeler-error-end-event',
         'processmaker-modeler-message-end-event',
+        'processmaker-modeler-text-annotation',
         'processmaker-modeler-pool',
       ],
     };
@@ -96,13 +110,21 @@ export default {
   },
   computed: {
     style() {
-      const { x, y } = this.shape.findView(this.paper).getBBox();
+      const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
       const width = this.shape.size().width * this.paper.scale().sx;
+      const widthOffsetFromLabel = shapeWidth - width > 4 ? (shapeWidth / 2) - 15 : 0;
 
-      return 'top:' + (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
+      return {
+        top: `${y - 45}px`,
+        left: `${x + width - 20 + widthOffsetFromLabel}px`,
+        cursor: 'pointer',
+      };
     },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
+    },
+    isTextAnnotation() {
+      return this.node.type === 'processmaker-modeler-text-annotation';
     },
     isValidSequenceFlowSource() {
       return !this.invalidSequenceFlowSources.includes(this.node.type);
@@ -142,6 +164,20 @@ export default {
       this.$emit('add-node', {
         type: 'processmaker-modeler-message-flow',
         definition: messageFlowDefinition,
+        diagram: this.moddle.create('bpmndi:BPMNEdge'),
+      });
+    },
+    addAssociation(cellView, evt, x, y) {
+      this.removeCrown();
+      const associationLink = this.moddle.create('bpmn:Association', {
+        sourceRef: this.shape.component.node.definition,
+        targetRef: { x, y },
+        associationDirection: direction.none,
+      });
+
+      this.$emit('add-node', {
+        type: 'processmaker-modeler-association',
+        definition: associationLink,
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
     },
