@@ -1,5 +1,6 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
+    <slot/>
     <sequence-flow-button
       v-if="isValidSequenceFlowSource"
       @click="addSequence"
@@ -72,6 +73,7 @@ export default {
         'processmaker-modeler-end-event',
         'processmaker-modeler-error-end-event',
         'processmaker-modeler-message-end-event',
+        'processmaker-modeler-pool',
       ],
     };
   },
@@ -94,10 +96,10 @@ export default {
   },
   computed: {
     style() {
-      const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
-      const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
-      const widthOffsetFromLabel = shapeWidth - width > 3 ? (shapeWidth / 2) - 15 : 0;
-      return 'top:' + (y - 45) + 'px;left:' + ((x + width - 20) + widthOffsetFromLabel) + 'px;cursor:pointer';
+      const { x, y } = this.shape.findView(this.paper).getBBox();
+      const width = this.shape.size().width * this.paper.scale().sx;
+
+      return 'top:' + (y - 45) + 'px;left:' + (x + width - 20) + 'px;cursor:pointer';
     },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);

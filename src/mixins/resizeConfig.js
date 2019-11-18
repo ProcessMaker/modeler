@@ -1,7 +1,7 @@
 import { shapes } from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
-import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
-import { minLaneWidth, minLaneHeight } from '@/components/nodes/poolLane/laneSizes';
+import { labelWidth, minPoolHeight, minPoolWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
+import { minLaneHeight, minLaneWidth } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
 import store from '@/store';
 import { id as laneId } from '@/components/nodes/poolLane';
@@ -252,7 +252,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeTopRight(point, newPosition, source) {
@@ -321,7 +320,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomLeft(point, newPosition, source) {
@@ -396,7 +394,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomRight(point, newPosition, source) {
@@ -460,7 +457,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     addResizeAnchors() {
