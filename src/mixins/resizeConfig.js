@@ -460,7 +460,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     addResizeAnchors() {
