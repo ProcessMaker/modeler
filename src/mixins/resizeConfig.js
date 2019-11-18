@@ -55,7 +55,7 @@ export default {
     configureResize() {
       this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
         if (cellView.model.component && cellView.model.component === this) {
-          /* Resize limits must be re-calculated the the pool or lane is moved */
+          /* Resize limits must be re-calculated if the the pool or lane is moved */
           this.calculateElementLimits();
         }
       });
@@ -482,7 +482,7 @@ export default {
     },
     setPointAttributes(point, cursorDirection) {
       point.attr({
-        root: { display: 'none' },
+        root: { display: 'initial' },
         body: {
           fill: '#fff',
           stroke: ' #fff',
