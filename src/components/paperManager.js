@@ -41,6 +41,7 @@ export default class PaperManager {
 
   set scale(scale) {
     this.#paper.scale(scale);
+    this.#paper.trigger('scale:changed');
   }
 
   roundToNearestGridMultiple(number) {
@@ -49,6 +50,7 @@ export default class PaperManager {
 
   translate(x, y) {
     this.#paper.translate(x, y);
+    this.#paper.trigger('translate:changed');
   }
 
   addEventHandler(eventName, callback, callbackScope) {

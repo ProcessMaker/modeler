@@ -89,37 +89,13 @@ export default {
         'processmaker-modeler-text-annotation',
         'processmaker-modeler-pool',
       ],
+      style: null,
     };
   },
   created() {
     this.$t = this.$t.bind(this);
   },
-  mounted() {
-    this.$nextTick(() => {
-      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
-       * This will ensure this.shape is defined. */
-
-      this.configurePoolLane();
-
-      if (this.isRendering) {
-        this.paper.once('render:done', this.setUpCrownConfig);
-      } else {
-        this.setUpCrownConfig();
-      }
-    });
-  },
   computed: {
-    style() {
-      const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
-      const width = this.shape.size().width * this.paper.scale().sx;
-      const widthOffsetFromLabel = shapeWidth - width > 4 ? (shapeWidth / 2) - 15 : 0;
-
-      return {
-        top: `${y - 45}px`,
-        left: `${x + width - 20 + widthOffsetFromLabel}px`,
-        cursor: 'pointer',
-      };
-    },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
     },
@@ -206,7 +182,25 @@ export default {
 
       this.$emit('save-state');
     },
+    repositionCrown() {
+      const shapeView = this.shape.findView(this.paper);
+
+      if (!shapeView) {
+        return;
+      }
+
+      const { x, y, width } = shapeView.getBBox();
+
+      this.style = {
+        top: `${y - 45}px`,
+        left: `${x + width - 20}px`,
+        cursor: 'pointer',
+      };
+    },
     setUpCrownConfig() {
+      this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
+      this.shape.on('change:position change:size change:attrs', this.repositionCrown);
+
       this.shape.on('change:position', (element, newPosition) => {
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
@@ -282,6 +276,20 @@ export default {
         }
       }
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
+       * This will ensure this.shape is defined. */
+
+      this.configurePoolLane();
+
+      if (this.isRendering) {
+        this.paper.once('render:done', this.setUpCrownConfig);
+      } else {
+        this.setUpCrownConfig();
+      }
+    });
   },
   destroyed() {
     this.shape.stopListening();
