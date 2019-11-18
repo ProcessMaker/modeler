@@ -111,19 +111,12 @@ export default {
   computed: {
     style() {
       const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
-      let width = (this.shape.getBBox().width * this.paper.scale().sx) - 20;
-      const widthOffsetFromLabel = shapeWidth - width > 3 ? (shapeWidth / 2) - 15 : 0;
-
-      if ([
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-message-flow',
-      ].includes(this.node.type)) {
-        width = shapeWidth;
-      }
+      const width = (this.shape.getBBox().width * this.paper.scale().sx) - 20;
+      const widthOffsetFromLabel = shapeWidth - width > 4 ? (shapeWidth / 2) - 15 : 0;
 
       return {
         top: `${y - 45}px`,
-        left: `${x + width + widthOffsetFromLabel}px`,
+        left: `${x + width - 20 + widthOffsetFromLabel}px`,
         cursor: 'pointer',
       };
     },
