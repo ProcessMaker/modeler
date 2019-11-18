@@ -20,7 +20,7 @@
       class="crown-config__icon"
       :title="$t('Lane Above')"
     />
-    <add-lane-above-button
+    <add-lane-below-button
       @click="addLaneBelow"
       class="crown-config__icon"
       :title="$t('Lane Below')"
@@ -43,6 +43,7 @@ import store from '@/store';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/addLaneAboveButton';
+import AddLaneBelowButton from '@/components/addLaneBelowButton';
 
 const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -68,6 +69,7 @@ export default {
   components: {
     CrownConfig,
     AddLaneAboveButton,
+    AddLaneBelowButton,
   },
   props: [
     'graph',
