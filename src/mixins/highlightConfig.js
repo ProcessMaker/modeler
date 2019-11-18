@@ -73,9 +73,6 @@ export default {
       }
     },
     configureCrown() {
-      if (!this.crownConfig) {
-        this.crownConfig = [];
-      }
       this.paper.once('render:done', () => this.setHighlight());
 
       const shapeView = this.shape.findView(this.paper);
