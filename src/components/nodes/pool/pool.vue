@@ -16,11 +16,13 @@
     @save-state="$emit('save-state', $event)"
   >
     <add-lane-above-button
+      v-b-tooltip.hover.viewport.d50
       @click="addLaneAbove"
       class="crown-config__icon"
       :title="$t('Lane Above')"
     />
     <add-lane-below-button
+      v-b-tooltip.hover.viewport.d50
       @click="addLaneBelow"
       class="crown-config__icon"
       :title="$t('Lane Below')"
