@@ -176,7 +176,7 @@ export default {
 
 <style scoped lang="scss">
 $primary-white: #f7f7f7;
-$seconadry-grey: #555555;
+$secondary-grey: #555555;
 $secondary-blue: #3397e1;
 $border-color: rgba(0, 0, 0, 0.125);
 $id-container-width: 6.5rem;
@@ -190,7 +190,7 @@ $warning-color: #F0AD4E;
 $button-color: #3BD7FF;
 
 .status-bar-container {
-  color: $seconadry-grey;
+  color: $secondary-grey;
   height: $status-bar-container-height;
   cursor: pointer;
 
@@ -236,7 +236,7 @@ $button-color: #3BD7FF;
 
     &--id {
       width: $id-container-width;
-      color: $seconadry-grey;
+      color: $secondary-grey;
       text-transform: none;
     }
 
