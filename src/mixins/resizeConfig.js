@@ -255,7 +255,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeTopRight(point, newPosition, source) {
@@ -324,7 +323,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomLeft(point, newPosition, source) {
@@ -399,7 +397,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomRight(point, newPosition, source) {
