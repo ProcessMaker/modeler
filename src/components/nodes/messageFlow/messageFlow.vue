@@ -19,7 +19,6 @@
 
 <script>
 import { shapes } from 'jointjs';
-import crownConfig from '@/mixins/crownConfig';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as poolId } from '../pool';
@@ -42,7 +41,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [crownConfig, linkConfig],
+  mixins: [linkConfig],
   data() {
     return {
       shape: null,
