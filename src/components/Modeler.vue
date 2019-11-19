@@ -103,6 +103,7 @@
       :nodeRegistry="nodeRegistry"
       :root-elements="definitions.get('rootElements')"
       :isRendering="isRendering"
+      :paperManager="paperManager"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -137,7 +138,15 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faStepBackward, faStepForward } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCompress,
+  faExpand,
+  faMapMarked,
+  faMinus,
+  faPlus,
+  faStepBackward,
+  faStepForward,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -301,6 +310,13 @@ export default {
       if (inspectorConfig.items) {
         inspectorConfig.items.forEach(this.translateConfig);
       }
+    },
+    saveState() {
+      if (!store.getters.allowSavingState) {
+        return;
+      }
+
+      this.pushToUndoStack();
     },
     async pushToUndoStack() {
       const xml = await this.getXmlFromDiagram();

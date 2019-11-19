@@ -21,6 +21,7 @@ export default new Vuex.Store({
     rootElements: [],
     autoValidate: false,
     globalProcesses: [],
+    allowSavingState: true,
   },
   getters: {
     nodes: state => state.nodes,
@@ -32,8 +33,15 @@ export default new Vuex.Store({
     autoValidate: state => state.autoValidate,
     globalProcesses: state => state.globalProcesses,
     globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
+    allowSavingState: state => state.allowSavingState,
   },
   mutations: {
+    preventSavingState(state) {
+      state.allowSavingState = false;
+    },
+    allowSavingState(state) {
+      state.allowSavingState = true;
+    },
     setAutoValidate(state, autoValidate) {
       state.autoValidate = autoValidate;
     },

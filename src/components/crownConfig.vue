@@ -59,10 +59,6 @@ export default {
     processNode: Object,
     collaboration: Object,
     isRendering: Boolean,
-    /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
-    allowSetNodePosition: {
-      default: true,
-    },
   },
   mixins: [poolLaneCrownConfig],
   watch: {
@@ -185,11 +181,6 @@ export default {
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
-
-      if (!this.allowSetNodePosition) {
-        return;
-      }
-
       this.$emit('save-state');
     },
     repositionCrown() {

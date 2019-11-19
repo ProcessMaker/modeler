@@ -1,5 +1,6 @@
 import { dia } from 'jointjs';
 import { highlightPadding } from '@/mixins/crownConfig';
+import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 
 export default class PaperManager {
   #paper;
@@ -84,4 +85,13 @@ export default class PaperManager {
       y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy),
     };
   }
+
+  setInvalidGirdColor() {
+    this.paper.drawBackground({ color: invalidNodeColor });
+  }
+
+  setDefaultGridColor() {
+    this.paper.drawBackground({ color: defaultNodeColor });
+  }
 }
+
