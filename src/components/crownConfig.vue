@@ -208,29 +208,18 @@ export default {
       };
     },
     paperDoneRendering() {
-      new Promise(resolve => {
-        this.paper.once('render:done', resolve);
-      });
+      if (!this.isRendering) {
+        return;
+      }
+
+      new Promise(resolve => this.paper.once('render:done', resolve));
     },
     async setUpCrownConfig() {
       await this.$nextTick();
-
-      if (this.isRendering) {
-        await this.paperDoneRendering();
-      }
+      await this.paperDoneRendering();
 
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
-
-      this.shape.on('change:position', (element, newPosition) => {
-        this.node.diagram.bounds.x = newPosition.x;
-        this.node.diagram.bounds.y = newPosition.y;
-
-        if (!this.savePositionOnPointerupEventSet) {
-          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
-          this.savePositionOnPointerupEventSet = true;
-        }
-      });
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
@@ -254,9 +243,24 @@ export default {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     },
+    async setUpPositionHandling() {
+      await this.$nextTick();
+      await this.paperDoneRendering();
+
+      this.shape.on('change:position', (element, newPosition) => {
+        this.node.diagram.bounds.x = newPosition.x;
+        this.node.diagram.bounds.y = newPosition.y;
+
+        if (!this.savePositionOnPointerupEventSet) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+          this.savePositionOnPointerupEventSet = true;
+        }
+      });
+    },
   },
-  mounted() {
+  async mounted() {
     this.setUpCrownConfig();
+    this.setUpPositionHandling();
   },
   destroyed() {
     this.shape.stopListening();
