@@ -109,6 +109,7 @@ function hasNewCrownConfig($element) {
     'processmaker.components.nodes.startEvent.Shape',
     'processmaker.components.nodes.endEvent.Shape',
     'processmaker.components.nodes.gateway.Shape',
+    'PoolLane',
     'textAnnotation',
     'processmaker.modeler.bpmn.pool',
   ];

@@ -40,6 +40,9 @@ export default {
     poolComponent() {
       return get(this, 'node.pool.component', this);
     },
+    isLane() {
+      return this.node.type === 'processmaker-modeler-lane';
+    },
   },
   methods: {
     calculateElementLimits() {

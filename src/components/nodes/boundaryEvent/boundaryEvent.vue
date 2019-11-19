@@ -11,6 +11,7 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
+    :allow-set-node-position="allowSetNodePosition"
     @remove-node="$emit('remove-node', $event)"
     @add-node="$emit('add-node', $event)"
     @save-state="$emit('save-state', $event)"
@@ -53,6 +54,7 @@ export default {
       previousPosition: null,
       validPosition: null,
       invalidTargetElement: null,
+      allowSetNodePosition: true,
     };
   },
   watch: {

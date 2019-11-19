@@ -1,18 +1,50 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  />
 </template>
 
 <script>
 import { shapes, util } from 'jointjs';
-import crownConfig from '@/mixins/crownConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
 import { poolColor } from '@/components/nodeColors';
+import CrownConfig from '@/components/poolLaneCrownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id', 'collaboration'],
-  mixins: [crownConfig, resizeConfig],
+  components: {
+    CrownConfig,
+  },
+  props: [
+    'graph',
+    'node',
+    'nodes',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, resizeConfig],
   data() {
     return {
       shape: null,
@@ -24,43 +56,9 @@ export default {
       this.shape.attr('label/text', name);
     },
   },
-  methods: {
-    removeShape() {
-      this.$emit('remove-node', this.node);
-
-      const poolComponent = this.node.pool.component;
-      const sortedLanes = poolComponent.sortedLanes();
-
-      if (sortedLanes.length === 2) {
-      /* Do not allow pool with only one lane;
-       * if removing 2nd last lane, remove the other lane as well */
-        this.$emit('remove-node', sortedLanes.filter(lane => lane !== this.shape)[0].component.node);
-        return;
-      }
-
-      if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-        poolComponent.fillLanes(this.shape, 'top-right', true);
-        return;
-      }
-
-      poolComponent.fillLanes(this.shape, 'bottom-right', true);
-    },
-    configureLaneInParentPool() {
-      /* Ensure this runs after `configurePoolLane` in crownConfig mixin */
-      const poolComponent = this.node.pool.component;
-      if (!poolComponent.laneSet) {
-        poolComponent.createLaneSet();
-      }
-
-      const lanes = poolComponent.laneSet.get('lanes');
-      if (!lanes.includes(this.node.definition)) {
-        lanes.push(this.node.definition);
-      }
-    },
-  },
   mounted() {
     this.shape = new shapes.standard.Rectangle();
-
+    this.shape.set('type', 'PoolLane');
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);

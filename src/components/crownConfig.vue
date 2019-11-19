@@ -36,6 +36,7 @@ import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
 import AssociationFlowButton from '@/components/associationFlowButton';
+import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import { direction } from '@/components/nodes/association/associationConfig';
 
@@ -46,19 +47,24 @@ export default {
     SequenceFlowButton,
     AssociationFlowButton,
   },
-  props: [
-    'highlighted',
-    'paper',
-    'graph',
-    'shape',
-    'node',
-    'nodeRegistry',
-    'moddle',
-    'planeElements',
-    'processNode',
-    'collaboration',
-    'isRendering',
-  ],
+  props: {
+    highlighted: Boolean,
+    paper: Object,
+    graph: Object,
+    shape: Object,
+    node: Object,
+    nodeRegistry: Object,
+    moddle: Object,
+    planeElements: Array,
+    processNode: Object,
+    collaboration: Object,
+    isRendering: Boolean,
+    /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
+    allowSetNodePosition: {
+      default: true,
+    },
+  },
+  mixins: [poolLaneCrownConfig],
   watch: {
     highlighted() {
       this.showCrown = this.highlighted;
@@ -72,8 +78,6 @@ export default {
   data() {
     return {
       showCrown: false,
-      /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
-      allowSetNodePosition: true,
       savePositionOnPointerupEventSet: false,
       validMessageFlowSources: [
         'processmaker-modeler-start-event',
@@ -86,6 +90,7 @@ export default {
         'processmaker-modeler-end-event',
         'processmaker-modeler-error-end-event',
         'processmaker-modeler-message-end-event',
+        'processmaker-modeler-lane',
         'processmaker-modeler-text-annotation',
         'processmaker-modeler-pool',
       ],
@@ -104,6 +109,11 @@ export default {
     },
     isValidSequenceFlowSource() {
       return !this.invalidSequenceFlowSources.includes(this.node.type);
+    },
+    process() {
+      return this.node.pool
+        ? this.node.pool.component.containingProcess
+        : this.processNode.definition;
     },
   },
   methods: {
@@ -215,17 +225,14 @@ export default {
         this.planeElements.push(this.node.diagram);
       }
 
-      const process = this.node.pool
-        ? this.node.pool.component.containingProcess
-        : this.processNode.definition;
       const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
 
-      if (nodeTypes.includes('bpmn:FlowElement') && !process.get('flowElements').includes(this.node.definition)) {
-        process.get('flowElements').push(this.node.definition);
+      if (nodeTypes.includes('bpmn:FlowElement') && !this.process.get('flowElements').includes(this.node.definition)) {
+        this.process.get('flowElements').push(this.node.definition);
       }
 
-      if (nodeTypes.includes('bpmn:Artifact') && !process.get('artifacts').includes(this.node.definition)) {
-        process.get('artifacts').push(this.node.definition);
+      if (nodeTypes.includes('bpmn:Artifact') && !this.process.get('artifacts').includes(this.node.definition)) {
+        this.process.get('artifacts').push(this.node.definition);
       }
 
       if (
@@ -236,54 +243,9 @@ export default {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     },
-    configurePoolLane() {
-      if ([
-        'processmaker-modeler-pool',
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-association',
-        'processmaker-modeler-message-flow',
-      ].includes(this.node.type)) {
-        return;
-      }
-
-      if (this.node.pool) {
-        if (!this.graph.getCell(this.node.pool)) {
-          this.node.pool = this.graph.getElements().find(element => {
-            return element.component && element.component.node === this.node.pool.component.node;
-          });
-        }
-
-        this.node.pool.component.addToPool(this.shape);
-
-        if (this.isLane) {
-          this.configureLaneInParentPool();
-        }
-
-        return;
-      }
-
-      /* If we are over a pool or lane, add the shape to the pool or lane */
-      const pool = this.graph.findModelsInArea(this.shape.getBBox()).filter(model => {
-        return model.component && model.component.node.type === 'processmaker-modeler-pool';
-      })[0];
-
-      if (pool) {
-        this.node.pool = pool;
-        this.node.pool.component.addToPool(this.shape);
-
-        if (this.isLane) {
-          this.configureLaneInParentPool();
-        }
-      }
-    },
   },
   mounted() {
     this.$nextTick(() => {
-      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
-       * This will ensure this.shape is defined. */
-
-      this.configurePoolLane();
-
       if (this.isRendering) {
         this.paper.once('render:done', this.setUpCrownConfig);
       } else {
@@ -295,13 +257,9 @@ export default {
     this.shape.stopListening();
     this.shape.remove();
 
-    const process = this.node.pool
-      ? this.node.pool.component.containingProcess
-      : this.processNode.definition;
-
-    pull(process.get('flowElements'), this.node.definition);
+    pull(this.process.get('flowElements'), this.node.definition);
     pull(this.planeElements, this.node.diagram);
-    pull(process.get('artifacts'), this.node.definition);
+    pull(this.process.get('artifacts'), this.node.definition);
 
     if (this.collaboration) {
       pull(this.collaboration.get('messageFlows'), this.node.definition);
