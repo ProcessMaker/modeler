@@ -12,7 +12,7 @@
 
       <div class="divider"/>
 
-      <div v-if="toggleValidationPanel" class="validation-container position-absolute text-left">
+      <div v-if="toggleValidationPanel" class="validation-container position-absolute text-left" data-test="validation-list">
         <div class="validation-container__list d-flex justify-content-between" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`" >
           <span class="validation-container__list--errorCategory d-flex justify-content-center">
             <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="validationIcon" />
@@ -51,7 +51,7 @@
       </div>
 
       <div v-else>
-        <button type="button" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
+        <button type="button" data-test="validation-list-toggle" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
           BPMN Issues
           <span class="badge badge-primary badge-pill">
             {{ warnings.length + numberOfValidationErrors }}
