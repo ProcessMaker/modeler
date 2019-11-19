@@ -37,8 +37,8 @@
         </div>
       </div>
 
-      <div v-if="warnings.length === 0 && !numberOfValidationErrors">
-        <button type="button" class="btn btn-light" :disabled="warnings.length === 0 && !numberOfValidationErrors" @click="toggleValidationPanel = !toggleValidationPanel">
+      <div v-if="hasIssues">
+        <button type="button" class="btn btn-light" :disabled="hasIssues" @click="toggleValidationPanel = !toggleValidationPanel">
           BPMN Valid
           <span class="badge badge-success badge-pill">
             <font-awesome-icon :icon="checkMarkIcon" />
@@ -88,6 +88,11 @@ export default {
     warnings() {
       this.toggleWarningsPanel = this.warnings.length > 0;
     },
+    hasIssues(value) {
+      if (value) {
+        this.toggleValidationPanel = false;
+      }
+    },
   },
   computed: {
     autoValidate: {
@@ -97,6 +102,9 @@ export default {
       set(autoValidate) {
         store.commit('setAutoValidate', autoValidate);
       },
+    },
+    hasIssues() {
+      return this.warnings.length === 0 && !this.numberOfValidationErrors;
     },
     errorList() {
       return Object.entries(this.validationErrors).reduce((errorList, [ errorKey, errors ]) => {
