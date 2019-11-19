@@ -93,6 +93,7 @@ export default {
         'processmaker-modeler-lane',
         'processmaker-modeler-text-annotation',
         'processmaker-modeler-pool',
+        'processmaker-modeler-association',
       ],
       style: null,
     };

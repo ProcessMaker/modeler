@@ -71,6 +71,9 @@ export default {
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
+    shapeView() {
+      return this.shape.findView(this.paper);
+    },
   },
   methods: {
     setEndpoint(shape, endpoint, connectionOffset) {
@@ -133,7 +136,6 @@ export default {
       const end = linkView.targetAnchor;
 
       this.node.diagram.waypoint = [start, ...this.shape.vertices(), end].map(point => this.moddle.create('dc:Point', point));
-      this.updateCrownPosition();
 
       if (!this.listeningToMouseup) {
         this.listeningToMouseup = true;
