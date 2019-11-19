@@ -72,9 +72,6 @@ export default {
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
     },
-    shapeView() {
-      return this.shape.findView(this.paper);
-    },
   },
   methods: {
     setEndpoint(shape, endpoint, connectionOffset) {
