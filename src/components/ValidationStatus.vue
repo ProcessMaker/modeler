@@ -169,7 +169,6 @@ $validation-container-width: 25rem;
 $status-bar-container-height: 3rem;
 $error-color: #D9534F;
 $warning-color: #F0AD4E;
-$button-color: #3BD7FF;
 
 .status-bar-container {
   color: $secondary-grey;
@@ -178,10 +177,6 @@ $button-color: #3BD7FF;
 
   &__status {
     cursor: pointer;
-  }
-
-  &__status-ellipsis:hover {
-    color: $secondary-blue;
   }
 
   &__status-icon {
@@ -208,10 +203,6 @@ $button-color: #3BD7FF;
   border-radius: 0.25rem;
   border-right: none;
 
-  &__defaultMessage {
-    text-transform: capitalize;
-  }
-
   &__list {
     padding: 1rem;
     word-wrap: break-word;
@@ -235,14 +226,6 @@ $button-color: #3BD7FF;
       font-weight: 700;
       text-transform: capitalize;
     }
-  }
-
-  .label-background-warning {
-    background-color: $warning-color;
-  }
-
-  .label-background-error {
-    background-color: $error-color;
   }
 }
 </style>
