@@ -1,5 +1,6 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
+    <slot/>
     <association-flow-button
       v-b-tooltip.hover.viewport.d50
       v-if="isTextAnnotation"
@@ -91,33 +92,15 @@ export default {
         'processmaker-modeler-message-end-event',
         'processmaker-modeler-lane',
         'processmaker-modeler-text-annotation',
+        'processmaker-modeler-pool',
       ],
+      style: null,
     };
   },
   created() {
     this.$t = this.$t.bind(this);
   },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.isRendering) {
-        this.paper.once('render:done', this.setUpCrownConfig);
-      } else {
-        this.setUpCrownConfig();
-      }
-    });
-  },
   computed: {
-    style() {
-      const { x, y, width: shapeWidth } = this.shape.findView(this.paper).getBBox();
-      const width = (this.node.diagram.bounds.width * this.paper.scale().sx);
-      const widthOffsetFromLabel = shapeWidth - width > 4 ? (shapeWidth / 2) - 15 : 0;
-
-      return {
-        top: `${y - 45}px`,
-        left: `${x + width - 20 + widthOffsetFromLabel}px`,
-        cursor: 'pointer',
-      };
-    },
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
     },
@@ -209,7 +192,25 @@ export default {
 
       this.$emit('save-state');
     },
+    repositionCrown() {
+      const shapeView = this.shape.findView(this.paper);
+
+      if (!shapeView) {
+        return;
+      }
+
+      const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation });
+
+      this.style = {
+        top: `${y - 45}px`,
+        left: `${x + width - 20}px`,
+        cursor: 'pointer',
+      };
+    },
     setUpCrownConfig() {
+      this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
+      this.shape.on('change:position change:size change:attrs', this.repositionCrown);
+
       this.shape.on('change:position', (element, newPosition) => {
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
@@ -242,6 +243,15 @@ export default {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.isRendering) {
+        this.paper.once('render:done', this.setUpCrownConfig);
+      } else {
+        this.setUpCrownConfig();
+      }
+    });
   },
   destroyed() {
     this.shape.stopListening();
