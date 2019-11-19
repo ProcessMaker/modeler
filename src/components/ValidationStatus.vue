@@ -15,7 +15,7 @@
       <div v-if="toggleValidationPanel" class="validation-container position-absolute text-left">
         <div class="validation-container__list d-flex justify-content-between" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`" >
           <span class="validation-container__list--errorCategory d-flex justify-content-center">
-            <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="valditionIcon" />
+            <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="validationIcon" />
           </span>
           <span class="validation-container__list--id">
             {{ error.id }}
@@ -42,7 +42,7 @@
       </div>
 
       <div v-if="warnings.length === 0 && !numberOfValidationErrors">
-        <button type="button" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
+        <button type="button" class="btn btn-light" :disabled="warnings.length === 0 && !numberOfValidationErrors" @click="toggleValidationPanel = !toggleValidationPanel">
           BPMN Valid
           <span class="badge badge-success badge-pill">
             <font-awesome-icon :icon="checkMarkIcon" />
@@ -128,7 +128,7 @@ export default {
         ? this.chevronUpIcon
         : this.chevronDownIcon;
     },
-    valditionIcon() {
+    validationIcon() {
       return this.isErrorOrWarning
         ? faTimesCircle
         : faExclamationTriangle;
