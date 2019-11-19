@@ -189,7 +189,7 @@ export default {
         return;
       }
 
-      const { x, y, width } = shapeView.getBBox();
+      const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation });
 
       this.style = {
         top: `${y - 45}px`,
