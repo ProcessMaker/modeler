@@ -87,6 +87,8 @@ export default {
         'processmaker-modeler-intermediate-message-catch-event',
       ],
       invalidSequenceFlowSources: [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
         'processmaker-modeler-end-event',
         'processmaker-modeler-error-end-event',
         'processmaker-modeler-message-end-event',

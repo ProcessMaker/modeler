@@ -111,6 +111,7 @@ function hasNewCrownConfig($element) {
     'processmaker.components.nodes.gateway.Shape',
     'PoolLane',
     'textAnnotation',
+    'standard.Link',
     'processmaker.modeler.bpmn.pool',
   ];
   return newCrown.includes($element.data('type'));

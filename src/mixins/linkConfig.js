@@ -44,18 +44,19 @@ export default {
           line: { stroke: 'orange' },
           '.joint-highlight-stroke': { 'display': 'none' },
         });
-
         this.shapeView.showTools();
       } else {
         this.shape.attr({
           line: { stroke: 'black' },
         });
-
         this.shapeView.hideTools();
       }
     },
   },
   computed: {
+    shapeView() {
+      return this.shape.findView(this.paper);
+    },
     sourceNode() {
       return get(this.sourceShape, 'component.node');
     },
@@ -70,9 +71,6 @@ export default {
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
-    },
-    shapeView() {
-      return this.shape.findView(this.paper);
     },
   },
   methods: {
@@ -207,7 +205,6 @@ export default {
       const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorPoint });
       const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorPoint });
       const segmentsTool = new linkTools.Segments();
-
       const toolsView = new dia.ToolsView({
         tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
       });
