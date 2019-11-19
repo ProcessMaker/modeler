@@ -1,5 +1,4 @@
 import { dia } from 'jointjs';
-import { highlightPadding } from '@/mixins/crownConfig';
 
 export default class PaperManager {
   #paper;
@@ -22,7 +21,7 @@ export default class PaperManager {
       perpendicularLinks: true,
       interactive: interactiveFunc,
       highlighting: {
-        default: { options: { padding: highlightPadding } },
+        default: { options: { padding: 3 } },
       },
     });
 

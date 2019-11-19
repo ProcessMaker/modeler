@@ -20,7 +20,6 @@
 <script>
 import { shapes, util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
-import { highlightPadding } from '@/mixins/crownConfig';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
@@ -68,7 +67,7 @@ export default {
         newHeight = currentBoundsHeight;
       }
 
-      this.shape.resize(this.nodeWidth, newHeight - highlightPadding);
+      this.shape.resize(this.nodeWidth, newHeight - 3);
     },
     updateNodeText(text) {
       const { height } = this.shape.findView(this.paper).getBBox();
