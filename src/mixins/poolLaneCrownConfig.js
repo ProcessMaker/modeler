@@ -1,8 +1,4 @@
 export default {
-  props: [
-    'node',
-    'graph',
-  ],
   computed: {
     isLane() {
       return this.node.type === 'processmaker-modeler-lane';
@@ -41,10 +37,14 @@ export default {
       })[0];
 
       if (pool) {
+        // eslint-disable-next-line no-console
+        console.log('in a pool');
         this.node.pool = pool;
         this.node.pool.component.addToPool(this.shape);
 
         if (this.isLane) {
+          // eslint-disable-next-line no-console
+          console.log('in a pool lane');
           this.configureLaneInParentPool();
         }
       }
@@ -60,29 +60,12 @@ export default {
         lanes.push(this.node.definition);
       }
     },
-    removePoolLaneShape() {
-      this.$emit('remove-node', this.node);
-
-      const poolComponent = this.node.pool.component;
-      const sortedLanes = poolComponent.sortedLanes();
-
-      if (sortedLanes.length === 2) {
-        /* Do not allow pool with only one lane;
-         * if removing 2nd last lane, remove the other lane as well */
-        this.$emit('remove-node', sortedLanes.filter(lane => lane !== this.shape)[0].component.node);
-        return;
-      }
-
-      if (this.shape === sortedLanes[sortedLanes.length - 1]) {
-        poolComponent.fillLanes(this.shape, 'top-right', true);
-        return;
-      }
-
-      poolComponent.fillLanes(this.shape, 'bottom-right', true);
-    },
   },
   mounted() {
     this.$nextTick(() => {
+      /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
+       * This will ensure this.shape is defined. */
+
       this.configurePoolLane();
     });
   },

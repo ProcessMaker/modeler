@@ -23,7 +23,7 @@ import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
 import { poolColor } from '@/components/nodeColors';
-import CrownConfig from '@/components/crownConfig';
+import CrownConfig from '@/components/poolLaneCrownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 export default {

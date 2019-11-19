@@ -22,7 +22,7 @@
       :title="$t('Message Flow')"
     />
     <delete-button
-      @click="remove"
+      @click="removeShape"
       class="crown-config__icon"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
@@ -35,8 +35,8 @@ import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
 import AssociationFlowButton from '@/components/associationFlowButton';
-import pull from 'lodash/pull';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
+import pull from 'lodash/pull';
 import { direction } from '@/components/nodes/association/associationConfig';
 
 export default {
@@ -183,9 +183,6 @@ export default {
         definition: associationLink,
         diagram: this.moddle.create('bpmndi:BPMNEdge'),
       });
-    },
-    remove() {
-      return this.isLane ? this.removePoolLaneShape() : this.removeShape();
     },
     removeShape() {
       this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
