@@ -207,7 +207,18 @@ export default {
         cursor: 'pointer',
       };
     },
-    setUpCrownConfig() {
+    paperDoneRendering() {
+      new Promise(resolve => {
+        this.paper.once('render:done', resolve);
+      });
+    },
+    async setUpCrownConfig() {
+      await this.$nextTick();
+
+      if (this.isRendering) {
+        await this.paperDoneRendering();
+      }
+
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
 
@@ -245,13 +256,7 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      if (this.isRendering) {
-        this.paper.once('render:done', this.setUpCrownConfig);
-      } else {
-        this.setUpCrownConfig();
-      }
-    });
+    this.setUpCrownConfig();
   },
   destroyed() {
     this.shape.stopListening();
