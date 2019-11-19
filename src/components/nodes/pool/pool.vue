@@ -1,23 +1,51 @@
 <template>
-  <div/>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    @remove-node="$emit('remove-node', $event)"
+    @add-node="$emit('add-node', $event)"
+    @save-state="$emit('save-state', $event)"
+  >
+    <add-lane-above-button
+      v-b-tooltip.hover.viewport.d50
+      @click="addLaneAbove"
+      class="crown-config__icon"
+      :title="$t('Lane Above')"
+    />
+    <add-lane-below-button
+      v-b-tooltip.hover.viewport.d50
+      @click="addLaneBelow"
+      class="crown-config__icon"
+      :title="$t('Lane Below')"
+    />
+  </crown-config>
 </template>
 
 <script>
 import { shapes, util } from 'jointjs';
-import crownConfig from '@/mixins/crownConfig';
-import resizeConfig from '@/mixins/resizeConfig';
 import portsConfig from '@/mixins/portsConfig';
-import Lane from '../poolLane';
+import resizeConfig from '@/mixins/resizeConfig';
+import Lane, { id as laneId } from '../poolLane';
 import { id as poolId } from './index';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
-import { poolPadding, labelWidth } from './poolSizes';
-import { id as laneId } from '../poolLane';
+import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
-import laneAboveIcon from '@/assets/lane-above.svg';
-import laneBelowIcon from '@/assets/lane-below.svg';
-import { invalidNodeColor, defaultNodeColor, poolColor } from '@/components/nodeColors';
+import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
 import store from '@/store';
+import CrownConfig from '@/components/crownConfig';
+import highlightConfig from '@/mixins/highlightConfig';
+import AddLaneAboveButton from '@/components/addLaneAboveButton';
+import AddLaneBelowButton from '@/components/addLaneBelowButton';
 
 const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
   markup: [
@@ -40,34 +68,34 @@ const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', 
 });
 
 export default {
-  props: ['graph', 'node', 'nodes', 'id', 'collaboration', 'processes', 'moddle', 'processNode', 'rootElements'],
-  mixins: [crownConfig, resizeConfig, portsConfig],
+  components: {
+    CrownConfig,
+    AddLaneAboveButton,
+    AddLaneBelowButton,
+  },
+  props: [
+    'graph',
+    'node',
+    'nodes',
+    'id',
+    'collaboration',
+    'processes',
+    'moddle',
+    'processNode',
+    'rootElements',
+    'highlighted',
+    'nodeRegistry',
+    'paper',
+    'planeElements',
+    'isRendering',
+  ],
+  mixins: [highlightConfig, resizeConfig, portsConfig],
   data() {
     return {
       shape: null,
       definition: null,
-      crownConfig: [
-        {
-          id: 'lane-above-button',
-          title: this.$t('Lane Above'),
-          icon: laneAboveIcon,
-          clickHandler: () => {
-            this.addLaneAbove = true;
-            this.addLane();
-          },
-        },
-        {
-          id: 'lane-below-button',
-          title: this.$t('Lane Below'),
-          icon: laneBelowIcon,
-          clickHandler: () => {
-            this.addLaneAbove = false;
-            this.addLane();
-          },
-        },
-      ],
       laneSet: null,
-      addLaneAbove: false,
+      isAddingLaneAbove: false,
     };
   },
   computed: {
@@ -87,6 +115,14 @@ export default {
     },
   },
   methods: {
+    addLaneAbove() {
+      this.isAddingLaneAbove = true;
+      this.addLane();
+    },
+    addLaneBelow() {
+      this.isAddingLaneAbove = false;
+      this.addLane();
+    },
     sortedLanes() {
       return this.shape.getEmbeddedCells().filter(({ component }) => {
         return component && component.node.type === laneId;
@@ -221,16 +257,14 @@ export default {
           labelWidth,
           isFirstLane
             ? 0
-            : this.addLaneAbove ? -laneHeight : height,
+            : this.isAddingLaneAbove ? -laneHeight : height,
           { parentRelative: true }
         );
         this.shape.resize(width, isFirstLane ? height : height + laneHeight, {
-          direction: this.addLaneAbove ? 'top-right' : 'bottom-right',
+          direction: this.isAddingLaneAbove ? 'top-right' : 'bottom-right',
         });
 
         this.fixResizeRounding();
-
-        this.updateCrownPosition();
         this.updateAnchorPointPosition();
 
         this.getElementsUnderArea(element).filter(laneElement => {
@@ -298,8 +332,6 @@ export default {
         });
 
         this.fixResizeRounding();
-
-        this.updateCrownPosition();
         this.updateAnchorPointPosition();
 
         if (this.laneSet) {

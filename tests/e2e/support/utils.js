@@ -109,8 +109,10 @@ function hasNewCrownConfig($element) {
     'processmaker.components.nodes.startEvent.Shape',
     'processmaker.components.nodes.endEvent.Shape',
     'processmaker.components.nodes.gateway.Shape',
+    'PoolLane',
     'textAnnotation',
     'standard.Link',
+    'processmaker.modeler.bpmn.pool',
   ];
   return newCrown.includes($element.data('type'));
 }

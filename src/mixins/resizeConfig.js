@@ -1,7 +1,7 @@
 import { shapes } from 'jointjs';
 import resizeIcon from '@/assets/highlight-shape.svg';
-import { minPoolHeight, minPoolWidth, poolPadding, labelWidth } from '@/components/nodes/pool/poolSizes';
-import { minLaneWidth, minLaneHeight } from '@/components/nodes/poolLane/laneSizes';
+import { labelWidth, minPoolHeight, minPoolWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
+import { minLaneHeight, minLaneWidth } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
 import store from '@/store';
 import { id as laneId } from '@/components/nodes/poolLane';
@@ -40,6 +40,9 @@ export default {
     poolComponent() {
       return get(this, 'node.pool.component', this);
     },
+    isLane() {
+      return this.node.type === 'processmaker-modeler-lane';
+    },
   },
   methods: {
     calculateElementLimits() {
@@ -55,7 +58,7 @@ export default {
     configureResize() {
       this.shape.listenTo(this.paper, 'element:pointerup', cellView => {
         if (cellView.model.component && cellView.model.component === this) {
-          /* Resize limits must be re-calculated the the pool or lane is moved */
+          /* Resize limits must be re-calculated if the the pool or lane is moved */
           this.calculateElementLimits();
         }
       });
@@ -252,7 +255,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeTopRight(point, newPosition, source) {
@@ -321,7 +323,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomLeft(point, newPosition, source) {
@@ -396,7 +397,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomRight(point, newPosition, source) {
@@ -460,7 +460,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     addResizeAnchors() {
@@ -486,7 +485,7 @@ export default {
     },
     setPointAttributes(point, cursorDirection) {
       point.attr({
-        root: { display: 'none' },
+        root: { display: 'initial' },
         body: {
           fill: '#fff',
           stroke: ' #fff',
