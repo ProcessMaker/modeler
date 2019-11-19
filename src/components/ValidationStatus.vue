@@ -13,17 +13,13 @@
       <div class="divider"/>
 
       <div v-if="toggleValidationPanel" class="validation-container position-absolute text-left" data-test="validation-list">
-        <div class="validation-container__list d-flex justify-content-between" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`" >
-          <span class="validation-container__list--errorCategory d-flex justify-content-center">
-            <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: iconColor }" :icon="validationIcon" />
-          </span>
-          <span class="validation-container__list--id">
-            {{ error.id }}
-          </span>
-          <span class="validation-container__list--message">
-            <span class="validation-container__list--key">{{ error.errorKey }}</span>
-            <div>{{ $t(error.message) }}</div>
-          </span>
+        <div class="validation-container__list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`" >
+          <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: iconColor }" :icon="validationIcon" />
+          <div>
+            <div class="font-weight-bold text-capitalize">{{ error.errorKey }}</div>
+            <div><span class="font-weight-bold mr-1">Element:</span>{{ error.id }}</div>
+            <div>{{ error.message }}</div>
+          </div>
         </div>
 
         <div
@@ -178,10 +174,6 @@ $warning-color: #F0AD4E;
   &__status {
     cursor: pointer;
   }
-
-  &__status-icon {
-    margin: 0 0.75rem;
-  }
 }
 
 .divider {
@@ -204,7 +196,7 @@ $warning-color: #F0AD4E;
   border-right: none;
 
   &__list {
-    padding: 1rem;
+    padding: 0.5rem;
     word-wrap: break-word;
 
     &--id {
@@ -215,11 +207,6 @@ $warning-color: #F0AD4E;
 
     &--message {
       width: $message-container-width;
-    }
-
-    &--errorCategory {
-      padding: 0.25rem 1rem 0 0.5rem;
-      width: $error-category-width;
     }
 
     &--key {
