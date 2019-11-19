@@ -78,12 +78,19 @@
           <font-awesome-icon class="status-bar-container__status-ellipsis" :icon="ellipsisIcon" />
         </div>
       </div>
+
+      <button type="button" class="btn btn-light">
+        BPMN Issues
+        <span class="badge badge-primary badge-pill">{{ warnings.length + numberOfValidationErrors }}</span>
+        <font-awesome-icon class="ml-3"   :icon="chevronDownIcon" />
+      </button>
+
     </div>
   </div>
 </template>
 
 <script>
-import { faCheckCircle, faTimesCircle, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faTimesCircle, faEllipsisV, faExclamationTriangle, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
 
@@ -101,6 +108,8 @@ export default {
       toggleWarningsPanel: this.warnings.length > 0,
       faExclamationTriangle,
       faCheckCircle,
+      chevronUpIcon: faChevronUp,
+      chevronDownIcon: faChevronDown,
     };
   },
   watch: {
