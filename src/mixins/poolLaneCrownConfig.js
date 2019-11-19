@@ -37,14 +37,10 @@ export default {
       })[0];
 
       if (pool) {
-        // eslint-disable-next-line no-console
-        console.log('in a pool');
         this.node.pool = pool;
         this.node.pool.component.addToPool(this.shape);
 
         if (this.isLane) {
-          // eslint-disable-next-line no-console
-          console.log('in a pool lane');
           this.configureLaneInParentPool();
         }
       }
