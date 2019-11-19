@@ -40,6 +40,9 @@ export default {
     poolComponent() {
       return get(this, 'node.pool.component', this);
     },
+    isLane() {
+      return this.node.type === 'processmaker-modeler-lane';
+    },
   },
   methods: {
     calculateElementLimits() {
@@ -252,7 +255,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeTopRight(point, newPosition, source) {
@@ -321,7 +323,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomLeft(point, newPosition, source) {
@@ -396,7 +397,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     resizeBottomRight(point, newPosition, source) {
@@ -460,7 +460,6 @@ export default {
         }
       }
 
-      this.updateCrownPosition();
       this.updateAnchorPointPosition();
     },
     addResizeAnchors() {

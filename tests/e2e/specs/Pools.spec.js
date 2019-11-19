@@ -37,6 +37,24 @@ describe('Pools', () => {
       });
   });
 
+  it('Does not allow pool with only one lane', () => {
+    const poolPosition = { x: 300, y: 300 };
+    const lanePosition = { x: 300, y: 550 };
+
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition).click().then($pool => {
+      getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
+    });
+
+    getElementAtPosition(poolPosition).click().then($pool => {
+      getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+    });
+
+    getElementAtPosition(lanePosition).getType().should('not.equal', nodeTypes.lane);
+    getElementAtPosition(lanePosition).getType().should('equal', nodeTypes.pool);
+  });
+
   it('Can drag elements between pools', function() {
     const startEventPosition = { x: 150, y: 150 };
 
