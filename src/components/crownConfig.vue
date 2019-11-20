@@ -283,7 +283,7 @@ export default {
   .crown-config {
     background-color: $primary-color;
     position: absolute;
-    z-index: 5;
+    z-index: 0;
     display: flex;
     justify-content: center;
     width: auto;

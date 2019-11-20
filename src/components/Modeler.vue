@@ -82,7 +82,7 @@
         :moddle="moddle"
         :processNode="processNode"
         @save-state="pushToUndoStack"
-        class="h-100"
+        class="inspector h-100"
       />
     </b-col>
     <component
@@ -936,7 +936,7 @@ $vertex-error-color: #ED4757;
     top: 0;
   }
 
-  .controls {
+  .controls, .inspector {
     z-index: 1;
   }
 
