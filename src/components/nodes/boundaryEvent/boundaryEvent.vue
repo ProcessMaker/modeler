@@ -45,7 +45,6 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
-    'paperManager',
   ],
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   data() {
@@ -147,7 +146,7 @@ export default {
     },
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
-      this.paperManager.setDefaultGridColor();
+      store.commit('allowSavingState');
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -172,7 +171,6 @@ export default {
       }
 
       store.commit('preventSavingState');
-      this.paperManager.setInvalidGirdColor();
       this.validPosition = this.shape.position();
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
@@ -180,7 +178,6 @@ export default {
         this.$emit('save-state');
 
         store.commit('allowSavingState');
-        this.paperManager.setDefaultGridColor();
       });
     },
     turnInvalidTargetRed() {
