@@ -10,63 +10,51 @@
         {{ $t('Auto validate') }}
       </b-form-checkbox>
 
-      <div class="divider"/>
+      <div class="divider" />
 
-      <div v-if="toggleValidationPanel" class="validation-container position-absolute text-left" data-test="validation-list">
-        <div class="validation-container__list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`" >
+      <div v-if="toggleValidationPanel && !hasNoIssues" class="validation-container position-absolute text-left" data-test="validation-list">
+        <div class="validation-container__list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
           <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: iconColor }" :icon="validationIcon" />
-          <div>
-            <div class="font-weight-bold text-capitalize">{{ error.errorKey }}</div>
-            <div><span class="font-weight-bold mr-1">Element:</span>{{ error.id }}</div>
-            <div>{{ error.message }}</div>
+          <div class="validation-container__list--message">
+            <h6 class="text-capitalize mb-0">{{ error.errorKey }}</h6>
+            <p class="mb-0"><em>{{ $t(error.message) }}.</em></p>
+            <p class="mb-0" v-if="error.id"><strong>Node ID:</strong> {{ error.id }}</p>
           </div>
         </div>
 
-        <div
-          class="validation-container__list d-flex"
-          v-for="(error, index) in warnings" :key="index"
-        >
-          <span class="validation-container__list--errorCategory d-flex justify-content-center mr-2">
-            <font-awesome-icon class="status-bar-container__status-icon" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
-          </span>
-
-          <span class="validation-container__list--message">
-            <span class="validation-container__list--key">{{ error.title }}</span>
-            <div>{{ $t(error.text) }}</div>
-          </span>
+        <div class="validation-container__list d-flex align-items-baseline" v-for="(warning, index) in warnings" :key="index">
+          <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
+          <div class="validation-container__list--message">
+            <h6 class="text-capitalize mb-0">{{ warning.title }}</h6>
+            <p class="mb-0"><em>{{ $t(warning.text) }}.</em></p>
+          </div>
         </div>
       </div>
 
-      <div v-if="hasIssues">
-        <button type="button" class="btn btn-light" :disabled="hasIssues" @click="toggleValidationPanel = !toggleValidationPanel">
-          BPMN Valid
-          <span class="badge badge-success badge-pill">
-            <font-awesome-icon :icon="checkMarkIcon" />
-          </span>
-        </button>
-      </div>
-
-      <div v-else>
-        <button type="button" data-test="validation-list-toggle" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
-          BPMN Issues
-          <span class="badge badge-primary badge-pill">
-            {{ warnings.length + numberOfValidationErrors }}
-          </span>
-          <font-awesome-icon class="ml-3" :icon="chevronToggle" />
-        </button>
-      </div>
-
+      <button v-if="hasNoIssues" type="button" class="btn btn-light" :disabled="hasNoIssues" @click="toggleValidationPanel = !toggleValidationPanel">
+        BPMN Valid
+        <span class="badge badge-success badge-pill">
+          <font-awesome-icon :icon="checkMarkIcon" />
+        </span>
+      </button>
+      <button v-else type="button" data-test="validation-list-toggle" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
+        BPMN Issues
+        <span class="badge badge-primary badge-pill">
+          {{ warnings.length + numberOfValidationErrors }}
+        </span>
+        <font-awesome-icon class="ml-3" :icon="toggleValidationPanel? chevronUpIcon : chevronDownIcon" />
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { faCheckCircle, faTimesCircle, faExclamationTriangle, faChevronUp, faChevronDown, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCheckCircle, faChevronDown, faChevronUp, faExclamationTriangle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
 
 export default {
-  components : {
+  components: {
     FontAwesomeIcon,
   },
   props: ['validationErrors', 'warnings'],
@@ -75,8 +63,7 @@ export default {
       toggleValidationPanel: false,
       errorColor: '#D9534F',
       warningColor: '#F0AD4E',
-      validColor: '#40C057',
-      toggleWarningsPanel: this.warnings.length > 0,
+      toggleWarningsPanel: false,
       faExclamationTriangle,
       faCheckCircle,
       chevronUpIcon: faChevronUp,
@@ -103,55 +90,34 @@ export default {
         store.commit('setAutoValidate', autoValidate);
       },
     },
-    hasIssues() {
-      return this.warnings.length === 0 && !this.numberOfValidationErrors;
+    hasNoIssues() {
+      return this.warnings.length === 0 && this.numberOfValidationErrors === 0;
     },
     errorList() {
-      return Object.entries(this.validationErrors).reduce((errorList, [ errorKey, errors ]) => {
-        const errorListItems = errors.map((error) => {
-          return  {
-            id: error.id,
-            errorKey,
-            category: error.category,
-            message: error.message,
-          };
+      return Object.entries(this.validationErrors)
+        .flatMap(([errorKey, errors]) => {
+          return errors.flatMap(error => {
+            return { ...error, errorKey };
+          });
         });
-
-        errorList.push(...errorListItems);
-        return errorList;
-      }, []);
     },
     getCategory() {
-      const errorCategory = this.errorList.find((category) => {
+      return this.errorList.find((category) => {
         return category;
       });
-      return errorCategory;
-    },
-    chevronToggle() {
-      return this.toggleValidationPanel
-        ? this.chevronUpIcon
-        : this.chevronDownIcon;
     },
     validationIcon() {
-      return this.isErrorOrWarning
+      return this.isError
         ? faTimesCircle
         : faExclamationTriangle;
     },
-    isErrorOrWarning() {
-      return this.getCategory.category === 'error' ? true : false;
+    isError() {
+      return this.getCategory.category === 'error';
     },
     iconColor() {
-      return this.isErrorOrWarning
-        ? `${ this.errorColor }`
-        : `${ this.warningColor }`;
-    },
-    statusColor() {
-      return this.hasValidationErrors
-        ? `${ this.errorColor }`
-        : `${ this.validColor }`;
-    },
-    hasValidationErrors() {
-      return this.numberOfValidationErrors > 0;
+      return this.isError
+        ? `${this.errorColor}`
+        : `${this.warningColor}`;
     },
     numberOfValidationErrors() {
       return this.errorList.length;
