@@ -1,5 +1,4 @@
 import { dia } from 'jointjs';
-import { highlightPadding } from '@/mixins/crownConfig';
 
 export default class PaperManager {
   #paper;
@@ -11,6 +10,7 @@ export default class PaperManager {
   static gridSize = 10;
 
   static factory(element, interactiveFunc, model) {
+    const defaultPadding = 3;
     const paper = new dia.Paper({
       async: true,
       el: element,
@@ -22,7 +22,7 @@ export default class PaperManager {
       perpendicularLinks: true,
       interactive: interactiveFunc,
       highlighting: {
-        default: { options: { padding: highlightPadding } },
+        default: { options: { padding: defaultPadding } },
       },
     });
 

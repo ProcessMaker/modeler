@@ -20,7 +20,6 @@
 <script>
 import { shapes, util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
-import { highlightPadding } from '@/mixins/crownConfig';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
@@ -56,19 +55,25 @@ export default {
     },
   },
   methods: {
-    setElementHeight(previousHeight, currentBoundsHeight, labelText) {
+    getLabelHeight(labelPadding) {
+      return this.shape
+        .findView(this.paper)
+        .selectors
+        .label
+        .getBBox()
+        .height + labelPadding;
+    },
+    calculateNewHeight(previousHeight, labelText, currentBoundsHeight) {
+      const defaultPadding = 3;
       const labelPadding = 15;
-      let newHeight = previousHeight;
-      const shapeView = this.shape.findView(this.paper);
-      const newLabelHeight = shapeView.selectors.label.getBBox().height + labelPadding;
+      const newLabelHeight = this.getLabelHeight(labelPadding);
       if (newLabelHeight !== previousHeight) {
-        newHeight = newLabelHeight;
+        return newLabelHeight - defaultPadding;
       }
       if (labelText.length === 0) {
-        newHeight = currentBoundsHeight;
+        return currentBoundsHeight - defaultPadding;
       }
-
-      this.shape.resize(this.nodeWidth, newHeight - highlightPadding);
+      return previousHeight - defaultPadding;
     },
     updateNodeText(text) {
       const { height } = this.shape.findView(this.paper).getBBox();
@@ -88,7 +93,7 @@ export default {
       });
 
       this.paper.once('render:done', () => {
-        this.setElementHeight(height, bounds.height, text);
+        this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height));
       });
     },
   },
