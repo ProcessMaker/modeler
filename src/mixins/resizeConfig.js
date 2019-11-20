@@ -485,7 +485,7 @@ export default {
     },
     setPointAttributes(point, cursorDirection) {
       point.attr({
-        root: { display: 'initial' },
+        root: { display: this.highlighted ? 'initial' : 'none' },
         body: {
           fill: '#fff',
           stroke: ' #fff',
