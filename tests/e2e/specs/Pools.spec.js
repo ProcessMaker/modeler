@@ -3,6 +3,8 @@ import {
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
+  getPositionInPaperCoords,
+  isElementCovered,
   moveElement,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
@@ -212,5 +214,30 @@ describe('Pools', () => {
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(pool2taskXml);
     });
+  });
+
+  it('should not cover child elements with lane', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition, nodeTypes.pool)
+      .click()
+      .then($pool => {
+        getCrownButtonForElement($pool, 'lane-above-button').click({ force: true });
+      });
+
+    const startEventPosition = { x: 150, y: 150 };
+    const topLanePosition = { x: startEventPosition.x, y: startEventPosition.y - 50 };
+    getPositionInPaperCoords(startEventPosition).then(({ x, y }) => {
+      getElementAtPosition(topLanePosition, nodeTypes.poolLane).click();
+
+      cy.get('.main-paper [button-id="bottom-right-resize-button"]')
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: x, clientY: y + 100, force: true })
+        .trigger('mouseup');
+    });
+
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
+      .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 });
