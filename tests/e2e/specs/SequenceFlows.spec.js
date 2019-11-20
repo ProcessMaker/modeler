@@ -220,7 +220,7 @@ describe('Sequence Flows', () => {
     });
   });
 
-  it('connects sequence flows with a stright line', function() {
+  it('connects sequence flows with a straight line', function() {
     const taskPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 

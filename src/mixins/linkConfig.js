@@ -44,18 +44,19 @@ export default {
           line: { stroke: 'orange' },
           '.joint-highlight-stroke': { 'display': 'none' },
         });
-
         this.shapeView.showTools();
       } else {
         this.shape.attr({
           line: { stroke: 'black' },
         });
-
         this.shapeView.hideTools();
       }
     },
   },
   computed: {
+    shapeView() {
+      return this.shape.findView(this.paper);
+    },
     sourceNode() {
       return get(this.sourceShape, 'component.node');
     },
@@ -133,7 +134,6 @@ export default {
       const end = linkView.targetAnchor;
 
       this.node.diagram.waypoint = [start, ...this.shape.vertices(), end].map(point => this.moddle.create('dc:Point', point));
-      this.updateCrownPosition();
 
       if (!this.listeningToMouseup) {
         this.listeningToMouseup = true;
@@ -205,7 +205,6 @@ export default {
       const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorPoint });
       const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorPoint });
       const segmentsTool = new linkTools.Segments();
-
       const toolsView = new dia.ToolsView({
         tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
       });

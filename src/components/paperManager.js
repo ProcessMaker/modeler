@@ -1,5 +1,4 @@
 import { dia } from 'jointjs';
-import { highlightPadding } from '@/mixins/crownConfig';
 import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 
 export default class PaperManager {
@@ -12,6 +11,7 @@ export default class PaperManager {
   static gridSize = 10;
 
   static factory(element, interactiveFunc, model) {
+    const defaultPadding = 3;
     const paper = new dia.Paper({
       async: true,
       el: element,
@@ -23,7 +23,7 @@ export default class PaperManager {
       perpendicularLinks: true,
       interactive: interactiveFunc,
       highlighting: {
-        default: { options: { padding: highlightPadding } },
+        default: { options: { padding: defaultPadding } },
       },
     });
 
@@ -94,4 +94,3 @@ export default class PaperManager {
     this.paper.drawBackground({ color: defaultNodeColor });
   }
 }
-
