@@ -86,11 +86,11 @@ export default class PaperManager {
     };
   }
 
-  setInvalidGirdColor() {
+  setStateInvalid() {
     this.paper.drawBackground({ color: invalidNodeColor });
   }
 
-  setDefaultGridColor() {
+  setStateValid() {
     this.paper.drawBackground({ color: defaultNodeColor });
   }
 }

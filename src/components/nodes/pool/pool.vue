@@ -560,7 +560,7 @@ export default {
           }
 
           store.commit('preventSavingElementPosition');
-          this.paperManager.setInvalidGirdColor();
+          this.paperManager.setStateInvalid();
         } else if (pool.component !== this && this.graph.getConnectedLinks(element).length > 0) {
           if (!previousValidPosition) {
             previousValidPosition = newPosition;
@@ -570,7 +570,7 @@ export default {
           invalidPool.attr('body/fill', invalidNodeColor);
 
           store.commit('preventSavingElementPosition');
-          this.paperManager.setDefaultGridColor();
+          this.paperManager.setStateValid();
         } else {
           previousValidPosition = null;
 
@@ -584,7 +584,7 @@ export default {
             : null;
 
           store.commit('allowSavingElementPosition');
-          this.paperManager.setDefaultGridColor();
+          this.paperManager.setStateValid();
         }
       });
 
