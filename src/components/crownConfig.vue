@@ -201,12 +201,6 @@ export default {
 
       this.$emit('save-state');
     },
-    getShapeBounds(shapeView) {
-      if (this.isFlow) {
-        return shapeView.getBBox();
-      }
-      return shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation });
-    },
     repositionCrown() {
       const shapeView = this.shape.findView(this.paper);
 
@@ -214,7 +208,7 @@ export default {
         return;
       }
 
-      const { x, y, width } = this.getShapeBounds(shapeView);
+      const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation && !this.isFlow });
 
       this.style = {
         top: `${y - 45}px`,
