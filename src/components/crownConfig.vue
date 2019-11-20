@@ -107,6 +107,12 @@ export default {
     isValidMessageFlowSource() {
       return this.validMessageFlowSources.includes(this.node.type);
     },
+    isFlow() {
+      return [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
+      ].includes(this.node.type);
+    },
     isTextAnnotation() {
       return this.node.type === 'processmaker-modeler-text-annotation';
     },
@@ -202,7 +208,7 @@ export default {
         return;
       }
 
-      const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation });
+      const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation && !this.isFlow });
 
       this.style = {
         top: `${y - 45}px`,
