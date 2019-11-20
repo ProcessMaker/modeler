@@ -39,6 +39,7 @@ import AssociationFlowButton from '@/components/associationFlowButton';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import { direction } from '@/components/nodes/association/associationConfig';
+import store from '@/store';
 
 export default {
   components: {
@@ -181,6 +182,11 @@ export default {
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
+
+      if (!store.getters.allowSavingState) {
+        return;
+      }
+
       this.$emit('save-state');
     },
     repositionCrown() {

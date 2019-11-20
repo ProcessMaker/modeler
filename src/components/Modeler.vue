@@ -311,13 +311,6 @@ export default {
         inspectorConfig.items.forEach(this.translateConfig);
       }
     },
-    saveState() {
-      if (!store.getters.allowSavingState) {
-        return;
-      }
-
-      this.pushToUndoStack();
-    },
     async pushToUndoStack() {
       const xml = await this.getXmlFromDiagram();
       undoRedoStore.dispatch('pushState', xml);
