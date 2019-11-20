@@ -211,10 +211,7 @@ export default {
 
       new Promise(resolve => this.paper.once('render:done', resolve));
     },
-    async setUpCrownConfig() {
-      await this.$nextTick();
-      await this.paperDoneRendering();
-
+    setUpCrownConfig() {
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
 
@@ -240,10 +237,7 @@ export default {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     },
-    async setUpPositionHandling() {
-      await this.$nextTick();
-      await this.paperDoneRendering();
-
+    setUpPositionHandling() {
       this.shape.on('change:position', (element, newPosition) => {
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
@@ -256,6 +250,9 @@ export default {
     },
   },
   async mounted() {
+    await this.$nextTick();
+    await this.paperDoneRendering();
+
     this.setUpCrownConfig();
     this.setUpPositionHandling();
   },
