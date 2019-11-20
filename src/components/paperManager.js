@@ -10,6 +10,7 @@ export default class PaperManager {
   static gridSize = 10;
 
   static factory(element, interactiveFunc, model) {
+    const defaultPadding = 3;
     const paper = new dia.Paper({
       async: true,
       el: element,
@@ -21,7 +22,7 @@ export default class PaperManager {
       perpendicularLinks: true,
       interactive: interactiveFunc,
       highlighting: {
-        default: { options: { padding: 3 } },
+        default: { options: { padding: defaultPadding } },
       },
     });
 
