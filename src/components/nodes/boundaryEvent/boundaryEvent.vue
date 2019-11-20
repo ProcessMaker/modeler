@@ -146,7 +146,7 @@ export default {
     },
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
-      store.commit('allowSavingState');
+      store.commit('allowSavingElementPosition');
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -170,14 +170,14 @@ export default {
         return;
       }
 
-      store.commit('preventSavingState');
+      store.commit('preventSavingElementPosition');
       this.validPosition = this.shape.position();
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
         this.resetInvalidTarget();
         this.$emit('save-state');
 
-        store.commit('allowSavingState');
+        store.commit('allowSavingElementPosition');
       });
     },
     turnInvalidTargetRed() {

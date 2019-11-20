@@ -183,7 +183,7 @@ export default {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
 
-      if (!store.getters.allowSavingState) {
+      if (!store.getters.allowSavingElementPosition) {
         return;
       }
 
