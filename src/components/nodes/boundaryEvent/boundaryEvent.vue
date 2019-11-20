@@ -45,7 +45,7 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
-    'paperMananger',
+    'paperManager',
   ],
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   data() {
