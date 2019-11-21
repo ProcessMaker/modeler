@@ -12,26 +12,29 @@
     <span class="divider" />
 
     <div v-if="isProblemsPanelDisplayed && numberOfProblems" class="validation-container position-absolute text-left" data-test="validation-list">
-      <div class="validation-container__list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
-        <font-awesome-icon
-          class="status-bar-container__status-icon ml-1 mr-2 mt-1"
-          :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
-          :icon="isErrorCategory(error) ? faTimesCircle: faExclamationTriangle"
-        />
-        <div class="validation-container__list--message">
-          <h6 class="text-capitalize mb-0">{{ error.errorKey }}</h6>
-          <p class="mb-0"><em>{{ error.message }}.</em></p>
-          <p class="mb-0" v-if="error.id"><strong>{{ $t('Node ID') }}:</strong> {{ error.id }}</p>
-        </div>
-      </div>
-
-      <div class="validation-container__list d-flex align-items-baseline" v-for="(warning, index) in warnings" :key="index">
-        <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
-        <div class="validation-container__list--message">
-          <h6 class="text-capitalize mb-0">{{ warning.title }}</h6>
-          <p class="mb-0"><em>{{ warning.text }}.</em></p>
-        </div>
-      </div>
+      <dl class="validation-container__list align-items-baseline">
+        <template v-for="error in errorList">
+          <dt class="text-capitalize" :key="`${error.id}_${error.errorKey}`">
+            <font-awesome-icon
+              class="status-bar-container__status-icon ml-1 mr-1 mt-1"
+              :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
+              :icon="isErrorCategory(error) ? faTimesCircle: faExclamationTriangle"
+            />
+            {{ error.errorKey }}
+          </dt>
+          <dd :key="`${error.id}_${error.errorKey}`">
+            <p class="pl-4 mb-0 font-italic">{{ error.message }}.</p>
+            <p class="pl-4 mb-0" v-if="error.id"><span class="font-weight-bold">{{ $t('Node ID') }}:</span> {{ error.id }}</p>
+          </dd>
+        </template>
+        <template v-for="(warning, index) in warnings">
+          <dt class="text-capitalize" :key="index">
+            <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-1 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
+            {{ warning.title }}
+          </dt>
+          <dd :key="index" class="font-italic pl-4">{{ warning.text }}</dd>
+        </template>
+      </dl>
     </div>
 
     <button v-if="numberOfProblems === 0" type="button" class="btn btn-light" :disabled="true">
