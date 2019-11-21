@@ -11,7 +11,6 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    :allow-set-node-position="allowSetNodePosition"
     @remove-node="$emit('remove-node', $event)"
     @add-node="$emit('add-node', $event)"
     @save-state="$emit('save-state', $event)"
@@ -28,6 +27,7 @@ import { invalidNodeColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import store from '@/store';
 
 export default {
   components: {
@@ -54,7 +54,6 @@ export default {
       previousPosition: null,
       validPosition: null,
       invalidTargetElement: null,
-      allowSetNodePosition: true,
     };
   },
   watch: {
@@ -147,7 +146,7 @@ export default {
     },
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
-      this.allowSetNodePosition = true;
+      store.commit('allowSavingElementPosition');
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -171,13 +170,14 @@ export default {
         return;
       }
 
-      this.allowSetNodePosition = false;
+      store.commit('preventSavingElementPosition');
       this.validPosition = this.shape.position();
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
         this.resetInvalidTarget();
         this.$emit('save-state');
-        this.allowSetNodePosition = true;
+
+        store.commit('allowSavingElementPosition');
       });
     },
     turnInvalidTargetRed() {

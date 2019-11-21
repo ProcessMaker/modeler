@@ -39,6 +39,7 @@ import AssociationFlowButton from '@/components/associationFlowButton';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import { direction } from '@/components/nodes/association/associationConfig';
+import store from '@/store';
 
 export default {
   components: {
@@ -59,10 +60,6 @@ export default {
     processNode: Object,
     collaboration: Object,
     isRendering: Boolean,
-    /* allowSetNodePosition is used to prevent setting a node position outside of a pool */
-    allowSetNodePosition: {
-      default: true,
-    },
   },
   mixins: [poolLaneCrownConfig],
   watch: {
@@ -195,7 +192,7 @@ export default {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
 
-      if (!this.allowSetNodePosition) {
+      if (!store.getters.allowSavingElementPosition) {
         return;
       }
 
@@ -216,19 +213,16 @@ export default {
         cursor: 'pointer',
       };
     },
+    paperDoneRendering() {
+      if (!this.isRendering) {
+        return;
+      }
+
+      new Promise(resolve => this.paper.once('render:done', resolve));
+    },
     setUpCrownConfig() {
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
-
-      this.shape.on('change:position', (element, newPosition) => {
-        this.node.diagram.bounds.x = newPosition.x;
-        this.node.diagram.bounds.y = newPosition.y;
-
-        if (!this.savePositionOnPointerupEventSet) {
-          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
-          this.savePositionOnPointerupEventSet = true;
-        }
-      });
 
       if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
@@ -252,15 +246,24 @@ export default {
         this.collaboration.get('messageFlows').push(this.node.definition);
       }
     },
+    setUpPositionHandling() {
+      this.shape.on('change:position', (element, newPosition) => {
+        this.node.diagram.bounds.x = newPosition.x;
+        this.node.diagram.bounds.y = newPosition.y;
+
+        if (!this.savePositionOnPointerupEventSet) {
+          this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
+          this.savePositionOnPointerupEventSet = true;
+        }
+      });
+    },
   },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.isRendering) {
-        this.paper.once('render:done', this.setUpCrownConfig);
-      } else {
-        this.setUpCrownConfig();
-      }
-    });
+  async mounted() {
+    await this.$nextTick();
+    await this.paperDoneRendering();
+
+    this.setUpCrownConfig();
+    this.setUpPositionHandling();
   },
   destroyed() {
     this.shape.stopListening();
