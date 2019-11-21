@@ -130,6 +130,7 @@ $status-bar-container-height: 3rem;
 }
 
 .validation-container {
+  z-index: 2;
   cursor: default;
   bottom: 0;
   right: 0;
