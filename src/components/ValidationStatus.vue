@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <button v-if="numberOfProblems === 0" type="button" class="btn btn-light" :disabled="numberOfProblems === 0" @click="isProblemsPanelDisplayed = !isProblemsPanelDisplayed">
+    <button v-if="numberOfProblems === 0" type="button" class="btn btn-light" :disabled="true">
       {{ $t('BPMN Valid') }}
       <span class="badge badge-success badge-pill">
         <font-awesome-icon :icon="faCheck" />
