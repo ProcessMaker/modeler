@@ -328,9 +328,8 @@ export default {
       });
     },
     async validateBpmnDiagram() {
-      const validationErrors = await this.linter.lint(this.definitions);
-      this.validationErrors = validationErrors;
-      this.$emit('validate', validationErrors);
+      this.validationErrors = await this.linter.lint(this.definitions);
+      this.$emit('validate', this.validationErrors);
     },
     undo() {
       if (this.isRendering) {
@@ -691,7 +690,7 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      const node = {type: control.type, definition, diagram};
+      const node = { type: control.type, definition, diagram };
       this.highlightNode(node);
       this.addNode(node);
     },

@@ -137,8 +137,8 @@ describe('Modeler', () => {
     const gatewayPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
 
-    cy.get('[data-test=validation-list-toggle]').click();
-    cy.get('[type=checkbox]').check({ force: true });
+    cy.get('[data-test="validation-toggle"]').click({ force: true });
+    cy.get('[data-test="validation-list-toggle"]').click();
 
     cy.get('[data-test=validation-list]').should($lsit => {
       expect($lsit).to.contain('Gateway must have multiple outgoing Sequence Flows');
@@ -241,8 +241,8 @@ describe('Modeler', () => {
     cy.get('[data-test=validation-toggle]').click({ force: true });
     cy.get('[data-test=validation-list-toggle]').click();
 
-    const initialNumberOfValidationErrors = 2;
-    cy.get('[data-test=validation-list]').children().should('have.length', initialNumberOfValidationErrors);
+    const initialNumberOfDefinitionListElements = 4;
+    cy.get('[data-test=validation-list]').children().should('have.length', initialNumberOfDefinitionListElements);
 
     const startEventPosition = { x: 150, y: 150 };
 
@@ -253,9 +253,10 @@ describe('Modeler', () => {
     const taskPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    const numberOfNewValidationErrors = 1;
+    const numberOfNewDefinitionListElements = 2;
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors).should('contain', 'node_2');
+      .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
+      .should('contain', 'node_2');
 
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
@@ -265,14 +266,14 @@ describe('Modeler', () => {
     });
 
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors)
+      .should('have.length', initialNumberOfDefinitionListElements)
       .should('not.contain', 'node_2');
 
     cy.get('[data-test=redo]').click();
     waitToRenderAllShapes();
 
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors)
+      .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
       .should('contain', 'node_2');
 
     getElementAtPosition(startEventPosition).then($startEvent => {
@@ -288,7 +289,8 @@ describe('Modeler', () => {
     uploadXml('unknownElement.xml');
     const warning = 'DataStoreReference is an unsupported element type in parse';
 
-    cy.get('.status-bar-container__status').click({ multiple: true });
+    cy.get('[data-test="validation-toggle"]').click({ force: true });
+    cy.get('[data-test="validation-list-toggle"]').click({ force: true });
     cy.get('[data-test="validation-list"]').should('contain', warning);
   });
 
@@ -440,10 +442,8 @@ describe('Modeler', () => {
     cy.get('[data-test=panels-btn]').click();
     cy.wait(700);
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).
-      click().
-      getType().
-      should('equal', nodeTypes.task);
+    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).click().getType()
+      .should('equal', nodeTypes.task);
   });
 
   it('should not generate duplicate diagram IDs', function() {
