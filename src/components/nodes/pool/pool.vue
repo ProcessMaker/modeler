@@ -88,6 +88,7 @@ export default {
     'paper',
     'planeElements',
     'isRendering',
+    'paperManager',
   ],
   mixins: [highlightConfig, resizeConfig, portsConfig],
   data() {
@@ -558,8 +559,8 @@ export default {
             invalidPool = null;
           }
 
-          this.paper.drawBackground({ color: invalidNodeColor });
-          element.component.allowSetNodePosition = false;
+          store.commit('preventSavingElementPosition');
+          this.paperManager.setStateInvalid();
         } else if (pool.component !== this && this.graph.getConnectedLinks(element).length > 0) {
           if (!previousValidPosition) {
             previousValidPosition = newPosition;
@@ -567,9 +568,10 @@ export default {
 
           invalidPool = pool.component.shape;
           invalidPool.attr('body/fill', invalidNodeColor);
-          element.component.allowSetNodePosition = false;
+
+          store.commit('preventSavingElementPosition');
+          this.paperManager.setStateValid();
         } else {
-          this.paper.drawBackground({ color: defaultNodeColor });
           previousValidPosition = null;
 
           if (invalidPool) {
@@ -581,7 +583,8 @@ export default {
             ? pool
             : null;
 
-          element.component.allowSetNodePosition = true;
+          store.commit('allowSavingElementPosition');
+          this.paperManager.setStateValid();
         }
       });
 

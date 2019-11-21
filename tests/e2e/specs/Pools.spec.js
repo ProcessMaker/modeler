@@ -6,6 +6,7 @@ import {
   getPositionInPaperCoords,
   isElementCovered,
   moveElement,
+  moveElementRelativeTo,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -214,6 +215,20 @@ describe('Pools', () => {
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(pool2taskXml);
     });
+  });
+
+  it('should revert pool element to initial position on undo after dragging outside of pool onto grid', function() {
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const startEventPosition = { x: 150, y: 150 };
+    moveElementRelativeTo(startEventPosition, 600, 600, nodeTypes.startEvent);
+
+    waitToRenderAllShapes();
+    cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
+
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).should('exist');
   });
 
   it('should not cover child elements with lane', function() {

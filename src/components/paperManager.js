@@ -1,4 +1,5 @@
 import { dia } from 'jointjs';
+import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 
 export default class PaperManager {
   #paper;
@@ -83,5 +84,13 @@ export default class PaperManager {
       x: this.roundToNearestGridMultiple((clientX - paperOrigin.x) / scale.sx),
       y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy),
     };
+  }
+
+  setStateInvalid() {
+    this.paper.drawBackground({ color: invalidNodeColor });
+  }
+
+  setStateValid() {
+    this.paper.drawBackground({ color: defaultNodeColor });
   }
 }

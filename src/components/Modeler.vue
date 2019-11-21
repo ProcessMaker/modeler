@@ -82,7 +82,7 @@
         :moddle="moddle"
         :processNode="processNode"
         @save-state="pushToUndoStack"
-        class="h-100"
+        class="inspector h-100"
       />
     </b-col>
     <component
@@ -103,6 +103,7 @@
       :nodeRegistry="nodeRegistry"
       :root-elements="definitions.get('rootElements')"
       :isRendering="isRendering"
+      :paperManager="paperManager"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -915,7 +916,7 @@ $vertex-error-color: #ED4757;
     top: 0;
   }
 
-  .controls {
+  .controls, .inspector {
     z-index: 1;
   }
 
