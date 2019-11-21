@@ -37,7 +37,9 @@ function getInspectorItems(node, config) {
 }
 
 function translateConfig(items) {
-  items.forEach(item => {
-    item.config.label = window.ProcessMaker.events.$t(item.config.label);
-  });
+  if (typeof window !== 'undefined') {
+    items.forEach(item => {
+      item.config.label = window.ProcessMaker.events.$t(item.config.label);
+    });
+  }
 }
