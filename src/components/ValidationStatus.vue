@@ -12,22 +12,22 @@
     <span class="divider" />
 
     <div v-if="isProblemsPanelDisplayed && numberOfProblems" class="validation-container position-absolute text-left" data-test="validation-list">
-      <div class="validation-container-list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
+      <div class="validation-container__list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
         <font-awesome-icon
-          class="status-bar-container-status-icon ml-1 mr-2 mt-1"
+          class="status-bar-container__status-icon ml-1 mr-2 mt-1"
           :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
           :icon="isErrorCategory(error) ? faTimesCircle: faExclamationTriangle"
         />
-        <div class="validation-container-list-message">
+        <div class="validation-container__list--message">
           <h6 class="text-capitalize mb-0">{{ error.errorKey }}</h6>
           <p class="mb-0"><em>{{ error.message }}.</em></p>
           <p class="mb-0" v-if="error.id"><strong>{{ $t('Node ID') }}:</strong> {{ error.id }}</p>
         </div>
       </div>
 
-      <div class="validation-container-list d-flex align-items-baseline" v-for="(warning, index) in warnings" :key="index">
-        <font-awesome-icon class="status-bar-container-status-icon ml-1 mr-2 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
-        <div class="validation-container-list-message">
+      <div class="validation-container__list d-flex align-items-baseline" v-for="(warning, index) in warnings" :key="index">
+        <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
+        <div class="validation-container__list--message">
           <h6 class="text-capitalize mb-0">{{ warning.title }}</h6>
           <p class="mb-0"><em>{{ warning.text }}.</em></p>
         </div>
@@ -114,7 +114,7 @@ $status-bar-container-height: 3rem;
   color: $secondary-grey;
   height: $status-bar-container-height;
 
-  &-status {
+  &__status {
     cursor: pointer;
   }
 }
@@ -139,11 +139,11 @@ $status-bar-container-height: 3rem;
   border-radius: 0.25rem;
   border-right: none;
 
-  &-list {
+  &__list {
     padding: 0.5rem;
     word-wrap: break-word;
 
-    &-message {
+    &--message {
       width: $message-container-width;
     }
   }
