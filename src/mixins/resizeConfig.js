@@ -79,22 +79,17 @@ export default {
 
       this.anchorPoints.forEach(point => {
         point.set('isDrag', true);
-
-        try {
-          this.shape.embed(point);
-        } catch (error) {
-          /* There is an error when re-adding points after removing/re-adding the pool.
-           * Ignore it for now. */
-        }
-
-        point.addTo(this.graph);
         point.set('previousPosition', point.position());
       });
 
-      this.setPointAttributes(pointBottomRight, 'nwse-resize');
-      this.setPointAttributes(pointBottomLeft, 'nesw-resize');
-      this.setPointAttributes(pointTopRight, 'nesw-resize');
-      this.setPointAttributes(pointTopLeft, 'nwse-resize');
+      if (this.highlighted) {
+        this.addResizeAnchors();
+      }
+
+      this.setPointAttributes(pointBottomRight, 'nwse-resize', 'bottom-right-resize-button');
+      this.setPointAttributes(pointBottomLeft, 'nesw-resize', 'bottom-left-resize-button');
+      this.setPointAttributes(pointTopRight, 'nesw-resize', 'top-right-resize-button');
+      this.setPointAttributes(pointTopLeft, 'nwse-resize', 'top-left-resize-button');
 
       pointBottomRight.position(x + width, y + height);
       pointBottomLeft.position(x - this.pointWidth, y + height);
@@ -464,12 +459,20 @@ export default {
     },
     addResizeAnchors() {
       this.anchorPoints.forEach(button => {
-        button.attr('root/display', 'initial');
+        try {
+          this.shape.embed(button);
+        } catch (error) {
+          /* There is an error when re-adding points after removing/re-adding the pool.
+           * Ignore it for now. */
+        }
+
+        button.addTo(this.graph);
+        button.toFront();
       });
     },
     removeResizeAnchors() {
       this.anchorPoints.forEach(button => {
-        button.attr('root/display', 'none');
+        button.remove();
       });
     },
     updateAnchorPointPosition(excludePoint) {
@@ -483,18 +486,17 @@ export default {
       excludePoint !== 2 && this.anchorPoints[2].position(x + width, y - this.pointHeight); // Top Right Point
       excludePoint !== 3 && this.anchorPoints[3].position(x - this.pointWidth, y - this.pointWidth); //Top Left Point
     },
-    setPointAttributes(point, cursorDirection) {
+    setPointAttributes(point, cursorDirection, buttonId) {
       point.attr({
-        root: { display: 'initial' },
         body: {
           fill: '#fff',
           stroke: ' #fff',
           opacity: 0.8,
-          cursor: `${cursorDirection}`,
         },
         image: {
           xlinkHref: resizeIcon,
-          cursor: `${cursorDirection}`,
+          cursor: cursorDirection,
+          buttonId,
           refWidth: 20,
           refHeight: 20,
           resetOffset: true,

@@ -148,8 +148,6 @@ import {
   faStepForward,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
-import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
@@ -160,6 +158,7 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
+import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 
 const version = '1.0';
 
@@ -775,36 +774,8 @@ export default {
     isBpmnNode(shape) {
       return shape.component != null;
     },
-    isNotLane(shape) {
-      return shape.component.node.type !== laneId;
-    },
-    bringPoolToFront(poolShape) {
-      this.bringShapeToFront(poolShape);
-    },
-    bringShapeToFront(shape) {
-      shape.toFront({ deep: true });
-    },
-    getElementPool(shape) {
-      return shape.component.node.pool;
-    },
-    isPool(shape) {
-      return shape.component.node.type === poolId;
-    },
     setShapeStacking(shape) {
-      this.paperManager.performAtomicAction(() => {
-        if (this.isPool(shape)) {
-          this.bringPoolToFront(shape);
-        }
-
-        const parentPool = this.getElementPool(shape);
-        if (parentPool) {
-          this.bringPoolToFront(parentPool);
-        }
-
-        if (this.isNotLane(shape) && !this.isPool(shape)) {
-          this.bringShapeToFront(shape);
-        }
-      });
+      this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape));
     },
   },
   created() {

@@ -3,8 +3,6 @@ import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const id = 'processmaker-modeler-lane';
-export const minLaneHeight = 100;
-
 export default {
   id,
   component,
