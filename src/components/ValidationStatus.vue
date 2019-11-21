@@ -1,50 +1,48 @@
 <template>
-  <div>
-    <div class="status-bar-container d-flex align-items-center justify-content-end">
-      <b-form-checkbox
-        data-test="validation-toggle"
-        class="h-100 d-flex align-items-center"
-        v-model="autoValidate"
-        switch
-      >
-        {{ $t('Auto validate') }}
-      </b-form-checkbox>
+  <div class="status-bar-container d-flex align-items-center justify-content-end">
+    <b-form-checkbox
+      data-test="validation-toggle"
+      class="h-100 d-flex align-items-center"
+      v-model="autoValidate"
+      switch
+    >
+      {{ $t('Auto validate') }}
+    </b-form-checkbox>
 
-      <div class="divider" />
+    <span class="divider" />
 
-      <div v-if="toggleValidationPanel && !hasNoIssues" class="validation-container position-absolute text-left" data-test="validation-list">
-        <div class="validation-container__list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
-          <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: iconColor }" :icon="validationIcon" />
-          <div class="validation-container__list--message">
-            <h6 class="text-capitalize mb-0">{{ error.errorKey }}</h6>
-            <p class="mb-0"><em>{{ $t(error.message) }}.</em></p>
-            <p class="mb-0" v-if="error.id"><strong>Node ID:</strong> {{ error.id }}</p>
-          </div>
-        </div>
-
-        <div class="validation-container__list d-flex align-items-baseline" v-for="(warning, index) in warnings" :key="index">
-          <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-2 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
-          <div class="validation-container__list--message">
-            <h6 class="text-capitalize mb-0">{{ warning.title }}</h6>
-            <p class="mb-0"><em>{{ $t(warning.text) }}.</em></p>
-          </div>
+    <div v-if="toggleValidationPanel && numberOfProblems" class="validation-container position-absolute text-left" data-test="validation-list">
+      <div class="validation-container-list d-flex align-items-baseline" v-for="error in errorList" :key="`${error.id}_${error.errorKey}`">
+        <font-awesome-icon class="status-bar-container-status-icon ml-1 mr-2 mt-1" :style="{ color: iconColor }" :icon="validationIcon" />
+        <div class="validation-container-list-message">
+          <h6 class="text-capitalize mb-0">{{ error.errorKey }}</h6>
+          <p class="mb-0"><em>{{ error.message }}.</em></p>
+          <p class="mb-0" v-if="error.id"><strong>Node ID:</strong> {{ error.id }}</p>
         </div>
       </div>
 
-      <button v-if="hasNoIssues" type="button" class="btn btn-light" :disabled="hasNoIssues" @click="toggleValidationPanel = !toggleValidationPanel">
-        BPMN Valid
-        <span class="badge badge-success badge-pill">
-          <font-awesome-icon :icon="checkMarkIcon" />
-        </span>
-      </button>
-      <button v-else type="button" data-test="validation-list-toggle" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
-        BPMN Issues
-        <span class="badge badge-primary badge-pill">
-          {{ warnings.length + numberOfValidationErrors }}
-        </span>
-        <font-awesome-icon class="ml-3" :icon="toggleValidationPanel? chevronUpIcon : chevronDownIcon" />
-      </button>
+      <div class="validation-container-list d-flex align-items-baseline" v-for="(warning, index) in warnings" :key="index">
+        <font-awesome-icon class="status-bar-container-status-icon ml-1 mr-2 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
+        <div class="validation-container-list-message">
+          <h6 class="text-capitalize mb-0">{{ warning.title }}</h6>
+          <p class="mb-0"><em>{{ warning.text }}.</em></p>
+        </div>
+      </div>
     </div>
+
+    <button v-if="hasNoIssues" type="button" class="btn btn-light" :disabled="hasNoIssues" @click="toggleValidationPanel = !toggleValidationPanel">
+      BPMN Valid
+      <span class="badge badge-success badge-pill">
+        <font-awesome-icon :icon="checkMarkIcon" />
+      </span>
+    </button>
+    <button v-else type="button" data-test="validation-list-toggle" class="btn btn-light" @click="toggleValidationPanel = !toggleValidationPanel">
+      BPMN Issues
+      <span class="badge badge-primary badge-pill">
+        {{ numberOfProblems }}
+      </span>
+      <font-awesome-icon class="ml-3" :icon="toggleValidationPanel? chevronUpIcon : chevronDownIcon" />
+    </button>
   </div>
 </template>
 
@@ -91,7 +89,7 @@ export default {
       },
     },
     hasNoIssues() {
-      return this.warnings.length === 0 && this.numberOfValidationErrors === 0;
+      return this.numberOfProblems === 0;
     },
     errorList() {
       return Object.entries(this.validationErrors)
@@ -119,8 +117,8 @@ export default {
         ? `${this.errorColor}`
         : `${this.warningColor}`;
     },
-    numberOfValidationErrors() {
-      return this.errorList.length;
+    numberOfProblems() {
+      return this.errorList.length + this.warnings.length;
     },
   },
 };
@@ -129,23 +127,17 @@ export default {
 <style scoped lang="scss">
 $primary-white: #f7f7f7;
 $secondary-grey: #555555;
-$secondary-blue: #3397e1;
 $border-color: rgba(0, 0, 0, 0.125);
-$id-container-width: 6.5rem;
 $message-container-width: 18rem;
-$error-category-width: 1rem;
 $validation-container-height: 14rem;
 $validation-container-width: 25rem;
 $status-bar-container-height: 3rem;
-$error-color: #D9534F;
-$warning-color: #F0AD4E;
 
 .status-bar-container {
   color: $secondary-grey;
   height: $status-bar-container-height;
-  cursor: pointer;
 
-  &__status {
+  &-status {
     cursor: pointer;
   }
 }
@@ -158,6 +150,7 @@ $warning-color: #F0AD4E;
 }
 
 .validation-container {
+  cursor: default;
   bottom: 0;
   right: 0;
   height: $validation-container-height;
@@ -169,23 +162,12 @@ $warning-color: #F0AD4E;
   border-radius: 0.25rem;
   border-right: none;
 
-  &__list {
+  &-list {
     padding: 0.5rem;
     word-wrap: break-word;
 
-    &--id {
-      width: $id-container-width;
-      color: $secondary-grey;
-      text-transform: none;
-    }
-
-    &--message {
+    &-message {
       width: $message-container-width;
-    }
-
-    &--key {
-      font-weight: 700;
-      text-transform: capitalize;
     }
   }
 }
