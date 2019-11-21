@@ -241,8 +241,8 @@ describe('Modeler', () => {
     cy.get('[data-test=validation-toggle]').click({ force: true });
     cy.get('[data-test=validation-list-toggle]').click();
 
-    const initialNumberOfValidationErrors = 2;
-    cy.get('[data-test=validation-list]').children().should('have.length', initialNumberOfValidationErrors);
+    const initialNumberOfDefinitionListElements = 4;
+    cy.get('[data-test=validation-list]').children().should('have.length', initialNumberOfDefinitionListElements);
 
     const startEventPosition = { x: 150, y: 150 };
 
@@ -253,9 +253,10 @@ describe('Modeler', () => {
     const taskPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    const numberOfNewValidationErrors = 1;
+    const numberOfNewDefinitionListElements = 2;
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors).should('contain', 'node_2');
+      .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
+      .should('contain', 'node_2');
 
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
@@ -265,14 +266,14 @@ describe('Modeler', () => {
     });
 
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors)
+      .should('have.length', initialNumberOfDefinitionListElements)
       .should('not.contain', 'node_2');
 
     cy.get('[data-test=redo]').click();
     waitToRenderAllShapes();
 
     cy.get('[data-test=validation-list]').children()
-      .should('have.length', initialNumberOfValidationErrors + numberOfNewValidationErrors)
+      .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
       .should('contain', 'node_2');
 
     getElementAtPosition(startEventPosition).then($startEvent => {

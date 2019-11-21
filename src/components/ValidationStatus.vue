@@ -11,8 +11,8 @@
 
     <span class="divider" />
 
-    <div v-if="isProblemsPanelDisplayed && numberOfProblems" class="validation-container position-absolute text-left" data-test="validation-list">
-      <dl class="validation-container__list align-items-baseline">
+    <div v-if="isProblemsPanelDisplayed && numberOfProblems" class="validation-container position-absolute text-left">
+      <dl class="validation-container__list align-items-baseline" data-test="validation-list">
         <template v-for="error in errorList">
           <dt class="text-capitalize" :key="`${error.id}_${error.errorKey}`">
             <font-awesome-icon
