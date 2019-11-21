@@ -167,7 +167,7 @@ export default {
         return null;
       }
 
-      return 'You must select at least one day.';
+      return this.$t('You must select at least one day.');
     },
     dateIntervalString() {
       if (this.isWeeklyPeriodSelected) {
