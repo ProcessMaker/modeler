@@ -132,7 +132,14 @@ export function isElementCovered($element) {
     .its('store.state')
     .then(({ paper, graph }) => {
       const shape = graph.getCell($element.attr('model-id'));
-      const shapeViews = paper.findViewsInArea(shape.getBBox());
+      let shapeViews = paper.findViewsInArea(shape.getBBox());
+
+      if (shape.isLink()) {
+        shapeViews = shapeViews.filter(shapeView => {
+          return ![shape.getSourceElement(), shape.getTargetElement()].includes(shapeView.model);
+        });
+      }
+
       const zIndexes = shapeViews.filter(shapeView => shapeView.model.component)
         .map(shapeView => shapeView.model.get('z'));
       const shapeZIndex = shape.get('z');
