@@ -30,7 +30,14 @@ function addInspectorItem(inspectorItems, config) {
 
 function getInspectorItems(node, config) {
   if (typeof config.container !== 'undefined') {
+    translateConfig(node.inspectorConfig[0].items);
     return node.inspectorConfig[0].items;
   }
   return node.inspectorConfig[0].items[0].items;
+}
+
+function translateConfig(items) {
+  items.forEach(item => {
+    item.config.label = window.ProcessMaker.events.$t(item.config.label);
+  });
 }
