@@ -21,7 +21,7 @@
         <div class="validation-container-list-message">
           <h6 class="text-capitalize mb-0">{{ error.errorKey }}</h6>
           <p class="mb-0"><em>{{ error.message }}.</em></p>
-          <p class="mb-0" v-if="error.id"><strong>Node ID:</strong> {{ error.id }}</p>
+          <p class="mb-0" v-if="error.id"><strong>{{ $t('Node ID') }}:</strong> {{ error.id }}</p>
         </div>
       </div>
 
@@ -35,13 +35,13 @@
     </div>
 
     <button v-if="numberOfProblems === 0" type="button" class="btn btn-light" :disabled="numberOfProblems === 0" @click="isProblemsPanelDisplayed = !isProblemsPanelDisplayed">
-      BPMN Valid
+      {{ $t('BPMN Valid') }}
       <span class="badge badge-success badge-pill">
         <font-awesome-icon :icon="faCheck" />
       </span>
     </button>
     <button v-else type="button" data-test="validation-list-toggle" class="btn btn-light" @click="isProblemsPanelDisplayed = !isProblemsPanelDisplayed">
-      BPMN Issues
+      {{ $t('BPMN Issues') }}
       <span class="badge badge-primary badge-pill">
         {{ numberOfProblems }}
       </span>
