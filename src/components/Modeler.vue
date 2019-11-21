@@ -137,7 +137,15 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faStepBackward, faStepForward } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCompress,
+  faExpand,
+  faMapMarked,
+  faMinus,
+  faPlus,
+  faStepBackward,
+  faStepForward,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { id as poolId } from './nodes/pool';
@@ -771,6 +779,21 @@ export default {
     },
     bringPoolToFront(poolShape) {
       this.bringShapeToFront(poolShape);
+
+      const hasLanes = poolShape.component.node.definition.processRef.laneSets[0];
+      if (!hasLanes) {
+        return;
+      }
+
+      const poolLanes = poolShape
+        .getEmbeddedCells()
+        .filter(cell => cell.component && cell.component.node.type === laneId);
+      const poolLaneElements = poolShape
+        .getEmbeddedCells()
+        .filter(cell => cell.component && cell.component.node.type !== laneId);
+
+      poolLanes.forEach(this.bringShapeToFront);
+      poolLaneElements.forEach(this.bringShapeToFront);
     },
     bringShapeToFront(shape) {
       shape.toFront({ deep: true });
