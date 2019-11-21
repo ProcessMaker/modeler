@@ -22,17 +22,17 @@
             />
             {{ error.errorKey }}
           </dt>
-          <dd :key="`${error.id}_${error.errorKey}`">
+          <dd :key="`${error.id}_${error.errorKey}_dd`">
             <p class="pl-4 mb-0 font-italic">{{ error.message }}.</p>
             <p class="pl-4 mb-0" v-if="error.id"><span class="font-weight-bold">{{ $t('Node ID') }}:</span> {{ error.id }}</p>
           </dd>
         </template>
         <template v-for="(warning, index) in warnings">
-          <dt class="text-capitalize" :key="index">
+          <dt class="text-capitalize" :key="warning.title + index">
             <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-1 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
             {{ warning.title }}
           </dt>
-          <dd :key="index" class="font-italic pl-4">{{ warning.text }}</dd>
+          <dd :key="warning.title + index + '__dd'" class="font-italic pl-4">{{ warning.text }}</dd>
         </template>
       </dl>
     </div>
