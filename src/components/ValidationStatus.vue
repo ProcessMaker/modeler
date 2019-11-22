@@ -1,5 +1,24 @@
 <template>
   <div class="status-bar-container d-flex align-items-center justify-content-end">
+
+    <template v-if="autoValidate">
+      <button v-if="numberOfProblemsToDisplay === 0" type="button" class="btn btn-light" :disabled="true">
+        {{ $t('BPMN Valid') }}
+        <span class="badge badge-success badge-pill">
+          <font-awesome-icon :icon="faCheck" />
+        </span>
+      </button>
+      <button v-else type="button" data-test="validation-list-toggle" class="btn btn-light" @click="shouldDisplayProblemsPanel = !shouldDisplayProblemsPanel">
+        {{ $t('BPMN Issues') }}
+        <span class="badge badge-primary badge-pill">
+          {{ numberOfProblemsToDisplay }}
+        </span>
+        <font-awesome-icon class="ml-3" :icon="shouldDisplayProblemsPanel? faChevronUp : faChevronDown" />
+      </button>
+    </template>
+
+    <span class="divider" />
+
     <b-form-checkbox
       data-test="validation-toggle"
       class="h-100 d-flex align-items-center"
@@ -9,9 +28,7 @@
       {{ $t('Auto validate') }}
     </b-form-checkbox>
 
-    <span class="divider" />
-
-    <div v-if="isProblemsPanelDisplayed && numberOfProblems" class="validation-container position-absolute text-left">
+    <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
       <dl class="validation-container__list align-items-baseline" data-test="validation-list">
         <template v-for="error in errorList">
           <dt class="text-capitalize" :key="`${error.id}_${error.errorKey}`">
@@ -36,20 +53,6 @@
         </template>
       </dl>
     </div>
-
-    <button v-if="numberOfProblems === 0" type="button" class="btn btn-light" :disabled="true">
-      {{ $t('BPMN Valid') }}
-      <span class="badge badge-success badge-pill">
-        <font-awesome-icon :icon="faCheck" />
-      </span>
-    </button>
-    <button v-else type="button" data-test="validation-list-toggle" class="btn btn-light" @click="isProblemsPanelDisplayed = !isProblemsPanelDisplayed">
-      {{ $t('BPMN Issues') }}
-      <span class="badge badge-primary badge-pill">
-        {{ numberOfProblems }}
-      </span>
-      <font-awesome-icon class="ml-3" :icon="isProblemsPanelDisplayed? faChevronUp : faChevronDown" />
-    </button>
   </div>
 </template>
 
@@ -65,7 +68,7 @@ export default {
   props: ['validationErrors', 'warnings'],
   data() {
     return {
-      isProblemsPanelDisplayed: false,
+      shouldDisplayProblemsPanel: false,
       errorColor: '#D9534F',
       warningColor: '#F0AD4E',
       faExclamationTriangle,
@@ -92,8 +95,11 @@ export default {
           });
         });
     },
-    numberOfProblems() {
+    numberOfProblemsToDisplay() {
       return this.errorList.length + this.warnings.length;
+    },
+    isProblemsPanelDisplayed() {
+      return this.shouldDisplayProblemsPanel && this.numberOfProblemsToDisplay > 0 && this.autoValidate;
     },
   },
   methods: {
