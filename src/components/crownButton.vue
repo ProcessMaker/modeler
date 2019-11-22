@@ -1,21 +1,27 @@
 <template>
   <button
-    @click="$emit('click')"
+    v-on="$listeners"
     :id="id"
     :aria-label="ariaLabel"
+    class="btn"
   >
-    <slot/>
+    <slot>
+      <img
+        :src="src"
+        alt=""
+      >
+    </slot>
   </button>
 </template>
 <script>
 
 export default {
-  props: ['id', 'ariaLabel'],
+  props: ['id', 'ariaLabel', 'src'],
 };
 </script>
 
 <style scoped>
-button {
+.btn {
   border: none;
   padding: 0;
   margin-top: 0;
