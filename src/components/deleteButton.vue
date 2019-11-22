@@ -2,7 +2,7 @@
   <crown-button
     id="delete-button"
     aria-label="Delete this node"
-    @click="$emit('click')"
+    v-on="$listeners"
   >
     <img
       :src="trashIcon"

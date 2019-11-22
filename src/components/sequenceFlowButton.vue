@@ -2,14 +2,9 @@
   <crown-button
     id="sequence-flow-button"
     aria-label="Create a sequence flow"
-    @click="$emit('click')"
-  >
-    <img
-      :src="sequenceFlow"
-      alt=""
-      role="presentation"
-    >
-  </crown-button>
+    :src="sequenceFlow"
+    v-on="$listeners"
+  />
 </template>
 <script>
 import sequenceFlow from '@/assets/connect-elements.svg';

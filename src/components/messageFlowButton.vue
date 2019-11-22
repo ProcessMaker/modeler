@@ -2,13 +2,9 @@
   <crown-button
     id="message-flow-button"
     aria-label="Create a message flow"
-    @click="$emit('click')"
-  >
-    <img
-      :src="messageFlow"
-      alt=""
-    >
-  </crown-button>
+    :src="messageFlow"
+    v-on="$listeners"
+  />
 </template>
 <script>
 import messageFlow from '@/assets/message-flow.svg';
