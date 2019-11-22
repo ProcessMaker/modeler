@@ -9,6 +9,8 @@
       <img
         :src="src"
         alt=""
+        width="width"
+        height="height"
       >
     </slot>
   </button>
@@ -16,7 +18,19 @@
 <script>
 
 export default {
-  props: ['id', 'ariaLabel', 'src'],
+  props: {
+    'id': String,
+    'ariaLabel': String,
+    'src': String,
+    'width': {
+      type: Number,
+      default: 19,
+    },
+    'height': {
+      type: Number,
+      default: 20,
+    },
+  },
 };
 </script>
 
@@ -29,7 +43,5 @@ export default {
 img {
   margin: 5px 10px;
   font-size: 1rem;
-  width: 19px;
-  height: 20px;
 }
 </style>

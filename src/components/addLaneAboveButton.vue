@@ -4,6 +4,7 @@
     aria-label="Add lane above icon"
     :src="laneAboveIcon"
     v-on="$listeners"
+    :width="25"
   />
 </template>
 
@@ -20,9 +21,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-  .crown-icon {
-    width: 25px;
-  }
-</style>
