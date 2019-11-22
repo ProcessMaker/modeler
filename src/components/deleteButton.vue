@@ -4,7 +4,16 @@
     aria-label="Delete this node"
     :src="trashIcon"
     v-on="$listeners"
-  />
+  >
+    <img
+      :src="trashIcon"
+      aria-hidden="true"
+      data-prefix="fas"
+      data-icon="trash-alt"
+      class="svg-inline--fa fa-trash-alt fa-w-14"
+      alt=""
+    >
+  </crown-button>
 </template>
 
 <script>
