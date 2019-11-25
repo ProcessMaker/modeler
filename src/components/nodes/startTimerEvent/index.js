@@ -7,7 +7,7 @@ export default {
   id: 'processmaker-modeler-start-timer-event',
   component,
   bpmnType: 'bpmn:StartEvent',
-  control: true,
+  control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/start-timer-event.svg'),
   label: 'Start Timer Event',
