@@ -19,6 +19,7 @@
       v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
     />
+    <slot name="dropdown"/>
     <delete-button
       @click="removeShape"
       v-b-tooltip.hover.viewport.d50

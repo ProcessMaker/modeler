@@ -156,6 +156,7 @@
       @save-state="pushToUndoStack"
       @set-shape-stacking="setShapeStacking"
       @setTooltip="tooltipTarget = $event"
+      @replace-node="replaceNode"
     />
   </b-row>
 </template>
@@ -763,6 +764,11 @@ export default {
       this.$nextTick(() => {
         this.pushToUndoStack();
       });
+    },
+    replaceNode(node, typeToReplaceWith) {
+      const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+      this.removeNode(node);
+      this.handleDrop({ clientX, clientY, control: { type: typeToReplaceWith } });
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
