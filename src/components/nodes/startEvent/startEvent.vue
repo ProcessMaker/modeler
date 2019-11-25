@@ -14,7 +14,20 @@
     @remove-node="$emit('remove-node', $event)"
     @add-node="$emit('add-node', $event)"
     @save-state="$emit('save-state', $event)"
-  />
+  >
+    <template v-slot:dropdown>
+      <div class="dropdown-container">
+        <button class="button" @click="dropdownOpen = !dropdownOpen">
+          <i class="fas fa-cog"/>
+        </button>
+
+        <select v-if="dropdownOpen" class="dropdown" @change="$emit('replace-node', node, $event.target.value)">
+          <option value=""/>
+          <option value="processmaker-modeler-start-timer-event">Start Timer Event</option>
+          <option value="processmaker-modeler-message-start-event">Message Start Event</option>
+        </select></div>
+    </template>
+  </crown-config>
 </template>
 
 <script>
@@ -48,6 +61,7 @@ export default {
     return {
       shape: null,
       definition: null,
+      dropdownOpen: true,
     };
   },
   watch: {
@@ -83,3 +97,24 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+  .dropdown-container {
+    position: relative;
+    display: flex;
+    margin: 0 10px;
+
+    .button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 0;
+    }
+
+    .dropdown {
+      position: absolute;
+      left: 0;
+      top: 2rem;
+    }
+  }
+</style>
