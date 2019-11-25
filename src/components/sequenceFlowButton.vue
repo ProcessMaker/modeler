@@ -1,18 +1,17 @@
 <template>
-  <img
-    :src="sequenceFlow"
-    @click="$emit('click')"
+  <crown-button
     id="sequence-flow-button"
-    data-test="sequence-flow-button"
-    width="19px"
-    height="20px"
-    alt="Create a sequence flow"
-  >
+    aria-label="Create a sequence flow"
+    :src="sequenceFlow"
+    v-on="$listeners"
+  />
 </template>
 <script>
 import sequenceFlow from '@/assets/connect-elements.svg';
+import CrownButton from '@/components/crownButton';
 
 export default {
+  components: { CrownButton },
   data() {
     return {
       sequenceFlow,

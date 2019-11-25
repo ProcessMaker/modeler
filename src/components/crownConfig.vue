@@ -5,26 +5,22 @@
       v-b-tooltip.hover.viewport.d50
       v-if="isTextAnnotation"
       @click="addAssociation"
-      class="crown-config__icon"
       :title="$t('Association Flow')"
     />
     <sequence-flow-button
       v-if="isValidSequenceFlowSource"
       @click="addSequence"
-      class="crown-config__icon"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
     />
     <message-flow-button
       v-if="isValidMessageFlowSource"
       @click="addMessageFlow"
-      class="crown-config__icon"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
     />
     <delete-button
       @click="removeShape"
-      class="crown-config__icon"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
     />
@@ -304,11 +300,6 @@ export default {
       z-index: -1;
       transform: rotate(45deg);
       border-radius: 1px;
-    }
-
-    &__icon {
-      margin: 5px 10px;
-      font-size: 1rem;
     }
   }
 </style>

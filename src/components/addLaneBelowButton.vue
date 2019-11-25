@@ -1,18 +1,19 @@
 <template>
-  <img
-    class="crown-icon"
-    alt="Add lane below icon"
-    v-on="$listeners"
-    :src="laneBelowIcon"
-    data-test="lane-below-button"
+  <crown-button
     id="lane-below-button"
-  >
+    aria-label="Add lane below icon"
+    :src="laneBelowIcon"
+    v-on="$listeners"
+    :width="25"
+  />
 </template>
 
 <script>
 import laneBelowIcon from '@/assets/lane-below.svg';
+import CrownButton from '@/components/crownButton';
 
 export default {
+  components: { CrownButton },
   data() {
     return {
       laneBelowIcon,
@@ -20,9 +21,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-  .crown-icon {
-    width: 25px;
-  }
-</style>

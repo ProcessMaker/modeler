@@ -1,22 +1,26 @@
 <template>
-  <img
-    :src="trashIcon"
-    @click="$emit('click')"
+  <crown-button
     id="delete-button"
-    data-test="delete-button"
-    aria-hidden="true"
-    data-prefix="fas"
-    data-icon="trash-alt"
-    class="svg-inline--fa fa-trash-alt fa-w-14"
-    role="img"
-    alt="Delete this node"
+    aria-label="Delete this node"
+    v-on="$listeners"
   >
+    <img
+      :src="trashIcon"
+      aria-hidden="true"
+      data-prefix="fas"
+      data-icon="trash-alt"
+      class="svg-inline--fa fa-trash-alt fa-w-14"
+      alt=""
+    >
+  </crown-button>
 </template>
 
 <script>
 import trashIcon from '@/assets/trash-alt-solid.svg';
+import CrownButton from '@/components/crownButton';
 
 export default {
+  components: { CrownButton },
   data() {
     return {
       trashIcon,
