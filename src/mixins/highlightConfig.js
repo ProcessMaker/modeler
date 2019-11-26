@@ -93,7 +93,7 @@ export default {
        * This will ensure this.shape is defined. */
 
       if (this.paperManager.hasScheduledUpdates()) {
-        this.paperManager.addOnceHandler('render:done', this.setUpHighlightConfig());
+        this.paperManager.addOnceHandler('render:done', this.setUpHighlightConfig);
         return;
       }
       this.setUpHighlightConfig();
