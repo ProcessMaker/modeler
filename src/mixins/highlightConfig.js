@@ -23,9 +23,9 @@ const defaultHighlighter = {
 export default {
   props: [
     'highlighted',
-    'paper',
+    'paperManager',
     'hasError',
-    'isRendering',
+    'autoValidate',
   ],
   data() {
     return {
@@ -37,16 +37,19 @@ export default {
       this.setHighlight();
     },
     hasError() {
-      if (this.isRendering) {
+      if (this.paperManager.hasScheduledUpdates()) {
+        this.paperManager.addOnceHandler('render:done', this.setErrorHighlight);
         return;
       }
-
+      this.setErrorHighlight();
+    },
+    autoValidate() {
       this.setErrorHighlight();
     },
   },
   computed: {
     shapeView() {
-      return this.shape.findView(this.paper);
+      return this.shape.findView(this.paperManager.paper);
     },
     shapeBody() {
       return this.shapeView.$el.find('[joint-selector=body]');
@@ -55,40 +58,33 @@ export default {
   methods: {
     setHighlight() {
       if (this.highlighted) {
-        this.shapeView.highlight(this.shapeBody, {highlighter: defaultHighlighter});
+        this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
         return;
       }
 
-      this.shapeView.unhighlight(this.shapeBody, {highlighter: defaultHighlighter});
+      this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
     },
     setErrorHighlight() {
       if (!this.shapeView) {
         return;
       }
-
-      if (this.hasError) {
+      if (this.hasError && this.autoValidate) {
         this.shapeView.highlight(null, { highlighter: errorHighlighter });
-      } else {
-        this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
+        return;
       }
+      this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
     },
-    configureCrown() {
-      this.paper.once('render:done', () => this.setHighlight());
-
-      const shapeView = this.shape.findView(this.paper);
+    setUpCrownConfig() {
+      this.setHighlight();
+      this.setErrorHighlight();
 
       this.shape.on('change:size', () => {
         if (this.highlighted) {
           /* Ensure the highlight box expands to fit element */
-          shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
-          shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
+          this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
+          this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
         }
       });
-    },
-    setUpCrownConfig() {
-      this.configureCrown();
-
-      this.setErrorHighlight();
     },
   },
   mounted() {
@@ -96,8 +92,8 @@ export default {
       /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
        * This will ensure this.shape is defined. */
 
-      if (this.isRendering) {
-        this.paper.once('render:done', this.setUpCrownConfig);
+      if (this.paperManager.hasScheduledUpdates()) {
+        this.paperManager.addOnceHandler('render:done', this.setUpCrownConfig);
       } else {
         this.setUpCrownConfig();
       }

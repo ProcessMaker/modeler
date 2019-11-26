@@ -5,16 +5,15 @@ import ModelerApp from './ModelerApp.vue';
 import BootstrapVue from 'bootstrap-vue';
 import './setup/initialLoad';
 import translations from '@/setup/translations.json';
-
-Vue.use(BootstrapVue);
-
 import * as VueDeepSet from 'vue-deepset';
-Vue.use(VueDeepSet);
-
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
+
+Vue.use(BootstrapVue);
+
+Vue.use(VueDeepSet);
 
 Vue.config.productionTip = false;
 

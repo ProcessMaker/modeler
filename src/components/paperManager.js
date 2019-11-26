@@ -1,4 +1,4 @@
-import { dia } from 'jointjs';
+import { dia, util } from 'jointjs';
 import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 
 export default class PaperManager {
@@ -92,5 +92,9 @@ export default class PaperManager {
 
   setStateValid() {
     this.paper.drawBackground({ color: defaultNodeColor });
+  }
+
+  hasScheduledUpdates() {
+    return this.#paper._updates.priorities.some(updates => !util.isEmpty(updates));
   }
 }

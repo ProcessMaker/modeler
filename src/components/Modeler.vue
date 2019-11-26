@@ -104,6 +104,7 @@
       :root-elements="definitions.get('rootElements')"
       :isRendering="isRendering"
       :paperManager="paperManager"
+      :auto-validate="autoValidate"
       @add-node="addNode"
       @remove-node="removeNode"
       @set-cursor="cursor = $event"
@@ -138,15 +139,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import {
-  faCompress,
-  faExpand,
-  faMapMarked,
-  faMinus,
-  faPlus,
-  faStepBackward,
-  faStepForward,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faStepBackward, faStepForward } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
@@ -267,10 +260,8 @@ export default {
     },
     highlightedNode: () => store.getters.highlightedNode,
     invalidNodes() {
-      return Object.entries(this.validationErrors).reduce((invalidIds, [, errors]) => {
-        invalidIds.push(...errors.map(error => error.id));
-        return invalidIds;
-      }, []);
+      return Object.entries(this.validationErrors)
+        .flatMap(([, errors]) => errors.map(error => error.id));
     },
   },
   methods: {
