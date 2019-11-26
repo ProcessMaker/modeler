@@ -1,11 +1,11 @@
 const errorHighlighter = {
   name: 'stroke',
   options: {
-    padding: 12,
+    padding: 10,
     attrs: {
       stroke: 'red',
-      'stroke-width': 3,
-      opacity: 0.6,
+      'stroke-width': 10,
+      opacity: 0.3,
     },
   },
 };
@@ -14,7 +14,7 @@ const defaultHighlighter = {
   name: 'stroke',
   options: {
     attrs: {
-      stroke: '#feb663',
+      stroke: '#5096db',
       'stroke-width': 3,
     },
   },
@@ -69,10 +69,10 @@ export default {
         return;
       }
       if (this.hasError && this.autoValidate) {
-        this.shapeView.highlight(null, { highlighter: errorHighlighter });
+        this.shapeView.highlight(this.shapeBody, { highlighter: errorHighlighter });
         return;
       }
-      this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
+      this.shapeView.unhighlight(this.shapeBody, { highlighter: errorHighlighter });
     },
     setUpHighlightConfig() {
       this.setHighlight();
