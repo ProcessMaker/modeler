@@ -75,8 +75,8 @@ export default {
       this.shapeView.unhighlight(this.shapeBody, { highlighter: errorHighlighter });
     },
     setUpHighlightConfig() {
-      this.setHighlight();
       this.setErrorHighlight();
+      this.setHighlight();
 
       this.shape.on('change:size', () => {
         if (this.highlighted) {
