@@ -74,7 +74,7 @@ export default {
       }
       this.shapeView.unhighlight(null, { highlighter: errorHighlighter });
     },
-    setUpCrownConfig() {
+    setUpHighlightConfig() {
       this.setHighlight();
       this.setErrorHighlight();
 
@@ -93,10 +93,10 @@ export default {
        * This will ensure this.shape is defined. */
 
       if (this.paperManager.hasScheduledUpdates()) {
-        this.paperManager.addOnceHandler('render:done', this.setUpCrownConfig);
-      } else {
-        this.setUpCrownConfig();
+        this.paperManager.addOnceHandler('render:done', this.setUpHighlightConfig());
+        return;
       }
+      this.setUpHighlightConfig();
     });
   },
 };
