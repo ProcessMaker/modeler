@@ -41,7 +41,7 @@ export default {
     highlighted(highlighted) {
       if (highlighted) {
         this.shape.attr({
-          line: { stroke: 'orange' },
+          line: { stroke: '#5096db' },
           '.joint-highlight-stroke': { 'display': 'none' },
         });
         this.shapeView.showTools();
@@ -133,7 +133,9 @@ export default {
       const start = linkView.sourceAnchor;
       const end = linkView.targetAnchor;
 
-      this.node.diagram.waypoint = [start, ...this.shape.vertices(), end].map(point => this.moddle.create('dc:Point', point));
+      this.node.diagram.waypoint = [start,
+        ...this.shape.vertices(),
+        end].map(point => this.moddle.create('dc:Point', point));
 
       if (!this.listeningToMouseup) {
         this.listeningToMouseup = true;
