@@ -79,12 +79,18 @@ export default {
       this.setHighlight();
 
       this.shape.on('change:size', () => {
-        if (this.highlighted) {
-          /* Ensure the highlight box expands to fit element */
-          this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
-          this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
+        if (this.paperManager.hasScheduledUpdates()) {
+          this.paperManager.addOnceHandler('render:done', this.reHighlightExpandedElement);
+          return;
         }
+        this.reHighlightExpandedElement();
       });
+    },
+    reHighlightExpandedElement() {
+      if (this.highlighted) {
+        this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
+        this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
+      }
     },
   },
   mounted() {
