@@ -41,7 +41,7 @@ export default {
       this.setShapeHighlight();
     },
     hasError() {
-      this.paperManager.executeAfterScheduledUpdates(this.setShapeHighlight);
+      this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
     },
     autoValidate() {
       this.setShapeHighlight();
@@ -72,12 +72,13 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.paperManager.executeAfterScheduledUpdates(() => {
-        this.setShapeHighlight();
-        this.shape.on('change:size', () => {
-          this.paperManager.executeAfterScheduledUpdates(this.setShapeHighlight);
+      this.paperManager.awaitScheduledUpdates()
+        .then(() => {
+          this.setShapeHighlight();
+          this.shape.on('change:size', () => {
+            this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
+          });
         });
-      });
     });
   },
 };

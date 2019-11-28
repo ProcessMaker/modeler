@@ -36,6 +36,7 @@ export default {
     'nodeRegistry',
     'moddle',
     'paper',
+    'paperManager',
     'collaboration',
     'processNode',
     'planeElements',
@@ -57,7 +58,7 @@ export default {
   methods: {
     getLabelHeight(labelPadding) {
       return this.shape
-        .findView(this.paper)
+        .findView(this.paperManager.paper)
         .selectors
         .label
         .getBBox()
@@ -76,7 +77,7 @@ export default {
       return previousHeight - defaultPadding;
     },
     updateNodeText(text) {
-      const { height } = this.shape.findView(this.paper).getBBox();
+      const { height } = this.shape.findView(this.paperManager.paper).getBBox();
       const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
       const bounds = this.node.diagram.bounds;
 
@@ -92,9 +93,8 @@ export default {
         },
       });
 
-      this.paper.once('render:done', () => {
-        this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height));
-      });
+      this.paperManager.awaitScheduledUpdates()
+        .then(() => this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height)));
     },
   },
   mounted() {
