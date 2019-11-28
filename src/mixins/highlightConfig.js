@@ -87,6 +87,10 @@ export default {
       });
     },
     reHighlightExpandedElement() {
+      if (this.hasError) {
+        this.shapeView.unhighlight(this.shapeBody, { highlighter: errorHighlighter });
+        this.shapeView.highlight(this.shapeBody, { highlighter: errorHighlighter });
+      }
       if (this.highlighted) {
         this.shapeView.unhighlight(this.shapeBody, { highlighter: defaultHighlighter });
         this.shapeView.highlight(this.shapeBody, { highlighter: defaultHighlighter });
