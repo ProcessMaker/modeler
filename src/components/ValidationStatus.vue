@@ -28,31 +28,35 @@
       {{ $t('Auto validate') }}
     </b-form-checkbox>
 
-    <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
-      <dl class="validation-container__list align-items-baseline" data-test="validation-list">
-        <template v-for="error in errorList">
-          <dt class="text-capitalize" :key="`${error.id}_${error.errorKey}`">
-            <font-awesome-icon
-              class="status-bar-container__status-icon ml-1 mr-1 mt-1"
-              :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
-              :icon="isErrorCategory(error) ? faTimesCircle: faExclamationTriangle"
-            />
-            {{ error.errorKey }}
-          </dt>
-          <dd :key="`${error.id}_${error.errorKey}_dd`">
-            <p class="pl-4 mb-0 font-italic">{{ error.message }}.</p>
-            <p class="pl-4 mb-0" v-if="error.id"><span class="font-weight-bold">{{ $t('Node ID') }}:</span> {{ error.id }}</p>
-          </dd>
-        </template>
-        <template v-for="(warning, index) in warnings">
-          <dt class="text-capitalize" :key="warning.title + index">
-            <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-1 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
-            {{ warning.title }}
-          </dt>
-          <dd :key="warning.title + index + '__dd'" class="font-italic pl-4">{{ warning.text }}</dd>
-        </template>
-      </dl>
-    </div>
+
+    <transition name="slide">
+
+      <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
+        <dl class="validation-container__list align-items-baseline" data-test="validation-list">
+          <template v-for="error in errorList">
+            <dt class="text-capitalize" :key="`${error.id}_${error.errorKey}`">
+              <font-awesome-icon
+                class="status-bar-container__status-icon ml-1 mr-1 mt-1"
+                :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
+                :icon="isErrorCategory(error) ? faTimesCircle: faExclamationTriangle"
+              />
+              {{ error.errorKey }}
+            </dt>
+            <dd :key="`${error.id}_${error.errorKey}_dd`">
+              <p class="pl-4 mb-0 font-italic">{{ error.message }}.</p>
+              <p class="pl-4 mb-0" v-if="error.id"><span class="font-weight-bold">{{ $t('Node ID') }}:</span> {{ error.id }}</p>
+            </dd>
+          </template>
+          <template v-for="(warning, index) in warnings">
+            <dt class="text-capitalize" :key="warning.title + index">
+              <font-awesome-icon class="status-bar-container__status-icon ml-1 mr-1 mt-1" :style="{ color: warningColor }" :icon="faExclamationTriangle" />
+              {{ warning.title }}
+            </dt>
+            <dd :key="warning.title + index + '__dd'" class="font-italic pl-4">{{ warning.text }}</dd>
+          </template>
+        </dl>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -158,4 +162,25 @@ $status-bar-container-height: 3rem;
     }
   }
 }
+
+.slide-enter-active {
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in;
+}
+
+.slide-leave-active {
+  transition-duration: 0.5s;
+  transition-timing-function: ease-out;
+}
+
+.slide-enter-to, .slide-leave {
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.slide-enter, .slide-leave-to {
+  overflow: hidden;
+  max-height: 0;
+}
+
 </style>
