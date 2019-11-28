@@ -94,7 +94,10 @@ export default {
       });
 
       this.paperManager.awaitScheduledUpdates()
-        .then(() => this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height)));
+        .then(() => {
+          this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height));
+          this.setShapeHighlight();
+        });
     },
   },
   mounted() {
