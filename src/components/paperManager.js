@@ -94,7 +94,11 @@ export default class PaperManager {
     this.paper.drawBackground({ color: defaultNodeColor });
   }
 
-  hasScheduledUpdates() {
-    return this.#paper._updates.priorities.some(updates => !util.isEmpty(updates));
+  executeAfterScheduledUpdates(callback) {
+    if (this.#paper._updates.priorities.some(updates => !util.isEmpty(updates))) {
+      this.addOnceHandler('render:done', callback);
+      return;
+    }
+    callback();
   }
 }
