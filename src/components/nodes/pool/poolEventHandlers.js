@@ -4,9 +4,10 @@ import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/node
 import store from '@/store';
 
 export default class PoolEventHandlers {
-  constructor(graph, paper, shape, component) {
+  constructor(graph, paper, paperManager, shape, component) {
     this.graph = graph;
     this.paper = paper;
+    this.paperManager = paperManager;
     this.shape = shape;
     this.component = component;
 
@@ -14,6 +15,12 @@ export default class PoolEventHandlers {
     this.draggingElement = null;
     this.newPool = null;
     this.invalidPool = null;
+  }
+
+  isNotPoolChild(model) {
+    return !(model.component && model.component !== this.component &&
+      model.component.node.type !== laneId &&
+      model.getParentCell() && model.getParentCell().component === this.component);
   }
 
   onPointerDown(cellView) {
@@ -27,12 +34,6 @@ export default class PoolEventHandlers {
     ) {
       this.draggingElement = cellView.model;
     }
-  }
-
-  isNotPoolChild(model) {
-    return !(model.component && model.component !== this.component &&
-      model.component.node.type !== laneId &&
-      model.getParentCell() && model.getParentCell().component === this.component);
   }
 
   onPointerUp(cellView) {
@@ -98,8 +99,8 @@ export default class PoolEventHandlers {
         this.invalidPool = null;
       }
 
-      this.paper.drawBackground({ color: invalidNodeColor });
-      element.component.allowSetNodePosition = false;
+      store.commit('preventSavingElementPosition');
+      this.paperManager.setStateInvalid();
     } else if (pool.component !== this.component && this.graph.getConnectedLinks(element).length > 0) {
       if (!this.previousValidPosition) {
         this.previousValidPosition = newPosition;
@@ -107,7 +108,9 @@ export default class PoolEventHandlers {
 
       this.invalidPool = pool.component.shape;
       this.invalidPool.attr('body/fill', invalidNodeColor);
-      element.component.allowSetNodePosition = false;
+
+      store.commit('preventSavingElementPosition');
+      this.paperManager.setStateValid();
     } else {
       this.paper.drawBackground({ color: defaultNodeColor });
       this.previousValidPosition = null;
@@ -121,7 +124,8 @@ export default class PoolEventHandlers {
         ? pool
         : null;
 
-      element.component.allowSetNodePosition = true;
+      store.commit('allowSavingElementPosition');
+      this.paperManager.setStateValid();
     }
   }
 }

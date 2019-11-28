@@ -68,6 +68,7 @@ export default {
     'paper',
     'planeElements',
     'isRendering',
+    'paperManager',
   ],
   mixins: [highlightConfig, resizeConfig, portsConfig],
   data() {
@@ -393,10 +394,47 @@ export default {
         laneShape.position(labelWidth, newY, { parentRelative: true });
       });
     },
-    isPoolChild(model, component) {
-      return model.component && model.component !== component &&
-        model.component.node.type !== laneId &&
-        model.getParentCell() && model.getParentCell().component === component;
+    captureChildren() {
+      this.graph.getElements().filter(({ component }) => component && component !== this).forEach(({ component }) => {
+        if (component.node.definition.$type === 'bpmn:BoundaryEvent') {
+          return;
+        }
+        this.shape.embed(component.shape);
+        component.node.pool = this.shape;
+      });
+      this.$emit('set-shape-stacking', this.shape);
+      this.resizePool(this.shape);
+    },
+    fitEmbeds() {
+      this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
+      this.shape.resize(
+        this.shape.getBBox().width - labelWidth,
+        this.shape.getBBox().height - labelWidth
+      );
+      this.shape.resize(
+        this.shape.getBBox().width,
+        this.shape.getBBox().height - labelWidth,
+        { direction: 'top' }
+      );
+    },
+    resizePool(pool) {
+      this.fitEmbeds();
+      const { width, height } = this.shape.get('size');
+      const bounds = this.node.diagram.bounds;
+      this.shape.resize(
+        /* Add labelWidth to ensure elements don't overlap with the pool label */
+        Math.max(width, bounds.width),
+        Math.max(height, bounds.height)
+      );
+      this.shape.getEmbeddedCells().forEach(cell => {
+        this.expandToFitElement(cell, pool);
+      });
+      const { x, y } = this.shape.position();
+      const { width: newWidth, height: newHeight } = this.shape.get('size');
+      this.node.diagram.bounds.x = x;
+      this.node.diagram.bounds.y = y;
+      this.node.diagram.bounds.width = newWidth;
+      this.node.diagram.bounds.height = newHeight;
     },
     updateLaneChildren() {
       /* Ensure elements in the pool are added to the lanes they are above */
@@ -462,11 +500,16 @@ export default {
 
     this.shape = configurePool(this.collaboration, this.node, this.graph);
     this.shape.component = this;
+    /* If there are no other pools, the first pool should capture all current flow elements.
+     * Don't do this when parsing an uploaded diagram. */
+    if (!this.collaboration) {
+      this.captureChildren();
+    }
     this.setPoolSize(this.shape);
     this.$emit('set-shape-stacking', this.shape);
 
     this.$nextTick(() => {
-      const handler = new PoolEventHandlers(this.graph, this.paper, this.shape, this);
+      const handler = new PoolEventHandlers(this.graph, this.paper, this.paperManager, this.shape, this);
       this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => handler.onChangePosition(element, newPosition));
       this.shape.listenTo(this.paper, 'cell:pointerdown', (cellView) => handler.onPointerDown(cellView));
       this.shape.listenTo(this.paper, 'cell:pointerup', (cellView) => handler.onPointerUp(cellView));
