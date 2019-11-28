@@ -13,7 +13,7 @@
         <span class="badge badge-primary badge-pill">
           {{ numberOfProblemsToDisplay }}
         </span>
-        <font-awesome-icon class="ml-3" :icon="shouldDisplayProblemsPanel? faChevronUp : faChevronDown" />
+        <font-awesome-icon class="ml-3" :class="rotateIcon"  :icon="faChevronDown" />
       </button>
     </template>
 
@@ -105,6 +105,9 @@ export default {
     isProblemsPanelDisplayed() {
       return this.shouldDisplayProblemsPanel && this.numberOfProblemsToDisplay > 0 && this.autoValidate;
     },
+    rotateIcon() {
+      return this.shouldDisplayProblemsPanel ? 'rotatingUp' : 'rotatingDown';
+    },
   },
   methods: {
     isErrorCategory(error) {
@@ -181,6 +184,16 @@ $status-bar-container-height: 3rem;
 .slide-enter, .slide-leave-to {
   overflow: hidden;
   max-height: 0;
+}
+
+.rotatingUp {
+  transition: transform 0.5s ease-in;
+  transform: rotate(180deg);
+}
+
+.rotatingDown {
+  transition: transform 0.5s ease-out;
+  transform: rotate(0deg);
 }
 
 </style>
