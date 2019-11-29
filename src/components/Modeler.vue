@@ -108,7 +108,7 @@
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
 
-    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" :class="{ 'mini-paper-expanded' : panelsCompressed }" />
+    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" :class="{ 'expanded' : panelsCompressed }" />
 
     <transition name="inspector">
       <b-col
