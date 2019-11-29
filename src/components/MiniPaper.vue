@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     visibilityClass() {
-      return this.isOpen ? 'visible' : 'invisible';
+      return this.isOpen ? 'opened' : 'closed';
     },
     miniMap() {
       return this.miniMapManager.miniMap;
@@ -60,6 +60,7 @@ export default {
 $mini-paper-container-top-position: 1rem;
 $mini-paper-container-right-position: 17.5rem;
 $mini-paper-container-right-expanded-position: 2rem;
+$transition: 0.3s;
 
 .mini-paper-container {
   position: absolute;
@@ -76,5 +77,13 @@ $mini-paper-container-right-expanded-position: 2rem;
 }
 .mini-paper-expanded {
   right: $mini-paper-container-right-expanded-position;
+}
+
+.mini-paper-container.closed {
+  opacity: 0;
+  transition: opacity $transition linear
+}
+.mini-paper-container.opened {
+  transition: opacity $transition linear;
 }
 </style>
