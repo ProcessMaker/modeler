@@ -75,13 +75,14 @@ $transition: 0.3s;
     pointer-events: none;
   }
 }
-.mini-paper-expanded {
+
+.mini-paper-container.expanded {
   right: $mini-paper-container-right-expanded-position;
 }
 
 .mini-paper-container.closed {
   opacity: 0;
-  transition: opacity $transition linear
+  transition: opacity $transition linear;
 }
 .mini-paper-container.opened {
   transition: opacity $transition linear;
