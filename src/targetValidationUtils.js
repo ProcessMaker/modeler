@@ -46,6 +46,11 @@ export default function getValidationProperties(clientX, clientY, control, paper
     return returnValue;
   }
 
+  if (isTextAnnotation(control.bpmnType)) {
+    returnValue.allowDrop = true;
+    return returnValue;
+  }
+
   let poolUnderPosition = getPoolUnderPosition(clientX, clientY, paper, graph);
   if (poolUnderPosition) {
     returnValue.allowDrop = true;
@@ -53,6 +58,10 @@ export default function getValidationProperties(clientX, clientY, control, paper
   }
 
   return returnValue;
+}
+
+function isTextAnnotation(bpmnType) {
+  return bpmnType === 'bpmn:TextAnnotation';
 }
 
 function getPoolUnderPosition(clientX, clientY, paper, graph) {
@@ -115,8 +124,8 @@ function isOverValidBoundaryErrorEventTarget(clientX, clientY, paper, graph) {
 }
 
 function isOverValidBoundaryEscalationEventTarget(clientX, clientY, paper, graph) {
-  return graph.findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper)).
-    find(({ component }) => isValidBoundaryEscalationEvent(component));
+  return graph.findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper))
+    .find(({ component }) => isValidBoundaryEscalationEvent(component));
 }
 
 export function isValidBoundaryEscalationEvent(component) {
