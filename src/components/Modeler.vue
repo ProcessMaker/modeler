@@ -69,22 +69,24 @@
 
     <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" :class="{ 'mini-paper-expanded' : panelsCompressed }" />
 
-    <b-col
-      v-show="!panelsCompressed"
-      class="pl-0 h-100 overflow-hidden inspector-column"
-      :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : panelsCompressed }]"
-      data-test="inspector-column"
-    >
-      <InspectorPanel
-        ref="inspector-panel"
-        :style="{ height: parentHeight }"
-        :nodeRegistry="nodeRegistry"
-        :moddle="moddle"
-        :processNode="processNode"
-        @save-state="pushToUndoStack"
-        class="inspector h-100"
-      />
-    </b-col>
+    <transition name="inspector">
+      <b-col
+        v-show="!panelsCompressed"
+        class="pl-0 h-100 overflow-hidden inspector-column"
+        :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : panelsCompressed }]"
+        data-test="inspector-column"
+      >
+        <InspectorPanel
+          ref="inspector-panel"
+          :style="{ height: parentHeight }"
+          :nodeRegistry="nodeRegistry"
+          :moddle="moddle"
+          :processNode="processNode"
+          @save-state="pushToUndoStack"
+          class="inspector h-100"
+        />
+      </b-col>
+    </transition>
     <component
       v-for="node in nodes"
       :is="node.type"
@@ -879,6 +881,7 @@ $controls-column-max-width: 265px;
 $controls-column-compressed-max-width: 95px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
+$controls-transition: 0.6s;
 
 .ignore-pointer {
   pointer-events: none;
@@ -891,10 +894,12 @@ $vertex-error-color: #ED4757;
 
   .controls-column {
     max-width: $controls-column-max-width;
+    transition: all $controls-transition ease-out;
   }
 
   .controls-column-compressed {
     max-width: $controls-column-compressed-max-width;
+    transition: all $controls-transition ease-in;
   }
 
   .main-paper {
@@ -952,6 +957,15 @@ $vertex-error-color: #ED4757;
   .btn-redo {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+  }
+
+  .inspector-enter-active, .inspector-leave-active {
+    transition: all $controls-transition ease;
+  }
+
+  .inspector-enter, .inspector-leave-to {
+    transform: translateX(10px);
+    opacity: 0;
   }
 }
 </style>
