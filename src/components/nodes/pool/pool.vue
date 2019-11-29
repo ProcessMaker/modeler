@@ -86,7 +86,7 @@ export default {
       }
 
       return this.processes.find(process =>
-        process.id === this.node.definition.get('processRef').id,
+        process.id === this.node.definition.get('processRef').id
       );
     },
   },
@@ -112,7 +112,7 @@ export default {
         return shape1.position().y - shape2.position().y;
       });
     },
-    getElementsUnderArea(element, graph = this.graph) {
+    getElementsUnderArea(element, graph) {
       const { x, y, width, height } = element.getBBox();
       const area = { x, y, width, height };
 
@@ -447,7 +447,7 @@ export default {
           element.component &&
           element.component.node.pool === this.shape &&
           element.component.node.type !== laneId &&
-          element.component.node.type !== textAnnotationId,
+          element.component.node.type !== textAnnotationId
         )
         .forEach(element => {
           const lane = this.graph
