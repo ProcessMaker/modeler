@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import { shapes, util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane, { id as laneId } from '../poolLane';
@@ -39,33 +38,14 @@ import { id as poolId } from './index';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
-import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
 import pull from 'lodash/pull';
 import store from '@/store';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/addLaneBelowButton';
-
-const Pool = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.pool', {
-  markup: [
-    ...shapes.standard.Rectangle.prototype.markup,
-    { tagName: 'polyline', selector: 'polyline' },
-  ],
-  attrs: {
-    label: {
-      fill: 'black',
-      transform: 'rotate(-90)',
-      refX: labelWidth / 2,
-    },
-    polyline: {
-      refPointsKeepOffset: `${labelWidth},0 ${labelWidth},200`,
-      stroke: '#000',
-      fill: '#fff',
-      strokeWidth: 2,
-    },
-  },
-});
+import { configurePool } from '@/components/nodes/pool/poolUtils';
+import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 
 export default {
   components: {
@@ -132,14 +112,14 @@ export default {
         return shape1.position().y - shape2.position().y;
       });
     },
-    getElementsUnderArea(element) {
-      const { x, y, width, height} = element.getBBox();
+    getElementsUnderArea(element, graph) {
+      const { x, y, width, height } = element.getBBox();
       const area = { x, y, width, height };
 
-      return this.graph.findModelsInArea(area);
+      return graph.findModelsInArea(area);
     },
     moveEmbeddedElements(currentElement, toPool) {
-      this.getElementsUnderArea(currentElement)
+      this.getElementsUnderArea(currentElement, this.graph)
         .filter(element => element.isEmbeddedIn(currentElement))
         .map(element => element.component.node.definition)
         .forEach((elementDefinition) => {
@@ -171,7 +151,7 @@ export default {
     },
     async addLane() {
       /* A Lane element must be contained in a LaneSet element.
-       * Get the current laneSet element or create a new one. */
+         * Get the current laneSet element or create a new one. */
 
       const lanes = [];
 
@@ -224,19 +204,19 @@ export default {
       this.shape.unembed(element);
       this.shape.embed(element);
 
-      this.expandToFitElement(element);
+      this.expandToFitElement(element, this.shape);
 
       /* If there are lanes, add the element to the lane it's above */
       if (element.component.node.type !== laneId && this.laneSet) {
         this.updateLaneChildren();
       }
     },
-    expandToFitElement(element) {
+    expandToFitElement(element, pool) {
       if (element.component.node.type === messageFlowId) {
         return;
       }
 
-      const { x: poolX, y: poolY, width, height } = this.shape.getBBox();
+      const { x: poolX, y: poolY, width, height } = pool.getBBox();
 
       if (element.component.node.type === laneId) {
         /* Position lane relative to pool */
@@ -248,7 +228,7 @@ export default {
           return;
         }
 
-        const isFirstLane = this.shape.getEmbeddedCells().filter(cell => {
+        const isFirstLane = pool.getEmbeddedCells().filter(cell => {
           return cell.component && cell.component.node.type === laneId;
         }).length === 1;
 
@@ -259,23 +239,23 @@ export default {
           isFirstLane
             ? 0
             : this.isAddingLaneAbove ? -laneHeight : height,
-          { parentRelative: true }
+          { parentRelative: true },
         );
-        this.shape.resize(width, isFirstLane ? height : height + laneHeight, {
+        pool.resize(width, isFirstLane ? height : height + laneHeight, {
           direction: this.isAddingLaneAbove ? 'top-right' : 'bottom-right',
         });
 
         this.fixResizeRounding();
         this.updateAnchorPointPosition();
 
-        this.getElementsUnderArea(element).filter(laneElement => {
+        this.getElementsUnderArea(element, this.graph).filter(laneElement => {
           return laneElement.component &&
             ![poolId, laneId].includes(laneElement.component.node.type) &&
             laneElement.component.node.pool.component === this;
         }).forEach(laneElement => {
           if (isFirstLane) {
-            this.shape.unembed(laneElement);
-            this.shape.embed(laneElement);
+            pool.unembed(laneElement);
+            pool.embed(laneElement);
           }
         });
 
@@ -287,7 +267,7 @@ export default {
 
         store.commit('updateNodeBounds', {
           node: this.node,
-          bounds: this.shape.getBBox(),
+          bounds: pool.getBBox(),
         });
 
         return;
@@ -328,7 +308,7 @@ export default {
       }
 
       if (newWidth || newHeight) {
-        this.shape.resize(Math.max(newWidth, width), Math.max(newHeight, height), {
+        pool.resize(Math.max(newWidth, width), Math.max(newHeight, height), {
           direction: `${directionHeight}-${directionWidth}`,
         });
 
@@ -349,7 +329,7 @@ export default {
 
         store.commit('updateNodeBounds', {
           node: this.node,
-          bounds: this.shape.getBBox(),
+          bounds: pool.getBBox(),
         });
 
         this.$emit('save-state');
@@ -366,10 +346,18 @@ export default {
 
       let resizeDirection;
       switch (direction) {
-        case 'top-right': resizeDirection = 'bottom-right'; break;
-        case 'top-left': resizeDirection = 'bottom-left'; break;
-        case 'bottom-right': resizeDirection = 'top-right'; break;
-        case 'bottom-left': resizeDirection = 'top-left'; break;
+        case 'top-right':
+          resizeDirection = 'bottom-right';
+          break;
+        case 'top-left':
+          resizeDirection = 'bottom-left';
+          break;
+        case 'bottom-right':
+          resizeDirection = 'top-right';
+          break;
+        case 'bottom-left':
+          resizeDirection = 'top-left';
+          break;
       }
 
       const resizingLaneIndex = this.sortedLanes().indexOf(resizingLane);
@@ -407,19 +395,15 @@ export default {
       });
     },
     captureChildren() {
-      this.graph
-        .getElements()
-        .filter(({ component }) => component && component !== this)
-        .forEach(({ component }) => {
-          if (component.node.definition.$type === 'bpmn:BoundaryEvent'){
-            return;
-          }
-          this.shape.embed(component.shape);
-          component.node.pool = this.shape;
-        });
-
+      this.graph.getElements().filter(({ component }) => component && component !== this).forEach(({ component }) => {
+        if (component.node.definition.$type === 'bpmn:BoundaryEvent') {
+          return;
+        }
+        this.shape.embed(component.shape);
+        component.node.pool = this.shape;
+      });
       this.$emit('set-shape-stacking', this.shape);
-      this.resizePool();
+      this.resizePool(this.shape);
     },
     fitEmbeds() {
       this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
@@ -433,33 +417,24 @@ export default {
         { direction: 'top' }
       );
     },
-    resizePool() {
+    resizePool(pool) {
       this.fitEmbeds();
-
       const { width, height } = this.shape.get('size');
       const bounds = this.node.diagram.bounds;
-
       this.shape.resize(
         /* Add labelWidth to ensure elements don't overlap with the pool label */
         Math.max(width, bounds.width),
         Math.max(height, bounds.height)
       );
-
       this.shape.getEmbeddedCells().forEach(cell => {
-        this.expandToFitElement(cell);
+        this.expandToFitElement(cell, pool);
       });
-
       const { x, y } = this.shape.position();
       const { width: newWidth, height: newHeight } = this.shape.get('size');
       this.node.diagram.bounds.x = x;
       this.node.diagram.bounds.y = y;
       this.node.diagram.bounds.width = newWidth;
       this.node.diagram.bounds.height = newHeight;
-    },
-    isPoolChild(model) {
-      return model.component && model.component !== this &&
-        model.component.node.type !== laneId &&
-        model.getParentCell() && model.getParentCell().component === this;
     },
     updateLaneChildren() {
       /* Ensure elements in the pool are added to the lanes they are above */
@@ -472,7 +447,7 @@ export default {
           element.component &&
           element.component.node.pool === this.shape &&
           element.component.node.type !== laneId &&
-          element.component.node.type !==  textAnnotationId
+          element.component.node.type !== textAnnotationId
         )
         .forEach(element => {
           const lane = this.graph
@@ -504,144 +479,47 @@ export default {
     hasPools() {
       return this.collaboration.get('participants').length > 0;
     },
+    setPoolSize(pool) {
+      pool.getEmbeddedCells().forEach(cell => {
+        this.expandToFitElement(cell, pool);
+      });
+
+      const { x, y } = pool.position();
+      const { width: newWidth, height: newHeight } = pool.get('size');
+      this.node.diagram.bounds.x = x;
+      this.node.diagram.bounds.y = y;
+      this.node.diagram.bounds.width = newWidth;
+      this.node.diagram.bounds.height = newHeight;
+    },
   },
   mounted() {
+    // Do some initialization on parent
     this.$emit('set-pools', this.node.definition);
+
     this.laneSet = this.containingProcess.get('laneSets')[0];
 
-    this.shape = new Pool();
-    const bounds = this.node.diagram.bounds;
-    this.shape.position(bounds.x, bounds.y);
-    this.shape.resize(bounds.width, bounds.height);
-    this.shape.attr('label/text', util.breakText(this.node.definition.get('name'), {
-      width: bounds.width,
-    }));
-    this.shape.attr('body', {
-      fill: poolColor,
-      originalFill: poolColor,
-    });
-
-    this.shape.addTo(this.graph);
+    this.shape = configurePool(this.collaboration, this.node, this.graph);
     this.shape.component = this;
-
     /* If there are no other pools, the first pool should capture all current flow elements.
      * Don't do this when parsing an uploaded diagram. */
     if (!this.collaboration) {
       this.captureChildren();
     }
+    this.setPoolSize(this.shape);
+    this.$emit('set-shape-stacking', this.shape);
 
     this.$nextTick(() => {
-      let previousValidPosition;
-      let draggingElement;
-      let newPool;
-      let invalidPool;
-
-      this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => {
-        if (!this.isPoolChild(element) || !draggingElement) {
-          return;
-        }
-
-        /* If the element we are dragging is not over a pool or lane, prevent dropping it.
-         * Also prevent moving the element to another pool if it has a sequence flow, as
-         * sequence flows between pools are not valid. */
-
-        const pool = this.getElementsUnderArea(element).find(model => {
-          return model.component && model.component.node.type === poolId;
-        });
-
-        if (!pool) {
-          if (!previousValidPosition) {
-            previousValidPosition = newPosition;
-          }
-
-          if (invalidPool) {
-            invalidPool.attr('body/fill', poolColor);
-            invalidPool = null;
-          }
-
-          store.commit('preventSavingElementPosition');
-          this.paperManager.setStateInvalid();
-        } else if (pool.component !== this && this.graph.getConnectedLinks(element).length > 0) {
-          if (!previousValidPosition) {
-            previousValidPosition = newPosition;
-          }
-
-          invalidPool = pool.component.shape;
-          invalidPool.attr('body/fill', invalidNodeColor);
-
-          store.commit('preventSavingElementPosition');
-          this.paperManager.setStateValid();
-        } else {
-          previousValidPosition = null;
-
-          if (invalidPool) {
-            invalidPool.attr('body/fill', poolColor);
-            invalidPool = null;
-          }
-
-          newPool = pool !== this.shape
-            ? pool
-            : null;
-
-          store.commit('allowSavingElementPosition');
-          this.paperManager.setStateValid();
-        }
-      });
-
-      this.shape.listenTo(this.paper, 'cell:pointerdown', cellView => {
-        if (!this.isPoolChild(cellView.model)) {
-          return;
-        }
-
-        if (
-          (!draggingElement || draggingElement !== cellView.model) &&
-          cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
-        ) {
-          draggingElement = cellView.model;
-        }
-      });
-
-      this.shape.listenTo(this.paper, 'cell:pointerup', cellView => {
-        if (!this.isPoolChild(cellView.model)) {
-          return;
-        }
-
-        if (!draggingElement || draggingElement !== cellView.model) {
-          return;
-        }
-
-        if (previousValidPosition) {
-          draggingElement.position(previousValidPosition.x, previousValidPosition.y, { deep: true });
-          store.commit('updateNodeBounds', {
-            node: draggingElement.component.node,
-            bounds: previousValidPosition,
-          });
-        }
-
-        if (invalidPool) {
-          invalidPool.attr('body/fill', poolColor);
-          invalidPool = null;
-        }
-
-        if (newPool) {
-          /* Remove the shape from its current pool */
-          this.moveElement(draggingElement, newPool);
-          newPool = null;
-        } else {
-          this.expandToFitElement(draggingElement);
-          this.laneSet && this.updateLaneChildren();
-        }
-
-        this.paper.drawBackground({ color: defaultNodeColor });
-        draggingElement = null;
-      });
+      const handler = new PoolEventHandlers(this.graph, this.paper, this.paperManager, this.shape, this);
+      this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => handler.onChangePosition(element, newPosition));
+      this.shape.listenTo(this.paper, 'cell:pointerdown', (cellView) => handler.onPointerDown(cellView));
+      this.shape.listenTo(this.paper, 'cell:pointerup', (cellView) => handler.onPointerUp(cellView));
     });
   },
   beforeDestroy() {
     const participants = this.collaboration.get('participants');
     pull(participants, this.node.definition);
 
-    if (! this.hasPools()) {
+    if (!this.hasPools()) {
       this.$emit('unset-pools');
     } else {
       pull(this.rootElements, this.containingProcess);
