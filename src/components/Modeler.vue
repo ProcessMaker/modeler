@@ -602,14 +602,13 @@ export default {
       return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
     },
     async renderPaper() {
-      await this.$nextTick();
-      await this.paperManager.performAtomicAction(async() => {
-        this.isRendering = true;
-        await this.waitForCursorToChange();
-        this.parse();
-        await this.paperManager.awaitScheduledUpdates();
-        this.isRendering = false;
-      });
+      this.isRendering = true;
+
+      await this.waitForCursorToChange();
+      await this.paperManager.performAtomicAction(() => this.parse());
+      await this.paperManager.awaitScheduledUpdates();
+
+      this.isRendering = false;
       this.$emit('parsed');
       this.removeLoaderIfProcessIsEmpty();
     },
