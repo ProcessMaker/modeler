@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     visibilityClass() {
-      return this.isOpen ? 'opened' : 'closed';
+      return this.isOpen ? 'opened visible' : 'closed invisible';
     },
     miniMap() {
       return this.miniMapManager.miniMap;
