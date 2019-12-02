@@ -28,6 +28,7 @@
       <ul class="dropdown" v-if="dropdownOpen">
         <li>
           <button
+            data-test="switch-to-start-timer-event"
             type="button"
             @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-start-timer-event' })"
           >Start Timer Event
@@ -36,6 +37,7 @@
 
         <li>
           <button
+            data-test="switch-to-message-start-event"
             type="button"
             @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-message-start-event' })"
           >Message Start Event
