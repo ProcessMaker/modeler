@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest, assertDownloadedXmlContainsExpected, getElementAtPosition, waitToRenderAllShapes,
+  dragFromSourceToDest, assertDownloadedXmlContainsExpected, getElementAtPosition,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -8,7 +8,6 @@ describe('Message Start Event', () => {
     const messageStartEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.startEvent, messageStartEventPosition);
     cy.get('[data-test=switch-to-message-start-event]').click();
-    waitToRenderAllShapes();
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:startEvent id="node_3" name="Message Start Event">
