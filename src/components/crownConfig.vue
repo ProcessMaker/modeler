@@ -19,7 +19,31 @@
       v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
     />
-    <slot name="dropdown"/>
+
+    <div class="dropdown-container">
+      <button class="button" @click="dropdownOpen = !dropdownOpen">
+        <i class="fas fa-cog"/>
+      </button>
+
+      <ul class="dropdown" v-if="dropdownOpen">
+        <li>
+          <button
+            type="button"
+            @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-start-timer-event' })"
+          >Start Timer Event
+          </button>
+        </li>
+
+        <li>
+          <button
+            type="button"
+            @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-message-start-event' })"
+          >Message Start Event
+          </button>
+        </li>
+      </ul>
+    </div>
+
     <delete-button
       @click="removeShape"
       v-b-tooltip.hover.viewport.d50
@@ -92,6 +116,7 @@ export default {
         'processmaker-modeler-association',
       ],
       style: null,
+      dropdownOpen: true,
     };
   },
   created() {
@@ -276,6 +301,28 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+  .dropdown-container {
+    position: relative;
+    display: flex;
+    margin: 0 10px;
+
+    .button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 0;
+    }
+
+    .dropdown {
+      position: absolute;
+      left: 0;
+      top: 2rem;
+    }
+  }
+</style>
+
 
 <style lang="scss">
   $primary-color: #5096db;

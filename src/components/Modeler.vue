@@ -765,7 +765,7 @@ export default {
         this.pushToUndoStack();
       });
     },
-    replaceNode(node, typeToReplaceWith) {
+    replaceNode({ node, typeToReplaceWith }) {
       const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
       this.removeNode(node);
       this.handleDrop({ clientX, clientY, control: { type: typeToReplaceWith } });
