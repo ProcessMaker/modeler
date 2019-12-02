@@ -31,7 +31,7 @@
             data-test="switch-to-start-timer-event"
             type="button"
             @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-start-timer-event' })"
-          >Start Timer Event
+          >{{ $t('Start Timer Event') }}
           </button>
         </li>
 
@@ -40,7 +40,7 @@
             data-test="switch-to-message-start-event"
             type="button"
             @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-message-start-event' })"
-          >Message Start Event
+          >{{ $t('Message Start Event') }}
           </button>
         </li>
       </ul>
