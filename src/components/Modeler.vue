@@ -612,14 +612,6 @@ export default {
 
       this.isRendering = false;
       this.$emit('parsed');
-      this.removeLoaderIfProcessIsEmpty();
-    },
-    removeLoaderIfProcessIsEmpty() {
-      const emptyProcess = store.getters.nodes.length === 0;
-      if (!emptyProcess) {
-        return;
-      }
-      this.isRendering = false;
     },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
