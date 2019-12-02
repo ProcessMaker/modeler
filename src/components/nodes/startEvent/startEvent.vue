@@ -58,6 +58,19 @@ export default {
       this.shape.attr('label/text', name);
     },
   },
+  methods: {
+    removeDropdownOnUnhighlight() {
+      const unwatch = this.$watch('highlighted', highlighted => {
+        if (!highlighted) {
+          this.showDropdown = false;
+          unwatch();
+        }
+      });
+    },
+  },
+  created() {
+    this.removeDropdownOnUnhighlight();
+  },
   mounted() {
     this.shape = new EventShape();
     this.shape.set('type', 'processmaker.components.nodes.startEvent.Shape');
