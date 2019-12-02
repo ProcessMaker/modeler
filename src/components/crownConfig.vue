@@ -23,24 +23,26 @@
       :title="$t('Message Flow')"
     />
 
-    <div class="dropdown-container">
-      <button class="button" @click="dropdownOpen = !dropdownOpen">
+    <div class="cog-container">
+      <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
         <i class="fas fa-cog"/>
       </button>
 
-      <ul class="dropdown" v-if="dropdownOpen">
-        <li>
+      <ul class="element-list" v-if="dropdownOpen">
+        <li class="element-list--item">
           <button
             data-test="switch-to-start-timer-event"
+            class="element-list--item__button"
             type="button"
             @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-start-timer-event' })"
           >{{ $t('Start Timer Event') }}
           </button>
         </li>
 
-        <li>
+        <li class="element-list--item">
           <button
             data-test="switch-to-message-start-event"
+            class="element-list--item__button"
             type="button"
             @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-message-start-event' })"
           >{{ $t('Message Start Event') }}
@@ -48,6 +50,8 @@
         </li>
       </ul>
     </div>
+
+
 
     <delete-button
       @click="removeShape"
@@ -308,28 +312,6 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-  .dropdown-container {
-    position: relative;
-    display: flex;
-    margin: 0 10px;
-
-    .button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 0;
-    }
-
-    .dropdown {
-      position: absolute;
-      left: 0;
-      top: 2rem;
-    }
-  }
-</style>
-
-
 <style lang="scss">
   $primary-color: #5096db;
 
@@ -359,6 +341,54 @@ export default {
     &__icon {
       margin: 5px 10px;
       font-size: 1rem;
+    }
+  }
+
+  .cog-container {
+    position: relative;
+    display: flex;
+
+    &--button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 0;
+      position: relative;
+    }
+  }
+
+  .element-list {
+    position: absolute;
+    white-space: nowrap;
+    top: 2.75rem;
+    left: -0.75rem;
+    border-radius: 5px;
+    background-color: $primary-color;
+    padding: 0;
+
+    &::after {
+      content: '';
+      background-color: $primary-color;
+      height: 1.25rem;
+      width: 1.25rem;
+      position: absolute;
+      top: -0.3rem;
+      left: 0.6rem;
+      z-index: -1;
+      transform: rotate(45deg);
+      border-radius: 1px;
+    }
+
+    &--item {
+      list-style: none;
+
+      &__button {
+        background: none;
+        padding: 0.25rem 0.85rem;
+        border: none;
+        color: #fff;
+        font-size: 0.85rem;
+      }
     }
   }
 </style>
