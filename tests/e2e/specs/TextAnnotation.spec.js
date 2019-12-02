@@ -22,10 +22,6 @@ describe('Text Annotation', () => {
   });
 
   it('Save a process with text annotation, pool and lane', function() {
-    if (!Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const poolPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -44,18 +40,28 @@ describe('Text Annotation', () => {
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, taskPosition);
 
-    cy.get('[data-test=save-process]').click();
+    const expectedXML = `<bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet>
+      <bpmn:lane id="node_3" name="">
+        <bpmn:flowNodeRef>node_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>node_7</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="node_4" name="" />
+      <bpmn:lane id="node_5" name="" />
+    </bpmn:laneSet>
+    <bpmn:startEvent id="node_1" name="Start Event" />
+    <bpmn:task id="node_7" name="Task" />
+    <bpmn:textAnnotation id="node_6">
+      <bpmn:text>New Text Annotation</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="node_8" associationDirection="None" sourceRef="node_6" targetRef="node_7" />`;
 
-    const successMessage = 'The process was saved.';
-
-    cy.get('.alert-success').contains(successMessage);
-
-    getElementAtPosition(poolPosition)
-      .click()
-      .then($pool => {
-        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(xml => xml.trim())
+      .then(xml => {
+        expect(xml).to.contain(expectedXML.trim());
       });
-
-    cy.get('[data-test=save-process]').click();
   });
 });
