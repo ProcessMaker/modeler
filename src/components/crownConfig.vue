@@ -28,7 +28,7 @@
         <i class="fas fa-cog"/>
       </button>
 
-      <ul class="dropdown" v-if="dropdownOpen">
+      <ul class="dropdown" v-if="dropdownOpen && isStartEvent">
         <li>
           <button
             data-test="switch-to-start-timer-event"
@@ -140,6 +140,9 @@ export default {
     },
     isTextAnnotation() {
       return this.node.type === 'processmaker-modeler-text-annotation';
+    },
+    isStartEvent() {
+      return this.node.type === 'processmaker-modeler-start-event';
     },
     isValidSequenceFlowSource() {
       return !this.invalidSequenceFlowSources.includes(this.node.type);
