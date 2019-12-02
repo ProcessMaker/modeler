@@ -54,7 +54,13 @@
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsCompressed = !panelsCompressed">
+          <button
+            class="btn btn-sm btn-secondary ml-auto"
+            data-test="panels-btn"
+            @click="panelsCompressed = !panelsCompressed"
+            v-b-tooltip.hover
+            :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
+          >
             <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
           </button>
 
