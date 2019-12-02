@@ -139,7 +139,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faStepBackward, faStepForward } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
@@ -212,8 +212,8 @@ export default {
       minusIcon: faMinus,
       expandIcon: faExpand,
       compressIcon: faCompress,
-      undoIcon: faStepBackward,
-      redoIcon: faStepForward,
+      undoIcon: faUndo,
+      redoIcon: faRedo,
     };
   },
   watch: {
