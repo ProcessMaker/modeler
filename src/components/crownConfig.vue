@@ -23,12 +23,12 @@
       :title="$t('Message Flow')"
     />
 
-    <div class="dropdown-container">
+    <div class="dropdown-container" v-if="showDropdown">
       <button class="button" @click="dropdownOpen = !dropdownOpen">
         <i class="fas fa-cog"/>
       </button>
 
-      <ul class="dropdown" v-if="dropdownOpen && isStartEvent">
+      <ul class="dropdown" v-if="dropdownOpen">
         <li>
           <button
             data-test="switch-to-start-timer-event"
@@ -87,6 +87,10 @@ export default {
     processNode: Object,
     collaboration: Object,
     isRendering: Boolean,
+    showDropdown: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [poolLaneCrownConfig],
   watch: {
@@ -140,9 +144,6 @@ export default {
     },
     isTextAnnotation() {
       return this.node.type === 'processmaker-modeler-text-annotation';
-    },
-    isStartEvent() {
-      return this.node.type === 'processmaker-modeler-start-event';
     },
     isValidSequenceFlowSource() {
       return !this.invalidSequenceFlowSources.includes(this.node.type);
