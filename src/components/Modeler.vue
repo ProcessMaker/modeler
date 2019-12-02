@@ -606,8 +606,9 @@ export default {
       await this.paperManager.performAtomicAction(async() => {
         this.isRendering = true;
         await this.waitForCursorToChange();
-        this.paperManager.awaitScheduledUpdates().then(() => this.isRendering = false);
         this.parse();
+        await this.paperManager.awaitScheduledUpdates();
+        this.isRendering = false;
       });
       this.$emit('parsed');
       this.removeLoaderIfProcessIsEmpty();
