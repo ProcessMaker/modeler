@@ -454,4 +454,37 @@ describe('Modeler', () => {
       expect(xml.match(/node_2_di/g)).to.have.length(1);
     });
   });
+
+  it('should only show dropdown for the start event', function() {
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
+
+    cy.get('[data-test=switch-to-start-timer-event]').should('exist');
+    cy.get('[data-test=switch-to-message-start-event]').should('exist');
+
+    dragFromSourceToDest(nodeTypes.task, { x: 300, y: 300 });
+
+    cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
+    cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
+  });
+
+  it('should hide start event dropdown on unhighlight', function() {
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
+    cy.get('.paper-container').click();
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
+
+    cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
+    cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
+  });
+
+  it('should hide start event dropdown when switching component type', function() {
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
+
+    cy.get('[data-test=switch-to-start-timer-event]').click();
+
+    cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
+    cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
+  });
 });
