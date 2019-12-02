@@ -604,8 +604,10 @@ export default {
     async renderPaper() {
       this.isRendering = true;
 
-      await this.waitForCursorToChange();
-      await this.paperManager.performAtomicAction(() => this.parse());
+      await this.paperManager.performAtomicAction(async() => {
+        await this.waitForCursorToChange();
+        this.parse();
+      });
       await this.paperManager.awaitScheduledUpdates();
 
       this.isRendering = false;
