@@ -50,12 +50,12 @@ export default {
     return {
       shape: null,
       definition: null,
-      showDropdown: this.node.type === 'processmaker-modeler-start-event',
+      showDropdown: false,
     };
   },
-  watch: {
-    'node.definition.name'(name) {
-      this.shape.attr('label/text', name);
+  computed: {
+    isBaseStartEvent() {
+      return this.node.type === 'processmaker-modeler-start-event';
     },
   },
   methods: {
@@ -68,8 +68,16 @@ export default {
       });
     },
   },
+  watch: {
+    'node.definition.name'(name) {
+      this.shape.attr('label/text', name);
+    },
+  },
   created() {
-    this.removeDropdownOnUnhighlight();
+    if (this.isBaseStartEvent && this.highlighted) {
+      this.showDropdown = true;
+      this.removeDropdownOnUnhighlight();
+    }
   },
   mounted() {
     this.shape = new EventShape();
