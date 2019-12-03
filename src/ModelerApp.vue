@@ -9,11 +9,11 @@
 
         <div class="ml-auto">
           <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">
-            <i class="fas fa-upload mr-1"/>
+            <i class="fas fa-upload mr-1" />
             {{ $t('Upload XML') }}
           </b-btn>
           <b-btn variant="secondary" size="sm" data-test="downloadXMLBtn" @click="download">
-            <i class="fas fa-download mr-1"/>
+            <i class="fas fa-download mr-1" />
             {{ $t('Download XML') }}
           </b-btn>
         </div>
@@ -95,7 +95,7 @@ export default {
             window.xml = xml;
             return;
           }
-          let file = new File([xml], 'bpmnProcess.xml', {type: 'text/xml'});
+          let file = new File([xml], 'bpmnProcess.xml', { type: 'text/xml' });
           FilerSaver.saveAs(file);
         }
       });
@@ -113,10 +113,6 @@ export default {
   },
   created() {
     reader.onload = this.setUploadedXml;
-  },
-  mounted() {
-    /* Add a start event on initial load */
-    this.$refs.modeler.$once('parsed', () => this.$refs.modeler.addStartEvent());
   },
 };
 </script>
