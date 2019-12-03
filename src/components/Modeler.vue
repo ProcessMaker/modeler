@@ -43,10 +43,24 @@
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
-          <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            @click="scale += scaleStep"
+            data-test="zoom-in"
+            v-b-tooltip.hover
+            :title="$t('Zoom In')"
+          >
             <font-awesome-icon :icon="plusIcon" />
           </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            @click="scale = Math.max(minimumScale, scale -= scaleStep)"
+            data-test="zoom-out"
+            v-b-tooltip.hover
+            :title="$t('Zoom Out')"
+          >
             <font-awesome-icon :icon="minusIcon" />
           </button>
           <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
@@ -64,7 +78,13 @@
             <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
           </button>
 
-          <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
+          <button
+            class="btn btn-sm btn-secondary mini-map-btn ml-auto"
+            data-test="mini-map-btn"
+            @click="miniMapOpen = !miniMapOpen"
+            v-b-tooltip.hover
+            :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
+          >
             <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
           </button>
         </div>
