@@ -314,12 +314,12 @@ export default {
 $primary-color: #5096db;
 $primary-light: #fff;
 
-$element-list-top: 2.75rem;
-$element-list-left: -0.75rem;
-$element-list-top-chevron: -0.3rem;
-$element-list-left-chevron: 0.6rem;
-$crown-top-chevron: 0.75rem;
-$crown-left-chevron: 0.45rem;
+$element-list-top: 2.5rem;
+$element-list-left: -0.65rem;
+$element-list-top-chevron: -0.2rem;
+$element-list-left-chevron: 0.5rem;
+$crown-top-chevron: 0.8rem;
+$crown-left-chevron: 0.3rem;
 
 $chevron-width: 1.25rem;
 $chevron-height: 1.25rem;
