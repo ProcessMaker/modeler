@@ -23,13 +23,13 @@
       :title="$t('Message Flow')"
     />
 
-    <div class="cog-container">
+    <div class="cog-container" role="menubar">
       <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
         <i class="fas fa-cog"/>
       </button>
 
-      <ul class="element-list" v-if="dropdownOpen">
-        <li class="element-list--item">
+      <ul class="element-list" v-if="dropdownOpen" role="list">
+        <li class="element-list--item" role="listitem">
           <button
             data-test="switch-to-start-timer-event"
             class="element-list--item__button"
@@ -39,7 +39,7 @@
           </button>
         </li>
 
-        <li class="element-list--item">
+        <li class="element-list--item" role="listitems">
           <button
             data-test="switch-to-message-start-event"
             class="element-list--item__button"
