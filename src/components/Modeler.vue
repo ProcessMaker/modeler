@@ -656,22 +656,16 @@ export default {
       return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
     },
     async renderPaper() {
-      await this.$nextTick();
+      this.isRendering = true;
+
       await this.paperManager.performAtomicAction(async() => {
-        this.isRendering = true;
         await this.waitForCursorToChange();
-        this.paperManager.awaitScheduledUpdates().then(() => this.isRendering = false);
         this.parse();
       });
-      this.$emit('parsed');
-      this.removeLoaderIfProcessIsEmpty();
-    },
-    removeLoaderIfProcessIsEmpty() {
-      const emptyProcess = store.getters.nodes.length === 0;
-      if (!emptyProcess) {
-        return;
-      }
+      await this.paperManager.awaitScheduledUpdates();
+
       this.isRendering = false;
+      this.$emit('parsed');
     },
     loadXML(xml = this.currentXML) {
       this.moddle.fromXML(xml, (err, definitions) => {
