@@ -1,26 +1,29 @@
 <template>
-  <div class="crown-config" :style="style" v-if="showCrown">
+  <div class="crown-config" :style="style" v-if="showCrown" role="menu">
     <slot />
     <association-flow-button
       v-b-tooltip.hover.viewport.d50
       v-if="isTextAnnotation"
       @click="addAssociation"
       :title="$t('Association Flow')"
+      role="menuitem"
     />
     <sequence-flow-button
       v-if="isValidSequenceFlowSource"
       @click="addSequence"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
+      role="menuitem"
     />
     <message-flow-button
       v-if="isValidMessageFlowSource"
       @click="addMessageFlow"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
+      role="menuitem"
     />
 
-    <div class="cog-container" v-if="showDropdown">
+    <div class="cog-container" v-if="showDropdown" role="menuitem">
       <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
         <i class="fas fa-cog" />
       </button>
@@ -52,6 +55,7 @@
       @click="removeShape"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
+      role="menuitem"
     />
   </div>
 </template>
