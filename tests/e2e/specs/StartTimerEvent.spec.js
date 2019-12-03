@@ -7,7 +7,8 @@ describe('Start Timer Event', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);
     const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.startEvent, startTimerEventPosition);
+    cy.get('[data-test=switch-to-start-timer-event]').click();
 
     getElementAtPosition(startTimerEventPosition).click();
 
@@ -70,7 +71,9 @@ describe('Start Timer Event', () => {
 
     cy.clock(currentDate);
     const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.startEvent, startTimerEventPosition);
+    cy.get('[data-test=switch-to-start-timer-event]').click();
+
     getElementAtPosition(startTimerEventPosition).click();
     cy.contains('Timing Control').click();
 
@@ -136,7 +139,9 @@ describe('Start Timer Event', () => {
 
     cy.clock(currentDate);
     const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startTimerEvent, startTimerEventPosition);
+    dragFromSourceToDest(nodeTypes.startEvent, startTimerEventPosition);
+    cy.get('[data-test=switch-to-start-timer-event]').click();
+
     getElementAtPosition(startTimerEventPosition).click();
     cy.contains('Timing Control').click();
     cy.get('[data-test=day-1]').click();

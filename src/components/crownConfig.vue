@@ -23,7 +23,7 @@
       :title="$t('Message Flow')"
     />
 
-    <div class="dropdown-container">
+    <div class="dropdown-container" v-if="showDropdown">
       <button class="button" @click="dropdownOpen = !dropdownOpen">
         <i class="fas fa-cog"/>
       </button>
@@ -87,6 +87,10 @@ export default {
     processNode: Object,
     collaboration: Object,
     isRendering: Boolean,
+    showDropdown: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [poolLaneCrownConfig],
   watch: {
