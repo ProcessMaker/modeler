@@ -456,7 +456,8 @@ describe('Modeler', () => {
   });
 
   it('should only show dropdown for the start event', function() {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 400, y: 400 };
+    dragFromSourceToDest(nodeTypes.startEvent, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
 
     cy.get('[data-test=switch-to-start-timer-event]').should('exist');
@@ -469,7 +470,8 @@ describe('Modeler', () => {
   });
 
   it('should hide start event dropdown on unhighlight', function() {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 400, y: 400 };
+    dragFromSourceToDest(nodeTypes.startEvent, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
     cy.get('.paper-container').click();
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
@@ -479,10 +481,19 @@ describe('Modeler', () => {
   });
 
   it('should hide start event dropdown when switching component type', function() {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 400, y: 400 };
+    dragFromSourceToDest(nodeTypes.startEvent, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
 
     cy.get('[data-test=switch-to-start-timer-event]').click();
+
+    cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
+    cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
+  });
+
+  it('should not show dropdown for start event already rendered on load', function() {
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
 
     cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
     cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
