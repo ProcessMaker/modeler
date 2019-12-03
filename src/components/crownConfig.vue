@@ -39,7 +39,7 @@
           </button>
         </li>
 
-        <li class="element-list--item" role="listitems">
+        <li class="element-list--item" role="listitem">
           <button
             data-test="switch-to-message-start-event"
             class="element-list--item__button"
