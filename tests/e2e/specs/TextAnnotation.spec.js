@@ -1,4 +1,5 @@
 import {
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -56,13 +57,7 @@ describe('Text Annotation', () => {
     </bpmn:textAnnotation>
     <bpmn:association id="node_8" associationDirection="None" sourceRef="node_6" targetRef="node_7" />`;
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .then(xml => {
-        expect(xml).to.contain(expectedXML.trim());
-      });
+    assertDownloadedXmlContainsExpected(expectedXML);
   });
 
   it('should be able to add a text annotation outside of a pool', () => {
@@ -82,12 +77,6 @@ describe('Text Annotation', () => {
     <bpmn:association id="node_4" associationDirection="None" sourceRef="node_3" targetRef="node_2" />
   </bpmn:process>`;
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .then(xml => {
-        expect(xml).to.contain(expectedXML.trim());
-      });
+    assertDownloadedXmlContainsExpected(expectedXML);
   });
 });
