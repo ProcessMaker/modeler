@@ -50,13 +50,34 @@ export default {
     return {
       shape: null,
       definition: null,
-      showDropdown: this.node.type === 'processmaker-modeler-start-event',
+      showDropdown: false,
     };
+  },
+  computed: {
+    isBaseStartEvent() {
+      return this.node.type === 'processmaker-modeler-start-event';
+    },
+  },
+  methods: {
+    removeDropdownOnUnhighlight() {
+      const unwatch = this.$watch('highlighted', highlighted => {
+        if (!highlighted) {
+          this.showDropdown = false;
+          unwatch();
+        }
+      });
+    },
   },
   watch: {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
+  },
+  created() {
+    if (this.isBaseStartEvent && this.highlighted) {
+      this.showDropdown = true;
+      this.removeDropdownOnUnhighlight();
+    }
   },
   mounted() {
     this.shape = new EventShape();
