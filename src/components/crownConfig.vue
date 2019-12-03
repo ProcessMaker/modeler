@@ -51,8 +51,6 @@
       </ul>
     </div>
 
-
-
     <delete-button
       @click="removeShape"
       class="crown-config__icon"
@@ -314,6 +312,30 @@ export default {
 
 <style lang="scss">
   $primary-color: #5096db;
+  $primary-light: #fff;
+
+  $element-list-top: 2.75rem;
+  $element-list-left: -0.75rem;
+  $element-list-top-chevron: -0.3rem;
+  $element-list-left-chevron: 0.6rem;
+  $crown-top-chevron: 0.75rem;
+  $crown-left-chevron: 0.45rem;
+
+  $chevron-width: 1.25rem;
+  $chevron-height: 1.25rem;
+
+  @mixin chevron($top, $left) {
+    content: '';
+    background-color: $primary-color;
+    width: $chevron-width;
+    height: $chevron-height;
+    position: absolute;
+    top: $top;
+    left: $left;
+    z-index: -1;
+    transform: rotate(45deg);
+    border-radius: 1px;
+  }
 
   .crown-config {
     background-color: $primary-color;
@@ -326,16 +348,7 @@ export default {
     border-radius: 5px;
 
     &::after {
-      background-color: $primary-color;
-      content: '';
-      width: 1.25rem;
-      height: 1.25rem;
-      position: absolute;
-      top: 0.75rem;
-      left: 0.45rem;
-      z-index: -1;
-      transform: rotate(45deg);
-      border-radius: 1px;
+      @include chevron($crown-top-chevron, $crown-left-chevron);
     }
 
     &__icon {
@@ -351,7 +364,7 @@ export default {
     &--button {
       background: none;
       border: none;
-      color: white;
+      color: $primary-light;
       padding: 0;
       position: relative;
     }
@@ -360,23 +373,14 @@ export default {
   .element-list {
     position: absolute;
     white-space: nowrap;
-    top: 2.75rem;
-    left: -0.75rem;
+    top: $element-list-top;
+    left: $element-list-left;
     border-radius: 5px;
     background-color: $primary-color;
     padding: 0;
 
     &::after {
-      content: '';
-      background-color: $primary-color;
-      height: 1.25rem;
-      width: 1.25rem;
-      position: absolute;
-      top: -0.3rem;
-      left: 0.6rem;
-      z-index: -1;
-      transform: rotate(45deg);
-      border-radius: 1px;
+      @include chevron($element-list-top-chevron, $element-list-left-chevron);
     }
 
     &--item {
@@ -386,7 +390,7 @@ export default {
         background: none;
         padding: 0.25rem 0.85rem;
         border: none;
-        color: #fff;
+        color: $primary-light;
         font-size: 0.85rem;
       }
     }
