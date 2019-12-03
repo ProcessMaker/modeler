@@ -1,6 +1,6 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown">
-    <slot/>
+    <slot />
     <association-flow-button
       v-b-tooltip.hover.viewport.d50
       v-if="isTextAnnotation"
@@ -22,11 +22,11 @@
 
     <div class="cog-container" v-if="showDropdown">
       <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
-        <i class="fas fa-cog"/>
+        <i class="fas fa-cog" />
       </button>
 
-      <ul class="element-list" v-if="dropdownOpen">
-        <li class="element-list--item">
+      <ul class="element-list" v-if="dropdownOpen" role="list">
+        <li class="element-list--item" role="listitem">
           <button
             data-test="switch-to-start-timer-event"
             class="element-list--item__button"
@@ -36,7 +36,7 @@
           </button>
         </li>
 
-        <li class="element-list--item">
+        <li class="element-list--item" role="listitems">
           <button
             data-test="switch-to-message-start-event"
             class="element-list--item__button"
@@ -311,83 +311,83 @@ export default {
 </script>
 
 <style lang="scss">
-  $primary-color: #5096db;
-  $primary-light: #fff;
+$primary-color: #5096db;
+$primary-light: #fff;
 
-  $element-list-top: 2.75rem;
-  $element-list-left: -0.75rem;
-  $element-list-top-chevron: -0.3rem;
-  $element-list-left-chevron: 0.6rem;
-  $crown-top-chevron: 0.75rem;
-  $crown-left-chevron: 0.45rem;
+$element-list-top: 2.75rem;
+$element-list-left: -0.75rem;
+$element-list-top-chevron: -0.3rem;
+$element-list-left-chevron: 0.6rem;
+$crown-top-chevron: 0.75rem;
+$crown-left-chevron: 0.45rem;
 
-  $chevron-width: 1.25rem;
-  $chevron-height: 1.25rem;
+$chevron-width: 1.25rem;
+$chevron-height: 1.25rem;
 
-  @mixin chevron($top, $left) {
-    content: '';
-    background-color: $primary-color;
-    width: $chevron-width;
-    height: $chevron-height;
-    position: absolute;
-    top: $top;
-    left: $left;
-    z-index: -1;
-    transform: rotate(45deg);
-    border-radius: 1px;
+@mixin chevron($top, $left) {
+  content: '';
+  background-color: $primary-color;
+  width: $chevron-width;
+  height: $chevron-height;
+  position: absolute;
+  top: $top;
+  left: $left;
+  z-index: -1;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.crown-config {
+  background-color: $primary-color;
+  position: absolute;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  width: auto;
+  height: 1.85rem;
+  border-radius: 5px;
+
+  &::after {
+    @include chevron($crown-top-chevron, $crown-left-chevron);
   }
+}
 
-  .crown-config {
-    background-color: $primary-color;
-    position: absolute;
-    z-index: 0;
-    display: flex;
-    justify-content: center;
-    width: auto;
-    height: 1.85rem;
-    border-radius: 5px;
+.cog-container {
+  position: relative;
+  display: flex;
 
-    &::after {
-      @include chevron($crown-top-chevron, $crown-left-chevron);
-    }
-  }
-
-  .cog-container {
+  &--button {
+    background: none;
+    border: none;
+    color: $primary-light;
+    padding: 0;
     position: relative;
-    display: flex;
+  }
+}
 
-    &--button {
+.element-list {
+  position: absolute;
+  white-space: nowrap;
+  top: $element-list-top;
+  left: $element-list-left;
+  border-radius: 5px;
+  background-color: $primary-color;
+  padding: 0;
+
+  &::after {
+    @include chevron($element-list-top-chevron, $element-list-left-chevron);
+  }
+
+  &--item {
+    list-style: none;
+
+    &__button {
       background: none;
+      padding: 0.25rem 0.85rem;
       border: none;
       color: $primary-light;
-      padding: 0;
-      position: relative;
+      font-size: 0.85rem;
     }
   }
-
-  .element-list {
-    position: absolute;
-    white-space: nowrap;
-    top: $element-list-top;
-    left: $element-list-left;
-    border-radius: 5px;
-    background-color: $primary-color;
-    padding: 0;
-
-    &::after {
-      @include chevron($element-list-top-chevron, $element-list-left-chevron);
-    }
-
-    &--item {
-      list-style: none;
-
-      &__button {
-        background: none;
-        padding: 0.25rem 0.85rem;
-        border: none;
-        color: $primary-light;
-        font-size: 0.85rem;
-      }
-    }
-  }
+}
 </style>
