@@ -27,40 +27,81 @@
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <span id="undo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="undo">
-            <button type="button" class="btn btn-sm btn-secondary btn-undo" :disabled="!canUndo" data-test="undo">
-              <font-awesome-icon :icon="undoIcon" />
-            </button>
-          </span>
-          <b-tooltip target="undo-wrapper">{{ $t('Undo') }}</b-tooltip>
+          <b-button
+            class="btn btn-sm btn-secondary btn-undo"
+            :disabled="!canUndo"
+            data-test="undo"
+            v-b-tooltip.hover
+            :title="$t('Undo')"
+            @click="undo"
+          >
+            <font-awesome-icon :icon="undoIcon" />
+          </b-button>
 
-          <span id="redo-wrapper" role="button" class="d-inline-block" tabindex="0" @click="redo">
-            <button type="button" class="btn btn-sm btn-secondary btn-redo" :disabled="!canRedo" data-test="redo">
-              <font-awesome-icon :icon="redoIcon" />
-            </button>
-          </span>
-          <b-tooltip target="redo-wrapper">{{ $t('Redo') }}</b-tooltip>
+          <b-button
+            class="btn btn-sm btn-secondary btn-redo"
+            :disabled="!canRedo"
+            data-test="redo"
+            v-b-tooltip.hover
+            :title="$t('Redo')"
+            @click="redo"
+          >
+            <font-awesome-icon :icon="redoIcon" />
+          </b-button>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
-          <button type="button" class="btn btn-sm btn-secondary" @click="scale += scaleStep" data-test="zoom-in">
+          <b-button
+            class="btn btn-sm btn-secondary"
+            @click="scale += scaleStep"
+            data-test="zoom-in"
+            v-b-tooltip.hover
+            :title="$t('Zoom In')"
+          >
             <font-awesome-icon :icon="plusIcon" />
-          </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="scale = Math.max(minimumScale, scale -= scaleStep)" data-test="zoom-out">
+          </b-button>
+          <b-button
+            class="btn btn-sm btn-secondary"
+            @click="scale = Math.max(minimumScale, scale -= scaleStep)"
+            data-test="zoom-out"
+            v-b-tooltip.hover
+            :title="$t('Zoom Out')"
+          >
             <font-awesome-icon :icon="minusIcon" />
-          </button>
-          <button type="button" class="btn btn-sm btn-secondary" @click="scale = initialScale" :disabled="scale === initialScale" data-test="zoom-reset">{{ $t('Reset') }}</button>
+          </b-button>
+          <b-button
+            class="btn btn-sm btn-secondary"
+            @click="scale = initialScale"
+            :disabled="scale === initialScale"
+            data-test="zoom-reset"
+            v-b-tooltip.hover
+            :title="$t('Reset to initial scale')"
+          >
+            {{ $t('Reset') }}
+          </b-button>
           <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <button class="btn btn-sm btn-secondary ml-auto" data-test="panels-btn" @click="panelsCompressed = !panelsCompressed">
+          <b-button
+            class="btn btn-sm btn-secondary ml-auto"
+            data-test="panels-btn"
+            @click="panelsCompressed = !panelsCompressed"
+            v-b-tooltip.hover
+            :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
+          >
             <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-          </button>
+          </b-button>
 
-          <button class="btn btn-sm btn-secondary mini-map-btn ml-auto" data-test="mini-map-btn" @click="miniMapOpen = !miniMapOpen">
+          <b-button
+            class="btn btn-sm btn-secondary mini-map-btn ml-auto"
+            data-test="mini-map-btn"
+            @click="miniMapOpen = !miniMapOpen"
+            v-b-tooltip.hover
+            :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
+          >
             <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
-          </button>
+          </b-button>
         </div>
       </div>
 
@@ -229,6 +270,9 @@ export default {
     },
     scale(scale) {
       this.paperManager.scale = scale;
+      if (scale === this.initialScale) {
+        this.$root.$emit('bv::hide::tooltip');
+      }
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -238,6 +282,16 @@ export default {
     },
     autoValidate() {
       this.validateIfAutoValidateIsOn();
+    },
+    canUndo(canUndo) {
+      if (!canUndo) {
+        this.$root.$emit('bv::hide::tooltip');
+      }
+    },
+    canRedo(canRedo) {
+      if (!canRedo) {
+        this.$root.$emit('bv::hide::tooltip');
+      }
     },
   },
   computed: {
