@@ -1,4 +1,5 @@
 import {
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -22,10 +23,6 @@ describe('Text Annotation', () => {
   });
 
   it('Save a process with text annotation, pool and lane', function() {
-    if (!Cypress.env('inProcessmaker')) {
-      this.skip();
-    }
-
     const poolPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -44,18 +41,42 @@ describe('Text Annotation', () => {
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, taskPosition);
 
-    cy.get('[data-test=save-process]').click();
+    const expectedXML = `<bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet>
+      <bpmn:lane id="node_3" name="">
+        <bpmn:flowNodeRef>node_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>node_7</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="node_4" name="" />
+      <bpmn:lane id="node_5" name="" />
+    </bpmn:laneSet>
+    <bpmn:startEvent id="node_1" name="Start Event" />
+    <bpmn:task id="node_7" name="Task" />
+    <bpmn:textAnnotation id="node_6">
+      <bpmn:text>New Text Annotation</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="node_8" associationDirection="None" sourceRef="node_6" targetRef="node_7" />`;
 
-    const successMessage = 'The process was saved.';
+    assertDownloadedXmlContainsExpected(expectedXML);
+  });
 
-    cy.get('.alert-success').contains(successMessage);
+  it('should be able to add a text annotation outside of a pool', () => {
+    const poolPosition = { x: 250, y: 200 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-    getElementAtPosition(poolPosition)
-      .click()
-      .then($pool => {
-        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
-      });
+    const textAnnotationPosition = { x: 400, y: 50 };
+    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
 
-    cy.get('[data-test=save-process]').click();
+    connectNodesWithFlow('association-flow-button', textAnnotationPosition, poolPosition);
+
+    const expectedXML = `<bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="node_1" name="Start Event" />
+    <bpmn:textAnnotation id="node_3">
+      <bpmn:text>New Text Annotation</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="node_4" associationDirection="None" sourceRef="node_3" targetRef="node_2" />
+  </bpmn:process>`;
+
+    assertDownloadedXmlContainsExpected(expectedXML);
   });
 });

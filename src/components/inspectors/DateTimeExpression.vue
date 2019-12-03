@@ -8,6 +8,7 @@
       class="p-0"
       :value="convertFromUTC(value)"
       @input="emitValue"
+      data-test="date-picker"
     />
   </div>
 </template>
