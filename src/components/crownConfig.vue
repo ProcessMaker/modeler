@@ -1,28 +1,61 @@
 <template>
-  <div class="crown-config" :style="style" v-if="showCrown">
-    <slot/>
+  <div class="crown-config" :style="style" v-if="showCrown" role="menu">
+    <slot />
     <association-flow-button
       v-b-tooltip.hover.viewport.d50
       v-if="isTextAnnotation"
       @click="addAssociation"
       :title="$t('Association Flow')"
+      role="menuitem"
     />
     <sequence-flow-button
       v-if="isValidSequenceFlowSource"
       @click="addSequence"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Sequence Flow')"
+      role="menuitem"
     />
     <message-flow-button
       v-if="isValidMessageFlowSource"
       @click="addMessageFlow"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Message Flow')"
+      role="menuitem"
     />
+
+    <div class="cog-container" v-if="showDropdown" role="menuitem">
+      <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
+        <i class="fas fa-cog" />
+      </button>
+
+      <ul class="element-list" v-if="dropdownOpen" role="list">
+        <li class="element-list--item" role="listitem">
+          <button
+            data-test="switch-to-start-timer-event"
+            class="element-list--item__button"
+            type="button"
+            @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-start-timer-event' })"
+          >{{ $t('Start Timer Event') }}
+          </button>
+        </li>
+
+        <li class="element-list--item" role="listitem">
+          <button
+            data-test="switch-to-message-start-event"
+            class="element-list--item__button"
+            type="button"
+            @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-message-start-event' })"
+          >{{ $t('Message Start Event') }}
+          </button>
+        </li>
+      </ul>
+    </div>
+
     <delete-button
       @click="removeShape"
       v-b-tooltip.hover.viewport.d50
       :title="$t('Delete')"
+      role="menuitem"
     />
   </div>
 </template>
@@ -56,6 +89,10 @@ export default {
     processNode: Object,
     collaboration: Object,
     isRendering: Boolean,
+    showDropdown: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [poolLaneCrownConfig],
   watch: {
@@ -91,6 +128,7 @@ export default {
         'processmaker-modeler-association',
       ],
       style: null,
+      dropdownOpen: true,
     };
   },
   created() {
@@ -277,29 +315,83 @@ export default {
 </script>
 
 <style lang="scss">
-  $primary-color: #5096db;
+$primary-color: #5096db;
+$primary-light: #fff;
 
-  .crown-config {
-    background-color: $primary-color;
-    position: absolute;
-    z-index: 0;
-    display: flex;
-    justify-content: center;
-    width: auto;
-    height: 1.85rem;
-    border-radius: 5px;
+$element-list-top: 2.5rem;
+$element-list-left: -0.65rem;
+$element-list-top-chevron: -0.2rem;
+$element-list-left-chevron: 0.5rem;
+$crown-top-chevron: 0.8rem;
+$crown-left-chevron: 0.3rem;
 
-    &::after {
-      background-color: $primary-color;
-      content: '';
-      width: 1.25rem;
-      height: 1.25rem;
-      position: absolute;
-      top: 0.75rem;
-      left: 0.45rem;
-      z-index: -1;
-      transform: rotate(45deg);
-      border-radius: 1px;
+$chevron-width: 1.25rem;
+$chevron-height: 1.25rem;
+
+@mixin chevron($top, $left) {
+  content: '';
+  background-color: $primary-color;
+  width: $chevron-width;
+  height: $chevron-height;
+  position: absolute;
+  top: $top;
+  left: $left;
+  z-index: -1;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.crown-config {
+  background-color: $primary-color;
+  position: absolute;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  width: auto;
+  height: 1.85rem;
+  border-radius: 5px;
+
+  &::after {
+    @include chevron($crown-top-chevron, $crown-left-chevron);
+  }
+}
+
+.cog-container {
+  position: relative;
+  display: flex;
+
+  &--button {
+    background: none;
+    border: none;
+    color: $primary-light;
+    padding: 0;
+    position: relative;
+  }
+}
+
+.element-list {
+  position: absolute;
+  white-space: nowrap;
+  top: $element-list-top;
+  left: $element-list-left;
+  border-radius: 5px;
+  background-color: $primary-color;
+  padding: 0;
+
+  &::after {
+    @include chevron($element-list-top-chevron, $element-list-left-chevron);
+  }
+
+  &--item {
+    list-style: none;
+
+    &__button {
+      background: none;
+      padding: 0.25rem 0.85rem;
+      border: none;
+      color: $primary-light;
+      font-size: 0.85rem;
     }
   }
+}
 </style>
