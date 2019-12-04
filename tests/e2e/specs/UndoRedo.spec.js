@@ -105,6 +105,13 @@ describe('Undo/redo', () => {
     const startEventMoveToPosition = { x: 300, y: 300 };
 
     cy.get('[data-test=undo]')
+      .click()
+      .should('be.disabled');
+
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=redo]')
+      .click()
       .should('be.disabled');
 
     waitToRenderAllShapes();

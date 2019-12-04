@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store( {
+export default new Vuex.Store({
   state: {
     stack: [],
     position: null,
@@ -53,10 +53,6 @@ export default new Vuex.Store( {
       }
 
       commit('setPosition', state.position + 1);
-    },
-    resetHistory({ commit }) {
-      commit('setPosition', 0);
-      commit('clearStack');
     },
   },
 });

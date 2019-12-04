@@ -16,6 +16,8 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@cypress/code-coverage/support';
+import { dragFromSourceToDest } from './utils';
+import { nodeTypes } from './constants';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -29,4 +31,6 @@ Cypress.Cookies.defaults({
 
 beforeEach(() => {
   cy.loadModeler();
+  dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
+  cy.get('.paper-container').click();
 });

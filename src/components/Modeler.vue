@@ -168,7 +168,6 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from './controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
-import { startEvent } from '@/components/nodes';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
@@ -788,26 +787,6 @@ export default {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
       this.poolTarget = poolTarget;
-    },
-    addStartEvent() {
-      /* Add an initial startEvent node if the graph is empty */
-      if (this.nodes.length > 0) {
-        return;
-      }
-
-      const definition = startEvent.definition(this.moddle, this.$t);
-      const diagram = startEvent.diagram(this.moddle);
-
-      diagram.bounds.x = 150;
-      diagram.bounds.y = 150;
-
-      this.addNode({
-        definition,
-        diagram,
-        type: startEvent.id,
-      });
-
-      setTimeout(() => undoRedoStore.dispatch('resetHistory'));
     },
     isBpmnNode(shape) {
       return shape.component != null;
