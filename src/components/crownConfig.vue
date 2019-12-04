@@ -28,7 +28,7 @@
         <i class="fas fa-cog" />
       </button>
 
-      <ul class="element-list" v-if="dropdownOpen && dropdownData" role="list">
+      <ul class="element-list" v-if="dropdownOpen" role="list">
         <li class="element-list--item" role="listitem" v-for="{label, nodeType} in dropdownData" :key="nodeType">
           <button
             data-test="switch-to-start-timer-event"
@@ -81,7 +81,7 @@ export default {
     isRendering: Boolean,
     dropdownData: {
       type: Array,
-      default: null,
+      default: () => [],
     },
   },
   mixins: [poolLaneCrownConfig],
