@@ -12,6 +12,7 @@
     :plane-elements="planeElements"
     :is-rendering="isRendering"
     :showDropdown="showDropdown"
+    :dropdown-data="dropdownData"
     @remove-node="$emit('remove-node', $event)"
     @add-node="$emit('add-node', $event)"
     @save-state="$emit('save-state', $event)"
@@ -51,6 +52,16 @@ export default {
       shape: null,
       definition: null,
       showDropdown: false,
+      dropdownData: [
+        {
+          label: 'Start Timer Event',
+          nodeType: 'processmaker-modeler-start-timer-event',
+        },
+        {
+          label: 'Message Start Event',
+          nodeType: 'processmaker-modeler-message-start-event',
+        },
+      ],
     };
   },
   computed: {

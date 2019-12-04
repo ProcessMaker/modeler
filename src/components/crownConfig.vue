@@ -28,24 +28,14 @@
         <i class="fas fa-cog" />
       </button>
 
-      <ul class="element-list" v-if="dropdownOpen" role="list">
-        <li class="element-list--item" role="listitem">
+      <ul class="element-list" v-if="dropdownOpen && dropdownData" role="list">
+        <li class="element-list--item" role="listitem" v-for="{label, nodeType} in dropdownData" :key="nodeType">
           <button
             data-test="switch-to-start-timer-event"
             class="element-list--item__button"
             type="button"
-            @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-start-timer-event' })"
-          >{{ $t('Start Timer Event') }}
-          </button>
-        </li>
-
-        <li class="element-list--item" role="listitem">
-          <button
-            data-test="switch-to-message-start-event"
-            class="element-list--item__button"
-            type="button"
-            @click="$emit('replace-node', { node, typeToReplaceWith: 'processmaker-modeler-message-start-event' })"
-          >{{ $t('Message Start Event') }}
+            @click="$emit('replace-node', { node, typeToReplaceWith: nodeType })"
+          >{{ $t(label) }}
           </button>
         </li>
       </ul>
@@ -92,6 +82,10 @@ export default {
     showDropdown: {
       type: Boolean,
       default: false,
+    },
+    dropdownData: {
+      type: Array,
+      default: null,
     },
   },
   mixins: [poolLaneCrownConfig],
