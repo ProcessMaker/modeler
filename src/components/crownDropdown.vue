@@ -5,9 +5,9 @@
     </button>
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
-      <li class="element-list--item" role="listitem" v-for="{label, nodeType} in dropdownData" :key="nodeType">
+      <li class="element-list--item" role="listitem" v-for="{label, nodeType, dataTest} in dropdownData" :key="nodeType">
         <button
-          data-test="switch-to-start-timer-event"
+          :data-test="dataTest"
           class="element-list--item__button"
           type="button"
           @click="$emit('replace-node', { node, typeToReplaceWith: nodeType })"
