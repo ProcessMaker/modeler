@@ -79,10 +79,6 @@ export default {
     processNode: Object,
     collaboration: Object,
     isRendering: Boolean,
-    showDropdown: {
-      type: Boolean,
-      default: false,
-    },
     dropdownData: {
       type: Array,
       default: null,
@@ -92,6 +88,9 @@ export default {
   watch: {
     highlighted() {
       this.showCrown = this.highlighted;
+      if (!this.highlighted && this.showDropdown) {
+        this.showDropdown = false;
+      }
     },
     shape() {
       if (this.highlighted) {
@@ -123,6 +122,7 @@ export default {
       ],
       style: null,
       dropdownOpen: true,
+      showDropdown: false,
     };
   },
   created() {
@@ -292,6 +292,7 @@ export default {
 
     this.setUpCrownConfig();
     this.setUpPositionHandling();
+    this.showDropdown = this.dropdownData.length > 0;
   },
   destroyed() {
     this.shape.stopListening();

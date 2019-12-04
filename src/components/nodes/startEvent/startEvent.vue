@@ -11,7 +11,6 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    :showDropdown="showDropdown"
     :dropdown-data="dropdownData"
     @remove-node="$emit('remove-node', $event)"
     @add-node="$emit('add-node', $event)"
@@ -64,31 +63,10 @@ export default {
       ],
     };
   },
-  computed: {
-    isBaseStartEvent() {
-      return this.node.type === 'processmaker-modeler-start-event';
-    },
-  },
-  methods: {
-    removeDropdownOnUnhighlight() {
-      const unwatch = this.$watch('highlighted', highlighted => {
-        if (!highlighted) {
-          this.showDropdown = false;
-          unwatch();
-        }
-      });
-    },
-  },
   watch: {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
-  },
-  created() {
-    if (this.isBaseStartEvent && this.highlighted) {
-      this.showDropdown = true;
-      this.removeDropdownOnUnhighlight();
-    }
   },
   mounted() {
     this.shape = new EventShape();
