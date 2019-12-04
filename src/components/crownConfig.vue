@@ -23,23 +23,12 @@
       role="menuitem"
     />
 
-    <div class="cog-container" v-if="showDropdown" role="menuitem">
-      <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
-        <i class="fas fa-cog" />
-      </button>
-
-      <ul class="element-list" v-if="dropdownOpen" role="list">
-        <li class="element-list--item" role="listitem" v-for="{label, nodeType} in dropdownData" :key="nodeType">
-          <button
-            data-test="switch-to-start-timer-event"
-            class="element-list--item__button"
-            type="button"
-            @click="$emit('replace-node', { node, typeToReplaceWith: nodeType })"
-          >{{ $t(label) }}
-          </button>
-        </li>
-      </ul>
-    </div>
+    <crown-dropdown
+      :dropdown-data="dropdownData"
+      :node="node"
+      :show-dropdown="showDropdown"
+      @replace-node="$emit('replace-node', $event)"
+    />
 
     <delete-button
       @click="removeShape"
@@ -55,6 +44,7 @@ import DeleteButton from '@/components/deleteButton';
 import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
 import AssociationFlowButton from '@/components/associationFlowButton';
+import CrownDropdown from '@/components/crownDropdown';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import { direction } from '@/components/nodes/association/associationConfig';
@@ -62,6 +52,7 @@ import store from '@/store';
 
 export default {
   components: {
+    CrownDropdown,
     DeleteButton,
     MessageFlowButton,
     SequenceFlowButton,
@@ -121,7 +112,6 @@ export default {
         'processmaker-modeler-association',
       ],
       style: null,
-      dropdownOpen: true,
       showDropdown: false,
     };
   },
@@ -292,7 +282,7 @@ export default {
 
     this.setUpCrownConfig();
     this.setUpPositionHandling();
-    this.showDropdown = this.dropdownData.length > 0;
+    this.showDropdown = this.dropdownData.length > 0 && this.highlighted;
   },
   destroyed() {
     this.shape.stopListening();
@@ -351,42 +341,4 @@ $chevron-height: 1.25rem;
   }
 }
 
-.cog-container {
-  position: relative;
-  display: flex;
-
-  &--button {
-    background: none;
-    border: none;
-    color: $primary-light;
-    padding: 0;
-    position: relative;
-  }
-}
-
-.element-list {
-  position: absolute;
-  white-space: nowrap;
-  top: $element-list-top;
-  left: $element-list-left;
-  border-radius: 5px;
-  background-color: $primary-color;
-  padding: 0;
-
-  &::after {
-    @include chevron($element-list-top-chevron, $element-list-left-chevron);
-  }
-
-  &--item {
-    list-style: none;
-
-    &__button {
-      background: none;
-      padding: 0.25rem 0.85rem;
-      border: none;
-      color: $primary-light;
-      font-size: 0.85rem;
-    }
-  }
-}
 </style>
