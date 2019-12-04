@@ -49,7 +49,7 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Generic Start Event',
+          label: 'Start Event',
           nodeType: 'processmaker-modeler-start-event',
         },
         {
