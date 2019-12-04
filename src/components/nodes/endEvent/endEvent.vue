@@ -47,8 +47,16 @@ export default {
       shape: null,
       definition: null,
       dropdownData: [
-        { label: 'Message End Event', nodeType: 'processmaker-modeler-message-end-event' },
-        { label: 'Error End Event', nodeType: 'processmaker-modeler-error-end-event' },
+        {
+          label: 'Message End Event',
+          nodeType: 'processmaker-modeler-message-end-event',
+          dataTest: 'switch-to-message-end-event',
+        },
+        {
+          label: 'Error End Event',
+          nodeType: 'processmaker-modeler-error-end-event',
+          dataTest: 'switch-to-error-end-event',
+        },
       ],
     };
   },
