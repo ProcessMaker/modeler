@@ -29,6 +29,7 @@ const boundaryEventData = [{
   invalidTargets: [{ type: nodeTypes.startEvent }],
 }, {
   type: 'Boundary Escalation Event',
+  skip: true,
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.callActivity,
@@ -61,8 +62,8 @@ function configurePool(poolPosition, nodeType, taskType) {
   dragFromSourceToDest(nodeTypes.pool, poolPosition);
 }
 
-boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidTargets }) => {
-  describe(`Common behaviour test for boundary event type ${type}`, () => {
+boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidTargets, skip = false }) => {
+  (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(taskType, taskPosition);
 

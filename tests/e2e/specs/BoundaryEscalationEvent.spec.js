@@ -6,7 +6,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Boundary Escalation Event', () => {
+describe.skip('Boundary Escalation Event', () => {
 
   it('can toggle interrupting on Boundary Escalation Events', function() {
     const taskPosition = { x: 200, y: 200 };
