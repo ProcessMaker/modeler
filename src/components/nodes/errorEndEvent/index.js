@@ -9,7 +9,7 @@ export const id = 'processmaker-modeler-error-end-event';
 export default merge(cloneDeep(endEventConfig), {
   id,
   component,
-  control: true,
+  control: false,
   label: 'Error End Event',
   icon: require('@/assets/toolpanel/error-end-event.svg'),
   definition(moddle, $t) {

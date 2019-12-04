@@ -11,9 +11,8 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    :dropdown-data="dropdownData"
+    v-on="$listeners"
   />
 </template>
 
@@ -47,6 +46,18 @@ export default {
     return {
       shape: null,
       definition: null,
+      dropdownData: [
+        {
+          label: 'Message End Event',
+          nodeType: 'processmaker-modeler-message-end-event',
+          dataTest: 'switch-to-message-end-event',
+        },
+        {
+          label: 'Error End Event',
+          nodeType: 'processmaker-modeler-error-end-event',
+          dataTest: 'switch-to-error-end-event',
+        },
+      ],
     };
   },
   watch: {

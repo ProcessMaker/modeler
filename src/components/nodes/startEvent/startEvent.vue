@@ -11,11 +11,8 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    :showDropdown="showDropdown"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
-    @replace-node="$emit('replace-node', $event)"
+    :dropdown-data="dropdownData"
+    v-on="$listeners"
   />
 </template>
 
@@ -50,34 +47,24 @@ export default {
     return {
       shape: null,
       definition: null,
-      showDropdown: false,
+      dropdownData: [
+        {
+          label: 'Start Timer Event',
+          nodeType: 'processmaker-modeler-start-timer-event',
+          dataTest: 'switch-to-start-timer-event',
+        },
+        {
+          label: 'Message Start Event',
+          nodeType: 'processmaker-modeler-message-start-event',
+          dataTest: 'switch-to-message-start-event',
+        },
+      ],
     };
-  },
-  computed: {
-    isBaseStartEvent() {
-      return this.node.type === 'processmaker-modeler-start-event';
-    },
-  },
-  methods: {
-    removeDropdownOnUnhighlight() {
-      const unwatch = this.$watch('highlighted', highlighted => {
-        if (!highlighted) {
-          this.showDropdown = false;
-          unwatch();
-        }
-      });
-    },
   },
   watch: {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
-  },
-  created() {
-    if (this.isBaseStartEvent && this.highlighted) {
-      this.showDropdown = true;
-      this.removeDropdownOnUnhighlight();
-    }
   },
   mounted() {
     this.shape = new EventShape();
