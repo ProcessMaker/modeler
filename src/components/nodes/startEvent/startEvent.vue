@@ -47,7 +47,6 @@ export default {
     return {
       shape: null,
       definition: null,
-      showDropdown: false,
       dropdownData: [
         {
           label: 'Start Timer Event',
