@@ -12,10 +12,7 @@
     :plane-elements="planeElements"
     :is-rendering="isRendering"
     :dropdown-data="dropdownData"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
-    @replace-node="$emit('replace-node', $event)"
+    v-on="$listeners"
   />
 </template>
 
