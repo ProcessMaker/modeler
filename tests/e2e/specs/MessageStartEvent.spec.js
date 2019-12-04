@@ -17,6 +17,7 @@ describe('Message Start Event', () => {
 
     const intermediateMessageThrowEvent = { x: 350, y: 350 };
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEvent);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
     getElementAtPosition(messageStartEventPosition).click();
     cy.contains('Listen For Message').next('select').select('node_4_message');
 

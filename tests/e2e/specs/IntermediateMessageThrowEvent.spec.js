@@ -18,6 +18,7 @@ const intermediateMessageThrowEventPosition = { x: 300, y: 200 };
 describe('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', function() {
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
@@ -30,6 +31,7 @@ describe('Intermediate Message Throw Event', () => {
 
   it('can create a message when intermediate message throw event is dragged on', function() {
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
@@ -45,6 +47,7 @@ describe('Intermediate Message Throw Event', () => {
 
   it('can remove the message when intermediate message throw event is deleted', function() {
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
@@ -71,6 +74,7 @@ describe('Intermediate Message Throw Event', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
@@ -87,7 +91,9 @@ describe('Intermediate Message Throw Event', () => {
     const catchEventXMLSnippet = `<bpmn:intermediateCatchEvent id="node_3" name="Intermediate Message Catch Event"><bpmn:messageEventDefinition messageRef="${ messageRef }" /></bpmn:intermediateCatchEvent>`;
 
     dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     cy.get('[name=messageRef]').select(messageRef);

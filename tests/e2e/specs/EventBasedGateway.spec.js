@@ -35,6 +35,7 @@ describe('Event-Based Gateway', () => {
 
     const intermediateMessageCatchEventPosition = { x: 500, y: 100 };
     dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
     connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, intermediateMessageCatchEventPosition);
 
     const endEventPosition = { x: 500, y: 350 };

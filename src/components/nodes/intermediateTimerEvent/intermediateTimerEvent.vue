@@ -18,12 +18,12 @@ export default {
         {
           label: 'Intermediate Message Catch Event',
           nodeType: 'processmaker-modeler-intermediate-message-catch-event',
-          dataTest: '',
+          dataTest: 'switch-to-intermediate-message-catch-event',
         },
         {
           label: 'Intermediate Message Throw Event',
           nodeType: 'processmaker-modeler-intermediate-message-throw-event',
-          dataTest: '',
+          dataTest: 'switch-to-intermediate-message-throw-event',
         },
       ],
     };
