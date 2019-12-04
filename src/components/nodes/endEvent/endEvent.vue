@@ -48,6 +48,10 @@ export default {
       definition: null,
       dropdownData: [
         {
+          label: 'Generic End Event',
+          nodeType: 'processmaker-modeler-end-event',
+        },
+        {
           label: 'Message End Event',
           nodeType: 'processmaker-modeler-message-end-event',
           dataTest: 'switch-to-message-end-event',
