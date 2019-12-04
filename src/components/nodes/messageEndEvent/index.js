@@ -7,6 +7,7 @@ import omit from 'lodash/omit';
 export default merge(cloneDeep(endEventConfig), {
   id: 'processmaker-modeler-message-end-event',
   component,
+  control: false,
   icon: require('@/assets/toolpanel/end-email-event.svg'),
   label: 'Message End Event',
   definition(moddle, $t) {

@@ -9,9 +9,10 @@ export default {
   data() {
     return {
       error: this.moddle.create('bpmn:Error', {
-        id: `${ this.id }_error`,
-        name: `${ this.id }_error`,
+        id: `${this.id}_error`,
+        name: `${this.id}_error`,
       }),
+      dropdownData: [],
     };
   },
   mounted() {

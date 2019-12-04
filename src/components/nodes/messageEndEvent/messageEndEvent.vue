@@ -9,9 +9,10 @@ export default {
   data() {
     return {
       message: this.moddle.create('bpmn:Message', {
-        id: `${ this.id }_message`,
-        name: `${ this.id }_message`,
+        id: `${this.id}_message`,
+        name: `${this.id}_message`,
       }),
+      dropdownData: [],
     };
   },
   mounted() {
