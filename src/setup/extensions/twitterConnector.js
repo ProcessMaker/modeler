@@ -1,6 +1,4 @@
-import {
-  task,
-} from '@/components/nodes';
+import Task from '@/components/nodes/task/task';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
@@ -10,7 +8,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   const nodeId = 'processmaker-connectors-social-twitter-send';
 
   const component = {
-    extends: task.component,
+    extends: Task,
   };
 
   const nodeType = {

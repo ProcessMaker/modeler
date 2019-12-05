@@ -1,6 +1,4 @@
-import {
-  task,
-} from '@/components/nodes';
+import Task from '@/components/nodes/task/task';
 import testIcon from '@/assets/connect-artifacts.svg';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
@@ -11,7 +9,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   const nodeId = 'connectors-test-message';
 
   const component = {
-    extends: task.component,
+    extends: Task,
     mounted() {
       this.shape.attr('image/xlink:href', testIcon);
     },

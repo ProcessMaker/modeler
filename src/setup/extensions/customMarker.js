@@ -1,6 +1,4 @@
-import {
-  task,
-} from '@/components/nodes';
+import Task from '@/components/nodes/task/task';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import bookIcon from '@/assets/book.svg';
 import clockIcon from '@/assets/clock.svg';
@@ -12,7 +10,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   const nodeId = 'processmaker-custom-marker-task-test';
 
   const component = {
-    extends: task.component,
+    extends: Task,
     watch: {
       'node.definition.name'(name) {
         switch (name) {
