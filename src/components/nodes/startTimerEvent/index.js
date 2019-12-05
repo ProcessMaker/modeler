@@ -9,7 +9,6 @@ export default {
   bpmnType: 'bpmn:StartEvent',
   control: false,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/start-timer-event.svg'),
   label: 'Start Timer Event',
   definition(moddle, $t) {
     let startEventDefinition = moddle.create('bpmn:StartEvent', {

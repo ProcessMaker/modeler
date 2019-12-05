@@ -9,7 +9,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   id,
   component,
   label: 'Boundary Message Event',
-  icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
+  icon: require('@/assets/toolpanel/boundary-message-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('New Boundary Message Event'),
