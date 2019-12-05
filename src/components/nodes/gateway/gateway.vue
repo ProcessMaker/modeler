@@ -11,9 +11,8 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    :dropdown-data="dropdownData"
+    v-on="$listeners"
   />
 </template>
 
@@ -47,6 +46,7 @@ export default {
       shape: null,
       definition: null,
       labelWidth: 175,
+      dropdownData: [],
     };
   },
   watch: {

@@ -7,9 +7,8 @@ export default {
   id: 'processmaker-modeler-inclusive-gateway',
   component,
   bpmnType: 'bpmn:InclusiveGateway',
-  control: true,
+  control: false,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/inclusive-gateway.svg'),
   label: 'Inclusive Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:InclusiveGateway', {
@@ -53,8 +52,8 @@ export default {
                 helper: 'Select direction of gateway',
                 name: 'gatewayDirection',
                 options: [
-                  { value: gatewayDirection.diverging , content: 'Diverging' },
-                  { value: gatewayDirection.converging , content: 'Converging' },
+                  { value: gatewayDirection.diverging, content: 'Diverging' },
+                  { value: gatewayDirection.converging, content: 'Converging' },
                 ],
               },
             },

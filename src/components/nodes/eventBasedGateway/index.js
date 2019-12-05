@@ -5,9 +5,8 @@ export default {
   id: 'processmaker-modeler-event-based-gateway',
   component,
   bpmnType: 'bpmn:EventBasedGateway',
-  control: true,
+  control: false,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/event-based-gateway.svg'),
   label: 'Event-Based Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:EventBasedGateway', {
