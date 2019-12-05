@@ -16,6 +16,8 @@ export { default as intermediateMessageCatchEvent } from './intermediateMessageC
 export { default as intermediateMessageThrowEvent } from './intermediateMessageThrowEvent';
 export { default as task } from './userTask';
 export { default as subProcess } from './subProcess';
+//This export is deprecated and will be removed in a future version
+export { default as callActivity } from './subProcess';
 export { default as scriptTask } from './scriptTask';
 export { default as serviceTask } from './serviceTask';
 export { default as textAnnotation } from './textAnnotation';
