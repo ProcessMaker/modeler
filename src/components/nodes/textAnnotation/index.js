@@ -1,5 +1,6 @@
 import component from './textAnnotation.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+
 export const id = 'processmaker-modeler-text-annotation';
 
 export default {
@@ -50,7 +51,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'configuration',
+            name: 'inspector-accordion',
           },
           items: [
             {
@@ -71,7 +72,7 @@ export default {
             initiallyOpen: false,
             label: 'Advanced',
             icon: 'cogs',
-            name: 'advanced',
+            name: 'inspector-accordion',
           },
           items: [
             {

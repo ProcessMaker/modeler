@@ -82,7 +82,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         config: {
           label: 'Timing Control',
           icon: 'clock',
-          name: 'timing-control',
+          name: 'inspector-accordion',
         },
         items: [
           {
@@ -102,7 +102,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
           initiallyOpen: false,
           label: 'Advanced',
           icon: 'cogs',
-          name: 'advanced',
+          name: 'inspector-accordion',
         },
         items: [
           {
