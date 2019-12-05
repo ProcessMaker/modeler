@@ -13,7 +13,6 @@ export default {
         {
           label: 'Intermediate Timer Event',
           nodeType: 'processmaker-modeler-intermediate-catch-timer-event',
-          dataTest: '',
         },
         {
           label: 'Intermediate Message Catch Event',
