@@ -224,7 +224,7 @@ describe('Undo/redo', () => {
 
     waitToRenderAllShapes();
     getElementAtPosition(startEventPosition).click();
-    cy.get('#accordion-button-advanced').click();
+    cy.contains('Advanced').click();
 
     const newId = '1234';
     const newName = 'foobar';
