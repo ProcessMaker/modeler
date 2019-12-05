@@ -68,7 +68,7 @@ describe('Boundary Timer Event', () => {
 
     const validBoundaryTimerEventTargets = [
       { type: nodeTypes.task, position: { x: 100, y: 300 } },
-      { type: nodeTypes.callActivity, position: { x: 240, y: 300 } },
+      { type: nodeTypes.subProcess, position: { x: 240, y: 300 } },
       { type: nodeTypes.scriptTask, position: { x: 380, y: 300 } },
       { type: nodeTypes.manualTask, position: { x: 100, y: 400 } },
       { type: nodeTypes.sendTweet, position: { x: 240, y: 400 } },

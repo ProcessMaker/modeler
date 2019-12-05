@@ -34,16 +34,16 @@ describe('Tasks', () => {
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
   });
 
-  it('Can create call activity flow', function() {
+  it('Can create sub process flow', function() {
     const startEventPosition = { x: 150, y: 150 };
-    const callActivityPosition = { x: 250, y: 250 };
+    const subProcessPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest(nodeTypes.callActivity, callActivityPosition);
+    dragFromSourceToDest(nodeTypes.subProcess, subProcessPosition);
 
-    getElementAtPosition(callActivityPosition).should('exist');
+    getElementAtPosition(subProcessPosition).should('exist');
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, callActivityPosition);
-    getElementAtPosition(callActivityPosition)
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, subProcessPosition);
+    getElementAtPosition(subProcessPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click({ force: true });
@@ -51,10 +51,10 @@ describe('Tasks', () => {
     waitToRenderAllShapes();
 
     cy.get('.inspector-container')
-      .should('contain', 'A process has not been configured in the connected Call Activity task.');
+      .should('contain', 'A process has not been configured in the connected Sub Process task.');
     cy.get('[name=startEvent]').should('not.exist');
 
-    getElementAtPosition(callActivityPosition).click({ force: true });
+    getElementAtPosition(subProcessPosition).click({ force: true });
 
     cy.get('.inspector-container').contains('Open Process').should('not.exist');
     cy.get('.multiselect')
@@ -68,7 +68,7 @@ describe('Tasks', () => {
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(callActivityPosition)
+    getElementAtPosition(subProcessPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click({ force: true });
@@ -76,11 +76,11 @@ describe('Tasks', () => {
     waitToRenderAllShapes();
 
     cy.get('.inspector-container')
-      .should('not.contain', 'A process has not been configured in the connected Call Activity task.');
+      .should('not.contain', 'A process has not been configured in the connected Sub Process task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
     const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
-    const callActivityXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
+    const subProcessXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
       <bpmn:incoming>node_3</bpmn:incoming>
     </bpmn:callActivity>`;
 
@@ -90,24 +90,24 @@ describe('Tasks', () => {
       .then(xml => xml.trim())
       .then(xml => {
         expect(xml).to.contain(sequenceFlowXml.trim());
-        expect(xml).to.contain(callActivityXml.trim());
+        expect(xml).to.contain(subProcessXml.trim());
       });
 
-    getElementAtPosition(callActivityPosition).click({ force: true });
+    getElementAtPosition(subProcessPosition).click({ force: true });
     cy.get('.multiselect')
       .click()
       .get('.multiselect__content')
       .contains('Process with start event')
       .click();
 
-    getElementAtPosition(callActivityPosition)
+    getElementAtPosition(subProcessPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click({ force: true });
 
     waitToRenderAllShapes();
     cy.get('.inspector-container')
-      .should('contain', 'A process has not been configured in the connected Call Activity task.');
+      .should('contain', 'A process has not been configured in the connected Sub Process task.');
 
     const emptyCallActivityXml = 'calledElement=""';
     cy.get('[data-test=downloadXMLBtn]').click();

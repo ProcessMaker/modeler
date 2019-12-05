@@ -15,18 +15,9 @@
 <script>
 import Vue from 'vue';
 
-import { VueFormRenderer, renderer } from '@processmaker/screen-builder';
+import { renderer, VueFormRenderer } from '@processmaker/screen-builder';
 
-import {
-  FormInput,
-  FormSelect,
-  FormTextArea,
-  FormCheckbox,
-  FormRadioButtonGroup,
-  FormAccordion,
-  FormDatePicker,
-  FormMultiSelect,
-} from '@processmaker/vue-form-elements';
+import { FormAccordion, FormCheckbox, FormDatePicker, FormInput, FormMultiSelect, FormRadioButtonGroup, FormSelect, FormTextArea } from '@processmaker/vue-form-elements';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
@@ -103,16 +94,16 @@ export default {
         sequenceFlowConfigurationFormElements.push(expressionConfig);
       }
 
-      if (this.isSequenceFlow(type) && this.isConnectedToCallActivity(definition)) {
+      if (this.isSequenceFlow(type) && this.isConnectedToSubProcess(definition)) {
         const startEventConfig = {
           component: SequenceFlowFormSelect,
           config: {
-            label: 'Call Activity Start Event',
+            label: 'Sub Process Start Event',
             name: 'startEvent',
-            targetCallActivity: definition.targetRef,
+            targetSubProcess: definition.targetRef,
             helper: definition.targetRef.calledElement
               ? ''
-              : 'Please select a valid process on the connected call activity.',
+              : 'Please select a valid process on the connected sub process.',
           },
         };
 
@@ -167,7 +158,7 @@ export default {
     isConnectedToGateway(definition) {
       return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
     },
-    isConnectedToCallActivity(definition) {
+    isConnectedToSubProcess(definition) {
       return definition.targetRef.$type === 'bpmn:CallActivity';
     },
     customInspectorHandler(value) {

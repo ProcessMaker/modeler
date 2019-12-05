@@ -1,5 +1,5 @@
-import component from './callActivity';
-import CallActivityFormSelect from './CallActivityFormSelect';
+import component from './subProcess';
+import SubProcessFormSelect from './SubProcessFormSelect';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
@@ -12,11 +12,11 @@ export default {
   bpmnType: 'bpmn:CallActivity',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/callActivity.svg'),
-  label: 'Call Activity',
+  icon: require('@/assets/toolpanel/subProcess.svg'),
+  label: 'Sub Process',
   definition(moddle, $t) {
     return moddle.create('bpmn:CallActivity', {
-      name: $t('New Call Activity'),
+      name: $t('New Sub Process'),
       calledElement: '',
     });
   },
@@ -44,7 +44,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Call Activity',
+      name: 'Sub Process',
       items: [
         {
           component: 'FormAccordion',
@@ -60,11 +60,11 @@ export default {
               component: 'FormInput',
               config: {
                 ...nameConfigSettings,
-                helper: 'The Name of the Call Activity',
+                helper: 'The Name of the Sub Process',
               },
             },
             {
-              component: CallActivityFormSelect,
+              component: SubProcessFormSelect,
               config: {
                 label: 'Process',
                 name: 'calledElement',

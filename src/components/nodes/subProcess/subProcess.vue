@@ -26,7 +26,7 @@ import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import { elementIdParser } from '@/components/nodes/callActivity/elementIdParser';
+import { elementIdParser } from '@/components/nodes/subProcess/elementIdParser';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
@@ -74,12 +74,12 @@ export default {
 
       const { ownerProcessId, processId } = elementIdParser(calledElement);
 
-      const calledProcess = store.getters.globalProcesses
+      const calledSubProcess = store.getters.globalProcesses
         .find(process => process.id == processId);
 
-      let calledElementName = calledProcess.name;
-      if (uniqBy(calledProcess.events, 'ownerProcessName').length > 1) {
-        const calledSubProcess = calledProcess.events.find(event => event.ownerProcessId == ownerProcessId);
+      let calledElementName = calledSubProcess.name;
+      if (uniqBy(calledSubProcess.events, 'ownerProcessName').length > 1) {
+        const calledSubProcess = calledSubProcess.events.find(event => event.ownerProcessId == ownerProcessId);
         calledElementName += ` (${calledSubProcess.ownerProcessName})`;
       }
 

@@ -1,4 +1,4 @@
-import { elementIdParser } from '@/components/nodes/callActivity/elementIdParser';
+import { elementIdParser } from '@/components/nodes/subProcess/elementIdParser';
 
 describe('element id parser', () => {
   it.each(['abcd-1234', 'ghghghghghgh-123', 'abcd-efgh-12345'])('should correctly parse element id %s', elementId => {

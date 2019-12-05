@@ -1,7 +1,7 @@
 <template>
   <div>
     <form-select
-      v-if="targetCallActivity.calledElement"
+      v-if="targetSubProcess.calledElement"
       v-bind="$attrs"
       v-on="$listeners"
       :disabled="eventList.length === 0"
@@ -10,9 +10,9 @@
     <div v-else>
       <div class="error-title">
         <font-awesome-icon :icon="faExclamationTriangle" />
-        Call Activity Start Event
+        Sub Process Start Event
       </div>
-      <p>A process has not been configured in the connected Call Activity task.</p>
+      <p>A process has not been configured in the connected Sub Process task.</p>
     </div>
   </div>
 </template>
@@ -24,14 +24,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
   inheritAttrs: false,
-  components : {
+  components: {
     FontAwesomeIcon,
   },
   data() {
     return { faExclamationTriangle };
   },
   props: {
-    targetCallActivity: { type: Object, required: true },
+    targetSubProcess: { type: Object, required: true },
   },
   computed: {
     dropdownList() {
@@ -43,7 +43,7 @@ export default {
       const list = [];
       store.getters.globalProcesses.forEach((process) => {
         process.events.forEach((event) => {
-          if (this.targetCallActivity.calledElement === event.ownerProcessId + '-' + String(process.id)) {
+          if (this.targetSubProcess.calledElement === event.ownerProcessId + '-' + String(process.id)) {
             list.push(this.toDropdownFormat(event));
           }
         });

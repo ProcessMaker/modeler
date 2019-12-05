@@ -24,7 +24,7 @@ import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
 import store from '@/store';
-import { id as callActivityId } from '@/components/nodes/callActivity';
+import { id as subProcessId } from '@/components/nodes/subProcess';
 import CrownConfig from '@/components/crownConfig';
 
 export default {
@@ -73,7 +73,7 @@ export default {
       return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(this.node.definition.sourceRef.$type);
     },
     targetIsCallActivity() {
-      return this.targetType === callActivityId;
+      return this.targetType === subProcessId;
     },
   },
   watch: {

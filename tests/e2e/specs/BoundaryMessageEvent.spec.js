@@ -2,7 +2,7 @@ import { dragFromSourceToDest, getElementAtPosition, removeIndentationAndLinebre
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Message Event', () => {
-  const taskType = nodeTypes.callActivity;
+  const taskType = nodeTypes.subProcess;
 
   it('Render an interrupting boundary message event', function() {
     const taskPosition = { x: 200, y: 200 };

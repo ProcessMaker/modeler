@@ -1,5 +1,5 @@
 import { id as taskId } from '@/components/nodes/task';
-import { id as callActivityId } from '@/components/nodes/callActivity';
+import { id as subProcessId } from '@/components/nodes/subProcess';
 import { id as manualTaskId } from '@/components/nodes/manualTask';
 import { id as scriptTaskId } from '@/components/nodes/scriptTask';
 import { boundaryTimerEvent, intermediateTimerEvent } from '@/components/nodes';
@@ -10,7 +10,7 @@ export default {
     getTaskUnderShape() {
       const taskIds = [
         taskId,
-        callActivityId,
+        subProcessId,
         manualTaskId,
         scriptTaskId,
       ];

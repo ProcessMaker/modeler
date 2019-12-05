@@ -32,13 +32,13 @@ const boundaryEventData = [{
   skip: true,
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
-  taskType: nodeTypes.callActivity,
+  taskType: nodeTypes.subProcess,
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
 }, {
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
-  taskType: nodeTypes.callActivity,
+  taskType: nodeTypes.subProcess,
   invalidTargets: [{ type: nodeTypes.startEvent }],
 }];
 
@@ -119,7 +119,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
           expect(xml).to.contain(eventXMLSnippet);
         });
 
-      moveElementRelativeTo({x: 400, y: 400}, 50, 50);
+      moveElementRelativeTo({ x: 400, y: 400 }, 50, 50);
       waitToRenderAllShapes();
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         cy.get(taskSelector).then($task => {
@@ -351,13 +351,13 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       dragFromSourceToDest(taskType, taskPosition);
       dragFromSourceToDest(nodeType, taskPosition);
       getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
-        const overPoolPosition = {x: 450, y: 450};
-        const overTaskPosition = {x: 550, y: 350};
+        const overPoolPosition = { x: 450, y: 450 };
+        const overTaskPosition = { x: 550, y: 350 };
 
-        [overPoolPosition, overTaskPosition].forEach(({x, y}) => {
+        [overPoolPosition, overTaskPosition].forEach(({ x, y }) => {
           cy.wrap($boundaryEvent)
-            .trigger('mousedown', {which: 1, force: true})
-            .trigger('mousemove', {clientX: x, clientY: y, force: true});
+            .trigger('mousedown', { which: 1, force: true })
+            .trigger('mousemove', { clientX: x, clientY: y, force: true });
 
           waitToRenderAllShapes();
 
