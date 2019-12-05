@@ -21,6 +21,7 @@ describe('Inspector Extension Manager', function() {
       id: 5,
       container: true,
       name: 'inspector-accordion',
+      label: 'Advanced',
     };
   });
 

@@ -5,7 +5,7 @@ export default function registerInspectorExtension(node, config) {
 }
 
 function moveAdvancedAccordionToBottom(inspectorItemA, inspectorItemB) {
-  const isAdvancedAccordion = (inspectorItem) => inspectorItem.name === 'advanced';
+  const isAdvancedAccordion = (inspectorItem) => inspectorItem.label === 'Advanced';
   if (isAdvancedAccordion(inspectorItemA)) {
     return 1;
   }
