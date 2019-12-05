@@ -22,13 +22,14 @@ export default shapes.standard.Circle.extend({
   markersMarkup('bottomLeft'),
   markersMarkup('bottomCenter'),
   markersMarkup('bottomRight')],
-  
+
   defaults: util.deepSupplement({
 
     type: 'processmaker.components.nodes.intermediateEvent.Shape',
     size: { width: 36, height: 36 },
     attrs: {
-      'body2': { cx: 18, cy: 18, r: 15, 'stroke-width': 2 },
+      'body': { fill: '#FFF4D1', stroke: '#FBBE02' },
+      'body2': { cx: 18, cy: 18, r: 15, 'stroke-width': 2, fill: '#FFF4D1', stroke: '#FBBE02' },
       'image': { 'ref-x': 5, 'ref-y': 5, ref: 'circle', width: 26, height: 26 },
       ...markersAttrs('topLeft', { ref: 'circle', 'ref-y': -20, 'ref-padding-x': 0 }),
       ...markersAttrs('topCenter', { ref: 'circle', 'ref-y': -20 }),
