@@ -6,9 +6,8 @@ export default {
   id: 'processmaker-modeler-parallel-gateway',
   component,
   bpmnType: 'bpmn:ParallelGateway',
-  control: true,
+  control: false,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/parallel-gateway.svg'),
   label: 'Parallel Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:ParallelGateway', {
@@ -53,8 +52,8 @@ export default {
                 helper: 'Select direction of gateway',
                 name: 'gatewayDirection',
                 options: [
-                  { value: gatewayDirection.diverging , content: 'Diverging' },
-                  { value: gatewayDirection.converging , content: 'Converging' },
+                  { value: gatewayDirection.diverging, content: 'Diverging' },
+                  { value: gatewayDirection.converging, content: 'Converging' },
                 ],
               },
             },

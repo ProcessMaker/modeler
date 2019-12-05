@@ -264,3 +264,8 @@ export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
     expect(xml).to.not.contain(removeIndentationAndLinebreaks(xmlString));
   });
 }
+
+export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
+  dragFromSourceToDest(genericNode, nodePosition);
+  cy.get(`[data-test=${nodeToSwitchTo}]`).click();
+}
