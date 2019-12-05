@@ -23,7 +23,7 @@ describe('Error End Event', () => {
   });
 
   it('Can create an error end event', function() {
-    assertDownloadedXmlContainsExpected(errorEndEventXml, '<bpmn:error id="node_2_error" name="node_2_error" />');
+    assertDownloadedXmlContainsExpected(errorEndEventXml, '<bpmn:error id="node_3_error" name="node_3_error" />');
   });
 
   it('can edit the error end event name', () => {
