@@ -82,6 +82,7 @@ describe('Message Flows', () => {
     const offset = 100;
     const taskPosition = { x: poolPosition.x + offset, y: poolPosition.y + offset };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
+    cy.get('[data-test=switch-to-user-task').click();
 
     getElementAtPosition(poolPosition)
       .click()

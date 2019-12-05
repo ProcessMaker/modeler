@@ -69,14 +69,18 @@ describe('Boundary Timer Event', () => {
     const validBoundaryTimerEventTargets = [
       { type: nodeTypes.task, position: { x: 100, y: 300 } },
       { type: nodeTypes.subProcess, position: { x: 240, y: 300 } },
-      { type: nodeTypes.scriptTask, position: { x: 380, y: 300 } },
-      { type: nodeTypes.manualTask, position: { x: 100, y: 400 } },
+      { type: nodeTypes.task, position: { x: 380, y: 300 }, selector: '[data-test=switch-to-script-task]' },
+      { type: nodeTypes.task, position: { x: 100, y: 400 }, selector: '[data-test=switch-to-manual-task]' },
       { type: nodeTypes.sendTweet, position: { x: 240, y: 400 } },
       { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } },
     ];
 
-    validBoundaryTimerEventTargets.forEach(({ type, position }) => {
+    validBoundaryTimerEventTargets.forEach(({ type, position, selector }) => {
       dragFromSourceToDest(type, position);
+
+      if (selector) {
+        cy.get(selector).click();
+      }
     });
 
     const numberOfElementsAfterAddingTasks = initialNumberOfElements + validBoundaryTimerEventTargets.length;

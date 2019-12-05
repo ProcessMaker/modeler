@@ -31,6 +31,7 @@ export default {
         {
           label: 'Task',
           nodeType: 'processmaker-modeler-task',
+          dataTest: 'switch-to-user-task',
         },
         {
           label: 'Manual Task',

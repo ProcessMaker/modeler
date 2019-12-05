@@ -64,7 +64,8 @@ describe('Event-Based Gateway', () => {
       });
 
     const scriptTaskPosition = { x: 450, y: 350 };
-    dragFromSourceToDest(nodeTypes.scriptTask, scriptTaskPosition);
+    dragFromSourceToDest(nodeTypes.task, scriptTaskPosition);
+    cy.get('[data-test=switch-to-script-task]').click();
     connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, scriptTaskPosition);
 
     getGraphElements().should('have.length', totalNumberOfValidElements);
