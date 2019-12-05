@@ -10,7 +10,6 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   component,
   control: false,
   bpmnType: 'bpmn:IntermediateCatchEvent',
-  icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {

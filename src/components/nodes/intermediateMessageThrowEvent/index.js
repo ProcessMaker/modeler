@@ -10,7 +10,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   control: false,
   bpmnType: 'bpmn:IntermediateThrowEvent',
   label: 'Intermediate Message Throw Event',
-  icon: require('@/assets/toolpanel/intermediate-mail-event-alt.svg'),
+  icon: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateThrowEvent', {
       name: $t('Intermediate Message Throw Event'),

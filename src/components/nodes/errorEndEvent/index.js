@@ -11,7 +11,6 @@ export default merge(cloneDeep(endEventConfig), {
   component,
   control: false,
   label: 'Error End Event',
-  icon: require('@/assets/toolpanel/error-end-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
       name: $t('Error End Event'),

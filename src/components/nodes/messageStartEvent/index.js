@@ -9,7 +9,6 @@ export default merge(cloneDeep(startEventConfig), {
   id: 'processmaker-modeler-message-start-event',
   control: false,
   component,
-  icon: require('@/assets/toolpanel/message-start-event.svg'),
   label: 'Message Start Event',
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
