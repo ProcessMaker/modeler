@@ -21,8 +21,8 @@
 export default {
   name: 'CrownDropdown',
   props: {
-    dropdownData: {},
-    node: {},
+    dropdownData: Array,
+    node: Object,
     showDropdown: {
       type: Boolean,
       required: true,

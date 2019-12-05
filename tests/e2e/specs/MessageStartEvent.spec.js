@@ -1,6 +1,4 @@
-import {
-  dragFromSourceToDest, assertDownloadedXmlContainsExpected, getElementAtPosition,
-} from '../support/utils';
+import { assertDownloadedXmlContainsExpected, dragFromSourceToDest, getElementAtPosition } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Message Start Event', () => {
@@ -16,13 +14,14 @@ describe('Message Start Event', () => {
     `);
 
     const intermediateMessageThrowEvent = { x: 350, y: 350 };
-    dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEvent);
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEvent);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
     getElementAtPosition(messageStartEventPosition).click();
-    cy.contains('Listen For Message').next('select').select('node_4_message');
+    cy.contains('Listen For Message').next('select').select('node_5_message');
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:startEvent id="node_3" name="Message Start Event">
-        <bpmn:messageEventDefinition messageRef="node_4_message" />
+        <bpmn:messageEventDefinition messageRef="node_5_message" />
       </bpmn:startEvent>
     `);
   });

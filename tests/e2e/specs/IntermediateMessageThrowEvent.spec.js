@@ -1,76 +1,68 @@
 import {
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
-  removeIndentationAndLinebreaks,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
-const messageRef = 'node_2_message';
+const messageRef = 'node_3_message';
 const messageName = 'awesome message name';
-const eventXMLSnippet = `<bpmn:intermediateThrowEvent id="node_2" name="Intermediate Message Throw Event"><bpmn:messageEventDefinition messageRef="${ messageRef }" /></bpmn:intermediateThrowEvent>`;
+const eventXMLSnippet = `
+  <bpmn:intermediateThrowEvent id="node_3" name="Intermediate Message Throw Event">
+    <bpmn:messageEventDefinition messageRef="${messageRef}" />
+  </bpmn:intermediateThrowEvent>
+`;
 const messageXMLSnippet = `<bpmn:message id="${ messageRef }" name="${ messageName }" />`;
 const intermediateMessageThrowEventPosition = { x: 300, y: 200 };
 
 describe('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', function() {
-    dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(eventXMLSnippet);
-    });
+    assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
 
   it('can create a message when intermediate message throw event is dragged on', function() {
-    dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
     typeIntoTextInput('[name=messageName]', messageName);
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(eventXMLSnippet);
-      expect(xml).to.contain(messageXMLSnippet);
-    });
+    assertDownloadedXmlContainsExpected(eventXMLSnippet, messageXMLSnippet);
   });
 
   it('can remove the message when intermediate message throw event is deleted', function() {
-    dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
     typeIntoTextInput('[name=messageName]', messageName);
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(messageXMLSnippet);
-    });
+    assertDownloadedXmlContainsExpected(messageXMLSnippet);
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click().then($intermediateMessageThrowEvent => {
       getCrownButtonForElement($intermediateMessageThrowEvent, 'delete-button').click();
     });
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.not.contain(messageXMLSnippet);
-    });
+    assertDownloadedXmlDoesNotContainExpected(messageXMLSnippet);
   });
 
   it('retains new message name when clicking off and on intermediate message throw event', function() {
     const startEventPosition = { x: 150, y: 150 };
 
-    dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
@@ -84,10 +76,16 @@ describe('Intermediate Message Throw Event', () => {
 
   it('can associate and rename message on intermediate message catch event', function() {
     const intermediateMessageCatchEventPosition = { x: 200, y: 300 };
-    const catchEventXMLSnippet = `<bpmn:intermediateCatchEvent id="node_3" name="Intermediate Message Catch Event"><bpmn:messageEventDefinition messageRef="${ messageRef }" /></bpmn:intermediateCatchEvent>`;
+    const catchEventXMLSnippet = `
+      <bpmn:intermediateCatchEvent id="node_5" name="Intermediate Message Catch Event">
+        <bpmn:messageEventDefinition messageRef="${messageRef}" />
+      </bpmn:intermediateCatchEvent>
+    `;
 
-    dragFromSourceToDest(nodeTypes.intermediateMessageThrowEvent, intermediateMessageThrowEventPosition);
-    dragFromSourceToDest(nodeTypes.intermediateMessageCatchEvent, intermediateMessageCatchEventPosition);
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageCatchEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     cy.get('[name=messageRef]').select(messageRef);
@@ -98,12 +96,6 @@ describe('Intermediate Message Throw Event', () => {
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     cy.get('[name=messageRef]').should('contain', messageName);
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(eventXMLSnippet);
-      expect(xml).to.contain(catchEventXMLSnippet);
-      expect(xml).to.contain(messageXMLSnippet);
-    });
+    assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
   });
 });

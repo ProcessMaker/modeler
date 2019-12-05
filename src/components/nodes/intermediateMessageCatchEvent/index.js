@@ -8,6 +8,7 @@ import omit from 'lodash/omit';
 export default merge(cloneDeep(intermediateMessageEventConfig), {
   id: 'processmaker-modeler-intermediate-message-catch-event',
   component,
+  control: false,
   bpmnType: 'bpmn:IntermediateCatchEvent',
   icon: require('@/assets/toolpanel/intermediate-mail-event.svg'),
   label: 'Intermediate Message Catch Event',
