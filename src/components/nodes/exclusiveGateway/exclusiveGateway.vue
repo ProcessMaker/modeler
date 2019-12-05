@@ -14,14 +14,17 @@ export default {
         {
           label: 'Inclusive Gateway',
           nodeType: 'processmaker-modeler-inclusive-gateway',
+          dataTest: 'switch-to-inclusive-gateway',
         },
         {
           label: 'Parallel Gateway',
           nodeType: 'processmaker-modeler-parallel-gateway',
+          dataTest: 'switch-to-parallel-gateway',
         },
         {
           label: 'Event Based Gateway',
           nodeType: 'processmaker-modeler-event-based-gateway',
+          dataTest: 'switch-to-event-based-gateway',
         },
       ],
     };

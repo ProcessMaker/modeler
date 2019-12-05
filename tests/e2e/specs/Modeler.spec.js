@@ -1,4 +1,5 @@
 import {
+  addNodeTypeToPaper,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -135,7 +136,8 @@ describe('Modeler', () => {
 
   it('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.inclusiveGateway, gatewayPosition);
+    dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
+    cy.get('[data-test=switch-to-inclusive-gateway]').click();
 
     cy.get('[data-test="validation-toggle"]').click({ force: true });
     cy.get('[data-test="validation-list-toggle"]').click();
@@ -336,7 +338,7 @@ describe('Modeler', () => {
 
   it('Scales gateways when mini-map is opened', function() {
     const gatewayPosition = { x: 400, y: 400 };
-    dragFromSourceToDest(nodeTypes.parallelGateway, gatewayPosition);
+    addNodeTypeToPaper(gatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
     cy.get('[data-test=mini-map-btn]').click();
 
     cy.get('.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]').then($startEvent => {

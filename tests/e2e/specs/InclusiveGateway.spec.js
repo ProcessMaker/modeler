@@ -1,24 +1,30 @@
-import { connectNodesWithFlow, dragFromSourceToDest, getElementAtPosition, typeIntoTextInput } from '../support/utils';
+import {
+  addNodeTypeToPaper,
+  connectNodesWithFlow,
+  dragFromSourceToDest,
+  getElementAtPosition,
+  typeIntoTextInput,
+} from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 import { gatewayDirection } from '../../../src/components/nodes/gateway/gatewayConfig';
 
 describe('Inclusive Gateway', () => {
+  const inclusivePosition = { x: 250, y: 250 };
+
+  beforeEach(() => {
+    addNodeTypeToPaper(inclusivePosition, nodeTypes.exclusiveGateway, 'switch-to-inclusive-gateway');
+  });
+
   it('Update inclusive gateway name', () => {
-    const inclusivePosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
-
     getElementAtPosition(inclusivePosition).click();
-
     const testString = 'testing';
     typeIntoTextInput('[name=name]', testString);
+
     cy.get('[name=name]').should('have.value', testString);
   });
 
   it('Detects gateway direction of converging or diverging', function() {
-    const inclusivePosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.inclusiveGateway, inclusivePosition);
-
     const startEventPosition = { x: 150, y: 150 };
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, inclusivePosition);
