@@ -60,6 +60,12 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
+    this.shape.attr({
+      label: {
+        text: this.node.definition.get('name'),
+        refY: '130%',
+      },
+    });
     this.shape.addTo(this.graph);
     this.shape.component = this;
   },
