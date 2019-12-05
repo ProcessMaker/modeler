@@ -60,26 +60,6 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
-    this.shape.attr({
-      body: {
-        stroke: '#FBBE02',
-        fill: '#FFF4D1',
-      },
-      body2: {
-        stroke: '#FBBE02',
-        fill: '#FFF4D1',
-      },
-      label: {
-        text: this.node.definition.get('name'),
-        refY: '130%',
-      },
-      image: {
-        'ref-x': 5,
-        'ref-y': 5,
-        'width': bounds.get('width') - 10,
-        'height': bounds.get('height') - 10,
-      },
-    });
     this.shape.addTo(this.graph);
     this.shape.component = this;
   },
