@@ -251,9 +251,11 @@ export function getXml() {
     .then(removeIndentationAndLinebreaks);
 }
 
-export function assertDownloadedXmlContainsExpected(xmlString) {
+export function assertDownloadedXmlContainsExpected(...xmlStrings) {
   getXml().then(xml => {
-    expect(xml).to.contain(removeIndentationAndLinebreaks(xmlString));
+    xmlStrings.forEach(xmlString => {
+      expect(xml).to.contain(removeIndentationAndLinebreaks(xmlString));
+    });
   });
 }
 
