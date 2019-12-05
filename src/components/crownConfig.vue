@@ -27,7 +27,7 @@
       :dropdown-data="dropdownData"
       :node="node"
       :show-dropdown="showDropdown"
-      @replace-node="$emit('replace-node', $event)"
+      @replace-node="replaceNode"
     />
 
     <delete-button
@@ -274,6 +274,13 @@ export default {
           this.savePositionOnPointerupEventSet = true;
         }
       });
+    },
+    replaceNode(event) {
+      if (event.node.type === event.typeToReplaceWith) {
+        this.showDropdown = false;
+        return;
+      }
+      this.$emit('replace-node', event);
     },
   },
   async mounted() {

@@ -49,6 +49,10 @@ export default {
       definition: null,
       dropdownData: [
         {
+          label: 'Start Event',
+          nodeType: 'processmaker-modeler-start-event',
+        },
+        {
           label: 'Start Timer Event',
           nodeType: 'processmaker-modeler-start-timer-event',
           dataTest: 'switch-to-start-timer-event',
