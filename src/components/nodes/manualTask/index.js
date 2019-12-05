@@ -9,7 +9,7 @@ export default {
   id,
   component,
   bpmnType: 'bpmn:ManualTask',
-  control: true,
+  control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/manualTask.svg'),
   label: 'Manual Task',

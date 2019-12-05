@@ -8,7 +8,7 @@ export default {
   id,
   component,
   bpmnType: 'bpmn:ScriptTask',
-  control: true,
+  control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/scriptTask.svg'),
   label: 'Script Task',

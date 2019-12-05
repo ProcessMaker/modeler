@@ -21,8 +21,7 @@
 import { util } from 'jointjs';
 import highlightConfig from '@/mixins/highlightConfig';
 import portsConfig from '@/mixins/portsConfig';
-import hasMarkers from '@/mixins/hasMarkers';
-import {markerSize} from '@/mixins/hasMarkers';
+import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
