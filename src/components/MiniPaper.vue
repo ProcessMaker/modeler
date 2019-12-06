@@ -74,17 +74,19 @@ $transition: 0.3s;
   .mini-paper {
     pointer-events: none;
   }
+
+  &.expanded {
+    right: $mini-paper-container-right-expanded-position;
+  }
+
+  &.closed {
+    opacity: 0;
+    transition: opacity $transition ease-out;
+  }
+
+  &.opened {
+    transition: opacity $transition ease-in, right $transition linear;
+  }
 }
 
-.mini-paper-container.expanded {
-  right: $mini-paper-container-right-expanded-position;
-}
-
-.mini-paper-container.closed {
-  opacity: 0;
-  transition: opacity $transition linear;
-}
-.mini-paper-container.opened {
-  transition: opacity $transition linear;
-}
 </style>

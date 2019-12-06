@@ -917,7 +917,7 @@ $controls-column-max-width: 265px;
 $controls-column-compressed-max-width: 95px;
 $toolbar-height: 2rem;
 $vertex-error-color: #ED4757;
-$controls-transition: 0.6s;
+$controls-transition: 0.3s;
 
 .ignore-pointer {
   pointer-events: none;

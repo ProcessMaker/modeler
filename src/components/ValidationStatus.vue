@@ -13,7 +13,7 @@
         <span class="badge badge-primary badge-pill">
           {{ numberOfProblemsToDisplay }}
         </span>
-        <font-awesome-icon class="ml-3" :class="rotateIcon"  :icon="faChevronDown" />
+        <font-awesome-icon class="ml-3" :class="rotateIcon" :icon="faChevronDown" />
       </button>
     </template>
 
@@ -125,6 +125,7 @@ $message-container-width: 18rem;
 $validation-container-height: 14rem;
 $validation-container-width: 25rem;
 $status-bar-container-height: 3rem;
+$transition: 0.3s;
 
 .status-bar-container {
   color: $secondary-grey;
@@ -167,12 +168,12 @@ $status-bar-container-height: 3rem;
 }
 
 .slide-enter-active {
-  transition-duration: 0.5s;
+  transition-duration: $transition;
   transition-timing-function: ease-in;
 }
 
 .slide-leave-active {
-  transition-duration: 0.5s;
+  transition-duration: $transition;
   transition-timing-function: ease-out;
 }
 
@@ -187,12 +188,12 @@ $status-bar-container-height: 3rem;
 }
 
 .rotatingUp {
-  transition: transform 0.5s ease-in;
+  transition: transform $transition ease-in;
   transform: rotate(180deg);
 }
 
 .rotatingDown {
-  transition: transform 0.5s ease-out;
+  transition: transform $transition ease-out;
   transform: rotate(0deg);
 }
 
