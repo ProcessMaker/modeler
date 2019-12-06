@@ -106,12 +106,22 @@ export default {
 </script>
 
 <style lang="scss">
+$border-color: rgba(0, 0, 0, 0.125);
+
 .card-header {
   background: #f7f7f7;
 }
 
 .list-group-item:first-child {
   border-top: 0;
+}
+
+.controls-column {
+  .list-group {
+    &:last-child {
+      border-bottom: 1px solid $border-color;
+    }
+  }
 }
 
 .tool {
