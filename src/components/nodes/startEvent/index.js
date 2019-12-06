@@ -11,6 +11,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/start-event.svg'),
   label: 'Start Event',
+  rank: 1,
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
       name: $t('Start Event'),

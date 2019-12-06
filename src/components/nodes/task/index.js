@@ -11,6 +11,7 @@ export default {
   bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
   control: true,
   category: 'BPMN',
+  rank: 4,
   icon: require('@/assets/toolpanel/task.svg'),
   label: 'Task',
   definition(moddle, $t) {

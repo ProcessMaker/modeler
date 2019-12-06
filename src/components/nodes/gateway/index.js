@@ -5,7 +5,7 @@ export default {
   id: 'processmaker-modeler-gateway',
   component,
   bpmnType: ['bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway'],
-  control: true,
+  control: false,
   category: 'BPMN',
   label: 'Gateway',
   definition(moddle, $t) {
