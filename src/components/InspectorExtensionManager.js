@@ -1,16 +1,15 @@
 export default function registerInspectorExtension(node, config) {
   const inspectorItems = getInspectorItems(node, config);
   addInspectorItem(inspectorItems, config);
-  inspectorItems.sort(moveAdvancedAccordionToBottom);
+  node.inspectorConfig[0].items.sort(moveAdvancedAccordionToBottom);
 }
 
-function moveAdvancedAccordionToBottom(inspectorItemA, inspectorItemB) {
-  const isAdvancedAccordion = (inspectorItem) => inspectorItem.label === 'Advanced';
-  if (isAdvancedAccordion(inspectorItemA)) {
+function moveAdvancedAccordionToBottom(accordionA, accordionB) {
+  if (isAdvancedAccordion(accordionA)) {
     return 1;
   }
 
-  if (isAdvancedAccordion(inspectorItemB)) {
+  if (isAdvancedAccordion(accordionB)) {
     return -1;
   }
 
@@ -33,4 +32,8 @@ function getInspectorItems(node, config) {
     return node.inspectorConfig[0].items;
   }
   return node.inspectorConfig[0].items[0].items;
+}
+
+function isAdvancedAccordion(accordion) {
+  return accordion.config.label === 'Advanced';
 }

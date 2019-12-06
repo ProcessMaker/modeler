@@ -1,6 +1,4 @@
-import {
-  task,
-} from '@/components/nodes';
+import { task } from '@/components/nodes';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }) => {
 
@@ -17,6 +15,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
       validation: 'numeric|min:1',
     },
   });
+
   registerInspectorExtension(task, {
     id: 'pm-assigned-users',
     component: 'FormSelect',
@@ -31,5 +30,26 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
         { value: 'Jane Smith', content: 'Jane Smith' },
       ],
     },
+  });
+
+  registerInspectorExtension(task, {
+    component: 'FormAccordion',
+    container: true,
+    config: {
+      initiallyOpen: false,
+      label: 'Assignment Rules',
+      icon: 'users',
+      name: 'assignmentRules',
+    },
+    items: [
+      {
+        component: 'FormInput',
+        config: {
+          label: 'Task Assignment',
+          helper: '',
+          name: 'taskAssignment',
+        },
+      },
+    ],
   });
 });
