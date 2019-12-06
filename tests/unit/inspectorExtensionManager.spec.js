@@ -17,29 +17,28 @@ describe('Inspector Extension Manager', function() {
         ],
       }],
     };
+
     config = {
       id: 5,
       container: true,
       name: 'inspector-accordion',
-      label: 'Advanced',
+      config: {
+        label: 'Advanced',
+      },
     };
   });
 
   it('should always sort the advanced accordion to the end when the config is a container', function() {
     registerInspectorExtension(node, config);
+    registerInspectorExtension(node, {
+      id: 'no-advanced-accordion',
+      container: true,
+      config: {
+        label: 'Non-advanced',
+      },
+    });
 
     const [lastItem] = node.inspectorConfig[0].items.slice(-1);
-    expect(lastItem).toBe(config);
-  });
-
-  it('should always sort the advanced accordion to the end when the config is not a container', function() {
-    delete config.container;
-    const items = node.inspectorConfig[0].items;
-    node.inspectorConfig[0].items = [{ items }];
-
-    registerInspectorExtension(node, config);
-
-    const [lastItem] = node.inspectorConfig[0].items[0].items.slice(-1);
     expect(lastItem).toBe(config);
   });
 
