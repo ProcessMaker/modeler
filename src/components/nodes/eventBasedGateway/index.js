@@ -32,7 +32,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'configuration',
+            name: 'inspector-accordion',
           },
           items: [
             {
@@ -52,7 +52,7 @@ export default {
             initiallyOpen: false,
             label: 'Advanced',
             icon: 'cogs',
-            name: 'advanced',
+            name: 'inspector-accordion',
           },
           items: [
             {

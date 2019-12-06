@@ -20,7 +20,8 @@ describe('Inspector Extension Manager', function() {
     config = {
       id: 5,
       container: true,
-      name: 'advanced',
+      name: 'inspector-accordion',
+      label: 'Advanced',
     };
   });
 

@@ -1,6 +1,7 @@
 <template>
   <b-card no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0" data-test="inspector-container">
     <vue-form-renderer
+      :key="config[0].name"
       v-if="highlightedNode"
       :data="data"
       @update="updateDefinition"
