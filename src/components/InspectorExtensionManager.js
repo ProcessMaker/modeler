@@ -35,5 +35,5 @@ function getInspectorItems(node, config) {
 }
 
 function isAdvancedAccordion(accordion) {
-  return accordion.config.label === 'Advanced';
+  return accordion.config && accordion.config.label === 'Advanced';
 }

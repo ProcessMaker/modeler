@@ -17,11 +17,14 @@ describe('Inspector Extension Manager', function() {
         ],
       }],
     };
+
     config = {
       id: 5,
       container: true,
       name: 'inspector-accordion',
-      label: 'Advanced',
+      config: {
+        label: 'Advanced',
+      },
     };
   });
 
