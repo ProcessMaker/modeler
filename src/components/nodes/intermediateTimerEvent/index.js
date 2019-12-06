@@ -13,7 +13,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/generic-intermediate-event.svg'),
   label: 'Intermediate Event',
-  rank: 3,
+  rank: 2,
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
       name: $t('Intermediate Timer Event'),
