@@ -10,6 +10,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/end-event.svg'),
   label: 'End Event',
+  rank: 2,
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
       name: $t('End Event'),

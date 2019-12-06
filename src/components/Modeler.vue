@@ -451,6 +451,22 @@ export default {
     registerBpmnExtension(namespace, extension) {
       this.extensions[namespace] = extension;
     },
+    addNodeToControls(nodeType) {
+      if (!nodeType.control) {
+        return;
+      }
+      const data = {
+        type: nodeType.id,
+        icon: nodeType.icon,
+        label: nodeType.label,
+        bpmnType: nodeType.bpmnType,
+        rank: nodeType.rank || Infinity,
+      };
+      const category = nodeType.category;
+      const categoryData = this.controls[category] || [];
+      categoryData.push(data);
+      this.controls[category] = categoryData;
+    },
     // This registers a node to use in the bpmn modeler
     registerNode(nodeType, customParser) {
       const defaultParser = () => nodeType.id;
@@ -464,20 +480,7 @@ export default {
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
-
-      if (nodeType.control) {
-        // Register the control for our control palette
-        if (!this.controls[nodeType.category]) {
-          this.$set(this.controls, nodeType.category, []);
-        }
-
-        this.controls[nodeType.category].push({
-          type: nodeType.id,
-          icon: nodeType.icon,
-          label: nodeType.label,
-          bpmnType: nodeType.bpmnType,
-        });
-      }
+      this.addNodeToControls(nodeType);
 
       const types = Array.isArray(nodeType.bpmnType)
         ? nodeType.bpmnType

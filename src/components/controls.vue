@@ -56,7 +56,8 @@ export default {
   computed: {
     controlItems() {
       return flatten(Object.values(this.controls))
-        .filter(control => control.label.toLowerCase().includes(this.filterQuery.toLowerCase()));
+        .filter(control => control.label.toLowerCase().includes(this.filterQuery.toLowerCase()))
+        .sort((node1, node2) => node1.rank - node2.rank);
     },
   },
   methods: {
