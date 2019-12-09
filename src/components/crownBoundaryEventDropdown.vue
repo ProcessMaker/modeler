@@ -47,6 +47,8 @@ export default {
   },
   methods: {
     addBoundaryEvent(nodeType) {
+      this.dropdownOpen = false;
+
       const definition = this.nodeRegistry[nodeType].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[nodeType].diagram(this.moddle);
 
