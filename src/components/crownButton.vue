@@ -40,7 +40,7 @@ export default {
   padding: 0;
   margin-top: 0;
 }
-img {
+img, i {
   margin: 5px 10px;
   font-size: 1rem;
 }
