@@ -46,6 +46,7 @@ import AddLaneAboveButton from '@/components/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/addLaneBelowButton';
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
+import { isBoundaryEvent } from '@/components/nodeManager';
 
 export default {
   components: {
@@ -250,6 +251,7 @@ export default {
 
         this.getElementsUnderArea(element, this.graph).filter(laneElement => {
           return laneElement.component &&
+            !isBoundaryEvent(laneElement.component.node) &&
             ![poolId, laneId].includes(laneElement.component.node.type) &&
             laneElement.component.node.pool.component === this;
         }).forEach(laneElement => {

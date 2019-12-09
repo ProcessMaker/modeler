@@ -191,7 +191,7 @@ import PaperManager from './paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
-import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
+import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 
 const version = '1.0';
@@ -728,16 +728,14 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      if (this.isBoundaryEvent(definition)) {
+      const node = { type: control.type, definition, diagram };
+
+      if (isBoundaryEvent(node)) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      const node = { type: control.type, definition, diagram };
       this.highlightNode(node);
       this.addNode(node);
-    },
-    isBoundaryEvent(definition) {
-      return definition.$type === 'bpmn:BoundaryEvent';
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x = diagram.bounds.x - (diagram.bounds.width / 2);

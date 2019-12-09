@@ -40,3 +40,7 @@ export function getTargetProcess(node, processes, processNode) {
     ? processes.find(({id}) => id === node.pool.component.node.definition.get('processRef').id)
     : processNode.definition;
 }
+
+export function isBoundaryEvent(node) {
+  return node.definition.$type === 'bpmn:BoundaryEvent';
+}
