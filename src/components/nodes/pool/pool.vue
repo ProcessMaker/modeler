@@ -210,7 +210,7 @@ export default {
         this.updateLaneChildren();
       }
     },
-    positionLaneRelativeToPool(laneElement, pool) {
+    positionAndSizeLane(laneElement, pool) {
       const { width, height } = pool.getBBox();
       const elementBounds = laneElement.component.node.diagram.bounds;
 
@@ -258,7 +258,7 @@ export default {
       const { x: poolX, y: poolY, width, height } = pool.getBBox();
 
       if (element.component.node.type === laneId) {
-        this.positionLaneRelativeToPool(element, pool);
+        this.positionAndSizeLane(element, pool);
         return;
       }
 
