@@ -51,6 +51,11 @@ export default {
           nodeType: 'processmaker-modeler-boundary-timer-event',
           dataTest: 'add-boundary-timer-event',
         },
+        {
+          label: 'Boundary Error Event',
+          nodeType: 'processmaker-modeler-boundary-error-event',
+          dataTest: 'add-boundary-error-event',
+        },
       ],
     };
   },
