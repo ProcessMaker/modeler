@@ -190,7 +190,7 @@ describe('Modeler', () => {
   it('Selects process node after deleting an element', () => {
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
-    cy.get('[data-test=inspector-container]').should('to.contain', 'Start Event');
+    cy.get('[data-test=inspector-container]').should('to.contain', 'Enter the name of this element');
 
     getElementAtPosition(startEventPosition)
       .then($startEvent => {
@@ -199,7 +199,7 @@ describe('Modeler', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('[data-test=inspector-container]').should('to.not.contain', 'Start Event');
+    cy.get('[data-test=inspector-container]').should('to.not.contain', 'Enter the name of this element');
     cy.get('[data-test=inspector-container]').should('to.contain', 'Process');
   });
 

@@ -60,7 +60,6 @@ export default {
               component: 'FormInput',
               config: {
                 ...nameConfigSettings,
-                helper: 'The Name of the Sub Process',
               },
             },
             {
@@ -68,6 +67,7 @@ export default {
               config: {
                 label: 'Process',
                 name: 'calledElement',
+                helper: 'Select which Process this element calls',
               },
             },
           ],

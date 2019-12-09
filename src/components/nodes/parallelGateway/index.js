@@ -1,6 +1,7 @@
 import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
@@ -40,16 +41,14 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
-                helper: 'The Name of the Gateway',
-                name: 'name',
+                ...nameConfigSettings,
               },
             },
             {
               component: 'FormSelect',
               config: {
                 label: 'Direction',
-                helper: 'Select direction of gateway',
+                helper: 'Select the direction of workflow for this element',
                 name: 'gatewayDirection',
                 options: [
                   { value: gatewayDirection.diverging, content: 'Diverging' },

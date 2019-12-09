@@ -59,6 +59,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
               config: {
                 label: 'Listen For Message',
                 name: 'messageRef',
+                helper: 'Select from which Intermediate Message Throw or Message End event to listen',
               },
             },
           ],

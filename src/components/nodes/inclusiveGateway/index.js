@@ -42,14 +42,13 @@ export default {
               component: 'FormInput',
               config: {
                 ...nameConfigSettings,
-                helper: 'The Name of the Gateway',
               },
             },
             {
               component: 'FormSelect',
               config: {
                 label: 'Direction',
-                helper: 'Select direction of gateway',
+                helper: 'Select the direction of workflow for this element',
                 name: 'gatewayDirection',
                 options: [
                   { value: gatewayDirection.diverging, content: 'Diverging' },

@@ -57,7 +57,7 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Annotation Description',
+                label: 'Text to Show',
                 helper: 'Body of the text annotation',
                 name: 'text',
                 placeholder: 'New Text Annotation',

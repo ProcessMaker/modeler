@@ -1,5 +1,6 @@
 import component from './exclusiveGateway.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-exclusive-gateway',
@@ -40,9 +41,7 @@ export default {
             {
               component: 'FormInput',
               config: {
-                label: 'Name',
-                helper: 'The Name of the Gateway',
-                name: 'name',
+                ...nameConfigSettings,
               },
             },
           ],

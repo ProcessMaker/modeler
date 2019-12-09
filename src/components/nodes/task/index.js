@@ -45,7 +45,6 @@ export default {
               component: 'FormInput',
               config: {
                 ...nameConfigSettings,
-                helper: 'The Name of the Task',
               },
             },
           ],

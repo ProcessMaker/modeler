@@ -43,7 +43,6 @@ export default {
               component: 'FormInput',
               config: {
                 ...nameConfigSettings,
-                helper: 'The Name of the Script Task',
               },
             },
           ],
