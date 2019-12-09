@@ -1,8 +1,13 @@
 <template>
   <div class="cog-container" v-if="showDropdown" role="menuitem">
-    <button class="cog-container--button" @click="dropdownOpen = !dropdownOpen">
-      <i class="fas fa-cog" />
-    </button>
+    <crown-button
+      id="dropdown-button"
+      aria-label="Select a type"
+      v-on="$listeners"
+      @click="dropdownOpen = !dropdownOpen"
+    >
+      <i class="fas fa-cog cog-container--button" />
+    </crown-button>
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
       <li class="element-list--item" role="listitem" v-for="{label, nodeType, dataTest} in dropdownData" :key="nodeType">
@@ -18,8 +23,11 @@
   </div>
 </template>
 <script>
+import CrownButton from '@/components/crownButton';
+
 export default {
   name: 'CrownDropdown',
+  components: { CrownButton },
   props: {
     dropdownData: Array,
     node: Object,
@@ -40,7 +48,7 @@ $primary-color: #5096db;
 $primary-light: #fff;
 
 $element-list-top: 2.5rem;
-$element-list-left: -0.65rem;
+$element-list-left: 0;
 $element-list-top-chevron: -0.2rem;
 $element-list-left-chevron: 0.5rem;
 $crown-top-chevron: 0.8rem;
@@ -70,8 +78,6 @@ $chevron-height: 1.25rem;
     background: none;
     border: none;
     color: $primary-light;
-    padding: 0;
-    position: relative;
   }
 }
 
