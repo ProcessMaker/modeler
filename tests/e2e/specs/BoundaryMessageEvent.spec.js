@@ -8,9 +8,10 @@ describe('Boundary Message Event', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(taskType, taskPosition);
 
-    const boundaryMessageEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryMessageEvent, boundaryMessageEventPosition);
+    cy.get('[data-test=boundary-event-dropdown]').click();
+    cy.get('[data-test=add-boundary-message-event]').click();
 
+    const boundaryMessageEventPosition = { x: 260, y: 260 };
     getElementAtPosition(boundaryMessageEventPosition).click();
 
     const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';

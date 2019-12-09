@@ -2,10 +2,11 @@
   <div class="cog-container" role="menuitem">
     <crown-button
       id="dropdown-button"
-      aria-label="Select a type"
+      aria-label="Select a boundary event"
       v-on="$listeners"
       :src="boundaryEventIcon"
       @click="dropdownOpen = !dropdownOpen"
+      data-test="boundary-event-dropdown"
     />
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
@@ -47,6 +48,8 @@ export default {
   },
   methods: {
     addBoundaryEvent(nodeType) {
+      this.dropdownOpen = false;
+
       const definition = this.nodeRegistry[nodeType].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[nodeType].diagram(this.moddle);
 
