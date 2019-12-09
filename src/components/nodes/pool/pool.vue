@@ -34,7 +34,6 @@
 import portsConfig from '@/mixins/portsConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane, { id as laneId } from '../poolLane';
-import { id as poolId } from './index';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
@@ -46,7 +45,6 @@ import AddLaneAboveButton from '@/components/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/addLaneBelowButton';
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
-import { isBoundaryEvent } from '@/components/nodeManager';
 
 export default {
   components: {
@@ -240,19 +238,6 @@ export default {
 
       this.fixResizeRounding();
       this.updateAnchorPointPosition();
-
-      this.getElementsUnderArea(laneElement, this.graph)
-        .filter(element => {
-          return isFirstLane &&
-            element.component &&
-            !isBoundaryEvent(element.component.node) &&
-            ![poolId, laneId].includes(element.component.node.type) &&
-            element.component.node.pool.component === this;
-        })
-        .forEach(laneElement => {
-          pool.unembed(laneElement);
-          pool.embed(laneElement);
-        });
 
       const { x, y } = laneElement.position();
       elementBounds.set('x', x);
