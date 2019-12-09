@@ -87,7 +87,7 @@ export default {
       }
 
       return this.processes.find(process =>
-        process.id === this.node.definition.get('processRef').id
+        process.id === this.node.definition.get('processRef').id,
       );
     },
   },
@@ -212,9 +212,9 @@ export default {
         this.updateLaneChildren();
       }
     },
-    positionLaneRelativeToPool(element, pool) {
+    positionLaneRelativeToPool(laneElement, pool) {
       const { width, height } = pool.getBBox();
-      const elementBounds = element.component.node.diagram.bounds;
+      const elementBounds = laneElement.component.node.diagram.bounds;
 
       if (elementBounds.x && elementBounds.y) {
         /* If lane already has a position, don't re-position or re-size it. */
@@ -226,8 +226,8 @@ export default {
       }).length === 1;
 
       const laneHeight = isFirstLane ? height : elementBounds.height;
-      element.resize(width - labelWidth, laneHeight);
-      element.position(
+      laneElement.resize(width - labelWidth, laneHeight);
+      laneElement.position(
         labelWidth,
         isFirstLane
           ? 0
@@ -241,23 +241,24 @@ export default {
       this.fixResizeRounding();
       this.updateAnchorPointPosition();
 
-      this.getElementsUnderArea(element, this.graph).filter(laneElement => {
-        return laneElement.component &&
-          !isBoundaryEvent(laneElement.component.node) &&
-          ![poolId, laneId].includes(laneElement.component.node.type) &&
-          laneElement.component.node.pool.component === this;
-      }).forEach(laneElement => {
-        if (isFirstLane) {
+      this.getElementsUnderArea(laneElement, this.graph)
+        .filter(element => {
+          return isFirstLane &&
+            element.component &&
+            !isBoundaryEvent(element.component.node) &&
+            ![poolId, laneId].includes(element.component.node.type) &&
+            element.component.node.pool.component === this;
+        })
+        .forEach(laneElement => {
           pool.unembed(laneElement);
           pool.embed(laneElement);
-        }
-      });
+        });
 
-      const { x, y } = element.position();
+      const { x, y } = laneElement.position();
       elementBounds.set('x', x);
       elementBounds.set('y', y);
-      elementBounds.set('width', element.get('size').width);
-      elementBounds.set('height', element.get('size').height);
+      elementBounds.set('width', laneElement.get('size').width);
+      elementBounds.set('height', laneElement.get('size').height);
 
       store.commit('updateNodeBounds', {
         node: this.node,
@@ -412,12 +413,12 @@ export default {
       this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
       this.shape.resize(
         this.shape.getBBox().width - labelWidth,
-        this.shape.getBBox().height - labelWidth
+        this.shape.getBBox().height - labelWidth,
       );
       this.shape.resize(
         this.shape.getBBox().width,
         this.shape.getBBox().height - labelWidth,
-        { direction: 'top' }
+        { direction: 'top' },
       );
     },
     resizePool(pool) {
@@ -427,7 +428,7 @@ export default {
       this.shape.resize(
         /* Add labelWidth to ensure elements don't overlap with the pool label */
         Math.max(width, bounds.width),
-        Math.max(height, bounds.height)
+        Math.max(height, bounds.height),
       );
       this.shape.getEmbeddedCells().forEach(cell => {
         this.expandToFitElement(cell, pool);
@@ -450,7 +451,7 @@ export default {
           element.component &&
           element.component.node.pool === this.shape &&
           element.component.node.type !== laneId &&
-          element.component.node.type !== textAnnotationId
+          element.component.node.type !== textAnnotationId,
         )
         .forEach(element => {
           const lane = this.graph
