@@ -11,9 +11,8 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    :boundary-event-dropdown-data="boundaryEventDropdownData"
+    v-on="$listeners"
   />
 </template>
 
@@ -51,6 +50,27 @@ export default {
     'isRendering',
   ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  data() {
+    return {
+      boundaryEventDropdownData: [
+        {
+          label: 'Boundary Timer Event',
+          nodeType: 'processmaker-modeler-boundary-timer-event',
+          dataTest: 'add-boundary-timer-event',
+        },
+        {
+          label: 'Boundary Error Event',
+          nodeType: 'processmaker-modeler-boundary-error-event',
+          dataTest: 'add-boundary-error-event',
+        },
+        {
+          label: 'Boundary Message Event',
+          nodeType: 'processmaker-modeler-boundary-message-event',
+          dataTest: 'add-boundary-message-event',
+        },
+      ],
+    };
+  },
   watch: {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
