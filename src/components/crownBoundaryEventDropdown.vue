@@ -4,10 +4,9 @@
       id="dropdown-button"
       aria-label="Select a type"
       v-on="$listeners"
+      :src="boundaryEventIcon"
       @click="dropdownOpen = !dropdownOpen"
-    >
-      <i class="fas fa-cog cog-container--button"/>
-    </crown-button>
+    />
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
       <li
@@ -29,6 +28,7 @@
 </template>
 <script>
 import CrownButton from '@/components/crownButton';
+import boundaryEventIcon from '@/assets/boundary-event.svg';
 
 export default {
   name: 'CrownDropdown',
@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       dropdownOpen: false,
+      boundaryEventIcon,
     };
   },
   methods: {
