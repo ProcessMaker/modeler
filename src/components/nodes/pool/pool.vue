@@ -212,6 +212,58 @@ export default {
         this.updateLaneChildren();
       }
     },
+    positionLaneRelativeToPool(element, pool) {
+      const { width, height } = pool.getBBox();
+      const elementBounds = element.component.node.diagram.bounds;
+
+      if (elementBounds.x && elementBounds.y) {
+        /* If lane already has a position, don't re-position or re-size it. */
+        return;
+      }
+
+      const isFirstLane = pool.getEmbeddedCells().filter(cell => {
+        return cell.component && cell.component.node.type === laneId;
+      }).length === 1;
+
+      const laneHeight = isFirstLane ? height : elementBounds.height;
+      element.resize(width - labelWidth, laneHeight);
+      element.position(
+        labelWidth,
+        isFirstLane
+          ? 0
+          : this.isAddingLaneAbove ? -laneHeight : height,
+        { parentRelative: true },
+      );
+      pool.resize(width, isFirstLane ? height : height + laneHeight, {
+        direction: this.isAddingLaneAbove ? 'top-right' : 'bottom-right',
+      });
+
+      this.fixResizeRounding();
+      this.updateAnchorPointPosition();
+
+      this.getElementsUnderArea(element, this.graph).filter(laneElement => {
+        return laneElement.component &&
+          !isBoundaryEvent(laneElement.component.node) &&
+          ![poolId, laneId].includes(laneElement.component.node.type) &&
+          laneElement.component.node.pool.component === this;
+      }).forEach(laneElement => {
+        if (isFirstLane) {
+          pool.unembed(laneElement);
+          pool.embed(laneElement);
+        }
+      });
+
+      const { x, y } = element.position();
+      elementBounds.set('x', x);
+      elementBounds.set('y', y);
+      elementBounds.set('width', element.get('size').width);
+      elementBounds.set('height', element.get('size').height);
+
+      store.commit('updateNodeBounds', {
+        node: this.node,
+        bounds: pool.getBBox(),
+      });
+    },
     expandToFitElement(element, pool) {
       if (element.component.node.type === messageFlowId) {
         return;
@@ -220,58 +272,7 @@ export default {
       const { x: poolX, y: poolY, width, height } = pool.getBBox();
 
       if (element.component.node.type === laneId) {
-        /* Position lane relative to pool */
-
-        const elementBounds = element.component.node.diagram.bounds;
-
-        if (elementBounds.x && elementBounds.y) {
-          /* If lane already has a position, don't re-position or re-size it. */
-          return;
-        }
-
-        const isFirstLane = pool.getEmbeddedCells().filter(cell => {
-          return cell.component && cell.component.node.type === laneId;
-        }).length === 1;
-
-        const laneHeight = isFirstLane ? height : elementBounds.height;
-        element.resize(width - labelWidth, laneHeight);
-        element.position(
-          labelWidth,
-          isFirstLane
-            ? 0
-            : this.isAddingLaneAbove ? -laneHeight : height,
-          { parentRelative: true },
-        );
-        pool.resize(width, isFirstLane ? height : height + laneHeight, {
-          direction: this.isAddingLaneAbove ? 'top-right' : 'bottom-right',
-        });
-
-        this.fixResizeRounding();
-        this.updateAnchorPointPosition();
-
-        this.getElementsUnderArea(element, this.graph).filter(laneElement => {
-          return laneElement.component &&
-            !isBoundaryEvent(laneElement.component.node) &&
-            ![poolId, laneId].includes(laneElement.component.node.type) &&
-            laneElement.component.node.pool.component === this;
-        }).forEach(laneElement => {
-          if (isFirstLane) {
-            pool.unembed(laneElement);
-            pool.embed(laneElement);
-          }
-        });
-
-        const { x, y } = element.position();
-        elementBounds.set('x', x);
-        elementBounds.set('y', y);
-        elementBounds.set('width', element.get('size').width);
-        elementBounds.set('height', element.get('size').height);
-
-        store.commit('updateNodeBounds', {
-          node: this.node,
-          bounds: pool.getBBox(),
-        });
-
+        this.positionLaneRelativeToPool(element, pool);
         return;
       }
 
