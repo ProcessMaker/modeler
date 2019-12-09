@@ -11,6 +11,7 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
+    :boundary-event-dropdown-data="boundaryEventDropdownData"
     @remove-node="$emit('remove-node', $event)"
     @add-node="$emit('add-node', $event)"
     @save-state="$emit('save-state', $event)"
@@ -52,6 +53,7 @@ export default {
     return {
       shape: null,
       definition: null,
+      boundaryEventDropdownData: null,
     };
   },
   computed: {
