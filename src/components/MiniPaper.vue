@@ -1,5 +1,5 @@
 <template>
-  <div class="mini-paper-container" @click="movePaper" :class="visibilityClass">
+  <div class="mini-paper-container" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
     <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>
@@ -26,9 +26,6 @@ export default {
     },
   },
   computed: {
-    visibilityClass() {
-      return this.isOpen ? 'opened visible' : 'closed invisible';
-    },
     miniMap() {
       return this.miniMapManager.miniMap;
     },
@@ -81,12 +78,16 @@ $transition: 0.3s;
 
   &.closed {
     opacity: 0;
-    transition: opacity $transition ease-out;
+    visibility: hidden;
+    transition: opacity $transition ease-out, visibility $transition ease-out;
   }
 
   &.opened {
-    transition: opacity $transition ease-in, right $transition linear;
+    visibility: visible;
+    opacity: 1;
+    transition-property: visibility, opacity, right;
+    transition-duration: $transition;
+    transition-timing-function: ease-in, ease-in, linear;
   }
 }
-
 </style>
