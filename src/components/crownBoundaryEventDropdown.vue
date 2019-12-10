@@ -20,6 +20,7 @@
           :data-test="dataTest"
           class="element-list--item__button"
           type="button"
+          :disabled="!canAddBoundaryEventToTarget(nodeType, shape)"
           @click="addBoundaryEvent(nodeType)"
         >{{ $t(label) }}
         </button>
@@ -50,6 +51,7 @@ export default {
     };
   },
   methods: {
+    canAddBoundaryEventToTarget,
     addBoundaryEvent(nodeType) {
       this.dropdownOpen = false;
 
@@ -59,16 +61,10 @@ export default {
 
       const definition = this.nodeRegistry[nodeType].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[nodeType].diagram(this.moddle);
-      const emptyPorts = getEmptyBoundaryEventPositionsForShape(this.shape);
+      const emptyPort = getEmptyBoundaryEventPositionsForShape(this.shape)[0];
 
-      if (emptyPorts.length === 0) {
-        return;
-      }
-
-      const { x, y } = emptyPorts[0];
-
-      diagram.bounds.x = x - (diagram.bounds.width / 2);
-      diagram.bounds.y = y - (diagram.bounds.height / 2);
+      diagram.bounds.x = emptyPort.x - (diagram.bounds.width / 2);
+      diagram.bounds.y = emptyPort.y - (diagram.bounds.height / 2);
 
       const node = {
         definition,
@@ -145,6 +141,11 @@ export default {
         border: none;
         color: $primary-light;
         font-size: 0.85rem;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
       }
     }
   }
