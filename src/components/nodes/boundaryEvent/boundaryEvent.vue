@@ -28,6 +28,7 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import store from '@/store';
+import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 
 export default {
   components: {
@@ -148,7 +149,7 @@ export default {
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
 
-      if (!task) {
+      if (!canAddBoundaryEventToTarget(this.node.type, task)) {
         this.resetToInitialPosition();
         return;
       }
