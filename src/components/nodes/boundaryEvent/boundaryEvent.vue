@@ -68,10 +68,7 @@ export default {
     getTaskUnderShape() {
       return this.graph
         .findModelsUnderElement(this.shape)
-        .find(this.isValidBoundaryEventTarget);
-    },
-    isValidBoundaryEventTarget(model) {
-      return isValidBoundaryEventTarget(model.component);
+        .find(model => isValidBoundaryEventTarget(model.component));
     },
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
@@ -194,7 +191,7 @@ export default {
         return;
       }
 
-      const targetIsInvalid = targetElement && !this.isValidBoundaryEventTarget(targetElement);
+      const targetIsInvalid = targetElement && !isValidBoundaryEventTarget(targetElement.component);
       if (targetIsInvalid) {
         targetElement.attr('body/fill', invalidNodeColor);
       }

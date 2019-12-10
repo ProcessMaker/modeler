@@ -36,6 +36,7 @@
       :nodeRegistry="nodeRegistry"
       :moddle="moddle"
       :node="node"
+      :shape="shape"
       @click="showDropdown = false"
       @add-boundary-event="$emit('add-node', $event)"
     />

@@ -30,6 +30,7 @@
 <script>
 import CrownButton from '@/components/crownButton';
 import boundaryEventIcon from '@/assets/boundary-event.svg';
+import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 
 export default {
   name: 'CrownDropdown',
@@ -39,6 +40,7 @@ export default {
     nodeRegistry: Object,
     moddle: Object,
     node: Object,
+    shape: Object,
   },
   data() {
     return {
@@ -52,9 +54,11 @@ export default {
 
       const definition = this.nodeRegistry[nodeType].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[nodeType].diagram(this.moddle);
+      const emptyPorts = getEmptyBoundaryEventPositionsForShape(this.shape);
+      const { x, y } = emptyPorts[0] || diagram.bounds;
 
-      diagram.bounds.x = this.node.diagram.bounds.x;
-      diagram.bounds.y = this.node.diagram.bounds.y;
+      diagram.bounds.x = x - (diagram.bounds.width / 2);
+      diagram.bounds.y = y - (diagram.bounds.height / 2);
 
       const node = {
         definition,
@@ -70,6 +74,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss">
   $primary-color: #5096db;
   $primary-light: #fff;
