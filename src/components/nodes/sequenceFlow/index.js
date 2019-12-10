@@ -1,5 +1,6 @@
 import component from './sequenceFlow.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const id = 'processmaker-modeler-sequence-flow';
 
@@ -65,11 +66,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Name',
-                helper: 'The Name of the Sequence Flow',
-                name: 'name',
-              },
+              config: nameConfigSettings,
             },
           ],
         },

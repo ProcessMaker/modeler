@@ -43,10 +43,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Task',
-              },
+              config: nameConfigSettings,
             },
           ],
         },

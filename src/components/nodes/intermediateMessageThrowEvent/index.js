@@ -55,6 +55,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
               config: {
                 label: 'Message Name',
                 name: 'messageName',
+                helper: 'Enter the message name that is unique from all other elements in the diagram',
               },
             },
           ],

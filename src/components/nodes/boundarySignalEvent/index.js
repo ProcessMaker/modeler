@@ -48,10 +48,7 @@ export default {
             },
             {
               component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Boundary Timer Event',
-              },
+              config: nameConfigSettings,
             },
           ],
         },
