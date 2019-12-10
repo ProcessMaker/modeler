@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <label>{{ $t('Recurring loop will repeat at time interval set below') }}</label>
+    <label>{{ $t('Recurring loop repeats at time interval set below') }}</label>
     <b-input-group>
       <b-form-input
         type="number"

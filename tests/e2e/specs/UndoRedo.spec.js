@@ -229,6 +229,7 @@ describe('Undo/redo', () => {
     const newId = '1234';
     const newName = 'foobar';
     cy.get('[name=id]').clear().type(newId);
+    cy.contains('Configuration').click();
     cy.get('[name=name]').clear().type(newName);
 
     waitToRenderNodeUpdates();
