@@ -192,7 +192,8 @@ export default {
         return;
       }
 
-      if (targetElement && !canAddBoundaryEventToTarget(this.node.type, targetElement)) {
+      const currentlyAttachedTask = this.shape.getParentCell();
+      if (targetElement && targetElement !== currentlyAttachedTask && !canAddBoundaryEventToTarget(this.node.type, targetElement)) {
         targetElement.attr('body/fill', invalidNodeColor);
       }
 
