@@ -55,7 +55,12 @@ export default {
       const definition = this.nodeRegistry[nodeType].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[nodeType].diagram(this.moddle);
       const emptyPorts = getEmptyBoundaryEventPositionsForShape(this.shape);
-      const { x, y } = emptyPorts[0] || diagram.bounds;
+
+      if (emptyPorts.length === 0) {
+        return;
+      }
+
+      const { x, y } = emptyPorts[0];
 
       diagram.bounds.x = x - (diagram.bounds.width / 2);
       diagram.bounds.y = y - (diagram.bounds.height / 2);
