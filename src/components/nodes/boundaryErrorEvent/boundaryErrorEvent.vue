@@ -2,7 +2,7 @@
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import errorBoltIcon from '@/assets/boundary-error-event-icon.svg';
 import isValidBoundaryEventTarget from '@/components/nodes/boundaryEvent/validBoundaryEventTargets';
-import { getAttachedErrorBoundaryEvents } from '@/targetValidationUtils';
+import { getAttachedErrorBoundaryEvents } from '@/boundaryEventValidation';
 
 export default {
   extends: BoundaryEvent,

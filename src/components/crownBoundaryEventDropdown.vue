@@ -31,6 +31,7 @@
 import CrownButton from '@/components/crownButton';
 import boundaryEventIcon from '@/assets/boundary-event.svg';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
+import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 
 export default {
   name: 'CrownDropdown',
@@ -51,6 +52,10 @@ export default {
   methods: {
     addBoundaryEvent(nodeType) {
       this.dropdownOpen = false;
+
+      if (!canAddBoundaryEventToTarget(nodeType, this.shape)) {
+        return;
+      }
 
       const definition = this.nodeRegistry[nodeType].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[nodeType].diagram(this.moddle);

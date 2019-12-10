@@ -18,7 +18,14 @@ export default function getValidationProperties(clientX, clientY, control, paper
   }
 
   if (isDraggingBoundaryEvent(control.bpmnType)) {
-    returnValue.allowDrop = canAddBoundaryEventToTarget(control.type, clientX, clientY, paper, graph);
+    const dropTarget = graph
+      .findModelsFromPoint(getLocalMousePosition(clientX, clientY, paper))
+      .sort((shape1, shape2) => {
+        /* Sort shape views by z-index descending; the shape "on top" will be first in array. */
+        return shape2.get('z') - shape1.get('z');
+      })[0];
+
+    returnValue.allowDrop = canAddBoundaryEventToTarget(control.type, dropTarget);
     return returnValue;
   }
 
