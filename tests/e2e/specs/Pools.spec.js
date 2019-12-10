@@ -201,7 +201,7 @@ describe('Pools', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    setBoundaryEvent('add-boundary-timer-event', taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
     moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
 
     const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';

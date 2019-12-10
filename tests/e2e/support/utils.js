@@ -4,11 +4,13 @@ import { nodeTypes } from './constants';
 
 const renderTime = 300;
 
-export function setBoundaryEvent(boundaryEvent, taskPosition, taskType = nodeTypes.task) {
+export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
+  const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
+
   waitToRenderAllShapes();
   getElementAtPosition(taskPosition, taskType).click();
   cy.get('[data-test="boundary-event-dropdown"]').click();
-  cy.get(`[data-test="${boundaryEvent}"`).click();
+  cy.get(`[data-test="${dataTest}"`).click();
   getElementAtPosition(taskPosition).click();
 }
 

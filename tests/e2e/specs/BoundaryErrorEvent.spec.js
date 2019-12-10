@@ -9,7 +9,6 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Error Event', () => {
-  const boundaryErrorEvent = 'add-boundary-error-event';
   it('Can only have one boundary error event per task', function() {
     const taskPosition = { x: 250, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -21,7 +20,7 @@ describe('Boundary Error Event', () => {
       });
 
     const boundaryErrorEventPosition = { x: taskPosition.x + 10, y: taskPosition.y + 10 };
-    setBoundaryEvent(boundaryErrorEvent, boundaryErrorEventPosition, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)
@@ -29,7 +28,7 @@ describe('Boundary Error Event', () => {
         expect($elements).to.have.lengthOf(1);
       });
 
-    setBoundaryEvent(boundaryErrorEvent, boundaryErrorEventPosition, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)

@@ -345,7 +345,7 @@ describe('Undo/redo', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    setBoundaryEvent('add-boundary-timer-event', taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const initialNumberOfElements = 3;
     const numberOfElementsToRemove = 1;

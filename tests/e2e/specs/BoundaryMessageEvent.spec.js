@@ -12,7 +12,7 @@ describe('Boundary Message Event', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(taskType, taskPosition);
 
-    setBoundaryEvent('add-boundary-message-event', taskPosition, taskType);
+    setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, taskType);
 
     const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
@@ -29,7 +29,7 @@ describe('Boundary Message Event', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(taskType, taskPosition);
 
-    setBoundaryEvent('add-boundary-message-event', taskPosition, taskType);
+    setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, taskType);
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).click();
