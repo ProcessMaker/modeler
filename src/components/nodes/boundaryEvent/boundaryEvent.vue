@@ -192,8 +192,7 @@ export default {
         return;
       }
 
-      const targetIsInvalid = targetElement && !isValidBoundaryEventTarget(targetElement.component);
-      if (targetIsInvalid) {
+      if (targetElement && !canAddBoundaryEventToTarget(this.node.type, targetElement)) {
         targetElement.attr('body/fill', invalidNodeColor);
       }
 
