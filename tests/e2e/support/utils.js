@@ -1,7 +1,16 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
+import { nodeTypes } from './constants';
 
 const renderTime = 300;
+
+export function setBoundaryEvent(boundaryEvent, taskPosition, taskType = nodeTypes.task) {
+  waitToRenderAllShapes();
+  getElementAtPosition(taskPosition, taskType).click();
+  cy.get('[data-test="boundary-event-dropdown"]').click();
+  cy.get(`[data-test="${boundaryEvent}"`).click();
+  getElementAtPosition(taskPosition).click();
+}
 
 export function getGraphElements() {
   return cy.window()

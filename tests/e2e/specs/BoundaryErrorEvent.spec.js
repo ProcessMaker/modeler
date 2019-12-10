@@ -4,10 +4,12 @@ import {
   getComponentsEmbeddedInShape,
   getPositionInPaperCoords,
   waitToRenderAllShapes,
+  setBoundaryEvent,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Error Event', () => {
+  const boundaryErrorEvent = 'add-boundary-error-event';
   it('Can only have one boundary error event per task', function() {
     const taskPosition = { x: 250, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -19,7 +21,7 @@ describe('Boundary Error Event', () => {
       });
 
     const boundaryErrorEventPosition = { x: taskPosition.x + 10, y: taskPosition.y + 10 };
-    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+    setBoundaryEvent(boundaryErrorEvent, boundaryErrorEventPosition, taskPosition);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)
@@ -27,7 +29,7 @@ describe('Boundary Error Event', () => {
         expect($elements).to.have.lengthOf(1);
       });
 
-    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+    setBoundaryEvent(boundaryErrorEvent, boundaryErrorEventPosition, taskPosition);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)

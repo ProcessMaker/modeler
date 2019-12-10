@@ -8,6 +8,7 @@ export const id = 'processmaker-modeler-boundary-error-event';
 export default merge(cloneDeep(boundaryEventConfig), {
   id,
   component,
+  control: false,
   label: 'Boundary Error Event',
   icon: require('@/assets/toolpanel/boundary-error-event.svg'),
   definition(moddle, $t) {

@@ -5,8 +5,10 @@ import {
   getCrownButtonForElement,
   getElementAtPosition,
   getLinksConnectedToElement,
+  moveElement,
   moveElementRelativeTo,
   removeIndentationAndLinebreaks,
+  setBoundaryEvent,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
@@ -18,12 +20,14 @@ const taskPosition = { x: 250, y: 200 };
 const boundaryEventData = [{
   type: 'Boundary Timer Event',
   nodeType: nodeTypes.boundaryTimerEvent,
+  boundaryEventType: 'add-boundary-timer-event',
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   invalidTargets: [{ type: nodeTypes.startEvent }],
 }, {
   type: 'Boundary Error Event',
   nodeType: nodeTypes.boundaryErrorEvent,
+  boundaryEventType: 'add-boundary-error-event',
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Error Event" attachedToRef="node_2"><bpmn:errorEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   invalidTargets: [{ type: nodeTypes.startEvent }],
@@ -31,12 +35,14 @@ const boundaryEventData = [{
   type: 'Boundary Escalation Event',
   skip: true,
   nodeType: nodeTypes.boundaryEscalationEvent,
+  boundaryEventType: 'add-boundary-escalation-event',
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Escalation Event" attachedToRef="node_2"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
 }, {
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
+  boundaryEventType: 'add-boundary-message-event',
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Message Event" attachedToRef="node_2"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
   invalidTargets: [{ type: nodeTypes.startEvent }],
@@ -50,7 +56,7 @@ function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
   expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 118);
 }
 
-function configurePool(poolPosition, nodeType, taskType) {
+function configurePool(poolPosition, boundaryEventType, taskType) {
   getElementAtPosition({ x: 150, y: 150 })
     .click()
     .then($startEvent => {
@@ -58,17 +64,16 @@ function configurePool(poolPosition, nodeType, taskType) {
     });
 
   dragFromSourceToDest(taskType, { x: 250, y: 250 });
-  dragFromSourceToDest(nodeType, boundaryEventPosition);
+  setBoundaryEvent(boundaryEventType, { x: 250, y: 250 }, taskType);
   dragFromSourceToDest(nodeTypes.pool, poolPosition);
 }
 
-boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidTargets, skip = false }) => {
+boundaryEventData.forEach(({ type, nodeType, boundaryEventType, eventXMLSnippet, taskType, invalidTargets, skip = false }) => {
   (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', function() {
       dragFromSourceToDest(taskType, taskPosition);
 
-      dragFromSourceToDest(nodeType, boundaryEventPosition);
-
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
       getElementAtPosition(boundaryEventPosition).click();
 
       cy.get('[data-test=downloadXMLBtn]').click();
@@ -83,7 +88,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('removes references of itself when inside of a pool and deleting the pool', function() {
       const poolPosition = { x: 400, y: 300 };
-      configurePool(poolPosition, nodeType, taskType);
+      configurePool(poolPosition, boundaryEventType, taskType);
 
       getElementAtPosition(poolPosition)
         .click()
@@ -101,7 +106,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
     });
 
     it('can stay anchored to task when moving pool', function() {
-      configurePool({ x: 300, y: 300 }, nodeType, taskType);
+      configurePool({ x: 300, y: 300 }, boundaryEventType, taskType);
       const taskSelector = '.main-paper ' +
         '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
@@ -142,8 +147,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       const outgoingTaskPosition = { x: 400, y: 400 };
       dragFromSourceToDest(taskType, outgoingTaskPosition);
 
-      dragFromSourceToDest(nodeType, boundaryEventPosition);
-
+      setBoundaryEvent(boundaryEventType, outgoingTaskPosition, taskType);
+      moveElement(outgoingTaskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
       connectNodesWithFlow('sequence-flow-button', boundaryEventPosition, outgoingTaskPosition);
 
       const numberOfSequenceFlowsAdded = 1;
@@ -167,7 +172,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       dragFromSourceToDest(taskType, firstTaskPosition);
 
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, boundaryEventPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
 
       connectNodesWithFlow('sequence-flow-button', firstTaskPosition, boundaryEventPosition);
 
@@ -182,7 +187,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('snaps back to original position when dragged over empty area', function() {
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, taskPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
 
       cy.get(boundaryEventSelector).then($boundaryEvent => {
         const boundaryEventPosition = $boundaryEvent.position();
@@ -209,9 +214,10 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
     it('does not snap boundary event to new position when selecting', function() {
       dragFromSourceToDest(taskType, taskPosition);
 
-      dragFromSourceToDest(nodeType, boundaryEventPosition);
+      const boundaryEventConnectedPosition = { x: 232, y: 220 };
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
+      moveElement(taskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
 
-      const boundaryEventConnectedPosition = { x: 232, y: 239 };
       getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
       getElementAtPosition(boundaryEventPosition).click();
       getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
@@ -219,7 +225,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('correctly re-renders a boundary event on undo and redo', () => {
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, taskPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
+      moveElement(taskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
 
       cy.get('[data-test=undo]').click({ force: true });
       waitToRenderAllShapes();
@@ -239,7 +246,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('can successfully undo/redo after dragging onto invalid (empty) space ', function() {
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, taskPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
 
       cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
         const boundaryEventPosition = $boundaryEvent.position();
@@ -274,7 +281,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('redo positions it in same location as before undo', function() {
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, boundaryEventPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
 
       cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
         const boundaryEventPosition = $boundaryEvent.position();
@@ -295,7 +302,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
     it('turns target red when it is an invalid drop target, and snaps back to original position', function() {
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, taskPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
       const invalidNodeTargetPosition = { x: 450, y: 150 };
 
       invalidTargets.forEach(invalidTargetNode => {
@@ -349,7 +356,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
     it('should turn pool red when hovered over and then back to default colour when no longer over pool', function() {
       dragFromSourceToDest(nodeTypes.pool, taskPosition);
       dragFromSourceToDest(taskType, taskPosition);
-      dragFromSourceToDest(nodeType, taskPosition);
+      setBoundaryEvent(boundaryEventType, taskPosition, taskType);
       getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
         const overPoolPosition = { x: 450, y: 450 };
         const overTaskPosition = { x: 550, y: 350 };
