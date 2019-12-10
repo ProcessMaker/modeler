@@ -89,9 +89,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-              },
+              config: nameConfigSettings,
             },
           ],
         },
