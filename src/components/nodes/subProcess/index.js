@@ -58,16 +58,14 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Sub Process',
-              },
+              config: nameConfigSettings,
             },
             {
               component: SubProcessFormSelect,
               config: {
                 label: 'Process',
                 name: 'calledElement',
+                helper: 'Select which Process this element calls',
               },
             },
           ],

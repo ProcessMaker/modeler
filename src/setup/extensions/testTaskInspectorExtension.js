@@ -10,7 +10,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
       type: 'number',
       label: 'Due In',
       placeholder: '72 hours',
-      helper: 'Time when the task will due (hours)',
+      helper: 'Enter the hours until this Task is overdue',
       name: 'dueIn',
       validation: 'numeric|min:1',
     },
@@ -46,7 +46,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
         component: 'FormInput',
         config: {
           label: 'Task Assignment',
-          helper: '',
+          helper: 'Select the Task assignee',
           name: 'taskAssignment',
         },
       },

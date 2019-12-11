@@ -34,7 +34,6 @@
 import portsConfig from '@/mixins/portsConfig';
 import resizeConfig from '@/mixins/resizeConfig';
 import Lane, { id as laneId } from '../poolLane';
-import { id as poolId } from './index';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
@@ -86,7 +85,7 @@ export default {
       }
 
       return this.processes.find(process =>
-        process.id === this.node.definition.get('processRef').id
+        process.id === this.node.definition.get('processRef').id,
       );
     },
   },
@@ -211,6 +210,46 @@ export default {
         this.updateLaneChildren();
       }
     },
+    positionAndSizeLane(laneElement, pool) {
+      const { width, height } = pool.getBBox();
+      const elementBounds = laneElement.component.node.diagram.bounds;
+
+      if (elementBounds.x && elementBounds.y) {
+        /* If lane already has a position, don't re-position or re-size it. */
+        return;
+      }
+
+      const isFirstLane = pool.getEmbeddedCells().filter(cell => {
+        return cell.component && cell.component.node.type === laneId;
+      }).length === 1;
+
+      const laneHeight = isFirstLane ? height : elementBounds.height;
+      laneElement.resize(width - labelWidth, laneHeight);
+      laneElement.position(
+        labelWidth,
+        isFirstLane
+          ? 0
+          : this.isAddingLaneAbove ? -laneHeight : height,
+        { parentRelative: true },
+      );
+      pool.resize(width, isFirstLane ? height : height + laneHeight, {
+        direction: this.isAddingLaneAbove ? 'top-right' : 'bottom-right',
+      });
+
+      this.fixResizeRounding();
+      this.updateAnchorPointPosition();
+
+      const { x, y } = laneElement.position();
+      elementBounds.set('x', x);
+      elementBounds.set('y', y);
+      elementBounds.set('width', laneElement.get('size').width);
+      elementBounds.set('height', laneElement.get('size').height);
+
+      store.commit('updateNodeBounds', {
+        node: this.node,
+        bounds: pool.getBBox(),
+      });
+    },
     expandToFitElement(element, pool) {
       if (element.component.node.type === messageFlowId) {
         return;
@@ -219,57 +258,7 @@ export default {
       const { x: poolX, y: poolY, width, height } = pool.getBBox();
 
       if (element.component.node.type === laneId) {
-        /* Position lane relative to pool */
-
-        const elementBounds = element.component.node.diagram.bounds;
-
-        if (elementBounds.x && elementBounds.y) {
-          /* If lane already has a position, don't re-position or re-size it. */
-          return;
-        }
-
-        const isFirstLane = pool.getEmbeddedCells().filter(cell => {
-          return cell.component && cell.component.node.type === laneId;
-        }).length === 1;
-
-        const laneHeight = isFirstLane ? height : elementBounds.height;
-        element.resize(width - labelWidth, laneHeight);
-        element.position(
-          labelWidth,
-          isFirstLane
-            ? 0
-            : this.isAddingLaneAbove ? -laneHeight : height,
-          { parentRelative: true },
-        );
-        pool.resize(width, isFirstLane ? height : height + laneHeight, {
-          direction: this.isAddingLaneAbove ? 'top-right' : 'bottom-right',
-        });
-
-        this.fixResizeRounding();
-        this.updateAnchorPointPosition();
-
-        this.getElementsUnderArea(element, this.graph).filter(laneElement => {
-          return laneElement.component &&
-            ![poolId, laneId].includes(laneElement.component.node.type) &&
-            laneElement.component.node.pool.component === this;
-        }).forEach(laneElement => {
-          if (isFirstLane) {
-            pool.unembed(laneElement);
-            pool.embed(laneElement);
-          }
-        });
-
-        const { x, y } = element.position();
-        elementBounds.set('x', x);
-        elementBounds.set('y', y);
-        elementBounds.set('width', element.get('size').width);
-        elementBounds.set('height', element.get('size').height);
-
-        store.commit('updateNodeBounds', {
-          node: this.node,
-          bounds: pool.getBBox(),
-        });
-
+        this.positionAndSizeLane(element, pool);
         return;
       }
 
@@ -409,12 +398,12 @@ export default {
       this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
       this.shape.resize(
         this.shape.getBBox().width - labelWidth,
-        this.shape.getBBox().height - labelWidth
+        this.shape.getBBox().height - labelWidth,
       );
       this.shape.resize(
         this.shape.getBBox().width,
         this.shape.getBBox().height - labelWidth,
-        { direction: 'top' }
+        { direction: 'top' },
       );
     },
     resizePool(pool) {
@@ -424,7 +413,7 @@ export default {
       this.shape.resize(
         /* Add labelWidth to ensure elements don't overlap with the pool label */
         Math.max(width, bounds.width),
-        Math.max(height, bounds.height)
+        Math.max(height, bounds.height),
       );
       this.shape.getEmbeddedCells().forEach(cell => {
         this.expandToFitElement(cell, pool);
@@ -447,7 +436,7 @@ export default {
           element.component &&
           element.component.node.pool === this.shape &&
           element.component.node.type !== laneId &&
-          element.component.node.type !== textAnnotationId
+          element.component.node.type !== textAnnotationId,
         )
         .forEach(element => {
           const lane = this.graph

@@ -9,7 +9,8 @@
       </b-form-select>
     </b-input-group>
 
-    <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every"/>
+    <small class="form-text text-muted">{{ $t(typeHelper) }}</small>
+    <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every" />
   </div>
 </template>
 
@@ -22,12 +23,20 @@ import { defaultDurationValue } from '@/components/nodes/intermediateTimerEvent'
 
 const types = {
   timeDuration: 'DurationExpression',
-  timeDate : 'DateTimeExpression',
+  timeDate: 'DateTimeExpression',
   timeCycle: 'CycleExpression',
 };
 
 export default {
-  props: ['options', 'value'],
+  props: {
+    value: {
+      type: Object,
+    },
+    typeHelper: {
+      type: String,
+      default: 'Select the type of delay',
+    },
+  },
   components: {
     DurationExpression,
     DateTimeExpression,

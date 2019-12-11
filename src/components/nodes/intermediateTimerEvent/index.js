@@ -95,10 +95,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: {
-                ...nameConfigSettings,
-                helper: 'The Name of the Intermediate Event',
-              },
+              config: nameConfigSettings,
             },
           ],
         },

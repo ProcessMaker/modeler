@@ -1,5 +1,6 @@
 import component from './messageFlow.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export const id = 'processmaker-modeler-message-flow';
 
@@ -27,15 +28,23 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
+              config: nameConfigSettings,
             },
+          ],
+        },
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Advanced',
+            icon: 'cogs',
+            name: 'inspector-accordion',
+          },
+          items: [
             {
               component: 'FormInput',
-              config: {
-                label: 'Name',
-                helper: 'The Name of the Message Flow',
-                name: 'name',
-              },
+              config: idConfigSettings,
             },
           ],
         },

@@ -1,5 +1,5 @@
 <template>
-  <div class="mini-paper-container" @click="movePaper" :class="visibilityClass">
+  <div class="mini-paper-container" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
     <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>
@@ -26,9 +26,6 @@ export default {
     },
   },
   computed: {
-    visibilityClass() {
-      return this.isOpen ? 'visible' : 'invisible';
-    },
     miniMap() {
       return this.miniMapManager.miniMap;
     },
@@ -60,6 +57,7 @@ export default {
 $mini-paper-container-top-position: 1rem;
 $mini-paper-container-right-position: 17.5rem;
 $mini-paper-container-right-expanded-position: 2rem;
+$transition: 0.3s;
 
 .mini-paper-container {
   position: absolute;
@@ -73,8 +71,23 @@ $mini-paper-container-right-expanded-position: 2rem;
   .mini-paper {
     pointer-events: none;
   }
-}
-.mini-paper-expanded {
-  right: $mini-paper-container-right-expanded-position;
+
+  &.expanded {
+    right: $mini-paper-container-right-expanded-position;
+  }
+
+  &.closed {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $transition ease-out, visibility $transition ease-out;
+  }
+
+  &.opened {
+    visibility: visible;
+    opacity: 1;
+    transition-property: visibility, opacity, right;
+    transition-duration: $transition;
+    transition-timing-function: ease-in, ease-in, linear;
+  }
 }
 </style>

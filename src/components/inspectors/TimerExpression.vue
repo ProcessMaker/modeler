@@ -10,18 +10,20 @@
       class="p-0"
       :value="startDate"
       @input="setStartDate"
+      :helper="startDateHelper"
     />
 
     <template v-if="hasRepeat">
       <label class="">{{ $t(repeatLabel) }}</label>
       <b-form-group class="m-0 mb-3 p-0">
-        <b-form-input type="number" min="1" max="99" class="d-inline-block w-50" v-model="repeat" data-test="repeat-input"/>
+        <b-form-input type="number" min="1" max="99" class="d-inline-block w-50" v-model="repeat" data-test="repeat-input" />
         <b-form-select v-model="periodicity" class="d-inline-block w-50 periodicity" data-test="repeat-on-select">
           <option value="day">{{ $t('day') }}</option>
           <option value="week">{{ $t('week') }}</option>
           <option value="month">{{ $t('month') }}</option>
           <option value="year">{{ $t('year') }}</option>
         </b-form-select>
+        <small class="form-text text-muted">{{ $t(repeatHelper) }}</small>
       </b-form-group>
     </template>
 
@@ -40,6 +42,7 @@
         </span>
       </div>
       <small v-if="repeatOnValidationError" class="text-danger">{{ repeatOnValidationError }}</small>
+      <small class="form-text text-muted">{{ $t(periodicityHelper) }}</small>
     </div>
 
     <template v-if="hasEnds">
@@ -49,7 +52,7 @@
           <b-form-radio v-model="ends" data-test="ends-never" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
         </b-form-group>
 
-        <b-form-group class="p-0 mb-1" :description="`${$t('Please click On to select a date')}.`">
+        <b-form-group class="p-0 mb-1" :description="`${$t('Click On to select a date')}.`">
           <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on">{{ $t('On') }}</b-form-radio>
           <form-date-picker
             :emit-iso="true"
@@ -66,9 +69,9 @@
           />
         </b-form-group>
 
-        <b-form-group class="mt-0 p-0">
+        <b-form-group class="mt-0 p-0" :description="`${$t('Click After to enter how many occurrences to end the timer control')}.`">
           <b-form-radio v-model="ends" data-test="ends-after" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{ $t('After') }}</b-form-radio>
-          <b-form-input v-model="times" data-test="ends-after-input" type="number" min="0" max="99" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block"/>
+          <b-form-input v-model="times" data-test="ends-after-input" type="number" min="0" max="99" :disabled="ends !== 'after'" class="w-25 pl-2 pr-1 d-inline-block" />
           <b-form-input :readonly="ends !== 'after'" :value="$t('occurrences')" class=" w-75 d-inline-block occurrences-text" />
         </b-form-group>
       </div>
@@ -88,7 +91,7 @@ const periods = {
 
 export default {
   props: {
-    value: [ Array, String ],
+    value: [Array, String],
     hasEnds: {
       type: Boolean,
       default: true,
@@ -104,6 +107,18 @@ export default {
     weekLabel: {
       type: String,
       default: 'Repeat on',
+    },
+    startDateHelper: {
+      type: String,
+      default: 'Select the date to initially trigger this element',
+    },
+    repeatHelper: {
+      type: String,
+      default: 'Set the periodic interval to trigger this element again',
+    },
+    periodicityHelper: {
+      type: String,
+      default: 'Select the day(s) of the week in which to trigger this element',
     },
   },
   data() {
@@ -317,11 +332,6 @@ export default {
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
     },
-    hasMultipleWeekdaySelected(){
-      return this.isWeeklyPeriodSelected &&
-        this.selectedWeekdays.length > 0 &&
-        !this.sameDay;
-    },
     getIso8601FormattedDateString(startDate) {
       const numberOfRepetition = this.ends === 'after' ? this.times : '';
       const period = this.getPeriod();
@@ -350,6 +360,7 @@ export default {
 .periodicity {
   margin-top: -3px;
 }
+
 .weekday {
   padding: 0.75em;
   margin-left: 0.2em;
@@ -359,32 +370,6 @@ export default {
 </style>
 
 <style>
-.calendar {
-  width: 16em;
-}
-
-.calendaron {
-  margin-left: 0.75rem;
-}
-
-.calendar .cell {
-  height: 2em;
-  line-height: 2em;
-}
-
-.start-date {
-  background-color: white !important;
-  width: 8em !important;
-}
-
-.end-date {
-  background-color: white !important;
-}
-
-.date-disabled .end-date {
-  background-color: #e9ecef !important;
-  color: transparent;
-}
 
 .form-date-picker label {
   display: none;

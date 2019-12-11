@@ -3,7 +3,7 @@ const interruptingToggleConfig = {
   config: {
     label: 'Interrupting',
     name: 'cancelActivity',
-    helper: 'Boundary Event Type',
+    helper: 'Select to interrupt the current Request workflow and route to the alternate workflow, thereby preventing parallel workflow',
   },
 };
 

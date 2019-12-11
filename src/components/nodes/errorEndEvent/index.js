@@ -55,6 +55,7 @@ export default merge(cloneDeep(endEventConfig), {
               config: {
                 label: 'Error Name',
                 name: 'errorName',
+                helper: 'Enter the error name that is unique from all other elements in the diagram',
               },
             },
           ],
