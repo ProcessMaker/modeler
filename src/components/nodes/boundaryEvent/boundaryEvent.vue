@@ -28,6 +28,7 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import store from '@/store';
+import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 
 export default {
   components: {
@@ -68,10 +69,7 @@ export default {
     getTaskUnderShape() {
       return this.graph
         .findModelsUnderElement(this.shape)
-        .find(this.isValidBoundaryEventTarget);
-    },
-    isValidBoundaryEventTarget(model) {
-      return isValidBoundaryEventTarget(model.component);
+        .find(model => isValidBoundaryEventTarget(model.component));
     },
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
@@ -151,7 +149,7 @@ export default {
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
 
-      if (!task) {
+      if (!canAddBoundaryEventToTarget(this.node.type, task)) {
         this.resetToInitialPosition();
         return;
       }
@@ -194,8 +192,8 @@ export default {
         return;
       }
 
-      const targetIsInvalid = targetElement && !this.isValidBoundaryEventTarget(targetElement);
-      if (targetIsInvalid) {
+      const currentlyAttachedTask = this.shape.getParentCell();
+      if (targetElement && targetElement !== currentlyAttachedTask && !canAddBoundaryEventToTarget(this.node.type, targetElement)) {
         targetElement.attr('body/fill', invalidNodeColor);
       }
 
