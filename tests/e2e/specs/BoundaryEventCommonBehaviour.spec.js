@@ -353,7 +353,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       dragFromSourceToDest(nodeTypes.pool, taskPosition);
       dragFromSourceToDest(taskType, taskPosition);
       setBoundaryEvent(nodeType, taskPosition, taskType);
-      getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
+      getElementAtPosition(taskPosition).then($boundaryEvent => {
         const overPoolPosition = { x: 450, y: 450 };
         const overTaskPosition = { x: 550, y: 350 };
 
