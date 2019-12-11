@@ -83,11 +83,13 @@ export default {
       const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[0].items');
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
+        let helper = 'Enter the expression that describes the workflow condition ';
+        helper += '<a href="https://processmaker.gitbook.io/processmaker/designing-processes/process-design/model-your-process/the-quick-toolbar%23expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
         const expressionConfig = {
           component: 'FormInput',
           config: {
             label: 'Expression',
-            helper: 'Enter the expression that describes the workflow condition',
+            helper,
             name: 'conditionExpression',
           },
         };
