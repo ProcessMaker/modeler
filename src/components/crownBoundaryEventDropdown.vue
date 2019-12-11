@@ -33,6 +33,7 @@ import CrownButton from '@/components/crownButton';
 import boundaryEventIcon from '@/assets/boundary-event.svg';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
+import store from '@/store';
 
 export default {
   name: 'CrownDropdown',
@@ -71,6 +72,8 @@ export default {
         diagram,
         type: nodeType,
       };
+
+      store.commit('highlightNode', node);
 
       this.$emit('add-boundary-event', node);
     },
