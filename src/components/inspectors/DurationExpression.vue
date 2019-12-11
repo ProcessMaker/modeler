@@ -15,7 +15,7 @@
           <option v-for="period in periods" :key="period.name" :value="period">{{ $t(period.name) }}</option>
         </b-form-select>
       </b-input-group-append>
-      <small class="form-text text-muted">Select the duration of the timer</small>
+      <small class="form-text text-muted">{{ $t('Select the duration of the timer') }}</small>
     </b-input-group>
   </div>
 </template>

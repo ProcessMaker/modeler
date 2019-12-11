@@ -23,7 +23,7 @@
           <option value="month">{{ $t('month') }}</option>
           <option value="year">{{ $t('year') }}</option>
         </b-form-select>
-        <small class="form-text text-muted">{{ repeatHelper }}</small>
+        <small class="form-text text-muted">{{ $t(repeatHelper) }}</small>
       </b-form-group>
     </template>
 
@@ -42,7 +42,7 @@
         </span>
       </div>
       <small v-if="repeatOnValidationError" class="text-danger">{{ repeatOnValidationError }}</small>
-      <small class="form-text text-muted">{{ periodicityHelper }}</small>
+      <small class="form-text text-muted">{{ $t(periodicityHelper) }}</small>
     </div>
 
     <template v-if="hasEnds">
