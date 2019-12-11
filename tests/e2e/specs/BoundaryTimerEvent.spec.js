@@ -6,6 +6,7 @@ import {
   getPositionInPaperCoords,
   moveElement,
   removeIndentationAndLinebreaks,
+  setBoundaryEvent,
   typeIntoTextInput,
   uploadXml,
   waitToRenderAllShapes,
@@ -18,9 +19,8 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
-
-    getElementAtPosition(boundaryTimerEventPosition).click();
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+    moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
 
     const name = 'Test name';
     typeIntoTextInput('[name=name]', name);
@@ -59,20 +59,31 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('Can drag boundary timer events over valid targets', function() {
+  it('Can add boundary timer events to valid targets', function() {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 150, y: 150 };
 
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, startEventPosition);
+    getElementAtPosition(startEventPosition).then($startEvent => {
+      cy.wrap($startEvent).find('[data-test="boundary-event-dropdown"]').should('not.exist');
+    });
+
     getGraphElements().should('have.length', initialNumberOfElements);
 
     const validBoundaryTimerEventTargets = [
       { type: nodeTypes.task, position: { x: 100, y: 300 } },
       { type: nodeTypes.subProcess, position: { x: 240, y: 300 } },
-      { type: nodeTypes.task, position: { x: 380, y: 300 }, selector: '[data-test=switch-to-script-task]' },
-      { type: nodeTypes.task, position: { x: 100, y: 400 }, selector: '[data-test=switch-to-manual-task]' },
-      { type: nodeTypes.sendTweet, position: { x: 240, y: 400 } },
-      { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } },
+      {
+        type: nodeTypes.task,
+        subType: nodeTypes.scriptTask,
+        position: { x: 380, y: 300 },
+        selector: '[data-test=switch-to-script-task]',
+      },
+      {
+        type: nodeTypes.task,
+        subType: nodeTypes.manualTask,
+        position: { x: 100, y: 400 },
+        selector: '[data-test=switch-to-manual-task]',
+      },
     ];
 
     validBoundaryTimerEventTargets.forEach(({ type, position, selector }) => {
@@ -86,8 +97,9 @@ describe('Boundary Timer Event', () => {
     const numberOfElementsAfterAddingTasks = initialNumberOfElements + validBoundaryTimerEventTargets.length;
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasks);
 
-    validBoundaryTimerEventTargets.forEach(({ position }) => {
-      dragFromSourceToDest(nodeTypes.boundaryTimerEvent, position);
+    validBoundaryTimerEventTargets.forEach(({ type, position, subType }) => {
+      setBoundaryEvent(nodeTypes.boundaryTimerEvent, position, subType || type);
+
     });
 
     const numberOfElementsAfterAddingTasksAndBoundaryTimerEvents = initialNumberOfElements + validBoundaryTimerEventTargets.length * 2;
@@ -99,9 +111,8 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
-
-    getElementAtPosition(boundaryTimerEventPosition).click();
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+    moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
@@ -111,7 +122,7 @@ describe('Boundary Timer Event', () => {
     cy.get('[data-test=redo]').click({ force: true });
     waitToRenderAllShapes();
 
-    getElementAtPosition(boundaryTimerEventPosition).click();
+    getElementAtPosition(boundaryTimerEventPosition, nodeTypes.boundaryTimerEvent).click();
 
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
@@ -124,14 +135,14 @@ describe('Boundary Timer Event', () => {
 
     const boundaryTimerEventPositions = [{ x: 277, y: 162 }, { x: 225, y: 379 }];
 
-    getElementAtPosition(boundaryTimerEventPositions[0]).click();
+    getElementAtPosition(boundaryTimerEventPositions[0], nodeTypes.boundaryTimerEvent).click();
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
     cy.get(interrupting).should('not.be.checked');
 
-    getElementAtPosition(boundaryTimerEventPositions[1]).click({ force: true });
+    getElementAtPosition(boundaryTimerEventPositions[1], nodeTypes.boundaryTimerEvent).click({ force: true });
 
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
@@ -142,7 +153,7 @@ describe('Boundary Timer Event', () => {
     const taskPosition = { x: 300, y: 300 };
     const numberOfBoundaryTimerEventsAdded = 1;
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const taskXml = '<bpmn:task id="node_2" name="Task" />';
     const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2">';
@@ -203,7 +214,7 @@ describe('Boundary Timer Event', () => {
   it('keeps Boundary Timer Event in correct position when dragging and dropping', function() {
     const taskPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const task2Position = { x: 500, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);

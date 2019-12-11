@@ -4,6 +4,7 @@ import {
   getComponentsEmbeddedInShape,
   getPositionInPaperCoords,
   waitToRenderAllShapes,
+  setBoundaryEvent,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -19,7 +20,7 @@ describe('Boundary Error Event', () => {
       });
 
     const boundaryErrorEventPosition = { x: taskPosition.x + 10, y: taskPosition.y + 10 };
-    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+    setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)
@@ -27,7 +28,7 @@ describe('Boundary Error Event', () => {
         expect($elements).to.have.lengthOf(1);
       });
 
-    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+    setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)
@@ -63,7 +64,7 @@ describe('Boundary Error Event', () => {
       });
     });
 
-    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+    setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
 
     const task2Position2 = { x: task2Position.x + 50, y: task2Position.y + 50 };
 

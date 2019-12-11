@@ -8,6 +8,7 @@ export const id = 'processmaker-modeler-boundary-message-event';
 export default merge(cloneDeep(boundaryEventConfig), {
   id,
   component,
+  control: false,
   label: 'Boundary Message Event',
   icon: require('@/assets/toolpanel/boundary-message-event.svg'),
   definition(moddle, $t) {
