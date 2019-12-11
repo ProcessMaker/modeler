@@ -9,6 +9,7 @@
       :value="convertFromUTC(value)"
       @input="emitValue"
       data-test="date-picker"
+      helper="Select the date to trigger this element"
     />
   </div>
 </template>
