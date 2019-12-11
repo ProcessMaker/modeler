@@ -1,5 +1,6 @@
 import {
   dragFromSourceToDest,
+  getElementAtPosition,
   removeIndentationAndLinebreaks,
   setBoundaryEvent,
 } from '../support/utils';
@@ -30,6 +31,7 @@ describe('Boundary Message Event', () => {
     dragFromSourceToDest(taskType, taskPosition);
 
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, taskType);
+    getElementAtPosition(taskPosition, nodeTypes.boundaryMessageEvent).click();
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).click();
