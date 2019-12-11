@@ -382,7 +382,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
     it('highlight boundary event on creation', function() {
       dragFromSourceToDest(taskType, taskPosition);
 
-      dragFromSourceToDest(nodeType, boundaryEventPosition);
+      setBoundaryEvent(nodeType, taskPosition, taskType);
 
       getElementAtPosition(boundaryEventPosition).click().children().should('have.class', 'joint-highlight-stroke');
     });
