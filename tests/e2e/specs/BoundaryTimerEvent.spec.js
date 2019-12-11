@@ -122,7 +122,7 @@ describe('Boundary Timer Event', () => {
     cy.get('[data-test=redo]').click({ force: true });
     waitToRenderAllShapes();
 
-    getElementAtPosition(boundaryTimerEventPosition).click();
+    getElementAtPosition(boundaryTimerEventPosition, nodeTypes.boundaryTimerEvent).click();
 
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
@@ -135,14 +135,14 @@ describe('Boundary Timer Event', () => {
 
     const boundaryTimerEventPositions = [{ x: 277, y: 162 }, { x: 225, y: 379 }];
 
-    getElementAtPosition(boundaryTimerEventPositions[0]).click();
+    getElementAtPosition(boundaryTimerEventPositions[0], nodeTypes.boundaryTimerEvent).click();
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
     cy.get(interrupting).should('not.be.checked');
 
-    getElementAtPosition(boundaryTimerEventPositions[1]).click({ force: true });
+    getElementAtPosition(boundaryTimerEventPositions[1], nodeTypes.boundaryTimerEvent).click({ force: true });
 
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });

@@ -64,7 +64,7 @@ describe('Boundary Error Event', () => {
       });
     });
 
-    dragFromSourceToDest(nodeTypes.boundaryErrorEvent, boundaryErrorEventPosition);
+    setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
 
     const task2Position2 = { x: task2Position.x + 50, y: task2Position.y + 50 };
 

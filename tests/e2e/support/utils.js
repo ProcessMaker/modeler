@@ -6,12 +6,13 @@ const renderTime = 300;
 
 export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
   const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
-
   waitToRenderAllShapes();
-  getElementAtPosition(taskPosition, taskType).click();
-  cy.get('[data-test="boundary-event-dropdown"]').click();
-  cy.get(`[data-test="${dataTest}"`).click();
-  getElementAtPosition(taskPosition).click();
+
+  getElementAtPosition(taskPosition, taskType).click({force: true});
+
+  cy.get('[data-test="boundary-event-dropdown"]').click({force: true});
+  cy.get(`[data-test="${dataTest}"`).click({ force: true });
+  waitToRenderAllShapes();
 }
 
 export function getGraphElements() {

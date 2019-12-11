@@ -14,7 +14,7 @@ import {
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
 import { defaultNodeColor, invalidNodeColor, poolColor, startColor } from '../../../src/components/nodeColors';
 
-const boundaryEventPosition = { x: 250, y: 250 };
+const boundaryEventPosition = { x: 280, y: 200 };
 const taskPosition = { x: 250, y: 200 };
 
 const boundaryEventData = [{
@@ -71,7 +71,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       dragFromSourceToDest(taskType, taskPosition);
 
       setBoundaryEvent(nodeType, taskPosition, taskType);
-      getElementAtPosition(boundaryEventPosition).click();
+      getElementAtPosition(boundaryEventPosition, nodeType).click();
 
       cy.get('[data-test=downloadXMLBtn]').click();
 
@@ -150,7 +150,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
 
       const numberOfSequenceFlowsAdded = 1;
 
-      getElementAtPosition(boundaryEventPosition).then(getLinksConnectedToElement).should($links => {
+      getElementAtPosition(boundaryEventPosition, nodeType).then(getLinksConnectedToElement).should($links => {
         expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
 
@@ -159,7 +159,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       cy.get('[data-test=redo]').click({ force: true });
       waitToRenderAllShapes();
 
-      getElementAtPosition(boundaryEventPosition).then(getLinksConnectedToElement).should($links => {
+      getElementAtPosition(boundaryEventPosition, nodeType).then(getLinksConnectedToElement).should($links => {
         expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
     });
@@ -177,7 +177,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
         expect($links).to.have.lengthOf(0);
       });
 
-      getElementAtPosition(boundaryEventPosition).click().then($boundaryEvent => {
+      getElementAtPosition(boundaryEventPosition, nodeType).click().then($boundaryEvent => {
         getCrownButtonForElement($boundaryEvent, 'delete-button').click();
       });
     });
@@ -211,13 +211,12 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
     it('does not snap boundary event to new position when selecting', function() {
       dragFromSourceToDest(taskType, taskPosition);
 
-      const boundaryEventConnectedPosition = { x: 232, y: 220 };
+      const boundaryEventConnectedPosition = { x: 290, y: 182 };
       setBoundaryEvent(nodeType, taskPosition, taskType);
-      moveElement(taskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
 
-      getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
-      getElementAtPosition(boundaryEventPosition).click();
-      getElementAtPosition(boundaryEventPosition).getPosition().should('contain', boundaryEventConnectedPosition);
+      getElementAtPosition(boundaryEventPosition, nodeType).getPosition().should('contain', boundaryEventConnectedPosition);
+      getElementAtPosition(boundaryEventPosition, nodeType).click();
+      getElementAtPosition(boundaryEventPosition, nodeType).getPosition().should('contain', boundaryEventConnectedPosition);
     });
 
     it('correctly re-renders a boundary event on undo and redo', () => {
