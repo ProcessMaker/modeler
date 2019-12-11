@@ -11,6 +11,7 @@ export const defaultDurationValue = 'PT1H';
 export default merge(cloneDeep(boundaryEventConfig), {
   id: 'processmaker-modeler-boundary-timer-event',
   component,
+  control: false,
   label: 'Boundary Timer Event',
   icon: require('@/assets/toolpanel/boundary-timer-event.svg'),
   definition(moddle, $t) {

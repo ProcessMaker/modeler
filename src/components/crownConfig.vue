@@ -30,6 +30,17 @@
       @replace-node="replaceNode"
     />
 
+    <crown-boundary-event-dropdown
+      v-if="boundaryEventDropdownData"
+      :dropdown-data="boundaryEventDropdownData"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :node="node"
+      :shape="shape"
+      @click="showDropdown = false"
+      @add-boundary-event="$emit('add-node', $event)"
+    />
+
     <delete-button
       @click="removeShape"
       v-b-tooltip.hover.viewport.d50
@@ -45,6 +56,7 @@ import MessageFlowButton from '@/components/messageFlowButton';
 import SequenceFlowButton from '@/components/sequenceFlowButton';
 import AssociationFlowButton from '@/components/associationFlowButton';
 import CrownDropdown from '@/components/crownDropdown';
+import CrownBoundaryEventDropdown from '@/components/crownBoundaryEventDropdown';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import { direction } from '@/components/nodes/association/associationConfig';
@@ -53,6 +65,7 @@ import store from '@/store';
 export default {
   components: {
     CrownDropdown,
+    CrownBoundaryEventDropdown,
     DeleteButton,
     MessageFlowButton,
     SequenceFlowButton,
@@ -73,6 +86,10 @@ export default {
     dropdownData: {
       type: Array,
       default: () => [],
+    },
+    boundaryEventDropdownData: {
+      type: Array,
+      default: null,
     },
   },
   mixins: [poolLaneCrownConfig],

@@ -11,9 +11,8 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    :boundary-event-dropdown-data="boundaryEventDropdownData"
+    v-on="$listeners"
   />
 </template>
 
@@ -52,6 +51,7 @@ export default {
     return {
       shape: null,
       definition: null,
+      boundaryEventDropdownData: null,
     };
   },
   computed: {

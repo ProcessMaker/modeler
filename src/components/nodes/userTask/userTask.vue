@@ -12,6 +12,7 @@
     :plane-elements="planeElements"
     :is-rendering="isRendering"
     :dropdownData="dropdownData"
+    :boundary-event-dropdown-data="boundaryEventDropdownData"
     v-on="$listeners"
   />
 </template>
@@ -42,6 +43,18 @@ export default {
           label: 'Script Task',
           nodeType: 'processmaker-modeler-script-task',
           dataTest: 'switch-to-script-task',
+        },
+      ],
+      boundaryEventDropdownData: [
+        {
+          label: 'Boundary Timer Event',
+          nodeType: 'processmaker-modeler-boundary-timer-event',
+          dataTest: 'add-boundary-timer-event',
+        },
+        {
+          label: 'Boundary Error Event',
+          nodeType: 'processmaker-modeler-boundary-error-event',
+          dataTest: 'add-boundary-error-event',
         },
       ],
     };

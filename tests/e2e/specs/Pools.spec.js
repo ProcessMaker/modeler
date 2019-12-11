@@ -8,6 +8,7 @@ import {
   moveElement,
   moveElementRelativeTo,
   removeIndentationAndLinebreaks,
+  setBoundaryEvent,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -200,7 +201,8 @@ describe('Pools', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+    moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
 
     const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
     cy.get('[data-test=downloadXMLBtn]').click();

@@ -6,6 +6,7 @@ import {
   getGraphElements,
   getLinksConnectedToElement,
   removeIndentationAndLinebreaks,
+  setBoundaryEvent,
   testNumberOfVertices,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -334,8 +335,7 @@ describe('Undo/redo', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    const boundaryTimerEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryTimerEvent, boundaryTimerEventPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const initialNumberOfElements = 3;
     const numberOfElementsToRemove = 1;
