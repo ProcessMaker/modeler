@@ -9,7 +9,6 @@ import {
   testNumberOfVertices,
   typeIntoTextInput,
   waitToRenderAllShapes,
-  waitToRenderNodeUpdates,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -220,22 +219,12 @@ describe('Undo/redo', () => {
   });
 
   it('Can update two properties at the same time', () => {
-    const startEventPosition = { x: 150, y: 150 };
-
-    waitToRenderAllShapes();
-    getElementAtPosition(startEventPosition).click();
-    cy.contains('Advanced').click();
-
-    const newId = '1234';
     const newName = 'foobar';
-    cy.get('[name=id]').clear().type(newId);
-    cy.contains('Configuration').click();
-    cy.get('[name=name]').clear().type(newName);
-
-    waitToRenderNodeUpdates();
-
-    cy.get('[name=id]').should('have.value', newId);
-    cy.get('[name=name]').should('have.value', newName);
+    const newId = 'node_1234';
+    getElementAtPosition({ x: 150, y: 150 }).click();
+    cy.get('[name=name]').clear().type(newName).should('have.value', newName);
+    cy.contains('Advanced').click();
+    cy.get('[name=id]').clear().type(newId).should('have.value', newId);
   });
 
   it('Correctly parses elements after redo', function() {
