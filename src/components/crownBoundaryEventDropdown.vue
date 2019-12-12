@@ -15,6 +15,8 @@
         role="listitem"
         v-for="{label, nodeType, dataTest} in dropdownData"
         :key="nodeType"
+        v-b-tooltip.hover.viewport.right.d50
+        :title="tooltip(nodeType)"
       >
         <button
           :data-test="dataTest"
@@ -76,6 +78,16 @@ export default {
       store.commit('highlightNode', node);
 
       this.$emit('add-boundary-event', node);
+    },
+    tooltip(nodeType) {
+      if (getEmptyBoundaryEventPositionsForShape(this.shape).length === 0) {
+        return 'No available space';
+      }
+      if (!canAddBoundaryEventToTarget(nodeType, this.shape)
+        && nodeType === 'processmaker-modeler-boundary-error-event') {
+        return 'Can only add one per Task';
+      }
+      return null;
     },
   },
   created() {
