@@ -1,5 +1,7 @@
 import { dragFromSourceToDest, getComponentsEmbeddedInShape, getElementAtPosition, setBoundaryEvent } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import uniqWith from 'lodash/uniqWith';
+import isEqual from 'lodash/isEqual';
 
 describe('Boundary event validation', function() {
   it('should add boundary events to empty ports around boundary event target, and not allow adding any more', function() {
