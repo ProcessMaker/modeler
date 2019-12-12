@@ -15,8 +15,7 @@
         role="listitem"
         v-for="{label, nodeType, dataTest} in dropdownData"
         :key="nodeType"
-        v-b-tooltip.hover.viewport.right.d50
-        :title="tooltip(nodeType)"
+        :id="nodeType"
       >
         <button
           :data-test="dataTest"
@@ -26,6 +25,9 @@
           @click="addBoundaryEvent(nodeType)"
         >{{ $t(label) }}
         </button>
+        <b-tooltip v-if="tooltip(nodeType)" :target="nodeType" variant="warning" placement="right">
+          {{ tooltip(nodeType) }}
+        </b-tooltip>
       </li>
     </ul>
   </div>
