@@ -44,6 +44,11 @@ export default {
           nodeType: 'processmaker-modeler-script-task',
           dataTest: 'switch-to-script-task',
         },
+        {
+          label: 'Sub Process',
+          nodeType: 'processmaker-modeler-call-activity',
+          dataTest: 'switch-to-sub-process',
+        },
       ],
       boundaryEventDropdownData: [
         {
