@@ -51,7 +51,23 @@ export default {
     return {
       shape: null,
       definition: null,
-      boundaryEventDropdownData: null,
+      boundaryEventDropdownData: [
+        {
+          label: 'Boundary Timer Event',
+          nodeType: 'processmaker-modeler-boundary-timer-event',
+          dataTest: 'add-boundary-timer-event',
+        },
+        {
+          label: 'Boundary Error Event',
+          nodeType: 'processmaker-modeler-boundary-error-event',
+          dataTest: 'add-boundary-error-event',
+        },
+        {
+          label: 'Boundary Message Event',
+          nodeType: 'processmaker-modeler-boundary-message-event',
+          dataTest: 'add-boundary-message-event',
+        },
+      ],
     };
   },
   computed: {
