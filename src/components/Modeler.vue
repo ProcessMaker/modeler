@@ -25,29 +25,10 @@
       :style="{ width: parentWidth, height: parentHeight }"
     >
       <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <b-button
-            class="btn btn-sm btn-secondary btn-undo"
-            :disabled="!canUndo"
-            data-test="undo"
-            v-b-tooltip.hover
-            :title="$t('Undo')"
-            @click="undo"
-          >
-            <font-awesome-icon :icon="undoIcon" />
-          </b-button>
-
-          <b-button
-            class="btn btn-sm btn-secondary btn-redo"
-            :disabled="!canRedo"
-            data-test="redo"
-            v-b-tooltip.hover
-            :title="$t('Redo')"
-            @click="redo"
-          >
-            <font-awesome-icon :icon="redoIcon" />
-          </b-button>
-        </div>
+        <undo-redo
+          :is-rendering="isRendering"
+          @load-xml="loadXML"
+        />
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <b-button
@@ -181,7 +162,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
@@ -194,11 +175,13 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
+import UndoRedo from '@/components/UndoRedo';
 
 const version = '1.0';
 
 export default {
   components: {
+    UndoRedo,
     controls,
     InspectorPanel,
     FontAwesomeIcon,
@@ -254,8 +237,6 @@ export default {
       minusIcon: faMinus,
       expandIcon: faExpand,
       compressIcon: faCompress,
-      undoIcon: faUndo,
-      redoIcon: faRedo,
     };
   },
   watch: {
@@ -284,16 +265,6 @@ export default {
     autoValidate() {
       this.validateIfAutoValidateIsOn();
     },
-    canUndo(canUndo) {
-      if (!canUndo) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
-    canRedo(canRedo) {
-      if (!canRedo) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
   },
   computed: {
     tooltipTitle() {
@@ -304,12 +275,6 @@ export default {
     },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
-    canUndo() {
-      return undoRedoStore.getters.canUndo;
-    },
-    canRedo() {
-      return undoRedoStore.getters.canRedo;
-    },
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
@@ -376,24 +341,6 @@ export default {
     async validateBpmnDiagram() {
       this.validationErrors = await this.linter.lint(this.definitions);
       this.$emit('validate', this.validationErrors);
-    },
-    undo() {
-      if (this.isRendering) {
-        return;
-      }
-      undoRedoStore
-        .dispatch('undo')
-        .then(this.loadXML)
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
-    },
-    redo() {
-      if (this.isRendering) {
-        return;
-      }
-      undoRedoStore
-        .dispatch('redo')
-        .then(this.loadXML)
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     setPools(poolDefinition) {
       if (!this.collaboration) {
@@ -963,14 +910,5 @@ $controls-transition: 0.3s;
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
   }
 
-  .btn-undo {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .btn-redo {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
 }
 </style>
