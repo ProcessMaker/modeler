@@ -7,17 +7,16 @@
       :title="tooltipTitle"
     />
 
-    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : panelsCompressed }]" data-test="controls-column">
-      <controls
-        :controls="controls"
-        :panelsCompressed="panelsCompressed"
-        :style="{ height: parentHeight }"
-        :allowDrop="allowDrop"
-        @drag="validateDropTarget"
-        @handleDrop="handleDrop"
-        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-      />
-    </b-col>
+    <controls
+      :controls="controls"
+      :compressed="panelsCompressed"
+      :parent-height="parentHeight"
+      :allowDrop="allowDrop"
+      @drag="validateDropTarget"
+      @handleDrop="handleDrop"
+      class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+      :canvas-drag-position="canvasDragPosition"
+    />
 
     <b-col
       class="paper-container h-100 pr-4"
@@ -108,26 +107,26 @@
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
 
-    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" :class="{ 'expanded' : panelsCompressed }" />
+    <mini-paper
+      :isOpen="miniMapOpen"
+      :paperManager="paperManager"
+      :graph="graph"
+      :class="{ 'expanded' : panelsCompressed }"
+    />
 
-    <transition name="inspector">
-      <b-col
-        v-show="!panelsCompressed"
-        class="pl-0 h-100 overflow-hidden inspector-column"
-        :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : panelsCompressed }]"
-        data-test="inspector-column"
-      >
-        <InspectorPanel
-          ref="inspector-panel"
-          :style="{ height: parentHeight }"
-          :nodeRegistry="nodeRegistry"
-          :moddle="moddle"
-          :processNode="processNode"
-          @save-state="pushToUndoStack"
-          class="inspector h-100"
-        />
-      </b-col>
-    </transition>
+    <InspectorPanel
+      ref="inspector-panel"
+      :style="{ height: parentHeight }"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :processNode="processNode"
+      @save-state="pushToUndoStack"
+      class="inspector h-100"
+      :parent-height="parentHeight"
+      :canvas-drag-position="canvasDragPosition"
+      :compressed="panelsCompressed"
+    />
+
     <component
       v-for="node in nodes"
       :is="node.type"
@@ -910,7 +909,6 @@ export default {
 @import '~jointjs/dist/joint.min.css';
 
 $cursors: default, not-allowed, wait;
-$inspector-column-max-width: 265px;
 $controls-column-max-width: 265px;
 $controls-column-compressed-max-width: 95px;
 $toolbar-height: 2rem;
@@ -922,20 +920,6 @@ $controls-transition: 0.3s;
 }
 
 .modeler {
-  .inspector-column {
-    max-width: $inspector-column-max-width;
-  }
-
-  .controls-column {
-    max-width: $controls-column-max-width;
-    transition: all $controls-transition ease-out;
-  }
-
-  .controls-column-compressed {
-    max-width: $controls-column-compressed-max-width;
-    transition: all $controls-transition ease-in;
-  }
-
   .main-paper {
     position: absolute;
     height: 100%;
@@ -943,10 +927,6 @@ $controls-transition: 0.3s;
     min-height: 100%;
     left: 0;
     top: 0;
-  }
-
-  .controls, .inspector {
-    z-index: 1;
   }
 
   .grabbing-cursor {
@@ -991,15 +971,6 @@ $controls-transition: 0.3s;
   .btn-redo {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-  }
-
-  .inspector-enter-active, .inspector-leave-active {
-    transition: all $controls-transition ease;
-  }
-
-  .inspector-enter, .inspector-leave-to {
-    transform: translateX(10px);
-    opacity: 0;
   }
 }
 </style>
