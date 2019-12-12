@@ -5,6 +5,13 @@ const yargs = require('yargs');
 module.exports = {
   css: {
     extract: false,
+    loaderOptions: {
+      sass: {
+        prependData: `
+          @import '@/assets/scss/settings/_settings.variables.scss';
+        `,
+      },
+    },
   },
   transpileDependencies: ['bpmnlint'],
   configureWebpack: {
