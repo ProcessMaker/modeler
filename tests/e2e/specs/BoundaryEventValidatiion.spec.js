@@ -6,7 +6,7 @@ import isEqual from 'lodash/isEqual';
 describe('Boundary event validation', function() {
   it('should add boundary events to empty ports around boundary event target, and not allow adding any more', function() {
     const taskPosition = { x: 250, y: 200 };
-    dragFromSourceToDest(taskType, taskPosition);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const numberOfPortsAroundTask = 12;
     for (let i = 0; i < numberOfPortsAroundTask; i++) {
