@@ -13,6 +13,8 @@ import {
 } from '../support/utils';
 import { boundaryEventSelector, nodeTypes } from '../support/constants';
 import { defaultNodeColor, invalidNodeColor, poolColor, startColor } from '../../../src/components/nodeColors';
+import uniqWith from 'lodash/uniqWith';
+import isEqual from 'lodash/isEqual';
 
 const boundaryEventPosition = { x: 280, y: 200 };
 const taskPosition = { x: 250, y: 200 };
@@ -385,6 +387,44 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, invalidT
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
       getElementAtPosition(boundaryEventPosition).click().children().should('have.class', 'joint-highlight-stroke');
+    });
+
+    it('should add ports to empty spaces around boundary event, and not allow adding any more', function() {
+      dragFromSourceToDest(taskType, taskPosition);
+
+      const numberOfPortsAroundTask = 12;
+
+      for (let i = 0; i < numberOfPortsAroundTask; i++) {
+        setBoundaryEvent(nodeType, taskPosition, taskType);
+      }
+
+      getElementAtPosition(taskPosition, taskType)
+        .then(getComponentsEmbeddedInShape)
+        .should($boundaryEvents => {
+          const boundaryEventPositions = $boundaryEvents.toArray().map($boundaryEvent => {
+            const { top, left } = $boundaryEvent.position();
+            return { top, left };
+          });
+
+          expect(uniqWith(boundaryEventPositions, isEqual)).to.have.length(numberOfPortsAroundTask);
+        });
+
+      cy
+        .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
+        .should('have.length', numberOfPortsAroundTask);
+
+      setBoundaryEvent(nodeType, taskPosition, taskType);
+
+      cy
+        .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
+        .should('have.length', numberOfPortsAroundTask);
+
+      getElementAtPosition(taskPosition, taskType).click();
+
+      const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
+      cy.get(`[data-test="${dataTest}"]`)
+        .should('exist')
+        .should('not.be.enabled');
     });
   });
 });
