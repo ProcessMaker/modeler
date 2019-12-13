@@ -34,21 +34,10 @@
           :paper-manager="paperManager"
         />
 
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <panel-state
-            @panels-changed="panelsChanged"
-          />
-
-          <b-button
-            class="btn btn-sm btn-secondary mini-map-btn ml-auto"
-            data-test="mini-map-btn"
-            @click="miniMapOpen = !miniMapOpen"
-            v-b-tooltip.hover
-            :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
-          >
-            <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
-          </b-button>
-        </div>
+        <additional-controls
+          @panels-changed="panelsChanged"
+          @mini-map-is-open="miniMapState"
+        />
       </div>
 
       <div ref="paper" data-test="paper" class="main-paper" />
@@ -128,8 +117,6 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
@@ -143,18 +130,17 @@ import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import UndoRedo from '@/components/UndoRedo';
 import Zoom from '@/components/Zoom';
-import PanelState from '@/components/PanelState';
+import AdditionalControls from '@/components/AdditionalControls';
 
 const version = '1.0';
 
 export default {
   components: {
-    PanelState,
+    AdditionalControls,
     Zoom,
     UndoRedo,
     controls,
     InspectorPanel,
-    FontAwesomeIcon,
     MiniPaper,
   },
   data() {
@@ -198,11 +184,6 @@ export default {
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
-      mapIcon: faMapMarked,
-      plusIcon: faPlus,
-      minusIcon: faMinus,
-      expandIcon: faExpand,
-      compressIcon: faCompress,
     };
   },
   watch: {
@@ -245,6 +226,9 @@ export default {
     },
   },
   methods: {
+    miniMapState(isOpen) {
+      this.miniMapOpen = isOpen;
+    },
     panelsChanged(isCompressed) {
       this.panelsCompressed = isCompressed;
     },
@@ -844,6 +828,7 @@ $controls-transition: 0.3s;
   }
 
   .paper-container {
+    position: initial !important;
     cursor: grab;
     user-select: none;
 
