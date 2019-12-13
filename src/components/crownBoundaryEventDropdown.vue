@@ -26,7 +26,11 @@
         >{{ $t(label) }}
         </button>
         <b-tooltip v-if="!canAddBoundaryEventToTarget(nodeType, shape)" :target="nodeType" variant="warning" placement="right">
-          {{ getEmptyBoundaryEventPositionsForShape(shape).length === 0 ? noAvailableSpaceLabel : disabledLabel }}
+          {{
+            getEmptyBoundaryEventPositionsForShape(shape).length === 0
+              ? 'No available space'
+              : disabledLabel
+          }}
         </b-tooltip>
       </li>
     </ul>
@@ -53,7 +57,6 @@ export default {
     return {
       dropdownOpen: false,
       boundaryEventIcon,
-      noAvailableSpaceLabel: 'No available space',
     };
   },
   methods: {
