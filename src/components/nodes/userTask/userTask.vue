@@ -44,17 +44,10 @@ export default {
           nodeType: 'processmaker-modeler-script-task',
           dataTest: 'switch-to-script-task',
         },
-      ],
-      boundaryEventDropdownData: [
         {
-          label: 'Boundary Timer Event',
-          nodeType: 'processmaker-modeler-boundary-timer-event',
-          dataTest: 'add-boundary-timer-event',
-        },
-        {
-          label: 'Boundary Error Event',
-          nodeType: 'processmaker-modeler-boundary-error-event',
-          dataTest: 'add-boundary-error-event',
+          label: 'Sub Process',
+          nodeType: 'processmaker-modeler-call-activity',
+          dataTest: 'switch-to-sub-process',
         },
       ],
     };

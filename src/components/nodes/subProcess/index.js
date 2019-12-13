@@ -10,7 +10,7 @@ export default {
   id,
   component,
   bpmnType: 'bpmn:CallActivity',
-  control: true,
+  control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/subProcess.svg'),
   label: 'Sub Process',

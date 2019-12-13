@@ -1,4 +1,5 @@
 import {
+  addNodeTypeToPaper,
   dragFromSourceToDest,
   getComponentsEmbeddedInShape,
   getElementAtPosition,
@@ -70,28 +71,28 @@ describe('Boundary Timer Event', () => {
     getGraphElements().should('have.length', initialNumberOfElements);
 
     const validBoundaryTimerEventTargets = [
-      { type: nodeTypes.task, position: { x: 100, y: 300 } },
-      { type: nodeTypes.subProcess, position: { x: 240, y: 300 } },
+      { type: nodeTypes.task, position: { x: 100, y: 300 }, selector: 'switch-to-user-task' },
+      { type: nodeTypes.subProcess, position: { x: 240, y: 300 }, selector: 'switch-to-sub-process' },
       {
         type: nodeTypes.task,
         subType: nodeTypes.scriptTask,
         position: { x: 380, y: 300 },
-        selector: '[data-test=switch-to-script-task]',
+        selector: 'switch-to-script-task',
       },
       {
         type: nodeTypes.task,
         subType: nodeTypes.manualTask,
         position: { x: 100, y: 400 },
-        selector: '[data-test=switch-to-manual-task]',
+        selector: 'switch-to-manual-task',
       },
     ];
 
     validBoundaryTimerEventTargets.forEach(({ type, position, selector }) => {
-      dragFromSourceToDest(type, position);
-
       if (selector) {
-        cy.get(selector).click();
+        addNodeTypeToPaper(position, nodeTypes.task, selector);
+        return;
       }
+      dragFromSourceToDest(type, position);
     });
 
     const numberOfElementsAfterAddingTasks = initialNumberOfElements + validBoundaryTimerEventTargets.length;

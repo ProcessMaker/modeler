@@ -1,4 +1,5 @@
 import {
+  addNodeTypeToPaper,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
@@ -35,14 +36,12 @@ describe('Tasks', () => {
   });
 
   it('Can create sub process flow', function() {
-    const startEventPosition = { x: 150, y: 150 };
     const subProcessPosition = { x: 250, y: 250 };
-
-    dragFromSourceToDest(nodeTypes.subProcess, subProcessPosition);
+    addNodeTypeToPaper(subProcessPosition, nodeTypes.task, 'switch-to-sub-process');
 
     getElementAtPosition(subProcessPosition).should('exist');
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, subProcessPosition);
+    connectNodesWithFlow('sequence-flow-button', { x: 150, y: 150 }, subProcessPosition);
     getElementAtPosition(subProcessPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
@@ -79,9 +78,9 @@ describe('Tasks', () => {
       .should('not.contain', 'A process has not been configured in the connected Sub Process task.');
     cy.get('[name=startEvent]').select('awesome start event');
 
-    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="node_2" />';
-    const subProcessXml = `<bpmn:callActivity id="node_2" name="Process with start event" calledElement="ProcessId-3">
-      <bpmn:incoming>node_3</bpmn:incoming>
+    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_1" targetRef="node_3" pm:startEvent="node_2" />';
+    const subProcessXml = `<bpmn:callActivity id="node_3" name="Process with start event" calledElement="ProcessId-3">
+      <bpmn:incoming>node_4</bpmn:incoming>
     </bpmn:callActivity>`;
 
     cy.get('[data-test=downloadXMLBtn]').click();
