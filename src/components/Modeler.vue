@@ -17,28 +17,22 @@
       class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
       :canvas-drag-position="canvasDragPosition"
     />
-
     <b-col
       class="paper-container h-100 pr-4"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-        <undo-redo
-          :is-rendering="isRendering"
-          @load-xml="loadXML"
-        />
-
-        <zoom
-          :paper-manager="paperManager"
-        />
-
-        <additional-controls
-          @panels-changed="panelsChanged"
-          @mini-map-is-open="miniMapState"
-        />
-      </div>
+      <tool-bar
+        :canvas-drag-position="canvasDragPosition"
+        :cursor="cursor"
+        :is-rendering="isRendering"
+        :panels-changed="panelsChanged"
+        :paper-manager="paperManager"
+        @load-xml="loadXML"
+        @panels-changed="panelsChanged"
+        @mini-map-changed="miniMapState"
+      />
 
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
@@ -128,17 +122,13 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
-import UndoRedo from '@/components/UndoRedo';
-import Zoom from '@/components/Zoom';
-import AdditionalControls from '@/components/AdditionalControls';
+import ToolBar from '@/components/ToolBar';
 
 const version = '1.0';
 
 export default {
   components: {
-    AdditionalControls,
-    Zoom,
-    UndoRedo,
+    ToolBar,
     controls,
     InspectorPanel,
     MiniPaper,
