@@ -35,15 +35,9 @@
         />
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <b-button
-            class="btn btn-sm btn-secondary ml-auto"
-            data-test="panels-btn"
-            @click="panelsCompressed = !panelsCompressed"
-            v-b-tooltip.hover
-            :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
-          >
-            <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-          </b-button>
+          <panel-state
+            @panels-changed="panelsChanged"
+          />
 
           <b-button
             class="btn btn-sm btn-secondary mini-map-btn ml-auto"
@@ -149,11 +143,13 @@ import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import UndoRedo from '@/components/UndoRedo';
 import Zoom from '@/components/Zoom';
+import PanelState from '@/components/PanelState';
 
 const version = '1.0';
 
 export default {
   components: {
+    PanelState,
     Zoom,
     UndoRedo,
     controls,
@@ -249,6 +245,9 @@ export default {
     },
   },
   methods: {
+    panelsChanged(isCompressed) {
+      this.panelsCompressed = isCompressed;
+    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
@@ -845,7 +844,6 @@ $controls-transition: 0.3s;
   }
 
   .paper-container {
-    position: initial !important;
     cursor: grab;
     user-select: none;
 
