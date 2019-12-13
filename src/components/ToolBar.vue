@@ -103,10 +103,10 @@ export default {
       }
     },
     miniMapOpen(isOpen) {
-      this.$emit('mini-map-changed', isOpen);
+      this.$emit('toggle-mini-map-open', isOpen);
     },
     panelsCompressed(isCompressed) {
-      this.$emit('panels-changed', isCompressed);
+      this.$emit('toggle-panels-compressed', isCompressed);
     },
     canUndo(canUndo) {
       if (!canUndo) {

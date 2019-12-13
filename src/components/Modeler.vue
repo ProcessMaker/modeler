@@ -27,11 +27,10 @@
         :canvas-drag-position="canvasDragPosition"
         :cursor="cursor"
         :is-rendering="isRendering"
-        :panels-changed="panelsChanged"
         :paper-manager="paperManager"
         @load-xml="loadXML"
-        @panels-changed="panelsChanged"
-        @mini-map-changed="miniMapState"
+        @toggle-panels-compressed="panelsCompressed = $event"
+        @toggle-mini-map-open="miniMapOpen = $event"
       />
 
       <div ref="paper" data-test="paper" class="main-paper" />
@@ -216,9 +215,6 @@ export default {
     },
   },
   methods: {
-    miniMapState(isOpen) {
-      this.miniMapOpen = isOpen;
-    },
     panelsChanged(isCompressed) {
       this.panelsCompressed = isCompressed;
     },
