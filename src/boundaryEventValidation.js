@@ -14,10 +14,6 @@ export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
     return getAttachedErrorBoundaryEvents(dropTarget).length === 0;
   }
 
-  if (boundaryEventType === 'processmaker-modeler-boundary-message-event') {
-    return dropTarget.component.node.definition.$type === 'bpmn:CallActivity';
-  }
-
   return true;
 }
 
