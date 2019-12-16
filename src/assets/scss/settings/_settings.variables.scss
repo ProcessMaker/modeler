@@ -1,7 +1,7 @@
-$cursors: default, not-allowed, wait;
-$inspector-column-max-width: 265px;
-$controls-column-max-width: 265px;
-$controls-column-compressed-max-width: 95px;
-$toolbar-height: 2rem;
+// COLOURS
+$primary-color: #3397e1;
+$white-10: #FFF;
+$border-color: rgba(0, 0, 0, 0.125);
 $vertex-error-color: #ED4757;
-$controls-transition: 0.3s;
+
+$cursors: default, not-allowed, wait;
