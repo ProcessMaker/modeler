@@ -38,7 +38,7 @@ $controls-transition: 0.3s;
 
 .is-dragging {
   background: $primary-color;
-  color: $white-10;
+  color: $primary-white;
   position: absolute;
   z-index: 10;
   box-shadow: 5px 5px 8px 0px #0000004a;
@@ -52,7 +52,7 @@ $controls-transition: 0.3s;
 
   &:hover {
     background-color: $primary-color;
-    color: $white-10;
+    color: $primary-white;
   }
 }
 
