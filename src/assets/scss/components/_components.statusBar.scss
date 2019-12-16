@@ -1,0 +1,9 @@
+$status-bar-bg-color: #eeeeee;
+$status-bar-color: #555555;
+$status-bar-font-size: 0.875rem;
+
+.statusbar {
+  background-color: $status-bar-bg-color;
+  font-size: $status-bar-font-size;
+  color: $status-bar-color;
+}
