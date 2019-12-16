@@ -11,7 +11,7 @@
         </b-input-group-prepend>
 
         <b-form-input ref="filter"
-          :placeholder="`${$t('Filter Controls')}`"
+          :placeholder="$t('Filter Controls')"
           class="border-top-0 border-right-0 rounded-0"
           type="text"
           v-model="filterQuery"
