@@ -19,7 +19,7 @@
   }
 
   .joint-marker-vertex:hover {
-    fill: $vertex-error-color;
+    fill: $error-color;
     cursor: url('../../assets/delete-icon-vertex.png') 0 0, pointer;
   }
 }
