@@ -19,7 +19,7 @@
       </b-input-group>
 
       <b-list-group flush class="overflow-auto w-auto">
-        <b-list-group-item v-for="(control, index) in controlItems"
+        <b-list-group-item v-for="(control, index) in controls"
           :key="index"
           class="control-item border-right-0 flex-grow-1"
           :class="{ 'p-2': !compressed }"
@@ -39,10 +39,9 @@
 </template>
 
 <script>
-import flatten from 'lodash/flatten';
 
 export default {
-  props: ['controls', 'allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight'],
+  props: ['allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight', 'nodeTypes'],
   watch: {
     allowDrop(allowDrop) {
       if (this.draggingElement) {
@@ -60,9 +59,17 @@ export default {
     };
   },
   computed: {
-    controlItems() {
-      return flatten(Object.values(this.controls))
-        .filter(control => control.label.toLowerCase().includes(this.filterQuery.toLowerCase()))
+    controls() {
+      return this.nodeTypes
+        .filter(nodeType => nodeType.control)
+        .filter(nodeType => nodeType.label.toLowerCase().includes(this.filterQuery.toLowerCase()))
+        .map(nodeType => ({
+          type: nodeType.id,
+          icon: nodeType.icon,
+          label: nodeType.label,
+          bpmnType: nodeType.bpmnType,
+          rank: nodeType.rank || Infinity,
+        }))
         .sort((node1, node2) => node1.rank - node2.rank);
     },
   },
@@ -158,7 +165,7 @@ $controls-transition: 0.3s;
   color: white;
   position: absolute;
   z-index: 10;
-  box-shadow: 5px 5px 8px 0px #0000004a;
+  box-shadow: 5px 5px 8px 0 #0000004a;
   cursor: grabbing;
   padding: 0.5rem;
 

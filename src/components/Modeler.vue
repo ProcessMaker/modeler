@@ -8,7 +8,7 @@
     />
 
     <controls
-      :controls="controls"
+      :nodeTypes="nodeTypes"
       :compressed="panelsCompressed"
       :parent-height="parentHeight"
       :allowDrop="allowDrop"
@@ -141,10 +141,6 @@ export default {
 
       // What bpmn moddle extensions should we register
       extensions: [],
-
-      // Our controls/nodes to show in our palette
-      controls: {},
-
       // Our node types, keyed by the id
       nodeRegistry: {},
 
@@ -173,6 +169,7 @@ export default {
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
+      nodeTypes: [],
     };
   },
   watch: {
@@ -215,9 +212,6 @@ export default {
     },
   },
   methods: {
-    panelsChanged(isCompressed) {
-      this.panelsCompressed = isCompressed;
-    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
@@ -332,23 +326,6 @@ export default {
     registerBpmnExtension(namespace, extension) {
       this.extensions[namespace] = extension;
     },
-    addNodeToControls(nodeType) {
-      if (!nodeType.control) {
-        return;
-      }
-      const data = {
-        type: nodeType.id,
-        icon: nodeType.icon,
-        label: nodeType.label,
-        bpmnType: nodeType.bpmnType,
-        rank: nodeType.rank || Infinity,
-      };
-      const category = nodeType.category;
-      const categoryData = this.controls[category] || [];
-      categoryData.push(data);
-      this.controls[category] = categoryData;
-    },
-    // This registers a node to use in the bpmn modeler
     registerNode(nodeType, customParser) {
       const defaultParser = () => nodeType.id;
       const implementationParser = definition => {
@@ -361,7 +338,7 @@ export default {
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);
-      this.addNodeToControls(nodeType);
+      this.nodeTypes.push(nodeType);
 
       const types = Array.isArray(nodeType.bpmnType)
         ? nodeType.bpmnType
