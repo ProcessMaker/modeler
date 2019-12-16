@@ -23,7 +23,7 @@
       :moddle="moddle"
       :shape="shape"
       v-on="$listeners"
-      @show-crown="showCrown = false"
+      @show-crown="showCrown = $event"
     />
 
     <crown-dropdown
