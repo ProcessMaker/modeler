@@ -10,7 +10,7 @@ describe('Boundary event validation', function() {
 
     const numberOfPortsAroundTask = 12;
     for (let i = 0; i < numberOfPortsAroundTask; i++) {
-      setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.task);
+      setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition);
     }
 
     getElementAtPosition(taskPosition, nodeTypes.task)
@@ -28,7 +28,7 @@ describe('Boundary event validation', function() {
       .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
       .should('have.length', numberOfPortsAroundTask);
 
-    setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.task);
+    setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition);
 
     cy
       .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
