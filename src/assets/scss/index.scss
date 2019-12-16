@@ -3,6 +3,7 @@
 
 // Tools – globally used mixins and functions. It’s important not to output any CSS in the first 2 layers.
 @import './tools/tools.animations';
+@import './tools/tools.chevron';
 
 // Generic – reset and/or normalize styles, box-sizing definition, etc. This is the first layer which generates actual CSS.
 
