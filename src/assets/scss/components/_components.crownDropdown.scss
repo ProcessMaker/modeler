@@ -54,6 +54,11 @@ $chevron-height: 1.25rem;
       border: none;
       color: $primary-white;
       font-size: 0.85rem;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     }
   }
 }
