@@ -13,8 +13,9 @@
       <li
         class="element-list--item"
         role="listitem"
-        v-for="{label, nodeType, dataTest} in dropdownData"
+        v-for="{label, nodeType, dataTest, disabledLabel} in dropdownData"
         :key="nodeType"
+        :id="nodeType"
       >
         <button
           :data-test="dataTest"
@@ -24,6 +25,13 @@
           @click="addBoundaryEvent(nodeType)"
         >{{ $t(label) }}
         </button>
+        <b-tooltip v-if="!canAddBoundaryEventToTarget(nodeType, shape)" :target="nodeType" variant="warning" placement="right">
+          {{
+            getEmptyBoundaryEventPositionsForShape(shape).length === 0
+              ? 'No available space'
+              : disabledLabel
+          }}
+        </b-tooltip>
       </li>
     </ul>
   </div>
@@ -53,6 +61,7 @@ export default {
   },
   methods: {
     canAddBoundaryEventToTarget,
+    getEmptyBoundaryEventPositionsForShape,
     addBoundaryEvent(nodeType) {
       this.dropdownOpen = false;
 

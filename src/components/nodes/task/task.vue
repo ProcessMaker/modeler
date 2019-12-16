@@ -61,6 +61,7 @@ export default {
           label: 'Boundary Error Event',
           nodeType: 'processmaker-modeler-boundary-error-event',
           dataTest: 'add-boundary-error-event',
+          disabledLabel: 'Can only add one per Task',
         },
         {
           label: 'Boundary Message Event',
