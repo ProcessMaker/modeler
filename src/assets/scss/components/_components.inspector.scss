@@ -1,4 +1,5 @@
 $inspector-column-max-width: 265px;
+$controls-transition: 0.3s;
 
 .inspector-column {
   max-width: $inspector-column-max-width;
@@ -22,5 +23,14 @@ $inspector-column-max-width: 265px;
     .inspector-font-size {
       font-size: 0.875rem;
     }
+  }
+
+  &-enter, &-leave-to {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+
+  &-enter-active, &-leave-active {
+    transition: all $controls-transition ease;
   }
 }

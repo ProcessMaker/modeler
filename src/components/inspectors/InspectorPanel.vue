@@ -133,7 +133,7 @@ export default {
       }
 
       if (this.hasCustomInspectorHandler) {
-        return this.customInspectorHanEdler;
+        return this.customInspectorHandler;
       }
 
       return this.defaultInspectorHandler;
