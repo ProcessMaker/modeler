@@ -94,9 +94,6 @@ export default {
 </script>
 
 <style lang="scss">
-  $primary-color: #5096db;
-  $primary-light: #fff;
-
   $element-list-top: 2.5rem;
   $element-list-left: 0;
   $element-list-top-chevron: -0.2rem;
@@ -127,7 +124,7 @@ export default {
     &--button {
       background: none;
       border: none;
-      color: $primary-light;
+      color: $primary-white;
     }
   }
 
@@ -151,7 +148,7 @@ export default {
         background: none;
         padding: 0.25rem 0.85rem;
         border: none;
-        color: $primary-light;
+        color: $primary-white;
         font-size: 0.85rem;
 
         &:disabled {
