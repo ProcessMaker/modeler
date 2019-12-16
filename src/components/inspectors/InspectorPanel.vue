@@ -1,16 +1,29 @@
 <template>
-  <b-card no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0" data-test="inspector-container">
-    <vue-form-renderer
-      :key="config[0].name"
-      v-if="highlightedNode"
-      :data="data"
-      @update="updateDefinition"
-      :config="config"
-      class="overflow-auto h-100 inspector-font-size"
-      @focusout.native="updateState"
-      ref="formRenderer"
-    />
-  </b-card>
+  <transition name="inspector">
+    <b-col
+      v-show="!compressed"
+      class="pl-0 h-100 overflow-hidden inspector-column"
+      :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : compressed }]"
+      data-test="inspector-column"
+    >
+      <b-card
+        no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0"
+        data-test="inspector-container"
+        :style="{ height: parentHeight }"
+      >
+        <vue-form-renderer
+          :key="config[0].name"
+          v-if="highlightedNode"
+          :data="data"
+          @update="updateDefinition"
+          :config="config"
+          class="overflow-auto h-100 inspector-font-size"
+          @focusout.native="updateState"
+          ref="formRenderer"
+        />
+      </b-card>
+    </b-col>
+  </transition>
 </template>
 
 <script>
@@ -41,7 +54,7 @@ Vue.component('VueFormRenderer', VueFormRenderer);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
-  props: ['nodeRegistry', 'moddle', 'processNode'],
+  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'compressed'],
   data() {
     return {
       inspectorHandler: null,
@@ -56,14 +69,6 @@ export default {
   computed: {
     highlightedNode() {
       return store.getters.highlightedNode;
-    },
-    inspectorStyles() {
-      this.$nextTick(() => {
-        const inspectorHeader = this.$refs.formRenderer.$children[0].$el;
-        inspectorHeader.classList.add('card-header', 'text-sm');
-      });
-
-      return 'card-body p-0';
     },
     config() {
       if (!this.highlightedNode) {
@@ -189,20 +194,41 @@ export default {
 </script>
 
 <style lang="scss">
-.inspector-container {
-  text-align: left;
-  user-select: none;
+$controls-transition: 0.3s;
+$inspector-column-max-width: 265px;
+.modeler {
+  .inspector-column {
+    max-width: $inspector-column-max-width;
+  }
+}
 
-  .form-group {
-    padding: 0 0.5rem;
+.inspector {
+  z-index: 1;
 
-    > label {
-      font-size: 0.8125rem;
+  &-container {
+    text-align: left;
+    user-select: none;
+
+    .form-group {
+      padding: 0 0.5rem;
+
+      > label {
+        font-size: 0.8125rem;
+      }
+    }
+
+    .inspector-font-size {
+      font-size: 0.875rem;
     }
   }
 
-  .inspector-font-size {
-    font-size: 0.875rem;
+  &-enter, &-leave-to {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+
+  &-enter-active, &-leave-active {
+    transition: all $controls-transition ease;
   }
 }
 </style>

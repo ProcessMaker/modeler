@@ -7,127 +7,55 @@
       :title="tooltipTitle"
     />
 
-    <b-col class="h-100 overflow-hidden controls-column" :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : panelsCompressed }]" data-test="controls-column">
-      <controls
-        :controls="controls"
-        :panelsCompressed="panelsCompressed"
-        :style="{ height: parentHeight }"
-        :allowDrop="allowDrop"
-        @drag="validateDropTarget"
-        @handleDrop="handleDrop"
-        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-      />
-    </b-col>
-
+    <controls
+      :controls="controls"
+      :compressed="panelsCompressed"
+      :parent-height="parentHeight"
+      :allowDrop="allowDrop"
+      @drag="validateDropTarget"
+      @handleDrop="handleDrop"
+      class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+      :canvas-drag-position="canvasDragPosition"
+    />
     <b-col
       class="paper-container h-100 pr-4"
       ref="paper-container"
       :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
       :style="{ width: parentWidth, height: parentHeight }"
     >
-      <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <b-button
-            class="btn btn-sm btn-secondary btn-undo"
-            :disabled="!canUndo"
-            data-test="undo"
-            v-b-tooltip.hover
-            :title="$t('Undo')"
-            @click="undo"
-          >
-            <font-awesome-icon :icon="undoIcon" />
-          </b-button>
-
-          <b-button
-            class="btn btn-sm btn-secondary btn-redo"
-            :disabled="!canRedo"
-            data-test="redo"
-            v-b-tooltip.hover
-            :title="$t('Redo')"
-            @click="redo"
-          >
-            <font-awesome-icon :icon="redoIcon" />
-          </b-button>
-        </div>
-
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
-          <b-button
-            class="btn btn-sm btn-secondary"
-            @click="scale += scaleStep"
-            data-test="zoom-in"
-            v-b-tooltip.hover
-            :title="$t('Zoom In')"
-          >
-            <font-awesome-icon :icon="plusIcon" />
-          </b-button>
-          <b-button
-            class="btn btn-sm btn-secondary"
-            @click="scale = Math.max(minimumScale, scale -= scaleStep)"
-            data-test="zoom-out"
-            v-b-tooltip.hover
-            :title="$t('Zoom Out')"
-          >
-            <font-awesome-icon :icon="minusIcon" />
-          </b-button>
-          <b-button
-            class="btn btn-sm btn-secondary"
-            @click="scale = initialScale"
-            :disabled="scale === initialScale"
-            data-test="zoom-reset"
-            v-b-tooltip.hover
-            :title="$t('Reset to initial scale')"
-          >
-            {{ $t('Reset') }}
-          </b-button>
-          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
-        </div>
-
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <b-button
-            class="btn btn-sm btn-secondary ml-auto"
-            data-test="panels-btn"
-            @click="panelsCompressed = !panelsCompressed"
-            v-b-tooltip.hover
-            :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
-          >
-            <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-          </b-button>
-
-          <b-button
-            class="btn btn-sm btn-secondary mini-map-btn ml-auto"
-            data-test="mini-map-btn"
-            @click="miniMapOpen = !miniMapOpen"
-            v-b-tooltip.hover
-            :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
-          >
-            <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
-          </b-button>
-        </div>
-      </div>
+      <tool-bar
+        :canvas-drag-position="canvasDragPosition"
+        :cursor="cursor"
+        :is-rendering="isRendering"
+        :paper-manager="paperManager"
+        @load-xml="loadXML"
+        @toggle-panels-compressed="panelsCompressed = $event"
+        @toggle-mini-map-open="miniMapOpen = $event"
+      />
 
       <div ref="paper" data-test="paper" class="main-paper" />
     </b-col>
 
-    <mini-paper :isOpen="miniMapOpen" :paperManager="paperManager" :graph="graph" :class="{ 'expanded' : panelsCompressed }" />
+    <mini-paper
+      :isOpen="miniMapOpen"
+      :paperManager="paperManager"
+      :graph="graph"
+      :class="{ 'expanded' : panelsCompressed }"
+    />
 
-    <transition name="inspector">
-      <b-col
-        v-show="!panelsCompressed"
-        class="pl-0 h-100 overflow-hidden inspector-column"
-        :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : panelsCompressed }]"
-        data-test="inspector-column"
-      >
-        <InspectorPanel
-          ref="inspector-panel"
-          :style="{ height: parentHeight }"
-          :nodeRegistry="nodeRegistry"
-          :moddle="moddle"
-          :processNode="processNode"
-          @save-state="pushToUndoStack"
-          class="inspector h-100"
-        />
-      </b-col>
-    </transition>
+    <InspectorPanel
+      ref="inspector-panel"
+      :style="{ height: parentHeight }"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :processNode="processNode"
+      @save-state="pushToUndoStack"
+      class="inspector h-100"
+      :parent-height="parentHeight"
+      :canvas-drag-position="canvasDragPosition"
+      :compressed="panelsCompressed"
+    />
+
     <component
       v-for="node in nodes"
       :is="node.type"
@@ -182,8 +110,6 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/MiniPaper';
 
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { id as laneId } from './nodes/poolLane';
 import { id as sequenceFlowId } from './nodes/sequenceFlow';
 import { id as associationId } from './nodes/association';
@@ -195,14 +121,15 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
+import ToolBar from '@/components/ToolBar';
 
 const version = '1.0';
 
 export default {
   components: {
+    ToolBar,
     controls,
     InspectorPanel,
-    FontAwesomeIcon,
     MiniPaper,
   },
   data() {
@@ -241,22 +168,11 @@ export default {
       parentWidth: null,
       linter: null,
       validationErrors: {},
-      scale: 1,
-      initialScale: 1,
-      minimumScale: 0.2,
-      scaleStep: 0.1,
       miniMapOpen: false,
       panelsCompressed: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
-      mapIcon: faMapMarked,
-      plusIcon: faPlus,
-      minusIcon: faMinus,
-      expandIcon: faExpand,
-      compressIcon: faCompress,
-      undoIcon: faUndo,
-      redoIcon: faRedo,
     };
   },
   watch: {
@@ -270,12 +186,6 @@ export default {
       document.body.style.cursor = 'auto';
       this.cursor = null;
     },
-    scale(scale) {
-      this.paperManager.scale = scale;
-      if (scale === this.initialScale) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
     currentXML() {
       this.validateIfAutoValidateIsOn();
     },
@@ -284,16 +194,6 @@ export default {
     },
     autoValidate() {
       this.validateIfAutoValidateIsOn();
-    },
-    canUndo(canUndo) {
-      if (!canUndo) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
-    canRedo(canRedo) {
-      if (!canRedo) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
     },
   },
   computed: {
@@ -305,12 +205,6 @@ export default {
     },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
-    canUndo() {
-      return undoRedoStore.getters.canUndo;
-    },
-    canRedo() {
-      return undoRedoStore.getters.canRedo;
-    },
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
@@ -321,6 +215,9 @@ export default {
     },
   },
   methods: {
+    panelsChanged(isCompressed) {
+      this.panelsCompressed = isCompressed;
+    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
@@ -377,24 +274,6 @@ export default {
     async validateBpmnDiagram() {
       this.validationErrors = await this.linter.lint(this.definitions);
       this.$emit('validate', this.validationErrors);
-    },
-    undo() {
-      if (this.isRendering) {
-        return;
-      }
-      undoRedoStore
-        .dispatch('undo')
-        .then(this.loadXML)
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
-    },
-    redo() {
-      if (this.isRendering) {
-        return;
-      }
-      undoRedoStore
-        .dispatch('redo')
-        .then(this.loadXML)
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     setPools(poolDefinition) {
       if (!this.collaboration) {
@@ -909,25 +788,18 @@ export default {
 <style lang="scss">
 @import '~jointjs/dist/joint.min.css';
 
+$cursors: default, not-allowed, wait;
+$controls-column-max-width: 265px;
+$controls-column-compressed-max-width: 95px;
+$toolbar-height: 2rem;
+$vertex-error-color: #ED4757;
+$controls-transition: 0.3s;
+
 .ignore-pointer {
   pointer-events: none;
 }
 
 .modeler {
-  .inspector-column {
-    max-width: $inspector-column-max-width;
-  }
-
-  .controls-column {
-    max-width: $controls-column-max-width;
-    transition: all $controls-transition ease-out;
-  }
-
-  .controls-column-compressed {
-    max-width: $controls-column-compressed-max-width;
-    transition: all $controls-transition ease-in;
-  }
-
   .main-paper {
     position: absolute;
     height: 100%;
@@ -935,10 +807,6 @@ export default {
     min-height: 100%;
     left: 0;
     top: 0;
-  }
-
-  .controls, .inspector {
-    z-index: 1;
   }
 
   .grabbing-cursor {
@@ -975,23 +843,5 @@ export default {
     cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
   }
 
-  .btn-undo {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .btn-redo {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  .inspector-enter-active, .inspector-leave-active {
-    transition: all $controls-transition ease;
-  }
-
-  .inspector-enter, .inspector-leave-to {
-    transform: translateX(10px);
-    opacity: 0;
-  }
 }
 </style>
