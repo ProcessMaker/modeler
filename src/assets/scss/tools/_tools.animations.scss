@@ -1,0 +1,10 @@
+$controls-transition: 0.3s;
+
+.inspector-enter, .inspector-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.inspector-enter-active, .inspector-leave-active {
+  transition: all $controls-transition ease;
+}
