@@ -3,7 +3,6 @@ $message-container-width: 18rem;
 $validation-container-height: 14rem;
 $validation-container-width: 25rem;
 $status-bar-container-height: 3rem;
-$transition: 0.3s;
 $divider-color: #d4d4d4;
 
 .status-bar-container {
@@ -44,34 +43,4 @@ $divider-color: #d4d4d4;
       width: $message-container-width;
     }
   }
-}
-
-.slide-enter-active {
-  transition-duration: $transition;
-  transition-timing-function: ease-in;
-}
-
-.slide-leave-active {
-  transition-duration: $transition;
-  transition-timing-function: ease-out;
-}
-
-.slide-enter-to, .slide-leave {
-  max-height: 400px;
-  overflow: hidden;
-}
-
-.slide-enter, .slide-leave-to {
-  overflow: hidden;
-  max-height: 0;
-}
-
-.rotatingUp {
-  transition: transform $transition ease-in;
-  transform: rotate(180deg);
-}
-
-.rotatingDown {
-  transition: transform $transition ease-out;
-  transform: rotate(0deg);
 }
