@@ -1,10 +1,10 @@
 import {
   dragFromSourceToDest,
-  getElementAtPosition,
   getComponentsEmbeddedInShape,
+  getElementAtPosition,
   getPositionInPaperCoords,
-  waitToRenderAllShapes,
   setBoundaryEvent,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -35,6 +35,10 @@ describe('Boundary Error Event', () => {
       .should($elements => {
         expect($elements).to.have.lengthOf(1);
       });
+
+    cy.get('[data-test=add-boundary-error-event]')
+      .should('exist')
+      .should('not.be.enabled');
 
     const task2Position = { x: 450, y: 200 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
