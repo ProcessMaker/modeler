@@ -60,8 +60,6 @@ export default {
     };
   },
   methods: {
-    canAddBoundaryEventToTarget,
-    getEmptyBoundaryEventPositionsForShape,
     addBoundaryEvent(nodeType) {
       this.dropdownOpen = false;
 
