@@ -22,7 +22,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as poolId } from '../pool';
-import CrownConfig from '@/components/crown/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 
 export default {
   components: {

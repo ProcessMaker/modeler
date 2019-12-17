@@ -21,7 +21,7 @@ import portsConfig from '@/mixins/portsConfig';
 import EventShape from '@/components/nodes/intermediateEvent/shape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import CrownConfig from '@/components/crown/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 export default {

@@ -229,46 +229,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-$primary-color: #5096db;
-$primary-light: #fff;
-
-$element-list-top: 2.5rem;
-$element-list-left: -0.65rem;
-$element-list-top-chevron: -0.2rem;
-$element-list-left-chevron: 0.5rem;
-$crown-top-chevron: 0.8rem;
-$crown-left-chevron: 0.3rem;
-
-$chevron-width: 1.25rem;
-$chevron-height: 1.25rem;
-
-@mixin chevron($top, $left) {
-  content: '';
-  background-color: $primary-color;
-  width: $chevron-width;
-  height: $chevron-height;
-  position: absolute;
-  top: $top;
-  left: $left;
-  z-index: -1;
-  transform: rotate(45deg);
-  border-radius: 1px;
-}
-
-.crown-config {
-  background-color: $primary-color;
-  position: absolute;
-  z-index: 0;
-  display: flex;
-  justify-content: center;
-  width: auto;
-  height: 1.85rem;
-  border-radius: 5px;
-
-  &::after {
-    @include chevron($crown-top-chevron, $crown-left-chevron);
-  }
-}
-
-</style>
+<style lang="scss" src="./crownConfig.scss" />

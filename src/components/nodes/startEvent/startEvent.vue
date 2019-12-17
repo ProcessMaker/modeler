@@ -22,7 +22,7 @@ import EventShape from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { startColor } from '@/components/nodeColors';
-import CrownConfig from '@/components/crown/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 export default {

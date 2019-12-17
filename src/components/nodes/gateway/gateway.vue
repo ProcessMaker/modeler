@@ -20,7 +20,7 @@
 import portsConfig from '@/mixins/portsConfig';
 import GatewayShape from '@/components/nodes/gateway/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import CrownConfig from '@/components/crown/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 export default {

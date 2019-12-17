@@ -26,7 +26,7 @@ import uniqBy from 'lodash/uniqBy';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { elementIdParser } from '@/components/nodes/subProcess/elementIdParser';
-import CrownConfig from '@/components/crown/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 const labelPadding = 15;
