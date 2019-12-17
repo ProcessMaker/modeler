@@ -1,51 +1,54 @@
 <template>
   <div class="crown-config" :style="style" v-if="showCrown" role="menu">
     <slot />
+
     <association-flow-button
-      v-b-tooltip.hover.viewport.d50
-      v-if="isTextAnnotation"
-      @click="addAssociation"
-      :title="$t('Association Flow')"
-      role="menuitem"
+      :node="node"
+      :moddle="moddle"
+      :shape="shape"
+      v-on="$listeners"
+      @toggle-crown-state="showCrown = $event"
     />
+
     <sequence-flow-button
-      v-if="isValidSequenceFlowSource"
-      @click="addSequence"
-      v-b-tooltip.hover.viewport.d50
-      :title="$t('Sequence Flow')"
-      role="menuitem"
+      :node="node"
+      :sequence-flow-config="nodeRegistry['processmaker-modeler-sequence-flow']"
+      :moddle="moddle"
+      v-on="$listeners"
+      @toggle-crown-state="showCrown = $event"
     />
+
     <message-flow-button
-      v-if="isValidMessageFlowSource"
-      @click="addMessageFlow"
-      v-b-tooltip.hover.viewport.d50
-      :title="$t('Message Flow')"
-      role="menuitem"
+      :node="node"
+      :moddle="moddle"
+      :shape="shape"
+      v-on="$listeners"
+      @toggle-crown-state="showCrown = $event"
     />
 
     <crown-dropdown
       :dropdown-data="dropdownData"
       :node="node"
       :show-dropdown="showDropdown"
-      @replace-node="replaceNode"
+      @toggle-dropdown-state="showDropdown = $event"
+      v-on="$listeners"
     />
 
     <crown-boundary-event-dropdown
-      v-if="boundaryEventDropdownData"
       :dropdown-data="boundaryEventDropdownData"
       :nodeRegistry="nodeRegistry"
       :moddle="moddle"
       :node="node"
       :shape="shape"
-      @click="showDropdown = false"
-      @add-boundary-event="$emit('add-node', $event)"
+      @toggle-dropdown-state="showDropdown = $event"
+      v-on="$listeners"
     />
 
     <delete-button
-      @click="removeShape"
-      v-b-tooltip.hover.viewport.d50
-      :title="$t('Delete')"
-      role="menuitem"
+      :graph="graph"
+      :shape="shape"
+      :node="node"
+      v-on="$listeners"
     />
   </div>
 </template>
@@ -59,7 +62,6 @@ import CrownDropdown from '@/components/crownDropdown';
 import CrownBoundaryEventDropdown from '@/components/crownBoundaryEventDropdown';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
-import { direction } from '@/components/nodes/association/associationConfig';
 import store from '@/store';
 
 export default {
@@ -89,7 +91,7 @@ export default {
     },
     boundaryEventDropdownData: {
       type: Array,
-      default: null,
+      default: () => [],
     },
   },
   mixins: [poolLaneCrownConfig],
@@ -110,24 +112,6 @@ export default {
     return {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
-      validMessageFlowSources: [
-        'processmaker-modeler-start-event',
-        'processmaker-modeler-end-event',
-        'processmaker-modeler-task',
-        'processmaker-modeler-pool',
-        'processmaker-modeler-intermediate-message-catch-event',
-      ],
-      invalidSequenceFlowSources: [
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-message-flow',
-        'processmaker-modeler-end-event',
-        'processmaker-modeler-error-end-event',
-        'processmaker-modeler-message-end-event',
-        'processmaker-modeler-lane',
-        'processmaker-modeler-text-annotation',
-        'processmaker-modeler-pool',
-        'processmaker-modeler-association',
-      ],
       style: null,
       showDropdown: false,
     };
@@ -136,9 +120,6 @@ export default {
     this.$t = this.$t.bind(this);
   },
   computed: {
-    isValidMessageFlowSource() {
-      return this.validMessageFlowSources.includes(this.node.type);
-    },
     isFlow() {
       return [
         'processmaker-modeler-sequence-flow',
@@ -148,9 +129,6 @@ export default {
     isTextAnnotation() {
       return this.node.type === 'processmaker-modeler-text-annotation';
     },
-    isValidSequenceFlowSource() {
-      return !this.invalidSequenceFlowSources.includes(this.node.type);
-    },
     process() {
       return this.node.pool
         ? this.node.pool.component.containingProcess
@@ -158,71 +136,6 @@ export default {
     },
   },
   methods: {
-    addSequence(cellView, evt, x, y) {
-      this.removeCrown();
-      const sequenceFlowConfig = this.nodeRegistry['processmaker-modeler-sequence-flow'];
-      const sequenceLink = sequenceFlowConfig.definition(this.moddle, this.$t);
-      sequenceLink.set('sourceRef', this.node.definition);
-      sequenceLink.set('targetRef', { x, y });
-
-      if (
-        sequenceLink.sourceRef.$type === 'bpmn:ExclusiveGateway' ||
-        sequenceLink.sourceRef.$type === 'bpmn:InclusiveGateway') {
-        sequenceLink.conditionExpression = this.moddle.create('bpmn:FormalExpression', {
-          body: '',
-        });
-      }
-
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-sequence-flow',
-        definition: sequenceLink,
-        diagram: sequenceFlowConfig.diagram(this.moddle),
-      });
-    },
-    addMessageFlow(cellView, evt, x, y) {
-      this.removeCrown();
-
-      const messageFlowDefinition = this.moddle.create('bpmn:MessageFlow', {
-        name: '',
-        sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
-      });
-
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-message-flow',
-        definition: messageFlowDefinition,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
-      });
-    },
-    addAssociation(cellView, evt, x, y) {
-      this.removeCrown();
-      const associationLink = this.moddle.create('bpmn:Association', {
-        sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
-        associationDirection: direction.none,
-      });
-
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-association',
-        definition: associationLink,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
-      });
-    },
-    removeShape() {
-      this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
-      this.shape.getEmbeddedCells({ deep: true }).forEach(cell => {
-        if (cell.component) {
-          this.graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
-          this.shape.unembed(cell);
-          this.$emit('remove-node', cell.component.node);
-        }
-      });
-
-      this.$emit('remove-node', this.node);
-    },
-    removeCrown() {
-      this.showCrown = false;
-    },
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
@@ -291,13 +204,6 @@ export default {
           this.savePositionOnPointerupEventSet = true;
         }
       });
-    },
-    replaceNode(event) {
-      if (event.node.type === event.typeToReplaceWith) {
-        this.showDropdown = false;
-        return;
-      }
-      this.$emit('replace-node', event);
     },
   },
   async mounted() {
