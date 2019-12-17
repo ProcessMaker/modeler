@@ -1,0 +1,15 @@
+$chevron-width: 1.25rem;
+$chevron-height: 1.25rem;
+
+@mixin chevron($top, $left) {
+  content: '';
+  background-color: $primary-color;
+  width: $chevron-width;
+  height: $chevron-height;
+  position: absolute;
+  top: $top;
+  left: $left;
+  z-index: -1;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}

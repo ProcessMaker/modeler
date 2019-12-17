@@ -54,12 +54,12 @@
 </template>
 
 <script>
-import DeleteButton from '@/components/deleteButton';
-import MessageFlowButton from '@/components/messageFlowButton';
-import SequenceFlowButton from '@/components/sequenceFlowButton';
-import AssociationFlowButton from '@/components/associationFlowButton';
-import CrownDropdown from '@/components/crownDropdown';
-import CrownBoundaryEventDropdown from '@/components/crownBoundaryEventDropdown';
+import DeleteButton from '@/components/crown/crownButtons/deleteButton';
+import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
+import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
+import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
+import CrownDropdown from '@/components/crown/crownDropdown';
+import CrownBoundaryEventDropdown from '@/components/crown/crownBoundaryEventDropdown';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import store from '@/store';

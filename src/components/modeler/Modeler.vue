@@ -94,34 +94,34 @@
 <script>
 import Vue from 'vue';
 import { dia } from 'jointjs';
-import boundaryEventConfig from './nodes/boundaryEvent';
+import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
-import controls from './controls';
+import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
-import linterConfig from '../../.bpmnlintrc';
-import NodeIdGenerator from '../NodeIdGenerator';
-import Process from './inspectors/process';
+import linterConfig from '../../../.bpmnlintrc';
+import NodeIdGenerator from '../../NodeIdGenerator';
+import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
-import MiniPaper from '@/components/MiniPaper';
+import MiniPaper from '@/components/miniPaper/MiniPaper';
 
-import { id as laneId } from './nodes/poolLane';
-import { id as sequenceFlowId } from './nodes/sequenceFlow';
-import { id as associationId } from './nodes/association';
-import { id as messageFlowId } from './nodes/messageFlow';
+import { id as laneId } from '../nodes/poolLane';
+import { id as sequenceFlowId } from '../nodes/sequenceFlow';
+import { id as associationId } from '../nodes/association';
+import { id as messageFlowId } from '../nodes/messageFlow';
 
-import PaperManager from './paperManager';
+import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
-import ToolBar from '@/components/ToolBar';
+import ToolBar from '@/components/toolbar/ToolBar';
 
 const version = '1.0';
 
@@ -761,64 +761,4 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-@import '~jointjs/dist/joint.min.css';
-
-$cursors: default, not-allowed, wait;
-$controls-column-max-width: 265px;
-$controls-column-compressed-max-width: 95px;
-$toolbar-height: 2rem;
-$vertex-error-color: #ED4757;
-$controls-transition: 0.3s;
-
-.ignore-pointer {
-  pointer-events: none;
-}
-
-.modeler {
-  .main-paper {
-    position: absolute;
-    height: 100%;
-    max-height: 100%;
-    min-height: 100%;
-    left: 0;
-    top: 0;
-  }
-
-  .grabbing-cursor {
-    cursor: grabbing !important;
-  }
-
-  .paper-container {
-    position: initial !important;
-    cursor: grab;
-    user-select: none;
-
-    .toolbar {
-      z-index: 1;
-      height: $toolbar-height;
-      cursor: auto;
-
-      > button {
-        cursor: pointer;
-      }
-    }
-  }
-
-  @each $cursor in $cursors {
-    .paper-container.#{$cursor} {
-      .joint-paper,
-      .joint-paper * {
-        cursor: #{$cursor} !important;
-      }
-    }
-  }
-
-  .joint-marker-vertex:hover {
-    fill: $vertex-error-color;
-    cursor: url('../assets/delete-icon-vertex.png') 0 0, pointer;
-  }
-
-}
-</style>
+<style lang="scss" src="./modeler.scss" />

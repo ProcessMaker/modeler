@@ -1,0 +1,46 @@
+$validation-panel-background-color: #f7f7f7;
+$message-container-width: 18rem;
+$validation-container-height: 14rem;
+$validation-container-width: 25rem;
+$status-bar-container-height: 3rem;
+$divider-color: #d4d4d4;
+
+.status-bar-container {
+  color: $primary-grey;
+  height: $status-bar-container-height;
+
+  &__status {
+    cursor: pointer;
+  }
+}
+
+.divider {
+  height: 1.25rem;
+  width: 2px;
+  background: $divider-color;
+  margin: 0 1rem;
+}
+
+.validation-container {
+  z-index: 2;
+  cursor: default;
+  bottom: 0;
+  right: 0;
+  height: $validation-container-height;
+  width: $validation-container-width;
+  background-color: $validation-panel-background-color;
+  overflow: auto;
+  margin-bottom: 3rem;
+  border: 1px solid $border-color;
+  border-radius: 0.25rem;
+  border-right: none;
+
+  &__list {
+    padding: 0.5rem;
+    word-wrap: break-word;
+
+    &--message {
+      width: $message-container-width;
+    }
+  }
+}

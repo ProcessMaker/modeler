@@ -61,10 +61,4 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.error-title {
-  color: #d9534f;
-  font-size: 1rem;
-}
-</style>
+<style lang="scss" src="./sequenceFlowFormSelect.scss" scoped />
