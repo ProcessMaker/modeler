@@ -18,18 +18,19 @@
         />
       </b-input-group>
 
-      <b-list-group flush class="overflow-auto w-auto">
-        <b-list-group-item v-for="(control, index) in controls"
+      <b-list-group flush class="overflow-auto w-auto" :class="{ 'd-flex align-items-center': compressed }">
+        <b-list-group-item
+          v-for="(control, index) in controls"
           :key="index"
           class="control-item border-right-0 flex-grow-1"
-          :class="{ 'p-2': !compressed }"
+          :class="compressed ? 'p-0 pt-2 pb-2 w-100 d-flex justify-content-center' : 'p-2'"
           :data-test="control.type"
           @dragstart="$event.preventDefault()"
           @mousedown="startDrag($event, control)"
         >
           <div class="tool" :class="{ 'text-truncate ml-1': !compressed }" v-b-tooltip.hover.viewport.d50 :title="$t(control.label)">
-            <img :src="control.icon" class="tool-icon mr-1" :alt="$t(control.label)">
-            {{ !compressed ? $t(control.label) : '' }}
+            <img :src="control.icon" class="tool-icon" :alt="$t(control.label)">
+            <span v-if="!compressed" class="ml-1">{{ $t(control.label) }}</span>
           </div>
         </b-list-group-item>
       </b-list-group>
