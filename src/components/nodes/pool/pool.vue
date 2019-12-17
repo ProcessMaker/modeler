@@ -174,7 +174,7 @@ export default {
       lanes.push(this.pushNewLane());
 
       await Promise.all(lanes);
-      this.$emit('set-shape-stacking', this.shape);
+      this.$emit('set-shape-stacking', this.shape, this.graph);
       this.$emit('save-state');
     },
     createLaneSet() {
