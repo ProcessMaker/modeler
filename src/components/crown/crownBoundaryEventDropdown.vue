@@ -33,7 +33,7 @@
   </div>
 </template>
 <script>
-import CrownButton from '@/components/crownButton';
+import CrownButton from '@/components/crown/crownButtons/crownButton';
 import boundaryEventIcon from '@/assets/boundary-event.svg';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';

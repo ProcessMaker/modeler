@@ -25,7 +25,7 @@ import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
 import store from '@/store';
 import { id as subProcessId } from '@/components/nodes/subProcess';
-import CrownConfig from '@/components/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig';
 
 export default {
   components: {

@@ -96,7 +96,7 @@ import Vue from 'vue';
 import { dia } from 'jointjs';
 import boundaryEventConfig from './nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
-import controls from './controls';
+import controls from './controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';

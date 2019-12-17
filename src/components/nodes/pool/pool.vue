@@ -37,10 +37,10 @@ import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
 import pull from 'lodash/pull';
 import store from '@/store';
-import CrownConfig from '@/components/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import AddLaneAboveButton from '@/components/addLaneAboveButton';
-import AddLaneBelowButton from '@/components/addLaneBelowButton';
+import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
+import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 

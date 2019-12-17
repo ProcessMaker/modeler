@@ -12,7 +12,7 @@
 </template>
 <script>
 import messageFlow from '@/assets/message-flow.svg';
-import CrownButton from '@/components/crownButton';
+import CrownButton from '@/components/crown/crownButtons/crownButton';
 
 export default {
   components: { CrownButton },

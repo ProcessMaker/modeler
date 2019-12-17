@@ -10,7 +10,7 @@
 
 <script>
 import laneBelowIcon from '@/assets/lane-below.svg';
-import CrownButton from '@/components/crownButton';
+import CrownButton from '@/components/crown/crownButtons/crownButton';
 
 export default {
   components: { CrownButton },

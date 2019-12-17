@@ -13,7 +13,7 @@
 
 <script>
 import connectIcon from '@/assets/connect-artifacts.svg';
-import CrownButton from '@/components/crownButton';
+import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { direction } from '@/components/nodes/association/associationConfig';
 
 export default {

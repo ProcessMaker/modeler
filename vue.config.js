@@ -9,6 +9,7 @@ module.exports = {
       sass: {
         prependData: `
           @import '@/assets/scss/settings/_settings.variables.scss';
+          @import '@/assets/scss/tools/_tools.chevron.scss';
         `,
       },
     },

@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-import CrownButton from '@/components/crownButton';
+import CrownButton from '@/components/crown/crownButtons/crownButton';
 
 export default {
   name: 'CrownDropdown',
@@ -51,3 +51,4 @@ export default {
   },
 };
 </script>
+<style lang="scss" src="./crownDropdown.scss" scoped />
