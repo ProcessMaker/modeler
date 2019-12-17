@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     addSequence(cellView, evt, x, y) {
-      this.$emit('show-crown', false);
+      this.$emit('toggle-crown-state', false);
       const sequenceLink = this.sequenceFlowConfig.definition(this.moddle, this.$t);
       sequenceLink.set('sourceRef', this.node.definition);
       sequenceLink.set('targetRef', { x, y });

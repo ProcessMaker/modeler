@@ -7,7 +7,7 @@
       :moddle="moddle"
       :shape="shape"
       v-on="$listeners"
-      @show-crown="showCrown = $event"
+      @toggle-crown-state="showCrown = $event"
     />
 
     <sequence-flow-button
@@ -15,7 +15,7 @@
       :sequence-flow-config="nodeRegistry['processmaker-modeler-sequence-flow']"
       :moddle="moddle"
       v-on="$listeners"
-      @show-crown="showCrown = $event"
+      @toggle-crown-state="showCrown = $event"
     />
 
     <message-flow-button
@@ -23,7 +23,7 @@
       :moddle="moddle"
       :shape="shape"
       v-on="$listeners"
-      @show-crown="showCrown = $event"
+      @toggle-crown-state="showCrown = $event"
     />
 
     <crown-dropdown
@@ -40,7 +40,7 @@
       :moddle="moddle"
       :node="node"
       :shape="shape"
-      @click="showDropdown = false"
+      @toggle-dropdown-state="showDropdown = $event"
       v-on="$listeners"
     />
 

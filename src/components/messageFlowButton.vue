@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     addMessageFlow(cellView, evt, x, y) {
-      this.$emit('show-crown', false);
+      this.$emit('toggle-crown-state', false);
 
       const messageFlowDefinition = this.moddle.create('bpmn:MessageFlow', {
         name: '',

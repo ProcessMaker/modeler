@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     addAssociation(cellView, evt, x, y) {
-      this.$emit('show-crown', false);
+      this.$emit('toggle-crown-state', false);
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
