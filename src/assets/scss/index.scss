@@ -14,13 +14,6 @@
 // Objects – class-based selectors which define undecorated design patterns, for example media object known from OOCSS
 
 // Components – specific UI components. This is where the majority of our work takes place and our UI components are often composed of Objects and Components
-@import './components/components.modeler';
-@import './components/components.toolbar';
-@import './components/components.inspector';
-@import './components/components.sequenceFlowFormSelect';
-@import './components/components.statusBar';
-@import './components/components.miniPaper';
-@import './components/components.validationStatus';
 
 // Utilities – utilities and helper classes with ability to override anything which goes before in the triangle, eg. hide helper class
 @import './utilities/utilities.cursor';

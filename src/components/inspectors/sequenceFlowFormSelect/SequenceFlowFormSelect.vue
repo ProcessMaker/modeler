@@ -61,3 +61,4 @@ export default {
   },
 };
 </script>
+<style lang="scss" src="./sequenceFlowFormSelect.scss" scoped />

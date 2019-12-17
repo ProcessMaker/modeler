@@ -94,34 +94,34 @@
 <script>
 import Vue from 'vue';
 import { dia } from 'jointjs';
-import boundaryEventConfig from './nodes/boundaryEvent';
+import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
-import controls from './controls/controls';
+import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
-import linterConfig from '../../.bpmnlintrc';
-import NodeIdGenerator from '../NodeIdGenerator';
-import Process from './inspectors/process';
+import linterConfig from '../../../.bpmnlintrc';
+import NodeIdGenerator from '../../NodeIdGenerator';
+import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
-import MiniPaper from '@/components/MiniPaper';
+import MiniPaper from '@/components/miniPaper/MiniPaper';
 
-import { id as laneId } from './nodes/poolLane';
-import { id as sequenceFlowId } from './nodes/sequenceFlow';
-import { id as associationId } from './nodes/association';
-import { id as messageFlowId } from './nodes/messageFlow';
+import { id as laneId } from '../nodes/poolLane';
+import { id as sequenceFlowId } from '../nodes/sequenceFlow';
+import { id as associationId } from '../nodes/association';
+import { id as messageFlowId } from '../nodes/messageFlow';
 
-import PaperManager from './paperManager';
+import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
-import ToolBar from '@/components/ToolBar';
+import ToolBar from '@/components/toolbar/ToolBar';
 
 const version = '1.0';
 
@@ -761,7 +761,4 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-@import '~jointjs/dist/joint.min.css';
-</style>
+<style lang="scss" src="./modeler.scss" />

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import MiniMapManager from './miniMapManager';
+import MiniMapManager from '../miniMapManager';
 
 export default {
   data() {
@@ -52,3 +52,4 @@ export default {
   },
 };
 </script>
+<style lang="scss" src="./miniPaper.scss" scoped />

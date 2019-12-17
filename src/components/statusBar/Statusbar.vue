@@ -8,3 +8,4 @@
     </div>
   </div>
 </template>
+<style lang="scss" src="./statusBar.scss" scoped />

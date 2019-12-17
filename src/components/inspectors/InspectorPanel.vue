@@ -40,7 +40,7 @@ import omit from 'lodash/omit';
 import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
-import SequenceFlowFormSelect from './SequenceFlowFormSelect.vue';
+import SequenceFlowFormSelect from './sequenceFlowFormSelect/SequenceFlowFormSelect.vue';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -192,3 +192,4 @@ export default {
   },
 };
 </script>
+<style lang="scss" src="./inspector.scss" scoped />

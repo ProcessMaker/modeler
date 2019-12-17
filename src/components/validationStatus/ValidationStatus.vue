@@ -116,3 +116,4 @@ export default {
   },
 };
 </script>
+<style lang="scss" src="./validationStatus.scss" scoped />

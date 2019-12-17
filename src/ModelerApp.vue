@@ -52,11 +52,11 @@
 </template>
 
 <script>
-import Modeler from './components/Modeler.vue';
-import Statusbar from './components/Statusbar.vue';
+import Modeler from './components/modeler/Modeler.vue';
+import Statusbar from './components/statusBar/Statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
-import ValidationStatus from '@/components/ValidationStatus';
+import ValidationStatus from '@/components/validationStatus/ValidationStatus';
 import runningInCypressTest from '@/runningInCypressTest';
 
 const reader = new FileReader();
