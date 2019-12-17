@@ -122,6 +122,7 @@ import initAnchor from '@/mixins/linkManager.js';
 import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
+import setUpArrowKeyEventHandlers from '@/components/modeler/moveWithArrowKeys';
 
 const version = '1.0';
 
@@ -690,6 +691,8 @@ export default {
     this.linter = new Linter(linterConfig);
   },
   mounted() {
+    setUpArrowKeyEventHandlers();
+
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
