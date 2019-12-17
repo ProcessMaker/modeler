@@ -1,9 +1,10 @@
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from './nodes/poolLane';
 
-export default function ensureShapeIsNotCovered(shape) {
+export default function ensureShapeIsNotCovered(shape, graph) {
   if (isPool(shape)) {
     bringPoolToFront(shape);
+    bringFlowsToFront(graph);
   }
 
   const parentPool = getElementPool(shape);
@@ -42,6 +43,12 @@ function bringPoolToFront(poolShape) {
 
 function bringShapeToFront(shape) {
   shape.toFront({ deep: true });
+}
+
+function bringFlowsToFront(graph) {
+  if (graph) {
+    graph.getLinks().forEach(bringShapeToFront);
+  }
 }
 
 function getElementPool(shape) {
