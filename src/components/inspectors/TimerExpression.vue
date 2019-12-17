@@ -57,15 +57,14 @@
           <form-date-picker
             :emit-iso="true"
             data-test="end-date-picker"
-            type="date"
             class="form-date-picker p-0 m-0"
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
             control-class="form-control"
-            data-format="date"
             :value="endDate"
             @input="setEndDate"
+            name="end date"
           />
         </b-form-group>
 
