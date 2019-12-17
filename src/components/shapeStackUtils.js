@@ -11,6 +11,7 @@ export default function ensureShapeIsNotCovered(shape, graph) {
 
   if (parentPool) {
     bringPoolToFront(parentPool);
+    bringFlowsToFront(graph);
   }
 
   if (isNotLane(shape) && !isPool(shape)) {
