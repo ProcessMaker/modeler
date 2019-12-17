@@ -55,7 +55,6 @@ export default {
       boundaryEventIcon,
     };
   },
-  computed: {},
   methods: {
     getErrorTooltipText(disabledLabel) {
       return this.getEmptyBoundaryEventPositionsForShape(this.shape).length === 0
