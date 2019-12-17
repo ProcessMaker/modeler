@@ -3,7 +3,6 @@
     <crown-button
       id="dropdown-button"
       aria-label="Select a type"
-      v-on="$listeners"
       @click="dropdownOpen = !dropdownOpen"
     >
       <i class="fas fa-cog cog-container--button" />
@@ -15,7 +14,7 @@
           :data-test="dataTest"
           class="element-list--item__button"
           type="button"
-          @click="$emit('replace-node', { node, typeToReplaceWith: nodeType })"
+          @click="replaceNode({ node, typeToReplaceWith: nodeType })"
         >{{ $t(label) }}
         </button>
       </li>
@@ -40,6 +39,15 @@ export default {
     return {
       dropdownOpen: true,
     };
+  },
+  methods: {
+    replaceNode(data) {
+      if (data.node.type === data.typeToReplaceWith) {
+        this.$emit('toggle-dropdown-state', false);
+        return;
+      }
+      this.$emit('replace-node', data);
+    },
   },
 };
 </script>
