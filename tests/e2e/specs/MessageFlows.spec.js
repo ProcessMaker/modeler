@@ -5,6 +5,7 @@ import {
   getElementAtPosition,
   getLinksConnectedToElement,
   getNumberOfLinks,
+  isElementCovered,
   moveElement,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -111,5 +112,34 @@ describe('Message Flows', () => {
     connectNodesWithFlow('message-flow-button', taskPosition, poolLanePosition);
 
     getNumberOfLinks().should('equal', 0);
+  });
+
+  it('Adding a pool and lanes does not overlap message flow', () => {
+    const poolPosition = { x: 150, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const poolTwoPosition = { x: 150, y: 600 };
+    dragFromSourceToDest(nodeTypes.pool, poolTwoPosition);
+
+    const taskPosition = { x: 200, y: 600 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    const startEventPosition = { x: 150, y: 150 };
+    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
+
+
+    getElementAtPosition(poolTwoPosition)
+      .click({ force: true })
+      .then($pool => getCrownButtonForElement($pool, 'lane-above-button')).click({ force: true });
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .then($links => $links[0])
+      .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 });
