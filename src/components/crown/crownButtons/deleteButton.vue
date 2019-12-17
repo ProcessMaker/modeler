@@ -12,7 +12,7 @@
       aria-hidden="true"
       data-prefix="fas"
       data-icon="trash-alt"
-      class="svg-inline--fa fa-trash-alt fa-w-14"
+      class="fa-trash-alt trash-icon"
       alt=""
     >
   </crown-button>
@@ -71,3 +71,8 @@ export default {
   },
 };
 </script>
+<style>
+  .trash-icon {
+    height: 13.5px;
+  }
+</style>

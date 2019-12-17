@@ -39,9 +39,10 @@ export default {
   border: none;
   padding: 0;
   margin-top: 0;
+  display: flex;
 }
 img, i {
   margin: 5px 10px;
-  font-size: 1rem;
+  width: 15px;
 }
 </style>
