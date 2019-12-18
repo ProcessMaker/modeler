@@ -173,6 +173,9 @@ export default {
 
       await Promise.all(lanes);
       this.$emit('set-shape-stacking', this.shape);
+      this.graph.getLinks().forEach(link => {
+        this.$emit('set-shape-stacking', link);
+      });
       this.$emit('save-state');
     },
     createLaneSet() {

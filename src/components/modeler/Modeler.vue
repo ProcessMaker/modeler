@@ -657,7 +657,7 @@ export default {
       return shape.component != null;
     },
     setShapeStacking(shape) {
-      this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape));
+      this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
   },
   created() {
