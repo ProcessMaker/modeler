@@ -1,30 +1,22 @@
-import store from '@/store';
 import PaperManager from '@/components/paperManager';
 
-const movementKeys = {
+export default function moveShapeByKeypress(key, shape) {
+  if (!shape || !isArrowKeyPressed(key)) {
+    return;
+  }
+
+  const [tx, ty] = getAmountToTranslateBy(key);
+  shape.translate(tx, ty);
+}
+
+export const movementKeys = {
   up: ['Up', 'ArrowUp'],
   down: ['Down', 'ArrowDown'],
   left: ['Left', 'ArrowLeft'],
   right: ['Right', 'ArrowRight'],
 };
 
-export default function setUpArrowKeyEventHandlers() {
-  document.addEventListener('keydown', event => {
-    const highlightedShape = store.getters.nodeShape(store.getters.highlightedNode);
-    if (!highlightedShape) {
-      return;
-    }
-
-    if (!isArrowKeyPressed(event.key)) {
-      return;
-    }
-
-    const [tx, ty] = getPositionToMoveBy(event.key);
-    highlightedShape.translate(tx, ty);
-  });
-}
-
-function getPositionToMoveBy(key) {
+function getAmountToTranslateBy(key) {
   const moveAmount = PaperManager.gridSize / 2;
 
   if (movementKeys.up.includes(key)) {
