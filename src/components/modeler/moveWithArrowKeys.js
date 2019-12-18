@@ -1,6 +1,13 @@
 import store from '@/store';
 import PaperManager from '@/components/paperManager';
 
+const movementKeys = {
+  up: ['Up', 'ArrowUp'],
+  down: ['Down', 'ArrowDown'],
+  left: ['Left', 'ArrowLeft'],
+  right: ['Right', 'ArrowRight'],
+};
+
 export default function setUpArrowKeyEventHandlers() {
   document.addEventListener('keydown', event => {
     const highlightedShape = store.getters.nodeShape(store.getters.highlightedNode);
@@ -8,26 +15,35 @@ export default function setUpArrowKeyEventHandlers() {
       return;
     }
 
-    highlightedShape.translate(...getPositionToMoveBy(event.key));
+    if (!isArrowKeyPressed(event.key)) {
+      return;
+    }
+
+    const [tx, ty] = getPositionToMoveBy(event.key);
+    highlightedShape.translate(tx, ty);
   });
 }
 
 function getPositionToMoveBy(key) {
   const moveAmount = PaperManager.gridSize / 2;
 
-  if (['Up', 'ArrowUp'].includes(key)) {
+  if (movementKeys.up.includes(key)) {
     return [0, -moveAmount];
   }
 
-  if (['Down', 'ArrowDown'].includes(key)) {
+  if (movementKeys.down.includes(key)) {
     return [0, moveAmount];
   }
 
-  if (['Left', 'ArrowLeft'].includes(key)) {
+  if (movementKeys.left.includes(key)) {
     return [-moveAmount, 0];
   }
 
-  if (['Right', 'ArrowRight'].includes(key)) {
+  if (movementKeys.right.includes(key)) {
     return [moveAmount, 0];
   }
+}
+
+function isArrowKeyPressed(key) {
+  return Object.values(movementKeys).flat().includes(key);
 }
