@@ -5,7 +5,7 @@ describe('moveWithArrowKeys', () => {
     const shape = { translate: jest.fn() };
     moveShapeByKeypress('Enter', shape);
 
-    expect(shape.translate).not.toHaveBeenCalled();
+    expect(shape.translate).toHaveBeenCalledWith(0, 0);
   });
 
   it.each`
