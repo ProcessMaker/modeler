@@ -4,19 +4,19 @@ import { id as laneId } from './nodes/poolLane';
 export default function ensureShapeIsNotCovered(shape, graph) {
   if (isPool(shape)) {
     bringPoolToFront(shape);
-    bringFlowsToFront(graph);
   }
 
   const parentPool = getElementPool(shape);
 
   if (parentPool) {
     bringPoolToFront(parentPool);
-    bringFlowsToFront(graph);
   }
 
   if (isNotLane(shape) && !isPool(shape)) {
     bringShapeToFront(shape);
   }
+
+  bringFlowsToFront(graph);
 }
 
 function isNotLane(shape) {
@@ -47,9 +47,7 @@ function bringShapeToFront(shape) {
 }
 
 function bringFlowsToFront(graph) {
-  if (graph) {
-    graph.getLinks().forEach(bringShapeToFront);
-  }
+  graph.getLinks().forEach(bringShapeToFront);
 }
 
 function getElementPool(shape) {

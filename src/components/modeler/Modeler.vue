@@ -656,8 +656,8 @@ export default {
     isBpmnNode(shape) {
       return shape.component != null;
     },
-    setShapeStacking(shape, graph) {
-      this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, graph));
+    setShapeStacking(shape) {
+      this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
   },
   created() {
@@ -743,7 +743,7 @@ export default {
         return;
       }
 
-      this.setShapeStacking(shape, this.graph);
+      this.setShapeStacking(shape);
 
       shape.component.$emit('click');
     });
