@@ -1,5 +1,5 @@
 <template>
-  <div class="cog-container" role="menuitem">
+  <div class="cog-container" role="menuitem" v-if="dropdownData.length > 0">
     <crown-button
       id="dropdown-button"
       aria-label="Select a boundary event"
@@ -26,18 +26,14 @@
         >{{ $t(label) }}
         </button>
         <b-tooltip v-if="!canAddBoundaryEventToTarget(nodeType, shape)" :target="nodeType" variant="warning" placement="right">
-          {{
-            getEmptyBoundaryEventPositionsForShape(shape).length === 0
-              ? 'No available space'
-              : disabledLabel
-          }}
+          {{ getErrorTooltipText(disabledLabel) }}
         </b-tooltip>
       </li>
     </ul>
   </div>
 </template>
 <script>
-import CrownButton from '@/components/crownButton';
+import CrownButton from '@/components/crown/crownButtons/crownButton';
 import boundaryEventIcon from '@/assets/boundary-event.svg';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
@@ -60,10 +56,16 @@ export default {
     };
   },
   methods: {
+    getErrorTooltipText(disabledLabel) {
+      return this.getEmptyBoundaryEventPositionsForShape(this.shape).length === 0
+        ? 'No available space'
+        : disabledLabel;
+    },
     canAddBoundaryEventToTarget,
     getEmptyBoundaryEventPositionsForShape,
     addBoundaryEvent(nodeType) {
       this.dropdownOpen = false;
+      this.$emit('toggle-dropdown-state', false);
 
       if (!canAddBoundaryEventToTarget(nodeType, this.shape)) {
         return;
@@ -84,7 +86,7 @@ export default {
 
       store.commit('highlightNode', node);
 
-      this.$emit('add-boundary-event', node);
+      this.$emit('add-node', node);
     },
   },
   created() {
@@ -93,72 +95,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-  $primary-color: #5096db;
-  $primary-light: #fff;
-
-  $element-list-top: 2.5rem;
-  $element-list-left: 0;
-  $element-list-top-chevron: -0.2rem;
-  $element-list-left-chevron: 0.5rem;
-  $crown-top-chevron: 0.8rem;
-  $crown-left-chevron: 0.3rem;
-
-  $chevron-width: 1.25rem;
-  $chevron-height: 1.25rem;
-
-  @mixin chevron($top, $left) {
-    content: '';
-    background-color: $primary-color;
-    width: $chevron-width;
-    height: $chevron-height;
-    position: absolute;
-    top: $top;
-    left: $left;
-    z-index: -1;
-    transform: rotate(45deg);
-    border-radius: 1px;
-  }
-
-  .cog-container {
-    position: relative;
-    display: flex;
-
-    &--button {
-      background: none;
-      border: none;
-      color: $primary-light;
-    }
-  }
-
-  .element-list {
-    position: absolute;
-    white-space: nowrap;
-    top: $element-list-top;
-    left: $element-list-left;
-    border-radius: 5px;
-    background-color: $primary-color;
-    padding: 0;
-
-    &::after {
-      @include chevron($element-list-top-chevron, $element-list-left-chevron);
-    }
-
-    &--item {
-      list-style: none;
-
-      &__button {
-        background: none;
-        padding: 0.25rem 0.85rem;
-        border: none;
-        color: $primary-light;
-        font-size: 0.85rem;
-
-        &:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-      }
-    }
-  }
-</style>
+<style lang="scss" src="./crownDropdown.scss" />

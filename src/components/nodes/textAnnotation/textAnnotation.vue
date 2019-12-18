@@ -20,7 +20,7 @@
 <script>
 import { shapes, util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
-import CrownConfig from '@/components/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 export const maxTextAnnotationWidth = 160;

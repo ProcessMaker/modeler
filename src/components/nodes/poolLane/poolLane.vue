@@ -11,9 +11,7 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    v-on="$listeners"
   />
 </template>
 
@@ -23,7 +21,7 @@ import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
 import { poolColor } from '@/components/nodeColors';
-import CrownConfig from '@/components/poolLaneCrownConfig';
+import CrownConfig from '@/components/crown/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
 export default {

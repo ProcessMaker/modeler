@@ -1,0 +1,8 @@
+@each $cursor in $cursors {
+  .paper-container.#{$cursor} {
+    .joint-paper,
+    .joint-paper * {
+      cursor: #{$cursor} !important;
+    }
+  }
+}

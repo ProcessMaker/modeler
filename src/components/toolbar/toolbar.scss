@@ -1,0 +1,11 @@
+$toolbar-height: 2rem;
+
+.toolbar {
+  z-index: 1;
+  height: $toolbar-height;
+  cursor: auto;
+
+  > button {
+    cursor: pointer;
+  }
+}

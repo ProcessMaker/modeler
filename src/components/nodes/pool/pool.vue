@@ -11,9 +11,7 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    v-on="$listeners"
   >
     <add-lane-above-button
       v-b-tooltip.hover.viewport.d50
@@ -39,10 +37,10 @@ import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
 import pull from 'lodash/pull';
 import store from '@/store';
-import CrownConfig from '@/components/crownConfig';
+import CrownConfig from '@/components/crown/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import AddLaneAboveButton from '@/components/addLaneAboveButton';
-import AddLaneBelowButton from '@/components/addLaneBelowButton';
+import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
+import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 

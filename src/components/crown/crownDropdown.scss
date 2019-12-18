@@ -1,0 +1,48 @@
+$element-list-top: 2.5rem;
+$element-list-left: 0;
+$element-list-top-chevron: -0.2rem;
+$element-list-left-chevron: 0.5rem;
+$crown-top-chevron: 0.8rem;
+$crown-left-chevron: 0.3rem;
+
+.cog-container {
+  position: relative;
+  display: flex;
+
+  &--button {
+    background: none;
+    border: none;
+    color: $primary-white;
+  }
+}
+
+.element-list {
+  position: absolute;
+  white-space: nowrap;
+  top: $element-list-top;
+  left: $element-list-left;
+  border-radius: 5px;
+  background-color: $primary-color;
+  padding: 0;
+
+  &::after {
+    @include chevron($element-list-top-chevron, $element-list-left-chevron);
+  }
+
+  &--item {
+    list-style: none;
+
+    &__button {
+      background: none;
+      padding: 0.25rem 0.85rem;
+      border: none;
+      color: $primary-white;
+      font-size: 0.85rem;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

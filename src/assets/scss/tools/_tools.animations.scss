@@ -1,0 +1,41 @@
+$controls-transition: 0.3s;
+$transition-duration: 0.3s;
+
+.inspector-enter, .inspector-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.inspector-enter-active, .inspector-leave-active {
+  transition: all $transition-duration ease;
+}
+
+.slide-enter-active {
+  transition-duration: $transition-duration;
+  transition-timing-function: ease-in;
+}
+
+.slide-leave-active {
+  transition-duration: $transition-duration;
+  transition-timing-function: ease-out;
+}
+
+.slide-enter-to, .slide-leave {
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.slide-enter, .slide-leave-to {
+  overflow: hidden;
+  max-height: 0;
+}
+
+.rotatingUp {
+  transition: transform $transition-duration ease-in;
+  transform: rotate(180deg);
+}
+
+.rotatingDown {
+  transition: transform $transition-duration ease-out;
+  transform: rotate(0deg);
+}

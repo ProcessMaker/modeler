@@ -40,7 +40,7 @@ import omit from 'lodash/omit';
 import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
-import SequenceFlowFormSelect from './SequenceFlowFormSelect.vue';
+import SequenceFlowFormSelect from './sequenceFlowFormSelect/SequenceFlowFormSelect.vue';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -192,43 +192,4 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-$controls-transition: 0.3s;
-$inspector-column-max-width: 265px;
-.modeler {
-  .inspector-column {
-    max-width: $inspector-column-max-width;
-  }
-}
-
-.inspector {
-  z-index: 1;
-
-  &-container {
-    text-align: left;
-    user-select: none;
-
-    .form-group {
-      padding: 0 0.5rem;
-
-      > label {
-        font-size: 0.8125rem;
-      }
-    }
-
-    .inspector-font-size {
-      font-size: 0.875rem;
-    }
-  }
-
-  &-enter, &-leave-to {
-    transform: translateX(10px);
-    opacity: 0;
-  }
-
-  &-enter-active, &-leave-active {
-    transition: all $controls-transition ease;
-  }
-}
-</style>
+<style lang="scss" src="./inspector.scss" scoped />

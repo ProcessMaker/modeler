@@ -1,0 +1,31 @@
+@import '~jointjs/dist/joint.min.css';
+
+.modeler {
+  .main-paper {
+    position: absolute;
+    height: 100%;
+    max-height: 100%;
+    min-height: 100%;
+    left: 0;
+    top: 0;
+  }
+
+  .grabbing-cursor {
+    cursor: grabbing !important;
+  }
+
+  .paper-container {
+    position: initial !important;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .joint-marker-vertex:hover {
+    fill: $error-color;
+    cursor: url('../../assets/delete-icon-vertex.png') 0 0, pointer;
+  }
+}
+
+.ignore-pointer {
+  pointer-events: none;
+}
