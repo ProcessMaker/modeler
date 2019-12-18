@@ -9,29 +9,25 @@ export default function moveShapeByKeypress(key, shape) {
   shape.translate(tx, ty);
 }
 
-const moveAmount = PaperManager.gridSize / 2;
-
-const arrowKeyCodes = new Map();
-arrowKeyCodes.set('Up', 'up');
-arrowKeyCodes.set('ArrowUp', 'up');
-arrowKeyCodes.set('Down', 'down');
-arrowKeyCodes.set('ArrowDown', 'down');
-arrowKeyCodes.set('Left', 'left');
-arrowKeyCodes.set('ArrowLeft', 'left');
-arrowKeyCodes.set('Right', 'right');
-arrowKeyCodes.set('ArrowRight', 'right');
+export const moveAmount = PaperManager.gridSize / 2;
 
 const translationAmount = new Map();
-translationAmount.set('up', [0, -moveAmount]);
-translationAmount.set('down', [0, moveAmount]);
-translationAmount.set('left', [-moveAmount, 0]);
-translationAmount.set('right', [moveAmount, 0]);
+translationAmount.set('Up', [0, -moveAmount]);
+translationAmount.set('Down', [0, moveAmount]);
+translationAmount.set('Left', [-moveAmount, 0]);
+translationAmount.set('Right', [moveAmount, 0]);
+
+function normaliseArrowKeyCode(key) {
+  const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
+  return match && match.length ? match[1] : undefined;
+}
 
 function getAmountToTranslateBy(key) {
-  const keyCode = arrowKeyCodes.get(key);
+  const keyCode = normaliseArrowKeyCode(key);
   return translationAmount.get(keyCode);
 }
 
 function isArrowKeyPressed(key) {
-  return arrowKeyCodes.has(key);
+  const keyCode = normaliseArrowKeyCode(key);
+  return translationAmount.has(keyCode);
 }

@@ -1,7 +1,4 @@
-import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
-import PaperManager from '@/components/paperManager';
-
-const moveAmount = PaperManager.gridSize / 2;
+import moveShapeByKeypress, { moveAmount } from '@/components/modeler/moveWithArrowKeys';
 
 describe('moveWithArrowKeys', () => {
   it('should not translate shape if correct keys are not pressed', () => {
