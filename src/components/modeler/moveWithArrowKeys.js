@@ -9,12 +9,12 @@ translationAmount.set('Left', [-moveAmount, 0]);
 translationAmount.set('Right', [moveAmount, 0]);
 
 export default function moveShapeByKeypress(key, shape) {
-  const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
-  const keyCode = match && match.length ? match[1] : undefined;
-  if (!shape || !translationAmount.has(keyCode)) {
+  if (!shape) {
     return;
   }
+  const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
+  const keyCode = match ? match[1] : undefined;
 
-  const [tx, ty] = translationAmount.get(keyCode);
+  const [tx, ty] = translationAmount.get(keyCode) || [0, 0];
   shape.translate(tx, ty);
 }
