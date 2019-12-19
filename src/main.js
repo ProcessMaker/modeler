@@ -8,7 +8,6 @@ import translations from '@/setup/translations.json';
 import * as VueDeepSet from 'vue-deepset';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import '@/assets/scss/index.scss';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
