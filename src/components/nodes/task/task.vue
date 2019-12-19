@@ -12,6 +12,7 @@
     :plane-elements="planeElements"
     :is-rendering="isRendering"
     :boundary-event-dropdown-data="boundaryEventDropdownData"
+    :dropdown-data="dropdownData"
     v-on="$listeners"
   />
 </template>
@@ -51,6 +52,28 @@ export default {
     return {
       shape: null,
       definition: null,
+      dropdownData: [
+        {
+          label: 'Task',
+          nodeType: 'processmaker-modeler-task',
+          dataTest: 'switch-to-user-task',
+        },
+        {
+          label: 'Manual Task',
+          nodeType: 'processmaker-modeler-manual-task',
+          dataTest: 'switch-to-manual-task',
+        },
+        {
+          label: 'Script Task',
+          nodeType: 'processmaker-modeler-script-task',
+          dataTest: 'switch-to-script-task',
+        },
+        {
+          label: 'Sub Process',
+          nodeType: 'processmaker-modeler-call-activity',
+          dataTest: 'switch-to-sub-process',
+        },
+      ],
       boundaryEventDropdownData: [
         {
           label: 'Boundary Timer Event',
@@ -73,7 +96,7 @@ export default {
   },
   computed: {
     hasTaskMarker() {
-      return this.shape.attr('image/xlink:href') ? true : false;
+      return !!this.shape.attr('image/xlink:href');
     },
   },
   watch: {
@@ -95,7 +118,7 @@ export default {
   },
   methods: {
     getElementsUnderArea(element) {
-      const { x, y, width, height} = element.getBBox();
+      const { x, y, width, height } = element.getBBox();
       const area = { x, y, width, height };
 
       return this.graph.findModelsInArea(area);

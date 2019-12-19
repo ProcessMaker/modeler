@@ -28,9 +28,8 @@
 
     <crown-dropdown
       :dropdown-data="dropdownData"
+      :dropdown-initially-open="dropdownInitiallyOpen"
       :node="node"
-      :show-dropdown="showDropdown"
-      @toggle-dropdown-state="showDropdown = $event"
       v-on="$listeners"
     />
 
@@ -40,7 +39,6 @@
       :moddle="moddle"
       :node="node"
       :shape="shape"
-      @toggle-dropdown-state="showDropdown = $event"
       v-on="$listeners"
     />
 
@@ -96,10 +94,10 @@ export default {
   },
   mixins: [poolLaneCrownConfig],
   watch: {
-    highlighted() {
-      this.showCrown = this.highlighted;
-      if (!this.highlighted && this.showDropdown) {
-        this.showDropdown = false;
+    highlighted(highlighted) {
+      this.showCrown = highlighted;
+      if (!highlighted && this.dropdownInitiallyOpen) {
+        this.dropdownInitiallyOpen = false;
       }
     },
     shape() {
@@ -113,7 +111,7 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      showDropdown: false,
+      dropdownInitiallyOpen: true,
     };
   },
   created() {
@@ -212,7 +210,6 @@ export default {
 
     this.setUpCrownConfig();
     this.setUpPositionHandling();
-    this.showDropdown = this.dropdownData.length > 0 && this.highlighted;
   },
   destroyed() {
     this.shape.stopListening();

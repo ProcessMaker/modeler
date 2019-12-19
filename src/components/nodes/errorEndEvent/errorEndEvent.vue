@@ -12,7 +12,6 @@ export default {
         id: `${this.id}_error`,
         name: `${this.id}_error`,
       }),
-      dropdownData: [],
     };
   },
   mounted() {

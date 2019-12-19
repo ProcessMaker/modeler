@@ -1,10 +1,11 @@
 import {
+  addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
   typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -18,7 +19,8 @@ describe('Error End Event', () => {
     `;
 
   beforeEach(() => {
-    dragFromSourceToDest(nodeTypes.endEvent, errorEndEventPosition);
+    addNodeTypeToPaper(errorEndEventPosition, nodeTypes.endEvent, 'switch-to-error-end-event');
+    waitToRenderAllShapes();
     cy.get('[data-test=switch-to-error-end-event]').click();
   });
 

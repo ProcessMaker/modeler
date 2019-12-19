@@ -1,4 +1,9 @@
-import { assertDownloadedXmlContainsExpected, dragFromSourceToDest, getElementAtPosition } from '../support/utils';
+import {
+  addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
+  getElementAtPosition,
+  waitToRenderAllShapes,
+} from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
@@ -6,7 +11,8 @@ const messageEndEventPosition = { x: 300, y: 200 };
 
 describe('Message End Event', () => {
   it('can render a message end event', function() {
-    dragFromSourceToDest(nodeTypes.endEvent, messageEndEventPosition);
+    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+    waitToRenderAllShapes();
     cy.get('[data-test=switch-to-message-end-event]').click();
 
     getElementAtPosition(messageEndEventPosition).click();

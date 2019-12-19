@@ -1,5 +1,5 @@
 <template>
-  <div class="cog-container" v-if="showDropdown" role="menuitem">
+  <div class="cog-container" v-if="dropdownData.length > 0" role="menuitem">
     <crown-button
       id="dropdown-button"
       aria-label="Select a type"
@@ -30,24 +30,26 @@ export default {
   props: {
     dropdownData: Array,
     node: Object,
-    showDropdown: {
-      type: Boolean,
-      required: true,
-    },
+    dropdownInitiallyOpen: Boolean,
   },
   data() {
     return {
-      dropdownOpen: true,
+      dropdownOpen: false,
     };
   },
   methods: {
     replaceNode(data) {
       if (data.node.type === data.typeToReplaceWith) {
-        this.$emit('toggle-dropdown-state', false);
+        this.dropdownOpen = false;
         return;
       }
       this.$emit('replace-node', data);
     },
+  },
+  mounted() {
+    if (this.dropdownInitiallyOpen) {
+      this.dropdownOpen = true;
+    }
   },
 };
 </script>
