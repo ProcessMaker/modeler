@@ -49,7 +49,7 @@
       <label class="mt-1 ">{{ $t('Ends') }}</label>
       <div>
         <b-form-group class="m-0 mb-2">
-          <b-form-radio v-model="ends" data-test="ends-never" class="pl-3" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
+          <b-form-radio v-model="ends" data-test="ends-never" name="optradio" value="never">{{ $t('Never') }}</b-form-radio>
         </b-form-group>
 
         <b-form-group class="p-0 mb-1" :description="`${$t('Click On to select a date')}.`">
