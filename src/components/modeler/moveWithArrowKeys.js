@@ -33,4 +33,10 @@ function expandPoolToContainElement(shape) {
   }
   
   pool.component.expandToFitElement(shape, pool);
+  
+  if (!pool.component.laneSet) {
+    return;
+  }
+
+  pool.component.updateLaneChildren();
 }
