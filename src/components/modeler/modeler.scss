@@ -1,4 +1,5 @@
 @import '~jointjs/dist/joint.min.css';
+@import '../../assets/scss/utilities/utilities.cursor';
 
 .modeler {
   .main-paper {
@@ -27,5 +28,9 @@
 }
 
 .ignore-pointer {
+  pointer-events: none;
+}
+
+.no-pointer-events {
   pointer-events: none;
 }
