@@ -20,7 +20,6 @@ export default function moveShapeByKeypress(key, shape) {
   const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
   const keyCode = match ? match[1] : undefined;
 
-  const { x, y } = shape.position();
   const [tx, ty] = translationAmount.get(keyCode) || [0, 0];
-  shape.position(x + tx, y + ty);
+  shape.translate(tx, ty);
 }
