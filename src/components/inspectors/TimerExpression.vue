@@ -212,7 +212,7 @@ export default {
       this.update();
     },
   },
-  mounted() {
+  created() {
     this.parseTimerConfig(this.value);
   },
   methods: {
