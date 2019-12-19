@@ -1,7 +1,7 @@
 <template>
   <crown-button
     v-if="validMessageFlowSources.includes(node.type)"
-    v-b-tooltip.hover.viewport.d50
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Message Flow')"
     id="message-flow-button"
     aria-label="Create a message flow"

@@ -2,7 +2,7 @@
   <crown-button
     v-if="node.type === 'processmaker-modeler-text-annotation'"
     :title="$t('Association Flow')"
-    v-b-tooltip.hover.viewport.d50
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     id="association-flow-button"
     aria-label="Add association flow"
     :src="connectIcon"

@@ -7,7 +7,7 @@
       :src="boundaryEventIcon"
       @click="dropdownOpen = !dropdownOpen"
       data-test="boundary-event-dropdown"
-      v-b-tooltip.hover.viewport.d50
+      v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       :title="$t('Boundary Events')"
     />
 

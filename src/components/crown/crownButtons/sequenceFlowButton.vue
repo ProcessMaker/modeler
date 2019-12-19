@@ -1,7 +1,7 @@
 <template>
   <crown-button
     v-if="!invalidSequenceFlowSources.includes(node.type)"
-    v-b-tooltip.hover.viewport.d50
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Sequence Flow')"
     id="sequence-flow-button"
     aria-label="Create a sequence flow"

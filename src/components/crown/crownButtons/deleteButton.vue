@@ -5,7 +5,7 @@
     id="delete-button"
     aria-label="Delete this node"
     @click="isPoolLane ? removePoolLaneShape() : removeShape()"
-    v-b-tooltip.hover.viewport.d50
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
     <img
       :src="trashIcon"
