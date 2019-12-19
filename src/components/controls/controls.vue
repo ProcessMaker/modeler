@@ -28,7 +28,12 @@
           @dragstart="$event.preventDefault()"
           @mousedown="startDrag($event, control)"
         >
-          <div class="tool" :class="{ 'text-truncate ml-1': !compressed }" v-b-tooltip.hover.viewport.d50 :title="$t(control.label)">
+          <div
+            class="tool"
+            :class="{ 'text-truncate ml-1': !compressed }"
+            v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
+            :title="$t(control.label)"
+          >
             <img :src="control.icon" class="tool-icon" :alt="$t(control.label)">
             <span v-if="!compressed" class="ml-1">{{ $t(control.label) }}</span>
           </div>
