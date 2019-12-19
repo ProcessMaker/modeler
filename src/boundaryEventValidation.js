@@ -10,19 +10,9 @@ export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
     return false;
   }
 
-  if (boundaryEventType === 'processmaker-modeler-boundary-error-event') {
-    return getAttachedErrorBoundaryEvents(dropTarget).length === 0;
-  }
-
   return true;
 }
 
 export function isValidBoundaryEscalationEvent(component) {
   return component && component.node.definition.$type === 'bpmn:CallActivity';
-}
-
-export function getAttachedErrorBoundaryEvents(shape) {
-  return shape
-    .getEmbeddedCells()
-    .filter(({ component }) => component && component.node.type === 'processmaker-modeler-boundary-error-event');
 }
