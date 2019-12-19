@@ -7,6 +7,8 @@
       :src="boundaryEventIcon"
       @click="dropdownOpen = !dropdownOpen"
       data-test="boundary-event-dropdown"
+      v-b-tooltip.hover.viewport.d50
+      :title="$t('Boundary Events')"
     />
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
