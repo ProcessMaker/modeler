@@ -1,8 +1,14 @@
 import moveShapeByKeypress, { moveAmount } from '@/components/modeler/moveWithArrowKeys';
 
+const shapeFactory = (type = 'foo') => ({
+  translate: jest.fn(),
+  get: jest.fn(() => type),
+  getParentCell: () => null,
+});
+
 describe('moveWithArrowKeys', () => {
   it('should not translate shape if correct keys are not pressed', () => {
-    const shape = { translate: jest.fn(), get: jest.fn(() => 'foo') };
+    const shape = shapeFactory();
     moveShapeByKeypress('Enter', shape);
 
     expect(shape.translate).toHaveBeenCalledWith(0, 0);
@@ -20,7 +26,7 @@ describe('moveWithArrowKeys', () => {
   ${'ArrowRight'} | ${[moveAmount, 0]}
   `('should move shape $keyPress direction when the corresponding key is pressed',
   ({ keyPress, expected }) => {
-    const shape = { translate: jest.fn(), get: jest.fn(() => 'foo') };
+    const shape = shapeFactory();
     moveShapeByKeypress(keyPress, shape);
 
     expect(shape.translate).toHaveBeenCalledWith(...expected);
@@ -31,7 +37,7 @@ describe('moveWithArrowKeys', () => {
     ['processmaker.components.nodes.boundaryEvent.Shape'],
   ],
   )('Does not attempt to move an invalid shape', (invalidShapeType) => {
-    const shape = { translate: jest.fn(), get: jest.fn(() => invalidShapeType) };
+    const shape = shapeFactory(invalidShapeType);
     moveShapeByKeypress('Up', shape);
 
     expect(shape.translate).not.toHaveBeenCalled();
