@@ -22,4 +22,15 @@ export default function moveShapeByKeypress(key, shape) {
 
   const [tx, ty] = translationAmount.get(keyCode) || [0, 0];
   shape.translate(tx, ty);
+
+  expandPoolToContainElement(shape);
+}
+
+function expandPoolToContainElement(shape) {
+  const pool = shape.getParentCell();
+  if (!pool || pool.get('type') !== 'processmaker.modeler.bpmn.pool') {
+    return;
+  }
+  
+  pool.component.expandToFitElement(shape, pool);
 }
