@@ -1,4 +1,10 @@
-import { dragFromSourceToDest, getElementAtPosition, typeIntoTextInput } from '../support/utils';
+import {
+  addNodeTypeToPaper,
+  dragFromSourceToDest,
+  getElementAtPosition,
+  typeIntoTextInput,
+  waitToRenderAllShapes,
+} from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
@@ -7,10 +13,9 @@ describe('Start Timer Event', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);
     const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startEvent, startTimerEventPosition);
-    cy.get('[data-test=switch-to-start-timer-event]').click();
-
-    getElementAtPosition(startTimerEventPosition).click();
+    addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
+    waitToRenderAllShapes();
+    cy.get('[data-test=switch-to-start-timer-event]').click(); //This clears the crown dropdown
 
     cy.contains('Timing Control').click();
     cy.contains('Timing Control').get('.badge-primary').should('not.exist');
