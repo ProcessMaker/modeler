@@ -12,7 +12,6 @@ export default {
         id: `${this.id}_message`,
         name: `${this.id}_message`,
       }),
-      dropdownData: [],
     };
   },
   mounted() {

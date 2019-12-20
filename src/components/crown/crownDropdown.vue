@@ -1,5 +1,5 @@
 <template>
-  <div class="cog-container" v-if="showDropdown" role="menuitem">
+  <div class="cog-container" v-if="dropdownData.length > 0" role="menuitem">
     <crown-button
       id="dropdown-button"
       aria-label="Select a type"
@@ -30,20 +30,20 @@ export default {
   props: {
     dropdownData: Array,
     node: Object,
-    showDropdown: {
+    dropdownInitiallyOpen: {
       type: Boolean,
       required: true,
     },
   },
   data() {
     return {
-      dropdownOpen: true,
+      dropdownOpen: this.dropdownInitiallyOpen,
     };
   },
   methods: {
     replaceNode(data) {
       if (data.node.type === data.typeToReplaceWith) {
-        this.$emit('toggle-dropdown-state', false);
+        this.dropdownOpen = false;
         return;
       }
       this.$emit('replace-node', data);

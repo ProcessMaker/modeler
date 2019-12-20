@@ -67,7 +67,6 @@ export default {
     getEmptyBoundaryEventPositionsForShape,
     addBoundaryEvent(nodeType) {
       this.dropdownOpen = false;
-      this.$emit('toggle-dropdown-state', false);
 
       if (!canAddBoundaryEventToTarget(nodeType, this.shape)) {
         return;

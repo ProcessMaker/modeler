@@ -12,6 +12,7 @@
     :plane-elements="planeElements"
     :is-rendering="isRendering"
     :boundary-event-dropdown-data="boundaryEventDropdownData"
+    :dropdown-data="dropdownData"
     v-on="$listeners"
   />
 </template>
@@ -67,6 +68,28 @@ export default {
           label: 'Boundary Message Event',
           nodeType: 'processmaker-modeler-boundary-message-event',
           dataTest: 'add-boundary-message-event',
+        },
+      ],
+      dropdownData: [
+        {
+          label: 'Task',
+          nodeType: 'processmaker-modeler-task',
+          dataTest: 'switch-to-user-task',
+        },
+        {
+          label: 'Manual Task',
+          nodeType: 'processmaker-modeler-manual-task',
+          dataTest: 'switch-to-manual-task',
+        },
+        {
+          label: 'Script Task',
+          nodeType: 'processmaker-modeler-script-task',
+          dataTest: 'switch-to-script-task',
+        },
+        {
+          label: 'Sub Process',
+          nodeType: 'processmaker-modeler-call-activity',
+          dataTest: 'switch-to-sub-process',
         },
       ],
     };

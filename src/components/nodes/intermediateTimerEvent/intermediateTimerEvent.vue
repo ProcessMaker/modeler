@@ -7,25 +7,5 @@ export default {
   mounted() {
     this.shape.attr('image/xlink:href', clockIcon);
   },
-  data() {
-    return {
-      dropdownData: [
-        {
-          label: 'Intermediate Timer Event',
-          nodeType: 'processmaker-modeler-intermediate-catch-timer-event',
-        },
-        {
-          label: 'Intermediate Message Catch Event',
-          nodeType: 'processmaker-modeler-intermediate-message-catch-event',
-          dataTest: 'switch-to-intermediate-message-catch-event',
-        },
-        {
-          label: 'Intermediate Message Throw Event',
-          nodeType: 'processmaker-modeler-intermediate-message-throw-event',
-          dataTest: 'switch-to-intermediate-message-throw-event',
-        },
-      ],
-    };
-  },
 };
 </script>
