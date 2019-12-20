@@ -30,11 +30,14 @@ export default {
   props: {
     dropdownData: Array,
     node: Object,
-    dropdownInitiallyOpen: Boolean,
+    dropdownInitiallyOpen: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      dropdownOpen: false,
+      dropdownOpen: this.dropdownInitiallyOpen,
     };
   },
   methods: {
@@ -45,11 +48,6 @@ export default {
       }
       this.$emit('replace-node', data);
     },
-  },
-  mounted() {
-    if (this.dropdownInitiallyOpen) {
-      this.dropdownOpen = true;
-    }
   },
 };
 </script>
