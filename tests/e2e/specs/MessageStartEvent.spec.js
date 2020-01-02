@@ -2,7 +2,7 @@ import { assertDownloadedXmlContainsExpected, dragFromSourceToDest, getElementAt
 import { nodeTypes } from '../support/constants';
 
 describe('Message Start Event', () => {
-  it('Can create message start event', function() {
+  it('Can create message start event', () => {
     const messageStartEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.startEvent, messageStartEventPosition);
     cy.get('[data-test=switch-to-message-start-event]').click();

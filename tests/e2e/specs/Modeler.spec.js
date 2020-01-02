@@ -49,7 +49,7 @@ describe('Modeler', () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it('Updates element name and validates xml', function() {
+  it('Updates element name and validates xml', () => {
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
@@ -97,7 +97,7 @@ describe('Modeler', () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it('Generates sequential, unique node IDs', function() {
+  it('Generates sequential, unique node IDs', () => {
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
@@ -203,7 +203,7 @@ describe('Modeler', () => {
     cy.get('[data-test=inspector-container]').should('to.contain', 'Process');
   });
 
-  it('Runs custom parser before default parser', function() {
+  it('Runs custom parser before default parser', () => {
     uploadXml('parser.xml');
 
     cy.readFile('tests/e2e/fixtures/parser.xml', 'utf8').then(sourceXML => {
@@ -287,7 +287,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('shows warning for unknown element during parsing', function() {
+  it('shows warning for unknown element during parsing', () => {
     uploadXml('unknownElement.xml');
     const warning = 'DataStoreReference is an unsupported element type in parse';
 
@@ -327,7 +327,7 @@ describe('Modeler', () => {
       .then(xml => expect(xml).to.contain(sequenceFlowXML));
   });
 
-  it('scales mini-map on load', function() {
+  it('scales mini-map on load', () => {
     cy.get('[data-test=mini-map-btn]').click();
     uploadXml('../fixtures/offscreenProcess.xml');
     cy.get('.mini-paper .joint-cell')
@@ -336,7 +336,7 @@ describe('Modeler', () => {
       });
   });
 
-  it('Scales gateways when mini-map is opened', function() {
+  it('Scales gateways when mini-map is opened', () => {
     const gatewayPosition = { x: 400, y: 400 };
     addNodeTypeToPaper(gatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
     cy.get('[data-test=mini-map-btn]').click();
@@ -351,7 +351,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('Does not show cursor when done loading empty process', function() {
+  it('Does not show cursor when done loading empty process', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     getElementAtPosition(startEventPosition)
@@ -369,7 +369,7 @@ describe('Modeler', () => {
     cy.get('.paper-container .joint-paper').should('not.have.css', 'cursor', 'wait');
   });
 
-  it('Hides element label on drag', function() {
+  it('Hides element label on drag', () => {
     const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
     const nonBreakingSpace = String.fromCharCode(160);
     const startEventLabelText = `Start${nonBreakingSpace}Event`;
@@ -439,7 +439,7 @@ describe('Modeler', () => {
     cy.get('[data-test=inspector-column]').should('not.have.class', 'inspector-column-compressed');
   });
 
-  it('can drag elements into collapsed inspector panel space', function() {
+  it('can drag elements into collapsed inspector panel space', () => {
     const taskPosition = { x: 745, y: 200 };
     cy.get('[data-test=panels-btn]').click();
     cy.wait(700);
@@ -448,7 +448,7 @@ describe('Modeler', () => {
       .should('equal', nodeTypes.task);
   });
 
-  it('should not generate duplicate diagram IDs', function() {
+  it('should not generate duplicate diagram IDs', () => {
     uploadXml('setUpForDuplicateDiagramId.xml');
     dragFromSourceToDest(nodeTypes.task, { x: 300, y: 300 });
     getXml().then(xml => {
@@ -457,7 +457,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('should only show dropdown for the start event', function() {
+  it('should only show dropdown for the start event', () => {
     const startEventPosition = { x: 400, y: 400 };
     dragFromSourceToDest(nodeTypes.startEvent, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
@@ -471,7 +471,7 @@ describe('Modeler', () => {
     cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
   });
 
-  it('should hide start event dropdown on unhighlight', function() {
+  it('should hide start event dropdown on unhighlight', () => {
     const startEventPosition = { x: 400, y: 400 };
     dragFromSourceToDest(nodeTypes.startEvent, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();

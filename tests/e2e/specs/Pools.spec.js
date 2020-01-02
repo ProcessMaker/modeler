@@ -59,7 +59,7 @@ describe('Pools', () => {
     getElementAtPosition(lanePosition).getType().should('equal', nodeTypes.pool);
   });
 
-  it('Can drag elements between pools', function() {
+  it('Can drag elements between pools', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     const pool1Position = { x: 200, y: 200 };
@@ -135,7 +135,7 @@ describe('Pools', () => {
       });
   });
 
-  it('Removes all references to element from lane', function() {
+  it('Removes all references to element from lane', () => {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -172,7 +172,7 @@ describe('Pools', () => {
       });
   });
 
-  it('Removes all references to element from a pool', function() {
+  it('Removes all references to element from a pool', () => {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -190,7 +190,7 @@ describe('Pools', () => {
     });
   });
 
-  it('moves boundary event to another process when dragged to that pool', function() {
+  it('moves boundary event to another process when dragged to that pool', () => {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -219,7 +219,7 @@ describe('Pools', () => {
     });
   });
 
-  it('should revert pool element to initial position on undo after dragging outside of pool onto grid', function() {
+  it('should revert pool element to initial position on undo after dragging outside of pool onto grid', () => {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
@@ -233,7 +233,7 @@ describe('Pools', () => {
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).should('exist');
   });
 
-  it('should not cover child elements with lane', function() {
+  it('should not cover child elements with lane', () => {
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
