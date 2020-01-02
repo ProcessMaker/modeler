@@ -1,10 +1,10 @@
 <template>
-  <div class="statusbar d-flex align-items-center justify-content-between pr-3 border border-bottom-0">
+  <div class="statusbar d-flex align-items-center justify-content-between pr-3 border-top">
     <div>
-      <slot name="secondary"/>
+      <slot name="secondary" />
     </div>
     <div>
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>
