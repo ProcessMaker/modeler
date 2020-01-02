@@ -1,6 +1,7 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import getIntermediateMailIconShapeAttributes from '@/mixins/intermediateMailIcon';
+import boundaryMessageMailSymbol from '@/assets/boundary-message-event.svg';
 
 export default {
   extends: BoundaryEvent,
@@ -11,7 +12,7 @@ export default {
     },
   },
   mounted() {
-    const shapeAttributes = getIntermediateMailIconShapeAttributes();
+    const shapeAttributes = getIntermediateMailIconShapeAttributes('#000', 1, '#fff', boundaryMessageMailSymbol);
     this.shape.attr(shapeAttributes);
   },
 };

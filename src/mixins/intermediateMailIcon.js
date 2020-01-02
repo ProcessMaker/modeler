@@ -1,9 +1,9 @@
-import intermediateMailSymbol from '@/assets/intermediate-mail.svg';
-
-export default function getIntermediateMailIconShapeAttributes(stroke = '#000', strokeWidth = 1, fill = '#fff') {
+export default function getIntermediateMailIconShapeAttributes(stroke = '#000', strokeWidth = 1, fill = '#fff', icon) {
+  // eslint-disable-next-line no-console
+  console.log(stroke, strokeWidth, fill, icon);
   return {
     image: {
-      xlinkHref: intermediateMailSymbol,
+      xlinkHref: icon,
       width: 20,
       height: 20,
       y: 3,
