@@ -13,17 +13,24 @@ const invalidTypes = [
   'processmaker.components.nodes.boundaryEvent.Shape',
 ];
 
-export default function moveShapeByKeypress(key, shape) {
+export default function moveShapeByKeypress(key, shape, onAfterMove) {
   if (!shape || invalidTypes.includes(shape.get('type'))) {
     return;
   }
+
   const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
-  const keyCode = match ? match[1] : undefined;
+  const keyCode = match && match[1];
+  
+  if (!keyCode) {
+    return;
+  }
 
   const [tx, ty] = translationAmount.get(keyCode) || [0, 0];
   shape.translate(tx, ty);
 
   expandPoolToContainElement(shape);
+
+  onAfterMove();
 }
 
 function expandPoolToContainElement(shape) {
@@ -31,9 +38,9 @@ function expandPoolToContainElement(shape) {
   if (!pool || pool.get('type') !== 'processmaker.modeler.bpmn.pool') {
     return;
   }
-  
+
   pool.component.expandToFitElement(shape, pool);
-  
+
   if (!pool.component.laneSet) {
     return;
   }

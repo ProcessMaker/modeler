@@ -692,8 +692,11 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', event => {
-      moveShapeByKeypress(event.key, store.getters.highlightedShape);
-      this.pushToUndoStack();
+      moveShapeByKeypress(
+        event.key,
+        store.getters.highlightedShape,
+        this.pushToUndoStack,
+      );
     });
 
     this.graph = new dia.Graph();
