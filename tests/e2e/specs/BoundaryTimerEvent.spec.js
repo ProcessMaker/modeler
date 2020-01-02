@@ -15,7 +15,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Boundary Timer Event', () => {
-  it('update boundary timer event properties element', function() {
+  it('update boundary timer event properties element', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -60,7 +60,7 @@ describe('Boundary Timer Event', () => {
       });
   });
 
-  it('Can add boundary timer events to valid targets', function() {
+  it('Can add boundary timer events to valid targets', () => {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 150, y: 150 };
 
@@ -107,7 +107,7 @@ describe('Boundary Timer Event', () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
   });
 
-  it('can toggle interrupting on Boundary Timer Events', function() {
+  it('can toggle interrupting on Boundary Timer Events', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -131,7 +131,7 @@ describe('Boundary Timer Event', () => {
 
   });
 
-  it('can toggle interrupting on Boundary Timer Events in multiple processes', function() {
+  it('can toggle interrupting on Boundary Timer Events in multiple processes', () => {
     uploadXml('boundaryTimersInPools.xml');
 
     const boundaryTimerEventPositions = [{ x: 277, y: 162 }, { x: 225, y: 379 }];
@@ -150,7 +150,7 @@ describe('Boundary Timer Event', () => {
     cy.get(interrupting).should('not.be.checked');
   });
 
-  it('moves to another task when dragged over', function() {
+  it('moves to another task when dragged over', () => {
     const taskPosition = { x: 300, y: 300 };
     const numberOfBoundaryTimerEventsAdded = 1;
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -212,7 +212,7 @@ describe('Boundary Timer Event', () => {
     });
   });
 
-  it('keeps Boundary Timer Event in correct position when dragging and dropping', function() {
+  it('keeps Boundary Timer Event in correct position when dragging and dropping', () => {
     const taskPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);

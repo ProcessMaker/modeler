@@ -24,7 +24,7 @@ describe('Error End Event', () => {
     cy.get('[data-test=switch-to-error-end-event]').click();
   });
 
-  it('Can create an error end event', function() {
+  it('Can create an error end event', () => {
     assertDownloadedXmlContainsExpected(errorEndEventXml, '<bpmn:error id="node_3_error" name="node_3_error" />');
   });
 

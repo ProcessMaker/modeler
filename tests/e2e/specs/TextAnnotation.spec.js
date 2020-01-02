@@ -22,7 +22,7 @@ describe('Text Annotation', () => {
     cy.get('[name=text]').should('have.value', testString);
   });
 
-  it('Save a process with text annotation, pool and lane', function() {
+  it('Save a process with text annotation, pool and lane', () => {
     const poolPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 

@@ -72,7 +72,7 @@ function configurePool(poolPosition, nodeType, taskType, taskTypeSelector) {
 
 boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskTypeSelector, invalidTargets, skip = false }) => {
   (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${type}`, () => {
-    it('can render a boundary event of this type', function() {
+    it('can render a boundary event of this type', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
 
       setBoundaryEvent(nodeType, taskPosition, taskType);
@@ -88,7 +88,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
         });
     });
 
-    it('removes references of itself when inside of a pool and deleting the pool', function() {
+    it('removes references of itself when inside of a pool and deleting the pool', () => {
       const poolPosition = { x: 400, y: 300 };
       configurePool(poolPosition, nodeType, taskType, taskTypeSelector);
 
@@ -107,7 +107,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
         });
     });
 
-    it('can stay anchored to task when moving pool', function() {
+    it('can stay anchored to task when moving pool', () => {
       configurePool({ x: 300, y: 300 }, nodeType, taskType, taskTypeSelector);
       const taskSelector = '.main-paper ' +
         '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
@@ -143,7 +143,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
         });
     });
 
-    it('retains outgoing sequence flows on Boundary Events', function() {
+    it('retains outgoing sequence flows on Boundary Events', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
 
       const outgoingTaskPosition = { x: 400, y: 400 };
@@ -169,7 +169,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
       });
     });
 
-    it('cannot attach an incoming sequence flow on Boundary Events', function() {
+    it('cannot attach an incoming sequence flow on Boundary Events', () => {
       const firstTaskPosition = { x: 400, y: 400 };
       addNodeTypeToPaper(firstTaskPosition, nodeTypes.task, taskTypeSelector);
 
@@ -187,7 +187,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
       });
     });
 
-    it('snaps back to original position when dragged over empty area', function() {
+    it('snaps back to original position when dragged over empty area', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
@@ -213,7 +213,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
       });
     });
 
-    it('does not snap boundary event to new position when selecting', function() {
+    it('does not snap boundary event to new position when selecting', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
 
       const boundaryEventConnectedPosition = { x: 290, y: 182 };
@@ -247,7 +247,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
         });
     });
 
-    it('can successfully undo/redo after dragging onto invalid (empty) space ', function() {
+    it('can successfully undo/redo after dragging onto invalid (empty) space ', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
@@ -282,7 +282,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
         });
     });
 
-    it('redo positions it in same location as before undo', function() {
+    it('redo positions it in same location as before undo', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
@@ -303,7 +303,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
       });
     });
 
-    it('turns target red when it is an invalid drop target, and snaps back to original position', function() {
+    it('turns target red when it is an invalid drop target, and snaps back to original position', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
       const invalidNodeTargetPosition = { x: 450, y: 150 };
@@ -356,7 +356,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
       });
     });
 
-    it('should turn pool red when hovered over and then back to default colour when no longer over pool', function() {
+    it('should turn pool red when hovered over and then back to default colour when no longer over pool', () => {
       dragFromSourceToDest(nodeTypes.pool, taskPosition);
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
@@ -386,7 +386,7 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
       });
     });
 
-    it('highlight boundary event on creation', function() {
+    it('highlight boundary event on creation', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 

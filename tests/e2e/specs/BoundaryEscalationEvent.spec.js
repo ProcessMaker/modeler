@@ -3,7 +3,7 @@ import { nodeTypes } from '../support/constants';
 
 describe.skip('Boundary Escalation Event', () => {
 
-  it('can toggle interrupting on Boundary Escalation Events', function() {
+  it('can toggle interrupting on Boundary Escalation Events', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.subProcess, taskPosition);
 
@@ -27,7 +27,7 @@ describe.skip('Boundary Escalation Event', () => {
     cy.get(interrupting).should('not.be.checked');
   });
 
-  it('can only embed onto a sub process', function() {
+  it('can only embed onto a sub process', () => {
     const initialNumberOfElements = 1;
     const inValidBoundaryEscalationEventTargets = [
       { type: nodeTypes.task, position: { x: 100, y: 300 } },

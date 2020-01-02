@@ -170,7 +170,7 @@ describe('Undo/redo', () => {
     });
   });
 
-  it('Does not include intermediate message flow definition in XML', function() {
+  it('Does not include intermediate message flow definition in XML', () => {
     const validMessageFlowXML = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
   <bpmn:process id="Process_1" isExecutable="true">
@@ -228,7 +228,7 @@ describe('Undo/redo', () => {
     cy.get('[name=id]').clear().type(newId).should('have.value', newId);
   });
 
-  it('Correctly parses elements after redo', function() {
+  it('Correctly parses elements after redo', () => {
     const testConnectorPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.testConnector, testConnectorPosition);
 
@@ -266,7 +266,7 @@ describe('Undo/redo', () => {
       });
   });
 
-  it('Can undo/redo modifying sequence flow vertices', function() {
+  it('Can undo/redo modifying sequence flow vertices', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 300, y: 300 };
 
@@ -299,7 +299,7 @@ describe('Undo/redo', () => {
     testNumberOfVertices(initialNumberOfWaypoints);
   });
 
-  it('Can undo/redo modifying association flow vertices', function() {
+  it('Can undo/redo modifying association flow vertices', () => {
     const startEventPosition = { x: 150, y: 150 };
     const textAnnotationPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
