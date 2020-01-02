@@ -29,11 +29,20 @@ export default {
   name: 'CrownDropdown',
   components: { CrownButton },
   props: {
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
     dropdownData: Array,
     node: Object,
     dropdownInitiallyOpen: {
       type: Boolean,
       required: true,
+    },
+  },
+  watch: {
+    isOpen(value) {
+      this.dropdownOpen = value;
     },
   },
   data() {

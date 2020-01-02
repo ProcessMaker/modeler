@@ -45,15 +45,24 @@ export default {
   name: 'CrownDropdown',
   components: { CrownButton },
   props: {
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
     dropdownData: Array,
     nodeRegistry: Object,
     moddle: Object,
     node: Object,
     shape: Object,
   },
+  watch: {
+    isOpen(value) {
+      this.dropdownOpen = value;
+    },
+  },
   data() {
     return {
-      dropdownOpen: false,
+      dropdownOpen: this.isOpen,
       boundaryEventIcon,
     };
   },
