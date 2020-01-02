@@ -9,9 +9,11 @@ const shapeFactory = (type = 'foo') => ({
 describe('moveWithArrowKeys', () => {
   it('should not translate shape if correct keys are not pressed', () => {
     const shape = shapeFactory();
+    const onAfterMove = jest.fn();
     moveShapeByKeypress('Enter', shape);
 
-    expect(shape.translate).toHaveBeenCalledWith(0, 0);
+    expect(shape.translate).not.toHaveBeenCalled();
+    expect(onAfterMove).not.toHaveBeenCalled();
   });
 
   it.each`
@@ -27,9 +29,11 @@ describe('moveWithArrowKeys', () => {
   `('should move shape $keyPress direction when the corresponding key is pressed',
   ({ keyPress, expected }) => {
     const shape = shapeFactory();
-    moveShapeByKeypress(keyPress, shape);
+    const onAfterMove = jest.fn();
+    moveShapeByKeypress(keyPress, shape, onAfterMove);
 
-    expect(shape.translate).toHaveBeenCalledWith(...expected);
+    expect(shape.translate).toHaveBeenCalledWith(...expected, { movedWithArrowKeys: true });
+    expect(onAfterMove).toHaveBeenCalledTimes(1);
   });
 
   it.each([
@@ -38,8 +42,10 @@ describe('moveWithArrowKeys', () => {
   ],
   )('Does not attempt to move an invalid shape', (invalidShapeType) => {
     const shape = shapeFactory(invalidShapeType);
-    moveShapeByKeypress('Up', shape);
+    const onAfterMove = jest.fn();
+    moveShapeByKeypress('Up', shape, onAfterMove);
 
     expect(shape.translate).not.toHaveBeenCalled();
+    expect(onAfterMove).not.toHaveBeenCalled();
   });
 });

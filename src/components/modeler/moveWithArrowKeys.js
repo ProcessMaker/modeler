@@ -13,20 +13,20 @@ const invalidTypes = [
   'processmaker.components.nodes.boundaryEvent.Shape',
 ];
 
-export default function moveShapeByKeypress(key, shape, onAfterMove) {
+export default function moveShapeByKeypress(key, shape, onAfterMove = () => {}) {
   if (!shape || invalidTypes.includes(shape.get('type'))) {
     return;
   }
 
   const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
   const keyCode = match && match[1];
-  
+
   if (!keyCode) {
     return;
   }
 
   const [tx, ty] = translationAmount.get(keyCode) || [0, 0];
-  shape.translate(tx, ty);
+  shape.translate(tx, ty, { movedWithArrowKeys: true });
 
   expandPoolToContainElement(shape);
 
