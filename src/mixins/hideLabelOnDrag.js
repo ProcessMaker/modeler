@@ -1,8 +1,8 @@
 export default {
   props: ['highlighted'],
   methods: {
-    hideLabel() {
-      if (!this.highlighted) {
+    hideLabel(element, newPosition, options) {
+      if (!this.highlighted || options.movedWithArrowKeys) {
         return;
       }
 
