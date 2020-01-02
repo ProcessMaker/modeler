@@ -27,18 +27,22 @@
     />
 
     <crown-dropdown
+      ref="taskDropdown"
       :dropdown-data="dropdownData"
       :dropdown-initially-open="dropdownInitiallyOpen"
       :node="node"
+      @click="closeBoundaryEventDropDown()"
       v-on="$listeners"
     />
 
     <crown-boundary-event-dropdown
+      ref="boundaryEventDropdown"
       :dropdown-data="boundaryEventDropdownData"
       :nodeRegistry="nodeRegistry"
       :moddle="moddle"
       :node="node"
       :shape="shape"
+      @click="closeTaskDropDown()"
       v-on="$listeners"
     />
 
@@ -134,6 +138,12 @@ export default {
     },
   },
   methods: {
+    closeBoundaryEventDropDown() {
+      this.$refs.boundaryEventDropdown.dropdownOpen = false;
+    },
+    closeTaskDropDown() {
+      this.$refs.taskDropdown.dropdownOpen = false;
+    },
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;

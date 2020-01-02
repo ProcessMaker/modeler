@@ -3,6 +3,7 @@
     <crown-button
       id="dropdown-button"
       aria-label="Select a type"
+      v-on="$listeners"
       @click="dropdownOpen = !dropdownOpen"
     >
       <i class="fas fa-cog cog-container--button" />
