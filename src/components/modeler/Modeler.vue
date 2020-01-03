@@ -1,94 +1,96 @@
 <template>
-  <b-row class="modeler h-100">
-    <b-tooltip
-      v-if="tooltipTarget"
-      :key="tooltipTarget.id"
-      :target="getTooltipTarget"
-      :title="tooltipTitle"
-    />
-
-    <controls
-      :nodeTypes="nodeTypes"
-      :compressed="panelsCompressed"
-      :parent-height="parentHeight"
-      :allowDrop="allowDrop"
-      @drag="validateDropTarget"
-      @handleDrop="handleDrop"
-      class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-      :canvas-drag-position="canvasDragPosition"
-    />
-    <b-col
-      class="paper-container h-100 pr-4"
-      ref="paper-container"
-      :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
-      :style="{ width: parentWidth, height: parentHeight }"
-    >
-      <tool-bar
-        :canvas-drag-position="canvasDragPosition"
-        :cursor="cursor"
-        :is-rendering="isRendering"
-        :paper-manager="paperManager"
-        @load-xml="loadXML"
-        @toggle-panels-compressed="panelsCompressed = $event"
-        @toggle-mini-map-open="miniMapOpen = $event"
+  <b-card-body class="overflow-hidden position-relative p-0 vh-100" data-test="body-container">
+    <b-row class="modeler h-100">
+      <b-tooltip
+        v-if="tooltipTarget"
+        :key="tooltipTarget.id"
+        :target="getTooltipTarget"
+        :title="tooltipTitle"
       />
 
-      <div ref="paper" data-test="paper" class="main-paper" />
-    </b-col>
+      <controls
+        :nodeTypes="nodeTypes"
+        :compressed="panelsCompressed"
+        :parent-height="parentHeight"
+        :allowDrop="allowDrop"
+        @drag="validateDropTarget"
+        @handleDrop="handleDrop"
+        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+        :canvas-drag-position="canvasDragPosition"
+      />
+      <b-col
+        class="paper-container h-100 pr-4"
+        ref="paper-container"
+        :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
+        :style="{ width: parentWidth, height: parentHeight }"
+      >
+        <tool-bar
+          :canvas-drag-position="canvasDragPosition"
+          :cursor="cursor"
+          :is-rendering="isRendering"
+          :paper-manager="paperManager"
+          @load-xml="loadXML"
+          @toggle-panels-compressed="panelsCompressed = $event"
+          @toggle-mini-map-open="miniMapOpen = $event"
+        />
 
-    <mini-paper
-      :isOpen="miniMapOpen"
-      :paperManager="paperManager"
-      :graph="graph"
-      :class="{ 'expanded' : panelsCompressed }"
-    />
+        <div ref="paper" data-test="paper" class="main-paper" />
+      </b-col>
 
-    <InspectorPanel
-      ref="inspector-panel"
-      :style="{ height: parentHeight }"
-      :nodeRegistry="nodeRegistry"
-      :moddle="moddle"
-      :processNode="processNode"
-      @save-state="pushToUndoStack"
-      class="inspector h-100"
-      :parent-height="parentHeight"
-      :canvas-drag-position="canvasDragPosition"
-      :compressed="panelsCompressed"
-    />
+      <mini-paper
+        :isOpen="miniMapOpen"
+        :paperManager="paperManager"
+        :graph="graph"
+        :class="{ 'expanded' : panelsCompressed }"
+      />
 
-    <component
-      v-for="node in nodes"
-      :is="node.type"
-      :key="node._modelerId"
-      :graph="graph"
-      :paper="paper"
-      :node="node"
-      :id="node.definition.id"
-      :highlighted="highlightedNode === node"
-      :has-error="invalidNodes.includes(node.definition.id)"
-      :collaboration="collaboration"
-      :process-node="processNode"
-      :processes="processes"
-      :plane-elements="planeElements"
-      :moddle="moddle"
-      :nodeRegistry="nodeRegistry"
-      :root-elements="definitions.get('rootElements')"
-      :isRendering="isRendering"
-      :paperManager="paperManager"
-      :auto-validate="autoValidate"
-      @add-node="addNode"
-      @remove-node="removeNode"
-      @set-cursor="cursor = $event"
-      @set-pool-target="poolTarget = $event"
-      @click="highlightNode(node)"
-      @unset-pools="unsetPools"
-      @set-pools="setPools"
-      @save-state="pushToUndoStack"
-      @set-shape-stacking="setShapeStacking"
-      @setTooltip="tooltipTarget = $event"
-      @replace-node="replaceNode"
-    />
-  </b-row>
+      <InspectorPanel
+        ref="inspector-panel"
+        :style="{ height: parentHeight }"
+        :nodeRegistry="nodeRegistry"
+        :moddle="moddle"
+        :processNode="processNode"
+        @save-state="pushToUndoStack"
+        class="inspector h-100"
+        :parent-height="parentHeight"
+        :canvas-drag-position="canvasDragPosition"
+        :compressed="panelsCompressed"
+      />
+
+      <component
+        v-for="node in nodes"
+        :is="node.type"
+        :key="node._modelerId"
+        :graph="graph"
+        :paper="paper"
+        :node="node"
+        :id="node.definition.id"
+        :highlighted="highlightedNode === node"
+        :has-error="invalidNodes.includes(node.definition.id)"
+        :collaboration="collaboration"
+        :process-node="processNode"
+        :processes="processes"
+        :plane-elements="planeElements"
+        :moddle="moddle"
+        :nodeRegistry="nodeRegistry"
+        :root-elements="definitions.get('rootElements')"
+        :isRendering="isRendering"
+        :paperManager="paperManager"
+        :auto-validate="autoValidate"
+        @add-node="addNode"
+        @remove-node="removeNode"
+        @set-cursor="cursor = $event"
+        @set-pool-target="poolTarget = $event"
+        @click="highlightNode(node)"
+        @unset-pools="unsetPools"
+        @set-pools="setPools"
+        @save-state="pushToUndoStack"
+        @set-shape-stacking="setShapeStacking"
+        @setTooltip="tooltipTarget = $event"
+        @replace-node="replaceNode"
+      />
+    </b-row>
+  </b-card-body>
 </template>
 
 <script>
@@ -119,7 +121,12 @@ import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
-import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess, isBoundaryEvent } from '@/components/nodeManager';
+import {
+  addIdToNodeAndSetUpDiagramReference,
+  addNodeToProcess,
+  getTargetProcess,
+  isBoundaryEvent,
+} from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
