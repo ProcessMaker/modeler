@@ -5,7 +5,7 @@
       aria-label="Select a boundary event"
       v-on="$listeners"
       :src="boundaryEventIcon"
-      @click="dropdownOpen = !dropdownOpen"
+      @click="$emit('toggle-dropdown-state', !dropdownOpen)"
       data-test="boundary-event-dropdown"
       v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       :title="$t('Boundary Events')"
@@ -42,9 +42,13 @@ import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 import store from '@/store';
 
 export default {
-  name: 'CrownDropdown',
+  name: 'CrownBoundaryEventDropdown',
   components: { CrownButton },
   props: {
+    dropdownOpen: {
+      type: Boolean,
+      required: true,
+    },
     dropdownData: Array,
     nodeRegistry: Object,
     moddle: Object,
@@ -53,7 +57,6 @@ export default {
   },
   data() {
     return {
-      dropdownOpen: false,
       boundaryEventIcon,
     };
   },
@@ -66,7 +69,7 @@ export default {
     canAddBoundaryEventToTarget,
     getEmptyBoundaryEventPositionsForShape,
     addBoundaryEvent(nodeType) {
-      this.dropdownOpen = false;
+      this.$emit('toggle-dropdown-state', false);
 
       if (!canAddBoundaryEventToTarget(nodeType, this.shape)) {
         return;

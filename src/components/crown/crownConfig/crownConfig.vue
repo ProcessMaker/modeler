@@ -26,19 +26,14 @@
       @toggle-crown-state="showCrown = $event"
     />
 
-    <crown-dropdown
+    <crown-dropdowns
       :dropdown-data="dropdownData"
-      :dropdown-initially-open="dropdownInitiallyOpen"
+      :boundary-event-dropdown-data="boundaryEventDropdownData"
       :node="node"
-      v-on="$listeners"
-    />
-
-    <crown-boundary-event-dropdown
-      :dropdown-data="boundaryEventDropdownData"
-      :nodeRegistry="nodeRegistry"
+      :node-registry="nodeRegistry"
       :moddle="moddle"
-      :node="node"
       :shape="shape"
+      :task-dropdown-initially-open="taskDropdownInitiallyOpen"
       v-on="$listeners"
     />
 
@@ -56,16 +51,14 @@ import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
-import CrownDropdown from '@/components/crown/crownButtons/crownDropdown';
-import CrownBoundaryEventDropdown from '@/components/crown/crownButtons/crownBoundaryEventDropdown';
+import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import store from '@/store';
 
 export default {
   components: {
-    CrownDropdown,
-    CrownBoundaryEventDropdown,
+    CrownDropdowns,
     DeleteButton,
     MessageFlowButton,
     SequenceFlowButton,
@@ -96,8 +89,8 @@ export default {
   watch: {
     highlighted(highlighted) {
       this.showCrown = highlighted;
-      if (!highlighted && this.dropdownInitiallyOpen) {
-        this.dropdownInitiallyOpen = false;
+      if (!highlighted) {
+        this.taskDropdownInitiallyOpen = false;
       }
     },
     shape() {
@@ -111,7 +104,7 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      dropdownInitiallyOpen: true,
+      taskDropdownInitiallyOpen: true,
     };
   },
   created() {
