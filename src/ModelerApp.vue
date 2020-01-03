@@ -19,15 +19,9 @@
         </div>
       </b-card-header>
 
-      <b-card-body class="overflow-hidden position-relative p-0 vh-100" data-test="body-container">
-        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
-      </b-card-body>
+      <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
 
-      <b-card-footer class="p-0 border-0">
-        <statusbar>
-          <validation-status :validation-errors="validationErrors" :warnings="warnings" />
-        </statusbar>
-      </b-card-footer>
+      <validation-status :validation-errors="validationErrors" :warnings="warnings" />
     </b-card>
 
     <b-modal
@@ -53,7 +47,6 @@
 
 <script>
 import Modeler from './components/modeler/Modeler.vue';
-import Statusbar from './components/statusBar/Statusbar.vue';
 import FileUpload from 'vue-upload-component';
 import FilerSaver from 'file-saver';
 import ValidationStatus from '@/components/validationStatus/ValidationStatus';
@@ -67,7 +60,6 @@ export default {
     Modeler,
     FileUpload,
     ValidationStatus,
-    Statusbar,
   },
   data() {
     return {

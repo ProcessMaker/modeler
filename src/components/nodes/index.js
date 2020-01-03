@@ -23,7 +23,6 @@ export { default as serviceTask } from './serviceTask';
 export { default as textAnnotation } from './textAnnotation';
 export { default as pool } from './pool';
 export { default as poolLane } from './poolLane';
-export { default as Statusbar } from '../statusBar/Statusbar';
 export { default as ValidationStatus } from '../validationStatus/ValidationStatus';
 export { default as Modeler } from '../modeler/Modeler';
 export { default as manualTask } from './manualTask';
