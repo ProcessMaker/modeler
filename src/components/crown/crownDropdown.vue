@@ -4,7 +4,7 @@
       id="dropdown-button"
       aria-label="Select a type"
       v-on="$listeners"
-      @click="dropdownOpen = !dropdownOpen"
+      @click="$emit('toggle-dropdown-state', !dropdownOpen)"
     >
       <i class="fas fa-cog cog-container--button" />
     </crown-button>
@@ -29,31 +29,17 @@ export default {
   name: 'CrownDropdown',
   components: { CrownButton },
   props: {
-    isOpen: {
-      type: Boolean,
-      default: false,
-    },
     dropdownData: Array,
     node: Object,
-    dropdownInitiallyOpen: {
+    dropdownOpen: {
       type: Boolean,
       required: true,
     },
   },
-  watch: {
-    isOpen(value) {
-      this.dropdownOpen = value;
-    },
-  },
-  data() {
-    return {
-      dropdownOpen: this.dropdownInitiallyOpen,
-    };
-  },
   methods: {
     replaceNode(data) {
       if (data.node.type === data.typeToReplaceWith) {
-        this.dropdownOpen = false;
+        this.$emit('toggle-dropdown-state', false);
         return;
       }
       this.$emit('replace-node', data);

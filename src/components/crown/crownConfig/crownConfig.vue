@@ -28,21 +28,20 @@
 
     <crown-dropdown
       :dropdown-data="dropdownData"
-      :dropdown-initially-open="dropdownInitiallyOpen"
+      :dropdown-open="taskDropdownOpen"
       :node="node"
-      :isOpen="taskDropDownWasClicked"
-      @click="() => { this.taskDropDownWasClicked = true; this.boundaryEventDropDownWasClicked = false; }"
+      @toggle-dropdown-state="taskDropdownToggle"
       v-on="$listeners"
     />
 
     <crown-boundary-event-dropdown
       :dropdown-data="boundaryEventDropdownData"
+      :dropdown-open="boundaryEventDropdownOpen"
       :nodeRegistry="nodeRegistry"
       :moddle="moddle"
       :node="node"
       :shape="shape"
-      :isOpen="boundaryEventDropDownWasClicked"
-      @click="() => { this.taskDropDownWasClicked = false; this.boundaryEventDropDownWasClicked = true; }"
+      @toggle-dropdown-state="boundaryEventDropdownToggle"
       v-on="$listeners"
     />
 
@@ -100,8 +99,9 @@ export default {
   watch: {
     highlighted(highlighted) {
       this.showCrown = highlighted;
-      if (!highlighted && this.dropdownInitiallyOpen) {
-        this.dropdownInitiallyOpen = false;
+      if (!highlighted) {
+        this.taskDropdownOpen = false;
+        this.boundaryEventDropdownOpen = false;
       }
     },
     shape() {
@@ -115,9 +115,8 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      dropdownInitiallyOpen: true,
-      taskDropDownWasClicked: true,
-      boundaryEventDropDownWasClicked: false,
+      taskDropdownOpen: true,
+      boundaryEventDropdownOpen: false,
     };
   },
   created() {
@@ -140,6 +139,14 @@ export default {
     },
   },
   methods: {
+    taskDropdownToggle(value) {
+      this.taskDropdownOpen = value;
+      this.boundaryEventDropdownOpen = false;
+    },
+    boundaryEventDropdownToggle(value) {
+      this.taskDropdownOpen = false;
+      this.boundaryEventDropdownOpen = value;
+    },
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
