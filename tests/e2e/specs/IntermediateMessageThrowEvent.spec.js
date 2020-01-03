@@ -21,7 +21,7 @@ const messageXMLSnippet = `<bpmn:message id="${ messageRef }" name="${ messageNa
 const intermediateMessageThrowEventPosition = { x: 300, y: 200 };
 
 describe('Intermediate Message Throw Event', () => {
-  it('can render an intermediate message throw event', function() {
+  it('can render an intermediate message throw event', () => {
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
@@ -30,7 +30,7 @@ describe('Intermediate Message Throw Event', () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
 
-  it('can create a message when intermediate message throw event is dragged on', function() {
+  it('can create a message when intermediate message throw event is dragged on', () => {
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
@@ -41,7 +41,7 @@ describe('Intermediate Message Throw Event', () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet, messageXMLSnippet);
   });
 
-  it('can remove the message when intermediate message throw event is deleted', function() {
+  it('can remove the message when intermediate message throw event is deleted', () => {
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
@@ -58,7 +58,7 @@ describe('Intermediate Message Throw Event', () => {
     assertDownloadedXmlDoesNotContainExpected(messageXMLSnippet);
   });
 
-  it('retains new message name when clicking off and on intermediate message throw event', function() {
+  it('retains new message name when clicking off and on intermediate message throw event', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
@@ -74,7 +74,7 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[name=messageName]').should('have.value', messageName);
   });
 
-  it('can associate and rename message on intermediate message catch event', function() {
+  it('can associate and rename message on intermediate message catch event', () => {
     const intermediateMessageCatchEventPosition = { x: 200, y: 300 };
     const catchEventXMLSnippet = `
       <bpmn:intermediateCatchEvent id="node_5" name="Intermediate Message Catch Event">

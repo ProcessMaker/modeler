@@ -12,7 +12,7 @@ describe('Boundary Message Event', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
   });
 
-  it('Render an interrupting boundary message event', function() {
+  it('Render an interrupting boundary message event', () => {
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
 
     const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_4" name="New Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
@@ -26,7 +26,7 @@ describe('Boundary Message Event', () => {
       });
   });
 
-  it('Render a non-interrupting boundary message event', function() {
+  it('Render a non-interrupting boundary message event', () => {
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
     getElementAtPosition(taskPosition).click();
 

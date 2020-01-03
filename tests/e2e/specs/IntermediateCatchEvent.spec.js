@@ -7,7 +7,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Catch Event', () => {
-  it('Update delay field on Intermediate Catch Event', function() {
+  it('Update delay field on Intermediate Catch Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
@@ -62,7 +62,7 @@ describe('Intermediate Catch Event', () => {
       .should('have', validIntermediateCatchEventXML.trim());
   });
 
-  it('Sets default values when switching between types', function() {
+  it('Sets default values when switching between types', () => {
     cy.clock();
 
     const intermediateCatchEventPosition = { x: 250, y: 250 };

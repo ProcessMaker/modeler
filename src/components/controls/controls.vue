@@ -4,7 +4,9 @@
     :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : compressed }]"
     data-test="controls-column"
   >
-    <b-card no-body class="controls" :style="{ height: parentHeight }">
+    <b-card no-body class="controls rounded-0 border-top-0 border-bottom-0 border-left-0"
+      :style="{ height: parentHeight }"
+    >
       <b-input-group size="sm" v-show="!compressed">
         <b-input-group-prepend>
           <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter" /></span>

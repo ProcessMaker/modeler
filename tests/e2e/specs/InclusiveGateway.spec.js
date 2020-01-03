@@ -24,7 +24,7 @@ describe('Inclusive Gateway', () => {
     cy.get('[name=name]').should('have.value', testString);
   });
 
-  it('Detects gateway direction of converging or diverging', function() {
+  it('Detects gateway direction of converging or diverging', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     connectNodesWithFlow('sequence-flow-button', startEventPosition, inclusivePosition);

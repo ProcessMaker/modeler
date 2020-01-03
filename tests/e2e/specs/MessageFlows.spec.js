@@ -74,7 +74,7 @@ describe('Message Flows', () => {
       });
   });
 
-  it('Cannot connect to itself', function() {
+  it('Cannot connect to itself', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     const poolPosition = { x: 100, y: 150 };

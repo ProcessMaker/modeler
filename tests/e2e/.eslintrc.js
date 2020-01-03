@@ -22,6 +22,7 @@ module.exports = {
     'object-shorthand': 'error',
     'space-before-function-paren': ['error', 'never'],
     'keyword-spacing': 'error',
+    'prefer-arrow-callback': 'error',
   },
   parserOptions: {
     parser: 'babel-eslint',

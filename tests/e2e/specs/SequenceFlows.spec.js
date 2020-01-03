@@ -49,7 +49,7 @@ describe('Sequence Flows', () => {
     cy.get('[name=conditionExpression]').should('have.value', testString);
   });
 
-  it('Allows modifying anchor points', function() {
+  it('Allows modifying anchor points', () => {
     const taskPosition = { x: 200, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -124,7 +124,7 @@ describe('Sequence Flows', () => {
     checkAnchorPoints('target');
   });
 
-  it('Retains target anchor point after parsing and moving shape', function() {
+  it('Retains target anchor point after parsing and moving shape', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 200, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -172,7 +172,7 @@ describe('Sequence Flows', () => {
     });
   });
 
-  it('Retains source anchor point after parsing and moving shape', function() {
+  it('Retains source anchor point after parsing and moving shape', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 400, y: 400 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -220,7 +220,7 @@ describe('Sequence Flows', () => {
     });
   });
 
-  it('connects sequence flows with a straight line', function() {
+  it('connects sequence flows with a straight line', () => {
     const taskPosition = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 

@@ -35,7 +35,7 @@ describe('Tasks', () => {
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
   });
 
-  it('Can create sub process flow', function() {
+  it('Can create sub process flow', () => {
     const subProcessPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(subProcessPosition, nodeTypes.task, 'switch-to-sub-process');
 
