@@ -6,7 +6,7 @@ import intermediateMailSymbol from '@/assets/intermediate-mail.svg';
 export default {
   extends: IntermediateEvent,
   mounted() {
-    const shapeAttributes = getIntermediateMailIconShapeAttributes('#fbbe02', 2, '#fff4d1', intermediateMailSymbol);
+    const shapeAttributes = getIntermediateMailIconShapeAttributes(intermediateMailSymbol, '#fbbe02', 2, '#fff4d1');
     this.shape.attr(shapeAttributes);
   },
 };

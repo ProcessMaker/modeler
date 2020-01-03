@@ -1,4 +1,4 @@
-export default function getIntermediateMailIconShapeAttributes(stroke = '#000', strokeWidth = 1, fill = '#fff', icon) {
+export default function getIntermediateMailIconShapeAttributes(icon, stroke = '#000', strokeWidth = 1, fill = '#fff') {
   return {
     image: {
       xlinkHref: icon,

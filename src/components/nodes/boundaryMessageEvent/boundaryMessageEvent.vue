@@ -12,7 +12,7 @@ export default {
     },
   },
   mounted() {
-    const shapeAttributes = getIntermediateMailIconShapeAttributes('#000', 1, '#fff', boundaryMessageMailSymbol);
+    const shapeAttributes = getIntermediateMailIconShapeAttributes(boundaryMessageMailSymbol);
     this.shape.attr(shapeAttributes);
   },
 };
