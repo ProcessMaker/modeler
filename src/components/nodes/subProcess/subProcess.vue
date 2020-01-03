@@ -29,7 +29,6 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { elementIdParser } from '@/components/nodes/subProcess/elementIdParser';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 
