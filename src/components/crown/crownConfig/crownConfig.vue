@@ -26,22 +26,14 @@
       @toggle-crown-state="showCrown = $event"
     />
 
-    <crown-dropdown
+    <crown-dropdowns
       :dropdown-data="dropdownData"
-      :dropdown-open="taskDropdownOpen"
+      :boundary-event-dropdown-data="boundaryEventDropdownData"
       :node="node"
-      @toggle-dropdown-state="taskDropdownToggle"
-      v-on="$listeners"
-    />
-
-    <crown-boundary-event-dropdown
-      :dropdown-data="boundaryEventDropdownData"
-      :dropdown-open="boundaryEventDropdownOpen"
-      :nodeRegistry="nodeRegistry"
+      :node-registry="nodeRegistry"
       :moddle="moddle"
-      :node="node"
       :shape="shape"
-      @toggle-dropdown-state="boundaryEventDropdownToggle"
+      :task-dropdown-initially-open="taskDropdownInitiallyOpen"
       v-on="$listeners"
     />
 
@@ -59,16 +51,14 @@ import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
-import CrownDropdown from '@/components/crown/crownButtons/crownDropdown';
-import CrownBoundaryEventDropdown from '@/components/crown/crownButtons/crownBoundaryEventDropdown';
+import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
 import store from '@/store';
 
 export default {
   components: {
-    CrownDropdown,
-    CrownBoundaryEventDropdown,
+    CrownDropdowns,
     DeleteButton,
     MessageFlowButton,
     SequenceFlowButton,
@@ -100,8 +90,7 @@ export default {
     highlighted(highlighted) {
       this.showCrown = highlighted;
       if (!highlighted) {
-        this.taskDropdownOpen = false;
-        this.boundaryEventDropdownOpen = false;
+        this.taskDropdownInitiallyOpen = false;
       }
     },
     shape() {
@@ -115,8 +104,7 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      taskDropdownOpen: true,
-      boundaryEventDropdownOpen: false,
+      taskDropdownInitiallyOpen: true,
     };
   },
   created() {
@@ -139,14 +127,6 @@ export default {
     },
   },
   methods: {
-    taskDropdownToggle(value) {
-      this.taskDropdownOpen = value;
-      this.boundaryEventDropdownOpen = false;
-    },
-    boundaryEventDropdownToggle(value) {
-      this.taskDropdownOpen = false;
-      this.boundaryEventDropdownOpen = value;
-    },
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;

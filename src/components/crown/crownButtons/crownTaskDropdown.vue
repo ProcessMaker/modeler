@@ -26,7 +26,7 @@
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 
 export default {
-  name: 'CrownDropdown',
+  name: 'CrownTaskDropdown',
   components: { CrownButton },
   props: {
     dropdownData: Array,

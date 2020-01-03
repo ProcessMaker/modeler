@@ -42,7 +42,7 @@ import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 import store from '@/store';
 
 export default {
-  name: 'CrownDropdown',
+  name: 'CrownBoundaryEventDropdown',
   components: { CrownButton },
   props: {
     dropdownOpen: {
