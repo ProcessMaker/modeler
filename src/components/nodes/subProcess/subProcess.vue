@@ -1,25 +1,20 @@
 <template>
-  <div>
-    <crown-config
-      :highlighted="highlighted"
-      :paper="paper"
-      :graph="graph"
-      :shape="shape"
-      :node="node"
-      :nodeRegistry="nodeRegistry"
-      :moddle="moddle"
-      :collaboration="collaboration"
-      :process-node="processNode"
-      :plane-elements="planeElements"
-      :is-rendering="isRendering"
-      :boundary-event-dropdown-data="boundaryEventDropdownData"
-      :dropdown-data="dropdownData"
-      v-on="$listeners"
-    />
-    <mini-paper
-      :graph="graph"
-    />
-  </div>
+  <crown-config
+    :highlighted="highlighted"
+    :paper="paper"
+    :graph="graph"
+    :shape="shape"
+    :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    :boundary-event-dropdown-data="boundaryEventDropdownData"
+    :dropdown-data="dropdownData"
+    v-on="$listeners"
+  />
 </template>
 
 <script>
@@ -34,15 +29,12 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { elementIdParser } from '@/components/nodes/subProcess/elementIdParser';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import MiniPaper from '@/components/miniPaper/MiniPaper';
-
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 
 export default {
   components: {
     CrownConfig,
-    MiniPaper,
   },
   props: [
     'graph',
@@ -56,7 +48,6 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
-    'paperManager',
   ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
