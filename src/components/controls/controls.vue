@@ -4,7 +4,7 @@
     :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : compressed }]"
     data-test="controls-column"
   >
-    <b-card no-body class="controls" :style="{ height: parentHeight }">
+    <b-card no-body class="controls rounded-0 border-top-0 border-bottom-0 border-left-0" :style="{ height: parentHeight }">
       <b-list-group flush class="overflow-auto w-auto" :class="{ 'd-flex align-items-center': compressed }">
         <b-list-group-item
           v-for="(control, index) in controls"

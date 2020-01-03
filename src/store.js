@@ -29,6 +29,7 @@ export default new Vuex.Store({
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
+    highlightedShape: (state, getters) => getters.nodeShape(getters.highlightedNode),
     rootElements: state => state.rootElements,
     autoValidate: state => state.autoValidate,
     globalProcesses: state => state.globalProcesses,
