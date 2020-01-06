@@ -21,7 +21,7 @@ $status-bar-font-size: 0.875rem;
   background-color: $status-bar-bg-color;
   font-size: $status-bar-font-size;
   color: $status-bar-color;
-
+  user-select: none;
 }
 
 .divider {
@@ -44,6 +44,7 @@ $status-bar-font-size: 0.875rem;
   border: 1px solid $border-color;
   border-radius: 0.25rem;
   border-right: none;
+  user-select: text;
 
   &__list {
     padding: 0.5rem;
