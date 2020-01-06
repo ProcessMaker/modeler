@@ -4,22 +4,7 @@
     :class="[{ 'ignore-pointer': canvasDragPosition, 'controls-column-compressed' : compressed }]"
     data-test="controls-column"
   >
-    <b-card no-body class="controls rounded-0 border-top-0 border-bottom-0 border-left-0"
-      :style="{ height: parentHeight }"
-    >
-      <b-input-group size="sm" v-show="!compressed">
-        <b-input-group-prepend>
-          <span class="input-group-text border-left-0 border-top-0 rounded-0"><i class="fas fa-filter" /></span>
-        </b-input-group-prepend>
-
-        <b-form-input ref="filter"
-          :placeholder="$t('Filter Controls')"
-          class="border-top-0 border-right-0 rounded-0"
-          type="text"
-          v-model="filterQuery"
-        />
-      </b-input-group>
-
+    <b-card no-body class="controls rounded-0 border-top-0 border-bottom-0 border-left-0" :style="{ height: parentHeight }">
       <b-list-group flush class="overflow-auto w-auto" :class="{ 'd-flex align-items-center': compressed }">
         <b-list-group-item
           v-for="(control, index) in controls"
@@ -41,7 +26,6 @@
           </div>
         </b-list-group-item>
       </b-list-group>
-
     </b-card>
   </b-col>
 </template>
@@ -59,7 +43,6 @@ export default {
   },
   data() {
     return {
-      filterQuery: '',
       draggingElement: null,
       draggingControl: null,
       xOffset: null,
@@ -70,7 +53,6 @@ export default {
     controls() {
       return this.nodeTypes
         .filter(nodeType => nodeType.control)
-        .filter(nodeType => nodeType.label.toLowerCase().includes(this.filterQuery.toLowerCase()))
         .map(nodeType => ({
           type: nodeType.id,
           icon: nodeType.icon,
