@@ -340,6 +340,7 @@ export default {
         if (definition.get('implementation') === nodeType.implementation) {
           return nodeType.id;
         }
+        return undefined;
       };
 
       this.translateConfig(nodeType.inspectorConfig[0]);
@@ -380,13 +381,7 @@ export default {
     },
     loadAssociations(flowElements, artifacts) {
       artifacts
-        .filter(definition => {
-          if (definition.$type !== 'bpmn:Association') {
-            return false;
-          }
-
-          return this.hasSourceAndTarget(definition);
-        })
+        .filter(definition => definition.$type === 'bpmn:Association' && this.hasSourceAndTarget(definition))
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
     loadArtifacts(flowElements, artifacts) {
@@ -396,13 +391,7 @@ export default {
     },
     loadSequenceFlows(flowElements, artifacts) {
       flowElements
-        .filter(definition => {
-          if (definition.$type !== 'bpmn:SequenceFlow') {
-            return false;
-          }
-
-          return this.hasSourceAndTarget(definition);
-        })
+        .filter(definition => definition.$type === 'bpmn:SequenceFlow' && this.hasSourceAndTarget(definition))
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
     loadFlowElements(flowElements, artifacts) {
