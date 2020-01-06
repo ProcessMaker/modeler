@@ -460,34 +460,39 @@ export default {
       unsupportedElements.filter(name => definition.get(name))
         .forEach(name => definition.set(name, undefined));
     },
+    getParsers(bpmnType) {
+      return this.parsers[bpmnType];
+    },
+    handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram) {
+      this.addWarning({
+        title: this.$t('Unsupported Element'),
+        text: bpmnType + this.$t(' is an unsupported element type in parse'),
+      });
+
+      pull(flowElements, definition);
+      pull(artifacts, definition);
+      pull(this.planeElements, diagram);
+      if (this.collaboration) {
+        pull(this.collaboration.get('messageFlows'), definition);
+      }
+
+      const incomingFlows = definition.get('incoming');
+      if (incomingFlows) {
+        pull(flowElements, incomingFlows);
+      }
+
+      const outgoingFlows = definition.get('outgoing');
+      if (outgoingFlows) {
+        pull(flowElements, outgoingFlows);
+      }
+    },
     setNode(definition, flowElements, artifacts) {
-      /* Get the diagram element for the corresponding flow element node. */
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
-      const parsers = this.parsers[bpmnType];
+      const parsers = this.getParsers(bpmnType);
 
       if (!parsers) {
-        this.addWarning({
-          title: this.$t('Unsupported Element'),
-          text: bpmnType + this.$t(' is an unsupported element type in parse'),
-        });
-
-        pull(flowElements, definition);
-        pull(artifacts, definition);
-        pull(this.planeElements, diagram);
-        if (this.collaboration) {
-          pull(this.collaboration.get('messageFlows'), definition);
-        }
-
-        const incomingFlows = definition.get('incoming');
-        if (incomingFlows) {
-          pull(flowElements, incomingFlows);
-        }
-
-        const outgoingFlows = definition.get('outgoing');
-        if (outgoingFlows) {
-          pull(flowElements, outgoingFlows);
-        }
+        this.handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram);
 
         return;
       }
