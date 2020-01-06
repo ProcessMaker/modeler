@@ -224,17 +224,17 @@ export default {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
     },
-    validateAndCleanPlaneElements() {
-      remove(this.planeElements, diagram => {
-        if (!diagram.bpmnElement) {
-          this.addWarning(
-            {
-              title: this.$t('Non-existent Element'),
-              text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
-            });
-          return true;
-        }
-      });
+    validatePlaneElements() {
+      this.planeElements
+        .filter(diagram => !diagram.bpmnElement)
+        .map(diagram => ({
+          title: this.$t('Non-existent Element'),
+          text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
+        }))
+        .forEach(warning => this.addWarning(warning));
+    },
+    cleanPlaneElements() {
+      remove(this.planeElements, diagram => !diagram.bpmnElement);
     },
     getTooltipTarget() {
       return this.tooltipTarget.$el[0];
@@ -370,90 +370,100 @@ export default {
         this.parsers[bpmnType].default.push(defaultParser);
       });
     },
-    // Parses our definitions and graphs and stores them in our id based lookup model
-    parse() {
-      // Get the top level objects
-      // All root elements are either bpmn:process or bpmn:collaboration types
-      // There should only be one collaboration
-
-      this.collaboration = this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
-      this.processes = this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
-
-      /* Get the diagram; there should only be one diagram. */
-      this.plane = this.definitions.diagrams[0].plane;
-      this.planeElements = this.plane.get('planeElement');
-
-      this.validateAndCleanPlaneElements();
-
-      this.processNode = {
-        type: 'processmaker-modeler-process',
-        definition: this.processes[0],
-        diagram: this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
-      };
-
-      /* Add any pools */
-      if (this.collaboration) {
-        this.collaboration.get('participants').forEach(this.setNode);
-      }
-
-      /* Iterate through all elements in each process. */
-      this.processes.forEach(process => {
-        this.ensureCancelActivityIsAddedToBoundaryEvents(process);
-
-        /* Add any lanes */
-        if (process.get('laneSets')[0]) {
-          process.laneSets[0].lanes.forEach(this.setNode);
-        }
-
-        /* Add all other elements */
-
-        const flowElements = process.get('flowElements');
-        const artifacts = process.get('artifacts');
-
-        /* First load the flow elements */
-        flowElements
-          .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
-          .forEach(definition => this.setNode(definition, flowElements, artifacts));
-
-        /* Then the sequence flows */
-        flowElements
-          .filter(definition => {
-            if (definition.$type !== 'bpmn:SequenceFlow') {
-              return false;
-            }
-
-            return this.hasSourceAndTarget(definition);
-          })
-          .forEach(definition => this.setNode(definition, flowElements, artifacts));
-
-        /* Then the artifacts */
-        artifacts
-          .filter(definition => definition.$type !== 'bpmn:Association')
-          .forEach(definition => this.setNode(definition, flowElements, artifacts));
-
-        /* Then the associations */
-        artifacts
-          .filter(definition => {
-            if (definition.$type !== 'bpmn:Association') {
-              return false;
-            }
-
-            return this.hasSourceAndTarget(definition);
-          })
-          .forEach(definition => this.setNode(definition, flowElements, artifacts));
-      });
-
-      store.commit('setRootElements', this.definitions.rootElements);
-
-      /* Add any message flows */
+    addMessageFlows() {
       if (this.collaboration) {
         this.collaboration
           .get('messageFlows')
           .filter(this.hasSourceAndTarget)
           .forEach(this.setNode);
       }
+    },
+    loadAssociations(flowElements, artifacts) {
+      artifacts
+        .filter(definition => {
+          if (definition.$type !== 'bpmn:Association') {
+            return false;
+          }
+
+          return this.hasSourceAndTarget(definition);
+        })
+        .forEach(definition => this.setNode(definition, flowElements, artifacts));
+    },
+    loadArtifacts(flowElements, artifacts) {
+      artifacts
+        .filter(definition => definition.$type !== 'bpmn:Association')
+        .forEach(definition => this.setNode(definition, flowElements, artifacts));
+    },
+    loadSequenceFlows(flowElements, artifacts) {
+      flowElements
+        .filter(definition => {
+          if (definition.$type !== 'bpmn:SequenceFlow') {
+            return false;
+          }
+
+          return this.hasSourceAndTarget(definition);
+        })
+        .forEach(definition => this.setNode(definition, flowElements, artifacts));
+    },
+    loadFlowElements(flowElements, artifacts) {
+      flowElements
+        .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
+        .forEach(definition => this.setNode(definition, flowElements, artifacts));
+    },
+    addLanes(process) {
+      if (process.get('laneSets')[0]) {
+        process.laneSets[0].lanes.forEach(this.setNode);
+      }
+    },
+    addPools() {
+      if (!this.collaboration) {
+        return;
+      }
+      this.collaboration.get('participants').forEach(this.setNode);
+    },
+    setUpDiagram() {
+      this.processes.forEach(process => {
+        this.ensureCancelActivityIsAddedToBoundaryEvents(process);
+
+        this.addLanes(process);
+
+        const flowElements = process.get('flowElements');
+        const artifacts = process.get('artifacts');
+
+        this.loadFlowElements(flowElements, artifacts);
+        this.loadSequenceFlows(flowElements, artifacts);
+        this.loadArtifacts(flowElements, artifacts);
+        this.loadAssociations(flowElements, artifacts);
+      });
+
+      store.commit('setRootElements', this.definitions.rootElements);
+
+      this.addMessageFlows();
 
       store.commit('highlightNode', this.processNode);
+    },
+    getCollaboration() {
+      return this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
+    },
+    getProcesses() {
+      return this.definitions.rootElements.filter(({ $type }) => $type === 'bpmn:Process');
+    },
+    getPlane() {
+      return this.definitions.diagrams[0].plane;
+    },
+    getPlaneElements() {
+      return this.plane.get('planeElement');
+    },
+    parse() {
+      this.collaboration = this.getCollaboration();
+      this.processes = this.getProcesses();
+      this.plane = this.getPlane();
+      this.planeElements = this.getPlaneElements();
+      this.processNode = {
+        type: 'processmaker-modeler-process',
+        definition: this.processes[0],
+        diagram: this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+      };
     },
     removeUnsupportedElementAttributes(definition) {
       const unsupportedElements = ['documentation', 'extensionElements'];
@@ -526,13 +536,15 @@ export default {
     },
     async renderPaper() {
       this.isRendering = true;
-
       await this.paperManager.performAtomicAction(async() => {
         await this.waitForCursorToChange();
         this.parse();
+        this.validatePlaneElements();
+        this.cleanPlaneElements();
+        this.addPools();
+        this.setUpDiagram();
       });
       await this.paperManager.awaitScheduledUpdates();
-
       this.isRendering = false;
       this.$emit('parsed');
     },
@@ -549,7 +561,6 @@ export default {
         this.renderPaper();
       });
     },
-
     getBoundaryEvents(process) {
       return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
     },
@@ -604,8 +615,8 @@ export default {
       this.addNode(node);
     },
     setShapeCenterUnderCursor(diagram) {
-      diagram.bounds.x = diagram.bounds.x - (diagram.bounds.width / 2);
-      diagram.bounds.y = diagram.bounds.y - (diagram.bounds.height / 2);
+      diagram.bounds.x -= (diagram.bounds.width / 2);
+      diagram.bounds.y -= (diagram.bounds.height / 2);
     },
     addNode(node) {
       node.pool = this.poolTarget;
