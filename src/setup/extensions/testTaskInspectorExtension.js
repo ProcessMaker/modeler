@@ -39,7 +39,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerInspectorExtension }
       initiallyOpen: false,
       label: 'Assignment Rules',
       icon: 'users',
-      name: 'assignmentRules',
+      name: 'inspector-accordion',
     },
     items: [
       {
