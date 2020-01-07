@@ -43,7 +43,7 @@ export default {
         this.$emit('toggle-dropdown-state', false);
         return;
       }
-      this.$emit('confirm-replace', data);
+      this.$emit('replace-node-type', data);
     },
   },
 };

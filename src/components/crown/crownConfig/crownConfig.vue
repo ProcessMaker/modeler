@@ -34,7 +34,7 @@
       :moddle="moddle"
       :shape="shape"
       :task-dropdown-initially-open="taskDropdownInitiallyOpen"
-      @confirm-replace="confirmReplace"
+      @replace-node-type="confirmReplace"
       v-on="$listeners"
     />
 
