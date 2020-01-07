@@ -26,13 +26,3 @@
   overflow: hidden;
   max-height: 0;
 }
-
-.rotatingUp {
-  transition: transform $transition-duration ease-in;
-  transform: rotate(180deg);
-}
-
-.rotatingDown {
-  transition: transform $transition-duration ease-out;
-  transform: rotate(0deg);
-}
