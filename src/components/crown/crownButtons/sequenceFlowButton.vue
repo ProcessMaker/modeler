@@ -13,6 +13,7 @@
 <script>
 import sequenceFlow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
+import Node from '@/components/nodes/node';
 
 export default {
   components: { CrownButton },
@@ -48,11 +49,11 @@ export default {
         });
       }
 
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-sequence-flow',
-        definition: sequenceLink,
-        diagram: this.sequenceFlowConfig.diagram(this.moddle),
-      });
+      this.$emit('add-node', new Node(
+        'processmaker-modeler-sequence-flow',
+        sequenceLink,
+        this.sequenceFlowConfig.diagram(this.moddle),
+      ));
     },
   },
   created() {

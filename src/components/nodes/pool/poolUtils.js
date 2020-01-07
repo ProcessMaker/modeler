@@ -23,7 +23,7 @@ function addAllElementsToPool(graph, pool) {
   graph
     .getElements()
     .filter((shape) => shape !== pool)
-    .filter(({ component }) => component.node.definition.$type !== 'bpmn:BoundaryEvent')
+    .filter(({ component }) => component.node.isBpmnType('bpmn:BoundaryEvent'))
     .forEach(({ component }) => {
       pool.embed(component.shape);
       component.node.pool = pool;

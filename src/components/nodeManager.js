@@ -15,7 +15,7 @@ export function addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator) {
 }
 
 export function addNodeToProcess(node, targetProcess) {
-  if (node.type === poolId || node.definition.$type === 'bpmn:MessageFlow') {
+  if (node.isType(poolId) || node.isBpmnType('bpmn:MessageFlow')) {
     return;
   }
 
@@ -27,7 +27,7 @@ export function addNodeToProcess(node, targetProcess) {
     return;
   }
 
-  if (node.definition.$type === 'bpmn:TextAnnotation' || node.definition.$type === 'bpmn:Association') {
+  if (node.isBpmnType('bpmn:TextAnnotation') || node.isBpmnType('bpmn:Association')) {
     targetProcess.get('artifacts').push(node.definition);
     return;
   }
@@ -39,8 +39,4 @@ export function getTargetProcess(node, processes, processNode) {
   return node.pool
     ? processes.find(({id}) => id === node.pool.component.node.definition.get('processRef').id)
     : processNode.definition;
-}
-
-export function isBoundaryEvent(node) {
-  return node.definition.$type === 'bpmn:BoundaryEvent';
 }

@@ -11,5 +11,5 @@ const validBoundaryEventTargets = [
 ];
 
 export default function isValidBoundaryEventTarget(component) {
-  return component && validBoundaryEventTargets.includes(component.node.definition.$type);
+  return component && validBoundaryEventTargets.some(targetType => component.node.isBpmnType(targetType));
 }

@@ -42,7 +42,7 @@ export function getEmptyBoundaryEventPositionsForShape(model) {
   const allPortPoints = getModelPortPoints(model, boundaryGroup);
   const boundaryEventPositions = model
     .getEmbeddedCells()
-    .filter(shape => shape.component && shape.component.node.definition.$type === 'bpmn:BoundaryEvent')
+    .filter(shape => shape.component && shape.component.node.isBpmnType('bpmn:BoundaryEvent'))
     .map(getShapeCenterPosition);
 
   return differenceWith(allPortPoints, boundaryEventPositions, isEqual);

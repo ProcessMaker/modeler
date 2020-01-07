@@ -8,7 +8,7 @@ export default {
   methods: {
     isValidBoundaryEventTarget(model) {
       const component = model.component;
-      return component && component.node.definition.$type === 'bpmn:CallActivity';
+      return component && component.isBpmnType('bpmn:CallActivity');
     },
   },
   mounted() {

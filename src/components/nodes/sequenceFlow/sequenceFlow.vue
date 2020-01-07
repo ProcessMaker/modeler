@@ -120,8 +120,8 @@ export default {
         this.eventBasedGatewayTarget();
     },
     eventBasedGatewayTarget() {
-      const isSourceEventBasedGateway = this.sourceNode.definition.$type === 'bpmn:EventBasedGateway';
-      const isTargetIntermediateCatchEvent = this.targetNode.definition.$type === 'bpmn:IntermediateCatchEvent';
+      const isSourceEventBasedGateway = this.sourceNode.isBpmnType('bpmn:EventBasedGateway');
+      const isTargetIntermediateCatchEvent = this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent');
 
       return !isSourceEventBasedGateway || isTargetIntermediateCatchEvent;
     },

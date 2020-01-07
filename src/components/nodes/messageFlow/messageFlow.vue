@@ -75,8 +75,6 @@ export default {
         this.allowOutgoingFlow();
     },
     targetIsValidType() {
-      const targetBpmnType = this.targetNode.definition.$type;
-
       return [
         'bpmn:Task',
         'bpmn:ScriptTask',
@@ -85,7 +83,7 @@ export default {
         'bpmn:ServiceTask',
         'bpmn:IntermediateCatchEvent',
         'bpmn:Participant',
-      ].includes(targetBpmnType);
+      ].some(type => this.targetNode.isBpmnType(type));
     },
     hasTargetType() {
       return this.targetType != null;

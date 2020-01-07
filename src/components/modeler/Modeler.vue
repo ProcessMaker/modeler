@@ -121,15 +121,11 @@ import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
-import {
-  addIdToNodeAndSetUpDiagramReference,
-  addNodeToProcess,
-  getTargetProcess,
-  isBoundaryEvent,
-} from '@/components/nodeManager';
+import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import Node from '@/components/nodes/node';
 
 const version = '1.0';
 
@@ -448,11 +444,11 @@ export default {
       this.processes = this.getProcesses();
       this.plane = this.getPlane();
       this.planeElements = this.getPlaneElements();
-      this.processNode = {
-        type: 'processmaker-modeler-process',
-        definition: this.processes[0],
-        diagram: this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
-      };
+      this.processNode = new Node(
+        'processmaker-modeler-process',
+        this.processes[0],
+        this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+      );
     },
     removeUnsupportedElementAttributes(definition) {
       const unsupportedElements = ['documentation', 'extensionElements'];
@@ -511,11 +507,7 @@ export default {
         definition.set('name', '');
       }
 
-      store.commit('addNode', {
-        type,
-        definition,
-        diagram,
-      });
+      store.commit('addNode', new Node(type, definition, diagram));
     },
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
@@ -599,9 +591,9 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = { type: control.type, definition, diagram };
+      const node = new Node(control.type, definition, diagram);
 
-      if (isBoundaryEvent(node)) {
+      if (node.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
