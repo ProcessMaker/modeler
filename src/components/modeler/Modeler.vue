@@ -32,6 +32,7 @@
           @load-xml="loadXML"
           @toggle-panels-compressed="panelsCompressed = $event"
           @toggle-mini-map-open="miniMapOpen = $event"
+          @saveBpmn="saveBpmn"
         />
 
         <div ref="paper" data-test="paper" class="main-paper" />
@@ -216,6 +217,9 @@ export default {
     },
   },
   methods: {
+    saveBpmn() {
+      this.$emit('saveBpmn');
+    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);

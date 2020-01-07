@@ -77,11 +77,21 @@
         <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
       </b-button>
     </div>
+
+    <b-button
+      class="btn btn-sm btn-secondary mini-map-btn ml-auto"
+      data-test="mini-map-btn"
+      @click="saveBpmn"
+      v-b-tooltip.hover
+      title="Save"
+    >
+      <font-awesome-icon :icon="saveIcon" />
+    </b-button>    
   </div>
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 
 export default {
@@ -142,6 +152,7 @@ export default {
       panelsCompressed: false,
       undoIcon: faUndo,
       redoIcon: faRedo,
+      saveIcon: faSave,
     };
   },
   methods: {
@@ -162,6 +173,9 @@ export default {
         .dispatch('redo')
         .then(() => this.$emit('load-xml'))
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
+    },
+    saveBpmn() {
+      this.$emit('saveBpmn');
     },
   },
 };
