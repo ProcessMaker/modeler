@@ -281,3 +281,11 @@ export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   dragFromSourceToDest(genericNode, nodePosition);
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
 }
+
+export function modalConfirm() {
+  cy.get('.modal-footer .btn-primary').click();
+}
+
+export function modalCancel() {
+  cy.get('.modal-footer .btn-secondary').click();
+}
