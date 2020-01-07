@@ -31,7 +31,16 @@ import Vue from 'vue';
 
 import { renderer, VueFormRenderer } from '@processmaker/screen-builder';
 
-import { FormAccordion, FormCheckbox, FormDatePicker, FormInput, FormMultiSelect, FormRadioButtonGroup, FormSelect, FormTextArea } from '@processmaker/vue-form-elements';
+import {
+  FormAccordion,
+  FormCheckbox,
+  FormDatePicker,
+  FormInput,
+  FormMultiSelect,
+  FormRadioButtonGroup,
+  FormSelect,
+  FormTextArea,
+} from '@processmaker/vue-form-elements';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
@@ -89,7 +98,7 @@ export default {
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         let helper = 'Enter the expression that describes the workflow condition ';
-        helper += '<a href="https://processmaker.gitbook.io/processmaker/designing-processes/process-design/model-your-process/the-quick-toolbar%23expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
+        helper += '<a href="https://processmaker.gitbook.io/processmaker/designing-processes/process-design/model-your-process/the-quick-toolbar#expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
         const expressionConfig = {
           component: 'FormInput',
           config: {
