@@ -17,7 +17,7 @@
               <span class="badge badge-primary badge-pill">
                 {{ numberOfProblemsToDisplay }}
               </span>
-              <font-awesome-icon class="ml-3" :class="rotateIcon" :icon="faChevronDown" />
+              <font-awesome-icon class="ml-3" :icon="chevronIcon" />
             </button>
           </template>
 
@@ -121,8 +121,8 @@ export default {
     isProblemsPanelDisplayed() {
       return this.shouldDisplayProblemsPanel && this.numberOfProblemsToDisplay > 0 && this.autoValidate;
     },
-    rotateIcon() {
-      return this.shouldDisplayProblemsPanel ? 'rotatingUp' : 'rotatingDown';
+    chevronIcon() {
+      return this.shouldDisplayProblemsPanel ? faChevronUp : faChevronDown;
     },
   },
   methods: {
