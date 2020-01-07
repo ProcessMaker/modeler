@@ -118,7 +118,7 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      taskDropdownInitiallyOpen: true,
+      taskDropdownInitiallyOpen: !this.isRendering,
       showReplaceModal: false,
       nodeToReplace: null,
     };
