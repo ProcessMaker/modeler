@@ -42,7 +42,7 @@ export default {
         this.$emit('toggle-dropdown-state', false);
         return;
       }
-      this.$emit('replace-node', data);
+      this.$emit('confirm-replace', data);
     },
   },
 };

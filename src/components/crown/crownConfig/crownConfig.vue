@@ -34,6 +34,7 @@
       :moddle="moddle"
       :shape="shape"
       :task-dropdown-initially-open="taskDropdownInitiallyOpen"
+      @confirm-replace="confirmReplace"
       v-on="$listeners"
     />
 
@@ -43,6 +44,19 @@
       :node="node"
       v-on="$listeners"
     />
+
+    <b-modal
+      id="modal-prevent-closing"
+      ref="modal"
+      :title="$t('Change Type')"
+      :ok-title="$t('Confirm')"
+      :cancel-title="$t('Cancel')"
+      v-model="showReplaceModal"
+      @hidden="showReplaceModal = false"
+      @ok="$emit('replace-node', nodeToReplace)"
+    >
+      <p>{{ $t('Changing this type will replace your current configuration') }}</p>
+    </b-modal>
   </div>
 </template>
 
@@ -105,6 +119,8 @@ export default {
       savePositionOnPointerupEventSet: false,
       style: null,
       taskDropdownInitiallyOpen: true,
+      showReplaceModal: false,
+      nodeToReplace: null,
     };
   },
   created() {
@@ -127,6 +143,14 @@ export default {
     },
   },
   methods: {
+    confirmReplace(node) {
+      if (this.taskDropdownInitiallyOpen) {
+        this.$emit('replace-node', node);
+        return;
+      }
+      this.showReplaceModal = true;
+      this.nodeToReplace = node;
+    },
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
