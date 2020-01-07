@@ -4,6 +4,8 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
+  modalCancel,
+  modalConfirm,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -11,10 +13,11 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Tasks', () => {
+  const taskPosition = { x: 250, y: 250 };
+
   it('Update task name', () => {
     const testString = 'testing';
 
-    const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).click();
@@ -24,7 +27,6 @@ describe('Tasks', () => {
   });
 
   it('Correctly renders task after undo/redo', () => {
-    const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     cy.get('[data-test=undo]').click();
@@ -116,5 +118,40 @@ describe('Tasks', () => {
       .then(xml => {
         expect(xml).to.contain(emptyCallActivityXml.trim());
       });
+  });
+
+  it('Can switch task type when initially added', () => {
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+    cy.get('[data-test=switch-to-manual-task]').click();
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
+  });
+
+  it('Can switch task type after initially added', () => {
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+
+    getElementAtPosition({ x: 150, y: 150 }).click();
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-manual-task]').click();
+    modalConfirm();
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
+  });
+
+  it('Does not switch task type if canceled', () => {
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+
+    getElementAtPosition({ x: 150, y: 150 }).click();
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-manual-task]').click();
+    modalCancel();
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
   });
 });

@@ -1,6 +1,7 @@
 <template>
   <div class="cog-container" v-if="dropdownData.length > 0" role="menuitem">
     <crown-button
+      data-test="select-type-dropdown"
       id="dropdown-button"
       aria-label="Select a type"
       v-on="$listeners"
@@ -42,7 +43,7 @@ export default {
         this.$emit('toggle-dropdown-state', false);
         return;
       }
-      this.$emit('replace-node', data);
+      this.$emit('replace-node-type', data);
     },
   },
 };
