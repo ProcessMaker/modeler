@@ -6,6 +6,7 @@
   "rules": {
     "no-inclusive-gateway": "off",
     "fake-join": "off",
-    "no-duplicate-sequence-flows": "off"
+    "no-duplicate-sequence-flows": "off",
+    "single-blank-start-event": "off"
   }
 }
