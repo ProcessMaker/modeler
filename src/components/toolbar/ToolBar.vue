@@ -1,15 +1,5 @@
 <template>
   <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom " role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-    <nav>
-      <ol class="breadcrumb">
-        <li v-if="allBreadcrumbs.length <= 0" class="breadcrumb-item">
-          <a href="/"><i class="fas fa-home"/></a>
-        </li>
-        <li class="breadcrumb-item" v-for="(breadcrumb,index) in allBreadcrumbs.flat()" :key="index">
-          <a :href="breadcrumb.url"> {{ breadcrumb.text }}</a>
-        </li>
-      </ol>
-    </nav>
     <div class="mr-3">
       <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
         <b-button
@@ -90,7 +80,7 @@
       </div>
 
       <b-button
-        v-if="allBreadcrumbs.length <= 0"
+        v-if="breadcrumbData.length > 0"
         class="btn btn-sm btn-secondary mini-map-btn ml-auto"
         data-test="mini-map-btn"
         @click="saveBpmn"
@@ -98,13 +88,13 @@
         title="Save"
       >
         <font-awesome-icon :icon="saveIcon" />
-      </b-button>   
-    </div> 
+      </b-button>
+    </div>
   </div>
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 
 export default {
@@ -117,10 +107,9 @@ export default {
     isRendering: {
       type: Boolean,
     },
-    allBreadcrumbs: {
+    breadcrumbData: {
       type: Array,
     },
-
   },
   watch: {
     scale(scale) {
@@ -170,16 +159,6 @@ export default {
       undoIcon: faUndo,
       redoIcon: faRedo,
       saveIcon: faSave,
-      foo: [
-        {
-          'text':'home',
-          'url':'www.google.ca',
-        },
-        {
-          'text':'home',
-          'url':'www.google.ca',
-        },
-      ],
     };
   },
   methods: {
@@ -207,4 +186,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" src="./toolbar.scss" scoped />

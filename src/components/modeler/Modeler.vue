@@ -6,7 +6,7 @@
         :cursor="cursor"
         :is-rendering="isRendering"
         :paper-manager="paperManager"
-        :allBreadcrumbs="allBreadcrumbs"
+        :breadcrumbData="breadcrumbData"
         @load-xml="loadXML"
         @toggle-panels-compressed="panelsCompressed = $event"
         @toggle-mini-map-open="miniMapOpen = $event"
@@ -69,9 +69,9 @@
         :graph="graph"
         :paper="paper"
         :node="node"
-        :id="node.id"
+        :id="node.definition.id"
         :highlighted="highlightedNode === node"
-        :has-error="invalidNodes.includes(node.id)"
+        :has-error="invalidNodes.includes(node.definition.id)"
         :collaboration="collaboration"
         :process-node="processNode"
         :processes="processes"
@@ -179,7 +179,7 @@ export default {
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
-      allBreadcrumbs: [],
+      breadcrumbData: [],
     };
   },
   watch: {
@@ -779,7 +779,7 @@ export default {
         undoRedoStore.dispatch('pushState', xml);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
-      breadcrumbs: breadcrumbs =>  this.allBreadcrumbs.push(breadcrumbs),
+      breadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
     });
   },
 };
