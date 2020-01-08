@@ -20,7 +20,7 @@ describe('nodeManager', () => {
 
       node.setIds(nodeIdGenerator);
 
-      expect(node.definition.id).toBe(nodeId);
+      expect(node.id).toBe(nodeId);
       expect(node.diagram.id).toBe(diagramId);
       expect(node.diagram.bpmnElement).toBe(node.definition);
     });
@@ -46,7 +46,7 @@ describe('nodeManager', () => {
 
       node.setIds(nodeIdGenerator);
 
-      expect(node.definition.id).toBe(nodeId);
+      expect(node.id).toBe(nodeId);
       expect(node.diagram.id).toBe(diagramId);
     });
   });

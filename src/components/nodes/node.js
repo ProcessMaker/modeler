@@ -17,11 +17,19 @@ export default class Node {
     return this.type === type;
   }
 
+  get id() {
+    return this.definition.id;
+  }
+
+  set id(id) {
+    this.definition.id = id;
+  }
+
   setIds(nodeIdGenerator) {
     const [nodeId, diagramId] = nodeIdGenerator.generate();
 
-    if (!this.definition.id) {
-      this.definition.id = nodeId;
+    if (!this.id) {
+      this.id = nodeId;
     }
 
     if (this.diagram) {

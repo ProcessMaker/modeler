@@ -104,7 +104,7 @@ export default {
       return sourcePool != null && sourcePool !== targetPool;
     },
     targetIsNotSource() {
-      return this.targetNode.definition.id !== this.sourceNode.definition.id;
+      return this.targetNode.id !== this.sourceNode.id;
     },
     allowOutgoingFlow() {
       return typeof this.sourceConfig.allowOutgoingFlow === 'undefined' ||
