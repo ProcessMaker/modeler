@@ -2,6 +2,7 @@ export default class Node {
   type;
   definition;
   diagram;
+  pool;
 
   constructor(type, definition, diagram) {
     this.type = type;
@@ -36,5 +37,11 @@ export default class Node {
       this.diagram.id = diagramId;
       this.diagram.bpmnElement = this.definition;
     }
+  }
+
+  getTargetProcess(processes, processNode) {
+    return this.pool
+      ? processes.find(({ id }) => id === this.pool.component.node.definition.get('processRef').id)
+      : processNode.definition;
   }
 }

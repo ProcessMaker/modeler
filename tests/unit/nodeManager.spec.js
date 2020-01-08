@@ -1,4 +1,4 @@
-import { addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
+import { addNodeToProcess } from '@/components/nodeManager';
 import { id as poolId } from '@/components/nodes/pool';
 import { id as laneId } from '@/components/nodes/poolLane';
 import Node from '@/components/nodes/node';
@@ -124,12 +124,12 @@ describe('nodeManager', () => {
     });
   });
 
-  describe('getTargetProcess', () => {
+  describe('get target process', () => {
     it('should return processNode definition for node that does not have pool', () => {
       const node = new Node('Foo', {}, {});
       const processNode = new Node('Bar', {}, {});
 
-      const targetProcess = getTargetProcess(node, [], processNode);
+      const targetProcess = node.getTargetProcess([], processNode);
 
       expect(targetProcess).toBe(processNode.definition);
     });
@@ -153,7 +153,7 @@ describe('nodeManager', () => {
       };
       const processes = [{}, {}, process, {}, {}];
 
-      const targetProcess = getTargetProcess(node, processes, {});
+      const targetProcess = node.getTargetProcess(processes, {});
 
       expect(targetProcess).toBe(process);
     });

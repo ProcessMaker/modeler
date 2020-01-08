@@ -121,11 +121,11 @@ import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
-import { addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import Node from '@/components/nodes/node';
+import { addNodeToProcess } from '@/components/nodeManager';
 
 const version = '1.0';
 
@@ -607,7 +607,7 @@ export default {
     addNode(node) {
       node.pool = this.poolTarget;
 
-      const targetProcess = getTargetProcess(node, this.processes, this.processNode);
+      const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
       node.setIds(this.nodeIdGenerator);
 

@@ -6,7 +6,7 @@ export function addNodeToProcess(node, targetProcess) {
     return;
   }
 
-  if (node.type === laneId) {
+  if (node.isType(laneId)) {
     targetProcess
       .get('laneSets')[0]
       .get('lanes')
@@ -14,16 +14,10 @@ export function addNodeToProcess(node, targetProcess) {
     return;
   }
 
+  let target = 'flowElements';
   if (node.isBpmnType('bpmn:TextAnnotation') || node.isBpmnType('bpmn:Association')) {
-    targetProcess.get('artifacts').push(node.definition);
-    return;
+    target = 'artifacts';
   }
 
-  targetProcess.get('flowElements').push(node.definition);
-}
-
-export function getTargetProcess(node, processes, processNode) {
-  return node.pool
-    ? processes.find(({id}) => id === node.pool.component.node.definition.get('processRef').id)
-    : processNode.definition;
+  targetProcess.get(target).push(node.definition);
 }
