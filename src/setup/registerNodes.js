@@ -31,6 +31,7 @@ import {
 import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker';
 
 const nodeTypes = [
+  startEvent,
   endEvent,
   task,
   scriptTask,
@@ -73,7 +74,6 @@ const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) =
 };
 
 export default function registerNodes({ registerNode, registerBpmnExtension }) {
-  registerNode(startEvent);
   customEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
     registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
