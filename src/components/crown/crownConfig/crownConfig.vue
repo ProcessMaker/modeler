@@ -34,7 +34,7 @@
       :moddle="moddle"
       :shape="shape"
       :task-dropdown-initially-open="taskDropdownInitiallyOpen"
-      @replace-node-type="confirmReplace"
+      @replace-node-type="confirmPrompt"
       v-on="$listeners"
     />
 
@@ -53,7 +53,7 @@
       :cancel-title="$t('Cancel')"
       v-model="showReplaceModal"
       @hidden="showReplaceModal = false"
-      @ok="$emit('replace-node', nodeToReplace)"
+      @ok="confirmedReplaceType"
     >
       <p>{{ $t('Changing this type will replace your current configuration') }}</p>
     </b-modal>
@@ -67,6 +67,7 @@ import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButt
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
+import { removeFlows } from '@/components/crown/utils.js';
 import pull from 'lodash/pull';
 import store from '@/store';
 
@@ -143,16 +144,22 @@ export default {
     },
   },
   methods: {
+
     paperNotRendered() {
       return !this.isRendering;
     },
-    confirmReplace(node) {
+    removeFlows,
+    confirmPrompt(node) {
       if (this.taskDropdownInitiallyOpen) {
         this.$emit('replace-node', node);
         return;
       }
       this.showReplaceModal = true;
       this.nodeToReplace = node;
+    },
+    confirmedReplaceType() {
+      this.removeFlows(this.graph, this.shape);
+      this.$emit('replace-node', this.nodeToReplace);
     },
     setNodePosition() {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
