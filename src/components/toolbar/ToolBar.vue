@@ -1,15 +1,15 @@
 <template>
   <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom " role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-    <div id="modeler-breadcrumb">
+    <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
+        <li v-if="allBreadcrumbs.length <= 0" class="breadcrumb-item">
           <a href="/"><i class="fas fa-home"/></a>
         </li>
         <li class="breadcrumb-item" v-for="(breadcrumb,index) in allBreadcrumbs.flat()" :key="index">
           <a :href="breadcrumb.url"> {{ breadcrumb.text }}</a>
         </li>
       </ol>
-    </div>
+    </nav>
     <div class="mr-3">
       <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
         <b-button
@@ -90,6 +90,7 @@
       </div>
 
       <b-button
+        v-if="allBreadcrumbs.length <= 0"
         class="btn btn-sm btn-secondary mini-map-btn ml-auto"
         data-test="mini-map-btn"
         @click="saveBpmn"

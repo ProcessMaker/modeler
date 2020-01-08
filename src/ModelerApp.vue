@@ -19,7 +19,7 @@
         </div>
       </b-card-header>
 
-      <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" @saveBpmn="saveBpmn" />
+      <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
 
       <validation-status :validation-errors="validationErrors" :warnings="warnings" />
     </b-card>
