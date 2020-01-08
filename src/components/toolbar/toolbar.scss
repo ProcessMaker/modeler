@@ -1,11 +1,18 @@
-$toolbar-height: 2rem;
+$toolbar-height: 4rem;
+$toolbar-background-color: #F7F7F7;
 
 .toolbar {
   z-index: 1;
   height: $toolbar-height;
   cursor: auto;
+  width: 100%;
+  background: $toolbar-background-color;
 
   > button {
     cursor: pointer;
   }
+}
+
+#modeler-breadcrumb > ol.breadcrumb{
+  background-color: $toolbar-background-color;
 }

@@ -1,92 +1,104 @@
 <template>
-  <div class="toolbar d-inline-block mt-3 position-relative" role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
-    <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-      <b-button
-        class="btn btn-sm btn-secondary btn-undo"
-        :disabled="!canUndo"
-        data-test="undo"
-        v-b-tooltip.hover
-        :title="$t('Undo')"
-        @click="undo"
-      >
-        <font-awesome-icon :icon="undoIcon" />
-      </b-button>
-
-      <b-button
-        class="btn btn-sm btn-secondary btn-redo"
-        :disabled="!canRedo"
-        data-test="redo"
-        v-b-tooltip.hover
-        :title="$t('Redo')"
-        @click="redo"
-      >
-        <font-awesome-icon :icon="redoIcon" />
-      </b-button>
+  <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom " role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+    <div id="modeler-breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fas fa-home"/></a>
+        </li>
+        <li class="breadcrumb-item" v-for="(breadcrumb,index) in allBreadcrumbs.flat()" :key="index">
+          <a :href="breadcrumb.url"> {{ breadcrumb.text }}</a>
+        </li>
+      </ol>
     </div>
+    <div class="mr-3">
+      <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
+        <b-button
+          class="btn btn-sm btn-secondary btn-undo"
+          :disabled="!canUndo"
+          data-test="undo"
+          v-b-tooltip.hover
+          :title="$t('Undo')"
+          @click="undo"
+        >
+          <font-awesome-icon :icon="undoIcon" />
+        </b-button>
 
-    <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
-      <b-button
-        class="btn btn-sm btn-secondary"
-        @click="scale += scaleStep"
-        data-test="zoom-in"
-        v-b-tooltip.hover
-        :title="$t('Zoom In')"
-      >
-        <font-awesome-icon :icon="plusIcon" />
-      </b-button>
-      <b-button
-        class="btn btn-sm btn-secondary"
-        @click="scale = Math.max(minimumScale, scale -= scaleStep)"
-        data-test="zoom-out"
-        v-b-tooltip.hover
-        :title="$t('Zoom Out')"
-      >
-        <font-awesome-icon :icon="minusIcon" />
-      </b-button>
-      <b-button
-        class="btn btn-sm btn-secondary"
-        @click="scale = initialScale"
-        :disabled="scale === initialScale"
-        data-test="zoom-reset"
-        v-b-tooltip.hover
-        :title="$t('Reset to initial scale')"
-      >
-        {{ $t('Reset') }}
-      </b-button>
-      <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
-    </div>
+        <b-button
+          class="btn btn-sm btn-secondary btn-redo"
+          :disabled="!canRedo"
+          data-test="redo"
+          v-b-tooltip.hover
+          :title="$t('Redo')"
+          @click="redo"
+        >
+          <font-awesome-icon :icon="redoIcon" />
+        </b-button>
+      </div>
 
-    <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-      <b-button
-        class="btn btn-sm btn-secondary ml-auto"
-        data-test="panels-btn"
-        @click="panelsCompressed = !panelsCompressed"
-        v-b-tooltip.hover
-        :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
-      >
-        <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-      </b-button>
+      <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
+        <b-button
+          class="btn btn-sm btn-secondary"
+          @click="scale += scaleStep"
+          data-test="zoom-in"
+          v-b-tooltip.hover
+          :title="$t('Zoom In')"
+        >
+          <font-awesome-icon :icon="plusIcon" />
+        </b-button>
+        <b-button
+          class="btn btn-sm btn-secondary"
+          @click="scale = Math.max(minimumScale, scale -= scaleStep)"
+          data-test="zoom-out"
+          v-b-tooltip.hover
+          :title="$t('Zoom Out')"
+        >
+          <font-awesome-icon :icon="minusIcon" />
+        </b-button>
+        <b-button
+          class="btn btn-sm btn-secondary"
+          @click="scale = initialScale"
+          :disabled="scale === initialScale"
+          data-test="zoom-reset"
+          v-b-tooltip.hover
+          :title="$t('Reset to initial scale')"
+        >
+          {{ $t('Reset') }}
+        </b-button>
+        <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+      </div>
+
+      <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
+        <b-button
+          class="btn btn-sm btn-secondary ml-auto"
+          data-test="panels-btn"
+          @click="panelsCompressed = !panelsCompressed"
+          v-b-tooltip.hover
+          :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
+        >
+          <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
+        </b-button>
+
+        <b-button
+          class="btn btn-sm btn-secondary mini-map-btn ml-auto"
+          data-test="mini-map-btn"
+          @click="miniMapOpen = !miniMapOpen"
+          v-b-tooltip.hover
+          :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
+        >
+          <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
+        </b-button>
+      </div>
 
       <b-button
         class="btn btn-sm btn-secondary mini-map-btn ml-auto"
         data-test="mini-map-btn"
-        @click="miniMapOpen = !miniMapOpen"
+        @click="saveBpmn"
         v-b-tooltip.hover
-        :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
+        title="Save"
       >
-        <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
-      </b-button>
-    </div>
-
-    <b-button
-      class="btn btn-sm btn-secondary mini-map-btn ml-auto"
-      data-test="mini-map-btn"
-      @click="saveBpmn"
-      v-b-tooltip.hover
-      title="Save"
-    >
-      <font-awesome-icon :icon="saveIcon" />
-    </b-button>    
+        <font-awesome-icon :icon="saveIcon" />
+      </b-button>   
+    </div> 
   </div>
 </template>
 <script>
@@ -104,6 +116,10 @@ export default {
     isRendering: {
       type: Boolean,
     },
+    allBreadcrumbs: {
+      type: Array,
+    },
+
   },
   watch: {
     scale(scale) {
@@ -153,6 +169,16 @@ export default {
       undoIcon: faUndo,
       redoIcon: faRedo,
       saveIcon: faSave,
+      foo: [
+        {
+          'text':'home',
+          'url':'www.google.ca',
+        },
+        {
+          'text':'home',
+          'url':'www.google.ca',
+        },
+      ],
     };
   },
   methods: {
