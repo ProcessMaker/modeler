@@ -34,7 +34,7 @@
       :moddle="moddle"
       :shape="shape"
       :task-dropdown-initially-open="taskDropdownInitiallyOpen"
-      @replace-node-type="confirmPrompt"
+      @replace-node-type="replaceNodeTypePrompt"
       v-on="$listeners"
     />
 
@@ -53,7 +53,7 @@
       :cancel-title="$t('Cancel')"
       v-model="showReplaceModal"
       @hidden="showReplaceModal = false"
-      @ok="confirmedReplaceType"
+      @ok="confirmedReplaceNodeType"
     >
       <p>{{ $t('Changing this type will replace your current configuration') }}</p>
     </b-modal>
@@ -144,12 +144,11 @@ export default {
     },
   },
   methods: {
-
     paperNotRendered() {
       return !this.isRendering;
     },
     removeFlows,
-    confirmPrompt(node) {
+    replaceNodeTypePrompt(node) {
       if (this.taskDropdownInitiallyOpen) {
         this.$emit('replace-node', node);
         return;
@@ -157,7 +156,7 @@ export default {
       this.showReplaceModal = true;
       this.nodeToReplace = node;
     },
-    confirmedReplaceType() {
+    confirmedReplaceNodeType() {
       this.removeFlows(this.graph, this.shape);
       this.$emit('replace-node', this.nodeToReplace);
     },
