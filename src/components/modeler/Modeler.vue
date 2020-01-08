@@ -121,7 +121,7 @@ import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import initAnchor from '@/mixins/linkManager.js';
-import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
+import { addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
@@ -609,7 +609,7 @@ export default {
 
       const targetProcess = getTargetProcess(node, this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      addIdToNodeAndSetUpDiagramReference(node, this.nodeIdGenerator);
+      node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
 

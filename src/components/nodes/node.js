@@ -16,4 +16,17 @@ export default class Node {
   isType(type) {
     return this.type === type;
   }
+
+  setIds(nodeIdGenerator) {
+    const [nodeId, diagramId] = nodeIdGenerator.generate();
+
+    if (!this.definition.id) {
+      this.definition.id = nodeId;
+    }
+
+    if (this.diagram) {
+      this.diagram.id = diagramId;
+      this.diagram.bpmnElement = this.definition;
+    }
+  }
 }

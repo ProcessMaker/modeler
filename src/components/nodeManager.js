@@ -1,19 +1,6 @@
 import { id as poolId } from './nodes/pool';
 import { id as laneId } from '@/components/nodes/poolLane';
 
-export function addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator) {
-  const [nodeId, diagramId] = nodeIdGenerator.generate();
-
-  if (!node.definition.id) {
-    node.definition.id = nodeId;
-  }
-
-  if (node.diagram) {
-    node.diagram.id = diagramId;
-    node.diagram.bpmnElement = node.definition;
-  }
-}
-
 export function addNodeToProcess(node, targetProcess) {
   if (node.isType(poolId) || node.isBpmnType('bpmn:MessageFlow')) {
     return;
