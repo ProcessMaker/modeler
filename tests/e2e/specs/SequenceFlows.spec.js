@@ -1,9 +1,12 @@
 import {
+  addNodeTypeToPaper,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
+  modalConfirm,
   moveElement,
+  removeIndentationAndLinebreaks,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -258,5 +261,44 @@ describe('Sequence Flows', () => {
     getElementAtPosition(endEventPosition, nodeTypes.endEvent).
       then($el => $el.find('[joint-selector="body"]')).
       should('have.attr', 'fill', endColor);
+  });
+
+  it('Removes sequence flows when switching task type', () => {
+    const startPosition = { x: 150, y: 150 };
+    const taskPosition = { x: 250, y: 250 };
+    let numberOfSequenceFlowsAdded = 1;
+
+    const sequenceFlow = '<bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_1" targetRef="node_3"';
+
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-script-task');
+    getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.scriptTask);
+
+    connectNodesWithFlow('sequence-flow-button', startPosition, taskPosition);
+
+    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links.length).to.eq(numberOfSequenceFlowsAdded);
+    });
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(sequenceFlow);
+    });
+
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-manual-task]').click();
+    modalConfirm();
+
+    waitToRenderAllShapes();
+
+    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links.length).to.eq(--numberOfSequenceFlowsAdded);
+    });
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.not.contain(sequenceFlow);
+    });
   });
 });
