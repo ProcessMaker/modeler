@@ -118,7 +118,7 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      taskDropdownInitiallyOpen: true,
+      taskDropdownInitiallyOpen: this.paperNotRendered(),
       showReplaceModal: false,
       nodeToReplace: null,
     };
@@ -143,6 +143,9 @@ export default {
     },
   },
   methods: {
+    paperNotRendered() {
+      return !this.isRendering;
+    },
     confirmReplace(node) {
       if (this.taskDropdownInitiallyOpen) {
         this.$emit('replace-node', node);
