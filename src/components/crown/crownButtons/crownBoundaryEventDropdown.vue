@@ -40,6 +40,7 @@ import boundaryEventIcon from '@/assets/boundary-event.svg';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 import store from '@/store';
+import Node from '@/components/nodes/node';
 
 export default {
   name: 'CrownBoundaryEventDropdown',
@@ -82,11 +83,7 @@ export default {
       diagram.bounds.x = emptyPort.x - (diagram.bounds.width / 2);
       diagram.bounds.y = emptyPort.y - (diagram.bounds.height / 2);
 
-      const node = {
-        definition,
-        diagram,
-        type: nodeType,
-      };
+      const node = new Node(nodeType, definition, diagram);
 
       store.commit('highlightNode', node);
 

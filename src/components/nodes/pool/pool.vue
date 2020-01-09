@@ -43,6 +43,7 @@ import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButt
 import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
+import Node from '@/components/nodes/node';
 
 export default {
   components: {
@@ -189,16 +190,16 @@ export default {
       const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
 
-      this.$emit('add-node', {
-        type: Lane.id,
+      this.$emit('add-node', new Node(
+        Lane.id,
         definition,
         diagram,
-      });
+      ));
 
       return this.$nextTick();
     },
     addToPool(element) {
-      if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
+      if (element.component.node.isBpmnType('bpmn:BoundaryEvent')) {
         return;
       }
       this.shape.unembed(element);
@@ -386,7 +387,7 @@ export default {
     },
     captureChildren() {
       this.graph.getElements().filter(({ component }) => component && component !== this).forEach(({ component }) => {
-        if (component.node.definition.$type === 'bpmn:BoundaryEvent') {
+        if (component.node.isBpmnType('bpmn:BoundaryEvent')) {
           return;
         }
         this.shape.embed(component.shape);

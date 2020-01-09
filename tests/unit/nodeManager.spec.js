@@ -1,58 +1,59 @@
-import { addIdToNodeAndSetUpDiagramReference, addNodeToProcess, getTargetProcess } from '@/components/nodeManager';
+import { addNodeToProcess } from '@/components/nodeManager';
 import { id as poolId } from '@/components/nodes/pool';
 import { id as laneId } from '@/components/nodes/poolLane';
+import Node from '@/components/nodes/node';
 
 describe('nodeManager', () => {
-  describe('addIdToNodeAndSetUpDiagramReference', () => {
+  describe('add id to to node and set up diagram reference', () => {
     it('should not change node ID if it already has an ID set', () => {
       const nodeId = 'foobar';
       const newNodeId = 'baz';
       const diagramId = 'diagram_id';
-      const node = {
-        definition: { id: nodeId },
-        diagram: {},
-      };
+      const node = new Node(
+        'foo',
+        { id: nodeId },
+        {},
+      );
       const nodeIdGenerator = {
         generate: () => ([newNodeId, diagramId]),
       };
 
-      addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator);
+      node.setIds(nodeIdGenerator);
 
-      expect(node.definition.id).toBe(nodeId);
+      expect(node.id).toBe(nodeId);
       expect(node.diagram.id).toBe(diagramId);
       expect(node.diagram.bpmnElement).toBe(node.definition);
     });
 
     it('should not throw if node does not have a diagram', () => {
-      const node = {
-        definition: { id: 123 },
-      };
+      const node = new Node(
+        'foo',
+        { id: 123 },
+        {},
+      );
       const nodeIdGenerator = {
         generate: () => ([]),
       };
 
-      expect(() => addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator)).not.toThrow();
+      expect(() => node.setIds(nodeIdGenerator)).not.toThrow();
     });
 
     it('should use ID generator if definition does not have ID', () => {
       const nodeId = 'foobar';
       const diagramId = 'baz';
       const nodeIdGenerator = { generate: () => [nodeId, diagramId] };
-      const node = {
-        definition: {},
-        diagram: {},
-      };
+      const node = new Node('foo', {}, {});
 
-      addIdToNodeAndSetUpDiagramReference(node, nodeIdGenerator);
+      node.setIds(nodeIdGenerator);
 
-      expect(node.definition.id).toBe(nodeId);
+      expect(node.id).toBe(nodeId);
       expect(node.diagram.id).toBe(diagramId);
     });
   });
 
   describe('addNodeToProcess', () => {
     it('should not modify target process for pool nodes', () => {
-      const node = { type: poolId };
+      const node = new Node(poolId, {}, {});
       const targetProcess = {};
 
       addNodeToProcess(node, targetProcess);
@@ -61,7 +62,7 @@ describe('nodeManager', () => {
     });
 
     it('should not modify target process for node definition $type "bpmn:MessageFlow"', () => {
-      const node = { definition: { $type: 'bpmn:MessageFlow' } };
+      const node = new Node('foo', { $type: 'bpmn:MessageFlow' }, {});
       const targetProcess = {};
 
       addNodeToProcess(node, targetProcess);
@@ -70,7 +71,7 @@ describe('nodeManager', () => {
     });
 
     it('should set lane definition on target process lanes', () => {
-      const node = {type: laneId, definition: {}};
+      const node = new Node(laneId, {}, {});
       const targetProcess = {
         laneSets: [{
           lanes: [],
@@ -93,7 +94,7 @@ describe('nodeManager', () => {
       'bpmn:TextAnnotation',
       'bpmn:Association',
     ])('should set definition on target process artifacts for node definition type %s', $type => {
-      const node = { definition: { $type } };
+      const node = new Node('foo', { $type }, {});
       const targetProcess = {
         artifacts: [],
         get(key) {
@@ -108,7 +109,7 @@ describe('nodeManager', () => {
     });
 
     it('should set definition on target process flowElements for non-message-flow node', () => {
-      const node = { definition: { $type: 'bpmn:NotMessageFlow' } };
+      const node = new Node('Foo', { $type: 'bpmn:NotMessageFlow' }, {});
       const targetProcess = {
         flowElements: [],
         get(key) {
@@ -123,12 +124,12 @@ describe('nodeManager', () => {
     });
   });
 
-  describe('getTargetProcess', () => {
+  describe('get target process', () => {
     it('should return processNode definition for node that does not have pool', () => {
-      const node = {};
-      const processNode = { definition: {} };
+      const node = new Node('Foo', {}, {});
+      const processNode = new Node('Bar', {}, {});
 
-      const targetProcess = getTargetProcess(node, [], processNode);
+      const targetProcess = node.getTargetProcess([], processNode);
 
       expect(targetProcess).toBe(processNode.definition);
     });
@@ -136,17 +137,26 @@ describe('nodeManager', () => {
     it('should return matching pool process for node that has pool', () => {
       const targetProcessId = 'foobar';
       const process = { id: targetProcessId };
-      const node = { pool: { component: { node: {definition: {
-        processRef: { id: targetProcessId },
-        get(key) {
-          return this[key];
+      const node = new Node('Foo', {}, {});
+      node.pool = {
+        component: {
+          node: new Node('FooBar',
+            {
+              processRef: { id: targetProcessId },
+              get(key) {
+                return this[key];
+              },
+            },
+            {},
+          ),
         },
-      }}}}};
+      };
       const processes = [{}, {}, process, {}, {}];
 
-      const targetProcess = getTargetProcess(node, processes, {});
+      const targetProcess = node.getTargetProcess(processes, {});
 
       expect(targetProcess).toBe(process);
     });
   });
-});
+})
+;

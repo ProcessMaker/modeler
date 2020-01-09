@@ -6,13 +6,9 @@ export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
     return false;
   }
 
-  if (getEmptyBoundaryEventPositionsForShape(dropTarget).length === 0) {
-    return false;
-  }
-
-  return true;
+  return getEmptyBoundaryEventPositionsForShape(dropTarget).length !== 0;
 }
 
 export function isValidBoundaryEscalationEvent(component) {
-  return component && component.node.definition.$type === 'bpmn:CallActivity';
+  return component && component.node.isBpmnType('bpmn:CallActivity');
 }

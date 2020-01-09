@@ -1,6 +1,6 @@
 <template>
   <crown-button
-    v-if="node.type === 'processmaker-modeler-text-annotation'"
+    v-if="node.isType('processmaker-modeler-text-annotation')"
     :title="$t('Association Flow')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     id="association-flow-button"
@@ -15,6 +15,7 @@
 import connectIcon from '@/assets/connect-artifacts.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { direction } from '@/components/nodes/association/associationConfig';
+import Node from '@/components/nodes/node';
 
 export default {
   components: { CrownButton },
@@ -33,11 +34,11 @@ export default {
         associationDirection: direction.none,
       });
 
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-association',
-        definition: associationLink,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
-      });
+      this.$emit('add-node', new Node(
+        'processmaker-modeler-association',
+        associationLink,
+        this.moddle.create('bpmndi:BPMNEdge'),
+      ));
     },
   },
 };

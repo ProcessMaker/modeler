@@ -13,6 +13,7 @@
 <script>
 import messageFlow from '@/assets/message-flow.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
+import Node from '@/components/nodes/node';
 
 export default {
   components: { CrownButton },
@@ -39,11 +40,11 @@ export default {
         targetRef: { x, y },
       });
 
-      this.$emit('add-node', {
-        type: 'processmaker-modeler-message-flow',
-        definition: messageFlowDefinition,
-        diagram: this.moddle.create('bpmndi:BPMNEdge'),
-      });
+      this.$emit('add-node', new Node(
+        'processmaker-modeler-message-flow',
+        messageFlowDefinition,
+        this.moddle.create('bpmndi:BPMNEdge'),
+      ));
     },
   },
 };
