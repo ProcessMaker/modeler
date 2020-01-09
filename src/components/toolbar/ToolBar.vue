@@ -1,5 +1,8 @@
 <template>
-  <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom " role="toolbar" aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }">
+  <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom" role="toolbar"
+    aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
+  >
+    <breadcrumb :breadcrumb-data="breadcrumbData" />
     <div class="mr-3">
       <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
         <b-button
@@ -96,10 +99,11 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
+import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 
 export default {
   name: 'tool-bar',
-  components: { FontAwesomeIcon },
+  components: { Breadcrumb, FontAwesomeIcon },
   props: {
     canvasDragPosition: {},
     cursor: {},
@@ -186,3 +190,4 @@ export default {
   },
 };
 </script>
+<style lang="scss"  src="./toolbar.scss" />

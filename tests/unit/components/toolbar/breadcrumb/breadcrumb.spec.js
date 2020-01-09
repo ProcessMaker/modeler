@@ -4,7 +4,8 @@ import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 describe('Breadcrumb', () => {
   it('does not render if no breadcrumbs prop is passed', function() {
     const breadcrumbs = mount(Breadcrumb);
-    expect(breadcrumbs.html()).toBeFalsy();
+    expect(breadcrumbs.find('nav').exists()).toBe(true);
+    expect(breadcrumbs.find('nav').find('ol').exists()).toBe(false);
   });
 
   it('does not render breadcrumbs data has zero length', function() {
@@ -13,7 +14,7 @@ describe('Breadcrumb', () => {
         breadcrumbData: [],
       },
     });
-    expect(breadcrumbs.html()).toBeFalsy();
+    expect(breadcrumbs.find('nav').find('ol').exists()).toBe(false);
   });
 
   it('can render breadcrumbs', function() {

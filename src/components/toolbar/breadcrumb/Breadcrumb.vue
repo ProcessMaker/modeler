@@ -1,6 +1,6 @@
 <template>
-  <nav v-if="breadcrumbData.length > 0">
-    <ol class="breadcrumb">
+  <nav id="breadcrumbs">
+    <ol v-if="breadcrumbData.length > 0" class="breadcrumb">
       <li class="breadcrumb-item">
         <a href="/"><i class="fas fa-home" /></a>
       </li>
