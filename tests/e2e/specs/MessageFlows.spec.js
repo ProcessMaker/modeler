@@ -6,7 +6,10 @@ import {
   getLinksConnectedToElement,
   getNumberOfLinks,
   isElementCovered,
+  modalConfirm,
   moveElement,
+  removeIndentationAndLinebreaks,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -141,5 +144,48 @@ describe('Message Flows', () => {
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
+  });
+
+  it('Removes message flows when switching task type', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const pool1Position = { x: 250, y: 250 };
+    const pool2Position = { x: 250, y: 500 };
+    const offset = 100;
+    const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
+    let numberOfMessageFlowsAdded = 1;
+
+    const messageFlow = '<bpmn:messageFlow id="node_5" name="" sourceRef="node_1" targetRef="node_4"';
+
+    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
+
+    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links.length).to.eq(numberOfMessageFlowsAdded);
+    });
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.contain(messageFlow);
+    });
+
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-manual-task]').click();
+    modalConfirm();
+
+    waitToRenderAllShapes();
+
+    getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
+      expect($links.length).to.eq(--numberOfMessageFlowsAdded);
+    });
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
+      expect(xml).to.not.contain(messageFlow);
+    });
   });
 });

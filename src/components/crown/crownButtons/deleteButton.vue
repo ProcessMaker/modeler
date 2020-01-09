@@ -21,6 +21,7 @@
 <script>
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
+import { removeFlows } from '@/components/crown/utils.js';
 
 export default {
   components: { CrownButton },
@@ -36,16 +37,9 @@ export default {
     },
   },
   methods: {
+    removeFlows,
     removeShape() {
-      this.graph.getConnectedLinks(this.shape).forEach(shape => this.$emit('remove-node', shape.component.node));
-      this.shape.getEmbeddedCells({ deep: true }).forEach(cell => {
-        if (cell.component) {
-          this.graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
-          this.shape.unembed(cell);
-          this.$emit('remove-node', cell.component.node);
-        }
-      });
-
+      this.removeFlows(this.graph, this.shape);
       this.$emit('remove-node', this.node);
     },
     removePoolLaneShape() {
