@@ -202,11 +202,9 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
 
         waitToRenderAllShapes();
 
-        getElementAtPosition(taskPosition).click();
-
         cy.wrap($boundaryEvent).should($el => {
           const { left, top } = $el.position();
-          const positionErrorMargin = 2;
+          const positionErrorMargin = 20;
           expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
           expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
         });
@@ -269,8 +267,8 @@ boundaryEventData.forEach(({ type, nodeType, eventXMLSnippet, taskType, taskType
         cy.get('@boundaryEvent').should($boundaryEvent => {
           const { left, top } = $boundaryEvent.position();
 
-          expect(left).to.be.closeTo(boundaryEventPosition.left, 2);
-          expect(top).to.be.closeTo(boundaryEventPosition.top, 2);
+          expect(left).to.be.closeTo(boundaryEventPosition.left, 20);
+          expect(top).to.be.closeTo(boundaryEventPosition.top, 20);
         });
       });
 
