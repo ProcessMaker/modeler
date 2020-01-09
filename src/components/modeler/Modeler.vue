@@ -1,18 +1,16 @@
 <template>
   <b-card-body class="overflow-hidden position-relative p-0 vh-100" data-test="body-container">
-    <b-row class="w-100 m-0">
-      <tool-bar
-        :canvas-drag-position="canvasDragPosition"
-        :cursor="cursor"
-        :is-rendering="isRendering"
-        :paper-manager="paperManager"
-        :breadcrumbData="breadcrumbData"
-        @load-xml="loadXML"
-        @toggle-panels-compressed="panelsCompressed = $event"
-        @toggle-mini-map-open="miniMapOpen = $event"
-        @saveBpmn="saveBpmn"
-      />
-    </b-row>
+    <tool-bar
+      :canvas-drag-position="canvasDragPosition"
+      :cursor="cursor"
+      :is-rendering="isRendering"
+      :paper-manager="paperManager"
+      :breadcrumb-data="breadcrumbData"
+      @load-xml="loadXML"
+      @toggle-panels-compressed="panelsCompressed = $event"
+      @toggle-mini-map-open="miniMapOpen = $event"
+      @saveBpmn="$emit('saveBpmn')"
+    />
 
     <b-row class="modeler h-100">
       <b-tooltip
@@ -222,9 +220,6 @@ export default {
     },
   },
   methods: {
-    saveBpmn() {
-      this.$emit('saveBpmn');
-    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
@@ -779,7 +774,7 @@ export default {
         undoRedoStore.dispatch('pushState', xml);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
-      breadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+      addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
     });
   },
 };
