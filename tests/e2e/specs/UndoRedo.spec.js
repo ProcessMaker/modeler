@@ -13,9 +13,11 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
+const TOOLBAR_HEIGHT = 64;
+
 describe('Undo/redo', () => {
   it('Can undo and redo sequence flow condition expression', () => {
-    const exclusiveGatewayPosition = { x: 250, y: 250 };
+    const exclusiveGatewayPosition = { x: 250, y: 250 + TOOLBAR_HEIGHT };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
@@ -105,13 +107,13 @@ describe('Undo/redo', () => {
     const startEventMoveToPosition = { x: 300, y: 300 };
 
     cy.get('[data-test=undo]')
-      .click()
+      .click({ force: true })
       .should('be.disabled');
 
     waitToRenderAllShapes();
 
     cy.get('[data-test=redo]')
-      .click()
+      .click({ force: true })
       .should('be.disabled');
 
     waitToRenderAllShapes();
@@ -124,7 +126,7 @@ describe('Undo/redo', () => {
 
     cy.get('[data-test=undo]')
       .should('not.be.disabled')
-      .click();
+      .click({ force: true });
 
     waitToRenderAllShapes();
 
@@ -140,11 +142,11 @@ describe('Undo/redo', () => {
       .moveTo(taskPosition2.x, taskPosition2.y)
       .moveTo(taskPosition3.x, taskPosition3.y);
 
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-test=undo]').click({ force: true });
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(taskPosition2).should('exist');
+    getElementAtPosition({ x: taskPosition2.x, y: taskPosition2.y + TOOLBAR_HEIGHT }).should('exist');
     getElementAtPosition(taskPosition3).should('not.exist');
   });
 
