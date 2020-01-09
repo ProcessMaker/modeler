@@ -328,7 +328,7 @@ describe('Modeler', () => {
   });
 
   it('scales mini-map on load', () => {
-    cy.get('[data-test=mini-map-btn]').click();
+    cy.get('[data-test=mini-map-btn]').click({ multiple: true });
     uploadXml('../fixtures/offscreenProcess.xml');
     cy.get('.mini-paper .joint-cell')
       .each($cell => {
@@ -339,7 +339,7 @@ describe('Modeler', () => {
   it('Scales gateways when mini-map is opened', () => {
     const gatewayPosition = { x: 400, y: 400 };
     addNodeTypeToPaper(gatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
-    cy.get('[data-test=mini-map-btn]').click();
+    cy.get('[data-test=mini-map-btn]').click({ multiple: true });
 
     cy.get('.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]').then($startEvent => {
       const { width: startEventWidth, height: startEventHeight } = $startEvent.get(0).getBBox();
