@@ -17,7 +17,10 @@ export default {
   mounted() {
     this.shape.attr('image/xlink:href', messageEndEventSymbol);
     this.rootElements.push(this.message);
-    this.node.definition.get('eventDefinitions')[0].messageRef = this.message;
+
+    if (!this.node.definition.get('eventDefinitions')[0].messageRef) {
+      this.node.definition.get('eventDefinitions')[0].messageRef = this.message;
+    }
   },
   destroyed() {
     pull(this.rootElements, this.message);
