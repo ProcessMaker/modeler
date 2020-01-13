@@ -101,7 +101,7 @@ describe('Intermediate Message Throw Event', () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
   });
 
-  it('should not create duplicate messages on undo/redo', function() {
+  it('should not create duplicate messages on undo/redo', () => {
     addNodeTypeToPaper({ x: 300, y: 300 }, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     cy.get('[data-test=undo]').click();

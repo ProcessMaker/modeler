@@ -26,7 +26,7 @@ describe('Message End Event', () => {
     `);
   });
 
-  it('should not create duplicate messages on undo/redo', function() {
+  it('should not create duplicate messages on undo/redo', () => {
     addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     cy.get('[data-test=undo]').click();

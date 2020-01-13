@@ -52,7 +52,7 @@ describe('Error End Event', () => {
     );
   });
 
-  it('should not create duplicate errors on undo/redo', function() {
+  it('should not create duplicate errors on undo/redo', () => {
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
     cy.get('[data-test=redo]').click();
