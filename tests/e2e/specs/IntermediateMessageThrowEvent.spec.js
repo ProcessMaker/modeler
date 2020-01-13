@@ -1,9 +1,11 @@
 import {
+  addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
+  getXml,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -97,5 +99,20 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[name=messageRef]').should('contain', messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
+  });
+
+  it('should not create duplicate messages on undo/redo', () => {
+    addNodeTypeToPaper({ x: 300, y: 300 }, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+
+    cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
+
+    getXml().then(xml => {
+      const match = xml.match(/<bpmn:message id=".*?" name=".*?" \/>/g);
+      const numberOfMessages = match && match.length;
+      expect(numberOfMessages).to.equal(1, 'More than 1 message element was found');
+    });
   });
 });

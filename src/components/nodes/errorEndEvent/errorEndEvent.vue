@@ -14,10 +14,24 @@ export default {
       }),
     };
   },
+  methods: {
+    addErrorRef() {
+      if (this.node.definition.get('eventDefinitions')[0].errorRef) {
+        this.error = this.node.definition.get('eventDefinitions')[0].errorRef;
+        return;
+      }
+
+      this.error = this.moddle.create('bpmn:Error', {
+        id: `${this.id}_error`,
+        name: `${this.id}_error`,
+      });
+      this.rootElements.push(this.error);
+      this.node.definition.get('eventDefinitions')[0].errorRef = this.error;
+    },
+  },
   mounted() {
     this.shape.attr('image/xlink:href', errorIcon);
-    this.rootElements.push(this.error);
-    this.node.definition.get('eventDefinitions')[0].errorRef = this.error;
+    this.addErrorRef();
   },
   destroyed() {
     pull(this.rootElements, this.error);

@@ -9,10 +9,25 @@ export default {
   data() {
     return {
       message: this.moddle.create('bpmn:Message', {
-        id: `${ this.id }_message`,
-        name: `${ this.id }_message`,
+        id: `${this.id}_message`,
+        name: `${this.id}_message`,
       }),
     };
+  },
+  methods: {
+    addMessageRef() {
+      if (this.node.definition.get('eventDefinitions')[0].messageRef) {
+        this.message = this.node.definition.get('eventDefinitions')[0].messageRef;
+        return;
+      }
+
+      this.message = this.moddle.create('bpmn:Message', {
+        id: `${this.id}_message`,
+        name: `${this.id}_message`,
+      });
+      this.rootElements.push(this.message);
+      this.node.definition.get('eventDefinitions')[0].messageRef = this.message;
+    },
   },
   mounted() {
     this.shape.attr('image/xlink:href', intermediateMailSymbol);
@@ -24,11 +39,8 @@ export default {
         x: 2,
       },
     });
-    this.rootElements.push(this.message);
 
-    if (!this.node.definition.get('eventDefinitions')[0].messageRef) {
-      this.node.definition.get('eventDefinitions')[0].messageRef = this.message;
-    }
+    this.addMessageRef();
   },
   destroyed() {
     pull(this.rootElements, this.message);
