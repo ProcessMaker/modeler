@@ -4,6 +4,7 @@ import {
   assertDownloadedXmlDoesNotContainExpected,
   getCrownButtonForElement,
   getElementAtPosition,
+  getXml,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -49,5 +50,18 @@ describe('Error End Event', () => {
       '<bpmn:error id="node_3_error" name="node_3_error" />',
       `<bpmn:error id="node_3_error" name="${errorName}" />`,
     );
+  });
+
+  it('should not create duplicate errors on undo/redo', function() {
+    cy.get('[data-test=undo]').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=redo]').click();
+    waitToRenderAllShapes();
+
+    getXml().then(xml => {
+      const match = xml.match(/<bpmn:error id=".*?" name=".*?" \/>/g);
+      const numberOfMessages = match && match.length;
+      expect(numberOfMessages).to.equal(1, 'More than 1 message element was found');
+    });
   });
 });
