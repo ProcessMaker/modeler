@@ -1,9 +1,11 @@
 $controls-column-max-width: 265px;
 $controls-column-compressed-max-width: 95px;
 $controls-transition: 0.3s;
+$toolbar-height: 4rem;
 
 .controls {
   z-index: 1;
+  padding-bottom: $toolbar-height;
 
   &-column {
     max-width: $controls-column-max-width;

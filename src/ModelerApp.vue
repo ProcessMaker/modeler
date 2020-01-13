@@ -18,9 +18,9 @@
           </b-btn>
         </div>
       </b-card-header>
-
-      <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
-
+      <b-card-body class="overflow-hidden position-relative p-0 vh-100">
+        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
+      </b-card-body>
       <validation-status :validation-errors="validationErrors" :warnings="warnings" />
     </b-card>
 
