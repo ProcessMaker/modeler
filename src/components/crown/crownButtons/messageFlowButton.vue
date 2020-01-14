@@ -26,7 +26,7 @@ export default {
         'processmaker-modeler-end-event',
         'processmaker-modeler-task',
         'processmaker-modeler-pool',
-        'processmaker-modeler-intermediate-message-catch-event',
+        'processmaker-modeler-intermediate-message-throw-event',
       ],
     };
   },
