@@ -10,6 +10,7 @@ $inspector-column-max-width: 265px;
   &-container {
     text-align: left;
     user-select: none;
+    padding-bottom: $toolbar-height;
 
     .form-group {
       padding: 0 0.5rem;

@@ -1,5 +1,5 @@
 <template>
-  <b-card-body class="overflow-hidden position-relative p-0 vh-100" data-test="body-container">
+  <span data-test="body-container">
     <tool-bar
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
@@ -11,7 +11,6 @@
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="$emit('saveBpmn')"
     />
-
     <b-row class="modeler h-100">
       <b-tooltip
         v-if="tooltipTarget"
@@ -93,7 +92,7 @@
         @replace-node="replaceNode"
       />
     </b-row>
-  </b-card-body>
+  </span>
 </template>
 
 <script>

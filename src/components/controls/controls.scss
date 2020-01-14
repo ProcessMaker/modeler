@@ -4,6 +4,7 @@ $controls-transition: 0.3s;
 
 .controls {
   z-index: 1;
+  padding-bottom: $toolbar-height;
 
   &-column {
     max-width: $controls-column-max-width;
