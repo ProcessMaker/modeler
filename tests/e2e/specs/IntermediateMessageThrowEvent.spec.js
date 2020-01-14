@@ -120,6 +120,9 @@ describe('Intermediate Message Throw Event', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     typeIntoTextInput('[name=messageName]', messageName);
+
+    /* Something outside of the inspector panel has to be selected to trigger the focusout event;
+     * otherwise it creates a race condition with the Undo button click event. */
     cy.get('[aria-label="Toolbar"]').click();
 
     cy.get('[data-test=undo]').click();
