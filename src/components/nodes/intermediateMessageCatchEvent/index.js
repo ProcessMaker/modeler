@@ -4,6 +4,8 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
 import omit from 'lodash/omit';
+/*import { getMessage } from '@/components/nodes/intermediateMessageCatchEvent/intermediateMessageCatchEventUtils';
+import store from '@/store';*/
 
 export default merge(cloneDeep(intermediateMessageEventConfig), {
   id: 'processmaker-modeler-intermediate-message-catch-event',
@@ -47,6 +49,16 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
         }),
       ]);
     }
+
+    /*if (!getMessage(store, node.definition.eventDefinitions[0].get('messageRef'))) {
+      // eslint-disable-next-line no-console
+      console.log(getMessage(store, node.definition.eventDefinitions[0].get('messageRef')));
+      setNodeProp(node, 'eventDefinitions', [
+        moddle.create('bpmn:MessageEventDefinition', {
+          messageRef: null,
+        }),
+      ]);
+    }*/
   },
   inspectorConfig: [
     {

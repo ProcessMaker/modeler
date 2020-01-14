@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  dragFromSourceToDest, getCrownButtonForElement,
   getElementAtPosition,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
@@ -94,5 +94,34 @@ describe('Intermediate Catch Event', () => {
       .should(xml => {
         expect(xml).to.contain(defaultTimeDuration);
       });
+  });
+
+  it.only('Removes messageRef when message is deleted', () => {
+    const intermediateCatchEventPosition = { x: 250, y: 250 };
+    const intermediateThrowEventPosition = { x: 250, y: 350 };
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
+
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
+
+    getElementAtPosition(intermediateCatchEventPosition).click();
+    cy.get('[name=messageRef]').select('node_5_message');
+
+    const messageRef = '<bpmn:messageEventDefinition messageRef="node_5_message" />';
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {
+      expect(xml).to.contain(messageRef);
+    });
+
+    getElementAtPosition(intermediateThrowEventPosition).click().then($throwEvent => {
+      getCrownButtonForElement($throwEvent, 'delete-button').click({ force: true });
+    });
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {
+      expect(xml).to.not.contain(messageRef);
+    });
   });
 });
