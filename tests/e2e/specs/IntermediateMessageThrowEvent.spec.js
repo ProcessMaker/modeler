@@ -2,14 +2,15 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
+  connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
+  getNumberOfLinks,
   getXml,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
-
 import { nodeTypes } from '../support/constants';
 
 const messageRef = 'node_3_message';
@@ -133,5 +134,29 @@ describe('Intermediate Message Throw Event', () => {
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
     cy.get('[name=messageName]').should('have.value', messageName);
+  });
+
+  it('should allow valid message flow connections', () => {
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
+    const secondPoolPosition = { x: 150, y: 450 };
+    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 450 });
+
+    const validMessageThrowEventTargets = [
+      { genericNode: nodeTypes.startEvent, nodeToSwitchTo: 'switch-to-message-start-event' },
+      { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-user-task' },
+      { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-manual-task' },
+      { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-script-task' },
+      { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-sub-process' },
+      { genericNode: nodeTypes.intermediateCatchEvent, nodeToSwitchTo: 'switch-to-intermediate-message-catch-event' },
+    ];
+
+    validMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
+      const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
+      addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
+      connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, nodePosition);
+      getNumberOfLinks().should('equal', 1);
+      cy.get('#delete-button').click();
+    });
   });
 });
