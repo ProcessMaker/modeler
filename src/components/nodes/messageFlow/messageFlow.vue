@@ -69,10 +69,26 @@ export default {
     isValidTarget() {
       return this.hasTargetType() &&
         this.targetIsValidType() &&
+        this.targetIsValidStartEventType() &&
+        this.targetIsValidIntermediateEventType() &&
         this.targetIsNotContainingPool() &&
         this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
         this.allowOutgoingFlow();
+    },
+    targetIsValidStartEventType() {
+      if (!this.targetNode.isBpmnType('bpmn:StartEvent')) {
+        return true;
+      }
+
+      return this.targetNode.isType('processmaker-modeler-message-start-event');
+    },
+    targetIsValidIntermediateEventType() {
+      if (!this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent')) {
+        return true;
+      }
+
+      return this.targetNode.isType('processmaker-modeler-intermediate-message-catch-event');
     },
     targetIsValidType() {
       return [
@@ -83,6 +99,7 @@ export default {
         'bpmn:ServiceTask',
         'bpmn:IntermediateCatchEvent',
         'bpmn:Participant',
+        'bpmn:StartEvent',
       ].some(type => this.targetNode.isBpmnType(type));
     },
     hasTargetType() {
