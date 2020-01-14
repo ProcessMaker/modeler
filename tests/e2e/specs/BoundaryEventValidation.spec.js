@@ -10,7 +10,7 @@ describe('Boundary event validation', () => {
 
     const numberOfPortsAroundTask = 12;
     for (let i = 0; i < numberOfPortsAroundTask; i++) {
-      setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition);
+      setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
     }
 
     getElementAtPosition(taskPosition, nodeTypes.task)
@@ -28,7 +28,7 @@ describe('Boundary event validation', () => {
       .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
       .should('have.length', numberOfPortsAroundTask);
 
-    setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     cy
       .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
@@ -36,7 +36,7 @@ describe('Boundary event validation', () => {
 
     getElementAtPosition(taskPosition, nodeTypes.task).click();
 
-    const dataTest = nodeTypes.boundaryMessageEvent.replace('processmaker-modeler-', 'add-');
+    const dataTest = nodeTypes.boundaryTimerEvent.replace('processmaker-modeler-', 'add-');
     cy.get(`[data-test="${dataTest}"]`)
       .should('exist')
       .should('not.be.enabled');
