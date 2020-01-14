@@ -34,13 +34,13 @@ import { renderer, VueFormRenderer } from '@processmaker/screen-builder';
 import {
   FormAccordion,
   FormCheckbox,
-  FormDatePicker,
   FormInput,
   FormMultiSelect,
   FormRadioButtonGroup,
   FormSelect,
   FormTextArea,
 } from '@processmaker/vue-form-elements';
+import FormDatePicker from '@/components/inspectors/FormDatePicker';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';

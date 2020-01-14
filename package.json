@@ -52,6 +52,7 @@
     "luxon": "^1.21.1",
     "mustache": "^3.1.0",
     "vue": "^2.6.10",
+    "vue-bootstrap-datetimepicker": "^5.0.1",
     "vue-deepset": "^0.6.3",
     "vue-upload-component": "^2.8.20",
     "vuex": "^3.1.1"
@@ -94,6 +95,7 @@
     "vue-jest": "^3.0.5",
     "vue-loader": "latest",
     "vue-template-compiler": "^2.6.10",
+    "vue-uniq-ids": "^1.0.0",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10",
     "yargs": "^14.2.0"
