@@ -126,7 +126,7 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
-import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import { keydownListener } from '@/components/modeler/moveWithArrowKeys';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 
@@ -699,17 +699,7 @@ export default {
     this.linter = new Linter(linterConfig);
   },
   mounted() {
-    document.addEventListener('keydown', event => {
-      const formElementHasFocus = event.target.toString().toLowerCase().indexOf('body') === -1;
-      if (formElementHasFocus) {
-        return;
-      }
-      moveShapeByKeypress(
-        event.key,
-        store.getters.highlightedShape,
-        this.pushToUndoStack,
-      );
-    });
+    document.addEventListener('keydown', keydownListener);
 
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
