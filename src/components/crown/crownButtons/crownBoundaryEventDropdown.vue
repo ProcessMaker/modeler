@@ -72,7 +72,7 @@ export default {
     addBoundaryEvent(nodeType) {
       this.$emit('toggle-dropdown-state', false);
 
-      if (!canAddBoundaryEventToTarget(nodeType, this.shape)) {
+      if (!this.canAddBoundaryEventToTarget(nodeType, this.shape)) {
         return;
       }
 

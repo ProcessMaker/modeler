@@ -89,6 +89,7 @@ export default {
           label: 'Boundary Message Event',
           nodeType: 'processmaker-modeler-boundary-message-event',
           dataTest: 'add-boundary-message-event',
+          disabledLabel: 'Allowed on Sub Process',
         },
       ],
     };
