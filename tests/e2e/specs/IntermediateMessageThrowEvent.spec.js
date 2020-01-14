@@ -159,6 +159,10 @@ describe('Intermediate Message Throw Event', () => {
       cy.get('#delete-button').click();
     });
 
+    connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
+    getNumberOfLinks().should('equal', 1);
+  });
+
   it('should disallow invalid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
