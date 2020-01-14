@@ -70,6 +70,7 @@ export default {
       return this.hasTargetType() &&
         this.targetIsValidType() &&
         this.targetIsValidStartEventType() &&
+        this.targetIsValidIntermediateEventType() &&
         this.targetIsNotContainingPool() &&
         this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
@@ -81,6 +82,13 @@ export default {
       }
 
       return this.targetNode.isType('processmaker-modeler-message-start-event');
+    },
+    targetIsValidIntermediateEventType() {
+      if (!this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent')) {
+        return true;
+      }
+
+      return this.targetNode.isType('processmaker-modeler-intermediate-message-catch-event');
     },
     targetIsValidType() {
       return [
