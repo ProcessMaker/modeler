@@ -6,9 +6,17 @@ export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
     return false;
   }
 
-  return getEmptyBoundaryEventPositionsForShape(dropTarget).length !== 0;
+  if (boundaryEventType === 'processmaker-modeler-boundary-message-event') {
+    return dropTarget.component.node.isBpmnType('bpmn:CallActivity') && spaceAvailable(dropTarget);
+  }
+
+  return spaceAvailable(dropTarget);
 }
 
 export function isValidBoundaryEscalationEvent(component) {
   return component && component.node.isBpmnType('bpmn:CallActivity');
+}
+
+function spaceAvailable(dropTarget) {
+  return getEmptyBoundaryEventPositionsForShape(dropTarget).length !== 0;
 }
