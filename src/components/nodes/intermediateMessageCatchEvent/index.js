@@ -14,6 +14,9 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
       name: $t('Intermediate Message Catch Event'),
+      allowedUsers: '',
+      allowedGroups: '',
+      whitelist: '',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),
       ],
@@ -60,6 +63,38 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
                 label: 'Listen For Message',
                 name: 'messageRef',
                 helper: 'Select from which Intermediate Message Throw or Message End event to listen',
+              },
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Allowed Users',
+                helper: 'Select allowed users',
+                name: 'allowedUsers',
+                options: [
+                  {},
+                  { value: '1,10', content: '1,10' },
+                ],
+              },
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Allowed Groups',
+                helper: 'Select allowed groups',
+                name: 'allowedGroups',
+                options: [
+                  {},
+                  { value: '20,30', content: '20,30' },
+                ],
+              },
+            },
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Whitelist',
+                helper: 'IP/Domain whitelist',
+                name: 'whitelist',
               },
             },
           ],
