@@ -150,6 +150,7 @@ describe('Modeler', () => {
 
     getElementAtPosition(gatewayPosition).click();
 
+    cy.contains('Advanced').click();
     cy.get('[name=gatewayDirection]').select('Converging');
 
     waitToRenderNodeUpdates();
