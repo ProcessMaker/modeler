@@ -80,7 +80,7 @@ describe('Intermediate Message Throw Event', () => {
   it('can associate and rename message on intermediate message catch event', () => {
     const intermediateMessageCatchEventPosition = { x: 200, y: 300 };
     const catchEventXMLSnippet = `
-      <bpmn:intermediateCatchEvent id="node_5" name="Intermediate Message Catch Event">
+      <bpmn:intermediateCatchEvent id="node_5" name="Intermediate Message Catch Event" pm:whitelist="">
         <bpmn:messageEventDefinition messageRef="${messageRef}" />
       </bpmn:intermediateCatchEvent>
     `;
