@@ -42,18 +42,6 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
-            {
-              component: 'FormSelect',
-              config: {
-                label: 'Direction',
-                helper: 'Select the direction of workflow for this element',
-                name: 'gatewayDirection',
-                options: [
-                  { value: gatewayDirection.diverging, content: 'Diverging' },
-                  { value: gatewayDirection.converging, content: 'Converging' },
-                ],
-              },
-            },
           ],
         },
         {
@@ -69,6 +57,18 @@ export default {
             {
               component: 'FormInput',
               config: idConfigSettings,
+            },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Direction',
+                helper: 'Select the direction of workflow for this element',
+                name: 'gatewayDirection',
+                options: [
+                  { value: gatewayDirection.diverging, content: 'Diverging' },
+                  { value: gatewayDirection.converging, content: 'Converging' },
+                ],
+              },
             },
           ],
         },
