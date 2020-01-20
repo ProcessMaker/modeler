@@ -22,7 +22,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { expressionPosition } from './sequenceFlowConfig';
+import { namePosition, expressionPosition } from './sequenceFlowConfig';
 import store from '@/store';
 import { id as subProcessId } from '@/components/nodes/subProcess';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
@@ -57,12 +57,27 @@ export default {
     targetType() {
       return get(this.target, 'component.node.type');
     },
-    label: {
+    shapeName() {
+      return this.node.definition.get('name');
+    },
+    nameLabel: {
       get() {
         return this.shape.label(0).attrs.text.text;
       },
       set(text = '') {
         this.shape.label(0, {
+          attrs: {
+            text: { text },
+          },
+        });
+      },
+    },
+    expressionLabel: {
+      get() {
+        return this.shape.label(1).attrs.text.text;
+      },
+      set(text = '') {
+        this.shape.label(1, {
           attrs: {
             text: { text },
           },
@@ -79,15 +94,17 @@ export default {
   watch: {
     'node.definition': {
       handler({ startEvent: startEventId, conditionExpression }) {
-        if (!this.sourceIsGateway && !this.targetIsCallActivity) {
+        if (this.targetIsCallActivity) {
           return;
         }
 
         const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newLabel = get(conditionExpression, 'body') || get(startEvent, 'name');
+        const newExpressionLabel = get(conditionExpression, 'body') || get(startEvent, 'name');
+        const newNameLabel = this.shapeName || get(startEvent, 'name');
 
-        if (newLabel !== this.label) {
-          this.label = newLabel;
+        if (newNameLabel !== this.nameLabel || newExpressionLabel !== this.expressionLabel) {
+          this.expressionLabel = newExpressionLabel;
+          this.nameLabel = newNameLabel;
         }
       },
       deep: true,
@@ -148,10 +165,10 @@ export default {
       this.shape.labels([{
         attrs: {
           text: {
-            text: '',
+            text: this.shapeName,
           },
         },
-        position: expressionPosition,
+        position: namePosition,
       }]);
     },
   },
@@ -159,10 +176,17 @@ export default {
     this.shape = new shapes.standard.Link();
     this.shape.connector('rounded', { radius: 5 });
     this.createLabel();
-
     const conditionExpression = this.node.definition.conditionExpression;
     if (conditionExpression) {
-      this.label = conditionExpression.body;
+      this.shape.appendLabel({
+        attrs: {
+          text: {
+            text: conditionExpression,
+          },
+        },
+        position: { expressionPosition },
+      });
+      this.expressionLabel = conditionExpression.body;
     }
 
     this.shape.addTo(this.graph);
