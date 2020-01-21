@@ -1,5 +1,4 @@
 import PaperManager from '@/components/paperManager';
-import store from '@/store';
 
 export const moveAmount = PaperManager.gridSize / 2;
 
@@ -47,17 +46,4 @@ function expandPoolToContainElement(shape) {
   }
 
   pool.component.updateLaneChildren();
-}
-
-export function keydownListener(event) {
-  const formElementHasFocus = event.target.toString().toLowerCase().indexOf('body') === -1;
-  if (formElementHasFocus) {
-    return;
-  }
-
-  moveShapeByKeypress(
-    event.key,
-    store.getters.highlightedShape,
-    this.pushToUndoStack,
-  );
 }
