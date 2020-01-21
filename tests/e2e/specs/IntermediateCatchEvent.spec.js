@@ -98,7 +98,7 @@ describe('Intermediate Catch Event', () => {
       });
   });
 
-  it.only('Removes messageRef when message is deleted', () => {
+  it('Removes messageRef when message is deleted', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     const intermediateThrowEventPosition = { x: 250, y: 350 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
