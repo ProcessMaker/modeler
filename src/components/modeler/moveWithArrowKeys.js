@@ -2,30 +2,28 @@ import PaperManager from '@/components/paperManager';
 
 export const moveAmount = PaperManager.gridSize / 2;
 
-const translationAmount = new Map();
-translationAmount.set('Up', [0, -moveAmount]);
-translationAmount.set('Down', [0, moveAmount]);
-translationAmount.set('Left', [-moveAmount, 0]);
-translationAmount.set('Right', [moveAmount, 0]);
+const translationVectors = new Map();
+translationVectors.set('Up', [0, -moveAmount]);
+translationVectors.set('Down', [0, moveAmount]);
+translationVectors.set('Left', [-moveAmount, 0]);
+translationVectors.set('Right', [moveAmount, 0]);
 
-const invalidTypes = [
+const immovableShapeTypes = [
   'PoolLane',
   'processmaker.components.nodes.boundaryEvent.Shape',
 ];
 
-export default function moveShapeByKeypress(key, shape, onAfterMove = () => {}) {
-  if (!shape || invalidTypes.includes(shape.get('type'))) {
+export default function moveShapeByKeypress(key, shape, onAfterMove = () => {
+}) {
+  if (!isArrowKey(key)) {
     return;
   }
 
-  const match = key.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
-  const keyCode = match && match[1];
-
-  if (!keyCode) {
+  if (!isMovableShape(shape)) {
     return;
   }
 
-  const [tx, ty] = translationAmount.get(keyCode) || [0, 0];
+  const [tx, ty] = getTranslationVector(key);
   shape.translate(tx, ty, { movedWithArrowKeys: true });
 
   expandPoolToContainElement(shape);
@@ -33,9 +31,29 @@ export default function moveShapeByKeypress(key, shape, onAfterMove = () => {}) 
   onAfterMove();
 }
 
+function isArrowKey(key) {
+  const arrows = ['up', 'down', 'left', 'right'];
+  return arrows.some(direction => key.toLowerCase().includes(direction));
+}
+
+function isMovableShape(shape) {
+  return shape && !immovableShapeTypes.includes(shape.get('type'));
+}
+
+function getTranslationVector(arrowKey) {
+  const crossBrowserKeyMatch = arrowKey.match(/^(?:Arrow)?(Up|Down|Left|Right)$/);
+  return crossBrowserKeyMatch !== null
+    ? translationVectors.get(crossBrowserKeyMatch[1])
+    : [0, 0];
+}
+
+function shapeParentIsAPool(pool) {
+  return !pool || pool.get('type') !== 'processmaker.modeler.bpmn.pool';
+}
+
 function expandPoolToContainElement(shape) {
   const pool = shape.getParentCell();
-  if (!pool || pool.get('type') !== 'processmaker.modeler.bpmn.pool') {
+  if (shapeParentIsAPool(pool)) {
     return;
   }
 
