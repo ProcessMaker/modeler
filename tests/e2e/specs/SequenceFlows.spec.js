@@ -141,7 +141,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     waitToRenderAllShapes();
 
@@ -165,7 +165,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(newTaskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     cy.get(anchorSelector).then($anchor => {
       /* Anchor should still be on the right */
@@ -189,7 +189,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     waitToRenderAllShapes();
 
@@ -213,7 +213,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(newStartEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     cy.get(anchorSelector).then($anchor => {
       /* Anchor should still be on the bottom */

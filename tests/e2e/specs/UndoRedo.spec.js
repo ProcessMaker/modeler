@@ -281,7 +281,7 @@ describe('Undo/redo', () => {
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     waitToRenderAllShapes();
 
