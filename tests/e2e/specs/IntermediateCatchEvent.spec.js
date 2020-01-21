@@ -1,8 +1,10 @@
 import {
-  dragFromSourceToDest, getCrownButtonForElement,
+  dragFromSourceToDest,
+  getCrownButtonForElement,
   getElementAtPosition,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -118,6 +120,8 @@ describe('Intermediate Catch Event', () => {
     getElementAtPosition(intermediateThrowEventPosition).click().then($throwEvent => {
       getCrownButtonForElement($throwEvent, 'delete-button').click({ force: true });
     });
+
+    waitToRenderAllShapes();
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {

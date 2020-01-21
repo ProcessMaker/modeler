@@ -85,6 +85,16 @@ export default new Vuex.Store({
         state.nodes.splice(index, 1);
       }
     },
+    removeMessageRef(state, message) {
+      state.nodes.filter(({ definition }) => (
+        definition.$type === 'bpmn:IntermediateCatchEvent' ||
+        definition.$type === 'bpmn:StartEvent'
+      )
+        && definition.eventDefinitions && definition.eventDefinitions.find(({ messageRef }) => messageRef === message))
+        .forEach(({ definition }) => {
+          definition.eventDefinitions[0].messageRef = null;
+        });
+    },
     setGraph(state, graph) {
       state.graph = graph;
     },

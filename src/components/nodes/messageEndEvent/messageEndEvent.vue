@@ -2,6 +2,7 @@
 import EndEvent from '@/components/nodes/endEvent/endEvent';
 import messageEndEventSymbol from '@/assets/message-end-event.svg';
 import pull from 'lodash/pull';
+import store from '@/store';
 
 export default {
   extends: EndEvent,
@@ -35,6 +36,7 @@ export default {
   },
   destroyed() {
     pull(this.rootElements, this.message);
+    store.commit('removeMessageRef', this.message);
   },
 };
 </script>
