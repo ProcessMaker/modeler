@@ -48,4 +48,12 @@ describe('moveWithArrowKeys', () => {
     expect(shape.translate).not.toHaveBeenCalled();
     expect(onAfterMove).not.toHaveBeenCalled();
   });
+
+  it('Does nothing when it does not receive a shape', () => {
+    const shape = undefined;
+    const onAfterMove = jest.fn();
+    moveShapeByKeypress('Up', shape, onAfterMove);
+
+    expect(onAfterMove).not.toHaveBeenCalled();
+  });
 });
