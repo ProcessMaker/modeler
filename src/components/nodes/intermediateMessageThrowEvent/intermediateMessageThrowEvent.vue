@@ -2,6 +2,7 @@
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
 import intermediateMailSymbol from '@/assets/intermediate-mail-alt.svg';
 import pull from 'lodash/pull';
+import store from '@/store';
 
 export default {
   extends: IntermediateEvent,
@@ -44,6 +45,7 @@ export default {
   },
   destroyed() {
     pull(this.rootElements, this.message);
+    store.commit('removeMessageRef', this.message);
   },
 };
 </script>
