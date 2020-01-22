@@ -1,8 +1,9 @@
 import {
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
-  removeIndentationAndLinebreaks,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -28,11 +29,7 @@ describe('Intermediate Catch Event', () => {
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     `;
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .should('have', validIntermediateCatchEventXML.trim());
+    assertDownloadedXmlContainsExpected(validIntermediateCatchEventXML);
   });
 
   it('Update date/time field on Intermediate Catch Event', () => {
@@ -57,11 +54,7 @@ describe('Intermediate Catch Event', () => {
     </bpmn:timerEventDefinition>
   </bpmn:intermediateCatchEvent>
   `;
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .should('have', validIntermediateCatchEventXML.trim());
+    assertDownloadedXmlContainsExpected(validIntermediateCatchEventXML);
   });
 
   it('Sets default values when switching between types', () => {
@@ -76,26 +69,14 @@ describe('Intermediate Catch Event', () => {
 
     const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00.000Z</bpmn:timeDate>';
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .should(xml => {
-        expect(xml).to.contain(defaultTimeDate);
-      });
+    assertDownloadedXmlContainsExpected(defaultTimeDate);
 
     cy.get('[data-test=intermediateTypeSelect]').select('Duration');
 
     cy.get('[data-test=downloadXMLBtn]').click();
 
     const defaultTimeDuration = '<bpmn:timeDuration>PT1H</bpmn:timeDuration>';
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .should(xml => {
-        expect(xml).to.contain(defaultTimeDuration);
-      });
+    assertDownloadedXmlContainsExpected(defaultTimeDuration);
   });
 
   it('Removes messageRef when message is deleted', () => {
@@ -112,10 +93,7 @@ describe('Intermediate Catch Event', () => {
 
     const messageRef = '<bpmn:messageEventDefinition messageRef="node_5_message" />';
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {
-      expect(xml).to.contain(messageRef);
-    });
+    assertDownloadedXmlContainsExpected(messageRef);
 
     getElementAtPosition(intermediateThrowEventPosition).click().then($throwEvent => {
       getCrownButtonForElement($throwEvent, 'delete-button').click({ force: true });
@@ -123,9 +101,6 @@ describe('Intermediate Catch Event', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {
-      expect(xml).to.not.contain(messageRef);
-    });
+    assertDownloadedXmlDoesNotContainExpected(messageRef);
   });
 });

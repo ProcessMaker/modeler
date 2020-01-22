@@ -1,8 +1,9 @@
 import {
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
-  removeIndentationAndLinebreaks,
   waitToRenderAllShapes,
 } from '../support/utils';
 
@@ -23,10 +24,7 @@ describe('Start Message Event', () => {
 
     const messageRef = '<bpmn:messageEventDefinition messageRef="node_5_message" />';
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {
-      expect(xml).to.contain(messageRef);
-    });
+    assertDownloadedXmlContainsExpected(messageRef);
 
     getElementAtPosition(endMessageEventPosition).click().then($throwEvent => {
       getCrownButtonForElement($throwEvent, 'delete-button').click({ force: true });
@@ -34,9 +32,6 @@ describe('Start Message Event', () => {
 
     waitToRenderAllShapes();
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).should(xml => {
-      expect(xml).to.not.contain(messageRef);
-    });
+    assertDownloadedXmlDoesNotContainExpected(messageRef);
   });
 });
