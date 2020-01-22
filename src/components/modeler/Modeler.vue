@@ -181,12 +181,18 @@ export default {
   },
   watch: {
     isRendering() {
+      const loadingMessage = 'Loading process, please be patient.';
+
       if (this.isRendering) {
+        window.ProcessMaker.alert(loadingMessage, 'info');
         document.body.style.cursor = 'wait !important';
         this.cursor = 'wait';
         return;
       }
 
+      window.ProcessMaker.navbar.alerts = window.ProcessMaker.navbar.alerts.filter(alert => {
+        return alert.alertText !== loadingMessage;
+      });
       document.body.style.cursor = 'auto';
       this.cursor = null;
     },
@@ -665,6 +671,10 @@ export default {
       return shape.component != null;
     },
     setShapeStacking(shape) {
+      if (this.isRendering) {
+        return;
+      }
+
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
   },
