@@ -463,12 +463,12 @@ describe('Modeler', () => {
     dragFromSourceToDest(nodeTypes.startEvent, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).click();
 
-    cy.get('[data-test=switch-to-start-timer-event]').should('exist');
+    //cy.get('[data-test=switch-to-start-timer-event]').should('exist');
     cy.get('[data-test=switch-to-message-start-event]').should('exist');
 
     dragFromSourceToDest(nodeTypes.task, { x: 300, y: 300 });
 
-    cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
+    //cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
     cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
   });
 

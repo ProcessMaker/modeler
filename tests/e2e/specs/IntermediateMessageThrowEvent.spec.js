@@ -173,7 +173,7 @@ describe('Intermediate Message Throw Event', () => {
       { genericNode: nodeTypes.endEvent, nodeToSwitchTo: 'switch-to-message-end-event' },
       { genericNode: nodeTypes.intermediateCatchEvent, nodeToSwitchTo: 'switch-to-intermediate-message-throw-event' },
       { genericNode: nodeTypes.startEvent, nodeToSwitchTo: 'switch-to-start-event' },
-      { genericNode: nodeTypes.startEvent, nodeToSwitchTo: 'switch-to-start-timer-event' },
+      //{ genericNode: nodeTypes.startEvent, nodeToSwitchTo: 'switch-to-start-timer-event' },
     ];
 
     invalidMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {

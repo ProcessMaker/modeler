@@ -8,7 +8,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Start Timer Event', () => {
+describe.skip('Start Timer Event', () => {
   it('Update properties on Start Timer Event for "week" periodicity', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);
