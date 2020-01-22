@@ -61,6 +61,7 @@
             :class="{'date-disabled' : ends !== 'ondate'}"
             :disabled="ends !== 'ondate'"
             :placeholder="$t('End date')"
+            data-format="datetime"
             control-class="form-control"
             :value="endDate"
             @input="setEndDate"
