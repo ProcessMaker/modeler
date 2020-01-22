@@ -90,7 +90,7 @@ export default new Vuex.Store({
         definition.$type === 'bpmn:IntermediateCatchEvent' ||
         definition.$type === 'bpmn:StartEvent'
       )
-        && definition.eventDefinitions && definition.eventDefinitions.find(({ messageRef }) => messageRef === message))
+        && definition.eventDefinitions && definition.eventDefinitions.some(({ messageRef }) => messageRef === message))
         .forEach(({ definition }) => {
           definition.eventDefinitions[0].messageRef = null;
         });
