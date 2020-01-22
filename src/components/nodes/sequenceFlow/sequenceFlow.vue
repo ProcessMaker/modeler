@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     updateRouter() {
-      this.shape.router('orthogonal');
+      this.shape.router('orthogonal', { padding: 1 });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
