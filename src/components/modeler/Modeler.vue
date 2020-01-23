@@ -453,6 +453,10 @@ export default {
       this.processes = this.getProcesses();
       this.plane = this.getPlane();
       this.planeElements = this.getPlaneElements();
+
+      this.validatePlaneElements();
+      this.cleanPlaneElements();
+
       this.processNode = new Node(
         'processmaker-modeler-process',
         this.processes[0],
@@ -534,8 +538,6 @@ export default {
       await this.paperManager.performAtomicAction(async() => {
         await this.waitForCursorToChange();
         this.parse();
-        this.validatePlaneElements();
-        this.cleanPlaneElements();
         this.addPools();
         this.setUpDiagram();
       });
