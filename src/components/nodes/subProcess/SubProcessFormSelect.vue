@@ -40,7 +40,7 @@ export default {
       selectedStartEvent: null,
       config: {},
       name: '',
-      loading: false 
+      loading: false ,
     };
   },
   inheritAttrs: false,
@@ -75,7 +75,7 @@ export default {
         this.config = JSON.parse(this.value);
       },
       immediate: true,
-    }
+    },
   },
   methods: {
     loadBpmnValues() {
@@ -105,7 +105,7 @@ export default {
         calledElement: `${this.selectedStartEvent.ownerProcessId}-${this.selectedProcess.id}`,
         processId: this.selectedProcess.id,
         startEvent: this.selectedStartEvent.id,
-        name: name,
+        name,
       };
       const stringValue = JSON.stringify(emit);
       this.$emit('input', stringValue);

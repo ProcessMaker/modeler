@@ -18,7 +18,7 @@ export default {
     return moddle.create('bpmn:CallActivity', {
       name: $t('New Sub Process'),
       calledElement: '',
-      config: '{}'
+      config: '{}',
     });
   },
   diagram(moddle) {

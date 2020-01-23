@@ -23,7 +23,6 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import { expressionPosition } from './sequenceFlowConfig';
-import store from '@/store';
 import { id as subProcessId } from '@/components/nodes/subProcess';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 
