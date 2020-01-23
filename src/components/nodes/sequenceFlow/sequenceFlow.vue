@@ -84,9 +84,6 @@ export default {
         });
       },
     },
-    sourceIsGateway() {
-      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(this.node.definition.sourceRef.$type);
-    },
     targetIsCallActivity() {
       return this.targetType === subProcessId;
     },
