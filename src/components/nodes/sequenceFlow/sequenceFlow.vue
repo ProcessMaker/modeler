@@ -76,23 +76,6 @@ export default {
       return this.targetType === subProcessId;
     },
   },
-  watch: {
-    'node.definition': {
-      handler({ startEvent: startEventId, conditionExpression }) {
-        if (!this.sourceIsGateway && !this.targetIsCallActivity) {
-          return;
-        }
-
-        const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newLabel = get(conditionExpression, 'body') || get(startEvent, 'name');
-
-        if (newLabel !== this.label) {
-          this.label = newLabel;
-        }
-      },
-      deep: true,
-    },
-  },
   methods: {
     updateRouter() {
       this.shape.router('orthogonal', { padding: 1 });
