@@ -18,6 +18,7 @@ export default {
     return moddle.create('bpmn:CallActivity', {
       name: $t('New Sub Process'),
       calledElement: '',
+      config: '{}'
     });
   },
   diagram(moddle) {
@@ -29,18 +30,27 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp) {
-    for (const key in value) {
-      if (node.definition[key] === value[key]) {
-        continue;
-      }
 
-      if (key === 'callActivityExpression') {
-        this.inspectorHandler(value[key], node, setNodeProp);
-        continue;
-      }
+    setNodeProp(node, 'id', value.id);
+    setNodeProp(node, 'name', value.name);
 
-      setNodeProp(node, key, value[key]);
+    const oldConfig     = JSON.parse(node.definition.config);
+    const currentConfig = JSON.parse(value.config);
+    
+    setNodeProp(node, 'calledElement', currentConfig.calledElement);
+
+    if (currentConfig.name != value.name) {
+      if (oldConfig.name === value.name || !oldConfig.name) {
+        // SubProcessFormSelect automatically updated the name so set the new name here
+        setNodeProp(node, 'name', currentConfig.name);
+      } else {
+        // The user is editing the name field manually, so update the config object name
+        currentConfig.name = value.name;
+      }
     }
+    
+    setNodeProp(node, 'config', JSON.stringify(currentConfig));
+
   },
   inspectorConfig: [
     {
@@ -64,7 +74,7 @@ export default {
               component: SubProcessFormSelect,
               config: {
                 label: 'Process',
-                name: 'calledElement',
+                name: 'config',
                 helper: 'Select which Process this element calls',
               },
             },

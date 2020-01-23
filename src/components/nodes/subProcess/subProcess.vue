@@ -109,26 +109,11 @@ export default {
         this.recalcMarkersAlignment();
       }
     },
-    'node.definition.calledElement'(calledElement) {
-      if (!calledElement) {
-        return;
-      }
-
-      const { ownerProcessId, processId } = elementIdParser(calledElement);
-
-      const calledSubProcess = store.getters.globalProcesses
-        .find(process => process.id == processId);
-
-      let calledElementName = calledSubProcess.name;
-      if (uniqBy(calledSubProcess.events, 'ownerProcessName').length > 1) {
-        const calledSubProcess = calledSubProcess.events.find(event => event.ownerProcessId == ownerProcessId);
-        calledElementName += ` (${calledSubProcess.ownerProcessName})`;
-      }
-
+    'node.definition.config'(config) {
       store.commit('updateNodeProp', {
         node: this.node,
-        key: 'name',
-        value: calledElementName,
+        key: 'config',
+        value: config,
       });
       this.$emit('save-state');
     },
