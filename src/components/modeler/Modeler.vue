@@ -40,7 +40,6 @@
       </b-col>
 
       <mini-paper
-        v-if="miniMapOpen"
         :isOpen="miniMapOpen"
         :paperManager="paperManager"
         :graph="graph"
