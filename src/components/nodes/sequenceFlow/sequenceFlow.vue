@@ -103,8 +103,8 @@ export default {
         const newNameLabel = this.shapeName || get(startEvent, 'name');
 
         if (newNameLabel !== this.nameLabel || newExpressionLabel !== this.expressionLabel) {
-          this.expressionLabel = newExpressionLabel;
           this.nameLabel = newNameLabel;
+          this.expressionLabel = newExpressionLabel;
         }
       },
       deep: true,
@@ -186,6 +186,7 @@ export default {
         },
         position: { expressionPosition },
       });
+
       this.expressionLabel = conditionExpression.body;
     }
 
