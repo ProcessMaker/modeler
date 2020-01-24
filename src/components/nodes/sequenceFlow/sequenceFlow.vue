@@ -183,7 +183,7 @@ export default {
             text: conditionExpression,
           },
         },
-        position: { expressionPosition },
+        position: expressionPosition,
       });
 
       this.expressionLabel = conditionExpression.body;
