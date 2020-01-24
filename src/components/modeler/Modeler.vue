@@ -125,9 +125,9 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
-import { keydownListener } from '@/components/modeler/moveWithArrowKeys';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
+import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 
 const version = '1.0';
 
@@ -664,6 +664,18 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
+    keydownListener(event) {
+      const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
+      if (focusIsOutsideDiagram) {
+        return;
+      }
+
+      moveShapeByKeypress(
+        event.key,
+        store.getters.highlightedShape,
+        this.pushToUndoStack,
+      );
+    },
     validateDropTarget({ clientX, clientY, control }) {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
@@ -710,7 +722,7 @@ export default {
     this.linter = new Linter(linterConfig);
   },
   mounted() {
-    document.addEventListener('keydown', keydownListener);
+    document.addEventListener('keydown', this.keydownListener);
 
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
