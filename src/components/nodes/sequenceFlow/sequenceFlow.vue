@@ -91,11 +91,13 @@ export default {
   watch: {
     'node.definition': {
       handler({ startEvent: startEventId, conditionExpression }) {
+        const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
+
         if (this.targetIsCallActivity) {
+          this.nameLabel = get(startEvent, 'name');
           return;
         }
 
-        const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
         const newExpressionLabel = get(conditionExpression, 'body') || get(startEvent, 'name');
         const newNameLabel = this.shapeName || get(startEvent, 'name');
 
