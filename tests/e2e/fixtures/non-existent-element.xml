@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xmi="http://www.omg.org/XMI" xmlns:adonis="http://www.boc-group.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="definition__f60c2193-64f8-4ff4-9c4a-147d7ebff21b" targetNamespace="http://www.boc-group.com" exporter="Camunda Modeler" exporterVersion="3.2.1" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  <collaboration id="Collaboration_f60c2193-64f8-4ff4-9c4a-147d7ebff21b" name="Demo File" isClosed="false">
+    <extensionElements>
+      <adonis:modelattributes>
+        <adonis:attribute name="A_DESCRIPTION" type="LONGSTRING" notebook="1" sourcelang="en" novalue="0">
+          <adonis:value>Demo</adonis:value>
+          <adonis:metavalue>`0`&lt;p&gt;`60`&lt;/p&gt;</adonis:metavalue>
+        </adonis:attribute>
+      </adonis:modelattributes>
+    </extensionElements>
+    <participant id="_9fcf20a4-c546-48fb-8fa4-a160ff676892" name="Demo" processRef="process_9fcf20a4-c546-48fb-8fa4-a160ff676892">
+      <extensionElements/>
+    </participant>
+  </collaboration>
+  <process id="process_9fcf20a4-c546-48fb-8fa4-a160ff676892" name="Demo" processType="None" isClosed="false" isExecutable="false">
+    <endEvent id="_18bfb3d6-4d45-4f78-8efa-5ef45c3c7a4e" name="End">
+      <incoming>_0e454ca0-59c4-4d36-927c-924879de1ee3</incoming>
+    </endEvent>
+    <startEvent id="_f7ecd7bd-0790-4098-a12d-41c75cb870ac" name="Start">
+      <outgoing>_0e454ca0-59c4-4d36-927c-924879de1ee3</outgoing>
+      <messageEventDefinition id="messageEventDefinition_f7ecd7bd-0790-4098-a12d-41c75cb870ac"/>
+    </startEvent>
+    <sequenceFlow id="_0e454ca0-59c4-4d36-927c-924879de1ee3" sourceRef="_f7ecd7bd-0790-4098-a12d-41c75cb870ac" targetRef="_18bfb3d6-4d45-4f78-8efa-5ef45c3c7a4e"/>
+  </process>
+  <bpmndi:BPMNDiagram id="Diagram_f60c2193-64f8-4ff4-9c4a-147d7ebff21b" name="Demo File">
+    <bpmndi:BPMNPlane id="BPMNPlane_f60c2193-64f8-4ff4-9c4a-147d7ebff21b" bpmnElement="Collaboration_f60c2193-64f8-4ff4-9c4a-147d7ebff21b">
+      <bpmndi:BPMNShape id="BPMN_Shape_9fcf20a4-c546-48fb-8fa4-a160ff676892" bpmnElement="_9fcf20a4-c546-48fb-8fa4-a160ff676892" isHorizontal="true">
+        <omgdc:Bounds x="156" y="290" width="1876" height="760"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMN_Shape_f7ecd7bd-0790-4098-a12d-41c75cb870ac" bpmnElement="_f7ecd7bd-0790-4098-a12d-41c75cb870ac">
+        <omgdc:Bounds x="280" y="357" width="56" height="56"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="266" y="413" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMN_Shape_8ff66e93-2693-4ef9-9090-32770540fed2" bpmnElement="_8ff66e93-2693-4ef9-9090-32770540fed2" isHorizontal="true">
+        <omgdc:Bounds x="196" y="851" width="1836" height="199"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMN_Shape_18bfb3d6-4d45-4f78-8efa-5ef45c3c7a4e" bpmnElement="_18bfb3d6-4d45-4f78-8efa-5ef45c3c7a4e">
+        <omgdc:Bounds x="1496" y="528" width="56" height="56"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1486" y="584" width="77" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMN_Edge_0e454ca0-59c4-4d36-927c-924879de1ee3" bpmnElement="_0e454ca0-59c4-4d36-927c-924879de1ee3">
+        <omgdi:waypoint x="336" y="385"/>
+        <omgdi:waypoint x="916" y="385"/>
+        <omgdi:waypoint x="916" y="556"/>
+        <omgdi:waypoint x="1496" y="556"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="252" y="323" width="0" height="0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
