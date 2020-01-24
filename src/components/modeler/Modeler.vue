@@ -663,8 +663,8 @@ export default {
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
     keydownListener(event) {
-      const formElementHasFocus = event.target.toString().toLowerCase().indexOf('body') === -1;
-      if (formElementHasFocus) {
+      const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
+      if (focusIsOutsideDiagram) {
         return;
       }
 
