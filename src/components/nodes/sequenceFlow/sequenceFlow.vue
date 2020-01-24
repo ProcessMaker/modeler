@@ -87,6 +87,9 @@ export default {
     targetIsCallActivity() {
       return this.targetType === subProcessId;
     },
+    sourceIsGateway() {
+      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(this.node.definition.sourceRef.$type);
+    },
   },
   watch: {
     'node.definition': {
@@ -95,9 +98,12 @@ export default {
         const newExpressionLabel = get(conditionExpression, 'body');
         const newNameLabel = this.shapeName || get(startEvent, 'name');
 
-        if (this.targetIsCallActivity) {
+        if (this.targetIsCallActivity ) {
           this.nameLabel = get(startEvent, 'name');
-          this.expressionLabel = newExpressionLabel;
+
+          if (this.sourceIsGateway) {
+            this.expressionLabel = newExpressionLabel;
+          }
           return;
         }
 
