@@ -92,14 +92,14 @@ export default {
     'node.definition': {
       handler({ startEvent: startEventId, conditionExpression }) {
         const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
+        const newExpressionLabel = get(conditionExpression, 'body');
+        const newNameLabel = this.shapeName || get(startEvent, 'name');
 
         if (this.targetIsCallActivity) {
           this.nameLabel = get(startEvent, 'name');
+          this.expressionLabel = newExpressionLabel;
           return;
         }
-
-        const newExpressionLabel = get(conditionExpression, 'body') || get(startEvent, 'name');
-        const newNameLabel = this.shapeName || get(startEvent, 'name');
 
         if (newNameLabel !== this.nameLabel || newExpressionLabel !== this.expressionLabel) {
           this.nameLabel = newNameLabel;
@@ -169,25 +169,27 @@ export default {
         },
         position: namePosition,
       }]);
+
+      const conditionExpression = this.node.definition.conditionExpression;
+
+      if (conditionExpression) {
+        this.shape.appendLabel({
+          attrs: {
+            text: {
+              text: conditionExpression,
+            },
+          },
+          position: expressionPosition,
+        });
+
+        this.expressionLabel = conditionExpression.body;
+      }
     },
   },
   mounted() {
     this.shape = new shapes.standard.Link();
     this.shape.connector('rounded', { radius: 5 });
     this.createLabel();
-    const conditionExpression = this.node.definition.conditionExpression;
-    if (conditionExpression) {
-      this.shape.appendLabel({
-        attrs: {
-          text: {
-            text: conditionExpression,
-          },
-        },
-        position: expressionPosition,
-      });
-
-      this.expressionLabel = conditionExpression.body;
-    }
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
