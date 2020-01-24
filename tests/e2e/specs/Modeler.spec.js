@@ -307,7 +307,7 @@ describe('Modeler', () => {
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
