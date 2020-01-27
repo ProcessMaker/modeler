@@ -320,6 +320,11 @@ export default {
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
+    blurActiveElement() {
+      if (document.activeElement.type) {
+        document.activeElement.blur();
+      }
+    },
     /**
      * Register a mixin into a node component.
      * Used during "modeler-before-init"
@@ -742,6 +747,10 @@ export default {
 
     this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
+    }, this);
+
+    this.paperManager.addEventHandler('element:pointerclick', () => {
+      this.blurActiveElement();
     }, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
