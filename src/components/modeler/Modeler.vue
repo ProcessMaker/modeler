@@ -322,11 +322,7 @@ export default {
     },
     blurFocusedScreenBuilderElement() {
       const elementsToBlur = ['INPUT', 'SELECT'];
-      const shouldBlurActiveElement = elementsToBlur.some((element) => {
-        return document.activeElement && document.activeElement.tagName.includes(element);
-      });
-
-      if (shouldBlurActiveElement) {
+      if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
         document.activeElement.blur();
       }
     },
