@@ -321,9 +321,9 @@ export default {
       store.commit('highlightNode', node);
     },
     blurFocusedScreenBuilderElement() {
-      const elementsToBlur = ['input', 'select'];
+      const elementsToBlur = ['INPUT', 'SELECT'];
       const shouldBlurActiveElement = elementsToBlur.some((element) => {
-        return document.activeElement && document.activeElement.toString().toLowerCase().includes(element);
+        return document.activeElement && document.activeElement.tagName.includes(element);
       });
 
       if (shouldBlurActiveElement) {
