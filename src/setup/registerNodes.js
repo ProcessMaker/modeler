@@ -22,6 +22,7 @@ import {
   scriptTask,
   sequenceFlow,
   serviceTask,
+  signalEndEvent,
   startEvent,
   startTimerEvent,
   subProcess,
@@ -61,6 +62,7 @@ const customEventNodes = [
   [boundaryMessageEvent, 'bpmn:BoundaryEvent', 'bpmn:MessageEventDefinition'],
   [messageEndEvent, 'bpmn:EndEvent', 'bpmn:MessageEventDefinition'],
   [errorEndEvent, 'bpmn:EndEvent', 'bpmn:ErrorEventDefinition'],
+  [signalEndEvent, 'bpmn:EndEvent', 'bpmn:SignalEventDefinition'],
 ];
 const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
   const definitions = definition.get('eventDefinitions');
