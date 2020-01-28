@@ -1,5 +1,7 @@
 import { dragFromSourceToDest, getElementAtPosition, getGraphElements, waitToRenderAllShapes } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
+import { defaultNodeColor } from '../../../src/components/nodeColors';
 
 describe.skip('Boundary Escalation Event', () => {
 
@@ -53,4 +55,14 @@ describe.skip('Boundary Escalation Event', () => {
     getGraphElements().should('have.length', numberOfElementsExpected + callActivityEscalation);
 
   });
+});
+
+CommonBoundaryEventBehaviour({
+  type: 'Boundary Escalation Event',
+  nodeType: nodeTypes.boundaryEscalationEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_4" name="New Boundary Escalation Event" attachedToRef="node_3"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.subProcess,
+  taskTypeSelector: 'switch-to-sub-process',
+  invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
+  skip: true,
 });

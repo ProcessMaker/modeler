@@ -5,6 +5,7 @@ import {
   setBoundaryEvent,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
 
 describe('Boundary Message Event', () => {
   const taskPosition = { x: 200, y: 200 };
@@ -42,4 +43,13 @@ describe('Boundary Message Event', () => {
         expect(xml).to.contain(boundaryMessageEventXML);
       });
   });
+});
+
+CommonBoundaryEventBehaviour({
+  type: 'Boundary Message Event',
+  nodeType: nodeTypes.boundaryMessageEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_4" name="New Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.subProcess,
+  taskTypeSelector: 'switch-to-sub-process',
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 });

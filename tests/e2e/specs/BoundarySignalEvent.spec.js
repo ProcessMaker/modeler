@@ -8,17 +8,15 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
 
 describe('Boundary Signal Event', () => {
   const taskPosition = { x: 200, y: 200 };
   const boundarySignalEventPosition = { x: 260, y: 200 };
 
-  beforeEach(() => {
+  it('update boundary signal event properties element', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundarySignalEvent, taskPosition);
-  });
-
-  it('update boundary signal event properties element', () => {
     moveElement(taskPosition, boundarySignalEventPosition.x, boundarySignalEventPosition.y);
 
     const name = 'Test name';
@@ -37,6 +35,8 @@ describe('Boundary Signal Event', () => {
   });
 
   it('can toggle interrupting on Boundary Signal Events', () => {
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    setBoundaryEvent(nodeTypes.boundarySignalEvent, taskPosition);
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
 
@@ -51,4 +51,13 @@ describe('Boundary Signal Event', () => {
     cy.get(interrupting).uncheck({ force: true });
     cy.get(interrupting).should('not.be.checked');
   });
+});
+
+CommonBoundaryEventBehaviour({
+  type: 'Boundary Signal Event',
+  nodeType: nodeTypes.boundarySignalEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.task,
+  taskTypeSelector: 'switch-to-user-task',
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 });
