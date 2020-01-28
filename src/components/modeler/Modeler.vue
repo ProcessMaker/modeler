@@ -754,9 +754,7 @@ export default {
       store.commit('highlightNode', this.processNode);
     }, this);
 
-    this.paperManager.addEventHandler('element:pointerclick', () => {
-      this.blurFocusedScreenBuilderElement();
-    }, this);
+    this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
