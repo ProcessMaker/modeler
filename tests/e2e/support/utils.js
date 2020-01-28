@@ -279,6 +279,7 @@ export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
 
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   dragFromSourceToDest(genericNode, nodePosition);
+  waitToRenderAllShapes();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
 }
 
