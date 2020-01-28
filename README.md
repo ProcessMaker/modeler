@@ -34,10 +34,7 @@ You can now run any of the below commands. Most commands make calls `vue-cli-ser
 # Compile the app and start a local development server
 npm run serve
 
-# Create a production build of the app
-npm run build
-
-# Compile the app to be distributed as an npm package
+# Create a production build of the app to be distributed as an npm package
 npm run build-bundle
 
 # Report and fix ESLint errors
