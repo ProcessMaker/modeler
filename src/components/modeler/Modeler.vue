@@ -320,8 +320,13 @@ export default {
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
-    blurActiveElement() {
-      if (document.activeElement.type) {
+    blurFocusedScreenBuilderElement() {
+      const elementsToBlur = ['input', 'select'];
+      const shouldBlurActiveElement = elementsToBlur.some((element) => {
+        return document.activeElement && document.activeElement.toString().toLowerCase().includes(element);
+      });
+
+      if (shouldBlurActiveElement) {
         document.activeElement.blur();
       }
     },
@@ -750,7 +755,7 @@ export default {
     }, this);
 
     this.paperManager.addEventHandler('element:pointerclick', () => {
-      this.blurActiveElement();
+      this.blurFocusedScreenBuilderElement();
     }, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
