@@ -1,8 +1,7 @@
 import {
+  assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
   getElementAtPosition,
-  moveElement,
-  removeIndentationAndLinebreaks,
   setBoundaryEvent,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -19,21 +18,14 @@ describe('Boundary Signal Event', () => {
   });
 
   it('update boundary signal event properties element', () => {
-    moveElement(taskPosition, boundarySignalEventPosition.x, boundarySignalEventPosition.y);
-
     const name = 'Test name';
     typeIntoTextInput('[name=name]', name);
 
-    const signalXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(signalXML);
-      });
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+        <bpmn:signalEventDefinition />
+      </bpmn:boundaryEvent>
+    `);
   });
 
   it('can toggle interrupting on Boundary Signal Events', () => {
