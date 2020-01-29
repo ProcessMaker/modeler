@@ -1,5 +1,5 @@
 import component from './signalEndEvent.vue';
-import endEventConfig from '../endEvent/index';
+import endEventConfig from '../endEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 
