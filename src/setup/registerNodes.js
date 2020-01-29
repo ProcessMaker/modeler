@@ -3,6 +3,7 @@ import {
   boundaryErrorEvent,
   boundaryEscalationEvent,
   boundaryMessageEvent,
+  boundarySignalEvent,
   boundaryTimerEvent,
   endEvent,
   errorEndEvent,
@@ -23,6 +24,7 @@ import {
   sequenceFlow,
   serviceTask,
   signalEndEvent,
+  signalStartEvent,
   startEvent,
   startTimerEvent,
   subProcess,
@@ -51,6 +53,7 @@ const nodeTypes = [
   textAnnotation,
 ];
 const customEventNodes = [
+  [signalStartEvent, 'bpmn:StartEvent', 'bpmn:SignalEventDefinition'],
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [messageStartEvent, 'bpmn:StartEvent', 'bpmn:MessageEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
@@ -60,6 +63,7 @@ const customEventNodes = [
   [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
   [boundaryEscalationEvent, 'bpmn:BoundaryEvent', 'bpmn:EscalationEventDefinition'],
   [boundaryMessageEvent, 'bpmn:BoundaryEvent', 'bpmn:MessageEventDefinition'],
+  [boundarySignalEvent, 'bpmn:BoundaryEvent', 'bpmn:SignalEventDefinition'],
   [messageEndEvent, 'bpmn:EndEvent', 'bpmn:MessageEventDefinition'],
   [errorEndEvent, 'bpmn:EndEvent', 'bpmn:ErrorEventDefinition'],
   [signalEndEvent, 'bpmn:EndEvent', 'bpmn:SignalEventDefinition'],

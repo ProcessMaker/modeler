@@ -1,5 +1,6 @@
 import {
   addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
   getComponentsEmbeddedInShape,
   getElementAtPosition,
@@ -32,32 +33,26 @@ describe('Boundary Timer Event', () => {
     const durationValue = 4;
     typeIntoTextInput('.repeat', durationValue);
 
-    const durationXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT4H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(durationXML);
-      });
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+        <bpmn:timerEventDefinition>
+          <bpmn:timeDuration>PT4H</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:boundaryEvent>
+    `);
 
     cy.get('[data-test=intermediateTypeSelect]').select('Cycle');
     const cycleValue = '6';
     cy.get('[data-test=periods]').select('day');
     typeIntoTextInput('.repeat', cycleValue);
 
-    const cycleXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeCycle>R/P6D</bpmn:timeCycle></bpmn:timerEventDefinition></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(cycleXML);
-      });
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+        <bpmn:timerEventDefinition>
+          <bpmn:timeCycle>R/P6D</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:boundaryEvent>
+      `);
   });
 
   it('Can add boundary timer events to valid targets', () => {
