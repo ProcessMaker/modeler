@@ -15,7 +15,7 @@ export default {
     };
   },
   methods: {
-    addMessageRef() {
+    addSignalRef() {
       if (this.node.definition.get('eventDefinitions')[0].signalRef) {
         this.signal = this.node.definition.get('eventDefinitions')[0].signalRef;
         return;
@@ -40,7 +40,7 @@ export default {
       },
     });
 
-    this.addMessageRef();
+    this.addSignalRef();
   },
   destroyed() {
     pull(this.rootElements, this.signal);
