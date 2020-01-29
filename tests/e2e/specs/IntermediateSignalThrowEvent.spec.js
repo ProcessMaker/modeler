@@ -7,7 +7,7 @@ describe('Signal Intermediate Throw Event', () => {
     addNodeTypeToPaper(intermediateSignalThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-signal-throw-event');
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:intermediateThrowEvent id="node_3" name="Intermediate Signal Throw Event">
+      <bpmn:intermediateThrowEvent id="node_3" name="Signal Intermediate Throw Event">
         <bpmn:signalEventDefinition signalRef="node_3_signal" />
       </bpmn:intermediateThrowEvent>
     `);
