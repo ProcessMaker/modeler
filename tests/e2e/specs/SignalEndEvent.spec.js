@@ -1,8 +1,8 @@
 import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Signal Start Event', () => {
-  it('Can create signal start event', () => {
+describe('Signal End Event', () => {
+  it('Can create signal end event', () => {
     const signalEndEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(signalEndEventPosition, nodeTypes.endEvent, 'switch-to-signal-end-event');
 
