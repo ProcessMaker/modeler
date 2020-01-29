@@ -3,18 +3,15 @@ import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
-  id: 'processmaker-modeler-intermediate-signal',
+  id: 'processmaker-modeler-intermediate-event',
   component,
   bpmnType: 'bpmn:IntermediateEvent',
   control: true,
   category: 'BPMN',
-  label: 'Intermediate Signal Event',
+  label: 'Intermediate Event',
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateEvent', {
-      name: $t('Intermediate Signal Event'),
-      eventDefinitions: [
-        moddle.create('bpmn:SignalEventDefinition', {}),
-      ],
+      name: $t('Intermediate Event'),
     });
   },
   diagram(moddle) {
@@ -29,7 +26,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Intermediate Signal Event',
+      name: 'Intermediate Event',
       items: [
         {
           component: 'FormAccordion',
