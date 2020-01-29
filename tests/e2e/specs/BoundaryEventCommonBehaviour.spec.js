@@ -47,6 +47,13 @@ const boundaryEventData = [{
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+}, {
+  type: 'Boundary Signal Event',
+  nodeType: nodeTypes.boundarySignalEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.task,
+  taskTypeSelector: 'switch-to-user-task',
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 }];
 
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {

@@ -1,7 +1,3 @@
-<template>
-  <div/>
-</template>
-
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import signalEventIcon from '@/assets/boundary-signal-event-icon.svg';
@@ -14,10 +10,10 @@ export default {
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       image: {
-        'ref-x': 8,
-        'ref-y': 7,
-        'width': bounds.get('width') - 16,
-        'height': bounds.get('height') - 16,
+        'ref-x': 3,
+        'ref-y': 1,
+        'width': bounds.get('width') - 15,
+        'height': bounds.get('height') - 15,
       },
     });
   },

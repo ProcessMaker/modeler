@@ -307,7 +307,7 @@ describe('Modeler', () => {
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
@@ -481,5 +481,15 @@ describe('Modeler', () => {
 
     cy.get('[data-test=switch-to-start-timer-event]').should('not.exist');
     cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
+  });
+
+  it('can render a file with non-existent element', () => {
+    uploadXml('non-existent-element.xml');
+
+    cy.get('[data-test="validation-toggle"]').click({ force: true });
+    cy.get('[data-test="validation-list-toggle"]').click({ force: true });
+    cy.get('[data-test=validation-list]').should($list => {
+      expect($list).to.contain('references a non-existent element and was not parsed');
+    });
   });
 });

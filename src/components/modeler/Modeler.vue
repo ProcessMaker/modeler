@@ -125,9 +125,9 @@ import registerInspectorExtension from '@/components/InspectorExtensionManager';
 import initAnchor from '@/mixins/linkManager.js';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
-import { keydownListener } from '@/components/modeler/moveWithArrowKeys';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
+import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 
 const version = '1.0';
 
@@ -320,6 +320,12 @@ export default {
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
+    blurFocusedScreenBuilderElement() {
+      const elementsToBlur = ['INPUT', 'SELECT'];
+      if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
+        document.activeElement.blur();
+      }
+    },
     /**
      * Register a mixin into a node component.
      * Used during "modeler-before-init"
@@ -453,6 +459,10 @@ export default {
       this.processes = this.getProcesses();
       this.plane = this.getPlane();
       this.planeElements = this.getPlaneElements();
+
+      this.validatePlaneElements();
+      this.cleanPlaneElements();
+
       this.processNode = new Node(
         'processmaker-modeler-process',
         this.processes[0],
@@ -534,8 +544,6 @@ export default {
       await this.paperManager.performAtomicAction(async() => {
         await this.waitForCursorToChange();
         this.parse();
-        this.validatePlaneElements();
-        this.cleanPlaneElements();
         this.addPools();
         this.setUpDiagram();
       });
@@ -662,6 +670,18 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
+    keydownListener(event) {
+      const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
+      if (focusIsOutsideDiagram) {
+        return;
+      }
+
+      moveShapeByKeypress(
+        event.key,
+        store.getters.highlightedShape,
+        this.pushToUndoStack,
+      );
+    },
     validateDropTarget({ clientX, clientY, control }) {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
@@ -708,7 +728,7 @@ export default {
     this.linter = new Linter(linterConfig);
   },
   mounted() {
-    document.addEventListener('keydown', keydownListener);
+    document.addEventListener('keydown', this.keydownListener);
 
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
@@ -729,6 +749,8 @@ export default {
     this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
     }, this);
+
+    this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;

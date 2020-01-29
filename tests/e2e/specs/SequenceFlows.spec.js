@@ -33,7 +33,7 @@ describe('Sequence Flows', () => {
       });
   });
 
-  it('Update Condition expression', () => {
+  it('Update name and condition expression', () => {
     const exclusiveGatewayPosition = { x: 400, y: 300 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
@@ -47,9 +47,23 @@ describe('Sequence Flows', () => {
       .then($links => $links[0])
       .click({ force: true });
 
-    const testString = 'foo > 7';
-    typeIntoTextInput('[name=conditionExpression]', testString);
-    cy.get('[name=conditionExpression]').should('have.value', testString);
+    const testNameString = 'Sequence name test';
+    typeIntoTextInput('[name=name]', testNameString);
+    cy.get('[name=name]').should('have.value', testNameString);
+
+    const testExpressionString = 'foo == 7';
+    typeIntoTextInput('[name=conditionExpression]', testExpressionString);
+    cy.get('[name=conditionExpression]').should('have.value', testExpressionString);
+
+    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_4" name="${ testNameString }" sourceRef="node_2" targetRef="node_3" pm:startEvent=""><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${ testExpressionString }</bpmn:conditionExpression></bpmn:sequenceFlow>`;
+
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(sequenceFlowXml);
+      });
   });
 
   /**
@@ -141,7 +155,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     waitToRenderAllShapes();
 
@@ -165,7 +179,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(newTaskPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     cy.get(anchorSelector).then($anchor => {
       /* Anchor should still be on the right */
@@ -189,7 +203,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     waitToRenderAllShapes();
 
@@ -213,7 +227,7 @@ describe('Sequence Flows', () => {
     getElementAtPosition(newStartEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
-      .click('topRight');
+      .click('topRight', { force: true });
 
     cy.get(anchorSelector).then($anchor => {
       /* Anchor should still be on the bottom */
