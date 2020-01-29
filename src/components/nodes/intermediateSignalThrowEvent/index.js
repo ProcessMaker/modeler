@@ -9,10 +9,10 @@ export default merge(cloneDeep(intermediateEventConfig), {
   component,
   control: false,
   bpmnType: 'bpmn:IntermediateThrowEvent',
-  label: 'Signal Intermediate Throw Event',
+  label: 'Intermediate Signal Throw Event',
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateThrowEvent', {
-      name: $t('Signal Intermediate Throw Event'),
+      name: $t('Intermediate Signal Throw Event'),
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition'),
       ],
