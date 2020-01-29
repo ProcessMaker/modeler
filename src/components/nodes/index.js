@@ -13,6 +13,7 @@ export { default as messageStartEvent } from './messageStartEvent';
 export { default as startTimerEvent } from './startTimerEvent';
 export { default as intermediateTimerEvent } from './intermediateTimerEvent';
 export { default as intermediateMessageCatchEvent } from './intermediateMessageCatchEvent';
+export { default as intermediateSignalCatchEvent } from './intermediateSignalCatchEvent';
 export { default as intermediateMessageThrowEvent } from './intermediateMessageThrowEvent';
 export { default as task } from './userTask';
 export { default as subProcess } from './subProcess';
