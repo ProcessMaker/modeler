@@ -2,6 +2,7 @@
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
 import intermediateSignalSymbol from '@/assets/intermediate-signal-alt.svg';
 import pull from 'lodash/pull';
+import store from '@/store';
 
 export default {
   extends: IntermediateEvent,
@@ -44,6 +45,7 @@ export default {
   },
   destroyed() {
     pull(this.rootElements, this.signal);
+    store.commit('removeSignalRef', this.signal);
   },
 };
 </script>
