@@ -1,15 +1,16 @@
 <template>
   <div>
     <form-multi-select
-      v-bind="$attrs"
+      label="Process"
       v-model="selectedProcess"
       :disabled="processList.length === 0"
       :options="processList"
       optionContent="name"
       class="p-0 mb-2"
     />
-    
+
     <form-multi-select
+      label="Start Event"
       v-if="selectedProcess"
       v-model="selectedStartEvent"
       :disabled="startEventList.length === 0"

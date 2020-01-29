@@ -1,9 +1,8 @@
 import {
   addNodeTypeToPaper,
-  connectNodesWithFlow,
+  assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getElementAtPosition,
-  getLinksConnectedToElement,
   modalCancel,
   modalConfirm,
   typeIntoTextInput,
@@ -37,87 +36,45 @@ describe('Tasks', () => {
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
   });
 
-  it('Can create sub process flow', () => {
+  it('Can create sub process with config', () => {
     const subProcessPosition = { x: 250, y: 250 };
+    const processName = 'Process with multiple start events';
+    const startEventName = 'Start Event Two';
+    const encodedConfig = encodeURIComponent(JSON.stringify({
+      calledElement: 'Subprocess1-5',
+      processId: 5,
+      startEvent: 'node_10',
+      name: `${processName} (${startEventName})`,
+    }));
+
     addNodeTypeToPaper(subProcessPosition, nodeTypes.task, 'switch-to-sub-process');
-
-    getElementAtPosition(subProcessPosition).should('exist');
-
-    connectNodesWithFlow('sequence-flow-button', { x: 150, y: 150 }, subProcessPosition);
     getElementAtPosition(subProcessPosition)
-      .then(getLinksConnectedToElement)
-      .then($links => $links[0])
       .click({ force: true });
 
-    waitToRenderAllShapes();
-
-    cy.get('.inspector-container')
-      .should('contain', 'A process has not been configured in the connected Sub Process task.');
-    cy.get('[name=startEvent]').should('not.exist');
-
-    getElementAtPosition(subProcessPosition).click({ force: true });
-
-    cy.get('.inspector-container').contains('Open Process').should('not.exist');
-    cy.get('.multiselect')
+    cy.get('[data-test="inspector-container"]')
+      .contains('Process')
+      .next('.multiselect')
       .click()
       .find('.multiselect__content')
-      .contains('Process with start event')
+      .contains(processName)
       .click();
-    cy.get('.inspector-container')
-      .contains('Open Process')
-      .should('exist');
 
-    waitToRenderAllShapes();
-
-    getElementAtPosition(subProcessPosition)
-      .then(getLinksConnectedToElement)
-      .then($links => $links[0])
-      .click({ force: true });
-
-    waitToRenderAllShapes();
-
-    cy.get('.inspector-container')
-      .should('not.contain', 'A process has not been configured in the connected Sub Process task.');
-    cy.get('[name=startEvent]').select('awesome start event');
-
-    const sequenceFlowXml = '<bpmn:sequenceFlow id="node_4" name="New Sequence Flow" sourceRef="node_1" targetRef="node_3" pm:startEvent="node_2" />';
-    const subProcessXml = `<bpmn:callActivity id="node_3" name="Process with start event" calledElement="ProcessId-3">
-      <bpmn:incoming>node_4</bpmn:incoming>
-    </bpmn:callActivity>`;
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .then(xml => {
-        expect(xml).to.contain(sequenceFlowXml.trim());
-        expect(xml).to.contain(subProcessXml.trim());
-      });
-
-    getElementAtPosition(subProcessPosition).click({ force: true });
-    cy.get('.multiselect')
+    cy.get('[data-test="inspector-container"]')
+      .contains('Start Event')
+      .next('.multiselect')
       .click()
-      .get('.multiselect__content')
-      .contains('Process with start event')
+      .find('.multiselect__content')
+      .contains(startEventName)
       .click();
 
-    getElementAtPosition(subProcessPosition)
-      .then(getLinksConnectedToElement)
-      .then($links => $links[0])
-      .click({ force: true });
-
-    waitToRenderAllShapes();
-    cy.get('.inspector-container')
-      .should('contain', 'A process has not been configured in the connected Sub Process task.');
-
-    const emptyCallActivityXml = 'calledElement=""';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .then(xml => {
-        expect(xml).to.contain(emptyCallActivityXml.trim());
-      });
+    assertDownloadedXmlDoesNotContainExpected(`
+      <bpmn:callActivity
+        id="node_2"
+        name="${processName} (${startEventName})"
+        calledElement="Subprocess1-5"
+        pm:config="${encodedConfig}"
+       />
+    `);
   });
 
   it('Can switch task type when initially added', () => {
