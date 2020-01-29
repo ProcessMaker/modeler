@@ -36,7 +36,7 @@ export default {
 
     const oldConfig     = JSON.parse(node.definition.config);
     const currentConfig = JSON.parse(value.config);
-    
+
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
     if (currentConfig.name != value.name) {
@@ -48,7 +48,7 @@ export default {
         currentConfig.name = value.name;
       }
     }
-    
+
     setNodeProp(node, 'config', JSON.stringify(currentConfig));
 
   },
@@ -73,9 +73,7 @@ export default {
             {
               component: SubProcessFormSelect,
               config: {
-                label: 'Process',
                 name: 'config',
-                helper: 'Select which Process this element calls',
               },
             },
           ],

@@ -2,6 +2,7 @@
   <div>
     <form-multi-select
       label="Process"
+      helper="Select which Process this element calls"
       v-model="selectedProcess"
       :disabled="processList.length === 0"
       :options="processList"
