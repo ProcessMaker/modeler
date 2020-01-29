@@ -30,13 +30,13 @@ export default {
     },
   },
   mounted() {
-    this.shape.attr('image/xlink:href', intermediateSignalSymbol);
     this.shape.attr({
       image: {
+        'ref-x': 7,
+        'ref-y': 5,
+        'xlink:href': intermediateSignalSymbol,
         width: 22,
-        height: 20,
-        y: 1,
-        x: 2,
+        height: 22,
       },
     });
 
