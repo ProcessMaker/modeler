@@ -3,6 +3,7 @@ import {
   boundaryErrorEvent,
   boundaryEscalationEvent,
   boundaryMessageEvent,
+  boundarySignalEvent,
   boundaryTimerEvent,
   endEvent,
   errorEndEvent,
@@ -59,6 +60,7 @@ const customEventNodes = [
   [boundaryErrorEvent, 'bpmn:BoundaryEvent', 'bpmn:ErrorEventDefinition'],
   [boundaryEscalationEvent, 'bpmn:BoundaryEvent', 'bpmn:EscalationEventDefinition'],
   [boundaryMessageEvent, 'bpmn:BoundaryEvent', 'bpmn:MessageEventDefinition'],
+  [boundarySignalEvent, 'bpmn:BoundaryEvent', 'bpmn:SignalEventDefinition'],
   [messageEndEvent, 'bpmn:EndEvent', 'bpmn:MessageEventDefinition'],
   [errorEndEvent, 'bpmn:EndEvent', 'bpmn:ErrorEventDefinition'],
 ];

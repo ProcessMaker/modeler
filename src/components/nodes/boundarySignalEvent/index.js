@@ -1,58 +1,36 @@
 import component from './boundarySignalEvent';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
+import boundaryEventConfig from '@/components/nodes/boundaryEvent';
+import interruptingToggleConfig from '@/components/nodes/boundaryEvent/interruptingToggleInspector';
 
-export default {
-  id: 'processmaker-modeler-boundary-signal-event',
+export const id = 'processmaker-modeler-boundary-signal-event';
+
+export default merge(cloneDeep(boundaryEventConfig), {
+  id,
   component,
-  bpmnType: 'bpmn:BoundaryEvent',
   control: false,
-  category: 'BPMN',
   label: 'Boundary Signal Event',
   icon: require('@/assets/toolpanel/boundary-signal-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Timer Event'),
+      name: $t('New Boundary Signal Event'),
+      cancelActivity: true,
       eventDefinitions: [
-        moddle.create('bpmn:SignalEventDefinition', {
-          id: null,
-        }),
+        moddle.create('bpmn:SignalEventDefinition'),
       ],
-    });
-  },
-  diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
-        height: 36,
-        width: 36,
-      }),
     });
   },
   inspectorConfig: [
     {
-      name: 'Boundary Event',
       items: [
         {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion',
-          },
           items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-            {
-              component: 'FormInput',
-              config: nameConfigSettings,
-            },
+            {},
+            interruptingToggleConfig,
           ],
         },
       ],
     },
   ],
-};
+});
