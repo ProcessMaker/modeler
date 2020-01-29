@@ -12,6 +12,7 @@ import {
   inclusiveGateway,
   intermediateMessageCatchEvent,
   intermediateMessageThrowEvent,
+  intermediateSignalCatchEvent,
   intermediateSignalThrowEvent,
   intermediateTimerEvent,
   manualTask,
@@ -24,6 +25,7 @@ import {
   scriptTask,
   sequenceFlow,
   serviceTask,
+  signalStartEvent,
   startEvent,
   startTimerEvent,
   subProcess,
@@ -52,10 +54,12 @@ const nodeTypes = [
   textAnnotation,
 ];
 const customEventNodes = [
+  [signalStartEvent, 'bpmn:StartEvent', 'bpmn:SignalEventDefinition'],
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [messageStartEvent, 'bpmn:StartEvent', 'bpmn:MessageEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
   [intermediateMessageCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:MessageEventDefinition'],
+  [intermediateSignalCatchEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:SignalEventDefinition'],
   [intermediateMessageThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:MessageEventDefinition'],
   [intermediateSignalThrowEvent, 'bpmn:IntermediateThrowEvent', 'bpmn:SignalEventDefinition'],
   [boundaryTimerEvent, 'bpmn:BoundaryEvent', 'bpmn:TimerEventDefinition'],
