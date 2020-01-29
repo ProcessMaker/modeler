@@ -9,7 +9,7 @@ export default {
   mounted() {
     this.shape.attr({
       image: {
-        'ref-y': 2,
+        'ref-y': 3,
         'xlink:href': signalEndEventIcon,
       },
     });
