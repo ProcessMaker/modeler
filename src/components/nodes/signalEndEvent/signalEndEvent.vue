@@ -4,7 +4,6 @@ import signalEndEventIcon from '@/assets/signal-end-event.svg';
 
 export default {
   extends: EndEvent,
-  props: ['rootElements'],
   mounted() {
     this.shape.attr({
       image: {
