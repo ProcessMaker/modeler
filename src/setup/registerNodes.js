@@ -22,6 +22,7 @@ import {
   scriptTask,
   sequenceFlow,
   serviceTask,
+  signalStartEvent,
   startEvent,
   startTimerEvent,
   subProcess,
@@ -50,6 +51,7 @@ const nodeTypes = [
   textAnnotation,
 ];
 const customEventNodes = [
+  [signalStartEvent, 'bpmn:StartEvent', 'bpmn:SignalEventDefinition'],
   [startTimerEvent, 'bpmn:StartEvent', 'bpmn:TimerEventDefinition'],
   [messageStartEvent, 'bpmn:StartEvent', 'bpmn:MessageEventDefinition'],
   [intermediateTimerEvent, 'bpmn:IntermediateCatchEvent', 'bpmn:TimerEventDefinition'],
