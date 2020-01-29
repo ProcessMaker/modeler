@@ -59,14 +59,14 @@ export default {
           dataTest: 'switch-to-start-timer-event',
         },
         {
-          label: 'Message Start Event',
-          nodeType: 'processmaker-modeler-message-start-event',
-          dataTest: 'switch-to-message-start-event',
-        },
-        {
           label: 'Signal Start Event',
           nodeType: 'processmaker-modeler-signal-start-event',
           dataTest: 'switch-to-signal-start-event',
+        },
+        {
+          label: 'Message Start Event',
+          nodeType: 'processmaker-modeler-message-start-event',
+          dataTest: 'switch-to-message-start-event',
         },
       ],
     };
