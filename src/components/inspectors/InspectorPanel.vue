@@ -49,7 +49,6 @@ import omit from 'lodash/omit';
 import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
-import SequenceFlowFormSelect from './sequenceFlowFormSelect/SequenceFlowFormSelect.vue';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -109,22 +108,6 @@ export default {
         };
 
         sequenceFlowConfigurationFormElements.push(expressionConfig);
-      }
-
-      if (this.isSequenceFlow(type) && this.isConnectedToSubProcess(definition)) {
-        const startEventConfig = {
-          component: SequenceFlowFormSelect,
-          config: {
-            label: 'Sub Process Start Event',
-            name: 'startEvent',
-            targetSubProcess: definition.targetRef,
-            helper: definition.targetRef.calledElement
-              ? ''
-              : 'Please select a valid process on the connected sub process.',
-          },
-        };
-
-        sequenceFlowConfigurationFormElements.push(startEventConfig);
       }
 
       return inspectorConfig;

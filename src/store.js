@@ -111,7 +111,7 @@ export default new Vuex.Store({
         const { data } = await window.ProcessMaker.apiClient.get('processes', {
           params: {
             order_direction: 'asc',
-            per_page: 15,
+            per_page: 1000,
             status: 'active',
             include: 'events',
           },
