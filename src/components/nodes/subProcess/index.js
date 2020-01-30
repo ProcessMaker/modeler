@@ -34,7 +34,7 @@ export default {
     setNodeProp(node, 'id', value.id);
     setNodeProp(node, 'name', value.name);
 
-    const oldConfig     = JSON.parse(node.definition.config);
+    const oldConfig = JSON.parse(node.definition.config);
     const currentConfig = JSON.parse(value.config);
 
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
