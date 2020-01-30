@@ -51,16 +51,16 @@ export default {
           label: 'Intermediate Timer Event',
           nodeType: 'processmaker-modeler-intermediate-catch-timer-event',
         },
-        {
-          label: 'Intermediate Signal Catch Event',
-          nodeType: 'processmaker-modeler-intermediate-signal-catch-event',
-          dataTest: 'switch-to-intermediate-signal-catch-event',
-        },
-        {
-          label: 'Intermediate Signal Throw Event',
-          nodeType: 'processmaker-modeler-intermediate-signal-throw-event',
-          dataTest: 'switch-to-intermediate-signal-throw-event',
-        },
+        // {
+        //   label: 'Intermediate Signal Catch Event',
+        //   nodeType: 'processmaker-modeler-intermediate-signal-catch-event',
+        //   dataTest: 'switch-to-intermediate-signal-catch-event',
+        // },
+        // {
+        //   label: 'Intermediate Signal Throw Event',
+        //   nodeType: 'processmaker-modeler-intermediate-signal-throw-event',
+        //   dataTest: 'switch-to-intermediate-signal-throw-event',
+        // },
         {
           label: 'Intermediate Message Catch Event',
           nodeType: 'processmaker-modeler-intermediate-message-catch-event',
