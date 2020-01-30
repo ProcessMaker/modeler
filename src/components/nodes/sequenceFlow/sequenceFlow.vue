@@ -22,7 +22,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { namePosition, expressionPosition } from './sequenceFlowConfig';
+import { namePosition } from './sequenceFlowConfig';
 import store from '@/store';
 import { id as subProcessId } from '@/components/nodes/subProcess';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
@@ -72,44 +72,22 @@ export default {
         });
       },
     },
-    expressionLabel: {
-      get() {
-        return this.shape.label(1).attrs.text.text;
-      },
-      set(text = '') {
-        this.shape.label(1, {
-          attrs: {
-            text: { text },
-          },
-        });
-      },
-    },
     targetIsCallActivity() {
       return this.targetType === subProcessId;
-    },
-    sourceIsGateway() {
-      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(this.node.definition.sourceRef.$type);
     },
   },
   watch: {
     'node.definition': {
-      handler({ startEvent: startEventId, conditionExpression }) {
+      handler({ startEvent: startEventId }) {
         const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newExpressionLabel = get(conditionExpression, 'body');
         const newNameLabel = this.shapeName || get(startEvent, 'name');
 
         if (this.targetIsCallActivity ) {
           this.nameLabel = get(startEvent, 'name');
-
-          if (this.sourceIsGateway) {
-            this.expressionLabel = newExpressionLabel;
-          }
-          return;
         }
 
-        if (newNameLabel !== this.nameLabel || newExpressionLabel !== this.expressionLabel) {
+        if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
-          this.expressionLabel = newExpressionLabel;
         }
       },
       deep: true,
@@ -175,21 +153,6 @@ export default {
         },
         position: namePosition,
       }]);
-
-      const conditionExpression = this.node.definition.conditionExpression;
-
-      if (conditionExpression) {
-        this.shape.appendLabel({
-          attrs: {
-            text: {
-              text: conditionExpression,
-            },
-          },
-          position: expressionPosition,
-        });
-
-        this.expressionLabel = conditionExpression.body;
-      }
     },
   },
   mounted() {
