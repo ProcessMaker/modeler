@@ -22,7 +22,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
-import { expressionPosition, namePosition } from './sequenceFlowConfig';
+import { namePosition } from './sequenceFlowConfig';
 import store from '@/store';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 
@@ -71,29 +71,22 @@ export default {
         });
       },
     },
-    expressionLabel: {
-      get() {
-        return this.shape.label(1).attrs.text.text;
-      },
-      set(text = '') {
-        this.shape.label(1, {
-          attrs: {
-            text: { text },
-          },
-        });
-      },
+    targetIsCallActivity() {
+      return this.targetType === subProcessId;
     },
   },
   watch: {
     'node.definition': {
-      handler({ startEvent: startEventId, conditionExpression }) {
+      handler({ startEvent: startEventId }) {
         const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newExpressionLabel = get(conditionExpression, 'body');
         const newNameLabel = this.shapeName || get(startEvent, 'name');
 
-        if (newNameLabel !== this.nameLabel || newExpressionLabel !== this.expressionLabel) {
+        if (this.targetIsCallActivity ) {
+          this.nameLabel = get(startEvent, 'name');
+        }
+
+        if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
-          this.expressionLabel = newExpressionLabel;
         }
       },
       deep: true,
@@ -159,21 +152,6 @@ export default {
         },
         position: namePosition,
       }]);
-
-      const conditionExpression = this.node.definition.conditionExpression;
-
-      if (conditionExpression) {
-        this.shape.appendLabel({
-          attrs: {
-            text: {
-              text: conditionExpression,
-            },
-          },
-          position: expressionPosition,
-        });
-
-        this.expressionLabel = conditionExpression.body;
-      }
     },
   },
   mounted() {
