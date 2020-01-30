@@ -1,9 +1,9 @@
 import component from './intermediateSignalCatchEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
-import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
+import intermediateEventConfig from '@/components/nodes/intermediateEvent';
 
-export default merge(cloneDeep(intermediateMessageEventConfig), {
+export default merge(cloneDeep(intermediateEventConfig), {
   id: 'processmaker-modeler-intermediate-signal-catch-event',
   component,
   control: false,
