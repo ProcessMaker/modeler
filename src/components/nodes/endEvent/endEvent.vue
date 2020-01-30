@@ -61,11 +61,11 @@ export default {
           nodeType: 'processmaker-modeler-error-end-event',
           dataTest: 'switch-to-error-end-event',
         },
-        {
-          label: 'Signal End Event',
-          nodeType: 'processmaker-modeler-signal-end-event',
-          dataTest: 'switch-to-signal-end-event',
-        },
+        // {
+        //   label: 'Signal End Event',
+        //   nodeType: 'processmaker-modeler-signal-end-event',
+        //   dataTest: 'switch-to-signal-end-event',
+        // },
       ],
     };
   },

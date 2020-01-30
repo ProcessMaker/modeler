@@ -8,7 +8,7 @@ export { default as eventBasedGateway } from './eventBasedGateway';
 export { default as sequenceFlow } from './sequenceFlow';
 export { default as messageFlow } from './messageFlow';
 export { default as messageEndEvent } from './messageEndEvent';
-export { default as signalEndEvent } from './signalEndEvent';
+// export { default as signalEndEvent } from './signalEndEvent';
 export { default as startEvent } from './startEvent';
 export { default as signalStartEvent } from './signalStartEvent';
 export { default as messageStartEvent } from './messageStartEvent';
