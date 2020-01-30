@@ -49,6 +49,7 @@ const boundaryEventData = [{
   invalidTargets: [{ type: nodeTypes.startEvent }],
 }, {
   type: 'Boundary Signal Event',
+  skip: true,
   nodeType: nodeTypes.boundarySignalEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,

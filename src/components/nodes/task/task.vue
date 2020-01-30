@@ -85,11 +85,11 @@ export default {
           nodeType: 'processmaker-modeler-boundary-error-event',
           dataTest: 'add-boundary-error-event',
         },
-        {
-          label: 'Boundary Signal Event',
-          nodeType: 'processmaker-modeler-boundary-signal-event',
-          dataTest: 'add-boundary-signal-event',
-        },
+        // {
+        //   label: 'Boundary Signal Event',
+        //   nodeType: 'processmaker-modeler-boundary-signal-event',
+        //   dataTest: 'add-boundary-signal-event',
+        // },
         {
           label: 'Boundary Message Event',
           nodeType: 'processmaker-modeler-boundary-message-event',
