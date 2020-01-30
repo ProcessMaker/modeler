@@ -475,7 +475,7 @@ export default {
       unsupportedElements.filter(name => definition.get(name))
         .forEach(name => definition.set(name, undefined));
     },
-    getParsers(definition) {
+    getCustomParser(definition) {
       const parsers = this.parsers[(definition.$type)];
       const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
       const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
@@ -509,7 +509,7 @@ export default {
     setNode(definition, flowElements, artifacts) {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
-      const parser = this.getParsers(definition);
+      const parser = this.getCustomParser(definition);
 
       if (!parser) {
         this.handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram);
