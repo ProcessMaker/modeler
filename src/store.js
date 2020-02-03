@@ -12,6 +12,16 @@ function makeDefinitionPropertyReactive(definition, key, value) {
   Vue.set(definition, key, value);
 }
 
+function removeRef(state, ref, callBack) {
+  state.nodes.filter(({ definition }) => (
+    definition.$type === 'bpmn:IntermediateCatchEvent' ||
+    definition.$type === 'bpmn:StartEvent'
+  )
+    && definition.eventDefinitions && definition.eventDefinitions.some(callBack)).forEach(({ definition }) => {
+    definition.eventDefinitions[0][ref] = null;
+  });
+}
+
 export default new Vuex.Store({
   state: {
     graph: null,
@@ -86,14 +96,10 @@ export default new Vuex.Store({
       }
     },
     removeMessageRef(state, message) {
-      state.nodes.filter(({ definition }) => (
-        definition.$type === 'bpmn:IntermediateCatchEvent' ||
-        definition.$type === 'bpmn:StartEvent'
-      )
-        && definition.eventDefinitions && definition.eventDefinitions.some(({ messageRef }) => messageRef === message))
-        .forEach(({ definition }) => {
-          definition.eventDefinitions[0].messageRef = null;
-        });
+      removeRef(state, 'messageRef', ({ messageRef }) => messageRef === message);
+    },
+    removeSignalRef(state, signal) {
+      removeRef(state, 'signalRef', ({ signalRef }) => signalRef === signal);
     },
     setGraph(state, graph) {
       state.graph = graph;
