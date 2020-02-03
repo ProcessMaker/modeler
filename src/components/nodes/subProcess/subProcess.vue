@@ -23,10 +23,8 @@ import portsConfig from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task/taskConfig';
 import store from '@/store';
-import uniqBy from 'lodash/uniqBy';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import { elementIdParser } from '@/components/nodes/subProcess/elementIdParser';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 const labelPadding = 15;
@@ -109,26 +107,11 @@ export default {
         this.recalcMarkersAlignment();
       }
     },
-    'node.definition.calledElement'(calledElement) {
-      if (!calledElement) {
-        return;
-      }
-
-      const { ownerProcessId, processId } = elementIdParser(calledElement);
-
-      const calledSubProcess = store.getters.globalProcesses
-        .find(process => process.id == processId);
-
-      let calledElementName = calledSubProcess.name;
-      if (uniqBy(calledSubProcess.events, 'ownerProcessName').length > 1) {
-        const calledSubProcess = calledSubProcess.events.find(event => event.ownerProcessId == ownerProcessId);
-        calledElementName += ` (${calledSubProcess.ownerProcessName})`;
-      }
-
+    'node.definition.config'(config) {
       store.commit('updateNodeProp', {
         node: this.node,
-        key: 'name',
-        value: calledElementName,
+        key: 'config',
+        value: config,
       });
       this.$emit('save-state');
     },

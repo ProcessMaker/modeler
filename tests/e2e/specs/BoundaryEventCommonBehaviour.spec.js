@@ -18,6 +18,7 @@ import { invalidNodeColor, poolColor, startColor } from '../../../src/components
 const boundaryEventPosition = { x: 280, y: 200 };
 const taskPosition = { x: 250, y: 200 };
 
+
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
   const boundaryPosition = boundaryEvent.position();
   const taskPosition = task.position();

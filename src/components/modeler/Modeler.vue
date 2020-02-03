@@ -320,6 +320,12 @@ export default {
     highlightNode(node) {
       store.commit('highlightNode', node);
     },
+    blurFocusedScreenBuilderElement() {
+      const elementsToBlur = ['INPUT', 'SELECT'];
+      if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
+        document.activeElement.blur();
+      }
+    },
     /**
      * Register a mixin into a node component.
      * Used during "modeler-before-init"
@@ -743,6 +749,8 @@ export default {
     this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
     }, this);
+
+    this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;

@@ -1,8 +1,7 @@
 import {
+  assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
   getElementAtPosition,
-  moveElement,
-  removeIndentationAndLinebreaks,
   setBoundaryEvent,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -10,33 +9,27 @@ import {
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
 
-describe('Boundary Signal Event', () => {
+describe.skip('Boundary Signal Event', () => {
   const taskPosition = { x: 200, y: 200 };
   const boundarySignalEventPosition = { x: 260, y: 200 };
 
-  it('update boundary signal event properties element', () => {
+  beforeEach(() => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundarySignalEvent, taskPosition);
-    moveElement(taskPosition, boundarySignalEventPosition.x, boundarySignalEventPosition.y);
+  });
 
+  it('update boundary signal event properties element', () => {
     const name = 'Test name';
     typeIntoTextInput('[name=name]', name);
 
-    const signalXML = '<bpmn:boundaryEvent id="node_3" name="Test name" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>';
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(signalXML);
-      });
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+        <bpmn:signalEventDefinition />
+      </bpmn:boundaryEvent>
+    `);
   });
 
   it('can toggle interrupting on Boundary Signal Events', () => {
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    setBoundaryEvent(nodeTypes.boundarySignalEvent, taskPosition);
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
 
@@ -60,4 +53,5 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+  skip: true,
 });

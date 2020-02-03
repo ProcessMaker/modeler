@@ -1,19 +1,28 @@
 <template>
   <div>
     <form-multi-select
-      v-bind="$attrs"
-      @input="$emit('input', $event ? $event.value : '')"
-      :value="selectValue"
+      label="Process"
+      helper="Select which Process this element calls"
+      v-model="selectedProcess"
       :disabled="processList.length === 0"
-      :options="dropdownList"
-      optionValue="value"
-      optionContent="content"
+      :options="processList"
+      optionContent="name"
+      class="p-0 mb-2"
+    />
+
+    <form-multi-select
+      label="Start Event"
+      v-if="selectedProcess"
+      v-model="selectedStartEvent"
+      :disabled="startEventList.length === 0"
+      :options="startEventList"
+      optionContent="name"
       class="p-0 mb-2"
     />
 
     <a
-      v-if="value"
-      :href="`/modeler/${selectedProcessId}`"
+      v-if="selectedProcess"
+      :href="`/modeler/${selectedProcess.id}`"
       target="_blank"
     >
       Open Process
@@ -27,48 +36,92 @@ import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
 
 export default {
+  data() {
+    return {
+      selectedProcess: null,
+      selectedStartEvent: null,
+      config: {},
+      name: '',
+      loading: false ,
+    };
+  },
   inheritAttrs: false,
   props: ['value'],
   computed: {
-    selectValue() {
-      return this.dropdownList.find(option => option.value === this.value);
+    processList() {
+      return store.getters.globalProcesses || [];
     },
-    selectedProcessId() {
-      return this.processList.find(({ value }) => value === this.value).processId;
+    startEventList() {
+      if (!this.selectedProcess) { return []; }
+      return this.selectedProcess.events;
     },
-    dropdownList() {
-      return this.processList.length > 0
-        ? this.processList
-        : [];
+  },
+  watch: {
+    selectedProcess() {
+      if (this.loading) { return; }
+      if (this.startEventList.length > 0) {
+        this.selectedStartEvent = this.startEventList[0];
+      } else {
+        this.selectedStartEvent = null;
+      }
+    },
+    selectedStartEvent() {
+      if (this.loading) { return; }
+      this.setBpmnValues();
     },
     processList() {
-      const list = [];
-
-      store.getters.globalProcesses.forEach(process => {
-        uniqBy(process.events, 'ownerProcessId').forEach(event => {
-          list.push(this.toDropdownFormat(process, event));
-        });
-      });
-
-      return list;
+      this.loadBpmnValues();
+    },
+    value: {
+      handler() {
+        this.config = JSON.parse(this.value);
+      },
+      immediate: true,
     },
   },
   methods: {
+    loadBpmnValues() {
+      if (!this.config.processId || !this.config.startEvent) {
+        return;
+      }
+
+      this.loading = true;
+      this.name = this.config.name;
+      this.selectedProcess = this.processList.find(p => p.id === this.config.processId);
+      this.selectedStartEvent = this.startEventList.find(se => se.id === this.config.startEvent);
+      this.$nextTick(() => {
+        this.loading = false;
+      });
+    },
+    setBpmnValues() {
+      if (!this.selectedProcess || !this.selectedStartEvent) {
+        return;
+      }
+
+      let name = this.selectedProcess.name;
+      if (this.startEventList.length > 1) {
+        name += ` (${this.selectedStartEvent.name})`;
+      }
+
+      const emit = {
+        calledElement: `${this.selectedStartEvent.ownerProcessId}-${this.selectedProcess.id}`,
+        processId: this.selectedProcess.id,
+        startEvent: this.selectedStartEvent.id,
+        name,
+      };
+      const stringValue = JSON.stringify(emit);
+      this.$emit('input', stringValue);
+    },
     containsMultipleProcesses(process) {
       return uniqBy(process.events, 'ownerProcessId').length > 1;
     },
-    toDropdownFormat(process, event) {
-      return {
-        processId: process.id,
-        value: `${event.ownerProcessId}-${process.id}`,
-        content: this.containsMultipleProcesses(process)
-          ? `${process.name} (${event.ownerProcessName})`
-          : process.name,
-      };
-    },
   },
   created() {
-    store.dispatch('fetchGlobalProcesses');
+    if (this.processList.length === 0) {
+      store.dispatch('fetchGlobalProcesses');
+    } else {
+      this.loadBpmnValues();
+    }
   },
 };
 </script>
