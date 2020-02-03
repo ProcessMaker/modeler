@@ -1,6 +1,6 @@
 import { dragFromSourceToDest, getElementAtPosition, getGraphElements, waitToRenderAllShapes } from '../support/utils';
 import { nodeTypes } from '../support/constants';
-import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
+import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 import { defaultNodeColor } from '../../../src/components/nodeColors';
 
 describe.skip('Boundary Escalation Event', () => {

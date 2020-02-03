@@ -14,7 +14,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
-import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
+import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 describe('Boundary Timer Event', () => {
   it('update boundary timer event properties element', () => {

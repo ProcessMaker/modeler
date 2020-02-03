@@ -11,8 +11,8 @@ import {
   removeIndentationAndLinebreaks,
   setBoundaryEvent,
   waitToRenderAllShapes,
-} from '../support/utils';
-import { boundaryEventSelector, nodeTypes } from '../support/constants';
+} from './utils';
+import { boundaryEventSelector, nodeTypes } from './constants';
 import { invalidNodeColor, poolColor, startColor } from '../../../src/components/nodeColors';
 
 const boundaryEventPosition = { x: 280, y: 200 };

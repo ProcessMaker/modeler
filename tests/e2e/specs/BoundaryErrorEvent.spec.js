@@ -1,5 +1,5 @@
 import { nodeTypes } from '../support/constants';
-import { CommonBoundaryEventBehaviour } from './BoundaryEventCommonBehaviour.spec';
+import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 CommonBoundaryEventBehaviour({
   type: 'Boundary Error Event',
