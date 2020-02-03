@@ -297,6 +297,16 @@ describe('Modeler', () => {
     cy.get('[data-test="validation-list"]').should('contain', warning);
   });
 
+  it('shows warning for non-default base element during parsing', () => {
+    uploadXml('nonDefaultBaseElement.xml');
+    const warning = 'Unsupported Element bpmn:IntermediateCatchEvent is an unsupported element type in parse';
+
+    cy.get('[data-test="validation-toggle"]').click({ force: true });
+    cy.get('[data-test="validation-list-toggle"]').click({ force: true });
+    cy.get('[data-test="validation-list"]').should('contain', warning);
+    getGraphElements().should('have.length', 0);
+  });
+
   it('check for joint marker class on linkTools', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 300, y: 300 };
