@@ -23,8 +23,6 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import { namePosition } from './sequenceFlowConfig';
-import store from '@/store';
-import { id as subProcessId } from '@/components/nodes/subProcess';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 
 export default {
@@ -72,19 +70,11 @@ export default {
         });
       },
     },
-    targetIsCallActivity() {
-      return this.targetType === subProcessId;
-    },
   },
   watch: {
     'node.definition': {
-      handler({ startEvent: startEventId }) {
-        const startEvent = store.getters.globalProcessEvents.find(event => event.id == startEventId);
-        const newNameLabel = this.shapeName || get(startEvent, 'name');
-
-        if (this.targetIsCallActivity ) {
-          this.nameLabel = get(startEvent, 'name');
-        }
+      handler() {
+        const newNameLabel = this.shapeName;
 
         if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;

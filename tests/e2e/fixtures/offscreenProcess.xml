@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+<bpmn:definitions
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  id="Definitions_03dabax"
+  targetNamespace="http://bpmn.io/schema/bpmn"
+  exporter="ProcessMaker Modeler"
+  exporterVersion="1.0"
+>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="node_1" name="Start Event">
       <bpmn:outgoing>node_3</bpmn:outgoing>
@@ -8,16 +17,16 @@
       <bpmn:incoming>node_3</bpmn:incoming>
       <bpmn:outgoing>node_5</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" pm:startEvent="" />
+    <bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" />
     <bpmn:task id="node_4" name="Task">
       <bpmn:incoming>node_5</bpmn:incoming>
       <bpmn:outgoing>node_7</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="node_5" name="New Sequence Flow" sourceRef="node_2" targetRef="node_4" pm:startEvent="" />
+    <bpmn:sequenceFlow id="node_5" name="New Sequence Flow" sourceRef="node_2" targetRef="node_4" />
     <bpmn:endEvent id="node_6" name="End Event">
       <bpmn:incoming>node_7</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="node_7" name="New Sequence Flow" sourceRef="node_4" targetRef="node_6" pm:startEvent="" />
+    <bpmn:sequenceFlow id="node_7" name="New Sequence Flow" sourceRef="node_4" targetRef="node_6" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">

@@ -55,7 +55,7 @@ describe('Sequence Flows', () => {
     typeIntoTextInput('[name=conditionExpression]', testExpressionString);
     cy.get('[name=conditionExpression]').should('have.value', testExpressionString);
 
-    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_4" name="${ testNameString }" sourceRef="node_2" targetRef="node_3" pm:startEvent=""><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${ testExpressionString }</bpmn:conditionExpression></bpmn:sequenceFlow>`;
+    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_4" name="${testNameString}" sourceRef="node_2" targetRef="node_3"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testExpressionString}</bpmn:conditionExpression></bpmn:sequenceFlow>`;
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
