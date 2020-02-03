@@ -475,8 +475,18 @@ export default {
       unsupportedElements.filter(name => definition.get(name))
         .forEach(name => definition.set(name, undefined));
     },
-    getParsers(bpmnType) {
-      return this.parsers[bpmnType];
+    getCustomParser(definition) {
+      const parsers = this.parsers[(definition.$type)];
+
+      if (!parsers) {
+        return;
+      }
+
+      const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
+      const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
+      const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
+
+      return customParser || implementationParser || defaultParser;
     },
     handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram) {
       this.addWarning({
@@ -504,21 +514,15 @@ export default {
     setNode(definition, flowElements, artifacts) {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
-      const parsers = this.getParsers(bpmnType);
+      const parser = this.getCustomParser(definition);
 
-      if (!parsers) {
+      if (!parser) {
         this.handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram);
-
         return;
       }
 
       this.removeUnsupportedElementAttributes(definition);
-
-      const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
-      const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
-      const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
-
-      const type = (customParser || implementationParser || defaultParser)(definition, this.moddle);
+      const type = parser(definition, this.moddle);
 
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
