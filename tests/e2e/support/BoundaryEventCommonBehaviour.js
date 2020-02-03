@@ -122,6 +122,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       setBoundaryEvent(nodeType, outgoingTaskPosition, taskType);
       moveElement(outgoingTaskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
       connectNodesWithFlow('sequence-flow-button', boundaryEventPosition, outgoingTaskPosition);
+      waitToRenderAllShapes();
 
       const numberOfSequenceFlowsAdded = 1;
 
