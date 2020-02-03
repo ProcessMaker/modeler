@@ -7,6 +7,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 describe.skip('Boundary Signal Event', () => {
   const taskPosition = { x: 200, y: 200 };
@@ -43,4 +44,14 @@ describe.skip('Boundary Signal Event', () => {
     cy.get(interrupting).uncheck({ force: true });
     cy.get(interrupting).should('not.be.checked');
   });
+});
+
+CommonBoundaryEventBehaviour({
+  type: 'Boundary Signal Event',
+  nodeType: nodeTypes.boundarySignalEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
+  taskType: nodeTypes.task,
+  taskTypeSelector: 'switch-to-user-task',
+  invalidTargets: [{ type: nodeTypes.startEvent }],
+  skip: true,
 });

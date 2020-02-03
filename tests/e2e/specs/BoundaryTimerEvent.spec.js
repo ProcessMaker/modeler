@@ -14,6 +14,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
+import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 describe('Boundary Timer Event', () => {
   it('update boundary timer event properties element', () => {
@@ -249,4 +250,13 @@ describe('Boundary Timer Event', () => {
       });
     });
   });
+});
+
+CommonBoundaryEventBehaviour({
+  type: 'Boundary Timer Event',
+  nodeType: nodeTypes.boundaryTimerEvent,
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+  taskType: nodeTypes.task,
+  taskTypeSelector: 'switch-to-user-task',
+  invalidTargets: [{ type: nodeTypes.startEvent }],
 });
