@@ -37,6 +37,7 @@ export default new Vuex.Store({
         return;
       }
 
+
       commit('setState', newState);
       commit('setPosition', state.stack.length - 1);
     },
