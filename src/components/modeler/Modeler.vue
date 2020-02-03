@@ -477,6 +477,11 @@ export default {
     },
     getCustomParser(definition) {
       const parsers = this.parsers[(definition.$type)];
+
+      if (!parsers) {
+        return;
+      }
+
       const customParser = parsers.custom.find(parser => parser(definition, this.moddle));
       const implementationParser = parsers.implementation.find(parser => parser(definition, this.moddle));
       const defaultParser = parsers.default.find(parser => parser(definition, this.moddle));
