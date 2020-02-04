@@ -40,7 +40,6 @@ export default new Vuex.Store({
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
     highlightedShapes: (state, getters) => {
-      // getters.nodeShape(getters.highlightedNodes[0])
       return getters.highlightedNodes.map(getters.nodeShape);
     },
     rootElements: state => state.rootElements,

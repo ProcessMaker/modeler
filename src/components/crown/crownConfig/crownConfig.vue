@@ -142,6 +142,7 @@ export default {
         ? this.node.pool.component.containingProcess
         : this.processNode.definition;
     },
+    highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
     paperNotRendered() {
@@ -219,9 +220,26 @@ export default {
       }
     },
     setUpPositionHandling() {
-      this.shape.on('change:position', (element, newPosition) => {
+      this.shape.on('change:position', (element, newPosition, { multiSelectMove }) => {
+        const dx = newPosition.x - this.node.diagram.bounds.x;
+        const dy = newPosition.y - this.node.diagram.bounds.y;
+
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
+
+        if (multiSelectMove) {
+          // eslint-disable-next-line no-console
+          console.log('skipping because of multiSelectMove');
+          return;
+        }
+
+        this.highlightedShapes.forEach(shape => {
+          if (shape === this.shape) {
+            return;
+          }
+
+          shape.translate(dx, dy, { multiSelectMove: true });
+        });
 
         if (!this.savePositionOnPointerupEventSet) {
           this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);
