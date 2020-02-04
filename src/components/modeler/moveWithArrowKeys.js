@@ -13,20 +13,23 @@ const immovableShapeTypes = [
   'processmaker.components.nodes.boundaryEvent.Shape',
 ];
 
-export default function moveShapeByKeypress(key, shape, onAfterMove = () => {
-}) {
+export default function moveShapeByKeypress(key, shapes, onAfterMove = () => {}) {
   if (!isArrowKey(key)) {
     return;
   }
 
-  if (!isMovableShape(shape)) {
+  const moveableShapes = shapes.filter(isMovableShape);
+
+  if (moveableShapes.length === 0) {
     return;
   }
 
   const [tx, ty] = getTranslationVector(key);
-  shape.translate(tx, ty, { movedWithArrowKeys: true });
 
-  expandPoolToContainElement(shape);
+  moveableShapes.forEach(shape => {
+    shape.translate(tx, ty, { movedWithArrowKeys: true });
+    expandPoolToContainElement(shape);
+  });
 
   onAfterMove();
 }

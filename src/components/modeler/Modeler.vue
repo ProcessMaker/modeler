@@ -67,7 +67,7 @@
         :paper="paper"
         :node="node"
         :id="node.id"
-        :highlighted="highlightedNode === node"
+        :highlighted="highlightedNodes.includes(node)"
         :has-error="invalidNodes.includes(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
@@ -83,7 +83,7 @@
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
-        @click="highlightNode(node)"
+        @click="highlightNode(node, $event)"
         @unset-pools="unsetPools"
         @set-pools="setPools"
         @save-state="pushToUndoStack"
@@ -218,7 +218,7 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
-    highlightedNode: () => store.getters.highlightedNode,
+    highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
       return Object.entries(this.validationErrors)
         .flatMap(([, errors]) => errors.map(error => error.id));
@@ -317,7 +317,12 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    highlightNode(node) {
+    highlightNode(node, event) {
+      if (event && event.shiftKey) {
+        store.commit('highlightNodes', [...this.highlightedNodes, node]);
+        return;
+      }
+
       store.commit('highlightNode', node);
     },
     blurFocusedScreenBuilderElement() {
@@ -682,7 +687,7 @@ export default {
 
       moveShapeByKeypress(
         event.key,
-        store.getters.highlightedShape,
+        store.getters.highlightedShapes,
         this.pushToUndoStack,
       );
     },
@@ -782,7 +787,7 @@ export default {
       }
     });
 
-    this.paperManager.addEventHandler('cell:pointerdown', cellView => {
+    this.paperManager.addEventHandler('cell:pointerdown', (cellView, event) => {
       const shape = cellView.model;
 
       if (!this.isBpmnNode(shape)) {
@@ -791,7 +796,7 @@ export default {
 
       this.setShapeStacking(shape);
 
-      shape.component.$emit('click');
+      shape.component.$emit('click', event);
     });
 
     initAnchor();
