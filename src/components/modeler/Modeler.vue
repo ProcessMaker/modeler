@@ -423,7 +423,7 @@ export default {
     },
     setUpDiagram() {
       this.processes.forEach(process => {
-        // this.ensureCancelActivityIsAddedToBoundaryEvents(process);
+        this.ensureCancelActivityIsAddedToBoundaryEvents(process);
 
         this.addLanes(process);
 
@@ -580,17 +580,17 @@ export default {
       }
       return boundaryEvent;
     },
+    ensureCancelActivityIsAddedToBoundaryEvents(process) {
+      this.getBoundaryEvents(process).forEach(definition => {
+        const boundaryEvent = this.createBoundaryEvent(definition);
+        definition.get('outgoing').forEach(outgoing => outgoing.set('sourceRef', boundaryEvent));
+        this.replaceDefinition(definition, boundaryEvent, process);
+      });
+    },
     replaceDefinition(definition, boundaryEvent, process) {
       const definitionIndex = process.get('flowElements').indexOf(definition);
       process.flowElements[definitionIndex] = boundaryEvent;
     },
-    // ensureCancelActivityIsAddedToBoundaryEvents(process) {
-    //   this.getBoundaryEvents(process).forEach(definition => {
-    //     const boundaryEvent = this.createBoundaryEvent(definition);
-    //     definition.get('outgoing').forEach(outgoing => outgoing.set('sourceRef', boundaryEvent));
-    //     this.replaceDefinition(definition, boundaryEvent, process);
-    //   });
-    // },
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
