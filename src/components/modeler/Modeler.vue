@@ -590,6 +590,12 @@ export default {
     replaceDefinition(definition, boundaryEvent, process) {
       const definitionIndex = process.get('flowElements').indexOf(definition);
       process.flowElements[definitionIndex] = boundaryEvent;
+      const boundaryEventDiagram = this.planeElements.find((diagram) => {
+        return diagram.bpmnElement === definition;
+      });
+      if (boundaryEventDiagram) {
+        boundaryEventDiagram.bpmnElement = boundaryEvent;
+      }
     },
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
