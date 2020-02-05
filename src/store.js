@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import flatten from 'lodash/flatten';
+import uniq from 'lodash/uniq';
 
 Vue.use(Vuex);
 
@@ -83,8 +84,8 @@ export default new Vuex.Store({
     highlightNode(state, node) {
       state.highlightedNodes = [node];
     },
-    highlightNodes(state, nodes) {
-      state.highlightedNodes = nodes;
+    addToHighlightedNodes(state, nodes) {
+      state.highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);
     },
     addNode(state, node) {
       /* Add an unchanging ID that Vue can use to track the component

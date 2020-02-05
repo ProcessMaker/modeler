@@ -320,7 +320,7 @@ export default {
     },
     highlightNode(node, event) {
       if (event && event.shiftKey) {
-        store.commit('highlightNodes', [...this.highlightedNodes, node]);
+        store.commit('addToHighlightedNodes', [node]);
         return;
       }
 
