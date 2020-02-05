@@ -220,16 +220,14 @@ export default {
       }
     },
     setUpPositionHandling() {
-      this.shape.on('change:position', (element, newPosition, { multiSelectMove }) => {
+      this.shape.on('change:position', (element, newPosition, { multiSelectMove, movedWithArrowKeys }) => {
         const dx = newPosition.x - this.node.diagram.bounds.x;
         const dy = newPosition.y - this.node.diagram.bounds.y;
 
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
 
-        if (multiSelectMove) {
-          // eslint-disable-next-line no-console
-          console.log('skipping because of multiSelectMove');
+        if (multiSelectMove || movedWithArrowKeys) {
           return;
         }
 
