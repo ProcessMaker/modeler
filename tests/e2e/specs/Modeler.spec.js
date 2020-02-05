@@ -502,4 +502,36 @@ describe('Modeler', () => {
       expect($list).to.contain('references a non-existent element and was not parsed');
     });
   });
+
+  it('Does not console error on multiple validation errors for one node', () => {
+    cy.window().then((win) => {
+      cy.spy(win.console, 'error');
+    });
+
+    const taskPosition1 = { x: 300, y: 250 };
+    const taskPosition2 = { x: 300, y: 350 };
+    const taskPosition3 = { x: 300, y: 450 };
+    const parallelGatewayPosition = { x: 200, y: 200 };
+    addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
+
+    dragFromSourceToDest(nodeTypes.task, taskPosition1);
+    dragFromSourceToDest(nodeTypes.task, taskPosition2);
+    dragFromSourceToDest(nodeTypes.task, taskPosition3);
+
+    connectNodesWithFlow('sequence-flow-button', taskPosition1, parallelGatewayPosition);
+    connectNodesWithFlow('sequence-flow-button', taskPosition2, parallelGatewayPosition);
+    connectNodesWithFlow('sequence-flow-button', parallelGatewayPosition, taskPosition3);
+
+    cy.get('[data-test="validation-toggle"]').click({ force: true });
+    cy.get('[data-test="validation-list-toggle"]').click();
+
+    cy.get('[data-test=validation-list]')
+      .should('contain.text', 'Gateway must have multiple outgoing Sequence Flows.Node ID: node_3');
+    cy.get('[data-test=validation-list]')
+      .should('contain.text', 'Gateway must not have multiple incoming Sequence Flows.Node ID: node_3');
+
+    cy.window().then((win) => {
+      expect(win.console.error).to.have.callCount(0);
+    });
+  });
 });
