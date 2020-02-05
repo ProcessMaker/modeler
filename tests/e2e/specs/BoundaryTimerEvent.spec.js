@@ -127,6 +127,27 @@ describe('Boundary Timer Event', () => {
 
   });
 
+  it('can update the node identifier and this persists correctly', () => {
+    uploadXml('taskWithBoundaryTimerEvent.xml');
+
+    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
+      .click({ force: true });
+
+    cy.contains('Advanced')
+      .click({ force: true });
+
+    const testId = 'test-id-update';
+    cy.contains('Node Identifier')
+      .next('input')
+      .clear()
+      .type(testId);
+
+    assertDownloadedXmlContainsExpected(
+      `<bpmn:boundaryEvent id="${ testId }" name="New Boundary Timer Event" attachedToRef="node_1">`,
+      `<bpmndi:BPMNShape id="node_2_di" bpmnElement="${ testId }">`,
+    );
+  });
+
   it('can toggle interrupting on Boundary Timer Events in multiple processes', () => {
     uploadXml('boundaryTimersInPools.xml');
 

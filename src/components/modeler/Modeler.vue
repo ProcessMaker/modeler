@@ -584,16 +584,20 @@ export default {
       }
       return boundaryEvent;
     },
-    replaceDefinition(definition, boundaryEvent, process) {
-      const definitionIndex = process.get('flowElements').indexOf(definition);
-      process.flowElements[definitionIndex] = boundaryEvent;
-    },
     ensureCancelActivityIsAddedToBoundaryEvents(process) {
       this.getBoundaryEvents(process).forEach(definition => {
         const boundaryEvent = this.createBoundaryEvent(definition);
         definition.get('outgoing').forEach(outgoing => outgoing.set('sourceRef', boundaryEvent));
         this.replaceDefinition(definition, boundaryEvent, process);
       });
+    },
+    replaceDefinition(definition, boundaryEvent, process) {
+      const definitionIndex = process.get('flowElements').indexOf(definition);
+      process.flowElements[definitionIndex] = boundaryEvent;
+      const boundaryEventDiagram = this.planeElements.find((diagram) => {
+        return diagram.bpmnElement === definition;
+      });
+      boundaryEventDiagram.bpmnElement = boundaryEvent;
     },
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
