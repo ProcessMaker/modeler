@@ -19,6 +19,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     setCursor();
     shiftKeyPressed = true;
     paperManager.preventTranslate = true;
+    paperManager.paper.setInteractivity(false);
   }
 
   function spacebarUpListener({ key }) {
@@ -29,6 +30,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     resetCursor();
     shiftKeyPressed = false;
     paperManager.preventTranslate = false;
+    paperManager.paper.setInteractivity(graph.get('interactiveFunc'));
   }
 
   function mousedownListener({ clientX, clientY }) {
@@ -69,9 +71,10 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       return;
     }
 
-    const selectedNodes = graph
-      .findModelsUnderElement(selectionBox)
-      .map(element => element.component.node);
+    const selectedNodes = paperManager.paper
+      .findViewsInArea(selectionBox.getBBox(), { strict: true })
+      .filter(shape => shape.model.component)
+      .map(shape => shape.model.component.node);
 
     store.commit('addToHighlightedNodes', selectedNodes);
 
