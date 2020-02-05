@@ -2,14 +2,11 @@ import errorList from '@/components/validationStatus/errorListUtil';
 import uniqBy from 'lodash/uniqBy';
 
 describe('Validation Status', () => {
-  it('Should not contain duplicate errorIds', () => {
+  it('Should contain unique errorIds', () => {
     const errors = {
-      'sameErrorType': [
-        {'id': 'node_1'},
-        {'id': 'node_1'},
-        {'id': 'node_1'},
-        {'id': 'node_1'},
-        {'id': 'node_1'},
+      'processmaker/gateway-direction': [
+        {'id': 'node_1', 'message': 'Gateway must have multiple outgoing Sequence Flows.'},
+        {'id': 'node_1', 'message': 'Gateway must not have multiple incoming Sequence Flows.'},
       ],
     };
 
