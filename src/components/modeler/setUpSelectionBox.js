@@ -8,8 +8,6 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   document.addEventListener('mouseup', mouseupListener);
   document.addEventListener('mousemove', mousemoveListener);
 
-  paperManager.preventTranslate = true;
-
   let shiftKeyPressed = false;
   let selectionBox;
 
@@ -20,6 +18,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
 
     setCursor();
     shiftKeyPressed = true;
+    paperManager.preventTranslate = true;
   }
 
   function spacebarUpListener({ key }) {
@@ -29,6 +28,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
 
     resetCursor();
     shiftKeyPressed = false;
+    paperManager.preventTranslate = false;
   }
 
   function mousedownListener({ clientX, clientY }) {
