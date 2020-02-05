@@ -128,6 +128,7 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 
 const version = '1.0';
 
@@ -800,6 +801,14 @@ export default {
     });
 
     initAnchor();
+
+    let cursor;
+    const setCursor = () => {
+      cursor = this.cursor;
+      this.cursor = 'crosshair';
+    };
+    const resetCursor = () => this.cursor = cursor;
+    setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
