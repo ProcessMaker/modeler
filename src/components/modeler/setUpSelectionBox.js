@@ -1,40 +1,38 @@
 import { shapes } from 'jointjs';
 import store from '@/store';
 
-const SPACEBAR = ' ';
-
 export default function setUpSelectionBox(setCursor, resetCursor, paperManager, graph) {
-  document.addEventListener('keydown', spacebarDownListener);
+  document.addEventListener('keydown', shiftKeyDownListener);
   document.addEventListener('keyup', spacebarUpListener);
   document.addEventListener('mousedown', mousedownListener);
   document.addEventListener('mouseup', mouseupListener);
   document.addEventListener('mousemove', mousemoveListener);
 
-  paperManager.drawingSelectionBox = true;
+  paperManager.preventTranslate = true;
 
-  let spacebarPressed = false;
+  let shiftKeyPressed = false;
   let selectionBox;
 
-  function spacebarDownListener(event) {
-    if (event.key !== SPACEBAR || spacebarPressed) {
+  function shiftKeyDownListener(event) {
+    if (event.key !== 'Shift' || shiftKeyPressed) {
       return;
     }
 
     setCursor();
-    spacebarPressed = true;
+    shiftKeyPressed = true;
   }
 
   function spacebarUpListener({ key }) {
-    if (key !== SPACEBAR || !spacebarPressed) {
+    if (key !== 'Shift' || !shiftKeyPressed) {
       return;
     }
 
     resetCursor();
-    spacebarPressed = false;
+    shiftKeyPressed = false;
   }
 
   function mousedownListener({ clientX, clientY }) {
-    if (!spacebarPressed) {
+    if (!shiftKeyPressed) {
       return;
     }
 

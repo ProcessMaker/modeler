@@ -3,7 +3,7 @@ import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 
 export default class PaperManager {
   #paper;
-  drawingSelectionBox = false;
+  preventTranslate = false;
 
   constructor(paper) {
     this.#paper = paper;
@@ -51,7 +51,7 @@ export default class PaperManager {
   }
 
   translate(x, y) {
-    if (this.drawingSelectionBox) {
+    if (this.preventTranslate) {
       return;
     }
 
