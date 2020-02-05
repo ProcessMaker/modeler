@@ -73,7 +73,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       .findModelsUnderElement(selectionBox)
       .map(element => element.component.node);
 
-    store.commit('highlightNodes', selectedNodes);
+    store.commit('highlightNodes', [...store.getters.highlightedNodes, ...selectedNodes]);
 
     graph.removeCells(selectionBox);
     selectionBox = null;
