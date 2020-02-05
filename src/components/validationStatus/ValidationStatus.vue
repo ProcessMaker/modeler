@@ -80,7 +80,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
-import uniqueId from 'lodash/uniqueId';
+import validationErrorList from './validationUtil';
 
 export default {
   components: {
@@ -109,16 +109,7 @@ export default {
       },
     },
     errorList() {
-      return Object.entries(this.validationErrors)
-        .flatMap(([errorKey, errors]) => {
-          return errors.flatMap(error => {
-            return {
-              ...error,
-              errorKey,
-              ...{'errorId': `${ uniqueId('id') }_${ error.id }`},
-            };
-          });
-        });
+      return validationErrorList(this.validationErrors);
     },
     numberOfProblemsToDisplay() {
       return this.errorList.length + this.warnings.length;
