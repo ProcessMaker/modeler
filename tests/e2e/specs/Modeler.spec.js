@@ -503,7 +503,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('Does not console error on multiple validation errors for one node', () => {
+  it('Does not display a console error on multiple validation errors for one node', () => {
     cy.window().then((win) => {
       cy.spy(win.console, 'error');
     });
@@ -512,8 +512,8 @@ describe('Modeler', () => {
     const taskPosition2 = { x: 300, y: 350 };
     const taskPosition3 = { x: 300, y: 450 };
     const parallelGatewayPosition = { x: 200, y: 200 };
-    addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
 
+    addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
     dragFromSourceToDest(nodeTypes.task, taskPosition1);
     dragFromSourceToDest(nodeTypes.task, taskPosition2);
     dragFromSourceToDest(nodeTypes.task, taskPosition3);

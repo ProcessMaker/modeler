@@ -80,7 +80,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
-import validationErrorList from './validationUtil';
+import validationErrorList from './errorListUtil';
 
 export default {
   components: {

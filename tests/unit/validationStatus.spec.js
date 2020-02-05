@@ -1,4 +1,4 @@
-import errorList from '../../src/components/validationStatus/validationUtil';
+import errorList from '@/components/validationStatus/errorListUtil';
 import uniqBy from 'lodash/uniqBy';
 
 describe('Validation Status', () => {
