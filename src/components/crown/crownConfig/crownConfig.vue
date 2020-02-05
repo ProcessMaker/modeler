@@ -227,7 +227,7 @@ export default {
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
 
-        if (multiSelectMove || movedWithArrowKeys) {
+        if (multiSelectMove || movedWithArrowKeys || !this.highlightedShapes.includes(this.shape)) {
           return;
         }
 
