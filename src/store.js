@@ -40,7 +40,9 @@ export default new Vuex.Store({
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
     },
     highlightedShapes: (state, getters) => {
-      return getters.highlightedNodes.map(getters.nodeShape);
+      return getters.highlightedNodes
+        .filter(node => node.type !== 'processmaker-modeler-process')
+        .map(getters.nodeShape);
     },
     rootElements: state => state.rootElements,
     autoValidate: state => state.autoValidate,

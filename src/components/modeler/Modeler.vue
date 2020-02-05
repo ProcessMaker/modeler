@@ -787,7 +787,7 @@ export default {
       }
     });
 
-    this.paperManager.addEventHandler('cell:pointerdown', (cellView, event) => {
+    this.paperManager.addEventHandler('cell:pointerclick', (cellView, event) => {
       const shape = cellView.model;
 
       if (!this.isBpmnNode(shape)) {
