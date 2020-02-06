@@ -38,7 +38,7 @@
             <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
               <dl class="validation-container__list align-items-baseline" data-test="validation-list">
                 <template v-for="error in errorList">
-                  <dt class="text-capitalize" :key="`${error.id}_${error.errorKey}`">
+                  <dt class="text-capitalize" :key="error.errorId">
                     <font-awesome-icon
                       class="status-bar-container__status-icon ml-1 mr-1 mt-1"
                       :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
@@ -46,7 +46,7 @@
                     />
                     {{ error.errorKey }}
                   </dt>
-                  <dd :key="`${error.id}_${error.errorKey}_dd`">
+                  <dd :key="`${ error.errorId }_dd`">
                     <p class="pl-4 mb-0 font-italic">{{ error.message }}.</p>
                     <p class="pl-4 mb-0" v-if="error.id"><span class="font-weight-bold">{{ $t('Node ID') }}:</span> {{
                       error.id }}</p>
@@ -80,6 +80,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
+import validationErrorList from './errorListUtil';
 
 export default {
   components: {
@@ -108,12 +109,7 @@ export default {
       },
     },
     errorList() {
-      return Object.entries(this.validationErrors)
-        .flatMap(([errorKey, errors]) => {
-          return errors.flatMap(error => {
-            return { ...error, errorKey };
-          });
-        });
+      return validationErrorList(this.validationErrors);
     },
     numberOfProblemsToDisplay() {
       return this.errorList.length + this.warnings.length;
