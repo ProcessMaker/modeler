@@ -109,7 +109,8 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     if (
       movedWithArrowKeys ||
       shapesToNotTranslate.includes(element.get('type')) ||
-      !store.getters.highlightedShapes.includes(element)
+      !store.getters.highlightedShapes.includes(element) ||
+      element.component.node.pool
     ) {
       return;
     }
