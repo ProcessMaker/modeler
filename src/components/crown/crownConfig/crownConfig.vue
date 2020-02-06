@@ -220,24 +220,9 @@ export default {
       }
     },
     setUpPositionHandling() {
-      this.shape.on('change:position', (element, newPosition, { multiSelectMove, movedWithArrowKeys }) => {
-        const dx = newPosition.x - this.node.diagram.bounds.x;
-        const dy = newPosition.y - this.node.diagram.bounds.y;
-
+      this.shape.on('change:position', (element, newPosition) => {
         this.node.diagram.bounds.x = newPosition.x;
         this.node.diagram.bounds.y = newPosition.y;
-
-        if (multiSelectMove || movedWithArrowKeys || !this.highlightedShapes.includes(this.shape)) {
-          return;
-        }
-
-        this.highlightedShapes.forEach(shape => {
-          if (shape === this.shape) {
-            return;
-          }
-
-          shape.translate(dx, dy, { multiSelectMove: true });
-        });
 
         if (!this.savePositionOnPointerupEventSet) {
           this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);

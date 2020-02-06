@@ -85,8 +85,7 @@ export default new Vuex.Store({
       state.highlightedNodes = [node];
     },
     addToHighlightedNodes(state, nodes) {
-      state.highlightedNodes = uniq([...state.highlightedNodes, ...nodes])
-        .filter(node => !['processmaker-modeler-pool', 'processmaker-modeler-lane'].includes(node.type));
+      state.highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);
     },
     addNode(state, node) {
       /* Add an unchanging ID that Vue can use to track the component
