@@ -1,6 +1,12 @@
 import { shapes } from 'jointjs';
 import store from '@/store';
 
+const shapesToNotTranslate = [
+  'processmaker.modeler.bpmn.pool',
+  'PoolLane',
+  'processmaker.components.nodes.boundaryEvent.Shape',
+];
+
 export default function setUpSelectionBox(setCursor, resetCursor, paperManager, graph) {
   let initialPositionByGerrie;
 
@@ -15,8 +21,6 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     }
 
     initialPositionByGerrie = cellView.model.position();
-    // eslint-disable-next-line no-console
-    console.log('set initialPositionByGerrie', initialPositionByGerrie);
     cellView.model.on('change:position', moveAllOtherHighlightedShapes);
   });
   paperManager.addEventHandler('cell:pointerup link:pointerup element:pointerup blank:pointerup', cellView => {
@@ -102,24 +106,21 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   }
 
   function moveAllOtherHighlightedShapes(element, newPosition, { movedWithArrowKeys }) {
-    if (movedWithArrowKeys) {
+    if (
+      movedWithArrowKeys ||
+      shapesToNotTranslate.includes(element.get('type')) ||
+      !store.getters.highlightedShapes.includes(element)
+    ) {
       return;
     }
 
     const { x, y } = initialPositionByGerrie;
     const dx = newPosition.x - x;
     const dy = newPosition.y - y;
-    const shapesToNotTranslate = [
-      'processmaker.modeler.bpmn.pool',
-      'PoolLane',
-      'processmaker.components.nodes.boundaryEvent.Shape',
-    ];
 
     store.getters.highlightedShapes
       .filter(shape => shape !== element && !shapesToNotTranslate.includes(shape.get('type')))
-      .forEach(shape => {
-        shape.translate(dx, dy);
-      });
+      .forEach(shape => shape.translate(dx, dy));
 
     initialPositionByGerrie = newPosition;
   }
