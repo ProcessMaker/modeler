@@ -14,25 +14,7 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
-
-function boundaryEventIsCloseToTask() {
-  const positionErrorMargin = 30;
-
-  const taskSelector = '.main-paper ' +
-    '[data-type="processmaker.components.nodes.task.Shape"]';
-
-  const boundaryTimerEventSelector = taskSelector +
-    ' ~ [data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
-
-  cy.get(taskSelector).then($task => {
-    const { left: taskLeft, top: taskTop } = $task.position();
-    cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
-      const { left, top } = $boundaryEvent.position();
-      expect(left).to.be.closeTo(taskLeft, positionErrorMargin);
-      expect(top).to.be.closeTo(taskTop, positionErrorMargin);
-    });
-  });
-}
+import { assertBoundaryEventIsCloseToTask } from '../support/utils';
 
 describe('Pools', () => {
   it('Update pool name', () => {
@@ -286,14 +268,14 @@ describe('Pools', () => {
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     getElementAtPosition(poolPosition).then($pool => {
-      boundaryEventIsCloseToTask();
+      assertBoundaryEventIsCloseToTask();
 
       cy.wrap($pool)
         .trigger('mousedown', { which: 1, force: true })
         .trigger('mousemove', { clientX: 800, clientY: 350, force: true })
         .trigger('mouseup', { force: true })
         .then(waitToRenderAllShapes)
-        .then(boundaryEventIsCloseToTask);
+        .then(assertBoundaryEventIsCloseToTask);
     });
   });
 });

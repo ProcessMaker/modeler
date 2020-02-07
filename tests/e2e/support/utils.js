@@ -1,6 +1,6 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
-import { nodeTypes } from './constants';
+import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
 
 const renderTime = 300;
 
@@ -274,6 +274,19 @@ export function assertDownloadedXmlContainsExpected(...xmlStrings) {
 export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
   getXml().then(xml => {
     expect(xml).to.not.contain(removeIndentationAndLinebreaks(xmlString));
+  });
+}
+
+export function assertBoundaryEventIsCloseToTask() {
+  const positionErrorMargin = 30;
+
+  cy.get(taskSelector).then($task => {
+    const { left: taskLeft, top: taskTop } = $task.position();
+    cy.get(boundaryEventSelector).then($boundaryEvent => {
+      const { left, top } = $boundaryEvent.position();
+      expect(left).to.be.closeTo(taskLeft, positionErrorMargin);
+      expect(top).to.be.closeTo(taskTop, positionErrorMargin);
+    });
   });
 }
 

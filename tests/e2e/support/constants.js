@@ -41,3 +41,6 @@ export const nodeTypes = {
 
 export const boundaryEventSelector = '.main-paper ' +
   '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+
+export const taskSelector = '.main-paper ' +
+  '[data-type="processmaker.components.nodes.task.Shape"]';
