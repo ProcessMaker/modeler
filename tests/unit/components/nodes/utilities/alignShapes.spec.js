@@ -4,9 +4,10 @@ import {
   alignRight,
   alignTop,
   centerX,
-  centerY,
+  centerY, distributeVertically,
   getBoundingBox,
 } from '@/components/nodes/utilities/AlignShapes';
+import { dummyShape } from './dummies';
 
 describe('Shape Alignment', () => {
   it('can calculate a correct bounding box with one shape', () => {
@@ -128,6 +129,22 @@ describe('Shape Alignment', () => {
     expect(shapes[2].translate).toHaveBeenCalledWith(0, -100);
   });
 
-});
+  it('can distribute Y middles', () => {
+    const shapes = [
+      dummyShape(0, 0, 100, 50),
+      dummyShape(100, 50, 100, 50),
+      dummyShape(100, 100, 100, 50),
+      dummyShape(200, 600, 100, 50),
+    ];
 
+    distributeVertically(shapes);
+
+    expect(shapes[0].translate).not.toHaveBeenCalled();
+    expect(shapes[1].translate).toHaveBeenCalledWith(0, 150);
+    expect(shapes[2].translate).toHaveBeenCalledWith(0, 300);
+    expect(shapes[3].translate).toHaveBeenCalledWith(0, 0);
+  });
+
+
+});
 
