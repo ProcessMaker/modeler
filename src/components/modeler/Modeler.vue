@@ -79,6 +79,7 @@
         :isRendering="isRendering"
         :paperManager="paperManager"
         :auto-validate="autoValidate"
+        :is-active="node === activeNode"
         @add-node="addNode"
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
@@ -178,6 +179,7 @@ export default {
       allWarnings: [],
       nodeTypes: [],
       breadcrumbData: [],
+      activeNode: null,
     };
   },
   watch: {
@@ -770,6 +772,7 @@ export default {
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
+      this.activeNode = null;
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
@@ -788,16 +791,21 @@ export default {
       }
     });
 
-    this.paperManager.addEventHandler('cell:pointerclick', (cellView, event) => {
-      const shape = cellView.model;
+    this.paperManager.addEventHandler('cell:pointerclick', ({ model: shape }, event) => {
+      if (!this.isBpmnNode(shape)) {
+        return;
+      }
 
+      shape.component.$emit('click', event);
+    });
+
+    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }) => {
       if (!this.isBpmnNode(shape)) {
         return;
       }
 
       this.setShapeStacking(shape);
-
-      shape.component.$emit('click', event);
+      this.activeNode = shape.component.node;
     });
 
     initAnchor();

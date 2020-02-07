@@ -46,6 +46,7 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
+    'isActive',
   ],
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   data() {
@@ -179,7 +180,7 @@ export default {
       });
     },
     turnInvalidTargetRed() {
-      if (!this.highlighted) {
+      if (!this.isActive) {
         return;
       }
 
