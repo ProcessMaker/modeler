@@ -1,5 +1,14 @@
 import { g, shapes } from 'jointjs';
 import store from '@/store';
+import {
+  alignBottom,
+  alignLeft,
+  alignRight,
+  alignTop,
+  centerX,
+  centerY,
+  distributeVertically,
+} from '@/components/nodes/utilities/AlignShapes';
 
 const shapesToNotTranslate = [
   'processmaker.modeler.bpmn.pool',
@@ -34,8 +43,34 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     cellView.model.off('change:position', moveAllOtherHighlightedShapes);
   });
 
-  function shiftKeyDownListener({ key }) {
-    if (key !== 'Shift' || shiftKeyPressed) {
+  function shiftKeyDownListener(event) {
+
+    const highlightedShapes = store.getters.highlightedShapes;
+    switch (event.key) {
+      case 'l':
+        alignLeft(highlightedShapes);
+        return;
+      case 'r':
+        alignRight(highlightedShapes);
+        return;
+      case 't':
+        alignTop(highlightedShapes);
+        return;
+      case 'b':
+        alignBottom(highlightedShapes);
+        return;
+      case 'x':
+        centerX(highlightedShapes);
+        return;
+      case 'y':
+        centerY(highlightedShapes);
+        return;
+      case 'X':
+        distributeVertically(highlightedShapes);
+        return;
+    }
+
+    if (event.key !== 'Shift' || shiftKeyPressed) {
       return;
     }
 
