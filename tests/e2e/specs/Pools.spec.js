@@ -15,6 +15,25 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
+function boundaryEventIsCloseToTask() {
+  const positionErrorMargin = 30;
+
+  const taskSelector = '.main-paper ' +
+    '[data-type="processmaker.components.nodes.task.Shape"]';
+
+  const boundaryTimerEventSelector = taskSelector +
+    ' ~ [data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+
+  cy.get(taskSelector).then($task => {
+    const { left: taskLeft, top: taskTop } = $task.position();
+    cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
+      const { left, top } = $boundaryEvent.position();
+      expect(left).to.be.closeTo(taskLeft, positionErrorMargin);
+      expect(top).to.be.closeTo(taskTop, positionErrorMargin);
+    });
+  });
+}
+
 describe('Pools', () => {
   it('Update pool name', () => {
     const testString = 'testing';
@@ -256,5 +275,25 @@ describe('Pools', () => {
 
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
+  });
+
+  it('does not move boundary events independently from tasks when moving pool', () => {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition).then($pool => {
+      boundaryEventIsCloseToTask();
+
+      cy.wrap($pool)
+        .trigger('mousedown', { which: 1, force: true })
+        .trigger('mousemove', { clientX: 800, clientY: 350, force: true })
+        .trigger('mouseup', { force: true })
+        .then(waitToRenderAllShapes)
+        .then(boundaryEventIsCloseToTask);
+    });
   });
 });
