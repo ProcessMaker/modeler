@@ -1,4 +1,4 @@
-import { shapes } from 'jointjs';
+import { g, shapes } from 'jointjs';
 import store from '@/store';
 
 const shapesToNotTranslate = [
@@ -9,9 +9,12 @@ const shapesToNotTranslate = [
 
 export default function setUpSelectionBox(setCursor, resetCursor, paperManager, graph) {
   let initialPositionByGerrie;
+  let shiftKeyPressed = false;
+  let selectionBox;
+  let selectionboxMousedownPosition;
 
   document.addEventListener('keydown', shiftKeyDownListener);
-  document.addEventListener('keyup', spacebarUpListener);
+  document.addEventListener('keyup', shiftKeyUpListener);
   document.addEventListener('mousedown', mousedownListener);
   document.addEventListener('mouseup', mouseupListener);
   document.addEventListener('mousemove', mousemoveListener);
@@ -31,11 +34,8 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     cellView.model.off('change:position', moveAllOtherHighlightedShapes);
   });
 
-  let shiftKeyPressed = false;
-  let selectionBox;
-
-  function shiftKeyDownListener(event) {
-    if (event.key !== 'Shift' || shiftKeyPressed) {
+  function shiftKeyDownListener({ key }) {
+    if (key !== 'Shift' || shiftKeyPressed) {
       return;
     }
 
@@ -45,7 +45,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     paperManager.paper.setInteractivity(false);
   }
 
-  function spacebarUpListener({ key }) {
+  function shiftKeyUpListener({ key }) {
     if (key !== 'Shift' || !shiftKeyPressed) {
       return;
     }
@@ -61,35 +61,26 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       return;
     }
 
-    const { x, y } = paperManager.clientToGridPoint(clientX, clientY);
-    selectionBox = new shapes.standard.Rectangle({
-      position: { x, y },
-      attrs: {
-        body: {
-          fill: 'lightblue',
-          opacity: 0.3,
-          stroke: 'blue',
-          strokeWidth: 1,
-        },
-      },
-    });
-    graph.addCell(selectionBox);
+    selectionboxMousedownPosition = paperManager.clientToGridPoint(clientX, clientY);
   }
 
   function mousemoveListener({ clientX, clientY }) {
-    if (!selectionBox) {
+    if (!selectionboxMousedownPosition) {
       return;
     }
 
-    const { x, y } = paperManager.clientToGridPoint(clientX, clientY);
-    const { x: shapeX, y: shapeY } = selectionBox.position();
-    const width = Math.abs(x - shapeX);
-    const height = Math.abs(y - shapeY);
+    if (selectionBox) {
+      graph.removeCells(selectionBox);
+    }
 
-    selectionBox.resize(width, height);
+    const { x, y } = paperManager.clientToGridPoint(clientX, clientY);
+    selectionBox = createSelectionBox(selectionboxMousedownPosition, { x, y });
+    graph.addCell(selectionBox);
   }
 
   function mouseupListener() {
+    selectionboxMousedownPosition = null;
+
     if (!selectionBox) {
       return;
     }
@@ -124,5 +115,22 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       .forEach(shape => shape.translate(dx, dy));
 
     initialPositionByGerrie = newPosition;
+  }
+
+  function createSelectionBox(p1, p2) {
+    const { x, y, width, height } = new g.Line(p1, p2).bbox();
+
+    return new shapes.standard.Rectangle({
+      position: { x, y },
+      size: { width, height },
+      attrs: {
+        body: {
+          fill: 'lightblue',
+          opacity: 0.3,
+          stroke: 'blue',
+          strokeWidth: 1,
+        },
+      },
+    });
   }
 }
