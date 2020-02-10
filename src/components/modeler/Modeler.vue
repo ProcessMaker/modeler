@@ -231,8 +231,8 @@ export default {
       const diagram = this.nodeRegistry[node.type].diagram(this.moddle);
       const clonedNode = new Node(node.type, definition, diagram);
 
-      // Fix position of copied element.
-      node.diagram.bounds.y = node.diagram.bounds.y + node.diagram.bounds.height + 30;
+      clonedNode.diagram.bounds.x = node.diagram.bounds.x;
+      clonedNode.diagram.bounds.y = node.diagram.bounds.y + clonedNode.diagram.bounds.height + 30;
 
       this.addNode(clonedNode);
     },
