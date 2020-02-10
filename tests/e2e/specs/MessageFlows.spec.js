@@ -94,22 +94,45 @@ describe('Message Flows', () => {
         getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
       });
 
+    getNumberOfLinks().should('equal', 0);
+
+    [poolPosition, startEventPosition, taskPosition].forEach(position => {
+      connectNodesWithFlow('message-flow-button', position, position);
+    });
+
+    getNumberOfLinks().should('equal', 0);
+  });
+
+  it('Cannot connect to invalid message flow targets', () => {
+    const startEventPosition = { x: 150, y: 150 };
+
+    const poolPosition = { x: 100, y: 150 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    const offset = 100;
+    const taskPosition = { x: poolPosition.x + offset, y: poolPosition.y + offset };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    cy.get('[data-test=switch-to-user-task').click();
+
+    getElementAtPosition(poolPosition)
+      .click()
+      .then($pool => {
+        getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
+      });
+
     const poolHeight = 300;
     const poolLanePosition = { x: poolPosition.x + 100, y: poolPosition.y + poolHeight };
 
     getNumberOfLinks().should('equal', 0);
 
-    connectNodesWithFlow('message-flow-button', poolPosition, poolPosition);
     connectNodesWithFlow('message-flow-button', poolPosition, startEventPosition);
     connectNodesWithFlow('message-flow-button', poolPosition, taskPosition);
     connectNodesWithFlow('message-flow-button', poolPosition, poolLanePosition);
 
-    connectNodesWithFlow('message-flow-button', startEventPosition, startEventPosition);
     connectNodesWithFlow('message-flow-button', startEventPosition, poolPosition);
     connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
     connectNodesWithFlow('message-flow-button', startEventPosition, poolLanePosition);
 
-    connectNodesWithFlow('message-flow-button', taskPosition, taskPosition);
     connectNodesWithFlow('message-flow-button', taskPosition, poolPosition);
     connectNodesWithFlow('message-flow-button', taskPosition, startEventPosition);
     connectNodesWithFlow('message-flow-button', taskPosition, poolLanePosition);
