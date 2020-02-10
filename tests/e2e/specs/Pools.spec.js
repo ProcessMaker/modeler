@@ -14,6 +14,7 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
+import { assertBoundaryEventIsCloseToTask } from '../support/utils';
 
 describe('Pools', () => {
   it('Update pool name', () => {
@@ -256,5 +257,25 @@ describe('Pools', () => {
 
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
+  });
+
+  it('does not move boundary events independently from tasks when moving pool', () => {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition).then($pool => {
+      assertBoundaryEventIsCloseToTask();
+
+      cy.wrap($pool)
+        .trigger('mousedown', { which: 1, force: true })
+        .trigger('mousemove', { clientX: 800, clientY: 350, force: true })
+        .trigger('mouseup', { force: true })
+        .then(waitToRenderAllShapes)
+        .then(assertBoundaryEventIsCloseToTask);
+    });
   });
 });
