@@ -11,7 +11,7 @@ describe('Copy element', () => {
 
     cy.get('[data-test=copy-button]').click();
 
-    const twoSartEventsXML = '<bpmn:startEvent id="node_1" name="Start Event" /><bpmn:startEvent id="node_2" name="Start Event" /><bpmn:startEvent id="node_3" name="Start Event" />';
+    const twoStartEventsXML = '<bpmn:startEvent id="node_1" name="Start Event" /><bpmn:startEvent id="node_2" name="Start Event" /><bpmn:startEvent id="node_3" name="Start Event" />';
     
 
     cy.get('[data-test=downloadXMLBtn]').click();
@@ -19,8 +19,7 @@ describe('Copy element', () => {
       .its('xml')
       .then(removeIndentationAndLinebreaks)
       .then(xml => {
-        expect(xml).to.contain(twoSartEventsXML);
+        expect(xml).to.contain(twoStartEventsXML);
       });
   });
 });
-
