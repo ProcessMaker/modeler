@@ -1,5 +1,5 @@
 import { getShapeMiddleX, getShapeMiddleY } from '@/components/nodes/utilities/ShapeUtilities';
-import { dummyShape } from './dummies';
+import { dummyShape } from '../../../utilities/dummies';
 
 describe('Shape Metrics and Translation Utilities', () => {
   it('returns x middle correctly', () => {
