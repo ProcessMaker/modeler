@@ -5,6 +5,7 @@
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     id="copy-button"
     aria-label="Copy Element"
+    data-test="copy-button"
     role="menuitem"
     :src="copyIcon"
     @click="$emit('copy-element', node)"
