@@ -90,6 +90,7 @@
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
+        @clone-element="cloneElement"
       />
     </b-row>
   </span>
@@ -225,6 +226,16 @@ export default {
     },
   },
   methods: {
+    cloneElement(node) {      
+      const definition = this.nodeRegistry[node.type].definition(this.moddle, this.$t);
+      const diagram = this.nodeRegistry[node.type].diagram(this.moddle);
+      const clonedNode = new Node(node.type, definition, diagram);
+
+      // Fix position of copied element.
+      node.diagram.bounds.y = node.diagram.bounds.y + node.diagram.bounds.height + 30;
+
+      this.addNode(clonedNode);
+    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);

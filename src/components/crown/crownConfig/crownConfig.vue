@@ -45,6 +45,10 @@
       v-on="$listeners"
     />
 
+    <button @click="$emit('clone-element', node)">
+      Clone
+    </button>
+
     <b-modal
       id="modal-prevent-closing"
       ref="modal"
