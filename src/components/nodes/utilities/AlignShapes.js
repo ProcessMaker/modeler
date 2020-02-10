@@ -50,7 +50,7 @@ export function centerY(shapes) {
 }
 
 
-export function distributeVertically(shapes) {
+export function distributeVerticalCentersEvenly(shapes) {
   const bounds = getBoundingBox(shapes);
   const itemCount = shapes.length;
   if (itemCount < 3) {
@@ -61,11 +61,11 @@ export function distributeVertically(shapes) {
   const topShape = topToBottom[0];
   const bottomShape = topToBottom[itemCount - 1];
 
-  const heightWithoutMiddleOfTopAndBottom = bounds.height
+  const heightWithoutMids = bounds.height
     - (topShape.size().height / 2)
     - (bottomShape.size().height / 2);
 
-  const spacingBetweenMidpoints = heightWithoutMiddleOfTopAndBottom / (itemCount - 1);
+  const spacingBetweenMidpoints = heightWithoutMids / (itemCount - 1);
   const offset = bounds.top + (topShape.size().height / 2);
   topToBottom.forEach((shape, idx) => {
     if (idx === 0) {
