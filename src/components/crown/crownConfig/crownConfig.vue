@@ -38,16 +38,17 @@
       v-on="$listeners"
     />
 
+    <copy-button
+      :node="node"
+      v-on="$listeners"
+    />
+
     <delete-button
       :graph="graph"
       :shape="shape"
       :node="node"
       v-on="$listeners"
     />
-
-    <button @click="$emit('clone-element', node)">
-      Clone
-    </button>
 
     <b-modal
       id="modal-prevent-closing"
@@ -69,6 +70,7 @@ import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
+import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
@@ -82,6 +84,7 @@ export default {
     MessageFlowButton,
     SequenceFlowButton,
     AssociationFlowButton,
+    CopyButton,
   },
   props: {
     highlighted: Boolean,
