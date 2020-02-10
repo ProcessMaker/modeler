@@ -4,10 +4,15 @@ import {
   alignRight,
   alignTop,
   centerX,
-  centerY, distributeVertically,
+  centerY,
+  distributeVerticalCentersEvenly,
   getBoundingBox,
 } from '@/components/nodes/utilities/AlignShapes';
-import { dummyShape } from './dummies';
+import { dummyShape } from '../../../utilities/dummies';
+import index from '../../../customMatchers/toHaveBeenProgrammaticallyMoved';
+import toHaveBeenProgrammaticallyMovedBy from '../../../customMatchers/toHaveBeenProgrammaticallyMovedBy';
+
+expect.extend({ toHaveBeenProgrammaticallyMoved: index, toHaveBeenProgrammaticallyMovedBy });
 
 describe('Shape Alignment', () => {
   it('can calculate a correct bounding box with one shape', () => {
@@ -54,9 +59,9 @@ describe('Shape Alignment', () => {
 
     alignLeft(shapes);
 
-    expect(shapes[0].translate).toHaveBeenCalledWith(0, 0);
-    expect(shapes[1].translate).toHaveBeenCalledWith(-100, 0);
-    expect(shapes[2].translate).toHaveBeenCalledWith(-200, 0);
+    expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(-100, 0);
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(-200, 0);
   });
 
   it('can align right', () => {
@@ -68,9 +73,9 @@ describe('Shape Alignment', () => {
 
     alignRight(shapes);
 
-    expect(shapes[0].translate).toHaveBeenCalledWith(200, 0);
-    expect(shapes[1].translate).toHaveBeenCalledWith(100, 0);
-    expect(shapes[2].translate).toHaveBeenCalledWith(0, 0);
+    expect(shapes[0]).toHaveBeenProgrammaticallyMovedBy(200, 0);
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(100, 0);
+    expect(shapes[2]).not.toHaveBeenProgrammaticallyMoved();
   });
 
   it('can align top', () => {
@@ -82,9 +87,9 @@ describe('Shape Alignment', () => {
 
     alignTop(shapes);
 
-    expect(shapes[0].translate).toHaveBeenCalledWith(0, 0);
-    expect(shapes[1].translate).toHaveBeenCalledWith(0, -100);
-    expect(shapes[2].translate).toHaveBeenCalledWith(0, -200);
+    expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved(0, 0);
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(0, -100);
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(0, -200);
   });
 
   it('can align bottom', () => {
@@ -96,9 +101,9 @@ describe('Shape Alignment', () => {
 
     alignBottom(shapes);
 
-    expect(shapes[0].translate).toHaveBeenCalledWith(0, 200);
-    expect(shapes[1].translate).toHaveBeenCalledWith(0, 100);
-    expect(shapes[2].translate).toHaveBeenCalledWith(0, 0);
+    expect(shapes[0]).toHaveBeenProgrammaticallyMovedBy(0, 200);
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(0, 100);
+    expect(shapes[2]).not.toHaveBeenProgrammaticallyMoved();
   });
 
   it('can center X', () => {
@@ -110,9 +115,9 @@ describe('Shape Alignment', () => {
 
     centerX(shapes);
 
-    expect(shapes[0].translate).toHaveBeenCalledWith(100, 0);
-    expect(shapes[1].translate).toHaveBeenCalledWith(0, 0);
-    expect(shapes[2].translate).toHaveBeenCalledWith(-100, 0);
+    expect(shapes[0]).toHaveBeenProgrammaticallyMovedBy(100, 0);
+    expect(shapes[1]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(-100, 0);
   });
 
   it('can center Y', () => {
@@ -124,9 +129,9 @@ describe('Shape Alignment', () => {
 
     centerY(shapes);
 
-    expect(shapes[0].translate).toHaveBeenCalledWith(0, 100);
-    expect(shapes[1].translate).toHaveBeenCalledWith(0, 0);
-    expect(shapes[2].translate).toHaveBeenCalledWith(0, -100);
+    expect(shapes[0]).toHaveBeenProgrammaticallyMovedBy(0, 100);
+    expect(shapes[1]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(0, -100);
   });
 
   it('can distribute Y middles', () => {
@@ -137,14 +142,24 @@ describe('Shape Alignment', () => {
       dummyShape(200, 600, 100, 50),
     ];
 
-    distributeVertically(shapes);
+    distributeVerticalCentersEvenly(shapes);
 
-    expect(shapes[0].translate).not.toHaveBeenCalled();
-    expect(shapes[1].translate).toHaveBeenCalledWith(0, 150);
-    expect(shapes[2].translate).toHaveBeenCalledWith(0, 300);
-    expect(shapes[3].translate).toHaveBeenCalledWith(0, 0);
+    expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(0, 150);
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(0, 300);
+    expect(shapes[3]).not.toHaveBeenProgrammaticallyMoved();
   });
 
+  it('only distributes three or more items', () => {
+    const shapes = [
+      dummyShape(0, 0, 100, 50),
+      dummyShape(200, 600, 100, 50),
+    ];
 
+    distributeVerticalCentersEvenly(shapes);
+
+    expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[1]).not.toHaveBeenProgrammaticallyMoved();
+  });
 });
 
