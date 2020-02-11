@@ -138,7 +138,7 @@ describe('Shape Alignment', () => {
     expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(0, -100);
   });
 
-  it('can distribute Y middles', () => {
+  it('can distribute vertical centers', () => {
     const shapes = [
       dummyShape(0, 0, 100, 50),
       dummyShape(100, 50, 100, 50),
