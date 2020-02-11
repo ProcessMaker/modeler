@@ -9,7 +9,7 @@ export default {
   bpmnType: 'bpmn:Lane',
   control: false,
   category: 'BPMN',
-  label: 'New Lane',
+  label: 'Lane',
   definition: (moddle) => moddle.create('bpmn:Lane', { name: '' }),
   diagram: (moddle) => moddle.create('bpmndi:BPMNShape', {
     bounds: moddle.create('dc:Bounds', {

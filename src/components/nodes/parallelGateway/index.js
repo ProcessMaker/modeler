@@ -12,7 +12,7 @@ export default {
   label: 'Parallel Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:ParallelGateway', {
-      name: $t('New Parallel Gateway'),
+      name: $t('Parallel Gateway'),
       gatewayDirection: gatewayDirection.diverging,
     });
   },

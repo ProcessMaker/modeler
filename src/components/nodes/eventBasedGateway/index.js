@@ -10,7 +10,7 @@ export default {
   label: 'Event-Based Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:EventBasedGateway', {
-      name: $t('New Event-Based Gateway'),
+      name: $t('Event-Based Gateway'),
     });
   },
   diagram(moddle) {

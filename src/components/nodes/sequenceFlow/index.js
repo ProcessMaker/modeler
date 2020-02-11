@@ -11,7 +11,7 @@ export default {
   control: false,
   definition(moddle, $t) {
     return moddle.create('bpmn:SequenceFlow', {
-      name: $t('New Sequence Flow'),
+      name: $t('Sequence Flow'),
     });
   },
   diagram(moddle) {

@@ -14,7 +14,7 @@ export default {
   label: 'Script Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:ScriptTask', {
-      name: $t('New Script Task'),
+      name: $t('Script Task'),
     });
   },
   diagram(moddle) {

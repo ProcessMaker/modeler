@@ -13,7 +13,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   icon: require('@/assets/toolpanel/boundary-message-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Message Event'),
+      name: $t('Boundary Message Event'),
       cancelActivity: true,
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),

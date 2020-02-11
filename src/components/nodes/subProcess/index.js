@@ -16,7 +16,7 @@ export default {
   label: 'Sub Process',
   definition(moddle, $t) {
     return moddle.create('bpmn:CallActivity', {
-      name: $t('New Sub Process'),
+      name: $t('Sub Process'),
       calledElement: '',
       config: '{}',
     });
