@@ -12,7 +12,11 @@ import { dummyShape } from '../../../utilities/dummies';
 import index from '../../../customMatchers/toHaveBeenProgrammaticallyMoved';
 import toHaveBeenProgrammaticallyMovedBy from '../../../customMatchers/toHaveBeenProgrammaticallyMovedBy';
 
-expect.extend({ toHaveBeenProgrammaticallyMoved: index, toHaveBeenProgrammaticallyMovedBy });
+/**
+ * @type {Function}
+ */
+const expect = require('expect');
+expect.extend({ toHaveBeenProgrammaticallyMoved, toHaveBeenProgrammaticallyMovedBy });
 
 describe('Shape Alignment', () => {
   it('can calculate a correct bounding box with one shape', () => {
