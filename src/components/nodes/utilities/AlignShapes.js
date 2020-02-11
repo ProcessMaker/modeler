@@ -76,6 +76,52 @@ export function distributeVerticalCentersEvenly(shapes) {
   });
 }
 
+export function distributeHorizontalCentersEvenly(shapes) {
+  const bounds = getBoundingBox(shapes);
+  const itemCount = shapes.length;
+  if (itemCount < 3) {
+    return;
+  }
+
+  const leftToRight = shapes.sort((a, b) => a.position().x - b.position().x);
+  const leftmostShape = leftToRight[0];
+  const rightmostShape = leftToRight[itemCount - 1];
+
+  const availableWidth = bounds.width
+    - (leftmostShape.size().width / 2)
+    - (rightmostShape.size().width / 2);
+
+  const distanceBetweenCenters = availableWidth / (itemCount - 1);
+  const offset = bounds.left + (leftmostShape.size().width / 2);
+
+  leftToRight.forEach((shape, idx) => {
+    if (idx === 0) {
+      return;
+    }
+
+    moveShapeMiddleXTo(shape, offset + idx * distanceBetweenCenters);
+  });
+}
+
+
+export function distributeHorizontalSpacingEvenly(shapes) {
+  const bounds = getBoundingBox(shapes);
+  const itemCount = shapes.length;
+  if (itemCount < 3) {
+    return;
+  }
+  const totalShapeWidth = shapes.reduce((sum, shape) => shape.size().width + sum, 0);
+  const leftToRight = shapes.sort((a, b) => a.position().x - b.position().x);
+  let offset = bounds.left + shapes[0].size().width;
+  const spaceBetween = (bounds.width - totalShapeWidth) / (leftToRight.length - 1);
+  leftToRight.forEach((shape, idx) => {
+    if (idx === 0) {
+      return;
+    }
+    moveShapeLeftTo(shape, offset + spaceBetween);
+    offset += spaceBetween + shape.size().width;
+  });
+}
 
 // TODO: this needs to be associated with the multi-selection box logic. We can
 // also pre-emptively recalc this everytime we add / remove items from a
