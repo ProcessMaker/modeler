@@ -184,7 +184,7 @@ export default {
       const loadingMessage = 'Loading process, please be patient.';
 
       if (this.isRendering) {
-        window.ProcessMaker.alert(loadingMessage, 'info');
+        window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
         this.cursor = 'wait';
         return;
