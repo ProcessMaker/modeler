@@ -4,7 +4,7 @@ import {
   alignRight,
   alignTop,
   centerX,
-  centerY,
+  centerY, distributeHorizontalCentersEvenly, distributeHorizontalSpacingEvenly,
   distributeVerticalCentersEvenly,
   getBoundingBox,
 } from '@/components/nodes/utilities/AlignShapes';
@@ -161,9 +161,43 @@ describe('Shape Alignment', () => {
     ];
 
     distributeVerticalCentersEvenly(shapes);
+    distributeHorizontalCentersEvenly(shapes);
+    distributeHorizontalSpacingEvenly(shapes);
 
     expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved();
     expect(shapes[1]).not.toHaveBeenProgrammaticallyMoved();
+  });
+
+  it('can distribute horizontal centers', () => {
+    const shapes = [
+      dummyShape(0, 0, 100, 50),
+      dummyShape(100, 0, 50, 50),
+      dummyShape(150, 0, 100, 50),
+      dummyShape(300, 0, 100, 50),
+    ];
+
+    distributeHorizontalCentersEvenly(shapes);
+
+    expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(25, 0);
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(50, 0);
+    expect(shapes[3]).not.toHaveBeenProgrammaticallyMoved();
+  });
+
+  it('can distribute horizontal spacing', () => {
+    const shapes = [
+      dummyShape(0, 0, 100, 50),
+      dummyShape(100, 0, 50, 50),
+      dummyShape(150, 0, 100, 50),
+      dummyShape(400, 0, 100, 50),
+    ];
+
+    distributeHorizontalSpacingEvenly(shapes);
+
+    expect(shapes[0]).not.toHaveBeenProgrammaticallyMoved();
+    expect(shapes[1]).toHaveBeenProgrammaticallyMovedBy(50, 0);
+    expect(shapes[2]).toHaveBeenProgrammaticallyMovedBy(100, 0);
+    expect(shapes[3]).not.toHaveBeenProgrammaticallyMoved();
   });
 });
 
