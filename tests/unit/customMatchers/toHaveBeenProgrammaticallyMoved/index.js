@@ -26,7 +26,7 @@ const passMessage = (shape) => () => {
  */
 export default function toHaveBeenProgrammaticallyMoved(shape) {
   if (!shape || !shape.translate || !shape.translate.mock) {
-    return { pass: false, message: () => `${printReceived(shape)} does not seem to be a movable shape.` };
+    return { pass: this.isNot, message: () => `${printReceived(shape)} does not seem to be a movable shape.` };
   }
 
   if (passes(shape)) {
