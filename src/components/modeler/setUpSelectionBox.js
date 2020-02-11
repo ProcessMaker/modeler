@@ -1,14 +1,18 @@
 import { g, shapes } from 'jointjs';
 import store from '@/store';
 import {
+  distributeHorizontalCentersEvenly,
+  distributeHorizontalSpacingEvenly,
+  distributeVerticalCentersEvenly,
+} from '@/components/nodes/utilities/AlignShapes';
+import {
   alignBottom,
   alignLeft,
   alignRight,
   alignTop,
-  centerX,
-  centerY, distributeHorizontalCentersEvenly, distributeHorizontalSpacingEvenly,
-  distributeVerticalCentersEvenly,
-} from '@/components/nodes/utilities/AlignShapes';
+  centerHorizontally,
+  centerVertically,
+} from '@/components/nodes/utilities/align';
 
 const shapesToNotTranslate = [
   'processmaker.modeler.bpmn.pool',
@@ -60,10 +64,10 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
         alignBottom(highlightedShapes);
         return;
       case 'x':
-        centerX(highlightedShapes);
+        centerHorizontally(highlightedShapes);
         return;
       case 'y':
-        centerY(highlightedShapes);
+        centerVertically(highlightedShapes);
         return;
       case 'X':
         distributeVerticalCentersEvenly(highlightedShapes);
