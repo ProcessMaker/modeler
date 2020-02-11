@@ -61,18 +61,18 @@ export function distributeVerticalCentersEvenly(shapes) {
   const topShape = topToBottom[0];
   const bottomShape = topToBottom[itemCount - 1];
 
-  const heightWithoutMids = bounds.height
+  const availableHeight = bounds.height
     - (topShape.size().height / 2)
     - (bottomShape.size().height / 2);
 
-  const spacingBetweenMidpoints = heightWithoutMids / (itemCount - 1);
+  const distanceBetweenCenters = availableHeight / (itemCount - 1);
   const offset = bounds.top + (topShape.size().height / 2);
   topToBottom.forEach((shape, idx) => {
     if (idx === 0) {
       return;
     }
 
-    moveShapeMiddleYTo(shape, offset + idx * spacingBetweenMidpoints);
+    moveShapeMiddleYTo(shape, offset + idx * distanceBetweenCenters);
   });
 }
 
