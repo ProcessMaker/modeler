@@ -180,10 +180,22 @@ export function moveElementRelativeTo(elementPosition, x, y, componentType) {
       .then($element => {
         const { left, top } = $element.position();
         const newPosition = paper.localToPagePoint(left + x, top + y);
-        cy.wrap($element)
-          .trigger('mousedown', 'topLeft', { which: 1, force: true })
-          .trigger('mousemove', 'topLeft', { clientX: newPosition.x, clientY: newPosition.y, force: true })
-          .trigger('mouseup', 'topLeft', { force: true });
+        const { tx, ty } = paper.translate();
+
+        return cy.get('.main-paper').then($paperContainer => {
+          const { x: paperX, y: paperY } = $paperContainer[0].getBoundingClientRect();
+          const mouseMoveOptions = {
+            clientX: newPosition.x - (paperX + tx),
+            clientY: newPosition.y - (paperY + ty),
+            force: true,
+          };
+
+          cy.wrap($element)
+            .trigger('mousedown', 'topLeft', { which: 1, force: true })
+            .trigger('mousemove', 'topLeft', mouseMoveOptions)
+            .trigger('mouseup', 'topLeft', { force: true });
+        });
+
       });
   });
 }
