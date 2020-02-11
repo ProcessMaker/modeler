@@ -107,7 +107,8 @@ export default {
   watch: {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
-      this.shape.attr('label/text', util.breakText(name, { width }));
+      const labelWidth = width - labelPadding;
+      this.shape.attr('label/text', util.breakText(name, { width: labelWidth }));
 
       /* Update shape height if label text overflows */
       const labelHeight = this.shapeView.selectors.label.getBBox().height;
