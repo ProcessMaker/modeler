@@ -6,8 +6,8 @@ import {
   alignRight,
   alignTop,
   centerX,
-  centerY,
-  distributeVertically,
+  centerY, distributeHorizontalCentersEvenly, distributeHorizontalSpacingEvenly,
+  distributeVerticalCentersEvenly,
 } from '@/components/nodes/utilities/AlignShapes';
 
 const shapesToNotTranslate = [
@@ -66,7 +66,13 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
         centerY(highlightedShapes);
         return;
       case 'X':
-        distributeVertically(highlightedShapes);
+        distributeVerticalCentersEvenly(highlightedShapes);
+        return;
+      case 'Y':
+        distributeHorizontalSpacingEvenly(highlightedShapes);
+        return;
+      case 'U':
+        distributeHorizontalCentersEvenly(highlightedShapes);
         return;
     }
 
