@@ -1,16 +1,20 @@
 import {
+  distributeHorizontalCentersEvenly,
+  distributeHorizontalSpacingEvenly,
+  distributeVerticalCentersEvenly,
+} from '@/components/nodes/utilities/distribute';
+import { dummyShape } from '../../../utilities/dummies';
+import toHaveBeenProgrammaticallyMoved from '../../../customMatchers/toHaveBeenProgrammaticallyMoved';
+import toHaveBeenProgrammaticallyMovedBy from '../../../customMatchers/toHaveBeenProgrammaticallyMovedBy';
+import { getBoundingBox } from '@/components/nodes/utilities/shapeGroup';
+import {
   alignBottom,
   alignLeft,
   alignRight,
   alignTop,
-  centerX,
-  centerY, distributeHorizontalCentersEvenly, distributeHorizontalSpacingEvenly,
-  distributeVerticalCentersEvenly,
-  getBoundingBox,
-} from '@/components/nodes/utilities/AlignShapes';
-import { dummyShape } from '../../../utilities/dummies';
-import toHaveBeenProgrammaticallyMoved from '../../../customMatchers/toHaveBeenProgrammaticallyMoved';
-import toHaveBeenProgrammaticallyMovedBy from '../../../customMatchers/toHaveBeenProgrammaticallyMovedBy';
+  centerHorizontally,
+  centerVertically,
+} from '@/components/nodes/utilities/align';
 
 /**
  * @type {Function}
@@ -117,7 +121,7 @@ describe('Shape Alignment', () => {
       dummyShape(200, 200, 100, 50),
     ];
 
-    centerX(shapes);
+    centerHorizontally(shapes);
 
     expect(shapes[0]).toHaveBeenProgrammaticallyMovedBy(100, 0);
     expect(shapes[1]).not.toHaveBeenProgrammaticallyMoved();
@@ -131,7 +135,7 @@ describe('Shape Alignment', () => {
       dummyShape(200, 200, 100, 50),
     ];
 
-    centerY(shapes);
+    centerVertically(shapes);
 
     expect(shapes[0]).toHaveBeenProgrammaticallyMovedBy(0, 100);
     expect(shapes[1]).not.toHaveBeenProgrammaticallyMoved();
