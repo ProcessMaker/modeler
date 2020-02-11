@@ -9,7 +9,7 @@ import {
   getBoundingBox,
 } from '@/components/nodes/utilities/AlignShapes';
 import { dummyShape } from '../../../utilities/dummies';
-import index from '../../../customMatchers/toHaveBeenProgrammaticallyMoved';
+import toHaveBeenProgrammaticallyMoved from '../../../customMatchers/toHaveBeenProgrammaticallyMoved';
 import toHaveBeenProgrammaticallyMovedBy from '../../../customMatchers/toHaveBeenProgrammaticallyMovedBy';
 
 /**
