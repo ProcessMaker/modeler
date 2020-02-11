@@ -331,14 +331,17 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       dragFromSourceToDest(nodeTypes.pool, taskPosition);
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
-      getElementAtPosition(taskPosition).then($boundaryEvent => {
+      getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
         const overPoolPosition = { x: 450, y: 450 };
         const overTaskPosition = { x: 550, y: 350 };
 
         [overPoolPosition, overTaskPosition].forEach(({ x, y }) => {
           cy.wrap($boundaryEvent)
-            .trigger('mousedown', { which: 1, force: true })
-            .trigger('mousemove', { clientX: x, clientY: y, force: true });
+            .as('boundaryEvent')
+            .click({ force: true })
+            .trigger('mousedown', { which: 1, force: true });
+          waitToRenderAllShapes();
+          cy.get('@boundaryEvent').trigger('mousemove', { clientX: x, clientY: y, force: true });
 
           waitToRenderAllShapes();
 
