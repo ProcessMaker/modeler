@@ -1,15 +1,6 @@
-const shapeBottom = (shape) => shape.position().y + shape.size().height;
-const shapeLeft = (shape) => shape.position().x;
-const shapeCenterX = (shape) => shape.position().x + (shape.size().width / 2);
-const shapeCenterY = (shape) => shape.position().y + (shape.size().height / 2);
-const shapeRight = (shape) => shape.position().x + shape.size().width;
-const shapeTop = (shape) => shape.position().y;
-
-module.exports = {
-  shapeBottom,
-  shapeLeft,
-  shapeCenterX,
-  shapeCenterY,
-  shapeRight,
-  shapeTop,
-};
+export const shapeBottom = (shape) => shape.position().y + shape.size().height;
+export const shapeLeft = (shape) => shape.position().x;
+export const shapeCenterX = (shape) => shape.position().x + (shape.size().width / 2);
+export const shapeCenterY = (shape) => shape.position().y + (shape.size().height / 2);
+export const shapeRight = (shape) => shape.position().x + shape.size().width;
+export const shapeTop = (shape) => shape.position().y;
