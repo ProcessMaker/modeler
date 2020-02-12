@@ -116,7 +116,7 @@ export default {
       const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
       const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
       const newLabelHeight = (Math.ceil((labelSpace) / gridSize) * gridSize) - taskGridDifference;
-      const newHeight = newLabelHeight < taskHeight ? taskHeight : newLabelHeight;
+      const newHeight = newLabelHeight < taskHeight || !name ? taskHeight : newLabelHeight;
       if (height !== newHeight) {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
