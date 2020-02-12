@@ -1,24 +1,23 @@
-import { matcherHint, printReceived } from 'jest-matcher-utils';
 import passes from './predicate';
 
 const failMessage = (shape, dx, dy) => () => {
   const expected = [dx, dy];
-  return matcherHint('.toHaveBeenProgrammaticallyMovedBy', 'shape', '') +
+  return this.utils.matcherHint('.toHaveBeenProgrammaticallyMovedBy', 'shape', '') +
     '\n\n' +
-    `Expected:\n Shape to have been programmatically moved by ${printReceived(expected)}.` +
+    `Expected:\n Shape to have been programmatically moved by ${this.utils.printReceived(expected)}.` +
     '\n\nReceived: ' +
     (shape.translate.mock.calls.length === 0
       ? '\n Shape has not been moved.'
-      : `\n Shape has been moved by: ${printReceived(shape.translate.mock.calls)}`);
+      : `\n Shape has been moved by: ${this.utils.printReceived(shape.translate.mock.calls)}`);
 };
 
 const passMessage = (shape, dx, dy) => () => {
   const expected = [dx, dy];
-  return matcherHint('.not.toHaveBeenProgrammaticallyMovedBy', 'shape', '') +
+  return this.utils.matcherHint('.not.toHaveBeenProgrammaticallyMovedBy', 'shape', '') +
     '\n\n' +
-    `Expected:\n Shape to not have been programmatically moved by ${printReceived(expected)}.` +
+    `Expected:\n Shape to not have been programmatically moved by ${this.utils.printReceived(expected)}.` +
     '\n\nReceived: ' +
-    `\n Shape has been moved by: ${printReceived(shape.translate.mock.calls)}`;
+    `\n Shape has been moved by: ${this.utils.printReceived(shape.translate.mock.calls)}`;
 };
 
 /**
@@ -29,7 +28,7 @@ const passMessage = (shape, dx, dy) => () => {
  */
 export default function toHaveBeenProgrammaticallyMovedBy(shape, dx, dy) {
   if (!shape || !shape.translate) {
-    return {pass: this.isNot, message: () => `${printReceived(shape)} does not seem to be a movable shape.`};
+    return {pass: this.isNot, message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`};
   }
 
   if (passes(shape, dx, dy)) {
