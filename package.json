@@ -84,7 +84,6 @@
     "eslint-plugin-vue": "^5.2.3",
     "i18next": "^15.0.8",
     "istanbul-lib-coverage": "^2.0.5",
-    "jest-matcher-utils": "^25.1.0",
     "node-sass": "^4.13.0",
     "nyc": "^14.1.1",
     "sass-loader": "^8.0.0",
