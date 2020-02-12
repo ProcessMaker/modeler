@@ -228,6 +228,7 @@ export default {
   methods: {
     copyElement(node, copyCount) {
       const clonedNode = node.clone();
+      clonedNode.id = null;
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
       clonedNode.diagram.bounds.x = node.diagram.bounds.x;

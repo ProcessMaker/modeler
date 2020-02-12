@@ -43,10 +43,7 @@ export default class Node {
 
   clone() {
     const diagramClone = cloneDeep(this.diagram);
-    const nodeCopy = new Node(this.type, diagramClone.bpmnElement, diagramClone);
-    nodeCopy.id = null;
-
-    return nodeCopy;
+    return new Node(this.type, diagramClone.bpmnElement, diagramClone);
   }
 
   getTargetProcess(processes, processNode) {
