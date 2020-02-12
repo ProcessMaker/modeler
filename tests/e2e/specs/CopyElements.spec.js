@@ -1,7 +1,4 @@
-import {
-  dragFromSourceToDest,
-  removeIndentationAndLinebreaks,
-} from '../support/utils';
+import { dragFromSourceToDest, removeIndentationAndLinebreaks } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Copy element', () => {
@@ -12,7 +9,7 @@ describe('Copy element', () => {
     cy.get('[data-test=copy-button]').click();
 
     const twoStartEventsXML = '<bpmn:startEvent id="node_1" name="Start Event" /><bpmn:startEvent id="node_2" name="Start Event" /><bpmn:startEvent id="node_3" name="Start Event" />';
-    
+
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

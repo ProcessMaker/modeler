@@ -129,6 +129,7 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import copyDefinitionProperties from '@/components/modeler/copyDefinitionProperties';
 
 const version = '1.0';
 
@@ -231,6 +232,8 @@ export default {
       const diagram = this.nodeRegistry[node.type].diagram(this.moddle);
       const clonedNode = new Node(node.type, definition, diagram);
       const yOffset = (clonedNode.diagram.bounds.height + 30) * copyCount;
+
+      copyDefinitionProperties(definition, node.definition);
 
       clonedNode.diagram.bounds.x = node.diagram.bounds.x;
       clonedNode.diagram.bounds.y = node.diagram.bounds.y + yOffset;
