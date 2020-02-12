@@ -1,5 +1,6 @@
 import { dia, util } from 'jointjs';
 import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
+import { gridSize } from '@/graph';
 
 export default class PaperManager {
   #paper;
@@ -8,7 +9,7 @@ export default class PaperManager {
     this.#paper = paper;
   }
 
-  static gridSize = 10;
+  static gridSize = gridSize;
 
   static factory(element, interactiveFunc, model) {
     const defaultPadding = 3;

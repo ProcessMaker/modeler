@@ -26,10 +26,10 @@ import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { gridSize } from '@/graph';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
-const gridSize = 10;
 
 export default {
   components: {
@@ -108,15 +108,11 @@ export default {
   watch: {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
-      const labelWidth = width - labelPadding;
-      const taskGridDifference = gridSize - (taskHeight % gridSize);
-      this.shape.attr('label/text', util.breakText(name, { width: labelWidth }));
+      this.shape.attr('label/text', util.breakText(name, { width }));
       const { height } = this.shape.size();
 
-      const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
-      const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
-      const newLabelHeight = (Math.ceil((labelSpace) / gridSize) * gridSize) - taskGridDifference;
-      const newHeight = newLabelHeight < taskHeight || !name ? taskHeight : newLabelHeight;
+      const heightByGrid = this.calculateSizeOnGrid();
+      const newHeight = this.heightIsLessThanTaskDefault(heightByGrid) ? taskHeight : heightByGrid;
       if (height !== newHeight) {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
@@ -130,6 +126,16 @@ export default {
       const area = { x, y, width, height };
 
       return this.graph.findModelsInArea(area);
+    },
+    calculateSizeOnGrid() {
+      const taskGridDifference = gridSize - (taskHeight % gridSize);
+      const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
+      const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
+
+      return (Math.ceil((labelSpace) / gridSize) * gridSize) - taskGridDifference;
+    },
+    heightIsLessThanTaskDefault(height) {
+      return height < taskHeight || !this.node.definition.name;
     },
   },
   mounted() {
