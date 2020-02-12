@@ -30,7 +30,7 @@ describe('moveWithArrowKeys', () => {
   ({ keyPress, expected }) => {
     const shape = shapeFactory();
     const onAfterMove = jest.fn();
-    moveShapeByKeypress(keyPress, shape, onAfterMove);
+    moveShapeByKeypress(keyPress, [shape], onAfterMove);
 
     expect(shape.translate).toHaveBeenCalledWith(...expected, { movedWithArrowKeys: true });
     expect(onAfterMove).toHaveBeenCalledTimes(1);
@@ -43,7 +43,7 @@ describe('moveWithArrowKeys', () => {
   )('Does not attempt to move an invalid shape', (invalidShapeType) => {
     const shape = shapeFactory(invalidShapeType);
     const onAfterMove = jest.fn();
-    moveShapeByKeypress('Up', shape, onAfterMove);
+    moveShapeByKeypress('Up', [shape], onAfterMove);
 
     expect(shape.translate).not.toHaveBeenCalled();
     expect(onAfterMove).not.toHaveBeenCalled();
@@ -52,7 +52,7 @@ describe('moveWithArrowKeys', () => {
   it('Does nothing when it does not receive a shape', () => {
     const shape = undefined;
     const onAfterMove = jest.fn();
-    moveShapeByKeypress('Up', shape, onAfterMove);
+    moveShapeByKeypress('Up', [shape], onAfterMove);
 
     expect(onAfterMove).not.toHaveBeenCalled();
   });

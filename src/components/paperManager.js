@@ -3,6 +3,7 @@ import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 
 export default class PaperManager {
   #paper;
+  preventTranslate = false;
 
   constructor(paper) {
     this.#paper = paper;
@@ -50,6 +51,10 @@ export default class PaperManager {
   }
 
   translate(x, y) {
+    if (this.preventTranslate) {
+      return;
+    }
+
     this.#paper.translate(x, y);
     this.#paper.trigger('translate:changed');
   }

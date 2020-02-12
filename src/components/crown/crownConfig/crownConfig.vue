@@ -142,6 +142,7 @@ export default {
         ? this.node.pool.component.containingProcess
         : this.processNode.definition;
     },
+    highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
     paperNotRendered() {

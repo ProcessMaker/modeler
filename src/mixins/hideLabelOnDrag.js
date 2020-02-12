@@ -1,8 +1,10 @@
 export default {
-  props: ['highlighted'],
+  props: {
+    isActive: Boolean,
+  },
   methods: {
     hideLabel(element, newPosition, options) {
-      if (!this.highlighted || options.movedWithArrowKeys) {
+      if (!this.isActive || options.movedWithArrowKeys) {
         return;
       }
 
