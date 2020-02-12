@@ -31,6 +31,7 @@ describe('Shape Distribution', () => {
   });
 
   it('only distributes three or more items', () => {
+    // two items are evenly distributed by definition
     const shapes = [
       dummyShape(0, 0, 100, 50),
       dummyShape(200, 600, 100, 50),

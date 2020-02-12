@@ -57,7 +57,8 @@ export function distributeHorizontalCentersEvenly(shapes) {
 export function distributeHorizontalSpacingEvenly(shapes) {
   const bounds = getBoundingBox(shapes);
   const itemCount = shapes.length;
-  if (itemCount < 3) {
+  const minimumArrangeable = 3; // less than 3 is evenly spaced by definition
+  if (itemCount < minimumArrangeable) {
     return;
   }
   const totalShapeWidth = shapes.reduce((sum, shape) => shape.size().width + sum, 0);
