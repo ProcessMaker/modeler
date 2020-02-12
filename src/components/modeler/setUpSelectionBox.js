@@ -8,7 +8,7 @@ const shapesToNotTranslate = [
 ];
 
 export default function setUpSelectionBox(setCursor, resetCursor, paperManager, graph) {
-  let initialPositionByGerrie;
+  let initialPosition;
   let shiftKeyPressed = false;
   let selectionBox;
   let selectionboxMousedownPosition;
@@ -23,7 +23,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       return;
     }
 
-    initialPositionByGerrie = cellView.model.position();
+    initialPosition = cellView.model.position();
     cellView.model.on('change:position', moveAllOtherHighlightedShapes);
   });
   paperManager.addEventHandler('cell:pointerup link:pointerup element:pointerup blank:pointerup', cellView => {
@@ -106,7 +106,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       return;
     }
 
-    const { x, y } = initialPositionByGerrie;
+    const { x, y } = initialPosition;
     const dx = newPosition.x - x;
     const dy = newPosition.y - y;
 
@@ -114,7 +114,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       .filter(shape => shape !== element && !shapesToNotTranslate.includes(shape.get('type')))
       .forEach(shape => shape.translate(dx, dy));
 
-    initialPositionByGerrie = newPosition;
+    initialPosition = newPosition;
   }
 
   function createSelectionBox(p1, p2) {
