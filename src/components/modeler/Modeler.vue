@@ -226,13 +226,14 @@ export default {
     },
   },
   methods: {
-    copyElement(node) {      
+    copyElement(node, copyCount) {
       const definition = this.nodeRegistry[node.type].definition(this.moddle, this.$t);
       const diagram = this.nodeRegistry[node.type].diagram(this.moddle);
       const clonedNode = new Node(node.type, definition, diagram);
+      const yOffset = (clonedNode.diagram.bounds.height + 30) * copyCount;
 
       clonedNode.diagram.bounds.x = node.diagram.bounds.x;
-      clonedNode.diagram.bounds.y = node.diagram.bounds.y + clonedNode.diagram.bounds.height + 30;
+      clonedNode.diagram.bounds.y = node.diagram.bounds.y + yOffset;
 
       this.addNode(clonedNode);
     },

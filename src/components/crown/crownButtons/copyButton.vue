@@ -7,7 +7,7 @@
     data-test="copy-button"
     role="menuitem"
     :src="copyIcon"
-    @click="$emit('copy-element', node)"
+    @click="copyElement"
   />
 </template>
 
@@ -20,6 +20,7 @@ export default {
   props: ['node'],
   data() {
     return {
+      copyCount: 0,
       copyIcon,
       validCopyElements: [
         'processmaker-modeler-start-event',
@@ -43,6 +44,12 @@ export default {
         'processmaker-custom-marker-task-test',
       ],
     };
+  },
+  methods: {
+    copyElement() {
+      this.copyCount++;
+      this.$emit('copy-element', this.node, this.copyCount);
+    },
   },
 };
 </script>
