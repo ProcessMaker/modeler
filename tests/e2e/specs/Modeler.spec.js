@@ -329,7 +329,7 @@ describe('Modeler', () => {
   it('persist boundary event with sequence flow in XML', () => {
     uploadXml('../fixtures/boundaryEvent.xml');
 
-    const sequenceFlowXML = '<bpmn:sequenceFlow id="node_5" name="New Sequence Flow" sourceRef="node_3" targetRef="node_2" />';
+    const sequenceFlowXML = '<bpmn:sequenceFlow id="node_5" name="Sequence Flow" sourceRef="node_3" targetRef="node_2" />';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

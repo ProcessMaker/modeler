@@ -60,7 +60,7 @@ describe.skip('Boundary Escalation Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Escalation Event',
   nodeType: nodeTypes.boundaryEscalationEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_4" name="New Boundary Escalation Event" attachedToRef="node_3"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_4" name="Boundary Escalation Event" attachedToRef="node_3"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],

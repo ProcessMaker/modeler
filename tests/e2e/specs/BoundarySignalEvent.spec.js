@@ -49,7 +49,7 @@ describe.skip('Boundary Signal Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Signal Event',
   nodeType: nodeTypes.boundarySignalEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
