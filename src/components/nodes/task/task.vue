@@ -29,6 +29,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
+const gridSize = 10;
 
 export default {
   components: {
@@ -108,14 +109,15 @@ export default {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
       const labelWidth = width - labelPadding;
+      const taskGridDifference = gridSize - (taskHeight % gridSize);
       this.shape.attr('label/text', util.breakText(name, { width: labelWidth }));
-
-      /* Update shape height if label text overflows */
-      const labelHeight = this.shapeView.selectors.label.getBBox().height;
       const { height } = this.shape.size();
 
-      if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
-        const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
+      const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
+      const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
+      const newLabelHeight = (Math.ceil((labelSpace) / gridSize) * gridSize) - taskGridDifference;
+      const newHeight = newLabelHeight < taskHeight ? taskHeight : newLabelHeight;
+      if (height !== newHeight) {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
