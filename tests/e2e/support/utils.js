@@ -133,9 +133,7 @@ export function connectNodesWithFlow(flowType, startPosition, endPosition, click
           cy.wrap($endElement)
             .trigger('mousemove', { clientX: x, clientY: y, force: true })
             .wait(renderTime)
-            .trigger('mousedown', { force: true })
             .click(clickPosition, { force: true })
-            .trigger('mouseup', { force: true });
         });
       });
     });
