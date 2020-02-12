@@ -5,6 +5,8 @@
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="mr-3">
+        <align-buttons />
+
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <b-button
             class="btn btn-sm btn-secondary btn-undo"
