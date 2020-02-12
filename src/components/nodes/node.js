@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep';
+
 export default class Node {
   type;
   definition;
@@ -37,6 +39,14 @@ export default class Node {
       this.diagram.id = diagramId;
       this.diagram.bpmnElement = this.definition;
     }
+  }
+
+  clone() {
+    const diagramClone = cloneDeep(this.diagram);
+    const nodeCopy = new Node(this.type, diagramClone.bpmnElement, diagramClone);
+    nodeCopy.id = null;
+
+    return nodeCopy;
   }
 
   getTargetProcess(processes, processNode) {
