@@ -13,7 +13,7 @@ export default {
   rank: 5,
   definition(moddle, $t) {
     return moddle.create('bpmn:ExclusiveGateway', {
-      name: $t('New Exclusive Gateway'),
+      name: $t('Exclusive Gateway'),
     });
   },
   diagram(moddle) {

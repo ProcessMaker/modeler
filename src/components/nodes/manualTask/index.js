@@ -15,7 +15,7 @@ export default {
   label: 'Manual Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:ManualTask', {
-      name: $t('New Manual Task'),
+      name: $t('Manual Task'),
     });
   },
   diagram(moddle) {

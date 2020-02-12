@@ -11,7 +11,7 @@ export default {
   label: 'Boundary Event',
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Event'),
+      name: $t('Boundary Event'),
       cancelActivity: true,
     });
   },

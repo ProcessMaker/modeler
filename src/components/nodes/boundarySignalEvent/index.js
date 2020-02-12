@@ -14,7 +14,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   icon: require('@/assets/toolpanel/boundary-signal-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Signal Event'),
+      name: $t('Boundary Signal Event'),
       cancelActivity: true,
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition'),

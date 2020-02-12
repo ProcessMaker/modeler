@@ -10,7 +10,7 @@ export default {
   label: 'Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:Gateway', {
-      name: $t('New Gateway'),
+      name: $t('Gateway'),
     });
   },
   diagram(moddle) {

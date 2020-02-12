@@ -14,7 +14,7 @@ export default {
   label: 'Pool',
   definition(moddle, $t) {
     return moddle.create('bpmn:Participant', {
-      name: $t('New Pool'),
+      name: $t('Pool'),
     });
   },
   diagram(moddle) {

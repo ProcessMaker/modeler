@@ -13,7 +13,7 @@ export default {
   label: 'Text Annotation',
   definition(moddle, $t) {
     return moddle.create('bpmn:TextAnnotation', {
-      text: $t('New Text Annotation'),
+      text: $t('Text Annotation'),
     });
   },
   diagram(moddle) {
@@ -60,7 +60,7 @@ export default {
                 label: 'Text to Show',
                 helper: 'Body of the text annotation',
                 name: 'text',
-                placeholder: 'New Text Annotation',
+                placeholder: 'Text Annotation',
               },
             },
           ],

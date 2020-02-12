@@ -179,7 +179,7 @@ describe('Undo/redo', () => {
     <bpmn:startEvent id="node_1" name="Start Event" />
   </bpmn:process>
   <bpmn:collaboration id="collaboration_0">
-    <bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />
+    <bpmn:participant id="node_2" name="Pool" processRef="Process_1" />
   </bpmn:collaboration>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_0">

@@ -53,7 +53,7 @@ describe('Text Annotation', () => {
     <bpmn:startEvent id="node_1" name="Start Event" />
     <bpmn:task id="node_7" name="Task" />
     <bpmn:textAnnotation id="node_6">
-      <bpmn:text>New Text Annotation</bpmn:text>
+      <bpmn:text>Text Annotation</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="node_8" associationDirection="None" sourceRef="node_6" targetRef="node_7" />`;
 
@@ -72,7 +72,7 @@ describe('Text Annotation', () => {
     const expectedXML = `<bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="node_1" name="Start Event" />
     <bpmn:textAnnotation id="node_3">
-      <bpmn:text>New Text Annotation</bpmn:text>
+      <bpmn:text>Text Annotation</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="node_4" associationDirection="None" sourceRef="node_3" targetRef="node_2" />
   </bpmn:process>`;
