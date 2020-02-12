@@ -3,7 +3,6 @@
     v-if="validCopyElements.includes(node.type)"
     :title="$t('Copy Element')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
-    id="copy-button"
     aria-label="Copy Element"
     data-test="copy-button"
     role="menuitem"
