@@ -4,7 +4,7 @@ import {
   distributeHorizontalCentersEvenly,
   distributeHorizontalSpacingEvenly,
   distributeVerticalCentersEvenly,
-} from '@/components/nodes/utilities/AlignShapes';
+} from '@/components/nodes/utilities/distribute';
 import {
   alignBottom,
   alignLeft,
