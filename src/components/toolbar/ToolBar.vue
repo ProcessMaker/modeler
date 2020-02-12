@@ -100,13 +100,23 @@
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCompress,
+  faExpand,
+  faMapMarked,
+  faMinus,
+  faPlus,
+  faRedo,
+  faSave,
+  faUndo,
+} from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
+import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, FontAwesomeIcon },
+  components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
   props: {
     canvasDragPosition: {},
     cursor: {},
