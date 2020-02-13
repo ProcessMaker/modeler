@@ -1,4 +1,7 @@
 import {
+  addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -8,7 +11,6 @@ import {
   isElementCovered,
   modalConfirm,
   moveElement,
-  removeIndentationAndLinebreaks,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -46,7 +48,14 @@ describe('Message Flows', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
-    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+    addNodeTypeToPaper(startEventPosition, nodeTypes.startEvent, 'switch-to-message-start-event');
+
+    connectNodesWithFlow('message-flow-button', taskPosition, startEventPosition);
 
     const numberOfMessageFlowsAdded = 1;
     getElementAtPosition(taskPosition)
@@ -79,6 +88,12 @@ describe('Message Flows', () => {
 
   it('Cannot connect to itself', () => {
     const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+    addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 150 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -105,6 +120,12 @@ describe('Message Flows', () => {
 
   it('Cannot connect to invalid message flow targets', () => {
     const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+    addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 150 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -151,7 +172,13 @@ describe('Message Flows', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
-    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+    addNodeTypeToPaper(startEventPosition, nodeTypes.startEvent, 'switch-to-message-start-event');
+    connectNodesWithFlow('message-flow-button', taskPosition, startEventPosition);
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
@@ -177,7 +204,12 @@ describe('Message Flows', () => {
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
     let numberOfMessageFlowsAdded = 1;
 
-    const messageFlow = '<bpmn:messageFlow id="node_5" name="" sourceRef="node_1" targetRef="node_4"';
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
+      .click()
+      .then($startEvent => {
+        getCrownButtonForElement($startEvent, 'delete-button').click();
+      });
+    addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
@@ -189,10 +221,8 @@ describe('Message Flows', () => {
       expect($links.length).to.eq(numberOfMessageFlowsAdded);
     });
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(messageFlow);
-    });
+    const messageFlow = 'bpmn:messageFlow';
+    assertDownloadedXmlContainsExpected(messageFlow);
 
     waitToRenderAllShapes();
 
@@ -206,9 +236,10 @@ describe('Message Flows', () => {
       expect($links.length).to.eq(--numberOfMessageFlowsAdded);
     });
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.not.contain(messageFlow);
-    });
+    assertDownloadedXmlDoesNotContainExpected(messageFlow);
+  });
+
+  it('should connect message end event to message start event in different pools', () => {
+
   });
 });
