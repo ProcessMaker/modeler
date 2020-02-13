@@ -286,7 +286,7 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 250, y: 250 };
     let numberOfSequenceFlowsAdded = 1;
 
-    const sequenceFlow = '<bpmn:sequenceFlow id="node_4" name="Sequence Flow" sourceRef="node_1" targetRef="node_3"';
+    const sequenceFlow = '<bpmn:sequenceFlow id="node_4" sourceRef="node_1" targetRef="node_3"';
 
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-script-task');
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.scriptTask);
