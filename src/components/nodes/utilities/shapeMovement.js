@@ -24,9 +24,9 @@ export const canMoveProgrammatically = (shape) => !PROGRAMMATICALLY_IMMOVABLE_SH
  */
 export function canAlign(shape) {
   const hasDimensions = (shape) => {
-    return shape
+    return !!(shape
       && shape.position
-      && shape.size;
+      && shape.size);
   };
   return hasDimensions(shape) && canMoveProgrammatically(shape);
 }

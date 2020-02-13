@@ -25,6 +25,10 @@ import { canAlign } from '@/components/nodes/utilities/shapeMovement';
  */
 
 export function getBoundingBox(shapes) {
+
+  if (! shapes || !shapes.length  || shapes.length === 0) {
+    return {left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, vMiddle: 0, hMiddle: 0};
+  }
   const hasDimensions = (shape) => {
     return shape
       && shape.position

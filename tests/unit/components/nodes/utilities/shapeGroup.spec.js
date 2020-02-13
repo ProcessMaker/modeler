@@ -1,7 +1,22 @@
 import { dummyShape } from '../../../utilities/dummies';
 import { getBoundingBox, getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
+import { shapeTypes } from '../../../../e2e/support/constants';
+import { canAlign } from '@/components/nodes/utilities/shapeMovement';
 
 describe('bounding box metrics', () => {
+  it('handles non-shape objects correctly without breaking', () => {
+    const bounds = getBoundingBox({});
+
+    expect(bounds.left).toBe(0);
+    expect(bounds.top).toBe(0);
+    expect(bounds.bottom).toBe(0);
+    expect(bounds.right).toBe(0);
+    expect(bounds.width).toBe(0);
+    expect(bounds.height).toBe(0);
+    expect(bounds.vMiddle).toBe(0);
+    expect(bounds.hMiddle).toBe(0);
+  });
+
   it('can calculate a correct bounding box with one shape', () => {
     const shapes = [
       dummyShape(0, 0, 100, 50),
@@ -166,6 +181,24 @@ describe('shape group alignment options', () => {
     ];
 
     expect(getShapesOptions(shapes).can.align.verticalCenter).toBe(true);
+  });
+
+  it('cannot align dimensionless shapes', () => {
+    expect(canAlign({})).toBe(false);
+  });
+
+  it('cannot align poolLanes', () => {
+    const poolLane = dummyShape(0, 0, 100, 50);
+    poolLane.get = () => shapeTypes.poolLane;
+
+    expect(canAlign(poolLane)).toBe(false);
+  });
+
+  it('cannot align boundaryEvents', () => {
+    const boundaryEvent = dummyShape(0, 0, 100, 50);
+    boundaryEvent.get = () => shapeTypes.boundaryEvent;
+
+    expect(canAlign(boundaryEvent)).toBe(false);
   });
 });
 
