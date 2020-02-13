@@ -26,9 +26,6 @@ export default {
       }),
     });
   },
-  allowOutgoingFlow() {
-    return false;
-  },
   inspectorConfig: [
     {
       name: 'End Event',
