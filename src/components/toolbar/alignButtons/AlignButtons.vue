@@ -23,7 +23,7 @@
     </b-button>
 
     <b-button
-      class="btn btn-sm btn-secondary btn-align-right"
+      class="btn btn-sm btn-secondary btn-align-right mr-1"
       data-test="align-right"
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.right"
@@ -56,7 +56,7 @@
     </b-button>
 
     <b-button
-      class="btn btn-sm btn-secondary btn-align-top"
+      class="btn btn-sm btn-secondary btn-align-top mr-1"
       data-test="align-top"
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.top"
@@ -74,7 +74,11 @@
       :title="$t('Distribute Horizontally')"
       @click="selectedShapes.distribute.horizontally"
     >
-      H
+      <img
+        :src="distHIcon"
+        alt=""
+        height="16"
+      >
     </b-button>
 
     <b-button
@@ -85,7 +89,11 @@
       :title="$t('Distribute Vertically')"
       @click="selectedShapes.distribute.vertically"
     >
-      V
+      <img
+        :src="distVIcon"
+        alt=""
+        height="16"
+      >
     </b-button>
   </div>
 </template>
@@ -94,6 +102,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faAlignCenter, faAlignLeft, faAlignRight } from '@fortawesome/free-solid-svg-icons';
 import store from '@/store';
 import { getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
+import distributeHorizontallyIcon from '@/assets/distribute-horizontally-icon.svg';
+import distributeVerticallyIcon from '@/assets/distribute-vertically-icon.svg';
+
 
 export default {
   components: { FontAwesomeIcon },
@@ -102,6 +113,8 @@ export default {
       alignCenterIcon: faAlignCenter,
       alignLeftIcon: faAlignLeft,
       alignRightIcon: faAlignRight,
+      distHIcon: distributeHorizontallyIcon,
+      distVIcon: distributeVerticallyIcon,
     };
   },
   computed: {
