@@ -11,7 +11,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create('bpmn:SequenceFlow', {
-      name: '',
+      name: null,
     });
   },
   diagram(moddle) {
