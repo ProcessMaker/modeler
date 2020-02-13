@@ -50,6 +50,10 @@ export default class PaperManager {
     return Math.round(number / PaperManager.gridSize) * PaperManager.gridSize;
   }
 
+  ceilToNearestGridMultiple(number) {
+    return Math.ceil(number / PaperManager.gridSize) * PaperManager.gridSize;
+  }
+
   translate(x, y) {
     this.#paper.translate(x, y);
     this.#paper.trigger('translate:changed');

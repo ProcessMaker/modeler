@@ -131,8 +131,7 @@ export default {
       const taskGridDifference = gridSize - (taskHeight % gridSize);
       const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
       const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
-
-      return (Math.ceil((labelSpace) / gridSize) * gridSize) - taskGridDifference;
+      return this.paperManager.ceilToNearestGridMultiple(labelSpace) - taskGridDifference;
     },
     heightIsLessThanTaskDefault(height) {
       return height < taskHeight || !this.node.definition.name;
