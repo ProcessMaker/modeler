@@ -6,14 +6,29 @@ import {
   shapeRight,
   shapeTop,
 } from '@/components/nodes/utilities/shapeMetrics';
+import { shapeTypes } from '../../../../tests/e2e/support/constants';
 
-export function isProgrammaticallyMovable(shape) {
-  const programaticallyImmovable = [
-    'processmaker.modeler.bpmn.pool',
-    'PoolLane',
-    'processmaker.components.nodes.boundaryEvent.Shape',
-  ];
-  return shape || !programaticallyImmovable.includes(shape.get('type'));
+const PROGRAMMATICALLY_IMMOVABLE_SHAPES = [
+  shapeTypes.boundaryEvent,
+  shapeTypes.poolLane,
+];
+
+/**
+ * Shapes we can safely call translate() on.
+ */
+export const canMoveProgrammatically = (shape) => !PROGRAMMATICALLY_IMMOVABLE_SHAPES.includes(shape.get('type'));
+
+/**
+ * Things like flow lines can still be moved programmatically (e.g. with
+ * arrow keys) - but should not be aligned
+ */
+export function canAlign(shape) {
+  const hasDimensions = (shape) => {
+    return shape
+      && shape.position
+      && shape.size;
+  };
+  return hasDimensions(shape) && canMoveProgrammatically(shape);
 }
 
 export function moveShapeBottomTo(shape, Y) {

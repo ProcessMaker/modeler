@@ -18,16 +18,22 @@ import {
   distributeHorizontalSpacingEvenly,
   distributeVerticalCentersEvenly,
 } from '@/components/nodes/utilities/distribute';
+import { canAlign } from '@/components/nodes/utilities/shapeMovement';
 
 /**
  * Utility functions that operate on a collection of shapes
  */
 
 export function getBoundingBox(shapes) {
-  const left = (shape) => shape.position().x;
-  const right = (shape) => shape.position().x + shape.size().width;
-  const top = (shape) => shape.position().y;
-  const bottom = (shape) => shape.position().y + shape.size().height;
+  const hasDimensions = (shape) => {
+    return shape
+      && shape.position
+      && shape.size;
+  };
+  const left = (shape) => hasDimensions(shape) ? shape.position().x : 0;
+  const right = (shape) => hasDimensions(shape) ? shape.position().x + shape.size().width : 0;
+  const top = (shape) => hasDimensions(shape) ? shape.position().y : 0;
+  const bottom = (shape) => hasDimensions(shape) ? shape.position().y + shape.size().height : 0;
 
   const minX = Math.min(...shapes.map(left));
   const maxX = Math.max(...shapes.map(right));
@@ -49,34 +55,35 @@ export function getBoundingBox(shapes) {
 }
 
 export function getShapesOptions(shapes) {
+  const alignableShapes = shapes.filter(shape => canAlign(shape));
   const bounds = getBoundingBox(shapes);
-  const canAlign = shapes.length > 1;
+  const enoughShapes = alignableShapes.length > 1;
   return {
     can: {
       align: {
-        left: canAlign && shapes.some(shape => shapeLeft(shape) !== bounds.left),
-        horizontalCenter: canAlign && shapes.some(shape => shapeCenterX(shape) !== bounds.hMiddle),
-        right: canAlign && shapes.some(shape => shapeRight(shape) !== bounds.right),
-        bottom: canAlign && shapes.some(shape => shapeBottom(shape) !== bounds.bottom),
-        verticalCenter: canAlign && shapes.some(shape => shapeCenterY(shape) !== bounds.vMiddle),
-        top: canAlign && shapes.some(shape => shapeTop(shape) !== bounds.top),
+        left: enoughShapes && alignableShapes.some(shape => shapeLeft(shape) !== bounds.left),
+        horizontalCenter: enoughShapes && alignableShapes.some(shape => shapeCenterX(shape) !== bounds.hMiddle),
+        right: enoughShapes && alignableShapes.some(shape => shapeRight(shape) !== bounds.right),
+        bottom: enoughShapes && alignableShapes.some(shape => shapeBottom(shape) !== bounds.bottom),
+        verticalCenter: enoughShapes && alignableShapes.some(shape => shapeCenterY(shape) !== bounds.vMiddle),
+        top: enoughShapes && alignableShapes.some(shape => shapeTop(shape) !== bounds.top),
       },
       distribute: {
-        horizontally: canAlign && shapes.length > 2,
-        vertically: canAlign && shapes.length > 2,
+        horizontally: enoughShapes && alignableShapes.length > 2,
+        vertically: enoughShapes && alignableShapes.length > 2,
       },
     },
     align: {
-      left: () => alignLeft(shapes),
-      horizontalCenter: () => centerHorizontally(shapes),
-      right: () => alignRight(shapes),
-      bottom: () => alignBottom(shapes),
-      verticalCenter: () => centerVertically(shapes),
-      top: () => alignTop(shapes),
+      left: () => alignLeft(alignableShapes),
+      horizontalCenter: () => centerHorizontally(alignableShapes),
+      right: () => alignRight(alignableShapes),
+      bottom: () => alignBottom(alignableShapes),
+      verticalCenter: () => centerVertically(alignableShapes),
+      top: () => alignTop(alignableShapes),
     },
     distribute: {
-      horizontally: () => distributeHorizontalSpacingEvenly(shapes),
-      vertically: () => distributeVerticalCentersEvenly(shapes),
+      horizontally: () => distributeHorizontalSpacingEvenly(alignableShapes),
+      vertically: () => distributeVerticalCentersEvenly(alignableShapes),
     },
   };
 }
