@@ -112,7 +112,7 @@ export default {
       const { height } = this.shape.size();
 
       const heightByGrid = this.calculateSizeOnGrid();
-      const newHeight = this.heightIsLessThanTaskDefault(heightByGrid) ? taskHeight : heightByGrid;
+      const newHeight = this.useTaskHeight(heightByGrid) ? taskHeight : heightByGrid;
       if (height !== newHeight) {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
@@ -131,10 +131,17 @@ export default {
       const taskGridDifference = gridSize - (taskHeight % gridSize);
       const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
       const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
-      return this.paperManager.ceilToNearestGridMultiple(labelSpace) - taskGridDifference;
+      let newHeight = this.paperManager.ceilToNearestGridMultiple(labelSpace) - taskGridDifference;
+      if (this.middleIsOddNumber(newHeight)) {
+        newHeight += gridSize;
+      }
+      return newHeight;
     },
-    heightIsLessThanTaskDefault(height) {
+    useTaskHeight(height) {
       return height < taskHeight || !this.node.definition.name;
+    },
+    middleIsOddNumber(value) {
+      return Math.abs((value / 2) % 2) === 1;
     },
   },
   mounted() {
