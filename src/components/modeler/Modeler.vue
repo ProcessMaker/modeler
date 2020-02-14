@@ -69,6 +69,7 @@
         :id="node.id"
         :highlighted="highlightedNode === node"
         :has-error="invalidNodes.includes(node.id)"
+        :simulation-state="simulationState(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
         :processes="processes"
@@ -137,6 +138,11 @@ export default {
     controls,
     InspectorPanel,
     MiniPaper,
+  },
+  props: {
+    simulation: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -225,6 +231,11 @@ export default {
     },
   },
   methods: {
+    simulationState(nodeId) {
+      const selected = this.simulation.paths[this.simulation.selected];
+      const simulationData = selected ? selected.path.find(node => node.id == nodeId) : null;
+      return simulationData ? selected.status : null;
+    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);

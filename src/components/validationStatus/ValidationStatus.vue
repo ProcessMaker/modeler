@@ -3,6 +3,13 @@
     <div class="statusbar d-flex align-items-center justify-content-end pr-3 border-top">
       <div>
         <div class="status-bar-container d-flex align-items-center justify-content-end">
+          <b-button
+            data-test="run-simulation-check"
+            @click="checkSimulation"
+          >
+            {{ $t('Check simulation') }}
+          </b-button>
+
           <template v-if="autoValidate">
             <button v-if="numberOfProblemsToDisplay === 0" type="button" class="btn btn-light" :disabled="true">
               {{ $t('BPMN Valid') }}
@@ -64,6 +71,27 @@
               </dl>
             </div>
           </transition>
+
+          <transition name="slide">
+
+            <div v-if="isSimulationPanelDisplayed" class="simulation-container position-absolute text-left">
+              <div role="tablist">
+                <b-card v-for="(test,index) in simulation.paths" :key="`simulation${index}`" no-body class="mb-1" :bg-variant="simulationMeta[test.status].variant" text-variant="white">
+                  <b-card-header header-tag="header" class="p-1" role="tab">
+                    {{ simulationMeta[test.status].title }}
+                    <b-button class="float-right" variant="outline-light" @click="toggleSimulationTest(index)" size="sm">
+                      <font-awesome-icon
+                        :icon="isSimulationTestOpen(index) ? faMinus : faPlus"
+                      />
+                    </b-button>
+                  </b-card-header>
+                  <b-collapse :visible="isSimulationTestOpen(index)" role="tabpanel">
+                    <b-table hover :items="test.path" :table-variant="simulationMeta[test.status].variant" :small="true" :borderless="true" head-variant="dark" />
+                  </b-collapse>
+                </b-card>
+              </div>
+            </div>
+          </transition>
         </div>
       </div>
     </div>
@@ -77,6 +105,8 @@ import {
   faChevronUp,
   faExclamationTriangle,
   faTimesCircle,
+  faPlus,
+  faMinus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
@@ -86,9 +116,29 @@ export default {
   components: {
     FontAwesomeIcon,
   },
-  props: ['validationErrors', 'warnings'],
+  props: ['validationErrors', 'warnings', 'simulation'],
   data() {
     return {
+      simulationMeta: {
+        ACTIVE: {
+          title: this.$t('Flow not completed'),
+          variant: 'warning',
+        },
+        LOOP: {
+          title: this.$t('Flow loop'),
+          variant: 'warning',
+        },
+        COMPLETED: {
+          title: this.$t('Flow completed'),
+          variant: 'success',
+        },
+        UNREACHABLE: {
+          title: this.$t('Unreachable elements'),
+          variant: 'danger',
+        },
+      },
+      simulationOpenedTests: [],
+      shouldDisplaySimulationPanel: false,
       shouldDisplayProblemsPanel: false,
       errorColor: '#D9534F',
       warningColor: '#F0AD4E',
@@ -97,6 +147,8 @@ export default {
       faChevronUp,
       faChevronDown,
       faCheck,
+      faPlus,
+      faMinus,
     };
   },
   computed: {
@@ -117,11 +169,29 @@ export default {
     isProblemsPanelDisplayed() {
       return this.shouldDisplayProblemsPanel && this.numberOfProblemsToDisplay > 0 && this.autoValidate;
     },
+    isSimulationPanelDisplayed() {
+      return this.shouldDisplaySimulationPanel;
+    },
     chevronIcon() {
       return this.shouldDisplayProblemsPanel ? faChevronUp : faChevronDown;
     },
   },
   methods: {
+    checkSimulation() {
+      this.shouldDisplaySimulationPanel = !this.shouldDisplaySimulationPanel;
+      this.simulation.paths.splice(0);
+      this.$emit('check-simulation');
+    },
+    isSimulationTestOpen(index) {
+      return this.simulation.selected === index;
+    },
+    toggleSimulationTest(index) {
+      if (this.isSimulationTestOpen(index)) {
+        this.simulation.selected = null;
+      } else {
+        this.simulation.selected = index;
+      }
+    },
     isErrorCategory(error) {
       return error.category === 'error';
     },

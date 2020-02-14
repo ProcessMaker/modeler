@@ -55,3 +55,19 @@ $status-bar-font-size: 0.875rem;
     }
   }
 }
+
+.simulation-container {
+  z-index: 2;
+  cursor: default;
+  bottom: 0;
+  right: 0;
+  height: auto;
+  width: $validation-container-width;
+  background-color: $validation-panel-background-color;
+  overflow: auto;
+  margin-bottom: 3rem;
+  border: 1px solid $border-color;
+  border-radius: 0.25rem;
+  border-right: none;
+  user-select: text;
+}

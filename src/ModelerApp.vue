@@ -19,9 +19,9 @@
         </div>
       </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
-        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
+        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" :simulation="simulation" />
       </b-card-body>
-      <validation-status :validation-errors="validationErrors" :warnings="warnings" />
+      <validation-status :validation-errors="validationErrors" :warnings="warnings" :simulation="simulation" @check-simulation="checkSimulation" />
     </b-card>
 
     <b-modal
@@ -63,6 +63,10 @@ export default {
   },
   data() {
     return {
+      simulation: {
+        selected: null,
+        paths: [],
+      },
       validationErrors: {},
       uploadedXml: null,
       xmlFile: [],
@@ -77,6 +81,18 @@ export default {
     },
   },
   methods: {
+    checkSimulation() {
+      window.ProcessMaker.apiClient.post('processes/simulate', {
+        params: {
+          bpmn: this.$refs.modeler.currentXML,
+        },
+      }).then((response) => {
+        this.simulation = {
+          selected: null,
+          paths: response.data,
+        };
+      });
+    },
     download() {
       this.$refs.modeler.toXML((err, xml) => {
         if (err) {
