@@ -1,4 +1,5 @@
 import {
+  hasPositionAndSizeAttribs,
   shapeBottom,
   shapeCenterX,
   shapeCenterY,
@@ -20,15 +21,10 @@ export const canMoveProgrammatically = (shape) => !PROGRAMMATICALLY_IMMOVABLE_SH
 
 /**
  * Things like flow lines can still be moved programmatically (e.g. with
- * arrow keys) - but should not be aligned
+ * arrow keys) - but should not be programmatically aligned.
  */
 export function canAlign(shape) {
-  const hasDimensions = (shape) => {
-    return !!(shape
-      && shape.position
-      && shape.size);
-  };
-  return hasDimensions(shape) && canMoveProgrammatically(shape);
+  return hasPositionAndSizeAttribs(shape) && canMoveProgrammatically(shape);
 }
 
 export function moveShapeBottomTo(shape, Y) {

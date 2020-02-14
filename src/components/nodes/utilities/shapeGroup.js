@@ -1,4 +1,5 @@
 import {
+  hasPositionAndSizeAttribs,
   shapeBottom,
   shapeCenterX,
   shapeCenterY,
@@ -26,18 +27,14 @@ import { canAlign } from '@/components/nodes/utilities/shapeMovement';
 
 export function getBoundingBox(shapes) {
 
-  if (! shapes || !shapes.length  || shapes.length === 0) {
-    return {left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, vMiddle: 0, hMiddle: 0};
+  if (!shapes || !shapes.length || shapes.length === 0) {
+    return { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, vMiddle: 0, hMiddle: 0 };
   }
-  const hasDimensions = (shape) => {
-    return shape
-      && shape.position
-      && shape.size;
-  };
-  const left = (shape) => hasDimensions(shape) ? shape.position().x : 0;
-  const right = (shape) => hasDimensions(shape) ? shape.position().x + shape.size().width : 0;
-  const top = (shape) => hasDimensions(shape) ? shape.position().y : 0;
-  const bottom = (shape) => hasDimensions(shape) ? shape.position().y + shape.size().height : 0;
+
+  const left = (shape) => hasPositionAndSizeAttribs(shape) ? shape.position().x : 0;
+  const right = (shape) => hasPositionAndSizeAttribs(shape) ? shape.position().x + shape.size().width : 0;
+  const top = (shape) => hasPositionAndSizeAttribs(shape) ? shape.position().y : 0;
+  const bottom = (shape) => hasPositionAndSizeAttribs(shape) ? shape.position().y + shape.size().height : 0;
 
   const minX = Math.min(...shapes.map(left));
   const maxX = Math.max(...shapes.map(right));
@@ -58,6 +55,9 @@ export function getBoundingBox(shapes) {
   };
 }
 
+/**
+ * Gets the available options for a group of shapes
+ */
 export function getShapesOptions(shapes) {
   const alignableShapes = shapes.filter(shape => canAlign(shape));
   const bounds = getBoundingBox(shapes);
