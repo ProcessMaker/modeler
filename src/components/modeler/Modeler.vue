@@ -10,6 +10,7 @@
       @toggle-panels-compressed="panelsCompressed = $event"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="$emit('saveBpmn')"
+      @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
       <b-tooltip
