@@ -5,7 +5,7 @@
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="mr-3">
-        <align-buttons />
+        <align-buttons @save-state="$emit('save-state')" />
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <b-button
