@@ -6,7 +6,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.left"
       :title="$t('Align Left')"
-      @click="selectedShapes.align.left"
+      @click="undoableAction(selectedShapes.align.left)"
     >
       <font-awesome-icon :icon="alignLeftIcon" />
     </b-button>
@@ -17,7 +17,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.horizontalCenter"
       :title="$t('Center Horizontally')"
-      @click="selectedShapes.align.horizontalCenter"
+      @click="undoableAction(selectedShapes.align.horizontalCenter)"
     >
       <font-awesome-icon :icon="alignCenterIcon" />
     </b-button>
@@ -28,7 +28,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.right"
       :title="$t('Align Right')"
-      @click="selectedShapes.align.right"
+      @click="undoableAction(selectedShapes.align.right)"
     >
       <font-awesome-icon :icon="alignRightIcon" />
     </b-button>
@@ -39,7 +39,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.bottom"
       :title="$t('Align Bottom')"
-      @click="selectedShapes.align.bottom"
+      @click="undoableAction(selectedShapes.align.bottom)"
     >
       <font-awesome-icon :icon="alignRightIcon" class="rotate-90-degrees-right" />
     </b-button>
@@ -50,7 +50,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.verticalCenter"
       :title="$t('Center Vertically')"
-      @click="selectedShapes.align.verticalCenter"
+      @click="undoableAction(selectedShapes.align.verticalCenter)"
     >
       <font-awesome-icon :icon="alignCenterIcon" class="rotate-90-degrees-right" />
     </b-button>
@@ -61,7 +61,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.top"
       :title="$t('Align Top')"
-      @click="selectedShapes.align.top"
+      @click="undoableAction(selectedShapes.align.top)"
     >
       <font-awesome-icon :icon="alignLeftIcon" class="rotate-90-degrees-right" />
     </b-button>
@@ -72,7 +72,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.distribute.horizontally"
       :title="$t('Distribute Horizontally')"
-      @click="selectedShapes.distribute.horizontally"
+      @click="undoableAction(selectedShapes.distribute.horizontally)"
     >
       <img
         :src="distHIcon"
@@ -87,7 +87,7 @@
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.distribute.vertically"
       :title="$t('Distribute Vertically')"
-      @click="selectedShapes.distribute.vertically"
+      @click="undoableAction(selectedShapes.distribute.vertically)"
     >
       <img
         :src="distVIcon"
@@ -116,6 +116,12 @@ export default {
       distHIcon: distributeHorizontallyIcon,
       distVIcon: distributeVerticallyIcon,
     };
+  },
+  methods: {
+    undoableAction(actionFn) {
+      actionFn();
+      this.$emit('save-state');
+    },
   },
   computed: {
     selectedShapes() {
