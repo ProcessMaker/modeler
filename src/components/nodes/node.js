@@ -1,4 +1,5 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeepWith from 'lodash/cloneDeepWith';
+import clone from 'lodash/clone';
 
 export default class Node {
   type;
@@ -42,7 +43,7 @@ export default class Node {
   }
 
   clone() {
-    const diagramClone = cloneDeep(this.diagram);
+    const diagramClone = cloneDeepWith(this.diagram, this.clearEventDefinitionRefs);
     return new Node(this.type, diagramClone.bpmnElement, diagramClone);
   }
 
@@ -50,5 +51,19 @@ export default class Node {
     return this.pool
       ? processes.find(({ id }) => id === this.pool.component.node.definition.get('processRef').id)
       : processNode.definition;
+  }
+
+  clearEventDefinitionRefs(value) {
+    const refValueKeys = ['errorRef', 'messageRef'];
+    const refValueKey = Object.keys(value).find(key => refValueKeys.includes(key));
+
+    if (!refValueKey) {
+      return;
+    }
+
+    const clonedValue = clone(value);
+    clonedValue[refValueKey] = null;
+
+    return clonedValue;
   }
 }
