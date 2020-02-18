@@ -2,22 +2,30 @@
   <div>
     <form-multi-select
       label="Process"
+      name="Process"
       helper="Select which Process this element calls"
       v-model="selectedProcess"
+      :showLabels="false"
+      :allow-empty="false"
       :disabled="processList.length === 0"
       :options="processList"
       optionContent="name"
       class="p-0 mb-2"
+      :validation="'required'"
     />
 
     <form-multi-select
       label="Start Event"
+      name="StartEvent"
       v-if="selectedProcess"
       v-model="selectedStartEvent"
       :disabled="startEventList.length === 0"
+      :allow-empty="false"
+      :showLabels="false"
       :options="startEventList"
       optionContent="name"
       class="p-0 mb-2"
+      :validation="'required'"
     />
 
     <a
@@ -25,7 +33,7 @@
       :href="`/modeler/${selectedProcess.id}`"
       target="_blank"
     >
-      Open Process
+      {{ this.$t('Open Process') }}
       <i class="ml-1 fas fa-external-link-alt"/>
     </a>
   </div>
