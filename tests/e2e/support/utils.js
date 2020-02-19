@@ -1,6 +1,7 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
 import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
+import { gridSize } from '../../../src/graph';
 
 const renderTime = 300;
 
@@ -23,7 +24,7 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType) {
-  const paperGridSize = 10;
+  const paperGridSize = gridSize;
   const searchRectangle = {
     width: paperGridSize,
     height: paperGridSize,

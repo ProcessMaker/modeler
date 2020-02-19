@@ -26,6 +26,7 @@ import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { gridSize } from '@/graph';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -108,13 +109,11 @@ export default {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr('label/text', util.breakText(name, { width }));
-
-      /* Update shape height if label text overflows */
-      const labelHeight = this.shapeView.selectors.label.getBBox().height;
       const { height } = this.shape.size();
 
-      if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
-        const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
+      const heightByGrid = this.calculateSizeOnGrid();
+      const newHeight = this.useTaskHeight(heightByGrid) ? taskHeight : heightByGrid;
+      if (height !== newHeight) {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
@@ -127,6 +126,22 @@ export default {
       const area = { x, y, width, height };
 
       return this.graph.findModelsInArea(area);
+    },
+    calculateSizeOnGrid() {
+      const taskGridDifference = gridSize - (taskHeight % gridSize);
+      const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
+      const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
+      let newHeight = this.paperManager.ceilToNearestGridMultiple(labelSpace) - taskGridDifference;
+      if (this.middleIsOddNumber(newHeight)) {
+        newHeight += gridSize;
+      }
+      return newHeight;
+    },
+    useTaskHeight(height) {
+      return height < taskHeight || !this.node.definition.name;
+    },
+    middleIsOddNumber(value) {
+      return Math.abs((value / 2) % 2) === 1;
     },
   },
   mounted() {
