@@ -17,7 +17,7 @@ import {
 } from '@/components/nodes/utilities/align';
 import {
   distributeHorizontalSpacingEvenly,
-  distributeVerticalCentersEvenly,
+  distributeVerticalSpacingEvenly,
 } from '@/components/nodes/utilities/distribute';
 import { canAlign } from '@/components/nodes/utilities/shapeMovement';
 
@@ -87,7 +87,7 @@ export function getShapesOptions(shapes) {
     },
     distribute: {
       horizontally: () => distributeHorizontalSpacingEvenly(alignableShapes),
-      vertically: () => distributeVerticalCentersEvenly(alignableShapes),
+      vertically: () => distributeVerticalSpacingEvenly(alignableShapes),
     },
   };
 }
