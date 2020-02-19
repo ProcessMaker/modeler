@@ -132,8 +132,6 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import XMLManager from '@/components/modeler/XMLManager';
 
-const version = '1.0';
-
 export default {
   components: {
     ToolBar,
@@ -181,7 +179,7 @@ export default {
       nodeTypes: [],
       breadcrumbData: [],
       activeNode: null,
-      xmlMananger: null,
+      xmlManager: null,
     };
   },
   watch: {
@@ -565,20 +563,12 @@ export default {
       this.isRendering = false;
       this.$emit('parsed');
     },
-    loadXML(xml = this.currentXML) {
-      this.moddle.fromXML(xml, (err, definitions) => {
-        if (err) {
-          return;
-        }
-        definitions.exporter = 'ProcessMaker Modeler';
-        definitions.exporterVersion = version;
-        this.definitions = definitions;
-        this.xmlMananger = new XMLManager(this.moddle, this.definitions);
-        this.$emit('set-xml-manager', this.xmlMananger);
-        this.nodeIdGenerator = new NodeIdGenerator(definitions);
-        store.commit('clearNodes');
-        this.renderPaper();
-      });
+    async loadXML(xml = this.currentXML) {
+      this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
+      this.xmlManager.definitions = this.definitions;
+      this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
+      store.commit('clearNodes');
+      this.renderPaper();
     },
     getBoundaryEvents(process) {
       return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
@@ -744,8 +734,9 @@ export default {
     });
 
     this.moddle = new BpmnModdle(this.extensions);
-
     this.linter = new Linter(linterConfig);
+    this.xmlManager = new XMLManager(this.moddle);
+    this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
     document.addEventListener('keydown', this.keydownListener);

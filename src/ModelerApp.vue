@@ -15,7 +15,7 @@
         </div>
       </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
-        <modeler @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event"/>
+        <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event"/>
       </b-card-body>
       <validation-status
         :validation-errors="validationErrors"

@@ -2,16 +2,38 @@ import runningInCypressTest from '@/runningInCypressTest';
 import FilerSaver from 'file-saver';
 
 export default class XMLManager {
-  moddle;
-  definitions;
+  #moddle;
+  #definitions;
 
-  constructor(moddle, definitions) {
-    this.moddle = moddle;
-    this.definitions = definitions;
+  constructor(moddle) {
+    this.#moddle = moddle;
+  }
+
+  set definitions(definitions) {
+    this.#definitions = definitions;
+  }
+
+  getDefinitionsFromXml(xmlString) {
+    return new Promise((resolve, reject) => {
+      this.#moddle.fromXML(xmlString, (err, definitions) => {
+        if (err) {
+          reject(err);
+        }
+
+        definitions.exporter = 'ProcessMaker Modeler';
+        definitions.exporterVersion = '1.0';
+
+        resolve(definitions);
+      });
+    });
   }
 
   download() {
-    this.moddle.toXML(this.definitions, { format: true }, (err, xml) => {
+    if (!this.#definitions) {
+      return;
+    }
+
+    this.#moddle.toXML(this.#definitions, { format: true }, (err, xml) => {
       if (err) {
         alert(err);
       } else {
