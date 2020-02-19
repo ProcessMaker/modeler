@@ -130,6 +130,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import XMLManager from '@/components/modeler/XMLManager';
 
 const version = '1.0';
 
@@ -180,6 +181,7 @@ export default {
       nodeTypes: [],
       breadcrumbData: [],
       activeNode: null,
+      xmlMananger: null,
     };
   },
   watch: {
@@ -571,6 +573,8 @@ export default {
         definitions.exporter = 'ProcessMaker Modeler';
         definitions.exporterVersion = version;
         this.definitions = definitions;
+        this.xmlMananger = new XMLManager(this.moddle, this.definitions);
+        this.$emit('set-xml-manager', this.xmlMananger);
         this.nodeIdGenerator = new NodeIdGenerator(definitions);
         store.commit('clearNodes');
         this.renderPaper();
