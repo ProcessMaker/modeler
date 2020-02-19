@@ -1,12 +1,12 @@
 <template>
-  <div v-if="isWeeklyPeriodSelected(periodicityValue)" class="pt-2 mb-2 form-group">
+  <div v-if="timeManager.isWeeklyPeriodSelected()" class="pt-2 mb-2 form-group">
     <label class="">{{ $t(weekLabel) }}</label>
     <div>
       <span
         v-for="day in weekdays"
         :key="day.day"
         class="badge badge-pill weekday mb-1"
-        :class="weekdayStyle(day, startDate)"
+        :class="timeManager.weekdayStyle(day)"
         :data-test="`day-${ day.day }`"
         @click="clickWeekDay(day)"
       >
@@ -20,7 +20,7 @@
 
 <script>
 import { DateTime } from 'luxon';
-import { dateIntervalString, isWeeklyPeriodSelected, weekdayStyle } from '@/components/inspectors/Time';
+import TimeManager from '@/components/inspectors/TimeManager';
 
 export default {
   props: {
@@ -87,13 +87,19 @@ export default {
           selected: false,
         },
       ],
-      startDate: DateTime.local().toUTC().toISO(),
-      endDate: null,
-      ends: 'never',
-      times: '1',
+      timeManager: new TimeManager(DateTime.local().toUTC().toISO(), this.repeat, this.periodicityValue, this.selectedWeekdays),
     };
   },
   watch: {
+    repeat(value) {
+      this.timeManager.repeat = value;
+    },
+    periodicityValue(value) {
+      this.timeManager.periodicityValue = value;
+    },
+    selectedWeekdays(value) {
+      this.timeManager.selectedWeekdays = value;
+    },
     dateIntervalString() {
       this.update();
     },
@@ -102,34 +108,29 @@ export default {
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
 
-      if (this.periodicityValue !== 'W' || numberOfSelectedWeekdays > 0) {
+      if (!this.timeManager.isWeeklyPeriodSelected() || numberOfSelectedWeekdays > 0) {
         return null;
       }
 
       return 'You must select at least one day.';
     },
     dateIntervalString() {
-      return dateIntervalString(this.selectedWeekdays, this.startDate, this.repeat, this.periodicityValue);
+      return this.timeManager.dateIntervalString();
     },
     selectedWeekdays() {
       return this.weekdays.filter(({ selected }) => selected).map(({ day }) => day);
     },
   },
   methods: {
-    isWeeklyPeriodSelected,
-    weekdayStyle,
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
     },
     update() {
-      if (!this.isWeeklyPeriodSelected(this.periodicityValue)) {
+      if (!this.timeManager.isWeeklyPeriodSelected()) {
         return;
       }
-      // eslint-disable-next-line no-console
-      console.log('emit', this.dateIntervalString);
       this.$emit('input', this.dateIntervalString);
     },
-
   },
 };
 </script>

@@ -18,14 +18,14 @@
 
     </b-input-group>
     <b-input-group v-if="periodicity">
-      <week-select v-model="weeks" :periodicityValue="periodicity.value" :repeat="repeat" />
+      <weekday-select v-model="weekdays" :periodicityValue="periodicity.value" :repeat="repeat" />
     </b-input-group>
   </div>
 </template>
 
 <script>
 import last from 'lodash/last';
-import WeekSelect from './WeekSelect';
+import WeekdaySelect from './WeekdaySelect';
 
 const periodNames = {
   minute: 'minute',
@@ -36,7 +36,7 @@ const periodNames = {
 };
 
 export default {
-  components: { WeekSelect },
+  components: { WeekdaySelect },
   props: ['value', 'repeatInput'],
   data() {
     const periods = [
@@ -50,7 +50,7 @@ export default {
     return {
       repeat: null,
       periodicity: null,
-      weeks: null,
+      weekdays: null,
       periods,
     };
   },
@@ -74,16 +74,14 @@ export default {
       if (this.periodicity.isTime) {
         return `R/PT${this.repeat}${this.periodicity.value}`;
       }
-      if (this.periodicity.isWeek && this.weeks) {
-        return this.weeks;
+      if (this.periodicity.isWeek && this.weekdays) {
+        return this.weekdays;
       }
       return `R/P${this.repeat}${this.periodicity.value}`;
     },
   },
   methods: {
     getPeriodFromDelayString(delayString) {
-      // eslint-disable-next-line no-console
-      console.log(delayString);
       const isTimePeriod = this.isTimePeriod(delayString);
       const periodicity = last(delayString);
 
@@ -102,8 +100,6 @@ export default {
     },
     getRepeatNumberFromDelayString(delayString) {
       const match = delayString.match(/PT?(\d+)/);
-      // eslint-disable-next-line no-console
-      console.log('delayString', delayString);
       return match ? match[1] : 1;
     },
   },
