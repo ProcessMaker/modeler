@@ -24,95 +24,13 @@ const defaultHighlighter = {
   },
 };
 
-// simulation highlighters
-const passedHighlighter = {
-  highlighter: {
-    name: 'stroke',
-    options: {
-      padding: 10,
-      attrs: {
-        stroke: 'red',
-        'stroke-width': 10,
-        opacity: 0.3,
-      },
-    },
-  },
-};
-const simulationHighlither = {
-  PASSED: {
-    highlighter: {
-      name: 'stroke',
-      options: {
-        padding: 10,
-        attrs: {
-          stroke: 'green',
-          'stroke-width': 10,
-          opacity: 0.3,
-        },
-      },
-    },
-  },
-  COMPLETED: {
-    highlighter: {
-      name: 'stroke',
-      options: {
-        padding: 10,
-        attrs: {
-          stroke: 'lightgreen',
-          'stroke-width': 10,
-          opacity: 0.3,
-        },
-      },
-    },
-  },
-  UNREACHABLE: {
-    highlighter: {
-      name: 'stroke',
-      options: {
-        padding: 10,
-        attrs: {
-          stroke: 'red',
-          'stroke-width': 10,
-          opacity: 0.3,
-        },
-      },
-    },
-  },
-  LOOP: {
-    highlighter: {
-      name: 'stroke',
-      options: {
-        padding: 10,
-        attrs: {
-          stroke: 'cyan',
-          'stroke-width': 10,
-          opacity: 0.3,
-        },
-      },
-    },
-  },
-  ACTIVE: {
-    highlighter: {
-      name: 'stroke',
-      options: {
-        padding: 10,
-        attrs: {
-          stroke: 'yellow',
-          'stroke-width': 10,
-          opacity: 0.3,
-        },
-      },
-    },
-  },
-};
-
 export default {
   props: [
     'highlighted',
     'paperManager',
     'hasError',
     'autoValidate',
-    'simulationState',
+    'borderOutline',
   ],
   data() {
     return {
@@ -129,8 +47,11 @@ export default {
     autoValidate() {
       this.setShapeHighlight();
     },
-    simulationState() {
-      this.setShapeHighlight();
+    borderOutline: {
+      deep: true,
+      handler(borderOutline) {
+        this.setBorderOutline(borderOutline);
+      },
     },
   },
   computed: {
@@ -154,17 +75,12 @@ export default {
       if (this.highlighted) {
         this.shapeView.highlight(this.shapeBody, defaultHighlighter);
       }
-      this.shapeView.unhighlight(this.shapeBody, passedHighlighter);
-      if (this.hasPassed) {
-        this.shapeView.highlight(this.shapeBody, passedHighlighter);
-      }
-      Object.keys(simulationHighlither).forEach( key => {
-        const highlither = simulationHighlither[key];
-        this.shapeView.unhighlight(this.shapeBody, highlither);
-      });
-      if (this.simulationState) {
-        this.shapeView.highlight(this.shapeBody, simulationHighlither[this.simulationState]);
-      }
+    },
+    setBorderOutline(borderOutline)
+    {
+      this.currentBorderOutline ? this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline) : null;
+      this.currentBorderOutline = borderOutline;
+      this.currentBorderOutline ? this.shapeView.highlight(this.shapeBody, this.borderOutline) : null;
     },
   },
   mounted() {

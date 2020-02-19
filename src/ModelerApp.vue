@@ -19,9 +19,11 @@
         </div>
       </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
-        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" :simulation="simulation" />
+        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" />
       </b-card-body>
-      <validation-status :validation-errors="validationErrors" :warnings="warnings" :simulation="simulation" @check-simulation="checkSimulation" />
+      <validation-status ref="validationStatus" :validation-errors="validationErrors" :warnings="warnings" :owner="self">
+        <component v-for="(component, index) in validationBar" :key="`validation-status-${index}`" :is="component" :owner="self" />
+      </validation-status>
     </b-card>
 
     <b-modal
@@ -63,9 +65,10 @@ export default {
   },
   data() {
     return {
-      simulation: {
-        selected: null,
-        paths: [],
+      self: this,
+      validationBar: [],
+      decorations: {
+        borderOutline: {},
       },
       validationErrors: {},
       uploadedXml: null,
@@ -81,18 +84,6 @@ export default {
     },
   },
   methods: {
-    checkSimulation() {
-      window.ProcessMaker.apiClient.post('processes/simulate', {
-        params: {
-          bpmn: this.$refs.modeler.currentXML,
-        },
-      }).then((response) => {
-        this.simulation = {
-          selected: null,
-          paths: response.data,
-        };
-      });
-    },
     download() {
       this.$refs.modeler.toXML((err, xml) => {
         if (err) {

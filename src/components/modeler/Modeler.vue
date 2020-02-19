@@ -69,7 +69,7 @@
         :id="node.id"
         :highlighted="highlightedNode === node"
         :has-error="invalidNodes.includes(node.id)"
-        :simulation-state="simulationState(node.id)"
+        :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
         :processes="processes"
@@ -140,8 +140,12 @@ export default {
     MiniPaper,
   },
   props: {
-    simulation: {
+    owner: Object,
+    decorations: {
       type: Object,
+      default() {
+        return {};
+      },
     },
   },
   data() {
@@ -231,10 +235,8 @@ export default {
     },
   },
   methods: {
-    simulationState(nodeId) {
-      const selected = this.simulation.paths[this.simulation.selected];
-      const simulationData = selected ? selected.path.find(node => node.id == nodeId) : null;
-      return simulationData ? selected.status : null;
+    borderOutline(nodeId) {
+      return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
     },
     addWarning(warning) {
       this.allWarnings.push(warning);
@@ -336,6 +338,9 @@ export default {
       if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
         document.activeElement.blur();
       }
+    },
+    registerStatusBar(component) {
+      this.owner.validationBar.push(component);
     },
     /**
      * Register a mixin into a node component.
@@ -740,6 +745,7 @@ export default {
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
+      registerStatusBar: this.registerStatusBar,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
