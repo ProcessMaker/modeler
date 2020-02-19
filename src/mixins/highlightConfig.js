@@ -79,8 +79,8 @@ export default {
     setBorderOutline(borderOutline)
     {
       this.currentBorderOutline ? this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline) : null;
-      this.currentBorderOutline = borderOutline;
-      this.currentBorderOutline ? this.shapeView.highlight(this.shapeBody, this.borderOutline) : null;
+      this.currentBorderOutline = JSON.parse(JSON.stringify(borderOutline));
+      this.currentBorderOutline ? this.shapeView.highlight(this.shapeBody, this.currentBorderOutline) : null;
     },
   },
   mounted() {
