@@ -126,7 +126,7 @@ export default {
         },
         LOOP: {
           title: this.$t('Flow loop'),
-          variant: 'warning',
+          variant: 'info',
         },
         COMPLETED: {
           title: this.$t('Flow completed'),

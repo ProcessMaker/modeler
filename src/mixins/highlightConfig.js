@@ -84,7 +84,7 @@ const simulationHighlither = {
       options: {
         padding: 10,
         attrs: {
-          stroke: 'yellow',
+          stroke: 'cyan',
           'stroke-width': 10,
           opacity: 0.3,
         },
