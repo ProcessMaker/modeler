@@ -11,7 +11,7 @@
       :options="processList"
       optionContent="name"
       class="p-0 mb-2"
-      :validation="'required'"
+      validation="required"
     />
 
     <form-multi-select
@@ -25,7 +25,7 @@
       :options="startEventList"
       optionContent="name"
       class="p-0 mb-2"
-      :validation="'required'"
+      validation="required"
     />
 
     <a
@@ -33,7 +33,7 @@
       :href="`/modeler/${selectedProcess.id}`"
       target="_blank"
     >
-      {{ this.$t('Open Process') }}
+      {{ $t('Open Process') }}
       <i class="ml-1 fas fa-external-link-alt"/>
     </a>
   </div>
