@@ -10,7 +10,7 @@
     </b-input-group>
 
     <small class="form-text text-muted">{{ $t(typeHelper) }}</small>
-    <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" week-label="Every" />
+    <component :is="component" v-model="timerProperty" :has-ends="false" repeat-label="Wait for" />
   </div>
 </template>
 
