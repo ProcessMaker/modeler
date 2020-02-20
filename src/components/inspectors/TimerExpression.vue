@@ -27,23 +27,9 @@
       </b-form-group>
     </template>
 
-    <div v-if="periodicity === 'week'" class="mb-2">
-      <label class="">{{ $t(weekLabel) }}</label>
-      <div>
-        <span
-          v-for="day in weekdays"
-          :key="day.day"
-          class="badge badge-pill weekday mb-1"
-          :class="weekdayStyle(day)"
-          :data-test="`day-${ day.day }`"
-          @click="clickWeekDay(day)"
-        >
-          {{ $t(day.initial) }}
-        </span>
-      </div>
-      <small v-if="repeatOnValidationError" class="text-danger">{{ repeatOnValidationError }}</small>
-      <small class="form-text text-muted">{{ $t(periodicityHelper) }}</small>
-    </div>
+    <b-input-group v-if="periodicity === 'week'">
+      <weekday-select v-model="weekdays" :periodicityValue="periodicityValue" :repeat="repeat" :start-date="startDate" :end-date="endDate" :ends="ends" :times="times" />
+    </b-input-group>
 
     <template v-if="hasEnds">
       <label class="mt-1 ">{{ $t('Ends') }}</label>
@@ -81,6 +67,7 @@
 
 <script>
 import { DateTime } from 'luxon';
+import WeekdaySelect from './WeekdaySelect';
 
 const periods = {
   day: 'D',
@@ -90,6 +77,7 @@ const periods = {
 };
 
 export default {
+  components: { WeekdaySelect },
   props: {
     value: [Array, String],
     hasEnds: {
@@ -124,45 +112,7 @@ export default {
   data() {
     return {
       DateTime,
-      weekdays: [
-        //  ISO week date weekday number, from 1 through 7,
-        //  beginning with Monday and ending with Sunday.
-        {
-          day: 7,
-          initial: 'S',
-          selected: false,
-        },
-        {
-          day: 1,
-          initial: 'M',
-          selected: false,
-        },
-        {
-          day: 2,
-          initial: 'T',
-          selected: false,
-        },
-        {
-          day: 3,
-          initial: 'W',
-          selected: false,
-        },
-        {
-          day: 4,
-          initial: 'T',
-          selected: false,
-        },
-        {
-          day: 5,
-          initial: 'F',
-          selected: false,
-        },
-        {
-          day: 6,
-          initial: 'S',
-          selected: false,
-        },
-      ],
+      weekdays: null,
       startDate: DateTime.local().toUTC().toISO(),
       repeat: '1',
       periodicity: 'week',
@@ -171,64 +121,33 @@ export default {
       times: '1',
     };
   },
-  computed: {
-    isWeeklyPeriodSelected() {
-      return this.periodicity === 'week';
-    },
-    repeatOnValidationError() {
-      const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
-
-      if (this.periodicity !== 'week' || numberOfSelectedWeekdays > 0) {
-        return null;
-      }
-
-      return 'You must select at least one day.';
-    },
-    dateIntervalString() {
-      if (this.isWeeklyPeriodSelected) {
-        return this.getFormattedDateWithWeekdayIntervals();
-      }
-
-      return this.getIso8601FormattedDateString(DateTime.fromISO(this.startDate, { zone: 'utc' }));
-    },
-    /**
-     * Array of week days the user selected
-     */
-    selectedWeekdays() {
-      return this.weekdays.filter(({ selected }) => selected)
-        .map(({ day }) => day);
-    },
-    /**
-     * True if the selected day is the same of the start date
-     */
-    sameDay() {
-      const currentWeekday = DateTime.fromISO(this.startDate, { zone: 'utc' }).toLocal().weekday;
-
-      return this.selectedWeekdays.length === 1 &&
-        this.weekdays.find(({ day }) => day === currentWeekday).selected;
-    },
-  },
-  watch: {
-    dateIntervalString() {
-      this.update();
-    },
-  },
   created() {
     this.parseTimerConfig(this.value);
   },
-  methods: {
-    getFormattedDateWithWeekdayIntervals() {
-      const dateIntervals = [];
-      dateIntervals.push(this.startDate);
-
-      this.selectedWeekdays.forEach(day => {
-        const weekDayDate = this.getWeekDayDate(day);
-        const isoDateString = this.getIso8601FormattedDateString(weekDayDate);
-        dateIntervals.push(isoDateString);
-      });
-
-      return dateIntervals.join('|');
+  watch: {
+    timerExpression: {
+      handler(timerExpression)
+      {
+        this.$emit('input', timerExpression);
+      },
+      immediate: true,
     },
+  },
+  computed: {
+    periodicityValue() {
+      return periods[this.periodicity];
+    },
+    timerExpression() {
+      if (this.periodicity.isTime) {
+        return `R/PT${ this.repeat }${ this.periodicityValue }`;
+      }
+      if (this.periodicity === 'week' && this.weekdays) {
+        return this.weekdays;
+      }
+      return `R/P${ this.repeat }${ this.periodicityValue }`;
+    },
+  },
+  methods: {
     setStartDate(startDateString) {
       this.startDate = DateTime
         .fromISO(startDateString, { zone: 'utc' })
@@ -251,17 +170,6 @@ export default {
         })
         .toUTC()
         .toISO();
-    },
-    weekdayStyle(day) {
-      const currentDay = DateTime.fromISO(this.startDate, { zone: 'utc' }).toLocal().weekday;
-
-      return [
-        day.selected ? 'badge-primary' : 'badge-light',
-        { 'border border-primary': currentDay === day.day },
-      ];
-    },
-    update() {
-      this.$emit('input', this.dateIntervalString);
     },
     /**
      * Parse an ISO8601 expression to get the timer configuration
@@ -332,26 +240,6 @@ export default {
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
     },
-    getIso8601FormattedDateString(startDate) {
-      const numberOfRepetition = this.ends === 'after' ? this.times : '';
-      const period = this.getPeriod();
-      const endDate = this.ends === 'ondate' ? this.endDate : '';
-
-      return `R${numberOfRepetition}/${startDate}/${period}` + (endDate ? '/' + endDate : '');
-    },
-    getWeekDayDate(isoWeekDay) {
-      const startDate = DateTime.fromISO(this.startDate, { zone: 'utc' });
-      let weekDayDate = startDate.set({ weekday: isoWeekDay });
-
-      if (weekDayDate.toMillis() < startDate.toMillis()) {
-        weekDayDate = weekDayDate.plus({ days: 7 });
-      }
-
-      return weekDayDate.toUTC().toISO();
-    },
-    getPeriod() {
-      return `P${this.repeat}` + periods[this.periodicity];
-    },
   },
 };
 </script>
@@ -359,13 +247,6 @@ export default {
 <style scoped="scoped">
 .periodicity {
   margin-top: -3px;
-}
-
-.weekday {
-  padding: 0.75em;
-  margin-left: 0.2em;
-  margin-bottom: 0.5em;
-  cursor: pointer;
 }
 </style>
 

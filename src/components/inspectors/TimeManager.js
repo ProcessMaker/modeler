@@ -22,6 +22,18 @@ export default class TimeManager {
     this._startDate = value;
   }
 
+  set endDate(value) {
+    this._endDate = value;
+  }
+
+  set ends(value) {
+    this._ends = value;
+  }
+
+  set times(value) {
+    this._times = value;
+  }
+
   set repeat(value) {
     this._repeat = value;
   }

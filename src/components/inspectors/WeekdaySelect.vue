@@ -24,6 +24,22 @@ import TimeManager from '@/components/inspectors/TimeManager';
 
 export default {
   props: {
+    startDate: {
+      type: String,
+      default: DateTime.local().toUTC().toISO().toString(),
+    },
+    endDate: {
+      type: String,
+      default: null,
+    },
+    ends: {
+      type: String,
+      default: 'never',
+    },
+    times: {
+      type: [Number, String],
+      default: 1,
+    },
     periodicityValue: {
       type: String,
       required: true,
@@ -87,10 +103,22 @@ export default {
           selected: false,
         },
       ],
-      timeManager: new TimeManager(DateTime.local().toUTC().toISO(), this.repeat, this.periodicityValue, this.selectedWeekdays),
+      timeManager: new TimeManager(DateTime.local().toUTC().toISO(), this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
     };
   },
   watch: {
+    startDate(value) {
+      this.timeManager.startDate = value;
+    },
+    endDate(value) {
+      this.timeManager.endDate = value;
+    },
+    ends(value) {
+      this.timeManager.ends = value;
+    },
+    times(value) {
+      this.timeManager.times = value;
+    },
     repeat(value) {
       this.timeManager.repeat = value;
     },
@@ -131,6 +159,9 @@ export default {
       }
       this.$emit('input', this.dateIntervalString);
     },
+  },
+  destroyed() {
+    this.$emit('input', null);
   },
 };
 </script>
