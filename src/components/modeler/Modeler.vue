@@ -129,6 +129,7 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import TimerEventNode from '@/components/nodes/timerEventNode';
 
 const version = '1.0';
 
@@ -227,12 +228,10 @@ export default {
   },
   methods: {
     copyElement(node, copyCount) {
-      const clonedNode = node.clone();
-      clonedNode.id = null;
+      const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
-      clonedNode.diagram.bounds.x = node.diagram.bounds.x;
-      clonedNode.diagram.bounds.y = node.diagram.bounds.y + yOffset;
+      clonedNode.diagram.bounds.y += yOffset;
 
       this.addNode(clonedNode);
     },
@@ -541,7 +540,11 @@ export default {
         definition.set('name', '');
       }
 
-      store.commit('addNode', new Node(type, definition, diagram));
+      const node = Node.isTimerType(type)
+        ? new TimerEventNode(type, definition, diagram)
+        : new Node(type, definition, diagram);
+
+      store.commit('addNode', node);
     },
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
@@ -626,8 +629,10 @@ export default {
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
-
-      const node = new Node(control.type, definition, diagram);
+      
+      const node = Node.isTimerType(control.type)
+        ? new TimerEventNode(control.type, definition, diagram)
+        : new Node(control.type, definition, diagram);
 
       if (node.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
