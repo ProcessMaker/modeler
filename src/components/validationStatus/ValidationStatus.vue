@@ -33,6 +33,7 @@
 
       <span class="divider"/>
 
+
       <b-form-checkbox
         data-test="validation-toggle"
         class="h-100 d-flex align-items-center"
@@ -41,6 +42,11 @@
       >
         {{ $t('Auto validate') }}
       </b-form-checkbox>
+
+      <b-btn class="ml-3" variant="secondary" size="sm" @click="renderPDF">
+        <i class="fas fa-download mr-1" />
+        {{ $t('Download as PDF') }}
+      </b-btn>
 
       <transition name="slide">
         <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
@@ -81,6 +87,8 @@ import { faCheck, faChevronDown, faChevronUp, faExclamationTriangle, faTimesCirc
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import store from '@/store';
 import validationErrorList from './errorListUtil';
+import jsPDF from 'jspdf';
+import canvg from 'canvg';
 
 export default {
   components: {
@@ -124,6 +132,29 @@ export default {
   methods: {
     isErrorCategory(error) {
       return error.category === 'error';
+    },
+    renderPDF() {
+      const svg = document.getElementById('v-2');
+
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svg);
+
+      const canvas = document.getElementById('template');
+      const context = canvas.getContext('2d');
+
+      context.fillStyle = '#FFFF';
+
+      canvg('template', svgString);
+
+      const imgData = document.getElementById('template').toDataURL('image/png');
+
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        format: 'letter',
+      });
+      doc.setFontSize(10);
+      doc.addImage(imgData, 'PNG', 10, 50);
+      doc.save('test.pdf');
     },
   },
 };

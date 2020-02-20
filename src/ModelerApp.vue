@@ -16,10 +16,6 @@
             <i class="fas fa-download mr-1" />
             {{ $t('Download XML') }}
           </b-btn>
-          <b-btn variant="secondary" size="sm" @click="renderPDF">
-            <i class="fas fa-download mr-1" />
-            {{ $t('Download as PDF') }}
-          </b-btn>
         </div>
       </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
@@ -58,8 +54,6 @@ import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
 import ValidationStatus from '@/components/validationStatus/ValidationStatus';
 import runningInCypressTest from '@/runningInCypressTest';
-import jsPDF from 'jspdf';
-import canvg from 'canvg';
 
 const reader = new FileReader();
 
@@ -101,29 +95,6 @@ export default {
           FilerSaver.saveAs(file);
         }
       });
-    },
-    renderPDF() {
-      const svg = document.getElementById('v-2');
-
-      const serializer = new XMLSerializer();
-      const svgString = serializer.serializeToString(svg);
-
-      const canvas = document.getElementById('template');
-      const context = canvas.getContext('2d');
-
-      context.fillStyle = '#FFFF';
-
-      canvg('template', svgString);
-
-      const imgData = document.getElementById('template').toDataURL('image/png');
-
-      const doc = new jsPDF({
-        orientation: 'landscape',
-        format: 'letter',
-      });
-      doc.setFontSize(10);
-      doc.addImage(imgData, 'PNG', 10, 50);
-      doc.save('test.pdf');
     },
     loadXmlIntoModeler() {
       this.$refs.modeler.loadXML(this.uploadedXml);
