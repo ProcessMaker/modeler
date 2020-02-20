@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       shape: null,
+      currentBorderOutline: null,
     };
   },
   watch: {
@@ -76,10 +77,9 @@ export default {
         this.shapeView.highlight(this.shapeBody, defaultHighlighter);
       }
     },
-    setBorderOutline(borderOutline)
-    {
+    setBorderOutline(borderOutline) {
       this.currentBorderOutline ? this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline) : null;
-      this.currentBorderOutline = JSON.parse(JSON.stringify(borderOutline));
+      this.currentBorderOutline = borderOutline ? JSON.parse(JSON.stringify(borderOutline)) : null;
       this.currentBorderOutline ? this.shapeView.highlight(this.shapeBody, this.currentBorderOutline) : null;
     },
   },
