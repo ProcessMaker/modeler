@@ -7,6 +7,11 @@ export const defaultViewportDimensions = {
   height: 768,
 };
 
+/**
+ * Node types are strings returned by
+ * shape.component.node.type - they are not the string
+ * same as the shape type.
+ */
 export const nodeTypes = {
   startEvent: 'processmaker-modeler-start-event',
   messageStartEvent: 'processmaker-modeler-message-start-event',
@@ -37,6 +42,14 @@ export const nodeTypes = {
   boundaryMessageEvent: 'processmaker-modeler-boundary-message-event',
   errorEndEvent: 'processmaker-modeler-error-end-event',
   poolLane: 'processmaker-modeler-lane',
+};
+
+/**
+ * Shape types are returned by shape.get('type').
+ */
+export const shapeTypes = {
+  poolLane: 'PoolLane',
+  boundaryEvent: 'processmaker.components.nodes.boundaryEvent.Shape',
 };
 
 export const boundaryEventSelector = '.main-paper ' +
