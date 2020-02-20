@@ -68,6 +68,7 @@
 <script>
 import { DateTime } from 'luxon';
 import WeekdaySelect from './WeekdaySelect';
+import { getIso8601FormattedDateString, getPeriod } from './TimeUtils';
 
 const periods = {
   day: 'D',
@@ -138,13 +139,11 @@ export default {
       return periods[this.periodicity];
     },
     timerExpression() {
-      if (this.periodicity.isTime) {
-        return `R/PT${ this.repeat }${ this.periodicityValue }`;
-      }
       if (this.periodicity === 'week' && this.weekdays) {
         return this.weekdays;
       }
-      return `R/P${ this.repeat }${ this.periodicityValue }`;
+      const period = getPeriod(this.repeat, this.periodicityValue);
+      return getIso8601FormattedDateString(this.startDate, this.endDate, period, this.ends, this.times);
     },
   },
   methods: {

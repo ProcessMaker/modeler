@@ -1,12 +1,12 @@
 <template>
-  <div v-if="timeManager.isWeeklyPeriodSelected()" class="pt-2 mb-2 form-group">
+  <div v-if="cycleManager.isWeeklyPeriodSelected()" class="pt-2 mb-2 form-group">
     <label class="">{{ $t(weekLabel) }}</label>
     <div>
       <span
         v-for="day in weekdays"
         :key="day.day"
         class="badge badge-pill weekday mb-1"
-        :class="timeManager.weekdayStyle(day)"
+        :class="cycleManager.weekdayStyle(day)"
         :data-test="`day-${ day.day }`"
         @click="clickWeekDay(day)"
       >
@@ -20,7 +20,7 @@
 
 <script>
 import { DateTime } from 'luxon';
-import TimeManager from '@/components/inspectors/TimeManager';
+import CycleManager from '@/components/inspectors/CycleManager';
 
 export default {
   props: {
@@ -103,30 +103,30 @@ export default {
           selected: false,
         },
       ],
-      timeManager: new TimeManager(DateTime.local().toUTC().toISO(), this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
+      cycleManager: new CycleManager(DateTime.local().toUTC().toISO(), this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
     };
   },
   watch: {
     startDate(value) {
-      this.timeManager.startDate = value;
+      this.cycleManager.startDate = value;
     },
     endDate(value) {
-      this.timeManager.endDate = value;
+      this.cycleManager.endDate = value;
     },
     ends(value) {
-      this.timeManager.ends = value;
+      this.cycleManager.ends = value;
     },
     times(value) {
-      this.timeManager.times = value;
+      this.cycleManager.times = value;
     },
     repeat(value) {
-      this.timeManager.repeat = value;
+      this.cycleManager.repeat = value;
     },
     periodicityValue(value) {
-      this.timeManager.periodicityValue = value;
+      this.cycleManager.periodicityValue = value;
     },
     selectedWeekdays(value) {
-      this.timeManager.selectedWeekdays = value;
+      this.cycleManager.selectedWeekdays = value;
     },
     dateIntervalString() {
       this.update();
@@ -136,14 +136,14 @@ export default {
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
 
-      if (!this.timeManager.isWeeklyPeriodSelected() || numberOfSelectedWeekdays > 0) {
+      if (!this.cycleManager.isWeeklyPeriodSelected() || numberOfSelectedWeekdays > 0) {
         return null;
       }
 
       return 'You must select at least one day.';
     },
     dateIntervalString() {
-      return this.timeManager.dateIntervalString();
+      return this.cycleManager.dateIntervalString();
     },
     selectedWeekdays() {
       return this.weekdays.filter(({ selected }) => selected).map(({ day }) => day);
@@ -154,7 +154,7 @@ export default {
       weekday.selected = !weekday.selected;
     },
     update() {
-      if (!this.timeManager.isWeeklyPeriodSelected()) {
+      if (!this.cycleManager.isWeeklyPeriodSelected()) {
         return;
       }
       this.$emit('input', this.dateIntervalString);

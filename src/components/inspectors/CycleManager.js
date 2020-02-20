@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
+import { getIso8601FormattedDateString, getPeriod } from './TimeUtils';
 
-export default class TimeManager {
+export default class CycleManager {
   _startDate;
   _repeat;
   _periodicityValue;
@@ -52,7 +53,8 @@ export default class TimeManager {
 
     this._selectedWeekdays.forEach(day => {
       const weekDayDate = this.getWeekDayDate(day);
-      const isoDateString = this.getIso8601FormattedDateString(weekDayDate);
+      const period = getPeriod(this._repeat, this._periodicityValue);
+      const isoDateString = getIso8601FormattedDateString(weekDayDate, this._endDate, period, this._ends, this._times);
       dateIntervals.push(isoDateString);
     });
 
@@ -70,23 +72,12 @@ export default class TimeManager {
     return weekDayDate.toUTC().toISO();
   }
 
-  getIso8601FormattedDateString(startDate) {
-    const numberOfRepetition = this._ends === 'after' ? this._times : '';
-    const endOnDate = this._ends === 'ondate' ? this._endDate : '';
-    const period = this.getPeriod();
-
-    return `R${ numberOfRepetition }/${ startDate }/${ period }` + (endOnDate ? '/' + endOnDate : '');
-  }
-
   dateIntervalString() {
     if (this.isWeeklyPeriodSelected() && this._selectedWeekdays.length > 0) {
       return this.getFormattedDateWithWeekdayIntervals();
     }
-    return this.getIso8601FormattedDateString(DateTime.fromISO(this._startDate, { zone: 'utc' }));
-  }
-
-  getPeriod() {
-    return `P${ this._repeat }` + this._periodicityValue;
+    const period = getPeriod(this._repeat, this._periodicityValue);
+    return getIso8601FormattedDateString(DateTime.fromISO(this._startDate, { zone: 'utc' }), this._endDate, period, this._ends, this._times);
   }
 
   isWeeklyPeriodSelected() {
