@@ -67,7 +67,7 @@
     </b-button>
 
     <b-button
-      class="btn btn-sm btn-secondary btn-distribute-horizontal"
+      class="btn btn-sm btn-secondary btn-distribute-horizontal d-flex align-items-center"
       data-test="distribute-horizontal"
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.distribute.horizontally"
@@ -82,7 +82,7 @@
     </b-button>
 
     <b-button
-      class="btn btn-sm btn-secondary btn-distribute-vertical"
+      class="btn btn-sm btn-secondary btn-distribute-vertical d-flex align-items-center"
       data-test="distribute-vertical"
       v-b-tooltip.hover
       :disabled="!selectedShapes.can.distribute.vertically"
