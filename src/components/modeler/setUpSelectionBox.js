@@ -1,5 +1,6 @@
 import { g, shapes } from 'jointjs';
 import store from '@/store';
+import { canMoveProgrammatically } from '@/components/nodes/utilities/shapeMovement';
 
 const shapesToNotTranslate = [
   'processmaker.modeler.bpmn.pool',
@@ -99,7 +100,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   function moveAllOtherHighlightedShapes(element, newPosition, { movedWithArrowKeys }) {
     if (
       movedWithArrowKeys ||
-      shapesToNotTranslate.includes(element.get('type')) ||
+      !canMoveProgrammatically(element) ||
       !store.getters.highlightedShapes.includes(element) ||
       element.component.node.pool
     ) {
