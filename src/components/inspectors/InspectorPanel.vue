@@ -173,6 +173,7 @@ export default {
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
+        this.updateState();
         if (this.highlightedNode.definition.get(key) !== value[key]) {
           this.setNodeProp(this.highlightedNode, key, value[key]);
         }
