@@ -139,7 +139,9 @@ export default {
   mounted() {
     this.selectWeekdays.forEach(dayOfWeek => {
       const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
-      foundDay.selected = true;
+      if (foundDay) {
+        foundDay.selected = true;
+      }
     });
   },
   computed: {

@@ -18,7 +18,12 @@
 
     </b-input-group>
     <b-input-group v-if="periodicity">
-      <weekday-select v-model="weekdays" :periodicityValue="periodicity.value" :repeat="repeat" />
+      <weekday-select
+        v-model="weekdays"
+        :selectWeekdays="selectedWeekdays"
+        :periodicityValue="periodicity.value"
+        :repeat="repeat"
+      />
     </b-input-group>
   </div>
 </template>
@@ -26,6 +31,7 @@
 <script>
 import last from 'lodash/last';
 import WeekdaySelect from './WeekdaySelect';
+import { DateTime } from 'luxon';
 
 const periodNames = {
   minute: 'minute',
@@ -48,10 +54,12 @@ export default {
     ];
 
     return {
+      DateTime,
       repeat: null,
       periodicity: null,
       weekdays: null,
       periods,
+      selectedWeekdays: null,
     };
   },
   watch: {
@@ -59,6 +67,7 @@ export default {
       handler(value) {
         this.periodicity = this.getPeriodFromDelayString(value);
         this.repeat = this.getRepeatNumberFromDelayString(value);
+        this.selectedWeekdays = this.getSelectedWeekdaysFromDelayString(value);
       },
       immediate: true,
     },
@@ -81,6 +90,18 @@ export default {
     },
   },
   methods: {
+    getSelectedWeekdaysFromDelayString(delayString) {
+      const expression = delayString.split('|');
+      const selectedWeekdays = [];
+      expression.forEach(exp => {
+        const match = exp.match(/R(\d*)\/([^/]+)\/PT?(\d+)(\w)(?:\/([^/]+))?/);
+        if (match) {
+          const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
+          selectedWeekdays.push(dayOfWeek);
+        }
+      });
+      return selectedWeekdays;
+    },
     getPeriodFromDelayString(delayString) {
       const isTimePeriod = this.isTimePeriod(delayString);
       const periodicity = last(delayString);

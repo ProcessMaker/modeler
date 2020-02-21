@@ -28,7 +28,16 @@
     </template>
 
     <b-input-group v-if="periodicity === 'week'">
-      <weekday-select ref="weekday" v-model="weekdays" :selectWeekdays="selectedWeekdays" :periodicityValue="periodicityValue" :repeat="repeat" :start-date="startDate" :end-date="endDate" :ends="ends" :times="times" />
+      <weekday-select
+        v-model="weekdays"
+        :selectWeekdays="selectedWeekdays"
+        :periodicityValue="periodicityValue"
+        :repeat="repeat"
+        :start-date="startDate"
+        :end-date="endDate"
+        :ends="ends"
+        :times="times"
+      />
     </b-input-group>
 
     <template v-if="hasEnds">
@@ -235,6 +244,7 @@ export default {
       this.endDate = DateTime.local().toUTC().toISO();
       this.ends = 'never';
       this.weekdays = null;
+      this.selectedWeekdays = [];
     },
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
