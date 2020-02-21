@@ -1,6 +1,6 @@
-const diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
-
 export default class Node {
+  static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
+
   type;
   definition;
   diagram;
@@ -47,8 +47,8 @@ export default class Node {
     const clonedNode = new Node(this.type, definition, diagram);
 
     clonedNode.id = null;
-    diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    clonedNode.definition.set('name', this.definition.get('name'));
+    Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
+    clonedNode.definition.name = this.definition.name;
 
     return clonedNode;
   }

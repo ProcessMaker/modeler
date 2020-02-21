@@ -1,33 +1,49 @@
 import Node from '@/components/nodes/node';
 
+const definitionFactory = (props = {}) => ({
+  ...props,
+  get: prop => this[prop],
+  set: (prop, val) => this[prop] = val,
+});
+const mockType = 'some-type';
+const mockNodeRegistry = {
+  [mockType]: {
+    definition() {
+      return definitionFactory();
+    },
+    diagram() {
+      return { bounds: {} };
+    },
+  },
+};
+
 describe('Node', () => {
-  it('should create a clone of itself', () => {
-    const definition = { id: 123, name: 'name', eventDefinitions: [{}] };
-    const node = new Node('type', definition, { bpmnElement: definition });
-    const clonedNode = node.clone();
+  let definition;
+  let bounds;
+  let node;
+
+  beforeEach(() => {
+    definition = definitionFactory({ id: 123, name: 'name' });
+    bounds = { x: 1, y: 2, width: 3, height: 4 };
+    node = new Node(mockType, definition, { bpmnElement: definition, bounds });
+  });
+
+  it('clone should return an object not equal to itself', () => {
+    let clonedNode = node.clone(mockNodeRegistry);
 
     expect(clonedNode).not.toBe(node);
-    expect(clonedNode).toEqual(node);
-
     expect(clonedNode.definition).not.toBe(node.definition);
     expect(clonedNode.diagram).not.toBe(node.diagram);
+    expect(clonedNode.diagram.bounds).not.toBe(node.diagram.bounds);
     expect(clonedNode.diagram.bpmnElement).not.toBe(node.definition);
-    expect(clonedNode.diagram.bpmnElement).toBe(clonedNode.definition);
   });
 
-  it('should set cloned event definition errorRef value to null', () => {
-    const definition = { eventDefinitions: [{ errorRef: {} }] };
-    const node = new Node('type', definition, { bpmnElement: definition });
-    const clonedNode = node.clone();
+  it('clone should copy definition name and diagram bounds', () => {
+    let clonedNode = node.clone(mockNodeRegistry);
 
-    expect(clonedNode.definition.eventDefinitions[0].errorRef).toBeNull();
-  });
-
-  it('should set cloned event definition errorRef value to null', () => {
-    const definition = { eventDefinitions: [{ messageRef: {} }] };
-    const node = new Node('type', definition, { bpmnElement: definition });
-    const clonedNode = node.clone();
-
-    expect(clonedNode.definition.eventDefinitions[0].messageRef).toBeNull();
+    expect(clonedNode.definition.name).toBe(node.definition.name);
+    Node.diagramPropertiesToCopy.forEach(prop => {
+      expect(clonedNode.diagram.bounds[prop]).toBe(node.diagram.bounds[prop]);
+    });
   });
 });

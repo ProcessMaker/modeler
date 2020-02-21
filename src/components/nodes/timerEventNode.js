@@ -1,13 +1,17 @@
 import Node from './node';
 
-const timerPropertyKeys = ['timeDuration', 'timeDate', 'timeCycle'];
-
 export default class TimerEventNode extends Node {
+  static timerPropertyKeys = ['timeDuration', 'timeDate', 'timeCycle'];
+
   clone(...args) {
     const clonedNode = super.clone(...args);
-    const timerKey = timerPropertyKeys.find(key => clonedNode.definition.get('eventDefinitions')[0][key]);
+    const timerKey = TimerEventNode.timerPropertyKeys.find(key => this.definition.eventDefinitions[0][key]);
 
-    clonedNode.definition.get('eventDefinitions')[0][timerKey].body = this.definition.get('eventDefinitions')[0][timerKey].body;
+    if (!clonedNode.definition.eventDefinitions[0][timerKey]) {
+      clonedNode.definition.eventDefinitions[0][timerKey] = {};
+    }
+
+    clonedNode.definition.eventDefinitions[0][timerKey].body = this.definition.eventDefinitions[0][timerKey].body;
 
     return clonedNode;
   }

@@ -629,7 +629,7 @@ export default {
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
-      
+
       const node = Node.isTimerType(control.type)
         ? new TimerEventNode(control.type, definition, diagram)
         : new Node(control.type, definition, diagram);
