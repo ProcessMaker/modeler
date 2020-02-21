@@ -22,6 +22,7 @@ import { shapes, util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import focusOnDoubleClick from '@/mixins/focusOnDoubleClick';
 
 export const maxTextAnnotationWidth = 160;
 export default {
@@ -42,7 +43,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig],
+  mixins: [highlightConfig, portsConfig, focusOnDoubleClick],
   data() {
     return {
       shape: null,

@@ -29,6 +29,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import store from '@/store';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
+import focusOnDoubleClick from '@/mixins/focusOnDoubleClick';
 
 export default {
   components: {
@@ -48,7 +49,7 @@ export default {
     'isRendering',
     'isActive',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag, focusOnDoubleClick],
   data() {
     return {
       shape: null,

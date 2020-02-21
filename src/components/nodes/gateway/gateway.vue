@@ -22,6 +22,7 @@ import GatewayShape from '@/components/nodes/gateway/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import focusOnDoubleClick from '@/mixins/focusOnDoubleClick';
 
 export default {
   components: {
@@ -40,7 +41,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag, focusOnDoubleClick],
   data() {
     return {
       shape: null,
