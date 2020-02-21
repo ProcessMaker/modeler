@@ -71,6 +71,7 @@ export default {
         this.targetIsValidType() &&
         this.targetIsValidStartEventType() &&
         this.targetIsValidIntermediateEventType() &&
+        this.targetIsValidBoundaryEventType() &&
         this.targetIsNotContainingPool() &&
         this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
@@ -90,6 +91,13 @@ export default {
 
       return this.targetNode.isType('processmaker-modeler-intermediate-message-catch-event');
     },
+    targetIsValidBoundaryEventType() {
+      if (!this.targetNode.isBpmnType('bpmn:BoundaryEvent')) {
+        return true;
+      }
+
+      return this.targetNode.isType('processmaker-modeler-boundary-message-event');
+    },
     targetIsValidType() {
       return [
         'bpmn:Task',
@@ -100,6 +108,7 @@ export default {
         'bpmn:IntermediateCatchEvent',
         'bpmn:Participant',
         'bpmn:StartEvent',
+        'bpmn:BoundaryEvent',
       ].some(type => this.targetNode.isBpmnType(type));
     },
     hasTargetType() {
@@ -124,8 +133,11 @@ export default {
       return this.targetNode.id !== this.sourceNode.id;
     },
     allowOutgoingFlow() {
-      return typeof this.sourceConfig.allowOutgoingFlow === 'undefined' ||
-        this.sourceConfig.allowOutgoingFlow(this.targetNode);
+      if ('allowOutgoingFlow' in this.sourceConfig) {
+        return this.sourceConfig.allowOutgoingFlow(this.targetNode);
+      }
+
+      return true;
     },
   },
   mounted() {
