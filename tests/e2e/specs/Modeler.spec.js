@@ -16,6 +16,7 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
+import { diagramImgData } from '../fixtures/diagramImgData.js';
 
 describe('Modeler', () => {
   it('Create a simple process', () => {
@@ -533,5 +534,18 @@ describe('Modeler', () => {
     cy.window().then((win) => {
       expect(win.console.error).to.have.callCount(0);
     });
+  });
+
+  it('saved diagram matches downloaded one', () => {
+    const taskPosition = { x: 300, y: 250 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    cy.get('[data-test=download-pdf-button]').click();
+
+    cy.window()
+      .its('diagramImgData')
+      .then(imgData => {
+        expect(imgData).to.equal(diagramImgData);  
+      });
   });
 });

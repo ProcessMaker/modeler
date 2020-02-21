@@ -32,7 +32,10 @@
       </template>
 
       <span class="divider"/>
-
+      <b-btn class="ml-3" data-test="download-pdf-button" variant="secondary" size="sm" @click="renderPDF">
+        <i class="fas fa-download mr-1" />
+        {{ $t('Download as PDF') }}
+      </b-btn>
 
       <b-form-checkbox
         data-test="validation-toggle"
@@ -42,11 +45,6 @@
       >
         {{ $t('Auto validate') }}
       </b-form-checkbox>
-
-      <b-btn class="ml-3" variant="secondary" size="sm" @click="renderPDF">
-        <i class="fas fa-download mr-1" />
-        {{ $t('Download as PDF') }}
-      </b-btn>
 
       <transition name="slide">
         <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
@@ -89,6 +87,7 @@ import store from '@/store';
 import validationErrorList from './errorListUtil';
 import jsPDF from 'jspdf';
 import canvg from 'canvg';
+import runningInCypressTest from '@/runningInCypressTest';
 
 export default {
   components: {
@@ -152,9 +151,15 @@ export default {
         orientation: 'landscape',
         format: 'letter',
       });
+
+      if (runningInCypressTest()) {
+        window.diagramImgData = imgData;
+        return;
+      }
+
       doc.setFontSize(10);
       doc.addImage(imgData, 'PNG', 10, 50);
-      doc.save('test.pdf');
+      doc.save('bpmn-diagram');
     },
   },
 };
