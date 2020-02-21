@@ -109,8 +109,10 @@ export default {
   },
   mixins: [poolLaneCrownConfig],
   watch: {
+    highlightedShapes() {
+      this.showCrown = this.highlightedShapes[0] === this.shape;
+    },
     highlighted(highlighted) {
-      this.showCrown = highlighted;
       if (!highlighted) {
         this.taskDropdownInitiallyOpen = false;
       }
@@ -149,6 +151,7 @@ export default {
         ? this.node.pool.component.containingProcess
         : this.processNode.definition;
     },
+    highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
     paperNotRendered() {

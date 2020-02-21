@@ -1,4 +1,5 @@
 import {
+  assertBoundaryEventIsCloseToTask,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -124,7 +125,7 @@ describe('Pools', () => {
         getCrownButtonForElement($pool, 'delete-button').click({ force: true });
       });
 
-    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
+    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_3" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -182,7 +183,7 @@ describe('Pools', () => {
     });
 
     const startEvent = '<bpmn:startEvent id="node_1" name="Start Event" />';
-    const emptyPool = '<bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />';
+    const emptyPool = '<bpmn:participant id="node_2" name="Pool" processRef="Process_1" />';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(emptyPool);
@@ -204,7 +205,7 @@ describe('Pools', () => {
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
     moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
 
-    const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="Boundary Timer Event" attachedToRef="node_4">';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(pool1taskXml);
@@ -212,7 +213,7 @@ describe('Pools', () => {
 
     moveElement(taskPosition, 150, 550);
 
-    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
+    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="Boundary Timer Event" attachedToRef="node_4">';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(pool2taskXml);
@@ -256,5 +257,25 @@ describe('Pools', () => {
 
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
+  });
+
+  it('does not move boundary events independently from tasks when moving pool', () => {
+    const taskPosition = { x: 200, y: 200 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+
+    const poolPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+    getElementAtPosition(poolPosition).then($pool => {
+      assertBoundaryEventIsCloseToTask();
+
+      cy.wrap($pool)
+        .trigger('mousedown', { which: 1, force: true })
+        .trigger('mousemove', { clientX: 800, clientY: 350, force: true })
+        .trigger('mouseup', { force: true })
+        .then(waitToRenderAllShapes)
+        .then(assertBoundaryEventIsCloseToTask);
+    });
   });
 });

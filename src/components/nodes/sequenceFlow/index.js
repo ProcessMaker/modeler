@@ -9,9 +9,9 @@ export default {
   component,
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
-  definition(moddle, $t) {
+  definition(moddle) {
     return moddle.create('bpmn:SequenceFlow', {
-      name: $t('New Sequence Flow'),
+      name: null,
     });
   },
   diagram(moddle) {
@@ -65,7 +65,7 @@ export default {
           items: [
             {
               component: 'FormInput',
-              config: nameConfigSettings,
+              config: { ...nameConfigSettings, validation: null },
             },
           ],
         },

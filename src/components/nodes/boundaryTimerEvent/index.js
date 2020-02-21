@@ -16,7 +16,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   icon: require('@/assets/toolpanel/boundary-timer-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Timer Event'),
+      name: $t('Boundary Timer Event'),
       cancelActivity: true,
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {

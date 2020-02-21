@@ -143,8 +143,8 @@ describe('Boundary Timer Event', () => {
       .type(testId);
 
     assertDownloadedXmlContainsExpected(
-      `<bpmn:boundaryEvent id="${ testId }" name="New Boundary Timer Event" attachedToRef="node_1">`,
-      `<bpmndi:BPMNShape id="node_2_di" bpmnElement="${ testId }">`,
+      `<bpmn:boundaryEvent id="${testId}" name="Boundary Timer Event" attachedToRef="node_1">`,
+      `<bpmndi:BPMNShape id="node_2_di" bpmnElement="${testId}">`,
     );
   });
 
@@ -174,7 +174,7 @@ describe('Boundary Timer Event', () => {
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const taskXml = '<bpmn:task id="node_2" name="Task" />';
-    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2">';
+    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2">';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -201,7 +201,7 @@ describe('Boundary Timer Event', () => {
           .then(waitToRenderAllShapes)
           .then(() => {
             const task2Xml = '<bpmn:task id="node_4" name="Task" />';
-            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_4">';
+            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_4">';
 
             cy.get('[data-test=downloadXMLBtn]').click();
             cy.window()
@@ -276,7 +276,7 @@ describe('Boundary Timer Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Timer Event',
   nodeType: nodeTypes.boundaryTimerEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],

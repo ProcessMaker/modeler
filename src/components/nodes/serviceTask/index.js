@@ -8,7 +8,7 @@ export default {
   label: 'Service Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:ServiceTask', {
-      name: $t('New Service Task'),
+      name: $t('Service Task'),
     });
   },
   inspectorConfig: [

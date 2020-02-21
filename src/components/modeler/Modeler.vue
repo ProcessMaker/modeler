@@ -10,6 +10,7 @@
       @toggle-panels-compressed="panelsCompressed = $event"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="$emit('saveBpmn')"
+      @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -67,7 +68,7 @@
         :paper="paper"
         :node="node"
         :id="node.id"
-        :highlighted="highlightedNode === node"
+        :highlighted="highlightedNodes.includes(node)"
         :has-error="invalidNodes.includes(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
@@ -79,11 +80,12 @@
         :isRendering="isRendering"
         :paperManager="paperManager"
         :auto-validate="autoValidate"
+        :is-active="node === activeNode"
         @add-node="addNode"
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
-        @click="highlightNode(node)"
+        @click="highlightNode(node, $event)"
         @unset-pools="unsetPools"
         @set-pools="setPools"
         @save-state="pushToUndoStack"
@@ -129,6 +131,7 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 
 const version = '1.0';
@@ -179,6 +182,7 @@ export default {
       allWarnings: [],
       nodeTypes: [],
       breadcrumbData: [],
+      activeNode: null,
     };
   },
   watch: {
@@ -186,7 +190,7 @@ export default {
       const loadingMessage = 'Loading process, please be patient.';
 
       if (this.isRendering) {
-        window.ProcessMaker.alert(loadingMessage, 'info');
+        window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
         this.cursor = 'wait';
         return;
@@ -220,7 +224,7 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
-    highlightedNode: () => store.getters.highlightedNode,
+    highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
       return Object.entries(this.validationErrors)
         .flatMap(([, errors]) => errors.map(error => error.id));
@@ -327,7 +331,12 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    highlightNode(node) {
+    highlightNode(node, event) {
+      if (event && event.shiftKey) {
+        store.commit('addToHighlightedNodes', [node]);
+        return;
+      }
+
       store.commit('highlightNode', node);
     },
     blurFocusedScreenBuilderElement() {
@@ -702,7 +711,7 @@ export default {
 
       moveShapeByKeypress(
         event.key,
-        store.getters.highlightedShape,
+        store.getters.highlightedShapes,
         this.pushToUndoStack,
       );
     },
@@ -784,6 +793,7 @@ export default {
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       this.isGrabbing = false;
+      this.activeNode = null;
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
@@ -802,19 +812,32 @@ export default {
       }
     });
 
-    this.paperManager.addEventHandler('cell:pointerdown', cellView => {
-      const shape = cellView.model;
+    this.paperManager.addEventHandler('cell:pointerclick', ({ model: shape }, event) => {
+      if (!this.isBpmnNode(shape)) {
+        return;
+      }
 
+      shape.component.$emit('click', event);
+    });
+
+    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }) => {
       if (!this.isBpmnNode(shape)) {
         return;
       }
 
       this.setShapeStacking(shape);
-
-      shape.component.$emit('click');
+      this.activeNode = shape.component.node;
     });
 
     initAnchor();
+
+    let cursor;
+    const setCursor = () => {
+      cursor = this.cursor;
+      this.cursor = 'crosshair';
+    };
+    const resetCursor = () => this.cursor = cursor;
+    setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {

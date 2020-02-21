@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     highlightedNode() {
-      return store.getters.highlightedNode;
+      return store.getters.highlightedNodes[0];
     },
     config() {
       if (!this.highlightedNode) {

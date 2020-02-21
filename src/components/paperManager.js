@@ -1,14 +1,16 @@
 import { dia, util } from 'jointjs';
 import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
+import { gridSize } from '@/graph';
 
 export default class PaperManager {
   #paper;
+  preventTranslate = false;
 
   constructor(paper) {
     this.#paper = paper;
   }
 
-  static gridSize = 10;
+  static gridSize = gridSize;
 
   static factory(element, interactiveFunc, model) {
     const defaultPadding = 3;
@@ -49,7 +51,15 @@ export default class PaperManager {
     return Math.round(number / PaperManager.gridSize) * PaperManager.gridSize;
   }
 
+  ceilToNearestGridMultiple(number) {
+    return Math.ceil(number / PaperManager.gridSize) * PaperManager.gridSize;
+  }
+
   translate(x, y) {
+    if (this.preventTranslate) {
+      return;
+    }
+
     this.#paper.translate(x, y);
     this.#paper.trigger('translate:changed');
   }
