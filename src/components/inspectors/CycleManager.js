@@ -49,11 +49,12 @@ export default class CycleManager {
 
   getFormattedDateWithWeekdayIntervals() {
     const dateIntervals = [];
+    const period = getPeriod(this._repeat, this._periodicityValue);
+
     dateIntervals.push(this._startDate);
 
     this._selectedWeekdays.forEach(day => {
       const weekDayDate = this.getWeekDayDate(day);
-      const period = getPeriod(this._repeat, this._periodicityValue);
       const isoDateString = getIso8601FormattedDateString(weekDayDate, this._endDate, period, this._ends, this._times);
       dateIntervals.push(isoDateString);
     });
@@ -73,7 +74,7 @@ export default class CycleManager {
   }
 
   dateIntervalString() {
-    if (this.isWeeklyPeriodSelected() && this._selectedWeekdays.length > 0) {
+    if (this.isWeeklyPeriodSelected() && this.hasSelectedWeekdays()) {
       return this.getFormattedDateWithWeekdayIntervals();
     }
     const period = getPeriod(this._repeat, this._periodicityValue);
@@ -82,6 +83,10 @@ export default class CycleManager {
 
   isWeeklyPeriodSelected() {
     return this._periodicityValue === 'W';
+  }
+
+  hasSelectedWeekdays() {
+    return this._selectedWeekdays.length > 0;
   }
 
   weekdayStyle(day) {

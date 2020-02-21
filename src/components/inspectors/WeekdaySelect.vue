@@ -24,6 +24,10 @@ import CycleManager from '@/components/inspectors/CycleManager';
 
 export default {
   props: {
+    selectWeekdays: {
+      type: Array,
+      default: () => [],
+    },
     startDate: {
       type: String,
       default: DateTime.local().toUTC().toISO().toString(),
@@ -103,7 +107,7 @@ export default {
           selected: false,
         },
       ],
-      cycleManager: new CycleManager(DateTime.local().toUTC().toISO(), this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
+      cycleManager: new CycleManager(this.startDate, this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
     };
   },
   watch: {
@@ -132,6 +136,12 @@ export default {
       this.update();
     },
   },
+  mounted() {
+    this.selectWeekdays.forEach(dayOfWeek => {
+      const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
+      foundDay.selected = true;
+    });
+  },
   computed: {
     repeatOnValidationError() {
       const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
@@ -154,9 +164,6 @@ export default {
       weekday.selected = !weekday.selected;
     },
     update() {
-      if (!this.cycleManager.isWeeklyPeriodSelected()) {
-        return;
-      }
       this.$emit('input', this.dateIntervalString);
     },
   },

@@ -28,7 +28,7 @@
     </template>
 
     <b-input-group v-if="periodicity === 'week'">
-      <weekday-select v-model="weekdays" :periodicityValue="periodicityValue" :repeat="repeat" :start-date="startDate" :end-date="endDate" :ends="ends" :times="times" />
+      <weekday-select ref="weekday" v-model="weekdays" :selectWeekdays="selectedWeekdays" :periodicityValue="periodicityValue" :repeat="repeat" :start-date="startDate" :end-date="endDate" :ends="ends" :times="times" />
     </b-input-group>
 
     <template v-if="hasEnds">
@@ -120,6 +120,7 @@ export default {
       ends: 'never',
       endDate: DateTime.local().toUTC().toISO(),
       times: '1',
+      selectedWeekdays: [],
     };
   },
   created() {
@@ -206,10 +207,9 @@ export default {
                 hasStartDate = true;
               }
 
-              if (this.isWeeklyPeriodSelected) {
+              if (this.periodicityValue === 'W') {
                 const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
-                const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
-                foundDay.selected = true;
+                this.selectedWeekdays.push(dayOfWeek);
               }
 
               this.endDate = match[5] || DateTime.local().toUTC().toISO();
@@ -234,7 +234,7 @@ export default {
       this.periodicity = 'week';
       this.endDate = DateTime.local().toUTC().toISO();
       this.ends = 'never';
-      this.weekdays.forEach(weekday => weekday.selected = false);
+      this.weekdays = null;
     },
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
