@@ -27,18 +27,17 @@
       </b-form-group>
     </template>
 
-    <b-input-group v-if="periodicity === 'week'">
-      <weekday-select
-        v-model="weekdays"
-        :selectWeekdays="selectedWeekdays"
-        :periodicityValue="periodicityValue"
-        :repeat="repeat"
-        :start-date="startDate"
-        :end-date="endDate"
-        :ends="ends"
-        :times="times"
-      />
-    </b-input-group>
+    <weekday-select
+      v-if="isWeeklyPeriodSelected"
+      v-model="expression"
+      :selectWeekdays="selectedWeekdays"
+      :periodicityValue="periodicityValue"
+      :repeat="repeat"
+      :start-date="startDate"
+      :end-date="endDate"
+      :ends="ends"
+      :times="times"
+    />
 
     <template v-if="hasEnds">
       <label class="mt-1 ">{{ $t('Ends') }}</label>
@@ -122,7 +121,7 @@ export default {
   data() {
     return {
       DateTime,
-      weekdays: null,
+      expression: null,
       startDate: DateTime.local().toUTC().toISO(),
       repeat: '1',
       periodicity: 'week',
@@ -149,14 +148,17 @@ export default {
       return periods[this.periodicity];
     },
     timerExpression() {
-      if (this.periodicity === 'week' && this.weekdays) {
-        return this.weekdays;
+      if (this.isWeeklyPeriodSelected() && this.expression) {
+        return this.expression;
       }
       const period = getPeriod(this.repeat, this.periodicityValue);
       return getIso8601FormattedDateString(this.startDate, this.endDate, period, this.ends, this.times);
     },
   },
   methods: {
+    isWeeklyPeriodSelected() {
+      return this.periodicity === 'week';
+    },
     setStartDate(startDateString) {
       this.startDate = DateTime
         .fromISO(startDateString, { zone: 'utc' })
@@ -216,7 +218,7 @@ export default {
                 hasStartDate = true;
               }
 
-              if (this.periodicityValue === 'W') {
+              if (this.isWeeklyPeriodSelected()) {
                 const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
                 this.selectedWeekdays.push(dayOfWeek);
               }
@@ -243,7 +245,7 @@ export default {
       this.periodicity = 'week';
       this.endDate = DateTime.local().toUTC().toISO();
       this.ends = 'never';
-      this.weekdays = null;
+      this.expression = null;
       this.selectedWeekdays = [];
     },
     clickWeekDay(weekday) {

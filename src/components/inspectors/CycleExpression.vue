@@ -17,14 +17,14 @@
       </b-input-group-append>
 
     </b-input-group>
-    <b-input-group v-if="periodicity">
-      <weekday-select
-        v-model="weekdays"
-        :selectWeekdays="selectedWeekdays"
-        :periodicityValue="periodicity.value"
-        :repeat="repeat"
-      />
-    </b-input-group>
+    <weekday-select
+      class="pt-3"
+      v-if="periodicity"
+      v-model="expression"
+      :selectWeekdays="selectedWeekdays"
+      :periodicityValue="periodicity.value"
+      :repeat="repeat"
+    />
   </div>
 </template>
 
@@ -57,7 +57,7 @@ export default {
       DateTime,
       repeat: null,
       periodicity: null,
-      weekdays: null,
+      expression: null,
       periods,
       selectedWeekdays: null,
     };
@@ -83,8 +83,8 @@ export default {
       if (this.periodicity.isTime) {
         return `R/PT${this.repeat}${this.periodicity.value}`;
       }
-      if (this.periodicity.isWeek && this.weekdays) {
-        return this.weekdays;
+      if (this.periodicity.isWeek && this.expression) {
+        return this.expression;
       }
       return `R/P${this.repeat}${this.periodicity.value}`;
     },

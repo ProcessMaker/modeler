@@ -1,5 +1,5 @@
 <template>
-  <div v-if="cycleManager.isWeeklyPeriodSelected()" class="pt-2 mb-2 form-group">
+  <div v-if="cycleManager.isWeeklyPeriodSelected()" class="mb-2">
     <label class="">{{ $t(weekLabel) }}</label>
     <div>
       <span
