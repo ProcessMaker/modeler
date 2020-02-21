@@ -149,8 +149,11 @@ export default {
 
       const doc = new jsPDF({
         orientation: 'landscape',
-        format: 'letter',
+        format: 'legal',
       });
+
+      const width = doc.internal.pageSize.getWidth();
+      const height = doc.internal.pageSize.getHeight();
 
       if (runningInCypressTest()) {
         window.diagramImgData = imgData;
@@ -158,7 +161,7 @@ export default {
       }
 
       doc.setFontSize(10);
-      doc.addImage(imgData, 'PNG', 10, 50);
+      doc.addImage(imgData, 'PNG', 0, 0, width, height);
       doc.save('bpmn-diagram');
     },
   },
