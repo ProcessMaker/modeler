@@ -71,6 +71,7 @@ export default class CycleManager {
     }
 
     return weekDayDate.toUTC().toISO();
+    return weekDayDate.toUTC();
   }
 
   dateIntervalString() {
