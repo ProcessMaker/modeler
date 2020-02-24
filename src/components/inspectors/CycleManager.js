@@ -70,7 +70,6 @@ export default class CycleManager {
       weekDayDate = weekDayDate.plus({ days: 7 });
     }
 
-    return weekDayDate.toUTC().toISO();
     return weekDayDate.toUTC();
   }
 
