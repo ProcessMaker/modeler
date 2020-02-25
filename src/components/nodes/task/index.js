@@ -1,7 +1,7 @@
 import component from './task.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export const id = 'processmaker-modeler-task';
 
@@ -17,6 +17,7 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
       name: $t('Form Task'),
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {
@@ -47,22 +48,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],

@@ -479,7 +479,7 @@ export default {
       );
     },
     removeUnsupportedElementAttributes(definition) {
-      const unsupportedElements = ['documentation', 'extensionElements'];
+      const unsupportedElements = ['extensionElements'];
 
       unsupportedElements.filter(name => definition.get(name))
         .forEach(name => definition.set(name, undefined));

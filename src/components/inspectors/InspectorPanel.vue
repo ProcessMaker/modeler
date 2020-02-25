@@ -147,6 +147,7 @@ export default {
         ? this.nodeRegistry[type].inspectorData(this.highlightedNode)
         : Object.entries(this.highlightedNode.definition).reduce((data, [key, value]) => {
           data[key] = value;
+
           return data;
         }, {});
     },
@@ -172,10 +173,15 @@ export default {
     },
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
-      for (const key in omit(value, ['$type', 'eventDefinitions'])) {
+      for (const key in omit(value, ['$type', 'eventDefinitions', 'documentation'])) {
         if (this.highlightedNode.definition.get(key) !== value[key]) {
           this.setNodeProp(this.highlightedNode, key, value[key]);
         }
+      }
+
+      if (value.documentation && this.highlightedNode.definition.documentation[0].text !== value.documentation[0].text) {
+        value.documentation[0] = this.moddle.create('bpmn:Documentation', { text: value.documentation[0].text });
+        this.setNodeProp(this.highlightedNode, 'documentation', value.documentation);
       }
     },
     updateState() {
