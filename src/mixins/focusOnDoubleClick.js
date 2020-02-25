@@ -26,10 +26,13 @@ async function focusNameInput(cellView) {
 
   const labelElement = this.shapeView.selectors.label ||
     Array.from(this.shapeView.selectors.root.children).find(el => el.classList.contains('labels'));
-  labelElement.style.outline = '1px dashed blue';
-  nameInput.addEventListener('blur', () => {
-    labelElement.style.outline = '';
-  });
+
+  if (labelElement) {
+    labelElement.style.outline = '1px dashed blue';
+    nameInput.addEventListener('blur', () => {
+      labelElement.style.outline = '';
+    });
+  }
 
   nameInput.focus();
 }
