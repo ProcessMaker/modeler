@@ -1,11 +1,17 @@
 /**
- * @param {Date|DateTime} date
+ * @param {Date|DateTime|string} date
  * @returns {string}
  */
 function toIsoDateTimeString(date) {
+
   if (date === null) {
     return '';
   }
+
+  if (typeof date === 'string') {
+    return date;
+  }
+
   return date.isLuxonDateTime ? date.toISO() : date.toISOString();
 }
 
