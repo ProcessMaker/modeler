@@ -9,19 +9,19 @@
 
         <div class="ml-auto">
           <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">
-            <i class="fas fa-upload mr-1"/>
+            <i class="fas fa-upload mr-1" />
             {{ $t('Upload XML') }}
+          </b-btn>
+          <b-btn variant="secondary" size="sm" data-test="downloadXMLBtn" @click="download">
+            <i class="fas fa-download mr-1" />
+            {{ $t('Download XML') }}
           </b-btn>
         </div>
       </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
-        <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event"/>
+        <modeler ref="modeler" @validate="validationErrors = $event" @warnings="warnings = $event" />
       </b-card-body>
-      <validation-status
-        :validation-errors="validationErrors"
-        :warnings="warnings"
-        :xml-manager="xmlManager"
-      />
+      <validation-status :validation-errors="validationErrors" :warnings="warnings" />
     </b-card>
 
     <b-modal
@@ -48,7 +48,9 @@
 <script>
 import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
+import FilerSaver from 'file-saver';
 import ValidationStatus from '@/components/validationStatus/ValidationStatus';
+import runningInCypressTest from '@/runningInCypressTest';
 
 const reader = new FileReader();
 
@@ -65,7 +67,6 @@ export default {
       uploadedXml: null,
       xmlFile: [],
       warnings: [],
-      xmlManager: null,
     };
   },
   watch: {
@@ -76,6 +77,21 @@ export default {
     },
   },
   methods: {
+    download() {
+      this.$refs.modeler.toXML((err, xml) => {
+        if (err) {
+          alert(err);
+        } else {
+          if (runningInCypressTest()) {
+            /* Save XML string to window–this is used in testing to compare against known valid XML */
+            window.xml = xml;
+            return;
+          }
+          let file = new File([xml], 'bpmnProcess.xml', { type: 'text/xml' });
+          FilerSaver.saveAs(file);
+        }
+      });
+    },
     loadXmlIntoModeler() {
       this.$refs.modeler.loadXML(this.uploadedXml);
     },
