@@ -5,8 +5,8 @@ export default class CycleManager {
   #startDate;
   #repeat;
   #periodicityValue;
-  #selectedWeekdays;
-  #endDate;
+  _selectedWeekdays;
+  _endDate;
   #ends;
   #times;
 
@@ -14,8 +14,8 @@ export default class CycleManager {
     this.#startDate = this.sanitizeDate(startDate);
     this.#repeat = repeat;
     this.#periodicityValue = periodicityValue;
-    this.#selectedWeekdays = selectedWeekdays;
-    this.#endDate = this.sanitizeDate(endDate);
+    this._selectedWeekdays = selectedWeekdays;
+    this._endDate = this.sanitizeDate(endDate);
     this.#ends = ends;
     this.#times = times;
   }
@@ -29,7 +29,7 @@ export default class CycleManager {
   // no coverage needed for mutator
   // istanbul ignore next
   set endDate(value) {
-    this.#endDate = this.sanitizeDate(value);
+    this._endDate = this.sanitizeDate(value);
   }
 
   // no coverage needed for mutator
@@ -59,12 +59,12 @@ export default class CycleManager {
   // no coverage needed for mutator
   // istanbul ignore next
   set selectedWeekdays(value) {
-    this.#selectedWeekdays = value;
+    this._selectedWeekdays = value;
   }
 
   /**
    * For historic reasons we need to be liberal in how we accept various incoming
-   * dates. See https://en.wikipedia.org/wiki/Robustness#principle
+   * dates. See https://en.wikipedia.org/wiki/Robustness_principle
    *
    * Turns a date string, DateTime, or Date into a Luxon UTC DateTime or null
    * @param {Date|DateTime|string} date
@@ -86,9 +86,9 @@ export default class CycleManager {
     const period = getPeriod(this.#repeat, this.#periodicityValue);
     const dateIntervals = [this.#startDate.toISO()];
 
-    this.#selectedWeekdays.forEach(day => {
+    this._selectedWeekdays.forEach(day => {
       const weekDayDate = this.getWeekDayDate(day);
-      const isoDateString = getIso8601FormattedDateString(weekDayDate, this.#endDate, period, this.#ends, this.#times);
+      const isoDateString = getIso8601FormattedDateString(weekDayDate, this._endDate, period, this.#ends, this.#times);
       dateIntervals.push(isoDateString);
     });
 
@@ -111,7 +111,7 @@ export default class CycleManager {
       return this.getFormattedDateWithWeekdayIntervals();
     }
     const period = getPeriod(this.#repeat, this.#periodicityValue);
-    return getIso8601FormattedDateString(this.#startDate, this.#endDate, period, this.#ends, this.#times);
+    return getIso8601FormattedDateString(this.#startDate, this._endDate, period, this.#ends, this.#times);
   }
 
   isWeeklyPeriodSelected() {
@@ -119,7 +119,7 @@ export default class CycleManager {
   }
 
   hasSelectedWeekdays() {
-    return this.#selectedWeekdays.length > 0;
+    return this._selectedWeekdays.length > 0;
   }
 
   // Not calculating coverage for the untested FE logic here - this is
