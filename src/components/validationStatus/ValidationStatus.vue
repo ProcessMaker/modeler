@@ -1,7 +1,6 @@
 <template>
   <b-card-footer class="p-0 border-0 statusbar d-flex align-items-center justify-content-end pr-3 pl-3 border-top">
     <b-btn
-      class="mr-auto"
       :disabled="!xmlManager"
       variant="secondary"
       size="sm"
@@ -10,6 +9,10 @@
     >
       <i class="fas fa-download mr-1"/>
       {{ $t('Download BPMN') }}
+    </b-btn>
+    <b-btn class="ml-2 mr-auto" data-test="download-pdf-button" variant="secondary" size="sm" @click="renderPDF">
+      <i class="fas fa-download mr-1"/>
+      {{ $t('Download as PDF') }}
     </b-btn>
 
     <div class="status-bar-container d-flex align-items-center justify-content-end">
@@ -32,10 +35,6 @@
       </template>
 
       <span class="divider"/>
-      <b-btn class="ml-3" data-test="download-pdf-button" variant="secondary" size="sm" @click="renderPDF">
-        <i class="fas fa-download mr-1" />
-        {{ $t('Download as PDF') }}
-      </b-btn>
 
       <b-form-checkbox
         data-test="validation-toggle"
