@@ -30,7 +30,7 @@ export default {
     },
     startDate: {
       type: String,
-      default: DateTime.local().toUTC().toISO().toString(),
+      default: DateTime.local().toUTC().toISO(),
     },
     endDate: {
       type: String,

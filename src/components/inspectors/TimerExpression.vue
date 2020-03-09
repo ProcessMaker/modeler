@@ -136,8 +136,7 @@ export default {
   },
   watch: {
     timerExpression: {
-      handler(timerExpression)
-      {
+      handler(timerExpression) {
         this.$emit('input', timerExpression);
       },
       immediate: true,
@@ -247,9 +246,6 @@ export default {
       this.ends = 'never';
       this.expression = null;
       this.selectedWeekdays = [];
-    },
-    clickWeekDay(weekday) {
-      weekday.selected = !weekday.selected;
     },
   },
 };
