@@ -23,7 +23,6 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as poolId } from '../pool';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import focusOnDoubleClick from '@/mixins/focusOnDoubleClick';
 
 export default {
   components: {
@@ -42,7 +41,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [linkConfig, focusOnDoubleClick],
+  mixins: [linkConfig],
   data() {
     return {
       shape: null,

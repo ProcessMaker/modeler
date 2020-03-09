@@ -44,7 +44,6 @@ import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButt
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
-import focusOnDoubleClick from '@/mixins/focusOnDoubleClick';
 
 export default {
   components: {
@@ -69,7 +68,7 @@ export default {
     'isRendering',
     'paperManager',
   ],
-  mixins: [highlightConfig, resizeConfig, portsConfig, focusOnDoubleClick],
+  mixins: [highlightConfig, resizeConfig, portsConfig],
   data() {
     return {
       shape: null,

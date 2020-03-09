@@ -24,7 +24,6 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { startColor } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import focusOnDoubleClick from '@/mixins/focusOnDoubleClick';
 
 export default {
   components: {
@@ -43,7 +42,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, focusOnDoubleClick],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
       shape: null,
