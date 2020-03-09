@@ -47,7 +47,7 @@
     "canvas": "^2.6.0",
     "canvg": "^2.0.0",
     "core-js": "^3.3.6",
-    "file-saver": "1.3.8",
+    "file-saver": "^1.3.8",
     "jointjs": "^3.1.1",
     "jsdom": "^13.2.0",
     "jspdf": "^1.5.3",
@@ -139,5 +139,8 @@
       "tests/**/*.js"
     ],
     "report-dir": "cypress-coverage"
+  },
+  "resolutions": {
+    "jspdf/file-saver": "file-saver"
   }
 }
