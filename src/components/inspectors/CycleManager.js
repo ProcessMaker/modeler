@@ -2,28 +2,28 @@ import { DateTime } from 'luxon';
 import { getIso8601FormattedDateString, getPeriod } from './TimeUtils';
 
 export default class CycleManager {
-  #startDate;
-  #repeat;
-  #periodicityValue;
+  _startDate;
+  _repeat;
+  _periodicityValue;
   _selectedWeekdays;
   _endDate;
-  #ends;
-  #times;
+  _ends;
+  _times;
 
   constructor(startDate, repeat, periodicityValue, selectedWeekdays = [], endDate = null, ends = 'never', times = '1') {
-    this.#startDate = this.sanitizeDate(startDate);
-    this.#repeat = repeat;
-    this.#periodicityValue = periodicityValue;
+    this._startDate = this.sanitizeDate(startDate);
+    this._repeat = repeat;
+    this._periodicityValue = periodicityValue;
     this._selectedWeekdays = selectedWeekdays;
     this._endDate = this.sanitizeDate(endDate);
-    this.#ends = ends;
-    this.#times = times;
+    this._ends = ends;
+    this._times = times;
   }
 
   // no coverage needed for mutator
   // istanbul ignore next
   set startDate(value) {
-    this.#startDate = this.sanitizeDate(value);
+    this._startDate = this.sanitizeDate(value);
   }
 
   // no coverage needed for mutator
@@ -35,25 +35,25 @@ export default class CycleManager {
   // no coverage needed for mutator
   // istanbul ignore next
   set ends(value) {
-    this.#ends = value;
+    this._ends = value;
   }
 
   // no coverage needed for mutator
   // istanbul ignore next
   set times(value) {
-    this.#times = value;
+    this._times = value;
   }
 
   // no coverage needed for mutator
   // istanbul ignore next
   set repeat(value) {
-    this.#repeat = value;
+    this._repeat = value;
   }
 
   // no coverage needed for mutator
   // istanbul ignore next
   set periodicityValue(value) {
-    this.#periodicityValue = value;
+    this._periodicityValue = value;
   }
 
   // no coverage needed for mutator
@@ -83,12 +83,12 @@ export default class CycleManager {
   }
 
   getFormattedDateWithWeekdayIntervals() {
-    const period = getPeriod(this.#repeat, this.#periodicityValue);
-    const dateIntervals = [this.#startDate.toISO()];
+    const period = getPeriod(this._repeat, this._periodicityValue);
+    const dateIntervals = [this._startDate.toISO()];
 
     this._selectedWeekdays.forEach(day => {
       const weekDayDate = this.getWeekDayDate(day);
-      const isoDateString = getIso8601FormattedDateString(weekDayDate, this._endDate, period, this.#ends, this.#times);
+      const isoDateString = getIso8601FormattedDateString(weekDayDate, this._endDate, period, this._ends, this._times);
       dateIntervals.push(isoDateString);
     });
 
@@ -96,7 +96,7 @@ export default class CycleManager {
   }
 
   getWeekDayDate(isoWeekDay) {
-    const date = DateTime.fromISO(this.#startDate, { zone: 'utc' });
+    const date = DateTime.fromISO(this._startDate, { zone: 'utc' });
     let weekDayDate = date.set({ weekday: isoWeekDay });
 
     if (weekDayDate.toMillis() < date.toMillis()) {
@@ -110,12 +110,12 @@ export default class CycleManager {
     if (this.isWeeklyPeriodSelected() && this.hasSelectedWeekdays()) {
       return this.getFormattedDateWithWeekdayIntervals();
     }
-    const period = getPeriod(this.#repeat, this.#periodicityValue);
-    return getIso8601FormattedDateString(this.#startDate, this._endDate, period, this.#ends, this.#times);
+    const period = getPeriod(this._repeat, this._periodicityValue);
+    return getIso8601FormattedDateString(this._startDate, this._endDate, period, this._ends, this._times);
   }
 
   isWeeklyPeriodSelected() {
-    return this.#periodicityValue === 'W';
+    return this._periodicityValue === 'W';
   }
 
   hasSelectedWeekdays() {
@@ -126,7 +126,7 @@ export default class CycleManager {
   // covered in e2e cypress tests
   // istanbul ignore next
   weekdayStyle(day) {
-    const isoWeekDayNumber = this.#startDate.toLocal().weekday;
+    const isoWeekDayNumber = this._startDate.toLocal().weekday;
 
     return [
       day.selected ? 'badge-primary' : 'badge-light',
