@@ -704,7 +704,7 @@ export default {
       return shape.component != null;
     },
     setShapeStacking(shape) {
-      if (this.isRendering || shape === this.previouslyStackedShape) {
+      if (this.isRendering || (!shape.component.node.isType('processmaker-modeler-pool') && shape === this.previouslyStackedShape)) {
         return;
       }
 

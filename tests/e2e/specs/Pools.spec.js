@@ -1,5 +1,7 @@
 import {
   assertBoundaryEventIsCloseToTask,
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -147,13 +149,7 @@ describe('Pools', () => {
       });
 
     const nonEmptyLane = '<bpmn:lane id="node_3" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(nonEmptyLane);
-      });
+    assertDownloadedXmlContainsExpected(nonEmptyLane);
 
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition)
@@ -163,14 +159,8 @@ describe('Pools', () => {
       });
 
     const emptyLane = '<bpmn:lane id="node_3" name="" />';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(emptyLane);
-        expect(xml).to.not.contain('node_1');
-      });
+    assertDownloadedXmlContainsExpected(emptyLane);
+    assertDownloadedXmlDoesNotContainExpected('node_1');
   });
 
   it('Removes all references to element from a pool', () => {
