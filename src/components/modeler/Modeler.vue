@@ -131,6 +131,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import focusNameInput from '@/components/modeler/focusOnDoubleClick';
 
 const version = '1.0';
 
@@ -181,6 +182,7 @@ export default {
       nodeTypes: [],
       breadcrumbData: [],
       activeNode: null,
+      previouslyStackedShape: null,
     };
   },
   watch: {
@@ -708,10 +710,11 @@ export default {
       return shape.component != null;
     },
     setShapeStacking(shape) {
-      if (this.isRendering) {
+      if (this.isRendering || shape === this.previouslyStackedShape) {
         return;
       }
 
+      this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
   },
@@ -757,6 +760,8 @@ export default {
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
+
+    this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInput);
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
