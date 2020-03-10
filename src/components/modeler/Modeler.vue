@@ -131,7 +131,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
-import focusNameInput from '@/components/modeler/focusOnDoubleClick';
+import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 
 export default {
@@ -756,7 +756,7 @@ export default {
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
 
-    this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInput);
+    this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);

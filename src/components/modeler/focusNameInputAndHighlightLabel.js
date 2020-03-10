@@ -6,14 +6,14 @@ function waitToTriggerOpenAnimation() {
   });
 }
 
-export default async function focusNameInput(cellView) {
+export default async function focusNameInputAndHighlightLabel(cellView) {
   if (!cellView.selectors) {
     return;
   }
 
   const labelElement = cellView.selectors.label ||
     Array.from(cellView.selectors.root.children).find(el => el.classList.contains('labels'));
-  
+
   if (!labelElement) {
     return;
   }
