@@ -103,7 +103,7 @@ describe('Start Timer Event', () => {
     ];
 
     periods.forEach(({ selector, letter }) => {
-      cy.get('[data-test=repeat-on-select]').select(selector);
+      cy.get('[data-test=repeat-on-select]').select(selector, { force: true });
 
       const timerExpression = `R/${currentDateString}/P${repeat}${letter}/2019-0${month + 1}-${endDay}T${hour}:00:00.000Z`;
       cy.get('[data-test=downloadXMLBtn]').click();

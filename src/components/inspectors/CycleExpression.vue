@@ -17,11 +17,21 @@
       </b-input-group-append>
 
     </b-input-group>
+    <weekday-select
+      class="pt-3"
+      v-if="periodicity"
+      v-model="expression"
+      :selectWeekdays="selectedWeekdays"
+      :periodicityValue="periodicity.value"
+      :repeat="repeat"
+    />
   </div>
 </template>
 
 <script>
 import last from 'lodash/last';
+import WeekdaySelect from './WeekdaySelect';
+import { DateTime } from 'luxon';
 
 const periodNames = {
   minute: 'minute',
@@ -32,20 +42,24 @@ const periodNames = {
 };
 
 export default {
+  components: { WeekdaySelect },
   props: ['value', 'repeatInput'],
   data() {
     const periods = [
       { name: periodNames.minute, value: 'M', isTime: true },
       { name: periodNames.hour, value: 'H', isTime: true },
       { name: periodNames.day, value: 'D' },
-      { name: periodNames.week, value: 'W' },
+      { name: periodNames.week, value: 'W', isWeek: true },
       { name: periodNames.month, value: 'M' },
     ];
 
     return {
+      DateTime,
       repeat: null,
       periodicity: null,
+      expression: null,
       periods,
+      selectedWeekdays: null,
     };
   },
   watch: {
@@ -53,6 +67,7 @@ export default {
       handler(value) {
         this.periodicity = this.getPeriodFromDelayString(value);
         this.repeat = this.getRepeatNumberFromDelayString(value);
+        this.selectedWeekdays = this.getSelectedWeekdaysFromDelayString(value);
       },
       immediate: true,
     },
@@ -68,10 +83,25 @@ export default {
       if (this.periodicity.isTime) {
         return `R/PT${this.repeat}${this.periodicity.value}`;
       }
+      if (this.periodicity.isWeek && this.expression) {
+        return this.expression;
+      }
       return `R/P${this.repeat}${this.periodicity.value}`;
     },
   },
   methods: {
+    getSelectedWeekdaysFromDelayString(delayString) {
+      const expression = delayString.split('|');
+      const selectedWeekdays = [];
+      expression.forEach(exp => {
+        const match = exp.match(/R(\d*)\/([^/]+)\/PT?(\d+)(\w)(?:\/([^/]+))?/);
+        if (match) {
+          const dayOfWeek = DateTime.fromISO(match[2], { zone: 'utc' }).toLocal().weekday;
+          selectedWeekdays.push(dayOfWeek);
+        }
+      });
+      return selectedWeekdays;
+    },
     getPeriodFromDelayString(delayString) {
       const isTimePeriod = this.isTimePeriod(delayString);
       const periodicity = last(delayString);
@@ -90,8 +120,8 @@ export default {
       return delayString[3] === 'T';
     },
     getRepeatNumberFromDelayString(delayString) {
-      const match = delayString.match(/\d+/);
-      return match && match[0];
+      const match = delayString.match(/PT?(\d+)/);
+      return match ? match[1] : 1;
     },
   },
 };
