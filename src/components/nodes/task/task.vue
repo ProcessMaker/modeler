@@ -55,7 +55,7 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Task',
+          label: 'Form Task',
           nodeType: 'processmaker-modeler-task',
           dataTest: 'switch-to-user-task',
         },
