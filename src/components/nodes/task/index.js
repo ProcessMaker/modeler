@@ -13,10 +13,10 @@ export default {
   category: 'BPMN',
   rank: 4,
   icon: require('@/assets/toolpanel/task.svg'),
-  label: 'Task',
+  label: 'Form Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
-      name: $t('Task'),
+      name: $t('Form Task'),
     });
   },
   diagram(moddle) {
@@ -29,7 +29,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Task',
+      name: 'Form Task',
       items: [
         {
           component: 'FormAccordion',

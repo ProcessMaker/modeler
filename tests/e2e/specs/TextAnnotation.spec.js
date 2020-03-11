@@ -51,7 +51,7 @@ describe('Text Annotation', () => {
       <bpmn:lane id="node_5" name="" />
     </bpmn:laneSet>
     <bpmn:startEvent id="node_1" name="Start Event" />
-    <bpmn:task id="node_7" name="Task" />
+    <bpmn:task id="node_7" name="Form Task" />
     <bpmn:textAnnotation id="node_6">
       <bpmn:text>Text Annotation</bpmn:text>
     </bpmn:textAnnotation>
