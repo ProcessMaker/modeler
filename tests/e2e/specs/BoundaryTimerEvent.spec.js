@@ -173,7 +173,7 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    const taskXml = '<bpmn:task id="node_2" name="Task" />';
+    const taskXml = '<bpmn:task id="node_2" name="Form Task" />';
     const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2">';
 
     cy.get('[data-test=downloadXMLBtn]').click();
@@ -200,7 +200,7 @@ describe('Boundary Timer Event', () => {
           .trigger('mouseup')
           .then(waitToRenderAllShapes)
           .then(() => {
-            const task2Xml = '<bpmn:task id="node_4" name="Task" />';
+            const task2Xml = '<bpmn:task id="node_4" name="Form Task" />';
             const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_4">';
 
             cy.get('[data-test=downloadXMLBtn]').click();
