@@ -1,3 +1,6 @@
+import cloneDeepWith from 'lodash/cloneDeepWith';
+import clone from 'lodash/clone';
+
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
 
@@ -41,16 +44,27 @@ export default class Node {
     }
   }
 
-  clone(nodeRegistry, moddle, $t) {
-    const definition = nodeRegistry[this.type].definition(moddle, $t);
-    const diagram = nodeRegistry[this.type].diagram(moddle);
-    const clonedNode = new Node(this.type, definition, diagram);
-
+  clone() {
+    const diagramClone = cloneDeepWith(this.diagram, this.clearEventDefinitionRefs);
+    const clonedNode = new Node(this.type, diagramClone.bpmnElement, diagramClone);
     clonedNode.id = null;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
     clonedNode.definition.name = this.definition.name;
 
     return clonedNode;
+  }
+
+  clearEventDefinitionRefs(value) {
+    const refValueKeys = ['errorRef', 'messageRef'];
+    const refValueKey = Object.keys(value).find(key => refValueKeys.includes(key));
+
+    if (!refValueKey) {
+      return;
+    }
+
+    const clonedValue = clone(value);
+    clonedValue[refValueKey] = null;
+    return clonedValue;
   }
 
   getTargetProcess(processes, processNode) {
