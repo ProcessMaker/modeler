@@ -1,11 +1,11 @@
 import {
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
   getGraphElements,
   getLinksConnectedToElement,
-  removeIndentationAndLinebreaks,
   setBoundaryEvent,
   testNumberOfVertices,
   typeIntoTextInput,
@@ -240,14 +240,7 @@ describe('Undo/redo', () => {
     const testConnector = '<bpmn:serviceTask id="node_2" name="Test Connector" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" implementation="test-message" />';
     const sendTweet = '<bpmn:serviceTask id="node_3" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />';
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(testConnector);
-        expect(xml).to.contain(sendTweet);
-      });
+    assertDownloadedXmlContainsExpected(testConnector, sendTweet);
 
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
@@ -258,14 +251,7 @@ describe('Undo/redo', () => {
     cy.get('[data-test=redo]').click();
     waitToRenderAllShapes();
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(testConnector);
-        expect(xml).to.contain(sendTweet);
-      });
+    assertDownloadedXmlContainsExpected(testConnector, sendTweet);
   });
 
   it('Can undo/redo modifying sequence flow vertices', () => {
