@@ -55,6 +55,9 @@ export default class Node {
   }
 
   clearEventDefinitionRefs(value) {
+    if (!value) {
+      return;
+    }
     const refValueKeys = ['errorRef', 'messageRef'];
     const refValueKey = Object.keys(value).find(key => refValueKeys.includes(key));
 
