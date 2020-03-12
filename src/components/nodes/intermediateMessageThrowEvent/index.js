@@ -17,6 +17,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),
       ],
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   inspectorData(node) {

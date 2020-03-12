@@ -4,7 +4,7 @@ import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export const defaultDurationValue = 'PT1H';
 
@@ -25,6 +25,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
           }),
         }),
       ],
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   inspectorData(node) {
@@ -96,22 +97,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
           },
         ],
       },
-      {
-        component: 'FormAccordion',
-        container: true,
-        config: {
-          initiallyOpen: false,
-          label: 'Advanced',
-          icon: 'cogs',
-          name: 'inspector-accordion',
-        },
-        items: [
-          {
-            component: 'FormInput',
-            config: idConfigSettings,
-          },
-        ],
-      },
+      advancedAccordionConfig,
     ],
   }],
 });

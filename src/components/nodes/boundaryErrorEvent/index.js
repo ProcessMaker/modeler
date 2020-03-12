@@ -17,6 +17,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:ErrorEventDefinition'),
       ],
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
 });

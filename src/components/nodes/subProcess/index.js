@@ -1,9 +1,9 @@
 import component from './subProcess';
 import SubProcessFormSelect from './SubProcessFormSelect';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
-export const taskHeight = 76;
 export const id = 'processmaker-modeler-call-activity';
 
 export default {
@@ -19,13 +19,14 @@ export default {
       name: $t('Sub Process'),
       calledElement: '',
       config: '{}',
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: taskHeight,
-        width: 116,
+        width: taskWidth,
       }),
     });
   },
@@ -78,22 +79,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],

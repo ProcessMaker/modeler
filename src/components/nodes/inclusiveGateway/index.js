@@ -2,6 +2,7 @@ import component from './inclusiveGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import DocumentationFormTextArea from '@/components/inspectors/DocumentationFormTextArea';
 
 export default {
   id: 'processmaker-modeler-inclusive-gateway',
@@ -14,6 +15,7 @@ export default {
     return moddle.create('bpmn:InclusiveGateway', {
       name: $t('Inclusive Gateway'),
       gatewayDirection: gatewayDirection.diverging,
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {
@@ -68,6 +70,13 @@ export default {
                   { value: gatewayDirection.diverging, content: 'Diverging' },
                   { value: gatewayDirection.converging, content: 'Converging' },
                 ],
+              },
+            },
+            {
+              component: DocumentationFormTextArea,
+              config: {
+                label: 'Description',
+                name: 'documentation',
               },
             },
           ],
