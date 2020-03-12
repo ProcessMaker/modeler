@@ -1,5 +1,5 @@
 import component from './textAnnotation.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export const id = 'processmaker-modeler-text-annotation';
 
@@ -14,6 +14,7 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:TextAnnotation', {
       text: $t('Text Annotation'),
+      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {
@@ -65,22 +66,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],
