@@ -231,6 +231,8 @@ describe('Undo/redo', () => {
   });
 
   it('Correctly parses elements after redo', () => {
+    waitToRenderAllShapes();
+
     const testConnectorPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.testConnector, testConnectorPosition);
 
