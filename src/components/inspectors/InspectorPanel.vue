@@ -116,19 +116,30 @@ export default {
       return this.highlightedNode;
     },
     updateDefinition() {
+      let inspectorHandler;
+
       if (!this.isAnyNodeActive) {
-        return noop;
+        inspectorHandler = noop;
       }
 
       if (this.isProcessNodeActive) {
-        return this.processNodeInspectorHandler;
+        inspectorHandler = this.processNodeInspectorHandler;
       }
 
       if (this.hasCustomInspectorHandler) {
-        return this.customInspectorHandler;
+        inspectorHandler = this.customInspectorHandler;
       }
 
-      return this.defaultInspectorHandler;
+      inspectorHandler = this.defaultInspectorHandler;
+
+      return value => {
+        if (value.documentation && this.highlightedNode.definition.documentation[0].text !== value.documentation[0].text) {
+          value.documentation[0] = this.moddle.create('bpmn:Documentation', { text: value.documentation[0].text });
+          this.setNodeProp(this.highlightedNode, 'documentation', value.documentation);
+        }
+
+        inspectorHandler(omit(value, ['documentation']));
+      };
     },
     hasCustomInspectorHandler() {
       return this.nodeRegistry[this.highlightedNode.type].inspectorHandler;
@@ -173,15 +184,10 @@ export default {
     },
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */
-      for (const key in omit(value, ['$type', 'eventDefinitions', 'documentation'])) {
+      for (const key in omit(value, ['$type', 'eventDefinitions'])) {
         if (this.highlightedNode.definition.get(key) !== value[key]) {
           this.setNodeProp(this.highlightedNode, key, value[key]);
         }
-      }
-
-      if (value.documentation && this.highlightedNode.definition.documentation[0].text !== value.documentation[0].text) {
-        value.documentation[0] = this.moddle.create('bpmn:Documentation', { text: value.documentation[0].text });
-        this.setNodeProp(this.highlightedNode, 'documentation', value.documentation);
       }
     },
     updateState() {
