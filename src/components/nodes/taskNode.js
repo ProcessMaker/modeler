@@ -17,16 +17,6 @@ export default class TaskNode extends Node {
     if (!value) {
       return;
     }
-
-    const refValueKeys = ['errorRef', 'messageRef'];
-    const refValueKey = Object.keys(value).find(key => refValueKeys.includes(key));
-
-    if (!refValueKey) {
-      return;
-    }
-
-    const clonedValue = clone(value);
-    clonedValue[refValueKey] = null;
-    return clonedValue;
+    return clone(value);
   }
 }
