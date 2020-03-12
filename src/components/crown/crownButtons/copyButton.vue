@@ -47,8 +47,7 @@ export default {
   },
   methods: {
     copyElement() {
-      this.copyCount++;
-      this.$emit('copy-element', this.node, this.copyCount);
+      this.$emit('copy-element', this.node, ++this.copyCount);
     },
   },
 };
