@@ -2,6 +2,7 @@
   <form-text-area
     v-bind="$attrs"
     :value="textValue"
+    :richtext="true"
     @input="updateDoc"
   />
 </template>
