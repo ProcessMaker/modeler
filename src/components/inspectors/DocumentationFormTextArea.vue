@@ -2,14 +2,21 @@
   <form-text-area
     v-bind="$attrs"
     :value="textValue"
-    :richtext="true"
+    :richtext="renderAsRichtext"
     class="documentation-input"
     @input="updateDoc"
   />
 </template>
 
 <script>
+import runningInCypressTest from '@/runningInCypressTest';
+
 export default {
+  data() {
+    return {
+      renderAsRichtext: !runningInCypressTest(),
+    };
+  },
   props: {
     value: {
       type: Array,
