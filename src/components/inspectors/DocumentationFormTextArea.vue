@@ -3,6 +3,7 @@
     v-bind="$attrs"
     :value="textValue"
     :richtext="true"
+    class="documentation-input"
     @input="updateDoc"
   />
 </template>
@@ -29,3 +30,9 @@ export default {
   },
 };
 </script>
+
+<style>
+  .documentation-input .richtext {
+    height: auto;
+  }
+</style>
