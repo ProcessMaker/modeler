@@ -1,6 +1,3 @@
-import cloneDeepWith from 'lodash/cloneDeepWith';
-import clone from 'lodash/clone';
-
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
 
@@ -44,30 +41,15 @@ export default class Node {
     }
   }
 
-  clone() {
-    const diagramClone = cloneDeepWith(this.diagram, this.clearEventDefinitionRefs);
-    const clonedNode = new Node(this.type, diagramClone.bpmnElement, diagramClone);
+  clone(nodeRegistry, moddle, $t) {
+    const definition = nodeRegistry[this.type].definition(moddle, $t);
+    const diagram = nodeRegistry[this.type].diagram(moddle);
+    const clonedNode = new Node(this.type, definition, diagram);
     clonedNode.id = null;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
     clonedNode.definition.name = this.definition.name;
 
     return clonedNode;
-  }
-
-  clearEventDefinitionRefs(value) {
-    if (!value) {
-      return;
-    }
-    const refValueKeys = ['errorRef', 'messageRef'];
-    const refValueKey = Object.keys(value).find(key => refValueKeys.includes(key));
-
-    if (!refValueKey) {
-      return;
-    }
-
-    const clonedValue = clone(value);
-    clonedValue[refValueKey] = null;
-    return clonedValue;
   }
 
   getTargetProcess(processes, processNode) {
@@ -80,6 +62,15 @@ export default class Node {
     return [
       'processmaker-modeler-start-timer-event',
       'processmaker-modeler-intermediate-catch-timer-event',
+    ].includes(type);
+  }
+
+  static isTaskType(type) {
+    return [
+      'processmaker-modeler-task',
+      'processmaker-modeler-manual-task',
+      'processmaker-modeler-script-task',
+      'processmaker-modeler-call-activity',
     ].includes(type);
   }
 }

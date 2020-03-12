@@ -133,6 +133,7 @@ import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
+import TaskNode from '@/components/nodes/taskNode';
 import XMLManager from '@/components/modeler/XMLManager';
 
 export default {
@@ -549,11 +550,20 @@ export default {
         definition.set('name', '');
       }
 
-      const node = Node.isTimerType(type)
-        ? new TimerEventNode(type, definition, diagram)
-        : new Node(type, definition, diagram);
+      const node = this.getNodeType(type, definition, diagram);
 
       store.commit('addNode', node);
+    },
+    getNodeType(type, definition, diagram) {
+      if (Node.isTimerType(type)) {
+        return new TimerEventNode(type, definition, diagram);
+      }
+
+      if (Node.isTaskType(type)) {
+        return new TaskNode(type, definition, diagram);
+      }
+
+      return new Node(type, definition, diagram);
     },
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
@@ -633,9 +643,7 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = Node.isTimerType(control.type)
-        ? new TimerEventNode(control.type, definition, diagram)
-        : new Node(control.type, definition, diagram);
+      const node = this.getNodeType(control.type, definition, diagram);
 
       if (node.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
