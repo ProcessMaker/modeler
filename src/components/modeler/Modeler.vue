@@ -131,6 +131,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 
 export default {
@@ -181,6 +182,7 @@ export default {
       breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
+      previouslyStackedShape: null,
     };
   },
   watch: {
@@ -702,10 +704,11 @@ export default {
       return shape.component != null;
     },
     setShapeStacking(shape) {
-      if (this.isRendering) {
+      if (this.isRendering || (!shape.component.node.isType('processmaker-modeler-pool') && shape === this.previouslyStackedShape)) {
         return;
       }
 
+      this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
   },
@@ -752,6 +755,8 @@ export default {
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
+
+    this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
