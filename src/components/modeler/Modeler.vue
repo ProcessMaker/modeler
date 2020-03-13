@@ -664,12 +664,14 @@ export default {
 
       this.planeElements.push(node.diagram);
 
-      const newNode = this.createNode(node.type, node.definition, node.diagram);
-      store.commit('addNode', newNode);
+      node = this.createNode(node.type, node.definition, node.diagram);
+      store.commit('addNode', node);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
         setTimeout(() => this.pushToUndoStack());
       }
+
+      this.highlightNode(node);
 
       this.poolTarget = null;
     },
