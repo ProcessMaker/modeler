@@ -116,11 +116,11 @@ export default {
       return this.highlightedNode;
     },
     updateDefinition() {
-      let inspectorHandler;
-
       if (!this.isAnyNodeActive) {
-        inspectorHandler = noop;
+        return noop;
       }
+
+      let inspectorHandler = this.defaultInspectorHandler;
 
       if (this.isProcessNodeActive) {
         inspectorHandler = this.processNodeInspectorHandler;
@@ -129,8 +129,6 @@ export default {
       if (this.hasCustomInspectorHandler) {
         inspectorHandler = this.customInspectorHandler;
       }
-
-      inspectorHandler = this.defaultInspectorHandler;
 
       return value => {
         if (value.documentation && this.highlightedNode.definition.documentation[0].text !== value.documentation[0].text) {
