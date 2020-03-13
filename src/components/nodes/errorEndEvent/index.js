@@ -17,7 +17,6 @@ export default merge(cloneDeep(endEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:ErrorEventDefinition'),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   inspectorData(node) {

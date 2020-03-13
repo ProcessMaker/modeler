@@ -15,7 +15,6 @@ export default {
     return moddle.create('bpmn:ParallelGateway', {
       name: $t('Parallel Gateway'),
       gatewayDirection: gatewayDirection.diverging,
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

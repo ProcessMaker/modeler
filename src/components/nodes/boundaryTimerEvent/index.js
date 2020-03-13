@@ -25,7 +25,6 @@ export default merge(cloneDeep(boundaryEventConfig), {
           }),
         }),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   inspectorData(node) {

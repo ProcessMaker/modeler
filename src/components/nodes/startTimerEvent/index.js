@@ -13,7 +13,6 @@ export default {
   definition(moddle, $t) {
     let startEventDefinition = moddle.create('bpmn:StartEvent', {
       name: $t('Start Timer Event'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
 
     startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {

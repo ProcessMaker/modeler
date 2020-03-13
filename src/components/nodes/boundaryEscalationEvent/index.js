@@ -19,7 +19,6 @@ export default merge(cloneDeep(boundaryEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:EscalationEventDefinition'),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   inspectorConfig: [

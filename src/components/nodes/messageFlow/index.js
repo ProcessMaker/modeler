@@ -12,7 +12,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:MessageFlow', {
       name: $t('Message Flow'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   inspectorConfig: [

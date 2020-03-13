@@ -12,7 +12,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateEvent', {
       name: $t('Intermediate Event'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

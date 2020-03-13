@@ -15,7 +15,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:Participant', {
       name: $t('Pool'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

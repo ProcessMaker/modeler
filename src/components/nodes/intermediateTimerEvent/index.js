@@ -24,7 +24,6 @@ export default {
           }),
         }),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

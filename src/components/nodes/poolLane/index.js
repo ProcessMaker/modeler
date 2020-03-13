@@ -13,7 +13,6 @@ export default {
   definition(moddle) {
     return moddle.create('bpmn:Lane', {
       name: '',
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram: (moddle) => moddle.create('bpmndi:BPMNShape', {

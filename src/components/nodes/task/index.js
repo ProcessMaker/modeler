@@ -17,7 +17,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
       name: $t('Form Task'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
       assignment: 'requester',
     });
   },

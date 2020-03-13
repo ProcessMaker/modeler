@@ -13,7 +13,6 @@ export default {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('Boundary Event'),
       cancelActivity: true,
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

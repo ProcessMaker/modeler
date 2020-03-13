@@ -11,7 +11,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:EventBasedGateway', {
       name: $t('Event-Based Gateway'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

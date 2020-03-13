@@ -14,7 +14,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:TextAnnotation', {
       text: $t('Text Annotation'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

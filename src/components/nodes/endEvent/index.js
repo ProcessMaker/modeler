@@ -14,7 +14,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
       name: $t('End Event'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

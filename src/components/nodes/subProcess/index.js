@@ -19,7 +19,6 @@ export default {
       name: $t('Sub Process'),
       calledElement: '',
       config: '{}',
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

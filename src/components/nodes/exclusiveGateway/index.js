@@ -14,7 +14,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:ExclusiveGateway', {
       name: $t('Exclusive Gateway'),
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

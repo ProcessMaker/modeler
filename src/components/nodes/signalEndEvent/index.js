@@ -16,7 +16,6 @@ export default merge(cloneDeep(endEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition'),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
 });

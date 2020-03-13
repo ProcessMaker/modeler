@@ -4,12 +4,13 @@
     :value="textValue"
     :richtext="renderAsRichtext"
     class="documentation-input"
-    @input="updateDoc"
+    @input="$emit('input', $event)"
   />
 </template>
 
 <script>
 import runningInCypressTest from '@/runningInCypressTest';
+import isString from 'lodash/isString';
 
 export default {
   data() {
@@ -19,20 +20,16 @@ export default {
   },
   props: {
     value: {
-      type: Array,
-      default: () => [],
+      type: [String, Array],
+      default: '',
     },
   },
   inheritAttrs: false,
   computed: {
     textValue() {
-      return this.value[0].text;
-    },
-  },
-  methods: {
-    updateDoc(text) {
-      this.value[0].text = text;
-      this.$emit('input', this.value);
+      return isString(this.value)
+        ? this.value
+        : this.value[0].text;
     },
   },
 };

@@ -14,7 +14,6 @@ export default merge(cloneDeep(startEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition'),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   validateIncoming() {

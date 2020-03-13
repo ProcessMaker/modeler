@@ -131,9 +131,12 @@ export default {
       }
 
       return value => {
-        if (value.documentation && this.highlightedNode.definition.documentation[0].text !== value.documentation[0].text) {
-          value.documentation[0] = this.moddle.create('bpmn:Documentation', { text: value.documentation[0].text });
-          this.setNodeProp(this.highlightedNode, 'documentation', value.documentation);
+        if (get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
+          const documentation = value.documentation
+            ? [this.moddle.create('bpmn:Documentation', { text: value.documentation })]
+            : undefined;
+
+          this.setNodeProp(this.highlightedNode, 'documentation', documentation);
         }
 
         inspectorHandler(omit(value, ['documentation']));

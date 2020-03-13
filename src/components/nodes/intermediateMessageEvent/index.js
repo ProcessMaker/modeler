@@ -15,7 +15,6 @@ export default {
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition', {}),
       ],
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

@@ -15,7 +15,6 @@ export default {
     return moddle.create('bpmn:InclusiveGateway', {
       name: $t('Inclusive Gateway'),
       gatewayDirection: gatewayDirection.diverging,
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {

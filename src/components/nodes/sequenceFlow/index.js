@@ -12,7 +12,6 @@ export default {
   definition(moddle) {
     return moddle.create('bpmn:SequenceFlow', {
       name: null,
-      documentation: [moddle.create('bpmn:Documentation', { text: '' })],
     });
   },
   diagram(moddle) {
