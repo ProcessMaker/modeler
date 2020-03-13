@@ -172,41 +172,6 @@ describe('Undo/redo', () => {
     });
   });
 
-  it('Does not include intermediate message flow definition in XML', () => {
-    const validMessageFlowXML = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
-  <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:startEvent id="node_1" name="Start Event" />
-  </bpmn:process>
-  <bpmn:collaboration id="collaboration_0">
-    <bpmn:participant id="node_2" name="Pool" processRef="Process_1" />
-  </bpmn:collaboration>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_0">
-      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
-        <dc:Bounds x="150" y="150" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
-        <dc:Bounds x="100" y="130" width="600" height="300" />
-      </bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn:definitions>`;
-
-    const poolPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
-
-    connectNodesWithFlow('message-flow-button', poolPosition, poolPosition);
-
-    waitToRenderAllShapes();
-
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .should('eq', validMessageFlowXML.trim());
-  });
-
   it('Can update start event name after undo', () => {
     const startEventPosition = { x: 150, y: 150 };
     const testString = 'foo bar';
