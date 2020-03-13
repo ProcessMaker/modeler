@@ -1,6 +1,7 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -536,7 +537,7 @@ describe('Modeler', () => {
     });
   });
 
-  it('should add documentation to element', () => {
+  it('should add and remove documentation to element', () => {
     const position = { x: 300, y: 300 };
     const baseElements = [
       nodeTypes.startEvent,
@@ -556,6 +557,9 @@ describe('Modeler', () => {
         cy.contains('Advanced').click();
         cy.get('[name="documentation"]').clear().type(docString);
         assertDownloadedXmlContainsExpected(docString);
+
+        cy.get('[name="documentation"]').clear();
+        assertDownloadedXmlDoesNotContainExpected('bpmn:documentation');
 
         getElementAtPosition(position, type)
           .click({ force: true })
