@@ -237,7 +237,6 @@ export default {
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
       clonedNode.diagram.bounds.y += yOffset;
-
       this.addNode(clonedNode);
     },
     addWarning(warning) {
@@ -550,11 +549,11 @@ export default {
         definition.set('name', '');
       }
 
-      const node = this.getNodeType(type, definition, diagram);
+      const node = this.createNode(type, definition, diagram);
 
       store.commit('addNode', node);
     },
-    getNodeType(type, definition, diagram) {
+    createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
         return new TimerEventNode(type, definition, diagram);
       }
@@ -643,7 +642,7 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = this.getNodeType(control.type, definition, diagram);
+      const node = this.createNode(control.type, definition, diagram);
 
       if (node.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
@@ -665,7 +664,8 @@ export default {
 
       this.planeElements.push(node.diagram);
 
-      store.commit('addNode', node);
+      const newNode = this.createNode(node.type, node.definition, node.diagram);
+      store.commit('addNode', newNode);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
         setTimeout(() => this.pushToUndoStack());
