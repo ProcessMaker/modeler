@@ -49,6 +49,7 @@ import omit from 'lodash/omit';
 import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
+import isString from 'lodash/isString';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -131,7 +132,11 @@ export default {
       }
 
       return value => {
-        if (get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
+        // eslint-disable-next-line no-console
+        console.log({ value });
+
+        if (isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
+
           const documentation = value.documentation
             ? [this.moddle.create('bpmn:Documentation', { text: value.documentation })]
             : undefined;
