@@ -224,6 +224,8 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
+    /* connectors expect a highlightedNode property */
+    highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
       return Object.entries(this.validationErrors)
