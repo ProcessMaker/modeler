@@ -569,7 +569,7 @@ describe('Modeler', () => {
       });
   });
 
-  it('after collapsing panels, show inspector handel when element is highlighted', () => {
+  it('after collapsing panels, show inspector panel when element is highlighted', () => {
     cy.get('[data-test="panels-btn"]').click();
     cy.get('[data-test="inspector-container"]').should('not.be.visible');
 
