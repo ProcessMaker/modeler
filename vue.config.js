@@ -1,6 +1,7 @@
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const yargs = require('yargs');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   css: {
@@ -62,6 +63,14 @@ module.exports = {
       if (argv.analyze) {
         plugins.push(new BundleAnalyzerPlugin());
       }
+
+      /* copy files required for dynamic import of rich text editor */
+      plugins.push(new CopyPlugin([{
+        from: path.resolve(__dirname, 'node_modules/@processmaker/vue-form-elements/dist'),
+        to: path.resolve(__dirname, 'public/js'),
+        ignore: ['demo.html'],
+      }]));
+
       return plugins;
     })(),
   },

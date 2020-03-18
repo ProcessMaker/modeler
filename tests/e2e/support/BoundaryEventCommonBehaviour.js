@@ -43,6 +43,7 @@ function configurePool(poolPosition, nodeType, taskType, taskTypeSelector) {
 export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, taskType, taskTypeSelector, invalidTargets, skip = false }) {
   (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${ type }`, () => {
     it('can render a boundary event of this type', () => {
+      waitToRenderAllShapes();
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
 
       setBoundaryEvent(nodeType, taskPosition, taskType);
