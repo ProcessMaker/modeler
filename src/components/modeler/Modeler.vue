@@ -58,7 +58,7 @@
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed"
+        :compressed="panelsCompressed && noElementsSelected"
       />
 
       <component
@@ -214,6 +214,9 @@ export default {
     },
   },
   computed: {
+    noElementsSelected() {
+      return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
+    },
     tooltipTitle() {
       if (this.tooltipTarget) {
         return this.tooltipTarget.$el.data('title');
