@@ -132,9 +132,6 @@ export default {
       }
 
       return value => {
-        // eslint-disable-next-line no-console
-        console.log({ value });
-
         if (isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
 
           const documentation = value.documentation

@@ -28,8 +28,6 @@ export default {
   inheritAttrs: false,
   computed: {
     textValue() {
-      // eslint-disable-next-line no-console
-      console.log('textValue', this.value);
       return isString(this.value)
         ? this.value
         : get(this.value[0], 'text', '');
@@ -37,10 +35,6 @@ export default {
   },
   methods: {
     emitValue(value) {
-      // eslint-disable-next-line no-console
-      console.log('emitting');
-      // eslint-disable-next-line no-console
-      console.log('rich text emit', value);
       this.$emit('input', value);
     },
   },

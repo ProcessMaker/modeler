@@ -36,9 +36,6 @@ export default {
   inspectorHandler(value, node, setNodeProp, moddle) {
     const definition = node.definition;
 
-    // eslint-disable-next-line no-console
-    console.log('startTimerEvent inspector value', value);
-
     // Go through each property and rebind it to our data
     for (const key in value) {
       if (definition[key] === value[key]) {

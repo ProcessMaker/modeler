@@ -10,9 +10,6 @@ function makeDefinitionPropertyReactive(definition, key, value) {
     return;
   }
 
-  // eslint-disable-next-line no-console
-  console.log('Making reactive', key, value);
-
   Vue.set(definition, key, value);
 }
 
@@ -78,9 +75,6 @@ export default new Vuex.Store({
     },
     updateNodeProp(state, { node, key, value }) {
       node.definition.set(key, value);
-
-      // eslint-disable-next-line no-console
-      console.log(`Setting ${key}:${value}`);
 
       makeDefinitionPropertyReactive(node.definition, key, value);
     },
