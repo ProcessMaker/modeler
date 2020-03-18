@@ -455,7 +455,7 @@ describe('Modeler', () => {
     cy.get('[data-test=panels-btn]').click();
     cy.wait(700);
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).click().getType()
+    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).click({ force: true }).getType()
       .should('equal', nodeTypes.task);
   });
 
