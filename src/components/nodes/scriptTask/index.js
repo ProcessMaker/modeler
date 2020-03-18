@@ -1,8 +1,8 @@
 import component from './scriptTask.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
-export const taskHeight = 76;
 export const id = 'processmaker-modeler-script-task';
 export default {
   id,
@@ -21,7 +21,7 @@ export default {
     return moddle.create('bpmndi:BPMNShape', {
       bounds: moddle.create('dc:Bounds', {
         height: taskHeight,
-        width: 116,
+        width: taskWidth,
       }),
     });
   },
@@ -45,22 +45,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],

@@ -1,5 +1,7 @@
 import {
   addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -533,6 +535,38 @@ describe('Modeler', () => {
     cy.window().then((win) => {
       expect(win.console.error).to.have.callCount(0);
     });
+  });
+
+  it('should add and remove documentation to element', () => {
+    const position = { x: 300, y: 300 };
+    const baseElements = [
+      nodeTypes.startEvent,
+      nodeTypes.intermediateCatchEvent,
+      nodeTypes.endEvent,
+      nodeTypes.task,
+      nodeTypes.exclusiveGateway,
+      nodeTypes.pool,
+      nodeTypes.textAnnotation,
+    ];
+
+    baseElements
+      .forEach(type => {
+        const docString = `${type} doc!`;
+
+        dragFromSourceToDest(type, position);
+        cy.contains('Advanced').click();
+        cy.get('[name="documentation"]').clear().type(docString);
+        assertDownloadedXmlContainsExpected(docString);
+
+        cy.get('[name="documentation"]').clear();
+        assertDownloadedXmlDoesNotContainExpected('bpmn:documentation');
+
+        getElementAtPosition(position, type)
+          .click({ force: true })
+          .then($element => {
+            getCrownButtonForElement($element, 'delete-button').click({ force: true });
+          });
+      });
   });
 
   it('after collapsing panels, show inspector handel when element is highlighted', () => {
