@@ -27,6 +27,8 @@ import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
+import sequentialIcon from '@/assets/sequential.svg';
+import parallelIcon from '@/assets/parallel.svg';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -143,12 +145,23 @@ export default {
     middleIsOddNumber(value) {
       return Math.abs((value / 2) % 2) === 1;
     },
+    setupMultiInstanceMarker() {
+      const loopCharacteristics = this.node.definition.get('loopCharacteristics');
+      const isMultiInstance = loopCharacteristics ?
+        loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' :
+        false;
+      const isSequential = isMultiInstance ? loopCharacteristics.isSequential : false;
+      if (isMultiInstance) {
+        this.$set(this.markers.bottomCenter, 'multiInstance', isSequential ? sequentialIcon : parallelIcon);
+      }
+    },
   },
   mounted() {
     this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
+    this.setupMultiInstanceMarker();
     this.shape.attr({
       body: {
         rx: 8,
