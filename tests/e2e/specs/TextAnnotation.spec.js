@@ -2,7 +2,6 @@ import {
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
-  getCrownButtonForElement,
   getElementAtPosition,
   typeIntoTextInput,
 } from '../support/utils';
