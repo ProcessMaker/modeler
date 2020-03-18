@@ -13,10 +13,9 @@ import { nodeTypes } from '../support/constants';
 
 describe('Tasks', () => {
   const taskPosition = { x: 250, y: 250 };
+  const testString = 'testing';
 
   it('Update task name', () => {
-    const testString = 'testing';
-
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).click();
@@ -103,5 +102,11 @@ describe('Tasks', () => {
     modalCancel();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+  });
+
+  it('Allows typing in name field on new sub process', () => {
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });
