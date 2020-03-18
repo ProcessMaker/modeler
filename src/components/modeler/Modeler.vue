@@ -851,6 +851,20 @@ export default {
     const resetCursor = () => this.cursor = cursor;
     setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
+    document.addEventListener('keydown', ({ key }) => {
+      if (key === 's' || key === 'S') {
+
+        // I can get some form of SVG here:
+        // eslint-disable-next-line no-console
+        console.log(this.paperManager.paper.svg);
+
+        // but ideally I'd like to use the SVG from the minimap
+        // as it's not translated in weird ways
+        // Something like
+        // console.log(miniMapManager.something.whatevs);
+      }
+    });
+
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: xml => {
