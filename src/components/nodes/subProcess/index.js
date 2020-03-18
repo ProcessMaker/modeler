@@ -39,8 +39,8 @@ export default {
 
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
-    if (currentConfig.name != value.name) {
-      if (oldConfig.name === value.name || !oldConfig.name) {
+    if (currentConfig.name !== value.name) {
+      if (currentConfig.name && (oldConfig.name === value.name || !oldConfig.name)) {
         // SubProcessFormSelect automatically updated the name so set the new name here
         setNodeProp(node, 'name', currentConfig.name);
       } else {
