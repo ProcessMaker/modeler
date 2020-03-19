@@ -238,15 +238,17 @@ export default {
     },
   },
   methods: {
-    saveBpmn() {
+    async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
       style.appendChild(document.createTextNode(css));
 
       svg.appendChild(style);
+      const xml = await this.getXmlFromDiagram();
+      const svgString = (new XMLSerializer()).serializeToString(svg);
 
-      this.$emit('saveBpmn', { svg });
+      this.$emit('saveBpmn', { xml, svg: svgString });
     },
     addWarning(warning) {
       this.allWarnings.push(warning);
