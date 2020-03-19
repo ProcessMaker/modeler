@@ -10,7 +10,7 @@
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
-      @saveBpmn="$emit('saveBpmn')"
+      @saveBpmn="saveBpmn"
       @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
@@ -238,6 +238,24 @@ export default {
     },
   },
   methods: {
+    saveBpmn() {
+      const svg = document.querySelector('.main-paper svg');
+      var css = 'h1 { background: red; }',
+        head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+
+      head.appendChild(style);
+
+      style.type = 'text/css';
+      if (style.styleSheet) {
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
+      
+      this.$emit('saveBpmn', { svg });
+    }
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
