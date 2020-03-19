@@ -457,7 +457,7 @@ describe('Modeler', () => {
     cy.get('[data-test=panels-btn]').click();
     cy.wait(700);
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).click().getType()
+    getElementAtPosition({ x: taskPosition.x + 5, y: taskPosition.y }).click({ force: true }).getType()
       .should('equal', nodeTypes.task);
   });
 
@@ -567,5 +567,17 @@ describe('Modeler', () => {
             getCrownButtonForElement($element, 'delete-button').click({ force: true });
           });
       });
+  });
+
+  it('after collapsing panels, show inspector panel when element is highlighted', () => {
+    cy.get('[data-test="panels-btn"]').click();
+    cy.get('[data-test="inspector-container"]').should('not.be.visible');
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+    cy.get('[data-test="inspector-container"]').should('be.visible');
+
+    cy.get('.paper-container').click();
+    cy.get('[data-test="inspector-container"]').should('not.be.visible');
   });
 });

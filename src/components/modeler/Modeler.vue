@@ -6,8 +6,9 @@
       :is-rendering="isRendering"
       :paper-manager="paperManager"
       :breadcrumb-data="breadcrumbData"
+      :panelsCompressed="panelsCompressed"
       @load-xml="loadXML"
-      @toggle-panels-compressed="panelsCompressed = $event"
+      @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="$emit('saveBpmn')"
       @save-state="pushToUndoStack"
@@ -57,7 +58,7 @@
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed"
+        :compressed="panelsCompressed && noElementsSelected"
       />
 
       <component
@@ -213,6 +214,9 @@ export default {
     },
   },
   computed: {
+    noElementsSelected() {
+      return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
+    },
     tooltipTitle() {
       if (this.tooltipTarget) {
         return this.tooltipTarget.$el.data('title');
