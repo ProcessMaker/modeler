@@ -18,15 +18,23 @@
       v-on="$listeners"
       @toggle-dropdown-state="boundaryEventDropdownToggle"
     />
+
+    <crown-color-dropdown
+      :dropdown-open="colorDropdownOpen"
+      :node="node"
+      v-on="$listeners"
+      @toggle-dropdown-state="colorDropdownToggle"
+    />
   </div>
 </template>
 <script>
 import CrownTaskDropdown from '@/components/crown/crownButtons/crownTaskDropdown';
 import CrownBoundaryEventDropdown from '@/components/crown/crownButtons/crownBoundaryEventDropdown';
+import CrownColorDropdown from '@/components/crown/crownButtons/crownColorDropdown';
 
 export default {
   name: 'CrownDropdowns',
-  components: { CrownTaskDropdown, CrownBoundaryEventDropdown },
+  components: { CrownTaskDropdown, CrownBoundaryEventDropdown, CrownColorDropdown },
   props: {
     dropdownData: Array,
     boundaryEventDropdownData: Array,
@@ -43,16 +51,24 @@ export default {
     return {
       taskDropdownOpen: this.taskDropdownInitiallyOpen,
       boundaryEventDropdownOpen: false,
+      colorDropdownOpen: false,
     };
   },
   methods: {
     taskDropdownToggle(value) {
       this.taskDropdownOpen = value;
       this.boundaryEventDropdownOpen = false;
+      this.colorDropdownOpen = false;
     },
     boundaryEventDropdownToggle(value) {
       this.taskDropdownOpen = false;
       this.boundaryEventDropdownOpen = value;
+      this.colorDropdownOpen = false;
+    },
+    colorDropdownToggle(value) {
+      this.taskDropdownOpen = false;
+      this.boundaryEventDropdownOpen = false;
+      this.colorDropdownOpen = value;
     },
   },
 };
