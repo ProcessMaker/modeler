@@ -6,9 +6,9 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-call-activity';
 
-function subProcessFormSelected(currentName, node) {
+function nameChangedByFormSelect(currentConfigName, currentName, node) {
   const previousConfigName = JSON.parse(node.definition.config).name;
-  return previousConfigName === currentName || !previousConfigName;
+  return currentConfigName && (previousConfigName === currentName || !previousConfigName);
 }
 
 export default {
@@ -44,7 +44,7 @@ export default {
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
     if (currentConfig.name !== value.name) {
-      if (subProcessFormSelected(value.name, node) && currentConfig.name) {
+      if (nameChangedByFormSelect(currentConfig.name, value.name, node)) {
         setNodeProp(node, 'name', currentConfig.name);
       } else {
         // The user is editing the name field manually, so update the config object name
