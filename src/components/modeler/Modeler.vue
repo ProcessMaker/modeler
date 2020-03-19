@@ -239,10 +239,12 @@ export default {
   },
   methods: {
     saveBpmn() {
-      const svg = document.querySelector('.main-paper svg');
+      const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
       style.appendChild(document.createTextNode(css));
+
+      svg.appendChild(style);
 
       this.$emit('saveBpmn', { svg });
     },
