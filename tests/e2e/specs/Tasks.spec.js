@@ -13,10 +13,9 @@ import { nodeTypes } from '../support/constants';
 
 describe('Tasks', () => {
   const taskPosition = { x: 250, y: 250 };
+  const testString = 'testing';
 
   it('Update task name', () => {
-    const testString = 'testing';
-
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).click();
@@ -37,14 +36,15 @@ describe('Tasks', () => {
   });
 
   it('Can create sub process with config', () => {
-    const subProcessPosition = { x: 250, y: 250 };
     const processName = 'Process with multiple start events';
+    const subProcessPosition = { x: 250, y: 250 };
+    const subProcessName = 'Sub Process';
     const startEventName = 'Start Event Two';
     const encodedConfig = JSON.stringify({
       calledElement: 'Subprocess1-5',
       processId: 5,
       startEvent: 'node_10',
-      name: `${processName} (${startEventName})`,
+      name: `${subProcessName}`,
     }).replace(/"/g, '&#34;');
 
     addNodeTypeToPaper(subProcessPosition, nodeTypes.task, 'switch-to-sub-process');
@@ -67,7 +67,7 @@ describe('Tasks', () => {
       .contains(startEventName)
       .click();
 
-    assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_3" name="${processName} (${startEventName})" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
+    assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_3" name="${subProcessName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
   });
 
   it('Can switch task type when initially added', () => {
@@ -103,5 +103,11 @@ describe('Tasks', () => {
     modalCancel();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+  });
+
+  it('Allows typing in name field on new sub process', () => {
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    typeIntoTextInput('[name=name]', testString);
+    cy.get('[name=name]').should('have.value', testString);
   });
 });
