@@ -664,14 +664,15 @@ export default {
 
       this.planeElements.push(node.diagram);
 
-      node = this.createNode(node.type, node.definition, node.diagram);
+      if (!['processmaker-modeler-sequence-flow','processmaker-modeler-message-flow','processmaker-modeler-lane'].includes(node.type)) {
+        node = this.createNode(node.type, node.definition, node.diagram);
+        this.highlightNode(node);
+      }
       store.commit('addNode', node);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
         setTimeout(() => this.pushToUndoStack());
       }
-
-      this.highlightNode(node);
 
       this.poolTarget = null;
     },
