@@ -30,6 +30,7 @@
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import store from '@/store';
+import Vue from 'vue';
 
 export default {
   props: {
@@ -58,6 +59,7 @@ export default {
       this.$emit('save-state');
     },
     setNodeColor(color) {
+      Vue.set(this.node.definition, 'color', color);
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
       this.$emit('save-state');
     },

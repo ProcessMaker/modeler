@@ -70,6 +70,7 @@ import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
 import pull from 'lodash/pull';
 import store from '@/store';
+import Color from 'color';
 
 export default {
   components: {
@@ -102,6 +103,10 @@ export default {
   },
   mixins: [poolLaneCrownConfig],
   watch: {
+    'node.definition.color'(color) {
+      this.shape.attr('body/fill', Color(color).lighten(0.3));
+      this.shape.attr('body/stroke', color);
+    },
     highlightedShapes() {
       this.showCrown = this.highlightedShapes[0] === this.shape;
     },
