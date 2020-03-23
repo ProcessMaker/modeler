@@ -21,7 +21,7 @@ import portsConfig from '@/mixins/portsConfig';
 import EventShape from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import { startColor } from '@/components/nodeColors';
+import { startColor, startColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 
@@ -84,7 +84,7 @@ export default {
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       body: {
-        stroke: '#00bf9c',
+        stroke: startColorStroke,
         fill: startColor,
         originalFill: startColor,
       },

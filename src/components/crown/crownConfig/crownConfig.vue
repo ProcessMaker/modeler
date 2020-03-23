@@ -70,7 +70,7 @@ import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
 import pull from 'lodash/pull';
 import store from '@/store';
-import Color from 'color';
+import { getDefaultNodeColors, setShapeColor } from '@/components/nodeColors';
 
 export default {
   components: {
@@ -103,9 +103,11 @@ export default {
   },
   mixins: [poolLaneCrownConfig],
   watch: {
-    'node.definition.color'(color) {
-      this.shape.attr('body/fill', Color(color).lighten(0.3));
-      this.shape.attr('body/stroke', color);
+    'node.definition.color': {
+      handler() {
+        this.setNodeColor();
+      },
+      deep: true,
     },
     highlightedShapes() {
       this.showCrown = this.highlightedShapes[0] === this.shape;
@@ -152,6 +154,12 @@ export default {
     highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
+    setNodeColor() {
+      const color = this.node.definition.get('color');
+      const { fill, stroke } = getDefaultNodeColors(this.node, color);
+
+      setShapeColor(this.shape, fill, stroke);
+    },
     paperNotRendered() {
       return !this.isRendering;
     },
@@ -244,6 +252,7 @@ export default {
 
     this.setUpCrownConfig();
     this.setUpPositionHandling();
+    this.setNodeColor();
   },
   destroyed() {
     this.shape.stopListening();

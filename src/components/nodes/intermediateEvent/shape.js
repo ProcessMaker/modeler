@@ -1,12 +1,13 @@
 import { shapes, util } from 'jointjs';
-import { markersMarkup, markersAttrs } from '@/mixins/hasMarkers';
+import { markersAttrs, markersMarkup } from '@/mixins/hasMarkers';
+import { intermediateColor, intermediateColorStroke } from '@/components/nodeColors';
 
 export default shapes.standard.Circle.extend({
 
   markup: [{
     tagName: 'circle',
     selector: 'body',
-  },{
+  }, {
     tagName: 'circle',
     selector: 'body2',
   }, {
@@ -28,8 +29,8 @@ export default shapes.standard.Circle.extend({
     type: 'processmaker.components.nodes.intermediateEvent.Shape',
     size: { width: 36, height: 36 },
     attrs: {
-      'body': { fill: '#FFF4D1', stroke: '#FBBE02' },
-      'body2': { cx: 18, cy: 18, r: 15, 'stroke-width': 2, fill: '#FFF4D1', stroke: '#FBBE02' },
+      'body': { fill: intermediateColor, stroke: intermediateColorStroke },
+      'body2': { cx: 18, cy: 18, r: 15, 'stroke-width': 2, fill: intermediateColor, stroke: intermediateColorStroke },
       'image': { 'ref-x': 5, 'ref-y': 5, ref: 'circle', width: 26, height: 26 },
       ...markersAttrs('topLeft', { ref: 'circle', 'ref-y': -20, 'ref-padding-x': 0 }),
       ...markersAttrs('topCenter', { ref: 'circle', 'ref-y': -20 }),
