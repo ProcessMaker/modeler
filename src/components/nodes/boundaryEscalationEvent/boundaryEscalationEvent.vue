@@ -1,6 +1,6 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
-import escalationIcon from '@/assets/boundary-escalation-icon.svg';
+import escalationIcon from '!!url-loader!@/assets/boundary-escalation-icon.svg';
 import { isValidBoundaryEscalationEvent } from '@/boundaryEventValidation';
 
 export default {

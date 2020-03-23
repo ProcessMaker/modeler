@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import laneAboveIcon from '@/assets/lane-above.svg';
+import laneAboveIcon from '!!url-loader!@/assets/lane-above.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 
 export default {

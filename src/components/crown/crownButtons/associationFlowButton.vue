@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import connectIcon from '@/assets/connect-artifacts.svg';
+import connectIcon from '!!url-loader!@/assets/connect-artifacts.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { direction } from '@/components/nodes/association/associationConfig';
 import Node from '@/components/nodes/node';
