@@ -70,6 +70,7 @@ import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
 import pull from 'lodash/pull';
 import store from '@/store';
+import isEqual from 'lodash/isEqual';
 
 export default {
   components: {
@@ -102,7 +103,11 @@ export default {
   },
   mixins: [poolLaneCrownConfig],
   watch: {
-    highlightedShapes() {
+    highlightedShapes(shapes, prevShapes) {
+      if (isEqual(shapes, prevShapes)) {
+        return;
+      }
+
       this.showCrown = this.highlightedShapes[0] === this.shape;
     },
     highlighted(highlighted) {
