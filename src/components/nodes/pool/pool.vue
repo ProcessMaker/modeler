@@ -185,6 +185,7 @@ export default {
       this.containingProcess.get('laneSets').push(laneSet);
     },
     pushNewLane(definition = Lane.definition(this.moddle, this.$t)) {
+      definition.set('color', this.node.definition.get('color'));
       this.$emit('set-pool-target', this.shape);
 
       const diagram = Lane.diagram(this.moddle);
