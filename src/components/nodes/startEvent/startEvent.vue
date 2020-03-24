@@ -86,7 +86,6 @@ export default {
       body: {
         stroke: startColorStroke,
         fill: startColor,
-        originalFill: startColor,
       },
       label: {
         text: this.node.definition.get('name'),

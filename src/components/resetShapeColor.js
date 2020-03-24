@@ -1,5 +1,9 @@
-import { defaultNodeColor } from './nodeColors';
+import { getDefaultNodeColors, setShapeColor } from './nodeColors';
 
 export default function resetShapeColor(shape) {
-  shape.attr('body/fill', shape.attr('body/originalFill') || defaultNodeColor);
+  const node = shape.component.node;
+  const color = node.definition.get('color');
+  const { fill, stroke } = getDefaultNodeColors(node, color);
+
+  setShapeColor(shape, fill, stroke);
 }

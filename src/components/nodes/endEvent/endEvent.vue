@@ -83,7 +83,6 @@ export default {
     this.shape.attr({
       body: {
         fill: endColor,
-        originalFill: endColor,
         stroke: endColorStroke,
       },
       label: {
