@@ -34,19 +34,12 @@ export default {
     setNodeProp(node, 'id', value.id);
     setNodeProp(node, 'name', value.name);
 
-    const oldConfig = JSON.parse(node.definition.config);
     const currentConfig = JSON.parse(value.config);
 
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
-    if (currentConfig.name != value.name) {
-      if (oldConfig.name === value.name || !oldConfig.name) {
-        // SubProcessFormSelect automatically updated the name so set the new name here
-        setNodeProp(node, 'name', currentConfig.name);
-      } else {
-        // The user is editing the name field manually, so update the config object name
-        currentConfig.name = value.name;
-      }
+    if (currentConfig.name !== value.name) {
+      currentConfig.name = value.name;
     }
 
     setNodeProp(node, 'config', JSON.stringify(currentConfig));
