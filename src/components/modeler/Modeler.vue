@@ -613,14 +613,17 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, control }) {
+    handleDrop({ clientX, clientY, control, name }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
         return;
       }
 
-      const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+      let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+      if (name) {
+        definition.name = name;
+      }
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
@@ -668,7 +671,11 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
       this.removeNode(node);
-      this.handleDrop({ clientX, clientY, control: { type: typeToReplaceWith } });
+      this.handleDrop({
+        clientX, clientY,
+        control: { type: typeToReplaceWith },
+        name: node.definition.get('name'),
+      });
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
