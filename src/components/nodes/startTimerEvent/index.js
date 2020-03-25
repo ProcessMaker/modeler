@@ -2,6 +2,7 @@ import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/startEvent/startNames';
 
 export default {
   id: 'processmaker-modeler-start-timer-event',
@@ -9,10 +10,10 @@ export default {
   bpmnType: 'bpmn:StartEvent',
   control: false,
   category: 'BPMN',
-  label: 'Start Timer Event',
+  label: defaultNames['start-timer'],
   definition(moddle, $t) {
     let startEventDefinition = moddle.create('bpmn:StartEvent', {
-      name: $t('Start Timer Event'),
+      name: $t(defaultNames['start-timer']),
     });
 
     startEventDefinition.eventDefinitions = [moddle.create('bpmn:TimerEventDefinition', {
@@ -75,7 +76,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Start Timer Event',
+      name: defaultNames['start-timer'],
       items: [
         {
           component: 'FormAccordion',

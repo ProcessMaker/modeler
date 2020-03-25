@@ -2,6 +2,7 @@ import component from './startEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { startEventDiameter } from './startEventConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from './startNames';
 
 export default {
   id: 'processmaker-modeler-start-event',
@@ -10,11 +11,11 @@ export default {
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/start-event.svg'),
-  label: 'Start Event',
+  label: defaultNames['start'],
   rank: 1,
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
-      name: $t('Start Event'),
+      name: $t(defaultNames['start']),
     });
   },
   diagram(moddle) {
@@ -37,7 +38,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Start Event',
+      name: defaultNames['start'],
       items: [
         {
           component: 'FormAccordion',

@@ -24,6 +24,7 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { startColor } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import defaultNames from './startNames';
 
 export default {
   components: {
@@ -49,22 +50,22 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Start Event',
+          label: defaultNames['start'],
           nodeType: 'processmaker-modeler-start-event',
           dataTest: 'switch-to-start-event',
         },
         {
-          label: 'Start Timer Event',
+          label: defaultNames['start-timer'],
           nodeType: 'processmaker-modeler-start-timer-event',
           dataTest: 'switch-to-start-timer-event',
         },
         {
-          label: 'Signal Start Event',
+          label: defaultNames['start-signal'],
           nodeType: 'processmaker-modeler-signal-start-event',
           dataTest: 'switch-to-signal-start-event',
         },
         {
-          label: 'Message Start Event',
+          label: defaultNames['start-message'],
           nodeType: 'processmaker-modeler-message-start-event',
           dataTest: 'switch-to-message-start-event',
         },
