@@ -46,9 +46,7 @@ export default {
         });
         this.shapeView.showTools();
       } else {
-        this.shape.attr({
-          line: { stroke: 'black' },
-        });
+        resetShapeColor(this.shape);
         this.shapeView.hideTools();
       }
     },
