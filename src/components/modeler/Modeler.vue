@@ -116,8 +116,6 @@ import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
-//import defaultStartNames from '@/components/nodes/startEvent/startNames';
-
 import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
@@ -135,6 +133,7 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
+import defaultStartNames from '@/components/nodes/startEvent/startNames';
 
 export default {
   components: {
@@ -623,7 +622,9 @@ export default {
 
       let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
       if (name) {
-        definition.name = name;
+        if (!Object.values(defaultStartNames).includes(name)) {
+          definition.name = name;
+        }
       }
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
