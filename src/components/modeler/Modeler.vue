@@ -624,7 +624,10 @@ export default {
 
       return null;
     },
-    isNotDefaultName(group, name) {
+    shouldSetDefaultName(group, name) {
+      if (!name) {
+        return false;
+      }
       const defaultNames = this.getDefaultNames(group);
       return defaultNames ? !Object.values(defaultNames).includes(name) : false;
     },
@@ -637,11 +640,10 @@ export default {
 
       let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
-      if (name) {
-        if (this.isNotDefaultName(control.group, name)) {
-          definition.name = name;
-        }
+      if (this.shouldSetDefaultName(control.group, name)) {
+        definition.name = name;
       }
+
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
