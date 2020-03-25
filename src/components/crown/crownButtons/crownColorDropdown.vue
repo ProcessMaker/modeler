@@ -55,6 +55,7 @@ export default {
   },
   methods: {
     unsetNodeColor() {
+      Vue.delete(this.node.definition, 'color');
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
       this.$emit('save-state');
     },
