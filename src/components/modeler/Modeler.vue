@@ -133,7 +133,8 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import defaultStartNames from '@/components/nodes/startEvent/startNames';
+import defaultStartNames from '@/components/nodes/startEvent/defaultNames';
+import defaultTaskNames from '@/components/nodes/task/defaultNames';
 
 export default {
   components: {
@@ -613,6 +614,20 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
+    getDefaultNames(group) {
+      if (group === 'StartEvent') {
+        return defaultStartNames;
+      }
+      if (group === 'Task') {
+        return defaultTaskNames;
+      }
+
+      return null;
+    },
+    isNotDefaultName(group, name) {
+      const defaultNames = this.getDefaultNames(group);
+      return defaultNames ? !Object.values(defaultNames).includes(name) : false;
+    },
     handleDrop({ clientX, clientY, control, name }) {
       this.validateDropTarget({ clientX, clientY, control });
 
@@ -621,8 +636,9 @@ export default {
       }
 
       let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+
       if (name) {
-        if (!Object.values(defaultStartNames).includes(name)) {
+        if (this.isNotDefaultName(control.group, name)) {
           definition.name = name;
         }
       }
@@ -675,7 +691,7 @@ export default {
       this.removeNode(node);
       this.handleDrop({
         clientX, clientY,
-        control: { type: typeToReplaceWith },
+        control: { type: typeToReplaceWith, group: node.definition.get('group') },
         name: node.definition.get('name'),
       });
     },

@@ -4,16 +4,19 @@ import cloneDeep from 'lodash/cloneDeep';
 import startEventConfig from '../startEvent';
 import CatchEventMessageSelect from '../intermediateMessageCatchEvent/CatchEventMessageSelect';
 import omit from 'lodash/omit';
-import defaultNames from '@/components/nodes/startEvent/startNames';
+import defaultNames from '@/components/nodes/startEvent/defaultNames';
+
+const id = 'processmaker-modeler-message-start-event';
 
 export default merge(cloneDeep(startEventConfig), {
-  id: 'processmaker-modeler-message-start-event',
+  id,
   control: false,
   component,
-  label: defaultNames['start-message'],
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
-      name: $t(defaultNames['start-message']),
+      name: $t(defaultNames[id]),
+      group: 'StartEvent',
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),
       ],
