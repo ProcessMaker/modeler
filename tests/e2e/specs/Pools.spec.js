@@ -1,4 +1,7 @@
 import {
+  assertBoundaryEventIsCloseToTask,
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -14,7 +17,6 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
-import { assertBoundaryEventIsCloseToTask } from '../support/utils';
 
 describe('Pools', () => {
   it('Update pool name', () => {
@@ -125,7 +127,7 @@ describe('Pools', () => {
         getCrownButtonForElement($pool, 'delete-button').click({ force: true });
       });
 
-    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_3" name="New Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
+    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_3" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -147,13 +149,7 @@ describe('Pools', () => {
       });
 
     const nonEmptyLane = '<bpmn:lane id="node_3" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(nonEmptyLane);
-      });
+    assertDownloadedXmlContainsExpected(nonEmptyLane);
 
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition)
@@ -163,14 +159,8 @@ describe('Pools', () => {
       });
 
     const emptyLane = '<bpmn:lane id="node_3" name="" />';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(emptyLane);
-        expect(xml).to.not.contain('node_1');
-      });
+    assertDownloadedXmlContainsExpected(emptyLane);
+    assertDownloadedXmlDoesNotContainExpected('node_1');
   });
 
   it('Removes all references to element from a pool', () => {
@@ -183,7 +173,7 @@ describe('Pools', () => {
     });
 
     const startEvent = '<bpmn:startEvent id="node_1" name="Start Event" />';
-    const emptyPool = '<bpmn:participant id="node_2" name="New Pool" processRef="Process_1" />';
+    const emptyPool = '<bpmn:participant id="node_2" name="Pool" processRef="Process_1" />';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
       expect(xml).to.contain(emptyPool);
@@ -205,19 +195,22 @@ describe('Pools', () => {
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
     moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
 
-    const pool1taskXml = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(pool1taskXml);
-    });
+    const pool1taskXml = `
+      <bpmn:process id="Process_1" isExecutable="true">
+        <bpmn:startEvent id="node_1" name="Start Event" />
+        <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />
+        <bpmn:boundaryEvent id="node_5" name="Boundary Timer Event" attachedToRef="node_4">
+    `;
+    assertDownloadedXmlContainsExpected(pool1taskXml);
 
     moveElement(taskPosition, 150, 550);
 
-    const pool2taskXml = '<bpmn:process id="process_2"><bpmn:task id="node_4" name="Task" /><bpmn:boundaryEvent id="node_5" name="New Boundary Timer Event" attachedToRef="node_4">';
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(pool2taskXml);
-    });
+    const pool2taskXml = `
+      <bpmn:process id="process_2">
+        <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />
+        <bpmn:boundaryEvent id="node_5" name="Boundary Timer Event" attachedToRef="node_4">
+    `;
+    assertDownloadedXmlContainsExpected(pool2taskXml);
   });
 
   it('should revert pool element to initial position on undo after dragging outside of pool onto grid', () => {

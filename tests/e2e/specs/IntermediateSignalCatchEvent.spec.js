@@ -1,7 +1,7 @@
 import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Intermediate Signal Catch Event', () => {
+describe('Intermediate Signal Catch Event', () => {
   it('Can create an intermediate signal catch event', () => {
     const intermediateSignalCatchEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(intermediateSignalCatchEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-signal-catch-event');

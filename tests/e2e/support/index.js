@@ -41,3 +41,5 @@ beforeEach(() => {
   dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
   cy.get('.paper-container').click();
 });
+
+require('./printLogsToTerminal');

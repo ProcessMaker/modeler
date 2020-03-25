@@ -1,7 +1,7 @@
 import component from './startEvent.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { startEventDiameter } from './startEventConfig';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export default {
   id: 'processmaker-modeler-start-event',
@@ -55,22 +55,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],

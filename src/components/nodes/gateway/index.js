@@ -1,5 +1,6 @@
 import component from './gateway.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export default {
   id: 'processmaker-modeler-gateway',
@@ -10,7 +11,7 @@ export default {
   label: 'Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:Gateway', {
-      name: $t('New Gateway'),
+      name: $t('Gateway'),
     });
   },
   diagram(moddle) {
@@ -49,6 +50,7 @@ export default {
             },
           ],
         },
+        advancedAccordionConfig,
       ],
     },
   ],

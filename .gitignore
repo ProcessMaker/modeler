@@ -4,6 +4,7 @@ node_modules
 *coverage
 reports
 .nyc_output
+/public/js
 
 # local env files
 .env.local

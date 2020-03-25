@@ -26,6 +26,9 @@ import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { gridSize } from '@/graph';
+import sequentialIcon from '@/assets/sequential.svg';
+import parallelIcon from '@/assets/parallel.svg';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -54,7 +57,7 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Task',
+          label: 'Form Task',
           nodeType: 'processmaker-modeler-task',
           dataTest: 'switch-to-user-task',
         },
@@ -85,11 +88,11 @@ export default {
           nodeType: 'processmaker-modeler-boundary-error-event',
           dataTest: 'add-boundary-error-event',
         },
-        // {
-        //   label: 'Boundary Signal Event',
-        //   nodeType: 'processmaker-modeler-boundary-signal-event',
-        //   dataTest: 'add-boundary-signal-event',
-        // },
+        {
+          label: 'Boundary Signal Event',
+          nodeType: 'processmaker-modeler-boundary-signal-event',
+          dataTest: 'add-boundary-signal-event',
+        },
         {
           label: 'Boundary Message Event',
           nodeType: 'processmaker-modeler-boundary-message-event',
@@ -108,13 +111,11 @@ export default {
     'node.definition.name'(name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr('label/text', util.breakText(name, { width }));
-
-      /* Update shape height if label text overflows */
-      const labelHeight = this.shapeView.selectors.label.getBBox().height;
       const { height } = this.shape.size();
 
-      if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
-        const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
+      const heightByGrid = this.calculateSizeOnGrid();
+      const newHeight = this.useTaskHeight(heightByGrid) ? taskHeight : heightByGrid;
+      if (height !== newHeight) {
         this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
@@ -128,12 +129,39 @@ export default {
 
       return this.graph.findModelsInArea(area);
     },
+    calculateSizeOnGrid() {
+      const taskGridDifference = gridSize - (taskHeight % gridSize);
+      const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
+      const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
+      let newHeight = this.paperManager.ceilToNearestGridMultiple(labelSpace) - taskGridDifference;
+      if (this.middleIsOddNumber(newHeight)) {
+        newHeight += gridSize;
+      }
+      return newHeight;
+    },
+    useTaskHeight(height) {
+      return height < taskHeight || !this.node.definition.name;
+    },
+    middleIsOddNumber(value) {
+      return Math.abs((value / 2) % 2) === 1;
+    },
+    setupMultiInstanceMarker() {
+      const loopCharacteristics = this.node.definition.get('loopCharacteristics');
+      const isMultiInstance = loopCharacteristics ?
+        loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' :
+        false;
+      const isSequential = isMultiInstance ? loopCharacteristics.isSequential : false;
+      if (isMultiInstance) {
+        this.$set(this.markers.bottomCenter, 'multiInstance', isSequential ? sequentialIcon : parallelIcon);
+      }
+    },
   },
   mounted() {
     this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
+    this.setupMultiInstanceMarker();
     this.shape.attr({
       body: {
         rx: 8,

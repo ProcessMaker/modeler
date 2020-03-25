@@ -14,7 +14,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   icon: require('@/assets/toolpanel/boundary-escalation-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('New Boundary Escalation Event'),
+      name: $t('Boundary Escalation Event'),
       cancelActivity: true,
       eventDefinitions: [
         moddle.create('bpmn:EscalationEventDefinition'),

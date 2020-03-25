@@ -1,6 +1,7 @@
 import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
 import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
+import { gridSize } from '../../../src/graph';
 
 const renderTime = 300;
 
@@ -23,7 +24,7 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType) {
-  const paperGridSize = 10;
+  const paperGridSize = gridSize;
   const searchRectangle = {
     width: paperGridSize,
     height: paperGridSize,
@@ -178,10 +179,22 @@ export function moveElementRelativeTo(elementPosition, x, y, componentType) {
       .then($element => {
         const { left, top } = $element.position();
         const newPosition = paper.localToPagePoint(left + x, top + y);
-        cy.wrap($element)
-          .trigger('mousedown', 'topLeft', { which: 1, force: true })
-          .trigger('mousemove', 'topLeft', { clientX: newPosition.x, clientY: newPosition.y, force: true })
-          .trigger('mouseup', 'topLeft', { force: true });
+        const { tx, ty } = paper.translate();
+
+        return cy.get('.main-paper').then($paperContainer => {
+          const { x: paperX, y: paperY } = $paperContainer[0].getBoundingClientRect();
+          const mouseMoveOptions = {
+            clientX: newPosition.x - (paperX + tx),
+            clientY: newPosition.y - (paperY + ty),
+            force: true,
+          };
+
+          cy.wrap($element)
+            .trigger('mousedown', 'topLeft', { which: 1, force: true })
+            .trigger('mousemove', 'topLeft', mouseMoveOptions)
+            .trigger('mouseup', 'topLeft', { force: true });
+        });
+
       });
   });
 }

@@ -1,6 +1,6 @@
 <template>
   <crown-button
-    v-if="validMessageFlowSources.includes(node.type)"
+    v-if="isValidMessageFlowSource"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Message Flow')"
     id="message-flow-button"
@@ -15,20 +15,26 @@ import messageFlow from '@/assets/message-flow.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 
+const validMessageFlowSourceTypes = [
+  'processmaker-modeler-message-end-event',
+  'processmaker-modeler-pool',
+  'processmaker-modeler-task',
+  'processmaker-modeler-call-activity',
+];
+
 export default {
   components: { CrownButton },
   props: ['node', 'moddle', 'shape'],
   data() {
     return {
       messageFlow,
-      validMessageFlowSources: [
-        'processmaker-modeler-start-event',
-        'processmaker-modeler-end-event',
-        'processmaker-modeler-task',
-        'processmaker-modeler-pool',
-        'processmaker-modeler-intermediate-message-throw-event',
-      ],
     };
+  },
+  computed: {
+    isValidMessageFlowSource() {
+      return this.node.isBpmnType('bpmn:IntermediateThrowEvent') ||
+        validMessageFlowSourceTypes.some(type => this.node.isType(type));
+    },
   },
   methods: {
     addMessageFlow(cellView, evt, x, y) {

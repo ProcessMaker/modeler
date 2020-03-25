@@ -1,13 +1,13 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getComponentsEmbeddedInShape,
   getElementAtPosition,
   getGraphElements,
   getPositionInPaperCoords,
   moveElement,
-  removeIndentationAndLinebreaks,
   setBoundaryEvent,
   typeIntoTextInput,
   uploadXml,
@@ -143,8 +143,8 @@ describe('Boundary Timer Event', () => {
       .type(testId);
 
     assertDownloadedXmlContainsExpected(
-      `<bpmn:boundaryEvent id="${ testId }" name="New Boundary Timer Event" attachedToRef="node_1">`,
-      `<bpmndi:BPMNShape id="node_2_di" bpmnElement="${ testId }">`,
+      `<bpmn:boundaryEvent id="${testId}" name="Boundary Timer Event" attachedToRef="node_1">`,
+      `<bpmndi:BPMNShape id="node_2_di" bpmnElement="${testId}">`,
     );
   });
 
@@ -173,17 +173,10 @@ describe('Boundary Timer Event', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    const taskXml = '<bpmn:task id="node_2" name="Task" />';
-    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2">';
+    const taskXml = '<bpmn:task id="node_2" name="Form Task" pm:assignment="requester" />';
+    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2">';
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(removeIndentationAndLinebreaks)
-      .then(xml => {
-        expect(xml).to.contain(taskXml);
-        expect(xml).to.contain(boundaryEventOnTaskXml);
-      });
+    assertDownloadedXmlContainsExpected(taskXml, boundaryEventOnTaskXml);
 
     const task2Position = { x: 500, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
@@ -200,18 +193,11 @@ describe('Boundary Timer Event', () => {
           .trigger('mouseup')
           .then(waitToRenderAllShapes)
           .then(() => {
-            const task2Xml = '<bpmn:task id="node_4" name="Task" />';
-            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_4">';
+            const task2Xml = '<bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />';
+            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_4">';
 
-            cy.get('[data-test=downloadXMLBtn]').click();
-            cy.window()
-              .its('xml')
-              .then(removeIndentationAndLinebreaks)
-              .then(xml => {
-                expect(xml).to.contain(task2Xml);
-                expect(xml).to.not.contain(boundaryEventOnTaskXml);
-                expect(xml).to.contain(boundaryEventOnTask2Xml);
-              });
+            assertDownloadedXmlContainsExpected(task2Xml, boundaryEventOnTask2Xml);
+            assertDownloadedXmlDoesNotContainExpected(boundaryEventOnTaskXml);
 
             getElementAtPosition(taskPosition)
               .then(getComponentsEmbeddedInShape)
@@ -276,7 +262,7 @@ describe('Boundary Timer Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Timer Event',
   nodeType: nodeTypes.boundaryTimerEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="New Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],

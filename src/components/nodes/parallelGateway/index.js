@@ -2,6 +2,7 @@ import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import DocumentationFormTextArea from '@/components/inspectors/DocumentationFormTextArea';
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
@@ -12,7 +13,7 @@ export default {
   label: 'Parallel Gateway',
   definition(moddle, $t) {
     return moddle.create('bpmn:ParallelGateway', {
-      name: $t('New Parallel Gateway'),
+      name: $t('Parallel Gateway'),
       gatewayDirection: gatewayDirection.diverging,
     });
   },
@@ -68,6 +69,13 @@ export default {
                   { value: gatewayDirection.diverging, content: 'Diverging' },
                   { value: gatewayDirection.converging, content: 'Converging' },
                 ],
+              },
+            },
+            {
+              component: DocumentationFormTextArea,
+              config: {
+                label: 'Description',
+                name: 'documentation',
               },
             },
           ],

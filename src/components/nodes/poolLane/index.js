@@ -1,6 +1,6 @@
 import component from './poolLane';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export const id = 'processmaker-modeler-lane';
 export default {
@@ -9,8 +9,12 @@ export default {
   bpmnType: 'bpmn:Lane',
   control: false,
   category: 'BPMN',
-  label: 'New Lane',
-  definition: (moddle) => moddle.create('bpmn:Lane', { name: '' }),
+  label: 'Lane',
+  definition(moddle) {
+    return moddle.create('bpmn:Lane', {
+      name: '',
+    });
+  },
   diagram: (moddle) => moddle.create('bpmndi:BPMNShape', {
     bounds: moddle.create('dc:Bounds', {
       height: 150,
@@ -39,22 +43,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],

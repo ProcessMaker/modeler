@@ -1,4 +1,6 @@
 import taskConfig from '@/components/nodes/task';
+import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export default {
   ...taskConfig,
@@ -8,13 +10,30 @@ export default {
   label: 'Service Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:ServiceTask', {
-      name: $t('New Service Task'),
+      name: $t('Service Task'),
     });
   },
   inspectorConfig: [
     {
-      name: 'ServiceTask',
+      name: 'Service Task',
       items: [
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: true,
+            label: 'Configuration',
+            icon: 'cog',
+            name: 'inspector-accordion',
+          },
+          items: [
+            {
+              component: 'FormInput',
+              config: nameConfigSettings,
+            },
+          ],
+        },
+        advancedAccordionConfig,
       ],
     },
   ],

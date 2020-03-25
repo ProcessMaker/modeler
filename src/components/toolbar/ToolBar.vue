@@ -5,6 +5,8 @@
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="mr-3">
+        <align-buttons @save-state="$emit('save-state')" />
+
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <b-button
             class="btn btn-sm btn-secondary btn-undo"
@@ -65,7 +67,7 @@
           <b-button
             class="btn btn-sm btn-secondary ml-auto"
             data-test="panels-btn"
-            @click="panelsCompressed = !panelsCompressed"
+            @click="$emit('toggle-panels-compressed')"
             v-b-tooltip.hover
             :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
           >
@@ -101,10 +103,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
+import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, FontAwesomeIcon },
+  components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
   props: {
     canvasDragPosition: {},
     cursor: {},
@@ -115,6 +118,7 @@ export default {
     breadcrumbData: {
       type: Array,
     },
+    panelsCompressed: Boolean,
   },
   watch: {
     scale(scale) {
@@ -125,9 +129,6 @@ export default {
     },
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);
-    },
-    panelsCompressed(isCompressed) {
-      this.$emit('toggle-panels-compressed', isCompressed);
     },
     canUndo(canUndo) {
       if (!canUndo) {
@@ -160,7 +161,6 @@ export default {
       miniMapOpen: false,
       compressIcon: faCompress,
       expandIcon: faExpand,
-      panelsCompressed: false,
       undoIcon: faUndo,
       redoIcon: faRedo,
       saveIcon: faSave,

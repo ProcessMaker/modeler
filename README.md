@@ -230,7 +230,7 @@ export default {
   // moddle is a reference to an instance of bpmn-moddle: https://github.com/bpmn-io/bpmn-moddle
   definition(moddle) {
     return moddle.create('bpmn:ScriptTask', {
-      name: 'New Script Task',
+      name: 'Script Task',
     });
   },
 
