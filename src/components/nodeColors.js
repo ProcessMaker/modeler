@@ -1,5 +1,14 @@
 import Color from 'color';
 
+export const baseNodeColors = [
+  '#357bf6',
+  '#f6c243',
+  '#6d747c',
+  '#4ba0b5',
+  '#53a451',
+  '#cc444a',
+];
+
 export const validNodeColor = '#dffdd0';
 export const invalidNodeColor = '#fae0e6';
 
@@ -19,7 +28,7 @@ export const poolColor = '#f7f7f7';
 
 export function getDefaultNodeColors(node, color) {
   if (color) {
-    return { fill: Color(color).lighten(0.3), stroke: color };
+    return { fill: Color(color).lighten(0.3).hex(), stroke: color };
   }
 
   if (node.isBpmnType('bpmn:StartEvent')) {

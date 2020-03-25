@@ -6,6 +6,7 @@
       :aria-label="$t('Open Color Palette')"
       role="menuitem"
       @click="$emit('toggle-dropdown-state', !dropdownOpen)"
+      data-test="picker-dropdown-button"
     >
       <i class="fas fa-palette cog-container--button"/>
     </crown-button>
@@ -14,11 +15,13 @@
       <button
         type="button"
         class="color-button"
+        data-test="clear-color"
         @click="unsetNodeColor"
       />
       <button
         type="button"
         class="color-button"
+        :data-test="color"
         v-for="color in colors" :key="color"
         :style="{ backgroundColor: color }"
         @click="setNodeColor(color)"
@@ -31,6 +34,7 @@
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import store from '@/store';
 import Vue from 'vue';
+import { baseNodeColors } from '@/components/nodeColors';
 
 export default {
   props: {
@@ -43,14 +47,7 @@ export default {
   components: { CrownButton },
   data() {
     return {
-      colors: [
-        '#357bf6',
-        '#f6c243',
-        '#6d747c',
-        '#4ba0b5',
-        '#53a451',
-        '#cc444a',
-      ],
+      colors: baseNodeColors,
     };
   },
   methods: {
