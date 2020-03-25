@@ -580,4 +580,15 @@ describe('Modeler', () => {
     cy.get('.paper-container').click();
     cy.get('[data-test="inspector-container"]').should('not.be.visible');
   });
+
+  it('should hide the crown when adding a sequence flow', () => {
+    cy.get('.crown-config').should('not.exist');
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+    cy.get('.crown-config').should('exist');
+
+    cy.get('#sequence-flow-button').click();
+    cy.get('.crown-config').should('not.exist');
+  });
 });
