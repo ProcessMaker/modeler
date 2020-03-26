@@ -133,13 +133,7 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import {
-  defaultStartNames,
-  defaultEndNames,
-  defaultTaskNames,
-  defaultGatewayNames,
-  defaultIntermediateNames,
-} from '@/components/nodes/defaultNames';
+import { shouldSetDefaultName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -619,31 +613,6 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    getDefaultNames(node) {
-      if (node.isStartGroup()) {
-        return defaultStartNames;
-      }
-      if (node.isTaskGroup()) {
-        return defaultTaskNames;
-      }
-      if (node.isGatewayGroup()) {
-        return defaultGatewayNames;
-      }
-      if (node.isIntermediateGroup()) {
-        return defaultIntermediateNames;
-      }
-      if (node.isEndGroup()) {
-        return defaultEndNames;
-      }
-      return null;
-    },
-    shouldSetDefaultName(node) {
-      if (!node) {
-        return false;
-      }
-      const defaultNames = this.getDefaultNames(node);
-      return defaultNames ? !Object.values(defaultNames).includes(node.definition.name) : false;
-    },
     handleDrop({ clientX, clientY, control, node }) {
       this.validateDropTarget({ clientX, clientY, control });
 
@@ -653,7 +622,7 @@ export default {
 
       let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
-      if (this.shouldSetDefaultName(node)) {
+      if (shouldSetDefaultName(node)) {
         definition.name = node.definition.name;
       }
 

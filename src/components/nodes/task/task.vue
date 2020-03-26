@@ -73,7 +73,7 @@ export default {
           dataTest: 'switch-to-script-task',
         },
         {
-          label: defaultNames['processmaker-modeler-script-task'],
+          label: defaultNames['processmaker-modeler-call-activity'],
           nodeType: 'processmaker-modeler-call-activity',
           dataTest: 'switch-to-sub-process',
         },
