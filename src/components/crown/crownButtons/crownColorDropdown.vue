@@ -15,16 +15,31 @@
       <button
         type="button"
         class="color-button"
-        data-test="clear-color"
-        @click="unsetNodeColor"
-      />
-      <button
-        type="button"
-        class="color-button"
         :data-test="color"
         v-for="color in colors" :key="color"
         :style="{ backgroundColor: color }"
-        @click="setNodeColor(color)"
+        @click="selectedColor = color"
+      />
+
+      <button
+        type="button"
+        class="color-button"
+        data-test="clear-color"
+        @click="selectedColor = null"
+      />
+
+      <button
+        type="button"
+        class="color-button toggle-picker"
+        @click="colorPickerOpen = !colorPickerOpen"
+      />
+
+      <sketch-picker
+        v-if="colorPickerOpen"
+        :value="selectedColor || '#fff'"
+        :presetColors="null"
+        class="color-picker"
+        @input="setColorFromPicker"
       />
     </div>
   </div>
@@ -35,6 +50,7 @@ import CrownButton from '@/components/crown/crownButtons/crownButton';
 import store from '@/store';
 import Vue from 'vue';
 import { baseNodeColors } from '@/components/nodeColors';
+import { Sketch } from 'vue-color';
 
 export default {
   props: {
@@ -44,13 +60,28 @@ export default {
     },
     node: Object,
   },
-  components: { CrownButton },
+  components: { CrownButton, 'sketch-picker': Sketch },
   data() {
     return {
       colors: baseNodeColors,
+      selectedColor: this.node.definition.get('color'),
+      colorPickerOpen: false,
     };
   },
+  watch: {
+    selectedColor(color) {
+      if (!color) {
+        this.unsetNodeColor();
+        return;
+      }
+
+      this.setNodeColor(color);
+    },
+  },
   methods: {
+    setColorFromPicker({ hex8 }) {
+      this.selectedColor = hex8;
+    },
     unsetNodeColor() {
       Vue.delete(this.node.definition, 'color');
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
@@ -72,6 +103,8 @@ export default {
   .color-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    grid-auto-flow: column;
     grid-gap: 0.5rem;
     padding: 0.5rem;
 
@@ -83,5 +116,15 @@ export default {
       border: 2px solid white;
       position: relative;
     }
+  }
+
+  .color-picker {
+    position: absolute;
+    right: 40px;
+    top: calc(100% - 36px);
+  }
+
+  .toggle-picker {
+    background: center / cover no-repeat url('../../../assets/color-wheel.png') !important;
   }
 </style>

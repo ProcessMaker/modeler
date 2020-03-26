@@ -7,7 +7,7 @@ import {
 } from '../support/utils';
 import { baseNodeColors } from '../../../src/components/nodeColors';
 import { nodeTypes } from '../support/constants';
-import Color from 'color';
+import tinycolor from 'tinycolor2';
 
 describe('Crown color picker', () => {
   const colorToSelect = baseNodeColors[0];
@@ -39,7 +39,7 @@ describe('Crown color picker', () => {
   it('should load color from BPMN', () => {
     uploadXml('taskWithColor.xml');
 
-    const fillColor = Color(colorToSelect).lighten(0.55).hex();
+    const fillColor = tinycolor(colorToSelect).lighten(35).toHex8String();
 
     cy.get('.main-paper [joint-selector="body"]')
       .should('have.attr', 'fill', fillColor)
