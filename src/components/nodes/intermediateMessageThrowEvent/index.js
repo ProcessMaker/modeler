@@ -3,17 +3,20 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
 import omit from 'lodash/omit';
+import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+
+const id = 'processmaker-modeler-intermediate-message-throw-event';
 
 export default merge(cloneDeep(intermediateMessageEventConfig), {
-  id: 'processmaker-modeler-intermediate-message-throw-event',
+  id,
   component,
   control: false,
   bpmnType: 'bpmn:IntermediateThrowEvent',
-  label: 'Intermediate Message Throw Event',
+  label: defaultNames[id],
   icon: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateThrowEvent', {
-      name: $t('Intermediate Message Throw Event'),
+      name: $t(defaultNames[id]),
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),
       ],
