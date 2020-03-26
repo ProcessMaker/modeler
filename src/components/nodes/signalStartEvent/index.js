@@ -20,7 +20,8 @@ export default merge(cloneDeep(startEventConfig), {
   inspectorData(node) {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'eventDefinitions') {
-        data.signalName = value[0].get('signalRef').name;
+        const signal = value[0].get('signalRef');
+        data.signalName = signal ? signal.name : '';
       } else {
         data[key] = value;
       }
@@ -38,7 +39,7 @@ export default merge(cloneDeep(startEventConfig), {
     }
 
     const signal = node.definition.get('eventDefinitions')[0].signalRef;
-    if (signal.name !== value.signalName) {
+    if (signal && signal.name !== value.signalName) {
       signal.name = value.signalName;
     }
   },

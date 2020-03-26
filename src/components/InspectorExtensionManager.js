@@ -20,7 +20,6 @@ function addInspectorItem(inspectorItems, config) {
   const nodeIndex = inspectorItems.findIndex(item => {
     return (config.id && config.id === item.id) || (config.name && config.name === item.name);
   });
-  window.nodeIndex = nodeIndex;
   if (nodeIndex === -1) {
     inspectorItems.push(config);
     return;
@@ -39,7 +38,6 @@ function getInspectorItems(node, config, root) {
       node = node.items.find(node => node.config.name === root[0]);
       root.shift();
     }
-    window.dee = node;
     return node ? node.items : null;
   } else {
     return node.inspectorConfig[0].items[0].items;
