@@ -133,7 +133,7 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { shouldSetDefaultName } from '@/components/modeler/modelerUtils';
+import { keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -622,7 +622,7 @@ export default {
 
       let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
-      if (shouldSetDefaultName(node)) {
+      if (keepOriginalName(node)) {
         definition.name = node.definition.name;
       }
 

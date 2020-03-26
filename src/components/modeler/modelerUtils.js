@@ -25,7 +25,7 @@ function getDefaultNames(node) {
   return null;
 }
 
-export function shouldSetDefaultName(node) {
+export function keepOriginalName(node) {
   if (!node) {
     return false;
   }
