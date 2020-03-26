@@ -18,7 +18,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
-      group: 'Task',
       assignment: 'requester',
     });
   },

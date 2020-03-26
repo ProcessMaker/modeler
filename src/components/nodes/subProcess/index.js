@@ -18,7 +18,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:CallActivity', {
       name: $t(defaultNames[id]),
-      group: 'Task',
       calledElement: '',
       config: '{}',
     });

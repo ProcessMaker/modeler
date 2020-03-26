@@ -614,24 +614,23 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    getDefaultNames(group) {
-      if (group === 'StartEvent') {
+    getDefaultNames(node) {
+      if (node.isStartGroup()) {
         return defaultStartNames;
       }
-      if (group === 'Task') {
+      if (node.isTaskGroup()) {
         return defaultTaskNames;
       }
-
       return null;
     },
-    shouldSetDefaultName(group, name) {
-      if (!name) {
+    shouldSetDefaultName(node) {
+      if (!node) {
         return false;
       }
-      const defaultNames = this.getDefaultNames(group);
-      return defaultNames ? !Object.values(defaultNames).includes(name) : false;
+      const defaultNames = this.getDefaultNames(node);
+      return defaultNames ? !Object.values(defaultNames).includes(node.definition.name) : false;
     },
-    handleDrop({ clientX, clientY, control, name }) {
+    handleDrop({ clientX, clientY, control, node }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -640,8 +639,8 @@ export default {
 
       let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
-      if (this.shouldSetDefaultName(control.group, name)) {
-        definition.name = name;
+      if (this.shouldSetDefaultName(node)) {
+        definition.name = node.definition.name;
       }
 
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
@@ -650,14 +649,14 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = new Node(control.type, definition, diagram);
+      const newNode = new Node(control.type, definition, diagram);
 
-      if (node.isBpmnType('bpmn:BoundaryEvent')) {
+      if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      this.highlightNode(node);
-      this.addNode(node);
+      this.highlightNode(newNode);
+      this.addNode(newNode);
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -693,8 +692,8 @@ export default {
       this.removeNode(node);
       this.handleDrop({
         clientX, clientY,
-        control: { type: typeToReplaceWith, group: node.definition.get('group') },
-        name: node.definition.get('name'),
+        control: { type: typeToReplaceWith },
+        node,
       });
     },
     removeNodeFromLane(node) {

@@ -14,7 +14,6 @@ export default merge(cloneDeep(startEventConfig), {
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
       name: $t(defaultNames[id]),
-      group: 'StartEvent',
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition'),
       ],

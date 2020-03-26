@@ -18,7 +18,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
       name: $t(defaultNames[id]),
-      group: 'StartEvent',
     });
   },
   diagram(moddle) {

@@ -18,6 +18,24 @@ export default class Node {
     return this.type === type;
   }
 
+  isStartGroup() {
+    return [
+      'processmaker-modeler-start-event',
+      'processmaker-modeler-message-start-event',
+      'processmaker-modeler-start-timer-event',
+      'processmaker-modeler-signal-start-event',
+    ].includes(this.type);
+  }
+
+  isTaskGroup() {
+    return [
+      'processmaker-modeler-task',
+      'processmaker-modeler-manual-task',
+      'processmaker-modeler-script-task',
+      'processmaker-modeler-call-activity',
+    ].includes(this.type);
+  }
+
   get id() {
     return this.definition.id;
   }

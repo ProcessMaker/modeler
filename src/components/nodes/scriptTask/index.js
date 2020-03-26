@@ -17,7 +17,6 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:ScriptTask', {
       name: $t(defaultNames[id]),
-      group: 'Task',
     });
   },
   diagram(moddle) {
