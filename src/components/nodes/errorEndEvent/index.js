@@ -3,6 +3,7 @@ import endEventConfig from '../endEvent/index';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import omit from 'lodash/omit';
+import defaultNames from '@/components/nodes/endEvent/defaultNames';
 
 export const id = 'processmaker-modeler-error-end-event';
 
@@ -10,10 +11,10 @@ export default merge(cloneDeep(endEventConfig), {
   id,
   component,
   control: false,
-  label: 'Error End Event',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
-      name: $t('Error End Event'),
+      name: $t(defaultNames[id]),
       eventDefinitions: [
         moddle.create('bpmn:ErrorEventDefinition'),
       ],

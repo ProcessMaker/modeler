@@ -1,3 +1,5 @@
+import { defaultStartNames, defaultEndNames, defaultTaskNames } from '@/components/nodes/defaultNames';
+
 export default class Node {
   type;
   definition;
@@ -19,21 +21,15 @@ export default class Node {
   }
 
   isStartGroup() {
-    return [
-      'processmaker-modeler-start-event',
-      'processmaker-modeler-message-start-event',
-      'processmaker-modeler-start-timer-event',
-      'processmaker-modeler-signal-start-event',
-    ].includes(this.type);
+    return Object.keys(defaultStartNames).includes(this.type);
+  }
+
+  isEndGroup() {
+    return Object.keys(defaultEndNames).includes(this.type);
   }
 
   isTaskGroup() {
-    return [
-      'processmaker-modeler-task',
-      'processmaker-modeler-manual-task',
-      'processmaker-modeler-script-task',
-      'processmaker-modeler-call-activity',
-    ].includes(this.type);
+    return Object.keys(defaultTaskNames).includes(this.type);
   }
 
   get id() {

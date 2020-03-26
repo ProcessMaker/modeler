@@ -133,8 +133,7 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import defaultStartNames from '@/components/nodes/startEvent/defaultNames';
-import defaultTaskNames from '@/components/nodes/task/defaultNames';
+import { defaultStartNames, defaultEndNames, defaultTaskNames } from '@/components/nodes/defaultNames';
 
 export default {
   components: {
@@ -617,6 +616,9 @@ export default {
     getDefaultNames(node) {
       if (node.isStartGroup()) {
         return defaultStartNames;
+      }
+      if (node.isEndGroup()) {
+        return defaultEndNames;
       }
       if (node.isTaskGroup()) {
         return defaultTaskNames;
