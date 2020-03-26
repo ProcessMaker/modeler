@@ -1,8 +1,8 @@
 const defaultNames = {
-  'processmaker-modeler-gateway': 'End Event',
-  'processmaker-modeler-error-end-event': 'Error End Event',
-  'processmaker-modeler-message-end-event': 'Message End Event',
-  'processmaker-modeler-signal-end-event': 'Signal End Event',
+  'processmaker-modeler-exclusive-gateway': 'Exclusive Gateway',
+  'processmaker-modeler-inclusive-gateway': 'Inclusive Gateway',
+  'processmaker-modeler-parallel-gateway': 'Parallel Gateway',
+  'processmaker-modeler-event-based-gateway': 'Event Based Gateway',
 };
 
 export default defaultNames;

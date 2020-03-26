@@ -1,4 +1,4 @@
-import { defaultStartNames, defaultEndNames, defaultTaskNames } from '@/components/nodes/defaultNames';
+import { defaultStartNames, defaultEndNames, defaultTaskNames, defaultGatewayNames } from '@/components/nodes/defaultNames';
 
 export default class Node {
   type;
@@ -30,6 +30,10 @@ export default class Node {
 
   isTaskGroup() {
     return Object.keys(defaultTaskNames).includes(this.type);
+  }
+
+  isGatewayGroup() {
+    return Object.keys(defaultGatewayNames).includes(this.type);
   }
 
   get id() {
