@@ -1,5 +1,5 @@
-export default function registerInspectorExtension(node, config) {
-  const inspectorItems = getInspectorItems(node, config);
+export default function registerInspectorExtension(node, config, root = '') {
+  const inspectorItems = getInspectorItems(node, config, root);
   addInspectorItem(inspectorItems, config);
   node.inspectorConfig[0].items.sort(moveAdvancedAccordionToBottom);
 }
@@ -27,11 +27,21 @@ function addInspectorItem(inspectorItems, config) {
   inspectorItems[nodeIndex] = config;
 }
 
-function getInspectorItems(node, config) {
+function getInspectorItems(node, config, root) {
   if (typeof config.container !== 'undefined') {
     return node.inspectorConfig[0].items;
   }
-  return node.inspectorConfig[0].items[0].items;
+  if (root) {
+    node = node.inspectorConfig[0];
+    root = root.split('.');
+    while (node && root.length) {
+      node = node.items.find(node => node.config.name === root[0]);
+      root.shift();
+    }
+    return node ? node.items : null;
+  } else {
+    return node.inspectorConfig[0].items[0].items;
+  }
 }
 
 function isAdvancedAccordion(accordion) {
