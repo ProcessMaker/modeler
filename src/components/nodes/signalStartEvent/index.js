@@ -21,7 +21,7 @@ export default merge(cloneDeep(startEventConfig), {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'eventDefinitions') {
         const signal = value[0].get('signalRef');
-        data.signalName = signal ? signal.name : '';
+        data.signalRef = signal ? signal.id : '';
       } else {
         data[key] = value;
       }
@@ -29,8 +29,8 @@ export default merge(cloneDeep(startEventConfig), {
       return data;
     }, {});
   },
-  inspectorHandler(value, node, setNodeProp) {
-    for (const key in omit(value, ['$type', 'eventDefinitions', 'signalName'])) {
+  inspectorHandler(value, node, setNodeProp, moddle, definitions) {
+    for (const key in omit(value, ['$type', 'eventDefinitions', 'signalRef'])) {
       if (node.definition[key] === value[key]) {
         continue;
       }
@@ -38,10 +38,8 @@ export default merge(cloneDeep(startEventConfig), {
       setNodeProp(node, key, value[key]);
     }
 
-    const signal = node.definition.get('eventDefinitions')[0].signalRef;
-    if (signal && signal.name !== value.signalName) {
-      signal.name = value.signalName;
-    }
+    const signal = definitions.rootElements.find(element => element.id === value.signalRef);
+    node.definition.get('eventDefinitions')[0].signalRef = signal;
   },
   validateIncoming() {
     return false;
