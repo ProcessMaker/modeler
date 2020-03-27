@@ -620,7 +620,7 @@ export default {
         return;
       }
 
-      let definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+      const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
       if (keepOriginalName(node)) {
         definition.name = node.definition.name;
