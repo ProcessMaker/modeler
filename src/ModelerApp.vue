@@ -86,10 +86,6 @@ export default {
     setUploadedXml(event) {
       this.uploadedXml = event.target.result;
     },
-    saveBpmn(event) {
-      // eslint-disable-next-line no-console
-      console.log(event.svg);
-    },
   },
   created() {
     reader.onload = this.setUploadedXml;
