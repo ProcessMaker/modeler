@@ -51,6 +51,7 @@
     "lodash": "^4.17.15",
     "luxon": "^1.21.1",
     "mustache": "^3.1.0",
+    "svg-inline-loader": "^0.8.2",
     "vue": "^2.6.10",
     "vue-deepset": "^0.6.3",
     "vue-upload-component": "^2.8.20",

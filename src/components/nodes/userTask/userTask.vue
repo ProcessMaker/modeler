@@ -1,6 +1,6 @@
 <script>
 import Task from '../task/task';
-import userIcon from '@/assets/user-task.svg';
+import userIcon from '!!svg-inline-loader!@/assets/user-task.svg';
 
 export default {
   extends: Task,
