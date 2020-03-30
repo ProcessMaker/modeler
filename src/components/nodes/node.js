@@ -26,23 +26,23 @@ export default class Node {
     return this.type === type;
   }
 
-  isStartGroup() {
+  isStartEvent() {
     return Object.keys(defaultStartNames).includes(this.type);
   }
 
-  isEndGroup() {
+  isEndEvent() {
     return Object.keys(defaultEndNames).includes(this.type);
   }
 
-  isTaskGroup() {
+  isTask() {
     return Object.keys(defaultTaskNames).includes(this.type);
   }
 
-  isGatewayGroup() {
+  isGateway() {
     return Object.keys(defaultGatewayNames).includes(this.type);
   }
 
-  isIntermediateGroup() {
+  isIntermediateEvent() {
     return Object.keys(defaultIntermediateNames).includes(this.type);
   }
 

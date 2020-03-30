@@ -7,19 +7,19 @@ import {
 } from '@/components/nodes/defaultNames';
 
 function getDefaultNames(node) {
-  if (node.isStartGroup()) {
+  if (node.isStartEvent()) {
     return defaultStartNames;
   }
-  if (node.isTaskGroup()) {
+  if (node.isTask()) {
     return defaultTaskNames;
   }
-  if (node.isGatewayGroup()) {
+  if (node.isGateway()) {
     return defaultGatewayNames;
   }
-  if (node.isIntermediateGroup()) {
+  if (node.isIntermediateEvent()) {
     return defaultIntermediateNames;
   }
-  if (node.isEndGroup()) {
+  if (node.isEndEvent()) {
     return defaultEndNames;
   }
   return null;
