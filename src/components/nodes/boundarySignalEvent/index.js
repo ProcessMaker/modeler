@@ -3,10 +3,12 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import boundaryEventConfig from '@/components/nodes/boundaryEvent';
 import interruptingToggleConfig from '@/components/nodes/boundaryEvent/interruptingToggleInspector';
+import signalEventDefinition from '../signalEventDefinition';
 
 export const id = 'processmaker-modeler-boundary-signal-event';
 
 export default merge(cloneDeep(boundaryEventConfig), {
+  ...signalEventDefinition,
   id,
   component,
   control: false,
