@@ -4,7 +4,7 @@ const encodeAsDataUri = (svgString) => {
 };
 
 /** returns a data URI encoded re-colored icon */
-const coloredIcon = (iconString, color = '') => {
+const coloredIcon = (iconString, color = '#788793') => {
   const svgDocument = (new DOMParser()).parseFromString(iconString, 'text/xml');
   if (color) {
     svgDocument.querySelectorAll('*[fill]:not([fill="none"])').forEach(svgNode => {
