@@ -135,6 +135,7 @@ import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import TaskNode from '@/components/nodes/taskNode';
 import XMLManager from '@/components/modeler/XMLManager';
+import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 
 export default {
   components: {
@@ -656,6 +657,12 @@ export default {
       diagram.bounds.y -= (diagram.bounds.height / 2);
     },
     addNode(node) {
+
+      if (validCopyElements.includes(node.type)) {
+        node = this.createNode(node.type, node.definition, node.diagram);
+        this.highlightNode(node);
+      }
+
       node.pool = this.poolTarget;
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
@@ -663,11 +670,6 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
-
-      if (!['processmaker-modeler-sequence-flow','processmaker-modeler-message-flow','processmaker-modeler-lane'].includes(node.type)) {
-        node = this.createNode(node.type, node.definition, node.diagram);
-        this.highlightNode(node);
-      }
       store.commit('addNode', node);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
