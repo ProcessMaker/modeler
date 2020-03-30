@@ -30,5 +30,5 @@ export function keepOriginalName(node) {
     return false;
   }
   const defaultNames = getDefaultNames(node);
-  return defaultNames ? !Object.values(defaultNames).includes(node.definition.name) : false;
+  return defaultNames ? !Object.values(defaultNames).includes(node.definition.name) : true;
 }
