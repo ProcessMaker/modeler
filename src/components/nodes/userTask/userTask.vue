@@ -7,15 +7,22 @@ const encodeAsDataUri = (svgString) => {
   return `data:image/svg+xml;base64,${base64}`;
 };
 
+/** returns a data URI encoded re-colored icon */
+const coloredIcon = (iconString, color = '') => {
+  const svgDocument = (new DOMParser()).parseFromString(iconString, 'text/xml');
+  if (color) {
+    svgDocument.querySelectorAll('*[fill]:not([fill="none"])').forEach(svgNode => {
+      svgNode.setAttribute('fill', color);
+    });
+  }
+
+  return encodeAsDataUri(svgDocument.documentElement.outerHTML);
+};
+
 export default {
   extends: Task,
   mounted() {
-    const svg = (new DOMParser()).parseFromString(userIcon, 'text/xml');
-    svg.querySelectorAll('*[fill]:not([fill="none"])').forEach(svgNode => {
-      svgNode.setAttribute('fill', 'blue');
-    });
-
-    this.shape.attr('image/xlink:href', encodeAsDataUri(userIcon));
+    this.shape.attr('image/xlink:href', coloredIcon(userIcon, '#C36'));
   },
 };
 </script>
