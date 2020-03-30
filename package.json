@@ -44,6 +44,7 @@
     "bpmn-moddle": "^6.0.0",
     "bpmnlint": "^6.3.0",
     "bpmnlint-plugin-processmaker": "1.0.2",
+    "color": "^3.1.2",
     "core-js": "^3.3.6",
     "file-saver": "^2.0.2",
     "jointjs": "^3.1.1",

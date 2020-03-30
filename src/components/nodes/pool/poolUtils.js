@@ -13,7 +13,6 @@ function createPool(node, graph) {
   }));
   pool.attr('body', {
     fill: poolColor,
-    originalFill: poolColor,
   });
   pool.addTo(graph);
   return pool;

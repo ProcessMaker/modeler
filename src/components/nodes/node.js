@@ -10,8 +10,8 @@ export default class Node {
     this.diagram = diagram;
   }
 
-  isBpmnType(type) {
-    return this.definition.$type === type;
+  isBpmnType(...types) {
+    return types.includes(this.definition.$type);
   }
 
   isType(type) {
