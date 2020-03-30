@@ -70,3 +70,23 @@ export function setShapeColor(shape, fill, stroke) {
     shape.attr('polyline/stroke', stroke);
   }
 }
+
+export function getDefaultIconColor(node) {
+  if (node.isBpmnType('bpmn:StartEvent')) {
+    return startColorStroke;
+  }
+
+  if (node.isBpmnType('bpmn:IntermediateEvent', 'bpmn:IntermediateCatchEvent', 'bpmn:IntermediateThrowEvent')) {
+    return intermediateColorStroke;
+  }
+
+  if (node.isBpmnType('bpmn:EndEvent')) {
+    return endColorStroke;
+  }
+
+  if (node.isBpmnType('bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway', 'bpmn:EventBasedGateway')) {
+    return '#000';
+  }
+
+  return '#788793';
+}

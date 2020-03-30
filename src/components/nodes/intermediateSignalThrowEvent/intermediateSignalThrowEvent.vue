@@ -1,11 +1,13 @@
 <script>
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import intermediateSignalSymbol from '@/assets/intermediate-signal-alt.svg';
+import intermediateSignalSymbol from '!!svg-inline-loader!@/assets/intermediate-signal-alt.svg';
 import pull from 'lodash/pull';
 import store from '@/store';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: IntermediateEvent,
+  mixins: [updateIconColor],
   props: ['moddle', 'rootElements', 'id'],
   data() {
     return {
@@ -13,6 +15,7 @@ export default {
         id: `${this.id}_signal`,
         name: `${this.id}_signal`,
       }),
+      nodeIcon: intermediateSignalSymbol,
     };
   },
   methods: {
@@ -35,7 +38,6 @@ export default {
       image: {
         'ref-x': 7,
         'ref-y': 5,
-        'xlink:href': intermediateSignalSymbol,
         width: 22,
         height: 22,
       },

@@ -22,7 +22,8 @@ export default {
       if (!this.nodeIcon) {
         return;
       }
-      this.shape.attr('image/xlink:href', coloredIcon(this.nodeIcon, this.node.definition.get('color')));
+
+      this.shape.attr('image/xlink:href', coloredIcon(this.nodeIcon, this.node));
     },
   },
 };
