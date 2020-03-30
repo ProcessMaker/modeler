@@ -5,10 +5,6 @@ import signalStartEventIcon from '@/assets/signal-start-event.svg';
 export default {
   extends: startEvent,
   props: ['moddle', 'rootElements', 'id'],
-  data() {
-    return {
-    };
-  },
   mounted() {
     this.shape.attr({
       image: {
