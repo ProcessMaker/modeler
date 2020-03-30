@@ -28,7 +28,7 @@ export const poolColor = '#f7f7f7';
 
 export function getDefaultNodeColors(node, color) {
   if (color) {
-    return { fill: Color(color).lighten(0.3).hex(), stroke: color };
+    return { fill: Color(color).lighten(0.4).hex(), stroke: color };
   }
 
   if (node.isBpmnType('bpmn:StartEvent')) {
