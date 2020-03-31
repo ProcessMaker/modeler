@@ -45,4 +45,15 @@ describe('Crown color picker', () => {
       .should('have.attr', 'fill', fillColor)
       .should('have.attr', 'stroke', colorToSelect);
   });
+
+  it('should load color prop for boundary events', () => {
+    uploadXml('taskWithColoredBoundaryEvent.xml');
+
+    const boundaryEventSelector = '.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"] [joint-selector="body"]';
+    const fillColor = tinycolor(colorToSelect).lighten(35).toHex8String();
+
+    cy.get(boundaryEventSelector)
+      .should('have.attr', 'fill', fillColor)
+      .should('have.attr', 'stroke', colorToSelect);
+  });
 });
