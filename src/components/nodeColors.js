@@ -94,7 +94,7 @@ export function getDefaultIconColor(node) {
     return endColorStroke;
   }
 
-  if (node.isBpmnType('bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway', 'bpmn:EventBasedGateway')) {
+  if (node.isBpmnType('bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway', 'bpmn:EventBasedGateway', 'bpmn:BoundaryEvent')) {
     return '#000';
   }
 

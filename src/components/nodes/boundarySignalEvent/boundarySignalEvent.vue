@@ -1,12 +1,18 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
-import signalEventIcon from '@/assets/boundary-signal-event-icon.svg';
+import signalEventIcon from '!!svg-inline-loader!@/assets/boundary-signal-event-icon.svg';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: BoundaryEvent,
+  mixins: [updateIconColor],
+  data() {
+    return {
+      nodeIcon: signalEventIcon,
+    };
+  },
   mounted() {
-    this.shape.attr('image/xlink:href', signalEventIcon);
-    let bounds = this.node.diagram.bounds;
+    const bounds = this.node.diagram.bounds;
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       image: {

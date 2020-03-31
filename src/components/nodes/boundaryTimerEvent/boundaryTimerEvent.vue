@@ -1,11 +1,15 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
-import timerEventIcon from '@/assets/timer-event-icon.svg';
+import timerEventIcon from '!!svg-inline-loader!@/assets/timer-event-icon.svg';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: BoundaryEvent,
-  mounted() {
-    this.shape.attr('image/xlink:href', timerEventIcon);
+  mixins: [updateIconColor],
+  data() {
+    return {
+      nodeIcon: timerEventIcon,
+    };
   },
 };
 </script>
