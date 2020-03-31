@@ -26,6 +26,7 @@ export default {
         'processmaker-modeler-message-flow',
         'processmaker-modeler-end-event',
         'processmaker-modeler-error-end-event',
+        'processmaker-modeler-terminate-end-event',
         'processmaker-modeler-message-end-event',
         'processmaker-modeler-lane',
         'processmaker-modeler-text-annotation',

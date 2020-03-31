@@ -67,6 +67,11 @@ export default {
           nodeType: 'processmaker-modeler-signal-end-event',
           dataTest: 'switch-to-signal-end-event',
         },
+        {
+          label: defaultNames['processmaker-modeler-terminate-end-event'],
+          nodeType: 'processmaker-modeler-terminate-end-event',
+          dataTest: 'switch-to-terminate-end-event',
+        },
       ],
     };
   },
