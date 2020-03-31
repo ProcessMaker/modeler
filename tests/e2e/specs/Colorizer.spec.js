@@ -39,7 +39,7 @@ describe('Crown color picker', () => {
   it('should load color from BPMN', () => {
     uploadXml('taskWithColor.xml');
 
-    const fillColor = Color(colorToSelect).lighten(0.4).hex();
+    const fillColor = Color(colorToSelect).lighten(0.55).hex();
 
     cy.get('.main-paper [joint-selector="body"]')
       .should('have.attr', 'fill', fillColor)
