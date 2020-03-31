@@ -69,6 +69,10 @@ export function setShapeColor(shape, fill, stroke) {
     shape.attr('polyline/fill', fill);
     shape.attr('polyline/stroke', stroke);
   }
+
+  if (shape.attr('label')) {
+    shape.attr('label/fill', stroke);
+  }
 }
 
 export function getDefaultIconColor(node) {
