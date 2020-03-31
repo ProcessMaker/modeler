@@ -30,6 +30,14 @@ export default merge(cloneDeep(boundaryEventConfig), {
           items: [
             {},
             interruptingToggleConfig,
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Signal Ref',
+                name: 'signalRef',
+                helper: 'Enter the signal reference that this element catches',
+              },
+            },
           ],
         },
       ],
