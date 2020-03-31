@@ -1,6 +1,6 @@
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-import errorIcon from '!!svg-inline-loader!@/assets/error.svg';
+import terminateIcon from '!!svg-inline-loader!@/assets/terminate-end-event.svg';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
@@ -12,7 +12,7 @@ export default {
       terminateEventDefinition: this.moddle.create('bpmn:TerminateEventDefinition', {
         id: `${ this.id }_ED`,
       }),
-      nodeIcon: errorIcon,
+      nodeIcon: terminateIcon,
     };
   },
 };
