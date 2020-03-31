@@ -28,7 +28,7 @@ export const poolColor = '#f7f7f7';
 
 export function getDefaultNodeColors(node, color) {
   if (color) {
-    return { fill: Color(color).lighten(0.3).hex(), stroke: color };
+    return { fill: Color(color).lighten(0.55).hex(), stroke: color };
   }
 
   if (node.isBpmnType('bpmn:StartEvent')) {
@@ -50,7 +50,13 @@ export function getDefaultNodeColors(node, color) {
   return { fill: defaultNodeColor, stroke: defaultNodeColorStroke };
 }
 
-export function setShapeColor(shape, fill, stroke) {
+export function setShapeColor(shape, fill, stroke, node) {
+  if (node.isType('processmaker-modeler-text-annotation')) {
+    shape.attr('label/fill', stroke);
+    shape.attr('body/stroke', stroke);
+    return;
+  }
+
   if (shape.attr('body')) {
     shape.attr('body/fill', fill);
     shape.attr('body/stroke', stroke);
@@ -69,4 +75,28 @@ export function setShapeColor(shape, fill, stroke) {
     shape.attr('polyline/fill', fill);
     shape.attr('polyline/stroke', stroke);
   }
+
+  if (shape.attr('label')) {
+    shape.attr('label/fill', stroke);
+  }
+}
+
+export function getDefaultIconColor(node) {
+  if (node.isBpmnType('bpmn:StartEvent')) {
+    return startColorStroke;
+  }
+
+  if (node.isBpmnType('bpmn:IntermediateEvent', 'bpmn:IntermediateCatchEvent', 'bpmn:IntermediateThrowEvent')) {
+    return intermediateColorStroke;
+  }
+
+  if (node.isBpmnType('bpmn:EndEvent')) {
+    return endColorStroke;
+  }
+
+  if (node.isBpmnType('bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway', 'bpmn:EventBasedGateway')) {
+    return '#000';
+  }
+
+  return '#788793';
 }
