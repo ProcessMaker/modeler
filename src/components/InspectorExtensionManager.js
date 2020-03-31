@@ -18,7 +18,7 @@ function moveAdvancedAccordionToBottom(accordionA, accordionB) {
 
 function addInspectorItem(inspectorItems, config) {
   const nodeIndex = inspectorItems.findIndex(item => {
-    return (config.id && config.id === item.id) || (config.config && item.config && config.config.name === item.config.name);
+    return (config.id && config.id === item.id) || (config.config && item.config && config.config.name && config.config.name === item.config.name);
   });
   if (nodeIndex === -1) {
     inspectorItems.push(config);
@@ -35,7 +35,7 @@ function getInspectorItems(node, config, root) {
     node = node.inspectorConfig[0];
     root = root.split('.');
     while (node && root.length) {
-      node = node.items.find(node => node.config.name === root[0]);
+      node = node.items.find(node => node.config && node.config.name === root[0]);
       root.shift();
     }
     return node ? node.items : null;
