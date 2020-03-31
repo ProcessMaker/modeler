@@ -21,7 +21,14 @@ export default {
       setNodeProp(node, key, value[key]);
     }
     
-    const signal = definitions.rootElements.find(element => element.id === value.signalRef);
+    let signal = definitions.rootElements.find(element => element.id === value.signalRef);
+    if (!signal) {
+      signal = moddle.create('bpmn:Signal', {
+        id: value.signalRef,
+        name: value.signalRef,
+      });
+      definitions.rootElements.push(signal);
+    }
     node.definition.get('eventDefinitions')[0].signalRef = signal;
     this.cleanSignalDefinitions(definitions);
   },
