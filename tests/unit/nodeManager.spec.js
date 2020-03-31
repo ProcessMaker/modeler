@@ -1,6 +1,4 @@
 import { addNodeToProcess } from '@/components/nodeManager';
-import { id as poolId } from '@/components/nodes/pool';
-import { id as laneId } from '@/components/nodes/poolLane';
 import Node from '@/components/nodes/node';
 
 describe('nodeManager', () => {
@@ -53,7 +51,7 @@ describe('nodeManager', () => {
 
   describe('addNodeToProcess', () => {
     it('should not modify target process for pool nodes', () => {
-      const node = new Node(poolId, {}, {});
+      const node = new Node('processmaker-modeler-pool', {}, {});
       const targetProcess = {};
 
       addNodeToProcess(node, targetProcess);
@@ -71,7 +69,7 @@ describe('nodeManager', () => {
     });
 
     it('should set lane definition on target process lanes', () => {
-      const node = new Node(laneId, {}, {});
+      const node = new Node('processmaker-modeler-lane', {}, {});
       const targetProcess = {
         laneSets: [{
           lanes: [],
