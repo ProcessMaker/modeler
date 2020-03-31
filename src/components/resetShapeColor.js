@@ -5,5 +5,5 @@ export default function resetShapeColor(shape) {
   const color = node.definition.get('color');
   const { fill, stroke } = getDefaultNodeColors(node, color);
 
-  setShapeColor(shape, fill, stroke);
+  setShapeColor(shape, fill, stroke, node);
 }

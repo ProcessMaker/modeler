@@ -50,7 +50,13 @@ export function getDefaultNodeColors(node, color) {
   return { fill: defaultNodeColor, stroke: defaultNodeColorStroke };
 }
 
-export function setShapeColor(shape, fill, stroke) {
+export function setShapeColor(shape, fill, stroke, node) {
+  if (node.isType('processmaker-modeler-text-annotation')) {
+    shape.attr('label/fill', stroke);
+    shape.attr('body/stroke', stroke);
+    return;
+  }
+
   if (shape.attr('body')) {
     shape.attr('body/fill', fill);
     shape.attr('body/stroke', stroke);
