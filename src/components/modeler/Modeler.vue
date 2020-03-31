@@ -134,7 +134,6 @@ import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { keepOriginalName } from '@/components/modeler/modelerUtils';
-import miniMapManager from '@/components/miniMapManager';
 
 export default {
   components: {
