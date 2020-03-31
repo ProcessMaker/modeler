@@ -9,7 +9,7 @@ describe('Markers', () => {
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
       .should('have.attr', 'xlink:href')
-      .and('match', /^\/img\/book.*svg$/);
+      .and('match', /^data:image\/svg\+xml;/);
   });
 
   it('Dynamically remove custom book marker', () => {
@@ -39,10 +39,10 @@ describe('Markers', () => {
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
       .should('have.attr', 'xlink:href')
-      .and('match', /^\/img\/book.*svg$/);
+      .and('match', /^data:image\/svg\+xml;/);
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:nth-child(2)')
       .should('have.attr', 'xlink:href')
-      .and('match', /^\/img\/clock.*svg$/);
+      .and('match', /^data:image\/svg\+xml;/);
   });
 });

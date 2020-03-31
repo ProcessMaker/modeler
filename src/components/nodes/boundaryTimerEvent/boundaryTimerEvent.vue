@@ -1,6 +1,6 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
-import timerEventIcon from '@/assets/timer-event-icon.svg';
+import timerEventIcon from '!!url-loader!@/assets/timer-event-icon.svg';
 
 export default {
   extends: BoundaryEvent,
