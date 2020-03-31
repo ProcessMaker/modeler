@@ -11,7 +11,7 @@
   />
 </template>
 <script>
-import sequenceFlow from '!!url-loader!@/assets/connect-elements.svg';
+import sequenceFlow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 

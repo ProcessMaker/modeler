@@ -11,7 +11,7 @@
   />
 </template>
 <script>
-import messageFlow from '!!url-loader!@/assets/message-flow.svg';
+import messageFlow from '@/assets/message-flow.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 
