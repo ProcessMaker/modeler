@@ -1,19 +1,22 @@
 import component from './endEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/endEvent/defaultNames';
+
+const id = 'processmaker-modeler-end-event';
 
 export default {
-  id: 'processmaker-modeler-end-event',
+  id,
   component,
   bpmnType: 'bpmn:EndEvent',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/end-event.svg'),
-  label: 'End Event',
+  label: defaultNames[id],
   rank: 3,
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
-      name: $t('End Event'),
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
@@ -28,7 +31,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'End Event',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',

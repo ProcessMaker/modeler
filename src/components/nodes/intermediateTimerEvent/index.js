@@ -2,11 +2,13 @@ import component from './intermediateTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
 
 export const defaultDurationValue = 'PT1H';
+const id = 'processmaker-modeler-intermediate-catch-timer-event';
 
 export default {
-  id: 'processmaker-modeler-intermediate-catch-timer-event',
+  id,
   component,
   bpmnType: 'bpmn:IntermediateCatchEvent',
   control: true,
@@ -16,7 +18,7 @@ export default {
   rank: 2,
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: $t('Intermediate Timer Event'),
+      name: $t(defaultNames[id]),
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
@@ -81,7 +83,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Intermediate Timer Event',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',

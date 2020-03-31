@@ -116,7 +116,6 @@ import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
-
 import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
@@ -134,6 +133,7 @@ import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
+import { keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -613,7 +613,7 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, control }) {
+    handleDrop({ clientX, clientY, control, node }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -621,20 +621,25 @@ export default {
       }
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+
+      if (keepOriginalName(node)) {
+        definition.name = node.definition.name;
+      }
+
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = new Node(control.type, definition, diagram);
+      const newNode = new Node(control.type, definition, diagram);
 
-      if (node.isBpmnType('bpmn:BoundaryEvent')) {
+      if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      this.highlightNode(node);
-      this.addNode(node);
+      this.highlightNode(newNode);
+      this.addNode(newNode);
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -668,7 +673,11 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
       this.removeNode(node);
-      this.handleDrop({ clientX, clientY, control: { type: typeToReplaceWith } });
+      this.handleDrop({
+        clientX, clientY,
+        control: { type: typeToReplaceWith },
+        node,
+      });
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
