@@ -601,6 +601,7 @@ export default {
       boundaryEvent.set('eventDefinitions', definition.get('eventDefinitions'));
       boundaryEvent.set('cancelActivity', definition.get('cancelActivity'));
       boundaryEvent.set('attachedToRef', definition.get('attachedToRef'));
+      boundaryEvent.set('color', definition.get('color'));
       boundaryEvent.$parent = definition.$parent;
       if (definition.get('outgoing').length > 0) {
         boundaryEvent.set('outgoing', definition.get('outgoing'));

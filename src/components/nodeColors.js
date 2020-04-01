@@ -1,4 +1,4 @@
-import Color from 'color';
+import tinycolor from 'tinycolor2';
 
 export const baseNodeColors = [
   '#357bf6',
@@ -28,7 +28,7 @@ export const poolColor = '#f7f7f7';
 
 export function getDefaultNodeColors(node, color) {
   if (color) {
-    return { fill: Color(color).lighten(0.55).hex(), stroke: color };
+    return { fill: tinycolor(color).lighten(35).toHex8String(), stroke: color };
   }
 
   if (node.isBpmnType('bpmn:StartEvent')) {
@@ -94,7 +94,7 @@ export function getDefaultIconColor(node) {
     return endColorStroke;
   }
 
-  if (node.isBpmnType('bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway', 'bpmn:EventBasedGateway')) {
+  if (node.isBpmnType('bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway', 'bpmn:EventBasedGateway', 'bpmn:BoundaryEvent')) {
     return '#000';
   }
 

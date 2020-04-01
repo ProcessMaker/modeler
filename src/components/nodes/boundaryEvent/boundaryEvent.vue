@@ -52,7 +52,6 @@ export default {
   data() {
     return {
       shape: null,
-      definition: null,
       previousPosition: null,
       validPosition: null,
       invalidTargetElement: null,

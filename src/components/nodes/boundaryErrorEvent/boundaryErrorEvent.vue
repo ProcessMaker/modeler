@@ -1,11 +1,15 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
-import errorBoltIcon from '!!url-loader!@/assets/boundary-error-event-icon.svg';
+import errorBoltIcon from '!!svg-inline-loader!@/assets/boundary-error-event-icon.svg';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: BoundaryEvent,
-  mounted() {
-    this.shape.attr('image/xlink:href', errorBoltIcon);
+  mixins: [updateIconColor],
+  data() {
+    return {
+      nodeIcon: errorBoltIcon,
+    };
   },
 };
 </script>
