@@ -53,6 +53,7 @@
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
+        :definitions="definitions"
         :processNode="processNode"
         @save-state="pushToUndoStack"
         class="inspector h-100"
