@@ -1,4 +1,9 @@
-import { assertDownloadedXmlContainsExpected, getElementAtPosition } from '../support/utils';
+import {
+  assertDownloadedXmlContainsExpected,
+  dragFromSourceToDest,
+  getElementAtPosition, typeIntoTextInput,
+} from '../support/utils';
+import { nodeTypes } from '../support/constants';
 
 describe('Copy element', () => {
   it('should copy start events', () => {
@@ -30,6 +35,30 @@ describe('Copy element', () => {
           </bpmndi:BPMNPlane>
         </bpmndi:BPMNDiagram>
       </bpmn:definitions>
+    `;
+
+    assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
+  });
+
+  it('should copy tasks', () => {
+    const taskPosition = { x: 250, y: 250 };
+
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+    getElementAtPosition(taskPosition).click();
+
+    typeIntoTextInput('[name=name]', 'Test Name');
+    typeIntoTextInput('[name=dueIn]', 45);
+    cy.get('[name = assignedUsers]').select('John Smith');
+
+    cy.get('[data-test=copy-button]').click();
+    cy.get('[data-test=copy-button]').click();
+
+    const processWithTwoStartEventCopies = `
+      <bpmn:startEvent id="node_1" name="Start Event" />
+      <bpmn:task id="node_2" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" />
+      <bpmn:task id="node_3" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" />
+      <bpmn:task id="node_4" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" />
     `;
 
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
