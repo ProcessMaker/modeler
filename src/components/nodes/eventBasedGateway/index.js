@@ -1,16 +1,19 @@
 import component from './eventBasedGateway.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/gateway/defaultNames';
+
+const id = 'processmaker-modeler-event-based-gateway';
 
 export default {
-  id: 'processmaker-modeler-event-based-gateway',
+  id,
   component,
   bpmnType: 'bpmn:EventBasedGateway',
   control: false,
   category: 'BPMN',
-  label: 'Event-Based Gateway',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:EventBasedGateway', {
-      name: $t('Event-Based Gateway'),
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
@@ -23,7 +26,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Event-Based Gateway',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',
@@ -45,22 +48,7 @@ export default {
             },
           ],
         },
-        {
-          component: 'FormAccordion',
-          container: true,
-          config: {
-            initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion',
-          },
-          items: [
-            {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
+        advancedAccordionConfig,
       ],
     },
   ],

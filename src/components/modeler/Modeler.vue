@@ -6,10 +6,11 @@
       :is-rendering="isRendering"
       :paper-manager="paperManager"
       :breadcrumb-data="breadcrumbData"
+      :panelsCompressed="panelsCompressed"
       @load-xml="loadXML"
-      @toggle-panels-compressed="panelsCompressed = $event"
+      @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
-      @saveBpmn="$emit('saveBpmn')"
+      @saveBpmn="saveBpmn"
       @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
@@ -57,7 +58,7 @@
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed"
+        :compressed="panelsCompressed && noElementsSelected"
       />
 
       <component
@@ -116,7 +117,6 @@ import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
-
 import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
@@ -133,8 +133,10 @@ import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
-import XMLManager from '@/components/modeler/XMLManager';
 import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
+import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
+import XMLManager from '@/components/modeler/XMLManager';
+import { keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -184,6 +186,7 @@ export default {
       breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
+      previouslyStackedShape: null,
     };
   },
   watch: {
@@ -214,6 +217,9 @@ export default {
     },
   },
   computed: {
+    noElementsSelected() {
+      return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
+    },
     tooltipTitle() {
       if (this.tooltipTarget) {
         return this.tooltipTarget.$el.data('title');
@@ -225,6 +231,8 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
+    /* connectors expect a highlightedNode property */
+    highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
       return Object.entries(this.validationErrors)
@@ -238,6 +246,18 @@ export default {
 
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
+    },
+    async saveBpmn() {
+      const svg = document.querySelector('.mini-paper svg');
+      const css = 'text { font-family: sans-serif; }';
+      const style = document.createElement('style');
+      style.appendChild(document.createTextNode(css));
+
+      svg.appendChild(style);
+      const xml = await this.getXmlFromDiagram();
+      const svgString = (new XMLSerializer()).serializeToString(svg);
+
+      this.$emit('saveBpmn', { xml, svg: svgString });
     },
     addWarning(warning) {
       this.allWarnings.push(warning);
@@ -489,7 +509,7 @@ export default {
       );
     },
     removeUnsupportedElementAttributes(definition) {
-      const unsupportedElements = ['documentation', 'extensionElements'];
+      const unsupportedElements = ['extensionElements'];
 
       unsupportedElements.filter(name => definition.get(name))
         .forEach(name => definition.set(name, undefined));
@@ -624,7 +644,7 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, control }) {
+    handleDrop({ clientX, clientY, control, node }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -632,20 +652,25 @@ export default {
       }
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+
+      if (keepOriginalName(node)) {
+        definition.name = node.definition.name;
+      }
+
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = this.createNode(control.type, definition, diagram);
+      const newNode = this.createNode(control.type, definition, diagram);
 
-      if (node.isBpmnType('bpmn:BoundaryEvent')) {
+      if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      this.highlightNode(node);
-      this.addNode(node);
+      this.highlightNode(newNode);
+      this.addNode(newNode);
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -684,7 +709,11 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
       this.removeNode(node);
-      this.handleDrop({ clientX, clientY, control: { type: typeToReplaceWith } });
+      this.handleDrop({
+        clientX, clientY,
+        control: { type: typeToReplaceWith },
+        node,
+      });
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
@@ -726,10 +755,11 @@ export default {
       return shape.component != null;
     },
     setShapeStacking(shape) {
-      if (this.isRendering) {
+      if (this.isRendering || (!shape.component.node.isType('processmaker-modeler-pool') && shape === this.previouslyStackedShape)) {
         return;
       }
 
+      this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
   },
@@ -776,6 +806,8 @@ export default {
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
+
+    this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);

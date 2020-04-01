@@ -16,7 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@cypress/code-coverage/support';
-import { dragFromSourceToDest } from './utils';
+import { dragFromSourceToDest, waitToRenderAllShapes } from './utils';
 import { nodeTypes } from './constants';
 
 // Alternatively you can use CommonJS syntax:
@@ -39,6 +39,7 @@ Cypress.on('scrolled', $el => {
 beforeEach(() => {
   cy.loadModeler();
   dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
+  waitToRenderAllShapes();
   cy.get('.paper-container').click();
 });
 

@@ -1,10 +1,12 @@
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-import errorIcon from '@/assets/error.svg';
+import errorIcon from '!!svg-inline-loader!@/assets/error.svg';
 import pull from 'lodash/pull';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: EndEvent,
+  mixins: [updateIconColor],
   props: ['moddle', 'rootElements', 'id'],
   data() {
     return {
@@ -12,6 +14,7 @@ export default {
         id: `${this.id}_error`,
         name: `${this.id}_error`,
       }),
+      nodeIcon: errorIcon,
     };
   },
   methods: {
@@ -30,7 +33,6 @@ export default {
     },
   },
   mounted() {
-    this.shape.attr('image/xlink:href', errorIcon);
     this.addErrorRef();
   },
   destroyed() {

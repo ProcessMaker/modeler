@@ -1,11 +1,15 @@
 <script>
 import TaskComponent from '@/components/nodes/task/task';
-import scriptIcon from '@/assets/manual-task.svg';
+import manualIcon from '!!svg-inline-loader!@/assets/manual-task.svg';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: TaskComponent,
-  mounted() {
-    this.shape.attr('image/xlink:href', scriptIcon);
+  mixins: [updateIconColor],
+  data() {
+    return {
+      nodeIcon: manualIcon,
+    };
   },
 };
 </script>

@@ -27,6 +27,9 @@ import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
+import sequentialIcon from '@/assets/sequential.svg';
+import parallelIcon from '@/assets/parallel.svg';
+import defaultNames from '@/components/nodes/task/defaultNames';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -55,22 +58,22 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Task',
+          label: defaultNames['processmaker-modeler-task'],
           nodeType: 'processmaker-modeler-task',
           dataTest: 'switch-to-user-task',
         },
         {
-          label: 'Manual Task',
+          label: defaultNames['processmaker-modeler-manual-task'],
           nodeType: 'processmaker-modeler-manual-task',
           dataTest: 'switch-to-manual-task',
         },
         {
-          label: 'Script Task',
+          label: defaultNames['processmaker-modeler-script-task'],
           nodeType: 'processmaker-modeler-script-task',
           dataTest: 'switch-to-script-task',
         },
         {
-          label: 'Sub Process',
+          label: defaultNames['processmaker-modeler-call-activity'],
           nodeType: 'processmaker-modeler-call-activity',
           dataTest: 'switch-to-sub-process',
         },
@@ -86,11 +89,11 @@ export default {
           nodeType: 'processmaker-modeler-boundary-error-event',
           dataTest: 'add-boundary-error-event',
         },
-        // {
-        //   label: 'Boundary Signal Event',
-        //   nodeType: 'processmaker-modeler-boundary-signal-event',
-        //   dataTest: 'add-boundary-signal-event',
-        // },
+        {
+          label: 'Boundary Signal Event',
+          nodeType: 'processmaker-modeler-boundary-signal-event',
+          dataTest: 'add-boundary-signal-event',
+        },
         {
           label: 'Boundary Message Event',
           nodeType: 'processmaker-modeler-boundary-message-event',
@@ -143,12 +146,23 @@ export default {
     middleIsOddNumber(value) {
       return Math.abs((value / 2) % 2) === 1;
     },
+    setupMultiInstanceMarker() {
+      const loopCharacteristics = this.node.definition.get('loopCharacteristics');
+      const isMultiInstance = loopCharacteristics ?
+        loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' :
+        false;
+      const isSequential = isMultiInstance ? loopCharacteristics.isSequential : false;
+      if (isMultiInstance) {
+        this.$set(this.markers.bottomCenter, 'multiInstance', isSequential ? sequentialIcon : parallelIcon);
+      }
+    },
   },
   mounted() {
     this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
+    this.setupMultiInstanceMarker();
     this.shape.attr({
       body: {
         rx: 8,

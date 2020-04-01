@@ -21,9 +21,10 @@ import portsConfig from '@/mixins/portsConfig';
 import EventShape from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import { startColor } from '@/components/nodeColors';
+import { startColor, startColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import defaultNames from './defaultNames';
 
 export default {
   components: {
@@ -49,22 +50,22 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Start Event',
+          label: defaultNames['processmaker-modeler-start-event'],
           nodeType: 'processmaker-modeler-start-event',
           dataTest: 'switch-to-start-event',
         },
         {
-          label: 'Start Timer Event',
+          label: defaultNames['processmaker-modeler-start-timer-event'],
           nodeType: 'processmaker-modeler-start-timer-event',
           dataTest: 'switch-to-start-timer-event',
         },
-        // {
-        //   label: 'Signal Start Event',
-        //   nodeType: 'processmaker-modeler-signal-start-event',
-        //   dataTest: 'switch-to-signal-start-event',
-        // },
         {
-          label: 'Message Start Event',
+          label: defaultNames['processmaker-modeler-signal-start-event'],
+          nodeType: 'processmaker-modeler-signal-start-event',
+          dataTest: 'switch-to-signal-start-event',
+        },
+        {
+          label: defaultNames['processmaker-modeler-message-start-event'],
           nodeType: 'processmaker-modeler-message-start-event',
           dataTest: 'switch-to-message-start-event',
         },
@@ -84,9 +85,8 @@ export default {
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       body: {
-        stroke: '#00bf9c',
+        stroke: startColorStroke,
         fill: startColor,
-        originalFill: startColor,
       },
       label: {
         text: this.node.definition.get('name'),
