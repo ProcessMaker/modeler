@@ -12,8 +12,5 @@ export default {
       nodeIcon: terminateIcon,
     };
   },
-  mounted() {
-    this.node.definition.get('eventDefinitions')[0].id = `${ this.id }_ED`;
-  },
 };
 </script>

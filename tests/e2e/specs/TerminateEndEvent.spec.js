@@ -8,7 +8,7 @@ describe('Terminate End Event', () => {
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:endEvent id="node_3" name="Terminate End Event">
-        <bpmn:terminateEventDefinition id="node_3_ED" />
+        <bpmn:terminateEventDefinition />
       </bpmn:endEvent>
     `);
   });
