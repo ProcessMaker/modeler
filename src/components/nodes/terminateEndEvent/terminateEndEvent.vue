@@ -9,11 +9,11 @@ export default {
   props: ['moddle', 'rootElements', 'id'],
   data() {
     return {
-      terminateEventDefinition: this.moddle.create('bpmn:TerminateEventDefinition', {
-        id: `${ this.id }_ED`,
-      }),
       nodeIcon: terminateIcon,
     };
+  },
+  mounted() {
+    this.node.definition.get('eventDefinitions')[0].id = `${ this.id }_ED`;
   },
 };
 </script>
