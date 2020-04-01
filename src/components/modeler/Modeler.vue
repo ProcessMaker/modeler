@@ -639,6 +639,11 @@ export default {
         definition.name = node.definition.name;
       }
 
+      const incoming = node.definition.get('incoming');
+      const outgoing = node.definition.get('outgoing');
+      definition.incoming = incoming;
+      definition.outgoing = outgoing;
+
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
@@ -650,6 +655,14 @@ export default {
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
+
+      incoming.forEach(ref => {
+        ref.targetRef = newNode;
+      });
+
+      outgoing.forEach(ref => {
+        ref.sourceRef = newNode;
+      });
 
       this.highlightNode(newNode);
       this.addNode(newNode);

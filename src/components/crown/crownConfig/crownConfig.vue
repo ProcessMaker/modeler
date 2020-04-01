@@ -178,7 +178,6 @@ export default {
       this.nodeToReplace = node;
     },
     confirmedReplaceNodeType() {
-      this.removeFlows(this.graph, this.shape);
       this.$emit('replace-node', this.nodeToReplace);
     },
     setNodePosition() {
