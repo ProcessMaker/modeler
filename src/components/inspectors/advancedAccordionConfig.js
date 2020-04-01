@@ -8,7 +8,7 @@ export default {
     initiallyOpen: false,
     label: 'Advanced',
     icon: 'cogs',
-    name: 'advanced-accordion',
+    name: 'inspector-accordion',
   },
   items: [
     {
