@@ -41,6 +41,7 @@ export const nodeTypes = {
   taskWithMarker: 'processmaker-custom-marker-task-test',
   boundaryMessageEvent: 'processmaker-modeler-boundary-message-event',
   errorEndEvent: 'processmaker-modeler-error-end-event',
+  terminateEndEvent: 'processmaker-modeler-terminate-end-event',
   poolLane: 'processmaker-modeler-lane',
 };
 
