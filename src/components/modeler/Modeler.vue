@@ -639,8 +639,8 @@ export default {
         definition.name = node.definition.name;
       }
 
-      const incoming = node.definition.get('incoming');
-      const outgoing = node.definition.get('outgoing');
+      const incoming = node ? node.definition.get('incoming') : [];
+      const outgoing = node ? node.definition.get('outgoing') : [];
       definition.incoming = incoming;
       definition.outgoing = outgoing;
 
