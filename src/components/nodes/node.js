@@ -1,5 +1,6 @@
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
+  static definitionPropertiesToNotCopy = ['$type', 'id'];
 
   type;
   definition;
@@ -45,9 +46,12 @@ export default class Node {
     const definition = nodeRegistry[this.type].definition(moddle, $t);
     const diagram = nodeRegistry[this.type].diagram(moddle);
     const clonedNode = new Node(this.type, definition, diagram);
+
     clonedNode.id = null;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    clonedNode.definition.name = this.definition.name;
+    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
+      clonedNode.definition[key] = this.definition[key];
+    });
 
     return clonedNode;
   }
@@ -62,15 +66,6 @@ export default class Node {
     return [
       'processmaker-modeler-start-timer-event',
       'processmaker-modeler-intermediate-catch-timer-event',
-    ].includes(type);
-  }
-
-  static isTaskType(type) {
-    return [
-      'processmaker-modeler-task',
-      'processmaker-modeler-manual-task',
-      'processmaker-modeler-script-task',
-      'processmaker-modeler-call-activity',
     ].includes(type);
   }
 }

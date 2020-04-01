@@ -133,7 +133,6 @@ import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
-import TaskNode from '@/components/nodes/taskNode';
 import XMLManager from '@/components/modeler/XMLManager';
 import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 
@@ -557,10 +556,6 @@ export default {
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
         return new TimerEventNode(type, definition, diagram);
-      }
-
-      if (Node.isTaskType(type)) {
-        return new TaskNode(type, definition, diagram);
       }
 
       return new Node(type, definition, diagram);
