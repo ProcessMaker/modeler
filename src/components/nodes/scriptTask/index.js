@@ -2,8 +2,10 @@ import component from './scriptTask.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/task/defaultNames';
 
 export const id = 'processmaker-modeler-script-task';
+
 export default {
   id,
   component,
@@ -11,10 +13,10 @@ export default {
   control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/scriptTask.svg'),
-  label: 'Script Task',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:ScriptTask', {
-      name: $t('Script Task'),
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
@@ -27,7 +29,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'ScriptTask',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',

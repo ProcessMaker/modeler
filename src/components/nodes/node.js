@@ -1,3 +1,11 @@
+import {
+  defaultStartNames,
+  defaultEndNames,
+  defaultTaskNames,
+  defaultGatewayNames,
+  defaultIntermediateNames,
+} from '@/components/nodes/defaultNames';
+
 export default class Node {
   type;
   definition;
@@ -10,12 +18,32 @@ export default class Node {
     this.diagram = diagram;
   }
 
-  isBpmnType(type) {
-    return this.definition.$type === type;
+  isBpmnType(...types) {
+    return types.includes(this.definition.$type);
   }
 
   isType(type) {
     return this.type === type;
+  }
+
+  isStartEvent() {
+    return Object.keys(defaultStartNames).includes(this.type);
+  }
+
+  isEndEvent() {
+    return Object.keys(defaultEndNames).includes(this.type);
+  }
+
+  isTask() {
+    return Object.keys(defaultTaskNames).includes(this.type);
+  }
+
+  isGateway() {
+    return Object.keys(defaultGatewayNames).includes(this.type);
+  }
+
+  isIntermediateEvent() {
+    return Object.keys(defaultIntermediateNames).includes(this.type);
   }
 
   get id() {

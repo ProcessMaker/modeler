@@ -29,6 +29,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
 import sequentialIcon from '@/assets/sequential.svg';
 import parallelIcon from '@/assets/parallel.svg';
+import defaultNames from '@/components/nodes/task/defaultNames';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -57,22 +58,22 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'Form Task',
+          label: defaultNames['processmaker-modeler-task'],
           nodeType: 'processmaker-modeler-task',
           dataTest: 'switch-to-user-task',
         },
         {
-          label: 'Manual Task',
+          label: defaultNames['processmaker-modeler-manual-task'],
           nodeType: 'processmaker-modeler-manual-task',
           dataTest: 'switch-to-manual-task',
         },
         {
-          label: 'Script Task',
+          label: defaultNames['processmaker-modeler-script-task'],
           nodeType: 'processmaker-modeler-script-task',
           dataTest: 'switch-to-script-task',
         },
         {
-          label: 'Sub Process',
+          label: defaultNames['processmaker-modeler-call-activity'],
           nodeType: 'processmaker-modeler-call-activity',
           dataTest: 'switch-to-sub-process',
         },

@@ -20,9 +20,10 @@
 import portsConfig from '@/mixins/portsConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import EventShape from '../startEvent/eventShape';
-import { endColor } from '@/components/nodeColors';
+import { endColor, endColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import defaultNames from '@/components/nodes/endEvent/defaultNames';
 
 export default {
   components: {
@@ -48,21 +49,21 @@ export default {
       definition: null,
       dropdownData: [
         {
-          label: 'End Event',
+          label: defaultNames['processmaker-modeler-end-event'],
           nodeType: 'processmaker-modeler-end-event',
         },
         {
-          label: 'Message End Event',
+          label: defaultNames['processmaker-modeler-message-end-event'],
           nodeType: 'processmaker-modeler-message-end-event',
           dataTest: 'switch-to-message-end-event',
         },
         {
-          label: 'Error End Event',
+          label: defaultNames['processmaker-modeler-error-end-event'],
           nodeType: 'processmaker-modeler-error-end-event',
           dataTest: 'switch-to-error-end-event',
         },
         {
-          label: 'Signal End Event',
+          label: defaultNames['processmaker-modeler-signal-end-event'],
           nodeType: 'processmaker-modeler-signal-end-event',
           dataTest: 'switch-to-signal-end-event',
         },
@@ -83,8 +84,7 @@ export default {
     this.shape.attr({
       body: {
         fill: endColor,
-        originalFill: endColor,
-        stroke: '#ED4757',
+        stroke: endColorStroke,
       },
       label: {
         text: this.node.definition.get('name'),

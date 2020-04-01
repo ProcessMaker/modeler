@@ -59,7 +59,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(taskPosition)
       .click()
       .then($task => {
-        getCrownButtonForElement($task, 'delete-button').click();
+        getCrownButtonForElement($task, 'delete-button').click({ force: true });
       });
 
     const scriptTaskPosition = { x: 450, y: 350 };

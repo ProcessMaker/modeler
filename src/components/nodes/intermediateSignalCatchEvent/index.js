@@ -3,17 +3,20 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateEventConfig from '@/components/nodes/intermediateEvent';
 import signalEventDefinition from '../signalEventDefinition';
+import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+
+const id = 'processmaker-modeler-intermediate-signal-catch-event';
 
 export default merge(cloneDeep(intermediateEventConfig), {
   ...signalEventDefinition,
-  id: 'processmaker-modeler-intermediate-signal-catch-event',
+  id,
   component,
   control: false,
   bpmnType: 'bpmn:IntermediateCatchEvent',
-  label: 'Intermediate Signal Catch Event',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
-      name: $t('Intermediate Signal Catch Event'),
+      name: $t(defaultNames[id]),
       eventDefinitions: [
         moddle.create('bpmn:SignalEventDefinition'),
       ],

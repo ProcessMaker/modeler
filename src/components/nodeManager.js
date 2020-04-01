@@ -1,12 +1,9 @@
-import { id as poolId } from './nodes/pool';
-import { id as laneId } from '@/components/nodes/poolLane';
-
 export function addNodeToProcess(node, targetProcess) {
-  if (node.isType(poolId) || node.isBpmnType('bpmn:MessageFlow')) {
+  if (node.isType('processmaker-modeler-pool') || node.isBpmnType('bpmn:MessageFlow')) {
     return;
   }
 
-  if (node.isType(laneId)) {
+  if (node.isType('processmaker-modeler-lane')) {
     targetProcess
       .get('laneSets')[0]
       .get('lanes')

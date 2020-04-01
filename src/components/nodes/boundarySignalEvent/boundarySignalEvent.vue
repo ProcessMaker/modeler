@@ -1,6 +1,6 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
-import signalEventIcon from '@/assets/boundary-signal-event-icon.svg';
+import signalEventIcon from '!!url-loader!@/assets/boundary-signal-event-icon.svg';
 
 export default {
   extends: BoundaryEvent,

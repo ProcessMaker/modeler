@@ -79,6 +79,17 @@ describe('Tasks', () => {
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
   });
 
+  it('Can keep the name when switching task type', () => {
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    typeIntoTextInput('[name=name]', testString);
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+    cy.get('[data-test=switch-to-manual-task]').click();
+
+    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
+    cy.get('[name=name]').should('have.value', testString);
+  });
+
   it('Can switch task type after initially added', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
 

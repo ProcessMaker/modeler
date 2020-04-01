@@ -1,11 +1,13 @@
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-import messageEndEventSymbol from '@/assets/message-end-event.svg';
+import messageEndEventSymbol from '!!svg-inline-loader!@/assets/message-end-event.svg';
 import pull from 'lodash/pull';
 import store from '@/store';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: EndEvent,
+  mixins: [updateIconColor],
   props: ['node', 'rootElements', 'id'],
   data() {
     return {
@@ -13,6 +15,7 @@ export default {
         id: `${this.id}_message`,
         name: `${this.id}_message`,
       }),
+      nodeIcon: messageEndEventSymbol,
     };
   },
   methods: {
@@ -31,7 +34,6 @@ export default {
     },
   },
   mounted() {
-    this.shape.attr('image/xlink:href', messageEndEventSymbol);
     this.addMessageRef();
   },
   destroyed() {

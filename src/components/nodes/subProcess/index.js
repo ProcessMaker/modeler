@@ -3,6 +3,7 @@ import SubProcessFormSelect from './SubProcessFormSelect';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/task/defaultNames';
 
 export const id = 'processmaker-modeler-call-activity';
 
@@ -13,10 +14,10 @@ export default {
   control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/subProcess.svg'),
-  label: 'Sub Process',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:CallActivity', {
-      name: $t('Sub Process'),
+      name: $t(defaultNames[id]),
       calledElement: '',
       config: '{}',
     });
@@ -47,7 +48,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Sub Process',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',

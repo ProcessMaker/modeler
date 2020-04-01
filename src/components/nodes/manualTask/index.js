@@ -1,6 +1,7 @@
 import component from './manualTask.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/task/defaultNames';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-manual-task';
@@ -12,10 +13,10 @@ export default {
   control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/manualTask.svg'),
-  label: 'Manual Task',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:ManualTask', {
-      name: $t('Manual Task'),
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
@@ -28,7 +29,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'ManualTask',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',
