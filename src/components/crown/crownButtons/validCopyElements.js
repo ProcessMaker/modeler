@@ -11,6 +11,7 @@ const validCopyElements = [
   'bpmn:CallActivity',
   'bpmn:ManualTask',
   'bpmn:ScriptTask',
+  'bpmn:ServiceTask',
   'bpmn:ExclusiveGateway',
   'bpmn:ParallelGateway',
   'bpmn:InclusiveGateway',
