@@ -23,6 +23,9 @@ export default {
       y: null,
     }),
   }),
+  allowOutgoingSequenceFlow() {
+    return false;
+  },
   inspectorConfig: [
     {
       name: 'Lane',

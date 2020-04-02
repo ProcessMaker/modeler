@@ -106,7 +106,7 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.allowOutgoingFlow() &&
+        this.allowOutgoingSequenceFlow() &&
         this.eventBasedGatewayTarget();
     },
     eventBasedGatewayTarget() {
@@ -130,9 +130,9 @@ export default {
     targetIsNotSource() {
       return this.targetNode.id !== this.sourceNode.id;
     },
-    allowOutgoingFlow() {
-      return this.sourceConfig.allowOutgoingFlow == null ||
-        this.sourceConfig.allowOutgoingFlow(this.targetNode);
+    allowOutgoingSequenceFlow() {
+      return this.sourceConfig.allowOutgoingSequenceFlow == null ||
+        this.sourceConfig.allowOutgoingSequenceFlow(this.targetNode);
     },
     createLabel() {
       this.shape.labels([{

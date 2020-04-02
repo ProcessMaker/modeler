@@ -49,6 +49,9 @@ export default {
       }
     }
   },
+  allowOutgoingSequenceFlow() {
+    return false;
+  },
   inspectorConfig: [
     {
       name: 'Sequence Flow',

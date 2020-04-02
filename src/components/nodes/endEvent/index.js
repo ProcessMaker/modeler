@@ -29,6 +29,9 @@ export default {
       }),
     });
   },
+  allowOutgoingSequenceFlow() {
+    return false;
+  },
   inspectorConfig: [
     {
       name: defaultNames[id],

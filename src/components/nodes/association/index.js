@@ -11,8 +11,11 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create('bpmn:Association', {
-      associationDirection: `${ direction.none }`,
+      associationDirection: `${direction.none}`,
     });
+  },
+  allowOutgoingSequenceFlow() {
+    return false;
   },
   inspectorConfig: [
     {

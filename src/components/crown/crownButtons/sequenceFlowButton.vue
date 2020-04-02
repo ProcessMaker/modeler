@@ -1,6 +1,6 @@
 <template>
   <crown-button
-    v-if="!invalidSequenceFlowSources.includes(node.type)"
+    v-if="allowOutgoingSequenceFlow"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Sequence Flow')"
     id="sequence-flow-button"
@@ -17,23 +17,26 @@ import Node from '@/components/nodes/node';
 
 export default {
   components: { CrownButton },
-  props: ['node', 'sequenceFlowConfig', 'moddle'],
+  props: ['node', 'moddle', 'nodeRegistry'],
   data() {
     return {
       sequenceFlow,
-      invalidSequenceFlowSources: [
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-message-flow',
-        'processmaker-modeler-end-event',
-        'processmaker-modeler-error-end-event',
-        'processmaker-modeler-terminate-end-event',
-        'processmaker-modeler-message-end-event',
-        'processmaker-modeler-lane',
-        'processmaker-modeler-text-annotation',
-        'processmaker-modeler-pool',
-        'processmaker-modeler-association',
-      ],
     };
+  },
+  computed: {
+    sequenceFlowConfig() {
+      return this.nodeRegistry['processmaker-modeler-sequence-flow'];
+    },
+    nodeConfig() {
+      return this.nodeRegistry[this.node.type];
+    },
+    allowOutgoingSequenceFlow() {
+      if ('allowOutgoingSequenceFlow' in this.nodeConfig) {
+        return this.nodeConfig.allowOutgoingSequenceFlow(this.node);
+      }
+
+      return true;
+    },
   },
   methods: {
     addSequence(cellView, evt, x, y) {
