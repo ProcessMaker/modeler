@@ -24,4 +24,23 @@ export default merge(cloneDeep(startEventConfig), {
   validateIncoming() {
     return false;
   },
+  inspectorConfig: [
+    {
+      items: [
+        {
+          items: [
+            {},
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Signal Ref',
+                name: 'signalRef',
+                helper: 'Enter the signal reference that this element catches',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });

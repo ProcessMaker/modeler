@@ -21,4 +21,23 @@ export default merge(cloneDeep(endEventConfig), {
       ],
     });
   },
+  inspectorConfig: [
+    {
+      items: [
+        {
+          items: [
+            {},
+            {
+              component: 'FormInput',
+              config: {
+                label: 'Signal Ref',
+                name: 'signalRef',
+                helper: 'Enter the signal reference that this element triggers',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });
