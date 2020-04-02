@@ -1,6 +1,6 @@
 <template>
   <crown-button
-    v-if="validCopyElements.includes(node.type)"
+    v-if="node.isBpmnType(...validCopyElements)"
     :title="$t('Copy Element')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     aria-label="Copy Element"
