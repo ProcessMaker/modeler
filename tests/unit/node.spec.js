@@ -2,8 +2,8 @@ import Node from '@/components/nodes/node';
 
 const definitionFactory = (props = {}) => ({
   ...props,
-  get: prop => this[prop],
-  set: (prop, val) => this[prop] = val,
+  get(prop) { return this[prop]; },
+  set(prop, val) { this[prop] = val; },
 });
 const mockType = 'some-type';
 const mockNodeRegistry = {
@@ -38,10 +38,12 @@ describe('Node', () => {
     expect(clonedNode.diagram.bpmnElement).not.toBe(node.definition);
   });
 
-  it('clone should copy definition name and diagram bounds', () => {
+  it('clone should copy definition name and color, and diagram bounds', () => {
+    definition.color = '#357bf6';
     let clonedNode = node.clone(mockNodeRegistry);
 
     expect(clonedNode.definition.name).toBe(node.definition.name);
+    expect(clonedNode.definition.color).toBe(node.definition.color);
     Node.diagramPropertiesToCopy.forEach(prop => {
       expect(clonedNode.diagram.bounds[prop]).toBe(node.diagram.bounds[prop]);
     });
