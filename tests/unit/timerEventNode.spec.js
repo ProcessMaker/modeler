@@ -3,8 +3,8 @@ import TimerEventNode from '@/components/nodes/timerEventNode';
 const definitionFactory = (props = {}) => ({
   ...props,
   eventDefinitions: [{}],
-  get: prop => this[prop],
-  set: (prop, val) => this[prop] = val,
+  get(prop) { return this[prop]; },
+  set(prop, val) { this[prop] = val; },
 });
 const mockType = 'some-type';
 const mockNodeRegistry = {
