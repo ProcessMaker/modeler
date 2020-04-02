@@ -1,9 +1,9 @@
 import {
-  defaultStartNames,
   defaultEndNames,
-  defaultTaskNames,
   defaultGatewayNames,
   defaultIntermediateNames,
+  defaultStartNames,
+  defaultTaskNames,
 } from '@/components/nodes/defaultNames';
 
 export default class Node {
@@ -73,7 +73,7 @@ export default class Node {
   clone(nodeRegistry, moddle, $t) {
     const definition = nodeRegistry[this.type].definition(moddle, $t);
     const diagram = nodeRegistry[this.type].diagram(moddle);
-    const clonedNode = new Node(this.type, definition, diagram);
+    const clonedNode = new this.constructor(this.type, definition, diagram);
 
     clonedNode.id = null;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
