@@ -45,8 +45,8 @@
       <transition name="slide">
         <div v-if="isProblemsPanelDisplayed" class="validation-container position-absolute text-left">
           <dl class="validation-container__list align-items-baseline" data-test="validation-list">
-            <template v-for="error in errorList">
-              <dt class="text-capitalize" :key="error.errorId">
+            <template v-for="(error, index) in errorList">
+              <dt class="text-capitalize" :key="`${error.errorId}_${index}`">
                 <font-awesome-icon
                   class="status-bar-container__status-icon ml-1 mr-1 mt-1"
                   :style="{ color: isErrorCategory(error) ? errorColor : warningColor }"
@@ -54,7 +54,7 @@
                 />
                 {{ error.errorKey }}
               </dt>
-              <dd :key="`${ error.errorId }_dd`">
+              <dd :key="`${ error.errorId }_${ index }_dd`">
                 <p class="pl-4 mb-0 font-italic">{{ error.message }}.</p>
                 <p class="pl-4 mb-0" v-if="error.id"><span class="font-weight-bold">{{ $t('Node ID') }}:</span> {{
                   error.id }}</p>
