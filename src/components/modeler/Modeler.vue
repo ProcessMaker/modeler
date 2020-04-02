@@ -133,7 +133,6 @@ import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
-import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { keepOriginalName } from '@/components/modeler/modelerUtils';
@@ -677,12 +676,6 @@ export default {
       diagram.bounds.y -= (diagram.bounds.height / 2);
     },
     addNode(node) {
-
-      if (validCopyElements.includes(node.type)) {
-        node = this.createNode(node.type, node.definition, node.diagram);
-        this.highlightNode(node);
-      }
-
       node.pool = this.poolTarget;
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
