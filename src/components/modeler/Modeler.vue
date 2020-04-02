@@ -439,6 +439,11 @@ export default {
         .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
+    loadCertainSequenceFlows(flowElements, artifacts, elements) {
+      flowElements.filter(
+        definition => definition.$type === 'bpmn:SequenceFlow' && elements.includes(definition) && this.hasSourceAndTarget(definition)).
+        forEach(definition => this.setNode(definition, flowElements, artifacts));
+    },
     addLanes(process) {
       if (process.get('laneSets')[0]) {
         process.laneSets[0].lanes.forEach(this.setNode);
@@ -656,16 +661,26 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
+      let flowsToLoad = [];
+
       incoming.forEach(ref => {
-        ref.targetRef = newNode;
+        ref.set('targetRef', newNode.definition);
+        flowsToLoad.push(ref);
       });
 
       outgoing.forEach(ref => {
-        ref.sourceRef = newNode;
+        ref.set('sourceRef', newNode.definition);
+        flowsToLoad.push(ref);
       });
 
       this.highlightNode(newNode);
       this.addNode(newNode);
+
+      this.processes.forEach(process => {
+        const flowElements = process.get('flowElements');
+        const artifacts = process.get('artifacts');
+        this.loadCertainSequenceFlows(flowElements, artifacts, flowsToLoad);
+      });
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
