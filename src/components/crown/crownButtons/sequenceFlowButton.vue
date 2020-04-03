@@ -15,6 +15,16 @@ import sequenceFlow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 
+const sequenceFlowBlacklist = [
+  'bpmn:EndEvent',
+  'bpmn:MessageFlow',
+  'bpmn:SequenceFlow',
+  'bpmn:Participant',
+  'bpmn:Lane',
+  'bpmn:TextAnnotation',
+  'bpmn:Association',
+];
+
 export default {
   components: { CrownButton },
   props: ['node', 'moddle', 'nodeRegistry'],
@@ -31,7 +41,7 @@ export default {
       return this.nodeRegistry[this.node.type];
     },
     allowOutgoingSequenceFlow() {
-      return !this.nodeConfig.disallowOutgoingSequenceFlow;
+      return !this.node.isBpmnType(...sequenceFlowBlacklist);
     },
   },
   methods: {
