@@ -21,9 +21,8 @@
         :validation-errors="validationErrors"
         :warnings="warnings"
         :xml-manager="xmlManager"
-        :owner="self"
       >
-        <component v-for="(component, index) in validationBar" :key="`validation-status-${index}`" :is="component" :owner="self" />
+        <component v-for="(component, index) in validationBar" :key="`validation-status-${index}`" :is="component" />
       </validation-status>
     </b-card>
 
