@@ -94,6 +94,7 @@
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
+        @copy-element="copyElement"
       />
     </b-row>
   </span>
@@ -132,6 +133,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { keepOriginalName } from '@/components/modeler/modelerUtils';
@@ -238,6 +240,13 @@ export default {
     },
   },
   methods: {
+    copyElement(node, copyCount) {
+      const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+      const yOffset = (node.diagram.bounds.height + 30) * copyCount;
+
+      clonedNode.diagram.bounds.y += yOffset;
+      this.addNode(clonedNode);
+    },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
@@ -560,7 +569,16 @@ export default {
         definition.set('name', '');
       }
 
-      store.commit('addNode', new Node(type, definition, diagram));
+      const node = this.createNode(type, definition, diagram);
+
+      store.commit('addNode', node);
+    },
+    createNode(type, definition, diagram) {
+      if (Node.isTimerType(type)) {
+        return new TimerEventNode(type, definition, diagram);
+      }
+
+      return new Node(type, definition, diagram);
     },
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
@@ -646,7 +664,7 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const newNode = new Node(control.type, definition, diagram);
+      const newNode = this.createNode(control.type, definition, diagram);
 
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
@@ -667,7 +685,6 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
-
       store.commit('addNode', node);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {

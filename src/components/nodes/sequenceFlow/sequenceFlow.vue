@@ -11,9 +11,7 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    v-on="$listeners"
   />
 </template>
 
