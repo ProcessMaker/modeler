@@ -29,7 +29,6 @@ export default {
       }),
     });
   },
-  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: defaultNames[id],

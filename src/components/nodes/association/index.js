@@ -14,7 +14,6 @@ export default {
       associationDirection: `${direction.none}`,
     });
   },
-  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: 'Association',

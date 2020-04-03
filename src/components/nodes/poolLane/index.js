@@ -23,7 +23,6 @@ export default {
       y: null,
     }),
   }),
-  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: 'Lane',

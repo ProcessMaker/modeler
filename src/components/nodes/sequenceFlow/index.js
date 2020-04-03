@@ -49,7 +49,6 @@ export default {
       }
     }
   },
-  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: 'Sequence Flow',

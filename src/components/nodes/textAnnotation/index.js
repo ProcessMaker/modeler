@@ -40,7 +40,6 @@ export default {
   validateAssociationIncoming() {
     return false;
   },
-  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: 'Text Annotation',
