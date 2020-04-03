@@ -12,7 +12,7 @@
 
     <sequence-flow-button
       :node="node"
-      :sequence-flow-config="nodeRegistry['processmaker-modeler-sequence-flow']"
+      :node-registry="nodeRegistry"
       :moddle="moddle"
       v-on="$listeners"
       @toggle-crown-state="showCrown = $event"
