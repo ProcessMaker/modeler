@@ -22,7 +22,7 @@
         :warnings="warnings"
         :xml-manager="xmlManager"
       >
-        <component v-for="(component, index) in validationBar" :key="`validation-status-${index}`" :is="component" />
+        <component v-for="(component, index) in validationBar" :key="index" :is="component" />
       </validation-status>
     </b-card>
 
