@@ -78,9 +78,13 @@ export default {
       }
     },
     setBorderOutline(borderOutline) {
-      this.currentBorderOutline ? this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline) : null;
+      if (this.currentBorderOutline) {
+        this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline);
+      }
       this.currentBorderOutline = borderOutline ? JSON.parse(JSON.stringify(borderOutline)) : null;
-      this.currentBorderOutline ? this.shapeView.highlight(this.shapeBody, this.currentBorderOutline) : null;
+      if (this.currentBorderOutline) {
+        this.shapeView.highlight(this.shapeBody, this.currentBorderOutline);
+      }
     },
   },
   mounted() {
