@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep';
+
 const errorHighlighter = {
   highlighter: {
     name: 'stroke',
@@ -81,7 +83,7 @@ export default {
       if (this.currentBorderOutline) {
         this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline);
       }
-      this.currentBorderOutline = borderOutline ? JSON.parse(JSON.stringify(borderOutline)) : null;
+      this.currentBorderOutline = borderOutline ? cloneDeep(borderOutline) : null;
       if (this.currentBorderOutline) {
         this.shapeView.highlight(this.shapeBody, this.currentBorderOutline);
       }
