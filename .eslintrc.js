@@ -26,6 +26,7 @@ module.exports = {
     }],
     'vue/html-self-closing': 'error',
     'vue/mustache-interpolation-spacing': 'error',
+    'template-curly-spacing': 'error',
   },
 
   parserOptions: {
