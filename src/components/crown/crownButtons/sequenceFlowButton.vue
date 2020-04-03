@@ -31,11 +31,7 @@ export default {
       return this.nodeRegistry[this.node.type];
     },
     allowOutgoingSequenceFlow() {
-      if ('allowOutgoingSequenceFlow' in this.nodeConfig) {
-        return this.nodeConfig.allowOutgoingSequenceFlow(this.node);
-      }
-
-      return true;
+      return !this.nodeConfig.disallowOutgoingSequenceFlow;
     },
   },
   methods: {

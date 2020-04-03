@@ -29,9 +29,7 @@ export default {
       }),
     });
   },
-  allowOutgoingSequenceFlow() {
-    return false;
-  },
+  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: defaultNames[id],

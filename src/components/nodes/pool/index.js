@@ -25,9 +25,7 @@ export default {
       }),
     });
   },
-  allowOutgoingSequenceFlow() {
-    return false;
-  },
+  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: 'Pool',

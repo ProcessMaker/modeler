@@ -131,8 +131,7 @@ export default {
       return this.targetNode.id !== this.sourceNode.id;
     },
     allowOutgoingSequenceFlow() {
-      return this.sourceConfig.allowOutgoingSequenceFlow == null ||
-        this.sourceConfig.allowOutgoingSequenceFlow(this.targetNode);
+      return !this.sourceConfig.disallowOutgoingSequenceFlow;
     },
     createLabel() {
       this.shape.labels([{

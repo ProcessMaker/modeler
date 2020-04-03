@@ -14,9 +14,7 @@ export default {
       name: $t('Message Flow'),
     });
   },
-  allowOutgoingSequenceFlow() {
-    return false;
-  },
+  disallowOutgoingSequenceFlow: true,
   inspectorConfig: [
     {
       name: 'Message Flow',
