@@ -2,6 +2,7 @@ import component from './task.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/task/defaultNames';
 
 export const id = 'processmaker-modeler-task';
 
@@ -13,10 +14,10 @@ export default {
   category: 'BPMN',
   rank: 4,
   icon: require('@/assets/toolpanel/task.svg'),
-  label: 'Form Task',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
-      name: $t('Form Task'),
+      name: $t(defaultNames[id]),
       assignment: 'requester',
     });
   },
@@ -30,7 +31,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Form Task',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',

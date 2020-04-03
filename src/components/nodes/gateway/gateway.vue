@@ -22,6 +22,7 @@ import GatewayShape from '@/components/nodes/gateway/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import defaultNames from '@/components/nodes/gateway/defaultNames';
 
 export default {
   components: {
@@ -48,21 +49,21 @@ export default {
       labelWidth: 175,
       dropdownData: [
         {
-          label: 'Exclusive Gateway',
+          label: defaultNames['processmaker-modeler-exclusive-gateway'],
           nodeType: 'processmaker-modeler-exclusive-gateway',
         },
         {
-          label: 'Inclusive Gateway',
+          label: defaultNames['processmaker-modeler-inclusive-gateway'],
           nodeType: 'processmaker-modeler-inclusive-gateway',
           dataTest: 'switch-to-inclusive-gateway',
         },
         {
-          label: 'Parallel Gateway',
+          label: defaultNames['processmaker-modeler-parallel-gateway'],
           nodeType: 'processmaker-modeler-parallel-gateway',
           dataTest: 'switch-to-parallel-gateway',
         },
         {
-          label: 'Event Based Gateway',
+          label: defaultNames['processmaker-modeler-event-based-gateway'],
           nodeType: 'processmaker-modeler-event-based-gateway',
           dataTest: 'switch-to-event-based-gateway',
         },

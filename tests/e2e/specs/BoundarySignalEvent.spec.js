@@ -20,11 +20,13 @@ describe('Boundary Signal Event', () => {
 
   it('update boundary signal event properties element', () => {
     const name = 'Test name';
+    const signalRef = 'signalRef';
     typeIntoTextInput('[name=name]', name);
+    typeIntoTextInput('[name=signalRef]', signalRef);
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
-        <bpmn:signalEventDefinition />
+        <bpmn:signalEventDefinition signalRef="${ signalRef }" />
       </bpmn:boundaryEvent>
     `);
   });

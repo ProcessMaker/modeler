@@ -10,7 +10,7 @@
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
-      @saveBpmn="$emit('saveBpmn')"
+      @saveBpmn="saveBpmn"
       @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
@@ -53,6 +53,7 @@
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
+        :definitions="definitions"
         :processNode="processNode"
         @save-state="pushToUndoStack"
         class="inspector h-100"
@@ -94,6 +95,7 @@
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
+        @copy-element="copyElement"
       />
     </b-row>
   </span>
@@ -117,7 +119,6 @@ import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
-
 import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
@@ -133,8 +134,10 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
+import { keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -247,6 +250,25 @@ export default {
     },
   },
   methods: {
+    copyElement(node, copyCount) {
+      const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+      const yOffset = (node.diagram.bounds.height + 30) * copyCount;
+
+      clonedNode.diagram.bounds.y += yOffset;
+      this.addNode(clonedNode);
+    },
+    async saveBpmn() {
+      const svg = document.querySelector('.mini-paper svg');
+      const css = 'text { font-family: sans-serif; }';
+      const style = document.createElement('style');
+      style.appendChild(document.createTextNode(css));
+
+      svg.appendChild(style);
+      const xml = await this.getXmlFromDiagram();
+      const svgString = (new XMLSerializer()).serializeToString(svg);
+
+      this.$emit('saveBpmn', { xml, svg: svgString });
+    },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
     },
@@ -563,7 +585,16 @@ export default {
         definition.set('name', '');
       }
 
-      store.commit('addNode', new Node(type, definition, diagram));
+      const node = this.createNode(type, definition, diagram);
+
+      store.commit('addNode', node);
+    },
+    createNode(type, definition, diagram) {
+      if (Node.isTimerType(type)) {
+        return new TimerEventNode(type, definition, diagram);
+      }
+
+      return new Node(type, definition, diagram);
     },
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
@@ -605,6 +636,7 @@ export default {
       boundaryEvent.set('eventDefinitions', definition.get('eventDefinitions'));
       boundaryEvent.set('cancelActivity', definition.get('cancelActivity'));
       boundaryEvent.set('attachedToRef', definition.get('attachedToRef'));
+      boundaryEvent.set('color', definition.get('color'));
       boundaryEvent.$parent = definition.$parent;
       if (definition.get('outgoing').length > 0) {
         boundaryEvent.set('outgoing', definition.get('outgoing'));
@@ -629,7 +661,7 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, control }) {
+    handleDrop({ clientX, clientY, control, node }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -637,20 +669,25 @@ export default {
       }
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
+
+      if (keepOriginalName(node)) {
+        definition.name = node.definition.name;
+      }
+
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const node = new Node(control.type, definition, diagram);
+      const newNode = this.createNode(control.type, definition, diagram);
 
-      if (node.isBpmnType('bpmn:BoundaryEvent')) {
+      if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      this.highlightNode(node);
-      this.addNode(node);
+      this.highlightNode(newNode);
+      this.addNode(newNode);
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -664,7 +701,6 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
-
       store.commit('addNode', node);
 
       if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
@@ -684,7 +720,11 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
       this.removeNode(node);
-      this.handleDrop({ clientX, clientY, control: { type: typeToReplaceWith } });
+      this.handleDrop({
+        clientX, clientY,
+        control: { type: typeToReplaceWith },
+        node,
+      });
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&

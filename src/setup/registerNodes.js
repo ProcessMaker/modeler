@@ -31,6 +31,7 @@ import {
   startTimerEvent,
   subProcess,
   task,
+  terminateEndEvent,
   textAnnotation,
 } from '@/components/nodes';
 import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker';
@@ -71,6 +72,7 @@ const customEventNodes = [
   [messageEndEvent, 'bpmn:EndEvent', 'bpmn:MessageEventDefinition'],
   [errorEndEvent, 'bpmn:EndEvent', 'bpmn:ErrorEventDefinition'],
   [signalEndEvent, 'bpmn:EndEvent', 'bpmn:SignalEventDefinition'],
+  [terminateEndEvent, 'bpmn:EndEvent', 'bpmn:TerminateEventDefinition'],
 ];
 const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
   const definitions = definition.get('eventDefinitions');

@@ -1,4 +1,15 @@
+import {
+  defaultEndNames,
+  defaultGatewayNames,
+  defaultIntermediateNames,
+  defaultStartNames,
+  defaultTaskNames,
+} from '@/components/nodes/defaultNames';
+
 export default class Node {
+  static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
+  static definitionPropertiesToNotCopy = ['$type', 'id'];
+
   type;
   definition;
   diagram;
@@ -10,12 +21,32 @@ export default class Node {
     this.diagram = diagram;
   }
 
-  isBpmnType(type) {
-    return this.definition.$type === type;
+  isBpmnType(...types) {
+    return types.includes(this.definition.$type);
   }
 
   isType(type) {
     return this.type === type;
+  }
+
+  isStartEvent() {
+    return Object.keys(defaultStartNames).includes(this.type);
+  }
+
+  isEndEvent() {
+    return Object.keys(defaultEndNames).includes(this.type);
+  }
+
+  isTask() {
+    return Object.keys(defaultTaskNames).includes(this.type);
+  }
+
+  isGateway() {
+    return Object.keys(defaultGatewayNames).includes(this.type);
+  }
+
+  isIntermediateEvent() {
+    return Object.keys(defaultIntermediateNames).includes(this.type);
   }
 
   get id() {
@@ -39,9 +70,30 @@ export default class Node {
     }
   }
 
+  clone(nodeRegistry, moddle, $t) {
+    const definition = nodeRegistry[this.type].definition(moddle, $t);
+    const diagram = nodeRegistry[this.type].diagram(moddle);
+    const clonedNode = new this.constructor(this.type, definition, diagram);
+
+    clonedNode.id = null;
+    Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
+    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
+      clonedNode.definition.set(key, this.definition.get(key));
+    });
+
+    return clonedNode;
+  }
+
   getTargetProcess(processes, processNode) {
     return this.pool
       ? processes.find(({ id }) => id === this.pool.component.node.definition.get('processRef').id)
       : processNode.definition;
+  }
+
+  static isTimerType(type) {
+    return [
+      'processmaker-modeler-start-timer-event',
+      'processmaker-modeler-intermediate-catch-timer-event',
+    ].includes(type);
   }
 }

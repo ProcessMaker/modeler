@@ -38,6 +38,11 @@
       v-on="$listeners"
     />
 
+    <copy-button
+      :node="node"
+      v-on="$listeners"
+    />
+
     <delete-button
       :graph="graph"
       :shape="shape"
@@ -65,12 +70,14 @@ import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
+import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
 import pull from 'lodash/pull';
 import store from '@/store';
 import isEqual from 'lodash/isEqual';
+import { getDefaultNodeColors, setShapeColor } from '@/components/nodeColors';
 
 export default {
   components: {
@@ -79,6 +86,7 @@ export default {
     MessageFlowButton,
     SequenceFlowButton,
     AssociationFlowButton,
+    CopyButton,
   },
   props: {
     highlighted: Boolean,
@@ -103,6 +111,12 @@ export default {
   },
   mixins: [poolLaneCrownConfig],
   watch: {
+    'node.definition.color': {
+      handler() {
+        this.setNodeColor();
+      },
+      deep: true,
+    },
     highlightedShapes(shapes, prevShapes) {
       if (isEqual(shapes, prevShapes)) {
         return;
@@ -152,6 +166,12 @@ export default {
     highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
+    setNodeColor() {
+      const color = this.node.definition.get('color');
+      const { fill, stroke } = getDefaultNodeColors(this.node, color);
+
+      setShapeColor(this.shape, fill, stroke, this.node);
+    },
     paperNotRendered() {
       return !this.isRendering;
     },
@@ -244,6 +264,7 @@ export default {
 
     this.setUpCrownConfig();
     this.setUpPositionHandling();
+    this.setNodeColor();
   },
   destroyed() {
     this.shape.stopListening();

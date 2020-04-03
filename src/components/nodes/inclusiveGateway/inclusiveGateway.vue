@@ -1,14 +1,17 @@
 <script>
 import GatewayComponent from '@/components/nodes/gateway/gateway';
-import inclusiveGatewaySymbol from '@/assets/inclusive-gatway-symbol.svg';
+import inclusiveGatewaySymbol from '!!svg-inline-loader!@/assets/inclusive-gatway-symbol.svg';
 import { gatewayDirection } from '@/components/nodes/gateway/gatewayConfig';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: GatewayComponent,
+  mixins: [updateIconColor],
   data() {
     return {
       outgoing: this.node.definition.get('outgoing'),
       incoming: this.node.definition.get('incoming'),
+      nodeIcon: inclusiveGatewaySymbol,
     };
   },
   watch: {
@@ -21,9 +24,6 @@ export default {
         this.node.definition.set('gatewayDirection', gatewayDirection.converging);
       }
     },
-  },
-  mounted() {
-    this.shape.attr('image/xlink:href', inclusiveGatewaySymbol);
   },
 };
 </script>

@@ -1,11 +1,15 @@
 <script>
 import Task from '../task/task';
-import userIcon from '@/assets/user-task.svg';
+import userIcon from '!!svg-inline-loader!@/assets/user-task.svg';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: Task,
-  mounted() {
-    this.shape.attr('image/xlink:href', userIcon);
+  mixins: [updateIconColor],
+  data() {
+    return {
+      nodeIcon: userIcon,
+    };
   },
 };
 </script>

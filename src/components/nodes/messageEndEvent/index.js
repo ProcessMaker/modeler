@@ -3,15 +3,18 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import endEventConfig from '@/components/nodes/endEvent';
 import omit from 'lodash/omit';
+import defaultNames from '@/components/nodes/endEvent/defaultNames';
+
+const id = 'processmaker-modeler-message-end-event';
 
 export default merge(cloneDeep(endEventConfig), {
-  id: 'processmaker-modeler-message-end-event',
+  id,
   component,
   control: false,
-  label: 'Message End Event',
+  label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
-      name: $t('Message End Event'),
+      name: $t(defaultNames[id]),
       eventDefinitions: [
         moddle.create('bpmn:MessageEventDefinition'),
       ],

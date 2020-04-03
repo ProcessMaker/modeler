@@ -1,11 +1,15 @@
 <script>
 import StartEvent from '@/components/nodes/startEvent/startEvent';
-import clockIcon from '@/assets/clock.svg';
+import clockIcon from '!!svg-inline-loader!@/assets/clock.svg';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: StartEvent,
-  mounted() {
-    this.shape.attr('image/xlink:href', clockIcon);
+  mixins: [updateIconColor],
+  data() {
+    return {
+      nodeIcon: clockIcon,
+    };
   },
 };
 </script>

@@ -1,9 +1,12 @@
 import component from './exclusiveGateway.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import defaultNames from '@/components/nodes/gateway/defaultNames';
+
+const id = 'processmaker-modeler-exclusive-gateway';
 
 export default {
-  id: 'processmaker-modeler-exclusive-gateway',
+  id,
   component,
   bpmnType: 'bpmn:ExclusiveGateway',
   control: true,
@@ -13,7 +16,7 @@ export default {
   rank: 5,
   definition(moddle, $t) {
     return moddle.create('bpmn:ExclusiveGateway', {
-      name: $t('Exclusive Gateway'),
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
@@ -26,7 +29,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Exclusive Gateway',
+      name: defaultNames[id],
       items: [
         {
           component: 'FormAccordion',

@@ -47,7 +47,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(endEventPosition)
       .click()
       .then($endEvent => {
-        getCrownButtonForElement($endEvent, 'delete-button').click();
+        getCrownButtonForElement($endEvent, 'delete-button').click({ force: true });
       });
 
     const taskPosition = { x: 450, y: 350 };
@@ -59,7 +59,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(taskPosition)
       .click()
       .then($task => {
-        getCrownButtonForElement($task, 'delete-button').click();
+        getCrownButtonForElement($task, 'delete-button').click({ force: true });
       });
 
     const scriptTaskPosition = { x: 450, y: 350 };
@@ -72,7 +72,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(scriptTaskPosition)
       .click()
       .then($scriptTask => {
-        getCrownButtonForElement($scriptTask, 'delete-button').click();
+        getCrownButtonForElement($scriptTask, 'delete-button').click({ force: true });
       });
 
     const exclusiveGatewayPosition = { x: 450, y: 350 };
@@ -84,7 +84,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(exclusiveGatewayPosition)
       .click()
       .then($exclusiveGateway => {
-        getCrownButtonForElement($exclusiveGateway, 'delete-button').click();
+        getCrownButtonForElement($exclusiveGateway, 'delete-button').click({ force: true });
       });
 
     const parallelGatewayPosition = { x: 450, y: 350 };
@@ -96,7 +96,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(parallelGatewayPosition)
       .click()
       .then($parallelGateway => {
-        getCrownButtonForElement($parallelGateway, 'delete-button').click();
+        getCrownButtonForElement($parallelGateway, 'delete-button').click({ force: true });
       });
 
     const inclusiveGatewayPosition = { x: 450, y: 350 };
@@ -108,7 +108,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(inclusiveGatewayPosition)
       .click()
       .then($inclusiveGateway => {
-        getCrownButtonForElement($inclusiveGateway, 'delete-button').click();
+        getCrownButtonForElement($inclusiveGateway, 'delete-button').click({ force: true });
       });
 
     const secondEventBasedGatewayPosition = { x: 450, y: 350 };
@@ -120,7 +120,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(secondEventBasedGatewayPosition)
       .click()
       .then($eventBasedGateway => {
-        getCrownButtonForElement($eventBasedGateway, 'delete-button').click();
+        getCrownButtonForElement($eventBasedGateway, 'delete-button').click({ force: true });
       });
 
     const textAnnotationPosition = { x: 450, y: 350 };
@@ -132,7 +132,7 @@ describe('Event-Based Gateway', () => {
     getElementAtPosition(textAnnotationPosition)
       .click()
       .then($textAnnotation => {
-        getCrownButtonForElement($textAnnotation, 'delete-button').click();
+        getCrownButtonForElement($textAnnotation, 'delete-button').click({ force: true });
       });
   });
 });
