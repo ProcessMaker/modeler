@@ -40,9 +40,9 @@ export default {
                 helper: 'Select Direction',
                 name: 'associationDirection',
                 options: [
-                  { value: `${ direction.none }`, content: 'None' },
-                  { value: `${ direction.one }`, content: 'One' },
-                  { value: `${ direction.both }`, content: 'Both' },
+                  { value: `${direction.none}`, content: 'None' },
+                  { value: `${direction.one}`, content: 'One' },
+                  { value: `${direction.both}`, content: 'Both' },
                 ],
               },
             },
