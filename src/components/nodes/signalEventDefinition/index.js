@@ -22,7 +22,7 @@ export default {
     }
     
     let signal = definitions.rootElements.find(element => element.id === value.signalRef);
-    if (!signal) {
+    if (!signal && value.signalRef) {
       signal = moddle.create('bpmn:Signal', {
         id: value.signalRef,
         name: value.signalRef,
