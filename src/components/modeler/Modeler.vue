@@ -72,6 +72,7 @@
         :id="node.id"
         :highlighted="highlightedNodes.includes(node)"
         :has-error="invalidNodes.includes(node.id)"
+        :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
         :processes="processes"
@@ -144,6 +145,15 @@ export default {
     controls,
     InspectorPanel,
     MiniPaper,
+  },
+  props: {
+    owner: Object,
+    decorations: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -259,6 +269,9 @@ export default {
 
       this.$emit('saveBpmn', { xml, svg: svgString });
     },
+    borderOutline(nodeId) {
+      return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
+    },
     addWarning(warning) {
       this.allWarnings.push(warning);
       this.$emit('warnings', this.allWarnings);
@@ -364,6 +377,9 @@ export default {
       if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
         document.activeElement.blur();
       }
+    },
+    registerStatusBar(component) {
+      this.owner.validationBar.push(component);
     },
     /**
      * Register a mixin into a node component.
@@ -781,6 +797,7 @@ export default {
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
+      registerStatusBar: this.registerStatusBar,
     });
 
     this.moddle = new BpmnModdle(this.extensions);

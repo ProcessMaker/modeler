@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep';
+
 const errorHighlighter = {
   highlighter: {
     name: 'stroke',
@@ -30,10 +32,12 @@ export default {
     'paperManager',
     'hasError',
     'autoValidate',
+    'borderOutline',
   ],
   data() {
     return {
       shape: null,
+      currentBorderOutline: null,
     };
   },
   watch: {
@@ -45,6 +49,12 @@ export default {
     },
     autoValidate() {
       this.setShapeHighlight();
+    },
+    borderOutline: {
+      deep: true,
+      handler(borderOutline) {
+        this.setBorderOutline(borderOutline);
+      },
     },
   },
   computed: {
@@ -67,6 +77,15 @@ export default {
       this.shapeView.unhighlight(this.shapeBody, defaultHighlighter);
       if (this.highlighted) {
         this.shapeView.highlight(this.shapeBody, defaultHighlighter);
+      }
+    },
+    setBorderOutline(borderOutline) {
+      if (this.currentBorderOutline) {
+        this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline);
+      }
+      this.currentBorderOutline = borderOutline ? cloneDeep(borderOutline) : null;
+      if (this.currentBorderOutline) {
+        this.shapeView.highlight(this.shapeBody, this.currentBorderOutline);
       }
     },
   },
