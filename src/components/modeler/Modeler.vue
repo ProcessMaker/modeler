@@ -813,6 +813,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       return {
         elementMove: cellView.model.get('elementMove'),
+        labelMove: false,
       };
     });
 
