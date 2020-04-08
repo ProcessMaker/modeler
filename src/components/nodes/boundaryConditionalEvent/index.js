@@ -13,6 +13,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('Boundary Conditional Event'),
+      cancelActivity: true,
       eventDefinitions: [
         moddle.create('bpmn:ConditionalEventDefinition'),
       ],
