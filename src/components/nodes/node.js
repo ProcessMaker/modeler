@@ -26,7 +26,12 @@ export default class Node {
   }
 
   canBeDefaultFlow() {
-    return true;
+    const validSources = [
+      'bpmn:ExclusiveGateway',
+      'bpmn:InclusiveGateway',
+    ];
+    return this.definition.$type === 'bpmn:SequenceFlow'
+      && validSources.indexOf(this.definition.sourceRef.$type) > -1;
   }
 
   isType(type) {

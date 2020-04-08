@@ -1,7 +1,7 @@
 <template>
   <crown-button
     v-if="node.canBeDefaultFlow()"
-    :title="$t('Default Flow')"
+    :title="$t('Set as Default Flow')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     aria-label="Default Flow"
     data-test="default-flow"
