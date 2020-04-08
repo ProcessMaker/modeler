@@ -137,11 +137,21 @@ export default {
         position: namePosition,
       }]);
     },
+    createDefaultFlowMarker() {
+      this.shape.attr('line', {
+        sourceMarker: {
+          'type': 'polyline',
+          'stroke-width': 0,
+          points: '2,6 4,-6',
+        },
+      });
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link();
     this.shape.connector('rounded', { radius: 5 });
     this.createLabel();
+    this.createDefaultFlowMarker();
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
