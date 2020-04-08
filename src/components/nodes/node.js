@@ -25,6 +25,10 @@ export default class Node {
     return types.includes(this.definition.$type);
   }
 
+  canBeDefaultFlow() {
+    return true;
+  }
+
   isType(type) {
     return this.type === type;
   }
