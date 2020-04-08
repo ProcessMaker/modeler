@@ -96,6 +96,7 @@
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
         @copy-element="copyElement"
+        @default-flow="defaultFlow"
       />
     </b-row>
   </span>
@@ -250,6 +251,10 @@ export default {
     },
   },
   methods: {
+    defaultFlow(flow) {
+      const source = flow.definition.sourceRef;
+      store.commit('setDefaultFlow', { source, flow });
+    },
     copyElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
