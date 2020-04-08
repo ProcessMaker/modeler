@@ -11,5 +11,16 @@ export default {
       nodeIcon: conditionalIcon,
     };
   },
+  mounted() {
+    const bounds = this.node.diagram.bounds;
+    this.shape.attr({
+      image: {
+        'ref-x': 6,
+        'ref-y': 6,
+        'width': bounds.get('width') - 12,
+        'height': bounds.get('height') - 12,
+      },
+    });
+  },
 };
 </script>
