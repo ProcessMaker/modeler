@@ -10,7 +10,6 @@ export default merge(cloneDeep(boundaryEventConfig), {
   component,
   control: false,
   label: 'Boundary Conditional Event',
-  icon: require('@/assets/conditional-icon.svg'),
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('Boundary Conditional Event'),
