@@ -37,3 +37,4 @@ export { default as boundaryErrorEvent } from './boundaryErrorEvent';
 export { default as boundaryEscalationEvent } from './boundaryEscalationEvent';
 export { default as boundarySignalEvent } from './boundarySignalEvent';
 export { default as registerNodes } from '@/setup/registerNodes';
+export { default as conditionalStartEvent } from './conditionalStartEvent';
