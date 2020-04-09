@@ -641,16 +641,6 @@ export default {
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
-      if (keepOriginalName(nodeThatWillBeReplaced)) {
-        definition.name = nodeThatWillBeReplaced.definition.name;
-      }
-
-      const incoming = nodeThatWillBeReplaced ? nodeThatWillBeReplaced.definition.get('incoming') : [];
-      const outgoing = nodeThatWillBeReplaced ? nodeThatWillBeReplaced.definition.get('outgoing') : [];
-
-      definition.set('incoming', incoming);
-      definition.set('outgoing', outgoing);
-
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
@@ -664,10 +654,15 @@ export default {
       }
 
       this.highlightNode(newNode);
-      this.addNode(newNode);
+      await this.addNode(newNode);
 
-      await this.$nextTick();
-      await this.paperManager.awaitScheduledUpdates();
+      if (!nodeThatWillBeReplaced) {
+        return;
+      }
+
+      if (keepOriginalName(nodeThatWillBeReplaced)) {
+        definition.name = nodeThatWillBeReplaced.definition.name;
+      }
 
       const forceNodeToRemount = definition => {
         const shape = this.graph.getLinks().find(element => {
@@ -675,6 +670,12 @@ export default {
         });
         shape.component.node._modelerId += '_replaced';
       };
+
+      const incoming = nodeThatWillBeReplaced.definition.get('incoming');
+      const outgoing = nodeThatWillBeReplaced.definition.get('outgoing');
+
+      definition.set('incoming', incoming);
+      definition.set('outgoing', outgoing);
 
       outgoing.forEach(ref => {
         ref.set('sourceRef', newNode.definition);
@@ -706,17 +707,21 @@ export default {
         return;
       }
 
-      setTimeout(() => this.pushToUndoStack());
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.pushToUndoStack();
+          resolve();
+        });
+      });
     },
-    removeNode(node) {
+    async removeNode(node) {
       removeOutgoingAndIncomingRefsToFlow(node);
 
       this.removeNodeFromLane(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
-      this.$nextTick(() => {
-        this.pushToUndoStack();
-      });
+      await this.$nextTick();
+      this.pushToUndoStack();
     },
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
@@ -727,15 +732,14 @@ export default {
           nodeThatWillBeReplaced: node,
         });
 
-        await this.$nextTick();
-        await this.paperManager.awaitScheduledUpdates();
-        this.removeNode(node);
+        await this.removeNode(node);
       });
     },
     async performSingleUndoRedoTransaction(cb) {
       undoRedoStore.commit('disableSavingState');
       await cb();
       undoRedoStore.commit('enableSavingState');
+      this.pushToUndoStack();
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
