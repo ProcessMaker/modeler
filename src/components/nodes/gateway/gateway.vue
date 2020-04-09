@@ -89,6 +89,7 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+    this.$set(this.node.definition, 'default', null);
   },
 };
 </script>

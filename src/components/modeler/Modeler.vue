@@ -253,6 +253,9 @@ export default {
   methods: {
     defaultFlow(flow) {
       const source = flow.definition.sourceRef;
+      if (source.default && source.default.id === flow.id) {
+        flow = null;
+      }
       store.commit('setDefaultFlow', { source, flow });
     },
     copyElement(node, copyCount) {

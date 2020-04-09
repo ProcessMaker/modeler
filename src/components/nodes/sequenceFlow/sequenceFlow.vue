@@ -68,6 +68,18 @@ export default {
         });
       },
     },
+    defaultFlow: {
+      get() {
+        return this.shape.attr('line').sourceMarker['stroke-width'] > 0;
+      },
+      set(value) {
+        this.shape.attr('line', {
+          sourceMarker: {
+            'stroke-width': value ? 2 : 0,
+          },
+        });
+      },
+    },
   },
   watch: {
     'node.definition': {
@@ -77,6 +89,19 @@ export default {
         if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
         }
+        window.aa = (window.aa || 0) + 1;
+        this.defaultFlow = this.node.definition.sourceRef
+          && this.node.definition.sourceRef.default
+          && this.node.definition.sourceRef.default.id === this.node.definition.id;
+      },
+      deep: true,
+    },
+    'node.definition.sourceRef': {
+      handler() {
+        window.aa = (window.aa || 0) + 1;
+        this.defaultFlow = this.node.definition.sourceRef
+          && this.node.definition.sourceRef.default
+          && this.node.definition.sourceRef.default.id === this.node.definition.id;
       },
       deep: true,
     },
@@ -142,7 +167,7 @@ export default {
         sourceMarker: {
           'type': 'polyline',
           'stroke-width': 0,
-          points: '2,6 4,-6',
+          points: '2,6 6,-6',
         },
       });
     },
