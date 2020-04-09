@@ -632,7 +632,7 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    async handleDrop({ clientX, clientY, control, node }) {
+    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -641,12 +641,12 @@ export default {
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
 
-      if (keepOriginalName(node)) {
-        definition.name = node.definition.name;
+      if (keepOriginalName(nodeThatWillBeReplaced)) {
+        definition.name = nodeThatWillBeReplaced.definition.name;
       }
 
-      const incoming = node ? node.definition.get('incoming') : [];
-      const outgoing = node ? node.definition.get('outgoing') : [];
+      const incoming = nodeThatWillBeReplaced ? nodeThatWillBeReplaced.definition.get('incoming') : [];
+      const outgoing = nodeThatWillBeReplaced ? nodeThatWillBeReplaced.definition.get('outgoing') : [];
 
       definition.set('incoming', incoming);
       definition.set('outgoing', outgoing);
@@ -685,9 +685,6 @@ export default {
         ref.set('targetRef', newNode.definition);
         forceNodeToRemount(ref);
       });
-
-      // eslint-disable-next-line no-console
-      console.log('newNode def 2', newNode.definition);
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -703,12 +700,13 @@ export default {
       this.planeElements.push(node.diagram);
 
       store.commit('addNode', node);
+      this.poolTarget = null;
 
-      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
-        setTimeout(() => this.pushToUndoStack());
+      if ([sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
+        return;
       }
 
-      this.poolTarget = null;
+      setTimeout(() => this.pushToUndoStack());
     },
     removeNode(node) {
       removeOutgoingAndIncomingRefsToFlow(node);
@@ -720,17 +718,24 @@ export default {
         this.pushToUndoStack();
       });
     },
-    async replaceNode({ node, typeToReplaceWith }) {
-      const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-      this.handleDrop({
-        clientX, clientY,
-        control: { type: typeToReplaceWith },
-        node,
-      });
+    replaceNode({ node, typeToReplaceWith }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+        await this.handleDrop({
+          clientX, clientY,
+          control: { type: typeToReplaceWith },
+          nodeThatWillBeReplaced: node,
+        });
 
-      await this.$nextTick();
-      await this.paperManager.awaitScheduledUpdates();
-      this.removeNode(node);
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        this.removeNode(node);
+      });
+    },
+    async performSingleUndoRedoTransaction(cb) {
+      undoRedoStore.commit('disableSavingState');
+      await cb();
+      undoRedoStore.commit('enableSavingState');
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
