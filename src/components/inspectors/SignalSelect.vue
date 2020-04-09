@@ -205,7 +205,7 @@ export default {
       if (exists) {
         return this.$t('Signal ID is duplicated');
       }
-      const validId = id.match(/^[a-zA-Z_][\w.-]*$/);
+      const validId = id.match(/^[_A-Za-z][-._A-Za-z0-9]*$/);
       if (!validId) {
         return this.$t('Signal ID is not a valid xsd:ID');
       }
