@@ -42,6 +42,11 @@ export default {
     'isRendering',
   ],
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  created() {
+    const flow = this.node.definition.default || null;
+    delete this.node.definition.default;
+    this.$set(this.node.definition, 'default', flow);
+  },
   data() {
     return {
       shape: null,
@@ -89,7 +94,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.$set(this.node.definition, 'default', null);
   },
 };
 </script>

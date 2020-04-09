@@ -89,7 +89,6 @@ export default {
         if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
         }
-        window.aa = (window.aa || 0) + 1;
         this.defaultFlow = this.node.definition.sourceRef
           && this.node.definition.sourceRef.default
           && this.node.definition.sourceRef.default.id === this.node.definition.id;
@@ -98,7 +97,6 @@ export default {
     },
     'node.definition.sourceRef': {
       handler() {
-        window.aa = (window.aa || 0) + 1;
         this.defaultFlow = this.node.definition.sourceRef
           && this.node.definition.sourceRef.default
           && this.node.definition.sourceRef.default.id === this.node.definition.id;
@@ -163,10 +161,13 @@ export default {
       }]);
     },
     createDefaultFlowMarker() {
+      const isDefault = this.node.definition.sourceRef
+        && this.node.definition.sourceRef.default
+        && this.node.definition.sourceRef.default.id === this.node.definition.id;
       this.shape.attr('line', {
         sourceMarker: {
           'type': 'polyline',
-          'stroke-width': 0,
+          'stroke-width': isDefault ? 2 : 0,
           points: '2,6 6,-6',
         },
       });
