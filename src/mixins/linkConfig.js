@@ -1,5 +1,4 @@
 import { dia, linkTools } from 'jointjs';
-import pull from 'lodash/pull';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { invalidNodeColor, validNodeColor } from '@/components/nodeColors';
@@ -294,19 +293,6 @@ export default {
     document.removeEventListener('mouseup', this.emitSave);
   },
   destroyed() {
-    /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
-    const { sourceRef, targetRef } = this.node.definition;
-    if (sourceRef) {
-      pull(sourceRef.get('outgoing'), this.node.definition);
-    }
-
-    /* If targetRef is defined, it could be a point or another element.
-     * If targetRef has an id, that means it's an element and the reference to it
-     * can be safely removed. */
-    if (targetRef.id) {
-      pull(targetRef.get('incoming'), this.node.definition);
-    }
-
     this.updateWaypoints.cancel();
   },
 };

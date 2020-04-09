@@ -134,6 +134,7 @@ import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { keepOriginalName } from '@/components/modeler/modelerUtils';
+import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
 
 export default {
   components: {
@@ -631,7 +632,7 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, control, node }) {
+    async handleDrop({ clientX, clientY, control, node }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -646,8 +647,9 @@ export default {
 
       const incoming = node ? node.definition.get('incoming') : [];
       const outgoing = node ? node.definition.get('outgoing') : [];
-      definition.incoming = incoming;
-      definition.outgoing = outgoing;
+
+      definition.set('incoming', incoming);
+      definition.set('outgoing', outgoing);
 
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
@@ -661,26 +663,31 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      let flowsToLoad = [];
-
-      incoming.forEach(ref => {
-        ref.set('targetRef', newNode.definition);
-        flowsToLoad.push(ref);
-      });
-
-      outgoing.forEach(ref => {
-        ref.set('sourceRef', newNode.definition);
-        flowsToLoad.push(ref);
-      });
-
       this.highlightNode(newNode);
       this.addNode(newNode);
 
-      this.processes.forEach(process => {
-        const flowElements = process.get('flowElements');
-        const artifacts = process.get('artifacts');
-        this.loadCertainSequenceFlows(flowElements, artifacts, flowsToLoad);
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+
+      const forceNodeToRemount = definition => {
+        const shape = this.graph.getLinks().find(element => {
+          return element.component && element.component.node.definition === definition;
+        });
+        shape.component.node._modelerId += '_replaced';
+      };
+
+      outgoing.forEach(ref => {
+        ref.set('sourceRef', newNode.definition);
+        forceNodeToRemount(ref);
       });
+
+      incoming.forEach(ref => {
+        ref.set('targetRef', newNode.definition);
+        forceNodeToRemount(ref);
+      });
+
+      // eslint-disable-next-line no-console
+      console.log('newNode def 2', newNode.definition);
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -704,6 +711,8 @@ export default {
       this.poolTarget = null;
     },
     removeNode(node) {
+      removeOutgoingAndIncomingRefsToFlow(node);
+
       this.removeNodeFromLane(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
@@ -711,14 +720,17 @@ export default {
         this.pushToUndoStack();
       });
     },
-    replaceNode({ node, typeToReplaceWith }) {
+    async replaceNode({ node, typeToReplaceWith }) {
       const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-      this.removeNode(node);
       this.handleDrop({
         clientX, clientY,
         control: { type: typeToReplaceWith },
         node,
       });
+
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.removeNode(node);
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
