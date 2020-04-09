@@ -31,7 +31,7 @@ export default class Node {
       'bpmn:InclusiveGateway',
     ];
     return this.definition.$type === 'bpmn:SequenceFlow'
-      && validSources.indexOf(this.definition.sourceRef.$type) > -1;
+      && validSources.includes(this.definition.sourceRef.$type);
   }
 
   isType(type) {
