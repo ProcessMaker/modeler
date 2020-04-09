@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "id": "global_1",
+      "name": "global signal 1"
+    },
+    {
+      "id": "global_2",
+      "name": "global signal 2"
+    }
+  ],
+  "meta": {
+    "filter": "",
+    "sort_by": "name",
+    "sort_order": "asc",
+    "count": 2,
+    "total_pages": 1,
+    "current_page": 1,
+    "from": 1,
+    "to": 2,
+    "last_page": 1,
+    "per_page": 15,
+    "total": 2
+  }
+}
