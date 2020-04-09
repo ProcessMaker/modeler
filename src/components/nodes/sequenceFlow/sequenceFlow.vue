@@ -89,22 +89,23 @@ export default {
         if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
         }
-        this.defaultFlow = this.node.definition.sourceRef
-          && this.node.definition.sourceRef.default
-          && this.node.definition.sourceRef.default.id === this.node.definition.id;
+        this.defaultFlow = this.isDefaultFlow();
       },
       deep: true,
     },
     'node.definition.sourceRef': {
       handler() {
-        this.defaultFlow = this.node.definition.sourceRef
-          && this.node.definition.sourceRef.default
-          && this.node.definition.sourceRef.default.id === this.node.definition.id;
+        this.defaultFlow = this.isDefaultFlow();
       },
       deep: true,
     },
   },
   methods: {
+    isDefaultFlow() {
+      return this.node.definition.sourceRef
+        && this.node.definition.sourceRef.default
+        && this.node.definition.sourceRef.default.id === this.node.definition.id;
+    },
     updateRouter() {
       this.shape.router('orthogonal', { padding: 1 });
     },
@@ -161,9 +162,7 @@ export default {
       }]);
     },
     createDefaultFlowMarker() {
-      const isDefault = this.node.definition.sourceRef
-        && this.node.definition.sourceRef.default
-        && this.node.definition.sourceRef.default.id === this.node.definition.id;
+      const isDefault = this.isDefaultFlow();
       this.shape.attr('line', {
         sourceMarker: {
           'type': 'polyline',
