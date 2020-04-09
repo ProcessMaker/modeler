@@ -4,6 +4,7 @@ import {
   getElementAtPosition,
   setBoundaryEvent,
   typeIntoTextInput,
+  selectOptionByName,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -20,9 +21,10 @@ describe('Boundary Signal Event', () => {
 
   it('update boundary signal event properties element', () => {
     const name = 'Test name';
-    const signalRef = 'signalRef';
+    const signalRef = 'global_1';
+    const signalName = 'global signal 1';
     typeIntoTextInput('[name=name]', name);
-    typeIntoTextInput('[name=signalRef]', signalRef);
+    selectOptionByName('[data-test="signalRef:select"]', signalName);
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">

@@ -15,6 +15,7 @@
         label="name"
         @search-change="loadOptionsDebounced"
         @open="loadOptions"
+        :data-test="`${name}:select`"
       >
         <template slot="noResult">
           <slot name="noResult">{{ $t('Not found') }}</slot>
@@ -110,6 +111,7 @@ export default {
   components: { Multiselect },
   props: {
     value: null,
+    name: String,
     placeholder: String,
     helper: String,
     trackBy: {
