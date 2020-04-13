@@ -346,7 +346,10 @@ export default {
         this.selectedOption = this.storeId
           ? this.options.find(option => get(option, this.trackBy) == value)
           : value;
-        return value && !this.selectedOption ? this.loadSelected(value) : null;
+          
+        if (value && !this.selectedOption) {
+          this.loadSelected(value);
+        }
       },
     },
   },
