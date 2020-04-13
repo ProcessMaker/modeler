@@ -130,10 +130,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    storeId: {
-      type: Boolean,
-      default: true,
-    },
   },
   computed: {
     localSignals() {
@@ -259,7 +255,7 @@ export default {
         });
         window.ProcessMaker.$modeler.definitions.rootElements.push(signal);
       }
-      this.$emit('input', this.storeId ? get(value, this.trackBy) : value);
+      this.$emit('input', get(value, this.trackBy));
       this.fixUnrefreshedVueFormRender();
     },
     fixUnrefreshedVueFormRender() {
@@ -329,15 +325,12 @@ export default {
         this.fixUnrefreshedVueFormRender();
       }
     },
-    loadOptionsDebounced() {},
   },
   watch: {
     value: {
       immediate: true,
       handler(value) {
-        this.selectedOption = this.storeId
-          ? this.options.find(option => get(option, this.trackBy) == value)
-          : value;
+        this.selectedOption = this.options.find(option => get(option, this.trackBy) == value);
           
         if (value && !this.selectedOption) {
           this.loadSelected(value);
