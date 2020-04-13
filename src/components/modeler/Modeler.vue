@@ -137,8 +137,8 @@ import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { keepOriginalName } from '@/components/modeler/modelerUtils';
 import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
+import { keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -709,8 +709,8 @@ export default {
       const incoming = nodeThatWillBeReplaced.definition.get('incoming');
       const outgoing = nodeThatWillBeReplaced.definition.get('outgoing');
 
-      definition.set('incoming', incoming);
-      definition.set('outgoing', outgoing);
+      definition.get('incoming').push(...incoming);
+      definition.get('outgoing').push(...outgoing);
 
       outgoing.forEach(ref => {
         ref.set('sourceRef', newNode.definition);

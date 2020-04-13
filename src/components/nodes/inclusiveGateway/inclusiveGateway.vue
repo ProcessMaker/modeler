@@ -9,20 +9,17 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      outgoing: this.node.definition.get('outgoing'),
       incoming: this.node.definition.get('incoming'),
       nodeIcon: inclusiveGatewaySymbol,
     };
   },
   watch: {
     incoming(incoming) {
-      const incomingCount = incoming.length;
+      const direction = incoming.length <= 1
+        ? gatewayDirection.diverging
+        : gatewayDirection.converging;
 
-      if (incomingCount <= 1 ) {
-        this.node.definition.set('gatewayDirection', gatewayDirection.diverging);
-      } else {
-        this.node.definition.set('gatewayDirection', gatewayDirection.converging);
-      }
+      this.node.definition.set('gatewayDirection', direction);
     },
   },
 };
