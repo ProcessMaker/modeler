@@ -33,8 +33,8 @@
     <small v-if="helper" class="form-text text-muted">{{ $t(helper) }}</small>
     <div v-if="showNewSignal" class="card">
       <div class="card-body p-2">
-        <form-input :label="$t('ID')" v-model="signalId" :error="validateNewId(signalId)" />
-        <form-input :label="$t('Name')" v-model="signalName" :error="validateNewName(signalName)" />
+        <form-input :label="$t('ID')" v-model="signalId" :error="getValidationErrorForNewId(signalId)" />
+        <form-input :label="$t('Name')" v-model="signalName" :error="getValidationErrorForNewName(signalName)" />
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal">
@@ -47,7 +47,7 @@
     </div>
     <div v-if="showEditSignal" class="card">
       <div class="card-body p-2">
-        <form-input :label="$t('Name')" v-model="signalName" :error="validateName(signalName)" />
+        <form-input :label="$t('Name')" v-model="signalName" :error="getValidationErrorForNameUpdate(signalName)" />
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal">
@@ -137,11 +137,11 @@ export default {
         .filter(element => element.$type === 'bpmn:Signal');
     },
     validNew() {
-      return this.validateNewId(this.signalId) === ''
-        && this.validateNewName(this.signalName) === '';
+      return this.getValidationErrorForNewId(this.signalId) === ''
+        && this.getValidationErrorForNewName(this.signalName) === '';
     },
     validUpdate() {
-      return this.validateName(this.signalName) === '';
+      return this.getValidationErrorForNameUpdate(this.signalName) === '';
     },
   },
   data() {
@@ -184,7 +184,7 @@ export default {
       });
       return usage;
     },
-    validateNewId(id) {
+    getValidationErrorForNewId(id) {
       if (!id) {
         return this.$t('Signal ID is required');
       }
@@ -200,7 +200,7 @@ export default {
       }
       return '';
     },
-    validateNewName(name) {
+    getValidationErrorForNewName(name) {
       if (!name) {
         return this.$t('Signal Name is required');
       }
@@ -212,7 +212,7 @@ export default {
       }
       return '';
     },
-    validateName(name) {
+    getValidationErrorForNameUpdate(name) {
       if (!name) {
         return this.$t('Signal Name is required');
       }
