@@ -105,7 +105,7 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import {get} from 'lodash';
+import {get,uniqBy} from 'lodash';
 
 export default {
   components: { Multiselect },
@@ -292,18 +292,7 @@ export default {
       this.showNewSignal = false;
     },
     updateOptions(globalSignals) {
-      this.options = globalSignals;
-      window.ProcessMaker.$modeler.definitions.rootElements.forEach((element) => {
-        const localSignal = this.options.find(option => option.id === element.id);
-        if (element.$type === 'bpmn:Signal' &&!localSignal) {
-          this.options.push({
-            id: element.id,
-            name: element.name,
-          });
-        } else if (localSignal) {
-          localSignal.name = element.name;
-        }
-      });
+      this.options = uniqBy([...this.localSignals, ...globalSignals], 'id');
     },
     loadOptions(filter) {
       const pmql = this.pmql;
