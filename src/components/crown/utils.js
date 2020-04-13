@@ -1,12 +1,26 @@
 import pull from 'lodash/pull';
 
-export function removeFlows(graph, shape) {
-  graph.getConnectedLinks(shape).forEach(shape => this.$emit('remove-node', shape.component.node));
+export function removeFlows(graph, shape, keepSequenceFlows = false) {
+  let linkShapes = graph.getConnectedLinks(shape);
+
+  if (keepSequenceFlows) {
+    linkShapes = linkShapes.filter(link => !link.component.node.isBpmnType('bpmn:SequenceFlow'));
+  }
+
+
+  linkShapes.forEach(shape => this.$emit('remove-node', shape.component.node));
   shape.getEmbeddedCells({ deep: true })
-    .filter(cell => cell.component)
+    .filter(cell => {
+      if (keepSequenceFlows) {
+        return cell.component && !cell.component.node.isBpmnType('bpmn:SequenceFlow');
+      }
+
+      return cell.component;
+    })
     .forEach(cell => {
       graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
       shape.unembed(cell);
+      
       this.$emit('remove-node', cell.component.node);
     });
 }
