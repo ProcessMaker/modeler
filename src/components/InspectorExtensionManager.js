@@ -1,5 +1,5 @@
-export default function registerInspectorExtension(node, config) {
-  const inspectorItems = getInspectorItems(node, config);
+export default function registerInspectorExtension(node, config, ownerName) {
+  const inspectorItems = getInspectorItems(node, config, ownerName);
   addInspectorItem(inspectorItems, config);
   node.inspectorConfig[0].items.sort(moveAdvancedAccordionToBottom);
 }
@@ -18,7 +18,8 @@ function moveAdvancedAccordionToBottom(accordionA, accordionB) {
 
 function addInspectorItem(inspectorItems, config) {
   const nodeIndex = inspectorItems.findIndex(item => {
-    return config.id && config.id === item.id;
+    const isAFieldWithSameName = !config.container && config.config && item.config && config.config.name && config.config.name === item.config.name;
+    return (config.id && config.id === item.id) || isAFieldWithSameName;
   });
   if (nodeIndex === -1) {
     inspectorItems.push(config);
@@ -27,9 +28,16 @@ function addInspectorItem(inspectorItems, config) {
   inspectorItems[nodeIndex] = config;
 }
 
-function getInspectorItems(node, config) {
+function getInspectorItems(node, config, ownerName) {
   if (typeof config.container !== 'undefined') {
     return node.inspectorConfig[0].items;
+  }
+  if (ownerName) {
+    node = node.inspectorConfig[0];
+    ownerName.split('.').forEach(name => {
+      node = node && node.items.find(node => node.config && node.config.name === name);
+    });
+    return node ? node.items : null;
   }
   return node.inspectorConfig[0].items[0].items;
 }

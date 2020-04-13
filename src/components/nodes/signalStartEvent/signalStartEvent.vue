@@ -5,6 +5,7 @@ import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: startEvent,
+  props: ['moddle', 'rootElements', 'id'],
   mixins: [updateIconColor],
   data() {
     return {

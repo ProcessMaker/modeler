@@ -12,7 +12,7 @@
 
     <sequence-flow-button
       :node="node"
-      :sequence-flow-config="nodeRegistry['processmaker-modeler-sequence-flow']"
+      :node-registry="nodeRegistry"
       :moddle="moddle"
       v-on="$listeners"
       @toggle-crown-state="showCrown = $event"
@@ -35,6 +35,11 @@
       :shape="shape"
       :task-dropdown-initially-open="taskDropdownInitiallyOpen"
       @replace-node-type="replaceNodeTypePrompt"
+      v-on="$listeners"
+    />
+
+    <copy-button
+      :node="node"
       v-on="$listeners"
     />
 
@@ -65,6 +70,7 @@ import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
+import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
@@ -80,6 +86,7 @@ export default {
     MessageFlowButton,
     SequenceFlowButton,
     AssociationFlowButton,
+    CopyButton,
   },
   props: {
     highlighted: Boolean,

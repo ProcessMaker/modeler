@@ -1,6 +1,6 @@
 <template>
   <crown-button
-    v-if="!invalidSequenceFlowSources.includes(node.type)"
+    v-if="allowOutgoingSequenceFlow"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Sequence Flow')"
     id="sequence-flow-button"
@@ -15,25 +15,34 @@ import sequenceFlow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 
+const sequenceFlowBlacklist = [
+  'bpmn:EndEvent',
+  'bpmn:MessageFlow',
+  'bpmn:SequenceFlow',
+  'bpmn:Participant',
+  'bpmn:Lane',
+  'bpmn:TextAnnotation',
+  'bpmn:Association',
+];
+
 export default {
   components: { CrownButton },
-  props: ['node', 'sequenceFlowConfig', 'moddle'],
+  props: ['node', 'moddle', 'nodeRegistry'],
   data() {
     return {
       sequenceFlow,
-      invalidSequenceFlowSources: [
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-message-flow',
-        'processmaker-modeler-end-event',
-        'processmaker-modeler-error-end-event',
-        'processmaker-modeler-terminate-end-event',
-        'processmaker-modeler-message-end-event',
-        'processmaker-modeler-lane',
-        'processmaker-modeler-text-annotation',
-        'processmaker-modeler-pool',
-        'processmaker-modeler-association',
-      ],
     };
+  },
+  computed: {
+    sequenceFlowConfig() {
+      return this.nodeRegistry['processmaker-modeler-sequence-flow'];
+    },
+    nodeConfig() {
+      return this.nodeRegistry[this.node.type];
+    },
+    allowOutgoingSequenceFlow() {
+      return !this.node.isBpmnType(...sequenceFlowBlacklist);
+    },
   },
   methods: {
     addSequence(cellView, evt, x, y) {

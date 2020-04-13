@@ -11,9 +11,7 @@
     :process-node="processNode"
     :plane-elements="planeElements"
     :is-rendering="isRendering"
-    @remove-node="$emit('remove-node', $event)"
-    @add-node="$emit('add-node', $event)"
-    @save-state="$emit('save-state', $event)"
+    v-on="$listeners"
   />
 </template>
 
@@ -106,7 +104,6 @@ export default {
         this.targetIsNotALane() &&
         this.targetIsInSamePool() &&
         this.targetIsNotSource() &&
-        this.allowOutgoingFlow() &&
         this.eventBasedGatewayTarget();
     },
     eventBasedGatewayTarget() {
@@ -129,10 +126,6 @@ export default {
     },
     targetIsNotSource() {
       return this.targetNode.id !== this.sourceNode.id;
-    },
-    allowOutgoingFlow() {
-      return this.sourceConfig.allowOutgoingFlow == null ||
-        this.sourceConfig.allowOutgoingFlow(this.targetNode);
     },
     createLabel() {
       this.shape.labels([{

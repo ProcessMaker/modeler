@@ -53,6 +53,7 @@
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
+        :definitions="definitions"
         :processNode="processNode"
         @save-state="pushToUndoStack"
         class="inspector h-100"
@@ -71,6 +72,7 @@
         :id="node.id"
         :highlighted="highlightedNodes.includes(node)"
         :has-error="invalidNodes.includes(node.id)"
+        :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
         :processes="processes"
@@ -93,6 +95,7 @@
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
+        @copy-element="copyElement"
       />
     </b-row>
   </span>
@@ -131,6 +134,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { keepOriginalName } from '@/components/modeler/modelerUtils';
@@ -142,6 +146,15 @@ export default {
     controls,
     InspectorPanel,
     MiniPaper,
+  },
+  props: {
+    owner: Object,
+    decorations: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -238,6 +251,13 @@ export default {
     },
   },
   methods: {
+    copyElement(node, copyCount) {
+      const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+      const yOffset = (node.diagram.bounds.height + 30) * copyCount;
+
+      clonedNode.diagram.bounds.y += yOffset;
+      this.addNode(clonedNode);
+    },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
@@ -249,6 +269,9 @@ export default {
       const svgString = (new XMLSerializer()).serializeToString(svg);
 
       this.$emit('saveBpmn', { xml, svg: svgString });
+    },
+    borderOutline(nodeId) {
+      return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
     },
     addWarning(warning) {
       this.allWarnings.push(warning);
@@ -355,6 +378,9 @@ export default {
       if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
         document.activeElement.blur();
       }
+    },
+    registerStatusBar(component) {
+      this.owner.validationBar.push(component);
     },
     /**
      * Register a mixin into a node component.
@@ -565,7 +591,16 @@ export default {
         definition.set('name', '');
       }
 
-      store.commit('addNode', new Node(type, definition, diagram));
+      const node = this.createNode(type, definition, diagram);
+
+      store.commit('addNode', node);
+    },
+    createNode(type, definition, diagram) {
+      if (Node.isTimerType(type)) {
+        return new TimerEventNode(type, definition, diagram);
+      }
+
+      return new Node(type, definition, diagram);
     },
     hasSourceAndTarget(definition) {
       const hasSource = definition.sourceRef && this.parsers[definition.sourceRef.$type];
@@ -647,7 +682,7 @@ export default {
       diagram.bounds.x = x;
       diagram.bounds.y = y;
 
-      const newNode = new Node(control.type, definition, diagram);
+      const newNode = this.createNode(control.type, definition, diagram);
 
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
@@ -699,7 +734,6 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
-
       store.commit('addNode', node);
       this.poolTarget = null;
 
@@ -812,6 +846,7 @@ export default {
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
+      registerStatusBar: this.registerStatusBar,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -827,6 +862,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       return {
         elementMove: cellView.model.get('elementMove'),
+        labelMove: false,
       };
     });
 
