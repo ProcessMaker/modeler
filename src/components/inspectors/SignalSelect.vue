@@ -244,7 +244,7 @@ export default {
     change(value) {
       if (!value) {
         this.$emit('input', '');
-        this.fixUnrefreshedVueFormRender();
+        this.refreshVueMultiselectValue();
         return;
       }
       let signal = this.getSignalById(value.id);
@@ -256,9 +256,11 @@ export default {
         window.ProcessMaker.$modeler.definitions.rootElements.push(signal);
       }
       this.$emit('input', get(value, this.trackBy));
-      this.fixUnrefreshedVueFormRender();
+      this.refreshVueMultiselectValue();
     },
-    fixUnrefreshedVueFormRender() {
+    // the vue-multiselect value does not refresh the form transientData
+    // when selecting the initial value of the control.
+    refreshVueMultiselectValue() {
       this.$nextTick(() => {
         let form = this;
         while (form && form.$options._componentTag !== 'vue-form-renderer') {
@@ -322,9 +324,10 @@ export default {
         };
       } else {
         this.$emit('input', '');
-        this.fixUnrefreshedVueFormRender();
+        this.refreshVueMultiselectValue();
       }
     },
+    loadOptionsDebounced() {},
   },
   watch: {
     value: {
