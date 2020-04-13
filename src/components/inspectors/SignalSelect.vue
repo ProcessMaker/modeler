@@ -216,6 +216,12 @@ export default {
       if (!name) {
         return this.$t('Signal Name is required');
       }
+      const exists = window.ProcessMaker.$modeler.definitions.rootElements.find((element) => {
+        return element.$type === 'bpmn:Signal' && element.name === name && element.id !== this.signalId;
+      });
+      if (exists) {
+        return this.$t('Signal Name is duplicated');
+      }
       return '';
     },
     confirmDeleteSignal() {
