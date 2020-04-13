@@ -154,7 +154,6 @@ export default {
       showEditSignal: false,
       showConfirmDelete: false,
       deleteSignal: null,
-      globalSignals: [],
       signalId: '',
       signalName: '',
     };
@@ -292,8 +291,8 @@ export default {
       window.ProcessMaker.$modeler.definitions.rootElements.push(signal);
       this.showNewSignal = false;
     },
-    updateOptions() {
-      this.options = this.globalSignals;
+    updateOptions(globalSignals) {
+      this.options = globalSignals;
       window.ProcessMaker.$modeler.definitions.rootElements.forEach((element) => {
         const localSignal = this.options.find(option => option.id === element.id);
         if (element.$type === 'bpmn:Signal' &&!localSignal) {
@@ -311,8 +310,7 @@ export default {
       window.window.ProcessMaker.apiClient
         .get(this.api, { params: { filter, pmql } })
         .then(response => {
-          this.globalSignals = response.data.data || [];
-          this.updateOptions();
+          this.updateOptions(response.data.data || []);
         });
     },
     loadSelected(value) {
