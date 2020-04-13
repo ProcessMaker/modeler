@@ -137,16 +137,8 @@ export default {
   },
   computed: {
     localSignals() {
-      const signals = [];
-      window.ProcessMaker.$modeler.definitions.rootElements.forEach((element) => {
-        if (element.$type === 'bpmn:Signal') {
-          signals.push({
-            id: element.id,
-            name: element.name,
-          });
-        }
-      });
-      return signals;
+      return window.ProcessMaker.$modeler.definitions.rootElements
+        .filter(element => element.$type === 'bpmn:Signal');
     },
     validNew() {
       return this.validateNewId(this.signalId) === ''
