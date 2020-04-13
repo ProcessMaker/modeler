@@ -96,7 +96,7 @@
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
         @copy-element="copyElement"
-        @default-flow="defaultFlow"
+        @default-flow="toggleDefaultFlow"
       />
     </b-row>
   </span>
@@ -251,12 +251,12 @@ export default {
     },
   },
   methods: {
-    defaultFlow(flow) {
+    toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
       if (source.default && source.default.id === flow.id) {
         flow = null;
       }
-      store.commit('setDefaultFlow', { source, flow });
+      source.set('default', flow);
     },
     copyElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);

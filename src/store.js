@@ -52,10 +52,6 @@ export default new Vuex.Store({
     allowSavingElementPosition: state => state.allowSavingElementPosition,
   },
   mutations: {
-    setDefaultFlow(state, { source, flow }) {
-      source.set('default', flow);
-      makeDefinitionPropertyReactive(source, 'default', flow);
-    },
     preventSavingElementPosition(state) {
       state.allowSavingElementPosition = false;
     },

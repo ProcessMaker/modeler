@@ -68,18 +68,6 @@ export default {
         });
       },
     },
-    defaultFlow: {
-      get() {
-        return this.shape.attr('line').sourceMarker['stroke-width'] > 0;
-      },
-      set(value) {
-        this.shape.attr('line', {
-          sourceMarker: {
-            'stroke-width': value ? 2 : 0,
-          },
-        });
-      },
-    },
   },
   watch: {
     'node.definition': {
@@ -89,18 +77,25 @@ export default {
         if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
         }
-        this.defaultFlow = this.isDefaultFlow();
+        this.setDefaultMarker(this.isDefaultFlow());
       },
       deep: true,
     },
     'node.definition.sourceRef': {
       handler() {
-        this.defaultFlow = this.isDefaultFlow();
+        this.setDefaultMarker(this.isDefaultFlow());
       },
       deep: true,
     },
   },
   methods: {
+    setDefaultMarker(value) {
+      this.shape.attr('line', {
+        sourceMarker: {
+          'stroke-width': value ? 2 : 0,
+        },
+      });
+    },
     isDefaultFlow() {
       return this.node.definition.sourceRef
         && this.node.definition.sourceRef.default
@@ -162,11 +157,10 @@ export default {
       }]);
     },
     createDefaultFlowMarker() {
-      const isDefault = this.isDefaultFlow();
       this.shape.attr('line', {
         sourceMarker: {
           'type': 'polyline',
-          'stroke-width': isDefault ? 2 : 0,
+          'stroke-width': this.isDefaultFlow() ? 2 : 0,
           points: '2,6 6,-6',
         },
       });
