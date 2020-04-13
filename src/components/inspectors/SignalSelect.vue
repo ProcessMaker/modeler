@@ -93,8 +93,8 @@
               {{ signal.name }}
             </td>
             <td align="right">
-              <a href="javascript:void(0)" @click="editSignal(signal)"><i class="fa fa-pen ml-1" /></a>
-              <a href="javascript:void(0)" @click="removeSignal(signal)"><i class="fa fa-trash ml-1" /></a>
+              <button class="btn-link ml-2" @click="editSignal(signal)"><i class="fa fa-pen" /></button>
+              <button class="btn-link ml-2" @click="removeSignal(signal)"><i class="fa fa-trash" /></button>
             </td>
           </tr>
         </tbody>
@@ -340,5 +340,10 @@ export default {
 <style scoped>
   .font-xs {
     font-size: 0.75rem;
+  }
+  .btn-link {
+    border-style: none !important;
+    background: transparent;
+    padding: 0px
   }
 </style>
