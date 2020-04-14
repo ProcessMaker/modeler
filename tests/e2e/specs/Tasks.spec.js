@@ -74,7 +74,9 @@ describe('Tasks', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+    cy.get('[data-test="select-type-dropdown"]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
+    modalConfirm();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
   });
@@ -84,7 +86,9 @@ describe('Tasks', () => {
     typeIntoTextInput('[name=name]', testString);
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
+    cy.get('[data-test="select-type-dropdown"]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
+    modalConfirm();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
     cy.get('[name=name]').should('have.value', testString);

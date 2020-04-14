@@ -721,6 +721,8 @@ export default {
         ref.set('targetRef', newNode.definition);
         forceNodeToRemount(ref);
       });
+
+      return newNode;
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -760,13 +762,14 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
         const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-        await this.handleDrop({
+        const newNode = await this.handleDrop({
           clientX, clientY,
           control: { type: typeToReplaceWith },
           nodeThatWillBeReplaced: node,
         });
 
         await this.removeNode(node);
+        this.highlightNode(newNode);
       });
     },
     async performSingleUndoRedoTransaction(cb) {

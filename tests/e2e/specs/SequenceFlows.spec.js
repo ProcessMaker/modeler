@@ -1,5 +1,6 @@
 import {
   addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
@@ -281,7 +282,7 @@ describe('Sequence Flows', () => {
       should('have.attr', 'fill', endColor);
   });
 
-  it('Removes sequence flows when switching task type', () => {
+  it('Retains sequence flows when switching task type', () => {
     const startPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
     let numberOfSequenceFlowsAdded = 1;
@@ -297,10 +298,7 @@ describe('Sequence Flows', () => {
       expect($links.length).to.eq(numberOfSequenceFlowsAdded);
     });
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.contain(sequenceFlow);
-    });
+    assertDownloadedXmlContainsExpected(sequenceFlow);
 
     waitToRenderAllShapes();
 
@@ -311,12 +309,10 @@ describe('Sequence Flows', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links.length).to.eq(--numberOfSequenceFlowsAdded);
+      expect($links.length).to.eq(numberOfSequenceFlowsAdded);
     });
 
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(removeIndentationAndLinebreaks).then(xml => {
-      expect(xml).to.not.contain(sequenceFlow);
-    });
+    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_4" sourceRef="node_1" targetRef="node_5"';
+    assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });
