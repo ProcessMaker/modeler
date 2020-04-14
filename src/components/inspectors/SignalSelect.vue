@@ -227,7 +227,7 @@ export default {
     confirmDeleteSignal() {
       this.showConfirmDelete = false;
       const index = window.ProcessMaker.$modeler.definitions.rootElements.findIndex(element => element.id === this.deleteSignal.id);
-      if (index) {
+      if (index > -1) {
         window.ProcessMaker.$modeler.definitions.rootElements.splice(index, 1);
       }
     },
