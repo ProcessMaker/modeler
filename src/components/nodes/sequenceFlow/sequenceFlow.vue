@@ -77,11 +77,30 @@ export default {
         if (newNameLabel !== this.nameLabel) {
           this.nameLabel = newNameLabel;
         }
+        this.setDefaultMarker(this.isDefaultFlow());
+      },
+      deep: true,
+    },
+    'node.definition.sourceRef': {
+      handler() {
+        this.setDefaultMarker(this.isDefaultFlow());
       },
       deep: true,
     },
   },
   methods: {
+    setDefaultMarker(value) {
+      this.shape.attr('line', {
+        sourceMarker: {
+          'stroke-width': value ? 2 : 0,
+        },
+      });
+    },
+    isDefaultFlow() {
+      return this.node.definition.sourceRef
+        && this.node.definition.sourceRef.default
+        && this.node.definition.sourceRef.default.id === this.node.definition.id;
+    },
     updateRouter() {
       this.shape.router('orthogonal', { padding: 1 });
     },
@@ -137,11 +156,21 @@ export default {
         position: namePosition,
       }]);
     },
+    createDefaultFlowMarker() {
+      this.shape.attr('line', {
+        sourceMarker: {
+          'type': 'polyline',
+          'stroke-width': this.isDefaultFlow() ? 2 : 0,
+          points: '2,6 6,-6',
+        },
+      });
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link();
     this.shape.connector('rounded', { radius: 5 });
     this.createLabel();
+    this.createDefaultFlowMarker();
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
