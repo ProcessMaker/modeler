@@ -3,8 +3,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import boundaryEventConfig from '@/components/nodes/boundaryEvent';
 import interruptingToggleConfig from '@/components/nodes/boundaryEvent/interruptingToggleInspector';
-import signalEventDefinition from '../signalEventDefinition';
-import SignalSelect from '@/components/inspectors/SignalSelect';
+import {signalSelector, default as signalEventDefinition} from '../signalEventDefinition';
 
 export const id = 'processmaker-modeler-boundary-signal-event';
 
@@ -31,14 +30,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
           items: [
             {},
             interruptingToggleConfig,
-            {
-              component: SignalSelect,
-              config: {
-                label: 'Signal Ref',
-                name: 'signalRef',
-                helper: 'Enter the signal reference that this element catches',
-              },
-            },
+            signalSelector('Signal that will trigger this boundary event'),
           ],
         },
       ],

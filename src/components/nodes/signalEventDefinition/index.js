@@ -1,4 +1,16 @@
 import omit from 'lodash/omit';
+import SignalSelect from '@/components/inspectors/SignalSelect';
+
+export function signalSelector(helper) {
+  return {
+    component: SignalSelect,
+    config: {
+      label: 'Signal',
+      name: 'signalRef',
+      helper,
+    },
+  };
+}
 
 export default {
   inspectorData(node) {
