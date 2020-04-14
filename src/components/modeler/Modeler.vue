@@ -72,6 +72,7 @@
         :id="node.id"
         :highlighted="highlightedNodes.includes(node)"
         :has-error="invalidNodes.includes(node.id)"
+        :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
         :processes="processes"
@@ -95,6 +96,7 @@
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
         @copy-element="copyElement"
+        @default-flow="toggleDefaultFlow"
       />
     </b-row>
   </span>
@@ -144,6 +146,15 @@ export default {
     controls,
     InspectorPanel,
     MiniPaper,
+  },
+  props: {
+    owner: Object,
+    decorations: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -240,6 +251,13 @@ export default {
     },
   },
   methods: {
+    toggleDefaultFlow(flow) {
+      const source = flow.definition.sourceRef;
+      if (source.default && source.default.id === flow.id) {
+        flow = null;
+      }
+      source.set('default', flow);
+    },
     copyElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
@@ -258,6 +276,9 @@ export default {
       const svgString = (new XMLSerializer()).serializeToString(svg);
 
       this.$emit('saveBpmn', { xml, svg: svgString });
+    },
+    borderOutline(nodeId) {
+      return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
     },
     addWarning(warning) {
       this.allWarnings.push(warning);
@@ -364,6 +385,9 @@ export default {
       if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
         document.activeElement.blur();
       }
+    },
+    registerStatusBar(component) {
+      this.owner.validationBar.push(component);
     },
     /**
      * Register a mixin into a node component.
@@ -781,6 +805,7 @@ export default {
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
+      registerStatusBar: this.registerStatusBar,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -796,6 +821,7 @@ export default {
     this.graph.set('interactiveFunc', cellView => {
       return {
         elementMove: cellView.model.get('elementMove'),
+        labelMove: false,
       };
     });
 

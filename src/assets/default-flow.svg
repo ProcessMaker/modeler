@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+  version="1.1" width="16px" height="20px" viewBox="7 7 16 20">
+	<defs />
+	<g>
+		<path d="M 7 27 L 17.93 13.34" fill="none" stroke="#ffffff" stroke-miterlimit="10" pointer-events="stroke" />
+		<path d="M 22.3 7.87 L 20.66 15.53 L 15.2 11.15 Z" fill="#ffffff" stroke="#ffffff" stroke-miterlimit="10" pointer-events="all" />
+		<path d="M 7 20 L 18 20" fill="none" stroke="#ffffff" stroke-miterlimit="10" pointer-events="stroke" />
+	</g>
+</svg>

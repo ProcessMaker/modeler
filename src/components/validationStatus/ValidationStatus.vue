@@ -1,5 +1,6 @@
 <template>
   <b-card-footer class="p-0 border-0 statusbar d-flex align-items-center justify-content-end pr-3 pl-3 border-top">
+    <slot />
     <b-btn
       class="mr-auto"
       :disabled="!xmlManager"

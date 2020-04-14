@@ -15,13 +15,15 @@
         </div>
       </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
-        <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event"/>
+        <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" />
       </b-card-body>
-      <validation-status
+      <validation-status ref="validationStatus"
         :validation-errors="validationErrors"
         :warnings="warnings"
         :xml-manager="xmlManager"
-      />
+      >
+        <component v-for="(component, index) in validationBar" :key="index" :is="component" />
+      </validation-status>
     </b-card>
 
     <b-modal
@@ -61,6 +63,10 @@ export default {
   },
   data() {
     return {
+      validationBar: [],
+      decorations: {
+        borderOutline: {},
+      },
       validationErrors: {},
       uploadedXml: null,
       xmlFile: [],
