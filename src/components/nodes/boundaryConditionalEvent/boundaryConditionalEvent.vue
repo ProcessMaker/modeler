@@ -14,10 +14,10 @@ export default {
   mounted() {
     this.shape.attr({
       image: {
-        'ref-x': 3,
-        'ref-y': 3,
-        width: 20,
-        height: 20,
+        'ref-x': 4,
+        'ref-y': 4,
+        width: 18,
+        height: 18,
       },
     });
   },

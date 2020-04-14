@@ -15,10 +15,10 @@ export default {
     const bounds = this.node.diagram.bounds;
     this.shape.attr({
       image: {
-        'ref-x': 8,
-        'ref-y': 8,
-        'width': bounds.get('width') - 16,
-        'height': bounds.get('height') - 16,
+        'ref-x': 9,
+        'ref-y': 9,
+        'width': bounds.get('width') - 18,
+        'height': bounds.get('height') - 18,
       },
     });
   },
