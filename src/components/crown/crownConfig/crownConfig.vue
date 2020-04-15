@@ -192,7 +192,7 @@ export default {
       this.nodeToReplace = node;
     },
     confirmedReplaceNodeType() {
-      this.removeFlows(this.graph, this.shape);
+      this.removeFlows(this.graph, this.shape, true);
       this.$emit('replace-node', this.nodeToReplace);
     },
     setNodePosition() {

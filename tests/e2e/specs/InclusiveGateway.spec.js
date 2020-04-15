@@ -1,5 +1,6 @@
 import {
   addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
@@ -30,11 +31,7 @@ describe('Inclusive Gateway', () => {
     connectNodesWithFlow('sequence-flow-button', startEventPosition, inclusivePosition);
 
     const divergingString = `gatewayDirection="${gatewayDirection.diverging}"`;
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .should('have', divergingString);
+    assertDownloadedXmlContainsExpected(divergingString);
 
     const taskPosition = { x: 350, y: 350 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -44,10 +41,6 @@ describe('Inclusive Gateway', () => {
     getElementAtPosition(taskPosition).click();
 
     const convergingString = `gatewayDirection="${gatewayDirection.converging}"`;
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window()
-      .its('xml')
-      .then(xml => xml.trim())
-      .should('to.contain', convergingString);
+    assertDownloadedXmlContainsExpected(convergingString);
   });
 });
