@@ -2,7 +2,7 @@ import component from './signalEndEvent.vue';
 import endEventConfig from '../endEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
-import signalEventDefinition from '../signalEventDefinition';
+import {signalSelector, default as signalEventDefinition} from '../signalEventDefinition';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
 
 export const id = 'processmaker-modeler-signal-end-event';
@@ -21,4 +21,16 @@ export default merge(cloneDeep(endEventConfig), {
       ],
     });
   },
+  inspectorConfig: [
+    {
+      items: [
+        {
+          items: [
+            {},
+            signalSelector('Select the signal reference that this element throws'),
+          ],
+        },
+      ],
+    },
+  ],
 });

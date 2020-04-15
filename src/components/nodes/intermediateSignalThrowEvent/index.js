@@ -2,7 +2,7 @@ import component from './intermediateSignalThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateEventConfig from '@/components/nodes/intermediateEvent';
-import signalEventDefinition from '../signalEventDefinition';
+import {signalSelector, default as signalEventDefinition} from '../signalEventDefinition';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
 
 const id = 'processmaker-modeler-intermediate-signal-throw-event';
@@ -28,14 +28,7 @@ export default merge(cloneDeep(intermediateEventConfig), {
         {
           items: [
             {},
-            {
-              component: 'FormInput',
-              config: {
-                label: 'Signal Ref',
-                name: 'signalRef',
-                helper: 'Enter the signal reference that this element triggers',
-              },
-            },
+            signalSelector('Select the signal reference that this element throws'),
           ],
         },
       ],

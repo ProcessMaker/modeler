@@ -26,6 +26,11 @@
       @toggle-crown-state="showCrown = $event"
     />
 
+    <default-flow
+      :node="node"
+      v-on="$listeners"
+    />
+
     <crown-dropdowns
       :dropdown-data="dropdownData"
       :boundary-event-dropdown-data="boundaryEventDropdownData"
@@ -72,6 +77,7 @@ import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButt
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
 import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
+import DefaultFlow from '@/components/crown/crownButtons/defaultFlowButton.vue';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import { removeFlows } from '@/components/crown/utils.js';
 import pull from 'lodash/pull';
@@ -87,6 +93,7 @@ export default {
     SequenceFlowButton,
     AssociationFlowButton,
     CopyButton,
+    DefaultFlow,
   },
   props: {
     highlighted: Boolean,
@@ -185,7 +192,7 @@ export default {
       this.nodeToReplace = node;
     },
     confirmedReplaceNodeType() {
-      this.removeFlows(this.graph, this.shape);
+      this.removeFlows(this.graph, this.shape, true);
       this.$emit('replace-node', this.nodeToReplace);
     },
     setNodePosition() {

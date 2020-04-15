@@ -22,7 +22,6 @@ describe('Error End Event', () => {
   beforeEach(() => {
     addNodeTypeToPaper(errorEndEventPosition, nodeTypes.endEvent, 'switch-to-error-end-event');
     waitToRenderAllShapes();
-    cy.get('[data-test=switch-to-error-end-event]').click();
   });
 
   it('Can create an error end event', () => {

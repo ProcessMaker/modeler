@@ -96,6 +96,9 @@ export default {
   created() {
     reader.onload = this.setUploadedXml;
   },
+  mounted() {
+    window.ProcessMaker.$modeler = this.$refs.modeler;
+  },
 };
 </script>
 

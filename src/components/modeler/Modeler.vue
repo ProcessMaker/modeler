@@ -96,6 +96,7 @@
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
         @copy-element="copyElement"
+        @default-flow="toggleDefaultFlow"
       />
     </b-row>
   </span>
@@ -137,6 +138,7 @@ import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
+import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
 import { keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
@@ -250,6 +252,13 @@ export default {
     },
   },
   methods: {
+    toggleDefaultFlow(flow) {
+      const source = flow.definition.sourceRef;
+      if (source.default && source.default.id === flow.id) {
+        flow = null;
+      }
+      source.set('default', flow);
+    },
     copyElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
@@ -661,7 +670,7 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
-    handleDrop({ clientX, clientY, control, node }) {
+    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {
@@ -669,10 +678,6 @@ export default {
       }
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
-
-      if (keepOriginalName(node)) {
-        definition.name = node.definition.name;
-      }
 
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
@@ -687,7 +692,40 @@ export default {
       }
 
       this.highlightNode(newNode);
-      this.addNode(newNode);
+      await this.addNode(newNode);
+
+      if (!nodeThatWillBeReplaced) {
+        return;
+      }
+
+      if (keepOriginalName(nodeThatWillBeReplaced)) {
+        definition.name = nodeThatWillBeReplaced.definition.name;
+      }
+
+      const forceNodeToRemount = definition => {
+        const shape = this.graph.getLinks().find(element => {
+          return element.component && element.component.node.definition === definition;
+        });
+        shape.component.node._modelerId += '_replaced';
+      };
+
+      const incoming = nodeThatWillBeReplaced.definition.get('incoming');
+      const outgoing = nodeThatWillBeReplaced.definition.get('outgoing');
+
+      definition.get('incoming').push(...incoming);
+      definition.get('outgoing').push(...outgoing);
+
+      outgoing.forEach(ref => {
+        ref.set('sourceRef', newNode.definition);
+        forceNodeToRemount(ref);
+      });
+
+      incoming.forEach(ref => {
+        ref.set('targetRef', newNode.definition);
+        forceNodeToRemount(ref);
+      });
+
+      return newNode;
     },
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
@@ -702,29 +740,46 @@ export default {
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
+      this.poolTarget = null;
 
-      if (![sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
-        setTimeout(() => this.pushToUndoStack());
+      if ([sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
+        return;
       }
 
-      this.poolTarget = null;
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.pushToUndoStack();
+          resolve();
+        });
+      });
     },
-    removeNode(node) {
+    async removeNode(node) {
+      removeOutgoingAndIncomingRefsToFlow(node);
+
       this.removeNodeFromLane(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
-      this.$nextTick(() => {
-        this.pushToUndoStack();
-      });
+      await this.$nextTick();
+      this.pushToUndoStack();
     },
     replaceNode({ node, typeToReplaceWith }) {
-      const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-      this.removeNode(node);
-      this.handleDrop({
-        clientX, clientY,
-        control: { type: typeToReplaceWith },
-        node,
+      this.performSingleUndoRedoTransaction(async() => {
+        const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+        const newNode = await this.handleDrop({
+          clientX, clientY,
+          control: { type: typeToReplaceWith },
+          nodeThatWillBeReplaced: node,
+        });
+
+        await this.removeNode(node);
+        this.highlightNode(newNode);
       });
+    },
+    async performSingleUndoRedoTransaction(cb) {
+      undoRedoStore.commit('disableSavingState');
+      await cb();
+      undoRedoStore.commit('enableSavingState');
+      this.pushToUndoStack();
     },
     removeNodeFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&

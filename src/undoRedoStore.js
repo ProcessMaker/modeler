@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     stack: [],
     position: null,
+    disabled: false,
   },
   getters: {
     canUndo(state) {
@@ -30,10 +31,16 @@ export default new Vuex.Store({
     clearStack(state) {
       state.stack = [state.stack[state.stack.length - 1]];
     },
+    disableSavingState(state) {
+      state.disabled = true;
+    },
+    enableSavingState(state) {
+      state.disabled = false;
+    },
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
-      if (newState === getters.currentState) {
+      if (newState === getters.currentState || state.disabled) {
         return;
       }
 
