@@ -1,4 +1,5 @@
 import {
+  addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
   getElementAtPosition,
@@ -77,5 +78,21 @@ describe('Intermediate Timer Event', () => {
 
     const defaultTimeDuration = '<bpmn:timeDuration>PT1H</bpmn:timeDuration>';
     assertDownloadedXmlContainsExpected(defaultTimeDuration);
+  });
+
+  it('should toggle between showing the weekday select when week is selected, and hidiing it when it is not', () => {
+    const intermediateTimerEventPosition = { x: 250, y: 250 };
+    addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
+    cy.contains('Timing Control').click();
+    cy.get('[data-test=intermediateTypeSelect]').select('Cycle');
+
+    cy.get('[data-test="periods"]').select('week');
+    cy.contains('Repeat on').should('be.visible');
+
+    cy.get('[data-test="periods"]').select('day');
+    cy.contains('Repeat on').should('not.be.visible');
+
+    cy.get('[data-test="periods"]').select('week');
+    cy.contains('Repeat on').should('be.visible');
   });
 });
