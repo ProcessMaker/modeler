@@ -19,7 +19,7 @@
     </b-input-group>
     <weekday-select
       class="pt-3"
-      v-if="periodicity"
+      v-if="periodicity && periodicity.isWeek"
       v-model="expression"
       :selectWeekdays="selectedWeekdays"
       :periodicityValue="periodicity.value"
