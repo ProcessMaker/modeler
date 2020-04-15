@@ -234,12 +234,12 @@ describe('Modeler', () => {
     const invalidId = '12 id!';
     typeIntoTextInput('[name=id]', invalidId);
 
-    cy.get('.invalid-feedback').should('contain', 'The id format is invalid.');
+    cy.get('.invalid-feedback').should('contain', 'The Node Identifier format is invalid.');
 
     const validId = 'Process_1';
     typeIntoTextInput('[name=id]', validId);
 
-    cy.get('.invalid-feedback').should('not.have.value', 'The id format is invalid.');
+    cy.get('.invalid-feedback').should('not.have.value', 'The Node Identifier format is invalid.');
   });
 
   it('updates validation after undo/redo', () => {
