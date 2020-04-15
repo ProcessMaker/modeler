@@ -51,6 +51,7 @@ export default {
         {
           label: defaultNames['processmaker-modeler-intermediate-catch-timer-event'],
           nodeType: 'processmaker-modeler-intermediate-catch-timer-event',
+          dataTest: 'switch-to-intermediate-timer-catch-event',
         },
         {
           label: defaultNames['processmaker-modeler-intermediate-signal-catch-event'],
