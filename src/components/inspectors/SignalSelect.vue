@@ -104,6 +104,7 @@
 </template>
 
 <script>
+import store from '@/store';
 import Multiselect from 'vue-multiselect';
 import {get,uniqBy} from 'lodash';
 
@@ -133,7 +134,7 @@ export default {
   },
   computed: {
     localSignals() {
-      return window.ProcessMaker.$modeler.definitions.rootElements
+      return store.getters.rootElements
         .filter(element => element.$type === 'bpmn:Signal');
     },
     validNew() {
@@ -166,9 +167,8 @@ export default {
       return labels.length ? (this.$t('This signal cannot be removed, it is used by') + ': ' + labels.join(', ')) : '';
     },
     signalUsage(signalId) {
-      const definitions = window.ProcessMaker.$modeler.definitions;
       const usage = [];
-      definitions.rootElements.forEach(node => {
+      store.getters.rootElements.forEach(node => {
         if (node.$type === 'bpmn:Process') {
           node.flowElements.forEach(element => {
             if (element.eventDefinitions) {
@@ -188,7 +188,7 @@ export default {
       if (!id) {
         return this.$t('Signal ID is required');
       }
-      const exists = window.ProcessMaker.$modeler.definitions.rootElements.find((element) => {
+      const exists = store.getters.rootElements.find((element) => {
         return element.id === id;
       });
       if (exists) {
@@ -204,7 +204,7 @@ export default {
       if (!name) {
         return this.$t('Signal Name is required');
       }
-      const exists = window.ProcessMaker.$modeler.definitions.rootElements.find((element) => {
+      const exists = store.getters.rootElements.find((element) => {
         return element.$type === 'bpmn:Signal' && element.name === name;
       });
       if (exists) {
@@ -216,7 +216,7 @@ export default {
       if (!name) {
         return this.$t('Signal Name is required');
       }
-      const exists = window.ProcessMaker.$modeler.definitions.rootElements.find((element) => {
+      const exists = store.getters.rootElements.find((element) => {
         return element.$type === 'bpmn:Signal' && element.name === name && element.id !== this.signalId;
       });
       if (exists) {
@@ -226,9 +226,9 @@ export default {
     },
     confirmDeleteSignal() {
       this.showConfirmDelete = false;
-      const index = window.ProcessMaker.$modeler.definitions.rootElements.findIndex(element => element.id === this.deleteSignal.id);
+      const index = store.getters.rootElements.findIndex(element => element.id === this.deleteSignal.id);
       if (index > -1) {
-        window.ProcessMaker.$modeler.definitions.rootElements.splice(index, 1);
+        store.getters.rootElements.splice(index, 1);
       }
     },
     removeSignal(signal) {
@@ -244,7 +244,7 @@ export default {
       this.showEditSignal = true;
     },
     getSignalById(id) {
-      return window.ProcessMaker.$modeler.definitions.rootElements.find(element => element.id === id);
+      return store.getters.rootElements.find(element => element.id === id);
     },
     change(value) {
       if (!value) {
@@ -258,7 +258,7 @@ export default {
           id: value.id,
           name: value.name,
         });
-        window.ProcessMaker.$modeler.definitions.rootElements.push(signal);
+        store.getters.rootElements.push(signal);
       }
       this.$emit('input', get(value, this.trackBy));
       this.refreshVueMultiselectValue();
@@ -294,7 +294,7 @@ export default {
         id: this.signalId,
         name: this.signalName,
       });
-      window.ProcessMaker.$modeler.definitions.rootElements.push(signal);
+      store.getters.rootElements.push(signal);
       this.showNewSignal = false;
     },
     updateOptions(globalSignals) {
@@ -309,7 +309,7 @@ export default {
         });
     },
     loadSelected(value) {
-      const signal = window.ProcessMaker.$modeler.definitions.rootElements.find(element => element.id === value);
+      const signal = store.getters.rootElements.find(element => element.id === value);
       if (signal) {
         this.selectedOption = {
           id: signal.id,
