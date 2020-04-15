@@ -466,11 +466,6 @@ export default {
         .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
-    loadCertainSequenceFlows(flowElements, artifacts, elements) {
-      flowElements.filter(
-        definition => definition.$type === 'bpmn:SequenceFlow' && elements.includes(definition) && this.hasSourceAndTarget(definition)).
-        forEach(definition => this.setNode(definition, flowElements, artifacts));
-    },
     addLanes(process) {
       if (process.get('laneSets')[0]) {
         process.laneSets[0].lanes.forEach(this.setNode);
