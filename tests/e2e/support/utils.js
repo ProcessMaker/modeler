@@ -113,6 +113,12 @@ export function typeIntoTextInput(selector, value) {
   waitToRenderNodeUpdates();
 }
 
+export function selectOptionByName(selector, name) {
+  cy.get(selector).click();
+  cy.get(selector).get('li span span:contains("' + name + '")').click();
+  waitToRenderNodeUpdates();
+}
+
 export function waitToRenderAllShapes() {
   cy.wait(renderTime);
 }

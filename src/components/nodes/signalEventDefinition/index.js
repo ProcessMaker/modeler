@@ -1,4 +1,16 @@
 import omit from 'lodash/omit';
+import SignalSelect from '@/components/inspectors/SignalSelect';
+
+export function signalSelector(helper) {
+  return {
+    component: SignalSelect,
+    config: {
+      label: 'Signal',
+      name: 'signalRef',
+      helper,
+    },
+  };
+}
 
 export default {
   inspectorData(node) {
@@ -22,7 +34,7 @@ export default {
     }
     
     let signal = definitions.rootElements.find(element => element.id === value.signalRef);
-    if (!signal) {
+    if (!signal && value.signalRef) {
       signal = moddle.create('bpmn:Signal', {
         id: value.signalRef,
         name: value.signalRef,
@@ -30,30 +42,5 @@ export default {
       definitions.rootElements.push(signal);
     }
     node.definition.get('eventDefinitions')[0].signalRef = signal;
-    this.cleanSignalDefinitions(definitions);
-  },
-  cleanSignalDefinitions(definitions) {
-    const used = {};
-    definitions.rootElements.forEach(node => {
-      if (node.$type === 'bpmn:Process') {
-        node.flowElements.forEach(element => {
-          if (element.eventDefinitions) {
-            element.eventDefinitions.forEach(event => {
-              if (event.$type === 'bpmn:SignalEventDefinition' && event.signalRef) {
-                used[event.signalRef.id] = true;
-              }
-            });
-          }
-        });
-      }
-    });
-    for (let i = 0; i < definitions.rootElements.length; i++) {
-      const node = definitions.rootElements[i];
-      if (node.$type === 'bpmn:Signal' && !used[node.id]) {
-        definitions.rootElements.splice(i, 1);
-        i--;
-      }
-    }
-    return definitions.rootElements;
   },
 };
