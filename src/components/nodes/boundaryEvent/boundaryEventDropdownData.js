@@ -14,11 +14,11 @@ const boundaryEventDropdownData = [
     nodeType: 'processmaker-modeler-boundary-signal-event',
     dataTest: 'add-boundary-signal-event',
   },
-  {
+  /*{
     label: 'Boundary Conditional Event',
     nodeType: 'processmaker-modeler-boundary-conditional-event',
     dataTest: 'add-boundary-conditional-event',
-  },
+  },*/
   {
     label: 'Boundary Message Event',
     nodeType: 'processmaker-modeler-boundary-message-event',
