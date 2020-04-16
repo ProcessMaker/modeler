@@ -23,8 +23,6 @@ export default {
         this.error = this.node.definition.get('eventDefinitions')[0].errorRef;
         return;
       }
-      // eslint-disable-next-line no-console
-      console.log('add error');
 
       this.error = this.moddle.create('bpmn:Error', {
         id: `${this.id}_error`,
