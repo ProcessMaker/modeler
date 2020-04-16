@@ -89,8 +89,9 @@ export default class Node {
 
     clonedNode.id = null;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach((key) => {
-      clonedNode.definition.set(key, cloneDeep(this.definition.get(key)));
+    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
+      const definition = this.definition.get(key);
+      clonedNode.definition.set(key, typeof definition === 'object' ? cloneDeep(definition) : definition);
     });
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
