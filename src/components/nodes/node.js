@@ -6,9 +6,12 @@ import {
   defaultTaskNames,
 } from '@/components/nodes/defaultNames';
 
+import cloneDeep from 'lodash/cloneDeep';
+
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
   static definitionPropertiesToNotCopy = ['$type', 'id'];
+  static eventDefinitionPropertiesToNotCopy = ['errorRef', 'messageRef'];
 
   type;
   definition;
@@ -86,9 +89,14 @@ export default class Node {
 
     clonedNode.id = null;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
-      clonedNode.definition.set(key, this.definition.get(key));
+    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach((key) => {
+      clonedNode.definition.set(key, cloneDeep(this.definition.get(key)));
     });
+    Node.eventDefinitionPropertiesToNotCopy.forEach(
+      prop => clonedNode.definition.eventDefinitions &&
+        clonedNode.definition.eventDefinitions[0].hasOwnProperty(prop) &&
+        clonedNode.definition.eventDefinitions[0].set(prop, null)
+    );
 
     return clonedNode;
   }
