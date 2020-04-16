@@ -177,7 +177,7 @@ export default {
       const color = this.node.definition.get('color');
       const { fill, stroke } = getDefaultNodeColors(this.node, color);
 
-      setShapeColor(this.shape, fill, stroke, this.node);
+      setShapeColor(this.shape, fill, stroke);
     },
     paperNotRendered() {
       return !this.isRendering;
