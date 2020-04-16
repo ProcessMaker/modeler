@@ -30,6 +30,7 @@ import { gridSize } from '@/graph';
 import sequentialIcon from '@/assets/sequential.svg';
 import parallelIcon from '@/assets/parallel.svg';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -78,29 +79,7 @@ export default {
           dataTest: 'switch-to-sub-process',
         },
       ],
-      boundaryEventDropdownData: [
-        {
-          label: 'Boundary Timer Event',
-          nodeType: 'processmaker-modeler-boundary-timer-event',
-          dataTest: 'add-boundary-timer-event',
-        },
-        {
-          label: 'Boundary Error Event',
-          nodeType: 'processmaker-modeler-boundary-error-event',
-          dataTest: 'add-boundary-error-event',
-        },
-        {
-          label: 'Boundary Signal Event',
-          nodeType: 'processmaker-modeler-boundary-signal-event',
-          dataTest: 'add-boundary-signal-event',
-        },
-        {
-          label: 'Boundary Message Event',
-          nodeType: 'processmaker-modeler-boundary-message-event',
-          dataTest: 'add-boundary-message-event',
-          disabledLabel: 'Allowed on Sub Process',
-        },
-      ],
+      boundaryEventDropdownData,
     };
   },
   computed: {
