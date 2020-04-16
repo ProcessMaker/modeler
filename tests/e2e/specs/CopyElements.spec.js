@@ -2,7 +2,9 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
-  getElementAtPosition, typeIntoTextInput, waitToRenderAllShapes,
+  getElementAtPosition,
+  typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
