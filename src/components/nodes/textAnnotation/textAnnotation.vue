@@ -108,6 +108,7 @@ export default {
     this.shape.attr({
       body: {
         refPoints: '25 10 3 10 3 3 25 3',
+        fill: 'none',
       },
       label: {
         fill: 'black',

@@ -1,7 +1,7 @@
 import { dia, linkTools } from 'jointjs';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import { invalidNodeColor, validNodeColor } from '@/components/nodeColors';
+import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
 
@@ -104,10 +104,6 @@ export default {
     setTarget(targetShape, connectionPoint) {
       this.setEndpoint(targetShape, endpoints.target, connectionPoint);
     },
-    setBodyColor(color, target = this.target) {
-      target.attr('body/fill', color);
-      target.attr('.body/fill', color);
-    },
     completeLink() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
       this.$emit('set-cursor', null);
@@ -156,7 +152,7 @@ export default {
         });
 
         if (this.target) {
-          this.setBodyColor(invalidNodeColor);
+          setShapeColor(this.target, invalidNodeColor);
         }
 
         return;
@@ -165,7 +161,7 @@ export default {
       this.setTarget(this.target);
       this.updateRouter();
       this.$emit('set-cursor', 'default');
-      this.setBodyColor(validNodeColor);
+      setShapeColor(this.target, validNodeColor);
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
