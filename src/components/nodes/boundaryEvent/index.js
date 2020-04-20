@@ -1,6 +1,5 @@
 import component from './boundaryEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export default {
   id: 'processmaker-modeler-boundary-event',
@@ -46,7 +45,6 @@ export default {
             },
           ],
         },
-        advancedAccordionConfig,
       ],
     },
   ],
