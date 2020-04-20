@@ -1,8 +1,10 @@
 import {
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
+  modalConfirm,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
@@ -32,5 +34,27 @@ describe('Association Flows', () => {
 
     cy.get(directionSelectSelector).select('Both');
     cy.get(directionSelectSelector).should('have.value', direction.both);
+  });
+
+  it('should keep association flow when changing element type', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const textAnnotationPosition = { x: 400, y: 100 };
+    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+
+    connectNodesWithFlow('association-flow-button', textAnnotationPosition, startEventPosition);
+
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-start-timer-event]').click();
+    modalConfirm();
+
+    getElementAtPosition(startEventPosition)
+      .then(getLinksConnectedToElement)
+      .should($links => {
+        expect($links).to.have.lengthOf(1);
+      });
+
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:association id="node_3" associationDirection="None" sourceRef="node_2" targetRef="node_4" />
+    `);
   });
 });
