@@ -1,7 +1,10 @@
 import {
+  addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
-  getElementAtPosition, typeIntoTextInput,
+  getElementAtPosition,
+  typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
@@ -62,5 +65,72 @@ describe('Copy element', () => {
     `;
 
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
+  });
+
+  it('copies error on Error End Event', () => {
+    const errorEndEventPosition = { x: 250, y: 250 };
+
+    addNodeTypeToPaper(errorEndEventPosition, nodeTypes.endEvent, 'switch-to-error-end-event');
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=copy-button]').click();
+    waitToRenderAllShapes();
+
+    const process = `
+      <bpmn:process id="Process_1" isExecutable="true">
+        <bpmn:startEvent id="node_1" name="Start Event" />
+        <bpmn:endEvent id="node_3" name="Error End Event">
+          <bpmn:errorEventDefinition errorRef="node_3_error" />
+        </bpmn:endEvent>
+        <bpmn:endEvent id="node_4" name="Error End Event">
+          <bpmn:errorEventDefinition errorRef="node_4_error" />
+        </bpmn:endEvent>
+      </bpmn:process>
+      <bpmn:error id="node_3_error" name="node_3_error" />
+      <bpmn:error id="node_4_error" name="node_4_error" />
+    `;
+
+    assertDownloadedXmlContainsExpected(process);
+
+  });
+
+  it('copies message on Message Event', () => {
+    const messageEndEventPosition = { x: 250, y: 250 };
+    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+    waitToRenderAllShapes();
+
+    cy.get('[data-test=copy-button]').click();
+    waitToRenderAllShapes();
+
+    const intermediateMessageThrowEventPosition = { x: 250, y: 450 };
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
+    cy.get('[data-test=copy-button]').click();
+    waitToRenderAllShapes();
+
+    const process = `
+      <bpmn:process id="Process_1" isExecutable="true">
+        <bpmn:startEvent id="node_1" name="Start Event" />
+        <bpmn:endEvent id="node_3" name="Message End Event">
+          <bpmn:messageEventDefinition messageRef="node_3_message" />
+        </bpmn:endEvent>
+        <bpmn:endEvent id="node_4" name="Message End Event">
+          <bpmn:messageEventDefinition messageRef="node_4_message" />
+        </bpmn:endEvent>
+        <bpmn:intermediateThrowEvent id="node_6" name="Intermediate Message Throw Event">
+          <bpmn:messageEventDefinition messageRef="node_6_message" />
+        </bpmn:intermediateThrowEvent>
+        <bpmn:intermediateThrowEvent id="node_7" name="Intermediate Message Throw Event">
+          <bpmn:messageEventDefinition messageRef="node_7_message" />
+        </bpmn:intermediateThrowEvent>
+      </bpmn:process>
+      <bpmn:message id="node_3_message" name="node_3_message" />
+      <bpmn:message id="node_4_message" name="node_4_message" />
+      <bpmn:message id="node_6_message" name="node_6_message" />
+      <bpmn:message id="node_7_message" name="node_7_message" />
+    `;
+
+    assertDownloadedXmlContainsExpected(process);
+
   });
 });
