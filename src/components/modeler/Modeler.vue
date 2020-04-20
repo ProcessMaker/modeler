@@ -731,6 +731,23 @@ export default {
         forceNodeToRemount(flow);
       });
 
+      if (this.collaboration) {
+        const messageFlows = this.collaboration.get('messageFlows');
+        messageFlows
+          .filter(flow => flow.sourceRef === nodeThatWillBeReplaced.definition)
+          .forEach(flow => {
+            flow.set('sourceRef', newNode.definition);
+            forceNodeToRemount(flow);
+          });
+
+        messageFlows
+          .filter(flow => flow.targetRef === nodeThatWillBeReplaced.definition)
+          .forEach(flow => {
+            flow.set('targetRef', newNode.definition);
+            forceNodeToRemount(flow);
+          });
+      }
+
       return newNode;
     },
     setShapeCenterUnderCursor(diagram) {

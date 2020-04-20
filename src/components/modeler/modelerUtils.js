@@ -35,7 +35,7 @@ export function keepOriginalName(node) {
 
 export function getAssociationFlowsForNode(node, processes) {
   return processes
-    .reduce((artifacts, process) => artifacts.concat(process.artifacts), [])
+    .reduce((artifacts, process) => artifacts.concat(process.get('artifacts')), [])
     .filter(artifact => artifact.$type === 'bpmn:Association')
     .filter(association => association.targetRef === node.definition);
 }
