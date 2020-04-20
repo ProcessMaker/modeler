@@ -1,7 +1,6 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
-  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -197,7 +196,7 @@ describe('Message Flows', () => {
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 
-  it('Removes message flows when switching task type', () => {
+  it('Retains message flows when switching task type', () => {
     const startEventPosition = { x: 150, y: 150 };
     const pool1Position = { x: 250, y: 250 };
     const pool2Position = { x: 250, y: 500 };
@@ -234,10 +233,10 @@ describe('Message Flows', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
-      expect($links.length).to.eq(--numberOfMessageFlowsAdded);
+      expect($links.length).to.eq(numberOfMessageFlowsAdded);
     });
 
-    assertDownloadedXmlDoesNotContainExpected(messageFlow);
+    assertDownloadedXmlContainsExpected(messageFlow);
   });
 
   it('should connect message end event to boundary message event in different pools', () => {
