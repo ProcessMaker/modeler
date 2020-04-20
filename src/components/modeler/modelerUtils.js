@@ -1,9 +1,9 @@
 import {
-  defaultStartNames,
   defaultEndNames,
-  defaultTaskNames,
   defaultGatewayNames,
   defaultIntermediateNames,
+  defaultStartNames,
+  defaultTaskNames,
 } from '@/components/nodes/defaultNames';
 
 function getDefaultNames(node) {
@@ -31,4 +31,11 @@ export function keepOriginalName(node) {
   }
   const defaultNames = getDefaultNames(node);
   return defaultNames ? !Object.values(defaultNames).includes(node.definition.name) : true;
+}
+
+export function getAssociationFlowsForNode(node, processes) {
+  return processes
+    .reduce((artifacts, process) => artifacts.concat(process.artifacts), [])
+    .filter(artifact => artifact.$type === 'bpmn:Association')
+    .filter(association => association.targetRef === node.definition);
 }
