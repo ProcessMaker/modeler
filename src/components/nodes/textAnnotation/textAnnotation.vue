@@ -86,7 +86,6 @@ export default {
           text: util.breakText(text, {
             width: maxTextAnnotationWidth,
           }),
-          fill: 'black',
           textAnchor: 'left',
         },
       });
