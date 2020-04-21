@@ -7,6 +7,7 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
+import { baseNodeColors } from '../../../src/components/nodeColors';
 
 describe('Text Annotation', () => {
   it('Update text annotation name', () => {
@@ -39,5 +40,19 @@ describe('Text Annotation', () => {
   </bpmn:process>`;
 
     assertDownloadedXmlContainsExpected(expectedXML);
+  });
+
+  it('keeps custom color when updating node text', () => {
+    const colorToSelect = baseNodeColors[0];
+    const textAnnotationPosition = { x: 400, y: 100 };
+    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+
+    getElementAtPosition(textAnnotationPosition).click();
+    cy.get('[data-test="picker-dropdown-button"]').click();
+    cy.get(`[data-test="${colorToSelect}"]`).click();
+    typeIntoTextInput('[name=text]', 'new text');
+
+    const annotationTextSelector = '.main-paper [data-type="textAnnotation"] [joint-selector="label"]';
+    cy.get(annotationTextSelector).should('have.attr', 'fill', colorToSelect);
   });
 });
