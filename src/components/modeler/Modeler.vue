@@ -139,7 +139,7 @@ import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
-import { keepOriginalName } from '@/components/modeler/modelerUtils';
+import { getAssociationFlowsForNode, keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -724,6 +724,29 @@ export default {
         ref.set('targetRef', newNode.definition);
         forceNodeToRemount(ref);
       });
+
+      const associationFlows = getAssociationFlowsForNode(nodeThatWillBeReplaced, this.processes);
+      associationFlows.forEach(flow => {
+        flow.set('targetRef', newNode.definition);
+        forceNodeToRemount(flow);
+      });
+
+      if (this.collaboration) {
+        const messageFlows = this.collaboration.get('messageFlows');
+        messageFlows
+          .filter(flow => flow.sourceRef === nodeThatWillBeReplaced.definition)
+          .forEach(flow => {
+            flow.set('sourceRef', newNode.definition);
+            forceNodeToRemount(flow);
+          });
+
+        messageFlows
+          .filter(flow => flow.targetRef === nodeThatWillBeReplaced.definition)
+          .forEach(flow => {
+            flow.set('targetRef', newNode.definition);
+            forceNodeToRemount(flow);
+          });
+      }
 
       return newNode;
     },
