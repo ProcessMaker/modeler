@@ -1,7 +1,8 @@
 import component from './startEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import { startEventDiameter } from './startEventConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import StartPermission from '@/components/inspectors/StartPermission';
+import { startEventDiameter } from './startEventConfig';
 import defaultNames from './defaultNames';
 
 const id = 'processmaker-modeler-start-event';
@@ -59,6 +60,28 @@ export default {
           ],
         },
         advancedAccordionConfig,
+        {
+          component: 'FormAccordion',
+          container: true,
+          config: {
+            initiallyOpen: false,
+            label: 'Start Permissions',
+            icon: 'user-shield',
+            name: 'inspector-accordion',
+          },
+          items: [
+            {
+              component: StartPermission,
+              config: {
+                label: 'Permission To Start',
+                helper: 'Select who may start a Request of this Process',
+                userHelper: 'Select who may start a Request',
+                groupHelper: 'Select the group from which any user may start a Request',
+                name: 'startPermission',
+              },
+            },
+          ],
+        },
       ],
     },
   ],
