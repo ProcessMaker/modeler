@@ -79,6 +79,8 @@ The [entry point](https://webpack.js.org/configuration/entry-context/#entry) for
 
 This event is fired before the modeler and [BpmnModdle](https://github.com/bpmn-io/bpmn-moddle) are set up and mounted. Listeners to this event are passed an object with three methods: `registerInspectorExtension`, `registerBpmnExtension`, and `registerNode`.
 
+You call the `registerInspectorExtension` method to hook into the modeler initialization process to add custom properties to the inspector panel for elements. This is intended to add custom behaviour that should **not** be available to all modeler instances; the intended use-case is to add custom properties for connectors.
+
 ```javascript
 import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker.json';
 import { intermediateMessageCatchEvent } from '@/components/nodes';
