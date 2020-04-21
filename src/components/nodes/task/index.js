@@ -14,7 +14,7 @@ export default {
   category: 'BPMN',
   rank: 4,
   icon: require('@/assets/toolpanel/task.svg'),
-  label: defaultNames[id],
+  label: 'Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
