@@ -3,6 +3,7 @@ import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
+import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 
 export const id = 'processmaker-modeler-boundary-escalation-event';
 
@@ -30,6 +31,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
             interruptingToggleConfig,
           ],
         },
+        advancedAccordionConfig,
       ],
     },
   ],
