@@ -35,8 +35,20 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     cellView.model.off('change:position', moveAllOtherHighlightedShapes);
   });
 
-  function shiftKeyDownListener({ key }) {
-    if (key !== 'Shift' || shiftKeyPressed) {
+  function resetSelectionCursor() {
+    resetCursor();
+    shiftKeyPressed = false;
+    paperManager.preventTranslate = false;
+    paperManager.paper.setInteractivity(graph.get('interactiveFunc'));
+  }
+
+  function shiftKeyDownListener(event) {
+    if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
+      resetSelectionCursor();
+      return;
+    }
+
+    if (event.key !== 'Shift' || shiftKeyPressed) {
       return;
     }
 
@@ -50,11 +62,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     if (key !== 'Shift' || !shiftKeyPressed) {
       return;
     }
-
-    resetCursor();
-    shiftKeyPressed = false;
-    paperManager.preventTranslate = false;
-    paperManager.paper.setInteractivity(graph.get('interactiveFunc'));
+    resetSelectionCursor();
   }
 
   function mousedownListener({ clientX, clientY }) {
