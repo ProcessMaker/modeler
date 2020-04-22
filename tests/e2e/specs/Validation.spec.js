@@ -1,7 +1,8 @@
 import {
-  addNodeTypeToPaper, connectNodesWithFlow,
+  addNodeTypeToPaper,
+  connectNodesWithFlow,
   dragFromSourceToDest,
-  getElementAtPosition, typeIntoTextInput,
+  getElementAtPosition,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
 } from '../support/utils';
@@ -48,9 +49,7 @@ describe('Validation', () => {
     cy.get('[data-test=validation-toggle]').click({ force: true });
     cy.get('[data-test=validation-list-toggle]').click({ force: true });
 
-    cy.get('[data-test=validation-list]').should($list => {
-      expect($list).to.not.contain('Rule error: Cannot read property \'forEach\' of undefined.');
-    });
+    cy.get('[data-test=validation-list]').should('not.contain', 'Cannot read property \'forEach\' of undefined.');
   });
 
   it('updates validation after undo/redo', () => {
