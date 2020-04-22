@@ -1,7 +1,7 @@
 import {
   addNodeTypeToPaper, connectNodesWithFlow,
   dragFromSourceToDest,
-  getElementAtPosition,
+  getElementAtPosition, typeIntoTextInput,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
 } from '../support/utils';
@@ -37,11 +37,20 @@ describe('Validation', () => {
     });
   });
 
-  it.only('does not break after emptying documentation #1211', () => {
-    // grab start event
-    // set and unset documentation
-    // re-validate
-    // no console errors expected
+  it('does not have forEach validation errors after emptying documentation', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+
+    cy.contains('Advanced').click();
+    cy.get('[name=documentation]').type('Test');
+    cy.get('[name=documentation]').clear();
+
+    cy.get('[data-test=validation-toggle]').click({ force: true });
+    cy.get('[data-test=validation-list-toggle]').click({ force: true });
+
+    cy.get('[data-test=validation-list]').should($list => {
+      expect($list).to.not.contain('Rule error: Cannot read property \'forEach\' of undefined.');
+    });
   });
 
   it('updates validation after undo/redo', () => {
