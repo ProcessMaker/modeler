@@ -74,12 +74,12 @@ export default new Vuex.Store({
       });
     },
     updateNodeProp(state, { node, key, value }) {
+      node.definition.set(key, value);
+
       if (value === undefined) {
         Vue.delete(node.definition, key);
         return;
       }
-
-      node.definition.set(key, value);
 
       makeDefinitionPropertyReactive(node.definition, key, value);
     },
