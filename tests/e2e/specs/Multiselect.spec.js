@@ -122,4 +122,45 @@ describe('Multiselect', () => {
       });
     });
   });
+
+  it('should not move multiple shapes when shift + combo is held down', () => {
+    [
+      {combo: 'meta', task1Position: { x: 100, y: 100 }},
+      {combo: 'ctrl', task1Position: { x: 400, y: 100 }},
+      {combo: 'alt', task1Position: { x: 700, y: 100 }},
+    ].forEach(({combo, task1Position}) => {
+      const task2Position = { x: task1Position.x + 100, y: task1Position.y + 100 };
+      const translateAmount = 200;
+      const newTask1Position = { x: task1Position.x + translateAmount, y: task1Position.y + translateAmount };
+
+      dragFromSourceToDest(nodeTypes.task, task1Position);
+      dragFromSourceToDest(nodeTypes.task, task2Position);
+
+      cy.get('.paper-container').click();
+
+      cy.get('body').type(`{shift}{${ combo }}`, { release: false });
+      cy.get('.paper-container').as('paperContainer').trigger('mousedown', 'topLeft');
+      cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
+      waitToRenderAllShapes();
+      cy.get('@paperContainer').trigger('mouseup');
+      cy.get('body').type(`{shift}{${ combo }}`, { release: true });
+
+      moveElementRelativeTo(task1Position, translateAmount, translateAmount, nodeTypes.task);
+
+      waitToRenderAllShapes();
+
+      getElementAtPosition(newTask1Position, nodeTypes.task).then($task => {
+        getGraphElements().then(elements => {
+          const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
+          expect({ x, y }).to.eql(newTask1Position);
+        });
+      });
+      getElementAtPosition(task2Position, nodeTypes.task).then($task => {
+        getGraphElements().then(elements => {
+          const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
+          expect({ x, y }).to.eql(task2Position);
+        });
+      });
+    });
+  });
 });
