@@ -570,14 +570,19 @@ describe('Modeler', () => {
   });
 
   it('after collapsing panels, show inspector panel when element is highlighted', () => {
+    const collapseAnimationTime = 300;
+
     cy.get('[data-test="panels-btn"]').click({ force: true });
+    cy.wait(collapseAnimationTime);
     cy.get('[data-test="inspector-container"]').should('not.be.visible');
 
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click({ force: true });
+    cy.wait(collapseAnimationTime);
     cy.get('[data-test="inspector-container"]').should('be.visible');
 
     cy.get('.paper-container').click({ force: true });
+    cy.wait(collapseAnimationTime);
     cy.get('[data-test="inspector-container"]').should('not.be.visible');
   });
 
