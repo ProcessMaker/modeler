@@ -71,7 +71,7 @@
         :node="node"
         :id="node.id"
         :highlighted="highlightedNodes.includes(node)"
-        :has-error="invalidNodes.includes(node.id)"
+        :has-error="invalidNodes.includes(node)"
         :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
@@ -247,8 +247,14 @@ export default {
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
-      return Object.entries(this.validationErrors)
-        .flatMap(([, errors]) => errors.map(error => error.id));
+      const invalidNodeIds = Object.values(this.validationErrors)
+        .flatMap(errors => {
+          return errors.map(error => this.nodes.find(node => node.id === error.id));
+        });
+
+      const nodesWithoutIds = this.nodes.filter(node => !node.id);
+
+      return [...invalidNodeIds, ...nodesWithoutIds];
     },
   },
   methods: {
