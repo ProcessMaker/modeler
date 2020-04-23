@@ -123,7 +123,7 @@ describe('Multiselect', () => {
     });
   });
 
-  it('should not move multiple shapes when shift + combo is held down', () => {
+  it('should not move multiple shapes when shift + combo was held down', () => {
     [
       {combo: 'meta', task1Position: { x: 100, y: 100 }},
       {combo: 'ctrl', task1Position: { x: 400, y: 100 }},

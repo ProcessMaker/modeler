@@ -35,7 +35,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     cellView.model.off('change:position', moveAllOtherHighlightedShapes);
   });
 
-  function resetSelectionCursor() {
+  function resetMultiSelect() {
     resetCursor();
     shiftKeyPressed = false;
     paperManager.preventTranslate = false;
@@ -44,7 +44,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
 
   function shiftKeyDownListener(event) {
     if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
-      resetSelectionCursor();
+      resetMultiSelect();
       return;
     }
 
@@ -62,7 +62,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     if (key !== 'Shift' || !shiftKeyPressed) {
       return;
     }
-    resetSelectionCursor();
+    resetMultiSelect();
   }
 
   function mousedownListener({ clientX, clientY }) {
