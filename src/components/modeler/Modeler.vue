@@ -139,7 +139,7 @@ import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
-import { getAssociationFlowsForNode, keepOriginalName } from '@/components/modeler/modelerUtils';
+import { getAssociationFlowsForNode, getInvalidNodes, keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -247,14 +247,7 @@ export default {
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
-      const invalidNodeIds = Object.values(this.validationErrors)
-        .flatMap(errors => {
-          return errors.map(error => this.nodes.find(node => node.id === error.id));
-        });
-
-      const nodesWithoutIds = this.nodes.filter(node => !node.id);
-
-      return [...invalidNodeIds, ...nodesWithoutIds];
+      return getInvalidNodes(this.validationErrors, this.nodes);
     },
   },
   methods: {
