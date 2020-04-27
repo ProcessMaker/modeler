@@ -1,7 +1,7 @@
-import { keepOriginalName} from '@/components/modeler/modelerUtils';
+import { getInvalidNodes, keepOriginalName } from '@/components/modeler/modelerUtils';
 import Node from '@/components/nodes/node';
 
-describe('Switch Types', () => {
+describe('keepOriginalName', () => {
   const nodeTypes = [
     ['Form Task', 'processmaker-modeler-script-task'],
     ['Start Event', 'processmaker-modeler-start-timer-event'],
@@ -18,6 +18,7 @@ describe('Switch Types', () => {
     );
     expect(keepOriginalName(node)).toBe(true);
   });
+
   it.each(nodeTypes)('Should switch default %s name', (name, type) => {
     const node = new Node(
       type,
@@ -25,5 +26,21 @@ describe('Switch Types', () => {
       {},
     );
     expect(keepOriginalName(node)).toBe(false);
+  });
+});
+
+describe('getInvalidNodes', () => {
+  it('should return node if it does not have an ID', () => {
+    const node = new Node('processmaker-modeler-start-event', { id: '' });
+    const nodes = getInvalidNodes({}, [node]);
+
+    expect(nodes).toContain(node);
+  });
+
+  it('should not return node if it does have an ID', () => {
+    const node = new Node('processmaker-modeler-start-event', { id: 'node_1' });
+    const nodes = getInvalidNodes({}, [node]);
+
+    expect(nodes).not.toContain(node);
   });
 });

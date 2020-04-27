@@ -39,3 +39,14 @@ export function getAssociationFlowsForNode(node, processes) {
     .filter(artifact => artifact.$type === 'bpmn:Association')
     .filter(association => association.targetRef === node.definition);
 }
+
+export function getInvalidNodes(validationErrors, nodes) {
+  const invalidNodes = Object.values(validationErrors)
+    .flatMap(errors => {
+      return errors.map(error => nodes.find(node => node.id === error.id));
+    });
+
+  const nodesWithoutIds = nodes.filter(node => !node.id);
+
+  return [...invalidNodes, ...nodesWithoutIds];
+}

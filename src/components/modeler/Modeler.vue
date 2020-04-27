@@ -71,7 +71,7 @@
         :node="node"
         :id="node.id"
         :highlighted="highlightedNodes.includes(node)"
-        :has-error="invalidNodes.includes(node.id)"
+        :has-error="invalidNodes.includes(node)"
         :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
@@ -139,7 +139,7 @@ import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
-import { getAssociationFlowsForNode, keepOriginalName } from '@/components/modeler/modelerUtils';
+import { getAssociationFlowsForNode, getInvalidNodes, keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export default {
   components: {
@@ -247,8 +247,7 @@ export default {
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
-      return Object.entries(this.validationErrors)
-        .flatMap(([, errors]) => errors.map(error => error.id));
+      return getInvalidNodes(this.validationErrors, this.nodes);
     },
   },
   methods: {
