@@ -132,6 +132,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     return new shapes.standard.Rectangle({
       position: { x, y },
       size: { width, height },
+      type: 'selectionBox',
       attrs: {
         body: {
           fill: 'lightblue',
