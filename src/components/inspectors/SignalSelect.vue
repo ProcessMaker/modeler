@@ -1,7 +1,7 @@
 <template>
   <div>
     <label class="typo__label">{{ label }}</label>
-    <div class="d-flex">
+    <div class="d-flex" :class="{invalid}">
       <multiselect
         :value="selectedOption"
         @input="change"
@@ -30,6 +30,9 @@
         </button>
       </div>
     </div>
+    <div v-if="invalid" class="invalid-feedback d-block"><div>
+      {{ $t('Signal reference is required') }}
+    </div></div>
     <small v-if="helper" class="form-text text-muted">{{ $t(helper) }}</small>
     <div v-if="showNewSignal" class="card">
       <div class="card-body p-2">
@@ -133,6 +136,9 @@ export default {
     },
   },
   computed: {
+    invalid() {
+      return !this.value;
+    },
     localSignals() {
       return store.getters.rootElements
         .filter(element => element.$type === 'bpmn:Signal');
@@ -345,5 +351,11 @@ export default {
     border-style: none !important;
     background: transparent;
     padding: 0px
+  }
+</style>
+
+<style>
+  .invalid .multiselect__tags {
+    border-color:#dc3545!important
   }
 </style>
