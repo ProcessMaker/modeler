@@ -95,10 +95,10 @@ describe('Multiselect', () => {
     dragFromSourceToDest(nodeTypes.task, task1Position);
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
-    cy.get('.paper-container').click();
+    cy.get('.paper-container').as('paperContainer').click();
 
     cy.get('body').type('{shift}', { release: false });
-    cy.get('.paper-container').as('paperContainer').trigger('mousedown', 'topLeft');
+    cy.get('@paperContainer').trigger('mousedown', 'topLeft');
     cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
     waitToRenderAllShapes();
     cy.get('@paperContainer').trigger('mouseup');
@@ -120,6 +120,18 @@ describe('Multiselect', () => {
         const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
         expect({ x, y }).to.eql(newTask2Position);
       });
+    });
+  });
+
+  it('should not move multiple shapes when shift + combo was held down2', () => {
+    ['meta', 'ctrl', 'alt'].forEach((combo) => {
+      cy.get('.paper-container').as('paperContainer').click();
+
+      cy.get('body').type(`{shift}{${ combo }}`, { release: false });
+      cy.get('@paperContainer').trigger('mousedown', 'topLeft');
+      cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
+      waitToRenderAllShapes();
+      cy.get('[data-type="selectionBox"]').should('not.exist');
     });
   });
 });

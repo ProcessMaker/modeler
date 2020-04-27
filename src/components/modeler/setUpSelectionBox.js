@@ -35,8 +35,20 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     cellView.model.off('change:position', moveAllOtherHighlightedShapes);
   });
 
-  function shiftKeyDownListener({ key }) {
-    if (key !== 'Shift' || shiftKeyPressed) {
+  function resetMultiSelect() {
+    resetCursor();
+    shiftKeyPressed = false;
+    paperManager.preventTranslate = false;
+    paperManager.paper.setInteractivity(graph.get('interactiveFunc'));
+  }
+
+  function shiftKeyDownListener(event) {
+    if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
+      resetMultiSelect();
+      return;
+    }
+
+    if (event.key !== 'Shift' || shiftKeyPressed) {
       return;
     }
 
@@ -50,11 +62,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     if (key !== 'Shift' || !shiftKeyPressed) {
       return;
     }
-
-    resetCursor();
-    shiftKeyPressed = false;
-    paperManager.preventTranslate = false;
-    paperManager.paper.setInteractivity(graph.get('interactiveFunc'));
+    resetMultiSelect();
   }
 
   function mousedownListener({ clientX, clientY }) {
@@ -124,6 +132,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     return new shapes.standard.Rectangle({
       position: { x, y },
       size: { width, height },
+      type: 'selectionBox',
       attrs: {
         body: {
           fill: 'lightblue',
