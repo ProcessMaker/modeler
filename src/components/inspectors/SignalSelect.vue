@@ -356,6 +356,6 @@ export default {
 
 <style>
   .invalid .multiselect__tags {
-    border-color:#f04124!important
+    border-color:#dc3545!important
   }
 </style>
