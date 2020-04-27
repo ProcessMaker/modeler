@@ -41,12 +41,12 @@ export function getAssociationFlowsForNode(node, processes) {
 }
 
 export function getInvalidNodes(validationErrors, nodes) {
-  const invalidNodeIds = Object.values(validationErrors)
+  const invalidNodes = Object.values(validationErrors)
     .flatMap(errors => {
       return errors.map(error => nodes.find(node => node.id === error.id));
     });
 
   const nodesWithoutIds = nodes.filter(node => !node.id);
 
-  return [...invalidNodeIds, ...nodesWithoutIds];
+  return [...invalidNodes, ...nodesWithoutIds];
 }
