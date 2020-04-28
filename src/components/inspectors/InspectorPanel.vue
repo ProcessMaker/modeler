@@ -12,7 +12,7 @@
         :style="{ height: parentHeight }"
       >
         <vue-form-renderer
-          :key="config[0].name"
+          :key="highlightedNode._modelerId"
           v-if="highlightedNode"
           :data="data"
           @update="updateDefinition"
