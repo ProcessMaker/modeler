@@ -14,9 +14,6 @@ export default {
       deep: true,
     },
   },
-  mounted() {
-    this.setIconColor();
-  },
   methods: {
     setIconColor() {
       if (!this.nodeIcon) {
@@ -25,5 +22,8 @@ export default {
 
       this.shape.attr('image/xlink:href', coloredIcon(this.nodeIcon, this.node));
     },
+  },
+  mounted() {
+    this.setIconColor();
   },
 };

@@ -25,6 +25,19 @@ import { startColor, startColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from './defaultNames';
+import webEntryIcon from '!!svg-inline-loader!@/assets/webentry.svg';
+import updateIconColor from '@/mixins/updateIconColor';
+import coloredIcon from '@/components/iconColors';
+
+function isWebEntryEnabled(config) {
+  if (!config) {
+    return false;
+  }
+
+  const parsedConfig = JSON.parse(config);
+
+  return parsedConfig && parsedConfig.web_entry && parsedConfig.web_entry.mode !== 'DISABLED';
+}
 
 export default {
   components: {
@@ -43,10 +56,10 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor],
   data() {
     return {
-      shape: null,
+      shape: new EventShape(),
       definition: null,
       dropdownData: [
         {
@@ -76,9 +89,22 @@ export default {
     'node.definition.name'(name) {
       this.shape.attr('label/text', name);
     },
+    'node.definition.config': {
+      immediate: true,
+      deep: true,
+      handler(config) {
+        if (isWebEntryEnabled(config)) {
+          this.nodeIcon = webEntryIcon;
+          this.shape.attr('image/xlink:href', coloredIcon(webEntryIcon, this.node));
+          return;
+        }
+
+        this.nodeIcon = null;
+        this.shape.attr('image/xlink:href', null);
+      },
+    },
   },
   mounted() {
-    this.shape = new EventShape();
     this.shape.set('type', 'processmaker.components.nodes.startEvent.Shape');
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
