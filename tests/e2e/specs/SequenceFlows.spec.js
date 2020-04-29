@@ -13,7 +13,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { taskWidth } from '../../../src/components/nodes/task/taskConfig';
-import { startEventDiameter } from '../../../src/components/nodes/startEvent/startEventConfig';
+import { startEventDiameter } from '../../../src/components/nodes/baseStartEvent/startEventConfig';
 import { endColor, startColor } from '../../../src/components/nodeColors';
 
 describe('Sequence Flows', () => {
