@@ -91,7 +91,6 @@ export default {
     },
     'node.definition.config': {
       immediate: true,
-      deep: true,
       handler(config) {
         if (isWebEntryEnabled(config)) {
           this.nodeIcon = webEntryIcon;
