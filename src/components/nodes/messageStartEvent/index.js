@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import startEventConfig from '../startEvent';
 import CatchEventMessageSelect from '../intermediateMessageCatchEvent/CatchEventMessageSelect';
 import omit from 'lodash/omit';
-import defaultNames from '@/components/nodes/startEvent/defaultNames';
+import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
 
 const id = 'processmaker-modeler-message-start-event';
 

@@ -2,7 +2,7 @@ import component from './startEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { startEventDiameter } from './startEventConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
-import defaultNames from './defaultNames';
+import defaultNames from '../baseStartEvent/defaultNames';
 
 const id = 'processmaker-modeler-start-event';
 

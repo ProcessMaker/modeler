@@ -2,7 +2,7 @@ import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
-import defaultNames from '@/components/nodes/startEvent/defaultNames';
+import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
 
 const id = 'processmaker-modeler-start-timer-event';
 

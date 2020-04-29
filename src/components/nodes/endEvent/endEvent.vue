@@ -19,7 +19,7 @@
 <script>
 import portsConfig from '@/mixins/portsConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import EventShape from '../startEvent/eventShape';
+import EventShape from '../baseStartEvent/eventShape';
 import { endColor, endColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
