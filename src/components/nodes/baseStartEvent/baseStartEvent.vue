@@ -27,16 +27,6 @@ import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from './defaultNames';
 import updateIconColor from '@/mixins/updateIconColor';
 
-function isWebEntryEnabled(config) {
-  if (!config) {
-    return false;
-  }
-
-  const parsedConfig = JSON.parse(config);
-
-  return parsedConfig && parsedConfig.web_entry && parsedConfig.web_entry.mode !== 'DISABLED';
-}
-
 export default {
   components: {
     CrownConfig,
