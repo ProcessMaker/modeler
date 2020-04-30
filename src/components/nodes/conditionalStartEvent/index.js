@@ -1,12 +1,12 @@
 import component from './conditionalStartEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
-import startEventConfig from '../startEvent';
-import defaultNames from '@/components/nodes/startEvent/defaultNames';
+import baseStartEventConfig from '@/components/nodes/baseStartEvent';
+import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
 
 const id = 'processmaker-modeler-conditional-start-event';
 
-export default merge(cloneDeep(startEventConfig), {
+export default merge(cloneDeep(baseStartEventConfig), {
   id,
   control: false,
   component,
