@@ -1,11 +1,9 @@
 <script>
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
 import conditionalIcon from '!!svg-inline-loader!@/assets/conditional-icon.svg';
-import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   extends: baseStartEvent,
-  mixins: [updateIconColor],
   data() {
     return {
       nodeIcon: conditionalIcon,

@@ -8,7 +8,6 @@ const id = 'processmaker-modeler-conditional-start-event';
 
 export default merge(cloneDeep(baseStartEventConfig), {
   id,
-  control: false,
   component,
   label: defaultNames[id],
   definition(moddle, $t) {
@@ -18,8 +17,5 @@ export default merge(cloneDeep(baseStartEventConfig), {
         moddle.create('bpmn:ConditionalEventDefinition'),
       ],
     });
-  },
-  validateIncoming() {
-    return false;
   },
 });
