@@ -28,6 +28,7 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -52,28 +53,7 @@ export default {
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
-      boundaryEventDropdownData: [
-        {
-          label: 'Boundary Timer Event',
-          nodeType: 'processmaker-modeler-boundary-timer-event',
-          dataTest: 'add-boundary-timer-event',
-        },
-        {
-          label: 'Boundary Error Event',
-          nodeType: 'processmaker-modeler-boundary-error-event',
-          dataTest: 'add-boundary-error-event',
-        },
-        {
-          label: 'Boundary Conditional Event',
-          nodeType: 'processmaker-modeler-boundary-conditional-event',
-          dataTest: 'add-boundary-conditional-event',
-        },
-        {
-          label: 'Boundary Message Event',
-          nodeType: 'processmaker-modeler-boundary-message-event',
-          dataTest: 'add-boundary-message-event',
-        },
-      ],
+      boundaryEventDropdownData,
       dropdownData: [
         {
           label: defaultNames['processmaker-modeler-task'],
