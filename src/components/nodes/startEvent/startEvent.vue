@@ -1,6 +1,5 @@
 <script>
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
-import signalStartEventIcon from '!!svg-inline-loader!@/assets/signal-start-event.svg';
 import webEntryIcon from '!!svg-inline-loader!@/assets/webentry.svg';
 import coloredIcon from '@/components/iconColors';
 
@@ -16,11 +15,6 @@ function isWebEntryEnabled(config) {
 
 export default {
   extends: baseStartEvent,
-  data() {
-    return {
-      nodeIcon: signalStartEventIcon,
-    };
-  },
   watch: {
     'node.definition.config': {
       immediate: true,
