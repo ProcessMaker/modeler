@@ -1,11 +1,9 @@
 <script>
-import StartEvent from '@/components/nodes/startEvent/startEvent';
 import clockIcon from '!!svg-inline-loader!@/assets/clock.svg';
-import updateIconColor from '@/mixins/updateIconColor';
+import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
 
 export default {
-  extends: StartEvent,
-  mixins: [updateIconColor],
+  extends: baseStartEvent,
   data() {
     return {
       nodeIcon: clockIcon,

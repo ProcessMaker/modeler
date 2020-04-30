@@ -18,12 +18,14 @@
 
 <script>
 import portsConfig from '@/mixins/portsConfig';
+import EventShape from './eventShape';
+import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import EventShape from '../baseStartEvent/eventShape';
-import { endColor, endColorStroke } from '@/components/nodeColors';
+import { startColor, startColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import defaultNames from '@/components/nodes/endEvent/defaultNames';
+import defaultNames from './defaultNames';
+import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
   components: {
@@ -42,35 +44,31 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor],
   data() {
     return {
-      shape: null,
+      shape: new EventShape(),
       definition: null,
       dropdownData: [
         {
-          label: defaultNames['processmaker-modeler-end-event'],
-          nodeType: 'processmaker-modeler-end-event',
+          label: defaultNames['processmaker-modeler-start-event'],
+          nodeType: 'processmaker-modeler-start-event',
+          dataTest: 'switch-to-start-event',
         },
         {
-          label: defaultNames['processmaker-modeler-message-end-event'],
-          nodeType: 'processmaker-modeler-message-end-event',
-          dataTest: 'switch-to-message-end-event',
+          label: defaultNames['processmaker-modeler-start-timer-event'],
+          nodeType: 'processmaker-modeler-start-timer-event',
+          dataTest: 'switch-to-start-timer-event',
         },
         {
-          label: defaultNames['processmaker-modeler-error-end-event'],
-          nodeType: 'processmaker-modeler-error-end-event',
-          dataTest: 'switch-to-error-end-event',
+          label: defaultNames['processmaker-modeler-signal-start-event'],
+          nodeType: 'processmaker-modeler-signal-start-event',
+          dataTest: 'switch-to-signal-start-event',
         },
         {
-          label: defaultNames['processmaker-modeler-signal-end-event'],
-          nodeType: 'processmaker-modeler-signal-end-event',
-          dataTest: 'switch-to-signal-end-event',
-        },
-        {
-          label: defaultNames['processmaker-modeler-terminate-end-event'],
-          nodeType: 'processmaker-modeler-terminate-end-event',
-          dataTest: 'switch-to-terminate-end-event',
+          label: defaultNames['processmaker-modeler-message-start-event'],
+          nodeType: 'processmaker-modeler-message-start-event',
+          dataTest: 'switch-to-message-start-event',
         },
       ],
     };
@@ -81,19 +79,24 @@ export default {
     },
   },
   mounted() {
-    this.shape = new EventShape();
-    this.shape.set('type', 'processmaker.components.nodes.endEvent.Shape');
+    this.shape.set('type', 'processmaker.components.nodes.startEvent.Shape');
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
     this.shape.resize(bounds.get('width'), bounds.get('height'));
     this.shape.attr({
       body: {
-        fill: endColor,
-        stroke: endColorStroke,
+        stroke: startColorStroke,
+        fill: startColor,
       },
       label: {
         text: this.node.definition.get('name'),
         refY: '130%',
+      },
+      image: {
+        'ref-x': 5,
+        'ref-y': 5,
+        'width': bounds.get('width') - 10,
+        'height': bounds.get('height') - 10,
       },
     });
     this.shape.addTo(this.graph);

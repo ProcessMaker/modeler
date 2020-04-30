@@ -1,16 +1,15 @@
 import component from './messageStartEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
-import startEventConfig from '../startEvent';
 import CatchEventMessageSelect from '../intermediateMessageCatchEvent/CatchEventMessageSelect';
 import omit from 'lodash/omit';
-import defaultNames from '@/components/nodes/startEvent/defaultNames';
+import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
+import baseStartEventConfig from '@/components/nodes/baseStartEvent';
 
 const id = 'processmaker-modeler-message-start-event';
 
-export default merge(cloneDeep(startEventConfig), {
+export default merge(cloneDeep(baseStartEventConfig), {
   id,
-  control: false,
   component,
   label: defaultNames[id],
   definition(moddle, $t) {
@@ -20,9 +19,6 @@ export default merge(cloneDeep(startEventConfig), {
         moddle.create('bpmn:MessageEventDefinition'),
       ],
     });
-  },
-  validateIncoming() {
-    return false;
   },
   inspectorData(node) {
     return Object.entries(node.definition).reduce((data, [key, value]) => {

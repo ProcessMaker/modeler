@@ -1,11 +1,9 @@
 <script>
-import startEvent from '../startEvent/startEvent';
 import startMailSymbol from '!!svg-inline-loader!@/assets/start-event-mail.svg';
-import updateIconColor from '@/mixins/updateIconColor';
+import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
 
 export default {
-  extends: startEvent,
-  mixins: [updateIconColor],
+  extends: baseStartEvent,
   data() {
     return {
       nodeIcon: startMailSymbol,
