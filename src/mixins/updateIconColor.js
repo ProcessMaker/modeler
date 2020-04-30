@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     setIconColor() {
-      if (!this.nodeIcon) {
+      if (!this.nodeIcon || this.node.definition.$type === 'bpmn:ServiceTask') {
         return;
       }
 
