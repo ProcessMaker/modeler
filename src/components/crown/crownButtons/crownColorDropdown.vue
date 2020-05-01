@@ -23,7 +23,7 @@
 
       <button
         type="button"
-        class="color-button clear-color fa fa-redo-alt"
+        class="color-button p-0 fa fa-redo-alt"
         data-test="clear-color"
         @click="selectedColor = null"
       />
@@ -114,10 +114,6 @@ export default {
       border-radius: 50%;
       border: 2px solid white;
       position: relative;
-    }
-
-    > .clear-color {
-      padding: 0;
     }
   }
 
