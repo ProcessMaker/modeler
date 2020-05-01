@@ -16,7 +16,9 @@ export default {
   },
   methods: {
     setIconColor() {
-      if (!this.nodeIcon || this.node.definition.$type === 'bpmn:ServiceTask') {
+      /* Temporary fix to prevent connector icons from switching to the user task icon.
+      *  Leaves connector icon the original color. */
+      if (!this.nodeIcon || this.node.isBpmnType('bpmn:ServiceTask')) {
         return;
       }
 
