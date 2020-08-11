@@ -66,6 +66,8 @@ export default {
   props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'compressed', 'definitions'],
   data() {
     return {
+      data: {},
+      config: [],
       inspectorHandler: null,
       translated: [],
     };
@@ -73,45 +75,13 @@ export default {
   watch: {
     highlightedNode() {
       document.activeElement.blur();
+      this.prepareData();
+      this.prepareConfig();
     },
   },
   computed: {
     highlightedNode() {
       return store.getters.highlightedNodes[0];
-    },
-    config() {
-      if (!this.highlightedNode) {
-        return {
-          name: 'Empty',
-          items: [],
-        };
-      }
-
-      const { type, definition } = this.highlightedNode;
-
-      if (this.highlightedNode === this.processNode) {
-        return Process.inspectorConfig;
-      }
-
-      const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
-      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[0].items');
-
-      if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
-        let helper = 'Enter the expression that describes the workflow condition ';
-        helper += '<a href="https://processmaker.gitbook.io/processmaker/designing-processes/process-design/model-your-process/the-quick-toolbar#expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
-        const expressionConfig = {
-          component: 'FormInput',
-          config: {
-            label: 'Expression',
-            helper,
-            name: 'conditionExpression',
-          },
-        };
-
-        sequenceFlowConfigurationFormElements.push(expressionConfig);
-      }
-
-      return inspectorConfig;
     },
     isAnyNodeActive() {
       return this.highlightedNode;
@@ -150,14 +120,50 @@ export default {
     isProcessNodeActive() {
       return this.highlightedNode === this.processNode;
     },
-    data() {
+  },
+  methods: {
+    prepareConfig() {
+      if (!this.highlightedNode) {
+        return this.config = {
+          name: 'Empty',
+          items: [],
+        };
+      }
+
+      const { type, definition } = this.highlightedNode;
+
+      if (this.highlightedNode === this.processNode) {
+        return this.config = Process.inspectorConfig;
+      }
+
+      const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
+      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[0].items');
+
+      if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
+        let helper = 'Enter the expression that describes the workflow condition ';
+        helper += '<a href="https://processmaker.gitbook.io/processmaker/designing-processes/process-design/model-your-process/the-quick-toolbar#expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
+        const expressionConfig = {
+          component: 'FormInput',
+          config: {
+            label: 'Expression',
+            helper,
+            name: 'conditionExpression',
+          },
+        };
+
+        sequenceFlowConfigurationFormElements.push(expressionConfig);
+      }
+
+      return this.config = inspectorConfig;
+    },
+    prepareData() {
       if (!this.highlightedNode) {
         return {};
       }
 
       const type = this.highlightedNode && this.highlightedNode.type;
 
-      return type && this.nodeRegistry[type].inspectorData
+      this.data = type && this.nodeRegistry[type].inspectorData
         ? this.nodeRegistry[type].inspectorData(this.highlightedNode)
         : Object.entries(this.highlightedNode.definition).reduce((data, [key, value]) => {
           data[key] = value;
@@ -165,8 +171,6 @@ export default {
           return data;
         }, {});
     },
-  },
-  methods: {
     isSequenceFlow(type) {
       return type === sequenceFlowId;
     },

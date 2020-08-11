@@ -4,6 +4,7 @@ const yargs = require('yargs');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  runtimeCompiler: true,
   css: {
     extract: false,
     loaderOptions: {

@@ -24,6 +24,7 @@ describe('Boundary Timer Event', () => {
     const boundaryTimerEventPosition = { x: 260, y: 260 };
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
     moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
+    cy.wait(500);
 
     const name = 'Test name';
     typeIntoTextInput('[name=name]', name);

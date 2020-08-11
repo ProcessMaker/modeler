@@ -95,6 +95,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
               label: 'Test Message',
               helper: 'The Body of The Message to Send',
               name: 'testMessage',
+              defaultValue: {mode: 'basic', value: ''},
             },
           },
         ],
