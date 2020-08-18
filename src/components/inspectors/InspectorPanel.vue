@@ -151,7 +151,14 @@ export default {
           },
         };
 
-        sequenceFlowConfigurationFormElements.push(expressionConfig);
+        const nameField = sequenceFlowConfigurationFormElements.find(x => x.config && x.config.label === 'Name');
+        const nameFieldIndex = sequenceFlowConfigurationFormElements.indexOf(nameField);
+        if (nameField && nameFieldIndex >= 0) {
+          sequenceFlowConfigurationFormElements.splice(nameFieldIndex + 1, 0, expressionConfig);
+        }
+        else {
+          sequenceFlowConfigurationFormElements.push(expressionConfig);
+        }
       }
 
       return this.config = inspectorConfig;
