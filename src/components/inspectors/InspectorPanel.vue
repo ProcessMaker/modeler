@@ -108,7 +108,16 @@ export default {
           },
         };
 
-        sequenceFlowConfigurationFormElements.push(expressionConfig);
+        // Always move the Expression Field below the Name field in the inspector
+        const nameField = sequenceFlowConfigurationFormElements.find(x => x.config && x.config.label === 'Name');
+        const nameFieldIndex = sequenceFlowConfigurationFormElements.indexOf(nameField);
+        if (nameField && nameFieldIndex >= 0) {
+          sequenceFlowConfigurationFormElements.splice(nameFieldIndex + 1, 0, expressionConfig);
+        }
+        else {
+          sequenceFlowConfigurationFormElements.push(expressionConfig);
+        }
+
       }
 
       return inspectorConfig;
