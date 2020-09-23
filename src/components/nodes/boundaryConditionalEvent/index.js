@@ -4,8 +4,10 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import { default as eventDefinition, inspector } from '../conditionalEventDefinition';
 
 export default merge(cloneDeep(boundaryEventConfig), {
+  ...eventDefinition,
   id: 'processmaker-modeler-boundary-conditional-event',
   component,
   control: false,
@@ -15,7 +17,11 @@ export default merge(cloneDeep(boundaryEventConfig), {
       name: $t('Boundary Conditional Event'),
       cancelActivity: true,
       eventDefinitions: [
-        moddle.create('bpmn:ConditionalEventDefinition'),
+        moddle.create('bpmn:ConditionalEventDefinition', {
+          condition: moddle.create('bpmn:FormalExpression',{
+            body: '',
+          }),
+        }),
       ],
     });
   },
@@ -24,6 +30,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
       {
         items: [
           {},
+          ...inspector(),
           interruptingToggleConfig,
         ],
       },
