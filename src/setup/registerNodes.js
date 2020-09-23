@@ -33,6 +33,7 @@ import {
   task,
   terminateEndEvent,
   textAnnotation,
+  conditionalStartEvent,
 } from '@/components/nodes';
 import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker';
 
@@ -54,6 +55,7 @@ const nodeTypes = [
   pool,
   poolLane,
   textAnnotation,
+  conditionalStartEvent,
 ];
 const customEventNodes = [
   [signalStartEvent, 'bpmn:StartEvent', 'bpmn:SignalEventDefinition'],
@@ -73,6 +75,7 @@ const customEventNodes = [
   [errorEndEvent, 'bpmn:EndEvent', 'bpmn:ErrorEventDefinition'],
   [signalEndEvent, 'bpmn:EndEvent', 'bpmn:SignalEventDefinition'],
   [terminateEndEvent, 'bpmn:EndEvent', 'bpmn:TerminateEventDefinition'],
+  [conditionalStartEvent, 'bpmn:StartEvent', 'bpmn:ConditionalEventDefinition'],
 ];
 const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) => (definition) => {
   const definitions = definition.get('eventDefinitions');
