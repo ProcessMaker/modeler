@@ -95,6 +95,7 @@ export default class Node {
     });
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
+        clonedNode.definition.eventDefinitions[0] &&
         clonedNode.definition.eventDefinitions[0].hasOwnProperty(prop) &&
         clonedNode.definition.eventDefinitions[0].set(prop, null)
     );
