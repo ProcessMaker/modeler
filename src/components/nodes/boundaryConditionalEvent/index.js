@@ -18,7 +18,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
       cancelActivity: true,
       eventDefinitions: [
         moddle.create('bpmn:ConditionalEventDefinition', {
-          condition: moddle.create('bpmn:FormalExpression',{
+          condition: moddle.create('bpmn:FormalExpression', {
             body: '',
           }),
         }),

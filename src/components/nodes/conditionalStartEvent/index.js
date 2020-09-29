@@ -17,7 +17,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
       name: $t(defaultNames[id]),
       eventDefinitions: [
         moddle.create('bpmn:ConditionalEventDefinition', {
-          condition: moddle.create('bpmn:FormalExpression',{
+          condition: moddle.create('bpmn:FormalExpression', {
             body: '',
           }),
         }),
