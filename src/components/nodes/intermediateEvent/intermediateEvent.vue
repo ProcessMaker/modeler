@@ -73,6 +73,11 @@ export default {
           nodeType: 'processmaker-modeler-intermediate-message-throw-event',
           dataTest: 'switch-to-intermediate-message-throw-event',
         },
+        {
+          label: defaultNames['processmaker-modeler-intermediate-conditional-catch-event'],
+          nodeType: 'processmaker-modeler-intermediate-conditional-catch-event',
+          dataTest: 'switch-to-intermediate-conditional-catch-event',
+        },
       ],
     };
   },
