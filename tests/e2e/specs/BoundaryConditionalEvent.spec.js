@@ -36,7 +36,7 @@ describe('Boundary Conditional Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Conditional Event',
   nodeType: nodeTypes.boundaryConditionalEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="Boundary Conditional Event" attachedToRef="node_2"><bpmn:conditionalEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="Boundary Conditional Event" attachedToRef="node_2"><bpmn:conditionalEventDefinition><bpmn:condition xsi:type="bpmn:tFormalExpression"></bpmn:condition></bpmn:conditionalEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
