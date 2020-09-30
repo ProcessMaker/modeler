@@ -3,6 +3,7 @@ import {
   getElementAtPosition,
   setBoundaryEvent,
   waitToRenderAllShapes,
+  removeIndentationAndLinebreaks,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
@@ -14,6 +15,19 @@ describe('Boundary Conditional Event', () => {
   beforeEach(() => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryConditionalEvent, taskPosition);
+  });
+
+  it('set condition on Boundary Conditional Events', () => {
+    const expectedBpmn = '<bpmn:boundaryEvent id="node_3" name="Boundary Conditional Event" attachedToRef="node_2"><bpmn:conditionalEventDefinition><bpmn:condition xsi:type="bpmn:tFormalExpression">form_input_1=="one"</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:boundaryEvent>';
+    const condition = '[name=condition]';
+    cy.get(condition).clear().type('form_input_1=="one"');
+    cy.get('[data-test=downloadXMLBtn]').click();
+    cy.window()
+      .its('xml')
+      .then(removeIndentationAndLinebreaks)
+      .then(xml => {
+        expect(xml).to.contain(expectedBpmn);
+      });
   });
 
   it('can toggle interrupting on Boundary Conditional Events', () => {
