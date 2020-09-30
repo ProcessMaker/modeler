@@ -23,7 +23,7 @@
 
       <button
         type="button"
-        class="color-button p-0 fa fa-redo-alt"
+        class="color-button p-0 fa fa-undo-alt"
         data-test="clear-color"
         @click="selectedColor = null"
       />
