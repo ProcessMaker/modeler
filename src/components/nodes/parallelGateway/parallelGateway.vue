@@ -11,5 +11,15 @@ export default {
       nodeIcon: parallelGatewaySymbol,
     };
   },
+  watch: {
+    'node.definition': {
+      deep:true,
+      immediate:true,
+      handler() {
+        //insure that parallel gateways don't have the 'default' attribute
+        delete this.node.definition.default;
+      },
+    },
+  },
 };
 </script>
