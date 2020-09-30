@@ -70,6 +70,11 @@ export default {
           nodeType: 'processmaker-modeler-message-start-event',
           dataTest: 'switch-to-message-start-event',
         },
+        {
+          label: defaultNames['processmaker-modeler-conditional-start-event'],
+          nodeType: 'processmaker-modeler-conditional-start-event',
+          dataTest: 'switch-to-conditional-start-event',
+        },
       ],
     };
   },

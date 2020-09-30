@@ -19,6 +19,7 @@ export { default as intermediateMessageCatchEvent } from './intermediateMessageC
 export { default as intermediateSignalCatchEvent } from './intermediateSignalCatchEvent';
 export { default as intermediateMessageThrowEvent } from './intermediateMessageThrowEvent';
 export { default as intermediateSignalThrowEvent } from './intermediateSignalThrowEvent';
+export { default as intermediateConditionalCatchEvent } from './intermediateConditionalCatchEvent';
 export { default as task } from './userTask';
 export { default as subProcess } from './subProcess';
 //This export is deprecated and will be removed in a future version
@@ -36,4 +37,6 @@ export { default as boundaryMessageEvent } from './boundaryMessageEvent';
 export { default as boundaryErrorEvent } from './boundaryErrorEvent';
 export { default as boundaryEscalationEvent } from './boundaryEscalationEvent';
 export { default as boundarySignalEvent } from './boundarySignalEvent';
+export { default as boundaryConditionalEvent } from './boundaryConditionalEvent';
+export { default as conditionalStartEvent } from './conditionalStartEvent';
 export { default as registerNodes } from '@/setup/registerNodes';
