@@ -18,6 +18,11 @@ export default {
     return moddle.create('bpmndi:BPMNEdge');
   },
   inspectorData(node) {
+    // If the flow's source is doesn't have condition remove it:
+    const hasCondition = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(node.definition.sourceRef.$type);
+    if (!hasCondition) {
+      delete node.definition.conditionExpression;
+    }
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'conditionExpression') {
         data[key] = value.body;
@@ -33,6 +38,12 @@ export default {
 
     // Exclusive and inclusive gateways could have conditioned flows
     const hasCondition = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
+
+    // If the flow's source is doesn't have condition remove it:
+    if (!hasCondition) {
+      delete value.conditionExpression;
+      delete node.definition.conditionExpression;
+    }
 
     // Go through each property and rebind it to our data
     for (const key in value) {
