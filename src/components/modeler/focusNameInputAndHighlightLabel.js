@@ -9,7 +9,7 @@ export default async function focusNameInputAndHighlightLabel(cellView) {
   }
 
   const configurationAccordion = document.getElementById('accordion-button-Configuration');
-  if (configurationAccordion.getAttribute('aria-expanded') === 'false') {
+  if (configurationAccordion && configurationAccordion.getAttribute('aria-expanded') === 'false') {
     clearTimeout(timeoutID);
     configurationAccordion.click();
     await waitToTriggerOpenAnimation();
