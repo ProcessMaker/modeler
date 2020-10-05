@@ -6,6 +6,7 @@ import {
   getElementAtPosition,
   getGraphElements,
   typeIntoTextInput,
+  modalConfirm,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -134,5 +135,23 @@ describe('Event-Based Gateway', () => {
       .then($textAnnotation => {
         getCrownButtonForElement($textAnnotation, 'delete-button').click({ force: true });
       });
+  });
+
+  it('Only convert to event based gateway with valid outgoing', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, eventBasedGatewayPosition);
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-parallel-gateway]').click();
+    modalConfirm();
+
+    const taskPosition = { x: 500, y: 250 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    connectNodesWithFlow('sequence-flow-button', eventBasedGatewayPosition, taskPosition);
+    getElementAtPosition(eventBasedGatewayPosition).click();
+
+    // Convert to event-based-gateway must be disabled
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('li:has([data-test=switch-to-event-based-gateway])').trigger('mouseenter', {force: true});
+    cy.get('[data-test=switch-to-event-based-gateway]').should('be.disabled');
   });
 });
