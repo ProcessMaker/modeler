@@ -11,14 +11,23 @@
     </crown-button>
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
-      <li class="element-list--item" role="listitem" v-for="{label, nodeType, dataTest} in dropdownData" :key="nodeType">
+      <li class="element-list--item" role="listitem" v-for="{label, nodeType, dataTest, disabled} in dropdownData" :key="nodeType" :id="nodeType">
         <button
           :data-test="dataTest"
           class="element-list--item__button"
           type="button"
+          :disabled="isDisabled(disabled, node, nodeType)"
           @click="replaceNode({ node, typeToReplaceWith: nodeType })"
         >{{ $t(label) }}
         </button>
+        <b-tooltip
+          v-if="isDisabled(disabled, node, nodeType)"
+          :target="nodeType"
+          variant="warning"
+          placement="right"
+        >
+          {{ $t(tooltip(disabled, node, nodeType)) }}
+        </b-tooltip>
       </li>
     </ul>
   </div>
@@ -38,6 +47,12 @@ export default {
     },
   },
   methods: {
+    isDisabled(disabled, node, target) {
+      return disabled && (disabled instanceof Function ? disabled.apply(this, [node, target]): disabled);
+    },
+    tooltip(disabled, node, target) {
+      return this.isDisabled(disabled, node, target) || '';
+    },
     replaceNode(data) {
       if (data.node.type === data.typeToReplaceWith) {
         this.$emit('toggle-dropdown-state', false);

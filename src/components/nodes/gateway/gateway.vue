@@ -71,6 +71,14 @@ export default {
           label: defaultNames['processmaker-modeler-event-based-gateway'],
           nodeType: 'processmaker-modeler-event-based-gateway',
           dataTest: 'switch-to-event-based-gateway',
+          disabled(node) {
+            if (node && node.definition && node.definition.outgoing) {
+              const validTypes = ['bpmn:IntermediateCatchEvent'];
+              const invalid = node.definition.outgoing.find(flow => !validTypes.includes(flow.targetRef.$type));
+              return invalid ? 'It must be connected only to catch events' : false;
+            }
+            return false;
+          },
         },
       ],
     };
