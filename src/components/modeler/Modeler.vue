@@ -139,7 +139,8 @@ import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
-import { getAssociationFlowsForNode, getInvalidNodes, keepOriginalName } from '@/components/modeler/modelerUtils';
+import { getInvalidNodes } from '@/components/modeler/modelerUtils';
+import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 
 export default {
   components: {
@@ -697,55 +698,15 @@ export default {
         return;
       }
 
-      if (keepOriginalName(nodeThatWillBeReplaced)) {
-        definition.name = nodeThatWillBeReplaced.definition.name;
-      }
-
-      const forceNodeToRemount = definition => {
-        const shape = this.graph.getLinks().find(element => {
-          return element.component && element.component.node.definition === definition;
-        });
-        shape.component.node._modelerId += '_replaced';
-      };
-
-      const incoming = nodeThatWillBeReplaced.definition.get('incoming');
-      const outgoing = nodeThatWillBeReplaced.definition.get('outgoing');
-
-      definition.get('incoming').push(...incoming);
-      definition.get('outgoing').push(...outgoing);
-
-      outgoing.forEach(ref => {
-        ref.set('sourceRef', newNode.definition);
-        forceNodeToRemount(ref);
-      });
-
-      incoming.forEach(ref => {
-        ref.set('targetRef', newNode.definition);
-        forceNodeToRemount(ref);
-      });
-
-      const associationFlows = getAssociationFlowsForNode(nodeThatWillBeReplaced, this.processes);
-      associationFlows.forEach(flow => {
-        flow.set('targetRef', newNode.definition);
-        forceNodeToRemount(flow);
-      });
-
-      if (this.collaboration) {
-        const messageFlows = this.collaboration.get('messageFlows');
-        messageFlows
-          .filter(flow => flow.sourceRef === nodeThatWillBeReplaced.definition)
-          .forEach(flow => {
-            flow.set('sourceRef', newNode.definition);
-            forceNodeToRemount(flow);
-          });
-
-        messageFlows
-          .filter(flow => flow.targetRef === nodeThatWillBeReplaced.definition)
-          .forEach(flow => {
-            flow.set('targetRef', newNode.definition);
-            forceNodeToRemount(flow);
-          });
-      }
+      const nodeMigrator = new NodeMigrator(
+        nodeThatWillBeReplaced,
+        definition,
+        this.graph,
+        newNode,
+        this.processes,
+        this.collaboration,
+      );
+      nodeMigrator.migrate();
 
       return newNode;
     },
