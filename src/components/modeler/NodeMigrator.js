@@ -11,7 +11,7 @@ export class NodeMigrator {
   }
 
   migrate() {
-    if (keepOriginalName()) {
+    if (keepOriginalName(this._nodeThatWillBeReplaced)) {
       this._definition.name = this._nodeThatWillBeReplaced.definition.name;
     }
 
