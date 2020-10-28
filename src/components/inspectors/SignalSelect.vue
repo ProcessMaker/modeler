@@ -25,7 +25,7 @@
         </template>
       </multiselect>
       <div class="btn-group ml-1" role="group">
-        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigSignal">
+        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigSignal" data-cy="events-list">
           <i class="fa fa-ellipsis-h" />
         </button>
       </div>
@@ -36,27 +36,27 @@
     <small v-if="helper" class="form-text text-muted">{{ $t(helper) }}</small>
     <div v-if="showNewSignal" class="card">
       <div class="card-body p-2">
-        <form-input :label="$t('ID')" v-model="signalId" :error="getValidationErrorForNewId(signalId)" />
-        <form-input :label="$t('Name')" v-model="signalName" :error="getValidationErrorForNewName(signalName)" />
+        <form-input :label="$t('ID')" v-model="signalId" :error="getValidationErrorForNewId(signalId)"  data-cy="events-add-id" />
+        <form-input :label="$t('Name')" v-model="signalName" :error="getValidationErrorForNewName(signalName)" data-cy="events-add-name" />
       </div>
       <div class="card-footer text-right p-2">
-        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal">
+        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal" data-cy="events-cancel">
           Cancel
         </button>
-        <button :disabled="!validNew" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="addSignal">
+        <button :disabled="!validNew" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="addSignal" data-cy="events-save">
           Save
         </button>
       </div>
     </div>
     <div v-if="showEditSignal" class="card">
       <div class="card-body p-2">
-        <form-input :label="$t('Name')" v-model="signalName" :error="getValidationErrorForNameUpdate(signalName)" />
+        <form-input :label="$t('Name')" v-model="signalName" :error="getValidationErrorForNameUpdate(signalName)" data-cy="events-edit-name" />
       </div>
       <div class="card-footer text-right p-2">
-        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal">
+        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal" data-cy="events-cancel">
           Cancel
         </button>
-        <button :disabled="!validUpdate" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="updateSignal">
+        <button :disabled="!validUpdate" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="updateSignal" data-cy="events-save">
           Save
         </button>
       </div>
@@ -70,10 +70,10 @@
         ({{ deleteSignal.id }}) {{ deleteSignal.name }}
       </div>
       <div class="card-footer text-right p-2">
-        <button type="button" class="btn btn-sm btn-light mr-2 p-1 font-xs" @click="showConfirmDelete=false">
+        <button type="button" class="btn btn-sm btn-light mr-2 p-1 font-xs" @click="showConfirmDelete=false" data-cy="events-cancel">
           Cancel
         </button>
-        <button v-if="!deleteSignalUsage(deleteSignal.id)" type="button" class="btn btn-sm btn-danger p-1 font-xs" @click="confirmDeleteSignal">
+        <button v-if="!deleteSignalUsage(deleteSignal.id)" type="button" class="btn btn-sm btn-danger p-1 font-xs" @click="confirmDeleteSignal" data-cy="events-delete">
           Delete
         </button>
       </div>
@@ -83,7 +83,7 @@
         <thead>
           <tr>
             <td colspan="2" align="right">
-              <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" @click="showAddSignal">
+              <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" @click="showAddSignal" data-cy="events-add">
                 <i class="fa fa-plus" /> Signal
               </button>
             </td>
@@ -96,8 +96,8 @@
               {{ signal.name }}
             </td>
             <td align="right">
-              <button class="btn-link ml-2" @click="editSignal(signal)"><i class="fa fa-pen" /></button>
-              <button class="btn-link ml-2" @click="removeSignal(signal)"><i class="fa fa-trash" /></button>
+              <button class="btn-link ml-2" @click="editSignal(signal)"><i class="fa fa-pen" data-cy="events-edit" /></button>
+              <button class="btn-link ml-2" @click="removeSignal(signal)"><i class="fa fa-trash" data-cy="events-remove" /></button>
             </td>
           </tr>
         </tbody>

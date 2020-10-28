@@ -25,7 +25,7 @@
         </template>
       </multiselect>
       <div class="btn-group ml-1" role="group">
-        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigMessage">
+        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigMessage" data-cy="events-list">
           <i class="fa fa-ellipsis-h" />
         </button>
       </div>
@@ -36,27 +36,27 @@
     <small v-if="helper" class="form-text text-muted">{{ $t(helper) }}</small>
     <div v-if="showNewMessage" class="card">
       <div class="card-body p-2">
-        <form-input :label="$t('ID')" v-model="messageId" :error="getValidationErrorForNewId(messageId)" />
-        <form-input :label="$t('Name')" v-model="messageName" :error="getValidationErrorForNewName(messageName)" />
+        <form-input :label="$t('ID')" v-model="messageId" :error="getValidationErrorForNewId(messageId)" data-cy="events-add-id" />
+        <form-input :label="$t('Name')" v-model="messageName" :error="getValidationErrorForNewName(messageName)" data-cy="events-add-name" />
       </div>
       <div class="card-footer text-right p-2">
-        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddMessage">
+        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddMessage" data-cy="events-cancel">
           Cancel
         </button>
-        <button :disabled="!validNew" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="addMessage">
+        <button :disabled="!validNew" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="addMessage" data-cy="events-save">
           Save
         </button>
       </div>
     </div>
     <div v-if="showEditMessage" class="card">
       <div class="card-body p-2">
-        <form-input :label="$t('Name')" v-model="messageName" :error="getValidationErrorForNameUpdate(messageName)" />
+        <form-input :label="$t('Name')" v-model="messageName" :error="getValidationErrorForNameUpdate(messageName)" data-cy="events-edit-name" />
       </div>
       <div class="card-footer text-right p-2">
-        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddMessage">
+        <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddMessage" data-cy="events-cancel">
           Cancel
         </button>
-        <button :disabled="!validUpdate" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="updateMessage">
+        <button :disabled="!validUpdate" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="updateMessage" data-cy="events-save">
           Save
         </button>
       </div>
@@ -70,10 +70,10 @@
         ({{ deleteMessage.id }}) {{ deleteMessage.name }}
       </div>
       <div class="card-footer text-right p-2">
-        <button type="button" class="btn btn-sm btn-light mr-2 p-1 font-xs" @click="showConfirmDelete=false">
+        <button type="button" class="btn btn-sm btn-light mr-2 p-1 font-xs" @click="showConfirmDelete=false" data-cy="events-cancel">
           Cancel
         </button>
-        <button v-if="!deleteMessageUsage(deleteMessage.id)" type="button" class="btn btn-sm btn-danger p-1 font-xs" @click="confirmDeleteMessage">
+        <button v-if="!deleteMessageUsage(deleteMessage.id)" type="button" class="btn btn-sm btn-danger p-1 font-xs" @click="confirmDeleteMessage" data-cy="events-delete">
           Delete
         </button>
       </div>
@@ -83,7 +83,7 @@
         <thead>
           <tr>
             <td colspan="2" align="right">
-              <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" @click="showAddMessage">
+              <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" @click="showAddMessage" data-cy="events-add">
                 <i class="fa fa-plus" /> Message
               </button>
             </td>
@@ -96,8 +96,8 @@
               {{ message.name }}
             </td>
             <td align="right">
-              <button class="btn-link ml-2" @click="editMessage(message)"><i class="fa fa-pen" /></button>
-              <button class="btn-link ml-2" @click="removeMessage(message)"><i class="fa fa-trash" /></button>
+              <button class="btn-link ml-2" @click="editMessage(message)"><i class="fa fa-pen" data-cy="events-edit" /></button>
+              <button class="btn-link ml-2" @click="removeMessage(message)"><i class="fa fa-trash" data-cy="events-remove" /></button>
             </td>
           </tr>
         </tbody>
