@@ -2,12 +2,13 @@ import component from './messageEndEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import endEventConfig from '@/components/nodes/endEvent';
-import omit from 'lodash/omit';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
+import { default as messageEventDefinition, messageSelector } from '../messageEventDefinition';
 
 const id = 'processmaker-modeler-message-end-event';
 
 export default merge(cloneDeep(endEventConfig), {
+  ...messageEventDefinition,
   id,
   component,
   control: false,
@@ -20,45 +21,13 @@ export default merge(cloneDeep(endEventConfig), {
       ],
     });
   },
-  inspectorData(node) {
-    return Object.entries(node.definition).reduce((data, [key, value]) => {
-      if (key === 'eventDefinitions') {
-        data.messageName = value[0].get('messageRef').name;
-      } else {
-        data[key] = value;
-      }
-
-      return data;
-    }, {});
-  },
-  inspectorHandler(value, node, setNodeProp) {
-    for (const key in omit(value, ['$type', 'eventDefinitions', 'messageName'])) {
-      if (node.definition[key] === value[key]) {
-        continue;
-      }
-
-      setNodeProp(node, key, value[key]);
-    }
-
-    const message = node.definition.get('eventDefinitions')[0].messageRef;
-    if (message.name !== value.messageName) {
-      message.name = value.messageName;
-    }
-  },
   inspectorConfig: [
     {
       items: [
         {
           items: [
             {},
-            {
-              component: 'FormInput',
-              config: {
-                label: 'Message Name',
-                name: 'messageName',
-                helper: 'Enter the message name that is unique from all other elements in the diagram',
-              },
-            },
+            messageSelector('Select the message reference that this element throws'),
           ],
         },
       ],
