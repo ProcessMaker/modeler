@@ -8,7 +8,6 @@ import {
   getElementAtPosition,
   getNumberOfLinks,
   getXml,
-  typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
