@@ -8,7 +8,6 @@ import {
   getElementAtPosition,
   getNumberOfLinks,
   getXml,
-  typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -39,7 +38,11 @@ describe('Intermediate Message Throw Event', () => {
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
-    typeIntoTextInput('[name=messageName]', messageName);
+    // Edit message
+    cy.get('[data-cy="events-list"]').click();
+    cy.get('[data-cy="events-edit"]').click();
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-save"]').click();
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, messageXMLSnippet);
   });
@@ -50,7 +53,11 @@ describe('Intermediate Message Throw Event', () => {
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
-    typeIntoTextInput('[name=messageName]', messageName);
+    // Edit message
+    cy.get('[data-cy="events-list"]').click();
+    cy.get('[data-cy="events-edit"]').click();
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-save"]').click();
 
     assertDownloadedXmlContainsExpected(messageXMLSnippet);
 
@@ -69,12 +76,21 @@ describe('Intermediate Message Throw Event', () => {
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
-    typeIntoTextInput('[name=messageName]', messageName);
+    // Edit message
+    cy.get('[data-cy="events-list"]').click();
+    cy.get('[data-cy="events-edit"]').click();
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-save"]').click();
 
     getElementAtPosition(startEventPosition).click();
     waitToRenderAllShapes();
     getElementAtPosition(intermediateMessageThrowEventPosition).click({ force: true });
-    cy.get('[name=messageName]').should('have.value', messageName);
+    // Edit message
+    cy.get('[data-cy="events-list"]').click();
+    cy.get('[data-cy="events-edit"]').click();
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-save"]').click();
+    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
   it('can associate and rename message on intermediate message catch event', () => {
@@ -91,13 +107,17 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
-    cy.get('[name=messageRef]').select(messageRef);
+    cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
-    typeIntoTextInput('[name=messageName]', messageName);
+    // Edit message
+    cy.get('[data-cy="events-list"]').click();
+    cy.get('[data-cy="events-edit"]').click();
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-save"]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
-    cy.get('[name=messageRef]').should('contain', messageName);
+    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
   });
@@ -120,7 +140,11 @@ describe('Intermediate Message Throw Event', () => {
   it('should retain message name after loading XML', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
-    typeIntoTextInput('[name=messageName]', messageName);
+    // Edit message
+    cy.get('[data-cy="events-list"]').click();
+    cy.get('[data-cy="events-edit"]').click();
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-save"]').click();
 
     /* Something outside of the inspector panel has to be selected to trigger the focusout event;
      * otherwise it creates a race condition with the Undo button click event. */
@@ -133,7 +157,7 @@ describe('Intermediate Message Throw Event', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
-    cy.get('[name=messageName]').should('have.value', messageName);
+    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
   it('should allow valid message flow connections', () => {

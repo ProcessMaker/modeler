@@ -19,7 +19,7 @@ describe('Intermediate Catch Event', () => {
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateCatchEventPosition).click();
-    cy.get('[name=messageRef]').select('node_5_message');
+    cy.get('[data-test="messageRef:select"]').selectOption('node_5_message');
 
     const messageRef = '<bpmn:messageEventDefinition messageRef="node_5_message" />';
 

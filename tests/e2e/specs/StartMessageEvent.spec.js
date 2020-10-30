@@ -20,7 +20,7 @@ describe('Start Message Event', () => {
     cy.get('[data-test=switch-to-message-end-event]').click();
 
     getElementAtPosition(startMessageEventPosition).click();
-    cy.get('[name=messageRef]').select('node_5_message');
+    cy.get('[data-test="messageRef:select"]').selectOption('node_5_message');
 
     const messageRef = '<bpmn:messageEventDefinition messageRef="node_5_message" />';
 
