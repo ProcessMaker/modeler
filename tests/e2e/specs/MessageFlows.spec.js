@@ -95,15 +95,14 @@ describe('Message Flows', () => {
       });
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
-    const poolPosition = { x: 100, y: 150 };
+    const poolPosition = { x: 100, y: 400 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
-    const offset = 100;
-    const taskPosition = { x: poolPosition.x + offset, y: poolPosition.y + offset };
+    const taskPosition = {x: 250, y: 250};
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     cy.get('[data-test=switch-to-user-task').click();
 
-    getElementAtPosition(poolPosition)
+    getElementAtPosition(poolPosition, nodeTypes.pool)
       .click()
       .then($pool => {
         getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
