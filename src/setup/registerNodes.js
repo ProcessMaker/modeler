@@ -7,6 +7,7 @@ import {
   boundaryTimerEvent,
   boundaryConditionalEvent,
   conditionalStartEvent,
+  dataObject,
   endEvent,
   errorEndEvent,
   eventBasedGateway,
@@ -41,6 +42,7 @@ import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/proc
 
 const nodeTypes = [
   startEvent,
+  dataObject,
   endEvent,
   task,
   scriptTask,
