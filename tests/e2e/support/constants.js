@@ -13,6 +13,7 @@ export const defaultViewportDimensions = {
  * same as the shape type.
  */
 export const nodeTypes = {
+  dataObject: 'processmaker-modeler-data-object',
   startEvent: 'processmaker-modeler-start-event',
   messageStartEvent: 'processmaker-modeler-message-start-event',
   task: 'processmaker-modeler-task',
