@@ -39,4 +39,5 @@ export { default as boundaryEscalationEvent } from './boundaryEscalationEvent';
 export { default as boundarySignalEvent } from './boundarySignalEvent';
 export { default as boundaryConditionalEvent } from './boundaryConditionalEvent';
 export { default as conditionalStartEvent } from './conditionalStartEvent';
+export { default as dataStore } from './dataStore';
 export { default as registerNodes } from '@/setup/registerNodes';
