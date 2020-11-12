@@ -1,12 +1,7 @@
 import {
-  addNodeTypeToPaper,
-  assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
   getElementAtPosition,
-  modalCancel,
-  modalConfirm,
   typeIntoTextInput,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
