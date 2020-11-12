@@ -1,9 +1,17 @@
 <template>
   <crown-config
-    v-bind="$attrs"
+    :highlighted="highlighted"
+    :paper="paper"
     :graph="graph"
     :shape="shape"
     :node="node"
+    :nodeRegistry="nodeRegistry"
+    :moddle="moddle"
+    :collaboration="collaboration"
+    :process-node="processNode"
+    :plane-elements="planeElements"
+    :is-rendering="isRendering"
+    :dropdown-data="dropdownData"
     v-on="$listeners"
   />
 </template>
@@ -22,6 +30,15 @@ export default {
   props: [
     'graph',
     'node',
+    'id',
+    'highlighted',
+    'nodeRegistry',
+    'moddle',
+    'paper',
+    'collaboration',
+    'processNode',
+    'planeElements',
+    'isRendering',
   ],
   mixins: [highlightConfig, hideLabelOnDrag],
   data() {
