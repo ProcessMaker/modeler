@@ -1,17 +1,9 @@
 <template>
   <crown-config
-    :highlighted="highlighted"
-    :paper="paper"
+    v-bind="$attrs"
     :graph="graph"
     :shape="shape"
     :node="node"
-    :nodeRegistry="nodeRegistry"
-    :moddle="moddle"
-    :collaboration="collaboration"
-    :process-node="processNode"
-    :plane-elements="planeElements"
-    :is-rendering="isRendering"
-    :dropdown-data="dropdownData"
     v-on="$listeners"
   />
 </template>
@@ -23,21 +15,13 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { shapes } from 'jointjs';
 
 export default {
+  inheritAttrs: false,
   components: {
     CrownConfig,
   },
   props: [
     'graph',
     'node',
-    'id',
-    'highlighted',
-    'nodeRegistry',
-    'moddle',
-    'paper',
-    'collaboration',
-    'processNode',
-    'planeElements',
-    'isRendering',
   ],
   mixins: [highlightConfig, hideLabelOnDrag],
   data() {
