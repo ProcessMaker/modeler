@@ -102,7 +102,7 @@ export default {
       }
 
       return value => {
-        if (value && isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
+        if (isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
 
           const documentation = value.documentation
             ? [this.moddle.create('bpmn:Documentation', { text: value.documentation })]
