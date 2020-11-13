@@ -1,6 +1,6 @@
 const requestVariableSettings = {
   label: 'Request Variable',
-  name: 'request_variable',
+  name: 'config',
   helper: 'Enter the request variable that will store the signal payload',
 };
 
