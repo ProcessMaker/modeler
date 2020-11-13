@@ -19,7 +19,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Modeler', () => {
-  it('Create a simple process', () => {
+  it.only('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
 

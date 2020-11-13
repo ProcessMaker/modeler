@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="9.4770" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2020-11-13T19:52:59" tests="0" file="tests/e2e/specs/Modeler.spec.js" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="Modeler" timestamp="2020-11-13T19:52:59" tests="1" time="9.4770" failures="0">
+    <testcase name="Modeler Create a simple process" time="9.4770" classname="Create a simple process">
+    </testcase>
+  </testsuite>
+</testsuites>

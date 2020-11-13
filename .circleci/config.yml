@@ -21,3 +21,7 @@ workflows:
           post-steps:
             - store_artifacts:
                 path: coverage
+            - store_test_results:
+                path: test_summary_reports
+            - store_artifacts:
+                path: test_summary_reports/mocha/test-results.xml
