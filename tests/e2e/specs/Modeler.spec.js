@@ -48,6 +48,7 @@ describe('Modeler', () => {
 
     const numberOfNewElementsAdded = 9;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
+    expect(false).to.be.true;
   });
 
   it('Updates element name and validates xml', () => {

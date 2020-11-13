@@ -24,3 +24,4 @@ yarn-error.log*
 *.sln
 *.sw*
 nbproject/
+test_summary_reports/mocha/test-results.xml
