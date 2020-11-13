@@ -23,6 +23,7 @@ const sequenceFlowBlacklist = [
   'bpmn:Lane',
   'bpmn:TextAnnotation',
   'bpmn:Association',
+  'bpmn:DataStoreReference',
 ];
 
 export default {
