@@ -2,7 +2,6 @@ import component from './intermediateSignalThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateEventConfig from '@/components/nodes/intermediateEvent';
-import requestVariableSettings from '@/components/inspectors/requestVariableSettings';
 import {signalSelector, default as signalEventDefinition} from '../signalEventDefinition';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
 
@@ -30,10 +29,6 @@ export default merge(cloneDeep(intermediateEventConfig), {
           items: [
             {},
             signalSelector('Select the signal reference that this element throws'),
-            {
-              component: 'FormInput',
-              config: requestVariableSettings,
-            },
           ],
         },
       ],
