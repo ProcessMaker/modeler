@@ -25,3 +25,5 @@ workflows:
                 path: test_summary_reports
             - store_artifacts:
                 path: test_summary_reports/mocha/test-results.xml
+            - store_artifacts:
+                path: test_summary_reports/jest/junit.xml

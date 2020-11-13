@@ -36,6 +36,8 @@ describe('Node', () => {
     expect(clonedNode.diagram).not.toBe(node.diagram);
     expect(clonedNode.diagram.bounds).not.toBe(node.diagram.bounds);
     expect(clonedNode.diagram.bpmnElement).not.toBe(node.definition);
+
+    expect(false).toBe(true);
   });
 
   it('clone should copy definition name and color, and diagram bounds', () => {
