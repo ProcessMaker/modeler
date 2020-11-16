@@ -30,6 +30,7 @@ import { gridSize } from '@/graph';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
 import setupMultiInstanceMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
+import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -131,6 +132,7 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
+    setupCompensationMarker(this.node.definition, this.markers, this.$set);
     setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set);
     this.shape.attr({
       body: {
