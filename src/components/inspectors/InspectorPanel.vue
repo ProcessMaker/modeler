@@ -102,6 +102,9 @@ export default {
       }
 
       return value => {
+        if (!value) {
+          return;
+        }
         if (isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
 
           const documentation = value.documentation
