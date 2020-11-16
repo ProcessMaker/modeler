@@ -1,6 +1,6 @@
 import setupMultiInstanceMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import sequentialIcon from '@/assets/sequential.svg';
-//import parallelIcon from '@/assets/parallel.svg';
+import parallelIcon from '@/assets/parallel.svg';
 
 describe('setupMultiInstanceMarkers', () => {
   it('does not set up markers for task without loop characteristics', () => {
@@ -16,7 +16,7 @@ describe('setupMultiInstanceMarkers', () => {
     const $set = jest.fn();
 
     const markers = {
-      bottomCenter: 'bottomCenter',
+      bottomCenter: {},
     };
 
     const nodeDefinition = {
@@ -35,6 +35,24 @@ describe('setupMultiInstanceMarkers', () => {
   });
 
   it('sets parallel icon for parallel multi instance task', () => {
+    const $set = jest.fn();
 
+    const markers = {
+      bottomCenter: {},
+    };
+
+    const nodeDefinition = {
+      loopCharacteristics: {
+        $type: 'bpmn:MultiInstanceLoopCharacteristics',
+        isSequential: false,
+      },
+      get(prop) {
+        return this[prop];
+      },
+    };
+
+    setupMultiInstanceMarkers(nodeDefinition, markers, $set);
+
+    expect($set).toHaveBeenCalledWith(markers.bottomCenter, 'multiInstance', parallelIcon);
   });
 });
