@@ -24,6 +24,7 @@ const sequenceFlowBlacklist = [
   'bpmn:TextAnnotation',
   'bpmn:Association',
   'bpmn:DataObjectReference',
+  'bpmn:DataStoreReference',
 ];
 
 export default {
