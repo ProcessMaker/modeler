@@ -51,7 +51,6 @@ export default {
   },
   watch: {
     markers: {
-      inmediate: true,
       deep: true,
       handler() {
         this.recalcMarkersAlignment();
