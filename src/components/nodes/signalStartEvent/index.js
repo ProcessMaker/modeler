@@ -1,6 +1,7 @@
 import component from './signalStartEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
+import requestVariableSettings from '@/components/inspectors/requestVariableSettings';
 import baseStartEventConfig from '../baseStartEvent';
 import { default as signalEventDefinition, signalSelector } from '../signalEventDefinition';
 import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
@@ -27,6 +28,10 @@ export default merge(cloneDeep(baseStartEventConfig), {
           items: [
             {},
             signalSelector('Signal that will trigger this start event'),
+            {
+              component: 'FormInput',
+              config: requestVariableSettings,
+            },
           ],
         },
       ],
