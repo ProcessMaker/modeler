@@ -1,7 +1,7 @@
 export const markersLimit = 3;
 export const markerSize = 16;
 export const markerPadding = 4;
-import recalculateMarkerAlignment from '@/mixins/recalculateMarkerAlignmentModule';
+import recalculateMarkerAlignment from '@/mixins/modules/recalculateMarkerAlignmentModule';
 
 /**
  * Prepare nodes for the Markers to be inserted inside the shapes.
