@@ -52,7 +52,7 @@ Tests can be run locally with the following commands:
 npm run test-unit
 
 # Open Cypress to run the end-to-end (e2e) test suite
-npm open-cypress
+npm run open-cypress
 
 # Run the Cypress end-to-end (e2e) test suite in headless mode
 npm run test-ci
@@ -182,7 +182,7 @@ For more examples, see the list of default rules at https://github.com/bpmn-io/b
 
 #### Adding validation rules during runtime
 
-To add custom validation when the liner runs, use the global event bus:
+To add custom validation when the linter runs, use the global event bus:
 ```javascript
 window.ProcessMaker.EventBus.$on('modeler-validate', (node, reporter) => {
   if (typeof node.id === 'string' && !node.id.startsWith('node_')) {
