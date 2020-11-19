@@ -10,15 +10,17 @@ describe('Data Objects and Data Stores', () => {
   const dataPosition = {x: 250, y: 250};
   const startEventPosition = {x: 150, y: 150};
 
-  it('does not support connecting sequence flows', () => {
-    dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+    it(`does not support connecting sequence flows for ${nodeType}`, () => {
+      dragFromSourceToDest(nodeType, dataPosition);
 
-    getElementAtPosition(dataPosition)
-      .click()
-      .then($el => getCrownButtonForElement($el, 'sequence-flow-button'))
-      .should('not.exist');
+      getElementAtPosition(dataPosition)
+        .click()
+        .then($el => getCrownButtonForElement($el, 'sequence-flow-button'))
+        .should('not.exist');
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, dataPosition);
-    getNumberOfLinks().should('equal', 0);
+      connectNodesWithFlow('sequence-flow-button', startEventPosition, dataPosition);
+      getNumberOfLinks().should('equal', 0);
+    });
   });
 });
