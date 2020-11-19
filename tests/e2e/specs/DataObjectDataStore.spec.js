@@ -1,19 +1,24 @@
 import {
+  connectNodesWithFlow,
   dragFromSourceToDest, getCrownButtonForElement,
-  getElementAtPosition,
+  getElementAtPosition, getNumberOfLinks,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
 describe('Data Objects and Data Stores', () => {
-  const position = {x: 250, y: 250};
+  const dataPosition = {x: 250, y: 250};
+  const startEventPosition = {x: 150, y: 150};
 
   it('does not support connecting sequence flows', () => {
-    dragFromSourceToDest(nodeTypes.dataObject, position);
+    dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
 
-    getElementAtPosition(position)
+    getElementAtPosition(dataPosition)
       .click()
       .then($el => getCrownButtonForElement($el, 'sequence-flow-button'))
       .should('not.exist');
+
+    connectNodesWithFlow('sequence-flow-button', startEventPosition, dataPosition);
+    getNumberOfLinks().should('equal', 0);
   });
 });
