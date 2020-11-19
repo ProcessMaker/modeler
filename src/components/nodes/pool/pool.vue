@@ -182,7 +182,9 @@ export default {
     createLaneSet() {
       const laneSet = this.moddle.create('bpmn:LaneSet');
       this.laneSet = laneSet;
-      this.laneSet.set('id', 'laneset_0');
+      const generator = this.$parent.nodeIdGenerator;
+      const [laneSetId] = generator.generate();
+      this.laneSet.set('id', laneSetId);
       this.containingProcess.get('laneSets').push(laneSet);
     },
     pushNewLane(definition = Lane.definition(this.moddle, this.$t)) {
