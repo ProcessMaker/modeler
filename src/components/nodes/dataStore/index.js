@@ -13,6 +13,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-store.svg'),
   label: defaultNames[id],
+  validateIncoming() {
+    return false;
+  },
   definition(moddle, $t) {
     return moddle.create('bpmn:DataStoreReference', {
       name: $t(defaultNames[id]),

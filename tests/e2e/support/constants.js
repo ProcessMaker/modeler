@@ -14,6 +14,7 @@ export const defaultViewportDimensions = {
  */
 export const nodeTypes = {
   dataObject: 'processmaker-modeler-data-object',
+  dataStore: 'processmaker-modeler-data-store',
   startEvent: 'processmaker-modeler-start-event',
   messageStartEvent: 'processmaker-modeler-message-start-event',
   task: 'processmaker-modeler-task',

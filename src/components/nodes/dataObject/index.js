@@ -13,6 +13,9 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-object.svg'),
   label: defaultNames[id],
+  validateIncoming() {
+    return false;
+  },
   definition(moddle, $t) {
     return moddle.create('bpmn:DataObjectReference', {
       name: $t(defaultNames[id]),
