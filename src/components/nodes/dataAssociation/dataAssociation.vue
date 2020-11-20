@@ -20,7 +20,6 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
-import { direction } from './associationConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 
 export default {
@@ -45,7 +44,6 @@ export default {
     return {
       shape: null,
       initialDataAssociationDirection: this.node.definition.dataAssociationDirection,
-      dataAssociationDirection: direction,
     };
   },
   computed: {
@@ -70,11 +68,6 @@ export default {
       return true;
     },
   },
-  watch: {
-    'node.definition.dataAssociationDirection'(direction) {
-      this.updateDataAssociationMarker(direction);
-    },
-  },
   methods: {
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
@@ -82,22 +75,6 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
-    },
-    updateDataAssociationMarker(direction) {
-      if (direction === this.dataAssociationDirection.none) {
-        this.shape.attr('line/targetMarker/display', 'none');
-        this.shape.attr('line/sourceMarker/display', 'none');
-      }
-
-      if (direction === this.dataAssociationDirection.one) {
-        this.shape.attr('line/targetMarker/display', 'block');
-        this.shape.attr('line/sourceMarker/display', 'none');
-      }
-
-      if (direction === this.dataAssociationDirection.both) {
-        this.shape.attr('line/targetMarker/display', 'block');
-        this.shape.attr('line/sourceMarker/display', 'block');
-      }
     },
   },
   mounted() {
@@ -128,7 +105,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.updateDataAssociationMarker(this.initialDataAssociationDirection);
   },
 };
 </script>

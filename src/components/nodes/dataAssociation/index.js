@@ -31,19 +31,6 @@ export default {
               component: 'FormInput',
               config: idConfigSettings,
             },
-            {
-              component: 'FormSelect',
-              config: {
-                label: 'Direction',
-                helper: 'Select Direction',
-                name: 'dataAssociationDirection',
-                options: [
-                  { value: `${direction.none}`, content: 'None' },
-                  { value: `${direction.one}`, content: 'One' },
-                  { value: `${direction.both}`, content: 'Both' },
-                ],
-              },
-            },
           ],
         },
       ],
