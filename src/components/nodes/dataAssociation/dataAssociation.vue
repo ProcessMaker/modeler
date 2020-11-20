@@ -58,8 +58,8 @@ export default {
       const invalidIncoming = this.targetConfig.bpmnType !== 'bpmn:dataObjectReference' &&
           this.targetConfig.bpmnType !== 'bpmn:dataStoreReference';
 
-      const invalidOutgoing = this.sourceConfig.validateAssociationOutgoing
-        && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
+      const invalidOutgoing = false; //this.sourceConfig.validateAssociationOutgoing
+      // && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
 
       if (invalidIncoming || invalidOutgoing) {
         return false;
@@ -87,13 +87,6 @@ export default {
         strokeDasharray: '1, 8',
         strokeDashoffset: '5',
         targetMarker: {
-          'type': 'image',
-          'xlink:href': associationHead,
-          'width': 20,
-          'height': 20,
-          'y': -10,
-        },
-        sourceMarker: {
           'type': 'image',
           'xlink:href': associationHead,
           'width': 20,
