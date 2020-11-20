@@ -7,7 +7,7 @@
     aria-label="Add association flow"
     :src="connectIcon"
     role="menuitem"
-    @click="addAssociation"
+    @click="addDataAssociation"
   />
 </template>
 
@@ -25,8 +25,6 @@ const dataAssociationFlowBlacklist = [
   'bpmn:Lane',
   'bpmn:TextAnnotation',
   'bpmn:Association',
-  'bpmn:DataObjectReference',
-  'bpmn:DataStoreReference',
 ];
 
 export default {
@@ -43,8 +41,9 @@ export default {
     },
   },
   methods: {
-    addAssociation(cellView, evt, x, y) {
+    addDataAssociation(cellView, evt, x, y) {
       this.$emit('toggle-crown-state', false);
+
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
@@ -52,7 +51,7 @@ export default {
       });
 
       this.$emit('add-node', new Node(
-        'processmaker-modeler-association',
+        'processmaker-modeler-data-association',
         associationLink,
         this.moddle.create('bpmndi:BPMNEdge'),
       ));
