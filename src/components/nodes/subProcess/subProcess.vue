@@ -29,6 +29,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
+import subprocessIcon from '@/assets/subprocess.svg';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -108,6 +109,7 @@ export default {
   },
   mounted() {
     this.shape = new TaskShape();
+    this.$set(this.markers.bottomCenter, 'subprocess', subprocessIcon);
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
