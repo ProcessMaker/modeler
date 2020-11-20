@@ -8,7 +8,7 @@ export const id = 'processmaker-modeler-data-store';
 export default {
   id,
   component,
-  bpmnType: 'bpmn:dataObjectReference',
+  bpmnType: 'bpmn:dataStoreReference',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-store.svg'),
