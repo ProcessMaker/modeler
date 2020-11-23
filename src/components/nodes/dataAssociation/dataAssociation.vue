@@ -55,8 +55,8 @@ export default {
       }
 
       /* A data association can only be connected to a data store or data object */
-      const invalidIncoming = this.targetConfig.bpmnType !== 'bpmn:dataObjectReference' &&
-          this.targetConfig.bpmnType !== 'bpmn:dataStoreReference';
+      const invalidIncoming = this.targetConfig.bpmnType !== 'bpmn:DataObjectReference' &&
+          this.targetConfig.bpmnType !== 'bpmn:DataStoreReference';
 
       const invalidOutgoing = false; //this.sourceConfig.validateAssociationOutgoing
       // && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
