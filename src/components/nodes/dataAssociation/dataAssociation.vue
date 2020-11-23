@@ -17,7 +17,7 @@
 
 <script>
 import { shapes } from 'jointjs';
-import linkConfigForDataAssociation from '@/mixins/linkConfigForDataAssociation';
+import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
@@ -39,7 +39,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [linkConfigForDataAssociation],
+  mixins: [linkConfig],
   data() {
     return {
       shape: null,
@@ -58,10 +58,7 @@ export default {
       const invalidIncoming = this.targetConfig.bpmnType !== 'bpmn:DataObjectReference' &&
           this.targetConfig.bpmnType !== 'bpmn:DataStoreReference';
 
-      const invalidOutgoing = false; //this.sourceConfig.validateAssociationOutgoing
-      // && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
-
-      if (invalidIncoming || invalidOutgoing) {
+      if (invalidIncoming) {
         return false;
       }
 
@@ -69,6 +66,12 @@ export default {
     },
   },
   methods: {
+    findSourceShape() {
+      return this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition.get('dataOutputAssociations') &&
+              element.component.node.definition.get('dataOutputAssociations')[0] === this.node.definition;
+      });
+    },
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
     },
