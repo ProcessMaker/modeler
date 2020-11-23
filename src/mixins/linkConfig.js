@@ -71,6 +71,11 @@ export default {
     },
   },
   methods: {
+    findSourceShape() {
+      return this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
+      });
+    },
     setEndpoint(shape, endpoint, connectionOffset) {
       if (isPoint(shape)) {
         return this.shape[endpoint](shape, {
@@ -225,9 +230,7 @@ export default {
     /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
      * This will ensure this.shape is defined. */
 
-    this.sourceShape = this.graph.getElements().find(element => {
-      return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
-    });
+    this.sourceShape = this.findSourceShape();
 
     this.setSource(this.sourceShape);
 
