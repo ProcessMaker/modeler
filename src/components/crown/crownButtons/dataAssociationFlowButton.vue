@@ -14,7 +14,6 @@
 <script>
 import connectIcon from '@/assets/connect-artifacts.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import { direction } from '@/components/nodes/association/associationConfig';
 import Node from '@/components/nodes/node';
 
 const dataAssociationFlowBlacklist = [
@@ -41,14 +40,15 @@ export default {
     },
   },
   methods: {
-    addDataAssociation(cellView, evt, x, y) {
+    addDataAssociation() {
       this.$emit('toggle-crown-state', false);
 
-      const associationLink = this.moddle.create('bpmn:Association', {
+      const associationLink = this.moddle.create('bpmn:DataOutputAssociation', {
         sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
-        associationDirection: direction.none,
+        targetRef: { x: undefined, y: undefined },
       });
+
+      this.shape.component.node.definition.set('dataOutputAssociations', [associationLink]);
 
       this.$emit('add-node', new Node(
         'processmaker-modeler-data-association',
