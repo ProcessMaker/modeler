@@ -97,7 +97,7 @@ export default class Node {
       prop => clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
         clonedNode.definition.eventDefinitions[0].hasOwnProperty(prop) &&
-        clonedNode.definition.eventDefinitions[0].set(prop, null)
+        clonedNode.definition.eventDefinitions[0].set(prop, null),
     );
 
     return clonedNode;

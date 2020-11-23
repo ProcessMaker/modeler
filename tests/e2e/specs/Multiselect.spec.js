@@ -127,7 +127,7 @@ describe('Multiselect', () => {
     ['meta', 'ctrl', 'alt'].forEach((combo) => {
       cy.get('.paper-container').as('paperContainer').click();
 
-      cy.get('body').type(`{shift}{${ combo }}`, { release: false });
+      cy.get('body').type(`{shift}{${combo}}`, { release: false });
       cy.get('@paperContainer').trigger('mousedown', 'topLeft');
       cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
       waitToRenderAllShapes();

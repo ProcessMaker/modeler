@@ -95,7 +95,7 @@
     "node-sass": "^4.14.1",
     "nyc": "^14.1.1",
     "sass-loader": "^8.0.2",
-    "stylelint": "^11.1.1",
+    "stylelint": "^13.8.0",
     "stylelint-config-recommended-scss": "^4.2.0",
     "stylelint-scss": "^3.18.0",
     "vue-color": "^2.7.1",

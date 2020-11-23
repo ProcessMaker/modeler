@@ -36,7 +36,7 @@ describe('Boundary Timer Event', () => {
     typeIntoTextInput('.repeat', durationValue);
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+      <bpmn:boundaryEvent id="node_3" name="${name}" attachedToRef="node_2">
         <bpmn:timerEventDefinition>
           <bpmn:timeDuration>PT4H</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
@@ -49,7 +49,7 @@ describe('Boundary Timer Event', () => {
     typeIntoTextInput('.repeat', cycleValue);
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+      <bpmn:boundaryEvent id="node_3" name="${name}" attachedToRef="node_2">
         <bpmn:timerEventDefinition>
           <bpmn:timeCycle>R/P6D</bpmn:timeCycle>
         </bpmn:timerEventDefinition>
