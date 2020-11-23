@@ -44,7 +44,6 @@ export default {
       this.$emit('toggle-crown-state', false);
 
       const associationLink = this.moddle.create('bpmn:DataOutputAssociation', {
-        sourceRef: this.shape.component.node.definition,
         targetRef: { x: undefined, y: undefined },
       });
 

@@ -460,6 +460,16 @@ export default {
         .filter(definition => definition.$type === 'bpmn:Association' && this.hasSourceAndTarget(definition))
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
+    loadDataAssociations(flowElements) {
+      const tasksThatHaveDataOutputAssociations = flowElements.filter(task => task.get('dataOutputAssociations') &&
+          task.get('dataOutputAssociations').length > 0);
+
+      tasksThatHaveDataOutputAssociations.forEach(task => {
+        task.get('dataOutputAssociations').forEach(dataAssociationLink => {
+          this.setNode(dataAssociationLink, flowElements);
+        });
+      });
+    },
     loadArtifacts(flowElements, artifacts) {
       artifacts
         .filter(definition => definition.$type !== 'bpmn:Association')
@@ -499,6 +509,7 @@ export default {
         this.loadSequenceFlows(flowElements, artifacts);
         this.loadArtifacts(flowElements, artifacts);
         this.loadAssociations(flowElements, artifacts);
+        this.loadDataAssociations(flowElements);
       });
 
       store.commit('setRootElements', this.definitions.rootElements);
@@ -589,7 +600,7 @@ export default {
       this.removeUnsupportedElementAttributes(definition);
       const type = parser(definition, this.moddle);
 
-      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association'];
+      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');

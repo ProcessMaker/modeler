@@ -17,7 +17,7 @@
 
 <script>
 import { shapes } from 'jointjs';
-import linkConfig from '@/mixins/linkConfig';
+import linkConfigForDataAssociation from '@/mixins/linkConfigForDataAssociation';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
@@ -39,7 +39,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [linkConfig],
+  mixins: [linkConfigForDataAssociation],
   data() {
     return {
       shape: null,

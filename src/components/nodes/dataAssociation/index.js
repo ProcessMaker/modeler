@@ -6,12 +6,10 @@ export const id  = 'processmaker-modeler-data-association';
 export default {
   id,
   component,
-  bpmnType: 'bpmn:DataAssociation',
+  bpmnType: ['bpmn:DataAssociation', 'bpmn:DataOutputAssociation'],
   control: false,
   definition(moddle) {
-    return moddle.create('bpmn:DataAssociation', {
-      dataAssociationDirection: 'None',
-    });
+    return moddle.create('bpmn:DataAssociation');
   },
   inspectorConfig: [
     {
