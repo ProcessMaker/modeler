@@ -10,6 +10,7 @@ import {nodeTypes} from '../support/constants';
 describe('Data Objects and Data Stores', () => {
   const dataPosition = {x: 250, y: 250};
   const startEventPosition = {x: 150, y: 150};
+  const taskPosition = { x: 400, y: 400 };
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
     it(`does not support connecting sequence flows for ${nodeType}`, () => {
@@ -52,5 +53,30 @@ describe('Data Objects and Data Stores', () => {
           </bpmn:dataOutputAssociation>
         </bpmn:startEvent>
       `);
+  });
+
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+    it(`does not support connecting data input association to start event for ${nodeType}`, () => {
+      dragFromSourceToDest(nodeType, dataPosition);
+      connectNodesWithFlow('association-flow-button', dataPosition, startEventPosition);
+      getNumberOfLinks().should('equal', 0);
+    });
+  });
+
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+    it(`can add data input association flows for ${nodeType}`, () => {
+      dragFromSourceToDest(nodeTypes.task, taskPosition);
+      dragFromSourceToDest(nodeType, dataPosition);
+      connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
+
+      getNumberOfLinks().should('equal', 1);
+      assertDownloadedXmlContainsExpected(`
+        <bpmn:task id="node_2" name="Form Task" pm:assignment="requester">
+          <bpmn:dataInputAssociation id="node_4">
+            <bpmn:targetRef>node_3</bpmn:targetRef>
+          </bpmn:dataInputAssociation>
+        </bpmn:task>
+      `);
+    });
   });
 });
