@@ -1,4 +1,4 @@
-import component from './dataAssociation.vue';
+import component from './dataInputAssociation.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import * as config from './config';
 

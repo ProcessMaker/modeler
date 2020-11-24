@@ -1,4 +1,4 @@
-import component from './dataAssociation.vue';
+import component from './dataOutputAssociation.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import * as config from './config';
 
@@ -8,7 +8,7 @@ export default {
   control: false,
   inspectorConfig: [
     {
-      name: 'Data Association',
+      name: 'Data Output Association',
       items: [
         {
           component: 'FormAccordion',

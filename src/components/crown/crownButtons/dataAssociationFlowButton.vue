@@ -52,17 +52,18 @@ export default {
         : dataOutputConfig;
 
       const associationLink = dataAssociationConfig.definition(this.moddle);
-
-      this.shape.component.node.definition.set('dataOutputAssociations', [associationLink]);
-
-      // eslint-disable-next-line no-console
-      console.log({'ideee': dataAssociationConfig.id});
-
-      this.$emit('add-node', new Node(
+      
+      const node = new Node(
         dataAssociationConfig.id,
         associationLink,
         dataAssociationConfig.diagram(this.moddle),
-      ));
+      );
+
+      node.dataAssociationProps = {
+        sourceShape: this.shape,
+      };
+
+      this.$emit('add-node', node);
     },
   },
 };

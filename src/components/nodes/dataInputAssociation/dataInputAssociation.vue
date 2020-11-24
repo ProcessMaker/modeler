@@ -54,11 +54,11 @@ export default {
         return false;
       }
 
-      /* A data association can only be connected to a data store or data object */
-      const invalidIncoming = this.targetConfig.bpmnType !== 'bpmn:DataObjectReference' &&
-          this.targetConfig.bpmnType !== 'bpmn:DataStoreReference';
+      /* A data input association can be connected to anything that isn't a data store or object */
+      const invalidTarget = this.targetConfig.bpmnType === 'bpmn:DataObjectReference' ||
+          this.targetConfig.bpmnType === 'bpmn:DataStoreReference';
 
-      if (invalidIncoming) {
+      if (invalidTarget) {
         return false;
       }
 

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { shapes } from 'jointjs';
+import {shapes} from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
@@ -67,13 +67,16 @@ export default {
   },
   methods: {
     findSourceShape() {
+      if (this.node.dataAssociationProps) {
+        return this.node.dataAssociationProps.sourceShape;
+      }
       return this.graph.getElements().find(element => {
         return element.component && element.component.node.definition.get('dataOutputAssociations') &&
-              element.component.node.definition.get('dataOutputAssociations')[0] === this.node.definition;
+            element.component.node.definition.get('dataOutputAssociations')[0] === this.node.definition;
       });
     },
     updateRouter() {
-      this.shape.router('normal', { elementPadding: this.elementPadding });
+      this.shape.router('normal', {elementPadding: this.elementPadding});
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
@@ -81,7 +84,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new shapes.standard.Link({ router: { name: 'normal' } });
+    this.shape = new shapes.standard.Link({router: {name: 'normal'}});
     this.shape.attr({
       line: {
         stroke: 'black',
@@ -98,6 +101,10 @@ export default {
         },
       },
     });
+
+    if (this.findSourceShape().component && !this.findSourceShape().component.node.definition.get('dataOutputAssociations').includes(this.node.definition)) {
+      this.findSourceShape().component.node.definition.set('dataOutputAssociations', [this.node.definition]);
+    }
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
