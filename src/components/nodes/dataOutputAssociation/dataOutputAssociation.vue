@@ -80,8 +80,8 @@ export default {
       this.shape.router('normal', {elementPadding: this.elementPadding});
     },
     updateDefinitionLinks() {
-      const targetShape = this.shape.getTargetElement();
-      this.node.definition.targetRef = targetShape.component.node.definition;
+      this.node.definition.set('targetRef', this.targetNode.definition);
+      this.sourceNode.definition.set('dataOutputAssociations', [this.node.definition]);
     },
   },
   mounted() {
@@ -102,10 +102,6 @@ export default {
         },
       },
     });
-
-    if (this.findSourceShape().component && !this.findSourceShape().component.node.definition.get('dataOutputAssociations').includes(this.node.definition)) {
-      this.findSourceShape().component.node.definition.set('dataOutputAssociations', [this.node.definition]);
-    }
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
