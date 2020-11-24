@@ -1,8 +1,10 @@
+import {bpmnType as dataOutputAssociationType} from '@/components/nodes/dataOutputAssociation/config';
+import {bpmnType as dataInputAssociationType} from '@/components/nodes/dataInputAssociation/config';
+
 export function addNodeToProcess(node, targetProcess) {
   const ignoredNodes = (node) => {
-    return node.isType('processmaker-modeler-pool')
-      || node.isType('processmaker-modeler-data-output-association')
-      || node.isBpmnType('bpmn:MessageFlow');
+    return node.isBpmnType('bpmn:MessageFlow', dataOutputAssociationType, dataInputAssociationType)
+      || node.isType('processmaker-modeler-pool');
   };
 
   if (ignoredNodes(node)) {

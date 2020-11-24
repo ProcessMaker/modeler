@@ -1,6 +1,6 @@
 export const id = 'processmaker-modeler-data-output-association';
 
-export const bpmnType = ['bpmn:DataAssociation', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
+export const bpmnType = 'bpmn:DataOutputAssociation';
 
 export function definition(moddle) {
   return moddle.create('bpmn:DataOutputAssociation', {
