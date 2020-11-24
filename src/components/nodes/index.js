@@ -41,5 +41,5 @@ export { default as boundaryConditionalEvent } from './boundaryConditionalEvent'
 export { default as conditionalStartEvent } from './conditionalStartEvent';
 export { default as dataObject } from './dataObject';
 export { default as dataStore } from './dataStore';
-export { default as dataAssociation} from './dataAssociation';
+export { default as dataAssociation} from './dataOutputAssociation';
 export { default as registerNodes } from '@/setup/registerNodes';

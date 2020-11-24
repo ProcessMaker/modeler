@@ -1,16 +1,11 @@
 import component from './dataAssociation.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
-
-export const id  = 'processmaker-modeler-data-association';
+import * as config from './config';
 
 export default {
-  id,
+  ...config,
   component,
-  bpmnType: ['bpmn:DataAssociation', 'bpmn:DataOutputAssociation'],
   control: false,
-  definition(moddle) {
-    return moddle.create('bpmn:DataAssociation');
-  },
   inspectorConfig: [
     {
       name: 'Data Association',

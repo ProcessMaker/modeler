@@ -1,7 +1,7 @@
 export function addNodeToProcess(node, targetProcess) {
   const ignoredNodes = (node) => {
     return node.isType('processmaker-modeler-pool')
-      || node.isType('processmaker-modeler-data-association')
+      || node.isType('processmaker-modeler-data-output-association')
       || node.isBpmnType('bpmn:MessageFlow');
   };
 

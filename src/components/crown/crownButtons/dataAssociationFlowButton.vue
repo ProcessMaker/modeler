@@ -15,6 +15,8 @@
 import connectIcon from '@/assets/connect-artifacts.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
+import * as dataOutputConfig from '@/components/nodes/dataOutputAssociation/config';
+import * as dataInputConfig from '@/components/nodes/dataInputAssociation/config';
 
 const dataAssociationFlowBlacklist = [
   'bpmn:EndEvent',
@@ -43,16 +45,23 @@ export default {
     addDataAssociation() {
       this.$emit('toggle-crown-state', false);
 
-      const associationLink = this.moddle.create('bpmn:DataOutputAssociation', {
-        targetRef: { x: undefined, y: undefined },
-      });
+      const comingFromDataStoreOrDataObject = this.node.isBpmnType('bpmn:DataStoreReference', 'bpmn:DataObjectReference');
+
+      const dataAssociationConfig = comingFromDataStoreOrDataObject
+        ? dataInputConfig
+        : dataOutputConfig;
+
+      const associationLink = dataAssociationConfig.definition(this.moddle);
 
       this.shape.component.node.definition.set('dataOutputAssociations', [associationLink]);
 
+      // eslint-disable-next-line no-console
+      console.log({'ideee': dataAssociationConfig.id});
+
       this.$emit('add-node', new Node(
-        'processmaker-modeler-data-association',
+        dataAssociationConfig.id,
         associationLink,
-        this.moddle.create('bpmndi:BPMNEdge'),
+        dataAssociationConfig.diagram(this.moddle),
       ));
     },
   },
