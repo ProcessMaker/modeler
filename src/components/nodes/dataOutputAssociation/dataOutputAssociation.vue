@@ -70,6 +70,7 @@ export default {
       if (this.node.dataAssociationProps) {
         return this.node.dataAssociationProps.sourceShape;
       }
+
       return this.graph.getElements().find(element => {
         return element.component && element.component.node.definition.get('dataOutputAssociations') &&
             element.component.node.definition.get('dataOutputAssociations')[0] === this.node.definition;

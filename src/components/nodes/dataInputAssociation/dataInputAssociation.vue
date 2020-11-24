@@ -67,17 +67,24 @@ export default {
   },
   methods: {
     findSourceShape() {
-      return this.graph.getElements().find(element => {
-        return element.component && element.component.node.definition.get('dataOutputAssociations') &&
-              element.component.node.definition.get('dataOutputAssociations')[0] === this.node.definition;
+      if (this.node.dataAssociationProps) {
+        return this.node.dataAssociationProps.sourceShape;
+      }
+
+      const taskWithInputAssociation = this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition.get('dataInputAssociations') &&
+            element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
       });
+
+      return taskWithInputAssociation.get('dataInputAssociations')[0];
     },
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
-      this.node.definition.targetRef = targetShape.component.node.definition;
+      this.node.definition.set('targetRef', this.sourceNode.definition);
+      targetShape.component.node.definition.set('dataInputAssociations', [this.node.definition]);
     },
   },
   mounted() {
