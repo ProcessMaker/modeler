@@ -77,6 +77,18 @@ export default {
 
       return taskWithInputAssociation.get('dataInputAssociations')[0];
     },
+    getTargetRef() {
+      if (this.node.dataAssociationProps) {
+        return this.node.dataAssociationProps.targetCoords;
+      }
+
+      const taskWithInputAssociation = this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition.get('dataInputAssociations') &&
+            element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
+      });
+
+      return taskWithInputAssociation.component.node.definition;
+    },
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
     },

@@ -238,7 +238,9 @@ export default {
       this.setupLinkTools();
     });
 
-    const targetRef = this.node.definition.get('targetRef');
+    const targetRef = this.getTargetRef
+      ? this.getTargetRef()
+      : this.node.definition.get('targetRef');
 
     if (targetRef.id) {
       const targetShape = this.graph.getElements().find(element => {
