@@ -609,7 +609,7 @@ export default {
       this.removeUnsupportedElementAttributes(definition);
       const type = parser(definition, this.moddle);
 
-      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation'];
+      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
