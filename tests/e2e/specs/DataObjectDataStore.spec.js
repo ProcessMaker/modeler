@@ -1,5 +1,5 @@
 import {
-  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlContainsExpected, assertElementsAreConnected,
   connectNodesWithFlow,
   dragFromSourceToDest, getCrownButtonForElement,
   getElementAtPosition, getNumberOfLinks, uploadXml,
@@ -55,10 +55,11 @@ describe('Data Objects and Data Stores', () => {
       `);
   });
 
-  it.skip('can parse and load a data input association from a BPMN file', () => {
+  it.only('can parse and load a data input association from a BPMN file', () => {
     uploadXml('withDataInputAssociation.xml');
 
-    getNumberOfLinks().should('equal', 1);
+    assertElementsAreConnected('node_2', 'node_1');
+
     assertDownloadedXmlContainsExpected(`
         <bpmn:task id="node_1" name="Form Task" pm:assignment="requester">
             <bpmn:dataInputAssociation id="node_3">

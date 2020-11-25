@@ -1,7 +1,7 @@
-import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
+import {saveDebounce} from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
-import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
-import { gridSize } from '../../../src/graph';
+import {boundaryEventSelector, nodeTypes, taskSelector} from './constants';
+import {gridSize} from '../../../src/graph';
 
 const renderTime = 300;
 
@@ -273,6 +273,24 @@ export function getNumberOfLinks() {
   return cy.window()
     .its('store.state')
     .then(({ graph }) => graph.getLinks().length);
+}
+
+export function assertElementsAreConnected(connectedFromId, connectedToId) {
+  return cy.window()
+    .its('store.state')
+    .then(({ graph }) => {
+      const linkFound = graph.getLinks().some((link) => {
+        return link.getSourceElement().component.node.definition.id === connectedFromId
+          && link.getTargetElement().component.node.definition.id === connectedToId;
+      });
+
+      let message = `Link should be from '${connectedFromId}' to '${connectedToId}'`;
+      if (!linkFound) {
+        message = `No link found from '${connectedFromId}' to '${connectedToId}'`;
+      }
+
+      expect(linkFound, message).to.be.true;
+    });
 }
 
 export function getXml() {
