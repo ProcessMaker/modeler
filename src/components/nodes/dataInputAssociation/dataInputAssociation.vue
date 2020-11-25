@@ -75,7 +75,11 @@ export default {
             element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
       });
 
-      return taskWithInputAssociation.get('dataInputAssociations')[0];
+      const dataObjectDefinition = taskWithInputAssociation.component.node.definition.get('dataInputAssociations')[0].sourceRef[0];
+
+      return this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === dataObjectDefinition;
+      });
     },
     getTargetRef() {
       if (this.node.dataAssociationProps) {
