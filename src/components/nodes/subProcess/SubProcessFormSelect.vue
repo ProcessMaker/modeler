@@ -1,9 +1,9 @@
 <template>
   <div>
     <form-multi-select
-      label="Process"
+      :label="$t('Process')"
       name="Process"
-      helper="Select which Process this element calls"
+      :helper="$t('Select which Process this element calls')"
       v-model="selectedProcess"
       :showLabels="false"
       :allow-empty="false"
@@ -15,7 +15,7 @@
     />
 
     <form-multi-select
-      label="Start Event"
+      :label="$t('Start Event')"
       name="StartEvent"
       v-if="selectedProcess"
       v-model="selectedStartEvent"
