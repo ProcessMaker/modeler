@@ -90,7 +90,7 @@
           data-test="mini-map-btn"
           @click="$emit('saveBpmn')"
           v-b-tooltip.hover
-          title="Save"
+          :title="$t('Save')"
         >
           <font-awesome-icon :icon="saveIcon" />
         </b-button>
