@@ -55,6 +55,20 @@ describe('Data Objects and Data Stores', () => {
       `);
   });
 
+  it.skip('can parse and load a data input association from a BPMN file', () => {
+    uploadXml('withDataInputAssociation.xml');
+
+    getNumberOfLinks().should('equal', 1);
+    assertDownloadedXmlContainsExpected(`
+        <bpmn:task id="node_1" name="Form Task" pm:assignment="requester">
+            <bpmn:dataInputAssociation id="node_3">
+                <bpmn:sourceRef>node_2</bpmn:sourceRef>
+            </bpmn:dataInputAssociation>
+        </bpmn:task>
+        <bpmn:dataObjectReference id="node_2" name="Data Object" />
+      `);
+  });
+
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
     it(`does not support connecting data input association to start event for ${nodeType}`, () => {
       dragFromSourceToDest(nodeType, dataPosition);
