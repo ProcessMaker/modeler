@@ -73,7 +73,7 @@ describe('Data Objects and Data Stores', () => {
       assertDownloadedXmlContainsExpected(`
         <bpmn:task id="node_2" name="Form Task" pm:assignment="requester">
           <bpmn:dataInputAssociation id="node_4">
-            <bpmn:targetRef>node_3</bpmn:targetRef>
+            <bpmn:sourceRef>node_3</bpmn:sourceRef>
           </bpmn:dataInputAssociation>
         </bpmn:task>
       `);
