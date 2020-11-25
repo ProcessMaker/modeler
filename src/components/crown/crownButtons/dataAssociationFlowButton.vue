@@ -52,7 +52,7 @@ export default {
         : dataOutputConfig;
 
       const associationLink = dataAssociationConfig.definition(this.moddle);
-      
+
       const node = new Node(
         dataAssociationConfig.id,
         associationLink,
