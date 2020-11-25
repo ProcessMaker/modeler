@@ -82,7 +82,8 @@ export default {
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
-      this.node.definition.set('targetRef', this.sourceNode.definition);
+      this.node.definition.set('sourceRef', [this.sourceNode.definition]);
+      this.node.definition.set('targetRef', null);
       targetShape.component.node.definition.set('dataInputAssociations', [this.node.definition]);
     },
   },
