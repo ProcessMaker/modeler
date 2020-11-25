@@ -61,6 +61,7 @@ export default {
 
       node.dataAssociationProps = {
         sourceShape: this.shape,
+        targetCoords: { x: undefined, y: undefined },
       };
 
       this.$emit('add-node', node);
