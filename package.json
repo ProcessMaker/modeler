@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "scripts": {
     "serve": "vue-cli-service serve",
     "open-cypress": "TZ=UTC cypress open",
