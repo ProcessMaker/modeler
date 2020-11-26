@@ -247,6 +247,8 @@ export default {
         return element.component && element.component.node.definition === targetRef;
       });
 
+      this.target = targetShape;
+
       const sequenceFlowWaypoints = this.node.diagram.waypoint;
       const sourceAnchorPoint = this.node.diagram.waypoint[0];
       const targetAnchorPoint = sequenceFlowWaypoints[sequenceFlowWaypoints.length - 1];

@@ -127,11 +127,6 @@ export default {
     this.shape.component = this;
   },
   destroyed() {
-    /* We need to early return because this.targetNode will be undefined when store.commit('clearNodes') is called from undo/redo */
-    if (!this.targetNode) {
-      return;
-    }
-
     pull(this.targetNode.definition.get('dataInputAssociations'), this.node.definition);
   },
 };
