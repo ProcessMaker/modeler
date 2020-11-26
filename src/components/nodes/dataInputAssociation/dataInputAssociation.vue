@@ -21,6 +21,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { pull } from 'lodash';
 
 export default {
   components: {
@@ -124,6 +125,14 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+  },
+  destroyed() {
+    /* We need to early return because this.targetNode will be undefined when store.commit('clearNodes') is called from undo/redo */
+    if (!this.targetNode) {
+      return;
+    }
+
+    pull(this.targetNode.definition.get('dataInputAssociations'), this.node.definition);
   },
 };
 </script>

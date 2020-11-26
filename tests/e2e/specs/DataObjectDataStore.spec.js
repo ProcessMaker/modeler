@@ -1,5 +1,5 @@
 import {
-  assertDownloadedXmlContainsExpected, assertElementsAreConnected,
+  assertDownloadedXmlContainsExpected, assertDownloadedXmlDoesNotContainExpected, assertElementsAreConnected,
   connectNodesWithFlow,
   dragFromSourceToDest, getCrownButtonForElement,
   getElementAtPosition, getNumberOfLinks, uploadXml,
@@ -55,7 +55,7 @@ describe('Data Objects and Data Stores', () => {
       `);
   });
 
-  it.only('can parse and load a data input association from a BPMN file', () => {
+  it('can parse and load a data input association from a BPMN file', () => {
     uploadXml('withDataInputAssociation.xml');
 
     assertElementsAreConnected('node_2', 'node_1');
@@ -93,5 +93,40 @@ describe('Data Objects and Data Stores', () => {
         </bpmn:task>
       `);
     });
+  });
+
+  it('removed the data input association on the task when the data object is deleted', () => {
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
+    connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
+
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:dataInputAssociation id="node_4">
+        <bpmn:sourceRef>node_3</bpmn:sourceRef>
+      </bpmn:dataInputAssociation>
+    `);
+
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:dataObjectReference id="node_3" name="Data Object" />
+    `);
+
+    getElementAtPosition(dataPosition)
+      .click()
+      .then($el => {
+        return getCrownButtonForElement($el, 'delete-button');
+      })
+      .click();
+
+    getNumberOfLinks().should('equal', 0);
+
+    assertDownloadedXmlDoesNotContainExpected(`
+      <bpmn:dataInputAssociation id="node_4">
+        <bpmn:sourceRef>node_3</bpmn:sourceRef>
+      </bpmn:dataInputAssociation>
+    `);
+
+    assertDownloadedXmlDoesNotContainExpected(`
+      <bpmn:dataObjectReference id="node_3" name="Data Object" />
+    `);
   });
 });
