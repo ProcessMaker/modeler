@@ -129,4 +129,39 @@ describe('Data Objects and Data Stores', () => {
       <bpmn:dataObjectReference id="node_3" name="Data Object" />
     `);
   });
+
+  it('removes the data output association on the task when the data object is deleted', () => {
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
+    connectNodesWithFlow('association-flow-button', taskPosition, dataPosition);
+
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:dataOutputAssociation id="node_4">
+        <bpmn:targetRef>node_3</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    `);
+
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:dataObjectReference id="node_3" name="Data Object" />
+    `);
+
+    getElementAtPosition(dataPosition)
+      .click()
+      .then($el => {
+        return getCrownButtonForElement($el, 'delete-button');
+      })
+      .click();
+
+    getNumberOfLinks().should('equal', 0);
+
+    assertDownloadedXmlDoesNotContainExpected(`
+      <bpmn:dataOutputAssociation id="node_4">
+        <bpmn:targetRef>node_3</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    `);
+
+    assertDownloadedXmlDoesNotContainExpected(`
+      <bpmn:dataObjectReference id="node_3" name="Data Object" />
+    `);
+  });
 });
