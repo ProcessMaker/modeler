@@ -21,6 +21,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import {pull} from 'lodash';
 
 export default {
   components: {
@@ -105,6 +106,9 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+  },
+  destroyed() {
+    pull(this.sourceNode.definition.get('dataOutputAssociations'), this.node.definition);
   },
 };
 </script>
