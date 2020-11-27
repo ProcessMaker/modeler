@@ -1,8 +1,8 @@
 import component from './task.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
 
 export const id = 'processmaker-modeler-task';
 
@@ -49,7 +49,7 @@ export default {
             },
           ],
         },
-        advancedAccordionConfig,
+        advancedAccordionConfigWithMarkerFlags,
       ],
     },
   ],
