@@ -25,6 +25,7 @@ export default {
     },
     {
       component: MarkerFlags,
+      name: 'taskMarkers',
       config: {
         label: 'Marker Flags',
         name: 'markerFlags',

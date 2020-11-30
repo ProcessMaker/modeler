@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+import omit from 'lodash/omit';
 
 export const id = 'processmaker-modeler-task';
 
@@ -19,6 +20,7 @@ export default {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
       assignment: 'requester',
+      isForCompensation: false,
     });
   },
   diagram(moddle) {
@@ -28,6 +30,22 @@ export default {
         width: taskWidth,
       }),
     });
+  },
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
+    if (value.markerFlags) {
+      if (value.markerFlags.loopCharacteristics) {
+        //TODO: set the loop characteristics up
+      }
+
+      const currentIsForCompensationValue = node.definition.get('isForCompensation');
+      const newIsForCompensationValue = value.markerFlags.isForCompensation;
+
+      if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
+        setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+      }
+    }
+
+    defaultInspectorHandler(omit(value, 'markerFlags', 'isForCompensation'));
   },
   inspectorConfig: [
     {
