@@ -84,6 +84,7 @@
         :paperManager="paperManager"
         :auto-validate="autoValidate"
         :is-active="node === activeNode"
+        :node-id-generator="nodeIdGenerator"
         @add-node="addNode"
         @remove-node="removeNode"
         @set-cursor="cursor = $event"

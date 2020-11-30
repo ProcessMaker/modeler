@@ -148,7 +148,7 @@ describe('Pools', () => {
         getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
       });
 
-    const nonEmptyLane = '<bpmn:lane id="node_3" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
+    const nonEmptyLane = '<bpmn:lane id="node_4" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
     assertDownloadedXmlContainsExpected(nonEmptyLane);
 
     const startEventPosition = { x: 150, y: 150 };
@@ -158,7 +158,7 @@ describe('Pools', () => {
         getCrownButtonForElement($startEvent, 'delete-button').click();
       });
 
-    const emptyLane = '<bpmn:lane id="node_3" name="" />';
+    const emptyLane = '<bpmn:lane id="node_4" name="" />';
     assertDownloadedXmlContainsExpected(emptyLane);
     assertDownloadedXmlDoesNotContainExpected('node_1');
   });
@@ -270,5 +270,40 @@ describe('Pools', () => {
         .then(waitToRenderAllShapes)
         .then(assertBoundaryEventIsCloseToTask);
     });
+  });
+
+  it('Check LaneSet IDs', () => {
+    const poolPosition1 = { x: 300, y: 150 };
+    const poolPosition2 = { x: 300, y: 400 };
+
+    // Add pool
+    dragFromSourceToDest(nodeTypes.pool, poolPosition1);
+
+    getElementAtPosition(poolPosition1).click().then($pool => {
+      getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
+    });
+
+    dragFromSourceToDest(nodeTypes.pool, poolPosition2);
+
+    getElementAtPosition({ x: 600, y: 600 }).click().then($pool => {
+      getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
+    });
+
+    const laneSet1IdBpmn = `
+      <bpmn:laneSet id="node_3">
+        <bpmn:lane id="node_4" name="">
+          <bpmn:flowNodeRef>node_1</bpmn:flowNodeRef>
+        </bpmn:lane>
+        <bpmn:lane id="node_5" name="" />
+      </bpmn:laneSet>
+    `;
+    const laneSet2IdBpmn = `
+      <bpmn:laneSet id="node_7">
+        <bpmn:lane id="node_8" name="" />
+        <bpmn:lane id="node_9" name="" />
+      </bpmn:laneSet>
+    `;
+    assertDownloadedXmlContainsExpected(laneSet1IdBpmn);
+    assertDownloadedXmlContainsExpected(laneSet2IdBpmn);
   });
 });
