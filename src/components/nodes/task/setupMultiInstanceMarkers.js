@@ -14,7 +14,6 @@ export default function setupMultiInstanceMarkers(nodeDefinition, markers, $set,
   ];
 
   if (!loopCharacteristics || !handledLoopTypes.includes(loopCharacteristics.$type)) {
-    // TODO: remove the loopCharacteristics key completely, don't just set it to null
     $delete(markers.bottomCenter, 'loopCharacteristics');
     return;
   }
