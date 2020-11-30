@@ -101,14 +101,8 @@ export default {
         this.recalcMarkersAlignment();
       }
     },
-    node: {
-      handler({definition}) {
-        if (definition.isForCompensation == null) {
-          return;
-        }
-        setupCompensationMarker(this.node.definition, this.markers, this.$set);
-      },
-      deep: true,
+    'node.definition.isForCompensation'() {
+      setupCompensationMarker(this.node.definition, this.markers, this.$set);
     },
     'node.definition.loopCharacteristics'() {
       setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set);
