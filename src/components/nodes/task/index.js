@@ -45,10 +45,17 @@ export default {
       }
     }
 
-    defaultInspectorHandler(omit(value, 'markerFlags', 'isForCompensation'));
+    defaultInspectorHandler(omit(value, 'markerFlags'));
   },
   inspectorData(node, defaultDataTransform) {
-    return defaultDataTransform(node);
+    const inspectorData =  defaultDataTransform(node);
+
+    inspectorData.markerFlags = {
+      isForCompensation: inspectorData.isForCompensation,
+    };
+    delete inspectorData.isForCompensation;
+
+    return inspectorData;
   },
   inspectorConfig: [
     {

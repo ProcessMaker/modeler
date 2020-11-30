@@ -15,11 +15,22 @@
 
 <script>
 export default {
+  props: {
+    value: {
+      type: Object,
+      default() {
+        return {
+          loopCharacteristics: 'no_loop',
+          isForCompensation: false,
+        };
+      },
+    },
+  },
   name: 'MarkerFlags',
   data() {
     return {
-      loopCharacteristics: 'no_loop',
-      isForCompensation: false,
+      loopCharacteristics: this.value.loopCharacteristics,
+      isForCompensation: this.value.isForCompensation,
     };
   },
   watch: {
