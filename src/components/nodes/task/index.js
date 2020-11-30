@@ -60,7 +60,7 @@ export default {
 
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
-      loopCharacteristics: inspectorData.loopCharacteristics ? 'loop' : 'no_loop',
+      loopCharacteristics: getLoopCharacteristicsRadioValue(inspectorData.loopCharacteristics),
     };
     delete inspectorData.isForCompensation;
     delete inspectorData.loopCharacteristics;
@@ -92,3 +92,7 @@ export default {
     },
   ],
 };
+
+function getLoopCharacteristicsRadioValue(loopCharacteristics) {
+  return loopCharacteristics ? 'loop' : 'no_loop';
+}

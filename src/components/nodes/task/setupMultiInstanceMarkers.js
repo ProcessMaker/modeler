@@ -5,7 +5,7 @@ import loopIcon from '@/assets/loop.svg';
 const standardLoop = 'bpmn:StandardLoopCharacteristics';
 const multiInstanceLoop = 'bpmn:MultiInstanceLoopCharacteristics';
 
-export default function setupMultiInstanceMarkers(nodeDefinition, markers, $set) {
+export default function setupMultiInstanceMarkers(nodeDefinition, markers, $set, $delete) {
   const loopCharacteristics = nodeDefinition.get('loopCharacteristics');
 
   const handledLoopTypes = [
@@ -14,7 +14,8 @@ export default function setupMultiInstanceMarkers(nodeDefinition, markers, $set)
   ];
 
   if (!loopCharacteristics || !handledLoopTypes.includes(loopCharacteristics.$type)) {
-    $set(markers.bottomCenter, 'loopCharacteristics', null);
+    // TODO: remove the loopCharacteristics key completely, don't just set it to null
+    $delete(markers.bottomCenter, 'loopCharacteristics');
     return;
   }
 

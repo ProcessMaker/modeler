@@ -102,10 +102,10 @@ export default {
       }
     },
     'node.definition.isForCompensation'() {
-      setupCompensationMarker(this.node.definition, this.markers, this.$set);
+      setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     },
     'node.definition.loopCharacteristics'() {
-      setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set);
+      setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     },
   },
   methods: {
@@ -138,8 +138,8 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-    setupCompensationMarker(this.node.definition, this.markers, this.$set);
-    setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set);
+    setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
+    setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     this.shape.attr({
       body: {
         rx: 8,
