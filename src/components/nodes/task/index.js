@@ -21,6 +21,7 @@ export default {
       name: $t(defaultNames[id]),
       assignment: 'requester',
       isForCompensation: false,
+      loopCharacteristics: null,
     });
   },
   diagram(moddle) {
@@ -34,7 +35,10 @@ export default {
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
     if (value.markerFlags) {
       if (value.markerFlags.loopCharacteristics) {
-        //TODO: set the loop characteristics up
+        const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
+        if (value.markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
+          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
+        }
       }
 
       const currentIsForCompensationValue = node.definition.get('isForCompensation');
@@ -52,8 +56,10 @@ export default {
 
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
+      loopCharacteristics: inspectorData.loopCharacteristics ? 'loop' : 'no_loop',
     };
     delete inspectorData.isForCompensation;
+    delete inspectorData.loopCharacteristics;
 
     return inspectorData;
   },
