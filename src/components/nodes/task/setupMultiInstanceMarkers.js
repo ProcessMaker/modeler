@@ -14,6 +14,7 @@ export default function setupMultiInstanceMarkers(nodeDefinition, markers, $set)
   ];
 
   if (!loopCharacteristics || !handledLoopTypes.includes(loopCharacteristics.$type)) {
+    $set(markers.bottomCenter, 'loopCharacteristics', null);
     return;
   }
 

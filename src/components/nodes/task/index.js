@@ -35,6 +35,10 @@ export default {
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
     if (value.markerFlags) {
       if (value.markerFlags.loopCharacteristics) {
+        if (value.markerFlags.loopCharacteristics === 'no_loop') {
+          setNodeProp(node, 'loopCharacteristics', null);
+        }
+
         const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
         if (value.markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
           setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
