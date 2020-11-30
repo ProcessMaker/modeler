@@ -1,6 +1,6 @@
 import component from './task.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import { taskHeight, taskWidth } from './taskConfig';
+import {taskHeight, taskWidth} from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
 import omit from 'lodash/omit';
@@ -40,8 +40,23 @@ export default {
         }
 
         const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
+
         if (value.markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
           setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
+        }
+
+        if (value.markerFlags.loopCharacteristics === 'parallel_mi' ) {
+          if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
+            return;
+          }
+          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
+        }
+
+        if (value.markerFlags.loopCharacteristics === 'sequential_mi') {
+          if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
+            return;
+          }
+          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', {isSequential: true}));
         }
       }
 
@@ -56,7 +71,7 @@ export default {
     defaultInspectorHandler(omit(value, 'markerFlags'));
   },
   inspectorData(node, defaultDataTransform) {
-    const inspectorData =  defaultDataTransform(node);
+    const inspectorData = defaultDataTransform(node);
 
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
@@ -94,5 +109,21 @@ export default {
 };
 
 function getLoopCharacteristicsRadioValue(loopCharacteristics) {
-  return loopCharacteristics ? 'loop' : 'no_loop';
+  if (!loopCharacteristics) {
+    return 'no_loop';
+  }
+
+  if (loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
+    return 'loop';
+  }
+
+  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !loopCharacteristics.isSequential) {
+    return 'parallel_mi';
+  }
+
+  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && loopCharacteristics.isSequential) {
+    return 'sequential_mi';
+  }
+
+  return 'no_loop';
 }
