@@ -47,6 +47,9 @@ export default {
 
     defaultInspectorHandler(omit(value, 'markerFlags', 'isForCompensation'));
   },
+  inspectorData(node, defaultDataTransform) {
+    return defaultDataTransform(node);
+  },
   inspectorConfig: [
     {
       name: defaultNames[id],

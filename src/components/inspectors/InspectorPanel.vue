@@ -175,13 +175,15 @@ export default {
 
       const type = this.highlightedNode && this.highlightedNode.type;
 
-      this.data = type && this.nodeRegistry[type].inspectorData
-        ? this.nodeRegistry[type].inspectorData(this.highlightedNode)
-        : Object.entries(this.highlightedNode.definition).reduce((data, [key, value]) => {
-          data[key] = value;
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
 
-          return data;
-        }, {});
+        return data;
+      }, {});
+
+      this.data = type && this.nodeRegistry[type].inspectorData
+        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform)
+        : defaultDataTransform(this.highlightedNode);
     },
     isSequenceFlow(type) {
       return type === sequenceFlowId;
