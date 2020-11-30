@@ -1,4 +1,6 @@
 import pull from 'lodash/pull';
+import {bpmnType as dataOutputAssociationType} from '@/components/nodes/dataOutputAssociation/config';
+import {bpmnType as dataInputAssociationType} from '@/components/nodes/dataInputAssociation/config';
 
 export function removeFlows(graph, shape, keepSequenceFlows = false) {
   let linkShapes = graph.getConnectedLinks(shape);
@@ -20,12 +22,16 @@ export function removeFlows(graph, shape, keepSequenceFlows = false) {
     .forEach(cell => {
       graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
       shape.unembed(cell);
-      
+
       this.$emit('remove-node', cell.component.node);
     });
 }
 
-export function removeOutgoingAndIncomingRefsToFlow(node) {
+export function removeOutgoingAndIncomingRefsToFlow(node){
+  if (node.isBpmnType(dataOutputAssociationType, dataInputAssociationType)) {
+    return;
+  }
+
   /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
   const { sourceRef, targetRef } = node.definition;
   if (sourceRef) {

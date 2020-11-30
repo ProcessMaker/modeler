@@ -26,6 +26,14 @@
       @toggle-crown-state="showCrown = $event"
     />
 
+    <data-association-flow-button
+      :node="node"
+      :moddle="moddle"
+      :shape="shape"
+      v-on="$listeners"
+      @toggle-crown-state="showCrown = $event"
+    />
+
     <default-flow
       :node="node"
       v-on="$listeners"
@@ -75,6 +83,7 @@ import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
+import DataAssociationFlowButton from '@/components/crown/crownButtons/dataAssociationFlowButton';
 import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import DefaultFlow from '@/components/crown/crownButtons/defaultFlowButton.vue';
@@ -93,6 +102,7 @@ export default {
     AssociationFlowButton,
     CopyButton,
     DefaultFlow,
+    DataAssociationFlowButton,
   },
   props: {
     highlighted: Boolean,

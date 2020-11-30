@@ -71,6 +71,11 @@ export default {
     },
   },
   methods: {
+    findSourceShape() {
+      return this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
+      });
+    },
     setEndpoint(shape, endpoint, connectionOffset) {
       if (isPoint(shape)) {
         return this.shape[endpoint](shape, {
@@ -225,9 +230,7 @@ export default {
     /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
      * This will ensure this.shape is defined. */
 
-    this.sourceShape = this.graph.getElements().find(element => {
-      return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
-    });
+    this.sourceShape = this.findSourceShape();
 
     this.setSource(this.sourceShape);
 
@@ -235,12 +238,16 @@ export default {
       this.setupLinkTools();
     });
 
-    const targetRef = this.node.definition.get('targetRef');
+    const targetRef = this.getTargetRef
+      ? this.getTargetRef()
+      : this.node.definition.get('targetRef');
 
     if (targetRef.id) {
       const targetShape = this.graph.getElements().find(element => {
         return element.component && element.component.node.definition === targetRef;
       });
+
+      this.target = targetShape;
 
       const sequenceFlowWaypoints = this.node.diagram.waypoint;
       const sourceAnchorPoint = this.node.diagram.waypoint[0];

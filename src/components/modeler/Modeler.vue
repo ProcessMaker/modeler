@@ -124,6 +124,7 @@ import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow';
+import { id as dataAssociationFlowId } from '../nodes/dataOutputAssociation';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -459,6 +460,25 @@ export default {
         .filter(definition => definition.$type === 'bpmn:Association' && this.hasSourceAndTarget(definition))
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
+    loadDataAssociations(flowElements) {
+      const tasksThatHaveDataOutputAssociations = flowElements.filter(task => task.get('dataOutputAssociations') &&
+          task.get('dataOutputAssociations').length > 0);
+
+      tasksThatHaveDataOutputAssociations.forEach(task => {
+        task.get('dataOutputAssociations').forEach(dataAssociationLink => {
+          this.setNode(dataAssociationLink, flowElements);
+        });
+      });
+
+      const tasksThatHaveDataInputAssociations = flowElements.filter(task => task.get('dataInputAssociations') &&
+          task.get('dataInputAssociations').length > 0);
+
+      tasksThatHaveDataInputAssociations.forEach(task => {
+        task.get('dataInputAssociations').forEach(dataAssociationLink => {
+          this.setNode(dataAssociationLink, flowElements);
+        });
+      });
+    },
     loadArtifacts(flowElements, artifacts) {
       artifacts
         .filter(definition => definition.$type !== 'bpmn:Association')
@@ -498,6 +518,7 @@ export default {
         this.loadSequenceFlows(flowElements, artifacts);
         this.loadArtifacts(flowElements, artifacts);
         this.loadAssociations(flowElements, artifacts);
+        this.loadDataAssociations(flowElements);
       });
 
       store.commit('setRootElements', this.definitions.rootElements);
@@ -588,7 +609,7 @@ export default {
       this.removeUnsupportedElementAttributes(definition);
       const type = parser(definition, this.moddle);
 
-      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association'];
+      const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
@@ -725,7 +746,7 @@ export default {
       store.commit('addNode', node);
       this.poolTarget = null;
 
-      if ([sequenceFlowId, laneId, associationId, messageFlowId].includes(node.type)) {
+      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataAssociationFlowId].includes(node.type)) {
         return;
       }
 
