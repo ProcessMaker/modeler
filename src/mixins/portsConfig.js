@@ -16,13 +16,15 @@ const leftTop = { x: '0%', y: '25%' };
 const leftBottom = { x: '0%', y: '75%' };
 const center = { x: '50%', y: '50%' };
 
-const defaultPorts = [top, right, bottom, left, center]
+const edgePorts = [top, topLeft, topRight, right, rightTop, rightBottom, bottom, bottomLeft, bottomRight, left, leftTop, leftBottom];
+
+const defaultPorts = [...edgePorts, center]
   .map(position => ({
     group: defaultGroup,
     args: position,
     markup,
   }));
-const boundaryPorts = [top, topLeft, topRight, right, rightTop, rightBottom, bottom, bottomLeft, bottomRight, left, leftTop, leftBottom]
+const boundaryPorts = edgePorts
   .map(position => ({
     group: boundaryGroup,
     args: position,
