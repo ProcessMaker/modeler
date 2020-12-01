@@ -5,19 +5,55 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
+function assertBottomCenterTaskMarkerHasImage(iconName, markerIndex = 0) {
+  cy.get(`.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.${markerIndex}"]`)
+    .should('have.attr', 'xlink:href')
+    // eslint-disable-next-line no-useless-escape
+    .and('match', new RegExp(`${iconName}.*\.svg`));
+}
+
 describe('Task Marker Flags', () => {
-
-  it('can set loop characteristics and compensation markers', () => {
+  beforeEach(() => {
     const taskPosition = { x: 250, y: 250 };
-
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-
     cy.contains('Advanced').click();
-    cy.get('[data-test=loop]').check({ force: true });
-    assertDownloadedXmlContainsExpected('<bpmn:standardLoopCharacteristics />');
+  });
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]')
-      .should('have.attr', 'xlink:href')
-      .and('match',  /loop.*\.svg/);
+  it('can set parallel multi-instance', () => {
+    cy.get('[data-test=parallel_mi]').check({ force: true });
+    cy.get('[data-test=for-compensation').uncheck({ force: true });
+
+    assertDownloadedXmlContainsExpected('<bpmn:multiInstanceLoopCharacteristics />');
+    assertBottomCenterTaskMarkerHasImage('parallel');
+  });
+
+  it('can set sequential multi-instance', () => {
+    cy.get('[data-test=sequential_mi]').check({ force: true });
+    cy.get('[data-test=for-compensation').uncheck({ force: true });
+
+    assertDownloadedXmlContainsExpected('<bpmn:multiInstanceLoopCharacteristics isSequential="true" />');
+    assertBottomCenterTaskMarkerHasImage('sequential');
+  });
+
+  it('can set standard loop', () => {
+    cy.get('[data-test=loop]').check({ force: true });
+    cy.get('[data-test=for-compensation').uncheck({ force: true });
+
+    assertDownloadedXmlContainsExpected('<bpmn:standardLoopCharacteristics />');
+    assertBottomCenterTaskMarkerHasImage('loop');
+  });
+
+  it('can set a task as "for compensation"', () => {
+    cy.get('[data-test=for-compensation').check({ force: true });
+    assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
+    assertBottomCenterTaskMarkerHasImage('compensation');
+  });
+
+  it('keeps compensation as the leftmost of the center icons', () => {
+    cy.get('[data-test=loop]').check({ force: true });
+    cy.get('[data-test=for-compensation').check({ force: true });
+
+    assertBottomCenterTaskMarkerHasImage('compensation');
+    assertBottomCenterTaskMarkerHasImage('loop', '1');
   });
 });
