@@ -1,6 +1,6 @@
 import component from './task.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import {taskHeight, taskWidth} from './taskConfig';
+import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
 import omit from 'lodash/omit';
