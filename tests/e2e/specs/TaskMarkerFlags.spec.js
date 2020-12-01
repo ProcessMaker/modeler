@@ -19,7 +19,7 @@ describe('Task Marker Flags', () => {
     cy.contains('Advanced').click();
   });
 
-  it('can set parallel multi-instance', () => {
+  it('sets a task as "parallel multi-instance"', () => {
     cy.get('[data-test=parallel_mi]').check({ force: true });
     cy.get('[data-test=for-compensation').uncheck({ force: true });
 
@@ -27,7 +27,7 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('parallel');
   });
 
-  it('can set sequential multi-instance', () => {
+  it('sets a task as "sequential multi-instance"', () => {
     cy.get('[data-test=sequential_mi]').check({ force: true });
     cy.get('[data-test=for-compensation').uncheck({ force: true });
 
@@ -35,7 +35,7 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('sequential');
   });
 
-  it('can set standard loop', () => {
+  it('sets a task as "standard loop"', () => {
     cy.get('[data-test=loop]').check({ force: true });
     cy.get('[data-test=for-compensation').uncheck({ force: true });
 
@@ -43,7 +43,7 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('loop');
   });
 
-  it('can set a task as "for compensation"', () => {
+  it('sets a task as "for compensation"', () => {
     cy.get('[data-test=for-compensation').check({ force: true });
     assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
     assertBottomCenterTaskMarkerHasImage('compensation');
