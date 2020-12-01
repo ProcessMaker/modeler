@@ -1,5 +1,5 @@
 import { g } from 'jointjs';
-import { boundaryGroup, defaultGroup } from '@/mixins/portsConfig';
+import {boundaryGroup, defaultGroup, rectangleGroup} from '@/mixins/portsConfig';
 import differenceWith from 'lodash/differenceWith';
 import isEqual from 'lodash/isEqual';
 
@@ -26,6 +26,10 @@ export function getBoundaryAnchorPoint(coords, model) {
 
 export function getDefaultAnchorPoint(coords, endView) {
   return getClosestAnchorPoint(endView.model, coords, defaultGroup);
+}
+
+export function getRectangleAnchorPoint(coords, endView) {
+  return getClosestAnchorPoint(endView.model, coords, rectangleGroup);
 }
 
 function getShapeCenterPosition(shape) {
