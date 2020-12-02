@@ -44,7 +44,7 @@ import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButt
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
-import { getRectangleAnchorPoint } from '@/portsUtils';
+import { aPortEveryXPixels } from '@/portsUtils';
 
 export default {
   components: {
@@ -77,7 +77,7 @@ export default {
       definition: null,
       laneSet: null,
       isAddingLaneAbove: false,
-      anchorPointFunction: getRectangleAnchorPoint,
+      anchorPointFunction: aPortEveryXPixels(20),
     };
   },
   computed: {
