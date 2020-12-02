@@ -1,5 +1,5 @@
 import { g } from 'jointjs';
-import {boundaryGroup, defaultGroup, rectangleGroup} from '@/mixins/portsConfig';
+import { boundaryGroup, defaultGroup, rectangleGroup } from '@/mixins/portsConfig';
 import differenceWith from 'lodash/differenceWith';
 import isEqual from 'lodash/isEqual';
 
@@ -54,7 +54,7 @@ export function aPortEveryXPixels(pixels) {
     const left = [leftMiddle];
     let sidePoint = leftMiddle;
     let i = 0;
-    while (sidePoint.y < boundingBox.bottomLeft().y){
+    while (sidePoint.y < boundingBox.bottomLeft().y) {
       i++;
       sidePoint = leftMiddle.clone();
       sidePoint.translate(0, pixels * i);
@@ -69,7 +69,7 @@ export function aPortEveryXPixels(pixels) {
     const top = getTopPoints(boundingBox);
     const left = getLeftPoints(boundingBox);
     const bottom = top.map(point => point.reflection(boundingBox.center()));
-    const right = left.map(point =>  point.reflection(boundingBox.center()));
+    const right = left.map(point => point.reflection(boundingBox.center()));
 
     const points = [...top, ...bottom, ...left, ...right, boundingBox.center()];
 
