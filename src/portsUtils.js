@@ -33,7 +33,6 @@ export function getRectangleAnchorPoint(coords, endView) {
 }
 
 export function aPortEveryXPixels(pixels) {
-
   function getTopPoints(boundingBox) {
     const topMiddle = boundingBox.topMiddle();
     const top = [topMiddle];
