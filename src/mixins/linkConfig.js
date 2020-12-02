@@ -22,6 +22,7 @@ export default {
       target: null,
       listeningToMouseup: false,
       vertices: null,
+      anchorPointFunction: getDefaultAnchorPoint,
     };
   },
   watch: {
@@ -96,9 +97,8 @@ export default {
       };
 
       this.shape[endpoint](shape, {
-        anchor: {
-          name: 'closestPort',
-          args: { getConnectionPoint, shape, paper: this.paper },
+        anchor: () => {
+          return this.getAnchorPointFunction(endpoint)(getConnectionPoint(), shape.findView(this.paper));
         },
         connectionPoint: { name: 'boundary' },
       });
@@ -200,10 +200,20 @@ export default {
         resetShapeColor(this.target);
       }
     },
+    getAnchorPointFunction(endpoint) {
+      if (endpoint === 'source') {
+        return this.sourceShape.component.anchorPointFunction || this.anchorPointFunction;
+      }
+
+      if (endpoint === 'target') {
+        return this.target.component.anchorPointFunction || this.anchorPointFunction;
+      }
+    },
     setupLinkTools() {
       const verticesTool = new linkTools.Vertices();
-      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorPoint });
-      const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorPoint });
+
+      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: this.getAnchorPointFunction('source') });
+      const targetAnchorTool = new linkTools.TargetAnchor({ snap: this.getAnchorPointFunction('target') });
       const segmentsTool = new linkTools.Segments();
       const toolsView = new dia.ToolsView({
         tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],

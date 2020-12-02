@@ -130,7 +130,6 @@ import { id as dataAssociationFlowId } from '../nodes/dataOutputAssociation';
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
-import initAnchor from '@/mixins/linkManager.js';
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
@@ -936,8 +935,6 @@ export default {
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
     });
-
-    initAnchor();
 
     let cursor;
     const setCursor = () => {
