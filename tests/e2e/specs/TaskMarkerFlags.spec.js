@@ -1,6 +1,6 @@
 import {
   assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest,
+  dragFromSourceToDest, uploadXml,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -56,4 +56,17 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('compensation');
     assertBottomCenterTaskMarkerHasImage('loop', '1');
   });
+
+  it.only('can still set "for compensation" after undo/redo', () => {
+    uploadXml('withLoopMarker.xml');
+
+    cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"]').click();
+    cy.contains('Advanced').click();
+    cy.get('[data-test=for-compensation').check({ force: true });
+
+    assertBottomCenterTaskMarkerHasImage('compensation');
+    assertBottomCenterTaskMarkerHasImage('loop', 1);
+    assertDownloadedXmlContainsExpected('<bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
+  });
+
 });
