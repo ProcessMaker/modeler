@@ -21,6 +21,7 @@ export default async function focusNameInputAndHighlightLabel(cellView) {
   });
 
   nameInput.focus();
+  nameInput.select();
 }
 
 function getLabelElementForShape(shape) {
