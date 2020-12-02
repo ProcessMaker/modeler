@@ -32,63 +32,44 @@ export function getRectangleAnchorPoint(coords, endView) {
   return getClosestAnchorPoint(endView.model, coords, rectangleGroup);
 }
 
-export function nPortsPerSide(portsPerSide) {
-  return (coords, endView) => {
-    const { x: modelX, y: modelY } = endView.model.position();
-    const { width, height } = endView.model.size();
-    const xOffset = Math.floor(width / portsPerSide);
-    const yOffset = Math.floor(height / portsPerSide);
-    const top = [];
-    const bottom = [];
-    const left = [];
-    const right = [];
-    for (let i = 0; i < portsPerSide; i++) {
-      top.push({x: modelX + (i * xOffset), y: modelY});
-      bottom.push({x: modelX + (i * xOffset), y: modelY + height});
-      left.push({x:modelX, y:  modelY + (i * yOffset)});
-      right.push({x:modelX + width, y:  modelY + (i * yOffset)});
-    }
-    const center = {x: modelX + width/ 2, y: modelY + height / 2};
-    const points = [...top, ...bottom, ...left, ...right, center];
-    const referencePoint = new g.Point(coords.x, coords.y);
-    return referencePoint.chooseClosest(points);
-  };
-}
-
-// eslint-disable-next-line no-unused-vars
 export function aPortEveryXPixels(pixels) {
   return (coords, endView) => {
-    // const { x: modelX, y: modelY } = endView.model.position();
-    // eslint-disable-next-line no-unused-vars
-    const { width, height } = endView.model.size();
-
     const bb = endView.model.getBBox({ useModelGeometry: true });
 
     const topMiddle = bb.topMiddle();
     const top = [topMiddle];
 
     let i = 0;
-    do {
+    let rightPoint = topMiddle.clone();
+    while (rightPoint.x < bb.topRight().x) {
       i++;
-      const rightPoint = topMiddle.clone();
+      rightPoint = topMiddle.clone();
       rightPoint.translate(pixels * i);
-      if (rightPoint.x >= bb.topRight().x) {
-        break;
-      }
-      top.push(rightPoint);
-      top.push(rightPoint.reflection(topMiddle));
-
-      // eslint-disable-next-line no-constant-condition
-    } while (i < 100);
-
+      top.push(rightPoint, rightPoint.reflection(topMiddle));
+    }
     top.push(bb.topLeft());
     top.push(bb.topRight());
+
+    const leftMiddle = bb.leftMiddle();
+    const left = [leftMiddle];
+    let sidePoint = leftMiddle;
+    i = 0;
+    while (sidePoint.y < bb.bottomLeft().y){
+      i++;
+      sidePoint = leftMiddle.clone();
+      sidePoint.translate(0, pixels * i);
+      left.push(sidePoint, sidePoint.reflection(leftMiddle));
+    }
+
+    const right = left.map(point => {
+      return point.reflection(bb.center());
+    });
 
     const bottom = top.map(point => {
       return point.reflection(bb.center());
     });
 
-    const points = [...top, ...bottom];
+    const points = [...top, ...bottom, ...left, ...right, bb.center()];
 
     const referencePoint = new g.Point(coords.x, coords.y);
     return referencePoint.chooseClosest(points);
