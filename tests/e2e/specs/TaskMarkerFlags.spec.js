@@ -57,7 +57,7 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('loop', '1');
   });
 
-  it.only('can still set "for compensation" after undo/redo', () => {
+  it('can still set "for compensation" after undo/redo', () => {
     uploadXml('withLoopMarker.xml');
 
     cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"]').click();
