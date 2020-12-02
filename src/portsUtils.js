@@ -33,43 +33,46 @@ export function getRectangleAnchorPoint(coords, endView) {
 }
 
 export function aPortEveryXPixels(pixels) {
-  return (coords, endView) => {
-    const bb = endView.model.getBBox({ useModelGeometry: true });
 
-    const topMiddle = bb.topMiddle();
+  function getTopPoints(boundingBox) {
+    const topMiddle = boundingBox.topMiddle();
     const top = [topMiddle];
-
     let i = 0;
     let rightPoint = topMiddle.clone();
-    while (rightPoint.x < bb.topRight().x) {
+    while (rightPoint.x < boundingBox.topRight().x) {
       i++;
       rightPoint = topMiddle.clone();
       rightPoint.translate(pixels * i);
       top.push(rightPoint, rightPoint.reflection(topMiddle));
     }
-    top.push(bb.topLeft());
-    top.push(bb.topRight());
+    top.push(boundingBox.topLeft());
+    top.push(boundingBox.topRight());
+    return top;
+  }
 
-    const leftMiddle = bb.leftMiddle();
+  function getLeftPoints(boundingBox) {
+    const leftMiddle = boundingBox.leftMiddle();
     const left = [leftMiddle];
     let sidePoint = leftMiddle;
-    i = 0;
-    while (sidePoint.y < bb.bottomLeft().y){
+    let i = 0;
+    while (sidePoint.y < boundingBox.bottomLeft().y){
       i++;
       sidePoint = leftMiddle.clone();
       sidePoint.translate(0, pixels * i);
       left.push(sidePoint, sidePoint.reflection(leftMiddle));
     }
+    return left;
+  }
 
-    const right = left.map(point => {
-      return point.reflection(bb.center());
-    });
+  return (coords, endView) => {
+    const boundingBox = endView.model.getBBox({ useModelGeometry: true });
 
-    const bottom = top.map(point => {
-      return point.reflection(bb.center());
-    });
+    const top = getTopPoints(boundingBox);
+    const left = getLeftPoints(boundingBox);
+    const bottom = top.map(point => point.reflection(boundingBox.center()));
+    const right = left.map(point =>  point.reflection(boundingBox.center()));
 
-    const points = [...top, ...bottom, ...left, ...right, bb.center()];
+    const points = [...top, ...bottom, ...left, ...right, boundingBox.center()];
 
     const referencePoint = new g.Point(coords.x, coords.y);
     return referencePoint.chooseClosest(points);
