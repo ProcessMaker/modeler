@@ -16,7 +16,7 @@
     "check-peer-deps": "npm ls --depth=0",
     "posttest": "npm run report:combined",
     "test-unit": "JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit",
-    "test-ci": "TZ=UTC vue-cli-service test:e2e --spec tests/e2e/specs/Modeler.spec.js --mode test --headless --browser chrome --reporter mocha-junit-reporter --reporter-options mochaFile=test_summary_reports/mocha/test-results.xml",
+    "test-ci": "TZ=UTC vue-cli-service test:e2e --mode test --headless --browser chrome -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml",
     "mkdir:reports": "mkdir reports || true",
     "precopy:reports": "npm run mkdir:reports",
     "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
