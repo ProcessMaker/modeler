@@ -56,7 +56,7 @@ export default {
           if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
             return;
           }
-          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', {isSequential: true}));
+          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
         }
       }
 
