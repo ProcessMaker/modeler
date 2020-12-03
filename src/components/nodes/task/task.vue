@@ -131,22 +131,8 @@ export default {
     middleIsOddNumber(value) {
       return Math.abs((value / 2) % 2) === 1;
     },
-    makeDefinitionPropertiesReactive() {
-      const deleteAndReset = (prop, val) => {
-        if (this.node.definition.hasOwnProperty(prop)) {
-          return;
-        }
-
-        delete Object.getPrototypeOf(this.node.definition)[prop];
-        this.$set(this.node.definition, prop, val);
-      };
-
-      deleteAndReset('isForCompensation', false);
-      deleteAndReset('loopCharacteristics', null);
-    },
   },
   mounted() {
-    this.makeDefinitionPropertiesReactive();
     this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
