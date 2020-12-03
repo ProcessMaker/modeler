@@ -66,6 +66,10 @@ describe('Task Marker Flags', () => {
 
     assertBottomCenterTaskMarkerHasImage('compensation');
     assertBottomCenterTaskMarkerHasImage('loop', 1);
-    assertDownloadedXmlContainsExpected('<bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
+    assertDownloadedXmlContainsExpected(`
+      <bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester">
+        <bpmn:standardLoopCharacteristics />
+      </bpmn:task>
+    `);
   });
 });
