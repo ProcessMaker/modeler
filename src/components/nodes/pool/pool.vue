@@ -44,6 +44,7 @@ import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButt
 import { configurePool } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
+import { aPortEveryXPixels } from '@/portsUtils';
 
 export default {
   components: {
@@ -67,6 +68,7 @@ export default {
     'planeElements',
     'isRendering',
     'paperManager',
+    'nodeIdGenerator',
   ],
   mixins: [highlightConfig, resizeConfig, portsConfig],
   data() {
@@ -75,6 +77,7 @@ export default {
       definition: null,
       laneSet: null,
       isAddingLaneAbove: false,
+      anchorPointFunction: aPortEveryXPixels(20),
     };
   },
   computed: {
@@ -182,6 +185,9 @@ export default {
     createLaneSet() {
       const laneSet = this.moddle.create('bpmn:LaneSet');
       this.laneSet = laneSet;
+      const generator = this.nodeIdGenerator;
+      const [laneSetId] = generator.generate();
+      this.laneSet.set('id', laneSetId);
       this.containingProcess.get('laneSets').push(laneSet);
     },
     pushNewLane(definition = Lane.definition(this.moddle, this.$t)) {

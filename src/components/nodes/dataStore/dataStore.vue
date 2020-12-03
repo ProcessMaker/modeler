@@ -21,6 +21,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import DataStoreShape from './shape';
+import portsConfig from '@/mixins/portsConfig';
 
 export default {
   components: {
@@ -39,7 +40,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, hideLabelOnDrag, portsConfig],
   data() {
     return {
       shape: null,

@@ -215,7 +215,7 @@ describe('Modeler', () => {
 
   it('shows warning for unknown element during parsing', () => {
     uploadXml('unknownElement.xml');
-    const warning = 'DataStoreReference is an unsupported element type in parse';
+    const warning = 'bpmn:Group is an unsupported element type in parse';
 
     cy.get('[data-test="validation-toggle"]').click({ force: true });
     cy.get('[data-test="validation-list-toggle"]').click({ force: true });

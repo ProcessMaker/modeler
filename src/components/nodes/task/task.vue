@@ -31,6 +31,7 @@ import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
 import setupMultiInstanceMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
+import { getRectangleAnchorPoint } from '@/portsUtils';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -80,6 +81,7 @@ export default {
         },
       ],
       boundaryEventDropdownData,
+      anchorPointFunction: getRectangleAnchorPoint,
     };
   },
   computed: {

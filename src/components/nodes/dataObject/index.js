@@ -8,7 +8,7 @@ export const id = 'processmaker-modeler-data-object';
 export default {
   id,
   component,
-  bpmnType: 'bpmn:dataObjectReference',
+  bpmnType: 'bpmn:DataObjectReference',
   control: true,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-object.svg'),

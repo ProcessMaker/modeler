@@ -22,6 +22,7 @@ export default {
       target: null,
       listeningToMouseup: false,
       vertices: null,
+      anchorPointFunction: getDefaultAnchorPoint,
     };
   },
   watch: {
@@ -71,6 +72,11 @@ export default {
     },
   },
   methods: {
+    findSourceShape() {
+      return this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
+      });
+    },
     setEndpoint(shape, endpoint, connectionOffset) {
       if (isPoint(shape)) {
         return this.shape[endpoint](shape, {
@@ -91,9 +97,8 @@ export default {
       };
 
       this.shape[endpoint](shape, {
-        anchor: {
-          name: 'closestPort',
-          args: { getConnectionPoint, shape, paper: this.paper },
+        anchor: () => {
+          return this.getAnchorPointFunction(endpoint)(getConnectionPoint(), shape.findView(this.paper));
         },
         connectionPoint: { name: 'boundary' },
       });
@@ -195,10 +200,20 @@ export default {
         resetShapeColor(this.target);
       }
     },
+    getAnchorPointFunction(endpoint) {
+      if (endpoint === 'source') {
+        return this.sourceShape.component.anchorPointFunction || this.anchorPointFunction;
+      }
+
+      if (endpoint === 'target') {
+        return this.target.component.anchorPointFunction || this.anchorPointFunction;
+      }
+    },
     setupLinkTools() {
       const verticesTool = new linkTools.Vertices();
-      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: getDefaultAnchorPoint });
-      const targetAnchorTool = new linkTools.TargetAnchor({ snap: getDefaultAnchorPoint });
+
+      const sourceAnchorTool = new linkTools.SourceAnchor({ snap: this.getAnchorPointFunction('source') });
+      const targetAnchorTool = new linkTools.TargetAnchor({ snap: this.getAnchorPointFunction('target') });
       const segmentsTool = new linkTools.Segments();
       const toolsView = new dia.ToolsView({
         tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
@@ -225,9 +240,7 @@ export default {
     /* Use nextTick to ensure this code runs after the component it is mixed into mounts.
      * This will ensure this.shape is defined. */
 
-    this.sourceShape = this.graph.getElements().find(element => {
-      return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
-    });
+    this.sourceShape = this.findSourceShape();
 
     this.setSource(this.sourceShape);
 
@@ -235,12 +248,16 @@ export default {
       this.setupLinkTools();
     });
 
-    const targetRef = this.node.definition.get('targetRef');
+    const targetRef = this.getTargetRef
+      ? this.getTargetRef()
+      : this.node.definition.get('targetRef');
 
     if (targetRef.id) {
       const targetShape = this.graph.getElements().find(element => {
         return element.component && element.component.node.definition === targetRef;
       });
+
+      this.target = targetShape;
 
       const sequenceFlowWaypoints = this.node.diagram.waypoint;
       const sourceAnchorPoint = this.node.diagram.waypoint[0];

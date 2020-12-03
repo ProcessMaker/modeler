@@ -16,7 +16,7 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Association',
+      name: 'Data Association',
       items: [
         {
           component: 'FormAccordion',
