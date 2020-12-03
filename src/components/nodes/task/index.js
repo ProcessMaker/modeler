@@ -20,8 +20,6 @@ export default {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
       assignment: 'requester',
-      isForCompensation: false,
-      loopCharacteristics: null,
     });
   },
   diagram(moddle) {
@@ -36,7 +34,7 @@ export default {
     if (value.markerFlags) {
       if (value.markerFlags.loopCharacteristics) {
         if (value.markerFlags.loopCharacteristics === 'no_loop') {
-          setNodeProp(node, 'loopCharacteristics', null);
+          setNodeProp(node, 'loopCharacteristics', undefined);
         }
 
         const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
