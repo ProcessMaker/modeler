@@ -29,7 +29,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
-import setupMultiInstanceMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
+import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
 
@@ -107,7 +107,7 @@ export default {
       setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     },
     'node.definition.loopCharacteristics'() {
-      setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+      setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     },
   },
   methods: {
@@ -140,7 +140,7 @@ export default {
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
     setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
-    setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+    setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     this.shape.attr({
       body: {
         rx: 8,
