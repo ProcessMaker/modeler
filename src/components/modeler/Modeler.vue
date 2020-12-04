@@ -712,10 +712,10 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      this.highlightNode(newNode);
       await this.addNode(newNode);
 
       if (!nodeThatWillBeReplaced) {
+        this.highlightNode(newNode);
         return;
       }
 
@@ -729,6 +729,7 @@ export default {
       );
       nodeMigrator.migrate();
 
+      this.highlightNode(newNode);
       return newNode;
     },
     setShapeCenterUnderCursor(diagram) {
