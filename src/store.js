@@ -78,7 +78,7 @@ export default new Vuex.Store({
     updateNodeProp(state, { node, key, value }) {
       setDefinitionPropertyReactive(node.definition, key, value);
 
-      if (value === undefined) {
+      if (value == null) {
         Vue.delete(node.definition, key);
       }
     },
