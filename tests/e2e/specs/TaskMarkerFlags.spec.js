@@ -1,6 +1,6 @@
 import {
-  assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest, uploadXml,
+  assertDownloadedXmlContainsExpected, assertDownloadedXmlDoesNotContainExpected,
+  dragFromSourceToDest, uploadXml, waitToRenderNodeUpdates,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -41,6 +41,23 @@ describe('Task Marker Flags', () => {
 
     assertDownloadedXmlContainsExpected('<bpmn:standardLoopCharacteristics />');
     assertBottomCenterTaskMarkerHasImage('loop');
+  });
+
+  it('can unset loop characteristics', () => {
+    cy.get('[data-test=loop]').check({ force: true });
+    waitToRenderNodeUpdates();
+    cy.get('[data-test=for-compensation').uncheck({ force: true });
+    waitToRenderNodeUpdates();
+
+    assertDownloadedXmlContainsExpected('<bpmn:standardLoopCharacteristics />');
+    assertBottomCenterTaskMarkerHasImage('loop');
+
+    cy.get('[data-test=no_loop]').check({ force: true });
+    waitToRenderNodeUpdates();
+
+    assertDownloadedXmlDoesNotContainExpected('<bpmn:standardLoopCharacteristics />');
+    cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]')
+      .should('not.have.attr', 'xlink:href');
   });
 
   it('sets a task as "for compensation"', () => {
