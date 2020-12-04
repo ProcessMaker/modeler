@@ -41,6 +41,7 @@ describe('Intermediate Timer Event', () => {
     const nameInput = '[name=name]';
     const testString = 'testing';
     typeIntoTextInput(nameInput, testString);
+    cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
     const startDateTime = '02/27/2019 12:30 AM';
     typeIntoTextInput('[data-test=date-picker]', startDateTime);
@@ -64,6 +65,7 @@ describe('Intermediate Timer Event', () => {
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
     getElementAtPosition(intermediateCatchEventPosition).click();
+    cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
 
     const defaultTimeDate = '<bpmn:timeDate>1970-01-01T00:00:00.000Z</bpmn:timeDate>';
@@ -81,6 +83,7 @@ describe('Intermediate Timer Event', () => {
   it('should toggle between showing the weekday select when week is selected, and hidiing it when it is not', () => {
     const intermediateTimerEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
+    cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Cycle');
 
     cy.get('[data-test="periods"]').select('week');

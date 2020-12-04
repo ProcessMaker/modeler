@@ -29,6 +29,9 @@ describe('Boundary Timer Event', () => {
     const name = 'Test name';
     typeIntoTextInput('[name=name]', name);
 
+    const timingControlAccordion = '.fa-clock';
+    cy.get(timingControlAccordion).click();
+
     const durationValue = 4;
     typeIntoTextInput('.repeat', durationValue);
 
