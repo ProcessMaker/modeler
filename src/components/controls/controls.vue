@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { BOTTOM } from '@/components/controls/rankConstants';
 
 export default {
   props: ['allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight', 'nodeTypes'],
@@ -58,7 +59,7 @@ export default {
           icon: nodeType.icon,
           label: nodeType.label,
           bpmnType: nodeType.bpmnType,
-          rank: nodeType.rank || Infinity,
+          rank: nodeType.rank || BOTTOM,
         }))
         .sort((node1, node2) => node1.rank - node2.rank);
     },
