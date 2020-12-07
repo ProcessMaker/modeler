@@ -2,7 +2,6 @@ import component from './dataStore.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
-import { BOTTOM } from '@/components/controls/rankConstants';
 
 export const id = 'processmaker-modeler-data-store';
 
@@ -14,7 +13,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-store.svg'),
   label: defaultNames[id],
-  rank: BOTTOM + 10,
+  rank: 90,
   validateIncoming() {
     return false;
   },
