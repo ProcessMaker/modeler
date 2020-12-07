@@ -50,6 +50,7 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
+    'paperManager',
   ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
@@ -127,6 +128,17 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+    this.paperManager.addEventHandler('element:pointerclick', (shapeView, event) => {
+      const isPlusMarkerTheTarget = event.target.getAttribute('joint-selector') === 'bottomCenter.0';
+      const isItThisShape = shapeView.model === this.shape;
+
+      if (!isPlusMarkerTheTarget || !isItThisShape) {
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('Clicked image!');
+    });
   },
 };
 </script>
