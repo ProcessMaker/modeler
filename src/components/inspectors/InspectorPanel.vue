@@ -50,7 +50,6 @@ import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
 import isString from 'lodash/isString';
-import isEqual from 'lodash/isEqual';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -74,16 +73,13 @@ export default {
     };
   },
   watch: {
-    highlightedNode() {
-      document.activeElement.blur();
-
-      const newConfig = this.prepareConfig();
-      if (isEqual(this.config, newConfig)) {
+    highlightedNode(current, previous) {
+      if (current === previous) {
         return;
       }
-
-      this.config = newConfig;
+      document.activeElement.blur();
       this.prepareData();
+      this.config = this.prepareConfig();
     },
   },
   computed: {
