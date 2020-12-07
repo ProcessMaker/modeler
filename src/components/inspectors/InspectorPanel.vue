@@ -79,7 +79,7 @@ export default {
       }
       document.activeElement.blur();
       this.prepareData();
-      this.config = this.prepareConfig();
+      this.setInspectorConfig();
     },
   },
   computed: {
@@ -128,18 +128,20 @@ export default {
     },
   },
   methods: {
-    prepareConfig() {
+    setInspectorConfig() {
       if (!this.highlightedNode) {
-        return this.config = {
+        this.config = {
           name: 'Empty',
           items: [],
         };
+        return;
       }
 
       const { type, definition } = this.highlightedNode;
 
       if (this.highlightedNode === this.processNode) {
-        return this.config = Process.inspectorConfig;
+        this.config = Process.inspectorConfig;
+        return;
       }
 
       const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
@@ -166,10 +168,9 @@ export default {
         else {
           sequenceFlowConfigurationFormElements.push(expressionConfig);
         }
-
       }
 
-      return inspectorConfig;
+      this.config = inspectorConfig;
     },
     prepareData() {
       if (!this.highlightedNode) {
