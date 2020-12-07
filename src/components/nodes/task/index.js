@@ -73,39 +73,41 @@ export default {
 };
 
 function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
-  if (markerFlags) {
-    if (markerFlags.loopCharacteristics) {
-      if (markerFlags.loopCharacteristics === 'no_loop') {
-        setNodeProp(node, 'loopCharacteristics', null);
-      }
+  if (!markerFlags) {
+    return;
+  }
 
-      const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
-
-      if (markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
-        setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
-      }
-
-      if (markerFlags.loopCharacteristics === 'parallel_mi' ) {
-        if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
-          return;
-        }
-        setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
-      }
-
-      if (markerFlags.loopCharacteristics === 'sequential_mi') {
-        if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
-          return;
-        }
-        setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
-      }
+  if (markerFlags.loopCharacteristics) {
+    if (markerFlags.loopCharacteristics === 'no_loop') {
+      setNodeProp(node, 'loopCharacteristics', null);
     }
 
-    const currentIsForCompensationValue = node.definition.get('isForCompensation');
-    const newIsForCompensationValue = markerFlags.isForCompensation;
+    const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
 
-    if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
-      setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+    if (markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
+      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
     }
+
+    if (markerFlags.loopCharacteristics === 'parallel_mi' ) {
+      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
+        return;
+      }
+      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
+    }
+
+    if (markerFlags.loopCharacteristics === 'sequential_mi') {
+      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
+        return;
+      }
+      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
+    }
+  }
+
+  const currentIsForCompensationValue = node.definition.get('isForCompensation');
+  const newIsForCompensationValue = markerFlags.isForCompensation;
+
+  if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
+    setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
   }
 }
 
