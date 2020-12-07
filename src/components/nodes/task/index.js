@@ -31,41 +31,7 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
-    if (value.markerFlags) {
-      if (value.markerFlags.loopCharacteristics) {
-        if (value.markerFlags.loopCharacteristics === 'no_loop') {
-          setNodeProp(node, 'loopCharacteristics', null);
-        }
-
-        const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
-
-        if (value.markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
-          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
-        }
-
-        if (value.markerFlags.loopCharacteristics === 'parallel_mi' ) {
-          if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
-            return;
-          }
-          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
-        }
-
-        if (value.markerFlags.loopCharacteristics === 'sequential_mi') {
-          if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
-            return;
-          }
-          setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
-        }
-      }
-
-      const currentIsForCompensationValue = node.definition.get('isForCompensation');
-      const newIsForCompensationValue = value.markerFlags.isForCompensation;
-
-      if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
-        setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
-      }
-    }
-
+    handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
     defaultInspectorHandler(omit(value, 'markerFlags'));
   },
   inspectorData(node, defaultDataTransform) {
@@ -105,6 +71,43 @@ export default {
     },
   ],
 };
+
+function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
+  if (markerFlags) {
+    if (markerFlags.loopCharacteristics) {
+      if (markerFlags.loopCharacteristics === 'no_loop') {
+        setNodeProp(node, 'loopCharacteristics', null);
+      }
+
+      const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
+
+      if (markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
+        setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
+      }
+
+      if (markerFlags.loopCharacteristics === 'parallel_mi' ) {
+        if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
+          return;
+        }
+        setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
+      }
+
+      if (markerFlags.loopCharacteristics === 'sequential_mi') {
+        if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
+          return;
+        }
+        setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
+      }
+    }
+
+    const currentIsForCompensationValue = node.definition.get('isForCompensation');
+    const newIsForCompensationValue = markerFlags.isForCompensation;
+
+    if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
+      setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+    }
+  }
+}
 
 function getLoopCharacteristicsRadioValue(loopCharacteristics) {
   if (!loopCharacteristics) {
