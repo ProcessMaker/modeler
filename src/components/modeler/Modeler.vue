@@ -912,13 +912,6 @@ export default {
       }
     }, this);
 
-    this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
-      const clickHandler = cellView.model.get('onClick');
-      if (clickHandler) {
-        clickHandler(cellView, evt, x, y);
-      }
-    });
-
     this.paperManager.addEventHandler('cell:pointerclick', ({ model: shape }, event) => {
       if (!this.isBpmnNode(shape)) {
         return;
