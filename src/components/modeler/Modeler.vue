@@ -712,8 +712,8 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
-      await this.addNode(newNode);
       this.highlightNode(newNode);
+      await this.addNode(newNode);
 
       if (!nodeThatWillBeReplaced) {
         return;
@@ -728,7 +728,7 @@ export default {
         this.collaboration,
       );
       nodeMigrator.migrate();
-      
+
       return newNode;
     },
     setShapeCenterUnderCursor(diagram) {
