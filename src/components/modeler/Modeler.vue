@@ -431,7 +431,7 @@ export default {
 
       types.forEach(bpmnType => {
         if (!this.parsers[bpmnType]) {
-          this.parsers[bpmnType] = { custom: [], implementation: [], default: [] };
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
         }
 
         if (customParser) {
@@ -712,9 +712,10 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
+      await this.addNode(newNode);
+      this.highlightNode(newNode);
+
       if (!nodeThatWillBeReplaced) {
-        await this.addNode(newNode);
-        this.highlightNode(newNode);
         return;
       }
 
@@ -727,9 +728,7 @@ export default {
         this.collaboration,
       );
       nodeMigrator.migrate();
-
-      await this.addNode(newNode);
-      this.highlightNode(newNode);
+      
       return newNode;
     },
     setShapeCenterUnderCursor(diagram) {
