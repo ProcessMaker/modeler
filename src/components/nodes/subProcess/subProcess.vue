@@ -159,9 +159,13 @@ export default {
       this.subProcessSvg = null;
       this.errorLoadingSvg = false;
 
-      window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}/svg`).then(({ data }) => {
-        this.subProcessSvg = data;
-      }).catch(() => this.errorLoadingSvg = true);
+      window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}/svg`)
+        .then(({ data }) => {
+          this.subProcessSvg = data;
+        })
+        .catch(() => {
+          this.errorLoadingSvg = true;
+        });
     },
   },
   mounted() {
