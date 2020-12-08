@@ -27,6 +27,10 @@
         </a>
       </template>
     </b-modal>
+
+    <b-modal ref="no-subprocess-modal" title="No subprocess selected" :hide-footer="true">
+      Please select a subprocess to view it.
+    </b-modal>
   </div>
 </template>
 
@@ -94,9 +98,11 @@ export default {
     };
   },
   computed: {
+    subprocessId() {
+      return JSON.parse(this.node.definition.get('config')).processId;
+    },
     subprocessLink() {
-      const config = JSON.parse(this.node.definition.get('config'));
-      return `/modeler/${config.processId}`;
+      return `/modeler/${this.subprocessId}`;
     },
     subprocessName() {
       return this.node.definition.get('name');
@@ -136,6 +142,11 @@ export default {
       const isItThisShape = shapeView.model === this.shape;
 
       if (!isPlusMarkerTheTarget || !isItThisShape) {
+        return;
+      }
+
+      if (!this.subprocessId) {
+        this.$refs['no-subprocess-modal'].show();
         return;
       }
 
