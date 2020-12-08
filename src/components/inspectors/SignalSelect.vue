@@ -41,10 +41,10 @@
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal" data-cy="events-cancel">
-          Cancel
+          {{ $t('Cancel') }}
         </button>
         <button :disabled="!validNew" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="addSignal" data-cy="events-save">
-          Save
+          {{ $t('Save') }}
         </button>
       </div>
     </div>
@@ -54,10 +54,10 @@
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddSignal" data-cy="events-cancel">
-          Cancel
+          {{ $t('Cancel') }}
         </button>
         <button :disabled="!validUpdate" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="updateSignal" data-cy="events-save">
-          Save
+          {{ $t('Save') }}
         </button>
       </div>
     </div>
@@ -71,10 +71,10 @@
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn btn-sm btn-light mr-2 p-1 font-xs" @click="showConfirmDelete=false" data-cy="events-cancel">
-          Cancel
+          {{ $t('Cancel') }}
         </button>
         <button v-if="!deleteSignalUsage(deleteSignal.id)" type="button" class="btn btn-sm btn-danger p-1 font-xs" @click="confirmDeleteSignal" data-cy="events-delete">
-          Delete
+          {{ $t('Save') }}
         </button>
       </div>
     </div>
@@ -84,7 +84,7 @@
           <tr>
             <td colspan="2" align="right">
               <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" @click="showAddSignal" data-cy="events-add">
-                <i class="fa fa-plus" /> Signal
+                <i class="fa fa-plus" /> {{ $t('Signal') }}
               </button>
             </td>
           </tr>
@@ -333,7 +333,7 @@ export default {
       immediate: true,
       handler(value) {
         this.selectedOption = this.options.find(option => get(option, this.trackBy) == value);
-          
+
         if (value && !this.selectedOption) {
           this.loadSelected(value);
         }
