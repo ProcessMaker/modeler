@@ -5,7 +5,7 @@ import {
   typeIntoTextInput,
 } from '../support/utils';
 
-import { nodeTypes } from '../support/constants';
+import {nodeTypes} from '../support/constants';
 
 function selectCalledProcess(calledProcessName) {
   cy.get('[data-test="inspector-container"]')
@@ -41,7 +41,6 @@ describe('Sub Process (Call Activities)', () => {
   const defaultSubProcessNodeName = 'Sub Process';
 
   it('Can create sub process with config', () => {
-    const calledProcessName = 'Process with multiple start events';
     const startEventName = 'Start Event Two';
     const encodedConfig = JSON.stringify({
       calledElement: 'Subprocess1-5',
@@ -53,7 +52,7 @@ describe('Sub Process (Call Activities)', () => {
     addSubprocessToPaper(subProcessPosition);
     getElementAtPosition(subProcessPosition).click({ force: true });
 
-    selectCalledProcess(calledProcessName);
+    selectCalledProcess('Process with multiple start events');
     selectSubProcessStartEvent(startEventName);
 
     assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_3" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
@@ -76,13 +75,12 @@ describe('Sub Process (Call Activities)', () => {
   });
 
   it('shows a subprocess preview modal containing a SVG when clicking the [+] button', () => {
-    const calledProcessName = 'Process with multiple start events';
     const calledSubProcessId = 5;
 
     addSubprocessToPaper(subProcessPosition);
     getElementAtPosition(subProcessPosition).click({ force: true });
 
-    selectCalledProcess(calledProcessName);
+    selectCalledProcess('Process with multiple start events');
 
     cy.clock();
     clickSubprocessPlusButton();
@@ -101,12 +99,10 @@ describe('Sub Process (Call Activities)', () => {
   });
 
   it('shows an error message when the SVG API GET call fails', () => {
-    const calledProcessName = 'Process with mocked axios failure';
-
     addSubprocessToPaper(subProcessPosition);
     getElementAtPosition(subProcessPosition).click({ force: true });
 
-    selectCalledProcess(calledProcessName);
+    selectCalledProcess('Process with mocked axios failure');
 
     cy.clock();
     clickSubprocessPlusButton();
