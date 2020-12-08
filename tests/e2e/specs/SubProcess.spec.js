@@ -87,7 +87,7 @@ describe('Sub Process (Call Activities)', () => {
 
     cy.tick(500);
     cy.get('.modal-content')
-      .should('contain.text', `You are viewing subprocess for '${defaultSubProcessNodeName}'`)
+      .should('contain.text', `Previewing '${defaultSubProcessNodeName}'`)
       .should('contain.text', 'Loading process preview...');
 
     cy.tick(1000);

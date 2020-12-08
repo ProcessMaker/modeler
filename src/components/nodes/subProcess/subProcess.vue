@@ -17,7 +17,7 @@
       v-on="$listeners"
     />
 
-    <b-modal ref="subprocess-modal" :title="`You are viewing subprocess for '${subprocessName}'`">
+    <b-modal ref="subprocess-modal" :title="`Previewing '${subprocessName}'`">
       <div v-if="subProcessSvg" v-html="subProcessSvg"/>
       <div v-else-if="errorLoadingSvg">Could not load preview</div>
       <div v-else><i class="fas fa-spinner fa-spin"/> Loading process preview...</div>
