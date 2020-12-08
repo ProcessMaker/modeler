@@ -12,7 +12,11 @@ axios.defaults.timeout = 5000;
 const mock = new MockAdapter(axios);
 mock.onGet('processes').reply(200, mockProcesses);
 mock.onGet('signals').reply(200, mockSignals);
-mock.onGet(/\/processes\/\d+\/svg/).reply(200, mockProcessSvg);
+mock.onGet(/\/processes\/\d+\/svg/).reply(() => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve([200, mockProcessSvg]), 1000);
+  });
+});
 
 window.ProcessMaker = {
   navbar: {
