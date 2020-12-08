@@ -18,7 +18,7 @@
     />
 
     <b-modal ref="subprocess-modal" :title="`You are viewing subprocess for '${subprocessName}'`">
-      This is the modal content.
+      <div v-html="subProcessSvg"/>
 
       <template #modal-footer>
         <a :href="subprocessLink" target="_blank">
@@ -72,6 +72,7 @@ export default {
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
+      subProcessSvg: '',
       boundaryEventDropdownData,
       dropdownData: [
         {
@@ -151,6 +152,10 @@ export default {
       }
 
       this.$refs['subprocess-modal'].show();
+
+      window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}/svg`).then(({ data }) => {
+        this.subProcessSvg = data;
+      });
     },
   },
   mounted() {
