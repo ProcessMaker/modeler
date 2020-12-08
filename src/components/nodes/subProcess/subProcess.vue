@@ -17,8 +17,15 @@
       v-on="$listeners"
     />
 
-    <b-modal ref="subprocess-modal" :hide-footer="true">
-      <a href="">Open subprocess in new window</a>
+    <b-modal ref="subprocess-modal" :title="`You are viewing subprocess for '${subprocessName}'`">
+      This is the modal content.
+
+      <template #modal-footer>
+        <a :href="subprocessLink" target="_blank">
+          Open subprocess in new window
+          <i class="ml-1 fas fa-external-link-alt"/>
+        </a>
+      </template>
     </b-modal>
   </div>
 </template>
@@ -85,6 +92,15 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    subprocessLink() {
+      const config = JSON.parse(this.node.definition.get('config'));
+      return `/modeler/${config.processId}`;
+    },
+    subprocessName() {
+      return this.node.definition.get('name');
+    },
   },
   watch: {
     'node.definition.name'(name) {
