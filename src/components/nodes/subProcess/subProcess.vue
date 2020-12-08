@@ -18,11 +18,12 @@
     />
 
     <b-modal ref="subprocess-modal" :title="`You are viewing subprocess for '${subprocessName}'`">
-      <div v-html="subProcessSvg" v-if="subProcessSvg"/>
-      <div v-else> <i class="fas fa-spinner fa-spin"/> </div>
+      <div v-if="subProcessSvg" v-html="subProcessSvg"/>
+      <div v-else-if="errorLoadingSvg">Could not load preview</div>
+      <div v-else><i class="fas fa-spinner fa-spin"/> Loading process preview...</div>
 
       <template #modal-footer>
-        <a :href="subprocessLink" target="_blank">
+        <a :href="subprocessLink" target="_blank" data-test="modal-process-link">
           Open subprocess in new window
           <i class="ml-1 fas fa-external-link-alt"/>
         </a>
@@ -74,6 +75,7 @@ export default {
   data() {
     return {
       subProcessSvg: null,
+      errorLoadingSvg: false,
       boundaryEventDropdownData,
       dropdownData: [
         {
@@ -155,9 +157,11 @@ export default {
       this.$refs['subprocess-modal'].show();
 
       this.subProcessSvg = null;
+      this.errorLoadingSvg = false;
+
       window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}/svg`).then(({ data }) => {
         this.subProcessSvg = data;
-      });
+      }).catch(() => this.errorLoadingSvg = true);
     },
   },
   mounted() {
