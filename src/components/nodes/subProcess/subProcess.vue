@@ -1,20 +1,26 @@
 <template>
-  <crown-config
-    :highlighted="highlighted"
-    :paper="paper"
-    :graph="graph"
-    :shape="shape"
-    :node="node"
-    :nodeRegistry="nodeRegistry"
-    :moddle="moddle"
-    :collaboration="collaboration"
-    :process-node="processNode"
-    :plane-elements="planeElements"
-    :is-rendering="isRendering"
-    :boundary-event-dropdown-data="boundaryEventDropdownData"
-    :dropdown-data="dropdownData"
-    v-on="$listeners"
-  />
+  <div>
+    <crown-config
+      :highlighted="highlighted"
+      :paper="paper"
+      :graph="graph"
+      :shape="shape"
+      :node="node"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :collaboration="collaboration"
+      :process-node="processNode"
+      :plane-elements="planeElements"
+      :is-rendering="isRendering"
+      :boundary-event-dropdown-data="boundaryEventDropdownData"
+      :dropdown-data="dropdownData"
+      v-on="$listeners"
+    />
+
+    <b-modal ref="subprocess-modal" :hide-footer="true">
+      <a href="">Open subprocess in new window</a>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -136,8 +142,7 @@ export default {
         return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log('Clicked image!');
+      this.$refs['subprocess-modal'].show();
     });
   },
 };
