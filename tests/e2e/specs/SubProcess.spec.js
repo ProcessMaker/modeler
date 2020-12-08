@@ -75,7 +75,7 @@ describe('Sub Process (Call Activities)', () => {
       .should('contain.text', 'Please select a subprocess to view it.');
   });
 
-  it('shows a subprocess SVG modal when clicking the [+] button', () => {
+  it('shows a subprocess preview modal containing a SVG when clicking the [+] button', () => {
     const calledProcessName = 'Process with multiple start events';
     const calledSubProcessId = 5;
 
@@ -100,7 +100,7 @@ describe('Sub Process (Call Activities)', () => {
     cy.get('[data-test="modal-process-link"]').should('have.attr', 'href', `/modeler/${calledSubProcessId}`);
   });
 
-  it('shows error message when loading of SVG fails', () => {
+  it('shows an error message when the SVG API GET call fails', () => {
     const calledProcessName = 'Process with mocked axios failure';
 
     addSubprocessToPaper(subProcessPosition);
