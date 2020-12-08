@@ -13,7 +13,7 @@
         :searchable="true"
         :internal-search="false"
         label="name"
-        @search-change="loadOptionsDebounced"
+        @search-change="loadOptions"
         @open="loadOptions"
         :data-test="`${name}:select`"
       >
@@ -109,7 +109,7 @@
 <script>
 import store from '@/store';
 import Multiselect from 'vue-multiselect';
-import {get,uniqBy} from 'lodash';
+import { get,uniqBy } from 'lodash';
 
 export default {
   components: { Multiselect },
