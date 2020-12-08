@@ -114,6 +114,18 @@ export default {
       this.shape.attr('image/display', callActivityType === 'globalTask' ? 'none' : 'initial');
     },
   },
+  methods: {
+    clickSubprocess(shapeView, event) {
+      const isPlusMarkerTheTarget = event.target.getAttribute('joint-selector') === 'bottomCenter.0';
+      const isItThisShape = shapeView.model === this.shape;
+
+      if (!isPlusMarkerTheTarget || !isItThisShape) {
+        return;
+      }
+
+      this.$refs['subprocess-modal'].show();
+    },
+  },
   mounted() {
     this.shape = new TaskShape();
     this.$set(this.markers.bottomCenter, 'subprocess', subprocessIcon);
@@ -134,16 +146,7 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-    this.paperManager.addEventHandler('element:pointerclick', (shapeView, event) => {
-      const isPlusMarkerTheTarget = event.target.getAttribute('joint-selector') === 'bottomCenter.0';
-      const isItThisShape = shapeView.model === this.shape;
-
-      if (!isPlusMarkerTheTarget || !isItThisShape) {
-        return;
-      }
-
-      this.$refs['subprocess-modal'].show();
-    });
+    this.paperManager.addEventHandler('element:pointerclick', this.clickSubprocess);
   },
 };
 </script>
