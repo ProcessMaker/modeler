@@ -125,7 +125,7 @@ import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow';
-import { id as dataAssociationFlowId } from '../nodes/dataOutputAssociation';
+import { id as dataAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
