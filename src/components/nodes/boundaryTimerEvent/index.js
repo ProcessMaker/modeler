@@ -83,7 +83,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         config: {
           label: 'Timing Control',
           icon: 'clock',
-          name: 'inspector-accordion',
+          name: 'inspector-accordion-boundary-timer-event',
         },
         items: [
           {

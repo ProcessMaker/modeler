@@ -1,8 +1,9 @@
 import component from './task.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+import omit from 'lodash/omit';
 
 export const id = 'processmaker-modeler-task';
 
@@ -29,6 +30,22 @@ export default {
       }),
     });
   },
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
+    handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
+    defaultInspectorHandler(omit(value, 'markerFlags'));
+  },
+  inspectorData(node, defaultDataTransform) {
+    const inspectorData = defaultDataTransform(node);
+
+    inspectorData.markerFlags = {
+      isForCompensation: inspectorData.isForCompensation,
+      loopCharacteristics: getLoopCharacteristicsRadioValue(inspectorData.loopCharacteristics),
+    };
+    delete inspectorData.isForCompensation;
+    delete inspectorData.loopCharacteristics;
+
+    return inspectorData;
+  },
   inspectorConfig: [
     {
       name: defaultNames[id],
@@ -40,7 +57,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion',
+            name: 'inspector-accordion-task',
           },
           items: [
             {
@@ -49,8 +66,67 @@ export default {
             },
           ],
         },
-        advancedAccordionConfig,
+        advancedAccordionConfigWithMarkerFlags,
       ],
     },
   ],
 };
+
+function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
+  if (!markerFlags) {
+    return;
+  }
+
+  if (markerFlags.loopCharacteristics) {
+    if (markerFlags.loopCharacteristics === 'no_loop') {
+      setNodeProp(node, 'loopCharacteristics', null);
+    }
+
+    const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
+
+    if (markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
+      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
+    }
+
+    if (markerFlags.loopCharacteristics === 'parallel_mi' ) {
+      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
+        return;
+      }
+      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
+    }
+
+    if (markerFlags.loopCharacteristics === 'sequential_mi') {
+      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
+        return;
+      }
+      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
+    }
+  }
+
+  const currentIsForCompensationValue = node.definition.get('isForCompensation');
+  const newIsForCompensationValue = markerFlags.isForCompensation;
+
+  if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
+    setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+  }
+}
+
+function getLoopCharacteristicsRadioValue(loopCharacteristics) {
+  if (!loopCharacteristics) {
+    return 'no_loop';
+  }
+
+  if (loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
+    return 'loop';
+  }
+
+  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !loopCharacteristics.isSequential) {
+    return 'parallel_mi';
+  }
+
+  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && loopCharacteristics.isSequential) {
+    return 'sequential_mi';
+  }
+
+  return 'no_loop';
+}

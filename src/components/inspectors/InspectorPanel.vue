@@ -181,13 +181,15 @@ export default {
 
       const type = this.highlightedNode && this.highlightedNode.type;
 
-      this.data = type && this.nodeRegistry[type].inspectorData
-        ? this.nodeRegistry[type].inspectorData(this.highlightedNode)
-        : Object.entries(this.highlightedNode.definition).reduce((data, [key, value]) => {
-          data[key] = value;
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
 
-          return data;
-        }, {});
+        return data;
+      }, {});
+
+      this.data = type && this.nodeRegistry[type].inspectorData
+        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform)
+        : defaultDataTransform(this.highlightedNode);
     },
     isSequenceFlow(type) {
       return type === sequenceFlowId;
@@ -199,7 +201,7 @@ export default {
       return definition.targetRef.$type === 'bpmn:CallActivity';
     },
     customInspectorHandler(value) {
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions);
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler);
     },
     processNodeInspectorHandler(value) {
       return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
