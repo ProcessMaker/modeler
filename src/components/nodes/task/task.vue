@@ -29,7 +29,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
-import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
+import setupMultiInstanceMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
 
@@ -103,12 +103,6 @@ export default {
         this.recalcMarkersAlignment();
       }
     },
-    'node.definition.isForCompensation'() {
-      setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
-    },
-    'node.definition.loopCharacteristics'() {
-      setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
-    },
   },
   methods: {
     getElementsUnderArea(element) {
@@ -133,14 +127,15 @@ export default {
     middleIsOddNumber(value) {
       return Math.abs((value / 2) % 2) === 1;
     },
+
   },
   mounted() {
     this.shape = new TaskShape();
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-    setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
-    setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+    setupCompensationMarker(this.node.definition, this.markers, this.$set);
+    setupMultiInstanceMarkers(this.node.definition, this.markers, this.$set);
     this.shape.attr({
       body: {
         rx: 8,

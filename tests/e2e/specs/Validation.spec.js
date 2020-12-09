@@ -131,21 +131,4 @@ describe('Validation', () => {
       expect(win.console.error).to.have.callCount(0);
     });
   });
-
-  it('has no validation errors for a valid basic diagram', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 250, y: 250 };
-    const endEventPosition = { x: 350, y: 350 };
-
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
-
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
-    connectNodesWithFlow('sequence-flow-button', taskPosition, endEventPosition);
-
-    cy.get('[data-test="validation-toggle"]').click({ force: true });
-
-    cy.get('[data-test=validation-list-valid]')
-      .should('contain.text', 'BPMN Valid');
-  });
 });

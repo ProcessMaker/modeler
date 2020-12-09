@@ -5,7 +5,6 @@ import loopIcon from '@/assets/loop.svg';
 
 describe('setupMultiInstanceMarkers', () => {
   let $set = jest.fn();
-  let $delete = jest.fn();
   let markers = {
     bottomCenter: {},
   };
@@ -13,10 +12,9 @@ describe('setupMultiInstanceMarkers', () => {
   it('does not set up markers for task without loop characteristics', () => {
     const nodeDefinition = { get(){} };
 
-    setupMultiInstanceMarkers(nodeDefinition, {}, $set, $delete);
+    setupMultiInstanceMarkers(nodeDefinition, {}, $set);
 
     expect($set).not.toHaveBeenCalled();
-    expect($delete).toHaveBeenCalledTimes(1);
   });
 
   it('sets sequential icon for sequential multi instance task', () => {

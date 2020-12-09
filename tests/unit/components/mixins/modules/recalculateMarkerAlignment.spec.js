@@ -42,22 +42,4 @@ describe('recalculateMarkerAlignment', () => {
     });
 
   });
-
-  it('sorts the bottom centre markers alphabetically by key', () => {
-    const shape = new TaskShape();
-    const markers = {
-      topLeft: {},
-      topCenter: {},
-      topRight: {},
-      bottomLeft: {},
-      bottomCenter: { c: 'third', b: 'second', a: 'first' },
-      bottomRight: {},
-    };
-
-    recalculateMarkerAlignment(markers, shape);
-
-    expect(shape.attributes.attrs['bottomCenter.0']['xlink:href']).toEqual('first');
-    expect(shape.attributes.attrs['bottomCenter.1']['xlink:href']).toEqual('second');
-    expect(shape.attributes.attrs['bottomCenter.2']['xlink:href']).toEqual('third');
-  });
 });

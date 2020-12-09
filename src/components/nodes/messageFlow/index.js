@@ -25,7 +25,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-message-flow',
+            name: 'inspector-accordion',
           },
           items: [
             {

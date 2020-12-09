@@ -92,7 +92,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-intermediate-timer-config',
+            name: 'inspector-accordion',
           },
           items: [
             {
@@ -107,7 +107,7 @@ export default {
           config: {
             label: 'Timing Control',
             icon: 'clock',
-            name: 'inspector-accordion-intermediate-timer-event-timing-control',
+            name: 'inspector-accordion',
           },
           items: [
             {
