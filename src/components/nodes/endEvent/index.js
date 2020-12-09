@@ -40,7 +40,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-end-event',
+            name: 'inspector-accordion',
           },
           items: [
             {

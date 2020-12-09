@@ -52,7 +52,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-text-annotation',
+            name: 'inspector-accordion',
           },
           items: [
             {

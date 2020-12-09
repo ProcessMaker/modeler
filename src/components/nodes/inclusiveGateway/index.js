@@ -39,7 +39,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-inclusive-gateway-config',
+            name: 'inspector-accordion',
           },
           items: [
             {
@@ -55,7 +55,7 @@ export default {
             initiallyOpen: false,
             label: 'Advanced',
             icon: 'cogs',
-            name: 'inspector-accordion-inclusive-gateway-advanced',
+            name: 'inspector-accordion',
           },
           items: [
             {

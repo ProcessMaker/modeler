@@ -57,7 +57,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-subprocess',
+            name: 'inspector-accordion',
           },
           items: [
             {

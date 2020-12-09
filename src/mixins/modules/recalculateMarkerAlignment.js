@@ -4,7 +4,6 @@ export const markerPadding = 4;
 
 export default function recalculateMarkerAlignment(markers, shape) {
   const { width, height } = shape.size();
-
   for (let position in markers) {
 
     alignMarkersFromLeftToRight(shape, position, width);
@@ -39,10 +38,7 @@ function alignMarkersFromCenter(shape, position, markers, width) {
   for (let i = 0; i < markersLimit; i++) {
     shape.attr(position + '.' + i + '/xlink:href', null);
   }
-
-  const orderedMarkers = orderMarkers(markers, position);
-
-  for (let marker in orderedMarkers) {
+  for (let marker in markers[position]) {
     shape.attr(position + '.' + c + '/xlink:href', markers[position][marker]);
     c++;
     if (c >= markersLimit) {
@@ -53,17 +49,6 @@ function alignMarkersFromCenter(shape, position, markers, width) {
   if (position.indexOf('Center') !== -1) {
     shape.attr(position + '/ref-x', (width - c * markerSize) / 2);
   }
-}
-
-function orderMarkers(markers, position) {
-  if (position === 'bottomCenter') {
-    const orderedMarkers = {};
-    Object.keys(markers[position]).sort().forEach(key => {
-      orderedMarkers[key] = markers[position][key];
-    });
-    return orderedMarkers;
-  }
-  return markers[position];
 }
 
 function hasTaskMarker(shape) {

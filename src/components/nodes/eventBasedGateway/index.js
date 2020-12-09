@@ -35,7 +35,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-event-based-gateway',
+            name: 'inspector-accordion',
           },
           items: [
             {

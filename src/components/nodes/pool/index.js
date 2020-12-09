@@ -37,7 +37,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-pool',
+            name: 'inspector-accordion',
           },
           items: [
             {

@@ -41,7 +41,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion-data-object',
+            name: 'inspector-accordion',
           },
           items: [
             {
