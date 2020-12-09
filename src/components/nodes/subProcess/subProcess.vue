@@ -19,7 +19,7 @@
 
     <b-modal ref="subprocess-modal" :title="`Previewing '${subprocessName}'`">
       <div v-if="subProcessSvg" v-html="subProcessSvg"/>
-      <div v-else-if="errorLoadingSvg">Could not load preview</div>
+      <div v-else-if="failedToLoadPreview">Could not load preview</div>
       <div v-else><i class="fas fa-spinner fa-spin"/> Loading process preview...</div>
 
       <template #modal-footer>
@@ -75,7 +75,7 @@ export default {
   data() {
     return {
       subProcessSvg: null,
-      errorLoadingSvg: false,
+      failedToLoadPreview: false,
       boundaryEventDropdownData,
       dropdownData: [
         {
@@ -157,14 +157,19 @@ export default {
       this.$refs['subprocess-modal'].show();
 
       this.subProcessSvg = null;
-      this.errorLoadingSvg = false;
+      this.failedToLoadPreview = false;
 
-      window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}/svg`)
+      window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}`, { params: { include: 'svg' } })
         .then(({ data }) => {
-          this.subProcessSvg = data;
+          if (!data.svg) {
+            this.failedToLoadPreview = true;
+            return;
+          }
+
+          this.subProcessSvg = data.svg;
         })
         .catch(() => {
-          this.errorLoadingSvg = true;
+          this.failedToLoadPreview = true;
         });
     },
   },
