@@ -125,4 +125,17 @@ describe('Tasks', () => {
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
   });
+
+  it('sets and retains task assignment value after re-highlighting node', () => {
+    const userAssignment = '1234';
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    cy.contains('Assignment Rules').click();
+    typeIntoTextInput('input[name="taskAssignment"]', userAssignment);
+
+    cy.get('.paper-container').click();
+
+    getElementAtPosition(taskPosition).click();
+    cy.contains('Assignment Rules').click();
+    cy.get('input[name="taskAssignment"]').should('have.value', userAssignment);
+  });
 });
