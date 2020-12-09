@@ -13,6 +13,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-store.svg'),
   label: defaultNames[id],
+  rank: 90,
   validateIncoming() {
     return false;
   },

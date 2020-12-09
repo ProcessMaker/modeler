@@ -12,7 +12,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
   control: true,
   icon: require('@/assets/toolpanel/start-event.svg'),
   label: defaultNames[id],
-  rank: 1,
+  rank: 10,
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {
       name: $t(defaultNames[id]),

@@ -46,9 +46,11 @@ export default {
       }
 
       if (key === 'conditionExpression' && hasCondition) {
-        // Set the condition expression
-        const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
-        setNodeProp(node, 'conditionExpression', conditionExpression);
+        // Set the condition expression IFF the expresion body changed
+        if (definition[key].body !== value[key]) {
+          const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
+          setNodeProp(node, key, conditionExpression);
+        }
       } else {
         setNodeProp(node, key, value[key]);
       }

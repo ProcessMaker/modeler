@@ -11,6 +11,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/text-annotation.svg'),
   label: 'Text Annotation',
+  rank: 70,
   definition(moddle, $t) {
     return moddle.create('bpmn:TextAnnotation', {
       text: $t('Text Annotation'),

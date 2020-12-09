@@ -12,6 +12,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/pool.svg'),
   label: 'Pool',
+  rank: 60,
   definition(moddle, $t) {
     return moddle.create('bpmn:Participant', {
       name: $t('Pool'),
