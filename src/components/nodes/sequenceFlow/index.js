@@ -19,6 +19,7 @@ export default {
   },
   inspectorData(node) {
     // If the flow's source is doesn't have condition remove it:
+    // eslint-disable-next-line no-unused-vars
     const hasCondition = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(node.definition.sourceRef.$type);
     if (!hasCondition) {
       delete node.definition.conditionExpression;
@@ -46,9 +47,11 @@ export default {
       }
 
       if (key === 'conditionExpression' && hasCondition) {
-        // Set the condition expression
-        const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
-        setNodeProp(node, 'conditionExpression', conditionExpression);
+        // Set the condition expression IFF the expresion body changed
+        if (definition[key].body !== value[key]) {
+          const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
+          setNodeProp(node, key, conditionExpression);
+        }
       } else {
         setNodeProp(node, key, value[key]);
       }
