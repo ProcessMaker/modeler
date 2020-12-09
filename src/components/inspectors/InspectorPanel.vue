@@ -78,12 +78,12 @@ export default {
       this.prepareData();
       this.prepareConfig();
     },
-    'highlightedNode.definition': {
-      handler() {
-        this.prepareData();
-      },
-      deep: true,
-    },
+    // 'highlightedNode.definition': {
+    //   handler() {
+    //     this.prepareData();
+    //   },
+    //   deep: true,
+    // },
   },
   computed: {
     highlightedNode() {
