@@ -19,7 +19,6 @@ export default {
   },
   inspectorData(node) {
     // If the flow's source is doesn't have condition remove it:
-    // eslint-disable-next-line no-unused-vars
     const hasCondition = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(node.definition.sourceRef.$type);
     if (!hasCondition) {
       delete node.definition.conditionExpression;
