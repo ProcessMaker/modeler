@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
 
 export const id = 'processmaker-modeler-task';
@@ -67,6 +68,7 @@ export default {
           ],
         },
         advancedAccordionConfigWithMarkerFlags,
+        documentationAccordionConfig,
       ],
     },
   ],

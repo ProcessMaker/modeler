@@ -1,6 +1,7 @@
 import component from './dataStore.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 
 export const id = 'processmaker-modeler-data-store';
@@ -50,6 +51,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

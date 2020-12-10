@@ -1,6 +1,7 @@
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { startEventDiameter } from './startEventConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 export default {
   bpmnType: 'bpmn:StartEvent',
@@ -43,6 +44,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

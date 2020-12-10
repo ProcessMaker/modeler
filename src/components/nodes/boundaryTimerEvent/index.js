@@ -5,6 +5,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 export const defaultDurationValue = 'PT1H';
 
@@ -97,6 +98,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         ],
       },
       advancedAccordionConfig,
+      documentationAccordionConfig,
     ],
   }],
 });

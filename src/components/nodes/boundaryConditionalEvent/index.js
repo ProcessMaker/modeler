@@ -4,6 +4,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import { default as eventDefinition, inspector } from '../conditionalEventDefinition';
 
 export default merge(cloneDeep(boundaryEventConfig), {
@@ -35,6 +36,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         ],
       },
       advancedAccordionConfig,
+      documentationAccordionConfig,
     ],
   }],
 });

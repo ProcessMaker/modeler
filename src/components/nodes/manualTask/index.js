@@ -1,6 +1,7 @@
 import component from './manualTask.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 
 export const taskHeight = 76;
@@ -47,6 +48,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

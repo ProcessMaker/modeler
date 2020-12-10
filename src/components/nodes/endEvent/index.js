@@ -1,6 +1,7 @@
 import component from './endEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
 
 const id = 'processmaker-modeler-end-event';
@@ -49,6 +50,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

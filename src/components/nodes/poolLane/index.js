@@ -1,6 +1,7 @@
 import component from './poolLane';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 export const id = 'processmaker-modeler-lane';
 export default {
@@ -43,6 +44,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },
