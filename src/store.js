@@ -5,11 +5,13 @@ import uniq from 'lodash/uniq';
 
 Vue.use(Vuex);
 
-function makeDefinitionPropertyReactive(definition, key, value) {
+function setDefinitionPropertyReactive(definition, key, value) {
   if (definition.hasOwnProperty(key)) {
+    definition.set(key, value);
     return;
   }
 
+  delete Object.getPrototypeOf(definition)[key];
   Vue.set(definition, key, value);
 }
 
@@ -74,14 +76,11 @@ export default new Vuex.Store({
       });
     },
     updateNodeProp(state, { node, key, value }) {
-      node.definition.set(key, value);
+      setDefinitionPropertyReactive(node.definition, key, value);
 
-      if (value === undefined) {
+      if (value == null) {
         Vue.delete(node.definition, key);
-        return;
       }
-
-      makeDefinitionPropertyReactive(node.definition, key, value);
     },
     clearNodes(state) {
       state.nodes = [];

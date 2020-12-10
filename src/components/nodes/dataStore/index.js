@@ -13,6 +13,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/data-store.svg'),
   label: defaultNames[id],
+  rank: 90,
   validateIncoming() {
     return false;
   },
@@ -40,7 +41,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion',
+            name: 'inspector-accordion-data-store',
           },
           items: [
             {

@@ -13,7 +13,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/generic-gateway.svg'),
   label: 'Gateway',
-  rank: 5,
+  rank: 50,
   definition(moddle, $t) {
     return moddle.create('bpmn:ExclusiveGateway', {
       name: $t(defaultNames[id]),
@@ -38,7 +38,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion',
+            name: 'inspector-accordion-exlcusive-gateway',
           },
           items: [
             {

@@ -12,6 +12,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/pool.svg'),
   label: 'Pool',
+  rank: 60,
   definition(moddle, $t) {
     return moddle.create('bpmn:Participant', {
       name: $t('Pool'),
@@ -36,7 +37,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion',
+            name: 'inspector-accordion-pool',
           },
           items: [
             {

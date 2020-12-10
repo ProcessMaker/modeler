@@ -125,7 +125,8 @@ import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow';
-import { id as dataAssociationFlowId } from '../nodes/dataOutputAssociation/config';
+import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
+import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -431,7 +432,7 @@ export default {
 
       types.forEach(bpmnType => {
         if (!this.parsers[bpmnType]) {
-          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: [] };
         }
 
         if (customParser) {
@@ -746,7 +747,7 @@ export default {
       store.commit('addNode', node);
       this.poolTarget = null;
 
-      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataAssociationFlowId].includes(node.type)) {
+      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataOutputAssociationFlowId, dataInputAssociationFlowId].includes(node.type)) {
         return;
       }
 
@@ -911,6 +912,13 @@ export default {
         );
       }
     }, this);
+
+    this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
+      const clickHandler = cellView.model.get('onClick');
+      if (clickHandler) {
+        clickHandler(cellView, evt, x, y);
+      }
+    });
 
     this.paperManager.addEventHandler('cell:pointerclick', ({ model: shape }, event) => {
       if (!this.isBpmnNode(shape)) {

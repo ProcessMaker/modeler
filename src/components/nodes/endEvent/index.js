@@ -13,7 +13,7 @@ export default {
   category: 'BPMN',
   icon: require('@/assets/toolpanel/end-event.svg'),
   label: defaultNames[id],
-  rank: 3,
+  rank: 30,
   definition(moddle, $t) {
     return moddle.create('bpmn:EndEvent', {
       name: $t(defaultNames[id]),
@@ -40,7 +40,7 @@ export default {
             initiallyOpen: true,
             label: 'Configuration',
             icon: 'cog',
-            name: 'inspector-accordion',
+            name: 'inspector-accordion-end-event',
           },
           items: [
             {
