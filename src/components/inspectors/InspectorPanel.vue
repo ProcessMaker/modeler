@@ -78,60 +78,12 @@ export default {
       this.prepareData();
       this.prepareConfig();
     },
-    'highlightedNode.definition.assignment': {
-      handler(currentValue, prevValue) {
-        if (currentValue === prevValue) {
-          return;
-        }
-        this.prepareData();
-      },
-      deep: true,
-    },
-    'highlightedNode.definition.assignmentLock': {
-      handler(currentValue, prevValue) {
-        if (currentValue === prevValue) {
-          return;
-        }
-        this.prepareData();
-      },
-      deep: true,
-    },
-    'highlightedNode.definition.allowReassignment': {
-      handler(currentValue, prevValue) {
-        if (currentValue === prevValue) {
-          return;
-        }
-        this.prepareData();
-      },
-      deep: true,
-    },
-    'highlightedNode.definition.assignedUsers': {
-      handler(currentValue, prevValue) {
-        if (currentValue === prevValue) {
-          return;
-        }
-        this.prepareData();
-      },
-      deep: true,
-    },
-    'highlightedNode.definition.assignedGroups': {
-      handler(currentValue, prevValue) {
-        if (currentValue === prevValue) {
-          return;
-        }
-        this.prepareData();
-      },
-      deep: true,
-    },
-    'highlightedNode.definition.assignmentRules': {
-      handler(currentValue, prevValue) {
-        if (currentValue === prevValue) {
-          return;
-        }
-        this.prepareData();
-      },
-      deep: true,
-    },
+    'highlightedNode.definition.assignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignmentLock'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.allowReassignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
     highlightedNode() {
@@ -179,6 +131,12 @@ export default {
     },
   },
   methods: {
+    handleAssignmentChanges(currentValue, previousValue) {
+      if (currentValue === previousValue) {
+        return;
+      }
+      this.prepareData();
+    },
     prepareConfig() {
       if (!this.highlightedNode) {
         return this.config = {
