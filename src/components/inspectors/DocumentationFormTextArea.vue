@@ -1,11 +1,18 @@
 <template>
-  <form-text-area
-    v-bind="$attrs"
-    :value="textValue"
-    :richtext="renderAsRichtext"
-    class="documentation-input"
-    @input="$emit('input', $event)"
-  />
+  <div>
+    <div>
+      <label>{{ $t('Documentation') }}</label>
+      <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+    </div>
+
+    <form-text-area
+      v-bind="$attrs"
+      :value="textValue"
+      :richtext="renderAsRichtext"
+      class="documentation-input"
+      @input="$emit('input', $event)"
+    />
+  </div>
 </template>
 
 <script>
@@ -34,6 +41,9 @@ export default {
     },
   },
   methods: {
+    expandEditor() {
+
+    },
     emitValue(value) {
       this.$emit('input', value);
     },
