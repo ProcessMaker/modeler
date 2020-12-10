@@ -32,7 +32,7 @@ function addSubprocessToPaper(position) {
 }
 
 function clickSubprocessPlusButton() {
-  cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]').click();
+  cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]:last').click();
 }
 
 describe('Sub Process (Call Activities)', () => {
