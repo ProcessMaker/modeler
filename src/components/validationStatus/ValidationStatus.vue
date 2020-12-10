@@ -15,7 +15,7 @@
 
     <div class="status-bar-container d-flex align-items-center justify-content-end">
       <template v-if="autoValidate">
-        <button v-if="numberOfProblemsToDisplay === 0" type="button" class="btn btn-light" :disabled="true">
+        <button v-if="numberOfProblemsToDisplay === 0" type="button" data-test="validation-list-valid" class="btn btn-light" :disabled="true">
           {{ $t('BPMN Valid') }}
           <span class="badge badge-success badge-pill">
             <font-awesome-icon :icon="faCheck"/>

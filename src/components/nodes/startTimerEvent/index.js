@@ -66,7 +66,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
           config: {
             label: 'Timing Control',
             icon: 'clock',
-            name: 'inspector-accordion',
+            name: 'inspector-accordion-start-timer-timing-control',
           },
           items: [
             {

@@ -78,12 +78,12 @@ export default {
       this.prepareData();
       this.prepareConfig();
     },
-    'highlightedNode.definition': {
-      handler() {
-        this.prepareData();
-      },
-      deep: true,
-    },
+    'highlightedNode.definition.assignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignmentLock'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.allowReassignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
     highlightedNode() {
@@ -131,6 +131,12 @@ export default {
     },
   },
   methods: {
+    handleAssignmentChanges(currentValue, previousValue) {
+      if (currentValue === previousValue) {
+        return;
+      }
+      this.prepareData();
+    },
     prepareConfig() {
       if (!this.highlightedNode) {
         return this.config = {
@@ -181,13 +187,15 @@ export default {
 
       const type = this.highlightedNode && this.highlightedNode.type;
 
-      this.data = type && this.nodeRegistry[type].inspectorData
-        ? this.nodeRegistry[type].inspectorData(this.highlightedNode)
-        : Object.entries(this.highlightedNode.definition).reduce((data, [key, value]) => {
-          data[key] = value;
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
 
-          return data;
-        }, {});
+        return data;
+      }, {});
+
+      this.data = type && this.nodeRegistry[type].inspectorData
+        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform)
+        : defaultDataTransform(this.highlightedNode);
     },
     isSequenceFlow(type) {
       return type === sequenceFlowId;
@@ -199,7 +207,7 @@ export default {
       return definition.targetRef.$type === 'bpmn:CallActivity';
     },
     customInspectorHandler(value) {
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions);
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler);
     },
     processNodeInspectorHandler(value) {
       return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));

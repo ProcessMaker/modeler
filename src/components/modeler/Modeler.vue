@@ -125,7 +125,8 @@ import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow';
-import { id as dataAssociationFlowId } from '../nodes/dataOutputAssociation';
+import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
+import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -431,7 +432,7 @@ export default {
 
       types.forEach(bpmnType => {
         if (!this.parsers[bpmnType]) {
-          this.parsers[bpmnType] = { custom: [], implementation: [], default: [] };
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
         }
 
         if (customParser) {
@@ -712,9 +713,10 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
+      this.highlightNode(newNode);
+      await this.addNode(newNode);
+
       if (!nodeThatWillBeReplaced) {
-        await this.addNode(newNode);
-        this.highlightNode(newNode);
         return;
       }
 
@@ -727,9 +729,7 @@ export default {
         this.collaboration,
       );
       nodeMigrator.migrate();
-
-      await this.addNode(newNode);
-      this.highlightNode(newNode);
+      
       return newNode;
     },
     setShapeCenterUnderCursor(diagram) {
@@ -747,7 +747,7 @@ export default {
       store.commit('addNode', node);
       this.poolTarget = null;
 
-      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataAssociationFlowId].includes(node.type)) {
+      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataOutputAssociationFlowId, dataInputAssociationFlowId].includes(node.type)) {
         return;
       }
 
