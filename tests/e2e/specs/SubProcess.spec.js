@@ -60,18 +60,24 @@ describe('Sub Process (Call Activities)', () => {
 
   it('Allows typing in name field on new sub process', () => {
     addSubprocessToPaper(subProcessPosition);
+    cy.clock();
+    cy.tick(500);
     typeIntoTextInput('[name=name]', testString);
+    cy.tick(500);
     cy.get('[name=name]').should('have.value', testString);
+    cy.clock().invoke('restore');
   });
 
   it('shows a message when clicking the [+] if no subprocess selected', () => {
     addSubprocessToPaper(subProcessPosition);
-
+    cy.clock();
+    cy.tick(500);
     clickSubprocessPlusButton();
-
+    cy.tick(500);
     cy.get('.modal-content')
       .should('contain.text', 'No subprocess selected')
       .should('contain.text', 'Please select a subprocess to view it.');
+    cy.clock().invoke('restore');
   });
 
   it('shows a subprocess preview modal containing a SVG when clicking the [+] button', () => {
@@ -96,6 +102,7 @@ describe('Sub Process (Call Activities)', () => {
       .should('contain.html', '<svg');
 
     cy.get('[data-test="modal-process-link"]').should('have.attr', 'href', `/modeler/${calledSubProcessId}`);
+    cy.clock().invoke('restore');
   });
 
   it('shows an error message when the SVG API GET call fails', () => {
