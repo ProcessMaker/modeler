@@ -78,12 +78,60 @@ export default {
       this.prepareData();
       this.prepareConfig();
     },
-    // 'highlightedNode.definition': {
-    //   handler() {
-    //     this.prepareData();
-    //   },
-    //   deep: true,
-    // },
+    'highlightedNode.definition.assignment': {
+      handler(currentValue, prevValue) {
+        if (currentValue === prevValue) {
+          return;
+        }
+        this.prepareData();
+      },
+      deep: true,
+    },
+    'highlightedNode.definition.assignmentLock': {
+      handler(currentValue, prevValue) {
+        if (currentValue === prevValue) {
+          return;
+        }
+        this.prepareData();
+      },
+      deep: true,
+    },
+    'highlightedNode.definition.allowReassignment': {
+      handler(currentValue, prevValue) {
+        if (currentValue === prevValue) {
+          return;
+        }
+        this.prepareData();
+      },
+      deep: true,
+    },
+    'highlightedNode.definition.assignedUsers': {
+      handler(currentValue, prevValue) {
+        if (currentValue === prevValue) {
+          return;
+        }
+        this.prepareData();
+      },
+      deep: true,
+    },
+    'highlightedNode.definition.assignedGroups': {
+      handler(currentValue, prevValue) {
+        if (currentValue === prevValue) {
+          return;
+        }
+        this.prepareData();
+      },
+      deep: true,
+    },
+    'highlightedNode.definition.assignmentRules': {
+      handler(currentValue, prevValue) {
+        if (currentValue === prevValue) {
+          return;
+        }
+        this.prepareData();
+      },
+      deep: true,
+    },
   },
   computed: {
     highlightedNode() {
