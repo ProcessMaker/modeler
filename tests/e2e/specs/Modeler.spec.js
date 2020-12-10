@@ -1,7 +1,5 @@
 import {
   addNodeTypeToPaper,
-  assertDownloadedXmlContainsExpected,
-  assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
