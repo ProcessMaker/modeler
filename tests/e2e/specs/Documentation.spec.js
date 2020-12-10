@@ -23,12 +23,15 @@ describe('Documentation accordion', () => {
   it('has a dedicated documentation inspector accordion', () => {
     baseElements
       .forEach(type => {
+        cy.clock();
+
         dragFromSourceToDest(type, position);
         cy.get('[name="documentation"]').as('documentation').should('not.be.visible');
         cy.contains('Advanced').click();
-        cy.wait(accordionOpenAnimationTime);
+        cy.tick(accordionOpenAnimationTime);
         cy.get('@documentation').should('not.be.visible');
         cy.contains('Documentation').click();
+        cy.tick(accordionOpenAnimationTime);
         cy.get('@documentation').should('be.visible');
 
         getElementAtPosition(position, type)
@@ -36,16 +39,20 @@ describe('Documentation accordion', () => {
           .then($element => {
             getCrownButtonForElement($element, 'delete-button').click({ force: true });
           });
+
+        cy.clock().invoke('restore');
       });
   });
 
-  it.skip('should add and remove documentation to element', () => {
+  it('should add and remove documentation to element', () => {
     baseElements
       .forEach(type => {
+        cy.clock();
         const docString = `${type} doc!`;
 
         dragFromSourceToDest(type, position);
-        cy.contains('Advanced').click();
+        cy.contains('Documentation').click();
+        cy.tick(accordionOpenAnimationTime);
         cy.get('[name="documentation"]').clear().type(docString);
         assertDownloadedXmlContainsExpected(docString);
 
@@ -57,6 +64,8 @@ describe('Documentation accordion', () => {
           .then($element => {
             getCrownButtonForElement($element, 'delete-button').click({ force: true });
           });
+
+        cy.clock().invoke('restore');
       });
   });
 });
