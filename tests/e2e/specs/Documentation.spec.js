@@ -2,7 +2,7 @@ import {nodeTypes} from '../support/constants';
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest, getCrownButtonForElement, getElementAtPosition, waitToRenderAllShapes,
+  dragFromSourceToDest, getCrownButtonForElement, getElementAtPosition,
 } from '../support/utils';
 
 describe('Documentation accordion', () => {
@@ -19,6 +19,13 @@ describe('Documentation accordion', () => {
   ];
   const position = { x: 300, y: 300 };
   const accordionOpenAnimationTime = 500;
+  const deleteElement = (position, type) => {
+    getElementAtPosition(position, type)
+      .click({ force: true })
+      .then($element => {
+        getCrownButtonForElement($element, 'delete-button').click({ force: true });
+      });
+  };
 
   it('has a dedicated documentation inspector accordion', () => {
     baseElements
@@ -34,11 +41,7 @@ describe('Documentation accordion', () => {
         cy.tick(accordionOpenAnimationTime);
         cy.get('@documentation').should('be.visible');
 
-        getElementAtPosition(position, type)
-          .click({ force: true })
-          .then($element => {
-            getCrownButtonForElement($element, 'delete-button').click({ force: true });
-          });
+        deleteElement(position, type);
 
         cy.clock().invoke('restore');
       });
@@ -59,11 +62,7 @@ describe('Documentation accordion', () => {
         cy.get('[name="documentation"]').clear();
         assertDownloadedXmlDoesNotContainExpected('bpmn:documentation');
 
-        getElementAtPosition(position, type)
-          .click({ force: true })
-          .then($element => {
-            getCrownButtonForElement($element, 'delete-button').click({ force: true });
-          });
+        deleteElement(position, type);
 
         cy.clock().invoke('restore');
       });
