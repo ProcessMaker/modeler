@@ -106,12 +106,13 @@ describe('Sub Process (Call Activities)', () => {
   });
 
   it('shows an error message when the SVG API GET call fails', () => {
-    addSubprocessToPaper(subProcessPosition);
-    getElementAtPosition(subProcessPosition).click({ force: true });
-
-    selectCalledProcess('Process with mocked axios failure');
-
     cy.clock();
+    addSubprocessToPaper(subProcessPosition);
+    cy.tick(500);
+    getElementAtPosition(subProcessPosition).click({ force: true });
+    cy.tick(500);
+    selectCalledProcess('Process with mocked axios failure');
+    cy.tick(500);
     clickSubprocessPlusButton();
     cy.tick(2000);
     cy.get('.modal-content').should('contain.text', 'Could not load preview');
