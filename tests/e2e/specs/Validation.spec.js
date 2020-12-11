@@ -42,7 +42,7 @@ describe('Validation', () => {
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
 
-    cy.contains('Advanced').click();
+    cy.contains('Documentation').click();
     cy.get('[name=documentation]').type('Test');
     cy.get('[name=documentation]').clear();
 
