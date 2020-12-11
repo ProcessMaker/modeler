@@ -5,7 +5,7 @@
 # Also check that we never pass a --spec directive in package.json
 # =================================================================
 
-stagedFiles=$(git s --porcelain | grep '^M' | awk '{print $2}')
+stagedFiles=$(git status --porcelain | grep '^M' | awk '{print $2}')
 
 for file in $stagedFiles; do
   if [[ $file == "checkForOnly.sh" ]]; then
