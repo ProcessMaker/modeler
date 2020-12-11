@@ -163,8 +163,19 @@ describe('Intermediate Message Throw Event', () => {
   it('allows connection between pools', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
+    const secondPoolPosition = { x: 100, y: 450 };
+    dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
+
+    connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
+    getNumberOfLinks().should('equal', 1);
+  });
+
+
+  it('allows valid message flow connections', () => {
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 150, y: 450 };
-    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 450 });
+    dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
 
     const validMessageThrowEventTargets = [
       { genericNode: nodeTypes.startEvent, nodeToSwitchTo: 'switch-to-message-start-event' },
@@ -182,12 +193,10 @@ describe('Intermediate Message Throw Event', () => {
       getNumberOfLinks().should('equal', 1);
       cy.get('#delete-button').click();
     });
-
-    connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
-    getNumberOfLinks().should('equal', 1);
   });
 
-  it('should disallow invalid message flow connections', () => {
+
+  it('disallows invalid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 150, y: 450 };
