@@ -3,6 +3,7 @@ import {
   assertDownloadedXmlContainsExpected,
   getElementAtPosition,
   typeIntoTextInput,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import {nodeTypes} from '../support/constants';
@@ -70,6 +71,7 @@ describe('Sub Process (Call Activities)', () => {
 
   it('shows a message when clicking the [+] if no subprocess selected', () => {
     addSubprocessToPaper(subProcessPosition);
+    waitToRenderAllShapes();
     cy.clock();
     cy.tick(500);
     clickSubprocessPlusButton();
