@@ -4,7 +4,7 @@ import {
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
-  getLinksConnectedToElement, modalConfirm, waitToRenderAllShapes,
+  getLinksConnectedToElement, modalConfirm,
 } from '../support/utils';
 import {nodeTypes} from '../support/constants';
 
