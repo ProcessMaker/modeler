@@ -90,6 +90,7 @@
     "cypress-vue-unit-test": "^1.11.7",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.3",
+    "husky": "^4.3.5",
     "i18next": "^15.0.8",
     "istanbul-lib-coverage": "^2.0.5",
     "node-sass": "^4.14.1",
@@ -144,5 +145,10 @@
       "tests/**/*.js"
     ],
     "report-dir": "cypress-coverage"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./checkForOnly.sh"
+    }
   }
 }
