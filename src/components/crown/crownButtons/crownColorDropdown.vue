@@ -51,6 +51,7 @@ import store from '@/store';
 import Vue from 'vue';
 import { baseNodeColors } from '@/components/nodeColors';
 import { Sketch } from 'vue-color';
+import manualIcon from '!!svg-inline-loader!@/assets/manual-task.svg';
 
 export default {
   props: {
@@ -88,6 +89,8 @@ export default {
     },
     setNodeColor(color) {
       Vue.set(this.node.definition, 'color', color);
+      Vue.set(this.node.definition, 'customIcon', btoa(manualIcon));
+      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value: btoa(manualIcon) });
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
       this.$emit('save-state');
     },

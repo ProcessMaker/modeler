@@ -14,6 +14,7 @@
     :boundary-event-dropdown-data="boundaryEventDropdownData"
     :dropdown-data="dropdownData"
     v-on="$listeners"
+    @setCustomIcon="setCustomIcon"
   />
 </template>
 
@@ -109,8 +110,20 @@ export default {
     'node.definition.loopCharacteristics'() {
       setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     },
+    'node.definition.customIcon': {
+      handler(){
+        const icon = this.node.definition.get('customIcon');
+        if (icon){
+          this.setCustomIcon(icon);
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
+    setCustomIcon(base64Icon) {
+      this.nodeIcon = atob(base64Icon);
+    },
     getElementsUnderArea(element) {
       const { x, y, width, height } = element.getBBox();
       const area = { x, y, width, height };
@@ -141,6 +154,9 @@ export default {
     this.shape.resize(bounds.width, bounds.height);
     setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+    if (this.node.definition.get('customIcon')) {
+      this.setCustomIcon(this.node.definition.get('customIcon'));
+    }
     this.shape.attr({
       body: {
         rx: 8,
