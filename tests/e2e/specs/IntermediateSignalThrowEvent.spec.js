@@ -1,10 +1,16 @@
-import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected, selectOptionByName } from '../support/utils';
+import {
+  addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
+  selectOptionByName,
+  waitToRenderAllShapes,
+} from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Signal Throw Event', () => {
   it('Can create intermediate signal throw event', () => {
     const intermediateSignalThrowEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(intermediateSignalThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-signal-throw-event');
+    waitToRenderAllShapes();
     selectOptionByName('[data-test="signalRef:select"]', 'global signal 1');
 
     assertDownloadedXmlContainsExpected(`

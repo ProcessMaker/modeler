@@ -1,20 +1,39 @@
 <template>
-  <crown-config
-    :highlighted="highlighted"
-    :paper="paper"
-    :graph="graph"
-    :shape="shape"
-    :node="node"
-    :nodeRegistry="nodeRegistry"
-    :moddle="moddle"
-    :collaboration="collaboration"
-    :process-node="processNode"
-    :plane-elements="planeElements"
-    :is-rendering="isRendering"
-    :boundary-event-dropdown-data="boundaryEventDropdownData"
-    :dropdown-data="dropdownData"
-    v-on="$listeners"
-  />
+  <div>
+    <crown-config
+      :highlighted="highlighted"
+      :paper="paper"
+      :graph="graph"
+      :shape="shape"
+      :node="node"
+      :nodeRegistry="nodeRegistry"
+      :moddle="moddle"
+      :collaboration="collaboration"
+      :process-node="processNode"
+      :plane-elements="planeElements"
+      :is-rendering="isRendering"
+      :boundary-event-dropdown-data="boundaryEventDropdownData"
+      :dropdown-data="dropdownData"
+      v-on="$listeners"
+    />
+
+    <b-modal ref="subprocess-modal" :title="`Previewing '${subprocessName}'`">
+      <div v-if="subProcessSvg" v-html="subProcessSvg" class="text-center" />
+      <div v-else-if="failedToLoadPreview">Could not load preview</div>
+      <div v-else><i class="fas fa-spinner fa-spin"/> Loading process preview...</div>
+
+      <template #modal-footer>
+        <a :href="subprocessLink" target="_blank" data-test="modal-process-link">
+          Open subprocess in new window
+          <i class="ml-1 fas fa-external-link-alt"/>
+        </a>
+      </template>
+    </b-modal>
+
+    <b-modal ref="no-subprocess-modal" title="No subprocess selected" :hide-footer="true">
+      Please select a subprocess to view it.
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -50,10 +69,13 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
+    'paperManager',
   ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   data() {
     return {
+      subProcessSvg: null,
+      failedToLoadPreview: false,
       boundaryEventDropdownData,
       dropdownData: [
         {
@@ -78,6 +100,17 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    subprocessId() {
+      return JSON.parse(this.node.definition.get('config')).processId;
+    },
+    subprocessLink() {
+      return `/modeler/${this.subprocessId}`;
+    },
+    subprocessName() {
+      return this.node.definition.get('name');
+    },
   },
   watch: {
     'node.definition.name'(name) {
@@ -107,6 +140,41 @@ export default {
       this.shape.attr('image/display', callActivityType === 'globalTask' ? 'none' : 'initial');
     },
   },
+  methods: {
+    clickSubprocess(shapeView, event) {
+      const isPlusMarkerTheTarget = event.target.getAttribute('joint-selector') === 'bottomCenter.0';
+      const isItThisShape = shapeView.model === this.shape;
+
+      if (!isPlusMarkerTheTarget || !isItThisShape) {
+        return;
+      }
+
+      if (!this.subprocessId) {
+        this.$refs['no-subprocess-modal'].show();
+        return;
+      }
+
+      this.$refs['subprocess-modal'].show();
+
+      this.subProcessSvg = null;
+      this.failedToLoadPreview = false;
+
+      window.ProcessMaker.apiClient.get(`/processes/${this.subprocessId}`, { params: { include: 'svg' } })
+        .then(({ data }) => {
+          if (!data.svg) {
+            this.failedToLoadPreview = true;
+            return;
+          }
+          const removeWidthAttribute = (svgString) => svgString.replace('<svg width="100%"', '<svg ');
+          const insertBorder = (svgString) => svgString.replace('<svg ', '<svg class="border border-dark"');
+
+          this.subProcessSvg = insertBorder(removeWidthAttribute(data.svg));
+        })
+        .catch(() => {
+          this.failedToLoadPreview = true;
+        });
+    },
+  },
   mounted() {
     this.shape = new TaskShape();
     this.$set(this.markers.bottomCenter, 'subprocess', subprocessIcon);
@@ -127,6 +195,7 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+    this.paperManager.addEventHandler('element:pointerclick', this.clickSubprocess);
   },
 };
 </script>
