@@ -107,7 +107,7 @@ describe('Sub Process (Call Activities)', () => {
     cy.clock().invoke('restore');
   });
 
-  it.only('centers and borders the svg shown in the preview modal', () => {
+  it('centers and borders the svg shown in the preview modal', () => {
     addSubprocessToPaper(subProcessPosition);
     getElementAtPosition(subProcessPosition).click({ force: true });
 
