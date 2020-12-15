@@ -107,6 +107,22 @@ describe('Sub Process (Call Activities)', () => {
     cy.clock().invoke('restore');
   });
 
+  it.only('centers and borders the svg shown in the preview modal', () => {
+    addSubprocessToPaper(subProcessPosition);
+    getElementAtPosition(subProcessPosition).click({ force: true });
+
+    selectCalledProcess('Process with multiple start events');
+
+    cy.clock();
+    clickSubprocessPlusButton();
+
+    cy.tick(1500);
+    cy.get('.modal-content div')
+      .should('not.contain.html', '<svg width="100%"')
+      .should('contain.html', '<svg class="border border-light');
+    cy.clock().invoke('restore');
+  });
+
   it('shows an error message when the SVG API GET call fails', () => {
     cy.clock();
     addSubprocessToPaper(subProcessPosition);
