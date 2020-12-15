@@ -113,7 +113,7 @@ describe('Start Timer Event', () => {
   it.skip('Update properties on Start Timer Event for "week" periodicity', () => {
   });
 
-  it('Updates properties for periodicity other than "week"', () => {
+  it.skip('Updates properties for periodicity other than "week"', () => {
     const year = 2019;
     const month = 7;
     const day = 8;
@@ -185,7 +185,7 @@ describe('Start Timer Event', () => {
       .should('contain', endsNeverExpression);
   });
 
-  it('Does not include selected weekdays for periods other than "week"', () => {
+  it.skip('Does not include selected weekdays for periods other than "week"', () => {
     const year = 2019;
     const month = 7;
     const day = 8;
