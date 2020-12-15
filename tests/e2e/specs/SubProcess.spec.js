@@ -119,7 +119,7 @@ describe('Sub Process (Call Activities)', () => {
     cy.tick(1500);
     cy.get('.modal-content div')
       .should('not.contain.html', '<svg width="100%"')
-      .should('contain.html', '<svg class="border border-light');
+      .should('contain.html', '<svg class="border border-dark');
     cy.clock().invoke('restore');
   });
 

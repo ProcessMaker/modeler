@@ -18,7 +18,7 @@
     />
 
     <b-modal ref="subprocess-modal" :title="`Previewing '${subprocessName}'`">
-      <div v-if="subProcessSvg" v-html="subProcessSvg"/>
+      <div v-if="subProcessSvg" v-html="subProcessSvg" class="text-center" />
       <div v-else-if="failedToLoadPreview">Could not load preview</div>
       <div v-else><i class="fas fa-spinner fa-spin"/> Loading process preview...</div>
 
@@ -165,8 +165,10 @@ export default {
             this.failedToLoadPreview = true;
             return;
           }
+          const removeWidthAttribute = (svgString) => svgString.replace('<svg width="100%"', '<svg ');
+          const insertBorder = (svgString) => svgString.replace('<svg ', '<svg class="border border-dark"');
 
-          this.subProcessSvg = data.svg;
+          this.subProcessSvg = insertBorder(removeWidthAttribute(data.svg));
         })
         .catch(() => {
           this.failedToLoadPreview = true;
