@@ -16,22 +16,43 @@
         type="button"
         class="color-button"
         :data-test="color"
-        v-for="color in colors" :key="color"
+        v-for="color in colors.slice(0,4)" :key="color"
+        :style="{ backgroundColor: color }"
+        @click="selectedColor = color"
+      />
+
+      <button
+        v-if="showCustomIconPicker"
+        type="button"
+        class="color-button p-0 fa fa-drafting-compass"
+        data-test="set-custom-icon"
+        @click="setCustomIcon"
+      />
+
+      <div
+        v-else
+      />
+
+      <button
+        type="button"
+        class="color-button"
+        :data-test="color"
+        v-for="color in colors.slice(4,8)" :key="color"
         :style="{ backgroundColor: color }"
         @click="selectedColor = color"
       />
 
       <button
         type="button"
-        class="color-button p-0 fa fa-undo-alt"
-        data-test="clear-color"
-        @click="selectedColor = null"
+        class="color-button toggle-picker"
+        @click="colorPickerOpen = !colorPickerOpen"
       />
 
       <button
         type="button"
-        class="color-button toggle-picker"
-        @click="colorPickerOpen = !colorPickerOpen"
+        class="color-button p-0 fa fa-undo-alt"
+        data-test="clear-color"
+        @click="unsetNodeColor"
       />
 
       <sketch-picker
@@ -51,7 +72,7 @@ import store from '@/store';
 import Vue from 'vue';
 import { baseNodeColors } from '@/components/nodeColors';
 import { Sketch } from 'vue-color';
-import manualIcon from '!!svg-inline-loader!@/assets/manual-task.svg';
+import manualIcon from '!!svg-inline-loader!@/assets/book.svg';
 
 export default {
   props: {
@@ -60,6 +81,10 @@ export default {
       required: true,
     },
     node: Object,
+    showCustomIconPicker: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: { CrownButton, 'sketch-picker': Sketch },
   data() {
@@ -85,13 +110,19 @@ export default {
     },
     unsetNodeColor() {
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
+      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value: undefined });
+      Vue.set(this.node.definition, 'color', undefined);
+      Vue.set(this.node.definition, 'customIcon', undefined);
       this.$emit('save-state');
     },
     setNodeColor(color) {
-      Vue.set(this.node.definition, 'color', color);
-      Vue.set(this.node.definition, 'customIcon', btoa(manualIcon));
-      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value: btoa(manualIcon) });
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
+      Vue.set(this.node.definition, 'color', color);
+      this.$emit('save-state');
+    },
+    setCustomIcon() {
+      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value: btoa(manualIcon) });
+      Vue.set(this.node.definition, 'customIcon', btoa(manualIcon));
       this.$emit('save-state');
     },
   },
@@ -105,7 +136,7 @@ export default {
   .color-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-auto-flow: column;
     grid-gap: 0.5rem;
     padding: 0.5rem;

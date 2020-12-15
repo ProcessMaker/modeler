@@ -22,6 +22,7 @@
     <crown-color-dropdown
       :dropdown-open="colorDropdownOpen"
       :node="node"
+      :showCustomIconPicker="showCustomIconPicker"
       v-on="$listeners"
       @toggle-dropdown-state="colorDropdownToggle"
     />
@@ -46,6 +47,7 @@ export default {
       type: Boolean,
       required: true,
     },
+    showCustomIconPicker: Boolean,
   },
   data() {
     return {

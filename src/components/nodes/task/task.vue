@@ -13,6 +13,7 @@
     :is-rendering="isRendering"
     :boundary-event-dropdown-data="boundaryEventDropdownData"
     :dropdown-data="dropdownData"
+    :showCustomIconPicker="true"
     v-on="$listeners"
     @setCustomIcon="setCustomIcon"
   />
@@ -112,9 +113,12 @@ export default {
     },
     'node.definition.customIcon': {
       handler(){
-        const icon = this.node.definition.get('customIcon');
-        if (icon){
-          this.setCustomIcon(icon);
+        const customIcon = this.node.definition.get('customIcon');
+        if (customIcon) {
+          this.setCustomIcon(customIcon);
+        }
+        else {
+          this.setDefaultIcon();
         }
       },
       deep: true,
@@ -122,7 +126,15 @@ export default {
   },
   methods: {
     setCustomIcon(base64Icon) {
+      if (!this.originalIcon) {
+        this.originalIcon = this.nodeIcon;
+      }
       this.nodeIcon = atob(base64Icon);
+    },
+    setDefaultIcon(){
+      if (this.originalIcon) {
+        this.nodeIcon = this.originalIcon;
+      }
     },
     getElementsUnderArea(element) {
       const { x, y, width, height } = element.getBBox();
