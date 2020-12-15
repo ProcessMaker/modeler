@@ -126,16 +126,20 @@ describe('Start Timer Event', () => {
     cy.tick(1000);
 
     cy.contains('Timing Control').click();
+    cy.tick(500);
     const repeat = 3;
     typeIntoTextInput('[data-test=repeat-input]', repeat);
 
     const endDay = 22;
     cy.get('[data-test=ends-on]').click('left', { force: true });
+    cy.tick(500);
     cy.get('[data-test=end-date-picker]')
       .click();
+    cy.tick(500);
     cy.get('.form-date-picker')
       .contains(endDay)
       .click();
+    cy.tick(500);
 
     const periods = [
       { selector: 'day', letter: 'D' },
@@ -155,6 +159,7 @@ describe('Start Timer Event', () => {
     });
 
     cy.get('[data-test=ends-after]').click('left', { force: true });
+    cy.tick(500);
     const endsAfter = 4;
     typeIntoTextInput('[data-test=ends-after-input]', endsAfter);
 
@@ -171,7 +176,9 @@ describe('Start Timer Event', () => {
 
     const endsNeverExpression = `R/${currentDateString}/P${repeat}Y`;
     cy.get('[data-test=ends-never]').click('left', { force: true });
+    cy.tick(500);
     cy.get('[data-test=downloadXMLBtn]').click();
+    cy.tick(500);
     cy.window()
       .its('xml')
       .then(xml => xml.trim())
@@ -191,13 +198,18 @@ describe('Start Timer Event', () => {
     cy.tick(1000);
 
     cy.contains('Timing Control').click();
+    cy.tick(500);
     cy.get('[data-test=day-1]').click();
+    cy.tick(500);
     cy.get('[data-test=day-2]').click();
+    cy.tick(500);
     cy.get('[data-test=day-3]').click();
+    cy.tick(500);
     cy.get('[data-test=repeat-on-select]').select('month');
 
     const dateExpression = `R/${currentDateString}/P1M`;
     cy.get('[data-test=downloadXMLBtn]').click();
+    cy.tick(500);
     cy.window()
       .its('xml')
       .then(xml => xml.trim())
