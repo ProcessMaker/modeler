@@ -108,6 +108,31 @@
       "created_at": "2019-04-01T16:02:14+00:00",
       "updated_at": "2019-04-02T19:11:03+00:00",
       "events": []
+    },
+    {
+      "id": 13,
+      "process_category_id": 1,
+      "user_id": 1,
+      "description": "This is a process for testing axios failure.",
+      "name": "Process with mocked axios failure",
+      "cancel_screen_id": null,
+      "status": "ACTIVE",
+      "pause_timer_start": 0,
+      "deleted_at": null,
+      "created_at": "2019-04-01T16:02:14+00:00",
+      "updated_at": "2019-04-02T19:11:03+00:00",
+      "events": [
+        {
+          "eventDefinitions": {},
+          "parallelMultiple": false,
+          "outgoing": {},
+          "incoming": {},
+          "id": "node_1",
+          "name": "Start Event One",
+          "ownerProcessId": "Subprocess1",
+          "ownerProcessName": "Subprocess One"
+        }
+      ]
     }
   ],
   "meta": {
