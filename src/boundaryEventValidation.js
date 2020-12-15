@@ -7,7 +7,7 @@ export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
   }
 
   if (boundaryEventType === 'processmaker-modeler-boundary-message-event') {
-    return dropTarget.component.node.isBpmnType('bpmn:CallActivity') && spaceAvailable(dropTarget);
+    return spaceAvailable(dropTarget);
   }
 
   return spaceAvailable(dropTarget);
