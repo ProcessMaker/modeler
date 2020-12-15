@@ -1,6 +1,5 @@
 import {
   addNodeTypeToPaper,
-  dragFromSourceToDest,
   getElementAtPosition, getPeriodicityStringUSFormattedDate,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -8,13 +7,21 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
+const startTimerEventPosition = { x: 250, y: 250 };
+
+function addStartTimerEventToPaper(){
+  addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
+}
+
 describe('Start Timer Event', () => {
-  const startTimerEventPosition = { x: 250, y: 250 };
+
+  const now = new Date();
+  const today = now.getDate().toString().padStart(2, '0');
 
   it('default timing control has no selected weekday', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);
-    addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
+    addStartTimerEventToPaper();
     waitToRenderAllShapes();
     // cy.get('[data-test=switch-to-start-timer-event]').click(); //This clears the crown dropdown
 
@@ -27,11 +34,9 @@ describe('Start Timer Event', () => {
   });
 
   it('can set a specific start date', () => {
-    const now = new Date();
-    const today = now.getDate().toString().padStart(2, '0');
     const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 AM`;
 
-    addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
+    addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
     cy.contains('Timing Control').click();
@@ -48,11 +53,9 @@ describe('Start Timer Event', () => {
   });
 
   it('can set a specific end date', () => {
-    const now = new Date();
-    const today = now.getDate().toString().padStart(2, '0');
     const expectedEndDate = getPeriodicityStringUSFormattedDate(now);
 
-    addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
+    addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
     cy.contains('Timing Control').click();
@@ -71,11 +74,8 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=end-date-picker]').should('contain.value', expectedEndDate);
   });
 
-  it.skip('checks that the timer expression is formatted correctly for the specific periodicity', () => {
-    const now = new Date();
-    const today = now.getDate().toString().padStart(2, '0');
-
-    addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
+  it.skip('checks that the timer expressions are correctly formatted', () => {
+    addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
     cy.contains('Timing Control').click();
@@ -111,54 +111,6 @@ describe('Start Timer Event', () => {
   });
 
   it.skip('Update properties on Start Timer Event for "week" periodicity', () => {
-
-
-  });
-
-  it.skip('should fails ', () => {
-    const currentDate = Date.UTC(2019, 7, 8, 14);
-    cy.clock(currentDate);
-    const startTimerEventPosition = { x: 250, y: 250 };
-    addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
-    // cy.tick(1000);
-    // waitToRenderAllShapes();
-    // cy.get('[data-test=switch-to-start-timer-event]').click(); //This clears the crown dropdown
-
-    cy.contains('Timing Control').click();
-    cy.tick(1000);
-    // Asserting that there is no default day left - this is a result of the date being mocked to sometime years ago like even before covid
-    cy.contains('Timing Control').get('.badge-primary').should('not.exist');
-    cy.contains('You must select at least one day.').should('exist');
-    cy.get('.border-primary').should('contain', 'T');
-
-    // Testing that we can set a date
-    cy.get('[data-test=start-date-picker]').click();
-    cy.get('.day').contains('14').click();
-    cy.get('[title="Select Time"]').click();
-    cy.get('[title="Pick Hour"]').click();
-    cy.get('.hour').contains('05').click();
-    cy.get('[title="Pick Minute"]').click();
-    cy.get('.minute').contains('30').click();
-    cy.get('[title="Toggle Period"]').click();
-    cy.tick(1000);
-    cy.get('[data-test=start-date-picker]').should('have.value', '08/14/2019 5:30 AM');
-
-    // test that we can set an end date
-    cy.get('[data-test=end-date-picker]').click({ force: true });
-    typeIntoTextInput('[data-test=repeat-input]', 3);
-    cy.get('[data-test=day-3]').click();
-    cy.contains('You must select at least one day.').should('not.exist');
-    cy.get('[data-test=ends-on]').click('left', { force: true });
-    cy.get('[data-test=end-date-picker]').click();
-    cy.get('.day').contains('22').click();
-
-    cy.tick(1000);
-    cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 5:30 AM');
-    cy.get('.paper-container').click( { force: true } );
-    getElementAtPosition(startTimerEventPosition).click();
-    cy.contains('Timing Control').click();
-    cy.get('[data-test=end-date-picker]').should('have.value', '08/22/2019 5:30 AM');
-    //
   });
 
   it('Updates properties for periodicity other than "week"', () => {
@@ -170,13 +122,10 @@ describe('Start Timer Event', () => {
     const currentDateString = `${year}-0${month + 1}-0${day}T${hour}:00:00.000Z`;
 
     cy.clock(currentDate);
-    const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startEvent, startTimerEventPosition);
-    cy.get('[data-test=switch-to-start-timer-event]').click();
+    addStartTimerEventToPaper();
+    cy.tick(1000);
 
-    getElementAtPosition(startTimerEventPosition).click();
     cy.contains('Timing Control').click();
-
     const repeat = 3;
     typeIntoTextInput('[data-test=repeat-input]', repeat);
 
@@ -238,11 +187,9 @@ describe('Start Timer Event', () => {
     const currentDateString = `${year}-0${month + 1}-0${day}T${hour}:00:00.000Z`;
 
     cy.clock(currentDate);
-    const startTimerEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startEvent, startTimerEventPosition);
-    cy.get('[data-test=switch-to-start-timer-event]').click();
+    addStartTimerEventToPaper();
+    cy.tick(1000);
 
-    getElementAtPosition(startTimerEventPosition).click();
     cy.contains('Timing Control').click();
     cy.get('[data-test=day-1]').click();
     cy.get('[data-test=day-2]').click();
