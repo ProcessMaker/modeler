@@ -6,26 +6,44 @@ export default {
       nodeIcon: null,
     };
   },
+  computed: {
+    icon: {
+      cache: false,
+      get() {
+        if (this.node.definition.get('customIcon')) {
+          const customIcon = this.node.definition.get('customIcon');
+          return atob(customIcon);
+        }
+        return this.nodeIcon;
+      },
+    },
+  },
   watch: {
     'node.definition.color': {
       handler() {
-        this.setIconColor();
+        this.updateIconColor();
+      },
+      deep: true,
+    },
+    'node.definition.customIcon': {
+      handler() {
+        this.updateIconColor();
       },
       deep: true,
     },
   },
   methods: {
-    setIconColor() {
+    updateIconColor() {
       /* Temporary fix to prevent connector icons from switching to the user task icon.
       *  Leaves connector icon the original color. */
       if (!this.nodeIcon || this.node.isBpmnType('bpmn:ServiceTask')) {
         return;
       }
 
-      this.shape.attr('image/xlink:href', coloredIcon(this.nodeIcon, this.node));
+      this.shape.attr('image/xlink:href', coloredIcon(this.icon, this.node));
     },
   },
   mounted() {
-    this.setIconColor();
+    this.updateIconColor();
   },
 };

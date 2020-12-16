@@ -15,7 +15,6 @@
     :dropdown-data="dropdownData"
     :showCustomIconPicker="true"
     v-on="$listeners"
-    @setCustomIcon="setCustomIcon"
   />
 </template>
 
@@ -34,6 +33,7 @@ import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundary
 import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
+import coloredIcon from '@/components/iconColors';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -111,30 +111,11 @@ export default {
     'node.definition.loopCharacteristics'() {
       setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     },
-    'node.definition.customIcon': {
-      handler(){
-        const customIcon = this.node.definition.get('customIcon');
-        if (customIcon) {
-          this.setCustomIcon(customIcon);
-        }
-        else {
-          this.setDefaultIcon();
-        }
-      },
-      deep: true,
-    },
   },
   methods: {
     setCustomIcon(base64Icon) {
-      if (!this.originalIcon) {
-        this.originalIcon = this.nodeIcon;
-      }
       this.nodeIcon = atob(base64Icon);
-    },
-    setDefaultIcon(){
-      if (this.originalIcon) {
-        this.nodeIcon = this.originalIcon;
-      }
+      this.shape.attr('image/xlink:href', coloredIcon(this.nodeIcon, this.node));
     },
     getElementsUnderArea(element) {
       const { x, y, width, height } = element.getBBox();
