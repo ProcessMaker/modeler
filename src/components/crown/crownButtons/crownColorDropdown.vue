@@ -93,6 +93,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    iconName: {
+      type: String,
+      default: '',
+    },
   },
   components: { CrownButton, 'sketch-picker': Sketch, IconSelector },
   data() {
@@ -100,7 +104,6 @@ export default {
       colors: baseNodeColors,
       selectedColor: this.node.definition.get('color'),
       colorPickerOpen: false,
-      iconName: 'user',
     };
   },
   watch: {

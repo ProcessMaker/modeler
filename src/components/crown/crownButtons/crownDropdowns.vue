@@ -23,6 +23,7 @@
       :dropdown-open="colorDropdownOpen"
       :node="node"
       :showCustomIconPicker="showCustomIconPicker"
+      :iconName="iconName"
       v-on="$listeners"
       @toggle-dropdown-state="colorDropdownToggle"
     />
@@ -48,6 +49,10 @@ export default {
       required: true,
     },
     showCustomIconPicker: Boolean,
+    iconName: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {

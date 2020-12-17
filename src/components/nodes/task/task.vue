@@ -14,6 +14,7 @@
     :boundary-event-dropdown-data="boundaryEventDropdownData"
     :dropdown-data="dropdownData"
     :showCustomIconPicker="true"
+    :iconName="this.iconName"
     v-on="$listeners"
   />
 </template>
@@ -84,6 +85,7 @@ export default {
       ],
       boundaryEventDropdownData,
       anchorPointFunction: getRectangleAnchorPoint,
+      iconName: 'user',
     };
   },
   computed: {
