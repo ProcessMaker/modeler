@@ -2,10 +2,6 @@ import {
   addNodeTypeToPaper,
   dragFromSourceToDest,
   getElementAtPosition,
-  modalCancel,
-  modalConfirm,
-  typeIntoTextInput,
-  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -33,7 +29,7 @@ describe('customIcon', () => {
 
   });
 
-  it.only('can set custom icon for Form Task', () => {
+  it('can set custom icon for Form Task', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     cy.get('[data-test="picker-dropdown-button"]').click();
