@@ -64,7 +64,12 @@
       />
     </div>
 
-    <b-modal ref="icon-selector-modal" title="Select a custom icon" ok-only>
+    <b-modal
+      ref="icon-selector-modal"
+      title="Select a custom icon"
+      cancel-title="Reset to Default"
+      @cancel="resetCustomIcon"
+    >
       <div>
         <icon-selector :value="iconName" @input="setCustomIcon" :allow-custom="false"/>
       </div>
