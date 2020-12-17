@@ -143,16 +143,17 @@ export default {
       if (!customIconName) {
         return;
       }
-
       const { html: iconSvg } = icon({ prefix: 'fas', iconName: customIconName });
       const base64Icon = btoa(iconSvg);
       store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  base64Icon });
       Vue.set(this.node.definition, 'customIcon', base64Icon);
+      this.$emit('set-custom-icon-name', customIconName);
       this.$emit('save-state');
     },
     resetCustomIcon() {
-      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  null });
+      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  undefined });
       Vue.set(this.node.definition, 'customIcon', undefined);
+      this.$emit('reset-custom-icon-name');
       this.$emit('save-state');
     },
     openIconSelector() {

@@ -15,6 +15,8 @@
     :dropdown-data="dropdownData"
     :showCustomIconPicker="true"
     :iconName="this.iconName"
+    @set-custom-icon-name="setCustomIconName"
+    @reset-custom-icon-name="resetCustomIconName"
     v-on="$listeners"
   />
 </template>
@@ -116,8 +118,13 @@ export default {
   },
   methods: {
     setCustomIcon(base64Icon) {
-      this.nodeIcon = atob(base64Icon);
-      this.shape.attr('image/xlink:href', coloredIcon(this.nodeIcon, this.node));
+      this.shape.attr('image/xlink:href', coloredIcon(atob(base64Icon), this.node));
+    },
+    setCustomIconName(iconName) {
+      this.iconName = iconName;
+    },
+    resetCustomIconName() {
+      this.setCustomIconName('');
     },
     getElementsUnderArea(element) {
       const { x, y, width, height } = element.getBBox();
