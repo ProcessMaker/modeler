@@ -85,7 +85,7 @@ export default {
       ],
       boundaryEventDropdownData,
       anchorPointFunction: getRectangleAnchorPoint,
-      iconName: 'user',
+      iconName: '',
     };
   },
   computed: {
