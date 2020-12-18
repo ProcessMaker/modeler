@@ -12,10 +12,11 @@ module.exports = {
     '\\.svg$': '<rootDir>/fileTransformer.js',
   },
   transformIgnorePatterns: [
-    '/node_modules/',
+    '/node_modules/((?!@fortawesome).)*/',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@fortawesome/(.*)\\.yml$': '<rootDir>/node_modules/@fortawesome/$1.yml',
   },
   snapshotSerializers: [
     'jest-serializer-vue',
