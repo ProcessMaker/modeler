@@ -9,7 +9,7 @@ export default {
   data() {
     return {
       nodeIcon: manualIcon,
-      iconName: 'hand-paper',
+      iconName: '',
     };
   },
 };
