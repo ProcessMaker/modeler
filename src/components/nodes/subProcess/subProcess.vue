@@ -49,7 +49,8 @@ import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
 import subprocessIcon from '@/assets/subprocess.svg';
-
+import updateIconColor from '@/mixins/updateIconColor';
+import customIcon from '@/mixins/customIcon';
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 
@@ -71,7 +72,7 @@ export default {
     'isRendering',
     'paperManager',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon],
   data() {
     return {
       subProcessSvg: null,
