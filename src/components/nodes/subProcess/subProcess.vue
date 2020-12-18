@@ -207,6 +207,9 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.paperManager.addEventHandler('element:pointerclick', this.clickSubprocess);
+    if (this.node.definition.get('customIcon')) {
+      this.setCustomIcon(this.node.definition.get('customIcon'));
+    }
   },
 };
 </script>
