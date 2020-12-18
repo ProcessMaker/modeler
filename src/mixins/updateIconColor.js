@@ -40,6 +40,9 @@ export default {
         return;
       }
 
+      if (!this.shape) {
+        return;
+      }
       this.shape.attr('image/xlink:href', coloredIcon(this.icon, this.node));
     },
   },
