@@ -29,6 +29,7 @@ import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
+import customIcon from '@/mixins/customIcon';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
 import defaultNames from '@/components/nodes/task/defaultNames';
@@ -36,7 +37,6 @@ import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundary
 import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
-import coloredIcon from '@/components/iconColors';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -58,7 +58,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon],
   data() {
     return {
       shape: null,
@@ -87,7 +87,6 @@ export default {
       ],
       boundaryEventDropdownData,
       anchorPointFunction: getRectangleAnchorPoint,
-      iconName: '',
     };
   },
   computed: {
@@ -117,12 +116,6 @@ export default {
     },
   },
   methods: {
-    setCustomIcon(base64Icon) {
-      this.shape.attr('image/xlink:href', coloredIcon(atob(base64Icon), this.node));
-    },
-    setCustomIconName(iconName) {
-      this.iconName = iconName;
-    },
     resetCustomIconName() {
       this.setCustomIconName('');
     },
@@ -156,9 +149,6 @@ export default {
     this.shape.resize(bounds.width, bounds.height);
     setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
-    if (this.node.definition.get('customIcon')) {
-      this.setCustomIcon(this.node.definition.get('customIcon'));
-    }
     this.shape.attr({
       body: {
         rx: 8,
