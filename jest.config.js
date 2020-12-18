@@ -10,6 +10,7 @@ module.exports = {
     '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest',
     '\\.svg$': '<rootDir>/fileTransformer.js',
+    '\\.yml$': '<rootDir>/fileTransformer.js',
   },
   transformIgnorePatterns: [
     '/node_modules/((?!@fortawesome).)*/',
