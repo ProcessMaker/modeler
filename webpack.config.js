@@ -21,10 +21,6 @@ module.exports = {
         test: /\.scss$/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader'],
       },
-      {
-        test: /\.ya?ml$/,
-        use: 'js-yaml-loader',
-      },
     ],
   },
   plugins: [

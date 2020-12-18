@@ -36,10 +36,6 @@ module.exports = {
           test: /\.bpmnlintrc$/,
           use: 'bpmnlint-loader',
         },
-        {
-          test: /\.ya?ml$/,
-          use: 'js-yaml-loader',
-        },
       ],
     },
     externals: (() => {

@@ -17,7 +17,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@fortawesome/(.*)\\.yml$': '<rootDir>/node_modules/@fortawesome/$1.yml',
+    '^js-yaml-loader\\!@fortawesome/(.*)\\.yml$': '<rootDir>/node_modules/@fortawesome/$1.yml',
   },
   snapshotSerializers: [
     'jest-serializer-vue',
