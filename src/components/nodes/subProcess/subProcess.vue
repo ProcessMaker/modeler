@@ -14,6 +14,10 @@
       :is-rendering="isRendering"
       :boundary-event-dropdown-data="boundaryEventDropdownData"
       :dropdown-data="dropdownData"
+      :showCustomIconPicker="true"
+      :iconName="this.iconName"
+      @set-custom-icon-name="setCustomIconName"
+      @reset-custom-icon-name="resetCustomIconName"
       v-on="$listeners"
     />
 
@@ -53,6 +57,10 @@ import updateIconColor from '@/mixins/updateIconColor';
 import customIcon from '@/mixins/customIcon';
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
+const blankDefaultIcon = '<svg version="1.1"\n' +
+    '     baseProfile="full"\n' +
+    '     width="16" height="16"\n' +
+    '     xmlns="http://www.w3.org/2000/svg"></svg>';
 
 export default {
   components: {
@@ -100,6 +108,8 @@ export default {
           dataTest: 'switch-to-sub-process',
         },
       ],
+      nodeIcon: blankDefaultIcon,
+      iconName: '',
     };
   },
   computed: {
