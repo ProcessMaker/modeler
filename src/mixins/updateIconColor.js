@@ -7,15 +7,11 @@ export default {
     };
   },
   computed: {
-    icon: {
-      cache: false,
-      get() {
-        if (this.node.definition.get('customIcon')) {
-          const customIcon = this.node.definition.get('customIcon');
-          return atob(customIcon);
-        }
-        return this.nodeIcon;
-      },
+    icon() {
+      if (this.node.definition.customIcon) {
+        return atob(this.node.definition.customIcon);
+      }
+      return this.nodeIcon;
     },
   },
   watch: {
