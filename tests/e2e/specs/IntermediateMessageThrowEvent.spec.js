@@ -33,8 +33,7 @@ describe('Intermediate Message Throw Event', () => {
   });
 
   it('can create a message when intermediate message throw event is dragged on', () => {
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
