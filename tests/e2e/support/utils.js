@@ -331,6 +331,7 @@ export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   dragFromSourceToDest(genericNode, nodePosition);
   waitToRenderAllShapes();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
+  cy.wait(300);
 }
 
 export function modalConfirm() {
@@ -339,4 +340,12 @@ export function modalConfirm() {
 
 export function modalCancel() {
   cy.get('.modal-footer .btn-secondary').click();
+}
+
+export function getPeriodicityStringUSFormattedDate(date) {
+  let year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString().padStart(2, '0');
+  let day = date.getDate().toString().padStart(2, '0');
+
+  return month + '/' + day + '/' + year;
 }

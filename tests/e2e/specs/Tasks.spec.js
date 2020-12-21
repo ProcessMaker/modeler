@@ -41,6 +41,7 @@ describe('Tasks', () => {
     cy.get('[data-test="select-type-dropdown"]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
     modalConfirm();
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
   });

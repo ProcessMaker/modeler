@@ -769,15 +769,17 @@ export default {
     },
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
-        const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-        const newNode = await this.handleDrop({
-          clientX, clientY,
-          control: { type: typeToReplaceWith },
-          nodeThatWillBeReplaced: node,
-        });
+        await this.paperManager.performAtomicAction(async() => {
+          const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+          const newNode = await this.handleDrop({
+            clientX, clientY,
+            control: { type: typeToReplaceWith },
+            nodeThatWillBeReplaced: node,
+          });
 
-        await this.removeNode(node);
-        this.highlightNode(newNode);
+          await this.removeNode(node);
+          this.highlightNode(newNode);
+        });
       });
     },
     async performSingleUndoRedoTransaction(cb) {
