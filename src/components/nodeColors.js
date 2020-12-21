@@ -2,10 +2,11 @@ import tinycolor from 'tinycolor2';
 
 export const baseNodeColors = [
   '#357bf6',
-  '#f6c243',
-  '#6d747c',
   '#4ba0b5',
   '#53a451',
+  '#6d747c',
+  '#f7b84b',
+  '#ff8628',
   '#cc444a',
 ];
 

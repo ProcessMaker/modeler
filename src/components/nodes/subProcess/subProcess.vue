@@ -14,6 +14,10 @@
       :is-rendering="isRendering"
       :boundary-event-dropdown-data="boundaryEventDropdownData"
       :dropdown-data="dropdownData"
+      :showCustomIconPicker="true"
+      :iconName="this.iconName"
+      @set-custom-icon-name="setCustomIconName"
+      @reset-custom-icon-name="resetCustomIconName"
       v-on="$listeners"
     />
 
@@ -49,9 +53,14 @@ import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
 import subprocessIcon from '@/assets/subprocess.svg';
-
+import updateIconColor from '@/mixins/updateIconColor';
+import customIcon from '@/mixins/customIcon';
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
+const blankDefaultIcon = '<svg version="1.1"\n' +
+    '     baseProfile="full"\n' +
+    '     width="16" height="16"\n' +
+    '     xmlns="http://www.w3.org/2000/svg"></svg>';
 
 export default {
   components: {
@@ -71,7 +80,7 @@ export default {
     'isRendering',
     'paperManager',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon],
   data() {
     return {
       subProcessSvg: null,
@@ -99,6 +108,8 @@ export default {
           dataTest: 'switch-to-sub-process',
         },
       ],
+      nodeIcon: blankDefaultIcon,
+      iconName: '',
     };
   },
   computed: {
@@ -196,6 +207,9 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.paperManager.addEventHandler('element:pointerclick', this.clickSubprocess);
+    if (this.node.definition.get('customIcon')) {
+      this.setCustomIcon(this.node.definition.get('customIcon'));
+    }
   },
 };
 </script>

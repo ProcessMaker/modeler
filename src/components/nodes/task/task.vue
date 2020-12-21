@@ -13,6 +13,10 @@
     :is-rendering="isRendering"
     :boundary-event-dropdown-data="boundaryEventDropdownData"
     :dropdown-data="dropdownData"
+    :showCustomIconPicker="true"
+    :iconName="this.iconName"
+    @set-custom-icon-name="setCustomIconName"
+    @reset-custom-icon-name="resetCustomIconName"
     v-on="$listeners"
   />
 </template>
@@ -25,6 +29,7 @@ import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
+import customIcon from '@/mixins/customIcon';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
 import defaultNames from '@/components/nodes/task/defaultNames';
@@ -53,7 +58,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon],
   data() {
     return {
       shape: null,

@@ -22,6 +22,8 @@
     <crown-color-dropdown
       :dropdown-open="colorDropdownOpen"
       :node="node"
+      :showCustomIconPicker="showCustomIconPicker"
+      :iconName="iconName"
       v-on="$listeners"
       @toggle-dropdown-state="colorDropdownToggle"
     />
@@ -45,6 +47,11 @@ export default {
     taskDropdownInitiallyOpen: {
       type: Boolean,
       required: true,
+    },
+    showCustomIconPicker: Boolean,
+    iconName: {
+      type: String,
+      default: '',
     },
   },
   data() {

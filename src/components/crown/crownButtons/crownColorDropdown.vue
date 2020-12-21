@@ -16,22 +16,43 @@
         type="button"
         class="color-button"
         :data-test="color"
-        v-for="color in colors" :key="color"
+        v-for="color in colors.slice(0,4)" :key="color"
+        :style="{ backgroundColor: color }"
+        @click="selectedColor = color"
+      />
+
+      <button
+        v-if="showCustomIconPicker"
+        type="button"
+        class="color-button p-0 fa fa-drafting-compass"
+        data-test="set-custom-icon"
+        @click="openIconSelector"
+      />
+
+      <div
+        v-else
+      />
+
+      <button
+        type="button"
+        class="color-button"
+        :data-test="color"
+        v-for="color in colors.slice(4,8)" :key="color"
         :style="{ backgroundColor: color }"
         @click="selectedColor = color"
       />
 
       <button
         type="button"
-        class="color-button p-0 fa fa-undo-alt"
-        data-test="clear-color"
-        @click="selectedColor = null"
+        class="color-button toggle-picker"
+        @click="colorPickerOpen = !colorPickerOpen"
       />
 
       <button
         type="button"
-        class="color-button toggle-picker"
-        @click="colorPickerOpen = !colorPickerOpen"
+        class="color-button p-0 fa fa-undo-alt"
+        data-test="clear-color"
+        @click="resetNodeStyling"
       />
 
       <sketch-picker
@@ -42,6 +63,17 @@
         @input="setColorFromPicker"
       />
     </div>
+
+    <b-modal
+      ref="icon-selector-modal"
+      title="Select a custom icon"
+      cancel-title="Reset to Default"
+      @cancel="resetCustomIcon"
+    >
+      <div>
+        <icon-selector :value="iconName" @input="setCustomIcon" :allow-custom="false"/>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -51,6 +83,9 @@ import store from '@/store';
 import Vue from 'vue';
 import { baseNodeColors } from '@/components/nodeColors';
 import { Sketch } from 'vue-color';
+import IconSelector from '@/components/IconSelector';
+import { library, icon } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 export default {
   props: {
@@ -59,8 +94,16 @@ export default {
       required: true,
     },
     node: Object,
+    showCustomIconPicker: {
+      type: Boolean,
+      default: false,
+    },
+    iconName: {
+      type: String,
+      default: '',
+    },
   },
-  components: { CrownButton, 'sketch-picker': Sketch },
+  components: { CrownButton, 'sketch-picker': Sketch, IconSelector },
   data() {
     return {
       colors: baseNodeColors,
@@ -71,7 +114,7 @@ export default {
   watch: {
     selectedColor(color) {
       if (!color) {
-        this.unsetNodeColor();
+        this.resetNodeColor();
         return;
       }
 
@@ -82,18 +125,44 @@ export default {
     setColorFromPicker({ hex8 }) {
       this.selectedColor = hex8;
     },
-    unsetNodeColor() {
-      store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
-      this.$emit('save-state');
+    resetNodeStyling() {
+      this.resetNodeColor();
+      this.resetCustomIcon();
     },
     setNodeColor(color) {
-      Vue.set(this.node.definition, 'color', color);
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
+      Vue.set(this.node.definition, 'color', color);
       this.$emit('save-state');
+    },
+    resetNodeColor() {
+      store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
+      Vue.set(this.node.definition, 'color', undefined);
+      this.$emit('save-state');
+    },
+    setCustomIcon(customIconName) {
+      if (!customIconName) {
+        return;
+      }
+      const { html: iconSvg } = icon({ prefix: 'fas', iconName: customIconName });
+      const base64Icon = btoa(iconSvg);
+      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  base64Icon });
+      Vue.set(this.node.definition, 'customIcon', base64Icon);
+      this.$emit('set-custom-icon-name', customIconName);
+      this.$emit('save-state');
+    },
+    resetCustomIcon() {
+      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  undefined });
+      Vue.set(this.node.definition, 'customIcon', undefined);
+      this.$emit('reset-custom-icon-name');
+      this.$emit('save-state');
+    },
+    openIconSelector() {
+      this.$refs['icon-selector-modal'].show();
     },
   },
   created() {
     this.$t = this.$t.bind(this);
+    library.add(fas);
   },
 };
 </script>
@@ -102,7 +171,7 @@ export default {
   .color-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-auto-flow: column;
     grid-gap: 0.5rem;
     padding: 0.5rem;

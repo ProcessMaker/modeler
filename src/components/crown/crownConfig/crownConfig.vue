@@ -47,6 +47,8 @@
       :moddle="moddle"
       :shape="shape"
       :task-dropdown-initially-open="taskDropdownInitiallyOpen"
+      :showCustomIconPicker="showCustomIconPicker"
+      :iconName="iconName"
       @replace-node-type="replaceNodeTypePrompt"
       v-on="$listeners"
     />
@@ -123,6 +125,14 @@ export default {
     boundaryEventDropdownData: {
       type: Array,
       default: () => [],
+    },
+    showCustomIconPicker: {
+      type: Boolean,
+      default: false,
+    },
+    iconName: {
+      type: String,
+      default: '',
     },
   },
   mixins: [poolLaneCrownConfig],
