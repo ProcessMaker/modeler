@@ -19,13 +19,11 @@ export default {
       handler() {
         this.updateIconColor();
       },
-      deep: true,
     },
     'node.definition.customIcon': {
       handler() {
         this.updateIconColor();
       },
-      deep: true,
     },
   },
   methods: {
