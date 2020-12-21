@@ -3,7 +3,7 @@
   <div>
     <div class="d-flex justify-content-between align-items-center">
       <label class="m-0">{{ $t(label) }}</label>
-      <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
+      <button type="button" v-b-modal.documentation-modal class="btn-sm float-right"><i class="fas fa-expand"/></button>
     </div>
 
     <form-text-area
@@ -13,6 +13,26 @@
       class="documentation-input"
       @input="$emit('input', $event)"
     />
+
+    <b-modal
+      id="documentation-modal"
+      size="lg"
+      centered
+      :title="$t('Description')"
+      v-cloak
+      header-close-content="&times;"
+      ok-only
+      ok-variant="secondary"
+      ok-title="Close"
+    >
+      <form-text-area
+        v-bind="$attrs"
+        :value="textValue"
+        :richtext="renderAsRichtext"
+        class="documentation-input"
+        @input="$emit('input', $event)"
+      />
+    </b-modal>
   </div>
 </template>
 
