@@ -1,7 +1,8 @@
+
 <template>
   <div>
-    <div>
-      <label>{{ $t('Documentation') }}</label>
+    <div class="d-flex justify-content-between align-items-center">
+      <label class="m-0">{{ $t(label) }}</label>
       <button type="button" @click="expandEditor" class="btn-sm float-right"><i class="fas fa-expand"/></button>
     </div>
 
@@ -30,6 +31,10 @@ export default {
     value: {
       type: [String, Array],
       default: '',
+    },
+    label: {
+      type: String,
+      default: 'Description',
     },
   },
   inheritAttrs: false,
