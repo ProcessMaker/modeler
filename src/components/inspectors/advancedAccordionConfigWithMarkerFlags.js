@@ -1,5 +1,4 @@
 import idConfigSettings from './idConfigSettings';
-import DocumentationFormTextArea from './DocumentationFormTextArea';
 import MarkerFlags from '@/components/inspectors/MarkerFlags';
 
 export default {
@@ -15,13 +14,6 @@ export default {
     {
       component: 'FormInput',
       config: idConfigSettings,
-    },
-    {
-      component: DocumentationFormTextArea,
-      config: {
-        label: 'Description',
-        name: 'documentation',
-      },
     },
     {
       component: MarkerFlags,

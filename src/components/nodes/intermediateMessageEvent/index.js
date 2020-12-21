@@ -1,6 +1,7 @@
 import component from '@/components/nodes/intermediateEvent/intermediateEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 export default {
   id: 'processmaker-modeler-intermediate-message',
@@ -47,6 +48,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

@@ -1,5 +1,4 @@
 import idConfigSettings from './idConfigSettings';
-import DocumentationFormTextArea from './DocumentationFormTextArea';
 
 export default {
   component: 'FormAccordion',
@@ -14,13 +13,6 @@ export default {
     {
       component: 'FormInput',
       config: idConfigSettings,
-    },
-    {
-      component: DocumentationFormTextArea,
-      config: {
-        label: 'Description',
-        name: 'documentation',
-      },
     },
   ],
 };

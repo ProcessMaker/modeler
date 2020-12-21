@@ -1,6 +1,7 @@
 import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
@@ -79,6 +80,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

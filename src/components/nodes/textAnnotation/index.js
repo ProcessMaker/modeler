@@ -1,5 +1,6 @@
 import component from './textAnnotation.vue';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 export const id = 'processmaker-modeler-text-annotation';
 
@@ -66,6 +67,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },

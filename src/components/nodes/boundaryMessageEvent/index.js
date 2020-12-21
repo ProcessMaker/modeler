@@ -4,6 +4,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import { default as messageEventDefinition, messageSelector } from '../messageEventDefinition';
 
 export const id = 'processmaker-modeler-boundary-message-event';
@@ -33,6 +34,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
             messageSelector('Message that will trigger this boundary event'),
           ],
         },
+        documentationAccordionConfig,
         advancedAccordionConfig,
       ],
     },
