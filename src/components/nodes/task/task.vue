@@ -116,9 +116,6 @@ export default {
     },
   },
   methods: {
-    resetCustomIconName() {
-      this.setCustomIconName('');
-    },
     getElementsUnderArea(element) {
       const { x, y, width, height } = element.getBBox();
       const area = { x, y, width, height };
