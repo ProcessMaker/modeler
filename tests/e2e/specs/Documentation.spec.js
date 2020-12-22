@@ -2,7 +2,7 @@ import {nodeTypes} from '../support/constants';
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest, getCrownButtonForElement, getElementAtPosition,
+  dragFromSourceToDest, getCrownButtonForElement, getElementAtPosition, modalAnimationTime,
 } from '../support/utils';
 
 describe('Documentation accordion', () => {
@@ -66,5 +66,27 @@ describe('Documentation accordion', () => {
 
         cy.clock().invoke('restore');
       });
+  });
+
+  it('can allow the documentation editor modal to edit the documentation', () => {
+    dragFromSourceToDest(nodeTypes.task, position);
+    cy.contains('Documentation').click();
+    cy.wait(accordionOpenAnimationTime);
+
+    const documentationFromInspector = 'some documentation';
+    cy.get('[data-test="documentation-text-area"]').type(documentationFromInspector);
+    cy.wait(modalAnimationTime);
+
+    cy.get('[data-test="documentation-modal-button"]').click();
+
+    const documentationFromModal = 'this is the documentation modal';
+    cy.get('[data-test="documentation-modal-text-area"]').type(documentationFromModal);
+
+    cy.contains('Close').click();
+    cy.wait(modalAnimationTime);
+
+    cy.get('[data-test="documentation-text-area"]').should('have.value', `${documentationFromInspector}${documentationFromModal}`);
+
+    assertDownloadedXmlContainsExpected(`${documentationFromInspector}${documentationFromModal}`);
   });
 });

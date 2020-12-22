@@ -3,7 +3,7 @@
   <div>
     <div class="d-flex justify-content-between align-items-center">
       <label class="m-0">{{ $t(label) }}</label>
-      <button type="button" v-b-modal.documentation-modal class="btn-sm float-right"><i class="fas fa-expand"/></button>
+      <button type="button" v-b-modal.documentation-modal class="btn-sm float-right" data-test="documentation-modal-button"><i class="fas fa-expand"/></button>
     </div>
 
     <form-text-area
@@ -11,6 +11,7 @@
       :value="textValue"
       :richtext="renderAsRichtext"
       class="documentation-input"
+      data-test="documentation-text-area"
       @input="$emit('input', $event)"
     />
 
@@ -27,9 +28,11 @@
     >
       <form-text-area
         v-bind="$attrs"
+        rows="10"
         :value="textValue"
         :richtext="renderAsRichtext"
         class="documentation-input"
+        data-test="documentation-modal-text-area"
         @input="$emit('input', $event)"
       />
     </b-modal>
