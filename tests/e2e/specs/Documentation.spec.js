@@ -27,19 +27,27 @@ describe('Documentation accordion', () => {
       });
   };
 
+  function getTinyMceEditor(){
+    return cy
+      .get('iframe#documentation-editor_ifr')
+      .its('0.contentDocument')
+      .its('body')
+      .then(cy.wrap);
+  }
+
   it('has a dedicated documentation inspector accordion', () => {
     baseElements
       .forEach(type => {
         cy.clock();
 
         dragFromSourceToDest(type, position);
-        cy.get('[name="documentation"]').as('documentation').should('not.be.visible');
+        cy.get('#tinymce').as('documentation').should('not.be.visible');
         cy.contains('Advanced').click();
         cy.tick(accordionOpenAnimationTime);
         cy.get('@documentation').should('not.be.visible');
         cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
-        cy.get('@documentation').should('be.visible');
+        getTinyMceEditor().should('be.visible');
 
         deleteElement(position, type);
 

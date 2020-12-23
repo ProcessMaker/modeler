@@ -9,9 +9,10 @@
     <form-text-area
       v-bind="$attrs"
       :value="textValue"
-      :richtext="renderAsRichtext"
+      :richtext="true"
       class="documentation-input d-flex"
       data-test="documentation-text-area"
+      id="documentation-editor"
       @input="$emit('input', $event)"
     />
 
@@ -31,7 +32,7 @@
         v-bind="$attrs"
         rows="5"
         :value="textValue"
-        :richtext="renderAsRichtext"
+        :richtext="true"
         class="documentation-input"
         data-test="documentation-modal-text-area"
         @input="$emit('input', $event)"
@@ -41,16 +42,10 @@
 </template>
 
 <script>
-import runningInCypressTest from '@/runningInCypressTest';
 import isString from 'lodash/isString';
 import get from 'lodash/get';
 
 export default {
-  data() {
-    return {
-      renderAsRichtext: !runningInCypressTest(),
-    };
-  },
   props: {
     value: {
       type: [String, Array],
