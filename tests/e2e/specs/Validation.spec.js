@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   connectNodesWithFlow,
   dragFromSourceToDest,
-  getElementAtPosition,
+  getElementAtPosition, getTinyMceEditor,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
 } from '../support/utils';
@@ -43,8 +43,8 @@ describe('Validation', () => {
     getElementAtPosition(startEventPosition).click();
 
     cy.contains('Documentation').click();
-    cy.get('[name=documentation]').type('Test');
-    cy.get('[name=documentation]').clear();
+    getTinyMceEditor().type('Test');
+    getTinyMceEditor().clear();
 
     cy.get('[data-test=validation-toggle]').click({ force: true });
     cy.get('[data-test=validation-list-toggle]').click({ force: true });
