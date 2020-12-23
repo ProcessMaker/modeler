@@ -25,10 +25,11 @@
       ok-only
       ok-variant="secondary"
       ok-title="Close"
+      no-enforce-focus
     >
       <form-text-area
         v-bind="$attrs"
-        rows="10"
+        rows="5"
         :value="textValue"
         :richtext="renderAsRichtext"
         class="documentation-input"
@@ -69,9 +70,6 @@ export default {
     },
   },
   methods: {
-    expandEditor() {
-
-    },
     emitValue(value) {
       this.$emit('input', value);
     },
