@@ -4,7 +4,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
-  modalConfirm,
+  modalConfirm, waitToRenderAllShapes,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
@@ -40,12 +40,14 @@ describe('Association Flows', () => {
     const startEventPosition = { x: 150, y: 150 };
     const textAnnotationPosition = { x: 400, y: 100 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, startEventPosition);
 
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-start-timer-event]').click();
     modalConfirm();
+    waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
