@@ -82,5 +82,6 @@ export default {
 <style>
   .documentation-input .richtext {
     height: auto;
+    width: 100%;
   }
 </style>
