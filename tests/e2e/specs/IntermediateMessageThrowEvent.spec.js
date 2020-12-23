@@ -24,10 +24,7 @@ const intermediateMessageThrowEventPosition = { x: 350, y: 200 };
 
 describe('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', () => {
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-
-    getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
@@ -69,11 +66,7 @@ describe('Intermediate Message Throw Event', () => {
 
   it('retains new message name when clicking off and on intermediate message throw event', () => {
     const startEventPosition = { x: 150, y: 150 };
-
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-
-    getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
     cy.get('[data-cy="events-list"]').click();
@@ -84,6 +77,7 @@ describe('Intermediate Message Throw Event', () => {
     getElementAtPosition(startEventPosition).click();
     waitToRenderAllShapes();
     getElementAtPosition(intermediateMessageThrowEventPosition).click({ force: true });
+    waitToRenderAllShapes();
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();
@@ -100,15 +94,13 @@ describe('Intermediate Message Throw Event', () => {
       </bpmn:intermediateCatchEvent>
     `;
 
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageCatchEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+    addNodeTypeToPaper(intermediateMessageCatchEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-catch-event');
 
-    getElementAtPosition(intermediateMessageCatchEventPosition).click();
     cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    waitToRenderAllShapes();
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();
@@ -116,6 +108,7 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[data-cy="events-save"]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
+    waitToRenderAllShapes();
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
