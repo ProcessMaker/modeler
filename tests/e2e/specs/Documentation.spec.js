@@ -27,9 +27,17 @@ describe('Documentation accordion', () => {
       });
   };
 
-  function getTinyMceEditor(){
+  function getTinyMceEditor() {
     return cy
       .get('iframe#documentation-editor_ifr')
+      .its('0.contentDocument')
+      .its('body')
+      .then(cy.wrap);
+  }
+
+  function getTinyMceEditorInModal() {
+    return cy
+      .get('iframe#documentation-editor-modal_ifr')
       .its('0.contentDocument')
       .its('body')
       .then(cy.wrap);
@@ -41,10 +49,10 @@ describe('Documentation accordion', () => {
         cy.clock();
 
         dragFromSourceToDest(type, position);
-        cy.get('#tinymce').as('documentation').should('not.be.visible');
+        cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
         cy.contains('Advanced').click();
         cy.tick(accordionOpenAnimationTime);
-        cy.get('@documentation').should('not.be.visible');
+        cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
         cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
         getTinyMceEditor().should('be.visible');
@@ -64,10 +72,10 @@ describe('Documentation accordion', () => {
         dragFromSourceToDest(type, position);
         cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
-        cy.get('[name="documentation"]').clear().type(docString);
+        getTinyMceEditor().clear().type(docString);
         assertDownloadedXmlContainsExpected(docString);
 
-        cy.get('[name="documentation"]').clear();
+        getTinyMceEditor().clear();
         assertDownloadedXmlDoesNotContainExpected('bpmn:documentation');
 
         deleteElement(position, type);
@@ -82,19 +90,20 @@ describe('Documentation accordion', () => {
     cy.wait(accordionOpenAnimationTime);
 
     const documentationFromInspector = 'some documentation';
-    cy.get('[data-test="documentation-text-area"]').type(documentationFromInspector);
+    getTinyMceEditor().type(documentationFromInspector);
     cy.wait(modalAnimationTime);
 
     cy.get('[data-test="documentation-modal-button"]').click();
 
     const documentationFromModal = 'this is the documentation modal';
-    cy.get('[data-test="documentation-modal-text-area"]').type(documentationFromModal);
+    getTinyMceEditorInModal().type(documentationFromModal);
 
     cy.contains('Close').click();
     cy.wait(modalAnimationTime);
 
-    cy.get('[data-test="documentation-text-area"]').should('have.value', `${documentationFromInspector}${documentationFromModal}`);
+    const documentationCombined = `${documentationFromModal}${documentationFromInspector}`;
+    getTinyMceEditor().should('have.text', documentationCombined);
 
-    assertDownloadedXmlContainsExpected(`${documentationFromInspector}${documentationFromModal}`);
+    assertDownloadedXmlContainsExpected(documentationCombined);
   });
 });

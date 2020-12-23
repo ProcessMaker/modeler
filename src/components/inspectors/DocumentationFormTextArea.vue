@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="d-flex justify-content-between align-items-end mb-2">
@@ -35,6 +34,7 @@
         :richtext="true"
         class="documentation-input"
         data-test="documentation-modal-text-area"
+        id="documentation-editor-modal"
         @input="$emit('input', $event)"
       />
     </b-modal>
