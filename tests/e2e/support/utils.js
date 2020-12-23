@@ -5,6 +5,22 @@ import {gridSize} from '../../../src/graph';
 
 const renderTime = 300;
 
+export function getTinyMceEditor() {
+  return cy
+    .get('iframe#documentation-editor_ifr')
+    .its('0.contentDocument')
+    .its('body')
+    .then(cy.wrap);
+}
+
+export function getTinyMceEditorInModal() {
+  return cy
+    .get('iframe#documentation-editor-modal_ifr')
+    .its('0.contentDocument')
+    .its('body')
+    .then(cy.wrap);
+}
+
 export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
   const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
   waitToRenderAllShapes();

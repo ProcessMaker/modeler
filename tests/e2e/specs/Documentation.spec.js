@@ -2,7 +2,12 @@ import {nodeTypes} from '../support/constants';
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest, getCrownButtonForElement, getElementAtPosition, modalAnimationTime,
+  dragFromSourceToDest,
+  getCrownButtonForElement,
+  getElementAtPosition,
+  getTinyMceEditor,
+  getTinyMceEditorInModal,
+  modalAnimationTime,
 } from '../support/utils';
 
 describe('Documentation accordion', () => {
@@ -26,22 +31,6 @@ describe('Documentation accordion', () => {
         getCrownButtonForElement($element, 'delete-button').click({ force: true });
       });
   };
-
-  function getTinyMceEditor() {
-    return cy
-      .get('iframe#documentation-editor_ifr')
-      .its('0.contentDocument')
-      .its('body')
-      .then(cy.wrap);
-  }
-
-  function getTinyMceEditorInModal() {
-    return cy
-      .get('iframe#documentation-editor-modal_ifr')
-      .its('0.contentDocument')
-      .its('body')
-      .then(cy.wrap);
-  }
 
   it('has a dedicated documentation inspector accordion', () => {
     baseElements
