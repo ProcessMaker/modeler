@@ -219,16 +219,14 @@ export function uploadXml(filepath) {
 
   cy.fixture(filepath, 'base64').then(bpmnProcess => {
     return cy.get('input[type=file]').then($input => {
-      return Cypress.Blob.base64StringToBlob(bpmnProcess, 'text/xml')
-        .then((blob) => {
-          const file = new File([blob], path.basename(filepath), { type: 'text/xml' });
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          const input = $input[0];
-          input.files = dataTransfer.files;
-          cy.wrap(input).trigger('change', { force: true });
-          return cy.get('#uploadmodal button').contains('Upload').click();
-        });
+      const blob = Cypress.Blob.base64StringToBlob(bpmnProcess, 'text/xml');
+      const file = new File([blob], path.basename(filepath), { type: 'text/xml' });
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      const input = $input[0];
+      input.files = dataTransfer.files;
+      cy.wrap(input).trigger('change', { force: true });
+      return cy.get('#uploadmodal button').contains('Upload').click();
     });
   });
 
