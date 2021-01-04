@@ -47,6 +47,8 @@ describe('Association Flows', () => {
     cy.get('[data-test=switch-to-start-timer-event]').click();
     modalConfirm();
 
+    cy.wait(500);
+
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .should($links => {
