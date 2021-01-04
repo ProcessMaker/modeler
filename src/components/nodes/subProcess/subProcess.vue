@@ -55,6 +55,7 @@ import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundary
 import subprocessIcon from '@/assets/subprocess.svg';
 import updateIconColor from '@/mixins/updateIconColor';
 import customIcon from '@/mixins/customIcon';
+import { getRectangleAnchorPoint } from '@/portsUtils';
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 const blankDefaultIcon = '<svg version="1.1"\n' +
@@ -110,6 +111,7 @@ export default {
       ],
       nodeIcon: blankDefaultIcon,
       iconName: '',
+      anchorPointFunction: getRectangleAnchorPoint,
     };
   },
   computed: {
