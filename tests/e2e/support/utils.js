@@ -234,14 +234,14 @@ export function uploadXml(filepath) {
   cy.wait(modalAnimationTime);
 }
 
-export function testNumberOfVertices(numberOfVertices) {
+export function testNumberOfVertices(expectedVertices) {
   cy.window()
     .its('store.state')
     .then(state => {
       const { graph, paper } = state;
-      const link = graph.getLinks()[0];
-      const waypoints = link.findView(paper).getConnection().segments;
-      expect(waypoints).to.have.length(numberOfVertices);
+      const firstLink = graph.getLinks()[0];
+      const waypoints = firstLink.findView(paper).getConnection().segments;
+      expect(waypoints.length).to.equal(expectedVertices, `We should have ${expectedVertices} waypoints`);
 
       if (Cypress.env('inProcessmaker')) {
         return;
@@ -254,14 +254,14 @@ export function testNumberOfVertices(numberOfVertices) {
         .then(xml => {
           const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
 
-          const numberOfCustomVertices = link.vertices().length;
+          const numberOfCustomVertices = firstLink.vertices().length;
           const hasCustomVertices = numberOfCustomVertices > 0;
           const numberOfStartAndEndVertices = 2;
 
           if (hasCustomVertices) {
-            expect(waypoints).to.have.length(numberOfStartAndEndVertices + numberOfCustomVertices);
+            expect(waypoints.length).to.equal(numberOfStartAndEndVertices + numberOfCustomVertices, `Expected ${numberOfStartAndEndVertices + numberOfCustomVertices} custom di:waypoints in the downloaded XML`);
           } else {
-            expect(waypoints).to.have.length(numberOfStartAndEndVertices);
+            expect(waypoints.length).to.equal(numberOfStartAndEndVertices, `Expected ${numberOfStartAndEndVertices} (just start + end) vertices in the downloaded XML`);
           }
         });
     });
