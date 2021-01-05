@@ -87,7 +87,7 @@
     "babel-plugin-istanbul": "^5.2.0",
     "bpmnlint-loader": "^0.1.4",
     "copy-webpack-plugin": "^5.1.1",
-    "cypress": "^3.8.3",
+    "cypress": "6.2.0",
     "cypress-vue-unit-test": "^1.11.7",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.3",

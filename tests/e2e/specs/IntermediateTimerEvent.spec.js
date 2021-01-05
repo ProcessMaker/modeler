@@ -34,28 +34,29 @@ describe('Intermediate Timer Event', () => {
 
   it('Update date/time field on Intermediate Timer Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-
-    getElementAtPosition(intermediateCatchEventPosition).click();
-
     const nameInput = '[name=name]';
     const testString = 'testing';
-    typeIntoTextInput(nameInput, testString);
-    cy.contains('Timing Control').click();
-    cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
     const startDateTime = '02/27/2019 12:30 AM';
-    typeIntoTextInput('[data-test=date-picker]', startDateTime);
-    cy.get('[data-test=date-picker]').should('have.value', startDateTime);
-
-    const validIntermediateCatchEventXML = `
+    const startDateTimeInUTC = '2019-02-27T00:30:00.000Z';
+    const expectedIntermediateCatchEventWithTimer = `
     <bpmn:intermediateCatchEvent id="node_2" name="testing">
     <bpmn:timerEventDefinition>
-      <bpmn:timeDate>2019-02-27T00:30-05:00</bpmn:timeDate>
+      <bpmn:timeDate>${startDateTimeInUTC}</bpmn:timeDate>
     </bpmn:timerEventDefinition>
   </bpmn:intermediateCatchEvent>
   `;
-    cy.get('[data-test=downloadXMLBtn]').click();
-    cy.window().its('xml').then(xml => xml.trim()).should('have', validIntermediateCatchEventXML.trim());
+
+    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    getElementAtPosition(intermediateCatchEventPosition).click();
+
+    typeIntoTextInput(nameInput, testString);
+    cy.contains('Timing Control').click();
+    cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
+    typeIntoTextInput('[data-test=date-picker]', startDateTime);
+    cy.get('[data-test=date-picker]').type('{enter}');
+
+    cy.get('[data-test=date-picker]').should('have.value', startDateTime);
+    assertDownloadedXmlContainsExpected(expectedIntermediateCatchEventWithTimer);
   });
 
   it('Sets default values when switching between types', () => {
@@ -80,7 +81,7 @@ describe('Intermediate Timer Event', () => {
     assertDownloadedXmlContainsExpected(defaultTimeDuration);
   });
 
-  it('should toggle between showing the weekday select when week is selected, and hidiing it when it is not', () => {
+  it('should toggle between showing the weekday select when week is selected, and hiding it when it is not', () => {
     const intermediateTimerEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
     cy.contains('Timing Control').click();
@@ -90,7 +91,7 @@ describe('Intermediate Timer Event', () => {
     cy.contains('Repeat on').should('be.visible');
 
     cy.get('[data-test="periods"]').select('day');
-    cy.contains('Repeat on').should('not.be.visible');
+    cy.contains('Repeat on').should('not.exist');
 
     cy.get('[data-test="periods"]').select('week');
     cy.contains('Repeat on').should('be.visible');
