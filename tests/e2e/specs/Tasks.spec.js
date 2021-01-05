@@ -4,7 +4,7 @@ import {
   getElementAtPosition, modalAnimationTime,
   modalCancel,
   modalConfirm,
-  typeIntoTextInput,
+  typeIntoTextInput, waitForAnimations,
   waitToRenderAllShapes,
 } from '../support/utils';
 
@@ -48,7 +48,7 @@ describe('Tasks', () => {
     cy.get('[data-test=switch-to-manual-task]').click();
     cy.wait(modalAnimationTime);
     modalConfirm();
-    waitToRenderAllShapes();
+    waitForAnimations();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
     cy.get('[name=name]').should('have.value', testString);
@@ -64,8 +64,7 @@ describe('Tasks', () => {
     cy.get('#modal-prevent-closing').should('be.visible').and('contain.text', 'Changing this type will replace your current configuration');
 
     modalConfirm();
-    waitToRenderAllShapes();
-
+    waitForAnimations();
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
   });
 
@@ -78,6 +77,7 @@ describe('Tasks', () => {
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
     modalCancel();
+    waitForAnimations();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
   });

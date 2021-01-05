@@ -208,7 +208,7 @@ describe('Modeler', () => {
     const validId = 'Process_1';
     typeIntoTextInput('[name=id]', validId);
 
-    cy.get('.invalid-feedback').should('not.have.value', 'The Node Identifier format is invalid.');
+    cy.get('.invalid-feedback').should('not.exist');
   });
 
   it('shows warning for unknown element during parsing', () => {

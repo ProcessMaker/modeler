@@ -42,7 +42,7 @@ describe('Start Timer Event', () => {
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
-    cy.get('.day').contains(today).click();
+    cy.get('.day').contains(Number(today)).click();
     cy.get('[title="Select Time"]').click();
     cy.get('[title="Pick Hour"]').click();
     cy.get('.hour').contains('05').click();
@@ -64,7 +64,7 @@ describe('Start Timer Event', () => {
     typeIntoTextInput('[data-test=repeat-input]', 3);
     cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]').click();
-    cy.get('.day').contains(today).click();
+    cy.get('.day').contains(Number(today)).click();
 
     cy.get('[data-test=end-date-picker]').should('contain.value', expectedEndDate);
     cy.get('.paper-container').click( { force: true } );

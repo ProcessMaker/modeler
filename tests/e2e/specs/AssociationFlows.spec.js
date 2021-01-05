@@ -4,7 +4,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
-  modalConfirm, waitToRenderAllShapes,
+  modalConfirm, waitToRenderAllShapes, waitForAnimations,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
@@ -47,7 +47,7 @@ describe('Association Flows', () => {
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-start-timer-event]').click();
     modalConfirm();
-    waitToRenderAllShapes();
+    waitForAnimations();
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
