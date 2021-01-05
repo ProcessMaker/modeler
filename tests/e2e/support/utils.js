@@ -123,6 +123,10 @@ export function waitToRenderAllShapes() {
   cy.wait(renderTime);
 }
 
+export function waitForAnimations() {
+  cy.wait(renderTime);
+}
+
 export function waitToRenderNodeUpdates() {
   cy.wait(saveDebounce);
 }
