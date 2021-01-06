@@ -25,6 +25,7 @@
       ok-only
       ok-variant="secondary"
       ok-title="Close"
+      no-enforce-focus
     >
       <form-text-area
         v-bind="$attrs"
@@ -82,5 +83,6 @@ export default {
 <style>
   .documentation-input .richtext {
     height: auto;
+    width: 100%;
   }
 </style>
