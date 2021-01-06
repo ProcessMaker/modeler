@@ -21,9 +21,14 @@
 import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
-import { id as poolId } from '../pool';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { isValidTargetType, targetIsValidStartEventType } from '@/components/nodes/messageFlow/validFlows';
+import {
+  isValidTargetType,
+  targetIsValidStartEventType,
+  targetIsValidIntermediateEventType,
+  targetIsValidBoundaryEventType,
+  targetIsNotContainingPool, targetIsInDifferentPool, targetIsNotSource,
+} from '@/components/nodes/messageFlow/validFlows';
 
 export default {
   components: {
@@ -69,49 +74,18 @@ export default {
     },
     isValidTarget() {
       return this.hasTargetType() &&
-        isValidTargetType(this.targetNode.definition.$type) &&
+        isValidTargetType(this.targetNode) &&
         targetIsValidStartEventType(this.targetNode) &&
-        this.targetIsValidIntermediateEventType() &&
-        this.targetIsValidBoundaryEventType() &&
-        this.targetIsNotContainingPool() &&
-        this.targetIsInDifferentPool() &&
-        this.targetIsNotSource() &&
+        targetIsValidIntermediateEventType(this.targetNode) &&
+        targetIsValidBoundaryEventType(this.targetNode) &&
+        targetIsNotContainingPool(this.target, this.sourceNode) &&
+        targetIsInDifferentPool(this.target, this.sourceShape) &&
+        targetIsNotSource(this.targetNode, this.sourceNode) &&
         this.allowOutgoingFlow();
     },
-    targetIsValidIntermediateEventType() {
-      if (!this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent')) {
-        return true;
-      }
 
-      return this.targetNode.isType('processmaker-modeler-intermediate-message-catch-event');
-    },
-    targetIsValidBoundaryEventType() {
-      if (!this.targetNode.isBpmnType('bpmn:BoundaryEvent')) {
-        return true;
-      }
-
-      return this.targetNode.isType('processmaker-modeler-boundary-message-event');
-    },
     hasTargetType() {
       return this.targetType != null;
-    },
-    targetIsNotContainingPool() {
-      return this.target !== this.sourceNode.pool;
-    },
-    targetIsPool() {
-      return this.targetType === poolId;
-    },
-    sourceIsPool() {
-      return this.sourceType === poolId;
-    },
-    targetIsInDifferentPool() {
-      const targetPool = this.targetIsPool() ? this.target : this.target.component.node.pool;
-      const sourcePool = this.sourceIsPool() ? this.sourceShape : this.sourceShape.component.node.pool;
-
-      return sourcePool != null && sourcePool !== targetPool;
-    },
-    targetIsNotSource() {
-      return this.targetNode.id !== this.sourceNode.id;
     },
     allowOutgoingFlow() {
       if ('allowOutgoingFlow' in this.sourceConfig) {
