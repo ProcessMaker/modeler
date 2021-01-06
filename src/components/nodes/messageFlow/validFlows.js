@@ -1,7 +1,26 @@
 import { id as poolId } from '@/components/nodes/pool';
 import get from 'lodash/get';
 
-export function isValidTargetType(targetNode) {
+export default function isValidMessageFlowConnection(sourceShape, targetShape, sourceConfig) {
+  const targetNode = get(targetShape, 'component.node');
+  const sourceNode = get(sourceShape, 'component.node');
+
+  return hasTargetType(targetShape) &&
+      isValidTargetType(targetNode) &&
+      targetIsValidStartEventType(targetNode) &&
+      targetIsValidIntermediateEventType(targetNode) &&
+      targetIsValidBoundaryEventType(targetNode) &&
+      targetIsNotContainingPool(targetShape, sourceNode) &&
+      targetIsInDifferentPool(targetShape, sourceShape) &&
+      targetIsNotSource(targetNode, sourceNode) &&
+      allowOutgoingFlow(sourceConfig, sourceNode);
+}
+
+function hasTargetType(targetShape) {
+  return get(targetShape, 'component.node.type') != null;
+}
+
+function isValidTargetType(targetNode) {
   return [
     'bpmn:Task',
     'bpmn:ScriptTask',
@@ -15,7 +34,7 @@ export function isValidTargetType(targetNode) {
   ].some(type => targetNode.isBpmnType(type));
 }
 
-export function targetIsValidStartEventType(targetNode) {
+function targetIsValidStartEventType(targetNode) {
   if (!targetNode.isBpmnType('bpmn:StartEvent')) {
     return true;
   }
@@ -23,7 +42,7 @@ export function targetIsValidStartEventType(targetNode) {
   return targetNode.isType('processmaker-modeler-message-start-event');
 }
 
-export function targetIsValidIntermediateEventType(targetNode) {
+function targetIsValidIntermediateEventType(targetNode) {
   if (!targetNode.isBpmnType('bpmn:IntermediateCatchEvent')) {
     return true;
   }
@@ -31,7 +50,7 @@ export function targetIsValidIntermediateEventType(targetNode) {
   return targetNode.isType('processmaker-modeler-intermediate-message-catch-event');
 }
 
-export function targetIsValidBoundaryEventType(targetNode) {
+function targetIsValidBoundaryEventType(targetNode) {
   if (!targetNode.isBpmnType('bpmn:BoundaryEvent')) {
     return true;
   }
@@ -39,19 +58,27 @@ export function targetIsValidBoundaryEventType(targetNode) {
   return targetNode.isType('processmaker-modeler-boundary-message-event');
 }
 
-export function targetIsNotContainingPool(target, sourceNode) {
+function targetIsNotContainingPool(target, sourceNode) {
   return target !== sourceNode.pool;
 }
 
-export function targetIsInDifferentPool(target, sourceShape) {
+function targetIsInDifferentPool(target, sourceShape) {
   const targetPool = shapeIsPool(target) ? target : target.component.node.pool;
   const sourcePool = shapeIsPool(sourceShape) ? sourceShape : sourceShape.component.node.pool;
 
   return sourcePool != null && sourcePool !== targetPool;
 }
 
-export function targetIsNotSource(targetNode, sourceNode) {
+function targetIsNotSource(targetNode, sourceNode) {
   return targetNode.id !== sourceNode.id;
+}
+
+function allowOutgoingFlow(sourceConfig, targetNode) {
+  if ('allowOutgoingFlow' in sourceConfig) {
+    return sourceConfig.allowOutgoingFlow(targetNode);
+  }
+
+  return true;
 }
 
 function shapeIsPool(shape){

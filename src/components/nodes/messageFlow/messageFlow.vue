@@ -22,13 +22,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import {
-  isValidTargetType,
-  targetIsValidStartEventType,
-  targetIsValidIntermediateEventType,
-  targetIsValidBoundaryEventType,
-  targetIsNotContainingPool, targetIsInDifferentPool, targetIsNotSource,
-} from '@/components/nodes/messageFlow/validFlows';
+import isValidMessageFlowConnection from '@/components/nodes/messageFlow/validFlows';
 
 export default {
   components: {
@@ -55,7 +49,11 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return this.isValidTarget();
+      return isValidMessageFlowConnection(
+        this.sourceShape,
+        this.target,
+        this.sourceConfig
+      );
     },
     targetType() {
       return get(this.target, 'component.node.type');
@@ -71,28 +69,6 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
-    },
-    isValidTarget() {
-      return this.hasTargetType() &&
-        isValidTargetType(this.targetNode) &&
-        targetIsValidStartEventType(this.targetNode) &&
-        targetIsValidIntermediateEventType(this.targetNode) &&
-        targetIsValidBoundaryEventType(this.targetNode) &&
-        targetIsNotContainingPool(this.target, this.sourceNode) &&
-        targetIsInDifferentPool(this.target, this.sourceShape) &&
-        targetIsNotSource(this.targetNode, this.sourceNode) &&
-        this.allowOutgoingFlow();
-    },
-
-    hasTargetType() {
-      return this.targetType != null;
-    },
-    allowOutgoingFlow() {
-      if ('allowOutgoingFlow' in this.sourceConfig) {
-        return this.sourceConfig.allowOutgoingFlow(this.targetNode);
-      }
-
-      return true;
     },
   },
   mounted() {

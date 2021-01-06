@@ -19,9 +19,9 @@
 import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
-import { id as laneId } from '../poolLane';
 import { namePosition } from './sequenceFlowConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { isValidSequenceFlowConnection, isValidSource } from '@/components/nodes/sequenceFlow/validFlows';
 
 export default {
   components: {
@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return this.isValidTarget() && this.isValidSource();
+      return isValidSequenceFlowConnection(this.sourceShape, this.target) && isValidSource(this.sourceShape, this.targetConfig);
     },
     targetType() {
       return get(this.target, 'component.node.type');
@@ -110,41 +110,6 @@ export default {
       this.node.definition.targetRef = targetShape.component.node.definition;
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
-    },
-    isValidSource() {
-      return this.validateIncoming();
-    },
-    validateIncoming() {
-      return this.targetConfig.validateIncoming == null ||
-        this.targetConfig.validateIncoming(this.sourceNode);
-    },
-    isValidTarget() {
-      return this.hasTargetType() &&
-        this.targetIsNotALane() &&
-        this.targetIsInSamePool() &&
-        this.targetIsNotSource() &&
-        this.eventBasedGatewayTarget();
-    },
-    eventBasedGatewayTarget() {
-      const isSourceEventBasedGateway = this.sourceNode.isBpmnType('bpmn:EventBasedGateway');
-      const isTargetIntermediateCatchEvent = this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent');
-
-      return !isSourceEventBasedGateway || isTargetIntermediateCatchEvent;
-    },
-    hasTargetType() {
-      return !!this.targetType;
-    },
-    targetIsNotALane() {
-      return this.targetType !== laneId;
-    },
-    targetIsInSamePool() {
-      const targetPool = this.target.component.node.pool;
-      const sourcePool = this.sourceShape.component.node.pool;
-
-      return !sourcePool || sourcePool === targetPool;
-    },
-    targetIsNotSource() {
-      return this.targetNode.id !== this.sourceNode.id;
     },
     createLabel() {
       this.shape.labels([{
