@@ -90,7 +90,7 @@ describe('Documentation accordion', () => {
     cy.contains('Close').click();
     cy.wait(modalAnimationTime);
 
-    const documentationCombined = `${documentationFromModal}${documentationFromInspector}`;
+    const documentationCombined = `${documentationFromInspector}${documentationFromModal}`;
     getTinyMceEditor().should('have.text', documentationCombined);
 
     assertDownloadedXmlContainsExpected(documentationCombined);
