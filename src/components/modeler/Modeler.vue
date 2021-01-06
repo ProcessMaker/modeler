@@ -144,12 +144,15 @@ import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 
+import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
+
 export default {
   components: {
     ToolBar,
     controls,
     InspectorPanel,
     MiniPaper,
+    ProcessmakerModelerGenericFlow,
   },
   props: {
     owner: Object,
@@ -432,7 +435,7 @@ export default {
 
       types.forEach(bpmnType => {
         if (!this.parsers[bpmnType]) {
-          this.parsers[bpmnType] = { custom: [], implementation: [], default: [] };
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
         }
 
         if (customParser) {

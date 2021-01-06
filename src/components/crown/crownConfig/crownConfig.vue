@@ -10,6 +10,14 @@
       @toggle-crown-state="showCrown = $event"
     />
 
+    <generic-flow-button
+      :node="node"
+      :node-registry="nodeRegistry"
+      :moddle="moddle"
+      v-on="$listeners"
+      @toggle-crown-state="showCrown = $event"
+    />
+
     <sequence-flow-button
       :node="node"
       :node-registry="nodeRegistry"
@@ -82,6 +90,7 @@
 
 <script>
 import DeleteButton from '@/components/crown/crownButtons/deleteButton';
+import GenericFlowButton from '@/components/crown/crownButtons/genericFlowButton';
 import MessageFlowButton from '@/components/crown/crownButtons/messageFlowButton';
 import SequenceFlowButton from '@/components/crown/crownButtons/sequenceFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
@@ -99,6 +108,7 @@ export default {
   components: {
     CrownDropdowns,
     DeleteButton,
+    GenericFlowButton,
     MessageFlowButton,
     SequenceFlowButton,
     AssociationFlowButton,

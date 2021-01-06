@@ -23,6 +23,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as poolId } from '../pool';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { isValidTargetType, targetIsValidStartEventType } from '@/components/nodes/messageFlow/validFlows';
 
 export default {
   components: {
@@ -68,21 +69,14 @@ export default {
     },
     isValidTarget() {
       return this.hasTargetType() &&
-        this.targetIsValidType() &&
-        this.targetIsValidStartEventType() &&
+        isValidTargetType(this.targetNode.definition.$type) &&
+        targetIsValidStartEventType(this.targetNode) &&
         this.targetIsValidIntermediateEventType() &&
         this.targetIsValidBoundaryEventType() &&
         this.targetIsNotContainingPool() &&
         this.targetIsInDifferentPool() &&
         this.targetIsNotSource() &&
         this.allowOutgoingFlow();
-    },
-    targetIsValidStartEventType() {
-      if (!this.targetNode.isBpmnType('bpmn:StartEvent')) {
-        return true;
-      }
-
-      return this.targetNode.isType('processmaker-modeler-message-start-event');
     },
     targetIsValidIntermediateEventType() {
       if (!this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent')) {
@@ -97,19 +91,6 @@ export default {
       }
 
       return this.targetNode.isType('processmaker-modeler-boundary-message-event');
-    },
-    targetIsValidType() {
-      return [
-        'bpmn:Task',
-        'bpmn:ScriptTask',
-        'bpmn:ManualTask',
-        'bpmn:CallActivity',
-        'bpmn:ServiceTask',
-        'bpmn:IntermediateCatchEvent',
-        'bpmn:Participant',
-        'bpmn:StartEvent',
-        'bpmn:BoundaryEvent',
-      ].some(type => this.targetNode.isBpmnType(type));
     },
     hasTargetType() {
       return this.targetType != null;
