@@ -7,7 +7,7 @@ import {
   getCrownButtonForElement,
   getElementAtPosition,
   getNumberOfLinks,
-  getXml,
+  getXml, waitForAnimations,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -25,6 +25,9 @@ const intermediateMessageThrowEventPosition = { x: 350, y: 200 };
 describe('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+
+    getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    waitToRenderAllShapes();
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
@@ -93,14 +96,17 @@ describe('Intermediate Message Throw Event', () => {
         <bpmn:messageEventDefinition messageRef="${messageRef}" />
       </bpmn:intermediateCatchEvent>
     `;
-
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     addNodeTypeToPaper(intermediateMessageCatchEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-catch-event');
 
-    cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
+    getElementAtPosition(intermediateMessageCatchEventPosition).click();
+    waitForAnimations();
 
+    cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
+    waitForAnimations();
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
-    waitToRenderAllShapes();
+    waitForAnimations();
+
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();
@@ -108,7 +114,7 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[data-cy="events-save"]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
-    waitToRenderAllShapes();
+    waitForAnimations();
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);

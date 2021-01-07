@@ -19,21 +19,6 @@ describe('Start Timer Event', () => {
   const now = new Date();
   const today = now.getDate().toString().padStart(2, '0');
 
-  it('default timing control has no selected weekday', () => {
-    const currentDate = Date.UTC(2019, 7, 8, 14);
-    cy.clock(currentDate);
-    addStartTimerEventToPaper();
-    waitToRenderAllShapes();
-    // cy.get('[data-test=switch-to-start-timer-event]').click(); //This clears the crown dropdown
-
-    cy.contains('Timing Control').click();
-    cy.contains('Timing Control').get('.badge-primary').should('not.exist');
-    cy.contains('You must select at least one day.').should('exist');
-    cy.get('.border-primary').should('contain', 'T');
-
-    cy.clock().invoke('restore');
-  });
-
   it('can set a specific start date', () => {
     const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 AM`;
 
@@ -42,7 +27,7 @@ describe('Start Timer Event', () => {
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
-    cy.get('.day').contains(Number(today)).click();
+    cy.get('.day').contains(new RegExp(`^${Number(today)}$`)).click();
     cy.get('[title="Select Time"]').click();
     cy.get('[title="Pick Hour"]').click();
     cy.get('.hour').contains('05').click();
@@ -64,7 +49,7 @@ describe('Start Timer Event', () => {
     typeIntoTextInput('[data-test=repeat-input]', 3);
     cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]').click();
-    cy.get('.day').contains(Number(today)).click();
+    cy.get('.day').contains(new RegExp(`^${Number(today)}$`)).click();
 
     cy.get('[data-test=end-date-picker]').should('contain.value', expectedEndDate);
     cy.get('.paper-container').click( { force: true } );
