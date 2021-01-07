@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
-  getElementAtPosition,
+  getElementAtPosition, getXml, removeIndentationAndLinebreaks,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -132,5 +132,25 @@ describe('Copy element', () => {
 
     assertDownloadedXmlContainsExpected(process);
 
+  });
+
+  it('only creates a single new node on copy if you have multiple pools', () => {
+    const firstPoolPosition = { x: 100, y: 150 };
+    const secondPoolPosition = { x: 100, y: 450 };
+
+    dragFromSourceToDest(nodeTypes.pool, firstPoolPosition);
+    waitToRenderAllShapes();
+    dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
+
+    const taskInSecondPoolPosition = {x: 150, y: 500};
+    dragFromSourceToDest(nodeTypes.task, taskInSecondPoolPosition);
+
+    cy.get('[data-test="copy-button"]').click();
+    waitToRenderAllShapes();
+
+    getXml().then(xml => {
+      const numberOfTasks = xml.match(/<bpmn:task/g);
+      expect(numberOfTasks).to.have.lengthOf(2);
+    });
   });
 });
