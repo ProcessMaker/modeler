@@ -22,8 +22,7 @@ describe('Start Timer Event', () => {
     const currentDate = Date.UTC(2019, 7, 8, 14);
     cy.clock(currentDate);
     addStartTimerEventToPaper();
-    waitToRenderAllShapes();
-    // cy.get('[data-test=switch-to-start-timer-event]').click(); //This clears the crown dropdown
+    cy.tick(300);
 
     cy.contains('Timing Control').click();
     cy.contains('Timing Control').get('.badge-primary').should('not.exist');
