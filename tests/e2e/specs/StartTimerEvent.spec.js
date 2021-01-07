@@ -18,20 +18,6 @@ describe('Start Timer Event', () => {
   const now = new Date();
   const today = now.getDate().toString().padStart(2, '0');
 
-  it('default timing control has no selected weekday', () => {
-    const currentDate = Date.UTC(2019, 7, 8, 14);
-    cy.clock(currentDate);
-    addStartTimerEventToPaper();
-    cy.tick(300);
-
-    cy.contains('Timing Control').click();
-    cy.contains('Timing Control').get('.badge-primary').should('not.exist');
-    cy.contains('You must select at least one day.').should('exist');
-    cy.get('.border-primary').should('contain', 'T');
-
-    cy.clock().invoke('restore');
-  });
-
   it('can set a specific start date', () => {
     const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 AM`;
 
