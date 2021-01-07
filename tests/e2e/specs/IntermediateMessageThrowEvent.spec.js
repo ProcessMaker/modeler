@@ -7,7 +7,7 @@ import {
   getCrownButtonForElement,
   getElementAtPosition,
   getNumberOfLinks,
-  getXml,
+  getXml, waitForAnimations,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -26,8 +26,10 @@ describe('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', () => {
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
+    waitToRenderAllShapes();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    waitToRenderAllShapes();
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
@@ -99,16 +101,15 @@ describe('Intermediate Message Throw Event', () => {
         <bpmn:messageEventDefinition messageRef="${messageRef}" />
       </bpmn:intermediateCatchEvent>
     `;
-
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageCatchEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+    addNodeTypeToPaper(intermediateMessageCatchEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-catch-event');
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
+    waitForAnimations();
     cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
-
+    waitForAnimations();
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    waitForAnimations();
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();
@@ -116,6 +117,7 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[data-cy="events-save"]').click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
+    waitForAnimations();
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
