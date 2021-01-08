@@ -29,7 +29,7 @@
 <script>
 import Vue from 'vue';
 
-import { renderer, VueFormRenderer } from '@processmaker/screen-builder';
+import { renderer } from '@processmaker/screen-builder';
 
 import {
   FormAccordion,
@@ -59,7 +59,6 @@ Vue.component('FormCheckbox', FormCheckbox);
 Vue.component('FormRadioButtonGroup', FormRadioButtonGroup);
 Vue.component('FormAccordion', FormAccordion);
 Vue.component('FormDatePicker', FormDatePicker);
-Vue.component('VueFormRenderer', VueFormRenderer);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {

@@ -24,9 +24,7 @@ const intermediateMessageThrowEventPosition = { x: 350, y: 200 };
 
 describe('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', () => {
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-    waitToRenderAllShapes();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
     waitToRenderAllShapes();
@@ -71,11 +69,7 @@ describe('Intermediate Message Throw Event', () => {
 
   it('retains new message name when clicking off and on intermediate message throw event', () => {
     const startEventPosition = { x: 150, y: 150 };
-
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-
-    getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
     cy.get('[data-cy="events-list"]').click();
@@ -86,6 +80,7 @@ describe('Intermediate Message Throw Event', () => {
     getElementAtPosition(startEventPosition).click();
     waitToRenderAllShapes();
     getElementAtPosition(intermediateMessageThrowEventPosition).click({ force: true });
+    waitToRenderAllShapes();
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();
@@ -106,10 +101,12 @@ describe('Intermediate Message Throw Event', () => {
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     waitForAnimations();
+
     cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
     waitForAnimations();
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
     waitForAnimations();
+
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();

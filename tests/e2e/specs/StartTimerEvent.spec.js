@@ -1,6 +1,7 @@
 import {
   addNodeTypeToPaper,
-  getElementAtPosition, getPeriodicityStringUSFormattedDate,
+  getElementAtPosition,
+  getPeriodicityStringUSFormattedDate,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -46,8 +47,6 @@ describe('Start Timer Event', () => {
     cy.contains('Timing Control').click();
     cy.get('[data-test=end-date-picker]').click({ force: true });
     typeIntoTextInput('[data-test=repeat-input]', 3);
-    cy.get('[data-test=day-3]').click();
-    cy.contains('You must select at least one day.').should('not.exist');
     cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]').click();
     cy.get('.day').contains(new RegExp(`^${Number(today)}$`)).click();

@@ -6,7 +6,7 @@ import {
   getElementAtPosition,
   getGraphElements,
   typeIntoTextInput,
-  modalConfirm,
+  modalConfirm, waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -143,6 +143,7 @@ describe('Event-Based Gateway', () => {
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-parallel-gateway]').click();
     modalConfirm();
+    waitToRenderAllShapes();
 
     const taskPosition = { x: 500, y: 250 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);

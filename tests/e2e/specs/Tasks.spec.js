@@ -1,7 +1,7 @@
 import {
   addNodeTypeToPaper,
   dragFromSourceToDest,
-  getElementAtPosition,
+  getElementAtPosition, modalAnimationTime,
   modalCancel,
   modalConfirm,
   typeIntoTextInput, waitForAnimations,
@@ -34,16 +34,9 @@ describe('Tasks', () => {
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
   });
 
-  it('Can switch task type when initially added', () => {
+  it('Should not display modal when switching task type when *initially* added', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
-
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
-    cy.get('[data-test="select-type-dropdown"]').click();
-    cy.get('[data-test=switch-to-manual-task]').click();
-    modalConfirm();
-    waitForAnimations();
-
-    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
   });
 
   it('Can keep the name when switching task type', () => {
@@ -53,6 +46,7 @@ describe('Tasks', () => {
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
     cy.get('[data-test="select-type-dropdown"]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
+    cy.wait(modalAnimationTime);
     modalConfirm();
     waitForAnimations();
 
@@ -60,17 +54,17 @@ describe('Tasks', () => {
     cy.get('[name=name]').should('have.value', testString);
   });
 
-  it('Can switch task type after initially added', () => {
+  it('Should display modal to switch task type *after* initially added', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
 
-    getElementAtPosition({ x: 150, y: 150 }).click();
-
-    getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
+    cy.wait(modalAnimationTime);
+
+    cy.get('#modal-prevent-closing').should('be.visible').and('contain.text', 'Changing this type will replace your current configuration');
+
     modalConfirm();
     waitForAnimations();
-
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.manualTask);
   });
 
