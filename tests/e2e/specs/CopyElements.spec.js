@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   dragFromSourceToDest,
-  getElementAtPosition, getXml, removeIndentationAndLinebreaks,
+  getElementAtPosition, getXml,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';

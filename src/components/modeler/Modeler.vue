@@ -432,7 +432,7 @@ export default {
 
       types.forEach(bpmnType => {
         if (!this.parsers[bpmnType]) {
-          this.parsers[bpmnType] = { custom: [], implementation: [], default: [] };
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
         }
 
         if (customParser) {
@@ -737,7 +737,9 @@ export default {
       diagram.bounds.y -= (diagram.bounds.height / 2);
     },
     addNode(node) {
-      node.pool = this.poolTarget;
+      if (!node.pool) {
+        node.pool = this.poolTarget;
+      }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
