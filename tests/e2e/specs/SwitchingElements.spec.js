@@ -31,10 +31,10 @@ function changeGatewayTypeTo(newType, gatewayPosition) {
 }
 
 function changeTypeTo(currentType, newType, position) {
-  getElementAtPosition(position, currentType).click({force:true});
-  cy.tick(modalAnimationTime);
+  getElementAtPosition(position, currentType).click();
   cy.get('[data-test=select-type-dropdown]').click();
   cy.get(`[data-test=${newType}]`).click();
+
   cy.tick(modalAnimationTime);
   modalConfirm();
   cy.tick(modalAnimationTime);
@@ -83,16 +83,12 @@ describe('Switching elements', () => {
   });
 
   it.skip('deletes boundary events on tasks when the task type is switched', () => {
-    const ms = 300;
     cy.clock();
 
     const taskPosition = {x: 300, y: 150};
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-user-task');
-    cy.tick(ms);
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.task);
-    cy.tick(ms);
     changeTypeTo(nodeTypes.task, 'switch-to-manual-task', taskPosition);
-    cy.tick(ms);
 
     assertDownloadedXmlDoesNotContainExpected('<bpmn:boundaryEvent');
   });
