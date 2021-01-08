@@ -64,12 +64,8 @@ describe('Switching elements', () => {
     const replacementStartEvent = '<bpmn:startEvent id="node_2" name="Message Start Event">';
     assertDownloadedXmlContainsExpected(initialStartEvent);
 
-    getElementAtPosition(startEventPosition).click();
-    cy.get('[data-test=select-type-dropdown]').click();
-    cy.get('[data-test=switch-to-message-start-event]').click();
-    cy.tick(ms);
-    modalConfirm();
-    cy.tick(ms);
+    changeTypeTo(nodeTypes.startEvent, 'switch-to-message-start-event', startEventPosition);
+
     // if we see two nodes here the replacement failed completely
     assertDownloadedXmlContainsExpected(replacementStartEvent);
     assertDownloadedXmlDoesNotContainExpected(initialStartEvent);
