@@ -88,6 +88,7 @@ export default class Node {
     const clonedNode = new this.constructor(this.type, definition, diagram);
 
     clonedNode.id = null;
+    clonedNode.pool = this.pool;
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
     Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
       const definition = this.definition.get(key);
