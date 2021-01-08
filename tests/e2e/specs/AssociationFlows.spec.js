@@ -4,7 +4,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   getLinksConnectedToElement,
-  modalConfirm, waitForAnimations,
+  modalConfirm, waitToRenderAllShapes, waitForAnimations,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
@@ -40,6 +40,7 @@ describe('Association Flows', () => {
     const startEventPosition = { x: 150, y: 150 };
     const textAnnotationPosition = { x: 400, y: 100 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, startEventPosition);
 

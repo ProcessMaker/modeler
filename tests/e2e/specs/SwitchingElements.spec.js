@@ -4,7 +4,7 @@ import {
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
-  getLinksConnectedToElement, modalConfirm,
+  getLinksConnectedToElement, modalConfirm, waitToRenderAllShapes,
 } from '../support/utils';
 import {nodeTypes} from '../support/constants';
 
@@ -26,6 +26,7 @@ function changeGatewayTypeTo(newType, gatewayPosition) {
   cy.get('[data-test=select-type-dropdown]').click();
   cy.get(`[data-test=switch-to-${newType}]`).click();
   modalConfirm();
+  waitToRenderAllShapes();
 }
 
 describe('Switching elements', () => {

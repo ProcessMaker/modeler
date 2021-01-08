@@ -8,16 +8,16 @@ import translations from '@/setup/translations.json';
 import * as VueDeepSet from 'vue-deepset';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import ScreenBuilder from '@processmaker/screen-builder';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 Vue.use(BootstrapVue);
-
 Vue.use(VueDeepSet);
+Vue.use(VueI18Next);
+Vue.use(ScreenBuilder);
 
 Vue.config.productionTip = false;
-
-Vue.use(VueI18Next);
 
 i18next.init({
   lng: 'en',

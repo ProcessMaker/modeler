@@ -2,7 +2,7 @@ import {
   assertDownloadedXmlContainsExpected, assertDownloadedXmlDoesNotContainExpected, assertElementsAreConnected,
   connectNodesWithFlow,
   dragFromSourceToDest, getCrownButtonForElement,
-  getElementAtPosition, getNumberOfLinks, uploadXml,
+  getElementAtPosition, getNumberOfLinks, uploadXml, waitToRenderAllShapes,
 } from '../support/utils';
 
 import {nodeTypes} from '../support/constants';
@@ -99,6 +99,7 @@ describe('Data Objects and Data Stores', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
     connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
+    waitToRenderAllShapes();
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:dataInputAssociation id="node_4">
@@ -116,6 +117,7 @@ describe('Data Objects and Data Stores', () => {
         return getCrownButtonForElement($el, 'delete-button');
       })
       .click();
+    waitToRenderAllShapes();
 
     getNumberOfLinks().should('equal', 0);
 
