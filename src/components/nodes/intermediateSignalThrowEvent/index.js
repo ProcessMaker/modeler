@@ -2,7 +2,7 @@ import component from './intermediateSignalThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateEventConfig from '@/components/nodes/intermediateEvent';
-import {signalSelector, default as signalEventDefinition} from '../signalEventDefinition';
+import { signalSelector, default as signalEventDefinition } from '../signalEventDefinition';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
 
 const id = 'processmaker-modeler-intermediate-signal-throw-event';

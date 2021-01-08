@@ -39,7 +39,7 @@ describe('nodeManager', () => {
     it('should use ID generator if definition does not have ID', () => {
       const nodeId = 'foobar';
       const diagramId = 'baz';
-      const nodeIdGenerator = { generate: () => [nodeId, diagramId] };
+      const nodeIdGenerator = { generate: () => [nodeId, diagramId]};
       const node = new Node('foo', {}, {});
 
       node.setIds(nodeIdGenerator);
