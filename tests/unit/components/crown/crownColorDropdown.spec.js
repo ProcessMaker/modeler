@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import crownColorDropdown from '@/components/crown/crownButtons/crownColorDropdown';
 import BootstrapVue from 'bootstrap-vue';
-import {baseNodeColors} from '@/components/nodeColors';
+import { baseNodeColors } from '@/components/nodeColors';
 
 jest.mock('../../../../src/store.js', () => {
   return { commit: jest.fn() };

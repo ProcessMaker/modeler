@@ -16,12 +16,12 @@
 </template>
 
 <script>
-import {shapes} from 'jointjs';
+import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import {pull} from 'lodash';
+import { pull } from 'lodash';
 
 export default {
   components: {
@@ -78,7 +78,7 @@ export default {
       });
     },
     updateRouter() {
-      this.shape.router('normal', {elementPadding: this.elementPadding});
+      this.shape.router('normal', { elementPadding: this.elementPadding });
     },
     updateDefinitionLinks() {
       this.node.definition.set('targetRef', this.targetNode.definition);
@@ -86,7 +86,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new shapes.standard.Link({router: {name: 'normal'}});
+    this.shape = new shapes.standard.Link({ router: { name: 'normal' } });
     this.shape.attr({
       line: {
         stroke: 'black',

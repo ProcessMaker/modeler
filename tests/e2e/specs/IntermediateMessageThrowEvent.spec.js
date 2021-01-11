@@ -47,10 +47,7 @@ describe('Intermediate Message Throw Event', () => {
   });
 
   it('can remove the message when intermediate message throw event is deleted', () => {
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-
-    getElementAtPosition(intermediateMessageThrowEventPosition).click();
+    addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
     cy.get('[data-cy="events-list"]').click();

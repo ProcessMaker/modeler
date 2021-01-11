@@ -2,7 +2,7 @@ import component from './intermediateMessageThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
-import {messageSelector, default as messageEventDefinition} from '../messageEventDefinition';
+import { messageSelector, default as messageEventDefinition } from '../messageEventDefinition';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
 
 const id = 'processmaker-modeler-intermediate-message-throw-event';
