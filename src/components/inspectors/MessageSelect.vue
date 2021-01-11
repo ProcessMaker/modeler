@@ -109,7 +109,7 @@
 <script>
 import store from '@/store';
 import Multiselect from 'vue-multiselect';
-import {get,uniqBy} from 'lodash';
+import { get,uniqBy } from 'lodash';
 
 export default {
   components: { Multiselect },
