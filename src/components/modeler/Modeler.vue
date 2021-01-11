@@ -140,7 +140,7 @@ import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { removeOutgoingAndIncomingRefsToFlow } from '@/components/crown/utils';
+import { removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 
@@ -762,6 +762,7 @@ export default {
     },
     async removeNode(node) {
       removeOutgoingAndIncomingRefsToFlow(node);
+      removeBoundaryEvents(this.graph, node, this.removeNode);
 
       this.removeNodeFromLane(node);
       store.commit('removeNode', node);

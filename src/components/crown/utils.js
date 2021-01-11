@@ -1,29 +1,23 @@
 import pull from 'lodash/pull';
-import {bpmnType as dataOutputAssociationType} from '@/components/nodes/dataOutputAssociation/config';
-import {bpmnType as dataInputAssociationType} from '@/components/nodes/dataInputAssociation/config';
+import { bpmnType as dataOutputAssociationType } from '@/components/nodes/dataOutputAssociation/config';
+import { bpmnType as dataInputAssociationType } from '@/components/nodes/dataInputAssociation/config';
 
-export function removeFlows(graph, shape, keepSequenceFlows = false) {
-  let linkShapes = graph.getConnectedLinks(shape);
-
-  if (keepSequenceFlows) {
-    linkShapes = linkShapes.filter(link => !link.component.node.isBpmnType('bpmn:SequenceFlow'));
-  }
-
+export function removeFlows(graph, shape) {
+  const linkShapes = graph.getConnectedLinks(shape);
 
   linkShapes.forEach(shape => this.$emit('remove-node', shape.component.node));
-  shape.getEmbeddedCells({ deep: true })
+}
+
+export function removeBoundaryEvents(graph, node, removeNode) {
+  const nodeShape = graph.getElements().find(el => el.component && el.component.node === node);
+
+  nodeShape.getEmbeddedCells({ deep: true })
     .filter(cell => {
-      if (keepSequenceFlows) {
-        return cell.component && !cell.component.node.isBpmnType('bpmn:SequenceFlow');
-      }
-
-      return cell.component;
+      return cell.component && cell.component.node.isBpmnType('bpmn:BoundaryEvent');
     })
-    .forEach(cell => {
-      graph.getConnectedLinks(cell).forEach(shape => this.$emit('remove-node', shape.component.node));
-      shape.unembed(cell);
-
-      this.$emit('remove-node', cell.component.node);
+    .forEach(boundaryEventShape => {
+      graph.getConnectedLinks(boundaryEventShape).forEach(shape => this.$emit('remove-node', shape.component.node));
+      removeNode(boundaryEventShape.component.node);
     });
 }
 
