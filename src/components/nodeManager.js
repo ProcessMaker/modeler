@@ -1,5 +1,5 @@
-import {bpmnType as dataOutputAssociationType} from '@/components/nodes/dataOutputAssociation/config';
-import {bpmnType as dataInputAssociationType} from '@/components/nodes/dataInputAssociation/config';
+import { bpmnType as dataOutputAssociationType } from '@/components/nodes/dataOutputAssociation/config';
+import { bpmnType as dataInputAssociationType } from '@/components/nodes/dataInputAssociation/config';
 
 export function addNodeToProcess(node, targetProcess) {
   const ignoredNodes = (node) => {

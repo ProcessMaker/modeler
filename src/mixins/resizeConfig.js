@@ -260,7 +260,7 @@ export default {
 
       if (point.get('previousPosition').x === x && point.get('previousPosition').y === y) { return; }
 
-      const { x: poolX, y: poolY, height: poolHeight} = this.poolComponent.shape.getBBox();
+      const { x: poolX, y: poolY, height: poolHeight } = this.poolComponent.shape.getBBox();
       const { x: laneX, y: laneY, height: laneHeight } = this.shape.getBBox();
       const sortedLanes = this.poolComponent.sortedLanes();
       const minHeight = sortedLanes.slice(1).reduce((height, lane) => {

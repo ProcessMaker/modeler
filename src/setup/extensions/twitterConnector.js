@@ -91,7 +91,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
               label: 'Tweet Body',
               helper: 'The Body Of The Tweet to Send',
               name: 'tweet',
-              defaultValue: {mode: 'basic', value: ''},
+              defaultValue: { mode: 'basic', value: '' },
             },
           },
         ],

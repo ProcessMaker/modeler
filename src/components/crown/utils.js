@@ -1,6 +1,6 @@
 import pull from 'lodash/pull';
-import {bpmnType as dataOutputAssociationType} from '@/components/nodes/dataOutputAssociation/config';
-import {bpmnType as dataInputAssociationType} from '@/components/nodes/dataInputAssociation/config';
+import { bpmnType as dataOutputAssociationType } from '@/components/nodes/dataOutputAssociation/config';
+import { bpmnType as dataInputAssociationType } from '@/components/nodes/dataInputAssociation/config';
 
 export function removeFlows(graph, shape, keepSequenceFlows = false) {
   let linkShapes = graph.getConnectedLinks(shape);

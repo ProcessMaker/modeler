@@ -1,4 +1,4 @@
-import {markersAttrs, markersMarkup} from '@/mixins/hasMarkers';
+import { markersAttrs, markersMarkup } from '@/mixins/hasMarkers';
 
 describe('hasMarkers', () => {
   it('markersMarkup generates markers markup', () => {

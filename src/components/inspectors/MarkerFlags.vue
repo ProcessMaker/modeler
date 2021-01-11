@@ -34,10 +34,10 @@ export default {
   },
   watch: {
     loopCharacteristics(newVal) {
-      this.$emit('input', {loopCharacteristics: newVal});
+      this.$emit('input', { loopCharacteristics: newVal });
     },
     isForCompensation(newVal) {
-      this.$emit('input', {isForCompensation: newVal});
+      this.$emit('input', { isForCompensation: newVal });
     },
   },
 };
