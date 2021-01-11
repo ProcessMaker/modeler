@@ -78,7 +78,7 @@ describe('Switching elements', () => {
     cy.clock().invoke('restore');
   });
 
-  it.skip('deletes boundary events on tasks when the task type is switched', () => {
+  it('deletes boundary events on tasks when the task type is switched', () => {
     cy.clock();
 
     const taskPosition = {x: 300, y: 150};
