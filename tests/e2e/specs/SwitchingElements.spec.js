@@ -41,7 +41,7 @@ function changeTypeTo(currentType, newType, position) {
 }
 
 describe('Switching elements', () => {
-  it('Switching a exclusive gateway to a parallel gateway should remove conditions from flows', () => {
+  it('Switching an exclusive gateway to a parallel gateway should remove conditions from flows', () => {
     const gatewayPosition = {x: 300, y: 150};
     const taskPosition = {x: 450, y: 150};
     dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
