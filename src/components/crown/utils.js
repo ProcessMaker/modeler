@@ -9,7 +9,7 @@ export function removeFlows(graph, shape) {
 }
 
 export function removeBoundaryEvents(graph, node, removeNode) {
-  const nodeShape = graph.getElements().find(el => el.component && el.component.node === node);
+  const nodeShape = graph.getCells().find(el => el.component && el.component.node === node);
 
   nodeShape.getEmbeddedCells({ deep: true })
     .filter(cell => {
