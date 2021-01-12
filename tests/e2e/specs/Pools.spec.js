@@ -6,7 +6,7 @@ import {
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
-  getPositionInPaperCoords,
+  getPositionInPaperCoords, getXml,
   isElementCovered,
   moveElement,
   moveElementRelativeTo,
@@ -305,5 +305,22 @@ describe('Pools', () => {
     `;
     assertDownloadedXmlContainsExpected(laneSet1IdBpmn);
     assertDownloadedXmlContainsExpected(laneSet2IdBpmn);
+  });
+
+  it('does not duplicate boundary events when added to a task in a pool', () => {
+    const poolPosition1 = { x: 300, y: 150 };
+    const poolPosition2 = { x: 300, y: 400 };
+    const taskPosition = { x: 350, y: 450 };
+
+    dragFromSourceToDest(nodeTypes.pool, poolPosition1);
+    dragFromSourceToDest(nodeTypes.pool, poolPosition2);
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    setBoundaryEvent(nodeTypes.boundaryConditionalEvent, taskPosition);
+
+    getXml().then(xml => {
+      const numberOfBoundaryEvents = xml.match(/<bpmn:boundaryEvent/g);
+      expect(numberOfBoundaryEvents).to.have.lengthOf(1);
+    });
+
   });
 });
