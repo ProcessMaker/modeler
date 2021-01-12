@@ -165,7 +165,7 @@ export default {
   },
   data() {
     return {
-      runningInCypressTest,
+      runningInCypressTest: runningInCypressTest(),
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
