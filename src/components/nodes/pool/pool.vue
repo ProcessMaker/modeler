@@ -34,16 +34,13 @@ import resizeConfig from '@/mixins/resizeConfig';
 import Lane, { id as laneId } from '../poolLane';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { labelWidth, poolPadding } from './poolSizes';
-import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
-import { id as dataStoreId } from '@/components/nodes/dataStore/index';
-import { id as dataObjectId } from '@/components/nodes/dataObject/index';
 import pull from 'lodash/pull';
 import store from '@/store';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
-import { configurePool } from '@/components/nodes/pool/poolUtils';
+import { configurePool, elementShouldHaveFlowNodeRef } from '@/components/nodes/pool/poolUtils';
 import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
 import { aPortEveryXPixels } from '@/portsUtils';
@@ -164,15 +161,10 @@ export default {
         const definition = Lane.definition(this.moddle, this.$t);
 
         /* If there are currently elements in the pool, add them to the first lane */
-        this.shape.getEmbeddedCells().filter(element => {
-          return element.component &&
-            element.component.node.type !== laneId &&
-            element.component.node.type !== textAnnotationId &&
-            element.component.node.type !== dataObjectId &&
-            element.component.node.type !== dataStoreId;
-        }).forEach(element => {
-          definition.get('flowNodeRef').push(element.component.node.definition);
-        });
+        this.shape.getEmbeddedCells().filter(element => elementShouldHaveFlowNodeRef(element))
+          .forEach(element => {
+            definition.get('flowNodeRef').push(element.component.node.definition);
+          });
 
         lanes.push(this.pushNewLane(definition));
       }
@@ -446,12 +438,8 @@ export default {
       this.shape
         .getEmbeddedCells()
         .filter(element =>
-          element.component &&
-          element.component.node.pool === this.shape &&
-          element.component.node.type !== laneId &&
-          element.component.node.type !== textAnnotationId &&
-          element.component.node.type !== dataObjectId &&
-          element.component.node.type !== dataStoreId
+          elementShouldHaveFlowNodeRef(element) &&
+            element.component.node.pool === this.shape
         )
         .forEach(element => {
           const lane = this.graph
