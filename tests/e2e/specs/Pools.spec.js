@@ -1,12 +1,13 @@
 import {
   assertBoundaryEventIsCloseToTask,
   assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlContainsSubstringNTimes,
   assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
-  getPositionInPaperCoords, getXml,
+  getPositionInPaperCoords,
   isElementCovered,
   moveElement,
   moveElementRelativeTo,
@@ -317,10 +318,6 @@ describe('Pools', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryConditionalEvent, taskPosition);
 
-    getXml().then(xml => {
-      const numberOfBoundaryEvents = xml.match(/<bpmn:boundaryEvent/g);
-      expect(numberOfBoundaryEvents).to.have.lengthOf(1);
-    });
-
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:boundaryEvent', 1);
   });
 });

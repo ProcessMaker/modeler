@@ -1,12 +1,12 @@
 import {
   addNodeTypeToPaper,
+  assertDownloadedXmlContainsSubstringNTimes,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
   getGraphElements,
   getLinksConnectedToElement,
-  getXml,
   isElementCovered,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
@@ -385,10 +385,8 @@ describe('Modeler', () => {
   it('should not generate duplicate diagram IDs', () => {
     uploadXml('setUpForDuplicateDiagramId.xml');
     dragFromSourceToDest(nodeTypes.task, { x: 300, y: 300 });
-    getXml().then(xml => {
-      expect(xml.match(/node_1_di/g)).to.have.length(1);
-      expect(xml.match(/node_2_di/g)).to.have.length(1);
-    });
+    assertDownloadedXmlContainsSubstringNTimes('node_1_di',1,'Node 1 should occur once');
+    assertDownloadedXmlContainsSubstringNTimes('node_2_di',1,'Node 2 should occur once');
   });
 
   it('should only show dropdown for the start event', () => {

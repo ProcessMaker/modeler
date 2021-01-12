@@ -1,8 +1,8 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlContainsSubstringNTimes,
   getElementAtPosition,
-  getXml,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -31,10 +31,6 @@ describe('Message End Event', () => {
     cy.get('[data-test=redo]').click();
     waitToRenderAllShapes();
 
-    getXml().then(xml => {
-      const match = xml.match(/<bpmn:message id=".*?" name=".*?" \/>/g);
-      const numberOfMessages = match && match.length;
-      expect(numberOfMessages).to.equal(1, 'More than 1 message element was found');
-    });
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'There should only be one message element found');
   });
 });

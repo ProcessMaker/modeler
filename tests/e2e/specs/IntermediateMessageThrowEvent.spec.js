@@ -1,13 +1,14 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlContainsSubstringNTimes,
   assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
   getNumberOfLinks,
-  getXml, waitForAnimations,
+  waitForAnimations,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -125,11 +126,7 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[data-test=redo]').click();
     waitToRenderAllShapes();
 
-    getXml().then(xml => {
-      const match = xml.match(/<bpmn:message id=".*?" name=".*?" \/>/g);
-      const numberOfMessages = match && match.length;
-      expect(numberOfMessages).to.equal(1, 'More than 1 message element was found');
-    });
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'Expect single message');
   });
 
   it('retains message name after loading XML', () => {
