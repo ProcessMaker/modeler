@@ -307,21 +307,42 @@ describe('Pools', () => {
     assertDownloadedXmlContainsExpected(laneSet2IdBpmn);
   });
 
-  it('does not add flow node ref to pool lane for excluded items', () => {
-    removeStartEvent();
+  describe('does not add flow node ref to pool lane for excluded items', () => {
+    it('when adding elements to an existing lane', () => {
+      removeStartEvent();
 
-    const poolPosition = {x: 100, y: 50};
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
-    getElementAtPosition({ x: poolPosition.x + 100, y: poolPosition.y + 100 }, nodeTypes.pool)
-      .click({force: true})
-      .then($pool => {
-        getCrownButtonForElement($pool, 'lane-below-button').click({force: true});
-      });
+      const poolPosition = {x: 100, y: 50};
+      dragFromSourceToDest(nodeTypes.pool, poolPosition);
+      getElementAtPosition({ x: poolPosition.x + 100, y: poolPosition.y + 100 }, nodeTypes.pool)
+        .click({force: true})
+        .then($pool => {
+          getCrownButtonForElement($pool, 'lane-below-button').click({force: true});
+        });
 
-    dragFromSourceToDest(nodeTypes.dataStore, {x: poolPosition.x + 100, y: poolPosition.y + 100});
-    dragFromSourceToDest(nodeTypes.dataObject, {x: poolPosition.x + 150, y: poolPosition.y + 150});
-    dragFromSourceToDest(nodeTypes.textAnnotation, {x: poolPosition.x + 200, y: poolPosition.y + 200});
+      dragFromSourceToDest(nodeTypes.dataStore, {x: poolPosition.x + 100, y: poolPosition.y + 100});
+      dragFromSourceToDest(nodeTypes.dataObject, {x: poolPosition.x + 150, y: poolPosition.y + 150});
+      dragFromSourceToDest(nodeTypes.textAnnotation, {x: poolPosition.x + 200, y: poolPosition.y + 200});
 
-    assertDownloadedXmlDoesNotContainExpected('<bpmn:flowNodeRef');
+      assertDownloadedXmlDoesNotContainExpected('<bpmn:flowNodeRef');
+    });
+
+    it('when adding elements to a pool and then adding a lane', () => {
+      removeStartEvent();
+
+      const poolPosition = {x: 100, y: 50};
+      dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+      dragFromSourceToDest(nodeTypes.dataStore, {x: poolPosition.x + 100, y: poolPosition.y + 100});
+      dragFromSourceToDest(nodeTypes.dataObject, {x: poolPosition.x + 150, y: poolPosition.y + 150});
+      dragFromSourceToDest(nodeTypes.textAnnotation, {x: poolPosition.x + 200, y: poolPosition.y + 200});
+
+      getElementAtPosition({ x: poolPosition.x + 100, y: poolPosition.y + 100 }, nodeTypes.pool)
+        .click({force: true})
+        .then($pool => {
+          getCrownButtonForElement($pool, 'lane-below-button').click({force: true});
+        });
+
+      assertDownloadedXmlDoesNotContainExpected('<bpmn:flowNodeRef');
+    });
   });
 });
