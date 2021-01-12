@@ -1,10 +1,11 @@
 import {
+  addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
-  getLinksConnectedToElement, modalConfirm, waitToRenderAllShapes,
+  getLinksConnectedToElement, modalAnimationTime, modalConfirm, setBoundaryEvent, waitToRenderAllShapes,
 } from '../support/utils';
 import {nodeTypes} from '../support/constants';
 
@@ -29,8 +30,18 @@ function changeGatewayTypeTo(newType, gatewayPosition) {
   waitToRenderAllShapes();
 }
 
+function changeTypeTo(currentType, newType, position) {
+  getElementAtPosition(position, currentType).click();
+  cy.get('[data-test=select-type-dropdown]').click();
+  cy.get(`[data-test=${newType}]`).click();
+
+  cy.tick(modalAnimationTime);
+  modalConfirm();
+  cy.tick(modalAnimationTime);
+}
+
 describe('Switching elements', () => {
-  it('Switching a exclusive gateway to a parallel gateway should remove conditions from flows', () => {
+  it('Switching an exclusive gateway to a parallel gateway should remove conditions from flows', () => {
     const gatewayPosition = {x: 300, y: 150};
     const taskPosition = {x: 450, y: 150};
     dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
@@ -53,12 +64,8 @@ describe('Switching elements', () => {
     const replacementStartEvent = '<bpmn:startEvent id="node_2" name="Message Start Event">';
     assertDownloadedXmlContainsExpected(initialStartEvent);
 
-    getElementAtPosition(startEventPosition).click();
-    cy.get('[data-test=select-type-dropdown]').click();
-    cy.get('[data-test=switch-to-message-start-event]').click();
-    cy.tick(ms);
-    modalConfirm();
-    cy.tick(ms);
+    changeTypeTo(nodeTypes.startEvent, 'switch-to-message-start-event', startEventPosition);
+
     // if we see two nodes here the replacement failed completely
     assertDownloadedXmlContainsExpected(replacementStartEvent);
     assertDownloadedXmlDoesNotContainExpected(initialStartEvent);
@@ -69,5 +76,16 @@ describe('Switching elements', () => {
     assertDownloadedXmlContainsExpected(initialStartEvent);
     assertDownloadedXmlDoesNotContainExpected(replacementStartEvent);
     cy.clock().invoke('restore');
+  });
+
+  it('deletes boundary events on tasks when the task type is switched', () => {
+    cy.clock();
+
+    const taskPosition = {x: 300, y: 150};
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-user-task');
+    setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.task);
+    changeTypeTo(nodeTypes.task, 'switch-to-manual-task', taskPosition);
+
+    assertDownloadedXmlDoesNotContainExpected('<bpmn:boundaryEvent');
   });
 });

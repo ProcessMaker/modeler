@@ -66,6 +66,7 @@
     />
 
     <b-modal
+      :no-fade="runningInCypressTest"
       id="modal-prevent-closing"
       ref="modal"
       :title="$t('Change Type')"
@@ -94,6 +95,7 @@ import pull from 'lodash/pull';
 import store from '@/store';
 import isEqual from 'lodash/isEqual';
 import { getDefaultNodeColors, setShapeColor } from '@/components/nodeColors';
+import runningInCypressTest from '@/runningInCypressTest';
 
 export default {
   components: {
@@ -163,6 +165,7 @@ export default {
   },
   data() {
     return {
+      runningInCypressTest: runningInCypressTest(),
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
