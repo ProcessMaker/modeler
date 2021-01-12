@@ -35,6 +35,8 @@ import Lane, { id as laneId } from '../poolLane';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
 import { labelWidth, poolPadding } from './poolSizes';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation/index';
+import { id as dataStoreId } from '@/components/nodes/dataStore/index';
+import { id as dataObjectId } from '@/components/nodes/dataObject/index';
 import pull from 'lodash/pull';
 import store from '@/store';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
@@ -165,7 +167,9 @@ export default {
         this.shape.getEmbeddedCells().filter(element => {
           return element.component &&
             element.component.node.type !== laneId &&
-            element.component.node.type !== textAnnotationId;
+            element.component.node.type !== textAnnotationId &&
+            element.component.node.type !== dataObjectId &&
+            element.component.node.type !== dataStoreId;
         }).forEach(element => {
           definition.get('flowNodeRef').push(element.component.node.definition);
         });
@@ -445,7 +449,9 @@ export default {
           element.component &&
           element.component.node.pool === this.shape &&
           element.component.node.type !== laneId &&
-          element.component.node.type !== textAnnotationId,
+          element.component.node.type !== textAnnotationId &&
+          element.component.node.type !== dataObjectId &&
+          element.component.node.type !== dataStoreId
         )
         .forEach(element => {
           const lane = this.graph
