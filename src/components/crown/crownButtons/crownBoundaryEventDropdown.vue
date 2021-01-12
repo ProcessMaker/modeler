@@ -84,6 +84,7 @@ export default {
       diagram.bounds.y = emptyPort.y - (diagram.bounds.height / 2);
 
       const node = new Node(nodeType, definition, diagram);
+      node.pool = this.node.pool;
 
       store.commit('highlightNode', node);
 
