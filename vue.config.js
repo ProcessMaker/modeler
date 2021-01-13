@@ -2,6 +2,8 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const yargs = require('yargs');
 const CopyPlugin = require('copy-webpack-plugin');
+// eslint-disable-next-line no-unused-vars
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
   runtimeCompiler: true,
@@ -71,6 +73,21 @@ module.exports = {
         to: path.resolve(__dirname, 'public/js'),
         ignore: ['demo.html'],
       }]));
+
+      /* use this plugin to find issues related to circular dependencies */
+      // plugins.push(new CircularDependencyPlugin({
+      //   // exclude detection of files based on a RegExp
+      //   exclude: /a\.js|node_modules/,
+      //   // include specific files based on a RegExp
+      //   include: /src/,
+      //   // add errors to webpack instead of warnings
+      //   failOnError: true,
+      //   // allow import cycles that include an asyncronous import,
+      //   // e.g. via import(/* webpackMode: "weak" */ './file.js')
+      //   allowAsyncCycles: false,
+      //   // set the current working directory for displaying module paths
+      //   cwd: process.cwd(),
+      // }));
 
       return plugins;
     })(),

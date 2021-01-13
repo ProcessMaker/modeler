@@ -21,21 +21,8 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { addFlow as addSequenceFlow, isValidSequenceFlowConnection } from '@/components/nodes/sequenceFlow/validFlows';
-import { addFlow as addMessageFlow, isValidMessageFlowConnection } from '@/components/nodes/messageFlow/validFlows';
-
-const flowMap = [
-  {
-    validityFn: isValidSequenceFlowConnection,
-    addFn: addSequenceFlow,
-    bpmnInfos: 'bpmn:SequenceFlow',
-  },
-  {
-    validityFn: isValidMessageFlowConnection,
-    addFn: addMessageFlow,
-    bpmnInfos: 'bpmn:MessageFlow',
-  },
-];
+import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
+import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
 export default {
   name: 'processmaker-modeler-generic-flow',
@@ -63,8 +50,11 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return [isValidSequenceFlowConnection, isValidMessageFlowConnection].some(isValidFn => {
-        return isValidFn(this.sourceShape, this.target, this.sourceConfig);
+      return [
+        SequenceFlow,
+        MessageFlow,
+      ].some(FlowClass => {
+        return FlowClass.isValid(this.sourceShape, this.target, this.sourceConfig);
       });
     },
     targetType() {
@@ -106,20 +96,25 @@ export default {
     },
   },
   methods: {
-    getFlowToRender() {
-      return flowMap.find(
-        mapObject => mapObject.validityFn(this.sourceShape, this.target, this.sourceConfig)
-      );
-    },
     completeLink() {
-      const flowType = this.getFlowToRender();
-      if (flowType) {
-        flowType.addFn.call(this, this.sourceShape, this.target);
-      }
-      //  create a new node for flowType
+      const Flow = [
+        SequenceFlow,
+        MessageFlow,
+      ].find(FlowClass => {
+        return FlowClass.isValid(this.sourceShape, this.target, this.sourceConfig);
+      });
+      const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
 
-    //  set sourceReg and targetRef on that new node
-      // replace this generic node with that new node
+      // if (flowType) {
+      //   flowType.addFn.call(this, this.sourceShape, this.target);
+      // }
+      // [x] create a new node for flowType
+      // [x] set sourceReg and targetRef on that new node
+      // [ ] replace this generic node with that new node
+      // [ ] kill the listener
+
+      const genericLink = this.shape.findView(this.paper);
+      this.$emit('add-node', flow.makeFlowNode(this.sourceShape, this.target, genericLink));
     },
     setDefaultMarker(value) {
       this.shape.attr('line', {

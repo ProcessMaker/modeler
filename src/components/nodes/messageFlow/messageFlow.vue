@@ -22,7 +22,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { isValidMessageFlowConnection } from '@/components/nodes/messageFlow/validFlows';
+import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 
 export default {
   components: {
@@ -49,11 +49,7 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return isValidMessageFlowConnection(
-        this.sourceShape,
-        this.target,
-        this.sourceConfig
-      );
+      return MessageFlow.isValid(this.sourceShape, this.target, this.sourceConfig);
     },
     targetType() {
       return get(this.target, 'component.node.type');
