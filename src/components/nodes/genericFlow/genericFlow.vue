@@ -21,6 +21,21 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { id as laneId } from '../poolLane';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { addFlow as addSequenceFlow, isValidSequenceFlowConnection } from '@/components/nodes/sequenceFlow/validFlows';
+import { addFlow as addMessageFlow, isValidMessageFlowConnection } from '@/components/nodes/messageFlow/validFlows';
+
+const flowMap = [
+  {
+    validityFn: isValidSequenceFlowConnection,
+    addFn: addSequenceFlow,
+    bpmnInfos: 'bpmn:SequenceFlow',
+  },
+  {
+    validityFn: isValidMessageFlowConnection,
+    addFn: addMessageFlow,
+    bpmnInfos: 'bpmn:MessageFlow',
+  },
+];
 
 export default {
   name: 'processmaker-modeler-generic-flow',
@@ -48,7 +63,9 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return this.isValidTarget() && this.isValidSource();
+      return [isValidSequenceFlowConnection, isValidMessageFlowConnection].some(isValidFn => {
+        return isValidFn(this.sourceShape, this.target, this.sourceConfig);
+      });
     },
     targetType() {
       return get(this.target, 'component.node.type');
@@ -89,6 +106,21 @@ export default {
     },
   },
   methods: {
+    getFlowToRender() {
+      return flowMap.find(
+        mapObject => mapObject.validityFn(this.sourceShape, this.target, this.sourceConfig)
+      );
+    },
+    completeLink() {
+      const flowType = this.getFlowToRender();
+      if (flowType) {
+        flowType.addFn.call(this, this.sourceShape, this.target);
+      }
+      //  create a new node for flowType
+
+    //  set sourceReg and targetRef on that new node
+      // replace this generic node with that new node
+    },
     setDefaultMarker(value) {
       this.shape.attr('line', {
         sourceMarker: {
@@ -103,13 +135,6 @@ export default {
     },
     updateRouter() {
       this.shape.router('orthogonal', { padding: 1 });
-    },
-    updateDefinitionLinks() {
-      const targetShape = this.shape.getTargetElement();
-
-      this.node.definition.targetRef = targetShape.component.node.definition;
-      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition);
     },
     isValidSource() {
       return this.validateIncoming();

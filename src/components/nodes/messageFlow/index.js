@@ -10,10 +10,13 @@ export default {
   component,
   bpmnType: 'bpmn:MessageFlow',
   control: false,
-  definition(moddle, $t) {
+  definition(moddle) {
     return moddle.create('bpmn:MessageFlow', {
-      name: $t('Message Flow'),
+      name: '',
     });
+  },
+  diagram(moddle) {
+    return moddle.create('bpmndi:BPMNEdge');
   },
   inspectorConfig: [
     {

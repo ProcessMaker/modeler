@@ -1,7 +1,8 @@
 import { id as poolId } from '@/components/nodes/pool';
 import get from 'lodash/get';
+import Node from '@/components/nodes/node';
 
-export default function isValidMessageFlowConnection(sourceShape, targetShape, sourceConfig) {
+export function isValidMessageFlowConnection(sourceShape, targetShape, sourceConfig) {
   const targetNode = get(targetShape, 'component.node');
   const sourceNode = get(sourceShape, 'component.node');
 
@@ -14,6 +15,26 @@ export default function isValidMessageFlowConnection(sourceShape, targetShape, s
       targetIsInDifferentPool(targetShape, sourceShape) &&
       targetIsNotSource(targetNode, sourceNode) &&
       allowOutgoingFlow(sourceConfig, sourceNode);
+}
+
+export function addFlow(sourceShape, targetShape) {
+  const diagram = this.nodeRegistry['processmaker-modeler-message-flow'].diagram(this.moddle);
+  const messageFlowDefinition = this.nodeRegistry['processmaker-modeler-message-flow'].definition(this.moddle);
+  const genericLink = this.shape.findView(this.paper);
+
+  messageFlowDefinition.set('sourceRef', sourceShape.component.node.definition);
+  messageFlowDefinition.set('targetRef', targetShape.component.node.definition);
+
+  const start = genericLink.sourceAnchor;
+  const end = genericLink.targetAnchor;
+
+  diagram.waypoint = [start, end].map(point => this.moddle.create('dc:Point', point));
+
+  this.$emit('add-node', new Node(
+    'processmaker-modeler-message-flow',
+    messageFlowDefinition,
+    diagram,
+  ));
 }
 
 function hasTargetType(targetShape) {
