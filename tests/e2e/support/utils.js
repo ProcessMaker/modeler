@@ -229,6 +229,19 @@ export function removeIndentationAndLinebreaks(string) {
   return string.replace(/(^\s+)|(\n)/gim, '');
 }
 
+export function removeElementAtPosition(elementPosition) {
+  getElementAtPosition(elementPosition)
+    .click()
+    .then($el => {
+      return getCrownButtonForElement($el, 'delete-button');
+    })
+    .click();
+}
+
+export function removeStartEvent(startEventPosition = {x: 150, y: 150}) {
+  removeElementAtPosition(startEventPosition);
+}
+
 export const modalAnimationTime = 300;
 
 export function uploadXml(filepath) {

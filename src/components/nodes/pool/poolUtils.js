@@ -2,6 +2,10 @@ import { util } from 'jointjs';
 import { poolColor } from '@/components/nodeColors';
 import { labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 import PoolShape from '@/components/nodes/pool/poolShape';
+import { id as laneId } from '@/components/nodes/poolLane';
+import { id as textAnnotationId } from '@/components/nodes/textAnnotation';
+import { id as dataObjectId } from '@/components/nodes/dataObject';
+import { id as dataStoreId } from '@/components/nodes/dataStore';
 
 function createPool(node, graph) {
   const pool = new PoolShape();
@@ -60,4 +64,12 @@ export function configurePool(collaboration, node, graph) {
   sizePool(pool, node);
 
   return pool;
+}
+
+export function elementShouldHaveFlowNodeRef(element) {
+  return element.component &&
+    element.component.node.type !== laneId &&
+    element.component.node.type !== textAnnotationId &&
+    element.component.node.type !== dataObjectId &&
+    element.component.node.type !== dataStoreId;
 }

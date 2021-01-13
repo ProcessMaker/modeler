@@ -12,6 +12,7 @@ import {
   moveElement,
   moveElementRelativeTo,
   removeIndentationAndLinebreaks,
+  removeStartEvent,
   setBoundaryEvent,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -319,5 +320,45 @@ describe('Pools', () => {
     setBoundaryEvent(nodeTypes.boundaryConditionalEvent, taskPosition);
 
     assertDownloadedXmlContainsSubstringNTimes('<bpmn:boundaryEvent', 1);
+  });
+
+  describe('does not add flow node references to pool lanes for excluded items', () => {
+
+    const poolPosition = {x: 100, y: 50};
+
+    function addLaneBelow() {
+      getElementAtPosition({x: poolPosition.x + 100, y: poolPosition.y + 100}, nodeTypes.pool)
+        .click({force: true})
+        .then($pool => {
+          getCrownButtonForElement($pool, 'lane-below-button').click({force: true});
+        });
+    }
+
+    function addElementsThatShouldNotHaveFlowNodeRefs() {
+      dragFromSourceToDest(nodeTypes.dataStore, {x: poolPosition.x + 100, y: poolPosition.y + 100});
+      dragFromSourceToDest(nodeTypes.dataObject, {x: poolPosition.x + 150, y: poolPosition.y + 150});
+      dragFromSourceToDest(nodeTypes.textAnnotation, {x: poolPosition.x + 200, y: poolPosition.y + 200});
+    }
+
+    it('when adding elements to an existing lane', () => {
+      removeStartEvent();
+      dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+      addLaneBelow();
+      addElementsThatShouldNotHaveFlowNodeRefs();
+
+      assertDownloadedXmlDoesNotContainExpected('<bpmn:flowNodeRef');
+    });
+
+    it('when adding elements to a pool and then adding a lane', () => {
+      removeStartEvent();
+      dragFromSourceToDest(nodeTypes.pool, poolPosition);
+
+      addElementsThatShouldNotHaveFlowNodeRefs();
+      addLaneBelow();
+
+      assertDownloadedXmlDoesNotContainExpected('<bpmn:flowNodeRef');
+    });
+
   });
 });
