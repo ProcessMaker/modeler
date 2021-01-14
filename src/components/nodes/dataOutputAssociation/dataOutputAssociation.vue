@@ -74,7 +74,7 @@ export default {
 
       return this.graph.getElements().find(element => {
         return element.component && element.component.node.definition.get('dataOutputAssociations') &&
-            element.component.node.definition.get('dataOutputAssociations')[0] === this.node.definition;
+            element.component.node.definition.get('dataOutputAssociations').includes(this.node.definition);
       });
     },
     updateRouter() {
@@ -82,7 +82,8 @@ export default {
     },
     updateDefinitionLinks() {
       this.node.definition.set('targetRef', this.targetNode.definition);
-      this.sourceNode.definition.set('dataOutputAssociations', [this.node.definition]);
+      const existingOutputAssociations = this.sourceNode.definition.get('dataOutputAssociations');
+      this.sourceNode.definition.set('dataOutputAssociations', [...existingOutputAssociations, this.node.definition]);
     },
   },
   mounted() {

@@ -2,9 +2,10 @@ import Flow from '@/components/nodes/genericFlow/Flow';
 import get from 'lodash/get';
 import Node from '@/components/nodes/node';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
 
 export default class SequenceFlow extends Flow {
-  static isValid(sourceShape, targetShape, targetConfig) {
+  static isValid({ sourceShape, targetShape, targetConfig }) {
     const targetNode = get(targetShape, 'component.node');
     const sourceNode = get(sourceShape, 'component.node');
 
@@ -13,7 +14,9 @@ export default class SequenceFlow extends Flow {
       SequenceFlow.targetIsNotALane(targetNode) &&
       SequenceFlow.targetIsInSamePool(sourceShape, targetShape) &&
       SequenceFlow.eventBasedGatewayTarget(sourceNode, targetNode) &&
-      SequenceFlow.isValidSource(sourceShape, targetConfig);
+      SequenceFlow.isValidSource(sourceShape, targetConfig) &&
+      !DataAssociation.isADataNode(sourceNode) &&
+      !DataAssociation.isADataNode(targetNode);
   }
 
   makeFlowNode(sourceShape, targetShape, genericLink) {

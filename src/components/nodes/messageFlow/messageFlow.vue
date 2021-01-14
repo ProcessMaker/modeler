@@ -49,7 +49,11 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return MessageFlow.isValid(this.sourceShape, this.target, this.sourceConfig);
+      return MessageFlow.isValid({
+        sourceShape: this.sourceShape,
+        targetShape: this.target,
+        sourceConfig: this.sourceConfig,
+      });
     },
     targetType() {
       return get(this.target, 'component.node.type');

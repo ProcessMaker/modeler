@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import Node from '@/components/nodes/node';
 
 export default class MessageFlow extends Flow {
-  static isValid(sourceShape, targetShape, sourceConfig) {
+  static isValid({ sourceShape, targetShape, sourceConfig }) {
     const targetNode = get(targetShape, 'component.node');
     const sourceNode = get(sourceShape, 'component.node');
 
