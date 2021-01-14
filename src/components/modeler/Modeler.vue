@@ -124,7 +124,7 @@ import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '../nodes/poolLane';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
-import { id as messageFlowId } from '../nodes/messageFlow';
+import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
 
