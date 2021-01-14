@@ -21,7 +21,6 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { namePosition } from './sequenceFlowConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { isValidSource } from '@/components/nodes/sequenceFlow/validFlows';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
 export default {
@@ -50,7 +49,7 @@ export default {
   computed: {
     isValidConnection() {
       return SequenceFlow.isValid(this.sourceShape, this.target)
-        && isValidSource(this.sourceShape, this.targetConfig);
+        && SequenceFlow.isValidSource(this.sourceShape, this.targetConfig);
     },
     targetType() {
       return get(this.target, 'component.node.type');

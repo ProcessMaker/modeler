@@ -15,6 +15,11 @@ export default class SequenceFlow extends Flow {
       SequenceFlow.eventBasedGatewayTarget(sourceNode, targetNode);
   }
 
+  static isValidSource(sourceShape, targetConfig) {
+    return targetConfig.validateIncoming == null ||
+      targetConfig.validateIncoming(sourceShape.node);
+  }
+
   makeFlowNode(sourceShape, targetShape, genericLink) {
     const diagram = this.nodeRegistry['processmaker-modeler-sequence-flow'].diagram(this.moddle);
     const sequenceFlowDefinition = this.nodeRegistry['processmaker-modeler-sequence-flow'].definition(this.moddle, this.$t);
