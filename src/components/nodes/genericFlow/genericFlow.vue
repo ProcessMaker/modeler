@@ -19,7 +19,6 @@
 import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
-import { id as laneId } from '@/components/nodes/poolLane/config';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
@@ -104,17 +103,9 @@ export default {
         return FlowClass.isValid(this.sourceShape, this.target, this.sourceConfig);
       });
       const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
-
-      // if (flowType) {
-      //   flowType.addFn.call(this, this.sourceShape, this.target);
-      // }
-      // [x] create a new node for flowType
-      // [x] set sourceReg and targetRef on that new node
-      // [ ] replace this generic node with that new node
-      // [ ] kill the listener
-
       const genericLink = this.shape.findView(this.paper);
       this.$emit('add-node', flow.makeFlowNode(this.sourceShape, this.target, genericLink));
+      this.$emit('remove-node', this.node);
     },
     setDefaultMarker(value) {
       this.shape.attr('line', {
@@ -130,41 +121,6 @@ export default {
     },
     updateRouter() {
       this.shape.router('orthogonal', { padding: 1 });
-    },
-    isValidSource() {
-      return this.validateIncoming();
-    },
-    validateIncoming() {
-      return this.targetConfig.validateIncoming == null ||
-        this.targetConfig.validateIncoming(this.sourceNode);
-    },
-    isValidTarget() {
-      return this.hasTargetType() &&
-        this.targetIsNotALane() &&
-        this.targetIsInSamePool() &&
-        this.targetIsNotSource() &&
-        this.eventBasedGatewayTarget();
-    },
-    eventBasedGatewayTarget() {
-      const isSourceEventBasedGateway = this.sourceNode.isBpmnType('bpmn:EventBasedGateway');
-      const isTargetIntermediateCatchEvent = this.targetNode.isBpmnType('bpmn:IntermediateCatchEvent');
-
-      return !isSourceEventBasedGateway || isTargetIntermediateCatchEvent;
-    },
-    hasTargetType() {
-      return !!this.targetType;
-    },
-    targetIsNotALane() {
-      return this.targetType !== laneId;
-    },
-    targetIsInSamePool() {
-      const targetPool = this.target.component.node.pool;
-      const sourcePool = this.sourceShape.component.node.pool;
-
-      return !sourcePool || sourcePool === targetPool;
-    },
-    targetIsNotSource() {
-      return this.targetNode.id !== this.sourceNode.id;
     },
     createDefaultFlowMarker() {
       this.shape.attr('line', {
