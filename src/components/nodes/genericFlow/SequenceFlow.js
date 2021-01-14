@@ -1,7 +1,7 @@
 import Flow from '@/components/nodes/genericFlow/Flow';
 import get from 'lodash/get';
 import Node from '@/components/nodes/node';
-import { id as laneId } from '@/components/nodes/poolLane';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 
 export default class SequenceFlow extends Flow {
   static isValid(sourceShape, targetShape) {

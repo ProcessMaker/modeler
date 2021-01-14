@@ -1,5 +1,5 @@
 import { id as poolId } from './nodes/pool';
-import { id as laneId } from './nodes/poolLane';
+import { id as laneId } from './nodes/poolLane/config';
 
 export default function ensureShapeIsNotCovered(shape, graph) {
   if (isPool(shape)) {

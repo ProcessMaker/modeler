@@ -19,7 +19,7 @@
 import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
-import { id as laneId } from '../poolLane';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';

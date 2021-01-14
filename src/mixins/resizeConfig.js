@@ -4,7 +4,7 @@ import { labelWidth, minPoolHeight, minPoolWidth, poolPadding } from '@/componen
 import { minLaneHeight, minLaneWidth } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
 import store from '@/store';
-import { id as laneId } from '@/components/nodes/poolLane';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 
 export default {
   props: ['highlighted', 'paper', 'processNode', 'planeElements', 'moddle'],

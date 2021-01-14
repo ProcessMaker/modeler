@@ -1,5 +1,6 @@
 import { id as laneId } from '../poolLane';
 import get from 'lodash/get';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 
 export function isValidSequenceFlowConnection(sourceShape, targetShape) {
   const sourceNode = get(sourceShape, 'component.node');

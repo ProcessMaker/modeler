@@ -2,7 +2,7 @@ import { util } from 'jointjs';
 import { poolColor } from '@/components/nodeColors';
 import { labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 import PoolShape from '@/components/nodes/pool/poolShape';
-import { id as laneId } from '@/components/nodes/poolLane';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as textAnnotationId } from '@/components/nodes/textAnnotation';
 import { id as dataObjectId } from '@/components/nodes/dataObject';
 import { id as dataStoreId } from '@/components/nodes/dataStore';
