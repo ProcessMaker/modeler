@@ -23,6 +23,11 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
+const BpmnFlows = [
+  SequenceFlow,
+  MessageFlow,
+];
+
 export default {
   name: 'processmaker-modeler-generic-flow',
   components: {
@@ -49,10 +54,7 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return [
-        SequenceFlow,
-        MessageFlow,
-      ].some(FlowClass => {
+      return BpmnFlows.some(FlowClass => {
         return FlowClass.isValid(this.sourceShape, this.target, this.sourceConfig);
       });
     },
@@ -96,10 +98,7 @@ export default {
   },
   methods: {
     completeLink() {
-      const Flow = [
-        SequenceFlow,
-        MessageFlow,
-      ].find(FlowClass => {
+      const Flow = BpmnFlows.find(FlowClass => {
         return FlowClass.isValid(this.sourceShape, this.target, this.sourceConfig);
       });
       const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
