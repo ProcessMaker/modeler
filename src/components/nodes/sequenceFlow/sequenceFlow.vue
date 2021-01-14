@@ -48,8 +48,7 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return SequenceFlow.isValid(this.sourceShape, this.target)
-        && SequenceFlow.isValidSource(this.sourceShape, this.targetConfig);
+      return SequenceFlow.isValid(this.sourceShape, this.target, this.targetConfig);
     },
     targetType() {
       return get(this.target, 'component.node.type');

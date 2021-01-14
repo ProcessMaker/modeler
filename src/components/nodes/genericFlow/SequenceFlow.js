@@ -4,7 +4,7 @@ import Node from '@/components/nodes/node';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 
 export default class SequenceFlow extends Flow {
-  static isValid(sourceShape, targetShape) {
+  static isValid(sourceShape, targetShape, targetConfig) {
     const targetNode = get(targetShape, 'component.node');
     const sourceNode = get(sourceShape, 'component.node');
 
@@ -12,12 +12,8 @@ export default class SequenceFlow extends Flow {
       Flow.targetIsNotSource(sourceNode, targetNode) &&
       SequenceFlow.targetIsNotALane(targetNode) &&
       SequenceFlow.targetIsInSamePool(sourceShape, targetShape) &&
-      SequenceFlow.eventBasedGatewayTarget(sourceNode, targetNode);
-  }
-
-  static isValidSource(sourceShape, targetConfig) {
-    return targetConfig.validateIncoming == null ||
-      targetConfig.validateIncoming(sourceShape.node);
+      SequenceFlow.eventBasedGatewayTarget(sourceNode, targetNode) &&
+      SequenceFlow.isValidSource(sourceShape, targetConfig);
   }
 
   makeFlowNode(sourceShape, targetShape, genericLink) {
@@ -48,6 +44,11 @@ export default class SequenceFlow extends Flow {
       sequenceFlowDefinition,
       diagram,
     );
+  }
+
+  static isValidSource(sourceShape, targetConfig) {
+    return targetConfig.validateIncoming == null ||
+      targetConfig.validateIncoming(sourceShape.node);
   }
 
   static targetIsNotALane(targetNode) {
