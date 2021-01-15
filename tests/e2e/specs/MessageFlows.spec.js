@@ -10,6 +10,7 @@ import {
   isElementCovered,
   modalConfirm,
   moveElement,
+  removeStartEvent,
   setBoundaryEvent,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -88,11 +89,7 @@ describe('Message Flows', () => {
 
   it('Cannot connect to itself', () => {
     const startEventPosition = { x: 150, y: 150 };
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
+    removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 400 };
@@ -118,13 +115,9 @@ describe('Message Flows', () => {
   });
 
   it('Cannot connect to invalid message flow targets', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
-    addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+    const endEventPosition = { x: 150, y: 150 };
+    removeStartEvent();
+    addNodeTypeToPaper(endEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -203,11 +196,7 @@ describe('Message Flows', () => {
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
     let numberOfMessageFlowsAdded = 1;
 
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
+    removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
@@ -246,11 +235,7 @@ describe('Message Flows', () => {
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
     const boundaryEventPosition = { x: taskPosition.x + 58, y: taskPosition.y };
 
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
+    removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
