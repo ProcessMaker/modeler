@@ -263,7 +263,7 @@ describe('Message Flows', () => {
     const boundaryEventId = 'node_8';
     const endEventXml = `<bpmn:endEvent id="${endEventId}" name="Message End Event">`;
     const boundaryEventXml = `<bpmn:boundaryEvent id="${boundaryEventId}" name="Boundary Message Event" attachedToRef="node_7">`;
-    const messageFlowXml = `<bpmn:messageFlow id="node_9" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
+    const messageFlowXml = `<bpmn:messageFlow id="node_10" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
 
     assertDownloadedXmlContainsExpected(endEventXml, boundaryEventXml, messageFlowXml);
   });

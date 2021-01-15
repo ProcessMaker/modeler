@@ -56,7 +56,7 @@ describe('Sequence Flows', () => {
     typeIntoTextInput('[name=conditionExpression]', testExpressionString);
     cy.get('[name=conditionExpression]').should('have.value', testExpressionString);
 
-    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_4" name="${testNameString}" sourceRef="node_2" targetRef="node_3"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testExpressionString}</bpmn:conditionExpression></bpmn:sequenceFlow>`;
+    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_5" name="${testNameString}" sourceRef="node_2" targetRef="node_3"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testExpressionString}</bpmn:conditionExpression></bpmn:sequenceFlow>`;
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -287,7 +287,7 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 250, y: 250 };
     let numberOfSequenceFlowsAdded = 1;
 
-    const sequenceFlow = '<bpmn:sequenceFlow id="node_4" sourceRef="node_1" targetRef="node_3"';
+    const sequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_3"';
 
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-script-task');
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.scriptTask);
@@ -312,7 +312,7 @@ describe('Sequence Flows', () => {
       expect($links.length).to.eq(numberOfSequenceFlowsAdded);
     });
 
-    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_4" sourceRef="node_1" targetRef="node_5"';
+    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_6"';
     assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });
