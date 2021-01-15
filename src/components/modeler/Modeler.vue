@@ -96,6 +96,7 @@
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
+        @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
       />
@@ -796,6 +797,14 @@ export default {
           await this.removeNode(node);
           this.highlightNode(newNode);
         });
+      });
+    },
+    replaceGenericFlow({ actualFlow, genericFlow, targetNode }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.addNode(actualFlow);
+        store.commit('removeNode', genericFlow);
+        await this.$nextTick();
+        this.highlightNode(targetNode);
       });
     },
     async performSingleUndoRedoTransaction(cb) {

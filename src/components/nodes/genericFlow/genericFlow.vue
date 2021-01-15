@@ -116,20 +116,11 @@ export default {
       });
       const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
       const genericLink = this.shape.findView(this.paper);
-      this.$emit('add-node', flow.makeFlowNode(this.sourceShape, this.target, genericLink));
-      this.$emit('remove-node', this.node);
-    },
-    setDefaultMarker(value) {
-      this.shape.attr('line', {
-        sourceMarker: {
-          'stroke-width': value ? 2 : 0,
-        },
+      this.$emit('replace-generic-flow', {
+        actualFlow: flow.makeFlowNode(this.sourceShape, this.target, genericLink),
+        genericFlow: this.node,
+        targetNode: get(this.target, 'component.node'),
       });
-    },
-    isDefaultFlow() {
-      return this.node.definition.sourceRef
-        && this.node.definition.sourceRef.default
-        && this.node.definition.sourceRef.default.id === this.node.definition.id;
     },
     updateRouter() {
       this.shape.router('normal');
