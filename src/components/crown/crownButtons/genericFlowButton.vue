@@ -16,23 +16,16 @@ import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 
-// eslint-disable-next-line no-unused-vars
-const sequenceFlowBlacklist = [
-  'bpmn:MessageFlow',
-  'bpmn:SequenceFlow',
-  'bpmn:Lane',
-  'bpmn:TextAnnotation',
-  'bpmn:Association',
-  'bpmn:DataObjectReference',
-  'bpmn:DataStoreReference',
-];
-
+// Don't show the magic flow button on:
 const dontShowOn = [
-
+  'processmaker-modeler-data-object',
+  'processmaker-modeler-data-store',
+  'processmaker-modeler-lane',
   'processmaker-modeler-end-event',
   'processmaker-modeler-error-end-event',
   'processmaker-modeler-signal-end-event',
   'processmaker-modeler-terminate-end-event',
+  'processmaker-modeler-text-annotation',
 ];
 
 export default {
