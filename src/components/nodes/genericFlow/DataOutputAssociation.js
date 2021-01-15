@@ -39,7 +39,7 @@ export default class DataOutputAssociation extends DataAssociation {
       targetCoords: { x: undefined, y: undefined },
     };
     const sourceNode = get(sourceShape, 'component.node');
-    const existingOutputAssociations = sourceNode.definition.get('dataOutputAssociations');
+    const existingOutputAssociations = sourceNode.definition.get('dataOutputAssociations') || [];
     sourceNode.definition.set('dataOutputAssociations', [...existingOutputAssociations, node.definition]);
     return node;
   }

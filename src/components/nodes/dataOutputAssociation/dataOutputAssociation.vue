@@ -82,7 +82,7 @@ export default {
     },
     updateDefinitionLinks() {
       this.node.definition.set('targetRef', this.targetNode.definition);
-      const existingOutputAssociations = this.sourceNode.definition.get('dataOutputAssociations');
+      const existingOutputAssociations = this.sourceNode.definition.get('dataOutputAssociations') || [];
       this.sourceNode.definition.set('dataOutputAssociations', [...existingOutputAssociations, this.node.definition]);
     },
   },
