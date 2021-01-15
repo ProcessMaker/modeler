@@ -803,9 +803,9 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           await this.addNode(actualFlow);
-          store.commit('removeNode', genericFlow);
+          await store.commit('removeNode', genericFlow);
           await this.$nextTick();
-          this.highlightNode(targetNode);
+          await this.highlightNode(targetNode);
         });
       });
     },
