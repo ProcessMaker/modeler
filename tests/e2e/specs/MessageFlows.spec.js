@@ -138,16 +138,14 @@ describe('Message Flows', () => {
 
     getNumberOfLinks().should('equal', 0);
 
-    connectNodesWithFlow('generic-flow-button', poolPosition, startEventPosition);
+    connectNodesWithFlow('generic-flow-button', poolPosition, endEventPosition);
     connectNodesWithFlow('generic-flow-button', poolPosition, taskPosition);
     connectNodesWithFlow('generic-flow-button', poolPosition, poolLanePosition);
 
-    connectNodesWithFlow('generic-flow-button', startEventPosition, poolPosition);
-    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
-    connectNodesWithFlow('generic-flow-button', startEventPosition, poolLanePosition);
+    connectNodesWithFlow('generic-flow-button', endEventPosition, poolPosition);
+    connectNodesWithFlow('generic-flow-button', endEventPosition, poolLanePosition);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, poolPosition);
-    connectNodesWithFlow('generic-flow-button', taskPosition, startEventPosition);
     connectNodesWithFlow('generic-flow-button', taskPosition, poolLanePosition);
 
     getNumberOfLinks().should('equal', 0);
