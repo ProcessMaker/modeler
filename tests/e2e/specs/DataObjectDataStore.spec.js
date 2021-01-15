@@ -20,21 +20,18 @@ describe('Data Objects and Data Stores', () => {
         .click()
         .then($el => getCrownButtonForElement($el, 'sequence-flow-button'))
         .should('not.exist');
-
-      connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
-      getNumberOfLinks().should('equal', 0);
     });
   });
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
     it(`can add data output association flows for ${nodeType}`, () => {
       dragFromSourceToDest(nodeType, dataPosition);
-      connectNodesWithFlow('association-flow-button', startEventPosition, dataPosition);
+      connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
 
       getNumberOfLinks().should('equal', 1);
       assertDownloadedXmlContainsExpected(`
         <bpmn:startEvent id="node_1" name="Start Event">
-          <bpmn:dataOutputAssociation id="node_3">
+          <bpmn:dataOutputAssociation id="node_4">
             <bpmn:targetRef>node_2</bpmn:targetRef>
           </bpmn:dataOutputAssociation>
         </bpmn:startEvent>
@@ -135,10 +132,10 @@ describe('Data Objects and Data Stores', () => {
   it('removes the data output association on the task when the data object is deleted', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
-    connectNodesWithFlow('association-flow-button', taskPosition, dataPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, dataPosition);
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:dataOutputAssociation id="node_4">
+      <bpmn:dataOutputAssociation id="node_5">
         <bpmn:targetRef>node_3</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     `);
@@ -157,7 +154,7 @@ describe('Data Objects and Data Stores', () => {
     getNumberOfLinks().should('equal', 0);
 
     assertDownloadedXmlDoesNotContainExpected(`
-      <bpmn:dataOutputAssociation id="node_4">
+      <bpmn:dataOutputAssociation id="node_5">
         <bpmn:targetRef>node_3</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     `);
