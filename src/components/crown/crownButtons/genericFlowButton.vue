@@ -14,6 +14,7 @@
 import Flow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 
 const sequenceFlowBlacklist = [
   'bpmn:EndEvent',
@@ -37,7 +38,7 @@ export default {
   },
   computed: {
     sequenceFlowConfig() {
-      return this.nodeRegistry['processmaker-modeler-generic-flow'];
+      return this.nodeRegistry[genericFlowId];
     },
     nodeConfig() {
       return this.nodeRegistry[this.node.type];
@@ -56,7 +57,7 @@ export default {
       });
 
       this.$emit('add-node', new Node(
-        'processmaker-modeler-generic-flow',
+        genericFlowId,
         flowPlaceholderDefinition,
         this.moddle.create('bpmndi:BPMNEdge'),
       ));

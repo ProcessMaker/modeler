@@ -23,6 +23,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
+import { id } from './config';
 
 const BpmnFlows = [
   DataOutputAssociation,
@@ -31,7 +32,7 @@ const BpmnFlows = [
 ];
 
 export default {
-  name: 'processmaker-modeler-generic-flow',
+  name: id,
   components: {
     CrownConfig,
   },

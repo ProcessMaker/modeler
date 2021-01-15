@@ -127,6 +127,7 @@ import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -752,7 +753,16 @@ export default {
       store.commit('addNode', node);
       this.poolTarget = null;
 
-      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataOutputAssociationFlowId, dataInputAssociationFlowId].includes(node.type)) {
+      // add processmaker-modeler-generic-flow
+      if ([
+        sequenceFlowId,
+        laneId,
+        associationId,
+        messageFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        genericFlowId,
+      ].includes(node.type)) {
         return;
       }
 
