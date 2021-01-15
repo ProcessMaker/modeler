@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { id as poolId } from '@/components/nodes/pool';
+import { id as poolId } from '@/components/nodes/pool/config';
 
 export default class Flow {
   nodeRegistry;

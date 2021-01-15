@@ -2,8 +2,8 @@ import component from './pool';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import { id } from './config';
 
-export const id = 'processmaker-modeler-pool';
 
 export default {
   id,
