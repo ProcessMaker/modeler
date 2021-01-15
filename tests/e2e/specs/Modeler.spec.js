@@ -445,7 +445,7 @@ describe('Modeler', () => {
     getElementAtPosition(startEventPosition).click();
     cy.get('.crown-config').should('exist');
 
-    cy.get('#sequence-flow-button').click();
+    cy.get('#generic-flow-button').click();
     cy.get('.crown-config').should('not.exist');
   });
 });
