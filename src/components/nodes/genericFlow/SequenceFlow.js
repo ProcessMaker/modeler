@@ -15,6 +15,7 @@ export default class SequenceFlow extends Flow {
       SequenceFlow.targetIsInSamePool(sourceShape, targetShape) &&
       SequenceFlow.eventBasedGatewayTarget(sourceNode, targetNode) &&
       SequenceFlow.isValidSource(sourceShape, targetConfig) &&
+      SequenceFlow.sourceIsNotPool(sourceNode) &&
       !DataAssociation.isADataNode(sourceNode) &&
       !DataAssociation.isADataNode(targetNode);
   }
@@ -74,5 +75,8 @@ export default class SequenceFlow extends Flow {
     const isTargetIntermediateCatchEvent = targetNode.isBpmnType('bpmn:IntermediateCatchEvent');
 
     return !isSourceEventBasedGateway || isTargetIntermediateCatchEvent;
+  }
+  static sourceIsNotPool(sourceNode) {
+    return !sourceNode.isType('processmaker-modeler-pool');
   }
 }
