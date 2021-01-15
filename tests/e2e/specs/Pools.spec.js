@@ -119,7 +119,7 @@ describe('Pools', () => {
 
     const poolPosition = {x: 300, y: 300};
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     getElementAtPosition(poolPosition)
       .click()

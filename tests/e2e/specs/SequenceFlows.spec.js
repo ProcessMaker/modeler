@@ -23,7 +23,7 @@ describe('Sequence Flows', () => {
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     const numberOfSequenceFlowsAdded = 1;
 
@@ -41,7 +41,7 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 400, y: 500 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', exclusiveGatewayPosition, taskPosition);
 
     getElementAtPosition(exclusiveGatewayPosition)
       .then(getLinksConnectedToElement)
@@ -79,7 +79,7 @@ describe('Sequence Flows', () => {
     const task2Position = { x: 400, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
+    connectNodesWithFlow('generic-flow-button', taskPosition, task2Position);
 
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
@@ -151,7 +151,7 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 200, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     getElementAtPosition(taskPosition)
       .then(getLinksConnectedToElement)
@@ -199,7 +199,7 @@ describe('Sequence Flows', () => {
     const taskPosition = { x: 400, y: 400 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
@@ -252,7 +252,7 @@ describe('Sequence Flows', () => {
     };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, endEventPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
 
     cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 308 326 L 308 450');
   });
@@ -263,7 +263,7 @@ describe('Sequence Flows', () => {
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, startEventPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).
       then($el => $el.find('[joint-selector="body"]')).
       should('have.attr', 'fill', startColor);
@@ -276,7 +276,7 @@ describe('Sequence Flows', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, endEventPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
     getElementAtPosition(endEventPosition, nodeTypes.endEvent).
       then($el => $el.find('[joint-selector="body"]')).
       should('have.attr', 'fill', endColor);
@@ -292,7 +292,7 @@ describe('Sequence Flows', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-script-task');
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.scriptTask);
 
-    connectNodesWithFlow('sequence-flow-button', startPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startPosition, taskPosition);
 
     getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
       expect($links.length).to.eq(numberOfSequenceFlowsAdded);

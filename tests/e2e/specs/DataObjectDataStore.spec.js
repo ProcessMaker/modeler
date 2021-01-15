@@ -21,7 +21,7 @@ describe('Data Objects and Data Stores', () => {
         .then($el => getCrownButtonForElement($el, 'sequence-flow-button'))
         .should('not.exist');
 
-      connectNodesWithFlow('sequence-flow-button', startEventPosition, dataPosition);
+      connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
       getNumberOfLinks().should('equal', 0);
     });
   });

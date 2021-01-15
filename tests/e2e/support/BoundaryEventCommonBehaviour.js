@@ -122,7 +122,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
 
       setBoundaryEvent(nodeType, outgoingTaskPosition, taskType);
       moveElement(outgoingTaskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
-      connectNodesWithFlow('sequence-flow-button', boundaryEventPosition, outgoingTaskPosition);
+      connectNodesWithFlow('generic-flow-button', boundaryEventPosition, outgoingTaskPosition);
       waitToRenderAllShapes();
 
       const numberOfSequenceFlowsAdded = 1;
@@ -148,7 +148,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
-      connectNodesWithFlow('sequence-flow-button', firstTaskPosition, boundaryEventPosition);
+      connectNodesWithFlow('generic-flow-button', firstTaskPosition, boundaryEventPosition);
 
       getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
         expect($links).to.have.lengthOf(0);

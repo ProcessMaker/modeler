@@ -115,9 +115,9 @@ describe('Validation', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition2);
     dragFromSourceToDest(nodeTypes.task, taskPosition3);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition1, parallelGatewayPosition);
-    connectNodesWithFlow('sequence-flow-button', taskPosition2, parallelGatewayPosition);
-    connectNodesWithFlow('sequence-flow-button', parallelGatewayPosition, taskPosition3);
+    connectNodesWithFlow('generic-flow-button', taskPosition1, parallelGatewayPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition2, parallelGatewayPosition);
+    connectNodesWithFlow('generic-flow-button', parallelGatewayPosition, taskPosition3);
 
     cy.get('[data-test="validation-toggle"]').click({ force: true });
     cy.get('[data-test="validation-list-toggle"]').click();
@@ -140,8 +140,8 @@ describe('Validation', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
-    connectNodesWithFlow('sequence-flow-button', taskPosition, endEventPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
 
     cy.get('[data-test="validation-toggle"]').click({ force: true });
 

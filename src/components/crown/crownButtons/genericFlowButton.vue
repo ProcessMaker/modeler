@@ -16,16 +16,23 @@ import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 
+// eslint-disable-next-line no-unused-vars
 const sequenceFlowBlacklist = [
-  'bpmn:EndEvent',
   'bpmn:MessageFlow',
   'bpmn:SequenceFlow',
-  'bpmn:Participant',
   'bpmn:Lane',
   'bpmn:TextAnnotation',
   'bpmn:Association',
   'bpmn:DataObjectReference',
   'bpmn:DataStoreReference',
+];
+
+const dontShowOn = [
+
+  'processmaker-modeler-end-event',
+  'processmaker-modeler-error-end-event',
+  'processmaker-modeler-signal-end-event',
+  'processmaker-modeler-terminate-end-event',
 ];
 
 export default {
@@ -44,7 +51,10 @@ export default {
       return this.nodeRegistry[this.node.type];
     },
     allowOutgoingSequenceFlow() {
-      return !this.node.isBpmnType(...sequenceFlowBlacklist);
+      return !dontShowOn.some((nodeType) => this.node.isType(nodeType));
+
+      // return !this.node.isBpmnType(...sequenceFlowBlacklist) &&
+      //     (this.node.isBpmnType('bpmn:EndEvent') && this.node.isType('processmaker-modeler-message-end-event'));
     },
   },
   methods: {

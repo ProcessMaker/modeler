@@ -161,7 +161,7 @@ describe('Intermediate Message Throw Event', () => {
     const secondPoolPosition = { x: 100, y: 450 };
     dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
 
-    connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
+    connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
     getNumberOfLinks().should('equal', 1);
   });
 
@@ -184,7 +184,7 @@ describe('Intermediate Message Throw Event', () => {
     validMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
       const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
       addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
-      connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, nodePosition);
+      connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, nodePosition);
       getNumberOfLinks().should('equal', 1);
       cy.get('#delete-button').click();
     });
@@ -207,7 +207,7 @@ describe('Intermediate Message Throw Event', () => {
     invalidMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
       const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
       addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
-      connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, nodePosition);
+      connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, nodePosition);
       getNumberOfLinks().should('equal', 0);
       getElementAtPosition(nodePosition).click();
       cy.get('#delete-button').click();
@@ -216,7 +216,7 @@ describe('Intermediate Message Throw Event', () => {
     getElementAtPosition(secondPoolPosition).click();
     cy.get('#lane-above-button').click({ force: true });
     const secondPoolLanePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y };
-    connectNodesWithFlow('message-flow-button', intermediateMessageThrowEventPosition, secondPoolLanePosition);
+    connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolLanePosition);
     getNumberOfLinks().should('equal', 0);
   });
 });
