@@ -131,15 +131,12 @@ export default {
         && this.node.definition.sourceRef.default.id === this.node.definition.id;
     },
     updateRouter() {
-      this.shape.router('orthogonal', { padding: 1 });
+      this.shape.router('normal');
     },
     createDefaultFlowMarker() {
       this.shape.attr('line', {
-        sourceMarker: {
-          'type': 'polyline',
-          'stroke-width': this.isDefaultFlow() ? 2 : 0,
-          points: '2,6 6,-6',
-        },
+        strokeWidth: 1,
+        strokeDasharray: '2 2',
       });
     },
   },
