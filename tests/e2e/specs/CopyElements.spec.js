@@ -1,8 +1,9 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlContainsSubstringNTimes,
   dragFromSourceToDest,
-  getElementAtPosition, getXml,
+  getElementAtPosition,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -148,9 +149,6 @@ describe('Copy element', () => {
     cy.get('[data-test="copy-button"]').click();
     waitToRenderAllShapes();
 
-    getXml().then(xml => {
-      const numberOfTasks = xml.match(/<bpmn:task/g);
-      expect(numberOfTasks).to.have.lengthOf(2);
-    });
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:task', 2, 'Expect exactly two tasks after copying one');
   });
 });

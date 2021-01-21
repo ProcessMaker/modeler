@@ -345,6 +345,13 @@ export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
   });
 }
 
+export function assertDownloadedXmlContainsSubstringNTimes(substring, expectedCount, message) {
+  getXml().then(xml => {
+    const matches = xml.match(new RegExp(substring, 'g'));
+    expect(matches).to.have.lengthOf(expectedCount, message);
+  });
+}
+
 export function assertBoundaryEventIsCloseToTask() {
   const positionErrorMargin = 30;
 
