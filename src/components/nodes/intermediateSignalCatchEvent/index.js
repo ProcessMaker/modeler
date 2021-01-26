@@ -29,7 +29,7 @@ export default merge(cloneDeep(intermediateEventConfig), {
         {
           items: [
             {},
-            signalSelector('Signal that will catch this intermediate event'),
+            signalSelector('Signal that will catch this intermediate event', false),
             {
               component: 'FormInput',
               config: requestVariableSettings,

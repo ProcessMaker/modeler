@@ -24,7 +24,7 @@
           <slot name="noOptions">{{ $t('No Data Available') }}</slot>
         </template>
       </multiselect>
-      <div class="btn-group ml-1" role="group">
+      <div class="btn-group ml-1" role="group" v-if="canEdit">
         <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigSignal" data-cy="events-list">
           <i class="fa fa-ellipsis-h" />
         </button>
@@ -118,6 +118,10 @@ export default {
     name: String,
     placeholder: String,
     helper: String,
+    canEdit: {
+      type: Boolean,
+      default: true,
+    },
     trackBy: {
       type: String,
       default: 'id',
