@@ -1,13 +1,14 @@
 import omit from 'lodash/omit';
 import SignalSelect from '@/components/inspectors/SignalSelect';
 
-export function signalSelector(helper) {
+export function signalSelector(helper, editEnabled = true) {
   return {
     component: SignalSelect,
     config: {
       label: 'Signal',
       name: 'signalRef',
       helper,
+      canEdit: editEnabled,
     },
   };
 }
@@ -29,10 +30,10 @@ export default {
       if (node.definition[key] === value[key]) {
         continue;
       }
-    
+
       setNodeProp(node, key, value[key]);
     }
-    
+
     let signal = definitions.rootElements.find(element => element.id === value.signalRef);
     if (!signal && value.signalRef) {
       signal = moddle.create('bpmn:Signal', {

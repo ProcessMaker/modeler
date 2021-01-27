@@ -27,7 +27,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
         {
           items: [
             {},
-            signalSelector('Signal that will trigger this start event'),
+            signalSelector('Signal that will trigger this start event', false),
             {
               component: 'FormInput',
               config: requestVariableSettings,
