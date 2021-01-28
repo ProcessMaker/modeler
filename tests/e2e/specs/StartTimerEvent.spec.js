@@ -20,14 +20,13 @@ describe('Start Timer Event', () => {
   const today = now.getDate().toString().padStart(2, '0');
 
   it('can set a specific start date', () => {
-    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 AM`;
+    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 PM`;
 
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
-    cy.get('.day').contains(new RegExp(`^${Number(today)}$`)).click();
     cy.get('[title="Select Time"]').click();
     cy.get('[title="Pick Hour"]').click();
     cy.get('.hour').contains('05').click();
@@ -39,7 +38,7 @@ describe('Start Timer Event', () => {
   });
 
   it('can set a specific end date', () => {
-    const expectedEndDate = getPeriodicityStringUSFormattedDate(now);
+    const expectedEndDate = getPeriodicityStringUSFormattedDate(now, true);
 
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
@@ -49,8 +48,6 @@ describe('Start Timer Event', () => {
     typeIntoTextInput('[data-test=repeat-input]', 3);
     cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]').click();
-    cy.get('.day').contains(new RegExp(`^${Number(today)}$`)).click();
-
     cy.get('[data-test=end-date-picker]').should('contain.value', expectedEndDate);
     cy.get('.paper-container').click( { force: true } );
     getElementAtPosition(startTimerEventPosition).click();
