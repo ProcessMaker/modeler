@@ -380,10 +380,14 @@ export function modalCancel() {
   cy.get('.modal-footer .btn-secondary').click();
 }
 
-export function getPeriodicityStringUSFormattedDate(date) {
+export function getPeriodicityStringUSFormattedDate(date, time = false) {
   let year = date.getFullYear();
   let month = (1 + date.getMonth()).toString().padStart(2, '0');
   let day = date.getDate().toString().padStart(2, '0');
-
-  return month + '/' + day + '/' + year;
+  let dateString = month + '/' + day + '/' + year;
+  if (time) {
+    let timeString = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    dateString += ' ' + timeString;
+  }
+  return dateString;
 }

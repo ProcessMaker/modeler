@@ -15,6 +15,7 @@ export default {
       config: {
         label: 'Description',
         name: 'documentation',
+        helper: '',
       },
     },
   ],
