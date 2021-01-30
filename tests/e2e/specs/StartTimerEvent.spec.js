@@ -7,6 +7,7 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
+import moment from 'moment';
 
 const startTimerEventPosition = { x: 250, y: 250 };
 
@@ -20,7 +21,8 @@ describe('Start Timer Event', () => {
   const today = now.getDate().toString().padStart(2, '0');
 
   it('can set a specific start date', () => {
-    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 PM`;
+    const toggledPeriod = moment(now).format('A') === 'AM' ? 'PM' : 'AM';
+    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 ${toggledPeriod}`;
 
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
