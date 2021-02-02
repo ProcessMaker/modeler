@@ -1,4 +1,4 @@
-import pull from 'lodash/pull';
+import { pull, get } from 'lodash';
 import { bpmnType as dataOutputAssociationType } from '@/components/nodes/dataOutputAssociation/config';
 import { bpmnType as dataInputAssociationType } from '@/components/nodes/dataInputAssociation/config';
 
@@ -37,5 +37,13 @@ export function removeOutgoingAndIncomingRefsToFlow(node){
    * can be safely removed. */
   if (targetRef && targetRef.id) {
     pull(targetRef.get('incoming'), node.definition);
+  }
+}
+
+export function removeSourceDefault(node) {
+  const defaultId = get(node, 'definition.sourceRef.default.id', null);
+  if (defaultId && defaultId === node.id) {
+    // unset this node as the source's default
+    node.definition.sourceRef.set('default', null);
   }
 }
