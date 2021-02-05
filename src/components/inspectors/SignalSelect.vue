@@ -308,7 +308,7 @@ export default {
       this.showNewSignal = false;
     },
     updateOptions(globalSignals) {
-      this.options = uniqBy([...this.localSignals, ...globalSignals], 'id');
+      this.options = uniqBy([ ...globalSignals, ...this.localSignals], 'id');
     },
     loadOptions(filter) {
       const pmql = this.pmql;
