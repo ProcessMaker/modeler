@@ -16,7 +16,7 @@ export function removeBoundaryEvents(graph, node, removeNode) {
       return cell.component && cell.component.node.isBpmnType('bpmn:BoundaryEvent');
     })
     .forEach(boundaryEventShape => {
-      graph.getConnectedLinks(boundaryEventShape).forEach(shape => this.$emit('remove-node', shape.component.node));
+      graph.getConnectedLinks(boundaryEventShape).forEach(shape => removeNode(shape.component.node));
       removeNode(boundaryEventShape.component.node);
     });
 }
