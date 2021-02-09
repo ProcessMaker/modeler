@@ -3,8 +3,10 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
+import NodeInspector from '../../../NodeInspector';
 
 export const id = 'processmaker-modeler-task';
 
@@ -32,11 +34,15 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
+    const nodeInspector = new NodeInspector(definitions);
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
-    defaultInspectorHandler(omit(value, 'markerFlags'));
+    nodeInspector.setDefinitionProps(value.$config, setNodeProp, moddle, node.definition);
+    defaultInspectorHandler(omit(value, 'markerFlags', '$config'));
   },
-  inspectorData(node, defaultDataTransform) {
+  inspectorData(node, defaultDataTransform, { definitions }) {
+    const nodeInspector = new NodeInspector(definitions);
     const inspectorData = defaultDataTransform(node);
+    inspectorData.$config = nodeInspector.getDefinitionProps(node.definition);
 
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
@@ -69,6 +75,7 @@ export default {
         },
         advancedAccordionConfigWithMarkerFlags,
         documentationAccordionConfig,
+        loopCharacteristicsInspector,
       ],
     },
   ],
