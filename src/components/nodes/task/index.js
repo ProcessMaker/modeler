@@ -76,6 +76,9 @@ export default {
       ],
     },
   ],
+  // reference for packages
+  loopCharacteristicsHandler,
+  loopCharacteristicsData,
 };
 
 function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {

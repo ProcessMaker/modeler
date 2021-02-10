@@ -20,12 +20,12 @@
           v-model="multiType"
           name="multiType-radio"
           value="loopCardinality"
-        >Loop Cardinality (Numeric)</b-form-radio>
+        >Numeric Expression</b-form-radio>
         <b-form-radio
           v-model="multiType"
           name="multiType-radio"
           value="inputData"
-        >Input Data (Array)</b-form-radio>
+        >Request Data Array</b-form-radio>
       </b-form-group>
       <b-form-group
         v-if="multiType === 'loopCardinality'"
@@ -34,7 +34,7 @@
         label-for="loopCardinality"
         :description="
           $t(
-            'A numeric Expression that controls the number of Activity instances that will be created'
+            'A numeric Expression that defines the number of Activity instances that will be created. Ex. 3 or Variable'
           )
         "
       >
@@ -42,17 +42,17 @@
           id="loopCardinality"
           v-model.lazy="loopCardinality"
           type="text"
-          placeholder="5, intVariable"
+          placeholder="numeric expression"
         />
       </b-form-group>
       <b-form-group
         v-if="multiType === 'inputData'"
         id="group-inputData"
-        :label="$t('Input Data')"
+        :label="$t('Source Data Variable')"
         label-for="inputData"
         :description="
           $t(
-            'Input used to determine the number of Activity instances, one per item in the Input Data.'
+            'Variable used to determine the number of Activity instances, one per item in the array.'
           )
         "
       >
@@ -64,30 +64,12 @@
         />
       </b-form-group>
       <b-form-group
-        v-if="multiType === 'inputData'"
-        id="group-inputDataItem"
-        :label="$t('Input Data Item')"
-        label-for="inputDataItem"
-        :description="
-          $t(
-            'Represents a single item of the array received by each Activity instance'
-          )
-        "
-      >
-        <b-form-input
-          id="inputDataItem"
-          v-model.lazy="inputDataItem"
-          type="text"
-          placeholder="itemVariable"
-        />
-      </b-form-group>
-      <b-form-group
         id="group-outputData"
-        :label="$t('Output Data')"
+        :label="$t('Output Data Variable')"
         label-for="outputData"
         :description="
           $t(
-            'Specifies the output array variable, which will be produced by the multi-instance.'
+            'Specifies the output request data variable array, which will be produced as a result of the multi-instance.'
           )
         "
       >
@@ -98,23 +80,48 @@
           placeholder="arrayVariable"
         />
       </b-form-group>
-      <b-form-group
-        id="group-outputDataItem"
-        :label="$t('Output Data Item')"
-        label-for="outputDataItem"
-        :description="
-          $t(
-            'Represents a single item of the array that will be produced by the multi-instance.'
-          )
-        "
-      >
-        <b-form-input
-          id="outputDataItem"
-          v-model.lazy="outputDataItem"
-          type="text"
-          placeholder="itemVariable"
-        />
-      </b-form-group>
+      
+      <a href="javascript:void(0)" v-b-toggle="`collapse-advanced-multi-instance`" class="text-black" @click="showAdvanced=!showAdvanced">
+        <i class="far" :class="{ 'fa-plus-square': !showAdvanced, 'fa-minus-square': showAdvanced }"/>
+        {{ $t('Advanced') }}
+      </a>
+      <b-collapse v-model="showAdvanced">
+        <b-form-group
+          v-if="multiType === 'inputData'"
+          id="group-inputDataItem"
+          :label="$t('Source Data Item Variable')"
+          label-for="inputDataItem"
+          :description="
+            $t(
+              'Represents a single item of the array received by each Activity instance. If not defined Task receives item as root data.'
+            )
+          "
+        >
+          <b-form-input
+            id="inputDataItem"
+            v-model.lazy="inputDataItem"
+            type="text"
+            placeholder="screen root data"
+          />
+        </b-form-group>
+        <b-form-group
+          id="group-outputDataItem"
+          :label="$t('Output Data Item Variable')"
+          label-for="outputDataItem"
+          :description="
+            $t(
+              'Represents a single item of the array that will be produced by the multi-instance. If not defined all Task instance values will be stored inside output variable.'
+            )
+          "
+        >
+          <b-form-input
+            id="outputDataItem"
+            v-model.lazy="outputDataItem"
+            type="text"
+            placeholder="screen root data"
+          />
+        </b-form-group>
+      </b-collapse>
     </template>
   </div>
 </template>
@@ -141,6 +148,12 @@ export default {
         { text: 'Parallel multi-instance', value: 'parallel_mi' },
         { text: 'Sequential multi-instance', value: 'sequential_mi' },
       ],
+      showAdvanced: false,
+      previous: {
+        loopCardinality: '3',
+        inputData: null,
+        outputData: null,
+      },
       local: cloneDeep(this.value),
       multiType: null,
       loopCardinality: null,
@@ -197,6 +210,9 @@ export default {
       this.inputDataItem = this.getInputDataItem();
       this.outputData = this.getLoopDataOutputRef();
       this.outputDataItem = this.getOutputDataItem();
+      this.previous.inputData = this.inputData;
+      this.previous.outputData = this.outputData;
+      this.previous.loopCardinality = this.loopCardinality;
     },
     getOutputDataItem() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.outputDataItem) return null;
@@ -289,13 +305,23 @@ export default {
       if (value === 'loopCardinality') {
         this.local.loopCharacteristics.loopCardinality = {
           $type: 'bpmn:Expression',
-          body: '',
+          body: this.previous.loopCardinality || '3',
         };
+        this.previous.inputData = this.inputData;
+        this.previous.outputData = this.outputData;
         delete this.local.loopCharacteristics.loopDataInputRef;
+        this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
       } else {
+        this.previous.loopCardinality = this.loopCardinality;
+        this.previous.outputData = this.outputData;
         delete this.local.loopCharacteristics.loopCardinality;
         this.local.loopCharacteristics.loopDataInputRef = '';
+        this.setLoopDataInputRef(this.previous.inputData || 'source_array');
+        this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
       }
+      this.loopCardinality = this.getLoopCardinality();
+      this.inputData = this.getLoopDataInputRef();
+      this.outputData = this.getLoopDataOutputRef();
     },
     getLoopCharacteristics() {
       if (!this.local.loopCharacteristics) return 'no_loop';
