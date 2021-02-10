@@ -4,9 +4,9 @@ import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
 import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
+import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
-import NodeInspector from '../../../NodeInspector';
 
 export const id = 'processmaker-modeler-task';
 
@@ -36,32 +36,17 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
-    const nodeInspector = new NodeInspector(definitions);
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
-    nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, node.definition);
-    if (node.definition.loopCharacteristics) {
-      setNodeProp(node, 'loopCharacteristics', node.definition.loopCharacteristics);
-    }
-    if (node.definition.ioSpecification) {
-      setNodeProp(node, 'ioSpecification', node.definition.ioSpecification);
-    }
+    loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'));
   },
-  inspectorData(node, defaultDataTransform, { definitions }) {
-    const nodeInspector = new NodeInspector(definitions);
+  inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
-    inspectorData.$loopCharactetistics = nodeInspector.getDefinitionProps({
-      id: node.definition.id,
-      loopCharacteristics: node.definition.loopCharacteristics,
-      ioSpecification: node.definition.ioSpecification,
-    });
-
+    loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
     };
     delete inspectorData.isForCompensation;
-    delete inspectorData.loopCharacteristics;
-    delete inspectorData.ioSpecification;
 
     return inspectorData;
   },
@@ -85,9 +70,9 @@ export default {
             },
           ],
         },
-        advancedAccordionConfigWithMarkerFlags,
-        documentationAccordionConfig,
         loopCharacteristicsInspector,
+        documentationAccordionConfig,
+        advancedAccordionConfigWithMarkerFlags,
       ],
     },
   ],
