@@ -40,7 +40,7 @@
       >
         <b-form-input
           id="loopCardinality"
-          v-model="loopCardinality"
+          v-model.lazy="loopCardinality"
           type="text"
           placeholder="5, intVariable"
         />
@@ -58,7 +58,7 @@
       >
         <b-form-input
           id="inputData"
-          v-model="inputData"
+          v-model.lazy="inputData"
           type="text"
           placeholder="arrayVariable"
         />
@@ -76,7 +76,7 @@
       >
         <b-form-input
           id="inputDataItem"
-          v-model="inputDataItem"
+          v-model.lazy="inputDataItem"
           type="text"
           placeholder="itemVariable"
         />
@@ -93,7 +93,7 @@
       >
         <b-form-input
           id="outputData"
-          v-model="outputData"
+          v-model.lazy="outputData"
           type="text"
           placeholder="arrayVariable"
         />
@@ -110,7 +110,7 @@
       >
         <b-form-input
           id="outputDataItem"
-          v-model="outputDataItem"
+          v-model.lazy="outputDataItem"
           type="text"
           placeholder="itemVariable"
         />
