@@ -142,12 +142,13 @@ export default {
         { text: 'Sequential multi-instance', value: 'sequential_mi' },
         { text: 'Loop', value: 'loop' },
       ],
-      multiType: this.getMultiType(),
-      loopCardinality: this.getLoopCardinality(),
-      inputData: this.getLoopDataInputRef(),
-      inputDataItem: this.getInputDataItem(),
-      outputData: this.getLoopDataOutputRef(),
-      outputDataItem: '',
+      local: cloneDeep(this.value),
+      multiType: null,
+      loopCardinality: null,
+      inputData: null,
+      inputDataItem: null,
+      outputData: null,
+      outputDataItem: null,
     };
   },
   computed: {
@@ -160,15 +161,13 @@ export default {
       },
     },
   },
+  mounted() {
+    this.loadData();
+  },
   watch: {
     value: {
       deep: true,
       handler() {
-        this.multiType = this.getMultiType();
-        this.loopCardinality = this.getLoopCardinality();
-        this.inputData = this.getLoopDataInputRef();
-        this.inputDataItem = this.getInputDataItem();
-        this.outputData = this.getLoopDataOutputRef();
       },
     },
     multiType(value) {
@@ -186,106 +185,131 @@ export default {
     outputData(value) {
       this.setLoopDataOutputRef(value);
     },
+    outputDataItem(value) {
+      this.setOutputDataItem(value);
+    },
   },
   methods: {
-    getLoopDataOutputRef() {
-      if (!this.value.loopCharacteristics || !this.value.loopCharacteristics.loopDataOutputRef) return null;
-      return this.value.ioSpecification.dataOutputs[0].name;
+    loadData() {
+      this.local = cloneDeep(this.value);
+      this.multiType = this.getMultiType();
+      this.loopCardinality = this.getLoopCardinality();
+      this.inputData = this.getLoopDataInputRef();
+      this.inputDataItem = this.getInputDataItem();
+      this.outputData = this.getLoopDataOutputRef();
+      this.outputDataItem = this.getOutputDataItem();
     },
-    setLoopDataOutputRef(value) {
-      const dataDef = {
-        $type: 'bpmn:DataOutput',
-        id: `${this.value.id}_output_1`,
-        isCollection: true,
-        name: value,
-      };
-      if (!this.value.ioSpecification) {
-        this.initIoSpecification();
-      }
-      this.value.ioSpecification.dataOutputs = [
-        dataDef,
-      ];
-      this.value.loopCharacteristics.loopDataOutputRef = dataDef.id;
-      this.$emit('input', cloneDeep(this.value));
+    getOutputDataItem() {
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.outputDataItem) return null;
+      return this.local.loopCharacteristics.outputDataItem.name;
     },
-    getInputDataItem() {
-      if (!this.value.loopCharacteristics || !this.value.loopCharacteristics.inputDataItem) return null;
-      return this.value.loopCharacteristics.inputDataItem.name;
-    },
-    setInputDataItem(value) {
-      this.value.loopCharacteristics.loopCardinality = {
+    setOutputDataItem(value) {
+      this.local.loopCharacteristics.outputDataItem = {
         $type: 'bpmn:DataInput',
         isCollection: true,
         name: value,
       };
-      this.$emit('input', cloneDeep(this.value));
+      this.$emit('input', cloneDeep(this.local));
+    },
+    getLoopDataOutputRef() {
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataOutputRef) return null;
+      return this.local.ioSpecification.dataOutputs[0].name;
+    },
+    setLoopDataOutputRef(value) {
+      if (!this.local.ioSpecification) {
+        this.initIoSpecification();
+      }
+      const dataDef = this.local.ioSpecification.dataOutputs[0] || {
+        $type: 'bpmn:DataOutput',
+        id: `${this.local.id}_output_1`,
+        isCollection: true,
+        name: value,
+      };
+      dataDef.name = value;
+      this.local.ioSpecification.dataOutputs = [
+        dataDef,
+      ];
+      this.local.loopCharacteristics.loopDataOutputRef = dataDef.id;
+      this.$emit('input', cloneDeep(this.local));
+    },
+    getInputDataItem() {
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.inputDataItem) return null;
+      return this.local.loopCharacteristics.inputDataItem.name;
+    },
+    setInputDataItem(value) {
+      this.local.loopCharacteristics.inputDataItem = {
+        $type: 'bpmn:DataInput',
+        isCollection: true,
+        name: value,
+      };
+      this.$emit('input', cloneDeep(this.local));
     },
     getLoopDataInputRef() {
-      if (!this.value.loopCharacteristics || !this.value.loopCharacteristics.loopDataInputRef) return null;
-      return this.value.ioSpecification.dataInputs[0].name;
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataInputRef) return null;
+      return this.local.ioSpecification.dataInputs[0].name;
     },
     setLoopDataInputRef(value) {
       const dataDef = {
         $type: 'bpmn:DataInput',
-        id: `${this.value.id}_input_1`,
+        id: `${this.local.id}_input_1`,
         isCollection: true,
         name: value,
       };
-      if (!this.value.ioSpecification) {
+      if (!this.local.ioSpecification) {
         this.initIoSpecification();
       }
-      this.value.ioSpecification.dataInputs = [
+      this.local.ioSpecification.dataInputs = [
         dataDef,
       ];
-      this.value.loopCharacteristics.loopDataInputRef = dataDef.id;
-      this.$emit('input', cloneDeep(this.value));
+      this.local.loopCharacteristics.loopDataInputRef = dataDef.id;
+      this.$emit('input', cloneDeep(this.local));
     },
     initIoSpecification() {
-      this.value.ioSpecification = {
+      this.local.ioSpecification = {
         $type: 'bpmn:InputOutputSpecification',
         dataInputs: [],
         dataOutputs: [],
       };
     },
     getLoopCardinality() {
-      if (!this.value.loopCharacteristics || !this.value.loopCharacteristics.loopCardinality) return null;
-      return this.value.loopCharacteristics.loopCardinality.body;
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopCardinality) return null;
+      return this.local.loopCharacteristics.loopCardinality.body;
     },
     setLoopCardinality(value) {
-      this.value.loopCharacteristics.loopCardinality = {
+      this.local.loopCharacteristics.loopCardinality = {
         $type: 'bpmn:Expression',
         body: value,
       };
-      this.$emit('input', cloneDeep(this.value));
+      this.$emit('input', cloneDeep(this.local));
     },
     getMultiType() {
-      if (!this.value.loopCharacteristics) return null;
-      return this.value.loopCharacteristics.loopCardinality !== undefined ? 'loopCardinality' : 'inputData';
+      if (!this.local.loopCharacteristics) return null;
+      return this.local.loopCharacteristics.loopCardinality !== undefined ? 'loopCardinality' : 'inputData';
     },
     setMultiType(value) {
       if (value === 'loopCardinality') {
-        this.value.loopCharacteristics.loopCardinality = {
+        this.local.loopCharacteristics.loopCardinality = {
           $type: 'bpmn:Expression',
           body: '',
         };
-        delete this.value.loopCharacteristics.loopDataInputRef;
+        delete this.local.loopCharacteristics.loopDataInputRef;
       } else {
-        delete this.value.loopCharacteristics.loopCardinality;
-        this.value.loopCharacteristics.loopDataInputRef = '';
+        delete this.local.loopCharacteristics.loopCardinality;
+        this.local.loopCharacteristics.loopDataInputRef = '';
       }
     },
     getLoopCharacteristics() {
-      if (!this.value.loopCharacteristics) return 'no_loop';
+      if (!this.local.loopCharacteristics) return 'no_loop';
       if (
-        this.value.loopCharacteristics.$type ===
+        this.local.loopCharacteristics.$type ===
           'bpmn:StandardLoopCharacteristics'
       )
         return 'loop';
       if (
-        this.value.loopCharacteristics.$type ===
+        this.local.loopCharacteristics.$type ===
           'bpmn:MultiInstanceLoopCharacteristics'
       ) {
-        return this.value.loopCharacteristics.isSequential
+        return this.local.loopCharacteristics.isSequential
           ? 'sequential_mi'
           : 'parallel_mi';
       }
@@ -294,19 +318,19 @@ export default {
     setLoopCharacteristics(value) {
       switch (value) {
         case 'no_loop':
-          this.value.loopCharacteristics = null;
+          this.local.loopCharacteristics = null;
           break;
         case 'loop':
-          this.value.loopCharacteristics = { $type: 'bpmn:StandardLoopCharacteristics' };
+          this.local.loopCharacteristics = { $type: 'bpmn:StandardLoopCharacteristics' };
           break;
         case 'parallel_mi':
-          this.value.loopCharacteristics = { $type: 'bpmn:MultiInstanceLoopCharacteristics', isSequential: false };
+          this.local.loopCharacteristics = { $type: 'bpmn:MultiInstanceLoopCharacteristics', isSequential: false };
           break;
         case 'sequential_mi':
-          this.value.loopCharacteristics = { $type: 'bpmn:MultiInstanceLoopCharacteristics', isSequential: true };
+          this.local.loopCharacteristics = { $type: 'bpmn:MultiInstanceLoopCharacteristics', isSequential: true };
           break;
       }
-      this.$emit('input', cloneDeep(this.value));
+      this.$emit('input', cloneDeep(this.local));
     },
   },
 };

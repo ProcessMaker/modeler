@@ -23,6 +23,8 @@ export default {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
       assignment: 'requester',
+      loopCharacteristics: null,
+      ioSpecification: null,
     });
   },
   diagram(moddle) {
@@ -36,20 +38,31 @@ export default {
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
     const nodeInspector = new NodeInspector(definitions);
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
-    nodeInspector.setDefinitionProps(value.$config, setNodeProp, moddle, node.definition);
-    defaultInspectorHandler(omit(value, 'markerFlags', '$config'));
+    nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, node.definition);
+    if (node.definition.loopCharacteristics) {
+      setNodeProp(node, 'loopCharacteristics', node.definition.loopCharacteristics);
+    }
+    if (node.definition.ioSpecification) {
+      setNodeProp(node, 'ioSpecification', node.definition.ioSpecification);
+    }
+    defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'));
   },
   inspectorData(node, defaultDataTransform, { definitions }) {
     const nodeInspector = new NodeInspector(definitions);
     const inspectorData = defaultDataTransform(node);
-    inspectorData.$config = nodeInspector.getDefinitionProps(node.definition);
+    inspectorData.$loopCharactetistics = nodeInspector.getDefinitionProps({
+      id: node.definition.id,
+      loopCharacteristics: node.definition.loopCharacteristics,
+      ioSpecification: node.definition.ioSpecification,
+    });
 
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
-      loopCharacteristics: getLoopCharacteristicsRadioValue(inspectorData.loopCharacteristics),
+      //loopCharacteristics: getLoopCharacteristicsRadioValue(inspectorData.loopCharacteristics),
     };
     delete inspectorData.isForCompensation;
     delete inspectorData.loopCharacteristics;
+    delete inspectorData.ioSpecification;
 
     return inspectorData;
   },
@@ -120,22 +133,22 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
   }
 }
 
-function getLoopCharacteristicsRadioValue(loopCharacteristics) {
-  if (!loopCharacteristics) {
-    return 'no_loop';
-  }
-
-  if (loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
-    return 'loop';
-  }
-
-  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !loopCharacteristics.isSequential) {
-    return 'parallel_mi';
-  }
-
-  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && loopCharacteristics.isSequential) {
-    return 'sequential_mi';
-  }
-
-  return 'no_loop';
-}
+//function getLoopCharacteristicsRadioValue(loopCharacteristics) {
+//  if (!loopCharacteristics) {
+//    return 'no_loop';
+//  }
+//
+//  if (loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
+//    return 'loop';
+//  }
+//
+//  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !loopCharacteristics.isSequential) {
+//    return 'parallel_mi';
+//  }
+//
+//  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && loopCharacteristics.isSequential) {
+//    return 'sequential_mi';
+//  }
+//
+//  return 'no_loop';
+//}

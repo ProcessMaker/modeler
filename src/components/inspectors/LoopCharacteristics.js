@@ -14,7 +14,7 @@ export default {
       component: LoopCharactetistics,
       name: 'LoopCharactetistics',
       config: {
-        name: '$config',
+        name: '$loopCharactetistics',
       },
     },
   ],

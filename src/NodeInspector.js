@@ -37,9 +37,9 @@ export default class NodeInspector {
       try {
         value = Object.keys(omit(value, '$type', '$config', 'markerFlags')).reduce((obj, prop) => {
           const val = this.setDefinitionProps(value[prop], setNodeProp, moddle, undefined, prop);
-          if (val !== undefined) obj[prop] = val;
+          obj[prop] = val;
           return obj;
-        }, node || moddle.create(value.$type, { id: this.nodeIdGenerator.generate() }));
+        }, node || moddle.create(value.$type, { id: this.nodeIdGenerator.generate()[0] }));
       } catch (e) {
         throw `Unable to create moddle node of type "${value.$type}" \n ${e}`;
       }
@@ -49,7 +49,7 @@ export default class NodeInspector {
       value = this.findById(value);
     }
     if (node && key !== undefined && value !== undefined) {
-      setNodeProp(node, key, value);
+      node[key] = value;
     }
     return value;
   }
