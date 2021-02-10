@@ -58,7 +58,6 @@ export default {
 
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
-      //loopCharacteristics: getLoopCharacteristicsRadioValue(inspectorData.loopCharacteristics),
     };
     delete inspectorData.isForCompensation;
     delete inspectorData.loopCharacteristics;
@@ -94,35 +93,9 @@ export default {
   ],
 };
 
-function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
+function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
   if (!markerFlags) {
     return;
-  }
-
-  if (markerFlags.loopCharacteristics) {
-    if (markerFlags.loopCharacteristics === 'no_loop') {
-      setNodeProp(node, 'loopCharacteristics', null);
-    }
-
-    const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
-
-    if (markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
-      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
-    }
-
-    if (markerFlags.loopCharacteristics === 'parallel_mi' ) {
-      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
-        return;
-      }
-      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
-    }
-
-    if (markerFlags.loopCharacteristics === 'sequential_mi') {
-      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
-        return;
-      }
-      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
-    }
   }
 
   const currentIsForCompensationValue = node.definition.get('isForCompensation');
@@ -132,23 +105,3 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
     setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
   }
 }
-
-//function getLoopCharacteristicsRadioValue(loopCharacteristics) {
-//  if (!loopCharacteristics) {
-//    return 'no_loop';
-//  }
-//
-//  if (loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
-//    return 'loop';
-//  }
-//
-//  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !loopCharacteristics.isSequential) {
-//    return 'parallel_mi';
-//  }
-//
-//  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && loopCharacteristics.isSequential) {
-//    return 'sequential_mi';
-//  }
-//
-//  return 'no_loop';
-//}

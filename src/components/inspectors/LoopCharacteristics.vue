@@ -140,7 +140,6 @@ export default {
         { text: 'No loop characteristics', value: 'no_loop' },
         { text: 'Parallel multi-instance', value: 'parallel_mi' },
         { text: 'Sequential multi-instance', value: 'sequential_mi' },
-        { text: 'Loop', value: 'loop' },
       ],
       local: cloneDeep(this.value),
       multiType: null,
