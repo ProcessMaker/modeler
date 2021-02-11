@@ -244,6 +244,9 @@ export default {
       this.local.ioSpecification.dataOutputs = [
         dataDef,
       ];
+      this.local.ioSpecification.outputSets[0].dataOutputRefs = [
+        dataDef.id,
+      ];
       this.local.loopCharacteristics.loopDataOutputRef = dataDef.id;
       this.$emit('input', cloneDeep(this.local));
     },
@@ -276,6 +279,9 @@ export default {
       this.local.ioSpecification.dataInputs = [
         dataDef,
       ];
+      this.local.ioSpecification.inputSets[0].dataInputRefs = [
+        dataDef.id,
+      ];
       this.local.loopCharacteristics.loopDataInputRef = dataDef.id;
       this.$emit('input', cloneDeep(this.local));
     },
@@ -284,6 +290,8 @@ export default {
         $type: 'bpmn:InputOutputSpecification',
         dataInputs: [],
         dataOutputs: [],
+        inputSets: [{ $type: 'bpmn:InputSet', dataInputRefs: []}],
+        outputSets: [{ $type: 'bpmn:OutputSet', dataOutputRefs: []}],
       };
     },
     getLoopCardinality() {

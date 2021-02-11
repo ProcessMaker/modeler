@@ -47,7 +47,7 @@ export default class NodeInspector {
     }
     const isReference = key !== undefined && (key.substr(key.length-3) === 'Ref' || key.substr(key.length-4) === 'Refs');
     if (isReference) {
-      value = this.findById(value);
+      value = value instanceof Array ? value.map(id => this.findById(id)) : this.findById(value);
     }
     if (node && key !== undefined && value !== undefined) {
       node[key] = value;
