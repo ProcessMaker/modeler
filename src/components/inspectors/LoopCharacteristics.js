@@ -30,7 +30,7 @@ export default {
   container: true,
   config: {
     initiallyOpen: false,
-    label: 'LoopCharacteristics',
+    label: 'Loop Characteristics',
     icon: 'bars',
     name: 'loop-characteristics-accordion',
   },
