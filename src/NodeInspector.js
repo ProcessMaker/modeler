@@ -38,7 +38,7 @@ export default class NodeInspector {
       try {
         value = Object.keys(omit(value, '$type', '$config', 'markerFlags')).reduce((obj, prop) => {
           const val = this.setDefinitionProps(value[prop], setNodeProp, moddle, undefined, prop);
-          obj[prop] = val;
+          if (val!== null && val !== undefined) obj[prop] = val;
           return obj;
         }, node || moddle.create(value.$type, { id: this.generateId() }));
       } catch (e) {
@@ -49,7 +49,7 @@ export default class NodeInspector {
     if (isReference) {
       value = value instanceof Array ? value.map(id => this.findById(id)) : this.findById(value);
     }
-    if (node && key !== undefined && value !== undefined) {
+    if (node && key !== undefined && value !== undefined && value !== null) {
       node[key] = value;
     }
     return value;
