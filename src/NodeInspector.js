@@ -4,6 +4,7 @@ import omit from 'lodash/omit';
 export default class NodeInspector {
 
   constructor(definitions) {
+    this.index = 0;
     this.definitions = definitions;
     this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
   }
@@ -39,7 +40,7 @@ export default class NodeInspector {
           const val = this.setDefinitionProps(value[prop], setNodeProp, moddle, undefined, prop);
           obj[prop] = val;
           return obj;
-        }, node || moddle.create(value.$type, { id: this.nodeIdGenerator.generate()[0] }));
+        }, node || moddle.create(value.$type, { id: this.generateId() }));
       } catch (e) {
         throw `Unable to create moddle node of type "${value.$type}" \n ${e}`;
       }
@@ -52,6 +53,11 @@ export default class NodeInspector {
       node[key] = value;
     }
     return value;
+  }
+
+  generateId() {
+    this.index++;
+    return `${this.nodeIdGenerator.generate()[0]}_${this.index}`;
   }
 
   findById(id, root = this.definitions.rootElements, walked = []) {
