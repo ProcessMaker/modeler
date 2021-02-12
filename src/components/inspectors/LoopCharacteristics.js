@@ -6,10 +6,14 @@ export const loopCharacteristicsHandler = function(value, node, setNodeProp, mod
   const nodeInspector = new NodeInspector(definitions);
   nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, node.definition);
   if (node.definition.loopCharacteristics) {
-    setNodeProp(node, 'loopCharacteristics', node.definition.loopCharacteristics);
+    const loopCharacteristics = node.definition.loopCharacteristics;
+    delete node.definition.loopCharacteristics;
+    setNodeProp(node, 'loopCharacteristics', loopCharacteristics);
   }
   if (node.definition.ioSpecification) {
-    setNodeProp(node, 'ioSpecification', node.definition.ioSpecification);
+    const ioSpecification = node.definition.ioSpecification;
+    delete node.definition.ioSpecification;
+    setNodeProp(node, 'ioSpecification', ioSpecification);
   }
   return omit(value, ['$loopCharactetistics']);
 };

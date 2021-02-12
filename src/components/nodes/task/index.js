@@ -23,8 +23,6 @@ export default {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
       assignment: 'requester',
-      loopCharacteristics: null,
-      ioSpecification: null,
     });
   },
   diagram(moddle) {
