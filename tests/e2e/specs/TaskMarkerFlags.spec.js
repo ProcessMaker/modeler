@@ -42,11 +42,17 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('loop', 1);
     assertDownloadedXmlContainsExpected(`
       <bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester">
-        <bpmn:ioSpecification id="node_3">
+        <bpmn:ioSpecification id="node_3_2">
           <bpmn:dataInput id="node_1_input_1" name="source_array" isCollection="true" />
-          <bpmn:dataOutput id="node_1_output_1" name="output_array_node_1" isCollection="true" />
+            <bpmn:dataOutput id="node_1_output_1" name="output_array_node_1" isCollection="true" />
+          <bpmn:inputSet id="node_6_5">
+            <bpmn:dataInputRefs>node_1_input_1</bpmn:dataInputRefs>
+          </bpmn:inputSet>
+          <bpmn:outputSet id="node_7_6">
+            <bpmn:dataOutputRefs>node_1_output_1</bpmn:dataOutputRefs>
+          </bpmn:outputSet>
         </bpmn:ioSpecification>
-        <bpmn:standardLoopCharacteristics id="node_2" />
+        <bpmn:standardLoopCharacteristics id="node_2_1" />
       </bpmn:task>
     `);
   });
