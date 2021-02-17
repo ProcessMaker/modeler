@@ -56,6 +56,8 @@ import subprocessIcon from '@/assets/subprocess.svg';
 import updateIconColor from '@/mixins/updateIconColor';
 import customIcon from '@/mixins/customIcon';
 import { getRectangleAnchorPoint } from '@/portsUtils';
+import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
+
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
 const blankDefaultIcon = '<svg version="1.1"\n' +
@@ -151,6 +153,9 @@ export default {
     },
     'node.definition.callActivityType'(callActivityType) {
       this.shape.attr('image/display', callActivityType === 'globalTask' ? 'none' : 'initial');
+    },
+    'node.definition.loopCharacteristics'() {
+      setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     },
   },
   methods: {

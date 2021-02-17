@@ -193,7 +193,7 @@ export default {
       }, {});
 
       this.data = type && this.nodeRegistry[type].inspectorData
-        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform)
+        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
         : defaultDataTransform(this.highlightedNode);
     },
     isSequenceFlow(type) {

@@ -1,6 +1,8 @@
 import component from './manualTask.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
+import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
+import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 
@@ -18,6 +20,8 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:ManualTask', {
       name: $t(defaultNames[id]),
+      loopCharacteristics: null,
+      ioSpecification: null,
     });
   },
   diagram(moddle) {
@@ -27,6 +31,15 @@ export default {
         width: 116,
       }),
     });
+  },
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
+    value = loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
+    defaultInspectorHandler(value);
+  },
+  inspectorData(node, defaultDataTransform, inspector) {
+    const inspectorData = defaultDataTransform(node);
+    loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
+    return inspectorData;
   },
   inspectorConfig: [
     {
@@ -48,6 +61,7 @@ export default {
             },
           ],
         },
+        loopCharacteristicsInspector,
         documentationAccordionConfig,
         advancedAccordionConfig,
       ],

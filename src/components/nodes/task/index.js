@@ -3,6 +3,8 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
+import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
 
@@ -33,17 +35,16 @@ export default {
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
-    defaultInspectorHandler(omit(value, 'markerFlags'));
+    loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
+    defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'));
   },
-  inspectorData(node, defaultDataTransform) {
+  inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
-
+    loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
-      loopCharacteristics: getLoopCharacteristicsRadioValue(inspectorData.loopCharacteristics),
     };
     delete inspectorData.isForCompensation;
-    delete inspectorData.loopCharacteristics;
 
     return inspectorData;
   },
@@ -67,42 +68,20 @@ export default {
             },
           ],
         },
-        advancedAccordionConfigWithMarkerFlags,
+        loopCharacteristicsInspector,
         documentationAccordionConfig,
+        advancedAccordionConfigWithMarkerFlags,
       ],
     },
   ],
+  // reference for packages
+  loopCharacteristicsHandler,
+  loopCharacteristicsData,
 };
 
-function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
+function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
   if (!markerFlags) {
     return;
-  }
-
-  if (markerFlags.loopCharacteristics) {
-    if (markerFlags.loopCharacteristics === 'no_loop') {
-      setNodeProp(node, 'loopCharacteristics', null);
-    }
-
-    const currentLoopCharacteristics = node.definition.get('loopCharacteristics') || {};
-
-    if (markerFlags.loopCharacteristics === 'loop' && currentLoopCharacteristics.$type !== 'bpmn:StandardLoopCharacteristics') {
-      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:StandardLoopCharacteristics'));
-    }
-
-    if (markerFlags.loopCharacteristics === 'parallel_mi' ) {
-      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !currentLoopCharacteristics.isSequential){
-        return;
-      }
-      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics'));
-    }
-
-    if (markerFlags.loopCharacteristics === 'sequential_mi') {
-      if (currentLoopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && currentLoopCharacteristics.isSequential){
-        return;
-      }
-      setNodeProp(node, 'loopCharacteristics', moddle.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: true }));
-    }
   }
 
   const currentIsForCompensationValue = node.definition.get('isForCompensation');
@@ -111,24 +90,4 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp, moddle) {
   if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
     setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
   }
-}
-
-function getLoopCharacteristicsRadioValue(loopCharacteristics) {
-  if (!loopCharacteristics) {
-    return 'no_loop';
-  }
-
-  if (loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
-    return 'loop';
-  }
-
-  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && !loopCharacteristics.isSequential) {
-    return 'parallel_mi';
-  }
-
-  if (loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics' && loopCharacteristics.isSequential) {
-    return 'sequential_mi';
-  }
-
-  return 'no_loop';
 }

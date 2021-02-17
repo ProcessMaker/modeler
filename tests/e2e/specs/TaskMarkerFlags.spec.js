@@ -1,6 +1,6 @@
 import {
-  assertDownloadedXmlContainsExpected, assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest, uploadXml, waitToRenderNodeUpdates,
+  assertDownloadedXmlContainsExpected,
+  dragFromSourceToDest, uploadXml,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -19,47 +19,6 @@ describe('Task Marker Flags', () => {
     cy.contains('Advanced').click();
   });
 
-  it('sets a task as "parallel multi-instance"', () => {
-    cy.get('[data-test=parallel_mi]').check({ force: true });
-    cy.get('[data-test=for-compensation').uncheck({ force: true });
-
-    assertDownloadedXmlContainsExpected('<bpmn:multiInstanceLoopCharacteristics />');
-    assertBottomCenterTaskMarkerHasImage('parallel');
-  });
-
-  it('sets a task as "sequential multi-instance"', () => {
-    cy.get('[data-test=sequential_mi]').check({ force: true });
-    cy.get('[data-test=for-compensation').uncheck({ force: true });
-
-    assertDownloadedXmlContainsExpected('<bpmn:multiInstanceLoopCharacteristics isSequential="true" />');
-    assertBottomCenterTaskMarkerHasImage('sequential');
-  });
-
-  it('sets a task as "standard loop"', () => {
-    cy.get('[data-test=loop]').check({ force: true });
-    cy.get('[data-test=for-compensation').uncheck({ force: true });
-
-    assertDownloadedXmlContainsExpected('<bpmn:standardLoopCharacteristics />');
-    assertBottomCenterTaskMarkerHasImage('loop');
-  });
-
-  it('can unset loop characteristics', () => {
-    cy.get('[data-test=loop]').check({ force: true });
-    waitToRenderNodeUpdates();
-    cy.get('[data-test=for-compensation').uncheck({ force: true });
-    waitToRenderNodeUpdates();
-
-    assertDownloadedXmlContainsExpected('<bpmn:standardLoopCharacteristics />');
-    assertBottomCenterTaskMarkerHasImage('loop');
-
-    cy.get('[data-test=no_loop]').check({ force: true });
-    waitToRenderNodeUpdates();
-
-    assertDownloadedXmlDoesNotContainExpected('<bpmn:standardLoopCharacteristics />');
-    cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]')
-      .should('not.have.attr', 'xlink:href');
-  });
-
   it('sets a task as "for compensation"', () => {
     cy.get('[data-test=for-compensation').check({ force: true });
     assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
@@ -67,11 +26,9 @@ describe('Task Marker Flags', () => {
   });
 
   it('keeps compensation as the leftmost of the center icons', () => {
-    cy.get('[data-test=loop]').check({ force: true });
     cy.get('[data-test=for-compensation').check({ force: true });
 
     assertBottomCenterTaskMarkerHasImage('compensation');
-    assertBottomCenterTaskMarkerHasImage('loop', '1');
   });
 
   it('can still set "for compensation" after undo/redo', () => {
@@ -85,7 +42,17 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('loop', 1);
     assertDownloadedXmlContainsExpected(`
       <bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester">
-        <bpmn:standardLoopCharacteristics />
+        <bpmn:ioSpecification id="node_3_2">
+          <bpmn:dataInput id="node_1_input_1" name="source_array" isCollection="true" />
+            <bpmn:dataOutput id="node_1_output_1" name="output_array_node_1" isCollection="true" />
+          <bpmn:inputSet id="node_6_5">
+            <bpmn:dataInputRefs>node_1_input_1</bpmn:dataInputRefs>
+          </bpmn:inputSet>
+          <bpmn:outputSet id="node_7_6">
+            <bpmn:dataOutputRefs>node_1_output_1</bpmn:dataOutputRefs>
+          </bpmn:outputSet>
+        </bpmn:ioSpecification>
+        <bpmn:standardLoopCharacteristics id="node_2_1" />
       </bpmn:task>
     `);
   });
