@@ -6,6 +6,9 @@ export default class NodeIdGenerator {
 
   constructor(definitions) {
     this.definitions = definitions;
+    // randomize initial counter
+    this.#counter = Math.round(Math.random() * 100) * 100 + 1;
+    this.#diagramCounter = Math.round(Math.random() * 100) * 100 + 1;
   }
 
   generate() {
