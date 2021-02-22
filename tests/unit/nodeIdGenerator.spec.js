@@ -3,16 +3,18 @@ import zip from 'lodash/zip';
 
 function definitionsFactory(definitionIds = [], diagramIds = []) {
   const planeElement = zip(definitionIds, diagramIds).map(([definitionId, diagramId]) => ({
+    $type: 'bpmndi:BPMNShape',
     id: diagramId,
-    bpmnElement: { id: definitionId },
+    bpmnElement: { $type: 'bpmn:task', id: definitionId },
     get(key) {
       return this[key];
     },
   }));
-
   return {
     diagrams: [{
+      $type: 'bpmndi:BPMNDiagram',
       plane: {
+        $type: 'bpmndi:BPMNPlane',
         planeElement,
         get(key) {
           return this[key];
@@ -45,7 +47,6 @@ describe('NodeIdGenerator', () => {
       duplicateGenerator.generate()[0],
     ];
     const generator = new NodeIdGenerator(definitionsFactory(definitionIds));
-
     const newDefinitionIds = [
       generator.generate()[0],
       generator.generate()[0],
