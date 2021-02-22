@@ -8,6 +8,20 @@ export default class NodeIdGenerator {
     this.definitions = definitions;
   }
 
+  findById(id, root = this.definitions.rootElements, walked = []) {
+    if (walked.indexOf(root) > -1) return;
+    let found;
+    if (root instanceof Array) {
+      walked.push(root);
+      root.find(item => found = this.findById(id, item, walked));
+    } else if (root instanceof Object && root.$type) {
+      walked.push(root);
+      if (root.id === id) return root;
+      Object.getOwnPropertyNames(root).find(key => found = !(root[key] instanceof Function) && this.findById(id, root[key], walked));
+    }
+    return found;
+  }
+
   generate() {
     let definitionId = this.#generateDefinitionId();
     let diagramId = this.#generateDiagramId();
@@ -38,18 +52,10 @@ export default class NodeIdGenerator {
   };
 
   #isDefinitionIdUnique = id => {
-    const planeElementIds = this.definitions.diagrams[0].plane
-      .get('planeElement')
-      .map(planeElement => planeElement.get('bpmnElement').id);
-
-    return !planeElementIds.includes(id);
+    return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
   };
 
   #isDiagramIdUnique = id => {
-    const diagramElementIds = this.definitions.diagrams[0].plane
-      .get('planeElement')
-      .map(planeElement => planeElement.id);
-
-    return !diagramElementIds.includes(id);
+    return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
   };
 }
