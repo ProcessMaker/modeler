@@ -10,7 +10,7 @@
       class="p-0"
       :value="startDate"
       @input="setStartDate"
-      :helper="startDateHelper"
+      :helper="$t(startDateHelper)"
     />
 
     <template v-if="hasRepeat">

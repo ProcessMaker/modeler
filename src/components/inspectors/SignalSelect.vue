@@ -5,7 +5,7 @@
       <multiselect
         :value="selectedOption"
         @input="change"
-        :placeholder="placeholder"
+        :placeholder="$t(placeholder)"
         :options="options"
         :multiple="multiple"
         :track-by="trackBy"
@@ -116,7 +116,10 @@ export default {
   props: {
     value: null,
     name: String,
-    placeholder: String,
+    placeholder: {
+      type: String,
+      default: 'Select option',
+    },
     helper: String,
     canEdit: {
       type: Boolean,

@@ -5,7 +5,7 @@
       <multiselect
         :value="selectedOption"
         @input="change"
-        :placeholder="placeholder"
+        :placeholder="$t(placeholder)"
         :options="options"
         :multiple="multiple"
         :track-by="trackBy"
@@ -41,10 +41,10 @@
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddMessage" data-cy="events-cancel">
-          Cancel
+          {{ $t('Cancel') }}
         </button>
         <button :disabled="!validNew" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="addMessage" data-cy="events-save">
-          Save
+          {{ $t('Save') }}
         </button>
       </div>
     </div>
@@ -54,10 +54,10 @@
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn-special-assignment-action btn-special-assignment-close btn btn-outline-secondary btn-sm" @click="cancelAddMessage" data-cy="events-cancel">
-          Cancel
+          {{ $t('Cancel') }}
         </button>
         <button :disabled="!validUpdate" type="button" class="btn-special-assignment-action btn btn-secondary btn-sm" @click="updateMessage" data-cy="events-save">
-          Save
+          {{ $t('Save') }}
         </button>
       </div>
     </div>
@@ -71,10 +71,10 @@
       </div>
       <div class="card-footer text-right p-2">
         <button type="button" class="btn btn-sm btn-light mr-2 p-1 font-xs" @click="showConfirmDelete=false" data-cy="events-cancel">
-          Cancel
+          {{ $t('Cancel') }}
         </button>
         <button v-if="!deleteMessageUsage(deleteMessage.id)" type="button" class="btn btn-sm btn-danger p-1 font-xs" @click="confirmDeleteMessage" data-cy="events-delete">
-          Delete
+          {{ $t('Delete') }}
         </button>
       </div>
     </div>
@@ -84,7 +84,7 @@
           <tr>
             <td colspan="2" align="right">
               <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" @click="showAddMessage" data-cy="events-add">
-                <i class="fa fa-plus" /> Message
+                <i class="fa fa-plus" /> {{ $t('Message') }}
               </button>
             </td>
           </tr>
@@ -116,7 +116,10 @@ export default {
   props: {
     value: null,
     name: String,
-    placeholder: String,
+    placeholder: {
+      type: String,
+      default: 'Select option',
+    },
     helper: String,
     trackBy: {
       type: String,

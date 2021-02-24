@@ -144,9 +144,9 @@ export default {
   data() {
     return {
       loopOptions: [
-        { text: 'No loop characteristics', value: 'no_loop' },
-        { text: 'Parallel multi-instance', value: 'parallel_mi' },
-        { text: 'Sequential multi-instance', value: 'sequential_mi' },
+        { text: this.$t('No loop characteristics'), value: 'no_loop' },
+        { text: this.$t('Parallel multi-instance'), value: 'parallel_mi' },
+        { text: this.$t('Sequential multi-instance'), value: 'sequential_mi' },
       ],
       showAdvanced: false,
       previous: {
