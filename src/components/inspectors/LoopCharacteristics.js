@@ -37,6 +37,7 @@ export default {
     label: 'Loop Characteristics',
     icon: 'bars',
     name: 'loop-characteristics-accordion',
+    style: 'display:none',
   },
   items: [
     {
