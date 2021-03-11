@@ -19,11 +19,20 @@
 import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
-import { namePosition } from './sequenceFlowConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
+import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
+import { id } from './config';
+
+const BpmnFlows = [
+  DataOutputAssociation,
+  SequenceFlow,
+  MessageFlow,
+];
 
 export default {
+  name: id,
   components: {
     CrownConfig,
   },
@@ -48,10 +57,13 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return SequenceFlow.isValid({
-        sourceShape: this.sourceShape,
-        targetShape: this.target,
-        targetConfig: this.targetConfig,
+      return BpmnFlows.some(FlowClass => {
+        return FlowClass.isValid({
+          sourceShape: this.sourceShape,
+          targetShape: this.target,
+          sourceConfig: this.sourceConfig,
+          targetConfig: this.targetConfig,
+        });
       });
     },
     targetType() {
@@ -93,52 +105,36 @@ export default {
     },
   },
   methods: {
-    setDefaultMarker(value) {
-      this.shape.attr('line', {
-        sourceMarker: {
-          'stroke-width': value ? 2 : 0,
-        },
+    completeLink() {
+      const Flow = BpmnFlows.find(FlowClass => {
+        return FlowClass.isValid({
+          sourceShape: this.sourceShape,
+          targetShape: this.target,
+          sourceConfig: this.sourceConfig,
+          targetConfig: this.targetConfig,
+        });
+      });
+      const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
+      const genericLink = this.shape.findView(this.paper);
+      this.$emit('replace-generic-flow', {
+        actualFlow: flow.makeFlowNode(this.sourceShape, this.target, genericLink),
+        genericFlow: this.node,
+        targetNode: get(this.target, 'component.node'),
       });
     },
-    isDefaultFlow() {
-      return this.node.definition.sourceRef
-        && this.node.definition.sourceRef.default
-        && this.node.definition.sourceRef.default.id === this.node.definition.id;
-    },
     updateRouter() {
-      this.shape.router('orthogonal', { padding: 1 });
-    },
-    updateDefinitionLinks() {
-      const targetShape = this.shape.getTargetElement();
-
-      this.node.definition.targetRef = targetShape.component.node.definition;
-      this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
-      targetShape.component.node.definition.get('incoming').push(this.node.definition);
-    },
-    createLabel() {
-      this.shape.labels([{
-        attrs: {
-          text: {
-            text: this.shapeName,
-          },
-        },
-        position: namePosition,
-      }]);
+      this.shape.router('normal');
     },
     createDefaultFlowMarker() {
       this.shape.attr('line', {
-        sourceMarker: {
-          'type': 'polyline',
-          'stroke-width': this.isDefaultFlow() ? 2 : 0,
-          points: '2,6 6,-6',
-        },
+        strokeWidth: 1,
+        strokeDasharray: '2 2',
       });
     },
   },
   mounted() {
     this.shape = new shapes.standard.Link();
     this.shape.connector('rounded', { radius: 5 });
-    this.createLabel();
     this.createDefaultFlowMarker();
 
     this.shape.addTo(this.graph);

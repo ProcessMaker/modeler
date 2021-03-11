@@ -10,6 +10,7 @@ import {
   isElementCovered,
   modalConfirm,
   moveElement,
+  removeStartEvent,
   setBoundaryEvent,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -23,7 +24,7 @@ describe('Message Flows', () => {
     const pool2Position = { x: 250, y: 500 };
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
 
-    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position, 'top');
+    connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
 
     moveElement(pool1Position, 300, 300);
     moveElement(pool1Position, 250, 250);
@@ -55,7 +56,7 @@ describe('Message Flows', () => {
       });
     addNodeTypeToPaper(startEventPosition, nodeTypes.startEvent, 'switch-to-message-start-event');
 
-    connectNodesWithFlow('message-flow-button', taskPosition, startEventPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, startEventPosition);
 
     const numberOfMessageFlowsAdded = 1;
     getElementAtPosition(taskPosition)
@@ -76,7 +77,7 @@ describe('Message Flows', () => {
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('message-flow-button', pool1Position, taskPosition);
+    connectNodesWithFlow('generic-flow-button', pool1Position, taskPosition);
 
     const numberOfMessageFlowsAdded = 1;
     getElementAtPosition(taskPosition)
@@ -88,11 +89,7 @@ describe('Message Flows', () => {
 
   it('Cannot connect to itself', () => {
     const startEventPosition = { x: 150, y: 150 };
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
+    removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 400 };
@@ -111,20 +108,16 @@ describe('Message Flows', () => {
     getNumberOfLinks().should('equal', 0);
 
     [poolPosition, startEventPosition, taskPosition].forEach(position => {
-      connectNodesWithFlow('message-flow-button', position, position);
+      connectNodesWithFlow('generic-flow-button', position, position);
     });
 
     getNumberOfLinks().should('equal', 0);
   });
 
   it('Cannot connect to invalid message flow targets', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
-    addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+    const endEventPosition = { x: 150, y: 150 };
+    removeStartEvent();
+    addNodeTypeToPaper(endEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 250 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -145,17 +138,15 @@ describe('Message Flows', () => {
 
     getNumberOfLinks().should('equal', 0);
 
-    connectNodesWithFlow('message-flow-button', poolPosition, startEventPosition);
-    connectNodesWithFlow('message-flow-button', poolPosition, taskPosition);
-    connectNodesWithFlow('message-flow-button', poolPosition, poolLanePosition);
+    connectNodesWithFlow('generic-flow-button', poolPosition, endEventPosition);
+    connectNodesWithFlow('generic-flow-button', poolPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', poolPosition, poolLanePosition);
 
-    connectNodesWithFlow('message-flow-button', startEventPosition, poolPosition);
-    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
-    connectNodesWithFlow('message-flow-button', startEventPosition, poolLanePosition);
+    connectNodesWithFlow('generic-flow-button', endEventPosition, poolPosition);
+    connectNodesWithFlow('generic-flow-button', endEventPosition, poolLanePosition);
 
-    connectNodesWithFlow('message-flow-button', taskPosition, poolPosition);
-    connectNodesWithFlow('message-flow-button', taskPosition, startEventPosition);
-    connectNodesWithFlow('message-flow-button', taskPosition, poolLanePosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, poolPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, poolLanePosition);
 
     getNumberOfLinks().should('equal', 0);
   });
@@ -177,7 +168,7 @@ describe('Message Flows', () => {
         getCrownButtonForElement($startEvent, 'delete-button').click();
       });
     addNodeTypeToPaper(startEventPosition, nodeTypes.startEvent, 'switch-to-message-start-event');
-    connectNodesWithFlow('message-flow-button', taskPosition, startEventPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, startEventPosition);
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
@@ -203,18 +194,14 @@ describe('Message Flows', () => {
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
     let numberOfMessageFlowsAdded = 1;
 
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
+    removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('message-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     getElementAtPosition(taskPosition).then(getLinksConnectedToElement).should($links => {
       expect($links.length).to.eq(numberOfMessageFlowsAdded);
@@ -246,24 +233,20 @@ describe('Message Flows', () => {
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
     const boundaryEventPosition = { x: taskPosition.x + 58, y: taskPosition.y };
 
-    getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .click()
-      .then($startEvent => {
-        getCrownButtonForElement($startEvent, 'delete-button').click();
-      });
+    removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
-    connectNodesWithFlow('message-flow-button', startEventPosition, boundaryEventPosition, 'center');
+    connectNodesWithFlow('generic-flow-button', startEventPosition, boundaryEventPosition, 'center');
 
     const endEventId = 'node_3';
     const boundaryEventId = 'node_8';
     const endEventXml = `<bpmn:endEvent id="${endEventId}" name="Message End Event">`;
     const boundaryEventXml = `<bpmn:boundaryEvent id="${boundaryEventId}" name="Boundary Message Event" attachedToRef="node_7">`;
-    const messageFlowXml = `<bpmn:messageFlow id="node_9" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
+    const messageFlowXml = `<bpmn:messageFlow id="node_10" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
 
     assertDownloadedXmlContainsExpected(endEventXml, boundaryEventXml, messageFlowXml);
   });

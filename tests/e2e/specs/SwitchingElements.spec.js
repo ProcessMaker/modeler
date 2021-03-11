@@ -46,7 +46,7 @@ describe('Switching elements', () => {
     const taskPosition = {x: 450, y: 150};
     dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    connectNodesWithFlow('sequence-flow-button', gatewayPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', gatewayPosition, taskPosition);
 
     const flowExpression = '1234 == 1234';
 

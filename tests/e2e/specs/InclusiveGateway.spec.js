@@ -28,7 +28,7 @@ describe('Inclusive Gateway', () => {
   it('Detects gateway direction of converging or diverging', () => {
     const startEventPosition = { x: 150, y: 150 };
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, inclusivePosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, inclusivePosition);
 
     const divergingString = `gatewayDirection="${gatewayDirection.diverging}"`;
     assertDownloadedXmlContainsExpected(divergingString);
@@ -36,7 +36,7 @@ describe('Inclusive Gateway', () => {
     const taskPosition = { x: 350, y: 350 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, inclusivePosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, inclusivePosition);
 
     getElementAtPosition(taskPosition).click();
 

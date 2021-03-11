@@ -1,5 +1,5 @@
-import { id as laneId } from '../poolLane';
-import { id as poolId } from './index';
+import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as poolId } from '@/components/nodes/pool/config';
 import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
 import store from '@/store';
 

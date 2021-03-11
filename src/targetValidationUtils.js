@@ -1,5 +1,5 @@
 import { g } from 'jointjs';
-import { id as poolId } from '@/components/nodes/pool';
+import { id as poolId } from '@/components/nodes/pool/config';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 
 export default function getValidationProperties(clientX, clientY, control, paper, graph, collaboration, paperContainer) {

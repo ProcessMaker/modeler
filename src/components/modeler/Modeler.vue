@@ -96,6 +96,7 @@
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
+        @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
       />
@@ -121,12 +122,13 @@ import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
-import { id as laneId } from '../nodes/poolLane';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
-import { id as messageFlowId } from '../nodes/messageFlow';
+import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -144,12 +146,15 @@ import { removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSource
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 
+import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
+
 export default {
   components: {
     ToolBar,
     controls,
     InspectorPanel,
     MiniPaper,
+    ProcessmakerModelerGenericFlow,
   },
   props: {
     owner: Object,
@@ -749,7 +754,16 @@ export default {
       store.commit('addNode', node);
       this.poolTarget = null;
 
-      if ([sequenceFlowId, laneId, associationId, messageFlowId, dataOutputAssociationFlowId, dataInputAssociationFlowId].includes(node.type)) {
+      // add processmaker-modeler-generic-flow
+      if ([
+        sequenceFlowId,
+        laneId,
+        associationId,
+        messageFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        genericFlowId,
+      ].includes(node.type)) {
         return;
       }
 
@@ -783,6 +797,16 @@ export default {
 
           await this.removeNode(node);
           this.highlightNode(newNode);
+        });
+      });
+    },
+    replaceGenericFlow({ actualFlow, genericFlow, targetNode }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
+          await this.addNode(actualFlow);
+          await store.commit('removeNode', genericFlow);
+          await this.$nextTick();
+          await this.highlightNode(targetNode);
         });
       });
     },

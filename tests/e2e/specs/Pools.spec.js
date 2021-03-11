@@ -121,7 +121,7 @@ describe('Pools', () => {
 
     const poolPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     getElementAtPosition(poolPosition)
       .click()
@@ -129,7 +129,7 @@ describe('Pools', () => {
         getCrownButtonForElement($pool, 'delete-button').click({ force: true });
       });
 
-    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_3" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
+    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_4" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

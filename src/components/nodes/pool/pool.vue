@@ -31,8 +31,9 @@
 <script>
 import portsConfig from '@/mixins/portsConfig';
 import resizeConfig from '@/mixins/resizeConfig';
-import Lane, { id as laneId } from '../poolLane';
-import { id as messageFlowId } from '@/components/nodes/messageFlow/index';
+import Lane from '../poolLane';
+import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { labelWidth, poolPadding } from './poolSizes';
 import pull from 'lodash/pull';
 import store from '@/store';

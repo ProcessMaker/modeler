@@ -17,16 +17,7 @@ import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import * as dataOutputConfig from '@/components/nodes/dataOutputAssociation/config';
 import * as dataInputConfig from '@/components/nodes/dataInputAssociation/config';
-
-const dataAssociationFlowBlacklist = [
-  'bpmn:EndEvent',
-  'bpmn:MessageFlow',
-  'bpmn:SequenceFlow',
-  'bpmn:Participant',
-  'bpmn:Lane',
-  'bpmn:TextAnnotation',
-  'bpmn:Association',
-];
+import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
 
 export default {
   components: { CrownButton },
@@ -38,7 +29,7 @@ export default {
   },
   computed: {
     allowOutgoingDataAssociationFlow() {
-      return !this.node.isBpmnType(...dataAssociationFlowBlacklist);
+      return DataAssociation.isADataNode(this.node);
     },
   },
   methods: {

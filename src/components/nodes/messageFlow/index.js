@@ -2,18 +2,20 @@ import component from './messageFlow.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-
-export const id = 'processmaker-modeler-message-flow';
+import { id } from '@/components/nodes/messageFlow/config';
 
 export default {
   id,
   component,
   bpmnType: 'bpmn:MessageFlow',
   control: false,
-  definition(moddle, $t) {
+  definition(moddle) {
     return moddle.create('bpmn:MessageFlow', {
-      name: $t('Message Flow'),
+      name: '',
     });
+  },
+  diagram(moddle) {
+    return moddle.create('bpmndi:BPMNEdge');
   },
   inspectorConfig: [
     {

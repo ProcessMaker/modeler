@@ -2,8 +2,8 @@ import component from './poolLane';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import { id } from '@/components/nodes/poolLane/config';
 
-export const id = 'processmaker-modeler-lane';
 export default {
   id,
   component,

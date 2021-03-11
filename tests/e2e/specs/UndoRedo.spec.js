@@ -23,7 +23,7 @@ describe('Undo/redo', () => {
     const taskPosition = { x: 400, y: 500 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', exclusiveGatewayPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', exclusiveGatewayPosition, taskPosition);
 
     getElementAtPosition(exclusiveGatewayPosition)
       .then(getLinksConnectedToElement)
@@ -157,7 +157,7 @@ describe('Undo/redo', () => {
     const pool2Position = { x: 250, y: 500 };
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
 
-    connectNodesWithFlow('message-flow-button', pool1Position, pool2Position, 'top');
+    connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
 
     getGraphElements().then(elements => {
       const numberOfElements = elements.length;
@@ -226,7 +226,7 @@ describe('Undo/redo', () => {
     const taskPosition = { x: 300, y: 300 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);

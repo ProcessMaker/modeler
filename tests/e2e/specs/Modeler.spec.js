@@ -28,19 +28,19 @@ describe('Modeler', () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     const task2Position = { x: 300, y: 350 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
-    connectNodesWithFlow('sequence-flow-button', taskPosition, task2Position);
+    connectNodesWithFlow('generic-flow-button', taskPosition, task2Position);
 
     const task3Position = { x: 100, y: 350 };
     dragFromSourceToDest(nodeTypes.task, task3Position);
-    connectNodesWithFlow('sequence-flow-button', task2Position, task3Position);
+    connectNodesWithFlow('generic-flow-button', task2Position, task3Position);
 
     const endEventPosition = { x: 100, y: 500 };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
-    connectNodesWithFlow('sequence-flow-button', task3Position, endEventPosition);
+    connectNodesWithFlow('generic-flow-button', task3Position, endEventPosition);
 
     dragFromSourceToDest(nodeTypes.pool, { x: 100, y: 100 });
 
@@ -90,7 +90,7 @@ describe('Modeler', () => {
     const taskPosition = { x: 400, y: 300 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', taskPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', taskPosition, taskPosition);
 
     const numberOfNewElementsAdded = 1;
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
@@ -139,7 +139,7 @@ describe('Modeler', () => {
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     const poolPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
@@ -235,7 +235,7 @@ describe('Modeler', () => {
     const taskPosition = { x: 300, y: 300 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
-    connectNodesWithFlow('sequence-flow-button', startEventPosition, taskPosition);
+    connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
@@ -443,7 +443,7 @@ describe('Modeler', () => {
     getElementAtPosition(startEventPosition).click();
     cy.get('.crown-config').should('exist');
 
-    cy.get('#sequence-flow-button').click();
+    cy.get('#generic-flow-button').click();
     cy.get('.crown-config').should('not.exist');
   });
 });
