@@ -21,6 +21,7 @@ export default {
       config: {
         label: 'Marker Flags',
         name: 'markerFlags',
+        style: 'display:none',
       },
     },
   ],
