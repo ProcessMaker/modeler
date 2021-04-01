@@ -6,7 +6,6 @@
     </div>
 
     <form-text-area
-      v-bind="$attrs"
       :value="textValue"
       :richtext="true"
       class="documentation-input d-flex"
@@ -28,7 +27,6 @@
       no-enforce-focus
     >
       <form-text-area
-        v-bind="$attrs"
         rows="5"
         :value="textValue"
         :richtext="true"
