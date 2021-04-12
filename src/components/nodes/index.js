@@ -44,3 +44,4 @@ export { default as dataStore } from './dataStore';
 export { default as dataInputAssociation } from './dataInputAssociation';
 export { default as dataOutputAssociation } from './dataOutputAssociation';
 export { default as registerNodes } from '@/setup/registerNodes';
+export { default as process } from '@/components/inspectors/process.js';
