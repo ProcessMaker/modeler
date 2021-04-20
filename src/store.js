@@ -86,7 +86,7 @@ export default new Vuex.Store({
       state.nodes = [];
     },
     highlightNode(state, node) {
-      state.highlightedNodes = [node];
+      state.highlightedNodes = node ? [node] : [];
     },
     addToHighlightedNodes(state, nodes) {
       state.highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);

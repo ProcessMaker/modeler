@@ -803,6 +803,8 @@ export default {
     replaceGenericFlow({ actualFlow, genericFlow, targetNode }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
+          await this.highlightNode(null);
+          await this.$nextTick();
           await this.addNode(actualFlow);
           await store.commit('removeNode', genericFlow);
           await this.$nextTick();
