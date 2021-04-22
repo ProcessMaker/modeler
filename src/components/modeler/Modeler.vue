@@ -106,6 +106,7 @@
 
 <script>
 import Vue from 'vue';
+import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
@@ -381,12 +382,22 @@ export default {
       this.collaboration = null;
     },
     highlightNode(node, event) {
+      if (!node || !this.highlightedNode) {
+        return;
+      }
+
       if (event && event.shiftKey) {
         store.commit('addToHighlightedNodes', [node]);
         return;
       }
 
-      store.commit('highlightNode', node);
+      let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
+
+      if (!isSameHighlightedNode) {
+        store.commit('highlightNode', node);  
+      }
+
+      return;
     },
     blurFocusedScreenBuilderElement() {
       const elementsToBlur = ['INPUT', 'SELECT'];
