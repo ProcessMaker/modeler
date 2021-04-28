@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { cloneDeep, debounce, isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 export default {
   props: {
     value: {
@@ -171,7 +171,6 @@ export default {
   },
   mounted() {
     this.loadData();
-    this.saveData2 = debounce(this.saveData, 100);
   },
   watch: {
     value: {
@@ -264,7 +263,6 @@ export default {
         dataDef.id,
       ];
       this.local.loopCharacteristics.loopDataOutputRef = dataDef.id;
-      //this.$emit('input', cloneDeep(this.local));
     },
     getInputDataItem() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.inputDataItem) return null;
@@ -276,7 +274,6 @@ export default {
         isCollection: true,
         name: value,
       };
-      //this.$emit('input', cloneDeep(this.local));
     },
     getLoopDataInputRef() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataInputRef) return null;
@@ -299,7 +296,6 @@ export default {
         dataDef.id,
       ];
       this.local.loopCharacteristics.loopDataInputRef = dataDef.id;
-      //this.$emit('input', cloneDeep(this.local));
     },
     initIoSpecification() {
       this.local.ioSpecification = {
@@ -319,7 +315,6 @@ export default {
         $type: 'bpmn:Expression',
         body: value,
       };
-      //this.$emit('input', cloneDeep(this.local));
     },
     getMultiType() {
       if (!this.local.loopCharacteristics) return null;
@@ -384,7 +379,6 @@ export default {
           this.local.loopCharacteristics.isSequential = true;
           break;
       }
-      //this.$emit('input', cloneDeep(this.local));
     },
   },
 };

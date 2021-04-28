@@ -2,13 +2,11 @@ import LoopCharactetistics from '@/components/inspectors/LoopCharacteristics.vue
 import NodeInspector from '@/NodeInspector';
 import omit from 'lodash/omit';
 
-// eslint-disable-next-line no-unused-vars
 export const loopCharacteristicsHandler = function(value, node, setNodeProp, moddle, definitions) {
   
   const nodeInspector = new NodeInspector(definitions);
   const update = nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, {});
   if (update.loopCharacteristics) {
-    //node.definition.loopCharacteristics = update.loopCharacteristics;
     delete node.definition.loopCharacteristics;
     setNodeProp(node, 'loopCharacteristics', update.loopCharacteristics);
   } else {
@@ -16,11 +14,9 @@ export const loopCharacteristicsHandler = function(value, node, setNodeProp, mod
     delete node.definition.loopCharacteristics;
   }
   if (update.ioSpecification) {
-    //node.definition.ioSpecification = update.ioSpecification;
     delete node.definition.ioSpecification;
     setNodeProp(node, 'ioSpecification', update.ioSpecification);
   } else {
-    //node.definition.ioSpecification = null;
     delete node.definition.ioSpecification;
   }
   return omit(value, ['$loopCharactetistics']);
