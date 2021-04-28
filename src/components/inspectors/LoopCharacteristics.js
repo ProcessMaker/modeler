@@ -2,18 +2,26 @@ import LoopCharactetistics from '@/components/inspectors/LoopCharacteristics.vue
 import NodeInspector from '@/NodeInspector';
 import omit from 'lodash/omit';
 
+// eslint-disable-next-line no-unused-vars
 export const loopCharacteristicsHandler = function(value, node, setNodeProp, moddle, definitions) {
+  
   const nodeInspector = new NodeInspector(definitions);
-  nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, node.definition);
-  if (node.definition.loopCharacteristics) {
-    const loopCharacteristics = node.definition.loopCharacteristics;
+  const update = nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, {});
+  if (update.loopCharacteristics) {
+    //node.definition.loopCharacteristics = update.loopCharacteristics;
     delete node.definition.loopCharacteristics;
-    setNodeProp(node, 'loopCharacteristics', loopCharacteristics);
+    setNodeProp(node, 'loopCharacteristics', update.loopCharacteristics);
+  } else {
+    node.definition.loopCharacteristics = null;
+    delete node.definition.loopCharacteristics;
   }
-  if (node.definition.ioSpecification) {
-    const ioSpecification = node.definition.ioSpecification;
+  if (update.ioSpecification) {
+    //node.definition.ioSpecification = update.ioSpecification;
     delete node.definition.ioSpecification;
-    setNodeProp(node, 'ioSpecification', ioSpecification);
+    setNodeProp(node, 'ioSpecification', update.ioSpecification);
+  } else {
+    //node.definition.ioSpecification = null;
+    delete node.definition.ioSpecification;
   }
   return omit(value, ['$loopCharactetistics']);
 };
