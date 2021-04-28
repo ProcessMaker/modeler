@@ -3,10 +3,13 @@ import omit from 'lodash/omit';
 
 export default class NodeInspector {
 
-  constructor(definitions) {
-    this.index = 0;
+  constructor(definitions, options = {}) {
+    this.index = new Date().getTime();
     this.definitions = definitions;
     this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
+    this.options = Object.assign({
+      prefix: this.nodeIdGenerator.generate()[0],
+    }, options);
   }
 
   getDefinitionProps(node) {
@@ -61,7 +64,7 @@ export default class NodeInspector {
 
   generateId() {
     this.index++;
-    return `${this.nodeIdGenerator.generate()[0]}_${this.index}`;
+    return `${this.options.prefix}_${this.index}`;
   }
 
   findById(id, root = this.definitions.rootElements, walked = []) {
