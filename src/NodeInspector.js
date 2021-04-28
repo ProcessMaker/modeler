@@ -4,7 +4,7 @@ import omit from 'lodash/omit';
 export default class NodeInspector {
 
   constructor(definitions, options = {}) {
-    this.index = new Date().getTime();
+    this.index = window.NODE_INSPECTOR_FIRST_INDEX || new Date().getTime();
     this.definitions = definitions;
     this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
     this.options = Object.assign({
