@@ -19,7 +19,7 @@ export default class NodeInspector {
         if (node[key] instanceof Object && node[key].id && isReference) {
           obj[key] = Object && node[key].id;
         } else if (node[key] instanceof Array && isReference) {
-          obj[key] = node[key].map(item => item.id);
+          obj[key] = node[key].filter(item => item).map(item => item.id);
         } else if (key === '$type' || (key.substr(0,1) !== '$' && key.substr(0,2) !== '__')) {
           obj[key] = this.getDefinitionProps(node[key]);
         }
@@ -38,7 +38,11 @@ export default class NodeInspector {
       try {
         value = Object.keys(omit(value, '$type', '$config', 'markerFlags')).reduce((obj, prop) => {
           const val = this.setDefinitionProps(value[prop], setNodeProp, moddle, undefined, prop);
-          if (val!== null && val !== undefined) obj[prop] = val;
+          if (val!== null && val !== undefined) {
+            obj[prop] = val;
+          } else if (val === undefined) {
+            delete obj[prop];
+          }
           return obj;
         }, node || moddle.create(value.$type, { id: this.generateId() }));
       } catch (e) {

@@ -326,10 +326,15 @@ export default {
       }
     },
     async pushToUndoStack() {
-      const xml = await this.getXmlFromDiagram();
-      undoRedoStore.dispatch('pushState', xml);
+      try {
+        const xml = await this.getXmlFromDiagram();
+        undoRedoStore.dispatch('pushState', xml);
 
-      window.ProcessMaker.EventBus.$emit('modeler-change');
+        window.ProcessMaker.EventBus.$emit('modeler-change');
+      } catch (invalidXml) {
+        // eslint-disable-next-line no-console
+        console.warn(invalidXml.message);
+      }
     },
     getXmlFromDiagram() {
       return new Promise((resolve, reject) => {

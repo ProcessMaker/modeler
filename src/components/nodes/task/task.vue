@@ -111,8 +111,11 @@ export default {
     'node.definition.isForCompensation'() {
       setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     },
-    'node.definition.loopCharacteristics'() {
-      setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+    'node.definition': {
+      deep: true,
+      handler() {
+        setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+      },
     },
   },
   methods: {

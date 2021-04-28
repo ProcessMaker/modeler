@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 export default {
   props: {
     value: {
@@ -154,7 +154,13 @@ export default {
         inputData: null,
         outputData: null,
       },
-      local: cloneDeep(this.value),
+      local: {
+        loopCharacteristics: {
+          $type: null,
+          isSequential: false,
+        },
+      },
+      loopType: null,
       multiType: null,
       loopCardinality: null,
       inputData: null,
@@ -163,47 +169,51 @@ export default {
       outputDataItem: null,
     };
   },
-  computed: {
-    loopType: {
-      get() {
-        return this.getLoopCharacteristics();
-      },
-      set(value) {
-        return this.setLoopCharacteristics(value);
-      },
-    },
-  },
   mounted() {
     this.loadData();
   },
   watch: {
     value: {
       deep: true,
-      handler() {
+      handler(value) {
+        if (!isEqual(this.local, value)) {
+          this.loadData();
+        }
       },
+    },
+    loopType(value) {
+      this.setLoopCharacteristics(value);
+      this.saveData();
     },
     multiType(value) {
       this.setMultiType(value);
+      this.saveData();
     },
     loopCardinality(value) {
       this.setLoopCardinality(value);
+      this.saveData();
     },
     inputData(value) {
       this.setLoopDataInputRef(value);
+      this.saveData();
     },
     inputDataItem(value) {
       this.setInputDataItem(value);
+      this.saveData();
     },
     outputData(value) {
       this.setLoopDataOutputRef(value);
+      this.saveData();
     },
     outputDataItem(value) {
       this.setOutputDataItem(value);
+      this.saveData();
     },
   },
   methods: {
     loadData() {
-      this.local = cloneDeep(this.value);
+      this.$set(this, 'local', cloneDeep(this.value));
+      this.loopType = this.getLoopCharacteristics();
       this.multiType = this.getMultiType();
       this.loopCardinality = this.getLoopCardinality();
       this.inputData = this.getLoopDataInputRef();
@@ -213,6 +223,11 @@ export default {
       this.previous.inputData = this.inputData;
       this.previous.outputData = this.outputData;
       this.previous.loopCardinality = this.loopCardinality;
+    },
+    saveData() {
+      if (!isEqual(this.local, this.value)) {
+        this.$emit('input', cloneDeep(this.local));
+      }
     },
     getOutputDataItem() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.outputDataItem) return null;
@@ -224,7 +239,7 @@ export default {
         isCollection: true,
         name: value,
       };
-      this.$emit('input', cloneDeep(this.local));
+      
     },
     getLoopDataOutputRef() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataOutputRef) return null;
@@ -248,7 +263,6 @@ export default {
         dataDef.id,
       ];
       this.local.loopCharacteristics.loopDataOutputRef = dataDef.id;
-      this.$emit('input', cloneDeep(this.local));
     },
     getInputDataItem() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.inputDataItem) return null;
@@ -260,7 +274,6 @@ export default {
         isCollection: true,
         name: value,
       };
-      this.$emit('input', cloneDeep(this.local));
     },
     getLoopDataInputRef() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataInputRef) return null;
@@ -283,7 +296,6 @@ export default {
         dataDef.id,
       ];
       this.local.loopCharacteristics.loopDataInputRef = dataDef.id;
-      this.$emit('input', cloneDeep(this.local));
     },
     initIoSpecification() {
       this.local.ioSpecification = {
@@ -303,7 +315,6 @@ export default {
         $type: 'bpmn:Expression',
         body: value,
       };
-      this.$emit('input', cloneDeep(this.local));
     },
     getMultiType() {
       if (!this.local.loopCharacteristics) return null;
@@ -349,21 +360,25 @@ export default {
       return 'no_loop';
     },
     setLoopCharacteristics(value) {
+      if (!this.local.loopCharacteristics) {
+        this.local.loopCharacteristics = {};
+      }
       switch (value) {
         case 'no_loop':
-          this.local.loopCharacteristics = null;
+          this.local.loopCharacteristics = undefined;
           break;
         case 'loop':
-          this.local.loopCharacteristics = { $type: 'bpmn:StandardLoopCharacteristics' };
+          this.local.loopCharacteristics.$type = 'bpmn:StandardLoopCharacteristics';
           break;
         case 'parallel_mi':
-          this.local.loopCharacteristics = { $type: 'bpmn:MultiInstanceLoopCharacteristics', isSequential: false };
+          this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
+          this.local.loopCharacteristics.isSequential = false;
           break;
         case 'sequential_mi':
-          this.local.loopCharacteristics = { $type: 'bpmn:MultiInstanceLoopCharacteristics', isSequential: true };
+          this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
+          this.local.loopCharacteristics.isSequential = true;
           break;
       }
-      this.$emit('input', cloneDeep(this.local));
     },
   },
 };
