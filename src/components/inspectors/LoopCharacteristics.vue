@@ -7,6 +7,7 @@
         :options="loopOptions"
         stacked
         name="radio-group-loop-characteristics"
+        @change="changeLoopType"
       />
     </b-form-group>
     <template
@@ -20,11 +21,13 @@
           v-model="multiType"
           name="multiType-radio"
           value="loopCardinality"
+          @change="changeMultiType"
         >Numeric Expression</b-form-radio>
         <b-form-radio
           v-model="multiType"
           name="multiType-radio"
           value="inputData"
+          @change="changeMultiType"
         >Request Data Array</b-form-radio>
       </b-form-group>
       <b-form-group
@@ -43,6 +46,7 @@
           v-model.lazy="loopCardinality"
           type="text"
           placeholder="numeric expression"
+          @change="changeLoopCardinality"
         />
       </b-form-group>
       <b-form-group
@@ -61,6 +65,7 @@
           v-model.lazy="inputData"
           type="text"
           placeholder="arrayVariable"
+          @change="changeInputData"
         />
       </b-form-group>
       <b-form-group
@@ -78,6 +83,7 @@
           v-model.lazy="outputData"
           type="text"
           placeholder="arrayVariable"
+          @change="changeOutputData"
         />
       </b-form-group>
       
@@ -102,6 +108,7 @@
             v-model.lazy="inputDataItem"
             type="text"
             placeholder="screen root data"
+            @change="changeInputDataItem"
           />
         </b-form-group>
         <b-form-group
@@ -119,6 +126,7 @@
             v-model.lazy="outputDataItem"
             type="text"
             placeholder="screen root data"
+            @change="changeOutputDataItem"
           />
         </b-form-group>
       </b-collapse>
@@ -153,6 +161,7 @@ export default {
         loopCardinality: '3',
         inputData: null,
         outputData: null,
+        inputDataItem: null,
       },
       local: {
         loopCharacteristics: {
@@ -181,36 +190,36 @@ export default {
         }
       },
     },
-    loopType(value) {
+  },
+  methods: {
+    changeLoopType(value) {
       this.setLoopCharacteristics(value);
       this.saveData();
     },
-    multiType(value) {
+    changeMultiType(value) {
       this.setMultiType(value);
       this.saveData();
     },
-    loopCardinality(value) {
+    changeLoopCardinality(value) {
       this.setLoopCardinality(value);
       this.saveData();
     },
-    inputData(value) {
+    changeInputData(value) {
       this.setLoopDataInputRef(value);
       this.saveData();
     },
-    inputDataItem(value) {
+    changeInputDataItem(value) {
       this.setInputDataItem(value);
       this.saveData();
     },
-    outputData(value) {
+    changeOutputData(value) {
       this.setLoopDataOutputRef(value);
       this.saveData();
     },
-    outputDataItem(value) {
+    changeOutputDataItem(value) {
       this.setOutputDataItem(value);
       this.saveData();
     },
-  },
-  methods: {
     loadData() {
       this.$set(this, 'local', cloneDeep(this.value));
       this.loopType = this.getLoopCharacteristics();
@@ -328,7 +337,9 @@ export default {
         };
         this.previous.inputData = this.inputData;
         this.previous.outputData = this.outputData;
+        this.previous.inputDataItem = this.inputDataItem;
         delete this.local.loopCharacteristics.loopDataInputRef;
+        delete this.local.loopCharacteristics.inputDataItem;
         this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
       } else {
         this.previous.loopCardinality = this.loopCardinality;
@@ -337,6 +348,7 @@ export default {
         this.local.loopCharacteristics.loopDataInputRef = '';
         this.setLoopDataInputRef(this.previous.inputData || 'source_array');
         this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
+        this.setInputDataItem(this.previous.inputDataItem || '');
       }
       this.loopCardinality = this.getLoopCardinality();
       this.inputData = this.getLoopDataInputRef();

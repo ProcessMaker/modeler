@@ -4,7 +4,7 @@ import omit from 'lodash/omit';
 
 export const loopCharacteristicsHandler = function(value, node, setNodeProp, moddle, definitions) {
   
-  const nodeInspector = new NodeInspector(definitions);
+  const nodeInspector = new NodeInspector(definitions, { prefix: `${node.definition.id}_inner` });
   const update = nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, {});
   if (update.loopCharacteristics) {
     delete node.definition.loopCharacteristics;
