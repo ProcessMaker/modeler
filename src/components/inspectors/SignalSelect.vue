@@ -16,6 +16,7 @@
         @search-change="loadOptions"
         @open="loadOptions"
         :data-test="`${name}:select`"
+        :disabled="!can('view-signals')"
       >
         <template slot="noResult">
           <slot name="noResult">{{ $t('Not found') }}</slot>
@@ -30,6 +31,9 @@
         </button>
       </div>
     </div>
+    <div v-if="!can('view-signals')" class="invalid-feedback d-block"><div>
+      {{ $t('You do not have permission to view signals') }}
+    </div></div>
     <div v-if="invalid" class="invalid-feedback d-block"><div>
       {{ $t('Signal reference is required') }}
     </div></div>
@@ -245,13 +249,25 @@ export default {
       }
     },
     removeSignal(signal) {
+      if (!this.can('delete-signals')) {
+        window.ProcessMaker.alert(this.$t('You do not have permission to delete signals'), 'danger');
+        return;
+      }
       this.showConfirmDelete = true;
       this.deleteSignal = signal;
     },
     toggleConfigSignal() {
+      if (!this.can('view-signals')) {
+        window.ProcessMaker.alert(this.$t('You do not have permission to view signals'), 'danger');
+        return;
+      }
       this.showListSignals = !this.showListSignals;
     },
     editSignal(signal) {
+      if (!this.can('edit-signals')) {
+        window.ProcessMaker.alert(this.$t('You do not have permission to edit signals'), 'danger');
+        return;
+      }
       this.signalId = signal.id;
       this.signalName = signal.name;
       this.showEditSignal = true;
@@ -290,6 +306,10 @@ export default {
       });
     },
     showAddSignal() {
+      if (!this.can('create-signals')) {
+        window.ProcessMaker.alert(this.$t('You do not have permission to add new signals'));
+        return;
+      }
       this.showNewSignal = true;
       this.signalId = '';
       this.signalName = '';
@@ -314,6 +334,8 @@ export default {
       this.options = uniqBy([ ...globalSignals, ...this.localSignals], 'id');
     },
     loadOptions(filter) {
+      if (!this.can('view-signals')) { return }
+
       const pmql = this.pmql;
       window.window.ProcessMaker.apiClient
         .get(this.api, { params: { filter, pmql } })
@@ -334,6 +356,9 @@ export default {
       }
     },
     loadOptionsDebounced() {},
+    can(permission) {
+      return _.get(window, `ProcessMaker.modeler.signalPermissions.${permission}`, false);
+    }
   },
   watch: {
     value: {
