@@ -100,8 +100,8 @@
               {{ signal.name }}
             </td>
             <td align="right">
-              <button class="btn-link ml-2" @click="editSignal(signal)"><i class="fa fa-pen" data-cy="events-edit" /></button>
-              <button class="btn-link ml-2" @click="removeSignal(signal)"><i class="fa fa-trash" data-cy="events-remove" /></button>
+              <button class="btn-link ml-2" @click="editSignal(signal)" v-if="can('edit-signals')"><i class="fa fa-pen" data-cy="events-edit" /></button>
+              <button class="btn-link ml-2" @click="removeSignal(signal)" v-if="can('delete-signals')"><i class="fa fa-trash" data-cy="events-remove" /></button>
             </td>
           </tr>
         </tbody>
@@ -249,10 +249,6 @@ export default {
       }
     },
     removeSignal(signal) {
-      if (!this.can('delete-signals')) {
-        window.ProcessMaker.alert(this.$t('You do not have permission to delete signals'), 'danger');
-        return;
-      }
       this.showConfirmDelete = true;
       this.deleteSignal = signal;
     },
@@ -264,10 +260,6 @@ export default {
       this.showListSignals = !this.showListSignals;
     },
     editSignal(signal) {
-      if (!this.can('edit-signals')) {
-        window.ProcessMaker.alert(this.$t('You do not have permission to edit signals'), 'danger');
-        return;
-      }
       this.signalId = signal.id;
       this.signalName = signal.name;
       this.showEditSignal = true;
@@ -307,7 +299,7 @@ export default {
     },
     showAddSignal() {
       if (!this.can('create-signals')) {
-        window.ProcessMaker.alert(this.$t('You do not have permission to add new signals'));
+        window.ProcessMaker.alert(this.$t('You do not have permission to add new signals'), 'danger');
         return;
       }
       this.showNewSignal = true;
