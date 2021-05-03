@@ -326,7 +326,7 @@ export default {
       this.options = uniqBy([ ...globalSignals, ...this.localSignals], 'id');
     },
     loadOptions(filter) {
-      if (!this.can('view-signals')) { return }
+      if (!this.can('view-signals')) { return; }
 
       const pmql = this.pmql;
       window.window.ProcessMaker.apiClient
@@ -349,8 +349,8 @@ export default {
     },
     loadOptionsDebounced() {},
     can(permission) {
-      return _.get(window, `ProcessMaker.modeler.signalPermissions.${permission}`, false);
-    }
+      return get(window, `ProcessMaker.modeler.signalPermissions.${permission}`, false);
+    },
   },
   watch: {
     value: {

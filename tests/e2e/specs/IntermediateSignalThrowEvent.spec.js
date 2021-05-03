@@ -12,7 +12,7 @@ describe('Intermediate Signal Throw Event', () => {
   beforeEach(() => {
     cy.window().then((win) => {
       _.set(win, 'ProcessMaker.modeler.signalPermissions', {
-        "create-signals":true,"view-signals":true,"edit-signals":true,"delete-signals":true
+        'create-signals':true,'view-signals':true,'edit-signals':true,'delete-signals':true,
       });
     });
   });
