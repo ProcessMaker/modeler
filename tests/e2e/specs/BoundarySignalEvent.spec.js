@@ -9,12 +9,18 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
+import _ from 'lodash';
 
 describe('Boundary Signal Event', () => {
   const taskPosition = { x: 200, y: 200 };
   const boundarySignalEventPosition = { x: 260, y: 200 };
 
   beforeEach(() => {
+    cy.window().then((win) => {
+      _.set(win, 'ProcessMaker.modeler.signalPermissions', {
+        'create-signals':true,'view-signals':true,'edit-signals':true,'delete-signals':true,
+      });
+    });
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundarySignalEvent, taskPosition);
   });
