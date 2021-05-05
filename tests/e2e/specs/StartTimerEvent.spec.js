@@ -39,6 +39,7 @@ describe('Start Timer Event', () => {
 
   });
 
+
   it('can set a specific end date', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
