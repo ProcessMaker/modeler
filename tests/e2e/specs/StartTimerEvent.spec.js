@@ -20,24 +20,24 @@ describe('Start Timer Event', () => {
   const now = new Date();
   const today = now.getDate().toString().padStart(2, '0');
 
-  // it('can set a specific start date', () => {
-  //   const toggledPeriod = moment(now).format('A') === 'AM' ? 'PM' : 'AM';
-  //   const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 ${toggledPeriod}`;
-  //
-  //   addStartTimerEventToPaper();
-  //   waitToRenderAllShapes();
-  //
-  //   cy.contains('Timing Control').click();
-  //   cy.get('[data-test=start-date-picker]').click();
-  //   cy.get('[title="Select Time"]').click();
-  //   cy.get('[title="Pick Hour"]').click();
-  //   cy.get('.hour').contains('05').click();
-  //   cy.get('[title="Pick Minute"]').click();
-  //   cy.get('.minute').contains('30').click();
-  //   cy.get('[title="Toggle Period"]').click();
-  //   cy.get('[data-test=start-date-picker]').should('have.value', expectedStartDate);
-  //
-  // });
+  it('can set a specific start date', () => {
+    const toggledPeriod = moment(now).format('A') === 'AM' ? 'PM' : 'AM';
+    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 ${toggledPeriod}`;
+
+    addStartTimerEventToPaper();
+    waitToRenderAllShapes();
+
+    cy.contains('Timing Control').click();
+    cy.get('[data-test=start-date-picker]').click();
+    cy.get('[title="Select Time"]').click();
+    cy.get('[title="Pick Hour"]').click();
+    cy.get('.hour').contains('05').click();
+    cy.get('[title="Pick Minute"]').click();
+    cy.get('.minute').contains('30').click();
+    cy.get('[title="Toggle Period"]').click();
+    cy.get('[data-test=start-date-picker]').should('have.value', expectedStartDate);
+
+  });
 
   it('can set a specific end date', () => {
     addStartTimerEventToPaper();
