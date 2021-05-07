@@ -21,11 +21,11 @@ describe('Start Timer Event', () => {
   const today = now.getDate().toString().padStart(2, '0');
 
   it('can set a specific start date', () => {
-    const toggledPeriod = moment(now).format('A') === 'AM' ? 'PM' : 'AM';
-    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 ${toggledPeriod}`;
-
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
+
+    const toggledPeriod = moment(now).format('A') === 'AM' ? 'PM' : 'AM';
+    const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 ${toggledPeriod}`;
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
