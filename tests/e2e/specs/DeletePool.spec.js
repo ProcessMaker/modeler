@@ -18,6 +18,7 @@ describe('Pools', () => {
     getBpmn().then(xml => {
       expect(xml).to.not.contain('<bpmn:laneSet');
       expect(xml).to.not.contain('<bpmn:lane');
+      expect(xml).to.not.contain('<bpmn:startEvent');
     });
   });
 });
