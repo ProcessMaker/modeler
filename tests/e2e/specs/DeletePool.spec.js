@@ -17,9 +17,8 @@ describe('Pools', () => {
     crown('delete-button');
     getBpmn().then(xml => {
       expect(xml).to.not.contain('<bpmn:laneSet');
+      expect(xml).to.not.contain('<bpmn:lane');
     });
-    // eslint-disable-next-line no-console
-    console.log(pool);
   });
 });
 
