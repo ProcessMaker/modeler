@@ -21,6 +21,29 @@ export function removeBoundaryEvents(graph, node, removeNode) {
     });
 }
 
+function findNode(graph, nodeId) {
+  const nodeShape = graph.getCells().find(el => el.component && el.component.node && el.component.node.definition && el.component.node.definition.id === nodeId);
+  return nodeShape && nodeShape.component && nodeShape.component.node;
+}
+
+export function removePoolElements(graph, node, removeNode) {
+  const isPool = node.definition.$type === 'bpmn:Participant';
+  if (!isPool) return;
+  if (!node.definition.processRef.laneSets) return;
+  node.definition.processRef.laneSets.forEach(laneSet => {
+    laneSet.lanes.forEach(lane => {
+      const node = findNode(graph, lane.id);
+      removeNode(node);
+    });
+  });
+  node.definition.processRef.flowElements.forEach(element => {
+    const node = findNode(graph, element.id);
+    if (node) {
+      removeNode(node);
+    }
+  });
+}
+
 export function removeOutgoingAndIncomingRefsToFlow(node){
   if (node.isBpmnType(dataOutputAssociationType, dataInputAssociationType)) {
     return;
