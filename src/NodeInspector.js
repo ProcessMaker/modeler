@@ -80,7 +80,7 @@ export default class NodeInspector {
 
     } else if (value instanceof Object) {
       Object.keys(omit(value, '$type', '$config', 'markerFlags')).forEach(key => {
-        value[key] = this.setReferences(value[key], key)
+        value[key] = this.setReferences(value[key], key);
       });
     } 
 
