@@ -10,6 +10,7 @@ export default class NodeInspector {
     this.options = Object.assign({
       prefix: this.nodeIdGenerator.generate()[0],
     }, options);
+    this.createdModdleNodes = {};
   }
 
   getDefinitionProps(node) {
@@ -47,19 +48,53 @@ export default class NodeInspector {
             delete obj[prop];
           }
           return obj;
-        }, node || moddle.create(value.$type, { id: this.generateId() }));
+        }, node || this.createModdleNode(moddle, value));
       } catch (e) {
         throw `Unable to create moddle node of type "${value.$type}" \n ${e}`;
       }
     }
-    const isReference = key !== undefined && (key.substr(key.length-3) === 'Ref' || key.substr(key.length-4) === 'Refs');
-    if (isReference) {
-      value = value instanceof Array ? value.map(id => this.findById(id)) : this.findById(value);
-    }
+    
     if (node && key !== undefined && value !== undefined && value !== null) {
       node[key] = value;
     }
+
     return value;
+  }
+
+  createModdleNode(moddle, value) {
+    const node = moddle.create(value.$type, { id: this.generateId() });
+    if (value.id) {
+      this.createdModdleNodes[value.id] = node;
+    }
+    return node;
+  }
+
+  setReferences(value, key = null) {
+    if (value === undefined) return;
+
+    if (this.isReference(key)) {
+      value = value instanceof Array ? value.map(id => this.findReference(id)) : this.findReference(value);
+
+    } else if (value instanceof Array) {
+      value = value.map(item => this.setReferences(item, null));
+
+    } else if (value instanceof Object) {
+      Object.keys(omit(value, '$type', '$config', 'markerFlags')).forEach(key => {
+        value[key] = this.setReferences(value[key], key);
+      });
+    } 
+
+    return value;
+  }
+
+  isReference(key)
+  {
+    return !!key && (key.substr(key.length-3) === 'Ref' || key.substr(key.length-4) === 'Refs');
+  }
+
+  findReference(id)
+  {
+    return this.createdModdleNodes[id] || this.findById(id);
   }
 
   generateId() {

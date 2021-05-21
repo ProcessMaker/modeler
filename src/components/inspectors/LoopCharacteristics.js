@@ -3,9 +3,9 @@ import NodeInspector from '@/NodeInspector';
 import omit from 'lodash/omit';
 
 export const loopCharacteristicsHandler = function(value, node, setNodeProp, moddle, definitions) {
-  
   const nodeInspector = new NodeInspector(definitions, { prefix: `${node.definition.id}_inner` });
-  const update = nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, {});
+  let update = nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, {});
+  update = nodeInspector.setReferences(update);
   if (update.loopCharacteristics) {
     delete node.definition.loopCharacteristics;
     setNodeProp(node, 'loopCharacteristics', update.loopCharacteristics);
