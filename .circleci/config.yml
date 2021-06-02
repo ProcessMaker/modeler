@@ -20,7 +20,6 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          config-file: staging.json
           executor: with-chrome
           browser: chrome
           #command: 'npm install -g npm@latest && npm run lint && npm test'
