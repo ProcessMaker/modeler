@@ -17,8 +17,8 @@ workflows:
       - cypress/run:
           executor: with-chrome
           browser: chrome
-          pre-steps:
-            - run: 'npm install -g npm@latest && npm run lint'
+          #pre-steps:
+          #  - run: 'npm install -g npm@latest && npm run lint'
           #command: 'npm install -g npm@latest && npm run lint && npm test'
           parallel: true
           parallelism: 2
