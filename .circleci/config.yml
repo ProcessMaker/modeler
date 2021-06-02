@@ -13,13 +13,13 @@ executors:
 workflows:
   build:
     jobs:
-      - cypress/install:
-          pre-steps:
-            - run: 'npm install -g npm@latest && npm run build && npm run lint'
+      #- cypress/install:
+          #pre-steps:
+            #- run: 'npm install -g npm@latest && npm run build && npm run lint'
         # runs tests using Chrome browser in custom executor (Cypress docker image)
       - cypress/run:
-          requires:
-            - cypress/install
+          #requires:
+            #- cypress/install
           executor: with-chrome
           browser: chrome
           #command: 'npm install -g npm@latest && npm run lint && npm test'
