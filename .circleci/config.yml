@@ -9,7 +9,7 @@ orbs:
 executors:
   with-chrome:
     docker:
-      - image: 'cypress/browsers:node12.8.1-chrome80-ff72'
+      - image: 'cypress/browsers:node14.16.0-chrome89-ff86'
 workflows:
   build:
     jobs:
@@ -20,7 +20,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          start: 'npm install -g npm@latest && npm run lint && npm run serve'
+          start: npm run serve
           wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
