@@ -20,9 +20,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          pre-steps:
-            - run: 'npm install -g npm@latest && npm run lint'
-          start: npm run serve
+          start: 'npm install -g npm@latest && npm run lint && npm run serve'
           wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
