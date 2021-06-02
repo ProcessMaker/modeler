@@ -20,6 +20,8 @@ workflows:
       - cypress/run:
           #requires:
             #- cypress/install
+          post-checkout:
+            - run: 'pwd && ls -la'
           executor: with-chrome
           browser: chrome
           #command: 'npm install -g npm@latest && npm run lint && npm test'
