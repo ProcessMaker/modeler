@@ -20,9 +20,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          pre-steps:
-            - npm rebuild node-sass
-          start: npm run serve
+          start: npm rebuild node-sass && npm run serve
           wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
