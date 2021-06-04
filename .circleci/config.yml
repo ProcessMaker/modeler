@@ -25,7 +25,7 @@ workflows:
           executor: with-chrome
           browser: chrome
           #command: 'npm install -g npm@latest && npm run lint && npm test'
-          command: 'npm install -g npm@latest && npm run lint && node node_modules/cypress/bin/cypress run --spec $(cat circleci.tests | tr '\n' ',')'
+          command: 'npm install -g npm@latest && npm run lint && node node_modules/cypress/bin/cypress run --spec $(cat circleci.tests | tr "\n" ",")'
           parallel: true
           parallelism: 2
           post-steps:
