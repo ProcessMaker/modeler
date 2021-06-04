@@ -20,7 +20,8 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          start: circleci tests glob "tests/**/*.js" | circleci tests split --split-by=timings --timings-type=classname > circleci.tests && \
+          start: apt-get install -y sed && \
+                circleci tests glob "tests/**/*.js" | circleci tests split --split-by=timings --timings-type=classname > circleci.tests && \
                 sed -i 's/No timing found for "//g' circleci.tests && \
                 sed -i 's/"//g' circleci.tests && \
                 sed -i 's/tests\/e2e\/.eslintrc.js//g' circleci.tests && \
