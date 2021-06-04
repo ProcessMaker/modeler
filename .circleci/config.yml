@@ -20,7 +20,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          start: circleci tests glob "tests/**/*.js" | circleci tests split --split-by=timings --timings-type=classname > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && cat circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
+          start: apt-get install -y sed && circleci tests glob "tests/**/*.js" | circleci tests split --split-by=timings --timings-type=classname > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && sed -i 's/tests\/e2e\/.eslintrc.js//g' circleci.tests && sed -i 's/tests\/unit\/.eslintrc.js//g' circleci.tests && sed -i 'N;s/\n//g' circleci.tests && cat circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
           wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
