@@ -20,7 +20,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          start: circleci tests glob "test/**/*.js" | circleci tests split > circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
+          start: circleci tests glob "tests/**/*.js" | circleci tests split --split-by=timings --timings-type=classname > circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
           wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
