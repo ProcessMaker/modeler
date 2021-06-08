@@ -47,33 +47,33 @@ workflows:
             - cypress/run
           pre-steps:
             - restore_cache:
-              keys:
-                - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-1-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-1-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-2-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-2-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-3-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-3-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-4-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-4-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-5-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-5-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-6-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-6-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-7-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-7-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-8-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-8-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - restore_cache:
-              keys:
-                - pm-9-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+                keys:
+                  - pm-9-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
           command: ls -la && ls -la coverage && ls nonono 
