@@ -29,11 +29,22 @@ workflows:
           parallel: true
           parallelism: 10
           post-steps:
+            - run: mkdir coverage && mv cypress-coverage/coverage-final.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
+            - save_cache:
+                paths:
+                  coverage/
+                key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+
             - store_artifacts:
-                path: coverage
+                path: cypress-coverage/coverage-final.json
             - store_test_results:
                 path: test_summary_reports
             - store_artifacts:
                 path: test_summary_reports/mocha/test-results.xml
             - store_artifacts:
                 path: test_summary_reports/jest/junit.xml
+      - Coverage:
+          requires:
+            - cypress/run
+          pre-steps:
+            - run: ls
