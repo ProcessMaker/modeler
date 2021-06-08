@@ -6,6 +6,7 @@ version: 2.1
 orbs:
   # use Cypress orb from CircleCI registry
   cypress: cypress-io/cypress@1.14.0
+
 executors:
   with-chrome:
     docker:
@@ -16,7 +17,6 @@ workflows:
       - cypress/install
         # runs tests using Chrome browser in custom executor (Cypress docker image)
       - cypress/run:
-          resource_class: xlarge
           requires:
             - cypress/install
           start: apt-get install -y sed && circleci tests glob "tests/**/*.js" | circleci tests split --split-by=timings --timings-type=classname > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && sed -i 's/tests\/e2e\/plugins\/index.js//g' circleci.tests && sed -i 's/tests\/e2e\/.eslintrc.js//g' circleci.tests && sed -i 's/tests\/unit\/.eslintrc.js//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests  && cat circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
