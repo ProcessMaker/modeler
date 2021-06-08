@@ -45,10 +45,8 @@ workflows:
       - cypress/run:
           requires:
             - cypress/run
-          pre-steps:
-            - attach_workspace:
-              at: ~/
-            - run: ls -la
+          command: ls -la
+          post-steps:
             - restore_cache:
               keys:
                 - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
