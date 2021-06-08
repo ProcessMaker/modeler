@@ -45,7 +45,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/run
-          post-steps:
+          pre-steps:
             - restore_cache:
               keys:
                 - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
@@ -76,4 +76,4 @@ workflows:
             - restore_cache:
               keys:
                 - pm-9-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-            - run: la -la coverageee
+          command: ls -la && ls -la coverage && ls nonono 
