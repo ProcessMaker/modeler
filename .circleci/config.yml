@@ -45,5 +45,36 @@ workflows:
       - cypress/run:
           requires:
             - cypress/run
+          attach-workspace: true
           pre-steps:
-            - run: ls -la coverage
+            - restore_cache:
+              keys:
+                - pm-0-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-1-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-2-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-3-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-4-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-5-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-6-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-7-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-8-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - restore_cache:
+              keys:
+                - pm-9-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+            - run: la -la coverageee
