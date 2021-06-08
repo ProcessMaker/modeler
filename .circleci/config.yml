@@ -34,7 +34,7 @@ workflows:
                 paths:
                   coverage/
                 key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-
+            - run: ls -la coverage
             - store_artifacts:
                 path: cypress-coverage/coverage-final.json
             - store_test_results:
@@ -43,8 +43,3 @@ workflows:
                 path: test_summary_reports/mocha/test-results.xml
             - store_artifacts:
                 path: test_summary_reports/jest/junit.xml
-      - Coverage:
-          requires:
-            - cypress/run
-          pre-steps:
-            - run: ls
