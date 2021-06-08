@@ -77,4 +77,9 @@ workflows:
             - restore_cache:
                 keys:
                   - pm-9-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-            - run: ls -la && ls -la coverage && ls nonono 
+            - run: ls -la && ls -la coverage
+            - run: npx nyc merge coverage && mkdir .nyc_output
+            - run: mv coverage.json .nyc_output/
+            - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
+            - store_artifacts:
+                path: combined-coverage
