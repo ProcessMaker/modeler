@@ -45,7 +45,6 @@ workflows:
       - cypress/run:
           requires:
             - cypress/run
-          command: 'ls -la'
           post-steps:
             - restore_cache:
               keys:
