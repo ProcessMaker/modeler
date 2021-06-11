@@ -40,7 +40,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/vue-fontawesome": "^0.1.10",
-    "@processmaker/screen-builder": "^2.9.0",
+    "@processmaker/screen-builder": "^2.10.0",
     "@processmaker/vue-form-elements": "^0.21.1",
     "acorn": "^6.4.2",
     "bootstrap-vue": "^2.0.4",
