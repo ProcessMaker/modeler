@@ -24,9 +24,9 @@ workflows:
           executor: with-chrome
           browser: chrome
           #command: 'npm install -g npm@latest && npm run lint && npm test'
-          command: 'nnpm install -g npm@latest && npm run lint && node node_modules/cypress/bin/cypress run --spec $(cat circleci.tests | tr "\n" ",") --reporter junit --reporter-options "mochaFile=test_summary_reports/my-test-output-[hash].xml"'
+          command: 'npm install -g npm@latest && npm run lint && node node_modules/cypress/bin/cypress run --spec $(cat circleci.tests | tr "\n" ",") --reporter junit --reporter-options "mochaFile=test_summary_reports/my-test-output-[hash].xml"'
           parallel: true
-          parallelism: 2
+          parallelism: 10
           post-steps:
             - run: mkdir coverage && mv cypress-coverage/coverage-final.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
             - save_cache:
