@@ -100,8 +100,8 @@
               {{ signal.name }}
             </td>
             <td align="right">
-              <button class="btn-link ml-2" @click="editSignal(signal)" v-if="can('edit-signals')"><i class="fa fa-pen" data-cy="events-edit" /></button>
-              <button class="btn-link ml-2" @click="removeSignal(signal)" v-if="can('delete-signals')"><i class="fa fa-trash" data-cy="events-remove" /></button>
+              <button :aria-label="$t('Edit')" class="btn-link ml-2" @click="editSignal(signal)" v-if="can('edit-signals')"><i class="fa fa-pen" data-cy="events-edit" /></button>
+              <button :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeSignal(signal)" v-if="can('delete-signals')"><i class="fa fa-trash" data-cy="events-remove" /></button>
             </td>
           </tr>
         </tbody>

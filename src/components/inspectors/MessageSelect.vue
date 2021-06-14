@@ -96,8 +96,8 @@
               {{ message.name }}
             </td>
             <td align="right">
-              <button class="btn-link ml-2" @click="editMessage(message)"><i class="fa fa-pen" data-cy="events-edit" /></button>
-              <button class="btn-link ml-2" @click="removeMessage(message)"><i class="fa fa-trash" data-cy="events-remove" /></button>
+              <button :aria-label="$t('Edit')" class="btn-link ml-2" @click="editMessage(message)"><i class="fa fa-pen" data-cy="events-edit" /></button>
+              <button :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeMessage(message)"><i class="fa fa-trash" data-cy="events-remove" /></button>
             </td>
           </tr>
         </tbody>
