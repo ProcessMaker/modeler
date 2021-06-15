@@ -25,7 +25,7 @@
         </template>
       </multiselect>
       <div class="btn-group ml-1" role="group">
-        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigMessage" data-cy="events-list">
+        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigMessage" data-cy="events-list" :title="$t('Configure')">
           <i class="fa fa-ellipsis-h" />
         </button>
       </div>
