@@ -25,7 +25,7 @@
         </template>
       </multiselect>
       <div class="btn-group ml-1" role="group">
-        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigMessage" data-cy="events-list">
+        <button type="button" class="btn btn-secondary btn-sm" @click="toggleConfigMessage" data-cy="events-list" :title="$t('Configure')">
           <i class="fa fa-ellipsis-h" />
         </button>
       </div>
@@ -96,8 +96,8 @@
               {{ message.name }}
             </td>
             <td align="right">
-              <button class="btn-link ml-2" @click="editMessage(message)"><i class="fa fa-pen" data-cy="events-edit" /></button>
-              <button class="btn-link ml-2" @click="removeMessage(message)"><i class="fa fa-trash" data-cy="events-remove" /></button>
+              <button :aria-label="$t('Edit')" class="btn-link ml-2" @click="editMessage(message)"><i class="fa fa-pen" data-cy="events-edit" /></button>
+              <button :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeMessage(message)"><i class="fa fa-trash" data-cy="events-remove" /></button>
             </td>
           </tr>
         </tbody>

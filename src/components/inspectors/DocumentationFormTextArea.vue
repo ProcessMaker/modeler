@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex justify-content-between align-items-end mb-2">
       <label class="m-0">{{ $t(label) }}</label>
-      <button type="button" v-b-modal.documentation-modal class="btn-sm float-right" data-test="documentation-modal-button"><i class="fas fa-expand"/></button>
+      <button type="button" :aria-label="$t('Expand')" v-b-modal.documentation-modal class="btn-sm float-right" data-test="documentation-modal-button"><i class="fas fa-expand"/></button>
     </div>
 
     <form-text-area
