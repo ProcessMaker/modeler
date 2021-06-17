@@ -76,4 +76,4 @@ workflows:
             - run: mv coverage.json .nyc_output/
             - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
             - store_artifacts:
-                path: combined-coverage
+                path: combined-coverage 
