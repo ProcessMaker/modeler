@@ -19,16 +19,16 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          start: apt-get install -y sed && circleci tests glob "tests/**/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && sed -i 's/tests\/e2e\/plugins\/index.js//g' circleci.tests && sed -i 's/tests\/e2e\/.eslintrc.js//g' circleci.tests && sed -i 's/tests\/unit\/.eslintrc.js//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests  && cat circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
+          start: apt-get install -y sed && circleci tests glob "tests/e2e/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && sed -i 's/tests\/e2e\/plugins\/index.js//g' circleci.tests && sed -i 's/tests\/e2e\/.eslintrc.js//g' circleci.tests && sed -i 's/tests\/unit\/.eslintrc.js//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests  && cat circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
           wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
           #command: 'npm install -g npm@latest && npm run lint && npm test'
-          command: 'nnpm install -g npm@latest && npm run lint && node node_modules/cypress/bin/cypress run --spec $(cat circleci.tests | tr "\n" ",") --reporter junit --reporter-options "mochaFile=test_summary_reports/my-test-output-[hash].xml"'
+          command: 'npm install -g npm@latest && npm run lint && TZ=UTC npx vue-cli-service test:e2e --mode test --headless --browser chrome --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml --spec $(cat circleci.tests | tr "\n" ",")'
           parallel: true
           parallelism: 2
           post-steps:
-            - run: mkdir coverage && mv cypress-coverage/coverage-final.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
+            - run: mkdir coverage && mv .nyc_output/out.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
             - save_cache:
                 paths:
                   coverage/
@@ -39,7 +39,7 @@ workflows:
       - cypress/run:
           requires:
             - cypress/run
-          command: ls -la
+          command: npm run test-unit
           post-steps:
             - restore_cache:
                 keys:
@@ -76,4 +76,6 @@ workflows:
             - run: mv coverage.json .nyc_output/
             - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
             - store_artifacts:
-                path: combined-coverage 
+                path: combined-coverage
+            - store_test_results:
+                path: test_summary_reports 
