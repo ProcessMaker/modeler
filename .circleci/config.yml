@@ -26,7 +26,7 @@ workflows:
           #command: 'npm install -g npm@latest && npm run lint && npm test'
           command: 'npm install -g npm@latest && npm run lint && TZ=UTC npx vue-cli-service test:e2e --mode test --headless --browser chrome --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml --spec $(cat circleci.tests | tr "\n" ",")'
           parallel: true
-          parallelism: 10
+          parallelism: 1
           post-steps:
             - run: mkdir coverage && mv .nyc_output/out.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
             - save_cache:
