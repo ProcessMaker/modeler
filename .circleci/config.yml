@@ -34,8 +34,6 @@ workflows:
                   coverage/
                 key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
             - run: ls -la coverage
-            - store_artifacts:
-                path: cypress-coverage
       - cypress/run:
           requires:
             - cypress/run
@@ -71,7 +69,7 @@ workflows:
             - restore_cache:
                 keys:
                   - pm-9-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-            - run: ls -la && ls -la coverage && cp jest-coverage/coverage-final.json coverage/from-jest.json
+            - run: ls -la coverage && cp jest-coverage/coverage-final.json coverage/from-jest.json
             - run: npx nyc merge coverage && mkdir .nyc_output
             - run: mv coverage.json .nyc_output/out.json
             - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
