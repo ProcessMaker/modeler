@@ -73,6 +73,7 @@ workflows:
             - run: npx nyc merge coverage && mkdir .nyc_output
             - run: mv coverage.json .nyc_output/out.json
             - run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
+            
             - store_artifacts:
                 path: combined-coverage
             - store_test_results:
