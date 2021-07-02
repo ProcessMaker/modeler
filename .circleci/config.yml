@@ -15,9 +15,9 @@ workflows:
   build:
     jobs:
       - cypress/install:
-        # runs tests using Chrome browser in custom executor (Cypress docker image)
+          # runs tests using Chrome browser in custom executor (Cypress docker image)
           pre-steps:
-            run: npm rebuild node-sass
+            - run: npm rebuild node-sass
       - cypress/run:
           requires:
             - cypress/install
