@@ -16,11 +16,13 @@ workflows:
     jobs:
       - cypress/install
         # runs tests using Chrome browser in custom executor (Cypress docker image)
+          pre-steps:
+            run: npm rebuild node-sass
       - cypress/run:
           requires:
             - cypress/install
           #start: apt-get install -y sed && circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && sed -i 's/tests\/e2e\/plugins\/index.js//g' circleci.tests && sed -i 's/tests\/e2e\/.eslintrc.js//g' circleci.tests && sed -i 's/tests\/unit\/.eslintrc.js//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests  && cat circleci.tests && npm rebuild node-sass && npx browserslist@latest --update-db && npm run serve
-          start: circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests && npm rebuild node-sass
+          start: circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests
           #wait-on: 'http://localhost:8080'
           executor: with-chrome
           browser: chrome
