@@ -96,7 +96,7 @@ jobs:
           path: combined-coverage
       - store_test_results:
           path: test_summary_reports 
-      
+       
 workflows:
   build:
     jobs:
