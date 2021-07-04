@@ -27,6 +27,7 @@ jobs:
         - .cache/Cypress
     - run: ls -la
   cypress/e2e-tests:
+    resource_class: xlarge
     docker:
     - image: cypress/browsers:node14.16.0-chrome89-ff86
     parallelism: 10
@@ -51,6 +52,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - run:
+          name: tests unit
+          command: npm run test-unit
       - run: mkdir coverage
       - restore_cache:
           keys:
