@@ -27,7 +27,6 @@ jobs:
         - .cache/Cypress
     - run: ls -la
   cypress/e2e-tests:
-    resource_class: xlarge
     docker:
     - image: cypress/browsers:node14.16.0-chrome89-ff86
     parallelism: 10
@@ -41,11 +40,14 @@ jobs:
     - run:
         name: run tests    
         command: 'npm install -g npm@latest && npm run lint && TZ=UTC npx vue-cli-service test:e2e --mode test --headless --browser chrome --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml --spec $(cat circleci.tests | tr "\n" ",")'
+    - run: 
+        name: preparate coverage
+        command: mkdir coverage && mv .nyc_output/out.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
     - save_cache:
         paths:
           - coverage/
         key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-       
+    - run: ls -la coverage
   cypress/report:
     docker:
     - image: cypress/base:14.16.0
