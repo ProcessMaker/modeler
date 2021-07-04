@@ -25,9 +25,9 @@ jobs:
         - project
         - .cache/Cypress
     - run: ls -la
-  cypress/tests-e2e:
+  cypress/e2e-tests:
     docker:
-    - image: cypress/base:14.16.0
+    - image: cypress/browsers:node14.16.0-chrome89-ff86
     parallelism: 1
     steps:
     - attach_workspace:
@@ -44,9 +44,9 @@ jobs:
           - coverage/
         key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
     - run: ls -la coverage
-  cypress/tests-unit-and-report:
+  cypress/report:
     docker:
-    - image: cypress/base:14.16.0
+    - image: cypress/browsers:node14.16.0-chrome89-ff86
     steps:
       - attach_workspace:
           at: ~/
@@ -94,11 +94,11 @@ workflows:
   build:
     jobs:
     - cypress/build
-    - cypress/tests-e2e:
+    - cypress/e2e-tests:
         requires:
           - cypress/build
-    - cypress/tests-unit-and-report:
+    - cypress/report:
         requires:
-          - cypress/tests-e2e
+          - cypress/e2e-tests
 
   version: 2
