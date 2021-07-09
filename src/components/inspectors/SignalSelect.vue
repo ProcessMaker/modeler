@@ -14,7 +14,7 @@
         :internal-search="false"
         label="name"
         @search-change="loadOptions"
-        @open="loadOptions"
+        @open="loadOptions()"
         :data-test="`${name}:select`"
         :disabled="!can('view-signals')"
       >
@@ -112,11 +112,9 @@
 
 <script>
 import store from '@/store';
-import Multiselect from 'vue-multiselect';
 import { get,uniqBy } from 'lodash';
 
 export default {
-  components: { Multiselect },
   props: {
     value: null,
     name: String,

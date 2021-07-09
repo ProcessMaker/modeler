@@ -56,12 +56,10 @@
 
 <script>
 import Icons from './Icons';
-import Multiselect from 'vue-multiselect';
 import FileUploadButton from './FileUploadButton';
 export default {
   components: {
     FileUploadButton,
-    Multiselect,
   },
   props: {
     value: {
