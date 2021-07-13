@@ -48,7 +48,7 @@
     "bootstrap-vue": "^2.0.4",
     "bpmn-moddle": "^6.0.7",
     "bpmnlint": "^6.4.0",
-    "bpmnlint-plugin-processmaker": "1.2.0",
+    "bpmnlint-plugin-processmaker": "1.2.2",
     "core-js": "^3.7.0",
     "file-saver": "^2.0.5",
     "jest-junit": "^12.0.0",
