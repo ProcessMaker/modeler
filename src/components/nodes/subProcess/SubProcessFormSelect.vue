@@ -12,6 +12,7 @@
       optionContent="name"
       class="p-0 mb-2"
       validation="required"
+      @open="loadProcesses"
     />
 
     <form-multi-select
@@ -123,10 +124,13 @@ export default {
     containsMultipleProcesses(process) {
       return uniqBy(process.events, 'ownerProcessId').length > 1;
     },
+    loadProcesses() {
+      store.dispatch('fetchGlobalProcesses');
+    },
   },
   created() {
     if (this.processList.length === 0) {
-      store.dispatch('fetchGlobalProcesses');
+      this.loadProcesses();
     } else {
       this.loadBpmnValues();
     }
