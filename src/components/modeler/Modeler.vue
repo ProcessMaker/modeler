@@ -629,7 +629,12 @@ export default {
       if (Node.isTimerType(type)) {
         return new TimerEventNode(type, definition, diagram);
       }
-
+      // Remove undefined or null properties
+      Object.keys(definition).forEach(key => {
+        if (definition[key] === undefined || definition[key] === null) {
+          delete definition[key];
+        }
+      });
       return new Node(type, definition, diagram);
     },
     hasSourceAndTarget(definition) {
