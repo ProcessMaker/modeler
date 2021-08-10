@@ -5,6 +5,7 @@ import {
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
+  uploadXml,
   getLinksConnectedToElement, modalAnimationTime, modalConfirm, setBoundaryEvent, waitToRenderAllShapes,
 } from '../support/utils';
 import {nodeTypes} from '../support/constants';
@@ -87,5 +88,16 @@ describe('Switching elements', () => {
     changeTypeTo(nodeTypes.task, 'switch-to-manual-task', taskPosition);
 
     assertDownloadedXmlDoesNotContainExpected('<bpmn:boundaryEvent');
+  });
+
+  it('switch a saved user task to a script task', () => {
+    uploadXml('processWithTwoTasks.xml');
+    cy.get('[data-type="processmaker.components.nodes.task.Shape"]').eq(1).click();
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-script-task]').click();
+    modalConfirm();
+    waitToRenderAllShapes();
+    cy.get('[data-test="validation-toggle"]').click({force: true});
+    cy.get('.status-bar-container').should('contain.text', 'BPMN Valid');
   });
 });
