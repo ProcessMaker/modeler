@@ -24,6 +24,11 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
 
+const hasDefaultFlow = [
+  'bpmn:ExclusiveGateway',
+  'bpmn:InclusiveGateway',
+];
+
 export default {
   components: {
     CrownConfig,
@@ -45,7 +50,9 @@ export default {
   created() {
     const flow = this.node.definition.default || null;
     delete this.node.definition.default;
-    this.$set(this.node.definition, 'default', flow);
+    if (hasDefaultFlow.indexOf(this.node.definition.$type) > -1) {
+      this.$set(this.node.definition, 'default', flow);
+    }
   },
   data() {
     return {

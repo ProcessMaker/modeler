@@ -1,5 +1,6 @@
 import {
   addNodeTypeToPaper,
+  assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
   dragFromSourceToDest,
   getCrownButtonForElement,
@@ -154,5 +155,20 @@ describe('Event-Based Gateway', () => {
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('li:has([data-test=switch-to-event-based-gateway])').trigger('mouseenter', {force: true});
     cy.get('[data-test=switch-to-event-based-gateway]').should('be.disabled');
+  });
+
+  it('When convert to Event Based Gateway it should not have the property default', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const eventOnePosition = { x: 450, y: 250 };
+    const eventTwoPosition = { x: 250, y: 450 };
+    addNodeTypeToPaper(eventOnePosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
+    addNodeTypeToPaper(eventTwoPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
+
+    connectNodesWithFlow('generic-flow-button', startEventPosition, eventBasedGatewayPosition);
+    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, eventOnePosition);
+    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, eventTwoPosition);
+
+    const updatedSequenceFlow = '<bpmn:eventBasedGateway id="node_3" name="Event Based Gateway"><bpmn:incoming>node_7</bpmn:incoming><bpmn:outgoing>node_9</bpmn:outgoing><bpmn:outgoing>node_11</bpmn:outgoing></bpmn:eventBasedGateway>';
+    assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });
