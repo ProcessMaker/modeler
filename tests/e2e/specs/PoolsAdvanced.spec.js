@@ -44,4 +44,17 @@ describe('Pools', () => {
       assertDownloadedXmlContainsExpected(atob(data));
     });
   });
+
+  it('Case 4 Delete a Pool, should remove inner flow events but keep signals definitions, user should remove signals using the UI', () => {
+    uploadXml('Pools-DeletePoolCommonSignalEvents.xml');
+    waitToRenderAllShapes();
+    cy.get('g[data-type="processmaker.modeler.bpmn.pool"]:visible').eq(1)
+      .click({ force: true })
+      .then($pool => {
+        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+      });
+    cy.fixture('Pools-DeletePoolCommonSignalEvents.after.xml', 'base64').then(data => {
+      assertDownloadedXmlContainsExpected(atob(data));
+    });
+  });
 });
