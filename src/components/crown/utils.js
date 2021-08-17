@@ -8,6 +8,58 @@ export function removeFlows(graph, shape) {
   linkShapes.forEach(shape => this.$emit('remove-node', shape.component.node));
 }
 
+// Remove the incoming and outgoing flows of a node
+export function removeNodeFlows(node, modeler) {
+  if (node.definition.incoming) {
+    node.definition.incoming.forEach((flow) => {
+      const node = modeler.nodes.find(node => node.definition === flow);
+      modeler.removeNode(node);
+    });
+  }
+  if (node.definition.outgoing) {
+    node.definition.outgoing.forEach((flow) => {
+      const node = modeler.nodes.find(node => node.definition === flow);
+      modeler.removeNode(node);
+    });
+  }
+}
+// Remove the associations of a node
+export function removeNodeMessageFlows(node, modeler) {
+  const linkedMessages = modeler.nodes.filter(n => {
+    if (n.definition.sourceRef) {
+      if (n.definition.sourceRef === node.definition) {
+        return true;
+      }
+    }
+    if (n.definition.targetRef) {
+      if (n.definition.targetRef === node.definition) {
+        return true;
+      }
+    }
+  });
+  linkedMessages.forEach((messageFlow) => {
+    modeler.removeNode(messageFlow);
+  });
+}
+// Remove the associations of a node
+export function removeNodeAssociations(node, modeler) {
+  const linkedAssociations = modeler.nodes.filter(n => {
+    if (n.definition.sourceRef) {
+      if (n.definition.sourceRef === node.definition) {
+        return true;
+      }
+    }
+    if (n.definition.targetRef) {
+      if (n.definition.targetRef === node.definition) {
+        return true;
+      }
+    }
+  });
+  linkedAssociations.forEach((association) => {
+    modeler.removeNode(association);
+  });
+}
+
 export function removeBoundaryEvents(graph, node, removeNode) {
   const nodeShape = graph.getCells().find(el => el.component && el.component.node === node);
 
@@ -25,6 +77,8 @@ export function removeOutgoingAndIncomingRefsToFlow(node){
   if (node.isBpmnType(dataOutputAssociationType, dataInputAssociationType)) {
     return;
   }
+  // eslint-disable-next-line no-console
+  console.log('  removeOutgoingAndIncomingRefsToFlow', node.id, node.type, node);
 
   /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
   const { sourceRef, targetRef } = node.definition;

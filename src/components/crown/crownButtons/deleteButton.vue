@@ -39,7 +39,6 @@ export default {
   methods: {
     removeFlows,
     removeShape() {
-      this.removeFlows(this.graph, this.shape);
       this.$emit('remove-node', this.node);
     },
     removePoolLaneShape() {
