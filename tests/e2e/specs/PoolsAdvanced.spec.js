@@ -18,4 +18,17 @@ describe('Pools', () => {
       assertDownloadedXmlContainsExpected(atob(data));
     });
   });
+
+  it('Case 2 Delete a Task inside a Pool, associations and flow nodes should be removed', () => {
+    uploadXml('AssociationInsidePool.xml');
+    waitToRenderAllShapes();
+    cy.get('g[data-type="processmaker.components.nodes.task.Shape"]:visible').eq(0)
+      .click({ force: true })
+      .then($pool => {
+        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+      });
+    cy.fixture('AssociationInsidePool.after.xml', 'base64').then(data => {
+      assertDownloadedXmlContainsExpected(atob(data));
+    });
+  });
 });
