@@ -791,8 +791,6 @@ export default {
       });
     },
     async removeNode(node, { removeRelationships = true } = {}) {
-      // eslint-disable-next-line no-console
-      console.log('removeNode', node.type, node.definition.id);
       if (removeRelationships) {
         removeNodeFlows(node, this);
         removeNodeMessageFlows(node, this);
