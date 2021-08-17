@@ -57,4 +57,17 @@ describe('Pools', () => {
       assertDownloadedXmlContainsExpected(atob(data));
     });
   });
+
+  it('Case 5 Delete the last Pool, should back to the default empty process', () => {
+    uploadXml('Pools-DeleteLastPool.xml');
+    waitToRenderAllShapes();
+    cy.get('g[data-type="processmaker.modeler.bpmn.pool"]:visible').eq(0)
+      .click({ force: true })
+      .then($pool => {
+        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+      });
+    cy.fixture('Pools-DeleteLastPool.after.xml', 'base64').then(data => {
+      assertDownloadedXmlContainsExpected(atob(data));
+    });
+  });
 });
