@@ -70,4 +70,25 @@ describe('Pools', () => {
       assertDownloadedXmlContainsExpected(atob(data));
     });
   });
+
+  it('Case 6 Delete a Lane then the Pool', () => {
+    uploadXml('Pools-DeleteLaneThenPool.xml');
+    waitToRenderAllShapes();
+    cy.get('g[data-type="PoolLane"]:visible').eq(1)
+      .click({ force: true })
+      .then($pool => {
+        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+      });
+    cy.fixture('Pools-DeleteLaneThenPool.after.xml', 'base64').then(data => {
+      assertDownloadedXmlContainsExpected(atob(data));
+    });
+    cy.get('g[data-type="processmaker.modeler.bpmn.pool"]:visible').eq(1)
+      .click({ force: true })
+      .then($pool => {
+        getCrownButtonForElement($pool, 'delete-button').click({ force: true });
+      });
+    cy.fixture('Pools-DeleteLaneThenPool.after2.xml', 'base64').then(data => {
+      assertDownloadedXmlContainsExpected(atob(data));
+    });
+  });
 });
