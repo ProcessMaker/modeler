@@ -26,7 +26,11 @@ export default new Vuex.Store({
     },
     setState(state, newState) {
       state.stack = state.stack.slice(0, state.position + 1);
-      state.stack.push(newState);
+      if (newState.inspectorChange) {
+        // Replace last element
+        state.stack.pop();
+      }
+      state.stack.push(newState.xml);
     },
     clearStack(state) {
       state.stack = [state.stack[state.stack.length - 1]];
@@ -40,7 +44,7 @@ export default new Vuex.Store({
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
-      if (newState === getters.currentState || state.disabled) {
+      if (newState.xml === getters.currentState || state.disabled) {
         return;
       }
 

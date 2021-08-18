@@ -43,12 +43,9 @@ describe('Undo/redo', () => {
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(taskPosition)
-      .then(getLinksConnectedToElement)
-      .then($links => $links[0])
-      .click({ force: true });
-
-    cy.get(conditionExpressionSelector).should('have.value', defaultExpressionValue);
+    // Undo only brings back the changes to flowchart, not inspector settings.
+    // So this undo removes the flow line
+    cy.get(conditionExpressionSelector).should('not.exist');
 
     cy.get('[data-test=redo]').click();
 

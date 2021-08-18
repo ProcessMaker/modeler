@@ -55,7 +55,7 @@
         :moddle="moddle"
         :definitions="definitions"
         :processNode="processNode"
-        @save-state="pushToUndoStack"
+        @save-state="pushToUndoStack(true)"
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
@@ -324,9 +324,9 @@ export default {
         inspectorConfig.items.forEach(this.translateConfig);
       }
     },
-    async pushToUndoStack() {
+    async pushToUndoStack(inspectorChange = false) {
       const xml = await this.getXmlFromDiagram();
-      undoRedoStore.dispatch('pushState', xml);
+      undoRedoStore.dispatch('pushState', { xml, inspectorChange });
 
       window.ProcessMaker.EventBus.$emit('modeler-change');
     },
@@ -1012,7 +1012,7 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: xml => {
         this.loadXML(xml);
-        undoRedoStore.dispatch('pushState', xml);
+        undoRedoStore.dispatch('pushState', { xml, inspectorChange: false });
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
