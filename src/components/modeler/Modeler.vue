@@ -789,7 +789,7 @@ export default {
       removeBoundaryEvents(this.graph, node, this.removeNode);
       removeSourceDefault(node);
 
-      this.removeNodesFromLane(node);
+      this.removeNodeRefFromLane(node);
       this.removeNodesFromPool(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
@@ -829,7 +829,7 @@ export default {
       undoRedoStore.commit('enableSavingState');
       this.pushToUndoStack();
     },
-    removeNodesFromLane(node) {
+    removeNodeRefFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
         node.pool.component.laneSet.get('lanes').find(lane => {
           return lane.get('flowNodeRef').includes(node.definition);
