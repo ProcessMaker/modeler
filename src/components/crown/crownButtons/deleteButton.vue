@@ -39,6 +39,7 @@ export default {
   methods: {
     removeFlows,
     removeShape() {
+      // @todo this should be handled by the Modeler.vue
       this.removeFlows(this.graph, this.shape);
       this.$emit('remove-node', this.node);
     },

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="node_2" name="Start Event">
+      <bpmn:outgoing>node_6</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="node_3" name="Form Task" pm:assignment="requester">
+      <bpmn:incoming>node_6</bpmn:incoming>
+      <bpmn:outgoing>node_8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="node_6" name="flow1" sourceRef="node_2" targetRef="node_3" />
+    <bpmn:endEvent id="node_9" name="Signal End Event">
+      <bpmn:incoming>node_8</bpmn:incoming>
+      <bpmn:signalEventDefinition signalRef="global_1" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="node_8" name="flow2" sourceRef="node_3" targetRef="node_9" />
+  </bpmn:process>
+  <bpmn:collaboration id="collaboration_0">
+    <bpmn:participant id="node_1" name="Pool" processRef="Process_1" />
+  </bpmn:collaboration>
+  <bpmn:signal id="global_1" name="global signal 1" />
+  <bpmn:signal id="global_2" name="global signal 2" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_0">
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+        <dc:Bounds x="90" y="110" width="600" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
+        <dc:Bounds x="160" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3">
+        <dc:Bounds x="290" y="210" width="116" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="node_6_di" bpmnElement="node_6">
+        <di:waypoint x="178" y="248" />
+        <di:waypoint x="348" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="node_9_di" bpmnElement="node_9">
+        <dc:Bounds x="500" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="node_8_di" bpmnElement="node_8">
+        <di:waypoint x="348" y="248" />
+        <di:waypoint x="518" y="248" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
