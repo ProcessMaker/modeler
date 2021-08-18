@@ -100,8 +100,6 @@ export function removeOutgoingAndIncomingRefsToFlow(node){
   if (node.isBpmnType(dataOutputAssociationType, dataInputAssociationType)) {
     return;
   }
-  // eslint-disable-next-line no-console
-  console.log('  removeOutgoingAndIncomingRefsToFlow', node.id, node.type, node);
 
   /* Modify source and target refs to remove incoming and outgoing properties pointing to this link */
   const { sourceRef, targetRef } = node.definition;
