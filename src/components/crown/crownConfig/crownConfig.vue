@@ -240,28 +240,6 @@ export default {
     setUpCrownConfig() {
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
-
-      if (!this.planeElements.includes(this.node.diagram)) {
-        this.planeElements.push(this.node.diagram);
-      }
-
-      const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
-
-      if (nodeTypes.includes('bpmn:FlowElement') && !this.process.get('flowElements').includes(this.node.definition)) {
-        this.process.get('flowElements').push(this.node.definition);
-      }
-
-      if (nodeTypes.includes('bpmn:Artifact') && !this.process.get('artifacts').includes(this.node.definition)) {
-        this.process.get('artifacts').push(this.node.definition);
-      }
-
-      if (
-        this.collaboration &&
-        nodeTypes.includes('bpmn:MessageFlow') &&
-        !this.collaboration.get('messageFlows').includes(this.node.definition)
-      ) {
-        this.collaboration.get('messageFlows').push(this.node.definition);
-      }
     },
     setUpPositionHandling() {
       this.shape.on('change:position', (element, newPosition) => {
