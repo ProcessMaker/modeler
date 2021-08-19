@@ -237,7 +237,7 @@ export default {
     },
     rootElementsInStore() {
       this.pushToUndoStack(true);
-    }
+    },
   },
   computed: {
     noElementsSelected() {
@@ -262,7 +262,7 @@ export default {
     },
     rootElementsInStore() {
       return store.getters.rootElements;
-    }
+    },
   },
   methods: {
     toggleDefaultFlow(flow) {
