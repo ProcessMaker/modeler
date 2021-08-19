@@ -334,7 +334,7 @@ export default {
     loadOptionsDebounced() {},
     pushToUndoStack() {
       window.ProcessMaker.EventBus.$emit('push-to-undo-stack', true);
-    }
+    },
   },
   watch: {
     value: {
