@@ -235,9 +235,6 @@ export default {
     autoValidate() {
       this.validateIfAutoValidateIsOn();
     },
-    rootElementsInStore() {
-      this.pushToUndoStack(true);
-    },
   },
   computed: {
     noElementsSelected() {
@@ -259,9 +256,6 @@ export default {
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
-    },
-    rootElementsInStore() {
-      return store.getters.rootElements;
     },
   },
   methods: {
@@ -1013,6 +1007,12 @@ export default {
     };
     const resetCursor = () => this.cursor = cursor;
     setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
+
+    window.ProcessMaker.EventBus.$on('push-to-undo-stack', (inspectorChange) => {
+      this.$nextTick(() => {
+        this.pushToUndoStack(inspectorChange);
+      });
+    });
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
