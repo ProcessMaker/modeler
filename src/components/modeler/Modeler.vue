@@ -235,6 +235,9 @@ export default {
     autoValidate() {
       this.validateIfAutoValidateIsOn();
     },
+    rootElementsInStore() {
+      this.pushToUndoStack(true);
+    }
   },
   computed: {
     noElementsSelected() {
@@ -257,6 +260,9 @@ export default {
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
+    rootElementsInStore() {
+      return store.getters.rootElements;
+    }
   },
   methods: {
     toggleDefaultFlow(flow) {

@@ -295,7 +295,10 @@ export default {
       this.showEditMessage = false;
     },
     updateMessage() {
-      this.getMessageById(this.messageId).name = this.messageName;
+      const messages = [...store.getters.rootElements];
+      const index = messages.findIndex(m => m.id === this.messageId);
+      messages[index].name = this.messageName;
+      store.commit('setRootElements', messages);
       this.showEditMessage = false;
     },
     addMessage() {
