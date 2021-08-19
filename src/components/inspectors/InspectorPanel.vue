@@ -18,7 +18,6 @@
           @update="updateDefinition"
           :config="config"
           class="overflow-auto h-100 inspector-font-size"
-          @focusout.native="updateState"
           ref="formRenderer"
         />
       </b-card>
@@ -50,6 +49,7 @@ import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
 import isString from 'lodash/isString';
+import _ from 'lodash';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -120,6 +120,7 @@ export default {
         }
 
         inspectorHandler(omit(value, ['documentation']));
+        this.updateState();
       };
     },
     hasCustomInspectorHandler() {
@@ -222,9 +223,9 @@ export default {
         }
       }
     },
-    updateState() {
+    updateState: _.throttle(function() {
       this.$emit('save-state');
-    },
+    }, 500),
   },
 };
 </script>
