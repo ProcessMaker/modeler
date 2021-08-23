@@ -238,7 +238,6 @@ export default {
       const index = store.getters.rootElements.findIndex(element => element.id === this.deleteMessage.id);
       if (index > -1) {
         store.getters.rootElements.splice(index, 1);
-        this.pushToUndoStack();
       }
     },
     removeMessage(message) {
@@ -272,7 +271,6 @@ export default {
       }
       this.$emit('input', get(value, this.trackBy));
       this.refreshVueMultiselectValue();
-      this.pushToUndoStack();
     },
     // the vue-multiselect value does not refresh the form transientData
     // when selecting the initial value of the control.
@@ -302,7 +300,6 @@ export default {
       messages[index].name = this.messageName;
       store.commit('setRootElements', messages);
       this.showEditMessage = false;
-      this.pushToUndoStack();
     },
     addMessage() {
       const message = window.ProcessMaker.$modeler.moddle.create('bpmn:Message', {
@@ -311,7 +308,6 @@ export default {
       });
       store.getters.rootElements.push(message);
       this.showNewMessage = false;
-      this.pushToUndoStack();
     },
     updateOptions(globalMessages) {
       this.options = uniqBy([...this.localMessages, ...globalMessages], 'id');
@@ -332,9 +328,6 @@ export default {
       }
     },
     loadOptionsDebounced() {},
-    pushToUndoStack() {
-      window.ProcessMaker.EventBus.$emit('push-to-undo-stack', true);
-    },
   },
   watch: {
     value: {

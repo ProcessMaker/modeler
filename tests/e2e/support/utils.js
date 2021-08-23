@@ -106,7 +106,7 @@ export function dragFromSourceToDest(source, position) {
     });
   });
 
-  return waitToRenderAllShapes();
+  return true //waitToRenderAllShapes();
 }
 
 export function getPositionInPaperCoords(position) {

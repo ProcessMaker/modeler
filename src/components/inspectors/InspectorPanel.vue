@@ -223,9 +223,9 @@ export default {
         }
       }
     },
-    updateState: _.throttle(function() {
+    updateState() {
       this.$emit('save-state');
-    }, 500),
+    }
   },
 };
 </script>

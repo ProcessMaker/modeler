@@ -143,10 +143,10 @@ describe('Intermediate Message Throw Event', () => {
     cy.get('[aria-label="Toolbar"]').click();
 
     cy.get('[data-test=undo]').click();
-    waitToRenderAllShapes();
+    cy.waitForRender();
 
     cy.get('[data-test=redo]').click();
-    waitToRenderAllShapes();
+    cy.waitForRender();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);

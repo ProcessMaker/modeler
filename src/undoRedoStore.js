@@ -31,6 +31,7 @@ export default new Vuex.Store({
         state.stack.pop();
       }
       state.stack.push(newState.xml);
+      window.ProcessMaker.EventBus.$emit('modeler-undo-pushed');
     },
     clearStack(state) {
       state.stack = [state.stack[state.stack.length - 1]];

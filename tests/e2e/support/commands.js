@@ -37,6 +37,34 @@ Cypress.Commands.add('loadModeler', () => {
   waitToRenderAllShapes();
 });
 
+const waitForEvent = (eventName, wrapFn) => {
+  return cy.window().its('ProcessMaker.EventBus').then(eventBus => {
+    return new Cypress.Promise((resolve, reject) => {
+
+      setTimeout(() => {
+        reject(`No event ${eventName} in 3 seconds`)
+      }, 3000);
+
+      eventBus.$once(eventName, () => {
+        resolve();
+      });
+
+      if (wrapFn) {
+        wrapFn.bind(this)();
+      }
+      
+    });
+  });
+};
+
+Cypress.Commands.add('waitForRender', (wrapFn = false) => {
+  return waitForEvent('modeler-rendered', wrapFn);
+});
+
+Cypress.Commands.add('waitForUndo', (wrapFn = false) => {
+  return waitForEvent('modeler-undo-pushed', wrapFn);
+});
+
 Cypress.Commands.add('moveTo', {
   prevSubject: 'element',
 }, (element, x, y) => {

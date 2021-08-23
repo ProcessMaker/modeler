@@ -11,7 +11,7 @@
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
-      @save-state="pushToUndoStack"
+      @save-state="pushToUndoStack(false)"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -92,7 +92,7 @@
         @click="highlightNode(node, $event)"
         @unset-pools="unsetPools"
         @set-pools="setPools"
-        @save-state="pushToUndoStack"
+        @save-state="pushToUndoStack(false)"
         @set-shape-stacking="setShapeStacking"
         @setTooltip="tooltipTarget = $event"
         @replace-node="replaceNode"
@@ -207,6 +207,7 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
+      batchIncludesFlowchartChange: false,
     };
   },
   watch: {
@@ -225,6 +226,8 @@ export default {
       });
       document.body.style.cursor = 'auto';
       this.cursor = null;
+
+      window.ProcessMaker.EventBus.$emit('modeler-rendered');
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -325,11 +328,24 @@ export default {
       }
     },
     async pushToUndoStack(inspectorChange = false) {
+      if (this.isRendering) {
+        return;
+      }
+      if (!inspectorChange) {
+        this.batchIncludesFlowchartChange = true;
+      }
+      await this.pushToUndoStackDebounced();
+    },
+    pushToUndoStackDebounced: _.debounce(async function() {
       const xml = await this.getXmlFromDiagram();
+      
+      const inspectorChange = this.batchIncludesFlowchartChange ? false : true;
+      this.batchIncludesFlowchartChange = false;
+
       undoRedoStore.dispatch('pushState', { xml, inspectorChange });
 
       window.ProcessMaker.EventBus.$emit('modeler-change');
-    },
+    }, 250),
     getXmlFromDiagram() {
       return new Promise((resolve, reject) => {
         this.toXML((error, xml) => {
@@ -774,7 +790,7 @@ export default {
 
       return new Promise(resolve => {
         setTimeout(() => {
-          this.pushToUndoStack();
+          this.pushToUndoStack(false);
           resolve();
         });
       });
@@ -794,7 +810,7 @@ export default {
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
       await this.$nextTick();
-      this.pushToUndoStack();
+      this.pushToUndoStack(false);
     },
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
@@ -827,7 +843,7 @@ export default {
       undoRedoStore.commit('disableSavingState');
       await cb();
       undoRedoStore.commit('enableSavingState');
-      this.pushToUndoStack();
+      this.pushToUndoStack(false);
     },
     removeNodesFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
@@ -1008,10 +1024,8 @@ export default {
     const resetCursor = () => this.cursor = cursor;
     setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
-    window.ProcessMaker.EventBus.$on('push-to-undo-stack', (inspectorChange) => {
-      this.$nextTick(() => {
-        this.pushToUndoStack(inspectorChange);
-      });
+    store.watch((s,g) => g.rootElements, () => {
+      this.pushToUndoStack(true);
     });
 
     /* Register custom nodes */
