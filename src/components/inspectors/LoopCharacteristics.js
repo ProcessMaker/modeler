@@ -38,8 +38,8 @@ export default {
   container: true,
   config: {
     initiallyOpen: false,
-    label: 'Loop Characteristics',
-    icon: 'bars',
+    label: 'Loop Activity',
+    icon: 'redo',
     name: 'loop-characteristics-accordion',
   },
   items: [
