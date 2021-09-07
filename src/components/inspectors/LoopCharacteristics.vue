@@ -1,14 +1,9 @@
 <template>
   <div>
-    <b-form-group :label="$t('Loop Characteristics')">
-      <b-form-radio-group
-        id="radio-group-loop-characteristics"
-        v-model="loopType"
-        :options="loopOptions"
-        stacked
-        name="radio-group-loop-characteristics"
-        @change="changeLoopType"
-      />
+    <b-form-group :label="$t('Loop Mode')">
+      <b-form-select id="" v-model="loopType" @change="changeLoopType">
+        <option v-for="option in loopOptions" :key="option.text" :value="option.value">{{ $t(option.text) }}</option>
+      </b-form-select>
     </b-form-group>
     <template
       v-if="
@@ -152,9 +147,9 @@ export default {
   data() {
     return {
       loopOptions: [
-        { text: this.$t('No loop characteristics'), value: 'no_loop' },
-        { text: this.$t('Parallel multi-instance'), value: 'parallel_mi' },
-        { text: this.$t('Sequential multi-instance'), value: 'sequential_mi' },
+        { text: this.$t('No Loop Mode'), value: 'no_loop' },
+        { text: this.$t('Multi-Instance (Parallel)'), value: 'parallel_mi' },
+        { text: this.$t('Multi-Instance (Sequential)'), value: 'sequential_mi' },
       ],
       showAdvanced: false,
       previous: {
