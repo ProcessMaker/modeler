@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-form-group :label="$t('Loop Mode')">
-      <b-form-select id="" v-model="loopType">
+      <b-form-select id="" v-model="loopType" @change="changeLoopType">
         <option v-for="option in loopOptions" :key="option.text" :value="option.value">{{ $t(option.text) }}</option>
       </b-form-select>
     </b-form-group>
@@ -184,9 +184,6 @@ export default {
           this.loadData();
         }
       },
-    },
-    loopType(value) {
-      this.changeLoopType(value);
     },
   },
   methods: {
