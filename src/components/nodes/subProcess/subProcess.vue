@@ -199,6 +199,7 @@ export default {
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
+    setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     this.shape.attr({
       body: {
         rx: 8,
