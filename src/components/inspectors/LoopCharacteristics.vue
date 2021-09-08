@@ -5,6 +5,17 @@
         <option v-for="option in loopOptions" :key="option.text" :value="option.value">{{ $t(option.text) }}</option>
       </b-form-select>
     </b-form-group>
+    <template v-if="loopType === 'loop'">
+      <b-form-group :label="$t('Maximun Iterations')">
+        <b-form-input v-model="maxIterations" type="number" min="0" step="1" @change="changeMaxIterations"/>
+        <small class="form-text text-muted">{{ $t("Leave empty to continue until exist condition is satisfied") }}</small>
+      </b-form-group>
+
+      <b-form-group :label="$t('Exit Condition')">
+        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="expression" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @change="changeExpression"/>
+        <small class="form-text text-muted">{{ $t("When FEEL expresion evaluates to true then exit loop ") }}</small>
+      </b-form-group>
+    </template>
     <template
       v-if="
         loopType === 'parallel_mi' ||
@@ -148,6 +159,7 @@ export default {
     return {
       loopOptions: [
         { text: this.$t('No Loop Mode'), value: 'no_loop' },
+        { text: this.$t('Loop'), value: 'loop' },
         { text: this.$t('Multi-Instance (Parallel)'), value: 'parallel_mi' },
         { text: this.$t('Multi-Instance (Sequential)'), value: 'sequential_mi' },
       ],
@@ -163,6 +175,8 @@ export default {
           $type: null,
           isSequential: false,
         },
+        maxIterations: 0,
+        expression: null,
       },
       loopType: null,
       multiType: null,
@@ -171,6 +185,8 @@ export default {
       inputDataItem: null,
       outputData: null,
       outputDataItem: null,
+      maxIterations: 0,
+      expression: null,
     };
   },
   mounted() {
@@ -187,6 +203,14 @@ export default {
     },
   },
   methods: {
+    changeMaxIterations(value) {
+      this.setMaxIterations(value);
+      this.saveData();
+    },
+    changeExpression() {
+      this.setExpression(this.expression);
+      this.saveData();
+    },
     changeLoopType(value) {
       this.setLoopCharacteristics(value);
       this.saveData();
@@ -227,6 +251,8 @@ export default {
       this.previous.inputData = this.inputData;
       this.previous.outputData = this.outputData;
       this.previous.loopCardinality = this.loopCardinality;
+      this.maxIterations = this.getMaxIterations();
+      this.expression = this.getExpression();
     },
     saveData() {
       if (!isEqual(this.local, this.value)) {
@@ -386,6 +412,20 @@ export default {
           this.local.loopCharacteristics.isSequential = true;
           break;
       }
+    },
+    setMaxIterations(value) {
+      this.local.loopCharacteristics.maxIterations = value;
+    },
+    getMaxIterations() {
+      if (!this.local.loopCharacteristics) return 0;
+      return this.local.loopCharacteristics.maxIterations;
+    },
+    setExpression(value) {
+      this.local.loopCharacteristics.expression = value;
+    },
+    getExpression() {
+      if (!this.local.loopCharacteristics) return null;
+      return this.local.loopCharacteristics.expression;
     },
   },
 };
