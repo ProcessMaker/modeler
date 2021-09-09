@@ -303,10 +303,16 @@ export default {
         case 'parallel_mi':
           this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
           this.local.loopCharacteristics.isSequential = false;
+          if (!this.multiType) {
+            this.multiType = 'inputData';
+          }
           break;
         case 'sequential_mi':
           this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
           this.local.loopCharacteristics.isSequential = true;
+          if (!this.multiType) {
+            this.multiType = 'inputData';
+          }
           break;
       }
     },
