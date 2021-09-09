@@ -146,6 +146,7 @@ import XMLManager from '@/components/modeler/XMLManager';
 import { removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault, removePoolElements } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
+import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
@@ -442,6 +443,7 @@ export default {
       };
 
       this.translateConfig(nodeType.inspectorConfig[0]);
+      addLoopCharacteristics(nodeType);
       this.nodeRegistry[nodeType.id] = nodeType;
 
       Vue.component(nodeType.id, nodeType.component);

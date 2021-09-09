@@ -25,10 +25,8 @@ i18next.init({
   lng: 'en',
   resources: { en: { translation: translations } },
 });
-
-const i18n = new VueI18Next(i18next);
+Vue.mixin({i18n: new VueI18Next(i18next)});
 
 new Vue({
   render: h => h(ModelerApp),
-  i18n,
 }).$mount('#modeler-app');
