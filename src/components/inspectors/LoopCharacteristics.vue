@@ -27,7 +27,7 @@
           v-model.lazy="inputData"
           type="text"
           :placeholder="$t('Request Variable Name')"
-          @change="changeInputData" 
+          @input="changeInputData" 
         />
       </b-form-group>
       <b-form-group
@@ -45,7 +45,7 @@
           v-model.lazy="outputData"
           type="text"
           :placeholder="$t('Request Variable Name')"
-          @change="changeOutputData"
+          @input="changeOutputData"
         />
       </b-form-group>
     </template>
