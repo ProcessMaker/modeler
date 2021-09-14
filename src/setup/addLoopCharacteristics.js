@@ -20,8 +20,8 @@ export default (node) => {
   node.inspectorConfig[0].items.splice(node.loopInspectorIndex || 1, 0, loopCharacteristicsInspector);
 
   // Get any original handlers defined by the node
-  const originalInspectorHandler = node.inspectorHandler ?? function() {};
-  const originalInspectorData = node.inspectorData ?? null;
+  const originalInspectorHandler = node.inspectorHandler || function() {};
+  const originalInspectorData = node.inspectorData || null;
 
   // Override the inspector handler to add loop props
   node.inspectorHandler = (value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) => {
