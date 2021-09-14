@@ -40,6 +40,7 @@ export default {
 
     const currentConfig = JSON.parse(value.config);
 
+    value['calledElement'] = currentConfig.calledElement;
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
     if (currentConfig.name !== value.name) {
