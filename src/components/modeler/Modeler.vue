@@ -799,7 +799,6 @@ export default {
       removeOutgoingAndIncomingRefsToFlow(node);
       removeBoundaryEvents(this.graph, node, this.removeNode);
       removeSourceDefault(node);
-      removePoolElements(this.graph, node, this.removeNode);
 
       this.removeNodesFromLane(node);
       this.removeNodesFromPool(node);
