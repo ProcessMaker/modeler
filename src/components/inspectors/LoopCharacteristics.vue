@@ -7,12 +7,12 @@
     </b-form-group>
     <template v-if="loopType === 'loop'">
       <b-form-group :label="$t('Maximun Iterations')">
-        <b-form-input v-model="maxIterations" type="number" min="0" step="1" @change="changeMaxIterations"/>
+        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" @change="changeLoopMaximum"/>
         <small class="form-text text-muted">{{ $t("Leave empty to continue until exist condition is satisfied") }}</small>
       </b-form-group>
 
       <b-form-group :label="$t('Exit Condition')">
-        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="expression" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @change="changeExpression"/>
+        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @change="changeLoopCondition"/>
         <small class="form-text text-muted">{{ $t("When FEEL expresion evaluates to true then exit loop ") }}</small>
       </b-form-group>
     </template>
@@ -98,8 +98,8 @@ export default {
           $type: null,
           isSequential: false,
         },
-        maxIterations: 0,
-        expression: null,
+        loopMaximum: 0,
+        loopCondition: null,
       },
       loopType: null,
       multiType: null,
@@ -108,8 +108,8 @@ export default {
       inputDataItem: null,
       outputData: null,
       outputDataItem: null,
-      maxIterations: 0,
-      expression: null,
+      loopMaximum: 0,
+      loopCondition: null,
     };
   },
   mounted() {
@@ -126,12 +126,12 @@ export default {
     },
   },
   methods: {
-    changeMaxIterations(value) {
-      this.setMaxIterations(value);
+    changeLoopMaximum(value) {
+      this.setLoopMaximum(value);
       this.saveData();
     },
-    changeExpression() {
-      this.setExpression(this.expression);
+    changeLoopCondition() {
+      this.setLoopCondition(this.loopCondition);
       this.saveData();
     },
     changeLoopType(value) {
@@ -174,8 +174,8 @@ export default {
       this.previous.inputData = this.inputData;
       this.previous.outputData = this.outputData;
       this.previous.loopCardinality = this.loopCardinality;
-      this.maxIterations = this.getMaxIterations();
-      this.expression = this.getExpression();
+      this.loopMaximum = this.getLoopMaximum();
+      this.loopCondition = this.getLoopCondition();
     },
     saveData() {
       if (!isEqual(this.local, this.value)) {
@@ -342,23 +342,23 @@ export default {
           break;
       }
     },
-    setMaxIterations(value) {
-      this.local.loopCharacteristics.maxIterations = value;
+    setLoopMaximum(value) {
+      this.local.loopCharacteristics.loopMaximum = value;
     },
-    getMaxIterations() {
+    getLoopMaximum() {
       if (!this.local.loopCharacteristics) return 0;
-      return this.local.loopCharacteristics.maxIterations;
+      return this.local.loopCharacteristics.loopMaximum;
     },
-    setExpression(value) {
-      this.local.loopCharacteristics.expression = value;
+    setLoopCondition(value) {
+      this.local.loopCharacteristics.loopCondition = {
+        $type: 'bpmn:Expression',
+        body: value,
+      };
     },
-    getExpression() {
-      if (!this.local.loopCharacteristics) return null;
-      return this.local.loopCharacteristics.expression;
+    getLoopCondition() {
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopCondition) return null;
+      return this.local.loopCharacteristics.loopCondition.body;
     },
   },
 };
 </script>
-
-<style scoped>
-</style>
