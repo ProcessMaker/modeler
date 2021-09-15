@@ -44,3 +44,6 @@ export { default as dataStore } from './dataStore';
 export { default as dataInputAssociation } from './dataInputAssociation';
 export { default as dataOutputAssociation } from './dataOutputAssociation';
 export { default as registerNodes } from '@/setup/registerNodes';
+import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
+import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
+export { loopCharacteristicsInspector, loopCharacteristicsHandler, loopCharacteristicsData };
