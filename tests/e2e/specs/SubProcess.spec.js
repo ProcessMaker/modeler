@@ -47,7 +47,7 @@ describe('Sub Process (Call Activities)', () => {
       calledElement: 'Subprocess1-5',
       processId: 5,
       startEvent: 'node_10',
-      name: `${defaultSubProcessNodeName}`,
+      name: 'Process with multiple start events (Start Event Two)',
     }).replace(/"/g, '&#34;');
 
     addSubprocessToPaper(subProcessPosition);
@@ -124,10 +124,10 @@ describe('Sub Process (Call Activities)', () => {
   });
 
   it('shows an error message when the SVG API GET call fails', () => {
-    cy.clock();
     addSubprocessToPaper(subProcessPosition);
-    cy.tick(500);
     getElementAtPosition(subProcessPosition).click({ force: true });
+
+    cy.clock();
     cy.tick(500);
     selectCalledProcess('Process with mocked axios failure');
     cy.tick(500);

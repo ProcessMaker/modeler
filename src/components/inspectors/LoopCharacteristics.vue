@@ -11,47 +11,14 @@
           loopType === 'sequential_mi'
       "
     >
-      <b-form-group :label="$t('Type')">
-        <b-form-radio
-          v-model="multiType"
-          name="multiType-radio"
-          value="loopCardinality"
-          @change="changeMultiType"
-        >Numeric Expression</b-form-radio>
-        <b-form-radio
-          v-model="multiType"
-          name="multiType-radio"
-          value="inputData"
-          @change="changeMultiType"
-        >Request Data Array</b-form-radio>
-      </b-form-group>
-      <b-form-group
-        v-if="multiType === 'loopCardinality'"
-        id="group-loopCardinality"
-        :label="$t('Loop Cardinality')"
-        label-for="loopCardinality"
-        :description="
-          $t(
-            'A numeric Expression that defines the number of Activity instances that will be created. Ex. 3 or Variable'
-          )
-        "
-      >
-        <b-form-input
-          id="loopCardinality"
-          v-model.lazy="loopCardinality"
-          type="text"
-          placeholder="numeric expression"
-          @change="changeLoopCardinality"
-        />
-      </b-form-group>
       <b-form-group
         v-if="multiType === 'inputData'"
         id="group-inputData"
-        :label="$t('Source Data Variable')"
+        :label="$t('Request Variable Array')"
         label-for="inputData"
         :description="
           $t(
-            'Variable used to determine the number of Activity instances, one per item in the array.'
+            'Non-array data will result in an error.'
           )
         "
       >
@@ -59,8 +26,8 @@
           id="inputData"
           v-model.lazy="inputData"
           type="text"
-          placeholder="arrayVariable"
-          @change="changeInputData"
+          :placeholder="$t('Request Variable Name')"
+          @input="changeInputData" 
         />
       </b-form-group>
       <b-form-group
@@ -77,54 +44,10 @@
           id="outputData"
           v-model.lazy="outputData"
           type="text"
-          placeholder="arrayVariable"
-          @change="changeOutputData"
+          :placeholder="$t('Request Variable Name')"
+          @input="changeOutputData"
         />
       </b-form-group>
-      
-      <a href="javascript:void(0)" v-b-toggle="`collapse-advanced-multi-instance`" class="text-black" @click="showAdvanced=!showAdvanced">
-        <i class="far" :class="{ 'fa-plus-square': !showAdvanced, 'fa-minus-square': showAdvanced }"/>
-        {{ $t('Advanced') }}
-      </a>
-      <b-collapse v-model="showAdvanced">
-        <b-form-group
-          v-if="multiType === 'inputData'"
-          id="group-inputDataItem"
-          :label="$t('Source Data Item Variable')"
-          label-for="inputDataItem"
-          :description="
-            $t(
-              'Represents a single item of the array received by each Activity instance. If not defined Task receives item as root data.'
-            )
-          "
-        >
-          <b-form-input
-            id="inputDataItem"
-            v-model.lazy="inputDataItem"
-            type="text"
-            placeholder="screen root data"
-            @change="changeInputDataItem"
-          />
-        </b-form-group>
-        <b-form-group
-          id="group-outputDataItem"
-          :label="$t('Output Data Item Variable')"
-          label-for="outputDataItem"
-          :description="
-            $t(
-              'Represents a single item of the array that will be produced by the multi-instance. If not defined all Task instance values will be stored inside output variable.'
-            )
-          "
-        >
-          <b-form-input
-            id="outputDataItem"
-            v-model.lazy="outputDataItem"
-            type="text"
-            placeholder="screen root data"
-            @change="changeOutputDataItem"
-          />
-        </b-form-group>
-      </b-collapse>
     </template>
   </div>
 </template>
@@ -380,10 +303,16 @@ export default {
         case 'parallel_mi':
           this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
           this.local.loopCharacteristics.isSequential = false;
+          if (!this.multiType) {
+            this.multiType = 'inputData';
+          }
           break;
         case 'sequential_mi':
           this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
           this.local.loopCharacteristics.isSequential = true;
+          if (!this.multiType) {
+            this.multiType = 'inputData';
+          }
           break;
       }
     },
