@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template>
   <div>
     <b-form-group :label="$t('Loop Mode')">
@@ -7,12 +8,12 @@
     </b-form-group>
     <template v-if="loopType === 'loop'">
       <b-form-group :label="$t('Maximun Iterations')">
-        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" @change="changeLoopMaximum"/>
+        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" @input="changeLoopMaximum"/>
         <small class="form-text text-muted">{{ $t("Leave empty to continue until exist condition is satisfied") }}</small>
       </b-form-group>
 
       <b-form-group :label="$t('Exit Condition')">
-        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @change="changeLoopCondition"/>
+        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @input="changeLoopCondition"/>
         <small class="form-text text-muted">{{ $t("When FEEL expresion evaluates to true then exit loop ") }}</small>
       </b-form-group>
     </template>
