@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <div>
     <b-form-group :label="$t('Loop Mode')">
@@ -40,6 +39,20 @@
           type="text"
           :placeholder="$t('Request Variable Name')"
           @input="changeInputData" 
+        />
+      </b-form-group>
+      <b-form-group
+        v-if="loopType === 'sequential_mi'"
+        id="group-exit-condition"
+        :label="$t('Exit Condition')"
+        label-for="exit-condition"
+        :description="$t('When the FEEL Expression evaluates to true then exit the loop')"
+      >
+        <b-form-textarea
+          id="exit-condition"
+          v-model.lazy="completionCondition"
+          :placeholder="$t('FEEL Syntax')"
+          @input="changeCompletionCondition"
         />
       </b-form-group>
       <b-form-group
@@ -90,6 +103,7 @@ export default {
       showAdvanced: false,
       previous: {
         loopCardinality: '3',
+        completionCondition: null,
         inputData: null,
         outputData: null,
         inputDataItem: null,
@@ -105,6 +119,7 @@ export default {
       loopType: null,
       multiType: null,
       loopCardinality: null,
+      completionCondition: null,
       inputData: null,
       inputDataItem: null,
       outputData: null,
@@ -147,6 +162,10 @@ export default {
       this.setLoopCardinality(value);
       this.saveData();
     },
+    changeCompletionCondition(value) {
+      this.setCompletionCondition(value);
+      this.saveData();
+    },
     changeInputData(value) {
       this.setLoopDataInputRef(value);
       this.saveData();
@@ -168,6 +187,7 @@ export default {
       this.loopType = this.getLoopCharacteristics();
       this.multiType = this.getMultiType();
       this.loopCardinality = this.getLoopCardinality();
+      this.completionCondition = this.getCompletionCondition();
       this.inputData = this.getLoopDataInputRef();
       this.inputDataItem = this.getInputDataItem();
       this.outputData = this.getLoopDataOutputRef();
@@ -175,6 +195,7 @@ export default {
       this.previous.inputData = this.inputData;
       this.previous.outputData = this.outputData;
       this.previous.loopCardinality = this.loopCardinality;
+      this.completionCondition = this.completionCondition;
       this.loopMaximum = this.getLoopMaximum();
       this.loopCondition = this.getLoopCondition();
     },
@@ -264,8 +285,18 @@ export default {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopCardinality) return null;
       return this.local.loopCharacteristics.loopCardinality.body;
     },
+    getCompletionCondition() {
+      if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.completionCondition) return null;
+      return this.local.loopCharacteristics.completionCondition.body;
+    },
     setLoopCardinality(value) {
       this.local.loopCharacteristics.loopCardinality = {
+        $type: 'bpmn:Expression',
+        body: value,
+      };
+    },
+    setCompletionCondition(value) {
+      this.local.loopCharacteristics.completionCondition = {
         $type: 'bpmn:Expression',
         body: value,
       };
@@ -280,6 +311,10 @@ export default {
           $type: 'bpmn:Expression',
           body: this.previous.loopCardinality || '3',
         };
+        this.local.loopCharacteristics.completionCondition = {
+          $type: 'bpmn:Expression',
+          body: this.previous.completionCondition || '',
+        };
         this.previous.inputData = this.inputData;
         this.previous.outputData = this.outputData;
         this.previous.inputDataItem = this.inputDataItem;
@@ -288,14 +323,17 @@ export default {
         this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
       } else {
         this.previous.loopCardinality = this.loopCardinality;
+        this.previous.completionCondition = this.completionCondition;
         this.previous.outputData = this.outputData;
         delete this.local.loopCharacteristics.loopCardinality;
+        delete this.local.loopCharacteristics.completionCondition;
         this.local.loopCharacteristics.loopDataInputRef = '';
         this.setLoopDataInputRef(this.previous.inputData || 'source_array');
         this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
         this.setInputDataItem(this.previous.inputDataItem || '');
       }
       this.loopCardinality = this.getLoopCardinality();
+      this.completionCondition = this.getCompletionCondition();
       this.inputData = this.getLoopDataInputRef();
       this.outputData = this.getLoopDataOutputRef();
     },
