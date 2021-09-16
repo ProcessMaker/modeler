@@ -13,7 +13,7 @@
 
       <b-form-group :label="$t('Exit Condition')">
         <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @input="changeLoopCondition"/>
-        <small class="form-text text-muted">{{ $t("When FEEL expresion evaluates to true then exit loop ") }}</small>
+        <small class="form-text text-muted">{{ $t("When FEEL expresion evaluates to true then exit loop") }}</small>
       </b-form-group>
     </template>
     <template
