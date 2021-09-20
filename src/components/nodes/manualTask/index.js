@@ -19,6 +19,7 @@ export default {
   definition(moddle, $t) {
     return moddle.create('bpmn:ManualTask', {
       name: $t(defaultNames[id]),
+      assignment: 'requester',
       loopCharacteristics: null,
       ioSpecification: null,
     });
