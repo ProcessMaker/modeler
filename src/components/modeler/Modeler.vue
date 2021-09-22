@@ -342,6 +342,9 @@ export default {
       });
     },
     async validateBpmnDiagram() {
+      if (!store.getters.globalProcesses || store.getters.globalProcesses.length === 0) {
+        await store.dispatch('fetchGlobalProcesses');
+      }
       this.validationErrors = await this.linter.lint(this.definitions);
       this.$emit('validate', this.validationErrors);
     },
