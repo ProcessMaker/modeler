@@ -382,10 +382,13 @@ export default {
       }
     },
     setLoopMaximum(value) {
+      if (!value) {
+        value = null;
+      }
       this.local.loopCharacteristics.loopMaximum = value;
     },
     getLoopMaximum() {
-      if (!this.local.loopCharacteristics) return 0;
+      if (!this.local.loopCharacteristics) return null;
       return this.local.loopCharacteristics.loopMaximum;
     },
     setLoopCondition(value) {
