@@ -345,6 +345,16 @@ export function assertDownloadedXmlDoesNotContainExpected(xmlString) {
   });
 }
 
+export function assertDownloadedXmlMatch(xmlString) {
+  getXml().then(xml => {
+    // Escape xmlString to regexp
+    xmlString = removeIndentationAndLinebreaks(xmlString);
+    const escapedXmlString = xmlString.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    // xmlString can contain * which means any number of characters
+    expect(xml).to.match(new RegExp(escapedXmlString.replace(/\\\*/g, '\\w*')));
+  });
+}
+
 export function assertDownloadedXmlContainsSubstringNTimes(substring, expectedCount, message) {
   getXml().then(xml => {
     const matches = xml.match(new RegExp(substring, 'g'));
