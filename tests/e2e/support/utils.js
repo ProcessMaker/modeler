@@ -349,7 +349,7 @@ export function assertDownloadedXmlMatch(xmlString) {
   getXml().then(xml => {
     // Escape xmlString to regexp
     xmlString = removeIndentationAndLinebreaks(xmlString);
-    const escapedXmlString = xmlString.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const escapedXmlString = xmlString.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
     // xmlString can contain * which means any number of characters
     expect(xml).to.match(new RegExp(escapedXmlString.replace(/\\\*/g, '\\w*')));
   });
