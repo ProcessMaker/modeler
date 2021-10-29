@@ -7,12 +7,12 @@
     </b-form-group>
     <template v-if="loopType === 'loop'">
       <b-form-group :label="$t('Maximum Iterations')">
-        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" @input="changeLoopMaximum"/>
+        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" @input="changeLoopMaximum" data-cy="loopMaximum" />
         <small class="form-text text-muted">{{ $t("Leave empty to continue until exit condition is satisfied") }}</small>
       </b-form-group>
 
       <b-form-group :label="$t('Exit Condition')">
-        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @input="changeLoopCondition"/>
+        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @input="changeLoopCondition" data-cy="loopCondition"/>
         <small class="form-text text-muted">{{ $t("When FEEL expression evaluates to true then exit loop") }}</small>
       </b-form-group>
     </template>
@@ -382,10 +382,13 @@ export default {
       }
     },
     setLoopMaximum(value) {
+      if (!value) {
+        value = null;
+      }
       this.local.loopCharacteristics.loopMaximum = value;
     },
     getLoopMaximum() {
-      if (!this.local.loopCharacteristics) return 0;
+      if (!this.local.loopCharacteristics) return null;
       return this.local.loopCharacteristics.loopMaximum;
     },
     setLoopCondition(value) {
