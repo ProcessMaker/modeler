@@ -23,8 +23,43 @@ export default class XMLManager {
         definitions.exporter = 'ProcessMaker Modeler';
         definitions.exporterVersion = '1.0';
 
+        // Clean broken references when loading definitions
+        this.cleanBrokenReferences(definitions);
+
         resolve(definitions);
       });
+    });
+  }
+
+  cleanBrokenReferences(definitions) {
+    const { rootElements, diagrams } = definitions;
+    const removed = [];
+
+    // Remove broken bpmn:SequenceFlow from bpmn:Process
+    rootElements.forEach(element => {
+      if (element.$type === 'bpmn:Process' && element.flowElements) {
+        element.flowElements = element.flowElements.filter(child => {
+          if (child.$type === 'bpmn:SequenceFlow') {
+            if (!(child.sourceRef && child.targetRef)) {
+              removed.push(child);
+            }
+            return child.sourceRef && child.targetRef;
+          }
+          return true;
+        });
+      }
+    });
+
+    // Remove BPMNEdge from bpmndi:BPMNDiagram
+    diagrams.forEach(element => {
+      if (element.$type === 'bpmndi:BPMNDiagram' && element.plane && element.plane.planeElement) {
+        element.plane.planeElement = element.plane.planeElement.filter(child => {
+          if (child.$type === 'bpmndi:BPMNEdge') {
+            return child.bpmnElement && !removed.includes(child.bpmnElement);
+          }
+          return true;
+        });
+      }
     });
   }
 
@@ -32,6 +67,9 @@ export default class XMLManager {
     if (!this.#definitions) {
       return;
     }
+
+    // Clean broken references before save the definitions
+    this.cleanBrokenReferences(this.#definitions);
 
     this.#moddle.toXML(this.#definitions, { format: true }, (err, xml) => {
       if (err) {
