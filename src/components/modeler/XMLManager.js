@@ -68,9 +68,6 @@ export default class XMLManager {
       return;
     }
 
-    // Clean broken references before save the definitions
-    this.cleanBrokenReferences(this.#definitions);
-
     this.#moddle.toXML(this.#definitions, { format: true }, (err, xml) => {
       if (err) {
         alert(err);
