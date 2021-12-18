@@ -23,7 +23,15 @@
           "ownerProcessId": "ProcessId",
           "ownerProcessName": "Process Name"
         }
-      ]
+      ],
+      "category": {
+        "id": 1,
+        "name": "Uncategorized",
+        "status": "ACTIVE",
+        "is_system": 0,
+        "created_at": "2021-09-01T06:11:30-07:00",
+        "updated_at": "2021-09-01T06:11:30-07:00"
+      }
     },
     {
       "id": 3,
@@ -48,7 +56,15 @@
           "ownerProcessId": "ProcessId",
           "ownerProcessName": "Process Name"
         }
-      ]
+      ],
+      "category": {
+        "id": 1,
+        "name": "Uncategorized",
+        "status": "ACTIVE",
+        "is_system": 0,
+        "created_at": "2021-09-01T06:11:30-07:00",
+        "updated_at": "2021-09-01T06:11:30-07:00"
+      }
     },
     {
       "id": 5,
@@ -93,7 +109,15 @@
           "ownerProcessId": "Subprocess2",
           "ownerProcessName": "Subprocess Two"
         }
-      ]
+      ],
+      "category": {
+        "id": 1,
+        "name": "Uncategorized",
+        "status": "ACTIVE",
+        "is_system": 0,
+        "created_at": "2021-09-01T06:11:30-07:00",
+        "updated_at": "2021-09-01T06:11:30-07:00"
+      }
     },
     {
       "id": 1,
@@ -107,7 +131,15 @@
       "deleted_at": null,
       "created_at": "2019-04-01T16:02:14+00:00",
       "updated_at": "2019-04-02T19:11:03+00:00",
-      "events": []
+      "events": [],
+      "category": {
+        "id": 1,
+        "name": "Uncategorized",
+        "status": "ACTIVE",
+        "is_system": 0,
+        "created_at": "2021-09-01T06:11:30-07:00",
+        "updated_at": "2021-09-01T06:11:30-07:00"
+      }
     },
     {
       "id": 13,
@@ -132,7 +164,15 @@
           "ownerProcessId": "Subprocess1",
           "ownerProcessName": "Subprocess One"
         }
-      ]
+      ],
+      "category": {
+        "id": 1,
+        "name": "Uncategorized",
+        "status": "ACTIVE",
+        "is_system": 0,
+        "created_at": "2021-09-01T06:11:30-07:00",
+        "updated_at": "2021-09-01T06:11:30-07:00"
+      }
     }
   ],
   "meta": {
