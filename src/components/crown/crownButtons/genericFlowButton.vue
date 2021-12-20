@@ -26,6 +26,7 @@ const dontShowOn = [
   'processmaker-modeler-signal-end-event',
   'processmaker-modeler-terminate-end-event',
   'processmaker-modeler-text-annotation',
+  'processmaker-modeler-sequence-flow',
 ];
 
 export default {
