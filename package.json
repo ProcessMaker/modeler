@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.18.4",
+  "version": "1.18.6",
   "scripts": {
     "serve": "vue-cli-service serve",
     "open-cypress": "TZ=UTC cypress open",
@@ -48,11 +48,11 @@
     "bootstrap-vue": "^2.0.4",
     "bpmn-moddle": "^6.0.7",
     "bpmnlint": "^6.4.0",
-    "bpmnlint-plugin-processmaker": "1.2.3",
+    "bpmnlint-plugin-processmaker": "1.2.5",
     "core-js": "^3.7.0",
     "file-saver": "^2.0.5",
     "jest-junit": "^12.0.0",
-    "jointjs": "^3.2.0",
+    "jointjs": "^3.4.2",
     "js-yaml-loader": "^1.2.2",
     "lodash": "^4.17.20",
     "luxon": "^1.25.0",

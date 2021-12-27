@@ -130,8 +130,8 @@ export default new Vuex.Store({
           params: {
             order_direction: 'asc',
             per_page: 1000,
-            status: 'active',
-            include: 'events',
+            status: 'all',
+            include: 'events,category',
           },
         });
         commit('setGlobalProcesses', data.data);
