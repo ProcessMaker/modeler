@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - 4.1-develop
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        node: [ 14 ]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+          cache: 'npm'
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+
+      - name: Run linter 👀
+        run: npm run lint
+
+      - name: Run tests 🧪
+        run: npm run test-unit
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v1
+        with:
+          start: npm run serve
+          wait-on: http://localhost:8080/
+          config_file: cypress.json
+          spec: "tests/e2e/**/*"
+
+      - name: Run build bundle 📦
+        run: npm run build-bundle
