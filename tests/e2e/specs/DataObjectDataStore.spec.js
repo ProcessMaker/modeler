@@ -1,5 +1,6 @@
 import {
   assertDownloadedXmlContainsExpected, assertDownloadedXmlDoesNotContainExpected, assertElementsAreConnected,
+  assertDownloadedXmlMatch,
   connectNodesWithFlow,
   dragFromSourceToDest, getCrownButtonForElement,
   getElementAtPosition, getNumberOfLinks, uploadXml, waitToRenderAllShapes,
@@ -83,14 +84,14 @@ describe('Data Objects and Data Stores', () => {
 
       const name = nodeType === 'processmaker-modeler-data-object' ? 'Data Object' : 'Data Store';
       getNumberOfLinks().should('equal', 1);
-      assertDownloadedXmlContainsExpected(`
+      assertDownloadedXmlMatch(`
         <bpmn:task id="node_2" name="Form Task" pm:assignment="requester">
-          <bpmn:ioSpecification id="node_5_1">
+          <bpmn:ioSpecification id="*">
             <bpmn:dataInput id="data_input_node_3" name="${name}" isCollection="false" />
-            <bpmn:inputSet id="node_7_3">
+            <bpmn:inputSet id="*">
               <bpmn:dataInputRefs>data_input_node_3</bpmn:dataInputRefs>
             </bpmn:inputSet>
-            <bpmn:outputSet id="node_8_4" />
+            <bpmn:outputSet id="*" />
           </bpmn:ioSpecification>
           <bpmn:dataInputAssociation id="node_4">
             <bpmn:sourceRef>node_3</bpmn:sourceRef>
