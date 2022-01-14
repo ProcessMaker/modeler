@@ -81,11 +81,20 @@ describe('Data Objects and Data Stores', () => {
       dragFromSourceToDest(nodeType, dataPosition);
       connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
 
+      const name = nodeType === 'processmaker-modeler-data-object' ? 'Data Object' : 'Data Store';
       getNumberOfLinks().should('equal', 1);
       assertDownloadedXmlContainsExpected(`
         <bpmn:task id="node_2" name="Form Task" pm:assignment="requester">
+          <bpmn:ioSpecification id="node_5_1">
+            <bpmn:dataInput id="data_input_node_3" name="${name}" isCollection="false" />
+            <bpmn:inputSet id="node_7_3">
+              <bpmn:dataInputRefs>data_input_node_3</bpmn:dataInputRefs>
+            </bpmn:inputSet>
+            <bpmn:outputSet id="node_8_4" />
+          </bpmn:ioSpecification>
           <bpmn:dataInputAssociation id="node_4">
             <bpmn:sourceRef>node_3</bpmn:sourceRef>
+            <bpmn:targetRef>data_input_node_3</bpmn:targetRef>
           </bpmn:dataInputAssociation>
         </bpmn:task>
       `);
@@ -101,6 +110,7 @@ describe('Data Objects and Data Stores', () => {
     assertDownloadedXmlContainsExpected(`
       <bpmn:dataInputAssociation id="node_4">
         <bpmn:sourceRef>node_3</bpmn:sourceRef>
+        <bpmn:targetRef>data_input_node_3</bpmn:targetRef>
       </bpmn:dataInputAssociation>
     `);
 
@@ -121,6 +131,7 @@ describe('Data Objects and Data Stores', () => {
     assertDownloadedXmlDoesNotContainExpected(`
       <bpmn:dataInputAssociation id="node_4">
         <bpmn:sourceRef>node_3</bpmn:sourceRef>
+        <bpmn:targetRef>data_input_node_3</bpmn:targetRef>
       </bpmn:dataInputAssociation>
     `);
 
