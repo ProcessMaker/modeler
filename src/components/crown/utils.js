@@ -99,3 +99,125 @@ export function removeSourceDefault(node) {
     node.definition.sourceRef.set('default', null);
   }
 }
+
+export function getOrFindDataInput(moddle, task, sourceNode) {
+  if (sourceNode.$type !== 'bpmn:DataObjectReference' && sourceNode.$type !== 'bpmn:DataStoreReference') {
+    throw 'Source node must be a DataObjectReference or bpmn:DataStoreReference, got ' + sourceNode.$type;
+  }
+  const sourceNodeId = sourceNode.id;
+  const dataInputId = `data_input_${sourceNodeId}`;
+  // Check if ioSpecification exists
+  if (!task.definition.ioSpecification) {
+    task.definition.set('ioSpecification', moddle.create('bpmn:InputOutputSpecification', {
+      dataInputs: [],
+      dataOutputs: [],
+      inputSets: [],
+      outputSets: [],
+    }));
+  }
+  // Check if dataInput exists
+  if (!task.definition.ioSpecification.dataInputs) {
+    task.definition.ioSpecification.set('dataInputs', []);
+  }
+  let dataInput = task.definition.ioSpecification.dataInputs.find(input => input.id === dataInputId);
+  if (!dataInput) {
+    task.definition.ioSpecification.dataInputs.push(moddle.create('bpmn:DataInput', {
+      id: dataInputId,
+      isCollection: 'false',
+      name: sourceNode.name,
+    }));
+    task.definition.ioSpecification.set('dataInputs', task.definition.ioSpecification.dataInputs);
+  }
+  dataInput = task.definition.ioSpecification.dataInputs.find(input => input.id === dataInputId);
+  // Check if outputSet exists
+  if (!task.definition.ioSpecification.outputSets) {
+    task.definition.ioSpecification.set('outputSets', [
+      moddle.create('bpmn:OutputSet', {
+        dataInputRefs: [],
+      }),
+    ]);
+  }
+  let outputSet = task.definition.ioSpecification.outputSets[0];
+  if (!outputSet) {
+    task.definition.ioSpecification.set('outputSets', [
+      moddle.create('bpmn:OutputSet', {
+        dataInputRefs: [],
+      }),
+    ]);
+  }
+  outputSet = task.definition.ioSpecification.outputSets[0];
+  // Check if inputSet exists
+  if (!task.definition.ioSpecification.inputSets) {
+    task.definition.ioSpecification.set('inputSets', [
+      moddle.create('bpmn:InputSet', {
+        dataInputRefs: [],
+      }),
+    ]);
+  }
+  let inputSet = task.definition.ioSpecification.inputSets[0];
+  if (!inputSet) {
+    task.definition.ioSpecification.set('inputSets', [
+      moddle.create('bpmn:InputSet', {
+        dataInputRefs: [],
+      }),
+    ]);
+  }
+  inputSet = task.definition.ioSpecification.inputSets[0];
+  // Check if dataInputRef exists
+  const dataInputRef = inputSet.dataInputRefs.find(ref => ref.id === dataInputId);
+  if (!dataInputRef) {
+    inputSet.dataInputRefs.push(dataInput);
+  }
+  return dataInput;
+}
+
+
+export function removeDataInput(task, sourceNode) {
+  if (sourceNode.$type !== 'bpmn:DataObjectReference' && sourceNode.$type !== 'bpmn:DataStoreReference') {
+    throw 'Source node must be a DataObjectReference or bpmn:DataStoreReference, got ' + sourceNode.$type;
+  }
+  const sourceNodeId = sourceNode.id;
+  const dataInputId = `data_input_${sourceNodeId}`;
+  // Check if ioSpecification exists
+  if (!task.definition.ioSpecification) {
+    return;
+  }
+  // Check if dataInput exists
+  if (!task.definition.ioSpecification.dataInputs) {
+    return;
+  }
+  let dataInput = task.definition.ioSpecification.dataInputs.find(input => input.id === dataInputId);
+  if (!dataInput) {
+    return;
+  }
+  // remove dataInput from dataInputs
+  pull(task.definition.ioSpecification.dataInputs, dataInput);
+  // Check if inputSet exists
+  if (!task.definition.ioSpecification.inputSets) {
+    return;
+  }
+  let inputSet = task.definition.ioSpecification.inputSets[0];
+  if (!inputSet) {
+    return;
+  }
+  // Check if dataInputRef exists
+  const dataInputRef = inputSet.dataInputRefs.find(ref => ref.id === dataInputId);
+  if (dataInputRef) {
+    pull(inputSet.dataInputRefs, dataInputRef);
+  }
+  // Remove inputSets if it is empty (without any dataInputRefs)
+  if (inputSet.dataInputRefs.length === 0) {
+    delete task.definition.ioSpecification.inputSets;
+  }
+  // Remove outputSets if it is empty (without any dataOutputRefs)
+  if (task.definition.ioSpecification.outputSets) {
+    let outputSet = task.definition.ioSpecification.outputSets[0];
+    if (outputSet && (!outputSet.dataOutputRefs || outputSet.dataOutputRefs.length === 0)) {
+      delete task.definition.ioSpecification.outputSets;
+    }
+  }
+  // Remove ioSpecification if it is empty (without outputSets and inputSets)
+  if (!task.definition.ioSpecification.inputSets && !task.definition.ioSpecification.outputSets) {
+    delete task.definition.ioSpecification;
+  }
+}
