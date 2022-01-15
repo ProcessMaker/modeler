@@ -179,26 +179,24 @@ export default {
       }
 
       window.ProcessMaker.apiClient.get('processes', {
-        params
+        params,
       }).then(response => {
         this.loading = false;
         this.processes = response.data.data;
       })
-      .catch(err => {
-        this.loading = false;
-      });
+        .catch(() => {
+          this.loading = false;
+        });
     },
     loadSelectedProcessInfo() {
       if (this.config.processId) {
         window.ProcessMaker.apiClient.get('processes/' + this.config.processId, { params: {
-          include: 'events,category'
-        }}).then(response => {
+          include: 'events,category',
+        } }).then(response => {
           this.selectedProcessInfo = response.data;
-        })
-        .catch(err => {
         });
       }
-    }
+    },
   },
   created() {
     if (this.processList.length === 0) {
