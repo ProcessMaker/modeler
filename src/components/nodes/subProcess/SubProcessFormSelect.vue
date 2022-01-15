@@ -12,7 +12,11 @@
       optionContent="name"
       class="p-0 mb-2"
       validation="required"
-      @open="loadProcesses"
+      @search-change="searchChange"
+      :searchable="true"
+      :internal-search="false"
+      :preserve-search="true"
+      :clear-on-select="false"
     />
 
     <form-multi-select
@@ -41,7 +45,6 @@
 </template>
 
 <script>
-import store from '@/store';
 import uniqBy from 'lodash/uniqBy';
 
 export default {
@@ -52,13 +55,19 @@ export default {
       config: {},
       name: '',
       loading: false ,
+      processes: [],
+      selectedProcessInfo: null,
     };
   },
   inheritAttrs: false,
   props: ['value'],
   computed: {
     processList() {
-      return this.filterValidProcesses(store.getters.globalProcesses) || [];
+      const list = this.filterValidProcesses(this.processes) || [];
+      if (this.selectedProcessInfo && !list.find(p => p.id === this.selectedProcessInfo.id)) {
+        list.push(this.selectedProcessInfo);
+      }
+      return list;
     },
     startEventList() {
       if (!this.selectedProcess) { return []; }
@@ -84,11 +93,15 @@ export default {
     value: {
       handler() {
         this.config = JSON.parse(this.value);
+        this.loadSelectedProcessInfo();
       },
       immediate: true,
     },
   },
   methods: {
+    searchChange(filter) {
+      this.loadProcesses(filter);
+    },
     filterValidProcesses(processes) {
       return processes.filter(process => {
         return process.category.is_system == false
@@ -151,9 +164,41 @@ export default {
     containsMultipleProcesses(process) {
       return uniqBy(process.events, 'ownerProcessId').length > 1;
     },
-    loadProcesses() {
-      store.dispatch('fetchGlobalProcesses');
+    loadProcesses(filter) {
+      this.loading = true;
+
+      const params = {
+        order_direction: 'asc',
+        per_page: 20,
+        status: 'all',
+        include: 'events,category',
+      };
+
+      if (filter) {
+        params.filter = filter;
+      }
+
+      window.ProcessMaker.apiClient.get('processes', {
+        params
+      }).then(response => {
+        this.loading = false;
+        this.processes = response.data.data;
+      })
+      .catch(err => {
+        this.loading = false;
+      });
     },
+    loadSelectedProcessInfo() {
+      if (this.config.processId) {
+        window.ProcessMaker.apiClient.get('processes/' + this.config.processId, { params: {
+          include: 'events,category'
+        }}).then(response => {
+          this.selectedProcessInfo = response.data;
+        })
+        .catch(err => {
+        });
+      }
+    }
   },
   created() {
     if (this.processList.length === 0) {
