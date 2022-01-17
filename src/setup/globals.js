@@ -19,8 +19,13 @@ mock.onGet(/\/processes\/\d+/).reply((config) => {
     });
   }
 
+  const regex = /processes\/(\d+)/g;
+  const matches = regex.exec(config.url);
+  const requestedId = matches[1];
+  const process = mockProcesses.data.find(p => p.id === parseInt(requestedId));
+
   return new Promise((resolve) => {
-    setTimeout(() => resolve([200, { svg: mockProcessSvg }]), 1000);
+    setTimeout(() => resolve([200, { svg: mockProcessSvg, ...process }]), 1000);
   });
 });
 

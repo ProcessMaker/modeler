@@ -21,6 +21,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
+import { getOrFindDataInput, removeDataInput } from '@/components/crown/utils';
 import { pull } from 'lodash';
 
 export default {
@@ -99,8 +100,9 @@ export default {
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
+      const dataInput = getOrFindDataInput(this.moddle, targetShape.component.node, this.sourceNode.definition);
+      this.node.definition.set('targetRef', dataInput);
       this.node.definition.set('sourceRef', [this.sourceNode.definition]);
-      this.node.definition.set('targetRef', null);
       targetShape.component.node.definition.set('dataInputAssociations', [this.node.definition]);
     },
   },
@@ -127,6 +129,7 @@ export default {
     this.shape.component = this;
   },
   destroyed() {
+    removeDataInput(this.targetNode, this.sourceNode.definition);
     pull(this.targetNode.definition.get('dataInputAssociations'), this.node.definition);
   },
 };
