@@ -104,8 +104,7 @@ export default {
     },
     filterValidProcesses(processes) {
       return processes.filter(process => {
-        return process.category.is_system == false
-            && this.filterValidStartEvents(process.events).length > 0;
+        return this.filterValidStartEvents(process.events).length > 0;
       });
     },
     filterValidStartEvents(events) {
