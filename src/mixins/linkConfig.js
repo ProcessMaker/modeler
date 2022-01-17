@@ -44,6 +44,7 @@ export default {
           line: { stroke: '#5096db' },
           '.joint-highlight-stroke': { 'display': 'none' },
         });
+        this.shapeView.showTools();
       } else {
         resetShapeColor(this.shape);
         this.shapeView.hideTools();
@@ -244,7 +245,9 @@ export default {
     this.setSource(this.sourceShape);
 
     this.$once('click', () => {
-      this.setupLinkTools();
+      this.$nextTick(() => {
+        this.setupLinkTools();
+      });
     });
 
     const targetRef = this.getTargetRef
