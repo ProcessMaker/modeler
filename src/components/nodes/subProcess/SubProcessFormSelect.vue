@@ -73,6 +73,13 @@ export default {
       if (!this.selectedProcess) { return []; }
       return this.filterValidStartEvents(this.selectedProcess.events);
     },
+    currentProcessId() {
+      const match = window.location.href.match(/modeler\/(\d+)/);
+      if (match && match[1]) {
+        return parseInt(match[1]);
+      }
+      return null;
+    },
   },
   watch: {
     selectedProcess() {
@@ -105,7 +112,7 @@ export default {
     filterValidProcesses(processes) {
       return processes.filter(process => {
         return this.filterValidStartEvents(process.events).length > 0;
-      });
+      }).filter(process => process.id !== this.currentProcessId);
     },
     filterValidStartEvents(events) {
       return events.filter(event => {
