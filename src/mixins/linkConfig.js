@@ -214,9 +214,8 @@ export default {
 
       const sourceAnchorTool = new linkTools.SourceAnchor({ snap: this.getAnchorPointFunction('source') });
       const targetAnchorTool = new linkTools.TargetAnchor({ snap: this.getAnchorPointFunction('target') });
-      const segmentsTool = new linkTools.Segments();
       const toolsView = new dia.ToolsView({
-        tools: [verticesTool, segmentsTool, sourceAnchorTool, targetAnchorTool],
+        tools: [verticesTool, sourceAnchorTool, targetAnchorTool],
       });
 
       this.shapeView.addTools(toolsView);
