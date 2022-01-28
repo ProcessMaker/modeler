@@ -245,7 +245,9 @@ export default {
     this.setSource(this.sourceShape);
 
     this.$once('click', () => {
-      this.setupLinkTools();
+      this.$nextTick(() => {
+        this.setupLinkTools();
+      });
     });
 
     const targetRef = this.getTargetRef
