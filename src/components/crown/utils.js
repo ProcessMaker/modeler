@@ -133,7 +133,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   if (!task.definition.ioSpecification.outputSets) {
     task.definition.ioSpecification.set('outputSets', [
       moddle.create('bpmn:OutputSet', {
-        dataInputRefs: [],
+        dataOutputRefs: [],
       }),
     ]);
   }
@@ -141,7 +141,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   if (!outputSet) {
     task.definition.ioSpecification.set('outputSets', [
       moddle.create('bpmn:OutputSet', {
-        dataInputRefs: [],
+        dataOutputRefs: [],
       }),
     ]);
   }
