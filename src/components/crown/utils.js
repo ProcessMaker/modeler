@@ -108,12 +108,12 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   const dataInputId = `data_input_${sourceNodeId}`;
   // Check if ioSpecification exists
   if (!task.definition.ioSpecification) {
-    task.definition.set('ioSpecification', moddle.create('bpmn:InputOutputSpecification', {
+    task.definition.ioSpecification = moddle.create('bpmn:InputOutputSpecification', {
       dataInputs: [],
       dataOutputs: [],
       inputSets: [],
       outputSets: [],
-    }));
+    });
   }
   // Check if dataInput exists
   if (!task.definition.ioSpecification.dataInputs) {
