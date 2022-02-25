@@ -34,7 +34,7 @@ describe('Boundary event validation', () => {
       .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
       .should('have.length', numberOfPortsAroundTask);
 
-    getElementAtPosition(taskPosition, nodeTypes.task).click();
+    getElementAtPosition(taskPosition, nodeTypes.task).click({force:true});
 
     const dataTest = nodeTypes.boundaryTimerEvent.replace('processmaker-modeler-', 'add-');
     cy.get(`[data-test="${dataTest}"]`)
