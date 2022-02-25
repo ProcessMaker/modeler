@@ -54,7 +54,7 @@
     "jest-junit": "^12.0.0",
     "jointjs": "^3.4.2",
     "js-yaml-loader": "^1.2.2",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "luxon": "^1.25.0",
     "mocha-junit-reporter": "^2.0.0",
     "mustache": "^3.2.1",
