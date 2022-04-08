@@ -1,5 +1,6 @@
 import idConfigSettings from './idConfigSettings';
 import MarkerFlags from '@/components/inspectors/MarkerFlags';
+import NodeIdentifier from './NodeIdentifier';
 
 export default {
   component: 'FormAccordion',
@@ -12,7 +13,7 @@ export default {
   },
   items: [
     {
-      component: 'FormInput',
+      component: NodeIdentifier,
       config: idConfigSettings,
     },
     {
