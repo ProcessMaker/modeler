@@ -133,7 +133,7 @@ describe('Modeler', () => {
     cy.get('[name=id] input').should('have.value', 'node_1');
   });
 
-  it.only('Check node ID is unique', () => {
+  it('Check node ID is unique', () => {
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 150, y: 150 };
