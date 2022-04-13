@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet id="node_2">
+      <bpmn:lane id="node_3" name="Two" />
+      <bpmn:lane id="node_4" name="One" />
+      <bpmn:lane id="node_5" name="Three" />
+    </bpmn:laneSet>
+  </bpmn:process>
+  <bpmn:collaboration id="collaboration_0">
+    <bpmn:participant id="node_1" name="Pool" processRef="Process_1" />
+    <bpmn:participant id="node_6" name="Pool" processRef="process_2" />
+  </bpmn:collaboration>
+  <bpmn:process id="process_2">
+    <bpmn:laneSet id="node_7">
+      <bpmn:lane id="node_8" name="Five" />
+      <bpmn:lane id="node_9" name="Four" />
+      <bpmn:lane id="node_10" name="Six" />
+    </bpmn:laneSet>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_0">
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+        <dc:Bounds x="70" y="80" width="600" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3">
+        <dc:Bounds x="100" y="230" width="570" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_4_di" bpmnElement="node_4">
+        <dc:Bounds x="100" y="80" width="570" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_5_di" bpmnElement="node_5">
+        <dc:Bounds x="100" y="530" width="570" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_6_di" bpmnElement="node_6">
+        <dc:Bounds x="70" y="730" width="600" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_8_di" bpmnElement="node_8">
+        <dc:Bounds x="100" y="880" width="570" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_9_di" bpmnElement="node_9">
+        <dc:Bounds x="100" y="730" width="570" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_10_di" bpmnElement="node_10">
+        <dc:Bounds x="100" y="1180" width="570" height="150" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
