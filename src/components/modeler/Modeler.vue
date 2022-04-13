@@ -880,6 +880,15 @@ export default {
             }
           });
         }
+        let laneSets = node.definition.processRef.laneSets;
+        if (laneSets != null && laneSets.length > 0) {
+          laneSets[0].lanes.forEach(lane => {
+            const nodeToRemove = this.nodes.find(n => n.definition === lane);
+            if (nodeToRemove) {
+              this.removeNode(nodeToRemove);
+            }
+          });
+        }
       }
     },
     handleResize() {
