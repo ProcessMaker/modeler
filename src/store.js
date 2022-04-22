@@ -76,6 +76,11 @@ export default new Vuex.Store({
       });
     },
     updateNodeProp(state, { node, key, value }) {
+      if (key == 'id' && node.definition.id !== value) {
+        if (state.nodes.some(node => node.definition.id === value)) {
+          return;
+        }
+      }
       setDefinitionPropertyReactive(node.definition, key, value);
 
       if (value == null) {

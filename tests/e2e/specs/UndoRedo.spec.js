@@ -192,7 +192,7 @@ describe('Undo/redo', () => {
     getElementAtPosition({ x: 150, y: 150 }).click();
     cy.get('[name=name]').clear().type(newName).should('have.value', newName);
     cy.contains('Advanced').click();
-    cy.get('[name=id]').clear().type(newId).should('have.value', newId);
+    cy.get('[name=id] input').clear().type(newId).should('have.value', newId);
   });
 
   it('Correctly parses elements after redo', () => {

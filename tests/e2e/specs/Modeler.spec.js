@@ -102,35 +102,76 @@ describe('Modeler', () => {
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
 
-    cy.get('[name=id]').should('have.value', 'node_1');
+    cy.get('[name=id] input').should('have.value', 'node_1');
 
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     getElementAtPosition(taskPosition).click();
     cy.contains('Advanced').click();
 
-    cy.get('[name=id]').should('have.value', 'node_2');
+    cy.get('[name=id] input').should('have.value', 'node_2');
 
-    typeIntoTextInput('[name=id]', 'node_3');
+    typeIntoTextInput('[name=id] input', 'node_3');
 
     const task2Position = { x: 250, y: 250 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
     getElementAtPosition(task2Position).click();
 
-    cy.get('[name=id]').should('have.value', 'node_4');
+    cy.get('[name=id] input').should('have.value', 'node_4');
 
     const task3Position = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.task, task3Position);
     getElementAtPosition(task3Position).click();
 
-    cy.get('[name=id]').should('have.value', 'node_5');
+    cy.get('[name=id] input').should('have.value', 'node_5');
 
     uploadXml('../../../src/blank.bpmn');
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     getElementAtPosition(taskPosition).click();
 
-    cy.get('[name=id]').should('have.value', 'node_1');
+    cy.get('[name=id] input').should('have.value', 'node_1');
+  });
+
+  it('Check node ID is unique', () => {
+    waitToRenderAllShapes();
+
+    const startEventPosition = { x: 150, y: 150 };
+    getElementAtPosition(startEventPosition).click();
+
+    cy.get('[name=id] input').should('have.value', 'node_1');
+
+    const taskPosition = { x: 300, y: 300 };
+    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    getElementAtPosition(taskPosition).click();
+    cy.contains('Advanced').click();
+
+    cy.get('[name=id] input').should('have.value', 'node_2');
+
+    getElementAtPosition(startEventPosition).click();
+    cy.contains('Advanced').click();
+    typeIntoTextInput('[name=id] input', 'node_2');
+
+    cy.get('#collapse-advanced-accordion')
+      .should('contain.text', 'Must be unique');
+
+    typeIntoTextInput('[name=id] input', 'node_3');
+
+    cy.get('#collapse-advanced-accordion')
+      .should('not.contain.text', 'Must be unique');
+
+
+    getElementAtPosition(taskPosition).click();
+    cy.contains('Advanced').click();
+    typeIntoTextInput('[name=id] input', 'node_3');
+
+    cy.get('#collapse-advanced-accordion')
+      .should('contain.text', 'Must be unique');
+
+    typeIntoTextInput('[name=id] input', 'node_2');
+
+    cy.get('#collapse-advanced-accordion')
+      .should('not.contain.text', 'Must be unique');
   });
 
   it('Adding a pool and lanes does not overlap sequence flow', () => {

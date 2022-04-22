@@ -1,4 +1,5 @@
 import idConfigSettings from './idConfigSettings';
+import NodeIdentifierInput from './NodeIdentifierInput';
 
 export default {
   component: 'FormAccordion',
@@ -11,7 +12,7 @@ export default {
   },
   items: [
     {
-      component: 'FormInput',
+      component: NodeIdentifierInput,
       config: idConfigSettings,
     },
   ],
