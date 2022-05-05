@@ -153,5 +153,10 @@
       "pre-commit": "./checkForOnly.sh",
       "pre-push": "npm run lint && npm run test-unit"
     }
-  }
+  },
+  "engines": {
+    "npm": ">=8",
+    "node": ">=14 <18"
+  },
+  "engineStrict": true
 }
