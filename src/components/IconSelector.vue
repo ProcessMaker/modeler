@@ -18,37 +18,53 @@
         @close="onClose"
       >
         <template slot="noResult">
-          <div class="multiselect-no-result text-muted my-2 text-center w-100" v-if="allowCustom">
+          <div
+            class="multiselect-no-result text-muted my-2 text-center w-100"
+            v-if="allowCustom"
+          >
             <strong>{{ $t('No icons found.') }}</strong>
-            <br>
+            <br >
             {{ $t('Try a different search or') }}
-            <br>
-            <a class="text-primary link-upload" @click="triggerUpload">{{ $t('upload a custom icon') }}</a>.
+            <br >
+            <a class="text-primary link-upload" @click="triggerUpload">{{
+              $t('upload a custom icon')
+            }}</a>.
           </div>
-          <div class="multiselect-no-result text-muted my-2 text-center w-100" v-else>
+          <div
+            class="multiselect-no-result text-muted my-2 text-center w-100"
+            v-else
+          >
             <strong>{{ $t('No icons found.') }}</strong>
-            <br>
+            <br >
             {{ $t('Try a different search.') }}
           </div>
         </template>
         <template slot="singleLabel" slot-scope="props">
           <span v-if="props.option">
-            <i class="fas fa-fw" :class="'fa-'+props.option.value"/> {{ props.option.label }}
+            <i class="fas fa-fw" :class="'fa-' + props.option.value" />
+            {{ props.option.label }}
           </span>
         </template>
         <template slot="placeholder">
           <span v-if="this.file">
-            {{ $t('Custom Icon File') }} <span class="text-muted" v-if="this.fileName">({{ this.fileName }})</span>
+            {{ $t('Custom Icon File') }}
+            <span class="text-muted" v-if="this.fileName">({{ this.fileName }})</span>
           </span>
         </template>
         <template slot="option" slot-scope="props">
           <div class="icon-square" @mouseover="onHover(props.option)">
-            <i class="fas fa-fw" :class="'fa-'+props.option.value"/>
+            <i class="fas fa-fw" :class="'fa-' + props.option.value" />
           </div>
         </template>
       </multiselect>
       <b-input-group-append class="multiselect-icons-upload" v-if="allowCustom">
-        <file-upload-button ref="fileUploadButton" accept="image/png, image/svg+xml, image/gif" v-model="uploadedFile" variant="secondary" v-b-tooltip="{title: $t('Upload Custom Icon')}"><i class="fas fa-fw fa-upload"/></file-upload-button>
+        <file-upload-button
+          ref="fileUploadButton"
+          accept="image/png, image/svg+xml, image/gif"
+          v-model="uploadedFile"
+          variant="secondary"
+          v-b-tooltip="{ title: $t('Upload Custom Icon') }"
+        ><i class="fas fa-fw fa-upload"/></file-upload-button>
       </b-input-group-append>
     </b-input-group>
   </div>
@@ -130,15 +146,20 @@ export default {
     },
     uploadedFile(value) {
       if (value) {
-        if (value.size > 2000){
-          this.$emit('error', this.$t('The custom icon file is too large. File size must be less than 2KB.'));
+        if (value.size > 2000) {
+          this.$emit(
+            'error',
+            this.$t(
+              'The custom icon file is too large. File size must be less than 2KB.'
+            )
+          );
         } else {
           this.file = value;
           this.fileName = value.name;
           this.uploadedFile = null;
           var reader = new FileReader();
           reader.readAsDataURL(this.file);
-          reader.onload = ()=> {
+          reader.onload = () => {
             this.file = reader.result;
           };
         }
@@ -171,7 +192,7 @@ export default {
       }
 
       if (this.query.length) {
-        this.list = this.all.filter(icon => {
+        this.list = this.all.filter((icon) => {
           return icon.search.includes(this.query);
         });
       } else {
@@ -185,7 +206,7 @@ export default {
       this.placeholder = this.$t('Icon');
     },
     find(value) {
-      return this.all.find(icon => icon.value == value);
+      return this.all.find((icon) => icon.value == value);
     },
     onHover(icon) {
       this.placeholder = icon.label;
@@ -246,7 +267,7 @@ $multiselect-height: 38px;
   .icon-square {
     color: #788793;
     font-size: $iconSize;
-    padding: $iconSize / 1.5;
+    padding: calc($iconSize / 1.5);
     text-align: center;
   }
 
@@ -255,7 +276,7 @@ $multiselect-height: 38px;
   }
 
   .multiselect__option--selected {
-    background: #3397E1;
+    background: #3397e1;
     .icon-square {
       color: white;
     }
@@ -263,7 +284,7 @@ $multiselect-height: 38px;
 
   .multiselect__input::placeholder {
     color: #788793;
-    opacity: .5;
+    opacity: 0.5;
   }
 
   .multiselect__placeholder {
