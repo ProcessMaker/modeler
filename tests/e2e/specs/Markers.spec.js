@@ -12,7 +12,7 @@ describe('Markers', () => {
       .and('match', /^data:image\/svg\+xml;/);
   });
 
-  it('Dynamically remove custom book marker', () => {
+  xit('Dynamically remove custom book marker', () => {
     const taskPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.taskWithMarker, taskPosition);
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
