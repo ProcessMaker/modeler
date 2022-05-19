@@ -32,6 +32,7 @@ export default class XMLManager {
   }
 
   cleanBrokenReferences(definitions) {
+    
     const { rootElements, diagrams } = definitions;
     const removed = [];
 
@@ -47,6 +48,7 @@ export default class XMLManager {
           }
           return true;
         });
+        element.laneSets[0].lanes = element.laneSets[0].lanes.filter(node => !!node.flowNodeRef);
       }
     });
 
