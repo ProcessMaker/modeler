@@ -32,7 +32,6 @@ export default class XMLManager {
   }
 
   cleanBrokenReferences(definitions) {
-    
     const { rootElements, diagrams } = definitions;
     const removed = [];
 
