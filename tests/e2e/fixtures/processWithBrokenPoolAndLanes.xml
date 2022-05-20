@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1530553328908" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+    <bpmn:process id="ProcessId" name="ProcessName" isExecutable="true">
+        <bpmn:laneSet id="node_2">
+            <bpmn:lane id="node_4" name="">
+                <bpmn:flowNodeRef>node_13</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_15</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="node_5" name="" />
+            <bpmn:lane id="node_6" name="" />
+            <bpmn:lane id="node_8" name="Supervisor" />
+            <bpmn:lane id="node_9" name="Empleado">
+                <bpmn:flowNodeRef>node_11</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_12</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_14</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_24</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="node_10" name="Recursos Humanos">
+                <bpmn:flowNodeRef>node_32</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_37</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="node_16" name="1">
+                <bpmn:flowNodeRef>node_20</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_22</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_25</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="node_18" name="2">
+                <bpmn:flowNodeRef>node_28</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_30</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>node_33</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:startEvent id="node_11" name="Evento de inicio" pm:allowInterstitial="false" pm:config="{&quot;web_entry&quot;:null}" pm:assignment="user_group" pm:assignedUsers="2">
+            <bpmn:outgoing>node_17</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:task id="node_12" name="Llenar el formulario de permiso de ausencia solicitud " pm:allowInterstitial="false" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&quot;reactions&quot;:false,&quot;voting&quot;:false,&quot;edit_comments&quot;:false,&quot;remove_comments&quot;:false,&quot;web_entry&quot;:null,&quot;email_notifications&quot;:{&quot;notifications&quot;:[]}}">
+            <bpmn:incoming>node_17</bpmn:incoming>
+            <bpmn:outgoing>node_19</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:task id="node_13" name="Revisar el formulario de solicitud de permiso de ausencia" pm:allowInterstitial="false" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&quot;reactions&quot;:false,&quot;voting&quot;:false,&quot;edit_comments&quot;:false,&quot;remove_comments&quot;:false,&quot;web_entry&quot;:null,&quot;email_notifications&quot;:{&quot;notifications&quot;:[]}}">
+            <bpmn:incoming>node_19</bpmn:incoming>
+            <bpmn:outgoing>node_21</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:serviceTask id="node_14" name="Enviar correo de solicitud rechazada" pm:config="{&quot;type&quot;:&quot;text&quot;,&quot;subject&quot;:&quot;&quot;,&quot;textBody&quot;:&quot;&quot;,&quot;screenRef&quot;:null,&quot;users&quot;:[],&quot;groups&quot;:[],&quot;addEmails&quot;:[]}" implementation="connector-send-email/processmaker-communication-email-send">
+            <bpmn:incoming>node_23</bpmn:incoming>
+            <bpmn:outgoing>node_26</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:exclusiveGateway id="node_15" name="¿Solicitud Aceptada?">
+            <bpmn:incoming>node_21</bpmn:incoming>
+            <bpmn:outgoing>node_23</bpmn:outgoing>
+            <bpmn:outgoing>node_29</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:sequenceFlow id="node_17" name="" sourceRef="node_11" targetRef="node_12" />
+        <bpmn:sequenceFlow id="node_19" name="" sourceRef="node_12" targetRef="node_13" />
+        <bpmn:sequenceFlow id="node_21" name="" sourceRef="node_13" targetRef="node_15" />
+        <bpmn:sequenceFlow id="node_23" name="NO" sourceRef="node_15" targetRef="node_14">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+        </bpmn:sequenceFlow>
+        <bpmn:endEvent id="node_24" name="Evento de finalización">
+            <bpmn:incoming>node_26</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="node_26" name="" sourceRef="node_14" targetRef="node_24" />
+        <bpmn:serviceTask id="node_27" name="Enviar correo de solicitud aprobada" pm:config="{&quot;type&quot;:&quot;text&quot;,&quot;subject&quot;:&quot;&quot;,&quot;textBody&quot;:&quot;&quot;,&quot;screenRef&quot;:null,&quot;users&quot;:[],&quot;groups&quot;:[],&quot;addEmails&quot;:[]}" implementation="connector-send-email/processmaker-communication-email-send">
+            <bpmn:incoming>node_29</bpmn:incoming>
+            <bpmn:outgoing>node_34</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="node_29" name="SI" sourceRef="node_15" targetRef="node_27">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+        </bpmn:sequenceFlow>
+        <bpmn:task id="node_31" name="Verificar solicitud de salida" pm:allowInterstitial="false" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&quot;reactions&quot;:false,&quot;voting&quot;:false,&quot;edit_comments&quot;:false,&quot;remove_comments&quot;:false,&quot;web_entry&quot;:null,&quot;email_notifications&quot;:{&quot;notifications&quot;:[]}}">
+            <bpmn:incoming>node_34</bpmn:incoming>
+            <bpmn:outgoing>node_36</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:serviceTask id="node_32" name="Enviar correo de días restantes" pm:config="{&quot;type&quot;:&quot;text&quot;,&quot;subject&quot;:&quot;&quot;,&quot;textBody&quot;:&quot;&quot;,&quot;screenRef&quot;:null,&quot;users&quot;:[],&quot;groups&quot;:[],&quot;addEmails&quot;:[]}" implementation="connector-send-email/processmaker-communication-email-send">
+            <bpmn:incoming>node_36</bpmn:incoming>
+            <bpmn:outgoing>node_39</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="node_34" name="" sourceRef="node_27" targetRef="node_31" />
+        <bpmn:sequenceFlow id="node_36" name="" sourceRef="node_31" targetRef="node_32" />
+        <bpmn:endEvent id="node_37" name="Evento de finalización">
+            <bpmn:incoming>node_39</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="node_39" name="" sourceRef="node_32" targetRef="node_37" />
+        <bpmn:startEvent id="node_20" name="Evento de inicio" pm:allowInterstitial="false" pm:config="{&quot;web_entry&quot;:null}" pm:assignment="user_group" pm:assignedUsers="2">
+            <bpmn:outgoing>node_38</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:task id="node_22" name="Tarea de formulario" pm:allowInterstitial="false" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&quot;reactions&quot;:false,&quot;voting&quot;:false,&quot;edit_comments&quot;:false,&quot;remove_comments&quot;:false,&quot;web_entry&quot;:null,&quot;email_notifications&quot;:{&quot;notifications&quot;:[]}}">
+            <bpmn:incoming>node_38</bpmn:incoming>
+            <bpmn:outgoing>node_41</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:exclusiveGateway id="node_25" name="Puerta de enlace exclusiva">
+            <bpmn:incoming>node_41</bpmn:incoming>
+            <bpmn:outgoing>node_43</bpmn:outgoing>
+            <bpmn:outgoing>node_45</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:endEvent id="node_28" name="Evento de finalización">
+            <bpmn:incoming>node_43</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:task id="node_30" name="Tarea de formulario" pm:allowInterstitial="false" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&quot;reactions&quot;:false,&quot;voting&quot;:false,&quot;edit_comments&quot;:false,&quot;remove_comments&quot;:false,&quot;web_entry&quot;:null,&quot;email_notifications&quot;:{&quot;notifications&quot;:[]}}">
+            <bpmn:incoming>node_45</bpmn:incoming>
+            <bpmn:outgoing>node_47</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:endEvent id="node_33" name="Evento de finalización">
+            <bpmn:incoming>node_47</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="node_38" sourceRef="node_20" targetRef="node_22" />
+        <bpmn:sequenceFlow id="node_41" sourceRef="node_22" targetRef="node_25" />
+        <bpmn:sequenceFlow id="node_43" sourceRef="node_25" targetRef="node_28">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="node_45" sourceRef="node_25" targetRef="node_30">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="node_47" sourceRef="node_30" targetRef="node_33" />
+    </bpmn:process>
+    <bpmn:collaboration id="collaboration_0">
+        <bpmn:participant id="node_7" name="Grupo" processRef="ProcessId" />
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="BPMNDiagramId">
+        <bpmndi:BPMNPlane id="BPMNPlaneId" bpmnElement="collaboration_0">
+            <bpmndi:BPMNShape id="node_4_di" bpmnElement="node_4">
+                <dc:Bounds x="240" y="330" width="570" height="150" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_5_di" bpmnElement="node_5">
+                <dc:Bounds x="240" y="180" width="570" height="150" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_8_di" bpmnElement="node_8">
+                <dc:Bounds x="189.9999999999979" y="260.00000000000017" width="1040.000000000002" height="220.0000000000009" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_9_di" bpmnElement="node_9">
+                <dc:Bounds x="189.99999999999784" y="60.00000000000293" width="1040.000000000002" height="199.99999999999585" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_10_di" bpmnElement="node_10">
+                <dc:Bounds x="189.99999999999784" y="180.0000000000009" width="1040.000000000002" height="264.9999999999992" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_11_di" bpmnElement="node_11">
+                <dc:Bounds x="260" y="145" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_12_di" bpmnElement="node_12">
+                <dc:Bounds x="370" y="95" width="116" height="136" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_13_di" bpmnElement="node_13">
+                <dc:Bounds x="370" y="325" width="116" height="136" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_14_di" bpmnElement="node_14">
+                <dc:Bounds x="530" y="125" width="116" height="96" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_15_di" bpmnElement="node_15">
+                <dc:Bounds x="570" y="375" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_17_di" bpmnElement="node_17">
+                <di:waypoint x="278" y="163" />
+                <di:waypoint x="428" y="163" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_19_di" bpmnElement="node_19">
+                <di:waypoint x="428" y="163" />
+                <di:waypoint x="428" y="393" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_21_di" bpmnElement="node_21">
+                <di:waypoint x="428" y="393" />
+                <di:waypoint x="588" y="393" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_23_di" bpmnElement="node_23">
+                <di:waypoint x="588" y="393" />
+                <di:waypoint x="588" y="173" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="node_24_di" bpmnElement="node_24">
+                <dc:Bounds x="720" y="155" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_26_di" bpmnElement="node_26">
+                <di:waypoint x="588" y="173" />
+                <di:waypoint x="738" y="173" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="node_27_di" bpmnElement="node_27">
+                <dc:Bounds x="530" y="555" width="116" height="96" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_29_di" bpmnElement="node_29">
+                <di:waypoint x="588" y="393" />
+                <di:waypoint x="588" y="603" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="node_31_di" bpmnElement="node_31">
+                <dc:Bounds x="700" y="555" width="116" height="96" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_32_di" bpmnElement="node_32">
+                <dc:Bounds x="870" y="555" width="116" height="96" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_34_di" bpmnElement="node_34">
+                <di:waypoint x="588" y="603" />
+                <di:waypoint x="758" y="603" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_36_di" bpmnElement="node_36">
+                <di:waypoint x="758" y="603" />
+                <di:waypoint x="928" y="603" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="node_37_di" bpmnElement="node_37">
+                <dc:Bounds x="1090" y="585" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_39_di" bpmnElement="node_39">
+                <di:waypoint x="928" y="603" />
+                <di:waypoint x="1108" y="603" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="node_3_di" bpmnElement="node_7">
+                <dc:Bounds x="80" y="150" width="680" height="450" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_6_di" bpmnElement="node_16">
+                <dc:Bounds x="110" y="150.00000000000017" width="650" height="299.9999999999999" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_7_di" bpmnElement="node_18">
+                <dc:Bounds x="110" y="450" width="650" height="150.00000000000006" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_16_di" bpmnElement="node_20">
+                <dc:Bounds x="180" y="270" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_18_di" bpmnElement="node_22">
+                <dc:Bounds x="290" y="250" width="116" height="76" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_20_di" bpmnElement="node_25">
+                <dc:Bounds x="330" y="380" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_22_di" bpmnElement="node_28">
+                <dc:Bounds x="330" y="520" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_25_di" bpmnElement="node_30">
+                <dc:Bounds x="470" y="490" width="116" height="76" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="node_28_di" bpmnElement="node_33">
+                <dc:Bounds x="650" y="510" width="36" height="36" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="node_33_di" bpmnElement="node_38">
+                <di:waypoint x="198" y="288" />
+                <di:waypoint x="348" y="288" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_38_di" bpmnElement="node_41">
+                <di:waypoint x="348" y="288" />
+                <di:waypoint x="348" y="398" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_41_di" bpmnElement="node_43">
+                <di:waypoint x="348" y="398" />
+                <di:waypoint x="348" y="538" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_43_di" bpmnElement="node_45">
+                <di:waypoint x="348" y="398" />
+                <di:waypoint x="528" y="528" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="node_45_di" bpmnElement="node_47">
+                <di:waypoint x="528" y="528" />
+                <di:waypoint x="668" y="528" />
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
