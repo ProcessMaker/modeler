@@ -30,14 +30,14 @@ describe('crownColorDropdown.vue', () => {
     });
   });
 
-  it('it sets the color in the vuex store', () => {
+  it('it sets the color in the vuex store', async() => {
     const colorToSelect = baseNodeColors[0];
     const colorButton = wrapper.find(`[data-test="${colorToSelect}"]`);
 
     expect(node.definition).not.toHaveProperty('color');
     expect(store.commit).toHaveBeenCalledTimes(0);
 
-    colorButton.trigger('click');
+    await colorButton.trigger('click');
 
     expect(store.commit).toHaveBeenCalledTimes(1);
     expect(store.commit).toHaveBeenNthCalledWith(1, 'updateNodeProp', { node, key: 'color', value: colorToSelect });
