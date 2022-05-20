@@ -48,6 +48,19 @@ export default class XMLManager {
           return true;
         });
       }
+      if (element.$type === 'bpmn:Process' && element.laneSets) {
+        element.laneSets.forEach(laneSet => {
+          laneSet.lanes = laneSet.lanes.filter(node => {
+            if (!definitions.diagrams) {
+              return false;
+            }
+            const laneHasShape = definitions.diagrams.find(diagram => diagram.plane.planeElement.find(shape => {
+              return shape && shape.bpmnElement.id === node.id;
+            }));
+            return laneHasShape;
+          });
+        });
+      }
     });
 
     // Remove BPMNEdge from bpmndi:BPMNDiagram
