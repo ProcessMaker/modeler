@@ -78,7 +78,7 @@ function crown(buttonId)
 
 function getBpmn()
 {
-  return new Promise(resolve => {
+  return new Cypress.Promise(resolve => {
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
