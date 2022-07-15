@@ -54,7 +54,7 @@
     "jest-junit": "^12.0.0",
     "jointjs": "^3.1.1",
     "js-yaml-loader": "^1.2.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "luxon": "^1.21.1",
     "mocha-junit-reporter": "^2.0.0",
     "mustache": "^3.2.1",
@@ -122,7 +122,7 @@
     "bpmn-moddle": "^6.0.0",
     "i18next": "^15.0.8",
     "jointjs": "^3.1.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "luxon": "^1.21.1",
     "vue": "^2.6.12",
     "vue-color": "^2.7.1"
