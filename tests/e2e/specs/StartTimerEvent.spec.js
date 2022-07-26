@@ -7,7 +7,7 @@ import {
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 const startTimerEventPosition = { x: 250, y: 250 };
 
@@ -24,7 +24,7 @@ describe('Start Timer Event', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
-    const toggledPeriod = moment(now).format('A') === 'AM' ? 'PM' : 'AM';
+    const toggledPeriod = format(new Date(now), 'A') === 'AM' ? 'PM' : 'AM';
     const expectedStartDate = `${getPeriodicityStringUSFormattedDate(now)} 5:30 ${toggledPeriod}`;
 
     cy.contains('Timing Control').click();
