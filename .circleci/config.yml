@@ -12,7 +12,7 @@ jobs:
         - cache-{{ .Branch }}-{{ checksum "package.json" }}
     - run:
         name: Npm CI
-        command: npm ci && npm rebuild node-sass && npx browserslist@latest --update-db
+        command: npm ci && npx browserslist@latest --update-db
     - run:
         command: npx cypress verify
     - save_cache:
