@@ -13,8 +13,9 @@
     @click="onClick"
   >
     <b-form-file
-      plain
+      ref="fileUpload"
       v-model="file"
+      plain
       v-bind="$attrs"
       class="file-upload-control"
       :accept="accept"
@@ -26,9 +27,8 @@
       :file-name-formatter="fileNameFormatter"
       @change="onChange"
       @input="onInput"
-      ref="fileUpload"
     />
-    <slot/>
+    <slot />
   </b-button>
 </template>
 
@@ -38,110 +38,110 @@ export default {
   props: {
     // Component
     value: {
-      default: null,
+      default: null
     },
     // Button
     block: {
       type: Boolean,
-      default: false,
+      default: false
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     size: {
       type: String,
-      default: 'md',
+      default: "md"
     },
     variant: {
       type: String,
-      default: 'secondary',
+      default: "secondary"
     },
     type: {
       type: String,
-      default: 'button',
+      default: "button"
     },
     tag: {
       type: String,
-      default: 'button',
+      default: "button"
     },
     pill: {
       type: Boolean,
-      default: false,
+      default: false
     },
     squared: {
       type: Boolean,
-      default: false,
+      default: false
     },
     pressed: {
       type: Boolean,
-      default: null,
+      default: null
     },
     // File Upload
     accept: {
       type: String,
-      default: '',
+      default: ""
     },
     capture: {
       type: Boolean,
-      default: false,
+      default: false
     },
     multiple: {
       type: Boolean,
-      default: false,
+      default: false
     },
     directory: {
       type: Boolean,
-      default: false,
+      default: false
     },
     noTraverse: {
       type: Boolean,
-      default: false,
+      default: false
     },
     noDrop: {
       type: Boolean,
-      default: false,
+      default: false
     },
     fileNameFormatter: {
       type: Function,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
-      file: null,
+      file: null
     };
   },
   watch: {
     file: {
       handler(value) {
-        this.$emit('input', value);
-      },
+        this.$emit("input", value);
+      }
     },
     value: {
       handler(value) {
         this.file = value;
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   methods: {
     onClick() {
       this.$refs.fileUpload.$el.click();
     },
     onChange(event) {
-      this.$emit('change', event);
+      this.$emit("change", event);
     },
     onInput(file) {
-      this.$emit('input', file);
+      this.$emit("input", file);
     },
     reset() {
       this.$refs.fileUpload.reset();
     },
     trigger() {
       this.$refs.fileUpload.$el.click();
-    },
-  },
+    }
+  }
 };
 </script>
 

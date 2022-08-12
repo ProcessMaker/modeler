@@ -1,11 +1,11 @@
-import component from './signalEndEvent.vue';
-import endEventConfig from '../endEvent';
-import merge from 'lodash/merge';
-import cloneDeep from 'lodash/cloneDeep';
-import { signalSelector, default as signalEventDefinition } from '../signalEventDefinition';
-import defaultNames from '@/components/nodes/endEvent/defaultNames';
+import merge from "lodash/merge";
+import cloneDeep from "lodash/cloneDeep";
+import defaultNames from "@/components/nodes/endEvent/defaultNames";
+import component from "./signalEndEvent.vue";
+import endEventConfig from "../endEvent";
+import { default as signalEventDefinition, signalSelector } from "../signalEventDefinition";
 
-export const id = 'processmaker-modeler-signal-end-event';
+export const id = "processmaker-modeler-signal-end-event";
 
 export default merge(cloneDeep(endEventConfig), {
   ...signalEventDefinition,
@@ -14,23 +14,18 @@ export default merge(cloneDeep(endEventConfig), {
   control: false,
   label: defaultNames[id],
   definition(moddle, $t) {
-    return moddle.create('bpmn:EndEvent', {
+    return moddle.create("bpmn:EndEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [
-        moddle.create('bpmn:SignalEventDefinition'),
-      ],
+      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")]
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [
-            {},
-            signalSelector('Select the signal reference that this element throws'),
-          ],
-        },
-      ],
-    },
-  ],
+          items: [{}, signalSelector("Select the signal reference that this element throws")]
+        }
+      ]
+    }
+  ]
 });

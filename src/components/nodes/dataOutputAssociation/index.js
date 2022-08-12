@@ -1,6 +1,6 @@
-import component from './dataOutputAssociation.vue';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import * as config from './config';
+import idConfigSettings from "@/components/inspectors/idConfigSettings";
+import component from "./dataOutputAssociation.vue";
+import * as config from "./config";
 
 export default {
   ...config,
@@ -8,25 +8,25 @@ export default {
   control: false,
   inspectorConfig: [
     {
-      name: 'Data Output Association',
+      name: "Data Output Association",
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-data-output-association',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-data-output-association"
           },
           items: [
             {
-              component: 'FormInput',
-              config: idConfigSettings,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+              component: "FormInput",
+              config: idConfigSettings
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };

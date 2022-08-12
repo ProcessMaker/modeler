@@ -1,13 +1,13 @@
-$toolbar-background-color: #FFF;
+$toolbar-background-color: #fff;
 
 .toolbar {
-  z-index: 1;
-  height: $toolbar-height;
-  cursor: auto;
-  width: 100%;
-  background: $toolbar-background-color;
+	z-index: 1;
+	height: $toolbar-height;
+	cursor: auto;
+	width: 100%;
+	background: $toolbar-background-color;
 
-  > button {
-    cursor: pointer;
-  }
+	> button {
+		cursor: pointer;
+	}
 }

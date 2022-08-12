@@ -1,35 +1,41 @@
 import {
-  assertDownloadedXmlContainsExpected, assertDownloadedXmlDoesNotContainExpected, assertElementsAreConnected,
+  assertDownloadedXmlContainsExpected,
+  assertDownloadedXmlDoesNotContainExpected,
   assertDownloadedXmlMatch,
+  assertElementsAreConnected,
   connectNodesWithFlow,
-  dragFromSourceToDest, getCrownButtonForElement,
-  getElementAtPosition, getNumberOfLinks, uploadXml, waitToRenderAllShapes,
-} from '../support/utils';
+  dragFromSourceToDest,
+  getCrownButtonForElement,
+  getElementAtPosition,
+  getNumberOfLinks,
+  uploadXml,
+  waitToRenderAllShapes,
+} from "../support/utils";
 
-import {nodeTypes} from '../support/constants';
+import { nodeTypes } from "../support/constants";
 
-describe('Data Objects and Data Stores', () => {
-  const dataPosition = {x: 250, y: 250};
-  const startEventPosition = {x: 150, y: 150};
+describe("Data Objects and Data Stores", () => {
+  const dataPosition = { x: 250, y: 250 };
+  const startEventPosition = { x: 150, y: 150 };
   const taskPosition = { x: 400, y: 400 };
 
-  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach((nodeType) => {
     it(`does not support connecting sequence flows for ${nodeType}`, () => {
       dragFromSourceToDest(nodeType, dataPosition);
 
       getElementAtPosition(dataPosition)
         .click()
-        .then($el => getCrownButtonForElement($el, 'sequence-flow-button'))
-        .should('not.exist');
+        .then(($el) => getCrownButtonForElement($el, "sequence-flow-button"))
+        .should("not.exist");
     });
   });
 
-  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach((nodeType) => {
     it(`can add data output association flows for ${nodeType}`, () => {
       dragFromSourceToDest(nodeType, dataPosition);
-      connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
+      connectNodesWithFlow("generic-flow-button", startEventPosition, dataPosition);
 
-      getNumberOfLinks().should('equal', 1);
+      getNumberOfLinks().should("equal", 1);
       assertDownloadedXmlContainsExpected(`
         <bpmn:startEvent id="node_1" name="Start Event">
           <bpmn:dataOutputAssociation id="node_4">
@@ -40,10 +46,10 @@ describe('Data Objects and Data Stores', () => {
     });
   });
 
-  it('can parse and load a data output association from a BPMN file', () => {
-    uploadXml('withDataOutputAssociation.xml');
+  it("can parse and load a data output association from a BPMN file", () => {
+    uploadXml("withDataOutputAssociation.xml");
 
-    getNumberOfLinks().should('equal', 1);
+    getNumberOfLinks().should("equal", 1);
     assertDownloadedXmlContainsExpected(`
         <bpmn:startEvent id="node_1" name="Start Event">
           <bpmn:dataOutputAssociation id="node_3">
@@ -53,10 +59,10 @@ describe('Data Objects and Data Stores', () => {
       `);
   });
 
-  it('can parse and load a data input association from a BPMN file', () => {
-    uploadXml('withDataInputAssociation.xml');
+  it("can parse and load a data input association from a BPMN file", () => {
+    uploadXml("withDataInputAssociation.xml");
 
-    assertElementsAreConnected('node_2', 'node_1');
+    assertElementsAreConnected("node_2", "node_1");
 
     assertDownloadedXmlContainsExpected(`
         <bpmn:task id="node_1" name="Form Task" pm:assignment="requester">
@@ -68,22 +74,22 @@ describe('Data Objects and Data Stores', () => {
       `);
   });
 
-  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach((nodeType) => {
     it(`does not support connecting data input association to start event for ${nodeType}`, () => {
       dragFromSourceToDest(nodeType, dataPosition);
-      connectNodesWithFlow('association-flow-button', dataPosition, startEventPosition);
-      getNumberOfLinks().should('equal', 0);
+      connectNodesWithFlow("association-flow-button", dataPosition, startEventPosition);
+      getNumberOfLinks().should("equal", 0);
     });
   });
 
-  [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
+  [nodeTypes.dataObject, nodeTypes.dataStore].forEach((nodeType) => {
     it(`can add data input association flows for ${nodeType}`, () => {
       dragFromSourceToDest(nodeTypes.task, taskPosition);
       dragFromSourceToDest(nodeType, dataPosition);
-      connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
+      connectNodesWithFlow("association-flow-button", dataPosition, taskPosition);
 
-      const name = nodeType === 'processmaker-modeler-data-object' ? 'Data Object' : 'Data Store';
-      getNumberOfLinks().should('equal', 1);
+      const name = nodeType === "processmaker-modeler-data-object" ? "Data Object" : "Data Store";
+      getNumberOfLinks().should("equal", 1);
       assertDownloadedXmlMatch(`
         <bpmn:task id="node_2" name="Form Task" pm:assignment="requester">
           <bpmn:ioSpecification id="*">
@@ -102,10 +108,10 @@ describe('Data Objects and Data Stores', () => {
     });
   });
 
-  it('removed the data input association on the task when the data object is deleted', () => {
+  it("removed the data input association on the task when the data object is deleted", () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
-    connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
+    connectNodesWithFlow("association-flow-button", dataPosition, taskPosition);
     waitToRenderAllShapes();
 
     assertDownloadedXmlContainsExpected(`
@@ -121,13 +127,11 @@ describe('Data Objects and Data Stores', () => {
 
     getElementAtPosition(dataPosition)
       .click()
-      .then($el => {
-        return getCrownButtonForElement($el, 'delete-button');
-      })
+      .then(($el) => getCrownButtonForElement($el, "delete-button"))
       .click();
     waitToRenderAllShapes();
 
-    getNumberOfLinks().should('equal', 0);
+    getNumberOfLinks().should("equal", 0);
 
     assertDownloadedXmlDoesNotContainExpected(`
       <bpmn:dataInputAssociation id="node_4">
@@ -141,10 +145,10 @@ describe('Data Objects and Data Stores', () => {
     `);
   });
 
-  it('removes the data output association on the task when the data object is deleted', () => {
+  it("removes the data output association on the task when the data object is deleted", () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     dragFromSourceToDest(nodeTypes.dataObject, dataPosition);
-    connectNodesWithFlow('generic-flow-button', taskPosition, dataPosition);
+    connectNodesWithFlow("generic-flow-button", taskPosition, dataPosition);
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:dataOutputAssociation id="node_5">
@@ -158,12 +162,10 @@ describe('Data Objects and Data Stores', () => {
 
     getElementAtPosition(dataPosition)
       .click()
-      .then($el => {
-        return getCrownButtonForElement($el, 'delete-button');
-      })
+      .then(($el) => getCrownButtonForElement($el, "delete-button"))
       .click();
 
-    getNumberOfLinks().should('equal', 0);
+    getNumberOfLinks().should("equal", 0);
 
     assertDownloadedXmlDoesNotContainExpected(`
       <bpmn:dataOutputAssociation id="node_5">

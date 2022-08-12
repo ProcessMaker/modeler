@@ -1,55 +1,54 @@
-import component from './pool';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
-import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-import { id } from './config';
-
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
+import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import component from "./pool";
+import { id } from "./config";
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:Participant',
+  bpmnType: "bpmn:Participant",
   control: true,
-  category: 'BPMN',
-  icon: require('@/assets/toolpanel/pool.svg'),
-  label: 'Pool',
+  category: "BPMN",
+  icon: require("@/assets/toolpanel/pool.svg"),
+  label: "Pool",
   rank: 60,
   definition(moddle, $t) {
-    return moddle.create('bpmn:Participant', {
-      name: $t('Pool'),
+    return moddle.create("bpmn:Participant", {
+      name: $t("Pool")
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 300,
-        width: 600,
-      }),
+        width: 600
+      })
     });
   },
   inspectorConfig: [
     {
-      name: 'Pool',
+      name: "Pool",
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-pool',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-pool"
           },
           items: [
             {
-              component: 'FormInput',
-              config: nameConfigSettings,
-            },
-          ],
+              component: "FormInput",
+              config: nameConfigSettings
+            }
+          ]
         },
         documentationAccordionConfig,
-        advancedAccordionConfig,
-      ],
-    },
-  ],
+        advancedAccordionConfig
+      ]
+    }
+  ]
 };

@@ -1,5 +1,5 @@
-import { id as poolId } from '@/components/nodes/pool/config';
-import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as poolId } from "@/components/nodes/pool/config";
+import { id as laneId } from "@/components/nodes/poolLane/config";
 
 export default function ensureShapeIsNotCovered(shape, graph) {
   if (isPool(shape)) {
@@ -31,12 +31,8 @@ function bringPoolToFront(poolShape) {
     return;
   }
 
-  const poolLanes = poolShape
-    .getEmbeddedCells()
-    .filter(cell => cell.component && cell.component.node.type === laneId);
-  const poolLaneElements = poolShape
-    .getEmbeddedCells()
-    .filter(cell => cell.component && cell.component.node.type !== laneId);
+  const poolLanes = poolShape.getEmbeddedCells().filter((cell) => cell.component && cell.component.node.type === laneId);
+  const poolLaneElements = poolShape.getEmbeddedCells().filter((cell) => cell.component && cell.component.node.type !== laneId);
 
   poolLanes.forEach(bringShapeToFront);
   poolLaneElements.forEach(bringShapeToFront);
@@ -57,4 +53,3 @@ function getElementPool(shape) {
 function isPool(shape) {
   return shape.component.node.type === poolId;
 }
-

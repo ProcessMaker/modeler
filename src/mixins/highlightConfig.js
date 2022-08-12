@@ -1,43 +1,37 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
 
 const errorHighlighter = {
   highlighter: {
-    name: 'stroke',
+    name: "stroke",
     options: {
       padding: 10,
       attrs: {
-        stroke: 'red',
-        'stroke-width': 10,
-        opacity: 0.3,
-      },
-    },
-  },
+        stroke: "red",
+        "stroke-width": 10,
+        opacity: 0.3
+      }
+    }
+  }
 };
 
 const defaultHighlighter = {
   highlighter: {
-    name: 'stroke',
+    name: "stroke",
     options: {
       attrs: {
-        stroke: '#5096db',
-        'stroke-width': 3,
-      },
-    },
-  },
+        stroke: "#5096db",
+        "stroke-width": 3
+      }
+    }
+  }
 };
 
 export default {
-  props: [
-    'highlighted',
-    'paperManager',
-    'hasError',
-    'autoValidate',
-    'borderOutline',
-  ],
+  props: ["highlighted", "paperManager", "hasError", "autoValidate", "borderOutline"],
   data() {
     return {
       shape: null,
-      currentBorderOutline: null,
+      currentBorderOutline: null
     };
   },
   watch: {
@@ -54,16 +48,16 @@ export default {
       deep: true,
       handler(borderOutline) {
         this.setBorderOutline(borderOutline);
-      },
-    },
+      }
+    }
   },
   computed: {
     shapeView() {
       return this.shape.findView(this.paperManager.paper);
     },
     shapeBody() {
-      return this.shapeView.$el.find('[joint-selector=body]');
-    },
+      return this.shapeView.$el.find("[joint-selector=body]");
+    }
   },
   methods: {
     setShapeHighlight() {
@@ -87,17 +81,16 @@ export default {
       if (this.currentBorderOutline) {
         this.shapeView.highlight(this.shapeBody, this.currentBorderOutline);
       }
-    },
+    }
   },
   mounted() {
     this.$nextTick(() => {
-      this.paperManager.awaitScheduledUpdates()
-        .then(() => {
-          this.setShapeHighlight();
-          this.shape.on('change:size', () => {
-            this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
-          });
+      this.paperManager.awaitScheduledUpdates().then(() => {
+        this.setShapeHighlight();
+        this.shape.on("change:size", () => {
+          this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
         });
+      });
     });
-  },
+  }
 };

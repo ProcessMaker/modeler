@@ -2,43 +2,44 @@
   <div>
     <b-form-group :label="$t('Loop Mode')">
       <b-form-select id="" v-model="loopType" @change="changeLoopType">
-        <option v-for="option in loopOptions" :key="option.text" :value="option.value">{{ $t(option.text) }}</option>
+        <option v-for="option in loopOptions" :key="option.text" :value="option.value">
+          {{ $t(option.text) }}
+        </option>
       </b-form-select>
     </b-form-group>
     <template v-if="loopType === 'loop'">
       <b-form-group :label="$t('Maximum Iterations')">
-        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" @input="changeLoopMaximum" data-cy="loopMaximum" />
+        <b-form-input v-model="loopMaximum" type="number" min="0" step="1" data-cy="loopMaximum" @input="changeLoopMaximum" />
         <small class="form-text text-muted">{{ $t("Leave empty to continue until exit condition is satisfied") }}</small>
       </b-form-group>
 
       <b-form-group :label="$t('Exit Condition')">
-        <textarea class="form-control special-assignment-input" ref="specialAssignmentsInput"  v-model="loopCondition" :aria-label="$t('FEEL Syntax')" placeholder="FEEL Syntax" @input="changeLoopCondition" data-cy="loopCondition"/>
+        <textarea
+          ref="specialAssignmentsInput"
+          v-model="loopCondition"
+          class="form-control special-assignment-input"
+          :aria-label="$t('FEEL Syntax')"
+          placeholder="FEEL Syntax"
+          data-cy="loopCondition"
+          @input="changeLoopCondition"
+        />
         <small class="form-text text-muted">{{ $t("When FEEL expression evaluates to true then exit loop") }}</small>
       </b-form-group>
     </template>
-    <template
-      v-if="
-        loopType === 'parallel_mi' ||
-          loopType === 'sequential_mi'
-      "
-    >
+    <template v-if="loopType === 'parallel_mi' || loopType === 'sequential_mi'">
       <b-form-group
         v-if="multiType === 'inputData'"
         id="group-inputData"
         :label="$t('Request Variable Array')"
         label-for="inputData"
-        :description="
-          $t(
-            'Non-array data will result in an error.'
-          )
-        "
+        :description="$t('Non-array data will result in an error.')"
       >
         <b-form-input
           id="inputData"
           v-model.lazy="inputData"
           type="text"
           :placeholder="$t('Request Variable Name')"
-          @input="changeInputData" 
+          @input="changeInputData"
         />
       </b-form-group>
       <b-form-group
@@ -59,11 +60,7 @@
         id="group-outputData"
         :label="$t('Output Data Variable')"
         label-for="outputData"
-        :description="
-          $t(
-            'Specifies the output request data variable array, which will be produced as a result of the multi-instance.'
-          )
-        "
+        :description="$t('Specifies the output request data variable array, which will be produced as a result of the multi-instance.')"
       >
         <b-form-input
           id="outputData"
@@ -78,43 +75,44 @@
 </template>
 
 <script>
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual } from "lodash";
+
 export default {
+  name: "LoopCharacteristics",
   props: {
     value: {
       type: Object,
       default() {
         return {
           loopCharacteristics: null,
-          ioSpecification: null,
+          ioSpecification: null
         };
-      },
-    },
+      }
+    }
   },
-  name: 'LoopCharacteristics',
   data() {
     return {
       loopOptions: [
-        { text: this.$t('No Loop Mode'), value: 'no_loop' },
-        { text: this.$t('Loop'), value: 'loop' },
-        { text: this.$t('Multi-Instance (Parallel)'), value: 'parallel_mi' },
-        { text: this.$t('Multi-Instance (Sequential)'), value: 'sequential_mi' },
+        { text: this.$t("No Loop Mode"), value: "no_loop" },
+        { text: this.$t("Loop"), value: "loop" },
+        { text: this.$t("Multi-Instance (Parallel)"), value: "parallel_mi" },
+        { text: this.$t("Multi-Instance (Sequential)"), value: "sequential_mi" }
       ],
       showAdvanced: false,
       previous: {
-        loopCardinality: '3',
+        loopCardinality: "3",
         completionCondition: null,
         inputData: null,
         outputData: null,
-        inputDataItem: null,
+        inputDataItem: null
       },
       local: {
         loopCharacteristics: {
           $type: null,
-          isSequential: false,
+          isSequential: false
         },
         loopMaximum: 0,
-        loopCondition: null,
+        loopCondition: null
       },
       loopType: null,
       multiType: null,
@@ -125,11 +123,8 @@ export default {
       outputData: null,
       outputDataItem: null,
       loopMaximum: 0,
-      loopCondition: null,
+      loopCondition: null
     };
-  },
-  mounted() {
-    this.loadData();
   },
   watch: {
     value: {
@@ -138,8 +133,11 @@ export default {
         if (!isEqual(this.local, value)) {
           this.loadData();
         }
-      },
-    },
+      }
+    }
+  },
+  mounted() {
+    this.loadData();
   },
   methods: {
     changeLoopMaximum(value) {
@@ -183,7 +181,7 @@ export default {
       this.saveData();
     },
     loadData() {
-      this.$set(this, 'local', cloneDeep(this.value));
+      this.$set(this, "local", cloneDeep(this.value));
       this.loopType = this.getLoopCharacteristics();
       this.multiType = this.getMultiType();
       this.loopCardinality = this.getLoopCardinality();
@@ -201,7 +199,7 @@ export default {
     },
     saveData() {
       if (!isEqual(this.local, this.value)) {
-        this.$emit('input', cloneDeep(this.local));
+        this.$emit("input", cloneDeep(this.local));
       }
     },
     getOutputDataItem() {
@@ -210,11 +208,10 @@ export default {
     },
     setOutputDataItem(value) {
       this.local.loopCharacteristics.outputDataItem = {
-        $type: 'bpmn:DataInput',
+        $type: "bpmn:DataInput",
         isCollection: true,
-        name: value,
+        name: value
       };
-      
     },
     getLoopDataOutputRef() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataOutputRef) return null;
@@ -225,18 +222,14 @@ export default {
         this.initIoSpecification();
       }
       const dataDef = this.local.ioSpecification.dataOutputs[0] || {
-        $type: 'bpmn:DataOutput',
+        $type: "bpmn:DataOutput",
         id: `${this.local.id}_output_1`,
         isCollection: true,
-        name: value,
+        name: value
       };
       dataDef.name = value;
-      this.local.ioSpecification.dataOutputs = [
-        dataDef,
-      ];
-      this.local.ioSpecification.outputSets[0].dataOutputRefs = [
-        dataDef.id,
-      ];
+      this.local.ioSpecification.dataOutputs = [dataDef];
+      this.local.ioSpecification.outputSets[0].dataOutputRefs = [dataDef.id];
       this.local.loopCharacteristics.loopDataOutputRef = dataDef.id;
     },
     getInputDataItem() {
@@ -245,9 +238,9 @@ export default {
     },
     setInputDataItem(value) {
       this.local.loopCharacteristics.inputDataItem = {
-        $type: 'bpmn:DataInput',
+        $type: "bpmn:DataInput",
         isCollection: true,
-        name: value,
+        name: value
       };
     },
     getLoopDataInputRef() {
@@ -256,29 +249,25 @@ export default {
     },
     setLoopDataInputRef(value) {
       const dataDef = {
-        $type: 'bpmn:DataInput',
+        $type: "bpmn:DataInput",
         id: `${this.local.id}_input_1`,
         isCollection: true,
-        name: value,
+        name: value
       };
       if (!this.local.ioSpecification) {
         this.initIoSpecification();
       }
-      this.local.ioSpecification.dataInputs = [
-        dataDef,
-      ];
-      this.local.ioSpecification.inputSets[0].dataInputRefs = [
-        dataDef.id,
-      ];
+      this.local.ioSpecification.dataInputs = [dataDef];
+      this.local.ioSpecification.inputSets[0].dataInputRefs = [dataDef.id];
       this.local.loopCharacteristics.loopDataInputRef = dataDef.id;
     },
     initIoSpecification() {
       this.local.ioSpecification = {
-        $type: 'bpmn:InputOutputSpecification',
+        $type: "bpmn:InputOutputSpecification",
         dataInputs: [],
         dataOutputs: [],
-        inputSets: [{ $type: 'bpmn:InputSet', dataInputRefs: []}],
-        outputSets: [{ $type: 'bpmn:OutputSet', dataOutputRefs: []}],
+        inputSets: [{ $type: "bpmn:InputSet", dataInputRefs: [] }],
+        outputSets: [{ $type: "bpmn:OutputSet", dataOutputRefs: [] }]
       };
     },
     getLoopCardinality() {
@@ -291,29 +280,29 @@ export default {
     },
     setLoopCardinality(value) {
       this.local.loopCharacteristics.loopCardinality = {
-        $type: 'bpmn:Expression',
-        body: value,
+        $type: "bpmn:Expression",
+        body: value
       };
     },
     setCompletionCondition(value) {
       this.local.loopCharacteristics.completionCondition = {
-        $type: 'bpmn:Expression',
-        body: value,
+        $type: "bpmn:Expression",
+        body: value
       };
     },
     getMultiType() {
       if (!this.local.loopCharacteristics) return null;
-      return this.local.loopCharacteristics.loopCardinality !== undefined ? 'loopCardinality' : 'inputData';
+      return this.local.loopCharacteristics.loopCardinality !== undefined ? "loopCardinality" : "inputData";
     },
     setMultiType(value) {
-      if (value === 'loopCardinality') {
+      if (value === "loopCardinality") {
         this.local.loopCharacteristics.loopCardinality = {
-          $type: 'bpmn:Expression',
-          body: this.previous.loopCardinality || '3',
+          $type: "bpmn:Expression",
+          body: this.previous.loopCardinality || "3"
         };
         this.local.loopCharacteristics.completionCondition = {
-          $type: 'bpmn:Expression',
-          body: this.previous.completionCondition || '',
+          $type: "bpmn:Expression",
+          body: this.previous.completionCondition || ""
         };
         this.previous.inputData = this.inputData;
         this.previous.outputData = this.outputData;
@@ -327,10 +316,10 @@ export default {
         this.previous.outputData = this.outputData;
         delete this.local.loopCharacteristics.loopCardinality;
         delete this.local.loopCharacteristics.completionCondition;
-        this.local.loopCharacteristics.loopDataInputRef = '';
-        this.setLoopDataInputRef(this.previous.inputData || 'source_array');
+        this.local.loopCharacteristics.loopDataInputRef = "";
+        this.setLoopDataInputRef(this.previous.inputData || "source_array");
         this.setLoopDataOutputRef(this.previous.outputData || `output_array_${this.local.id}`);
-        this.setInputDataItem(this.previous.inputDataItem || '');
+        this.setInputDataItem(this.previous.inputDataItem || "");
       }
       this.loopCardinality = this.getLoopCardinality();
       this.completionCondition = this.getCompletionCondition();
@@ -338,45 +327,36 @@ export default {
       this.outputData = this.getLoopDataOutputRef();
     },
     getLoopCharacteristics() {
-      if (!this.local.loopCharacteristics) return 'no_loop';
-      if (
-        this.local.loopCharacteristics.$type ===
-          'bpmn:StandardLoopCharacteristics'
-      )
-        return 'loop';
-      if (
-        this.local.loopCharacteristics.$type ===
-          'bpmn:MultiInstanceLoopCharacteristics'
-      ) {
-        return this.local.loopCharacteristics.isSequential
-          ? 'sequential_mi'
-          : 'parallel_mi';
+      if (!this.local.loopCharacteristics) return "no_loop";
+      if (this.local.loopCharacteristics.$type === "bpmn:StandardLoopCharacteristics") return "loop";
+      if (this.local.loopCharacteristics.$type === "bpmn:MultiInstanceLoopCharacteristics") {
+        return this.local.loopCharacteristics.isSequential ? "sequential_mi" : "parallel_mi";
       }
-      return 'no_loop';
+      return "no_loop";
     },
     setLoopCharacteristics(value) {
       if (!this.local.loopCharacteristics) {
         this.local.loopCharacteristics = {};
       }
       switch (value) {
-        case 'no_loop':
+        case "no_loop":
           this.local.loopCharacteristics = undefined;
           break;
-        case 'loop':
-          this.local.loopCharacteristics.$type = 'bpmn:StandardLoopCharacteristics';
+        case "loop":
+          this.local.loopCharacteristics.$type = "bpmn:StandardLoopCharacteristics";
           break;
-        case 'parallel_mi':
-          this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
+        case "parallel_mi":
+          this.local.loopCharacteristics.$type = "bpmn:MultiInstanceLoopCharacteristics";
           this.local.loopCharacteristics.isSequential = false;
           if (!this.multiType) {
-            this.multiType = 'inputData';
+            this.multiType = "inputData";
           }
           break;
-        case 'sequential_mi':
-          this.local.loopCharacteristics.$type = 'bpmn:MultiInstanceLoopCharacteristics';
+        case "sequential_mi":
+          this.local.loopCharacteristics.$type = "bpmn:MultiInstanceLoopCharacteristics";
           this.local.loopCharacteristics.isSequential = true;
           if (!this.multiType) {
-            this.multiType = 'inputData';
+            this.multiType = "inputData";
           }
           break;
       }
@@ -393,14 +373,14 @@ export default {
     },
     setLoopCondition(value) {
       this.local.loopCharacteristics.loopCondition = {
-        $type: 'bpmn:Expression',
-        body: value,
+        $type: "bpmn:Expression",
+        body: value
       };
     },
     getLoopCondition() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopCondition) return null;
       return this.local.loopCharacteristics.loopCondition.body;
-    },
-  },
+    }
+  }
 };
 </script>

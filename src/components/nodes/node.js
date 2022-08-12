@@ -3,19 +3,24 @@ import {
   defaultGatewayNames,
   defaultIntermediateNames,
   defaultStartNames,
-  defaultTaskNames,
-} from '@/components/nodes/defaultNames';
+  defaultTaskNames
+} from "@/components/nodes/defaultNames";
 
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
 
 export default class Node {
-  static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
-  static definitionPropertiesToNotCopy = ['$type', 'id'];
-  static eventDefinitionPropertiesToNotCopy = ['errorRef', 'messageRef'];
+  static diagramPropertiesToCopy = ["x", "y", "width", "height"];
+
+  static definitionPropertiesToNotCopy = ["$type", "id"];
+
+  static eventDefinitionPropertiesToNotCopy = ["errorRef", "messageRef"];
 
   type;
+
   definition;
+
   diagram;
+
   pool;
 
   constructor(type, definition, diagram) {
@@ -29,12 +34,8 @@ export default class Node {
   }
 
   canBeDefaultFlow() {
-    const validSources = [
-      'bpmn:ExclusiveGateway',
-      'bpmn:InclusiveGateway',
-    ];
-    return this.definition.$type === 'bpmn:SequenceFlow'
-      && validSources.includes(this.definition.sourceRef.$type);
+    const validSources = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway"];
+    return this.definition.$type === "bpmn:SequenceFlow" && validSources.includes(this.definition.sourceRef.$type);
   }
 
   isType(type) {
@@ -89,21 +90,24 @@ export default class Node {
 
     clonedNode.id = null;
     clonedNode.pool = this.pool;
-    Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
-      const definition = this.definition.get(key);
-      const clonedDefinition = typeof definition === 'object' ? cloneDeep(definition) : definition;
-      if (key === 'eventDefinitions') {
-        for (var i in clonedDefinition) {
-          if (definition[i].signalRef && !clonedDefinition[i].signalRef) {
-            clonedDefinition[i].signalRef = { ...definition[i].signalRef };
+    Node.diagramPropertiesToCopy.forEach((prop) => (clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]));
+    Object.keys(this.definition)
+      .filter((key) => !Node.definitionPropertiesToNotCopy.includes(key))
+      .forEach((key) => {
+        const definition = this.definition.get(key);
+        const clonedDefinition = typeof definition === "object" ? cloneDeep(definition) : definition;
+        if (key === "eventDefinitions") {
+          for (const i in clonedDefinition) {
+            if (definition[i].signalRef && !clonedDefinition[i].signalRef) {
+              clonedDefinition[i].signalRef = { ...definition[i].signalRef };
+            }
           }
         }
-      }
-      clonedNode.definition.set(key, clonedDefinition);
-    });
+        clonedNode.definition.set(key, clonedDefinition);
+      });
     Node.eventDefinitionPropertiesToNotCopy.forEach(
-      prop => clonedNode.definition.eventDefinitions &&
+      (prop) =>
+        clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
         clonedNode.definition.eventDefinitions[0].hasOwnProperty(prop) &&
         clonedNode.definition.eventDefinitions[0].set(prop, null)
@@ -113,15 +117,10 @@ export default class Node {
   }
 
   getTargetProcess(processes, processNode) {
-    return this.pool
-      ? processes.find(({ id }) => id === this.pool.component.node.definition.get('processRef').id)
-      : processNode.definition;
+    return this.pool ? processes.find(({ id }) => id === this.pool.component.node.definition.get("processRef").id) : processNode.definition;
   }
 
   static isTimerType(type) {
-    return [
-      'processmaker-modeler-start-timer-event',
-      'processmaker-modeler-intermediate-catch-timer-event',
-    ].includes(type);
+    return ["processmaker-modeler-start-timer-event", "processmaker-modeler-intermediate-catch-timer-event"].includes(type);
   }
 }

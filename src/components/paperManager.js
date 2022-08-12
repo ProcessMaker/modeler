@@ -1,9 +1,10 @@
-import { dia, util } from 'jointjs';
-import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
-import { gridSize } from '@/graph';
+import { dia, util } from "jointjs";
+import { defaultNodeColor, invalidNodeColor } from "@/components/nodeColors";
+import { gridSize } from "@/graph";
 
 export default class PaperManager {
   #paper;
+
   preventTranslate = false;
 
   constructor(paper) {
@@ -18,15 +19,15 @@ export default class PaperManager {
       async: true,
       el: element,
       model,
-      sorting: 'sorting-approximate',
+      sorting: "sorting-approximate",
       gridSize: PaperManager.gridSize,
       drawGrid: true,
       clickThreshold: 10,
       perpendicularLinks: true,
       interactive: interactiveFunc,
       highlighting: {
-        default: { options: { padding: defaultPadding } },
-      },
+        default: { options: { padding: defaultPadding } }
+      }
     });
 
     paper.translate(168, 20);
@@ -44,7 +45,7 @@ export default class PaperManager {
 
   set scale(scale) {
     this.#paper.scale(scale);
-    this.#paper.trigger('scale:changed');
+    this.#paper.trigger("scale:changed");
   }
 
   roundToNearestGridMultiple(number) {
@@ -61,7 +62,7 @@ export default class PaperManager {
     }
 
     this.#paper.translate(x, y);
-    this.#paper.trigger('translate:changed');
+    this.#paper.trigger("translate:changed");
   }
 
   addEventHandler(eventName, callback, callbackScope) {
@@ -88,11 +89,11 @@ export default class PaperManager {
 
   clientToGridPoint(clientX, clientY) {
     const paperOrigin = this.#paper.localToPagePoint(0, 0);
-    const scale = this.scale;
+    const { scale } = this;
 
     return {
       x: this.roundToNearestGridMultiple((clientX - paperOrigin.x) / scale.sx),
-      y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy),
+      y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy)
     };
   }
 
@@ -105,9 +106,9 @@ export default class PaperManager {
   }
 
   awaitScheduledUpdates() {
-    if (this.#paper._updates.priorities.some(updates => !util.isEmpty(updates))) {
+    if (this.#paper._updates.priorities.some((updates) => !util.isEmpty(updates))) {
       return new Promise((resolve) => {
-        this.addOnceHandler('render:done', resolve);
+        this.addOnceHandler("render:done", resolve);
       });
     }
     return Promise.resolve();

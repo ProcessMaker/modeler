@@ -8,16 +8,16 @@ export default async function focusNameInputAndHighlightLabel(cellView) {
     return;
   }
 
-  const configurationAccordion = document.getElementById('accordion-button-Configuration');
-  if (configurationAccordion && configurationAccordion.getAttribute('aria-expanded') === 'false') {
+  const configurationAccordion = document.getElementById("accordion-button-Configuration");
+  if (configurationAccordion && configurationAccordion.getAttribute("aria-expanded") === "false") {
     clearTimeout(timeoutID);
     configurationAccordion.click();
     await waitToTriggerOpenAnimation();
   }
 
-  labelElement.style.outline = '1px dashed blue';
-  nameInput.addEventListener('blur', () => {
-    labelElement.style.outline = '';
+  labelElement.style.outline = "1px dashed blue";
+  nameInput.addEventListener("blur", () => {
+    labelElement.style.outline = "";
   });
 
   nameInput.focus();
@@ -29,12 +29,11 @@ function getLabelElementForShape(shape) {
     return;
   }
 
-  return shape.selectors.label ||
-    Array.from(shape.selectors.root.children).find(el => el.classList.contains('labels'));
+  return shape.selectors.label || Array.from(shape.selectors.root.children).find((el) => el.classList.contains("labels"));
 }
 
 function waitToTriggerOpenAnimation() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     timeoutID = setTimeout(resolve);
   });
 }

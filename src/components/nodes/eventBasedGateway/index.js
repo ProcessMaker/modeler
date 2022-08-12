@@ -1,28 +1,28 @@
-import component from './eventBasedGateway.vue';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
-import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-import defaultNames from '@/components/nodes/gateway/defaultNames';
+import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
+import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import defaultNames from "@/components/nodes/gateway/defaultNames";
+import component from "./eventBasedGateway.vue";
 
-const id = 'processmaker-modeler-event-based-gateway';
+const id = "processmaker-modeler-event-based-gateway";
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:EventBasedGateway',
+  bpmnType: "bpmn:EventBasedGateway",
   control: false,
-  category: 'BPMN',
+  category: "BPMN",
   label: defaultNames[id],
   definition(moddle, $t) {
-    return moddle.create('bpmn:EventBasedGateway', {
-      name: $t(defaultNames[id]),
+    return moddle.create("bpmn:EventBasedGateway", {
+      name: $t(defaultNames[id])
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36,
-      }),
+        width: 36
+      })
     });
   },
   inspectorConfig: [
@@ -30,28 +30,28 @@ export default {
       name: defaultNames[id],
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-event-based-gateway',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-event-based-gateway"
           },
           items: [
             {
-              component: 'FormInput',
+              component: "FormInput",
               config: {
-                label: 'Name',
-                helper: 'The Name of the Gateway',
-                name: 'name',
-              },
-            },
-          ],
+                label: "Name",
+                helper: "The Name of the Gateway",
+                name: "name"
+              }
+            }
+          ]
         },
         documentationAccordionConfig,
-        advancedAccordionConfig,
-      ],
-    },
-  ],
+        advancedAccordionConfig
+      ]
+    }
+  ]
 };

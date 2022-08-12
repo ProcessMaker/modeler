@@ -1,25 +1,25 @@
-import component from './boundaryEvent.vue';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import component from "./boundaryEvent.vue";
 
 export default {
-  id: 'processmaker-modeler-boundary-event',
+  id: "processmaker-modeler-boundary-event",
   component,
-  bpmnType: 'bpmn:BoundaryEvent',
+  bpmnType: "bpmn:BoundaryEvent",
   control: true,
-  category: 'BPMN',
-  label: 'Boundary Event',
+  category: "BPMN",
+  label: "Boundary Event",
   definition(moddle, $t) {
-    return moddle.create('bpmn:BoundaryEvent', {
-      name: $t('Boundary Event'),
-      cancelActivity: true,
+    return moddle.create("bpmn:BoundaryEvent", {
+      name: $t("Boundary Event"),
+      cancelActivity: true
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36,
-      }),
+        width: 36
+      })
     });
   },
   validateIncoming() {
@@ -27,25 +27,25 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Boundary Event',
+      name: "Boundary Event",
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-boundary-event',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-boundary-event"
           },
           items: [
             {
-              component: 'FormInput',
-              config: nameConfigSettings,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+              component: "FormInput",
+              config: nameConfigSettings
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };

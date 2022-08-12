@@ -1,1 +1,1 @@
-export const id = 'processmaker-modeler-message-flow';
+export const id = "processmaker-modeler-message-flow";

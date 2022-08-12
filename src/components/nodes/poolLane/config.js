@@ -1,1 +1,1 @@
-export const id = 'processmaker-modeler-lane';
+export const id = "processmaker-modeler-lane";

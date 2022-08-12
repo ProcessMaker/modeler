@@ -5,30 +5,34 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   typeIntoTextInput,
-} from '../support/utils';
+} from "../support/utils";
 
-import { nodeTypes } from '../support/constants';
-import { gatewayDirection } from '../../../src/components/nodes/gateway/gatewayConfig';
+import { nodeTypes } from "../support/constants";
+import { gatewayDirection } from "../../../src/components/nodes/gateway/gatewayConfig";
 
-describe('Inclusive Gateway', () => {
+describe("Inclusive Gateway", () => {
   const inclusivePosition = { x: 250, y: 250 };
 
   beforeEach(() => {
-    addNodeTypeToPaper(inclusivePosition, nodeTypes.exclusiveGateway, 'switch-to-inclusive-gateway');
+    addNodeTypeToPaper(
+      inclusivePosition,
+      nodeTypes.exclusiveGateway,
+      "switch-to-inclusive-gateway",
+    );
   });
 
-  it('Update inclusive gateway name', () => {
+  it("Update inclusive gateway name", () => {
     getElementAtPosition(inclusivePosition).click();
-    const testString = 'testing';
-    typeIntoTextInput('[name=name]', testString);
+    const testString = "testing";
+    typeIntoTextInput("[name=name]", testString);
 
-    cy.get('[name=name]').should('have.value', testString);
+    cy.get("[name=name]").should("have.value", testString);
   });
 
-  it('Detects gateway direction of converging or diverging', () => {
+  it("Detects gateway direction of converging or diverging", () => {
     const startEventPosition = { x: 150, y: 150 };
 
-    connectNodesWithFlow('generic-flow-button', startEventPosition, inclusivePosition);
+    connectNodesWithFlow("generic-flow-button", startEventPosition, inclusivePosition);
 
     const divergingString = `gatewayDirection="${gatewayDirection.diverging}"`;
     assertDownloadedXmlContainsExpected(divergingString);
@@ -36,7 +40,7 @@ describe('Inclusive Gateway', () => {
     const taskPosition = { x: 350, y: 350 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    connectNodesWithFlow('generic-flow-button', taskPosition, inclusivePosition);
+    connectNodesWithFlow("generic-flow-button", taskPosition, inclusivePosition);
 
     getElementAtPosition(taskPosition).click();
 

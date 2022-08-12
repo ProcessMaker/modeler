@@ -1,48 +1,50 @@
-import component from './task.vue';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import { taskHeight, taskWidth } from './taskConfig';
-import defaultNames from '@/components/nodes/task/defaultNames';
-import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
-import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
-import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
-import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-import omit from 'lodash/omit';
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import defaultNames from "@/components/nodes/task/defaultNames";
+import advancedAccordionConfigWithMarkerFlags from "@/components/inspectors/advancedAccordionConfigWithMarkerFlags";
+import loopCharacteristicsInspector, {
+  loopCharacteristicsData,
+  loopCharacteristicsHandler
+} from "@/components/inspectors/LoopCharacteristics";
+import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import omit from "lodash/omit";
+import { taskHeight, taskWidth } from "./taskConfig";
+import component from "./task.vue";
 
-export const id = 'processmaker-modeler-task';
+export const id = "processmaker-modeler-task";
 
 export default {
-  id: 'processmaker-modeler-task',
+  id: "processmaker-modeler-task",
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
+  bpmnType: ["bpmn:Task", "bpmn:UserTask", "bpmn:GlobalTask", "bpmn:SubProcess"],
   control: true,
-  category: 'BPMN',
+  category: "BPMN",
   rank: 40,
-  icon: require('@/assets/toolpanel/task.svg'),
-  label: 'Task',
+  icon: require("@/assets/toolpanel/task.svg"),
+  label: "Task",
   definition(moddle, $t) {
-    return moddle.create('bpmn:Task', {
+    return moddle.create("bpmn:Task", {
       name: $t(defaultNames[id]),
-      assignment: 'requester',
+      assignment: "requester"
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: taskHeight,
-        width: taskWidth,
-      }),
+        width: taskWidth
+      })
     });
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
-    defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'));
+    defaultInspectorHandler(omit(value, "markerFlags", "$loopCharactetistics"));
   },
   inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
     loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
     inspectorData.markerFlags = {
-      isForCompensation: inspectorData.isForCompensation,
+      isForCompensation: inspectorData.isForCompensation
     };
     delete inspectorData.isForCompensation;
 
@@ -53,30 +55,30 @@ export default {
       name: defaultNames[id],
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-task',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-task"
           },
           items: [
             {
-              component: 'FormInput',
-              config: nameConfigSettings,
-            },
-          ],
+              component: "FormInput",
+              config: nameConfigSettings
+            }
+          ]
         },
         loopCharacteristicsInspector,
         documentationAccordionConfig,
-        advancedAccordionConfigWithMarkerFlags,
-      ],
-    },
+        advancedAccordionConfigWithMarkerFlags
+      ]
+    }
   ],
   // reference for packages
   loopCharacteristicsHandler,
-  loopCharacteristicsData,
+  loopCharacteristicsData
 };
 
 function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
@@ -84,10 +86,10 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
     return;
   }
 
-  const currentIsForCompensationValue = node.definition.get('isForCompensation');
+  const currentIsForCompensationValue = node.definition.get("isForCompensation");
   const newIsForCompensationValue = markerFlags.isForCompensation;
 
   if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
-    setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+    setNodeProp(node, "isForCompensation", newIsForCompensationValue);
   }
 }

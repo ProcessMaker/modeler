@@ -1,15 +1,9 @@
-import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
-import {
-  loopCharacteristicsHandler,
+import loopCharacteristicsInspector, {
   loopCharacteristicsData,
-} from '@/components/inspectors/LoopCharacteristics';
+  loopCharacteristicsHandler
+} from "@/components/inspectors/LoopCharacteristics";
 
-const validTasks = [
-  'bpmn:ServiceTask',
-  'bpmn:ManualTask',
-  'bpmn:CallActivity',
-  'bpmn:ScriptTask',
-];
+const validTasks = ["bpmn:ServiceTask", "bpmn:ManualTask", "bpmn:CallActivity", "bpmn:ScriptTask"];
 
 export default (node) => {
   if (validTasks.indexOf(node.bpmnType) === -1) {
@@ -20,7 +14,7 @@ export default (node) => {
   node.inspectorConfig[0].items.splice(node.loopInspectorIndex || 1, 0, loopCharacteristicsInspector);
 
   // Get any original handlers defined by the node
-  const originalInspectorHandler = node.inspectorHandler || function() {};
+  const originalInspectorHandler = node.inspectorHandler || function () {};
   const originalInspectorData = node.inspectorData || null;
 
   // Override the inspector handler to add loop props
@@ -32,9 +26,7 @@ export default (node) => {
 
   // Override the data handler to load loop config into the inspector
   node.inspectorData = (node, defaultDataTransform, inspector) => {
-    const inspectorData = originalInspectorData ? 
-      originalInspectorData(node, defaultDataTransform, inspector) : 
-      defaultDataTransform(node);
+    const inspectorData = originalInspectorData ? originalInspectorData(node, defaultDataTransform, inspector) : defaultDataTransform(node);
 
     loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
     return inspectorData;

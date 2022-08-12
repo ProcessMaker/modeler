@@ -1,12 +1,12 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import flatten from 'lodash/flatten';
-import uniq from 'lodash/uniq';
+import Vue from "vue";
+import Vuex from "vuex";
+import flatten from "lodash/flatten";
+import uniq from "lodash/uniq";
 
 Vue.use(Vuex);
 
 function setDefinitionPropertyReactive(definition, key, value) {
-  if (definition.hasOwnProperty(key)) {
+  if (Object.prototype.hasOwnProperty.call(definition, key)) {
     definition.set(key, value);
     return;
   }
@@ -16,13 +16,16 @@ function setDefinitionPropertyReactive(definition, key, value) {
 }
 
 function removeRef(state, ref, callBack) {
-  state.nodes.filter(({ definition }) => (
-    definition.$type === 'bpmn:IntermediateCatchEvent' ||
-    definition.$type === 'bpmn:StartEvent'
-  )
-    && definition.eventDefinitions && definition.eventDefinitions.some(callBack)).forEach(({ definition }) => {
-    definition.eventDefinitions[0][ref] = null;
-  });
+  state.nodes
+    .filter(
+      ({ definition }) =>
+        (definition.$type === "bpmn:IntermediateCatchEvent" || definition.$type === "bpmn:StartEvent") &&
+        definition.eventDefinitions &&
+        definition.eventDefinitions.some(callBack)
+    )
+    .forEach(({ definition }) => {
+      definition.eventDefinitions[0][ref] = null;
+    });
 }
 
 export default new Vuex.Store({
@@ -34,24 +37,19 @@ export default new Vuex.Store({
     rootElements: [],
     autoValidate: false,
     globalProcesses: [],
-    allowSavingElementPosition: true,
+    allowSavingElementPosition: true
   },
   getters: {
-    nodes: state => state.nodes,
-    highlightedNodes: state => state.highlightedNodes,
-    nodeShape: state => node => {
-      return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
-    },
-    highlightedShapes: (state, getters) => {
-      return getters.highlightedNodes
-        .filter(node => node.type !== 'processmaker-modeler-process')
-        .map(getters.nodeShape);
-    },
-    rootElements: state => state.rootElements,
-    autoValidate: state => state.autoValidate,
-    globalProcesses: state => state.globalProcesses,
-    globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
-    allowSavingElementPosition: state => state.allowSavingElementPosition,
+    nodes: (state) => state.nodes,
+    highlightedNodes: (state) => state.highlightedNodes,
+    nodeShape: (state) => (node) => state.graph.getCells().find((cell) => cell.component && cell.component.node === node),
+    highlightedShapes: (state, getters) =>
+      getters.highlightedNodes.filter((node) => node.type !== "processmaker-modeler-process").map(getters.nodeShape),
+    rootElements: (state) => state.rootElements,
+    autoValidate: (state) => state.autoValidate,
+    globalProcesses: (state) => state.globalProcesses,
+    globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map((process) => process.events)),
+    allowSavingElementPosition: (state) => state.allowSavingElementPosition
   },
   mutations: {
     preventSavingElementPosition(state) {
@@ -68,7 +66,7 @@ export default new Vuex.Store({
     },
     updateNodeBounds(state, { node, bounds }) {
       Object.entries(bounds).forEach(([key, val]) => {
-        if (key === '$type') {
+        if (key === "$type") {
           return;
         }
 
@@ -76,8 +74,8 @@ export default new Vuex.Store({
       });
     },
     updateNodeProp(state, { node, key, value }) {
-      if (key == 'id' && node.definition.id !== value) {
-        if (state.nodes.some(node => node.definition.id === value)) {
+      if (key === "id" && node.definition.id !== value) {
+        if (state.nodes.some((nodee) => nodee.definition.id === value)) {
           return;
         }
       }
@@ -101,7 +99,8 @@ export default new Vuex.Store({
        * (used in v-for when rendering the node). Relying on the
        * definition ID will cause issues as the user can change the
        * ID of elements. */
-      node._modelerId = '_modelerId_' + node.definition.get('id');
+      // eslint-disable-next-line no-underscore-dangle
+      node._modelerId = `_modelerId_${node.definition.get("id")}`;
 
       state.nodes.push(node);
     },
@@ -113,10 +112,10 @@ export default new Vuex.Store({
       }
     },
     removeMessageRef(state, message) {
-      removeRef(state, 'messageRef', ({ messageRef }) => messageRef === message);
+      removeRef(state, "messageRef", ({ messageRef }) => messageRef === message);
     },
     removeSignalRef(state, signal) {
-      removeRef(state, 'signalRef', ({ signalRef }) => signalRef === signal);
+      removeRef(state, "signalRef", ({ signalRef }) => signalRef === signal);
     },
     setGraph(state, graph) {
       state.graph = graph;
@@ -126,24 +125,24 @@ export default new Vuex.Store({
     },
     setGlobalProcesses(state, globalProcesses) {
       state.globalProcesses = globalProcesses;
-    },
+    }
   },
   actions: {
     async fetchGlobalProcesses({ commit }) {
       try {
-        const { data } = await window.ProcessMaker.apiClient.get('processes', {
+        const { data } = await window.ProcessMaker.apiClient.get("processes", {
           params: {
-            order_direction: 'asc',
+            order_direction: "asc",
             per_page: 1000,
-            status: 'all',
-            include: 'events,category',
-          },
+            status: "all",
+            include: "events,category"
+          }
         });
-        commit('setGlobalProcesses', data.data);
+        commit("setGlobalProcesses", data.data);
         window.ProcessMaker.globalProcesses = data.data;
       } catch (error) {
         /* Ignore error */
       }
-    },
-  },
+    }
+  }
 });

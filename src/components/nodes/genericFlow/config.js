@@ -1,1 +1,1 @@
-export const id = 'processmaker-modeler-generic-flow';
+export const id = "processmaker-modeler-generic-flow";

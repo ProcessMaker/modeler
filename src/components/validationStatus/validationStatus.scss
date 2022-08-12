@@ -9,49 +9,49 @@ $status-bar-color: #555555;
 $status-bar-font-size: 0.875rem;
 
 .status-bar-container {
-  color: $primary-grey;
-  height: $status-bar-container-height;
+	color: $primary-grey;
+	height: $status-bar-container-height;
 
-  &__status {
-    cursor: pointer;
-  }
+	&__status {
+		cursor: pointer;
+	}
 }
 
 .statusbar {
-  background-color: $status-bar-bg-color;
-  font-size: $status-bar-font-size;
-  color: $status-bar-color;
-  user-select: none;
+	background-color: $status-bar-bg-color;
+	font-size: $status-bar-font-size;
+	color: $status-bar-color;
+	user-select: none;
 }
 
 .divider {
-  height: 1.25rem;
-  width: 2px;
-  background: $divider-color;
-  margin: 0 1rem;
+	height: 1.25rem;
+	width: 2px;
+	background: $divider-color;
+	margin: 0 1rem;
 }
 
 .validation-container {
-  z-index: 2;
-  cursor: default;
-  bottom: 0;
-  right: 0;
-  height: $validation-container-height;
-  width: $validation-container-width;
-  background-color: $validation-panel-background-color;
-  overflow: auto;
-  margin-bottom: 3rem;
-  border: 1px solid $border-color;
-  border-radius: 0.25rem;
-  border-right: none;
-  user-select: text;
+	z-index: 2;
+	cursor: default;
+	bottom: 0;
+	right: 0;
+	height: $validation-container-height;
+	width: $validation-container-width;
+	background-color: $validation-panel-background-color;
+	overflow: auto;
+	margin-bottom: 3rem;
+	border: 1px solid $border-color;
+	border-radius: 0.25rem;
+	border-right: none;
+	user-select: text;
 
-  &__list {
-    padding: 0.5rem;
-    word-wrap: break-word;
+	&__list {
+		padding: 0.5rem;
+		word-wrap: break-word;
 
-    &--message {
-      width: $message-container-width;
-    }
-  }
+		&--message {
+			width: $message-container-width;
+		}
+	}
 }

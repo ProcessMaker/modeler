@@ -1,31 +1,31 @@
-import component from './exclusiveGateway.vue';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
-import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-import defaultNames from '@/components/nodes/gateway/defaultNames';
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
+import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import defaultNames from "@/components/nodes/gateway/defaultNames";
+import component from "./exclusiveGateway.vue";
 
-const id = 'processmaker-modeler-exclusive-gateway';
+const id = "processmaker-modeler-exclusive-gateway";
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:ExclusiveGateway',
+  bpmnType: "bpmn:ExclusiveGateway",
   control: true,
-  category: 'BPMN',
-  icon: require('@/assets/toolpanel/generic-gateway.svg'),
-  label: 'Gateway',
+  category: "BPMN",
+  icon: require("@/assets/toolpanel/generic-gateway.svg"),
+  label: "Gateway",
   rank: 50,
   definition(moddle, $t) {
-    return moddle.create('bpmn:ExclusiveGateway', {
-      name: $t(defaultNames[id]),
+    return moddle.create("bpmn:ExclusiveGateway", {
+      name: $t(defaultNames[id])
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36,
-      }),
+        width: 36
+      })
     });
   },
   inspectorConfig: [
@@ -33,24 +33,24 @@ export default {
       name: defaultNames[id],
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-exlcusive-gateway',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-exlcusive-gateway"
           },
           items: [
             {
-              component: 'FormInput',
-              config: nameConfigSettings,
-            },
-          ],
+              component: "FormInput",
+              config: nameConfigSettings
+            }
+          ]
         },
         documentationAccordionConfig,
-        advancedAccordionConfig,
-      ],
-    },
-  ],
+        advancedAccordionConfig
+      ]
+    }
+  ]
 };

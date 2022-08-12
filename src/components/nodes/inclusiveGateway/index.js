@@ -1,31 +1,31 @@
-import component from './inclusiveGateway.vue';
-import { gatewayDirection } from '../gateway/gatewayConfig';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import DocumentationFormTextArea from '@/components/inspectors/DocumentationFormTextArea';
-import defaultNames from '@/components/nodes/gateway/defaultNames';
+import idConfigSettings from "@/components/inspectors/idConfigSettings";
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import DocumentationFormTextArea from "@/components/inspectors/DocumentationFormTextArea";
+import defaultNames from "@/components/nodes/gateway/defaultNames";
+import { gatewayDirection } from "../gateway/gatewayConfig";
+import component from "./inclusiveGateway.vue";
 
-const id = 'processmaker-modeler-inclusive-gateway';
+const id = "processmaker-modeler-inclusive-gateway";
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:InclusiveGateway',
+  bpmnType: "bpmn:InclusiveGateway",
   control: false,
-  category: 'BPMN',
+  category: "BPMN",
   label: defaultNames[id],
   definition(moddle, $t) {
-    return moddle.create('bpmn:InclusiveGateway', {
+    return moddle.create("bpmn:InclusiveGateway", {
       name: $t(defaultNames[id]),
-      gatewayDirection: gatewayDirection.diverging,
+      gatewayDirection: gatewayDirection.diverging
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36,
-      }),
+        width: 36
+      })
     });
   },
   inspectorConfig: [
@@ -33,57 +33,57 @@ export default {
       name: defaultNames[id],
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-inclusive-gateway-config',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-inclusive-gateway-config"
           },
           items: [
             {
-              component: 'FormInput',
-              config: nameConfigSettings,
-            },
-          ],
+              component: "FormInput",
+              config: nameConfigSettings
+            }
+          ]
         },
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion-inclusive-gateway-advanced',
+            label: "Advanced",
+            icon: "cogs",
+            name: "inspector-accordion-inclusive-gateway-advanced"
           },
           items: [
             {
-              component: 'FormInput',
-              config: idConfigSettings,
+              component: "FormInput",
+              config: idConfigSettings
             },
             {
-              component: 'FormSelect',
+              component: "FormSelect",
               config: {
-                label: 'Direction',
-                helper: 'Select the direction of workflow for this element',
-                name: 'gatewayDirection',
+                label: "Direction",
+                helper: "Select the direction of workflow for this element",
+                name: "gatewayDirection",
                 options: [
-                  { value: gatewayDirection.diverging, content: 'Diverging' },
-                  { value: gatewayDirection.converging, content: 'Converging' },
-                ],
-              },
+                  { value: gatewayDirection.diverging, content: "Diverging" },
+                  { value: gatewayDirection.converging, content: "Converging" }
+                ]
+              }
             },
             {
               component: DocumentationFormTextArea,
               config: {
-                label: 'Description',
-                name: 'documentation',
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
+                label: "Description",
+                name: "documentation"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };

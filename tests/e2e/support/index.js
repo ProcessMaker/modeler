@@ -14,10 +14,10 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
-import '@cypress/code-coverage/support';
-import { dragFromSourceToDest, waitToRenderAllShapes } from './utils';
-import { nodeTypes } from './constants';
+import "./commands";
+import "@cypress/code-coverage/support";
+import { dragFromSourceToDest, waitToRenderAllShapes } from "./utils";
+import { nodeTypes } from "./constants";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -26,13 +26,13 @@ import { nodeTypes } from './constants';
 Cypress.Screenshot.defaults({ screenshotOnRunFailure: false });
 
 Cypress.Cookies.defaults({
-  preserve: ['processmaker_session', /remember_web_.*/],
+  preserve: ["processmaker_session", /remember_web_.*/],
 });
 
-Cypress.on('scrolled', $el => {
+Cypress.on("scrolled", ($el) => {
   $el.get(0).scrollIntoView({
-    block: 'center',
-    inline: 'center',
+    block: "center",
+    inline: "center",
   });
 });
 
@@ -40,7 +40,7 @@ beforeEach(() => {
   cy.loadModeler();
   dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
   waitToRenderAllShapes();
-  cy.get('.paper-container').click();
+  cy.get(".paper-container").click();
 });
 
-require('./printLogsToTerminal');
+require("./printLogsToTerminal");

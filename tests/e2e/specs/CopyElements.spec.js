@@ -6,16 +6,16 @@ import {
   getElementAtPosition,
   typeIntoTextInput,
   waitToRenderAllShapes,
-} from '../support/utils';
-import { nodeTypes } from '../support/constants';
+} from "../support/utils";
+import { nodeTypes } from "../support/constants";
 
-describe('Copy element', () => {
-  it('should copy start events', () => {
+describe("Copy element", () => {
+  it("should copy start events", () => {
     const startEventPosition = { x: 150, y: 150 };
 
     getElementAtPosition(startEventPosition).click();
-    cy.get('[data-test=copy-button]').click();
-    cy.get('[data-test=copy-button]').click();
+    cy.get("[data-test=copy-button]").click();
+    cy.get("[data-test=copy-button]").click();
 
     const processWithTwoStartEventCopies = `
       <?xml version="1.0" encoding="UTF-8"?>
@@ -44,19 +44,19 @@ describe('Copy element', () => {
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
   });
 
-  it('should copy tasks', () => {
+  it("should copy tasks", () => {
     const taskPosition = { x: 250, y: 250 };
 
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).click();
 
-    typeIntoTextInput('[name=name]', 'Test Name');
-    typeIntoTextInput('[name=dueIn]', 45);
-    cy.get('[name = assignedUsers]').select('John Smith');
+    typeIntoTextInput("[name=name]", "Test Name");
+    typeIntoTextInput("[name=dueIn]", 45);
+    cy.get("[name = assignedUsers]").select("John Smith");
 
-    cy.get('[data-test=copy-button]').click();
-    cy.get('[data-test=copy-button]').click();
+    cy.get("[data-test=copy-button]").click();
+    cy.get("[data-test=copy-button]").click();
 
     const processWithTwoStartEventCopies = `
       <bpmn:startEvent id="node_1" name="Start Event" />
@@ -68,13 +68,13 @@ describe('Copy element', () => {
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
   });
 
-  it('copies error on Error End Event', () => {
+  it("copies error on Error End Event", () => {
     const errorEndEventPosition = { x: 250, y: 250 };
 
-    addNodeTypeToPaper(errorEndEventPosition, nodeTypes.endEvent, 'switch-to-error-end-event');
+    addNodeTypeToPaper(errorEndEventPosition, nodeTypes.endEvent, "switch-to-error-end-event");
     waitToRenderAllShapes();
 
-    cy.get('[data-test=copy-button]').click();
+    cy.get("[data-test=copy-button]").click();
     waitToRenderAllShapes();
 
     const process = `
@@ -92,21 +92,20 @@ describe('Copy element', () => {
     `;
 
     assertDownloadedXmlContainsExpected(process);
-
   });
 
-  it('copies message on Message Event', () => {
+  it("copies message on Message Event", () => {
     const messageEndEventPosition = { x: 250, y: 250 };
-    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, "switch-to-message-end-event");
     waitToRenderAllShapes();
 
-    cy.get('[data-test=copy-button]').click();
+    cy.get("[data-test=copy-button]").click();
     waitToRenderAllShapes();
 
     const intermediateMessageThrowEventPosition = { x: 250, y: 450 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
-    cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
-    cy.get('[data-test=copy-button]').click();
+    cy.get("[data-test=switch-to-intermediate-message-throw-event]").click();
+    cy.get("[data-test=copy-button]").click();
     waitToRenderAllShapes();
 
     const process = `
@@ -132,10 +131,9 @@ describe('Copy element', () => {
     `;
 
     assertDownloadedXmlContainsExpected(process);
-
   });
 
-  it('only creates a single new node on copy if you have multiple pools', () => {
+  it("only creates a single new node on copy if you have multiple pools", () => {
     const firstPoolPosition = { x: 100, y: 150 };
     const secondPoolPosition = { x: 100, y: 450 };
 
@@ -143,12 +141,16 @@ describe('Copy element', () => {
     waitToRenderAllShapes();
     dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
 
-    const taskInSecondPoolPosition = {x: 150, y: 500};
+    const taskInSecondPoolPosition = { x: 150, y: 500 };
     dragFromSourceToDest(nodeTypes.task, taskInSecondPoolPosition);
 
     cy.get('[data-test="copy-button"]').click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes('<bpmn:task', 2, 'Expect exactly two tasks after copying one');
+    assertDownloadedXmlContainsSubstringNTimes(
+      "<bpmn:task",
+      2,
+      "Expect exactly two tasks after copying one",
+    );
   });
 });

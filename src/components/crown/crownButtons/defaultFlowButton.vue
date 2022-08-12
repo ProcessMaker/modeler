@@ -1,8 +1,8 @@
 <template>
   <crown-button
     v-if="node.canBeDefaultFlow()"
-    :title="$t('Set as Default Flow')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
+    :title="$t('Set as Default Flow')"
     aria-label="Default Flow"
     data-test="default-flow"
     role="menuitem"
@@ -12,21 +12,21 @@
 </template>
 
 <script>
-import CrownButton from '@/components/crown/crownButtons/crownButton';
-import icon from '@/assets/default-flow.svg';
+import CrownButton from "@/components/crown/crownButtons/crownButton";
+import icon from "@/assets/default-flow.svg";
 
 export default {
   components: { CrownButton },
-  props: ['node'],
+  props: ["node"],
   data() {
     return {
-      icon,
+      icon
     };
   },
   methods: {
     click() {
-      this.$emit('default-flow', this.node);
-    },
-  },
+      this.$emit("default-flow", this.node);
+    }
+  }
 };
 </script>

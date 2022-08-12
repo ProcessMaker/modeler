@@ -1,22 +1,22 @@
-import DocumentationFormTextArea from './DocumentationFormTextArea';
+import DocumentationFormTextArea from "./DocumentationFormTextArea";
 
 export default {
-  component: 'FormAccordion',
+  component: "FormAccordion",
   container: true,
   config: {
     initiallyOpen: false,
-    label: 'Documentation',
-    icon: 'book',
-    name: 'documentation-accordion',
+    label: "Documentation",
+    icon: "book",
+    name: "documentation-accordion"
   },
   items: [
     {
       component: DocumentationFormTextArea,
       config: {
-        label: 'Description',
-        name: 'documentation',
-        helper: '',
-      },
-    },
-  ],
+        label: "Description",
+        name: "documentation",
+        helper: ""
+      }
+    }
+  ]
 };

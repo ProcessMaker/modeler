@@ -1,7 +1,8 @@
 export default class NodeIdGenerator {
-  static prefix = 'node_';
+  static prefix = "node_";
 
   #counter = 1;
+
   #diagramCounter = 1;
 
   constructor(definitions) {
@@ -13,11 +14,11 @@ export default class NodeIdGenerator {
     let found;
     if (root instanceof Array) {
       walked.push(root);
-      root.find(item => found = this.findById(id, item, walked));
+      root.find((item) => (found = this.findById(id, item, walked)));
     } else if (root instanceof Object && root.$type) {
       walked.push(root);
       if (root.id === id) return root;
-      Object.getOwnPropertyNames(root).find(key => found = !(root[key] instanceof Function) && this.findById(id, root[key], walked));
+      Object.getOwnPropertyNames(root).find((key) => (found = !(root[key] instanceof Function) && this.findById(id, root[key], walked)));
     }
     return found;
   }
@@ -45,17 +46,13 @@ export default class NodeIdGenerator {
   };
 
   #generateDiagramId = () => {
-    const id = NodeIdGenerator.prefix + this.#diagramCounter + '_di';
+    const id = `${NodeIdGenerator.prefix + this.#diagramCounter}_di`;
     this.#diagramCounter++;
 
     return id;
   };
 
-  #isDefinitionIdUnique = id => {
-    return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
-  };
+  #isDefinitionIdUnique = (id) => !this.findById(id) && !this.findById(id, this.definitions.diagrams);
 
-  #isDiagramIdUnique = id => {
-    return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
-  };
+  #isDiagramIdUnique = (id) => !this.findById(id) && !this.findById(id, this.definitions.diagrams);
 }

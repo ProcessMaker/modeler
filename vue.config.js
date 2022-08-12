@@ -1,9 +1,9 @@
-const path = require('path');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const yargs = require('yargs');
-const CopyPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const yargs = require("yargs");
+const CopyPlugin = require("copy-webpack-plugin");
 // eslint-disable-next-line no-unused-vars
-const CircularDependencyPlugin = require('circular-dependency-plugin');
+const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = {
   runtimeCompiler: true,
@@ -18,61 +18,58 @@ module.exports = {
       },
     },
   },
-  transpileDependencies: ['bpmnlint'],
+  transpileDependencies: ["bpmnlint"],
   configureWebpack: {
     resolve: {
-      modules: [
-        path.resolve(__dirname, 'node_modules'),
-        'node_modules',
-      ],
+      modules: [path.resolve(__dirname, "node_modules"), "node_modules"],
       symlinks: false,
       alias: {
-        jointjs$: process.env.NODE_ENV === 'development'
-          ? 'jointjs/dist/joint.js'
-          : 'jointjs',
+        jointjs$: process.env.NODE_ENV === "development" ? "jointjs/dist/joint.js" : "jointjs",
       },
     },
     module: {
       rules: [
         {
           test: /\.bpmnlintrc$/,
-          use: 'bpmnlint-loader',
+          use: "bpmnlint-loader",
         },
       ],
     },
     externals: (() => {
       const externals = [];
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV === "production") {
         externals.push(
-          'vue',
+          "vue",
           /^bootstrap\/.+$/,
           /^@processmaker\/(?!processmaker-bpmn-moddle).+$/,
           /^@fortawesome\/.+$/,
-          'jointjs',
-          'i18next',
-          '@panter/vue-i18next',
-          'luxon',
-          'lodash',
-          'bpmn-moddle',
+          "jointjs",
+          "i18next",
+          "@panter/vue-i18next",
+          "luxon",
+          "lodash",
+          "bpmn-moddle",
         );
       }
       return externals;
     })(),
     plugins: (() => {
-      const argv = yargs
-        .boolean('analyze')
-        .argv;
+      const { argv } = yargs.boolean("analyze");
       const plugins = [];
       if (argv.analyze) {
         plugins.push(new BundleAnalyzerPlugin());
       }
 
       /* copy files required for dynamic import of rich text editor */
-      plugins.push(new CopyPlugin([{
-        from: path.resolve(__dirname, 'node_modules/@processmaker/vue-form-elements/dist'),
-        to: path.resolve(__dirname, 'public/js'),
-        ignore: ['demo.html'],
-      }]));
+      plugins.push(
+        new CopyPlugin([
+          {
+            from: path.resolve(__dirname, "node_modules/@processmaker/vue-form-elements/dist"),
+            to: path.resolve(__dirname, "public/js"),
+            ignore: ["demo.html"],
+          },
+        ]),
+      );
 
       /* use this plugin to find issues related to circular dependencies */
       // plugins.push(new CircularDependencyPlugin({

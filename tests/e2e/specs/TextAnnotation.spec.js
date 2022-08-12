@@ -4,32 +4,32 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   typeIntoTextInput,
-} from '../support/utils';
+} from "../support/utils";
 
-import { nodeTypes } from '../support/constants';
-import { baseNodeColors } from '../../../src/components/nodeColors';
+import { nodeTypes } from "../support/constants";
+import { baseNodeColors } from "../../../src/components/nodeColors";
 
-describe('Text Annotation', () => {
-  it('Update text annotation name', () => {
-    const testString = 'testing';
+describe("Text Annotation", () => {
+  it("Update text annotation name", () => {
+    const testString = "testing";
 
     const textAnnotationPosition = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
 
     getElementAtPosition(textAnnotationPosition).click();
 
-    typeIntoTextInput('[name=text]', testString);
-    cy.get('[name=text]').should('have.value', testString);
+    typeIntoTextInput("[name=text]", testString);
+    cy.get("[name=text]").should("have.value", testString);
   });
 
-  it('should be able to add a text annotation outside of a pool', () => {
+  it("should be able to add a text annotation outside of a pool", () => {
     const poolPosition = { x: 250, y: 200 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
 
     const textAnnotationPosition = { x: 400, y: 50 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
 
-    connectNodesWithFlow('association-flow-button', textAnnotationPosition, poolPosition);
+    connectNodesWithFlow("association-flow-button", textAnnotationPosition, poolPosition);
 
     const expectedXML = `<bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="node_1" name="Start Event" />
@@ -42,7 +42,7 @@ describe('Text Annotation', () => {
     assertDownloadedXmlContainsExpected(expectedXML);
   });
 
-  it('keeps custom color when updating node text', () => {
+  it("keeps custom color when updating node text", () => {
     const colorToSelect = baseNodeColors[0];
     const textAnnotationPosition = { x: 400, y: 100 };
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
@@ -50,9 +50,10 @@ describe('Text Annotation', () => {
     getElementAtPosition(textAnnotationPosition).click();
     cy.get('[data-test="picker-dropdown-button"]').click();
     cy.get(`[data-test="${colorToSelect}"]`).click();
-    typeIntoTextInput('[name=text]', 'new text');
+    typeIntoTextInput("[name=text]", "new text");
 
-    const annotationTextSelector = '.main-paper [data-type="textAnnotation"] [joint-selector="label"]';
-    cy.get(annotationTextSelector).should('have.attr', 'fill', colorToSelect);
+    const annotationTextSelector =
+      '.main-paper [data-type="textAnnotation"] [joint-selector="label"]';
+    cy.get(annotationTextSelector).should("have.attr", "fill", colorToSelect);
   });
 });

@@ -1,7 +1,7 @@
 <script>
-import TaskComponent from '@/components/nodes/task/task';
-import manualIcon from '!!svg-inline-loader!@/assets/manual-task.svg';
-import updateIconColor from '@/mixins/updateIconColor';
+import TaskComponent from "@/components/nodes/task/task";
+import manualIcon from "!!svg-inline-loader!@/assets/manual-task.svg";
+import updateIconColor from "@/mixins/updateIconColor";
 
 export default {
   extends: TaskComponent,
@@ -9,8 +9,8 @@ export default {
   data() {
     return {
       nodeIcon: manualIcon,
-      iconName: '',
+      iconName: ""
     };
-  },
+  }
 };
 </script>

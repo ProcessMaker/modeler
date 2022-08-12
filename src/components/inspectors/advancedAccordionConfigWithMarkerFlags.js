@@ -1,29 +1,29 @@
-import idConfigSettings from './idConfigSettings';
-import MarkerFlags from '@/components/inspectors/MarkerFlags';
-import NodeIdentifierInput from './NodeIdentifierInput';
+import MarkerFlags from "@/components/inspectors/MarkerFlags";
+import idConfigSettings from "./idConfigSettings";
+import NodeIdentifierInput from "./NodeIdentifierInput";
 
 export default {
-  component: 'FormAccordion',
+  component: "FormAccordion",
   container: true,
   config: {
     initiallyOpen: false,
-    label: 'Advanced',
-    icon: 'cogs',
-    name: 'advanced-accordion',
+    label: "Advanced",
+    icon: "cogs",
+    name: "advanced-accordion"
   },
   items: [
     {
       component: NodeIdentifierInput,
-      config: idConfigSettings,
+      config: idConfigSettings
     },
     {
       component: MarkerFlags,
-      name: 'taskMarkers',
+      name: "taskMarkers",
       config: {
-        label: 'Marker Flags',
-        name: 'markerFlags',
-        style: 'display:none',
-      },
-    },
-  ],
+        label: "Marker Flags",
+        name: "markerFlags",
+        style: "display:none"
+      }
+    }
+  ]
 };

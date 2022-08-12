@@ -1,12 +1,12 @@
-import component from './signalStartEvent.vue';
-import merge from 'lodash/merge';
-import cloneDeep from 'lodash/cloneDeep';
-import requestVariableSettings from '@/components/inspectors/requestVariableSettings';
-import baseStartEventConfig from '../baseStartEvent';
-import { default as signalEventDefinition, signalSelector } from '../signalEventDefinition';
-import defaultNames from '@/components/nodes/baseStartEvent/defaultNames';
+import merge from "lodash/merge";
+import cloneDeep from "lodash/cloneDeep";
+import requestVariableSettings from "@/components/inspectors/requestVariableSettings";
+import defaultNames from "@/components/nodes/baseStartEvent/defaultNames";
+import baseStartEventConfig from "../baseStartEvent";
+import { default as signalEventDefinition, signalSelector } from "../signalEventDefinition";
+import component from "./signalStartEvent.vue";
 
-const id = 'processmaker-modeler-signal-start-event';
+const id = "processmaker-modeler-signal-start-event";
 
 export default merge(cloneDeep(baseStartEventConfig), {
   ...signalEventDefinition,
@@ -14,11 +14,9 @@ export default merge(cloneDeep(baseStartEventConfig), {
   component,
   label: defaultNames[id],
   definition(moddle, $t) {
-    return moddle.create('bpmn:StartEvent', {
+    return moddle.create("bpmn:StartEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [
-        moddle.create('bpmn:SignalEventDefinition'),
-      ],
+      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")]
     });
   },
   inspectorConfig: [
@@ -27,14 +25,14 @@ export default merge(cloneDeep(baseStartEventConfig), {
         {
           items: [
             {},
-            signalSelector('Signal that will trigger this start event', false),
+            signalSelector("Signal that will trigger this start event", false),
             {
-              component: 'FormInput',
-              config: requestVariableSettings,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+              component: "FormInput",
+              config: requestVariableSettings
+            }
+          ]
+        }
+      ]
+    }
+  ]
 });

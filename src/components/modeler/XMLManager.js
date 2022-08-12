@@ -1,8 +1,9 @@
-import runningInCypressTest from '@/runningInCypressTest';
-import FilerSaver from 'file-saver';
+import runningInCypressTest from "@/runningInCypressTest";
+import FilerSaver from "file-saver";
 
 export default class XMLManager {
   #moddle;
+
   #definitions;
 
   constructor(moddle) {
@@ -20,8 +21,8 @@ export default class XMLManager {
           reject(err);
         }
 
-        definitions.exporter = 'ProcessMaker Modeler';
-        definitions.exporterVersion = '1.0';
+        definitions.exporter = "ProcessMaker Modeler";
+        definitions.exporterVersion = "1.0";
 
         // Clean broken references when loading definitions
         this.cleanBrokenReferences(definitions);
@@ -36,10 +37,10 @@ export default class XMLManager {
     const removed = [];
 
     // Remove broken bpmn:SequenceFlow from bpmn:Process
-    rootElements.forEach(element => {
-      if (element.$type === 'bpmn:Process' && element.flowElements) {
-        element.flowElements = element.flowElements.filter(child => {
-          if (child.$type === 'bpmn:SequenceFlow') {
+    rootElements.forEach((element) => {
+      if (element.$type === "bpmn:Process" && element.flowElements) {
+        element.flowElements = element.flowElements.filter((child) => {
+          if (child.$type === "bpmn:SequenceFlow") {
             if (!(child.sourceRef && child.targetRef)) {
               removed.push(child);
             }
@@ -48,15 +49,15 @@ export default class XMLManager {
           return true;
         });
       }
-      if (element.$type === 'bpmn:Process' && element.laneSets) {
-        element.laneSets.forEach(laneSet => {
-          laneSet.lanes = laneSet.lanes.filter(node => {
+      if (element.$type === "bpmn:Process" && element.laneSets) {
+        element.laneSets.forEach((laneSet) => {
+          laneSet.lanes = laneSet.lanes.filter((node) => {
             if (!definitions.diagrams) {
               return false;
             }
-            const laneHasShape = definitions.diagrams.find(diagram => diagram.plane.planeElement.find(shape => {
-              return shape && shape.bpmnElement.id === node.id;
-            }));
+            const laneHasShape = definitions.diagrams.find((diagram) =>
+              diagram.plane.planeElement.find((shape) => shape && shape.bpmnElement.id === node.id)
+            );
             return laneHasShape;
           });
         });
@@ -64,10 +65,10 @@ export default class XMLManager {
     });
 
     // Remove BPMNEdge from bpmndi:BPMNDiagram
-    diagrams.forEach(element => {
-      if (element.$type === 'bpmndi:BPMNDiagram' && element.plane && element.plane.planeElement) {
-        element.plane.planeElement = element.plane.planeElement.filter(child => {
-          if (child.$type === 'bpmndi:BPMNEdge') {
+    diagrams.forEach((element) => {
+      if (element.$type === "bpmndi:BPMNDiagram" && element.plane && element.plane.planeElement) {
+        element.plane.planeElement = element.plane.planeElement.filter((child) => {
+          if (child.$type === "bpmndi:BPMNEdge") {
             return child.bpmnElement && !removed.includes(child.bpmnElement);
           }
           return true;
@@ -91,7 +92,7 @@ export default class XMLManager {
           return;
         }
 
-        const file = new File([xml], 'bpmnProcess.xml', { type: 'text/xml' });
+        const file = new File([xml], "bpmnProcess.xml", { type: "text/xml" });
         FilerSaver.saveAs(file);
       }
     });

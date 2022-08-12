@@ -4,14 +4,14 @@ import {
   assertDownloadedXmlContainsSubstringNTimes,
   getElementAtPosition,
   waitToRenderAllShapes,
-} from '../support/utils';
-import { nodeTypes } from '../support/constants';
+} from "../support/utils";
+import { nodeTypes } from "../support/constants";
 
 const messageEndEventPosition = { x: 300, y: 200 };
 
-describe('Message End Event', () => {
-  it('can render a message end event', () => {
-    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+describe("Message End Event", () => {
+  it("can render a message end event", () => {
+    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, "switch-to-message-end-event");
     waitToRenderAllShapes();
 
     getElementAtPosition(messageEndEventPosition).click();
@@ -23,14 +23,18 @@ describe('Message End Event', () => {
     `);
   });
 
-  it('should not create duplicate messages on undo/redo', () => {
-    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
+  it("should not create duplicate messages on undo/redo", () => {
+    addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, "switch-to-message-end-event");
 
-    cy.get('[data-test=undo]').click();
+    cy.get("[data-test=undo]").click();
     waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click();
+    cy.get("[data-test=redo]").click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'There should only be one message element found');
+    assertDownloadedXmlContainsSubstringNTimes(
+      '<bpmn:message id=".*?" name=".*?" />',
+      1,
+      "There should only be one message element found",
+    );
   });
 });

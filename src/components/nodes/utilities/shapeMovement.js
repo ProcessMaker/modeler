@@ -5,19 +5,16 @@ import {
   shapeCenterY,
   shapeLeft,
   shapeRight,
-  shapeTop,
-} from '@/components/nodes/utilities/shapeMetrics';
-import { shapeTypes } from '../../../../tests/e2e/support/constants';
+  shapeTop
+} from "@/components/nodes/utilities/shapeMetrics";
+import { shapeTypes } from "../../../../tests/e2e/support/constants";
 
-const PROGRAMMATICALLY_IMMOVABLE_SHAPES = [
-  shapeTypes.boundaryEvent,
-  shapeTypes.poolLane,
-];
+const PROGRAMMATICALLY_IMMOVABLE_SHAPES = [shapeTypes.boundaryEvent, shapeTypes.poolLane];
 
 /**
  * Shapes we can safely call translate() on.
  */
-export const canMoveProgrammatically = (shape) => !PROGRAMMATICALLY_IMMOVABLE_SHAPES.includes(shape.get('type'));
+export const canMoveProgrammatically = (shape) => !PROGRAMMATICALLY_IMMOVABLE_SHAPES.includes(shape.get("type"));
 
 /**
  * Things like flow lines can still be moved programmatically (e.g. with
@@ -56,4 +53,3 @@ export function moveShapeTopTo(shape, Y) {
   const dy = Y - shapeTop(shape);
   shape.translate(0, dy);
 }
-

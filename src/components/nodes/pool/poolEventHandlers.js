@@ -1,7 +1,7 @@
-import { id as laneId } from '@/components/nodes/poolLane/config';
-import { id as poolId } from '@/components/nodes/pool/config';
-import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
-import store from '@/store';
+import { id as laneId } from "@/components/nodes/poolLane/config";
+import { id as poolId } from "@/components/nodes/pool/config";
+import { defaultNodeColor, invalidNodeColor, poolColor } from "@/components/nodeColors";
+import store from "@/store";
 
 export default class PoolEventHandlers {
   constructor(graph, paper, paperManager, shape, component) {
@@ -18,9 +18,13 @@ export default class PoolEventHandlers {
   }
 
   isNotPoolChild(model) {
-    return !(model.component && model.component !== this.component &&
+    return !(
+      model.component &&
+      model.component !== this.component &&
       model.component.node.type !== laneId &&
-      model.getParentCell() && model.getParentCell().component === this.component);
+      model.getParentCell() &&
+      model.getParentCell().component === this.component
+    );
   }
 
   onPointerDown(cellView) {
@@ -30,7 +34,8 @@ export default class PoolEventHandlers {
 
     if (
       (!this.draggingElement || this.draggingElement !== cellView.model) &&
-      cellView.model.component && ![poolId, laneId].includes(cellView.model.component.node.type)
+      cellView.model.component &&
+      ![poolId, laneId].includes(cellView.model.component.node.type)
     ) {
       this.draggingElement = cellView.model;
     }
@@ -46,15 +51,17 @@ export default class PoolEventHandlers {
     }
 
     if (this.previousValidPosition) {
-      this.draggingElement.position(this.previousValidPosition.x, this.previousValidPosition.y, { deep: true });
-      store.commit('updateNodeBounds', {
+      this.draggingElement.position(this.previousValidPosition.x, this.previousValidPosition.y, {
+        deep: true
+      });
+      store.commit("updateNodeBounds", {
         node: this.draggingElement.component.node,
-        bounds: this.previousValidPosition,
+        bounds: this.previousValidPosition
       });
     }
 
     if (this.invalidPool) {
-      this.invalidPool.attr('body/fill', poolColor);
+      this.invalidPool.attr("body/fill", poolColor);
       this.invalidPool = null;
     }
 
@@ -78,16 +85,19 @@ export default class PoolEventHandlers {
     }
 
     /* If the element we are dragging is not over a pool or lane, prevent dropping it.
-       * Also prevent moving the element to another pool if it has a sequence flow, as
-       * sequence flows between pools are not valid. */
+     * Also prevent moving the element to another pool if it has a sequence flow, as
+     * sequence flows between pools are not valid. */
 
     const { x, y, width, height } = element.getBBox();
-    const area = { x, y, width, height };
+    const area = {
+      x,
+      y,
+      width,
+      height
+    };
 
     const elementsUnderArea = this.graph.findModelsInArea(area);
-    const pool = elementsUnderArea.find(model => {
-      return model.component && model.component.node.type === poolId;
-    });
+    const pool = elementsUnderArea.find((model) => model.component && model.component.node.type === poolId);
 
     if (!pool) {
       if (!this.previousValidPosition) {
@@ -95,11 +105,11 @@ export default class PoolEventHandlers {
       }
 
       if (this.invalidPool) {
-        this.invalidPool.attr('body/fill', poolColor);
+        this.invalidPool.attr("body/fill", poolColor);
         this.invalidPool = null;
       }
 
-      store.commit('preventSavingElementPosition');
+      store.commit("preventSavingElementPosition");
       this.paperManager.setStateInvalid();
     } else if (pool.component !== this.component && this.graph.getConnectedLinks(element).length > 0) {
       if (!this.previousValidPosition) {
@@ -107,24 +117,22 @@ export default class PoolEventHandlers {
       }
 
       this.invalidPool = pool.component.shape;
-      this.invalidPool.attr('body/fill', invalidNodeColor);
+      this.invalidPool.attr("body/fill", invalidNodeColor);
 
-      store.commit('preventSavingElementPosition');
+      store.commit("preventSavingElementPosition");
       this.paperManager.setStateValid();
     } else {
       this.paper.drawBackground({ color: defaultNodeColor });
       this.previousValidPosition = null;
 
       if (this.invalidPool) {
-        this.invalidPool.attr('body/fill', poolColor);
+        this.invalidPool.attr("body/fill", poolColor);
         this.invalidPool = null;
       }
 
-      this.newPool = pool !== this.shape
-        ? pool
-        : null;
+      this.newPool = pool !== this.shape ? pool : null;
 
-      store.commit('allowSavingElementPosition');
+      store.commit("allowSavingElementPosition");
       this.paperManager.setStateValid();
     }
   }

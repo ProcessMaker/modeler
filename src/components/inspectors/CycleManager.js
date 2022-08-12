@@ -1,16 +1,22 @@
-import { DateTime } from 'luxon';
-import { getIso8601FormattedDateString, getPeriod } from './TimeUtils';
+import { DateTime } from "luxon";
+import { getIso8601FormattedDateString, getPeriod } from "./TimeUtils";
 
 export default class CycleManager {
   _startDate;
+
   _repeat;
+
   _periodicityValue;
+
   _selectedWeekdays;
+
   _endDate;
+
   _ends;
+
   _times;
 
-  constructor(startDate, repeat, periodicityValue, selectedWeekdays = [], endDate = null, ends = 'never', times = '1') {
+  constructor(startDate, repeat, periodicityValue, selectedWeekdays = [], endDate = null, ends = "never", times = "1") {
     this._startDate = this.sanitizeDate(startDate);
     this._repeat = repeat;
     this._periodicityValue = periodicityValue;
@@ -75,7 +81,7 @@ export default class CycleManager {
       return date;
     }
 
-    if (typeof date === 'string') {
+    if (typeof date === "string") {
       return DateTime.fromISO(date).toUTC();
     }
 
@@ -86,17 +92,17 @@ export default class CycleManager {
     const period = getPeriod(this._repeat, this._periodicityValue);
     const dateIntervals = [this._startDate.toISO()];
 
-    this._selectedWeekdays.forEach(day => {
+    this._selectedWeekdays.forEach((day) => {
       const weekDayDate = this.getWeekDayDate(day);
       const isoDateString = getIso8601FormattedDateString(weekDayDate, this._endDate, period, this._ends, this._times);
       dateIntervals.push(isoDateString);
     });
 
-    return dateIntervals.join('|');
+    return dateIntervals.join("|");
   }
 
   getWeekDayDate(isoWeekDay) {
-    const date = DateTime.fromISO(this._startDate, { zone: 'utc' });
+    const date = DateTime.fromISO(this._startDate, { zone: "utc" });
     let weekDayDate = date.set({ weekday: isoWeekDay });
 
     if (weekDayDate.toMillis() < date.toMillis()) {
@@ -115,7 +121,7 @@ export default class CycleManager {
   }
 
   isWeeklyPeriodSelected() {
-    return this._periodicityValue === 'W';
+    return this._periodicityValue === "W";
   }
 
   hasSelectedWeekdays() {
@@ -128,9 +134,6 @@ export default class CycleManager {
   weekdayStyle(day) {
     const isoWeekDayNumber = this._startDate.toLocal().weekday;
 
-    return [
-      day.selected ? 'badge-primary' : 'badge-light',
-      { 'border border-primary': isoWeekDayNumber === day.day },
-    ];
+    return [day.selected ? "badge-primary" : "badge-light", { "border border-primary": isoWeekDayNumber === day.day }];
   }
 }

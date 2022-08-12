@@ -1,40 +1,40 @@
-import idConfigSettings from './idConfigSettings';
+import idConfigSettings from "./idConfigSettings";
 
 export default {
-  id: 'processmaker-modeler-process',
-  bpmnType: 'bpmn:Process',
+  id: "processmaker-modeler-process",
+  bpmnType: "bpmn:Process",
   control: false,
-  label: 'Process',
+  label: "Process",
   inspectorConfig: [
     {
-      name: 'Process Information',
+      name: "Process Information",
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-process',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-process"
           },
           items: [
             {
-              component: 'FormInput',
-              config: idConfigSettings,
+              component: "FormInput",
+              config: idConfigSettings
             },
             {
-              component: 'FormInput',
+              component: "FormInput",
               config: {
-                label: 'Name',
-                helper: 'The Name of the Process',
-                name: 'name',
-                placeholder: '',
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
+                label: "Name",
+                helper: "The Name of the Process",
+                name: "name",
+                placeholder: ""
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };

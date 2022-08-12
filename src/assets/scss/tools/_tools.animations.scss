@@ -1,28 +1,32 @@
-.inspector-enter, .inspector-leave-to {
-  transform: translateX(10px);
-  opacity: 0;
+.inspector-enter,
+.inspector-leave-to {
+	transform: translateX(10px);
+	opacity: 0;
 }
 
-.inspector-enter-active, .inspector-leave-active {
-  transition: all $transition-duration ease;
+.inspector-enter-active,
+.inspector-leave-active {
+	transition: all $transition-duration ease;
 }
 
 .slide-enter-active {
-  transition-duration: $transition-duration;
-  transition-timing-function: ease-in;
+	transition-duration: $transition-duration;
+	transition-timing-function: ease-in;
 }
 
 .slide-leave-active {
-  transition-duration: $transition-duration;
-  transition-timing-function: ease-out;
+	transition-duration: $transition-duration;
+	transition-timing-function: ease-out;
 }
 
-.slide-enter-to, .slide-leave {
-  max-height: 400px;
-  overflow: hidden;
+.slide-enter-to,
+.slide-leave {
+	max-height: 400px;
+	overflow: hidden;
 }
 
-.slide-enter, .slide-leave-to {
-  overflow: hidden;
-  max-height: 0;
+.slide-enter,
+.slide-leave-to {
+	overflow: hidden;
+	max-height: 0;
 }

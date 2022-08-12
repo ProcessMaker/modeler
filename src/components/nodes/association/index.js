@@ -1,53 +1,53 @@
-import component from './association.vue';
-import { direction } from './associationConfig';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import idConfigSettings from "@/components/inspectors/idConfigSettings";
+import component from "./association.vue";
+import { direction } from "./associationConfig";
 
-export const id  = 'processmaker-modeler-association';
+export const id = "processmaker-modeler-association";
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:Association',
+  bpmnType: "bpmn:Association",
   control: false,
   definition(moddle) {
-    return moddle.create('bpmn:Association', {
-      associationDirection: `${direction.none}`,
+    return moddle.create("bpmn:Association", {
+      associationDirection: `${direction.none}`
     });
   },
   inspectorConfig: [
     {
-      name: 'Data Association',
+      name: "Data Association",
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-association',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-association"
           },
           items: [
             {
-              component: 'FormInput',
-              config: idConfigSettings,
+              component: "FormInput",
+              config: idConfigSettings
             },
             {
-              component: 'FormSelect',
+              component: "FormSelect",
               config: {
-                label: 'Direction',
-                helper: 'Select Direction',
-                name: 'associationDirection',
+                label: "Direction",
+                helper: "Select Direction",
+                name: "associationDirection",
                 options: [
-                  { value: `${direction.none}`, content: 'None' },
-                  { value: `${direction.one}`, content: 'One' },
-                  { value: `${direction.both}`, content: 'Both' },
-                ],
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
+                  { value: `${direction.none}`, content: "None" },
+                  { value: `${direction.one}`, content: "One" },
+                  { value: `${direction.both}`, content: "Both" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };

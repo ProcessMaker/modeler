@@ -1,16 +1,15 @@
-import { g } from 'jointjs';
-import { boundaryGroup, defaultGroup, rectangleGroup } from '@/mixins/portsConfig';
-import differenceWith from 'lodash/differenceWith';
-import isEqual from 'lodash/isEqual';
+import { g } from "jointjs";
+import { boundaryGroup, defaultGroup, rectangleGroup } from "@/mixins/portsConfig";
+import differenceWith from "lodash/differenceWith";
+import isEqual from "lodash/isEqual";
 
 function getModelPortPoints(model, group) {
   const { x: modelX, y: modelY } = model.position();
-  const points = Object.values(model.getPortsPositions(group))
-    .map(({ x, y }) => new g.Point(modelX + x, modelY + y));
+  const points = Object.values(model.getPortsPositions(group)).map(({ x, y }) => new g.Point(modelX + x, modelY + y));
   if (!points) {
     const { x, y } = model.position();
     const { width, height } = model.size();
-    points.push(new g.Point(x - (width / 2), y - (height / 2)));
+    points.push(new g.Point(x - width / 2, y - height / 2));
   }
   return points;
 }
@@ -68,8 +67,8 @@ export function aPortEveryXPixels(pixels) {
 
     const top = getTopPoints(boundingBox);
     const left = getLeftPoints(boundingBox);
-    const bottom = top.map(point => point.reflection(boundingBox.center()));
-    const right = left.map(point => point.reflection(boundingBox.center()));
+    const bottom = top.map((point) => point.reflection(boundingBox.center()));
+    const right = left.map((point) => point.reflection(boundingBox.center()));
 
     const points = [...top, ...bottom, ...left, ...right, boundingBox.center()];
 
@@ -83,8 +82,8 @@ function getShapeCenterPosition(shape) {
   const { width, height } = shape.size();
 
   return {
-    x: x + (width / 2),
-    y: y + (height / 2),
+    x: x + width / 2,
+    y: y + height / 2
   };
 }
 
@@ -92,7 +91,7 @@ export function getEmptyBoundaryEventPositionsForShape(model) {
   const allPortPoints = getModelPortPoints(model, boundaryGroup);
   const boundaryEventPositions = model
     .getEmbeddedCells()
-    .filter(shape => shape.component && shape.component.node.isBpmnType('bpmn:BoundaryEvent'))
+    .filter((shape) => shape.component && shape.component.node.isBpmnType("bpmn:BoundaryEvent"))
     .map(getShapeCenterPosition);
 
   return differenceWith(allPortPoints, boundaryEventPositions, isEqual);

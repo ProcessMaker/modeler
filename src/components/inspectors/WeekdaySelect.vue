@@ -7,7 +7,7 @@
         :key="day.day"
         class="badge badge-pill weekday mb-1"
         :class="cycleManager.weekdayStyle(day)"
-        :data-test="`day-${ day.day }`"
+        :data-test="`day-${day.day}`"
         @click="clickWeekDay(day)"
       >
         {{ $t(day.initial) }}
@@ -19,51 +19,51 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon';
-import CycleManager from '@/components/inspectors/CycleManager';
+import { DateTime } from "luxon";
+import CycleManager from "@/components/inspectors/CycleManager";
 
 export default {
   props: {
     selectWeekdays: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     startDate: {
       type: String,
-      default: DateTime.local().toUTC().toISO(),
+      default: DateTime.local().toUTC().toISO()
     },
     endDate: {
       type: String,
-      default: null,
+      default: null
     },
     ends: {
       type: String,
-      default: 'never',
+      default: "never"
     },
     times: {
       type: [Number, String],
-      default: 1,
+      default: 1
     },
     periodicityValue: {
       type: String,
-      required: true,
+      required: true
     },
     repeat: {
       type: [String, Number],
-      default: 1,
+      default: 1
     },
     hasEnds: {
       type: Boolean,
-      default: true,
+      default: true
     },
     weekLabel: {
       type: String,
-      default: 'Repeat on',
+      default: "Repeat on"
     },
     periodicityHelper: {
       type: String,
-      default: 'Select the day(s) of the week in which to trigger this element',
-    },
+      default: "Select the day(s) of the week in which to trigger this element"
+    }
   },
   data() {
     return {
@@ -73,42 +73,67 @@ export default {
         //  beginning with Monday and ending with Sunday.
         {
           day: 7,
-          initial: 'S',
-          selected: false,
+          initial: "S",
+          selected: false
         },
         {
           day: 1,
-          initial: 'M',
-          selected: false,
+          initial: "M",
+          selected: false
         },
         {
           day: 2,
-          initial: 'T',
-          selected: false,
+          initial: "T",
+          selected: false
         },
         {
           day: 3,
-          initial: 'W',
-          selected: false,
+          initial: "W",
+          selected: false
         },
         {
           day: 4,
-          initial: 'T',
-          selected: false,
+          initial: "T",
+          selected: false
         },
         {
           day: 5,
-          initial: 'F',
-          selected: false,
+          initial: "F",
+          selected: false
         },
         {
           day: 6,
-          initial: 'S',
-          selected: false,
-        },
+          initial: "S",
+          selected: false
+        }
       ],
-      cycleManager: new CycleManager(this.startDate, this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
+      cycleManager: new CycleManager(
+        this.startDate,
+        this.repeat,
+        this.periodicityValue,
+        this.selectedWeekdays,
+        this.endDate,
+        this.ends,
+        this.times
+      )
     };
+  },
+  computed: {
+    repeatOnValidationError() {
+      const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
+
+      if (!this.cycleManager.isWeeklyPeriodSelected() || numberOfSelectedWeekdays > 0) {
+        return null;
+      }
+
+      return "You must select at least one day.";
+    },
+    dateIntervalString() {
+      return this.cycleManager.dateIntervalString();
+    },
+    selectedWeekdays() {
+      return this.weekdays.filter(({ selected }) => selected).map(({ day }) => day);
+    }
   },
   watch: {
     startDate(value) {
@@ -134,52 +159,35 @@ export default {
     },
     dateIntervalString() {
       this.update();
-    },
+    }
   },
   mounted() {
-    this.selectWeekdays.forEach(dayOfWeek => {
-      const foundDay = this.weekdays.find(wd => wd.day === dayOfWeek);
+    this.selectWeekdays.forEach((dayOfWeek) => {
+      const foundDay = this.weekdays.find((wd) => wd.day === dayOfWeek);
       if (foundDay) {
         foundDay.selected = true;
       }
     });
   },
-  computed: {
-    repeatOnValidationError() {
-      const numberOfSelectedWeekdays = this.weekdays.filter(({ selected }) => selected).length;
-
-      if (!this.cycleManager.isWeeklyPeriodSelected() || numberOfSelectedWeekdays > 0) {
-        return null;
-      }
-
-      return 'You must select at least one day.';
-    },
-    dateIntervalString() {
-      return this.cycleManager.dateIntervalString();
-    },
-    selectedWeekdays() {
-      return this.weekdays.filter(({ selected }) => selected).map(({ day }) => day);
-    },
+  destroyed() {
+    this.$emit("input", null);
   },
   methods: {
     clickWeekDay(weekday) {
       weekday.selected = !weekday.selected;
     },
     update() {
-      this.$emit('input', this.dateIntervalString);
-    },
-  },
-  destroyed() {
-    this.$emit('input', null);
-  },
+      this.$emit("input", this.dateIntervalString);
+    }
+  }
 };
 </script>
 
 <style scoped="scoped">
-  .weekday {
-    padding: 0.75em;
-    margin-left: 0.2em;
-    margin-bottom: 0.5em;
-    cursor: pointer;
-  }
+.weekday {
+  padding: 0.75em;
+  margin-left: 0.2em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
 </style>

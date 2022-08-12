@@ -1,31 +1,36 @@
-import NodeIdGenerator from '@/NodeIdGenerator';
-import zip from 'lodash/zip';
+import zip from "lodash/zip";
+import NodeIdGenerator from "@/NodeIdGenerator";
 
 function definitionsFactory(definitionIds = [], diagramIds = []) {
   const planeElement = zip(definitionIds, diagramIds).map(([definitionId, diagramId]) => ({
-    $type: 'bpmndi:BPMNShape',
+    $type: "bpmndi:BPMNShape",
     id: diagramId,
-    bpmnElement: { $type: 'bpmn:task', id: definitionId },
+    bpmnElement: { $type: "bpmn:task", id: definitionId },
     get(key) {
       return this[key];
     },
   }));
   return {
-    diagrams: [{
-      $type: 'bpmndi:BPMNDiagram',
-      plane: {
-        $type: 'bpmndi:BPMNPlane',
-        planeElement,
-        get(key) {
-          return this[key];
+    diagrams: [
+      {
+        $type: "bpmndi:BPMNDiagram",
+        plane: {
+          $type: "bpmndi:BPMNPlane",
+          planeElement,
+          get(key) {
+            return this[key];
+          },
         },
       },
-    }],
+    ],
   };
 }
 
-describe('NodeIdGenerator', () => {
-  it.each([['definition', 0], ['diagram', 1]])('should generate unique %s IDs', (name, idIndex) => {
+describe("NodeIdGenerator", () => {
+  it.each([
+    ["definition", 0],
+    ["diagram", 1],
+  ])("should generate unique %s IDs", (name, idIndex) => {
     const generator = new NodeIdGenerator(definitionsFactory());
     const ids = [];
     const numberOfIdsToGenerate = 10;
@@ -39,7 +44,7 @@ describe('NodeIdGenerator', () => {
     }
   });
 
-  it('should not generate definition IDs that already exist in definitions', () => {
+  it("should not generate definition IDs that already exist in definitions", () => {
     const duplicateGenerator = new NodeIdGenerator(definitionsFactory());
     const definitionIds = [
       duplicateGenerator.generate()[0],
@@ -59,7 +64,7 @@ describe('NodeIdGenerator', () => {
     }
   });
 
-  it('should not generate diagram IDs that already exist in definitions', () => {
+  it("should not generate diagram IDs that already exist in definitions", () => {
     const duplicateGenerator = new NodeIdGenerator(definitionsFactory());
     const diagramIds = [
       duplicateGenerator.generate()[1],

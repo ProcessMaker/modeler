@@ -1,4 +1,4 @@
-import {nodeTypes} from '../support/constants';
+import { nodeTypes } from "../support/constants";
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
@@ -8,9 +8,9 @@ import {
   getTinyMceEditor,
   getTinyMceEditorInModal,
   modalAnimationTime,
-} from '../support/utils';
+} from "../support/utils";
 
-describe('Documentation accordion', () => {
+describe("Documentation accordion", () => {
   const baseElements = [
     nodeTypes.startEvent,
     nodeTypes.intermediateCatchEvent,
@@ -27,71 +27,69 @@ describe('Documentation accordion', () => {
   const deleteElement = (position, type) => {
     getElementAtPosition(position, type)
       .click({ force: true })
-      .then($element => {
-        getCrownButtonForElement($element, 'delete-button').click({ force: true });
+      .then(($element) => {
+        getCrownButtonForElement($element, "delete-button").click({ force: true });
       });
   };
 
-  it('has a dedicated documentation inspector accordion', () => {
-    baseElements
-      .forEach(type => {
-        cy.clock();
+  it("has a dedicated documentation inspector accordion", () => {
+    baseElements.forEach((type) => {
+      cy.clock();
 
-        dragFromSourceToDest(type, position);
-        cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
-        cy.contains('Advanced').click();
-        cy.tick(accordionOpenAnimationTime);
-        cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
-        cy.contains('Documentation').click();
-        cy.tick(accordionOpenAnimationTime);
-        getTinyMceEditor().should('be.visible');
+      dragFromSourceToDest(type, position);
+      cy.get("iframe#documentation-editor_ifr").should("not.be.visible");
+      cy.contains("Advanced").click();
+      cy.tick(accordionOpenAnimationTime);
+      cy.get("iframe#documentation-editor_ifr").should("not.be.visible");
+      cy.contains("Documentation").click();
+      cy.tick(accordionOpenAnimationTime);
+      getTinyMceEditor().should("be.visible");
 
-        deleteElement(position, type);
+      deleteElement(position, type);
 
-        cy.clock().invoke('restore');
-      });
+      cy.clock().invoke("restore");
+    });
   });
 
-  it('should add and remove documentation to element', () => {
-    baseElements
-      .forEach(type => {
-        cy.clock();
-        const docString = `${type} doc!`;
+  it("should add and remove documentation to element", () => {
+    baseElements.forEach((type) => {
+      cy.clock();
+      const docString = `${type} doc!`;
 
-        dragFromSourceToDest(type, position);
-        cy.contains('Documentation').click();
-        cy.tick(accordionOpenAnimationTime);
-        getTinyMceEditor().clear().type(docString);
-        assertDownloadedXmlContainsExpected(docString);
+      dragFromSourceToDest(type, position);
+      cy.contains("Documentation").click();
+      cy.tick(accordionOpenAnimationTime);
+      getTinyMceEditor().clear().type(docString);
+      assertDownloadedXmlContainsExpected(docString);
 
-        getTinyMceEditor().clear();
-        assertDownloadedXmlDoesNotContainExpected('bpmn:documentation');
+      getTinyMceEditor().clear();
+      assertDownloadedXmlDoesNotContainExpected("bpmn:documentation");
 
-        deleteElement(position, type);
+      deleteElement(position, type);
 
-        cy.clock().invoke('restore');
-      });
+      cy.clock().invoke("restore");
+    });
   });
 
-  it('can allow the documentation editor modal to edit the documentation', () => {
+  it("can allow the documentation editor modal to edit the documentation", () => {
     dragFromSourceToDest(nodeTypes.task, position);
-    cy.contains('Documentation').click();
+    cy.contains("Documentation").click();
     cy.wait(accordionOpenAnimationTime);
 
-    const documentationFromInspector = 'some documentation';
+    const documentationFromInspector = "some documentation";
     getTinyMceEditor().type(documentationFromInspector);
     cy.wait(modalAnimationTime);
 
     cy.get('[data-test="documentation-modal-button"]').click();
 
-    const documentationFromModal = 'this is the documentation modal';
+    const documentationFromModal = "this is the documentation modal";
     getTinyMceEditorInModal().type(documentationFromModal);
 
-    cy.contains('Close').click();
+    cy.contains("Close").click();
     cy.wait(modalAnimationTime);
 
     const documentationCombined = `${documentationFromInspector}${documentationFromModal}`;
-    getTinyMceEditor().should('have.text', documentationCombined);
+    getTinyMceEditor().should("have.text", documentationCombined);
 
     assertDownloadedXmlContainsExpected(documentationCombined);
   });

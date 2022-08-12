@@ -5,7 +5,7 @@
     :graph="graph"
     :shape="shape"
     :node="node"
-    :nodeRegistry="nodeRegistry"
+    :node-registry="nodeRegistry"
     :moddle="moddle"
     :collaboration="collaboration"
     :process-node="processNode"
@@ -16,67 +16,80 @@
 </template>
 
 <script>
-import portsConfig from '@/mixins/portsConfig';
-import EventShape from '@/components/nodes/boundaryEvent/shape';
-import isValidBoundaryEventTarget from './validBoundaryEventTargets';
-import resetShapeColor from '@/components/resetShapeColor';
-import { getBoundaryAnchorPoint } from '@/portsUtils';
-import { invalidNodeColor } from '@/components/nodeColors';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import highlightConfig from '@/mixins/highlightConfig';
-import store from '@/store';
-import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
+import portsConfig from "@/mixins/portsConfig";
+import EventShape from "@/components/nodes/boundaryEvent/shape";
+import resetShapeColor from "@/components/resetShapeColor";
+import { getBoundaryAnchorPoint } from "@/portsUtils";
+import { invalidNodeColor } from "@/components/nodeColors";
+import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import highlightConfig from "@/mixins/highlightConfig";
+import store from "@/store";
+import { canAddBoundaryEventToTarget } from "@/boundaryEventValidation";
+import isValidBoundaryEventTarget from "./validBoundaryEventTargets";
 
 export default {
   components: {
-    CrownConfig,
+    CrownConfig
   },
-  props: [
-    'graph',
-    'node',
-    'id',
-    'highlighted',
-    'nodeRegistry',
-    'moddle',
-    'paper',
-    'collaboration',
-    'processNode',
-    'planeElements',
-    'isRendering',
-    'isActive',
-  ],
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  props: [
+    "graph",
+    "node",
+    "id",
+    "highlighted",
+    "nodeRegistry",
+    "moddle",
+    "paper",
+    "collaboration",
+    "processNode",
+    "planeElements",
+    "isRendering",
+    "isActive"
+  ],
   data() {
     return {
       shape: null,
       previousPosition: null,
       validPosition: null,
-      invalidTargetElement: null,
+      invalidTargetElement: null
     };
   },
   watch: {
-    'node.definition.name'(name) {
-      this.shape.attr('label/text', name);
+    "node.definition.name": function(name) {
+      this.shape.attr("label/text", name);
     },
-    'node.definition.cancelActivity'(isCancelActivity) {
+    "node.definition.cancelActivity": function(isCancelActivity) {
       this.toggleInterruptingStyle(isCancelActivity);
-    },
+    }
+  },
+  async mounted() {
+    this.shape = new EventShape();
+    this.setShapeProperties();
+    this.shape.addTo(this.graph);
+
+    await this.$nextTick();
+
+    this.toggleInterruptingStyle();
+    const task = this.getTaskUnderShape();
+    this.attachBoundaryEventToTask(task);
+    this.updateShapePosition(task);
+
+    this.shape.on("change:position", this.turnInvalidTargetRed);
+    this.shape.listenTo(this.paper, "element:pointerdown", this.attachToValidTarget);
   },
   methods: {
     getTaskUnderShape() {
-      return this.graph
-        .findModelsUnderElement(this.shape)
-        .find(model => isValidBoundaryEventTarget(model.component));
+      return this.graph.findModelsUnderElement(this.shape).find((model) => isValidBoundaryEventTarget(model.component));
     },
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
         body: {
-          strokeDasharray: dashLength,
+          strokeDasharray: dashLength
         },
         body2: {
-          strokeDasharray: dashLength,
-        },
+          strokeDasharray: dashLength
+        }
       });
     },
     setSolidShapeBorder() {
@@ -94,7 +107,7 @@ export default {
       const { x, y, width, height } = this.node.diagram.bounds;
       this.shape.position(x, y);
       this.shape.resize(width, height);
-      this.shape.attr('label/text', this.node.definition.get('name'));
+      this.shape.attr("label/text", this.node.definition.get("name"));
       this.shape.component = this;
     },
     hasPositionChanged() {
@@ -111,8 +124,8 @@ export default {
       const { width, height } = this.shape.size();
 
       return {
-        x: x + (width / 2),
-        y: y + (height / 2),
+        x: x + width / 2,
+        y: y + height / 2
       };
     },
     updateShapePosition(task) {
@@ -122,7 +135,7 @@ export default {
 
       const { x, y } = getBoundaryAnchorPoint(this.getCenterPosition(), task);
       const { width, height } = this.shape.size();
-      this.shape.position(x - (width / 2), y - (height / 2));
+      this.shape.position(x - width / 2, y - height / 2);
 
       this.previousPosition = this.shape.position();
     },
@@ -138,11 +151,11 @@ export default {
       }
 
       task.embed(this.shape);
-      this.node.definition.set('attachedToRef', task.component.node.definition);
+      this.node.definition.set("attachedToRef", task.component.node.definition);
     },
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
-      store.commit('allowSavingElementPosition');
+      store.commit("allowSavingElementPosition");
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -166,14 +179,14 @@ export default {
         return;
       }
 
-      store.commit('preventSavingElementPosition');
+      store.commit("preventSavingElementPosition");
       this.validPosition = this.shape.position();
-      this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
+      this.shape.listenToOnce(this.paper, "cell:pointerup blank:pointerup", () => {
         this.moveBoundaryEventIfOverTask();
         this.resetInvalidTarget();
-        this.$emit('save-state');
+        this.$emit("save-state");
 
-        store.commit('allowSavingElementPosition');
+        store.commit("allowSavingElementPosition");
       });
     },
     turnInvalidTargetRed() {
@@ -181,9 +194,7 @@ export default {
         return;
       }
 
-      const targetElement = this.graph
-        .findModelsUnderElement(this.shape)
-        .filter(model => model.component)[0];
+      const targetElement = this.graph.findModelsUnderElement(this.shape).filter((model) => model.component)[0];
 
       const targetHasNotChanged = this.invalidTargetElement === targetElement;
       if (targetHasNotChanged) {
@@ -192,7 +203,7 @@ export default {
 
       const currentlyAttachedTask = this.shape.getParentCell();
       if (targetElement && targetElement !== currentlyAttachedTask && !canAddBoundaryEventToTarget(this.node.type, targetElement)) {
-        targetElement.attr('body/fill', invalidNodeColor);
+        targetElement.attr("body/fill", invalidNodeColor);
       }
 
       if (this.invalidTargetElement) {
@@ -200,22 +211,7 @@ export default {
       }
 
       this.invalidTargetElement = targetElement;
-    },
-  },
-  async mounted() {
-    this.shape = new EventShape();
-    this.setShapeProperties();
-    this.shape.addTo(this.graph);
-
-    await this.$nextTick();
-
-    this.toggleInterruptingStyle();
-    const task = this.getTaskUnderShape();
-    this.attachBoundaryEventToTask(task);
-    this.updateShapePosition(task);
-
-    this.shape.on('change:position', this.turnInvalidTargetRed);
-    this.shape.listenTo(this.paper, 'element:pointerdown', this.attachToValidTarget);
-  },
+    }
+  }
 };
 </script>

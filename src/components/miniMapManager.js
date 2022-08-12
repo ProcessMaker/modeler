@@ -1,4 +1,4 @@
-import { dia } from 'jointjs';
+import { dia } from "jointjs";
 
 export default class MiniMapManager {
   #miniMap;
@@ -13,7 +13,7 @@ export default class MiniMapManager {
       model: graph,
       width: 230,
       height: 200,
-      interactive: false,
+      interactive: false
     });
 
     return new this(miniMap);
@@ -31,8 +31,8 @@ export default class MiniMapManager {
     const { x, y } = this.miniMap.paperToLocalPoint(offsetX, offsetY);
 
     return {
-      newX: (clientWidth / 2) - (x * scaleX),
-      newY: (clientHeight / 2) - (y * scaleY),
+      newX: clientWidth / 2 - x * scaleX,
+      newY: clientHeight / 2 - y * scaleY
     };
   }
 }

@@ -1,10 +1,15 @@
-import { dragFromSourceToDest, getComponentsEmbeddedInShape, getElementAtPosition, setBoundaryEvent } from '../support/utils';
-import { nodeTypes } from '../support/constants';
-import uniqWith from 'lodash/uniqWith';
-import isEqual from 'lodash/isEqual';
+import uniqWith from "lodash/uniqWith";
+import isEqual from "lodash/isEqual";
+import {
+  dragFromSourceToDest,
+  getComponentsEmbeddedInShape,
+  getElementAtPosition,
+  setBoundaryEvent,
+} from "../support/utils";
+import { nodeTypes } from "../support/constants";
 
-describe('Boundary event validation', () => {
-  it('should add boundary events to empty ports around boundary event target, and not allow adding any more', () => {
+describe("Boundary event validation", () => {
+  it("should add boundary events to empty ports around boundary event target, and not allow adding any more", () => {
     const taskPosition = { x: 250, y: 200 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
@@ -15,8 +20,8 @@ describe('Boundary event validation', () => {
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then(getComponentsEmbeddedInShape)
-      .should($boundaryEvents => {
-        const boundaryEventPositions = $boundaryEvents.toArray().map($boundaryEvent => {
+      .should(($boundaryEvents) => {
+        const boundaryEventPositions = $boundaryEvents.toArray().map(($boundaryEvent) => {
           const { top, left } = $boundaryEvent.position();
           return { top, left };
         });
@@ -24,21 +29,21 @@ describe('Boundary event validation', () => {
         expect(uniqWith(boundaryEventPositions, isEqual)).to.have.length(numberOfPortsAroundTask);
       });
 
-    cy
-      .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
-      .should('have.length', numberOfPortsAroundTask);
+    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should(
+      "have.length",
+      numberOfPortsAroundTask,
+    );
 
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    cy
-      .get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]')
-      .should('have.length', numberOfPortsAroundTask);
+    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should(
+      "have.length",
+      numberOfPortsAroundTask,
+    );
 
-    getElementAtPosition(taskPosition, nodeTypes.task).click({force:true});
+    getElementAtPosition(taskPosition, nodeTypes.task).click({ force: true });
 
-    const dataTest = nodeTypes.boundaryTimerEvent.replace('processmaker-modeler-', 'add-');
-    cy.get(`[data-test="${dataTest}"]`)
-      .should('exist')
-      .should('not.be.enabled');
+    const dataTest = nodeTypes.boundaryTimerEvent.replace("processmaker-modeler-", "add-");
+    cy.get(`[data-test="${dataTest}"]`).should("exist").should("not.be.enabled");
   });
 });

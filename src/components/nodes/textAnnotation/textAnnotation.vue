@@ -5,7 +5,7 @@
     :graph="graph"
     :shape="shape"
     :node="node"
-    :nodeRegistry="nodeRegistry"
+    :node-registry="nodeRegistry"
     :moddle="moddle"
     :collaboration="collaboration"
     :process-node="processNode"
@@ -16,51 +16,71 @@
 </template>
 
 <script>
-import { shapes, util } from 'jointjs';
-import portsConfig from '@/mixins/portsConfig';
-import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import highlightConfig from '@/mixins/highlightConfig';
+import { shapes, util } from "jointjs";
+import portsConfig from "@/mixins/portsConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import highlightConfig from "@/mixins/highlightConfig";
 
 export const maxTextAnnotationWidth = 160;
 export default {
   components: {
-    CrownConfig,
+    CrownConfig
   },
-  props: [
-    'graph',
-    'node',
-    'id',
-    'highlighted',
-    'nodeRegistry',
-    'moddle',
-    'paper',
-    'paperManager',
-    'collaboration',
-    'processNode',
-    'planeElements',
-    'isRendering',
-  ],
   mixins: [highlightConfig, portsConfig],
+  props: [
+    "graph",
+    "node",
+    "id",
+    "highlighted",
+    "nodeRegistry",
+    "moddle",
+    "paper",
+    "paperManager",
+    "collaboration",
+    "processNode",
+    "planeElements",
+    "isRendering"
+  ],
   data() {
     return {
       shape: null,
       definition: null,
-      nodeWidth: 10,
+      nodeWidth: 10
     };
   },
   watch: {
-    'node.definition.text'(text) {
+    "node.definition.text": function(text) {
       this.updateNodeText(text);
-    },
+    }
+  },
+  mounted() {
+    const { bounds } = this.node.diagram;
+
+    this.shape = new shapes.standard.Polyline();
+    this.shape.set("type", "textAnnotation");
+    this.shape.position(bounds.x, bounds.y);
+    this.shape.resize(this.nodeWidth, bounds.height);
+    this.shape.attr({
+      body: {
+        refPoints: "25 10 3 10 3 3 25 3",
+        fill: "none"
+      },
+      label: {
+        fill: "black",
+        yAlignment: "left",
+        xAlignment: "left",
+        refX: "5",
+        refY: "5"
+      }
+    });
+
+    this.shape.addTo(this.graph);
+    this.shape.component = this;
+    this.updateNodeText(this.node.definition.get("text"));
   },
   methods: {
     getLabelHeight(labelPadding) {
-      return this.shape
-        .findView(this.paperManager.paper)
-        .selectors
-        .label
-        .getBBox()
-        .height + labelPadding;
+      return this.shape.findView(this.paperManager.paper).selectors.label.getBBox().height + labelPadding;
     },
     calculateNewHeight(previousHeight, labelText, currentBoundsHeight) {
       const defaultPadding = 3;
@@ -77,50 +97,24 @@ export default {
     updateNodeText(text) {
       const { height } = this.shape.findView(this.paperManager.paper).getBBox();
       const refPoints = `25 ${height} 3 ${height} 3 3 25 3`;
-      const bounds = this.node.diagram.bounds;
+      const { bounds } = this.node.diagram;
 
       this.shape.position(bounds.x, bounds.y);
       this.shape.attr({
         body: { refPoints },
         label: {
           text: util.breakText(text, {
-            width: maxTextAnnotationWidth,
+            width: maxTextAnnotationWidth
           }),
-          textAnchor: 'left',
-        },
+          textAnchor: "left"
+        }
       });
 
-      this.paperManager.awaitScheduledUpdates()
-        .then(() => {
-          this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height));
-          this.setShapeHighlight();
-        });
-    },
-  },
-  mounted() {
-    const bounds = this.node.diagram.bounds;
-
-    this.shape = new shapes.standard.Polyline();
-    this.shape.set('type', 'textAnnotation');
-    this.shape.position(bounds.x, bounds.y);
-    this.shape.resize(this.nodeWidth, bounds.height);
-    this.shape.attr({
-      body: {
-        refPoints: '25 10 3 10 3 3 25 3',
-        fill: 'none',
-      },
-      label: {
-        fill: 'black',
-        yAlignment: 'left',
-        xAlignment: 'left',
-        refX: '5',
-        refY: '5',
-      },
-    });
-
-    this.shape.addTo(this.graph);
-    this.shape.component = this;
-    this.updateNodeText(this.node.definition.get('text'));
-  },
+      this.paperManager.awaitScheduledUpdates().then(() => {
+        this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height));
+        this.setShapeHighlight();
+      });
+    }
+  }
 };
 </script>

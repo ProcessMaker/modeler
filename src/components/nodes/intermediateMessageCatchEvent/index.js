@@ -1,37 +1,32 @@
-import component from './intermediateMessageCatchEvent.vue';
-import merge from 'lodash/merge';
-import cloneDeep from 'lodash/cloneDeep';
-import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
-import { default as messageEventDefinition, messageSelector } from '../messageEventDefinition';
-import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import merge from "lodash/merge";
+import cloneDeep from "lodash/cloneDeep";
+import intermediateMessageEventConfig from "@/components/nodes/intermediateMessageEvent";
+import defaultNames from "@/components/nodes/intermediateEvent/defaultNames";
+import { default as messageEventDefinition, messageSelector } from "../messageEventDefinition";
+import component from "./intermediateMessageCatchEvent.vue";
 
-const id = 'processmaker-modeler-intermediate-message-catch-event';
+const id = "processmaker-modeler-intermediate-message-catch-event";
 
 export default merge(cloneDeep(intermediateMessageEventConfig), {
   ...messageEventDefinition,
   id,
   component,
   control: false,
-  bpmnType: 'bpmn:IntermediateCatchEvent',
+  bpmnType: "bpmn:IntermediateCatchEvent",
   label: defaultNames[id],
   definition(moddle, $t) {
-    return moddle.create('bpmn:IntermediateCatchEvent', {
+    return moddle.create("bpmn:IntermediateCatchEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [
-        moddle.create('bpmn:MessageEventDefinition'),
-      ],
+      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")]
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [
-            {},
-            messageSelector('Message that will catch this intermediate event'),
-          ],
-        },
-      ],
-    },
-  ],
+          items: [{}, messageSelector("Message that will catch this intermediate event")]
+        }
+      ]
+    }
+  ]
 });

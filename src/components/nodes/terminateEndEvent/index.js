@@ -1,10 +1,10 @@
-import component from './terminateEndEvent.vue';
-import endEventConfig from '../endEvent/index';
-import merge from 'lodash/merge';
-import cloneDeep from 'lodash/cloneDeep';
-import defaultNames from '@/components/nodes/endEvent/defaultNames';
+import merge from "lodash/merge";
+import cloneDeep from "lodash/cloneDeep";
+import defaultNames from "@/components/nodes/endEvent/defaultNames";
+import endEventConfig from "../endEvent/index";
+import component from "./terminateEndEvent.vue";
 
-export const id = 'processmaker-modeler-terminate-end-event';
+export const id = "processmaker-modeler-terminate-end-event";
 
 export default merge(cloneDeep(endEventConfig), {
   id,
@@ -12,11 +12,9 @@ export default merge(cloneDeep(endEventConfig), {
   control: false,
   label: defaultNames[id],
   definition(moddle, $t) {
-    return moddle.create('bpmn:EndEvent', {
+    return moddle.create("bpmn:EndEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [
-        moddle.create('bpmn:TerminateEventDefinition'),
-      ],
+      eventDefinitions: [moddle.create("bpmn:TerminateEventDefinition")]
     });
-  },
+  }
 });

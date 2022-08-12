@@ -1,9 +1,9 @@
 <template>
   <crown-button
     v-if="allowOutgoingDataAssociationFlow"
-    :title="$t('Data Association Flow')"
-    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     id="association-flow-button"
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
+    :title="$t('Data Association Flow')"
     aria-label="Add association flow"
     :src="connectIcon"
     role="menuitem"
@@ -12,51 +12,45 @@
 </template>
 
 <script>
-import connectIcon from '@/assets/connect-artifacts.svg';
-import CrownButton from '@/components/crown/crownButtons/crownButton';
-import Node from '@/components/nodes/node';
-import * as dataOutputConfig from '@/components/nodes/dataOutputAssociation/config';
-import * as dataInputConfig from '@/components/nodes/dataInputAssociation/config';
-import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
+import connectIcon from "@/assets/connect-artifacts.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton";
+import Node from "@/components/nodes/node";
+import * as dataOutputConfig from "@/components/nodes/dataOutputAssociation/config";
+import * as dataInputConfig from "@/components/nodes/dataInputAssociation/config";
+import DataAssociation from "@/components/nodes/genericFlow/DataAssociation";
 
 export default {
   components: { CrownButton },
-  props: ['node', 'moddle', 'shape'],
+  props: ["node", "moddle", "shape"],
   data() {
     return {
-      connectIcon,
+      connectIcon
     };
   },
   computed: {
     allowOutgoingDataAssociationFlow() {
       return DataAssociation.isADataNode(this.node);
-    },
+    }
   },
   methods: {
     addDataAssociation() {
-      this.$emit('toggle-crown-state', false);
+      this.$emit("toggle-crown-state", false);
 
-      const comingFromDataStoreOrDataObject = this.node.isBpmnType('bpmn:DataStoreReference', 'bpmn:DataObjectReference');
+      const comingFromDataStoreOrDataObject = this.node.isBpmnType("bpmn:DataStoreReference", "bpmn:DataObjectReference");
 
-      const dataAssociationConfig = comingFromDataStoreOrDataObject
-        ? dataInputConfig
-        : dataOutputConfig;
+      const dataAssociationConfig = comingFromDataStoreOrDataObject ? dataInputConfig : dataOutputConfig;
 
       const associationLink = dataAssociationConfig.definition(this.moddle);
 
-      const node = new Node(
-        dataAssociationConfig.id,
-        associationLink,
-        dataAssociationConfig.diagram(this.moddle),
-      );
+      const node = new Node(dataAssociationConfig.id, associationLink, dataAssociationConfig.diagram(this.moddle));
 
       node.dataAssociationProps = {
         sourceShape: this.shape,
-        targetCoords: { x: undefined, y: undefined },
+        targetCoords: { x: undefined, y: undefined }
       };
 
-      this.$emit('add-node', node);
-    },
-  },
+      this.$emit("add-node", node);
+    }
+  }
 };
 </script>

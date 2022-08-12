@@ -1,7 +1,10 @@
 <template>
   <b-row class="w-100 m-0">
-    <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom" role="toolbar"
-      aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
+    <div
+      class="toolbar d-flex justify-content-between align-items-center border-top border-bottom"
+      role="toolbar"
+      aria-label="Toolbar"
+      :class="{ 'ignore-pointer': canvasDragPosition }"
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="mr-3">
@@ -9,10 +12,10 @@
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <b-button
+            v-b-tooltip.hover
             class="btn btn-sm btn-secondary btn-undo"
             :disabled="!canUndo"
             data-test="undo"
-            v-b-tooltip.hover
             :title="$t('Undo')"
             @click="undo"
           >
@@ -20,10 +23,10 @@
           </b-button>
 
           <b-button
+            v-b-tooltip.hover
             class="btn btn-sm btn-secondary btn-redo"
             :disabled="!canRedo"
             data-test="redo"
-            v-b-tooltip.hover
             :title="$t('Redo')"
             @click="redo"
           >
@@ -33,64 +36,64 @@
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <b-button
-            class="btn btn-sm btn-secondary"
-            @click="scale += scaleStep"
-            data-test="zoom-in"
             v-b-tooltip.hover
+            class="btn btn-sm btn-secondary"
+            data-test="zoom-in"
             :title="$t('Zoom In')"
+            @click="scale += scaleStep"
           >
             <font-awesome-icon :icon="plusIcon" />
           </b-button>
           <b-button
-            class="btn btn-sm btn-secondary"
-            @click="scale = Math.max(minimumScale, scale -= scaleStep)"
-            data-test="zoom-out"
             v-b-tooltip.hover
+            class="btn btn-sm btn-secondary"
+            data-test="zoom-out"
             :title="$t('Zoom Out')"
+            @click="scale = Math.max(minimumScale, (scale -= scaleStep))"
           >
             <font-awesome-icon :icon="minusIcon" />
           </b-button>
           <b-button
+            v-b-tooltip.hover
             class="btn btn-sm btn-secondary"
-            @click="scale = initialScale"
             :disabled="scale === initialScale"
             data-test="zoom-reset"
-            v-b-tooltip.hover
             :title="$t('Reset to initial scale')"
+            @click="scale = initialScale"
           >
-            {{ $t('Reset') }}
+            {{ $t("Reset") }}
           </b-button>
-          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale * 100) }}%</span>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
           <b-button
+            v-b-tooltip.hover
             class="btn btn-sm btn-secondary ml-auto"
             data-test="panels-btn"
-            @click="$emit('toggle-panels-compressed')"
-            v-b-tooltip.hover
             :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
+            @click="$emit('toggle-panels-compressed')"
           >
             <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
           </b-button>
 
           <b-button
+            v-b-tooltip.hover
             class="btn btn-sm btn-secondary mini-map-btn ml-auto"
             data-test="mini-map-btn"
-            @click="miniMapOpen = !miniMapOpen"
-            v-b-tooltip.hover
             :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
+            @click="miniMapOpen = !miniMapOpen"
           >
             <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
           </b-button>
         </div>
 
         <b-button
+          v-b-tooltip.hover
           class="btn btn-sm btn-secondary mini-map-btn ml-auto"
           data-test="mini-map-btn"
-          @click="$emit('saveBpmn')"
-          v-b-tooltip.hover
           :title="$t('Save')"
+          @click="$emit('saveBpmn')"
         >
           <font-awesome-icon :icon="saveIcon" />
         </b-button>
@@ -99,55 +102,26 @@
   </b-row>
 </template>
 <script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
-import undoRedoStore from '@/undoRedoStore';
-import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
-import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
+import undoRedoStore from "@/undoRedoStore";
+import Breadcrumb from "@/components/toolbar/breadcrumb/Breadcrumb";
+import AlignButtons from "@/components/toolbar/alignButtons/AlignButtons";
 
 export default {
-  name: 'tool-bar',
+  name: "ToolBar",
   components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
   props: {
     canvasDragPosition: {},
     cursor: {},
     paperManager: {},
     isRendering: {
-      type: Boolean,
+      type: Boolean
     },
     breadcrumbData: {
-      type: Array,
+      type: Array
     },
-    panelsCompressed: Boolean,
-  },
-  watch: {
-    scale(scale) {
-      this.paperManager.scale = scale;
-      if (scale === this.initialScale) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
-    miniMapOpen(isOpen) {
-      this.$emit('toggle-mini-map-open', isOpen);
-    },
-    canUndo(canUndo) {
-      if (!canUndo) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
-    canRedo(canRedo) {
-      if (!canRedo) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
-  },
-  computed: {
-    canUndo() {
-      return undoRedoStore.getters.canUndo;
-    },
-    canRedo() {
-      return undoRedoStore.getters.canRedo;
-    },
+    panelsCompressed: Boolean
   },
   data() {
     return {
@@ -163,8 +137,37 @@ export default {
       expandIcon: faExpand,
       undoIcon: faUndo,
       redoIcon: faRedo,
-      saveIcon: faSave,
+      saveIcon: faSave
     };
+  },
+  computed: {
+    canUndo() {
+      return undoRedoStore.getters.canUndo;
+    },
+    canRedo() {
+      return undoRedoStore.getters.canRedo;
+    }
+  },
+  watch: {
+    scale(scale) {
+      this.paperManager.scale = scale;
+      if (scale === this.initialScale) {
+        this.$root.$emit("bv::hide::tooltip");
+      }
+    },
+    miniMapOpen(isOpen) {
+      this.$emit("toggle-mini-map-open", isOpen);
+    },
+    canUndo(canUndo) {
+      if (!canUndo) {
+        this.$root.$emit("bv::hide::tooltip");
+      }
+    },
+    canRedo(canRedo) {
+      if (!canRedo) {
+        this.$root.$emit("bv::hide::tooltip");
+      }
+    }
   },
   methods: {
     undo() {
@@ -172,20 +175,20 @@ export default {
         return;
       }
       undoRedoStore
-        .dispatch('undo')
-        .then(() => this.$emit('load-xml'))
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
+        .dispatch("undo")
+        .then(() => this.$emit("load-xml"))
+        .then(() => window.ProcessMaker.EventBus.$emit("modeler-change"));
     },
     redo() {
       if (this.isRendering) {
         return;
       }
       undoRedoStore
-        .dispatch('redo')
-        .then(() => this.$emit('load-xml'))
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
-    },
-  },
+        .dispatch("redo")
+        .then(() => this.$emit("load-xml"))
+        .then(() => window.ProcessMaker.EventBus.$emit("modeler-change"));
+    }
+  }
 };
 </script>
 <style lang="scss" src="./toolbar.scss" />

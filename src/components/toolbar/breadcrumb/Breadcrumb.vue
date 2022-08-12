@@ -4,8 +4,8 @@
       <li class="breadcrumb-item">
         <a href="/"><i class="fas fa-home" /></a>
       </li>
-      <li class="breadcrumb-item" v-for="(breadcrumb, index) in breadcrumbData[0]" :key="index">
-        <a :href="breadcrumb.url" v-if="breadcrumb.url">{{ breadcrumb.text }}</a>
+      <li v-for="(breadcrumb, index) in breadcrumbData[0]" :key="index" class="breadcrumb-item">
+        <a v-if="breadcrumb.url" :href="breadcrumb.url">{{ breadcrumb.text }}</a>
         <span v-if="!breadcrumb.url">{{ breadcrumb.text }}</span>
       </li>
     </ol>
@@ -13,9 +13,9 @@
 </template>
 <script>
 export default {
-  name: 'breadcrumb',
+  name: "Breadcrumb",
   props: {
-    breadcrumbData: { type: Array, default: () => []},
-  },
+    breadcrumbData: { type: Array, default: () => [] }
+  }
 };
 </script>

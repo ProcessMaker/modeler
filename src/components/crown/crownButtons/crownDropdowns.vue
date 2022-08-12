@@ -11,7 +11,7 @@
     <crown-boundary-event-dropdown
       :dropdown-data="boundaryEventDropdownData"
       :dropdown-open="boundaryEventDropdownOpen"
-      :nodeRegistry="nodeRegistry"
+      :node-registry="nodeRegistry"
       :moddle="moddle"
       :node="node"
       :shape="shape"
@@ -22,20 +22,20 @@
     <crown-color-dropdown
       :dropdown-open="colorDropdownOpen"
       :node="node"
-      :showCustomIconPicker="showCustomIconPicker"
-      :iconName="iconName"
+      :show-custom-icon-picker="showCustomIconPicker"
+      :icon-name="iconName"
       v-on="$listeners"
       @toggle-dropdown-state="colorDropdownToggle"
     />
   </div>
 </template>
 <script>
-import CrownTaskDropdown from '@/components/crown/crownButtons/crownTaskDropdown';
-import CrownBoundaryEventDropdown from '@/components/crown/crownButtons/crownBoundaryEventDropdown';
-import CrownColorDropdown from '@/components/crown/crownButtons/crownColorDropdown';
+import CrownTaskDropdown from "@/components/crown/crownButtons/crownTaskDropdown";
+import CrownBoundaryEventDropdown from "@/components/crown/crownButtons/crownBoundaryEventDropdown";
+import CrownColorDropdown from "@/components/crown/crownButtons/crownColorDropdown";
 
 export default {
-  name: 'CrownDropdowns',
+  name: "CrownDropdowns",
   components: { CrownTaskDropdown, CrownBoundaryEventDropdown, CrownColorDropdown },
   props: {
     dropdownData: Array,
@@ -46,19 +46,19 @@ export default {
     shape: Object,
     taskDropdownInitiallyOpen: {
       type: Boolean,
-      required: true,
+      required: true
     },
     showCustomIconPicker: Boolean,
     iconName: {
       type: String,
-      default: '',
-    },
+      default: ""
+    }
   },
   data() {
     return {
       taskDropdownOpen: this.taskDropdownInitiallyOpen,
       boundaryEventDropdownOpen: false,
-      colorDropdownOpen: false,
+      colorDropdownOpen: false
     };
   },
   methods: {
@@ -76,8 +76,8 @@ export default {
       this.taskDropdownOpen = false;
       this.boundaryEventDropdownOpen = false;
       this.colorDropdownOpen = value;
-    },
-  },
+    }
+  }
 };
 </script>
 
