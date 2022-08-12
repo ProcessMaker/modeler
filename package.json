@@ -3,7 +3,7 @@
   "version": "1.22.2",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "lint": "vue-cli-service lint --no-fix",
+    "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "bundle-analyze": "npm run build-bundle -- --analyze",
     "bundle-link": "npm run build-bundle",
@@ -150,7 +150,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "./checkForOnly.sh",
-      "pre-push": "npm run test-unit"
+      "pre-push": "npm run lint && npm run test-unit"
     }
   },
   "nyc": {
