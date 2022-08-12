@@ -1,0 +1,10 @@
+public/
+node_modules/
+jest-coverage
+dist
+cypress
+cypress-coverage
+coverage
+.idea
+reports
+test_summary_reports

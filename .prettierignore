@@ -8,6 +8,9 @@ coverage
 # Ignore all HTML files:
 *.html
 
+# Ignore all fixtures
+tests/e2e/fixtures/
+
 # Ignore local env files
 .env.local
 .env.*.local
@@ -25,3 +28,12 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+*.bpmn
+*.svg
+
+cypress-coverage
+jest-coverage
+public
+reports
+test_summary_reports

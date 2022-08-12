@@ -3,14 +3,14 @@
   "version": "1.22.2",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "bundle-analyze": "npm run build-bundle -- --analyze",
     "bundle-link": "npm run build-bundle",
     "check-peer-deps": "npm ls --depth=0",
     "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
     "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
-    "lint-fix": "vue-cli-service lint",
+    "lint-fix": "vue-cli-service lint --fix",
     "mkdir:reports": "mkdir reports || true",
     "open-cypress": "TZ=UTC cypress open",
     "postbundle-link": "npm link",
@@ -150,7 +150,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "./checkForOnly.sh",
-      "pre-push": "npm run lint && npm run test-unit"
+      "pre-push": "npm run test-unit"
     }
   },
   "nyc": {
