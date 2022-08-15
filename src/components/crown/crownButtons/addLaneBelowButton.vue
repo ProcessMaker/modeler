@@ -2,10 +2,16 @@
   <crown-button
     id="lane-below-button"
     aria-label="Add lane below icon"
-    :src="laneBelowIcon"
     v-on="$listeners"
     :width="25"
-  />
+  >
+    <img
+      :src="laneBelowIcon"
+      aria-hidden="true"
+      class="lane-below-icon"
+      alt=""
+    >
+  </crown-button>
 </template>
 
 <script>
@@ -21,3 +27,8 @@ export default {
   },
 };
 </script>
+<style>
+  .lane-below-icon {
+    height: 15px;
+  }
+</style>

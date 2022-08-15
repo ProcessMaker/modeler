@@ -5,10 +5,16 @@
     :title="$t('Flow')"
     id="generic-flow-button"
     aria-label="Create a flow"
-    :src="sequenceFlow"
     role="menuitem"
     @click="addSequence"
-  />
+  >
+    <img
+      :src="sequenceFlow"
+      aria-hidden="true"
+      class="sequence-flow"
+      alt=""
+    >
+  </crown-button>
 </template>
 <script>
 import Flow from '@/assets/connect-elements.svg';
@@ -72,3 +78,8 @@ export default {
   },
 };
 </script>
+<style>
+  .sequence-flow {
+    height: 15px;
+  }
+</style>
