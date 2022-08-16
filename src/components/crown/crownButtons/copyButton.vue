@@ -6,9 +6,16 @@
     aria-label="Copy Element"
     data-test="copy-button"
     role="menuitem"
-    :src="copyIcon"
     @click="copyElement"
-  />
+  >
+    <img
+      :src="copyIcon"
+      aria-hidden="true"
+      class="copy-icon"
+      alt=""
+    >
+  </crown-button>
+  
 </template>
 
 <script>
@@ -33,3 +40,8 @@ export default {
   },
 };
 </script>
+<style>
+  .copy-icon {
+    height: 15px;
+  }
+</style>

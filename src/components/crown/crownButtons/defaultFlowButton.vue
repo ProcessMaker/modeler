@@ -6,9 +6,15 @@
     aria-label="Default Flow"
     data-test="default-flow"
     role="menuitem"
-    :src="icon"
     @click="click"
-  />
+  >
+    <img
+      :src="icon"
+      aria-hidden="true"
+      class="default-flow-icon"
+      alt=""
+    >
+  </crown-button>
 </template>
 
 <script>
@@ -30,3 +36,8 @@ export default {
   },
 };
 </script>
+<style>
+  .default-flow-icon {
+    height: 15px;
+  }
+</style>
