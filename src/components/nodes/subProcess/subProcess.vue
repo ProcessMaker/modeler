@@ -125,7 +125,7 @@ export default {
     }
   },
   watch: {
-    "node.definition.name": function(name) {
+    "node.definition.name": function (name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr("label/text", util.breakText(name, { width }));
 
@@ -140,7 +140,7 @@ export default {
         this.recalcMarkersAlignment();
       }
     },
-    "node.definition.config": function(config) {
+    "node.definition.config": function (config) {
       store.commit("updateNodeProp", {
         node: this.node,
         key: "config",
@@ -148,10 +148,10 @@ export default {
       });
       this.$emit("save-state");
     },
-    "node.definition.callActivityType": function(callActivityType) {
+    "node.definition.callActivityType": function (callActivityType) {
       this.shape.attr("image/display", callActivityType === "globalTask" ? "none" : "initial");
     },
-    "node.definition.loopCharacteristics": function() {
+    "node.definition.loopCharacteristics": function () {
       setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
     }
   },

@@ -1,7 +1,8 @@
 import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
-import component from "./pool";
+import PoolIcon from "@/assets/toolpanel/pool.svg";
+import component from "./pool.vue";
 import { id } from "./config";
 
 export default {
@@ -10,7 +11,7 @@ export default {
   bpmnType: "bpmn:Participant",
   control: true,
   category: "BPMN",
-  icon: require("@/assets/toolpanel/pool.svg"),
+  icon: PoolIcon,
   label: "Pool",
   rank: 60,
   definition(moddle, $t) {

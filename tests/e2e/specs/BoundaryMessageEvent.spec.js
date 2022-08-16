@@ -1,9 +1,4 @@
-import {
-  addNodeTypeToPaper,
-  getElementAtPosition,
-  removeIndentationAndLinebreaks,
-  setBoundaryEvent,
-} from "../support/utils";
+import { addNodeTypeToPaper, getElementAtPosition, removeIndentationAndLinebreaks, setBoundaryEvent } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 import { CommonBoundaryEventBehaviour } from "../support/BoundaryEventCommonBehaviour";
 
@@ -54,5 +49,5 @@ CommonBoundaryEventBehaviour({
     '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
   taskTypeSelector: "switch-to-sub-process",
-  invalidTargets: [{ type: nodeTypes.startEvent }],
+  invalidTargets: [{ type: nodeTypes.startEvent }]
 });

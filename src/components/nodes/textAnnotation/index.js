@@ -1,5 +1,6 @@
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import TextAnnotationSvg from "@/assets/toolpanel/text-annotation.svg";
 import component from "./textAnnotation.vue";
 
 export const id = "processmaker-modeler-text-annotation";
@@ -10,7 +11,7 @@ export default {
   bpmnType: "bpmn:TextAnnotation",
   control: true,
   category: "BPMN",
-  icon: require("@/assets/toolpanel/text-annotation.svg"),
+  icon: TextAnnotationSvg,
   label: "Text Annotation",
   rank: 70,
   definition(moddle, $t) {
@@ -29,7 +30,6 @@ export default {
   /**
    * Validate whether to accept an incoming flow from the node
    *
-   * @param node
    */
   validateIncoming() {
     return false;
@@ -37,7 +37,6 @@ export default {
   /**
    * Validate whether to accept an incoming association from an artifact
    *
-   * @param node
    */
   validateAssociationIncoming() {
     return false;

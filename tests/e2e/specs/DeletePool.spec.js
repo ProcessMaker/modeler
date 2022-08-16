@@ -3,7 +3,7 @@ import {
   getCrownButtonForElement,
   getElementAtPosition,
   removeIndentationAndLinebreaks,
-  typeIntoTextInput,
+  typeIntoTextInput
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 

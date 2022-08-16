@@ -7,7 +7,7 @@ import {
   getElementAtPosition,
   getTinyMceEditor,
   getTinyMceEditorInModal,
-  modalAnimationTime,
+  modalAnimationTime
 } from "../support/utils";
 
 describe("Documentation accordion", () => {
@@ -20,7 +20,7 @@ describe("Documentation accordion", () => {
     nodeTypes.pool,
     nodeTypes.textAnnotation,
     nodeTypes.dataObject,
-    nodeTypes.dataStore,
+    nodeTypes.dataStore
   ];
   const position = { x: 300, y: 300 };
   const accordionOpenAnimationTime = 500;

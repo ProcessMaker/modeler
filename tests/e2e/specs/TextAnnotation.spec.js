@@ -3,7 +3,7 @@ import {
   connectNodesWithFlow,
   dragFromSourceToDest,
   getElementAtPosition,
-  typeIntoTextInput,
+  typeIntoTextInput
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
@@ -52,8 +52,7 @@ describe("Text Annotation", () => {
     cy.get(`[data-test="${colorToSelect}"]`).click();
     typeIntoTextInput("[name=text]", "new text");
 
-    const annotationTextSelector =
-      '.main-paper [data-type="textAnnotation"] [joint-selector="label"]';
+    const annotationTextSelector = '.main-paper [data-type="textAnnotation"] [joint-selector="label"]';
     cy.get(annotationTextSelector).should("have.attr", "fill", colorToSelect);
   });
 });

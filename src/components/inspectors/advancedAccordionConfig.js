@@ -1,5 +1,5 @@
 import idConfigSettings from "./idConfigSettings";
-import NodeIdentifierInput from "./NodeIdentifierInput";
+import NodeIdentifierInput from "./NodeIdentifierInput.vue";
 
 export default {
   component: "FormAccordion",

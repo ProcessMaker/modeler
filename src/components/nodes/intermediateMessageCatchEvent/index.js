@@ -2,7 +2,7 @@ import merge from "lodash/merge";
 import cloneDeep from "lodash/cloneDeep";
 import intermediateMessageEventConfig from "@/components/nodes/intermediateMessageEvent";
 import defaultNames from "@/components/nodes/intermediateEvent/defaultNames";
-import { default as messageEventDefinition, messageSelector } from "../messageEventDefinition";
+import messageEventDefinition, { messageSelector } from "../messageEventDefinition";
 import component from "./intermediateMessageCatchEvent.vue";
 
 const id = "processmaker-modeler-intermediate-message-catch-event";

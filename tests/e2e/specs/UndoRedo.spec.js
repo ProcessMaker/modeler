@@ -9,7 +9,7 @@ import {
   setBoundaryEvent,
   testNumberOfVertices,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -132,17 +132,13 @@ describe("Undo/redo", () => {
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
     dragFromSourceToDest(nodeTypes.task, taskPosition1);
 
-    getElementAtPosition(taskPosition1)
-      .moveTo(taskPosition2.x, taskPosition2.y)
-      .moveTo(taskPosition3.x, taskPosition3.y);
+    getElementAtPosition(taskPosition1).moveTo(taskPosition2.x, taskPosition2.y).moveTo(taskPosition3.x, taskPosition3.y);
 
     cy.get("[data-test=undo]").click({ force: true });
 
     waitToRenderAllShapes();
 
-    getElementAtPosition({ x: taskPosition2.x, y: taskPosition2.y + TOOLBAR_HEIGHT }).should(
-      "exist",
-    );
+    getElementAtPosition({ x: taskPosition2.x, y: taskPosition2.y + TOOLBAR_HEIGHT }).should('exist');
     getElementAtPosition(taskPosition3).should("not.exist");
   });
 
@@ -172,10 +168,7 @@ describe("Undo/redo", () => {
     const startEventPosition = { x: 150, y: 150 };
     const testString = "foo bar";
 
-    getElementAtPosition(startEventPosition).moveTo(
-      startEventPosition.x + 50,
-      startEventPosition.y + 50,
-    );
+    getElementAtPosition(startEventPosition).moveTo(startEventPosition.x + 50, startEventPosition.y + 50);
     cy.get("[data-test=undo]").click();
     waitToRenderAllShapes();
 

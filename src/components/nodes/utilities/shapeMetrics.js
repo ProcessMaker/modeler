@@ -4,6 +4,5 @@ export const shapeCenterX = (shape) => shape.position().x + shape.size().width /
 export const shapeCenterY = (shape) => shape.position().y + shape.size().height / 2;
 export const shapeRight = (shape) => shape.position().x + shape.size().width;
 export const shapeTop = (shape) => shape.position().y;
-export const shapeArea = (shape) => (hasPositionAndSizeAttribs(shape) ? shape.size().width * shape.size().height() : 0);
-
 export const hasPositionAndSizeAttribs = (shape) => Boolean(shape && shape.position && shape.size);
+export const shapeArea = (shape) => (hasPositionAndSizeAttribs(shape) ? shape.size().width * shape.size().height() : 0);

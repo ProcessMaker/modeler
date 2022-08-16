@@ -1,7 +1,4 @@
-import {
-  distributeHorizontalSpacingEvenly,
-  distributeVerticalCentersEvenly,
-} from "@/components/nodes/utilities/distribute";
+import { distributeHorizontalSpacingEvenly, distributeVerticalCentersEvenly } from "@/components/nodes/utilities/distribute";
 import { dummyShape } from "../../../utilities/dummies";
 import toHaveBeenProgrammaticallyMoved from "../../../customMatchers/toHaveBeenProgrammaticallyMoved";
 import toHaveBeenProgrammaticallyMovedBy from "../../../customMatchers/toHaveBeenProgrammaticallyMovedBy";
@@ -15,12 +12,7 @@ expect.extend({ toHaveBeenProgrammaticallyMoved, toHaveBeenProgrammaticallyMoved
 
 describe("Shape Distribution", () => {
   it("can distribute vertical spacing", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 50, 100, 50),
-      dummyShape(100, 100, 100, 100),
-      dummyShape(200, 750, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 50, 100, 50), dummyShape(100, 100, 100, 100), dummyShape(200, 750, 100, 50)];
 
     distributeVerticalCentersEvenly(shapes);
 
@@ -42,12 +34,7 @@ describe("Shape Distribution", () => {
   });
 
   it("can distribute horizontal spacing", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 0, 50, 50),
-      dummyShape(150, 0, 100, 50),
-      dummyShape(400, 0, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 0, 50, 50), dummyShape(150, 0, 100, 50), dummyShape(400, 0, 100, 50)];
 
     distributeHorizontalSpacingEvenly(shapes);
 

@@ -3,7 +3,7 @@ import cloneDeep from "lodash/cloneDeep";
 import endEventConfig from "@/components/nodes/endEvent";
 import defaultNames from "@/components/nodes/endEvent/defaultNames";
 import component from "./messageEndEvent.vue";
-import { default as messageEventDefinition, messageSelector } from "../messageEventDefinition";
+import messageEventDefinition, { messageSelector } from "../messageEventDefinition";
 
 const id = "processmaker-modeler-message-end-event";
 

@@ -95,7 +95,7 @@ export default {
     }
   },
   watch: {
-    "node.definition.name": function(name) {
+    "node.definition.name": function (name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr("label/text", util.breakText(name, { width }));
       const { height } = this.shape.size();
@@ -108,7 +108,7 @@ export default {
         this.recalcMarkersAlignment();
       }
     },
-    "node.definition.isForCompensation": function() {
+    "node.definition.isForCompensation": function () {
       setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     },
     "node.definition": {

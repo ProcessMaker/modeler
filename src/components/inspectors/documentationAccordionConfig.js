@@ -1,4 +1,4 @@
-import DocumentationFormTextArea from "./DocumentationFormTextArea";
+import DocumentationFormTextArea from "./DocumentationFormTextArea.vue";
 
 export default {
   component: "FormAccordion",

@@ -3,7 +3,7 @@ import cloneDeep from "lodash/cloneDeep";
 import requestVariableSettings from "@/components/inspectors/requestVariableSettings";
 import defaultNames from "@/components/nodes/baseStartEvent/defaultNames";
 import baseStartEventConfig from "../baseStartEvent";
-import { default as signalEventDefinition, signalSelector } from "../signalEventDefinition";
+import signalEventDefinition, { signalSelector } from "../signalEventDefinition";
 import component from "./signalStartEvent.vue";
 
 const id = "processmaker-modeler-signal-start-event";

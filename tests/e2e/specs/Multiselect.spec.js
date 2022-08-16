@@ -3,7 +3,7 @@ import {
   getElementAtPosition,
   getGraphElements,
   moveElementRelativeTo,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -14,11 +14,11 @@ describe("Multiselect", () => {
     const translateAmount = 200;
     const newTask1Position = {
       x: task1Position.x + translateAmount,
-      y: task1Position.y + translateAmount,
+      y: task1Position.y + translateAmount
     };
     const newTask2Position = {
       x: task2Position.x + translateAmount,
-      y: task2Position.y + translateAmount,
+      y: task2Position.y + translateAmount
     };
 
     dragFromSourceToDest(nodeTypes.task, task1Position);
@@ -56,11 +56,11 @@ describe("Multiselect", () => {
     const translateAmount = 20;
     const newTask1Position = {
       x: task1Position.x + translateAmount,
-      y: task1Position.y + translateAmount,
+      y: task1Position.y + translateAmount
     };
     const newTask2Position = {
       x: task2Position.x + translateAmount,
-      y: task2Position.y + translateAmount,
+      y: task2Position.y + translateAmount
     };
     const moveAmount = 5;
     const numberOfTimesToMove = translateAmount / moveAmount;
@@ -103,11 +103,11 @@ describe("Multiselect", () => {
     const translateAmount = 200;
     const newTask1Position = {
       x: task1Position.x + translateAmount,
-      y: task1Position.y + translateAmount,
+      y: task1Position.y + translateAmount
     };
     const newTask2Position = {
       x: task2Position.x + translateAmount,
-      y: task2Position.y + translateAmount,
+      y: task2Position.y + translateAmount
     };
 
     dragFromSourceToDest(nodeTypes.task, task1Position);

@@ -2,7 +2,7 @@ import loopCharacteristicsInspector, {
   loopCharacteristicsData,
   loopCharacteristicsHandler
 } from "@/components/inspectors/LoopCharacteristics";
-import NodeIdentifierInput from "../inspectors/NodeIdentifierInput";
+import NodeIdentifierInput from "../inspectors/NodeIdentifierInput.vue";
 
 export { default as association } from "./association";
 export { default as endEvent } from "./endEvent";
@@ -35,8 +35,8 @@ export { default as serviceTask } from "./serviceTask";
 export { default as textAnnotation } from "./textAnnotation";
 export { default as pool } from "./pool";
 export { default as poolLane } from "./poolLane";
-export { default as ValidationStatus } from "../validationStatus/ValidationStatus";
-export { default as Modeler } from "../modeler/Modeler";
+export { default as ValidationStatus } from "../validationStatus/ValidationStatus.vue";
+export { default as Modeler } from "../modeler/Modeler.vue";
 export { default as manualTask } from "./manualTask";
 export { default as boundaryTimerEvent } from "./boundaryTimerEvent";
 export { default as boundaryMessageEvent } from "./boundaryMessageEvent";

@@ -6,7 +6,7 @@ const switchToTaskType = {
   "processmaker-modeler-task": "switch-to-user-task",
   "processmaker-modeler-manual-task": "switch-to-manual-task",
   "processmaker-modeler-script-task": "switch-to-script-task",
-  "processmaker-modeler-call-activity": "switch-to-sub-process",
+  "processmaker-modeler-call-activity": "switch-to-sub-process"
 };
 
 const searchPlusSvg =

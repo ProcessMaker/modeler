@@ -3,6 +3,6 @@ export function dummyShape(x, y, width, height) {
     position: () => ({ x, y }),
     size: () => ({ width, height }),
     get: () => "dummy",
-    translate: jest.fn(),
+    translate: jest.fn()
   };
 }

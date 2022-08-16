@@ -1,15 +1,9 @@
-import {
-  assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest,
-  uploadXml,
-} from "../support/utils";
+import { assertDownloadedXmlContainsExpected, dragFromSourceToDest, uploadXml } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
 
 function assertBottomCenterTaskMarkerHasImage(iconName, markerIndex = 0) {
-  cy.get(
-    `.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.${markerIndex}"]`,
-  )
+  cy.get(`.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.${markerIndex}"]`)
     .should("have.attr", "xlink:href")
     // eslint-disable-next-line no-useless-escape
     .and("match", new RegExp(`${iconName}.*\.svg`));
@@ -24,9 +18,7 @@ describe("Task Marker Flags", () => {
 
   it('sets a task as "for compensation"', () => {
     cy.get("[data-test=for-compensation").check({ force: true });
-    assertDownloadedXmlContainsExpected(
-      '<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />',
-    );
+    assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
     assertBottomCenterTaskMarkerHasImage("compensation");
   });
 

@@ -2,6 +2,7 @@ import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import defaultNames from "@/components/nodes/task/defaultNames";
+import DataObjectIcon from "@/assets/toolpanel/data-object.svg";
 import component from "./dataObject.vue";
 
 export const id = "processmaker-modeler-data-object";
@@ -12,7 +13,7 @@ export default {
   bpmnType: "bpmn:DataObjectReference",
   control: true,
   category: "BPMN",
-  icon: require("@/assets/toolpanel/data-object.svg"),
+  icon: DataObjectIcon,
   label: defaultNames[id],
   rank: 80,
   validateIncoming() {

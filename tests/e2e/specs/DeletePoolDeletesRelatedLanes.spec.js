@@ -1,9 +1,4 @@
-import {
-  assertDownloadedXmlContainsExpected,
-  getCrownButtonForElement,
-  uploadXml,
-  waitToRenderAllShapes,
-} from "../support/utils";
+import { assertDownloadedXmlContainsExpected, getCrownButtonForElement, uploadXml, waitToRenderAllShapes } from "../support/utils";
 
 describe("Pool Lanes", () => {
   it("Deleting first pool deletes One, Two, Three lanes", () => {

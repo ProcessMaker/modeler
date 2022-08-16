@@ -14,9 +14,9 @@ module.exports = {
         prependData: `
           @import '@/assets/scss/settings/_settings.variables.scss';
           @import '@/assets/scss/tools/_tools.chevron.scss';
-        `,
-      },
-    },
+        `
+      }
+    }
   },
   transpileDependencies: ["bpmnlint"],
   configureWebpack: {
@@ -24,16 +24,16 @@ module.exports = {
       modules: [path.resolve(__dirname, "node_modules"), "node_modules"],
       symlinks: false,
       alias: {
-        jointjs$: process.env.NODE_ENV === "development" ? "jointjs/dist/joint.js" : "jointjs",
-      },
+        jointjs$: process.env.NODE_ENV === "development" ? "jointjs/dist/joint.js" : "jointjs"
+      }
     },
     module: {
       rules: [
         {
           test: /\.bpmnlintrc$/,
-          use: "bpmnlint-loader",
-        },
-      ],
+          use: "bpmnlint-loader"
+        }
+      ]
     },
     externals: (() => {
       const externals = [];
@@ -48,7 +48,7 @@ module.exports = {
           "@panter/vue-i18next",
           "luxon",
           "lodash",
-          "bpmn-moddle",
+          "bpmn-moddle"
         );
       }
       return externals;
@@ -66,9 +66,9 @@ module.exports = {
           {
             from: path.resolve(__dirname, "node_modules/@processmaker/vue-form-elements/dist"),
             to: path.resolve(__dirname, "public/js"),
-            ignore: ["demo.html"],
-          },
-        ]),
+            ignore: ["demo.html"]
+          }
+        ])
       );
 
       /* use this plugin to find issues related to circular dependencies */
@@ -87,6 +87,6 @@ module.exports = {
       // }));
 
       return plugins;
-    })(),
-  },
+    })()
+  }
 };

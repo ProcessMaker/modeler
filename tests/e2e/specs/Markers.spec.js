@@ -21,9 +21,7 @@ describe("Markers", () => {
 
     typeIntoTextInput("[name=name]", "Task without Marker");
 
-    getElementAtPosition(taskPosition)
-      .find("image[joint-selector*=topRight]:first")
-      .should("not.have.attr", "xlink:href");
+    getElementAtPosition(taskPosition).find('image[joint-selector*=topRight]:first').should("not.have.attr", "xlink:href");
   });
 
   it("A task could have multiple custom markers", () => {

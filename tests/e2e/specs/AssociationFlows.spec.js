@@ -6,7 +6,7 @@ import {
   getLinksConnectedToElement,
   modalConfirm,
   waitForAnimations,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { direction } from "../../../src/components/nodes/association/associationConfig";

@@ -120,22 +120,22 @@ export default {
       this.prepareData();
       this.prepareConfig();
     },
-    "highlightedNode.definition.assignment": function(current, previous) {
+    "highlightedNode.definition.assignment": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
     },
-    "highlightedNode.definition.assignmentLock": function(current, previous) {
+    "highlightedNode.definition.assignmentLock": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
     },
-    "highlightedNode.definition.allowReassignment": function(current, previous) {
+    "highlightedNode.definition.allowReassignment": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
     },
-    "highlightedNode.definition.assignedUsers": function(current, previous) {
+    "highlightedNode.definition.assignedUsers": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
     },
-    "highlightedNode.definition.assignedGroups": function(current, previous) {
+    "highlightedNode.definition.assignedGroups": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
     },
-    "highlightedNode.definition.assignmentRules": function(current, previous) {
+    "highlightedNode.definition.assignmentRules": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
     }
   },

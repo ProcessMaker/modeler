@@ -3,7 +3,7 @@ import cloneDeep from "lodash/cloneDeep";
 import defaultNames from "@/components/nodes/endEvent/defaultNames";
 import component from "./signalEndEvent.vue";
 import endEventConfig from "../endEvent";
-import { default as signalEventDefinition, signalSelector } from "../signalEventDefinition";
+import signalEventDefinition, { signalSelector } from "../signalEventDefinition";
 
 export const id = "processmaker-modeler-signal-end-event";
 

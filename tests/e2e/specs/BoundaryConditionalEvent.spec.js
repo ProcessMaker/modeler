@@ -3,7 +3,7 @@ import {
   getElementAtPosition,
   removeIndentationAndLinebreaks,
   setBoundaryEvent,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 import { CommonBoundaryEventBehaviour } from "../support/BoundaryEventCommonBehaviour";
@@ -40,10 +40,7 @@ describe("Boundary Conditional Event", () => {
     cy.get("[data-test=redo]").click({ force: true });
     waitToRenderAllShapes();
 
-    getElementAtPosition(
-      boundaryConditionalEventPosition,
-      nodeTypes.boundaryConditionalEvent,
-    ).click();
+    getElementAtPosition(boundaryConditionalEventPosition, nodeTypes.boundaryConditionalEvent).click();
 
     cy.get(interrupting).should("be.checked");
     cy.get(interrupting).uncheck({ force: true });
@@ -58,5 +55,5 @@ CommonBoundaryEventBehaviour({
     '<bpmn:boundaryEvent id="node_3" name="Boundary Conditional Event" attachedToRef="node_2"><bpmn:conditionalEventDefinition><bpmn:condition xsi:type="bpmn:tFormalExpression"></bpmn:condition></bpmn:conditionalEventDefinition></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: "switch-to-user-task",
-  invalidTargets: [{ type: nodeTypes.startEvent }],
+  invalidTargets: [{ type: nodeTypes.startEvent }]
 });

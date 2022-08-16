@@ -3,8 +3,9 @@ import { taskHeight, taskWidth } from "@/components/nodes/task/taskConfig";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import defaultNames from "@/components/nodes/task/defaultNames";
-import SubProcessFormSelect from "./SubProcessFormSelect";
-import component from "./subProcess";
+import SubProcessSvg from "@/assets/toolpanel/subProcess.svg";
+import SubProcessFormSelect from "./SubProcessFormSelect.vue";
+import component from "./subProcess.vue";
 
 export const id = "processmaker-modeler-call-activity";
 
@@ -14,7 +15,7 @@ export default {
   bpmnType: "bpmn:CallActivity",
   control: false,
   category: "BPMN",
-  icon: require("@/assets/toolpanel/subProcess.svg"),
+  icon: SubProcessSvg,
   label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create("bpmn:CallActivity", {

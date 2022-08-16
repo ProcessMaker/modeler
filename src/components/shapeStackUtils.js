@@ -1,26 +1,12 @@
 import { id as poolId } from "@/components/nodes/pool/config";
 import { id as laneId } from "@/components/nodes/poolLane/config";
 
-export default function ensureShapeIsNotCovered(shape, graph) {
-  if (isPool(shape)) {
-    bringPoolToFront(shape);
-  }
-
-  const parentPool = getElementPool(shape);
-
-  if (parentPool) {
-    bringPoolToFront(parentPool);
-  }
-
-  if (isNotLane(shape) && !isPool(shape)) {
-    bringShapeToFront(shape);
-  }
-
-  bringFlowsToFront(graph);
-}
-
 function isNotLane(shape) {
   return shape.component.node.type !== laneId;
+}
+
+function bringShapeToFront(shape) {
+  shape.toFront({ deep: true });
 }
 
 function bringPoolToFront(poolShape) {
@@ -38,10 +24,6 @@ function bringPoolToFront(poolShape) {
   poolLaneElements.forEach(bringShapeToFront);
 }
 
-function bringShapeToFront(shape) {
-  shape.toFront({ deep: true });
-}
-
 function bringFlowsToFront(graph) {
   graph.getLinks().forEach(bringShapeToFront);
 }
@@ -52,4 +34,22 @@ function getElementPool(shape) {
 
 function isPool(shape) {
   return shape.component.node.type === poolId;
+}
+
+export default function ensureShapeIsNotCovered(shape, graph) {
+  if (isPool(shape)) {
+    bringPoolToFront(shape);
+  }
+
+  const parentPool = getElementPool(shape);
+
+  if (parentPool) {
+    bringPoolToFront(parentPool);
+  }
+
+  if (isNotLane(shape) && !isPool(shape)) {
+    bringShapeToFront(shape);
+  }
+
+  bringFlowsToFront(graph);
 }

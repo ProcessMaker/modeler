@@ -4,7 +4,7 @@
  */
 export const defaultViewportDimensions = {
   width: 1366,
-  height: 768,
+  height: 768
 };
 
 /**
@@ -45,7 +45,7 @@ export const nodeTypes = {
   boundaryMessageEvent: "processmaker-modeler-boundary-message-event",
   errorEndEvent: "processmaker-modeler-error-end-event",
   terminateEndEvent: "processmaker-modeler-terminate-end-event",
-  poolLane: "processmaker-modeler-lane",
+  poolLane: "processmaker-modeler-lane"
 };
 
 /**
@@ -53,11 +53,9 @@ export const nodeTypes = {
  */
 export const shapeTypes = {
   poolLane: "PoolLane",
-  boundaryEvent: "processmaker.components.nodes.boundaryEvent.Shape",
+  boundaryEvent: "processmaker.components.nodes.boundaryEvent.Shape"
 };
 
-export const boundaryEventSelector =
-  ".main-paper " + '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+export const boundaryEventSelector = ".main-paper " + '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
-export const taskSelector =
-  ".main-paper " + '[data-type="processmaker.components.nodes.task.Shape"]';
+export const taskSelector = ".main-paper " + '[data-type="processmaker.components.nodes.task.Shape"]';

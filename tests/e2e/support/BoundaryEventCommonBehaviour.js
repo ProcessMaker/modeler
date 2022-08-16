@@ -10,7 +10,7 @@ import {
   moveElementRelativeTo,
   removeIndentationAndLinebreaks,
   setBoundaryEvent,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "./utils";
 import { boundaryEventSelector, nodeTypes } from "./constants";
 import { invalidNodeColor, poolColor, startColor } from "../../../src/components/nodeColors";
@@ -46,7 +46,7 @@ export function CommonBoundaryEventBehaviour({
   taskType,
   taskTypeSelector,
   invalidTargets,
-  skip = false,
+  skip = false
 }) {
   (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${type}`, () => {
     it("can render a boundary event of this type", () => {
@@ -87,8 +87,7 @@ export function CommonBoundaryEventBehaviour({
 
     it("can stay anchored to task when moving pool", () => {
       configurePool({ x: 300, y: 300 }, nodeType, taskType, taskTypeSelector);
-      const taskSelector =
-        ".main-paper " + '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+      const taskSelector = ".main-paper " + '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
 
       cy.get(boundaryEventSelector).then(($boundaryEvent) => {
         cy.get(taskSelector).then(($task) => {
@@ -204,13 +203,9 @@ export function CommonBoundaryEventBehaviour({
       const boundaryEventConnectedPosition = { x: 290, y: 182 };
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
-      getElementAtPosition(boundaryEventPosition, nodeType)
-        .getPosition()
-        .should("contain", boundaryEventConnectedPosition);
+      getElementAtPosition(boundaryEventPosition, nodeType).getPosition().should("contain", boundaryEventConnectedPosition);
       getElementAtPosition(boundaryEventPosition, nodeType).click();
-      getElementAtPosition(boundaryEventPosition, nodeType)
-        .getPosition()
-        .should("contain", boundaryEventConnectedPosition);
+      getElementAtPosition(boundaryEventPosition, nodeType).getPosition().should("contain", boundaryEventConnectedPosition);
     });
 
     it("correctly re-renders a boundary event on undo and redo", () => {
@@ -305,10 +300,7 @@ export function CommonBoundaryEventBehaviour({
         cy.window()
           .its("store.state.paper")
           .then((paper) => {
-            const newPosition = paper.localToPagePoint(
-              invalidNodeTargetPosition.x,
-              invalidNodeTargetPosition.y,
-            );
+            const newPosition = paper.localToPagePoint(invalidNodeTargetPosition.x, invalidNodeTargetPosition.y);
 
             cy.get(boundaryEventSelector).then(($boundaryEvent) => {
               const boundaryEventPosition = $boundaryEvent.position();
@@ -320,7 +312,7 @@ export function CommonBoundaryEventBehaviour({
                   cy.wrap($boundaryEvent).trigger("mousemove", {
                     clientX: newPosition.x,
                     clientY: newPosition.y,
-                    force: true,
+                    force: true
                   });
                 });
 
@@ -364,10 +356,7 @@ export function CommonBoundaryEventBehaviour({
         const overTaskPosition = { x: 550, y: 350 };
 
         [overPoolPosition, overTaskPosition].forEach(({ x, y }) => {
-          cy.wrap($boundaryEvent)
-            .as("boundaryEvent")
-            .click({ force: true })
-            .trigger("mousedown", { which: 1, force: true });
+          cy.wrap($boundaryEvent).as('boundaryEvent').click({ force: true }).trigger("mousedown", { which: 1, force: true });
           waitToRenderAllShapes();
           cy.get("@boundaryEvent").trigger("mousemove", { clientX: x, clientY: y, force: true });
 
@@ -392,10 +381,7 @@ export function CommonBoundaryEventBehaviour({
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
-      getElementAtPosition(boundaryEventPosition)
-        .click()
-        .children()
-        .should("have.class", "joint-highlight-stroke");
+      getElementAtPosition(boundaryEventPosition).click().children().should("have.class", "joint-highlight-stroke");
     });
   });
 }

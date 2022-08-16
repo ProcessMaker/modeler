@@ -1,11 +1,4 @@
-import {
-  shapeBottom,
-  shapeCenterX,
-  shapeCenterY,
-  shapeLeft,
-  shapeRight,
-  shapeTop,
-} from "@/components/nodes/utilities/shapeMetrics";
+import { shapeBottom, shapeCenterX, shapeCenterY, shapeLeft, shapeRight, shapeTop } from "@/components/nodes/utilities/shapeMetrics";
 import { dummyShape } from "../../../utilities/dummies";
 
 describe("Shape Metrics Utilities", () => {

@@ -7,9 +7,7 @@ const failMessage = (shape, utils) => () =>
   `\n\nReceived: ${
     get(shape, "translate.mock.calls", []).length === 0
       ? "\n Shape has not been moved."
-      : `\n Move has been called, but with dx==0, dy==0: ${utils.printReceived(
-          shape.translate.mock.calls,
-        )}`
+      : `\n Move has been called, but with dx==0, dy==0: ${utils.printReceived(shape.translate.mock.calls)}`
   }`;
 
 const passMessage = (shape, utils) => () =>
@@ -26,7 +24,7 @@ export default function toHaveBeenProgrammaticallyMoved(shape) {
   if (!shape || !shape.translate || !shape.translate.mock) {
     return {
       pass: this.isNot,
-      message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`,
+      message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`
     };
   }
 

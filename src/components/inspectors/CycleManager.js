@@ -76,7 +76,7 @@ export default class CycleManager {
    * @param {Date|DateTime|string} date
    * @return {DateTime|null}
    */
-  sanitizeDate(date) {
+  static sanitizeDate(date) {
     if (date === null) {
       return date;
     }

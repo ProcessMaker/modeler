@@ -1,8 +1,4 @@
-import {
-  assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest,
-  getElementAtPosition,
-} from "../support/utils";
+import { assertDownloadedXmlContainsExpected, dragFromSourceToDest, getElementAtPosition } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
 describe("Message Start Event", () => {

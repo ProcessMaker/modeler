@@ -5,7 +5,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -147,10 +147,6 @@ describe("Copy element", () => {
     cy.get('[data-test="copy-button"]').click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes(
-      "<bpmn:task",
-      2,
-      "Expect exactly two tasks after copying one",
-    );
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:task', 2, 'Expect exactly two tasks after copying one');
   });
 });

@@ -4,8 +4,9 @@ import boundaryEventConfig from "@/components/nodes/boundaryEvent";
 import interruptingToggleConfig from "@/components/nodes/boundaryEvent/interruptingToggleInspector";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
-import { default as signalEventDefinition, signalSelector } from "../signalEventDefinition";
-import component from "./boundarySignalEvent";
+import BoundarySignalEventIcon from "@/assets/toolpanel/boundary-signal-event.svg";
+import signalEventDefinition, { signalSelector } from "../signalEventDefinition";
+import component from "./boundarySignalEvent.vue";
 
 export const id = "processmaker-modeler-boundary-signal-event";
 
@@ -15,7 +16,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   component,
   control: false,
   label: "Boundary Signal Event",
-  icon: require("@/assets/toolpanel/boundary-signal-event.svg"),
+  icon: BoundarySignalEventIcon,
   definition(moddle, $t) {
     return moddle.create("bpmn:BoundaryEvent", {
       name: $t("Boundary Signal Event"),

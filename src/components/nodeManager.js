@@ -21,3 +21,5 @@ export function addNodeToProcess(node, targetProcess) {
 
   targetProcess.get(target).push(node.definition);
 }
+
+export default { addNodeToProcess };

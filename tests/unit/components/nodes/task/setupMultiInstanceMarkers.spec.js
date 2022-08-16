@@ -7,12 +7,12 @@ describe("setupMultiInstanceMarkers", () => {
   const $set = jest.fn();
   const $delete = jest.fn();
   const markers = {
-    bottomCenter: {},
+    bottomCenter: {}
   };
 
   it("does not set up markers for task without loop characteristics", () => {
     const nodeDefinition = {
-      get() {},
+      get() {}
     };
 
     setupMultiInstanceMarkers(nodeDefinition, {}, $set, $delete);
@@ -25,11 +25,11 @@ describe("setupMultiInstanceMarkers", () => {
     const nodeDefinition = {
       loopCharacteristics: {
         $type: "bpmn:MultiInstanceLoopCharacteristics",
-        isSequential: true,
+        isSequential: true
       },
       get(prop) {
         return this[prop];
-      },
+      }
     };
 
     setupMultiInstanceMarkers(nodeDefinition, markers, $set);
@@ -41,11 +41,11 @@ describe("setupMultiInstanceMarkers", () => {
     const nodeDefinition = {
       loopCharacteristics: {
         $type: "bpmn:MultiInstanceLoopCharacteristics",
-        isSequential: false,
+        isSequential: false
       },
       get(prop) {
         return this[prop];
-      },
+      }
     };
 
     setupMultiInstanceMarkers(nodeDefinition, markers, $set);
@@ -56,11 +56,11 @@ describe("setupMultiInstanceMarkers", () => {
   it("sets loop icon for standard loop characteristics task", () => {
     const nodeDefinition = {
       loopCharacteristics: {
-        $type: "bpmn:StandardLoopCharacteristics",
+        $type: "bpmn:StandardLoopCharacteristics"
       },
       get(prop) {
         return this[prop];
-      },
+      }
     };
 
     setupMultiInstanceMarkers(nodeDefinition, markers, $set);
@@ -71,11 +71,11 @@ describe("setupMultiInstanceMarkers", () => {
   it("can add a compensation marker", () => {
     const nodeDefinition = {
       loopCharacteristics: {
-        $type: "bpmn:StandardLoopCharacteristics",
+        $type: "bpmn:StandardLoopCharacteristics"
       },
       get(prop) {
         return this[prop];
-      },
+      }
     };
 
     setupMultiInstanceMarkers(nodeDefinition, markers, $set);

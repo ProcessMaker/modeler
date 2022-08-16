@@ -8,7 +8,7 @@ function definitionsFactory(definitionIds = [], diagramIds = []) {
     bpmnElement: { $type: "bpmn:task", id: definitionId },
     get(key) {
       return this[key];
-    },
+    }
   }));
   return {
     diagrams: [
@@ -19,17 +19,17 @@ function definitionsFactory(definitionIds = [], diagramIds = []) {
           planeElement,
           get(key) {
             return this[key];
-          },
-        },
-      },
-    ],
+          }
+        }
+      }
+    ]
   };
 }
 
 describe("NodeIdGenerator", () => {
   it.each([
     ["definition", 0],
-    ["diagram", 1],
+    ["diagram", 1]
   ])("should generate unique %s IDs", (name, idIndex) => {
     const generator = new NodeIdGenerator(definitionsFactory());
     const ids = [];
@@ -46,18 +46,9 @@ describe("NodeIdGenerator", () => {
 
   it("should not generate definition IDs that already exist in definitions", () => {
     const duplicateGenerator = new NodeIdGenerator(definitionsFactory());
-    const definitionIds = [
-      duplicateGenerator.generate()[0],
-      duplicateGenerator.generate()[0],
-      duplicateGenerator.generate()[0],
-    ];
+    const definitionIds = [duplicateGenerator.generate()[0], duplicateGenerator.generate()[0], duplicateGenerator.generate()[0]];
     const generator = new NodeIdGenerator(definitionsFactory(definitionIds));
-    const newDefinitionIds = [
-      generator.generate()[0],
-      generator.generate()[0],
-      generator.generate()[0],
-      generator.generate()[0],
-    ];
+    const newDefinitionIds = [generator.generate()[0], generator.generate()[0], generator.generate()[0], generator.generate()[0]];
 
     while (newDefinitionIds.length > 0) {
       expect(definitionIds).not.toContain(newDefinitionIds.pop());
@@ -66,19 +57,10 @@ describe("NodeIdGenerator", () => {
 
   it("should not generate diagram IDs that already exist in definitions", () => {
     const duplicateGenerator = new NodeIdGenerator(definitionsFactory());
-    const diagramIds = [
-      duplicateGenerator.generate()[1],
-      duplicateGenerator.generate()[1],
-      duplicateGenerator.generate()[1],
-    ];
+    const diagramIds = [duplicateGenerator.generate()[1], duplicateGenerator.generate()[1], duplicateGenerator.generate()[1]];
     const generator = new NodeIdGenerator(definitionsFactory([], diagramIds));
 
-    const newDefinitionIds = [
-      generator.generate()[1],
-      generator.generate()[1],
-      generator.generate()[1],
-      generator.generate()[1],
-    ];
+    const newDefinitionIds = [generator.generate()[1], generator.generate()[1], generator.generate()[1], generator.generate()[1]];
 
     while (newDefinitionIds.length > 0) {
       expect(diagramIds).not.toContain(newDefinitionIds.pop());

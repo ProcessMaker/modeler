@@ -1,7 +1,8 @@
-import Task from "@/components/nodes/task/task";
+import Task from "@/components/nodes/task/task.vue";
 import idConfigSettings from "@/components/inspectors/idConfigSettings";
-import bookIcon from "!!url-loader!@/assets/book.svg";
-import clockIcon from "!!url-loader!@/assets/clock.svg";
+import bookIcon from "@/assets/book.svg";
+import clockIcon from "@/assets/clock.svg";
+import TaskSvg from "@/assets/toolpanel/task.svg";
 
 window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
   /* Add a custom node example */
@@ -39,7 +40,7 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
     bpmnType: "bpmn:ScriptTask",
     control: true,
     category: "Other",
-    icon: require("@/assets/toolpanel/task.svg"),
+    icon: TaskSvg,
     label: "Task with Marker",
     definition(moddle) {
       return moddle.create("bpmn:ScriptTask", {

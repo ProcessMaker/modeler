@@ -4,7 +4,7 @@ import {
   dragFromSourceToDest,
   getElementAtPosition,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -83,11 +83,7 @@ describe("Intermediate Timer Event", () => {
 
   it("should toggle between showing the weekday select when week is selected, and hiding it when it is not", () => {
     const intermediateTimerEventPosition = { x: 250, y: 250 };
-    addNodeTypeToPaper(
-      intermediateTimerEventPosition,
-      nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-timer-catch-event",
-    );
+    addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
     cy.contains("Timing Control").click();
     cy.get("[data-test=intermediateTypeSelect]").select("Cycle");
 

@@ -1,5 +1,6 @@
-import Task from "@/components/nodes/task/task";
+import Task from "@/components/nodes/task/task.vue";
 import idConfigSettings from "@/components/inspectors/idConfigSettings";
+import TaskSvg from "@/assets/toolpanel/task.svg";
 
 window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
   /* Add a custom node example */
@@ -17,7 +18,7 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
     bpmnType: "bpmn:ServiceTask",
     control: true,
     category: "Social",
-    icon: require("@/assets/toolpanel/task.svg"),
+    icon: TaskSvg,
     label: "Send Tweet",
     implementation,
     definition(moddle) {

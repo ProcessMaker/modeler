@@ -3,7 +3,7 @@ import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlContainsSubstringNTimes,
   getElementAtPosition,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -31,10 +31,6 @@ describe("Message End Event", () => {
     cy.get("[data-test=redo]").click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes(
-      '<bpmn:message id=".*?" name=".*?" />',
-      1,
-      "There should only be one message element found",
-    );
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'There should only be one message element found');
   });
 });

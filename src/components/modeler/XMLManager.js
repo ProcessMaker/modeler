@@ -32,7 +32,7 @@ export default class XMLManager {
     });
   }
 
-  cleanBrokenReferences(definitions) {
+  static cleanBrokenReferences(definitions) {
     const { rootElements, diagrams } = definitions;
     const removed = [];
 

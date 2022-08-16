@@ -9,7 +9,7 @@ import {
   getElementAtPosition,
   getNumberOfLinks,
   uploadXml,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";

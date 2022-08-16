@@ -10,11 +10,11 @@ const coloredIcon = (iconString, node) => {
   const svgDocument = new DOMParser().parseFromString(iconString, "text/xml");
   const iconColor = node.definition.get("color") || getDefaultIconColor(node);
 
-  svgDocument.querySelectorAll('*[fill]:not([fill="none"])').forEach((svgNode) => {
+  svgDocument.querySelectorAll(`*[fill]:not([fill="none"])`).forEach((svgNode) => {
     svgNode.setAttribute("fill", iconColor);
   });
 
-  svgDocument.querySelectorAll('*[stroke]:not([stroke="none"])').forEach((svgNode) => {
+  svgDocument.querySelectorAll(`*[stroke]:not([stroke="none"])`).forEach((svgNode) => {
     svgNode.setAttribute("stroke", iconColor);
   });
 

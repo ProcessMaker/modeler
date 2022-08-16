@@ -1,11 +1,4 @@
-import {
-  alignBottom,
-  alignLeft,
-  alignRight,
-  alignTop,
-  centerHorizontally,
-  centerVertically,
-} from "@/components/nodes/utilities/align";
+import { alignBottom, alignLeft, alignRight, alignTop, centerHorizontally, centerVertically } from "@/components/nodes/utilities/align";
 import { dummyShape } from "../../../utilities/dummies";
 import toHaveBeenProgrammaticallyMoved from "../../../customMatchers/toHaveBeenProgrammaticallyMoved";
 import toHaveBeenProgrammaticallyMovedBy from "../../../customMatchers/toHaveBeenProgrammaticallyMovedBy";
@@ -21,11 +14,7 @@ expect.extend({ toHaveBeenProgrammaticallyMoved, toHaveBeenProgrammaticallyMoved
 
 describe("Shape Alignment", () => {
   it("can align left", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     alignLeft(shapes);
 
@@ -35,11 +24,7 @@ describe("Shape Alignment", () => {
   });
 
   it("can align right", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     alignRight(shapes);
 
@@ -49,11 +34,7 @@ describe("Shape Alignment", () => {
   });
 
   it("can align top", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     alignTop(shapes);
 
@@ -63,11 +44,7 @@ describe("Shape Alignment", () => {
   });
 
   it("can align bottom", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     alignBottom(shapes);
 
@@ -77,11 +54,7 @@ describe("Shape Alignment", () => {
   });
 
   it("can center X", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     centerHorizontally(shapes);
 
@@ -91,11 +64,7 @@ describe("Shape Alignment", () => {
   });
 
   it("can center Y", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     centerVertically(shapes);
 

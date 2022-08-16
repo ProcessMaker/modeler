@@ -76,7 +76,7 @@ export default {
     };
   },
   watch: {
-    "node.definition.name": function(name) {
+    "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
     }
   },

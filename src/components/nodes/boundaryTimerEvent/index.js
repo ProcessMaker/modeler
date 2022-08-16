@@ -2,6 +2,7 @@ import merge from "lodash/merge";
 import cloneDeep from "lodash/cloneDeep";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import BoundaryTimerEventIcon from "@/assets/toolpanel/boundary-timer-event.svg";
 import component from "./boundaryTimerEvent.vue";
 import IntermediateTimer from "../../inspectors/IntermediateTimer.vue";
 import boundaryEventConfig from "../boundaryEvent";
@@ -14,7 +15,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   component,
   control: false,
   label: "Boundary Timer Event",
-  icon: require("@/assets/toolpanel/boundary-timer-event.svg"),
+  icon: BoundaryTimerEventIcon,
   definition(moddle, $t) {
     return moddle.create("bpmn:BoundaryEvent", {
       name: $t("Boundary Timer Event"),

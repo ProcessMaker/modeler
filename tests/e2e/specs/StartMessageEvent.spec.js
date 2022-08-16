@@ -4,7 +4,7 @@ import {
   dragFromSourceToDest,
   getCrownButtonForElement,
   getElementAtPosition,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";

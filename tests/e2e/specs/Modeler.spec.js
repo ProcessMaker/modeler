@@ -11,7 +11,7 @@ import {
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
   uploadXml,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
@@ -201,10 +201,7 @@ describe("Modeler", () => {
   it("Selects process node after deleting an element", () => {
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
-    cy.get("[data-test=inspector-container]").should(
-      "to.contain",
-      "Enter the name of this element",
-    );
+    cy.get("[data-test=inspector-container]").should('to.contain', 'Enter the name of this element');
 
     getElementAtPosition(startEventPosition).then(($startEvent) => {
       getCrownButtonForElement($startEvent, "delete-button").click();
@@ -212,10 +209,7 @@ describe("Modeler", () => {
 
     waitToRenderAllShapes();
 
-    cy.get("[data-test=inspector-container]").should(
-      "to.not.contain",
-      "Enter the name of this element",
-    );
+    cy.get("[data-test=inspector-container]").should('to.not.contain', 'Enter the name of this element');
     cy.get("[data-test=inspector-container]").should("to.contain", "Process");
   });
 
@@ -266,8 +260,7 @@ describe("Modeler", () => {
 
   it("shows warning for non-default base element during parsing", () => {
     uploadXml("nonDefaultBaseElement.xml");
-    const warning =
-      "Unsupported Element bpmn:IntermediateCatchEvent is an unsupported element type in parse";
+    const warning = "Unsupported Element bpmn:IntermediateCatchEvent is an unsupported element type in parse";
 
     cy.get('[data-test="validation-toggle"]').click({ force: true });
     cy.get('[data-test="validation-list-toggle"]').click({ force: true });
@@ -297,8 +290,7 @@ describe("Modeler", () => {
   it("persist boundary event with sequence flow in XML", () => {
     uploadXml("../fixtures/boundaryEvent.xml");
 
-    const sequenceFlowXML =
-      '<bpmn:sequenceFlow id="node_5" name="Sequence Flow" sourceRef="node_3" targetRef="node_2" />';
+    const sequenceFlowXML = '<bpmn:sequenceFlow id="node_5" name="Sequence Flow" sourceRef="node_3" targetRef="node_2" />';
 
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -320,18 +312,14 @@ describe("Modeler", () => {
     addNodeTypeToPaper(gatewayPosition, nodeTypes.exclusiveGateway, "switch-to-parallel-gateway");
     cy.get("[data-test=mini-map-btn]").click({ multiple: true });
 
-    cy.get('.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]').then(
-      ($startEvent) => {
-        const { width: startEventWidth, height: startEventHeight } = $startEvent.get(0).getBBox();
-        cy.get('.mini-paper [data-type="processmaker.components.nodes.gateway.Shape"]').should(
-          ($gateway) => {
-            const { width, height } = $gateway.get(0).getBBox();
-            expect(width).to.be.closeTo(startEventWidth, 100);
-            expect(height).to.be.closeTo(startEventHeight, 100);
-          },
-        );
-      },
-    );
+    cy.get('.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]').then(($startEvent) => {
+      const { width: startEventWidth, height: startEventHeight } = $startEvent.get(0).getBBox();
+      cy.get('.mini-paper [data-type="processmaker.components.nodes.gateway.Shape"]').should(($gateway) => {
+        const { width, height } = $gateway.get(0).getBBox();
+        expect(width).to.be.closeTo(startEventWidth, 100);
+        expect(height).to.be.closeTo(startEventHeight, 100);
+      });
+    });
   });
 
   it("Does not show cursor when done loading empty process", () => {
@@ -351,8 +339,7 @@ describe("Modeler", () => {
   });
 
   it("Hides element label on drag", () => {
-    const startEventSelector =
-      '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
+    const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
     const nonBreakingSpace = String.fromCharCode(160);
     const startEventLabelText = `Start${nonBreakingSpace}Event`;
 
@@ -369,10 +356,7 @@ describe("Modeler", () => {
         cy.wrap($startEvent).find(">text").should("have.css", "display", "block");
       });
 
-    cy.get("@startEvent")
-      .trigger("mousemove", { clientX: 600, clientY: 600 })
-      .find(">text")
-      .should("have.css", "display", "none");
+    cy.get("@startEvent").trigger("mousemove", { clientX: 600, clientY: 600 }).find(">text").should("have.css", "display", "none");
 
     cy.get("@startEvent").trigger("mouseup").find(">text").should("have.css", "display", "block");
 

@@ -33,11 +33,7 @@ describe("bounding box metrics", () => {
   });
 
   it("can calculate a correct bounding box with multiple shapes", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 100, 50),
-      dummyShape(200, 200, 100, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 100, 50), dummyShape(200, 200, 100, 50)];
 
     const bounds = getBoundingBox(shapes);
     expect(bounds.left).toBe(0);
@@ -175,21 +171,13 @@ describe("shape group distribution options", () => {
   });
 
   it("can horizontally distribute three or more items", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 70, 50),
-      dummyShape(200, 200, 70, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 70, 50), dummyShape(200, 200, 70, 50)];
 
     expect(getShapesOptions(shapes).can.distribute.horizontally).toBe(true);
   });
 
   it("can vertically distribute three or more items", () => {
-    const shapes = [
-      dummyShape(0, 0, 100, 50),
-      dummyShape(100, 100, 70, 50),
-      dummyShape(200, 200, 70, 50),
-    ];
+    const shapes = [dummyShape(0, 0, 100, 50), dummyShape(100, 100, 70, 50), dummyShape(200, 200, 70, 50)];
 
     expect(getShapesOptions(shapes).can.distribute.horizontally).toBe(true);
   });

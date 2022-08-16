@@ -11,12 +11,12 @@ describe("Mini Map Manager", () => {
       871,
       {
         x: 254.109375,
-        y: 312,
+        y: 312
       },
       {
         newX: 314.890625,
-        newY: 123.5,
-      },
+        newY: 123.5
+      }
     ],
     [
       71,
@@ -27,13 +27,13 @@ describe("Mini Map Manager", () => {
       871,
       {
         x: 350.139375,
-        y: 388,
+        y: 388
       },
       {
         newX: 393.9303125,
-        newY: 241.5,
-      },
-    ],
+        newY: 241.5
+      }
+    ]
   ];
 
   let miniMapPaper;
@@ -48,15 +48,8 @@ describe("Mini Map Manager", () => {
     "Can calculate a new position for the main paper",
     (offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight, localPoint, expected) => {
       miniMapPaper.paperToLocalPoint = () => localPoint;
-      const actual = miniMapManager.calculateNewPaperPosition(
-        offsetX,
-        offsetY,
-        scaleX,
-        scaleY,
-        clientWidth,
-        clientHeight,
-      );
+      const actual = miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
       expect(actual).toEqual(expected);
-    },
+    }
   );
 });

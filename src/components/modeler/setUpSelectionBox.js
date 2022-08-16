@@ -10,26 +10,23 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   let selectionBox;
   let selectionboxMousedownPosition;
 
-  document.addEventListener("keydown", shiftKeyDownListener);
-  document.addEventListener("keyup", shiftKeyUpListener);
-  document.addEventListener("mousedown", mousedownListener);
-  document.addEventListener("mouseup", mouseupListener);
-  document.addEventListener("mousemove", mousemoveListener);
-  paperManager.addEventHandler("cell:pointerdown", (cellView) => {
-    if (!cellView.model.component) {
-      return;
-    }
+  function createSelectionBox(p1, p2) {
+    const { x, y, width, height } = new g.Line(p1, p2).bbox();
 
-    initialPosition = cellView.model.position();
-    cellView.model.on("change:position", moveAllOtherHighlightedShapes);
-  });
-  paperManager.addEventHandler("cell:pointerup link:pointerup element:pointerup blank:pointerup", (cellView) => {
-    if (!cellView.model) {
-      return;
-    }
-
-    cellView.model.off("change:position", moveAllOtherHighlightedShapes);
-  });
+    return new shapes.standard.Rectangle({
+      position: { x, y },
+      size: { width, height },
+      type: "selectionBox",
+      attrs: {
+        body: {
+          fill: "lightblue",
+          opacity: 0.3,
+          stroke: "blue",
+          strokeWidth: 1
+        }
+      }
+    });
+  }
 
   function resetMultiSelect() {
     resetCursor();
@@ -122,21 +119,24 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     initialPosition = newPosition;
   }
 
-  function createSelectionBox(p1, p2) {
-    const { x, y, width, height } = new g.Line(p1, p2).bbox();
+  document.addEventListener("keydown", shiftKeyDownListener);
+  document.addEventListener("keyup", shiftKeyUpListener);
+  document.addEventListener("mousedown", mousedownListener);
+  document.addEventListener("mouseup", mouseupListener);
+  document.addEventListener("mousemove", mousemoveListener);
+  paperManager.addEventHandler("cell:pointerdown", (cellView) => {
+    if (!cellView.model.component) {
+      return;
+    }
 
-    return new shapes.standard.Rectangle({
-      position: { x, y },
-      size: { width, height },
-      type: "selectionBox",
-      attrs: {
-        body: {
-          fill: "lightblue",
-          opacity: 0.3,
-          stroke: "blue",
-          strokeWidth: 1
-        }
-      }
-    });
-  }
+    initialPosition = cellView.model.position();
+    cellView.model.on("change:position", moveAllOtherHighlightedShapes);
+  });
+  paperManager.addEventHandler("cell:pointerup link:pointerup element:pointerup blank:pointerup", (cellView) => {
+    if (!cellView.model) {
+      return;
+    }
+
+    cellView.model.off("change:position", moveAllOtherHighlightedShapes);
+  });
 }

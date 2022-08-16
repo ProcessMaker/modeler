@@ -1,9 +1,4 @@
-import {
-  dragFromSourceToDest,
-  getElementAtPosition,
-  typeIntoTextInput,
-  waitToRenderAllShapes,
-} from "../support/utils";
+import { dragFromSourceToDest, getElementAtPosition, typeIntoTextInput, waitToRenderAllShapes } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
 

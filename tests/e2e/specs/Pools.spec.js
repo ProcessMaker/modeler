@@ -15,7 +15,7 @@ import {
   removeStartEvent,
   setBoundaryEvent,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
@@ -93,8 +93,7 @@ describe("Pools", () => {
     waitToRenderAllShapes();
 
     const empty1stPool = '<bpmn:process id="Process_1" isExecutable="true" />';
-    const startEventIn2ndPool =
-      '<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
+    const startEventIn2ndPool = '<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
       .its("xml")
@@ -136,8 +135,7 @@ describe("Pools", () => {
         getCrownButtonForElement($pool, "delete-button").click({ force: true });
       });
 
-    const sequenceFlowReference =
-      '<bpmn:sequenceFlow id="node_4" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
+    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_4" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
 
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -158,8 +156,7 @@ describe("Pools", () => {
         getCrownButtonForElement($pool, "lane-below-button").click({ force: true });
       });
 
-    const nonEmptyLane =
-      '<bpmn:lane id="node_4" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
+    const nonEmptyLane = '<bpmn:lane id="node_4" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
     assertDownloadedXmlContainsExpected(nonEmptyLane);
 
     const startEventPosition = { x: 150, y: 150 };
@@ -355,15 +352,15 @@ describe("Pools", () => {
     function addElementsThatShouldNotHaveFlowNodeRefs() {
       dragFromSourceToDest(nodeTypes.dataStore, {
         x: poolPosition.x + 100,
-        y: poolPosition.y + 100,
+        y: poolPosition.y + 100
       });
       dragFromSourceToDest(nodeTypes.dataObject, {
         x: poolPosition.x + 150,
-        y: poolPosition.y + 150,
+        y: poolPosition.y + 150
       });
       dragFromSourceToDest(nodeTypes.textAnnotation, {
         x: poolPosition.x + 200,
-        y: poolPosition.y + 200,
+        y: poolPosition.y + 200
       });
     }
 

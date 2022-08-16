@@ -2,7 +2,7 @@ import merge from "lodash/merge";
 import cloneDeep from "lodash/cloneDeep";
 import defaultNames from "@/components/nodes/baseStartEvent/defaultNames";
 import baseStartEventConfig from "@/components/nodes/baseStartEvent";
-import { default as messageEventDefinition, messageSelector } from "../messageEventDefinition";
+import messageEventDefinition, { messageSelector } from "../messageEventDefinition";
 import component from "./messageStartEvent.vue";
 
 const id = "processmaker-modeler-message-start-event";

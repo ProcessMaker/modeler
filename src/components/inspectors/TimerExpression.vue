@@ -47,9 +47,8 @@
         </b-form-group>
 
         <b-form-group class="p-0 mb-1" :description="`${$t('Click On to select a date')}.`">
-          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on">{{
-              $t("On")
-            }}
+          <b-form-radio v-model="ends" class="pl-3 ml-2 mb-1" name="optradio" value="ondate" data-test="ends-on"
+            >{{ $t("On") }}
           </b-form-radio>
           <form-date-picker
             :emit-iso="true"
@@ -67,9 +66,8 @@
         </b-form-group>
 
         <b-form-group class="mt-0 p-0" :description="`${$t('Click After to enter how many occurrences to end the timer control')}.`">
-          <b-form-radio v-model="ends" data-test="ends-after" class="pl-3 ml-2 mb-1" name="optradio" value="after">{{
-              $t("After")
-            }}
+          <b-form-radio v-model="ends" data-test="ends-after" class="pl-3 ml-2 mb-1" name="optradio" value="after"
+            >{{ $t("After") }}
           </b-form-radio>
           <b-form-input
             v-model="times"

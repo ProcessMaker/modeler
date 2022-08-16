@@ -17,6 +17,7 @@ function moveAdvancedAccordionToBottom(accordionA, accordionB) {
 function addInspectorItem(inspectorItems, config) {
   const nodeIndex = inspectorItems.findIndex((item) => {
     // prettier-ignore
+    // eslint-disable-next-line max-len
     const isAFieldWithSameName = !config.container && config.config && item.config && config.config.name && config.config.name === item.config.name;
     return (config.id && config.id === item.id) || isAFieldWithSameName;
   });
@@ -34,7 +35,7 @@ function getInspectorItems(node, config, ownerName) {
   if (ownerName) {
     node = node.inspectorConfig[0];
     ownerName.split(".").forEach((name) => {
-      node = node && node.items.find((node) => node.config && node.config.name === name);
+      node = node && node.items.find((nodee) => nodee.config && nodee.config.name === name);
     });
     return node ? node.items : null;
   }

@@ -26,13 +26,13 @@ import { nodeTypes } from "./constants";
 Cypress.Screenshot.defaults({ screenshotOnRunFailure: false });
 
 Cypress.Cookies.defaults({
-  preserve: ["processmaker_session", /remember_web_.*/],
+  preserve: ["processmaker_session", /remember_web_.*/]
 });
 
 Cypress.on("scrolled", ($el) => {
   $el.get(0).scrollIntoView({
     block: "center",
-    inline: "center",
+    inline: "center"
   });
 });
 

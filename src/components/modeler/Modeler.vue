@@ -133,7 +133,7 @@ import { getInvalidNodes } from "@/components/modeler/modelerUtils";
 import { NodeMigrator } from "@/components/modeler/NodeMigrator";
 import addLoopCharacteristics from "@/setup/addLoopCharacteristics";
 
-import ProcessmakerModelerGenericFlow from "@/components/nodes/genericFlow/genericFlow";
+import ProcessmakerModelerGenericFlow from "@/components/nodes/genericFlow/genericFlow.vue";
 import PaperManager from "../paperManager";
 import { id as dataInputAssociationFlowId } from "../nodes/dataInputAssociation/config";
 import { id as dataOutputAssociationFlowId } from "../nodes/dataOutputAssociation/config";
@@ -143,7 +143,7 @@ import { id as sequenceFlowId } from "../nodes/sequenceFlow";
 import Process from "../inspectors/process";
 import NodeIdGenerator from "../../NodeIdGenerator";
 import linterConfig from "../../../.bpmnlintrc";
-import controls from "../controls/controls";
+import controls from "../controls/controls.vue";
 import boundaryEventConfig from "../nodes/boundaryEvent";
 
 export default {

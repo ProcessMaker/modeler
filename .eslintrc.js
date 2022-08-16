@@ -23,6 +23,10 @@ module.exports = {
     "max-len": ["error", { code: 140, ignoreUrls: true }],
     "comma-dangle": ["error", "never"],
     quotes: ["error", "double", { allowTemplateLiterals: true }],
+    "import/no-extraneous-dependencies": "warn",
+    "consistent-return": "warn",
+    "no-plusplus": 0,
+    "no-underscore-dangle": 0,
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off"
   },

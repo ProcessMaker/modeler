@@ -78,7 +78,7 @@ export default {
     }
   },
   watch: {
-    "node.definition.associationDirection": function(direction) {
+    "node.definition.associationDirection": function (direction) {
       this.updateAssociationMarker(direction);
     }
   },

@@ -1,8 +1,4 @@
-import {
-  dragFromSourceToDest,
-  getElementAtPosition,
-  waitToRenderAllShapes,
-} from "../support/utils";
+import { dragFromSourceToDest, getElementAtPosition, waitToRenderAllShapes } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
 const CYPRESS_UNDO_SCROLL_ADJUSTMENT = 60.5;

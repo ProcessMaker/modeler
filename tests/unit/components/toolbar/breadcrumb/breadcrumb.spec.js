@@ -11,8 +11,8 @@ describe("Breadcrumb", () => {
   it("does not render breadcrumbs data has zero length", () => {
     const breadcrumbs = mount(Breadcrumb, {
       propsData: {
-        breadcrumbData: [],
-      },
+        breadcrumbData: []
+      }
     });
     expect(breadcrumbs.find("nav").find("ol").exists()).toBe(false);
   });
@@ -20,12 +20,12 @@ describe("Breadcrumb", () => {
   it("can render breadcrumbs", () => {
     const links = [
       { text: "link test text", url: "some_url" },
-      { text: "another link", url: "" },
+      { text: "another link", url: "" }
     ];
     const breadcrumbs = mount(Breadcrumb, {
       propsData: {
-        breadcrumbData: [links],
-      },
+        breadcrumbData: [links]
+      }
     });
 
     expect(breadcrumbs.findAll("ol.breadcrumb > li").length).toBe(links.length + 1);
@@ -35,7 +35,7 @@ describe("Breadcrumb", () => {
         breadcrumbs
           .findAll("ol.breadcrumb > li")
           .at(index + 1)
-          .text(),
+          .text()
       ).toEqual(link.text);
     });
   });
@@ -44,8 +44,8 @@ describe("Breadcrumb", () => {
     const links = [{ text: "another link", url: "" }];
     const breadcrumbs = mount(Breadcrumb, {
       propsData: {
-        breadcrumbData: [links],
-      },
+        breadcrumbData: [links]
+      }
     });
 
     expect(breadcrumbs.findAll("ol.breadcrumb > li").length).toBe(2);

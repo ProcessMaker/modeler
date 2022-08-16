@@ -2,6 +2,7 @@ import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import defaultNames from "@/components/nodes/intermediateEvent/defaultNames";
+import GenericIntermediateEventSvg from "@/assets/toolpanel/generic-intermediate-event.svg";
 import IntermediateTimer from "../../inspectors/IntermediateTimer.vue";
 import component from "./intermediateTimerEvent.vue";
 
@@ -14,7 +15,7 @@ export default {
   bpmnType: "bpmn:IntermediateCatchEvent",
   control: true,
   category: "BPMN",
-  icon: require("@/assets/toolpanel/generic-intermediate-event.svg"),
+  icon: GenericIntermediateEventSvg,
   label: "Intermediate Event",
   rank: 20,
   definition(moddle, $t) {

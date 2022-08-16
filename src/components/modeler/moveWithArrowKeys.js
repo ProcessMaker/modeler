@@ -10,27 +10,6 @@ translationVectors.set("Right", [moveAmount, 0]);
 
 const immovableShapeTypes = ["PoolLane", "processmaker.components.nodes.boundaryEvent.Shape"];
 
-export default function moveShapeByKeypress(key, shapes, onAfterMove = () => {}) {
-  if (!isArrowKey(key)) {
-    return;
-  }
-
-  const moveableShapes = shapes.filter(isMovableShape);
-
-  if (moveableShapes.length === 0) {
-    return;
-  }
-
-  const [tx, ty] = getTranslationVector(key);
-
-  moveableShapes.forEach((shape) => {
-    shape.translate(tx, ty, { movedWithArrowKeys: true });
-    expandPoolToContainElement(shape);
-  });
-
-  onAfterMove();
-}
-
 function isArrowKey(key) {
   const arrows = ["up", "down", "left", "right"];
   return arrows.some((direction) => key.toLowerCase().includes(direction));
@@ -62,4 +41,25 @@ function expandPoolToContainElement(shape) {
   }
 
   pool.component.updateLaneChildren();
+}
+
+export default function moveShapeByKeypress(key, shapes, onAfterMove = () => {}) {
+  if (!isArrowKey(key)) {
+    return;
+  }
+
+  const moveableShapes = shapes.filter(isMovableShape);
+
+  if (moveableShapes.length === 0) {
+    return;
+  }
+
+  const [tx, ty] = getTranslationVector(key);
+
+  moveableShapes.forEach((shape) => {
+    shape.translate(tx, ty, { movedWithArrowKeys: true });
+    expandPoolToContainElement(shape);
+  });
+
+  onAfterMove();
 }

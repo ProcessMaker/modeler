@@ -2,6 +2,7 @@ import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
 import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import defaultNames from "@/components/nodes/task/defaultNames";
+import ManualTaskSvg from "@/assets/toolpanel/manualTask.svg";
 import component from "./manualTask.vue";
 
 export const taskHeight = 76;
@@ -13,7 +14,7 @@ export default {
   bpmnType: "bpmn:ManualTask",
   control: false,
   category: "BPMN",
-  icon: require("@/assets/toolpanel/manualTask.svg"),
+  icon: ManualTaskSvg,
   label: defaultNames[id],
   loopInspectorIndex: 1,
   definition(moddle, $t) {

@@ -1,9 +1,8 @@
 <template>
   <div>
     <b-form-group>
-      <b-form-checkbox v-model="isForCompensation" data-test="for-compensation" name="for-compensation">{{
-          $t("For Compensation")
-        }}
+      <b-form-checkbox v-model="isForCompensation" data-test="for-compensation" name="for-compensation"
+        >{{ $t("For Compensation") }}
       </b-form-checkbox>
     </b-form-group>
   </div>

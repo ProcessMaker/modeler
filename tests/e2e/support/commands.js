@@ -38,7 +38,7 @@ Cypress.Commands.add("loadModeler", () => {
 Cypress.Commands.add(
   "moveTo",
   {
-    prevSubject: "element",
+    prevSubject: "element"
   },
   (element, x, y) => {
     cy.window()
@@ -50,17 +50,17 @@ Cypress.Commands.add(
           .trigger("mousedown")
           .trigger("mousemove", {
             clientX: paperOrigin.x + x,
-            clientY: paperOrigin.y + y,
+            clientY: paperOrigin.y + y
           })
           .trigger("mouseup");
       });
-  },
+  }
 );
 
 Cypress.Commands.add(
   "getPosition",
   {
-    prevSubject: "element",
+    prevSubject: "element"
   },
   (element) => {
     cy.window()
@@ -72,30 +72,28 @@ Cypress.Commands.add(
 
         return {
           x: left - paperOrigin.x - x,
-          y: top - paperOrigin.y - y,
+          y: top - paperOrigin.y - y
         };
       });
-  },
+  }
 );
 
 Cypress.Commands.add(
   "getType",
   {
-    prevSubject: "element",
+    prevSubject: "element"
   },
   (element) => {
     cy.window()
       .its("store.state.paper")
       .invoke("getModelById", element.attr("model-id"))
       .then((shape) => shape.component.node.type);
-  },
+  }
 );
 
 Cypress.Commands.add("selectOption", { prevSubject: true }, (subject, option) => {
   cy.get(subject).click();
   cy.get(subject).find("input").clear().type(option);
-  cy.get(subject)
-    .find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`)
-    .click();
+  cy.get(subject).find(`span:not(.multiselect__option--disabled) span:contains("${option}"):first`).click();
   cy.wait(300);
 });

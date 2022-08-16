@@ -5,7 +5,7 @@ import {
   getElementAtPosition,
   getTinyMceEditor,
   waitToRenderAllShapes,
-  waitToRenderNodeUpdates,
+  waitToRenderNodeUpdates
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -49,10 +49,7 @@ describe("Validation", () => {
     cy.get("[data-test=validation-toggle]").click({ force: true });
     cy.get("[data-test=validation-list-toggle]").click({ force: true });
 
-    cy.get("[data-test=validation-list]").should(
-      "not.contain",
-      "Cannot read property 'forEach' of undefined.",
-    );
+    cy.get("[data-test=validation-list]").should('not.contain', 'Cannot read property \'forEach\' of undefined.');
   });
 
   it("updates validation after undo/redo", () => {
@@ -60,9 +57,7 @@ describe("Validation", () => {
     cy.get("[data-test=validation-list-toggle]").click();
 
     const initialNumberOfDefinitionListElements = 4;
-    cy.get("[data-test=validation-list]")
-      .children()
-      .should("have.length", initialNumberOfDefinitionListElements);
+    cy.get("[data-test=validation-list]").children().should("have.length", initialNumberOfDefinitionListElements);
 
     const startEventPosition = { x: 150, y: 150 };
 
@@ -76,10 +71,7 @@ describe("Validation", () => {
     const numberOfNewDefinitionListElements = 2;
     cy.get("[data-test=validation-list]")
       .children()
-      .should(
-        "have.length",
-        initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements,
-      )
+      .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
       .should("contain", "node_2");
 
     cy.get("[data-test=undo]").click();
@@ -99,10 +91,7 @@ describe("Validation", () => {
 
     cy.get("[data-test=validation-list]")
       .children()
-      .should(
-        "have.length",
-        initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements,
-      )
+      .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
       .should("contain", "node_2");
 
     getElementAtPosition(startEventPosition).then(($startEvent) => {
@@ -124,11 +113,7 @@ describe("Validation", () => {
     const taskPosition3 = { x: 300, y: 450 };
     const parallelGatewayPosition = { x: 200, y: 200 };
 
-    addNodeTypeToPaper(
-      parallelGatewayPosition,
-      nodeTypes.exclusiveGateway,
-      "switch-to-parallel-gateway",
-    );
+    addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
     dragFromSourceToDest(nodeTypes.task, taskPosition1);
     dragFromSourceToDest(nodeTypes.task, taskPosition2);
     dragFromSourceToDest(nodeTypes.task, taskPosition3);
@@ -140,14 +125,8 @@ describe("Validation", () => {
     cy.get('[data-test="validation-toggle"]').click({ force: true });
     cy.get('[data-test="validation-list-toggle"]').click();
 
-    cy.get("[data-test=validation-list]").should(
-      "contain.text",
-      "Gateway must have multiple outgoing Sequence Flows.Node ID: node_3",
-    );
-    cy.get("[data-test=validation-list]").should(
-      "contain.text",
-      "Gateway must not have multiple incoming Sequence Flows.Node ID: node_3",
-    );
+    cy.get("[data-test=validation-list]").should('contain.text', 'Gateway must have multiple outgoing Sequence Flows.Node ID: node_3');
+    cy.get("[data-test=validation-list]").should('contain.text', 'Gateway must not have multiple incoming Sequence Flows.Node ID: node_3');
 
     cy.window().then((win) => {
       expect(win.console.error).to.have.callCount(0);

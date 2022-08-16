@@ -1,5 +1,5 @@
 import omit from "lodash/omit";
-import MessageSelect from "@/components/inspectors/MessageSelect";
+import MessageSelect from "@/components/inspectors/MessageSelect.vue";
 
 export function messageSelector(helper) {
   return {

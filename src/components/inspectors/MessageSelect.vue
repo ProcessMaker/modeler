@@ -121,29 +121,29 @@
     <template v-else-if="showListMessages && !showNewMessage && !showEditMessage">
       <table class="table table-sm table-striped" width="100%">
         <thead>
-        <tr>
-          <td colspan="2" align="right">
-            <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" data-cy="events-add" @click="showAddMessage">
-              <i class="fa fa-plus" /> {{ $t("Message") }}
-            </button>
-          </td>
-        </tr>
+          <tr>
+            <td colspan="2" align="right">
+              <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" data-cy="events-add" @click="showAddMessage">
+                <i class="fa fa-plus" /> {{ $t("Message") }}
+              </button>
+            </td>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="message in localMessages" :key="`message-${message.id}`">
-          <td>
-            <b-badge variant="secondary">{{ message.id }}</b-badge>
-            {{ message.name }}
-          </td>
-          <td align="right">
-            <button :aria-label="$t('Edit')" class="btn-link ml-2" @click="editMessage(message)">
-              <i class="fa fa-pen" data-cy="events-edit" />
-            </button>
-            <button :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeMessage(message)">
-              <i class="fa fa-trash" data-cy="events-remove" />
-            </button>
-          </td>
-        </tr>
+          <tr v-for="message in localMessages" :key="`message-${message.id}`">
+            <td>
+              <b-badge variant="secondary">{{ message.id }}</b-badge>
+              {{ message.name }}
+            </td>
+            <td align="right">
+              <button :aria-label="$t('Edit')" class="btn-link ml-2" @click="editMessage(message)">
+                <i class="fa fa-pen" data-cy="events-edit" />
+              </button>
+              <button :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeMessage(message)">
+                <i class="fa fa-trash" data-cy="events-remove" />
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </template>
@@ -371,8 +371,7 @@ export default {
         this.refreshVueMultiselectValue();
       }
     },
-    loadOptionsDebounced() {
-    }
+    loadOptionsDebounced() {}
   }
 };
 </script>

@@ -4,8 +4,8 @@ import advancedAccordionConfig from "@/components/inspectors/advancedAccordionCo
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import interruptingToggleConfig from "../boundaryEvent/interruptingToggleInspector";
 import boundaryEventConfig from "../boundaryEvent";
-import component from "./boundaryConditionalEvent";
-import { default as eventDefinition, inspector } from "../conditionalEventDefinition";
+import component from "./boundaryConditionalEvent.vue";
+import eventDefinition, { inspector } from "../conditionalEventDefinition";
 
 export default merge(cloneDeep(boundaryEventConfig), {
   ...eventDefinition,

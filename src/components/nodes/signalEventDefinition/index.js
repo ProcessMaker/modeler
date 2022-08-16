@@ -1,5 +1,5 @@
 import omit from "lodash/omit";
-import SignalSelect from "@/components/inspectors/SignalSelect";
+import SignalSelect from "@/components/inspectors/SignalSelect.vue";
 
 export function signalSelector(helper, editEnabled = true) {
   return {

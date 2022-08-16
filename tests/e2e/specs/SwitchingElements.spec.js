@@ -10,7 +10,7 @@ import {
   modalConfirm,
   setBoundaryEvent,
   uploadXml,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 

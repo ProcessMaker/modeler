@@ -7,7 +7,7 @@ describe("Intermediate Conditional Catch Event", () => {
     addNodeTypeToPaper(
       intermediateConditionalCatchEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-conditional-catch-event",
+      "switch-to-intermediate-conditional-catch-event"
     );
     const condition = "[name=condition]";
     cy.get(condition).clear().type('form_input_1=="one"');

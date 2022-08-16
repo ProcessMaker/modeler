@@ -48,11 +48,11 @@ export default class PaperManager {
     this.#paper.trigger("scale:changed");
   }
 
-  roundToNearestGridMultiple(number) {
+  static roundToNearestGridMultiple(number) {
     return Math.round(number / PaperManager.gridSize) * PaperManager.gridSize;
   }
 
-  ceilToNearestGridMultiple(number) {
+  static ceilToNearestGridMultiple(number) {
     return Math.ceil(number / PaperManager.gridSize) * PaperManager.gridSize;
   }
 
@@ -106,6 +106,7 @@ export default class PaperManager {
   }
 
   awaitScheduledUpdates() {
+    // eslint-disable-next-line no-underscore-dangle
     if (this.#paper._updates.priorities.some((updates) => !util.isEmpty(updates))) {
       return new Promise((resolve) => {
         this.addOnceHandler("render:done", resolve);

@@ -1,8 +1,22 @@
 let timeoutID;
 
+function getLabelElementForShape(shape) {
+  if (!shape.selectors) {
+    return;
+  }
+
+  return shape.selectors.label || Array.from(shape.selectors.root.children).find((el) => el.classList.contains("labels"));
+}
+
+function waitToTriggerOpenAnimation() {
+  return new Promise((resolve) => {
+    timeoutID = setTimeout(resolve);
+  });
+}
+
 export default async function focusNameInputAndHighlightLabel(cellView) {
   const labelElement = getLabelElementForShape(cellView);
-  const nameInput = document.querySelector('[name="name"]') || document.querySelector('[name="text"]');
+  const nameInput = document.querySelector(`[name="name"]`) || document.querySelector(`[name="text"]`);
 
   if (!labelElement || !nameInput || document.activeElement === nameInput) {
     return;
@@ -22,18 +36,4 @@ export default async function focusNameInputAndHighlightLabel(cellView) {
 
   nameInput.focus();
   nameInput.select();
-}
-
-function getLabelElementForShape(shape) {
-  if (!shape.selectors) {
-    return;
-  }
-
-  return shape.selectors.label || Array.from(shape.selectors.root.children).find((el) => el.classList.contains("labels"));
-}
-
-function waitToTriggerOpenAnimation() {
-  return new Promise((resolve) => {
-    timeoutID = setTimeout(resolve);
-  });
 }

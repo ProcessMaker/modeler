@@ -12,7 +12,7 @@ import {
   moveElement,
   removeStartEvent,
   setBoundaryEvent,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -246,12 +246,7 @@ describe("Message Flows", () => {
     dragFromSourceToDest(nodeTypes.pool, pool2Position);
     addNodeTypeToPaper(taskPosition, nodeTypes.task, "switch-to-sub-process");
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
-    connectNodesWithFlow(
-      "generic-flow-button",
-      startEventPosition,
-      boundaryEventPosition,
-      "center",
-    );
+    connectNodesWithFlow('generic-flow-button', startEventPosition, boundaryEventPosition, 'center');
 
     const endEventId = "node_3";
     const boundaryEventId = "node_8";

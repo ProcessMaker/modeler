@@ -56,10 +56,10 @@ export default {
     };
   },
   watch: {
-    "node.definition.name": function(name) {
+    "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
     },
-    "node.definition.cancelActivity": function(isCancelActivity) {
+    "node.definition.cancelActivity": function (isCancelActivity) {
       this.toggleInterruptingStyle(isCancelActivity);
     }
   },

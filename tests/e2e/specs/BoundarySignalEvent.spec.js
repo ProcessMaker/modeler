@@ -6,7 +6,7 @@ import {
   selectOptionByName,
   setBoundaryEvent,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 import { CommonBoundaryEventBehaviour } from "../support/BoundaryEventCommonBehaviour";
@@ -21,7 +21,7 @@ describe("Boundary Signal Event", () => {
         "create-signals": true,
         "view-signals": true,
         "edit-signals": true,
-        "delete-signals": true,
+        "delete-signals": true
       });
     });
     dragFromSourceToDest(nodeTypes.task, taskPosition);
@@ -66,5 +66,5 @@ CommonBoundaryEventBehaviour({
     '<bpmn:boundaryEvent id="node_3" name="Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: "switch-to-user-task",
-  invalidTargets: [{ type: nodeTypes.startEvent }],
+  invalidTargets: [{ type: nodeTypes.startEvent }]
 });

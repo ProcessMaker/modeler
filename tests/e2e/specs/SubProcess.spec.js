@@ -3,7 +3,7 @@ import {
   assertDownloadedXmlContainsExpected,
   getElementAtPosition,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
@@ -33,9 +33,7 @@ function addSubprocessToPaper(position) {
 }
 
 function clickSubprocessPlusButton() {
-  cy.get(
-    '.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]',
-  ).click();
+  cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]').click();
 }
 
 describe("Sub Process (Call Activities)", () => {
@@ -49,7 +47,7 @@ describe("Sub Process (Call Activities)", () => {
       calledElement: "Subprocess1-5",
       processId: 5,
       startEvent: "node_10",
-      name: "Process with multiple start events (Start Event Two)",
+      name: "Process with multiple start events (Start Event Two)"
     }).replace(/"/g, "&#34;");
 
     addSubprocessToPaper(subProcessPosition);
@@ -59,7 +57,7 @@ describe("Sub Process (Call Activities)", () => {
     selectSubProcessStartEvent(startEventName);
 
     assertDownloadedXmlContainsExpected(
-      `<bpmn:callActivity id="node_3" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`,
+      `<bpmn:callActivity id="node_3" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`
     );
   });
 
@@ -103,15 +101,9 @@ describe("Sub Process (Call Activities)", () => {
       .should("contain.text", "Loading process preview...");
 
     cy.tick(1000);
-    cy.get(".modal-content")
-      .should("not.contain.text", "Loading process preview...")
-      .should("contain.html", "<svg");
+    cy.get(".modal-content").should("not.contain.text", "Loading process preview...").should("contain.html", "<svg");
 
-    cy.get('[data-test="modal-process-link"]').should(
-      "have.attr",
-      "href",
-      `/modeler/${calledSubProcessId}`,
-    );
+    cy.get('[data-test="modal-process-link"]').should('have.attr', 'href', `/modeler/${calledSubProcessId}`);
     cy.clock().invoke("restore");
   });
 
@@ -125,9 +117,7 @@ describe("Sub Process (Call Activities)", () => {
     clickSubprocessPlusButton();
 
     cy.tick(1500);
-    cy.get(".modal-content div")
-      .should("not.contain.html", '<svg width="100%"')
-      .should("contain.html", '<svg class="border border-dark');
+    cy.get(".modal-content div").should("not.contain.html", '<svg width="100%"').should("contain.html", '<svg class="border border-dark');
     cy.clock().invoke("restore");
   });
 

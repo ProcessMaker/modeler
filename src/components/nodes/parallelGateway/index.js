@@ -1,6 +1,6 @@
 import idConfigSettings from "@/components/inspectors/idConfigSettings";
 import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
-import DocumentationFormTextArea from "@/components/inspectors/DocumentationFormTextArea";
+import DocumentationFormTextArea from "@/components/inspectors/DocumentationFormTextArea.vue";
 import { gatewayDirection } from "../gateway/gatewayConfig";
 import component from "./parallelGateway.vue";
 

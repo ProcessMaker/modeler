@@ -1,9 +1,4 @@
-import {
-  dragFromSourceToDest,
-  getElementAtPosition,
-  getGraphElements,
-  waitToRenderAllShapes,
-} from "../support/utils";
+import { dragFromSourceToDest, getElementAtPosition, getGraphElements, waitToRenderAllShapes } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 import { CommonBoundaryEventBehaviour } from "../support/BoundaryEventCommonBehaviour";
 import { defaultNodeColor } from "../../../src/components/nodeColors";
@@ -41,15 +36,14 @@ describe.skip("Boundary Escalation Event", () => {
       { type: nodeTypes.scriptTask, position: { x: 380, y: 300 } },
       { type: nodeTypes.manualTask, position: { x: 100, y: 400 } },
       { type: nodeTypes.sendTweet, position: { x: 240, y: 400 } },
-      { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } },
+      { type: nodeTypes.taskWithMarker, position: { x: 380, y: 400 } }
     ];
 
     inValidBoundaryEscalationEventTargets.forEach(({ type, position }) => {
       dragFromSourceToDest(type, position);
     });
 
-    const numberOfElementsExpected =
-      initialNumberOfElements + inValidBoundaryEscalationEventTargets.length;
+    const numberOfElementsExpected = initialNumberOfElements + inValidBoundaryEscalationEventTargets.length;
     getGraphElements().should("have.length", numberOfElementsExpected);
 
     inValidBoundaryEscalationEventTargets.forEach(({ position }) => {
@@ -68,9 +62,6 @@ CommonBoundaryEventBehaviour({
     '<bpmn:boundaryEvent id="node_4" name="Boundary Escalation Event" attachedToRef="node_3"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
   taskTypeSelector: "switch-to-sub-process",
-  invalidTargets: [
-    { type: nodeTypes.startEvent },
-    { type: nodeTypes.task, color: defaultNodeColor },
-  ],
-  skip: true,
+  invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
+  skip: true
 });

@@ -9,7 +9,7 @@ import {
   getElementAtPosition,
   getNumberOfLinks,
   waitForAnimations,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
@@ -28,7 +28,7 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
@@ -41,7 +41,7 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
@@ -59,7 +59,7 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
 
     // Edit message
@@ -84,7 +84,7 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
 
     // Edit message
@@ -102,10 +102,7 @@ describe("Intermediate Message Throw Event", () => {
     cy.get('[data-cy="events-edit"]').click();
     cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
     cy.get('[data-cy="events-save"]').click();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should(
-      "contain.text",
-      messageName,
-    );
+    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
   it("associates and renames message on intermediate message catch event", () => {
@@ -118,12 +115,12 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
     addNodeTypeToPaper(
       intermediateMessageCatchEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-catch-event",
+      "switch-to-intermediate-message-catch-event"
     );
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
@@ -142,38 +139,27 @@ describe("Intermediate Message Throw Event", () => {
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     waitForAnimations();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should(
-      "contain.text",
-      messageName,
-    );
+    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
   });
 
   it("does not create duplicate messages on undo/redo", () => {
-    addNodeTypeToPaper(
-      { x: 300, y: 300 },
-      nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
-    );
+    addNodeTypeToPaper({ x: 300, y: 300 }, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     cy.get("[data-test=undo]").click();
     waitToRenderAllShapes();
     cy.get("[data-test=redo]").click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes(
-      '<bpmn:message id=".*?" name=".*?" />',
-      1,
-      "Expect single message",
-    );
+    assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'Expect single message');
   });
 
   it("retains message name after loading XML", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
 
     // Edit message
@@ -193,27 +179,20 @@ describe("Intermediate Message Throw Event", () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should(
-      "contain.text",
-      messageName,
-    );
+    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
   it("allows connection between pools", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
     dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 100, y: 450 };
     dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
 
-    connectNodesWithFlow(
-      "generic-flow-button",
-      intermediateMessageThrowEventPosition,
-      secondPoolPosition,
-    );
+    connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
     getNumberOfLinks().should("equal", 1);
   });
 
@@ -221,7 +200,7 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
     dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 150, y: 450 };
@@ -235,18 +214,14 @@ describe("Intermediate Message Throw Event", () => {
       { genericNode: nodeTypes.task, nodeToSwitchTo: "switch-to-sub-process" },
       {
         genericNode: nodeTypes.intermediateCatchEvent,
-        nodeToSwitchTo: "switch-to-intermediate-message-catch-event",
-      },
+        nodeToSwitchTo: "switch-to-intermediate-message-catch-event"
+      }
     ];
 
     validMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
       const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
       addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
-      connectNodesWithFlow(
-        "generic-flow-button",
-        intermediateMessageThrowEventPosition,
-        nodePosition,
-      );
+      connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, nodePosition);
       getNumberOfLinks().should("equal", 1);
       cy.get("#delete-button").click();
     });
@@ -256,7 +231,7 @@ describe("Intermediate Message Throw Event", () => {
     addNodeTypeToPaper(
       intermediateMessageThrowEventPosition,
       nodeTypes.intermediateCatchEvent,
-      "switch-to-intermediate-message-throw-event",
+      "switch-to-intermediate-message-throw-event"
     );
     dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 150, y: 450 };
@@ -266,20 +241,16 @@ describe("Intermediate Message Throw Event", () => {
       { genericNode: nodeTypes.endEvent, nodeToSwitchTo: "switch-to-message-end-event" },
       {
         genericNode: nodeTypes.intermediateCatchEvent,
-        nodeToSwitchTo: "switch-to-intermediate-message-throw-event",
+        nodeToSwitchTo: "switch-to-intermediate-message-throw-event"
       },
       { genericNode: nodeTypes.startEvent, nodeToSwitchTo: "switch-to-start-event" },
-      { genericNode: nodeTypes.startEvent, nodeToSwitchTo: "switch-to-start-timer-event" },
+      { genericNode: nodeTypes.startEvent, nodeToSwitchTo: "switch-to-start-timer-event" }
     ];
 
     invalidMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
       const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
       addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
-      connectNodesWithFlow(
-        "generic-flow-button",
-        intermediateMessageThrowEventPosition,
-        nodePosition,
-      );
+      connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, nodePosition);
       getNumberOfLinks().should("equal", 0);
       getElementAtPosition(nodePosition).click();
       cy.get("#delete-button").click();
@@ -288,11 +259,7 @@ describe("Intermediate Message Throw Event", () => {
     getElementAtPosition(secondPoolPosition).click();
     cy.get("#lane-above-button").click({ force: true });
     const secondPoolLanePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y };
-    connectNodesWithFlow(
-      "generic-flow-button",
-      intermediateMessageThrowEventPosition,
-      secondPoolLanePosition,
-    );
+    connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolLanePosition);
     getNumberOfLinks().should("equal", 0);
   });
 });

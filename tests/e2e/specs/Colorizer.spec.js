@@ -4,7 +4,7 @@ import {
   assertDownloadedXmlDoesNotContainExpected,
   dragFromSourceToDest,
   getElementAtPosition,
-  uploadXml,
+  uploadXml
 } from "../support/utils";
 import { baseNodeColors } from "../../../src/components/nodeColors";
 import { nodeTypes } from "../support/constants";
@@ -41,20 +41,15 @@ describe("Crown color picker", () => {
 
     const fillColor = tinycolor(colorToSelect).lighten(35).toHex8String();
 
-    cy.get('.main-paper [joint-selector="body"]')
-      .should("have.attr", "fill", fillColor)
-      .should("have.attr", "stroke", colorToSelect);
+    cy.get('.main-paper [joint-selector="body"]').should('have.attr', 'fill', fillColor).should("have.attr", "stroke", colorToSelect);
   });
 
   it("should load color prop for boundary events", () => {
     uploadXml("taskWithColoredBoundaryEvent.xml");
 
-    const boundaryEventSelector =
-      '.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"] [joint-selector="body"]';
+    const boundaryEventSelector = '.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"] [joint-selector="body"]';
     const fillColor = tinycolor(colorToSelect).lighten(35).toHex8String();
 
-    cy.get(boundaryEventSelector)
-      .should("have.attr", "fill", fillColor)
-      .should("have.attr", "stroke", colorToSelect);
+    cy.get(boundaryEventSelector).should('have.attr', 'fill', fillColor).should("have.attr", "stroke", colorToSelect);
   });
 });

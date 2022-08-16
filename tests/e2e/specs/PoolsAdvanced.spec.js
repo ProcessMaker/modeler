@@ -1,9 +1,4 @@
-import {
-  assertDownloadedXmlContainsExpected,
-  getCrownButtonForElement,
-  uploadXml,
-  waitToRenderAllShapes,
-} from "../support/utils";
+import { assertDownloadedXmlContainsExpected, getCrownButtonForElement, uploadXml, waitToRenderAllShapes } from "../support/utils";
 
 describe("Pools", () => {
   it("Case 1 Delete a Pool should remove all elements inside it", () => {

@@ -7,7 +7,7 @@ import {
   modalConfirm,
   typeIntoTextInput,
   waitForAnimations,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
@@ -63,9 +63,7 @@ describe("Tasks", () => {
     cy.get("[data-test=switch-to-manual-task]").click();
     cy.wait(modalAnimationTime);
 
-    cy.get("#modal-prevent-closing")
-      .should("be.visible")
-      .and("contain.text", "Changing this type will replace your current configuration");
+    cy.get("#modal-prevent-closing").should("be.visible").and("contain.text", "Changing this type will replace your current configuration");
 
     modalConfirm();
     waitForAnimations();

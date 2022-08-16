@@ -49,7 +49,7 @@ export default {
     };
   },
   watch: {
-    "node.definition.text": function(text) {
+    "node.definition.text": function (text) {
       this.updateNodeText(text);
     }
   },

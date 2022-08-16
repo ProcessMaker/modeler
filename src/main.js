@@ -8,7 +8,7 @@ import * as VueDeepSet from "vue-deepset";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import ScreenBuilder from "@processmaker/screen-builder";
-import Multiselect from "@processmaker/vue-multiselect/src/Multiselect";
+import Multiselect from "@processmaker/vue-multiselect";
 import ModelerApp from "./ModelerApp.vue";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";

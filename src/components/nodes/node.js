@@ -90,16 +90,18 @@ export default class Node {
 
     clonedNode.id = null;
     clonedNode.pool = this.pool;
-    Node.diagramPropertiesToCopy.forEach((prop) => (clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]));
+    Node.diagramPropertiesToCopy.forEach((prop) => {
+      clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop];
+    });
     Object.keys(this.definition)
       .filter((key) => !Node.definitionPropertiesToNotCopy.includes(key))
       .forEach((key) => {
-        const definition = this.definition.get(key);
-        const clonedDefinition = typeof definition === "object" ? cloneDeep(definition) : definition;
+        const def = this.definition.get(key);
+        const clonedDefinition = typeof def === "object" ? cloneDeep(def) : def;
         if (key === "eventDefinitions") {
           for (const i in clonedDefinition) {
-            if (definition[i].signalRef && !clonedDefinition[i].signalRef) {
-              clonedDefinition[i].signalRef = { ...definition[i].signalRef };
+            if (def[i].signalRef && !clonedDefinition[i].signalRef) {
+              clonedDefinition[i].signalRef = { ...def[i].signalRef };
             }
           }
         }
@@ -109,7 +111,7 @@ export default class Node {
       (prop) =>
         clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
-        clonedNode.definition.eventDefinitions[0].hasOwnProperty(prop) &&
+        Object.prototype.hasOwnProperty.call(clonedNode.definition.eventDefinitions[0], prop) &&
         clonedNode.definition.eventDefinitions[0].set(prop, null)
     );
 

@@ -9,7 +9,7 @@ import {
   moveElement,
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 import { taskWidth } from "../../../src/components/nodes/task/taskConfig";
@@ -248,17 +248,13 @@ describe("Sequence Flows", () => {
 
     const endEventPosition = {
       x: taskPosition.x + taskWidth / 2 - startEventDiameter / 2 + 1,
-      y: taskPosition.y + 200,
+      y: taskPosition.y + 200
     };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
     connectNodesWithFlow("generic-flow-button", taskPosition, endEventPosition);
 
-    cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should(
-      "have.attr",
-      "d",
-      "M 308 326 L 308 450",
-    );
+    cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 308 326 L 308 450');
   });
 
   it("retains original background color when it cannot connect to an element", () => {
@@ -320,8 +316,7 @@ describe("Sequence Flows", () => {
         expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
 
-    const updatedSequenceFlow =
-      '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_6"';
+    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_6"';
     assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });

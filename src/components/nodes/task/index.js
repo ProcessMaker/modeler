@@ -7,10 +7,24 @@ import loopCharacteristicsInspector, {
 } from "@/components/inspectors/LoopCharacteristics";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import omit from "lodash/omit";
+import TaskSvg from "@/assets/toolpanel/task.svg";
 import { taskHeight, taskWidth } from "./taskConfig";
 import component from "./task.vue";
 
 export const id = "processmaker-modeler-task";
+
+function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
+  if (!markerFlags) {
+    return;
+  }
+
+  const currentIsForCompensationValue = node.definition.get("isForCompensation");
+  const newIsForCompensationValue = markerFlags.isForCompensation;
+
+  if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
+    setNodeProp(node, "isForCompensation", newIsForCompensationValue);
+  }
+}
 
 export default {
   id: "processmaker-modeler-task",
@@ -19,7 +33,7 @@ export default {
   control: true,
   category: "BPMN",
   rank: 40,
-  icon: require("@/assets/toolpanel/task.svg"),
+  icon: TaskSvg,
   label: "Task",
   definition(moddle, $t) {
     return moddle.create("bpmn:Task", {
@@ -80,16 +94,3 @@ export default {
   loopCharacteristicsHandler,
   loopCharacteristicsData
 };
-
-function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
-  if (!markerFlags) {
-    return;
-  }
-
-  const currentIsForCompensationValue = node.definition.get("isForCompensation");
-  const newIsForCompensationValue = markerFlags.isForCompensation;
-
-  if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
-    setNodeProp(node, "isForCompensation", newIsForCompensationValue);
-  }
-}

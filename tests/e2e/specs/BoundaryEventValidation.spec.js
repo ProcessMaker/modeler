@@ -1,11 +1,6 @@
 import uniqWith from "lodash/uniqWith";
 import isEqual from "lodash/isEqual";
-import {
-  dragFromSourceToDest,
-  getComponentsEmbeddedInShape,
-  getElementAtPosition,
-  setBoundaryEvent,
-} from "../support/utils";
+import { dragFromSourceToDest, getComponentsEmbeddedInShape, getElementAtPosition, setBoundaryEvent } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
 describe("Boundary event validation", () => {
@@ -29,17 +24,11 @@ describe("Boundary event validation", () => {
         expect(uniqWith(boundaryEventPositions, isEqual)).to.have.length(numberOfPortsAroundTask);
       });
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should(
-      "have.length",
-      numberOfPortsAroundTask,
-    );
+    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should('have.length', numberOfPortsAroundTask);
 
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should(
-      "have.length",
-      numberOfPortsAroundTask,
-    );
+    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should('have.length', numberOfPortsAroundTask);
 
     getElementAtPosition(taskPosition, nodeTypes.task).click({ force: true });
 

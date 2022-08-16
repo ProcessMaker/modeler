@@ -4,7 +4,7 @@ import {
   getElementAtPosition,
   getPeriodicityStringUSFormattedDate,
   typeIntoTextInput,
-  waitToRenderAllShapes,
+  waitToRenderAllShapes
 } from "../support/utils";
 
 import { nodeTypes } from "../support/constants";
@@ -35,10 +35,7 @@ describe("Start Timer Event", () => {
     cy.get(".minute").contains("30").click();
     cy.get('[title="Toggle Period"]').click();
     // compare date and hours to avoid the problems caused when there are some seconds of delay
-    cy.get("[data-test=start-date-picker]").should(
-      "contain.value",
-      expectedStartDate.substr(0, 14),
-    );
+    cy.get("[data-test=start-date-picker]").should('contain.value', expectedStartDate.substr(0, 14));
   });
 
   it("can set a specific end date", () => {
@@ -86,7 +83,7 @@ describe("Start Timer Event", () => {
       "2019-08-14T05:30:00.000Z",
       "R/2019-08-20T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z",
       "R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z",
-      "R/2019-08-15T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z",
+      "R/2019-08-15T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z"
     ].join("|");
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -125,15 +122,13 @@ describe("Start Timer Event", () => {
     const periods = [
       { selector: "day", letter: "D" },
       { selector: "month", letter: "M" },
-      { selector: "year", letter: "Y" },
+      { selector: "year", letter: "Y" }
     ];
 
     periods.forEach(({ selector, letter }) => {
       cy.get("[data-test=repeat-on-select]").select(selector, { force: true });
 
-      const timerExpression = `R/${currentDateString}/P${repeat}${letter}/2019-0${
-        month + 1
-      }-${endDay}T${hour}:00:00.000Z`;
+      const timerExpression = `R/${currentDateString}/P${repeat}${letter}/2019-0${month + 1}-${endDay}T${hour}:00:00.000Z`;
       cy.get("[data-test=downloadXMLBtn]").click();
       cy.window()
         .its("xml")

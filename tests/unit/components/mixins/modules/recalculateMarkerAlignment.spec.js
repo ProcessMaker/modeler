@@ -10,7 +10,7 @@ describe("recalculateMarkerAlignment", () => {
       topRight: {},
       bottomLeft: {},
       bottomCenter: {},
-      bottomRight: {},
+      bottomRight: {}
     };
 
     recalculateMarkerAlignment(markers, shape);
@@ -19,14 +19,14 @@ describe("recalculateMarkerAlignment", () => {
       ref: "rect",
       "ref-width": 0,
       "ref-x": 50,
-      "ref-y": 40,
+      "ref-y": 40
     });
 
     expect(shape.attributes.attrs.topCenter).toEqual({
       ref: "rect",
       "ref-width": 0,
       "ref-x": 50,
-      "ref-y": 4,
+      "ref-y": 4
     });
 
     ["bottomLeft", "bottomCenter", "topLeft", "topCenter"].forEach((markerPosition) => {
@@ -50,7 +50,7 @@ describe("recalculateMarkerAlignment", () => {
       topRight: {},
       bottomLeft: {},
       bottomCenter: { c: "third", b: "second", a: "first" },
-      bottomRight: {},
+      bottomRight: {}
     };
 
     recalculateMarkerAlignment(markers, shape);

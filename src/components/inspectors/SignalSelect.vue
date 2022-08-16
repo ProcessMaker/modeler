@@ -122,29 +122,29 @@
     <template v-else-if="showListSignals && !showNewSignal && !showEditSignal">
       <table class="table table-sm table-striped" width="100%">
         <thead>
-        <tr>
-          <td colspan="2" align="right">
-            <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" data-cy="events-add" @click="showAddSignal">
-              <i class="fa fa-plus" /> {{ $t("Signal") }}
-            </button>
-          </td>
-        </tr>
+          <tr>
+            <td colspan="2" align="right">
+              <button type="button" class="btn btn-secondary btn-sm p-1 font-xs" data-cy="events-add" @click="showAddSignal">
+                <i class="fa fa-plus" /> {{ $t("Signal") }}
+              </button>
+            </td>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="signal in localSignals" :key="`signal-${signal.id}`">
-          <td>
-            <b-badge variant="secondary">{{ signal.id }}</b-badge>
-            {{ signal.name }}
-          </td>
-          <td align="right">
-            <button v-if="can('edit-signals')" :aria-label="$t('Edit')" class="btn-link ml-2" @click="editSignal(signal)">
-              <i class="fa fa-pen" data-cy="events-edit" />
-            </button>
-            <button v-if="can('delete-signals')" :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeSignal(signal)">
-              <i class="fa fa-trash" data-cy="events-remove" />
-            </button>
-          </td>
-        </tr>
+          <tr v-for="signal in localSignals" :key="`signal-${signal.id}`">
+            <td>
+              <b-badge variant="secondary">{{ signal.id }}</b-badge>
+              {{ signal.name }}
+            </td>
+            <td align="right">
+              <button v-if="can('edit-signals')" :aria-label="$t('Edit')" class="btn-link ml-2" @click="editSignal(signal)">
+                <i class="fa fa-pen" data-cy="events-edit" />
+              </button>
+              <button v-if="can('delete-signals')" :aria-label="$t('Remove')" class="btn-link ml-2" @click="removeSignal(signal)">
+                <i class="fa fa-trash" data-cy="events-remove" />
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </template>
@@ -391,8 +391,7 @@ export default {
         this.refreshVueMultiselectValue();
       }
     },
-    loadOptionsDebounced() {
-    },
+    loadOptionsDebounced() {},
     can(permission) {
       return get(window, `ProcessMaker.modeler.signalPermissions.${permission}`, false);
     }
