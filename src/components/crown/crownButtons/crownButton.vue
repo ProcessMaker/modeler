@@ -40,8 +40,12 @@ export default {
   margin-top: 0;
   display: flex;
 }
-img, i {
+img {
   margin: 0px 10px;
   height: 15px;
+}
+i {
+  margin: 0px 10px;
+  font-size: 15px;
 }
 </style>
