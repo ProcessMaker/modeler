@@ -11,7 +11,6 @@
     <img
       :src="connectIcon"
       aria-hidden="true"
-      class="connect-icon"
     >
   </crown-button>
 </template>
@@ -65,8 +64,3 @@ export default {
   },
 };
 </script>
-<style>
-  .connect-icon {
-    height: 15px;
-  }
-</style>

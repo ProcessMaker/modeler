@@ -11,7 +11,6 @@
     <img
       :src="copyIcon"
       aria-hidden="true"
-      class="copy-icon"
     >
   </crown-button>
   
@@ -39,8 +38,3 @@ export default {
   },
 };
 </script>
-<style>
-  .copy-icon {
-    height: 15px;
-  }
-</style>

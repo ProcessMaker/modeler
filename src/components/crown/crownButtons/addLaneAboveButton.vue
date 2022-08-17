@@ -8,7 +8,6 @@
     <img
       :src="laneAboveIcon"
       aria-hidden="true"
-      class="lane-above-icon"
     >
   </crown-button>
 </template>
@@ -26,8 +25,3 @@ export default {
   },
 };
 </script>
-<style>
-  .lane-above-icon {
-    height: 15px;
-  }
-</style>

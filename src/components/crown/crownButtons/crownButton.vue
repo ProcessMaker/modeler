@@ -41,7 +41,7 @@ export default {
   display: flex;
 }
 img, i {
-  margin: 5px 10px;
-  width: 15px;
+  margin: 0px 10px;
+  height: 15px;
 }
 </style>

@@ -11,7 +11,6 @@
     <img
       :src="icon"
       aria-hidden="true"
-      class="default-flow-icon"
     >
   </crown-button>
 </template>
@@ -35,8 +34,3 @@ export default {
   },
 };
 </script>
-<style>
-  .default-flow-icon {
-    height: 15px;
-  }
-</style>

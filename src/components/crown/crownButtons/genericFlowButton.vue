@@ -11,7 +11,6 @@
     <img
       :src="sequenceFlow"
       aria-hidden="true"
-      class="sequence-flow"
     >
   </crown-button>
 </template>
@@ -77,8 +76,3 @@ export default {
   },
 };
 </script>
-<style>
-  .sequence-flow {
-    height: 15px;
-  }
-</style>

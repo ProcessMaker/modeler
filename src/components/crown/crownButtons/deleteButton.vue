@@ -65,8 +65,3 @@ export default {
   },
 };
 </script>
-<style>
-  .trash-icon {
-    height: 15px;
-  }
-</style>

@@ -8,7 +8,6 @@
     <img
       :src="laneBelowIcon"
       aria-hidden="true"
-      class="lane-below-icon"
     >
   </crown-button>
 </template>
@@ -26,8 +25,3 @@ export default {
   },
 };
 </script>
-<style>
-  .lane-below-icon {
-    height: 15px;
-  }
-</style>
