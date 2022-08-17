@@ -13,7 +13,6 @@
       data-prefix="fas"
       data-icon="trash-alt"
       class="fa-trash-alt trash-icon"
-      alt=""
     >
   </crown-button>
 </template>

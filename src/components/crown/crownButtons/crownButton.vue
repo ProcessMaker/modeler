@@ -8,7 +8,6 @@
     <slot>
       <img
         :src="src"
-        alt=""
         width="width"
         height="height"
       >

@@ -12,7 +12,6 @@
       :src="connectIcon"
       aria-hidden="true"
       class="connect-icon"
-      alt=""
     >
   </crown-button>
 </template>

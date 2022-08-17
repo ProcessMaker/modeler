@@ -12,7 +12,6 @@
       :src="copyIcon"
       aria-hidden="true"
       class="copy-icon"
-      alt=""
     >
   </crown-button>
   

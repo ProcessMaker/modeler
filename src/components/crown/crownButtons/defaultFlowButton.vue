@@ -12,7 +12,6 @@
       :src="icon"
       aria-hidden="true"
       class="default-flow-icon"
-      alt=""
     >
   </crown-button>
 </template>

@@ -12,7 +12,6 @@
       :src="sequenceFlow"
       aria-hidden="true"
       class="sequence-flow"
-      alt=""
     >
   </crown-button>
 </template>

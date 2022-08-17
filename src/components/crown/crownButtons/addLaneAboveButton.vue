@@ -9,7 +9,6 @@
       :src="laneAboveIcon"
       aria-hidden="true"
       class="lane-above-icon"
-      alt=""
     >
   </crown-button>
 </template>
