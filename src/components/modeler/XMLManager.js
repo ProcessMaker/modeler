@@ -32,7 +32,7 @@ export default class XMLManager {
     });
   }
 
-  static cleanBrokenReferences(definitions) {
+  cleanBrokenReferences = (definitions) => {
     const { rootElements, diagrams } = definitions;
     const removed = [];
 
@@ -75,7 +75,7 @@ export default class XMLManager {
         });
       }
     });
-  }
+  };
 
   download() {
     if (!this.#definitions) {

@@ -46,13 +46,13 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
       const { definition } = node;
       const config = JSON.parse(definition.config);
 
-      for (const key in value) {
+      Object.keys(value).forEach((key) => {
         if (key in config) {
           config[key] = value[key];
         } else if (definition[key] !== value[key]) {
           setNodeProp(node, key, value[key]);
         }
-      }
+      });
 
       const newConfig = JSON.stringify(config);
       if (newConfig !== definition.config) {

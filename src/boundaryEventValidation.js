@@ -1,6 +1,10 @@
 import isValidBoundaryEventTarget from "@/components/nodes/boundaryEvent/validBoundaryEventTargets";
 import { getEmptyBoundaryEventPositionsForShape } from "@/portsUtils";
 
+function spaceAvailable(dropTarget) {
+  return getEmptyBoundaryEventPositionsForShape(dropTarget).length !== 0;
+}
+
 export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
   if (!dropTarget || !isValidBoundaryEventTarget(dropTarget.component)) {
     return false;
@@ -15,8 +19,4 @@ export function canAddBoundaryEventToTarget(boundaryEventType, dropTarget) {
 
 export function isValidBoundaryEscalationEvent(component) {
   return component && component.node.isBpmnType("bpmn:CallActivity");
-}
-
-function spaceAvailable(dropTarget) {
-  return getEmptyBoundaryEventPositionsForShape(dropTarget).length !== 0;
 }

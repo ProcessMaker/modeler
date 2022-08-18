@@ -18,6 +18,7 @@ export default (node) => {
   const originalInspectorData = node.inspectorData || null;
 
   // Override the inspector handler to add loop props
+  // eslint-disable-next-line no-shadow
   node.inspectorHandler = (value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) => {
     originalInspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler);
     value = loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
@@ -25,6 +26,7 @@ export default (node) => {
   };
 
   // Override the data handler to load loop config into the inspector
+  // eslint-disable-next-line no-shadow
   node.inspectorData = (node, defaultDataTransform, inspector) => {
     const inspectorData = originalInspectorData ? originalInspectorData(node, defaultDataTransform, inspector) : defaultDataTransform(node);
 

@@ -101,19 +101,19 @@ import BpmnModdle from "bpmn-moddle";
 import pull from "lodash/pull";
 import remove from "lodash/remove";
 import store from "@/store";
-import InspectorPanel from "@/components/inspectors/InspectorPanel";
+import InspectorPanel from "@/components/inspectors/InspectorPanel.vue";
 import undoRedoStore from "@/undoRedoStore";
 import { Linter } from "bpmnlint";
 import runningInCypressTest from "@/runningInCypressTest";
 import getValidationProperties from "@/targetValidationUtils";
-import MiniPaper from "@/components/miniPaper/MiniPaper";
+import MiniPaper from "@/components/miniPaper/MiniPaper.vue";
 import { id as laneId } from "@/components/nodes/poolLane/config";
 import { id as genericFlowId } from "@/components/nodes/genericFlow/config";
 
 import registerInspectorExtension from "@/components/InspectorExtensionManager";
 
 import ensureShapeIsNotCovered from "@/components/shapeStackUtils";
-import ToolBar from "@/components/toolbar/ToolBar";
+import ToolBar from "@/components/toolbar/ToolBar.vue";
 import Node from "@/components/nodes/node";
 import { addNodeToProcess } from "@/components/nodeManager";
 import moveShapeByKeypress from "@/components/modeler/moveWithArrowKeys";
@@ -142,6 +142,7 @@ import { id as associationId } from "../nodes/association";
 import { id as sequenceFlowId } from "../nodes/sequenceFlow";
 import Process from "../inspectors/process";
 import NodeIdGenerator from "../../NodeIdGenerator";
+// eslint-disable-next-line import/extensions
 import linterConfig from "../../../.bpmnlintrc";
 import controls from "../controls/controls.vue";
 import boundaryEventConfig from "../nodes/boundaryEvent";
@@ -965,9 +966,12 @@ export default {
       this.pushToUndoStack();
     },
     removeNodesFromLane(node) {
-      const containingLane = node.pool;
-      node.pool.component.laneSet;
-      node.pool.component.laneSet.get("lanes").find((lane) => lane.get("flowNodeRef").includes(node.definition));
+      const containingLane =
+        node.pool &&
+        node.pool.component.laneSet &&
+        node.pool.component.laneSet.get("lanes").find((lane) => {
+          return lane.get("flowNodeRef").includes(node.definition);
+        });
 
       if (!containingLane) {
         return;

@@ -8,3 +8,4 @@ coverage
 .idea
 reports
 test_summary_reports
+.bpmnlintrc

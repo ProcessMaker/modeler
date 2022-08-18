@@ -2,14 +2,21 @@ export const markersLimit = 3;
 export const markerSize = 16;
 export const markerPadding = 4;
 
-export default function recalculateMarkerAlignment(markers, shape) {
-  const { width, height } = shape.size();
-
-  for (const position in markers) {
-    alignMarkersFromLeftToRight(shape, position, width);
-    alignMarkersFromBottom(shape, position, height);
-    alignMarkersFromCenter(shape, position, markers, width);
+function orderMarkers(markers, position) {
+  if (position === "bottomCenter") {
+    const orderedMarkers = {};
+    Object.keys(markers[position])
+      .sort()
+      .forEach((key) => {
+        orderedMarkers[key] = markers[position][key];
+      });
+    return orderedMarkers;
   }
+  return markers[position];
+}
+
+function hasTaskMarker(shape) {
+  return !!shape.attr("image/xlink:href");
 }
 
 function getPadding(shape, position) {
@@ -41,6 +48,7 @@ function alignMarkersFromCenter(shape, position, markers, width) {
 
   const orderedMarkers = orderMarkers(markers, position);
 
+  // eslint-disable-next-line guard-for-in,no-restricted-syntax
   for (const marker in orderedMarkers) {
     shape.attr(`${position}.${c}/xlink:href`, markers[position][marker]);
     c++;
@@ -54,19 +62,13 @@ function alignMarkersFromCenter(shape, position, markers, width) {
   }
 }
 
-function orderMarkers(markers, position) {
-  if (position === "bottomCenter") {
-    const orderedMarkers = {};
-    Object.keys(markers[position])
-      .sort()
-      .forEach((key) => {
-        orderedMarkers[key] = markers[position][key];
-      });
-    return orderedMarkers;
-  }
-  return markers[position];
-}
+export default function recalculateMarkerAlignment(markers, shape) {
+  const { width, height } = shape.size();
 
-function hasTaskMarker(shape) {
-  return !!shape.attr("image/xlink:href");
+  // eslint-disable-next-line guard-for-in,no-restricted-syntax
+  for (const position in markers) {
+    alignMarkersFromLeftToRight(shape, position, width);
+    alignMarkersFromBottom(shape, position, height);
+    alignMarkersFromCenter(shape, position, markers, width);
+  }
 }

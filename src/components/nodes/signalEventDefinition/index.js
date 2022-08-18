@@ -26,13 +26,13 @@ export default {
     }, {});
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions) {
-    for (const key in omit(value, ["$type", "eventDefinitions", "signalRef"])) {
+    Object.keys(omit(value, ["$type", "eventDefinitions", "signalRef"])).forEach((key) => {
       if (node.definition[key] === value[key]) {
-        continue;
+        return;
       }
 
       setNodeProp(node, key, value[key]);
-    }
+    });
 
     let signal = definitions.rootElements.find((element) => element.id === value.signalRef);
     if (!signal && value.signalRef) {

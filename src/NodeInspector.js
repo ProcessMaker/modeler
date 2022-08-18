@@ -47,7 +47,7 @@ export default class NodeInspector {
           return obj;
         }, node || this.createModdleNode(moddle, value));
       } catch (e) {
-        throw `Unable to create moddle node of type "${value.$type}" \n ${e}`;
+        throw new Error(`Unable to create moddle node of type "${value.$type}" \n ${e}`);
       }
     }
 
@@ -74,17 +74,15 @@ export default class NodeInspector {
     } else if (value instanceof Array) {
       value = value.map((item) => this.setReferences(item, null));
     } else if (value instanceof Object) {
-      Object.keys(omit(value, "$type", "$config", "markerFlags")).forEach((key) => {
-        value[key] = this.setReferences(value[key], key);
+      Object.keys(omit(value, "$type", "$config", "markerFlags")).forEach((keyy) => {
+        value[keyy] = this.setReferences(value[keyy], keyy);
       });
     }
 
     return value;
   }
 
-  isReference(key) {
-    return !!key && (key.substr(key.length - 3) === "Ref" || key.substr(key.length - 4) === "Refs");
-  }
+  isReference = (key) => !!key && (key.substr(key.length - 3) === "Ref" || key.substr(key.length - 4) === "Refs");
 
   findReference(id) {
     return this.createdModdleNodes[id] || this.findById(id);

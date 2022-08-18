@@ -27,6 +27,8 @@ module.exports = {
     "consistent-return": "warn",
     "no-plusplus": 0,
     "no-underscore-dangle": 0,
+    "no-restricted-syntax": "warn",
+    "no-continue": "warn",
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off"
   },

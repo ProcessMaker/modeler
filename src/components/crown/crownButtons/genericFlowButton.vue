@@ -12,7 +12,7 @@
 </template>
 <script>
 import Flow from "@/assets/connect-elements.svg";
-import CrownButton from "@/components/crown/crownButtons/crownButton";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 import Node from "@/components/nodes/node";
 import { id as genericFlowId } from "@/components/nodes/genericFlow/config";
 
@@ -63,11 +63,7 @@ export default {
         targetRef: { x, y }
       });
 
-      this.$emit("add-node", new Node(
-        genericFlowId,
-        flowPlaceholderDefinition,
-        this.moddle.create("bpmndi:BPMNEdge")
-      );
+      this.$emit("add-node", new Node(genericFlowId, flowPlaceholderDefinition, this.moddle.create("bpmndi:BPMNEdge")));
     }
   }
 };

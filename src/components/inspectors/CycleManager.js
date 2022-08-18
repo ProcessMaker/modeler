@@ -76,7 +76,7 @@ export default class CycleManager {
    * @param {Date|DateTime|string} date
    * @return {DateTime|null}
    */
-  static sanitizeDate(date) {
+  sanitizeDate = (date) => {
     if (date === null) {
       return date;
     }
@@ -86,7 +86,7 @@ export default class CycleManager {
     }
 
     return date.isLuxonDateTime ? date.toUTC() : DateTime.fromJSDate(date).toUTC();
-  }
+  };
 
   getFormattedDateWithWeekdayIntervals() {
     const period = getPeriod(this._repeat, this._periodicityValue);

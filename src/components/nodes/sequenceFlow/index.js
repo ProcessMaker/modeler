@@ -41,13 +41,13 @@ export default {
     const hasCondition = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway"].includes(definition.sourceRef.$type);
 
     // Go through each property and rebind it to our data
-    for (const key in value) {
+    Object.keys(value).forEach((key) => {
       if (definition[key] === value[key]) {
-        continue;
+        return;
       }
 
       if (key === "conditionExpression" && hasCondition) {
-        // Set the condition expression IFF the expresion body changed
+        // Set the condition expression IFF the expression body changed
         if (definition[key].body !== value[key]) {
           const conditionExpression = moddle.create("bpmn:FormalExpression", { body: value[key] });
           setNodeProp(node, key, conditionExpression);
@@ -55,7 +55,7 @@ export default {
       } else {
         setNodeProp(node, key, value[key]);
       }
-    }
+    });
   },
   inspectorConfig: [
     {

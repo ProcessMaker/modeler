@@ -48,13 +48,9 @@ export default class PaperManager {
     this.#paper.trigger("scale:changed");
   }
 
-  static roundToNearestGridMultiple(number) {
-    return Math.round(number / PaperManager.gridSize) * PaperManager.gridSize;
-  }
+  roundToNearestGridMultiple = (number) => Math.round(number / PaperManager.gridSize) * PaperManager.gridSize;
 
-  static ceilToNearestGridMultiple(number) {
-    return Math.ceil(number / PaperManager.gridSize) * PaperManager.gridSize;
-  }
+  ceilToNearestGridMultiple = (number) => Math.ceil(number / PaperManager.gridSize) * PaperManager.gridSize;
 
   translate(x, y) {
     if (this.preventTranslate) {

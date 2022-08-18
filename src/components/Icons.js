@@ -1,3 +1,7 @@
+/* eslint-disable */
+/*
+TODO This file needs to be to be relooked. String.prototypes shouldn't be modified at all.
+ */
 import icons from "js-yaml-loader!@fortawesome/fontawesome-free/metadata/icons.yml";
 
 const common = [

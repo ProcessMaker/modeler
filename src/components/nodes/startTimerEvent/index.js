@@ -31,19 +31,19 @@ export default merge(cloneDeep(baseStartEventConfig), {
   inspectorHandler(value, node, setNodeProp, moddle) {
     const { definition } = node;
 
-    for (const key in value) {
+    Object.keys(value).forEach((key) => {
       if (definition[key] === value[key]) {
-        continue;
+        return;
       }
 
       if (key === "eventDefinitions") {
         const body = value[key];
         if (typeof body === "object") {
-          continue;
+          return;
         }
         const expression = definition.get(key)[0].timeCycle;
         if (expression && expression.body === body) {
-          continue;
+          return;
         }
 
         const eventDefinition = {
@@ -55,7 +55,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
       } else {
         setNodeProp(node, key, value[key]);
       }
-    }
+    });
   },
   inspectorConfig: [
     {
