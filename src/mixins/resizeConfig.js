@@ -456,10 +456,13 @@ export default {
       }
       const { x, y, width, height } = this.shape.getBBox();
 
+      // TODO We have 4 expressions which are pretty much doing nothing? Are they serving a purpose?
+      /* eslint-disable */
       excludePoint !== 0 && this.anchorPoints[0].position(x + width, y + height); // Bottom Right Point
       excludePoint !== 1 && this.anchorPoints[1].position(x - this.pointWidth, y + height); // Bottom Left Point
       excludePoint !== 2 && this.anchorPoints[2].position(x + width, y - this.pointHeight); // Top Right Point
       excludePoint !== 3 && this.anchorPoints[3].position(x - this.pointWidth, y - this.pointWidth); // Top Left Point
+      /* eslint-enable */
     },
     setPointAttributes(point, cursorDirection, buttonId) {
       point.attr({

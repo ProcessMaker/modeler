@@ -71,6 +71,7 @@ export default class PoolEventHandlers {
       this.newPool = null;
     } else {
       this.component.expandToFitElement(this.draggingElement, this.shape);
+      // eslint-disable-next-line no-unused-expressions
       this.component.laneSet && this.component.updateLaneChildren();
     }
 

@@ -5,21 +5,21 @@ import { bpmnType as dataInputAssociationType } from "@/components/nodes/dataInp
 export function removeFlows(graph, shape) {
   const linkShapes = graph.getConnectedLinks(shape);
 
-  linkShapes.forEach((shape) => this.$emit("remove-node", shape.component.node));
+  linkShapes.forEach((shapee) => this.$emit("remove-node", shapee.component.node));
 }
 
 // Remove the incoming and outgoing flows of a node
 export function removeNodeFlows(node, modeler) {
   if (node.definition.incoming) {
     node.definition.incoming.forEach((flow) => {
-      const node = modeler.nodes.find((node) => node.definition === flow);
-      modeler.removeNode(node);
+      const targetNode = modeler.nodes.find((nodeee) => nodeee.definition === flow);
+      modeler.removeNode(targetNode);
     });
   }
   if (node.definition.outgoing) {
     node.definition.outgoing.forEach((flow) => {
-      const node = modeler.nodes.find((node) => node.definition === flow);
-      modeler.removeNode(node);
+      const targetNode = modeler.nodes.find((nodeee) => nodeee.definition === flow);
+      modeler.removeNode(targetNode);
     });
   }
 }
@@ -103,7 +103,7 @@ export function removeSourceDefault(node) {
 
 export function getOrFindDataInput(moddle, task, sourceNode) {
   if (sourceNode.$type !== "bpmn:DataObjectReference" && sourceNode.$type !== "bpmn:DataStoreReference") {
-    throw `Source node must be a DataObjectReference or bpmn:DataStoreReference, got ${sourceNode.$type}`;
+    throw new Error(`Source node must be a DataObjectReference or bpmn:DataStoreReference, got ${sourceNode.$type}`);
   }
   const sourceNodeId = sourceNode.id;
   const dataInputId = `data_input_${sourceNodeId}`;
@@ -176,7 +176,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
 
 export function removeDataInput(task, sourceNode) {
   if (sourceNode.$type !== "bpmn:DataObjectReference" && sourceNode.$type !== "bpmn:DataStoreReference") {
-    throw `Source node must be a DataObjectReference or bpmn:DataStoreReference, got ${sourceNode.$type}`;
+    throw new Error(`Source node must be a DataObjectReference or bpmn:DataStoreReference, got ${sourceNode.$type}`);
   }
   const sourceNodeId = sourceNode.id;
   const dataInputId = `data_input_${sourceNodeId}`;
