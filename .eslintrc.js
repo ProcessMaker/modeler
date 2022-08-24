@@ -30,6 +30,7 @@ module.exports = {
     "no-restricted-syntax": "warn",
     "no-continue": "warn",
     "prefer-destructuring": "warn",
+    "import/no-cycle": "warn",
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off"
   },
