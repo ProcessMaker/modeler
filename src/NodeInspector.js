@@ -98,10 +98,12 @@ export default class NodeInspector {
     let found;
     if (root instanceof Array) {
       walked.push(root);
+      // eslint-disable-next-line no-return-assign
       root.find((item) => (found = this.findById(id, item, walked)));
     } else if (root instanceof Object && root.$type) {
       walked.push(root);
       if (root.id === id) return root;
+      // eslint-disable-next-line no-return-assign
       Object.getOwnPropertyNames(root).find((key) => (found = !(root[key] instanceof Function) && this.findById(id, root[key], walked)));
     }
     return found;

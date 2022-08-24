@@ -26,6 +26,7 @@ export function removeNodeFlows(node, modeler) {
 
 // Remove the associations of a node
 export function removeNodeMessageFlows(node, modeler) {
+  // eslint-disable-next-line consistent-return,array-callback-return
   const linkedMessages = modeler.nodes.filter((n) => {
     if (n.definition.sourceRef) {
       if (n.definition.sourceRef === node.definition) {
@@ -45,6 +46,7 @@ export function removeNodeMessageFlows(node, modeler) {
 
 // Remove the associations of a node
 export function removeNodeAssociations(node, modeler) {
+  // eslint-disable-next-line consistent-return,array-callback-return
   const linkedAssociations = modeler.nodes.filter((n) => {
     if (n.definition.sourceRef) {
       if (n.definition.sourceRef === node.definition) {
