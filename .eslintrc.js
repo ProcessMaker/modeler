@@ -4,6 +4,9 @@ module.exports = {
     es2020: true,
     node: true
   },
+  globals: {
+    jest: true
+  },
 
   extends: ["plugin:vue/recommended", "airbnb-base", "eslint:recommended", "@vue/prettier", "@vue/airbnb", "plugin:prettier/recommended"],
 
@@ -19,6 +22,7 @@ module.exports = {
     "prettier/prettier": ["error", { trailingComma: "none" }],
     "no-unexpected-multiline": "error",
     "no-param-reassign": 1,
+    radix: 0,
     eqeqeq: "error",
     "max-len": ["error", { code: 140, ignoreUrls: true }],
     "comma-dangle": ["error", "never"],
