@@ -1,58 +1,75 @@
-
 version: 2
 jobs:
   cypress/build:
     resource_class: xlarge
     docker:
-    - image: cypress/base:14.16.0
+      - image: cypress/base:16.14.2
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - cache-{{ .Branch }}-{{ checksum "package.json" }}
-    - run:
-        name: Npm CI
-        command: npm ci && npx browserslist@latest --update-db
-    - run:
-        command: npx cypress verify
-    - save_cache:
-        key: cache-{{ .Branch }}-{{ checksum "package.json" }}
-        paths:
-        - ~/.npm
-        - ~/.cache
-    - run: npm run lint
-    - persist_to_workspace:
-        root: ~/
-        paths:
-        - project
-        - .cache/Cypress
-    - run: ls -la
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: Npm CI
+          command: npm ci && npx browserslist@latest --update-db
+      - run:
+          command: npx cypress verify
+      - save_cache:
+          key: cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+            - ~/.cache
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project
+            - .cache/Cypress
   cypress/e2e-tests:
     resource_class: xlarge
     docker:
-    - image: cypress/browsers:node14.16.0-chrome89-ff86
+      - image: cypress/browsers:node16.14.0-chrome99-ff97
     parallelism: 10
     steps:
-    - attach_workspace:
-        at: ~/
-    - run: ls -la
-    - run:
-        name: before tests
-        command: circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests && cat circleci.tests
-    - run:
-        name: run tests
-        command:  TZ=UTC npx vue-cli-service test:e2e --mode test --headless --browser chrome --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml --spec $(cat circleci.tests | tr "\n" ",")
-    - run:
-        name: preparate coverage
-        command: mkdir coverage && mv .nyc_output/out.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
-    - save_cache:
-        paths:
-          - coverage/
-        key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
-    - run: ls -la coverage
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: before tests
+          command: circleci tests glob "tests/e2e/*/*.js" | circleci tests split > circleci.tests && sed -i 's/No timing found for "//g' circleci.tests && sed -i 's/"//g' circleci.tests && grep "\S" circleci.tests > uno.txt && mv uno.txt circleci.tests && cat circleci.tests
+      - run:
+          name: run tests
+          command: TZ=UTC npx vue-cli-service test:e2e --mode test --headless --browser chrome --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml --spec $(cat circleci.tests | tr "\n" ",")
+      - run:
+          name: preparate coverage
+          command: mkdir coverage && mv .nyc_output/out.json coverage/coverage-$CIRCLE_NODE_INDEX-$(date +"%s%N").json
+      - save_cache:
+          paths:
+            - coverage/
+          key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
+
+  lint:
+    docker:
+      - image: cimg/node:16.15.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run:
+          command: npm run lint
+  unit-test:
+    docker:
+      - image: cimg/node:16.15.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run:
+          command: npm run test-unit
+
   cypress/report:
     docker:
-    - image: cypress/base:14.16.0
+      - image: cypress/base:16.14.2
     steps:
       - attach_workspace:
           at: ~/
@@ -102,12 +119,16 @@ jobs:
 workflows:
   build:
     jobs:
-    - cypress/build
-    - cypress/e2e-tests:
-        requires:
-          - cypress/build
-    - cypress/report:
-        requires:
-          - cypress/e2e-tests
-
-  version: 2
+      - cypress/build
+      - lint:
+          requires:
+            - cypress/build
+      - unit-test:
+          requires:
+            - lint
+      - cypress/e2e-tests:
+          requires:
+            - lint
+      - cypress/report:
+          requires:
+            - lint
