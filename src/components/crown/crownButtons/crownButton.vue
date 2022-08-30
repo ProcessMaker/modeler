@@ -8,7 +8,6 @@
     <slot>
       <img
         :src="src"
-        alt=""
         width="width"
         height="height"
       >
@@ -41,8 +40,12 @@ export default {
   margin-top: 0;
   display: flex;
 }
-img, i {
-  margin: 5px 10px;
-  width: 15px;
+img {
+  margin: 0px 10px;
+  height: 15px;
+}
+i {
+  margin: 0px 10px;
+  font-size: 15px;
 }
 </style>

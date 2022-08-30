@@ -13,7 +13,6 @@
       data-prefix="fas"
       data-icon="trash-alt"
       class="fa-trash-alt trash-icon"
-      alt=""
     >
   </crown-button>
 </template>
@@ -66,8 +65,3 @@ export default {
   },
 };
 </script>
-<style>
-  .trash-icon {
-    height: 13.25px;
-  }
-</style>

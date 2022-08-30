@@ -6,9 +6,14 @@
     aria-label="Copy Element"
     data-test="copy-button"
     role="menuitem"
-    :src="copyIcon"
     @click="copyElement"
-  />
+  >
+    <img
+      :src="copyIcon"
+      aria-hidden="true"
+    >
+  </crown-button>
+  
 </template>
 
 <script>
