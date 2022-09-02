@@ -127,5 +127,5 @@ workflows:
             - lint
       - cypress/report:
           requires:
-            - lint
+            - cypress/e2e-tests
   version: 2
