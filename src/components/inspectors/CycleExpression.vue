@@ -26,7 +26,7 @@
 <script>
 import last from "lodash/last";
 import { DateTime } from "luxon";
-import WeekdaySelect from "./WeekdaySelect";
+import WeekdaySelect from "./WeekdaySelect.vue";
 
 const periodNames = {
   minute: "minute",

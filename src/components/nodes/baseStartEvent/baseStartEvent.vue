@@ -21,7 +21,7 @@ import portsConfig from "@/mixins/portsConfig";
 import hasMarkers from "@/mixins/hasMarkers";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
 import { startColor, startColorStroke } from "@/components/nodeColors";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import highlightConfig from "@/mixins/highlightConfig";
 import updateIconColor from "@/mixins/updateIconColor";
 import defaultNames from "./defaultNames";

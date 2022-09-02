@@ -138,7 +138,7 @@ describe("Undo/redo", () => {
 
     waitToRenderAllShapes();
 
-    getElementAtPosition({ x: taskPosition2.x, y: taskPosition2.y + TOOLBAR_HEIGHT }).should('exist');
+    getElementAtPosition({ x: taskPosition2.x, y: taskPosition2.y + TOOLBAR_HEIGHT }).should("exist");
     getElementAtPosition(taskPosition3).should("not.exist");
   });
 
@@ -195,10 +195,10 @@ describe("Undo/redo", () => {
     const sendTweetPosition = { x: 150, y: 450 };
     dragFromSourceToDest(nodeTypes.sendTweet, sendTweetPosition);
 
-    const testConnector =
-      '<bpmn:serviceTask id="node_2" name="Test Connector" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" implementation="test-message" />';
-    const sendTweet =
-      '<bpmn:serviceTask id="node_3" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />';
+    // eslint-disable-next-line max-len
+    const testConnector = `<bpmn:serviceTask id="node_2" name="Test Connector" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" implementation="test-message" />`;
+    // eslint-disable-next-line max-len
+    const sendTweet = `<bpmn:serviceTask id="node_3" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />`;
 
     assertDownloadedXmlContainsExpected(testConnector, sendTweet);
 

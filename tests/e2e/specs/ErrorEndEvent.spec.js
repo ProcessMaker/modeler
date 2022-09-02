@@ -25,7 +25,7 @@ describe("Error End Event", () => {
   });
 
   it("Can create an error end event", () => {
-    assertDownloadedXmlContainsExpected(errorEndEventXml, '<bpmn:error id="node_3_error" name="node_3_error" />');
+    assertDownloadedXmlContainsExpected(errorEndEventXml, `<bpmn:error id="node_3_error" name="node_3_error" />`);
   });
 
   it("can edit the error end event name", () => {
@@ -45,7 +45,7 @@ describe("Error End Event", () => {
 
     assertDownloadedXmlDoesNotContainExpected(
       errorEndEventXml,
-      '<bpmn:error id="node_3_error" name="node_3_error" />',
+      `<bpmn:error id="node_3_error" name="node_3_error" />`,
       `<bpmn:error id="node_3_error" name="${errorName}" />`
     );
   });
@@ -56,6 +56,6 @@ describe("Error End Event", () => {
     cy.get("[data-test=redo]").click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes('<bpmn:error id=".*?" name=".*?" />', 1, 'There should only be one message element found');
+    assertDownloadedXmlContainsSubstringNTimes(`<bpmn:error id=".*?" name=".*?" />`, 1, "There should only be one message element found");
   });
 });

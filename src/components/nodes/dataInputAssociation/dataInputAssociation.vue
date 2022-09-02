@@ -19,10 +19,10 @@
 import { shapes } from "jointjs";
 import linkConfig from "@/mixins/linkConfig";
 import get from "lodash/get";
-import associationHead from "!!url-loader!@/assets/association-head.svg";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import associationHead from "!!svg-inline-loader!@/assets/association-head.svg";
 import { getOrFindDataInput, removeDataInput } from "@/components/crown/utils";
 import { pull } from "lodash";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {

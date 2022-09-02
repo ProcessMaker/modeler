@@ -36,8 +36,8 @@
   </div>
 </template>
 <script>
-import CrownButton from "@/components/crown/crownButtons/crownButton";
-import boundaryEventIcon from "@/assets/boundary-event.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
+import boundaryEventIcon from "!!svg-inline-loader!@/assets/boundary-event.svg";
 import { getEmptyBoundaryEventPositionsForShape } from "@/portsUtils";
 import { canAddBoundaryEventToTarget } from "@/boundaryEventValidation";
 import store from "@/store";

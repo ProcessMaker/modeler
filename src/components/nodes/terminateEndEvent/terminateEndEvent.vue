@@ -1,5 +1,5 @@
 <script>
-import EndEvent from "@/components/nodes/endEvent/endEvent";
+import EndEvent from "@/components/nodes/endEvent/endEvent.vue";
 import terminateIcon from "!!svg-inline-loader!@/assets/terminate-end-event.svg";
 import updateIconColor from "@/mixins/updateIconColor";
 

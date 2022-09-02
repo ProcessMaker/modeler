@@ -51,7 +51,7 @@ describe("nodeManager", () => {
       expect(targetProcess).toEqual({});
     });
 
-    it('should not modify target process for node definition $type "bpmn:MessageFlow"', () => {
+    it(`should not modify target process for node definition $type "bpmn:MessageFlow"`, () => {
       const node = new Node("foo", { $type: "bpmn:MessageFlow" }, {});
       const targetProcess = {};
 

@@ -217,7 +217,7 @@ export default {
     value: {
       immediate: true,
       handler(value) {
-        this.selectedOption = this.options.find((option) => get(option, this.trackBy) == value);
+        this.selectedOption = this.options.find((option) => get(option, this.trackBy) === value);
 
         if (value && !this.selectedOption) {
           this.loadSelected(value);

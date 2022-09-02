@@ -24,8 +24,8 @@ describe("Documentation accordion", () => {
   ];
   const position = { x: 300, y: 300 };
   const accordionOpenAnimationTime = 500;
-  const deleteElement = (position, type) => {
-    getElementAtPosition(position, type)
+  const deleteElement = (positionn, type) => {
+    getElementAtPosition(positionn, type)
       .click({ force: true })
       .then(($element) => {
         getCrownButtonForElement($element, "delete-button").click({ force: true });
@@ -80,7 +80,7 @@ describe("Documentation accordion", () => {
     getTinyMceEditor().type(documentationFromInspector);
     cy.wait(modalAnimationTime);
 
-    cy.get('[data-test="documentation-modal-button"]').click();
+    cy.get(`[data-test="documentation-modal-button"]`).click();
 
     const documentationFromModal = "this is the documentation modal";
     getTinyMceEditorInModal().type(documentationFromModal);

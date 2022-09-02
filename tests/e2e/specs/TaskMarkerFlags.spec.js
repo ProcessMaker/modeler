@@ -16,9 +16,9 @@ describe("Task Marker Flags", () => {
     cy.contains("Advanced").click();
   });
 
-  it('sets a task as "for compensation"', () => {
+  it(`sets a task as "for compensation"`, () => {
     cy.get("[data-test=for-compensation").check({ force: true });
-    assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
+    assertDownloadedXmlContainsExpected(`<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />`);
     assertBottomCenterTaskMarkerHasImage("compensation");
   });
 
@@ -28,13 +28,13 @@ describe("Task Marker Flags", () => {
     assertBottomCenterTaskMarkerHasImage("compensation");
   });
 
-  it('can still set "for compensation" after undo/redo', () => {
+  it(`can still set "for compensation" after undo/redo`, () => {
     cy.window().then((win) => {
       win.NODE_INSPECTOR_FIRST_INDEX = 1;
     });
     uploadXml("withLoopMarker.xml");
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"]').click();
+    cy.get(`.main-paper [data-type="processmaker.components.nodes.task.Shape"]`).click();
     cy.contains("Advanced").click();
     cy.get("[data-test=for-compensation").check({ force: true });
 

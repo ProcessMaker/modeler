@@ -149,7 +149,7 @@ describe("Multiselect", () => {
       cy.get("@paperContainer").trigger("mousedown", "topLeft");
       cy.get("@paperContainer").trigger("mousemove", "bottomRight");
       waitToRenderAllShapes();
-      cy.get('[data-type="selectionBox"]').should("not.exist");
+      cy.get(`[data-type="selectionBox"]`).should("not.exist");
     });
   });
 });

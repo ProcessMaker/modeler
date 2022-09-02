@@ -21,9 +21,9 @@ import portsConfig from "@/mixins/portsConfig";
 import EventShape from "@/components/nodes/intermediateEvent/shape";
 import hasMarkers from "@/mixins/hasMarkers";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
 import defaultNames from "@/components/nodes/intermediateEvent/defaultNames";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {

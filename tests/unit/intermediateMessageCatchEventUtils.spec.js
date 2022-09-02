@@ -1,4 +1,4 @@
-import { getMessage, getMessagesList } from "@/components/nodes/intermediateMessageCatchEvent/intermediateMessageCatchEventUtils.js";
+import { getMessage, getMessagesList } from "@/components/nodes/intermediateMessageCatchEvent/intermediateMessageCatchEventUtils";
 
 function MessageFactory(id, name) {
   return {

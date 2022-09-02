@@ -16,9 +16,9 @@ describe("Intermediate Signal Throw Event", () => {
 
   it("Can create intermediate signal throw event", () => {
     const intermediateSignalThrowEventPosition = { x: 250, y: 250 };
-    addNodeTypeToPaper(intermediateSignalThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-signal-throw-event');
+    addNodeTypeToPaper(intermediateSignalThrowEventPosition, nodeTypes.intermediateCatchEvent, "switch-to-intermediate-signal-throw-event");
     waitToRenderAllShapes();
-    selectOptionByName('[data-test="signalRef:select"]', "global signal 1");
+    selectOptionByName(`[data-test="signalRef:select"]`, "global signal 1");
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:intermediateThrowEvent id="node_3" name="Intermediate Signal Throw Event">

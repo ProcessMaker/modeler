@@ -30,9 +30,9 @@
   </div>
 </template>
 <script>
-import CrownTaskDropdown from "@/components/crown/crownButtons/crownTaskDropdown";
-import CrownBoundaryEventDropdown from "@/components/crown/crownButtons/crownBoundaryEventDropdown";
-import CrownColorDropdown from "@/components/crown/crownButtons/crownColorDropdown";
+import CrownTaskDropdown from "@/components/crown/crownButtons/crownTaskDropdown.vue";
+import CrownBoundaryEventDropdown from "@/components/crown/crownButtons/crownBoundaryEventDropdown.vue";
+import CrownColorDropdown from "@/components/crown/crownButtons/crownColorDropdown.vue";
 
 export default {
   name: "CrownDropdowns",

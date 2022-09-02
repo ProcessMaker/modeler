@@ -62,8 +62,8 @@ describe("Switching elements", () => {
     const ms = 300;
     cy.clock();
     const startEventPosition = { x: 150, y: 150 };
-    const initialStartEvent = '<bpmn:startEvent id="node_1" name="Start Event" />';
-    const replacementStartEvent = '<bpmn:startEvent id="node_2" name="Message Start Event">';
+    const initialStartEvent = `<bpmn:startEvent id="node_1" name="Start Event" />`;
+    const replacementStartEvent = `<bpmn:startEvent id="node_2" name="Message Start Event">`;
     assertDownloadedXmlContainsExpected(initialStartEvent);
 
     changeTypeTo(nodeTypes.startEvent, "switch-to-message-start-event", startEventPosition);
@@ -93,12 +93,12 @@ describe("Switching elements", () => {
 
   it("switch a saved user task to a script task", () => {
     uploadXml("processWithTwoTasks.xml");
-    cy.get('[data-type="processmaker.components.nodes.task.Shape"]').eq(1).click();
+    cy.get(`[data-type="processmaker.components.nodes.task.Shape"]`).eq(1).click();
     cy.get("[data-test=select-type-dropdown]").click();
     cy.get("[data-test=switch-to-script-task]").click();
     modalConfirm();
     waitToRenderAllShapes();
-    cy.get('[data-test="validation-toggle"]').click({ force: true });
+    cy.get(`[data-test="validation-toggle"]`).click({ force: true });
     cy.get(".status-bar-container").should("contain.text", "BPMN Valid");
   });
 });

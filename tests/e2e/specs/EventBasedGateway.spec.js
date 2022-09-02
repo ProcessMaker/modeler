@@ -17,7 +17,7 @@ describe("Event-Based Gateway", () => {
   const eventBasedGatewayPosition = { x: 250, y: 250 };
 
   beforeEach(() => {
-    addNodeTypeToPaper(eventBasedGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-event-based-gateway');
+    addNodeTypeToPaper(eventBasedGatewayPosition, nodeTypes.exclusiveGateway, "switch-to-event-based-gateway");
   });
 
   it("Update event-based gateway name", () => {
@@ -34,7 +34,7 @@ describe("Event-Based Gateway", () => {
 
     const intermediateCatchEventPosition = { x: 500, y: 250 };
     dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
-    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, intermediateCatchEventPosition);
+    connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, intermediateCatchEventPosition);
 
     const intermediateMessageCatchEventPosition = { x: 500, y: 100 };
     addNodeTypeToPaper(
@@ -42,7 +42,7 @@ describe("Event-Based Gateway", () => {
       nodeTypes.intermediateCatchEvent,
       "switch-to-intermediate-message-catch-event"
     );
-    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, intermediateMessageCatchEventPosition);
+    connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, intermediateMessageCatchEventPosition);
 
     const endEventPosition = { x: 500, y: 350 };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
@@ -84,7 +84,7 @@ describe("Event-Based Gateway", () => {
 
     const exclusiveGatewayPosition = { x: 450, y: 350 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
-    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, exclusiveGatewayPosition);
+    connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, exclusiveGatewayPosition);
 
     getGraphElements().should("have.length", totalNumberOfValidElements);
 
@@ -95,7 +95,7 @@ describe("Event-Based Gateway", () => {
       });
 
     const parallelGatewayPosition = { x: 450, y: 350 };
-    addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
+    addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, "switch-to-parallel-gateway");
     connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, parallelGatewayPosition);
 
     getGraphElements().should("have.length", totalNumberOfValidElements);
@@ -107,8 +107,8 @@ describe("Event-Based Gateway", () => {
       });
 
     const inclusiveGatewayPosition = { x: 450, y: 350 };
-    addNodeTypeToPaper(inclusiveGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-inclusive-gateway');
-    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, inclusiveGatewayPosition);
+    addNodeTypeToPaper(inclusiveGatewayPosition, nodeTypes.exclusiveGateway, "switch-to-inclusive-gateway");
+    connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, inclusiveGatewayPosition);
 
     getGraphElements().should("have.length", totalNumberOfValidElements);
 
@@ -119,8 +119,8 @@ describe("Event-Based Gateway", () => {
       });
 
     const secondEventBasedGatewayPosition = { x: 450, y: 350 };
-    addNodeTypeToPaper(secondEventBasedGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-event-based-gateway');
-    connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, secondEventBasedGatewayPosition);
+    addNodeTypeToPaper(secondEventBasedGatewayPosition, nodeTypes.exclusiveGateway, "switch-to-event-based-gateway");
+    connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, secondEventBasedGatewayPosition);
 
     getGraphElements().should("have.length", totalNumberOfValidElements);
 
@@ -168,15 +168,16 @@ describe("Event-Based Gateway", () => {
     const startEventPosition = { x: 150, y: 150 };
     const eventOnePosition = { x: 450, y: 250 };
     const eventTwoPosition = { x: 250, y: 450 };
-    addNodeTypeToPaper(eventOnePosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
-    addNodeTypeToPaper(eventTwoPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
+    addNodeTypeToPaper(eventOnePosition, nodeTypes.intermediateCatchEvent, "switch-to-intermediate-timer-catch-event");
+    addNodeTypeToPaper(eventTwoPosition, nodeTypes.intermediateCatchEvent, "switch-to-intermediate-timer-catch-event");
 
     connectNodesWithFlow("generic-flow-button", startEventPosition, eventBasedGatewayPosition);
     connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, eventOnePosition);
     connectNodesWithFlow("generic-flow-button", eventBasedGatewayPosition, eventTwoPosition);
 
     const updatedSequenceFlow =
-      '<bpmn:eventBasedGateway id="node_3" name="Event Based Gateway"><bpmn:incoming>node_7</bpmn:incoming><bpmn:outgoing>node_9</bpmn:outgoing><bpmn:outgoing>node_11</bpmn:outgoing></bpmn:eventBasedGateway>';
+      // eslint-disable-next-line max-len
+      `<bpmn:eventBasedGateway id="node_3" name="Event Based Gateway"><bpmn:incoming>node_7</bpmn:incoming><bpmn:outgoing>node_9</bpmn:outgoing><bpmn:outgoing>node_11</bpmn:outgoing></bpmn:eventBasedGateway>`;
     assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });

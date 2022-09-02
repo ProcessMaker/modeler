@@ -13,7 +13,7 @@ Cypress.on("window:before:load", (window) => {
   const appWindow = docIframe.contentWindow;
 
   ["log", "info", "error", "warn", "debug"].forEach((consoleMethod) => {
-    appWindow.console[consoleMethod] = function (...args) {
+    appWindow.console[consoleMethod] = (...args) => {
       logs.push(args.join(" "));
     };
   });
@@ -24,7 +24,9 @@ Cypress.mocha.getRunner().on("test", () => {
 });
 
 Cypress.on("fail", (error) => {
+  // eslint-disable-next-line no-param-reassign
   error.stack += "\n\nConsole Logs:\n=============\n";
+  // eslint-disable-next-line no-param-reassign
   error.stack += logs.join("\n");
 
   logs = [];

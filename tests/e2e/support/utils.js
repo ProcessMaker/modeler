@@ -6,30 +6,11 @@ import { gridSize } from "../../../src/graph";
 const renderTime = 300;
 
 export function getTinyMceEditor() {
-  return cy
-    .get("iframe#documentation-editor_ifr")
-    .its("0.contentDocument")
-    .its("body")
-    .then(cy.wrap);
+  return cy.get("iframe#documentation-editor_ifr").its("0.contentDocument").its("body").then(cy.wrap);
 }
 
 export function getTinyMceEditorInModal() {
-  return cy
-    .get("iframe#documentation-editor-modal_ifr")
-    .its("0.contentDocument")
-    .its("body")
-    .then(cy.wrap);
-}
-
-export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
-  const dataTest = nodeType.replace("processmaker-modeler-", "add-");
-  waitToRenderAllShapes();
-
-  getElementAtPosition(taskPosition, taskType).click({ force: true });
-
-  cy.get("[data-test=\"boundary-event-dropdown\"]").click({ force: true });
-  cy.get(`[data-test="${dataTest}"`).click({ force: true });
-  waitToRenderAllShapes();
+  return cy.get("iframe#documentation-editor-modal_ifr").its("0.contentDocument").its("body").then(cy.wrap);
 }
 
 export function getGraphElements() {
@@ -54,19 +35,20 @@ export function getElementAtPosition(position, componentType) {
     .its("store.state.paper")
     .invoke("findViewsInArea", searchRectangle)
     .then((views) => views.filter((view) => view.model.component))
-    .then((views) => views)
-    .then((views) => (componentType
-        ? views.filter((view) => view.model.component.node.type === componentType)
-        : views
+    .then((views) => {
+      return views;
+    })
+    .then((views) => {
+      return componentType ? views.filter((view) => view.model.component.node.type === componentType) : views;
+    })
+    .then((views) =>
+      views.sort((view1, view2) => {
+        /* Sort shape views by z-index descending; the shape "on top" will be first in array. */
+        return view2.model.get("z") - view1.model.get("z");
+      })
     )
-      .then((views) => views.sort(
-          (view1, view2) =>
-            /* Sort shape views by z-index descending; the shape "on top" will be first in array. */
-            view2.model.get("z") - view1.model.get("z")
-        )
-      )
-      .then((views) => views[0])
-      .then((view) => (view.$el ? view.$el : null));
+    .then((views) => views[0])
+    .then((view) => (view.$el ? view.$el : null));
 }
 
 export function getLinksConnectedToElement($element) {
@@ -74,10 +56,12 @@ export function getLinksConnectedToElement($element) {
     .window()
     .its("store.state.graph")
     .invoke("getConnectedLinks", { id: $element.attr("model-id") })
-    .then((links) => cy
-      .window()
-      .its("store.state.paper")
-      .then((paper) => links.map((link) => link.findView(paper).$el)));
+    .then((links) =>
+      cy
+        .window()
+        .its("store.state.paper")
+        .then((paper) => links.map((link) => link.findView(paper).$el))
+    );
 }
 
 export function getComponentsEmbeddedInShape($element) {
@@ -87,10 +71,42 @@ export function getComponentsEmbeddedInShape($element) {
     .invoke("getCell", $element.attr("model-id"))
     .then((shape) => shape.getEmbeddedCells())
     .then((embeddedCells) => embeddedCells.filter((cell) => cell.component))
-    .then((embeddedComponents) => cy
-      .window()
-      .its("store.state.paper")
-      .then((paper) => embeddedComponents.map((cell) => cell.findView(paper).$el)));
+    .then((embeddedComponents) =>
+      cy
+        .window()
+        .its("store.state.paper")
+        .then((paper) => embeddedComponents.map((cell) => cell.findView(paper).$el))
+    );
+}
+
+export function getPositionInPaperCoords(position) {
+  return cy
+    .window()
+    .its("store.state.paper")
+    .then((paper) => {
+      const { tx, ty } = paper.translate();
+
+      return cy.get(".main-paper").then(($paperContainer) => {
+        const { x, y } = $paperContainer[0].getBoundingClientRect();
+        return { x: position.x + x + tx, y: position.y + y + ty };
+      });
+    });
+}
+
+export function getCrownButtonForElement($element, crownButton) {
+  return cy.get(`#${crownButton}`);
+}
+
+export function waitToRenderAllShapes() {
+  cy.wait(renderTime);
+}
+
+export function waitForAnimations() {
+  cy.wait(renderTime);
+}
+
+export function waitToRenderNodeUpdates() {
+  cy.wait(saveDebounce);
 }
 
 export function dragFromSourceToDest(source, position) {
@@ -112,24 +128,6 @@ export function dragFromSourceToDest(source, position) {
   return waitToRenderAllShapes();
 }
 
-export function getPositionInPaperCoords(position) {
-  return cy
-    .window()
-    .its("store.state.paper")
-    .then((paper) => {
-      const { tx, ty } = paper.translate();
-
-      return cy.get(".main-paper").then(($paperContainer) => {
-        const { x, y } = $paperContainer[0].getBoundingClientRect();
-        return { x: position.x + x + tx, y: position.y + y + ty };
-      });
-    });
-}
-
-export function getCrownButtonForElement($element, crownButton) {
-  return cy.get(`#${crownButton}`);
-}
-
 export function typeIntoTextInput(selector, value) {
   cy.get(selector).clear().type(value);
   waitToRenderNodeUpdates();
@@ -141,24 +139,18 @@ export function selectOptionByName(selector, name) {
   waitToRenderNodeUpdates();
 }
 
-export function waitToRenderAllShapes() {
-  cy.wait(renderTime);
+export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
+  const dataTest = nodeType.replace("processmaker-modeler-", "add-");
+  waitToRenderAllShapes();
+
+  getElementAtPosition(taskPosition, taskType).click({ force: true });
+
+  cy.get(`[data-test="boundary-event-dropdown"]`).click({ force: true });
+  cy.get(`[data-test="${dataTest}"`).click({ force: true });
+  waitToRenderAllShapes();
 }
 
-export function waitForAnimations() {
-  cy.wait(renderTime);
-}
-
-export function waitToRenderNodeUpdates() {
-  cy.wait(saveDebounce);
-}
-
-export function connectNodesWithFlow(
-  flowType,
-  startPosition,
-  endPosition,
-  clickPosition = "center"
-) {
+export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = "center") {
   return getElementAtPosition(startPosition)
     .click({ force: true })
     .then(($element) => getCrownButtonForElement($element, flowType).click({ force: true }))
@@ -182,14 +174,10 @@ export function isElementCovered($element) {
       let shapeViews = paper.findViewsInArea(shape.getBBox());
 
       if (shape.isLink()) {
-        shapeViews = shapeViews.filter(
-          (shapeView) => ![shape.getSourceElement(), shape.getTargetElement()].includes(shapeView.model)
-        );
+        shapeViews = shapeViews.filter((shapeView) => ![shape.getSourceElement(), shape.getTargetElement()].includes(shapeView.model));
       }
 
-      const zIndexes = shapeViews
-        .filter((shapeView) => shapeView.model.component)
-        .map((shapeView) => shapeView.model.get("z"));
+      const zIndexes = shapeViews.filter((shapeView) => shapeView.model.component).map((shapeView) => shapeView.model.get("z"));
       const shapeZIndex = shape.get("z");
 
       return zIndexes.some((zIndex) => shapeZIndex < zIndex);
@@ -214,7 +202,8 @@ export function moveElementRelativeTo(elementPosition, x, y, componentType) {
   return cy
     .window()
     .its("store.state.paper")
-    .then((paper) => getElementAtPosition(elementPosition, componentType).then(($element) => {
+    .then((paper) =>
+      getElementAtPosition(elementPosition, componentType).then(($element) => {
         const { left, top } = $element.position();
         const newPosition = paper.localToPagePoint(left + x, top + y);
         const { tx, ty } = paper.translate();
@@ -259,7 +248,8 @@ export function uploadXml(filepath) {
   /* Wait for modal to open */
   cy.wait(modalAnimationTime);
 
-  cy.fixture(filepath, "base64").then((bpmnProcess) => cy.get("input[type=file]").then(($input) => {
+  cy.fixture(filepath, "base64").then((bpmnProcess) =>
+    cy.get("input[type=file]").then(($input) => {
       const blob = Cypress.Blob.base64StringToBlob(bpmnProcess, "text/xml");
       const file = new File([blob], path.basename(filepath), { type: "text/xml" });
       const dataTransfer = new DataTransfer();
@@ -282,10 +272,7 @@ export function testNumberOfVertices(expectedVertices) {
       const { graph, paper } = state;
       const firstLink = graph.getLinks()[0];
       const waypoints = firstLink.findView(paper).getConnection().segments;
-      expect(waypoints.length).to.equal(
-        expectedVertices,
-        `We should have ${expectedVertices} waypoints`
-      );
+      expect(waypoints.length).to.equal(expectedVertices, `We should have ${expectedVertices} waypoints`);
 
       if (Cypress.env("inProcessmaker")) {
         return;
@@ -296,21 +283,19 @@ export function testNumberOfVertices(expectedVertices) {
         .its("xml")
         .then(removeIndentationAndLinebreaks)
         .then((xml) => {
-          const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
+          const waypointss = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
 
           const numberOfCustomVertices = firstLink.vertices().length;
           const hasCustomVertices = numberOfCustomVertices > 0;
           const numberOfStartAndEndVertices = 2;
 
           if (hasCustomVertices) {
-            expect(waypoints.length).to.equal(
+            expect(waypointss.length).to.equal(
               numberOfStartAndEndVertices + numberOfCustomVertices,
-              `Expected ${
-                numberOfStartAndEndVertices + numberOfCustomVertices
-              } custom di:waypoints in the downloaded XML`
+              `Expected ${numberOfStartAndEndVertices + numberOfCustomVertices} custom di:waypoints in the downloaded XML`
             );
           } else {
-            expect(waypoints.length).to.equal(
+            expect(waypointss.length).to.equal(
               numberOfStartAndEndVertices,
               `Expected ${numberOfStartAndEndVertices} (just start + end) vertices in the downloaded XML`
             );
@@ -334,8 +319,9 @@ export function assertElementsAreConnected(connectedFromId, connectedToId) {
       const linkFound = graph
         .getLinks()
         .some(
-          (link) => link.getSourceElement().component.node.definition.id === connectedFromId
-            && link.getTargetElement().component.node.definition.id === connectedToId
+          (link) =>
+            link.getSourceElement().component.node.definition.id === connectedFromId &&
+            link.getTargetElement().component.node.definition.id === connectedToId
         );
 
       let message = `Link should be from '${connectedFromId}' to '${connectedToId}'`;
@@ -343,6 +329,7 @@ export function assertElementsAreConnected(connectedFromId, connectedToId) {
         message = `No link found from '${connectedFromId}' to '${connectedToId}'`;
       }
 
+      // eslint-disable-next-line no-unused-expressions
       expect(linkFound, message).to.be.true;
     });
 }
@@ -422,7 +409,7 @@ export function getPeriodicityStringUSFormattedDate(date, time = false) {
       minute: "numeric",
       hour12: true
     });
-    dateString += " " + timeString;
+    dateString += ` ${timeString}`;
   }
   return dateString;
 }

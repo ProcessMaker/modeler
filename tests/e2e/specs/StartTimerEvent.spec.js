@@ -28,14 +28,14 @@ describe("Start Timer Event", () => {
 
     cy.contains("Timing Control").click();
     cy.get("[data-test=start-date-picker]").click();
-    cy.get('[title="Select Time"]').click();
-    cy.get('[title="Pick Hour"]').click();
+    cy.get(`[title="Select Time"]`).click();
+    cy.get(`[title="Pick Hour"]`).click();
     cy.get(".hour").contains("05").click();
-    cy.get('[title="Pick Minute"]').click();
+    cy.get(`[title="Pick Minute"]`).click();
     cy.get(".minute").contains("30").click();
-    cy.get('[title="Toggle Period"]').click();
+    cy.get(`[title="Toggle Period"]`).click();
     // compare date and hours to avoid the problems caused when there are some seconds of delay
-    cy.get("[data-test=start-date-picker]").should('contain.value', expectedStartDate.substr(0, 14));
+    cy.get("[data-test=start-date-picker]").should("contain.value", expectedStartDate.substr(0, 14));
   });
 
   it("can set a specific end date", () => {
@@ -63,10 +63,10 @@ describe("Start Timer Event", () => {
     cy.contains("Timing Control").click();
     cy.get("[data-test=start-date-picker]").click();
     cy.get(".day").contains(today).click();
-    cy.get('[title="Select Time"]').click();
-    cy.get('[title="Pick Hour"]').click();
+    cy.get(`[title="Select Time"]`).click();
+    cy.get(`[title="Pick Hour"]`).click();
     cy.get(".hour").contains("05").click();
-    cy.get('[title="Pick Minute"]').click();
+    cy.get(`[title="Pick Minute"]`).click();
     cy.get(".minute").contains("30").click();
 
     const timerExpression1 = "R/2019-08-14T05:30:00.000Z/P3W/2019-08-22T05:30:00.000Z";
@@ -92,9 +92,9 @@ describe("Start Timer Event", () => {
       .should("contain", timerExpression2);
   });
 
-  it.skip('Update properties on Start Timer Event for "week" periodicity', () => {});
+  it.skip(`Update properties on Start Timer Event for "week" periodicity`, () => {});
 
-  it.skip('Updates properties for periodicity other than "week"', () => {
+  it.skip(`Updates properties for periodicity other than "week"`, () => {
     const year = 2019;
     const month = 7;
     const day = 8;
@@ -163,7 +163,7 @@ describe("Start Timer Event", () => {
       .should("contain", endsNeverExpression);
   });
 
-  it.skip('Does not include selected weekdays for periods other than "week"', () => {
+  it.skip(`Does not include selected weekdays for periods other than "week"`, () => {
     const year = 2019;
     const month = 7;
     const day = 8;

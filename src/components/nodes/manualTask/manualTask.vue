@@ -1,5 +1,5 @@
 <script>
-import TaskComponent from "@/components/nodes/task/task";
+import TaskComponent from "@/components/nodes/task/task.vue";
 import manualIcon from "!!svg-inline-loader!@/assets/manual-task.svg";
 import updateIconColor from "@/mixins/updateIconColor";
 

@@ -19,10 +19,10 @@
 import { shapes } from "jointjs";
 import linkConfig from "@/mixins/linkConfig";
 import get from "lodash/get";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import MessageFlow from "@/components/nodes/genericFlow/MessageFlow";
 import SequenceFlow from "@/components/nodes/genericFlow/SequenceFlow";
 import DataOutputAssociation from "@/components/nodes/genericFlow/DataOutputAssociation";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import { id } from "./config";
 
 const BpmnFlows = [DataOutputAssociation, SequenceFlow, MessageFlow];

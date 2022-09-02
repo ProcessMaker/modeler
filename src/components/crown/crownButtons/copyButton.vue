@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import CrownButton from "@/components/crown/crownButtons/crownButton";
-import copyIcon from "@/assets/copy-regular.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
+import copyIcon from "!!svg-inline-loader!@/assets/copy-regular.svg";
 import validCopyElements from "@/components/crown/crownButtons/validCopyElements";
 
 export default {

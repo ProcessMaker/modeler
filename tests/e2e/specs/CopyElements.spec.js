@@ -144,9 +144,9 @@ describe("Copy element", () => {
     const taskInSecondPoolPosition = { x: 150, y: 500 };
     dragFromSourceToDest(nodeTypes.task, taskInSecondPoolPosition);
 
-    cy.get('[data-test="copy-button"]').click();
+    cy.get(`[data-test="copy-button"]`).click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes('<bpmn:task', 2, 'Expect exactly two tasks after copying one');
+    assertDownloadedXmlContainsSubstringNTimes("<bpmn:task", 2, "Expect exactly two tasks after copying one");
   });
 });

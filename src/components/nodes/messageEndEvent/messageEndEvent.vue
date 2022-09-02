@@ -1,5 +1,5 @@
 <script>
-import EndEvent from "@/components/nodes/endEvent/endEvent";
+import EndEvent from "@/components/nodes/endEvent/endEvent.vue";
 import messageEndEventSymbol from "!!svg-inline-loader!@/assets/message-end-event.svg";
 import pull from "lodash/pull";
 import store from "@/store";

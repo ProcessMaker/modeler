@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-import CrownButton from "@/components/crown/crownButtons/crownButton";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 
 export default {
   name: "CrownTaskDropdown",

@@ -201,7 +201,7 @@ describe("Modeler", () => {
   it("Selects process node after deleting an element", () => {
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
-    cy.get("[data-test=inspector-container]").should('to.contain', 'Enter the name of this element');
+    cy.get("[data-test=inspector-container]").should("to.contain", "Enter the name of this element");
 
     getElementAtPosition(startEventPosition).then(($startEvent) => {
       getCrownButtonForElement($startEvent, "delete-button").click();
@@ -209,7 +209,7 @@ describe("Modeler", () => {
 
     waitToRenderAllShapes();
 
-    cy.get("[data-test=inspector-container]").should('to.not.contain', 'Enter the name of this element');
+    cy.get("[data-test=inspector-container]").should("to.not.contain", "Enter the name of this element");
     cy.get("[data-test=inspector-container]").should("to.contain", "Process");
   });
 
@@ -253,18 +253,18 @@ describe("Modeler", () => {
     uploadXml("unknownElement.xml");
     const warning = "bpmn:Group is an unsupported element type in parse";
 
-    cy.get('[data-test="validation-toggle"]').click({ force: true });
-    cy.get('[data-test="validation-list-toggle"]').click({ force: true });
-    cy.get('[data-test="validation-list"]').should("contain", warning);
+    cy.get(`[data-test="validation-toggle"]`).click({ force: true });
+    cy.get(`[data-test="validation-list-toggle"]`).click({ force: true });
+    cy.get(`[data-test="validation-list"]`).should("contain", warning);
   });
 
   it("shows warning for non-default base element during parsing", () => {
     uploadXml("nonDefaultBaseElement.xml");
     const warning = "Unsupported Element bpmn:IntermediateCatchEvent is an unsupported element type in parse";
 
-    cy.get('[data-test="validation-toggle"]').click({ force: true });
-    cy.get('[data-test="validation-list-toggle"]').click({ force: true });
-    cy.get('[data-test="validation-list"]').should("contain", warning);
+    cy.get(`[data-test="validation-toggle"]`).click({ force: true });
+    cy.get(`[data-test="validation-list-toggle"]`).click({ force: true });
+    cy.get(`[data-test="validation-list"]`).contains(warning);
     getGraphElements().should("have.length", 0);
   });
 
@@ -290,7 +290,7 @@ describe("Modeler", () => {
   it("persist boundary event with sequence flow in XML", () => {
     uploadXml("../fixtures/boundaryEvent.xml");
 
-    const sequenceFlowXML = '<bpmn:sequenceFlow id="node_5" name="Sequence Flow" sourceRef="node_3" targetRef="node_2" />';
+    const sequenceFlowXML = `<bpmn:sequenceFlow id="node_5" name="Sequence Flow" sourceRef="node_3" targetRef="node_2" />`;
 
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -312,9 +312,9 @@ describe("Modeler", () => {
     addNodeTypeToPaper(gatewayPosition, nodeTypes.exclusiveGateway, "switch-to-parallel-gateway");
     cy.get("[data-test=mini-map-btn]").click({ multiple: true });
 
-    cy.get('.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]').then(($startEvent) => {
+    cy.get(`.mini-paper [data-type="processmaker.components.nodes.startEvent.Shape"]`).then(($startEvent) => {
       const { width: startEventWidth, height: startEventHeight } = $startEvent.get(0).getBBox();
-      cy.get('.mini-paper [data-type="processmaker.components.nodes.gateway.Shape"]').should(($gateway) => {
+      cy.get(`.mini-paper [data-type="processmaker.components.nodes.gateway.Shape"]`).should(($gateway) => {
         const { width, height } = $gateway.get(0).getBBox();
         expect(width).to.be.closeTo(startEventWidth, 100);
         expect(height).to.be.closeTo(startEventHeight, 100);
@@ -339,7 +339,7 @@ describe("Modeler", () => {
   });
 
   it("Hides element label on drag", () => {
-    const startEventSelector = '.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]';
+    const startEventSelector = `.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"]`;
     const nonBreakingSpace = String.fromCharCode(160);
     const startEventLabelText = `Start${nonBreakingSpace}Event`;
 
@@ -362,7 +362,7 @@ describe("Modeler", () => {
 
     const poolPosition = { x: 150, y: 300 };
     dragFromSourceToDest(nodeTypes.pool, poolPosition);
-    const poolSelector = '.main-paper [data-type="processmaker.modeler.bpmn.pool"]';
+    const poolSelector = `.main-paper [data-type="processmaker.modeler.bpmn.pool"]`;
 
     cy.get(poolSelector)
       .trigger("mousedown")
@@ -376,13 +376,13 @@ describe("Modeler", () => {
   it("can collapse the controls panel", () => {
     cy.get("[data-test=controls-column]").should("not.have.class", "controls-column-compressed");
 
-    cy.get('[data-test="panels-btn"]').click();
+    cy.get(`[data-test="panels-btn"]`).click();
     cy.get("[data-test=controls-column]").should("have.class", "controls-column-compressed");
   });
 
   it("can expand the controls panel", () => {
-    cy.get('[data-test="panels-btn"]').click();
-    cy.get('[data-test="panels-btn"]').click();
+    cy.get(`[data-test="panels-btn"]`).click();
+    cy.get(`[data-test="panels-btn"]`).click();
 
     cy.get("[data-test=controls-column]").should("not.have.class", "controls-column-compressed");
   });
@@ -390,14 +390,14 @@ describe("Modeler", () => {
   it("can collapse inspector panel", () => {
     cy.get("[data-test=inspector-column]").should("not.have.class", "inspector-column-compressed");
 
-    cy.get('[data-test="panels-btn"]').click();
+    cy.get(`[data-test="panels-btn"]`).click();
     cy.get("[data-test=inspector-column]").should("have.class", "inspector-column-compressed");
   });
 
   it("can expand inspector panel", () => {
-    cy.get('[data-test="panels-btn"]').click();
+    cy.get(`[data-test="panels-btn"]`).click();
 
-    cy.get('[data-test="panels-btn"]').click();
+    cy.get(`[data-test="panels-btn"]`).click();
     cy.get("[data-test=inspector-column]").should("not.have.class", "inspector-column-compressed");
   });
 
@@ -447,23 +447,23 @@ describe("Modeler", () => {
   it("can render a file with non-existent element", () => {
     uploadXml("non-existent-element.xml");
 
-    cy.get('[data-test="validation-toggle"]').click({ force: true });
-    cy.get('[data-test="validation-list-toggle"]').click({ force: true });
+    cy.get(`[data-test="validation-toggle"]`).click({ force: true });
+    cy.get(`[data-test="validation-list-toggle"]`).click({ force: true });
     cy.get("[data-test=validation-list]").should(($list) => {
       expect($list).to.contain("references a non-existent element and was not parsed");
     });
   });
 
   it("after collapsing panels, show inspector panel when element is highlighted", () => {
-    cy.get('[data-test="panels-btn"]').click();
-    cy.get('[data-test="inspector-container"]').should("not.be.visible");
+    cy.get(`[data-test="panels-btn"]`).click();
+    cy.get(`[data-test="inspector-container"]`).should("not.be.visible");
 
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition).click();
-    cy.get('[data-test="inspector-container"]').should("be.visible");
+    cy.get(`[data-test="inspector-container"]`).should("be.visible");
 
     cy.get(".paper-container").click();
-    cy.get('[data-test="inspector-container"]').should("not.be.visible");
+    cy.get(`[data-test="inspector-container"]`).should("not.be.visible");
   });
 
   it("should hide the crown when adding a sequence flow", () => {

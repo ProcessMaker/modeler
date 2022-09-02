@@ -11,7 +11,7 @@
   />
 </template>
 <script>
-import Flow from "@/assets/connect-elements.svg";
+import Flow from "!!svg-inline-loader!@/assets/connect-elements.svg";
 import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 import Node from "@/components/nodes/node";
 import { id as genericFlowId } from "@/components/nodes/genericFlow/config";

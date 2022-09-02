@@ -29,13 +29,13 @@ import hasMarkers, { markerSize } from "@/mixins/hasMarkers";
 import TaskShape from "@/components/nodes/task/shape";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
 import customIcon from "@/mixins/customIcon";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import { gridSize } from "@/graph";
 import defaultNames from "@/components/nodes/task/defaultNames";
 import boundaryEventDropdownData from "@/components/nodes/boundaryEvent/boundaryEventDropdownData";
 import setupLoopCharacteristicsMarkers from "@/components/nodes/task/setupMultiInstanceMarkers";
 import setupCompensationMarker from "@/components/nodes/task/setupCompensationMarker";
 import { getRectangleAnchorPoint } from "@/portsUtils";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import { taskHeight } from "./taskConfig";
 
 const labelPadding = 15;

@@ -374,7 +374,10 @@ export default {
       cursor = this.cursor;
       this.cursor = "crosshair";
     };
-    const resetCursor = () => (this.cursor = cursor);
+    const resetCursor = () => {
+      this.cursor = cursor;
+      return this.cursor;
+    };
     setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
     /* Register custom nodes */
@@ -745,7 +748,7 @@ export default {
       }
     },
     setNode(definition, flowElements, artifacts) {
-      const diagram = this.planeElements.find((diagram) => diagram.bpmnElement.id === definition.id);
+      const diagram = this.planeElements.find((diagramm) => diagramm.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
 

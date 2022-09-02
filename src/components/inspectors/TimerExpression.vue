@@ -87,7 +87,7 @@
 
 <script>
 import { DateTime } from "luxon";
-import WeekdaySelect from "./WeekdaySelect";
+import WeekdaySelect from "./WeekdaySelect.vue";
 import { getIso8601FormattedDateString, getPeriod } from "./TimeUtils";
 
 const periods = {
@@ -233,7 +233,8 @@ export default {
               }
 
               this.endDate = match[5] || DateTime.local().toUTC().toISO();
-              this.ends = !match[5] ? (!match[1] ? "never" : "after") : "ondate";
+              const neverAfterConditional = !match[1] ? "never" : "after";
+              this.ends = !match[5] ? neverAfterConditional : "ondate";
             }
           }
 

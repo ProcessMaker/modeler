@@ -50,7 +50,7 @@
 
 <script>
 import FileUpload from "vue-upload-component";
-import ValidationStatus from "@/components/validationStatus/ValidationStatus";
+import ValidationStatus from "@/components/validationStatus/ValidationStatus.vue";
 import undoRedoStore from "@/undoRedoStore";
 import Modeler from "./components/modeler/Modeler.vue";
 

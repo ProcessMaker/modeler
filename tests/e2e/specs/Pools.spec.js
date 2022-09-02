@@ -74,10 +74,10 @@ describe("Pools", () => {
     const pool1Position = { x: 200, y: 200 };
     dragFromSourceToDest(nodeTypes.pool, pool1Position);
 
-    const startEventIn1stPool =
-      '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
-    const startEventIn1stPoolWithNullProps =
-      '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
+    // eslint-disable-next-line max-len
+    const startEventIn1stPool = `<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>`;
+    // eslint-disable-next-line max-len
+    const startEventIn1stPoolWithNullProps = `<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>`;
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
       .its("xml")
@@ -92,8 +92,8 @@ describe("Pools", () => {
     moveElement(startEventPosition, pool2Position);
     waitToRenderAllShapes();
 
-    const empty1stPool = '<bpmn:process id="Process_1" isExecutable="true" />';
-    const startEventIn2ndPool = '<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
+    const empty1stPool = `<bpmn:process id="Process_1" isExecutable="true" />`;
+    const startEventIn2ndPool = `<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>`;
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
       .its("xml")
@@ -135,7 +135,7 @@ describe("Pools", () => {
         getCrownButtonForElement($pool, "delete-button").click({ force: true });
       });
 
-    const sequenceFlowReference = '<bpmn:sequenceFlow id="node_4" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />';
+    const sequenceFlowReference = `<bpmn:sequenceFlow id="node_4" name="Sequence Flow" sourceRef="node_1" targetRef="node_2" />`;
 
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -156,7 +156,7 @@ describe("Pools", () => {
         getCrownButtonForElement($pool, "lane-below-button").click({ force: true });
       });
 
-    const nonEmptyLane = '<bpmn:lane id="node_4" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
+    const nonEmptyLane = `<bpmn:lane id="node_4" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>`;
     assertDownloadedXmlContainsExpected(nonEmptyLane);
 
     const startEventPosition = { x: 150, y: 150 };
@@ -166,7 +166,7 @@ describe("Pools", () => {
         getCrownButtonForElement($startEvent, "delete-button").click();
       });
 
-    const emptyLane = '<bpmn:lane id="node_4" name="" />';
+    const emptyLane = `<bpmn:lane id="node_4" name="" />`;
     assertDownloadedXmlContainsExpected(emptyLane);
     assertDownloadedXmlDoesNotContainExpected("node_1");
   });
@@ -182,8 +182,8 @@ describe("Pools", () => {
         getCrownButtonForElement($startEvent, "delete-button").click();
       });
 
-    const startEvent = '<bpmn:startEvent id="node_1" name="Start Event" />';
-    const emptyPool = '<bpmn:participant id="node_2" name="Pool" processRef="Process_1" />';
+    const startEvent = `<bpmn:startEvent id="node_1" name="Start Event" />`;
+    const emptyPool = `<bpmn:participant id="node_2" name="Pool" processRef="Process_1" />`;
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
       .its("xml")
@@ -255,7 +255,7 @@ describe("Pools", () => {
     getPositionInPaperCoords(startEventPosition).then(({ x, y }) => {
       getElementAtPosition(topLanePosition, nodeTypes.poolLane).click();
 
-      cy.get('.main-paper [button-id="bottom-right-resize-button"]')
+      cy.get(`.main-paper [button-id="bottom-right-resize-button"]`)
         .trigger("mousedown")
         .trigger("mousemove", { clientX: x, clientY: y + 100, force: true })
         .trigger("mouseup");

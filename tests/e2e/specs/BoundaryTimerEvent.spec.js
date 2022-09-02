@@ -62,7 +62,7 @@ describe("Boundary Timer Event", () => {
     const startEventPosition = { x: 150, y: 150 };
 
     getElementAtPosition(startEventPosition).then(($startEvent) => {
-      cy.wrap($startEvent).find('[data-test="boundary-event-dropdown"]').should("not.exist");
+      cy.wrap($startEvent).find(`[data-test="boundary-event-dropdown"]`).should("not.exist");
     });
 
     getGraphElements().should("have.length", initialNumberOfElements);
@@ -104,7 +104,7 @@ describe("Boundary Timer Event", () => {
     });
 
     const numberOfElementsAfterAddingTasksAndBoundaryTimerEvents = initialNumberOfElements + validBoundaryTimerEventTargets.length * 2;
-    getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
+    getGraphElements().should("have.length", numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
   });
 
   it("can toggle interrupting on Boundary Timer Events", () => {
@@ -133,7 +133,7 @@ describe("Boundary Timer Event", () => {
   it("can update the node identifier and this persists correctly", () => {
     uploadXml("taskWithBoundaryTimerEvent.xml");
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').click({
+    cy.get(`.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]`).click({
       force: true
     });
 
@@ -178,17 +178,17 @@ describe("Boundary Timer Event", () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    const taskXml = '<bpmn:task id="node_2" name="Form Task" pm:assignment="requester" />';
-    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2">';
+    const taskXml = `<bpmn:task id="node_2" name="Form Task" pm:assignment="requester" />`;
+    const boundaryEventOnTaskXml = `<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2">`;
 
     assertDownloadedXmlContainsExpected(taskXml, boundaryEventOnTaskXml);
 
     const task2Position = { x: 500, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
-    const boundaryTimerEventSelector = ".main-paper ";
-    ('[data-type="processmaker.components.nodes.task.Shape"] ~ ');
-    ('[data-type="processmaker.components.nodes.boundaryEvent.Shape"]');
+    const boundaryTimerEventSelector =
+      // eslint-disable-next-line max-len
+      `.main-paper [data-type="processmaker.components.nodes.task.Shape"] ~ [data-type="processmaker.components.nodes.boundaryEvent.Shape"]`;
 
     getPositionInPaperCoords(task2Position).then((newPosition) => {
       cy.get(boundaryTimerEventSelector).then(($boundaryEvent) => {
@@ -198,8 +198,8 @@ describe("Boundary Timer Event", () => {
           .trigger("mouseup")
           .then(waitToRenderAllShapes)
           .then(() => {
-            const task2Xml = '<bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />';
-            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_4">';
+            const task2Xml = `<bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />`;
+            const boundaryEventOnTask2Xml = `<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_4">`;
 
             assertDownloadedXmlContainsExpected(task2Xml, boundaryEventOnTask2Xml);
             assertDownloadedXmlDoesNotContainExpected(boundaryEventOnTaskXml);
@@ -228,9 +228,9 @@ describe("Boundary Timer Event", () => {
     const task2Position = { x: 500, y: 500 };
     dragFromSourceToDest(nodeTypes.task, task2Position);
 
-    const boundaryTimerEventSelector = ".main-paper ";
-    ('[data-type="processmaker.components.nodes.task.Shape"] ~ ');
-    ('[data-type="processmaker.components.nodes.boundaryEvent.Shape"]');
+    const boundaryTimerEventSelector =
+      // eslint-disable-next-line max-len
+      `.main-paper [data-type="processmaker.components.nodes.task.Shape"] ~ [data-type="processmaker.components.nodes.boundaryEvent.Shape"]`;
 
     getPositionInPaperCoords(task2Position).then((newPosition) => {
       cy.get(boundaryTimerEventSelector).then(($boundaryEvent) => {
@@ -268,7 +268,8 @@ CommonBoundaryEventBehaviour({
   type: "Boundary Timer Event",
   nodeType: nodeTypes.boundaryTimerEvent,
   eventXMLSnippet:
-    '<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>',
+    // eslint-disable-next-line max-len
+    `<bpmn:boundaryEvent id="node_3" name="Boundary Timer Event" attachedToRef="node_2"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>`,
   taskType: nodeTypes.task,
   taskTypeSelector: "switch-to-user-task",
   invalidTargets: [{ type: nodeTypes.startEvent }]

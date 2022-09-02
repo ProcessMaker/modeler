@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import CrownButton from "@/components/crown/crownButtons/crownButton";
-import icon from "@/assets/default-flow.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
+import icon from "!!svg-inline-loader!@/assets/default-flow.svg";
 
 export default {
   components: { CrownButton },

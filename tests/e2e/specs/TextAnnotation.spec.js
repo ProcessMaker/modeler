@@ -48,11 +48,11 @@ describe("Text Annotation", () => {
     dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
 
     getElementAtPosition(textAnnotationPosition).click();
-    cy.get('[data-test="picker-dropdown-button"]').click();
+    cy.get(`[data-test="picker-dropdown-button"]`).click();
     cy.get(`[data-test="${colorToSelect}"]`).click();
     typeIntoTextInput("[name=text]", "new text");
 
-    const annotationTextSelector = '.main-paper [data-type="textAnnotation"] [joint-selector="label"]';
+    const annotationTextSelector = `.main-paper [data-type="textAnnotation"] [joint-selector="label"]`;
     cy.get(annotationTextSelector).should("have.attr", "fill", colorToSelect);
   });
 });

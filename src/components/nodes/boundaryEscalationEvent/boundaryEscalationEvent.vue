@@ -1,6 +1,6 @@
 <script>
-import BoundaryEvent from "@/components/nodes/boundaryEvent/boundaryEvent";
-import escalationIcon from "!!url-loader!@/assets/boundary-escalation-icon.svg";
+import BoundaryEvent from "@/components/nodes/boundaryEvent/boundaryEvent.vue";
+import escalationIcon from "!!svg-inline-loader!@/assets/boundary-escalation-icon.svg";
 import { isValidBoundaryEscalationEvent } from "@/boundaryEventValidation";
 
 export default {

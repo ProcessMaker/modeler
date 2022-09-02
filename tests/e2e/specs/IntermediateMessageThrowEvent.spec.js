@@ -47,10 +47,10 @@ describe("Intermediate Message Throw Event", () => {
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
 
     // Edit message
-    cy.get('[data-cy="events-list"]').click();
-    cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
-    cy.get('[data-cy="events-save"]').click();
+    cy.get(`[data-cy="events-list"]`).click();
+    cy.get(`[data-cy="events-edit"]`).click();
+    cy.get(`[data-cy="events-edit-name"]`).clear().type(messageName);
+    cy.get(`[data-cy="events-save"]`).click();
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, messageXMLSnippet);
   });
@@ -63,10 +63,10 @@ describe("Intermediate Message Throw Event", () => {
     );
 
     // Edit message
-    cy.get('[data-cy="events-list"]').click();
-    cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
-    cy.get('[data-cy="events-save"]').click();
+    cy.get(`[data-cy="events-list"]`).click();
+    cy.get(`[data-cy="events-edit"]`).click();
+    cy.get(`[data-cy="events-edit-name"]`).clear().type(messageName);
+    cy.get(`[data-cy="events-save"]`).click();
 
     assertDownloadedXmlContainsExpected(messageXMLSnippet);
 
@@ -88,21 +88,21 @@ describe("Intermediate Message Throw Event", () => {
     );
 
     // Edit message
-    cy.get('[data-cy="events-list"]').click();
-    cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
-    cy.get('[data-cy="events-save"]').click();
+    cy.get(`[data-cy="events-list"]`).click();
+    cy.get(`[data-cy="events-edit"]`).click();
+    cy.get(`[data-cy="events-edit-name"]`).clear().type(messageName);
+    cy.get(`[data-cy="events-save"]`).click();
 
     getElementAtPosition(startEventPosition).click();
     waitToRenderAllShapes();
     getElementAtPosition(intermediateMessageThrowEventPosition).click({ force: true });
     waitToRenderAllShapes();
     // Edit message
-    cy.get('[data-cy="events-list"]').click();
-    cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
-    cy.get('[data-cy="events-save"]').click();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
+    cy.get(`[data-cy="events-list"]`).click();
+    cy.get(`[data-cy="events-edit"]`).click();
+    cy.get(`[data-cy="events-edit-name"]`).clear().type(messageName);
+    cy.get(`[data-cy="events-save"]`).click();
+    cy.get(`[data-test="messageRef:select"] .multiselect__single`).should("contain.text", messageName);
   });
 
   it("associates and renames message on intermediate message catch event", () => {
@@ -126,33 +126,33 @@ describe("Intermediate Message Throw Event", () => {
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     waitForAnimations();
 
-    cy.get('[data-test="messageRef:select"]').selectOption(messageRef);
+    cy.get(`[data-test="messageRef:select"]`).selectOption(messageRef);
     waitForAnimations();
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
     waitForAnimations();
 
     // Edit message
-    cy.get('[data-cy="events-list"]').click();
-    cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
-    cy.get('[data-cy="events-save"]').click();
+    cy.get(`[data-cy="events-list"]`).click();
+    cy.get(`[data-cy="events-edit"]`).click();
+    cy.get(`[data-cy="events-edit-name"]`).clear().type(messageName);
+    cy.get(`[data-cy="events-save"]`).click();
 
     getElementAtPosition(intermediateMessageCatchEventPosition).click();
     waitForAnimations();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
+    cy.get(`[data-test="messageRef:select"] .multiselect__single`).should("contain.text", messageName);
 
     assertDownloadedXmlContainsExpected(eventXMLSnippet, catchEventXMLSnippet, messageXMLSnippet);
   });
 
   it("does not create duplicate messages on undo/redo", () => {
-    addNodeTypeToPaper({ x: 300, y: 300 }, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
+    addNodeTypeToPaper({ x: 300, y: 300 }, nodeTypes.intermediateCatchEvent, "switch-to-intermediate-message-throw-event");
 
     cy.get("[data-test=undo]").click();
     waitToRenderAllShapes();
     cy.get("[data-test=redo]").click();
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'Expect single message');
+    assertDownloadedXmlContainsSubstringNTimes(`<bpmn:message id=".*?" name=".*?" />`, 1, "Expect single message");
   });
 
   it("retains message name after loading XML", () => {
@@ -163,14 +163,14 @@ describe("Intermediate Message Throw Event", () => {
     );
 
     // Edit message
-    cy.get('[data-cy="events-list"]').click();
-    cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
-    cy.get('[data-cy="events-save"]').click();
+    cy.get(`[data-cy="events-list"]`).click();
+    cy.get(`[data-cy="events-edit"]`).click();
+    cy.get(`[data-cy="events-edit-name"]`).clear().type(messageName);
+    cy.get(`[data-cy="events-save"]`).click();
 
     /* Something outside of the inspector panel has to be selected to trigger the focusout event;
      * otherwise it creates a race condition with the Undo button click event. */
-    cy.get('[aria-label="Toolbar"]').click();
+    cy.get(`[aria-label="Toolbar"]`).click();
 
     cy.get("[data-test=undo]").click();
     waitToRenderAllShapes();
@@ -179,7 +179,7 @@ describe("Intermediate Message Throw Event", () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
+    cy.get(`[data-test="messageRef:select"] .multiselect__single`).should("contain.text", messageName);
   });
 
   it("allows connection between pools", () => {
@@ -192,7 +192,7 @@ describe("Intermediate Message Throw Event", () => {
     const secondPoolPosition = { x: 100, y: 450 };
     dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
 
-    connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
+    connectNodesWithFlow("generic-flow-button", intermediateMessageThrowEventPosition, secondPoolPosition);
     getNumberOfLinks().should("equal", 1);
   });
 
@@ -221,7 +221,7 @@ describe("Intermediate Message Throw Event", () => {
     validMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
       const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
       addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
-      connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, nodePosition);
+      connectNodesWithFlow("generic-flow-button", intermediateMessageThrowEventPosition, nodePosition);
       getNumberOfLinks().should("equal", 1);
       cy.get("#delete-button").click();
     });
@@ -250,7 +250,7 @@ describe("Intermediate Message Throw Event", () => {
     invalidMessageThrowEventTargets.forEach(({ genericNode, nodeToSwitchTo }) => {
       const nodePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y + 50 };
       addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo);
-      connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, nodePosition);
+      connectNodesWithFlow("generic-flow-button", intermediateMessageThrowEventPosition, nodePosition);
       getNumberOfLinks().should("equal", 0);
       getElementAtPosition(nodePosition).click();
       cy.get("#delete-button").click();
@@ -259,7 +259,7 @@ describe("Intermediate Message Throw Event", () => {
     getElementAtPosition(secondPoolPosition).click();
     cy.get("#lane-above-button").click({ force: true });
     const secondPoolLanePosition = { x: secondPoolPosition.x + 50, y: secondPoolPosition.y };
-    connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolLanePosition);
+    connectNodesWithFlow("generic-flow-button", intermediateMessageThrowEventPosition, secondPoolLanePosition);
     getNumberOfLinks().should("equal", 0);
   });
 });

@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = (on, config) => {
   if (config.env.inProcessmaker) {
     config.baseUrl = "https://processmaker.local.processmaker.com";

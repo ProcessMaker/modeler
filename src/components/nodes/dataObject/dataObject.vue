@@ -17,11 +17,11 @@
 </template>
 
 <script>
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
 import { shapes } from "jointjs";
 import portsConfig from "@/mixins/portsConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {

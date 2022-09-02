@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import Breadcrumb from "@/components/toolbar/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/toolbar/breadcrumb/Breadcrumb.vue";
 
 describe("Breadcrumb", () => {
   it("does not render if no breadcrumbs prop is passed", () => {

@@ -14,8 +14,8 @@ describe("Keyboard movement interaction", () => {
       cy.get("body").type("{leftarrow}{leftarrow}{leftarrow}{leftarrow}");
       waitToRenderAllShapes();
 
-      getElementAtPosition(taskPosition).then(($task) => {
-        const { top: newTop, left: newLeft } = $task.position();
+      getElementAtPosition(taskPosition).then((task) => {
+        const { top: newTop, left: newLeft } = task.position();
 
         expect(newTop).to.be.lessThan(top);
         expect(newLeft).to.be.lessThan(left);
@@ -38,8 +38,8 @@ describe("Keyboard movement interaction", () => {
 
       waitToRenderAllShapes();
 
-      getElementAtPosition(taskPosition).then(($task) => {
-        const { top: newTop, left: newLeft } = $task.position();
+      getElementAtPosition(taskPosition).then((task) => {
+        const { top: newTop, left: newLeft } = task.position();
 
         expect(newTop - CYPRESS_UNDO_SCROLL_ADJUSTMENT).to.be.approximately(top, 2);
         expect(newLeft).to.be.approximately(left, 2);

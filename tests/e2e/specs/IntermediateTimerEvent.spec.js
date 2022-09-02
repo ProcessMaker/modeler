@@ -83,17 +83,17 @@ describe("Intermediate Timer Event", () => {
 
   it("should toggle between showing the weekday select when week is selected, and hiding it when it is not", () => {
     const intermediateTimerEventPosition = { x: 250, y: 250 };
-    addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
+    addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, "switch-to-intermediate-timer-catch-event");
     cy.contains("Timing Control").click();
     cy.get("[data-test=intermediateTypeSelect]").select("Cycle");
 
-    cy.get('[data-test="periods"]').select("week");
+    cy.get(`[data-test="periods"]`).select("week");
     cy.contains("Repeat on").should("be.visible");
 
-    cy.get('[data-test="periods"]').select("day");
+    cy.get(`[data-test="periods"]`).select("day");
     cy.contains("Repeat on").should("not.exist");
 
-    cy.get('[data-test="periods"]').select("week");
+    cy.get(`[data-test="periods"]`).select("week");
     cy.contains("Repeat on").should("be.visible");
   });
 });

@@ -56,6 +56,7 @@ describe("Sequence Flows", () => {
     typeIntoTextInput("[name=conditionExpression]", testExpressionString);
     cy.get("[name=conditionExpression]").should("have.value", testExpressionString);
 
+    // eslint-disable-next-line max-len
     const sequenceFlowXml = `<bpmn:sequenceFlow id="node_5" name="${testNameString}" sourceRef="node_2" targetRef="node_3"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testExpressionString}</bpmn:conditionExpression></bpmn:sequenceFlow>`;
 
     cy.get("[data-test=downloadXMLBtn]").click();
@@ -254,7 +255,7 @@ describe("Sequence Flows", () => {
 
     connectNodesWithFlow("generic-flow-button", taskPosition, endEventPosition);
 
-    cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 308 326 L 308 450');
+    cy.get(`.main-paper [data-type="standard.Link"] [joint-selector="line"]`).should("have.attr", "d", "M 308 326 L 308 450");
   });
 
   it("retains original background color when it cannot connect to an element", () => {
@@ -265,7 +266,7 @@ describe("Sequence Flows", () => {
 
     connectNodesWithFlow("generic-flow-button", taskPosition, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
-      .then(($el) => $el.find('[joint-selector="body"]'))
+      .then(($el) => $el.find(`[joint-selector="body"]`))
       .should("have.attr", "fill", startColor);
   });
 
@@ -278,7 +279,7 @@ describe("Sequence Flows", () => {
 
     connectNodesWithFlow("generic-flow-button", taskPosition, endEventPosition);
     getElementAtPosition(endEventPosition, nodeTypes.endEvent)
-      .then(($el) => $el.find('[joint-selector="body"]'))
+      .then(($el) => $el.find(`[joint-selector="body"]`))
       .should("have.attr", "fill", endColor);
   });
 
@@ -287,7 +288,7 @@ describe("Sequence Flows", () => {
     const taskPosition = { x: 250, y: 250 };
     const numberOfSequenceFlowsAdded = 1;
 
-    const sequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_3"';
+    const sequenceFlow = `<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_3"`;
 
     addNodeTypeToPaper(taskPosition, nodeTypes.task, "switch-to-script-task");
     getElementAtPosition(taskPosition).getType().should("equal", nodeTypes.scriptTask);
@@ -316,7 +317,7 @@ describe("Sequence Flows", () => {
         expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
 
-    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_6"';
+    const updatedSequenceFlow = `<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_6"`;
     assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });

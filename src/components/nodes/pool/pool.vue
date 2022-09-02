@@ -25,14 +25,14 @@ import { id as laneId } from "@/components/nodes/poolLane/config";
 import { id as messageFlowId } from "@/components/nodes/messageFlow/config";
 import pull from "lodash/pull";
 import store from "@/store";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
-import AddLaneAboveButton from "@/components/crown/crownButtons/addLaneAboveButton";
-import AddLaneBelowButton from "@/components/crown/crownButtons/addLaneBelowButton";
+import AddLaneAboveButton from "@/components/crown/crownButtons/addLaneAboveButton.vue";
+import AddLaneBelowButton from "@/components/crown/crownButtons/addLaneBelowButton.vue";
 import { configurePool, elementShouldHaveFlowNodeRef } from "@/components/nodes/pool/poolUtils";
 import PoolEventHandlers from "@/components/nodes/pool/poolEventHandlers";
 import Node from "@/components/nodes/node";
 import { aPortEveryXPixels } from "@/portsUtils";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import { labelWidth, poolPadding } from "./poolSizes";
 import Lane from "../poolLane";
 
@@ -256,6 +256,7 @@ export default {
 
       const laneHeight = isFirstLane ? height : elementBounds.height;
       laneElement.resize(width - labelWidth, laneHeight);
+      // eslint-disable-next-line no-nested-ternary
       laneElement.position(labelWidth, isFirstLane ? 0 : this.isAddingLaneAbove ? -laneHeight : height, { parentRelative: true });
       pool.resize(width, isFirstLane ? height : height + laneHeight, {
         direction: this.isAddingLaneAbove ? "top-right" : "bottom-right"
@@ -368,6 +369,8 @@ export default {
         case "bottom-left":
           resizeDirection = "top-left";
           break;
+        default:
+          break;
       }
 
       const resizingLaneIndex = this.sortedLanes().indexOf(resizingLane);
@@ -457,8 +460,9 @@ export default {
         .forEach((element) => {
           const lane = this.graph
             .findModelsUnderElement(element, { searchBy: "center" })
-            .find((element) => element.component && element.component.node.type === laneId);
+            .find((elementt) => elementt.component && elementt.component.node.type === laneId);
 
+          // eslint-disable-next-line no-unused-expressions
           newLaneRefs[lane.id]
             ? newLaneRefs[lane.id].push(element.component.node.definition)
             : (newLaneRefs[lane.id] = [element.component.node.definition]);

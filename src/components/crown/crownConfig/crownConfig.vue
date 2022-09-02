@@ -51,12 +51,12 @@
 </template>
 
 <script>
-import DeleteButton from "@/components/crown/crownButtons/deleteButton";
-import GenericFlowButton from "@/components/crown/crownButtons/genericFlowButton";
-import AssociationFlowButton from "@/components/crown/crownButtons/associationFlowButton";
-import DataAssociationFlowButton from "@/components/crown/crownButtons/dataAssociationFlowButton";
+import DeleteButton from "@/components/crown/crownButtons/deleteButton.vue";
+import GenericFlowButton from "@/components/crown/crownButtons/genericFlowButton.vue";
+import AssociationFlowButton from "@/components/crown/crownButtons/associationFlowButton.vue";
+import DataAssociationFlowButton from "@/components/crown/crownButtons/dataAssociationFlowButton.vue";
 import CopyButton from "@/components/crown/crownButtons/copyButton.vue";
-import CrownDropdowns from "@/components/crown/crownButtons/crownDropdowns";
+import CrownDropdowns from "@/components/crown/crownButtons/crownDropdowns.vue";
 import DefaultFlow from "@/components/crown/crownButtons/defaultFlowButton.vue";
 import poolLaneCrownConfig from "@/mixins/poolLaneCrownConfig";
 import pull from "lodash/pull";
@@ -224,12 +224,12 @@ export default {
         cursor: "pointer"
       };
     },
-    paperDoneRendering() {
+    async paperDoneRendering() {
       if (!this.isRendering) {
         return;
       }
 
-      new Promise((resolve) => this.paper.once("render:done", resolve));
+      await this.paper.once("render:done");
     },
     setUpCrownConfig() {
       this.paper.on("render:done scale:changed translate:changed", this.repositionCrown);

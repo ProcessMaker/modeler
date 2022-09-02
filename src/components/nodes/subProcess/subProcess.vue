@@ -46,21 +46,22 @@ import { taskHeight } from "@/components/nodes/task/taskConfig";
 import store from "@/store";
 import hasMarkers, { markerSize } from "@/mixins/hasMarkers";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
 import defaultNames from "@/components/nodes/task/defaultNames";
 import boundaryEventDropdownData from "@/components/nodes/boundaryEvent/boundaryEventDropdownData";
-import subprocessIcon from "@/assets/subprocess.svg";
+import subprocessIcon from "!!svg-inline-loader!@/assets/subprocess.svg";
 import updateIconColor from "@/mixins/updateIconColor";
 import customIcon from "@/mixins/customIcon";
 import { getRectangleAnchorPoint } from "@/portsUtils";
 import setupLoopCharacteristicsMarkers from "@/components/nodes/task/setupMultiInstanceMarkers";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
-const blankDefaultIcon = "<svg version=\"1.1\"\n";
-("     baseProfile=\"full\"\n");
-"     width=\"16\" height=\"16\"\n" + "     xmlns=\"http://www.w3.org/2000/svg\"></svg>";
+const blankDefaultIcon = `<svg version="1.1"
+     baseProfile="full"
+     width="16" height="16"
+     xmlns="http://www.w3.org/2000/svg"></svg>`;
 
 export default {
   components: {
@@ -207,8 +208,8 @@ export default {
             this.failedToLoadPreview = true;
             return;
           }
-          const removeWidthAttribute = (svgString) => svgString.replace("<svg width=\"100%\"", "<svg ");
-          const insertBorder = (svgString) => svgString.replace("<svg ", "<svg class=\"border border-dark\"");
+          const removeWidthAttribute = (svgString) => svgString.replace(`<svg width="100%"`, "<svg ");
+          const insertBorder = (svgString) => svgString.replace("<svg ", `<svg class="border border-dark"`);
 
           this.subProcessSvg = insertBorder(removeWidthAttribute(data.svg));
         })

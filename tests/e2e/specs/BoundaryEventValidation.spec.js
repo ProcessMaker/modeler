@@ -24,11 +24,11 @@ describe("Boundary event validation", () => {
         expect(uniqWith(boundaryEventPositions, isEqual)).to.have.length(numberOfPortsAroundTask);
       });
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should('have.length', numberOfPortsAroundTask);
+    cy.get(`.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]`).should("have.length", numberOfPortsAroundTask);
 
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]').should('have.length', numberOfPortsAroundTask);
+    cy.get(`.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]`).should("have.length", numberOfPortsAroundTask);
 
     getElementAtPosition(taskPosition, nodeTypes.task).click({ force: true });
 

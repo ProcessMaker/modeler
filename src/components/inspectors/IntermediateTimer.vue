@@ -17,9 +17,9 @@
 <script>
 import { DateTime } from "luxon";
 import { defaultDurationValue } from "@/components/nodes/intermediateTimerEvent";
-import DurationExpression from "./DurationExpression";
-import DateTimeExpression from "./DateTimeExpression";
-import CycleExpression from "./CycleExpression";
+import DurationExpression from "./DurationExpression.vue";
+import DateTimeExpression from "./DateTimeExpression.vue";
+import CycleExpression from "./CycleExpression.vue";
 
 const types = {
   timeDuration: "DurationExpression",

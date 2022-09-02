@@ -6,3 +6,5 @@ export function dummyShape(x, y, width, height) {
     translate: jest.fn()
   };
 }
+
+export default { dummyShape };

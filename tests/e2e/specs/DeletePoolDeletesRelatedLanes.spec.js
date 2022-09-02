@@ -4,7 +4,7 @@ describe("Pool Lanes", () => {
   it("Deleting first pool deletes One, Two, Three lanes", () => {
     uploadXml("DeletingPoolDeletesRelatedLanes.before.xml");
     waitToRenderAllShapes();
-    cy.get('g[data-type="processmaker.modeler.bpmn.pool"]')
+    cy.get(`g[data-type="processmaker.modeler.bpmn.pool"]`)
       .eq(0)
       .click({ force: true })
       .then(($pool) => {

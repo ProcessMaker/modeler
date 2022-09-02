@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import trashIcon from "@/assets/trash-alt-solid.svg";
-import CrownButton from "@/components/crown/crownButtons/crownButton";
-import { removeFlows } from "@/components/crown/utils.js";
+import trashIcon from "!!svg-inline-loader!@/assets/trash-alt-solid.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
+import { removeFlows } from "@/components/crown/utils";
 
 export default {
   components: { CrownButton },

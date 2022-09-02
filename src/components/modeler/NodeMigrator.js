@@ -62,7 +62,7 @@ export class NodeMigrator {
     }
   }
 
-  static _handleSequenceFlowForGateway(ref) {
+  _handleSequenceFlowForGateway = (ref) => {
     // Exclusive and inclusive gateways could have conditioned flows
     const hasCondition = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway"].includes(ref.sourceRef.$type);
 
@@ -70,7 +70,7 @@ export class NodeMigrator {
     if (!hasCondition) {
       delete ref.conditionExpression;
     }
-  }
+  };
 }
 
 export default NodeMigrator;

@@ -64,12 +64,12 @@
 </template>
 
 <script>
-import CrownButton from "@/components/crown/crownButtons/crownButton";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 import store from "@/store";
 import Vue from "vue";
 import { baseNodeColors } from "@/components/nodeColors";
 import { Sketch } from "vue-color";
-import IconSelector from "@/components/IconSelector";
+import IconSelector from "@/components/IconSelector.vue";
 import { icon, library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 

@@ -1,4 +1,4 @@
-import MiniMapManager from "@/components/miniMapManager.js";
+import MiniMapManager from "@/components/miniMapManager";
 
 describe("Mini Map Manager", () => {
   const positionData = [

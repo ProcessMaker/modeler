@@ -20,8 +20,8 @@ import { shapes, util } from "jointjs";
 import resizeConfig from "@/mixins/resizeConfig";
 import pull from "lodash/pull";
 import { poolColor } from "@/components/nodeColors";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import { labelWidth } from "../pool/poolSizes";
 
 export default {

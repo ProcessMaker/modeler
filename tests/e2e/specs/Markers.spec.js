@@ -4,12 +4,13 @@ import { nodeTypes } from "../support/constants";
 describe("Markers", () => {
   it("Add a task with a custom book marker", () => {
     const taskPosition = { x: 200, y: 200 };
+    const bookIcon = "book";
     dragFromSourceToDest(nodeTypes.taskWithMarker, taskPosition);
     getElementAtPosition(taskPosition).getType().should("equal", nodeTypes.taskWithMarker);
     getElementAtPosition(taskPosition)
       .find("image[joint-selector*=topRight]:first")
       .should("have.attr", "xlink:href")
-      .and("match", /^data:image\/svg\+xml;/);
+      .and("match", new RegExp(`${bookIcon}.*.svg`));
   });
 
   xit("Dynamically remove custom book marker", () => {
@@ -21,11 +22,13 @@ describe("Markers", () => {
 
     typeIntoTextInput("[name=name]", "Task without Marker");
 
-    getElementAtPosition(taskPosition).find('image[joint-selector*=topRight]:first').should("not.have.attr", "xlink:href");
+    getElementAtPosition(taskPosition).find("image[joint-selector*=topRight]:first").should("not.have.attr", "xlink:href");
   });
 
   it("A task could have multiple custom markers", () => {
     const taskPosition = { x: 200, y: 200 };
+    const bookIcon = "book";
+    const clockIcon = "clock";
     dragFromSourceToDest(nodeTypes.taskWithMarker, taskPosition);
     getElementAtPosition(taskPosition).getType().should("equal", nodeTypes.taskWithMarker);
 
@@ -36,10 +39,10 @@ describe("Markers", () => {
     getElementAtPosition(taskPosition)
       .find("image[joint-selector*=topRight]:first")
       .should("have.attr", "xlink:href")
-      .and("match", /^data:image\/svg\+xml;/);
+      .and("match", new RegExp(`${bookIcon}.*.svg`));
     getElementAtPosition(taskPosition)
       .find("image[joint-selector*=topRight]:nth-child(2)")
       .should("have.attr", "xlink:href")
-      .and("match", /^data:image\/svg\+xml;/);
+      .and("match", new RegExp(`${clockIcon}.*.svg`));
   });
 });

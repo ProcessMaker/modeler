@@ -22,7 +22,7 @@ import resetShapeColor from "@/components/resetShapeColor";
 import { getBoundaryAnchorPoint } from "@/portsUtils";
 import { invalidNodeColor } from "@/components/nodeColors";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import highlightConfig from "@/mixins/highlightConfig";
 import store from "@/store";
 import { canAddBoundaryEventToTarget } from "@/boundaryEventValidation";
@@ -101,7 +101,7 @@ export default {
       this.setShapeBorderDashSpacing(dashedLineSpacing);
     },
     toggleInterruptingStyle() {
-      this.node.definition.cancelActivity ? this.setSolidShapeBorder() : this.setDashedShapeBorder();
+      return this.node.definition.cancelActivity ? this.setSolidShapeBorder() : this.setDashedShapeBorder();
     },
     setShapeProperties() {
       const { x, y, width, height } = this.node.diagram.bounds;

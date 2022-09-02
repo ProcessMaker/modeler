@@ -1,5 +1,5 @@
 <script>
-import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent";
+import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent.vue";
 import intermediateMailSymbol from "!!svg-inline-loader!@/assets/intermediate-mail-alt.svg";
 import pull from "lodash/pull";
 import store from "@/store";

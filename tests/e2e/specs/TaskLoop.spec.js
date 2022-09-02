@@ -4,13 +4,13 @@ describe("Task Loop properties", () => {
   it("Set & Unset Loop Maximum property", () => {
     uploadXml("withLoopMarker.xml");
 
-    cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"]').click();
+    cy.get(`.main-paper [data-type="processmaker.components.nodes.task.Shape"]`).click();
     cy.contains("Loop Activity").click();
 
     // Set Loop Maximum
-    cy.get('[data-cy="loopMaximum"]').clear().type("10");
+    cy.get(`[data-cy="loopMaximum"]`).clear().type("10");
     // Remove Loop Maximum
-    cy.get('[data-cy="loopMaximum"]').clear();
+    cy.get(`[data-cy="loopMaximum"]`).clear();
 
     // loopMaximum should be removed from xml
     assertDownloadedXmlMatch(`
@@ -20,7 +20,7 @@ describe("Task Loop properties", () => {
     `);
 
     // Set Loop Maximum
-    cy.get('[data-cy="loopMaximum"]').clear().type("10");
+    cy.get(`[data-cy="loopMaximum"]`).clear().type("10");
 
     // loopMaximum should be added to xml
     assertDownloadedXmlMatch(`

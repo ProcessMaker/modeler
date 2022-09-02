@@ -21,8 +21,8 @@
 import { shapes } from "jointjs";
 import linkConfig from "@/mixins/linkConfig";
 import get from "lodash/get";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import MessageFlow from "@/components/nodes/genericFlow/MessageFlow";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {

@@ -1,5 +1,5 @@
 <script>
-import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent";
+import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent.vue";
 import conditionalIcon from "!!svg-inline-loader!@/assets/conditional-icon.svg";
 import updateIconColor from "@/mixins/updateIconColor";
 

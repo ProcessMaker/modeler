@@ -1,5 +1,5 @@
 <script>
-import baseStartEvent from "@/components/nodes/baseStartEvent/baseStartEvent";
+import baseStartEvent from "@/components/nodes/baseStartEvent/baseStartEvent.vue";
 import webEntryIcon from "!!svg-inline-loader!@/assets/webentry.svg";
 import coloredIcon from "@/components/iconColors";
 

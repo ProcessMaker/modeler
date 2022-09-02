@@ -12,7 +12,8 @@ describe("Boundary Message Event", () => {
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
 
     const boundaryMessageEventXML =
-      '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+      // eslint-disable-next-line max-len
+      `<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>`;
 
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -29,8 +30,8 @@ describe("Boundary Message Event", () => {
 
     const interrupting = "[name=cancelActivity]";
     cy.get(interrupting).click();
-    const boundaryMessageEventXML =
-      '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" cancelActivity="false" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+    // eslint-disable-next-line max-len
+    const boundaryMessageEventXML = `<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" cancelActivity="false" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>`;
 
     cy.get("[data-test=downloadXMLBtn]").click();
     cy.window()
@@ -46,7 +47,8 @@ CommonBoundaryEventBehaviour({
   type: "Boundary Message Event",
   nodeType: nodeTypes.boundaryMessageEvent,
   eventXMLSnippet:
-    '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
+    // eslint-disable-next-line max-len
+    `<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>`,
   taskType: nodeTypes.subProcess,
   taskTypeSelector: "switch-to-sub-process",
   invalidTargets: [{ type: nodeTypes.startEvent }]

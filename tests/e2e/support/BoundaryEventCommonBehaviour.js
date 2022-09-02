@@ -20,14 +20,14 @@ const taskPosition = { x: 250, y: 200 };
 
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
   const boundaryPosition = boundaryEvent.position();
-  const taskPosition = task.position();
+  const taskPositionn = task.position();
 
-  expect(boundaryPosition.top).to.be.closeTo(taskPosition.top, 1);
-  expect(boundaryPosition.left).to.be.closeTo(taskPosition.left, 118);
+  expect(boundaryPosition.top).to.be.closeTo(taskPositionn.top, 1);
+  expect(boundaryPosition.left).to.be.closeTo(taskPositionn.left, 118);
 }
 
 function configurePool(poolPosition, nodeType, taskType, taskTypeSelector) {
-  const taskPosition = { x: 250, y: 250 };
+  const taskPositionn = { x: 250, y: 250 };
   getElementAtPosition({ x: 150, y: 150 })
     .click()
     .then(($startEvent) => {
@@ -35,7 +35,7 @@ function configurePool(poolPosition, nodeType, taskType, taskTypeSelector) {
     });
 
   addNodeTypeToPaper({ x: 250, y: 250 }, nodeTypes.task, taskTypeSelector);
-  setBoundaryEvent(nodeType, taskPosition, taskType);
+  setBoundaryEvent(nodeType, taskPositionn, taskType);
   dragFromSourceToDest(nodeTypes.pool, poolPosition);
 }
 
@@ -87,7 +87,7 @@ export function CommonBoundaryEventBehaviour({
 
     it("can stay anchored to task when moving pool", () => {
       configurePool({ x: 300, y: 300 }, nodeType, taskType, taskTypeSelector);
-      const taskSelector = ".main-paper " + '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
+      const taskSelector = `.main-paper [data-type="processmaker.components.nodes.boundaryEvent.Shape"]`;
 
       cy.get(boundaryEventSelector).then(($boundaryEvent) => {
         cy.get(taskSelector).then(($task) => {
@@ -178,7 +178,7 @@ export function CommonBoundaryEventBehaviour({
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
       cy.get(boundaryEventSelector).then(($boundaryEvent) => {
-        const boundaryEventPosition = $boundaryEvent.position();
+        const boundaryEventPositionn = $boundaryEvent.position();
         const emptySpot = { x: 400, y: 400 };
 
         cy.wrap($boundaryEvent)
@@ -191,8 +191,8 @@ export function CommonBoundaryEventBehaviour({
         cy.wrap($boundaryEvent).should(($el) => {
           const { left, top } = $el.position();
           const positionErrorMargin = 20;
-          expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
-          expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+          expect(left).to.be.closeTo(boundaryEventPositionn.left, positionErrorMargin);
+          expect(top).to.be.closeTo(boundaryEventPositionn.top, positionErrorMargin);
         });
       });
     });
@@ -236,7 +236,7 @@ export function CommonBoundaryEventBehaviour({
       cy.get(boundaryEventSelector)
         .as("boundaryEvent")
         .then(($boundaryEvent) => {
-          const boundaryEventPosition = $boundaryEvent.position();
+          const boundaryEventPositionn = $boundaryEvent.position();
 
           cy.wrap($boundaryEvent)
             .trigger("mousedown", { which: 1, force: true })
@@ -250,11 +250,11 @@ export function CommonBoundaryEventBehaviour({
           cy.get("[data-test=redo]").click({ force: true });
           waitToRenderAllShapes();
 
-          cy.get("@boundaryEvent").should(($boundaryEvent) => {
-            const { left, top } = $boundaryEvent.position();
+          cy.get("@boundaryEvent").should((boundaryEvent) => {
+            const { left, top } = boundaryEvent.position();
 
-            expect(left).to.be.closeTo(boundaryEventPosition.left, 20);
-            expect(top).to.be.closeTo(boundaryEventPosition.top, 20);
+            expect(left).to.be.closeTo(boundaryEventPositionn.left, 20);
+            expect(top).to.be.closeTo(boundaryEventPositionn.top, 20);
           });
         });
 
@@ -273,18 +273,18 @@ export function CommonBoundaryEventBehaviour({
       cy.get(boundaryEventSelector)
         .as("boundaryEvent")
         .then(($boundaryEvent) => {
-          const boundaryEventPosition = $boundaryEvent.position();
+          const boundaryEventPositionn = $boundaryEvent.position();
 
           cy.get("[data-test=undo]").click();
           waitToRenderAllShapes();
           cy.get("[data-test=redo]").click();
           waitToRenderAllShapes();
 
-          cy.get("@boundaryEvent").should(($boundaryEvent) => {
-            const { left, top } = $boundaryEvent.position();
+          cy.get("@boundaryEvent").should((boundaryEvent) => {
+            const { left, top } = boundaryEvent.position();
 
-            expect(left).to.closeTo(boundaryEventPosition.left, 2);
-            expect(top).to.closeTo(boundaryEventPosition.top, 2);
+            expect(left).to.closeTo(boundaryEventPositionn.left, 2);
+            expect(top).to.closeTo(boundaryEventPositionn.top, 2);
           });
         });
     });
@@ -303,13 +303,13 @@ export function CommonBoundaryEventBehaviour({
             const newPosition = paper.localToPagePoint(invalidNodeTargetPosition.x, invalidNodeTargetPosition.y);
 
             cy.get(boundaryEventSelector).then(($boundaryEvent) => {
-              const boundaryEventPosition = $boundaryEvent.position();
+              const boundaryEventPositionn = $boundaryEvent.position();
 
               cy.wrap($boundaryEvent)
                 .trigger("mousedown", { which: 1, force: true })
-                .then(($boundaryEvent) => {
+                .then((boundaryEvent) => {
                   waitToRenderAllShapes();
-                  cy.wrap($boundaryEvent).trigger("mousemove", {
+                  cy.wrap(boundaryEvent).trigger("mousemove", {
                     clientX: newPosition.x,
                     clientY: newPosition.y,
                     force: true
@@ -319,7 +319,7 @@ export function CommonBoundaryEventBehaviour({
               waitToRenderAllShapes();
 
               getElementAtPosition(invalidNodeTargetPosition, invalidTargetNode.type)
-                .then(($el) => $el.find('[joint-selector="body"]'))
+                .then(($el) => $el.find(`[joint-selector="body"]`))
                 .should("have.attr", "fill", invalidNodeColor);
 
               cy.wrap($boundaryEvent).trigger("mouseup");
@@ -327,7 +327,7 @@ export function CommonBoundaryEventBehaviour({
               waitToRenderAllShapes();
 
               getElementAtPosition(invalidNodeTargetPosition, invalidTargetNode.type)
-                .then(($el) => $el.find('[joint-selector="body"]'))
+                .then(($el) => $el.find(`[joint-selector="body"]`))
                 .should("have.attr", "fill", invalidTargetNode.color || startColor);
 
               getElementAtPosition(invalidNodeTargetPosition).click();
@@ -335,8 +335,8 @@ export function CommonBoundaryEventBehaviour({
               cy.wrap($boundaryEvent).should(($el) => {
                 const { left, top } = $el.position();
                 const positionErrorMargin = 2;
-                expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
-                expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+                expect(left).to.be.closeTo(boundaryEventPositionn.left, positionErrorMargin);
+                expect(top).to.be.closeTo(boundaryEventPositionn.top, positionErrorMargin);
               });
             });
           });
@@ -356,14 +356,14 @@ export function CommonBoundaryEventBehaviour({
         const overTaskPosition = { x: 550, y: 350 };
 
         [overPoolPosition, overTaskPosition].forEach(({ x, y }) => {
-          cy.wrap($boundaryEvent).as('boundaryEvent').click({ force: true }).trigger("mousedown", { which: 1, force: true });
+          cy.wrap($boundaryEvent).as("boundaryEvent").click({ force: true }).trigger("mousedown", { which: 1, force: true });
           waitToRenderAllShapes();
           cy.get("@boundaryEvent").trigger("mousemove", { clientX: x, clientY: y, force: true });
 
           waitToRenderAllShapes();
 
           getElementAtPosition(taskPosition, nodeTypes.pool)
-            .then(($el) => $el.find('[joint-selector="body"]'))
+            .then(($el) => $el.find(`[joint-selector="body"]`))
             .should("have.attr", "fill", invalidNodeColor);
 
           cy.wrap($boundaryEvent).trigger("mouseup");
@@ -371,7 +371,7 @@ export function CommonBoundaryEventBehaviour({
           waitToRenderAllShapes();
 
           getElementAtPosition(taskPosition, nodeTypes.pool)
-            .then(($el) => $el.find('[joint-selector="body"]'))
+            .then(($el) => $el.find(`[joint-selector="body"]`))
             .should("have.attr", "fill", poolColor);
         });
       });
@@ -385,3 +385,5 @@ export function CommonBoundaryEventBehaviour({
     });
   });
 }
+
+export default { CommonBoundaryEventBehaviour };

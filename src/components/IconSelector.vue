@@ -66,7 +66,7 @@
 
 <script>
 import Icons from "./Icons";
-import FileUploadButton from "./FileUploadButton";
+import FileUploadButton from "./FileUploadButton.vue";
 
 export default {
   components: {
@@ -189,7 +189,7 @@ export default {
       this.placeholder = this.$t("Icon");
     },
     find(value) {
-      return this.all.find((icon) => icon.value == value);
+      return this.all.find((icon) => icon.value === value);
     },
     onHover(icon) {
       this.placeholder = icon.label;

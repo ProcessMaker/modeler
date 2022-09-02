@@ -20,9 +20,9 @@
 import portsConfig from "@/mixins/portsConfig";
 import GatewayShape from "@/components/nodes/gateway/shape";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
 import defaultNames from "@/components/nodes/gateway/defaultNames";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 const hasDefaultFlow = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway"];
 

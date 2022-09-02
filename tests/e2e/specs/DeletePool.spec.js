@@ -7,22 +7,6 @@ import {
 } from "../support/utils";
 import { nodeTypes } from "../support/constants";
 
-describe("Pools", () => {
-  it("Test Delete Pool should delete lanes", () => {
-    const pool = addPool();
-    addLane(pool);
-    inspector(getLane(pool, 0), "name", "lane1");
-    inspector(getLane(pool, 1), "name", "lane2");
-    choose(pool);
-    crown("delete-button");
-    getBpmn().then((xml) => {
-      expect(xml).to.not.contain("<bpmn:laneSet");
-      expect(xml).to.not.contain("<bpmn:lane");
-      expect(xml).to.not.contain("<bpmn:startEvent");
-    });
-  });
-});
-
 function addPool() {
   return new Promise((resolve) => {
     const poolPosition = { x: 200, y: 200 };
@@ -88,3 +72,19 @@ function getBpmn() {
       });
   });
 }
+
+describe("Pools", () => {
+  it("Test Delete Pool should delete lanes", () => {
+    const pool = addPool();
+    addLane(pool);
+    inspector(getLane(pool, 0), "name", "lane1");
+    inspector(getLane(pool, 1), "name", "lane2");
+    choose(pool);
+    crown("delete-button");
+    getBpmn().then((xml) => {
+      expect(xml).to.not.contain("<bpmn:laneSet");
+      expect(xml).to.not.contain("<bpmn:lane");
+      expect(xml).to.not.contain("<bpmn:startEvent");
+    });
+  });
+});

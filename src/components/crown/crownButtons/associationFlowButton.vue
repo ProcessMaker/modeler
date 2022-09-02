@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import connectIcon from "@/assets/connect-artifacts.svg";
-import CrownButton from "@/components/crown/crownButtons/crownButton";
+import connectIcon from "!!svg-inline-loader!@/assets/connect-artifacts.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 import { direction } from "@/components/nodes/association/associationConfig";
 import Node from "@/components/nodes/node";
 

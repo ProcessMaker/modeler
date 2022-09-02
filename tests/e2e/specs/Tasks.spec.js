@@ -46,7 +46,7 @@ describe("Tasks", () => {
     typeIntoTextInput("[name=name]", testString);
 
     getElementAtPosition(taskPosition).click().getType().should("equal", nodeTypes.subProcess);
-    cy.get('[data-test="select-type-dropdown"]').click();
+    cy.get(`[data-test="select-type-dropdown"]`).click();
     cy.get("[data-test=switch-to-manual-task]").click();
     cy.wait(modalAnimationTime);
     modalConfirm();

@@ -10,12 +10,13 @@ describe("Intermediate Conditional Catch Event", () => {
       "switch-to-intermediate-conditional-catch-event"
     );
     const condition = "[name=condition]";
-    cy.get(condition).clear().type('form_input_1=="one"');
-
+    cy.get(condition).clear().type(`form_input_1=="one"`);
+    /* eslint-disable */
     assertDownloadedXmlContainsExpected(`
       <bpmn:intermediateCatchEvent id="node_3" name="Intermediate Conditional Catch Event">
         <bpmn:conditionalEventDefinition><bpmn:condition xsi:type="bpmn:tFormalExpression">form_input_1=="one"</bpmn:condition></bpmn:conditionalEventDefinition>
       </bpmn:intermediateCatchEvent>
     `);
+    /* eslint-enable */
   });
 });

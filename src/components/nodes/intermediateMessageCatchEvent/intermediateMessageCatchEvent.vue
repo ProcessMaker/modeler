@@ -1,5 +1,5 @@
 <script>
-import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent";
+import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent.vue";
 import getIntermediateMailIconShapeAttributes from "@/mixins/intermediateMailIcon";
 import intermediateMailSymbol from "!!svg-inline-loader!@/assets/intermediate-mail.svg";
 import { intermediateColor, intermediateColorStroke } from "@/components/nodeColors";

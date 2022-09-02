@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
-import crownColorDropdown from "@/components/crown/crownButtons/crownColorDropdown";
+import crownColorDropdown from "@/components/crown/crownButtons/crownColorDropdown.vue";
 import BootstrapVue from "bootstrap-vue";
 import { baseNodeColors } from "@/components/nodeColors";
 

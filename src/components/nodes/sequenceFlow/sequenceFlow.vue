@@ -19,8 +19,8 @@
 import { shapes } from "jointjs";
 import linkConfig from "@/mixins/linkConfig";
 import get from "lodash/get";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import SequenceFlow from "@/components/nodes/genericFlow/SequenceFlow";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import { namePosition } from "./sequenceFlowConfig";
 
 export default {

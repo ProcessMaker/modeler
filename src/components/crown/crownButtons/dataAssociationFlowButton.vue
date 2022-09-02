@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import connectIcon from "@/assets/connect-artifacts.svg";
-import CrownButton from "@/components/crown/crownButtons/crownButton";
+import connectIcon from "!!svg-inline-loader!@/assets/connect-artifacts.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 import Node from "@/components/nodes/node";
 import * as dataOutputConfig from "@/components/nodes/dataOutputAssociation/config";
 import * as dataInputConfig from "@/components/nodes/dataInputAssociation/config";

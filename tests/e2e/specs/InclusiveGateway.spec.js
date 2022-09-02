@@ -14,7 +14,7 @@ describe("Inclusive Gateway", () => {
   const inclusivePosition = { x: 250, y: 250 };
 
   beforeEach(() => {
-    addNodeTypeToPaper(inclusivePosition, nodeTypes.exclusiveGateway, 'switch-to-inclusive-gateway');
+    addNodeTypeToPaper(inclusivePosition, nodeTypes.exclusiveGateway, "switch-to-inclusive-gateway");
   });
 
   it("Update inclusive gateway name", () => {

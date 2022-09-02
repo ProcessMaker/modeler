@@ -19,9 +19,9 @@
 import { shapes } from "jointjs";
 import linkConfig from "@/mixins/linkConfig";
 import get from "lodash/get";
-import associationHead from "!!url-loader!@/assets/association-head.svg";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import associationHead from "!!svg-inline-loader!@/assets/association-head.svg";
 import { pull } from "lodash";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {
@@ -56,14 +56,10 @@ export default {
       }
 
       /* A data association can only be connected to a data store or data object */
-      const invalidIncoming = this.targetConfig.bpmnType !== "bpmn:DataObjectReference";
-      this.targetConfig.bpmnType !== "bpmn:DataStoreReference";
+      const invalidIncoming =
+        this.targetConfig.bpmnType !== "bpmn:DataObjectReference" && this.targetConfig.bpmnType !== "bpmn:DataStoreReference";
 
-      if (invalidIncoming) {
-        return false;
-      }
-
-      return true;
+      return !invalidIncoming;
     }
   },
   mounted() {

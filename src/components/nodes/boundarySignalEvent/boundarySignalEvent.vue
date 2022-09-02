@@ -1,5 +1,5 @@
 <script>
-import BoundaryEvent from "@/components/nodes/boundaryEvent/boundaryEvent";
+import BoundaryEvent from "@/components/nodes/boundaryEvent/boundaryEvent.vue";
 import signalEventIcon from "!!svg-inline-loader!@/assets/boundary-signal-event-icon.svg";
 import updateIconColor from "@/mixins/updateIconColor";
 

@@ -148,16 +148,18 @@ export default {
     },
     prepareConfig() {
       if (!this.highlightedNode) {
-        return (this.config = {
+        this.config = {
           name: "Empty",
           items: []
-        });
+        };
+        return this.config;
       }
 
       const { type, definition } = this.highlightedNode;
 
       if (this.highlightedNode === this.processNode) {
-        return (this.config = Process.inspectorConfig);
+        this.config = Process.inspectorConfig;
+        return this.config;
       }
 
       const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
@@ -165,8 +167,7 @@ export default {
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         let helper = this.$t("Enter the expression that describes the workflow condition");
-        helper +=
-          " <a href=\"https://processmaker.gitbook.io/processmaker/v/processmaker/designing-processes/process-design/model-your-process/flow-indicator-elements/the-quick-toolbar#expression-syntax-components-to-specify-request-conditions-that-trigger-an-outgoing-sequence-flow-element\" target=\"_blank\"><i class=\"far fa-question-circle mr-1\"></a>";
+        helper += ` <a href="https://processmaker.gitbook.io/processmaker/v/processmaker/designing-processes/process-design/model-your-process/flow-indicator-elements/the-quick-toolbar#expression-syntax-components-to-specify-request-conditions-that-trigger-an-outgoing-sequence-flow-element" target="_blank"><i class="far fa-question-circle mr-1"></a>`;
         const expressionConfig = {
           component: "FormInput",
           config: {
@@ -186,7 +187,9 @@ export default {
         }
       }
 
-      return (this.config = inspectorConfig);
+      this.config = inspectorConfig;
+
+      return this.config;
     },
     prepareData() {
       if (!this.highlightedNode) {

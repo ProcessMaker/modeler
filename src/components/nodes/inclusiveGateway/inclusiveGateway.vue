@@ -1,5 +1,5 @@
 <script>
-import GatewayComponent from "@/components/nodes/gateway/gateway";
+import GatewayComponent from "@/components/nodes/gateway/gateway.vue";
 import inclusiveGatewaySymbol from "!!svg-inline-loader!@/assets/inclusive-gatway-symbol.svg";
 import { gatewayDirection } from "@/components/nodes/gateway/gatewayConfig";
 import updateIconColor from "@/mixins/updateIconColor";

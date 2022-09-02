@@ -19,8 +19,8 @@
 import { shapes } from "jointjs";
 import linkConfig from "@/mixins/linkConfig";
 import get from "lodash/get";
-import associationHead from "!!url-loader!@/assets/association-head.svg";
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
+import associationHead from "!!svg-inline-loader!@/assets/association-head.svg";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import { direction } from "./associationConfig";
 
 export default {
@@ -64,22 +64,18 @@ export default {
       if (sourcePool && sourcePool !== targetPool) {
         return false;
       }
-      const invalidIncoming = this.targetConfig.validateAssociationIncoming;
-      !this.targetConfig.validateAssociationIncoming(this.sourceNode);
+      const invalidIncoming =
+        this.targetConfig.validateAssociationIncoming && !this.targetConfig.validateAssociationIncoming(this.sourceNode);
 
-      const invalidOutgoing = this.sourceConfig.validateAssociationOutgoing;
-      !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
+      const invalidOutgoing =
+        this.sourceConfig.validateAssociationOutgoing && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
 
-      if (invalidIncoming || invalidOutgoing) {
-        return false;
-      }
-
-      return true;
+      return !(invalidIncoming || invalidOutgoing);
     }
   },
   watch: {
-    "node.definition.associationDirection": function (direction) {
-      this.updateAssociationMarker(direction);
+    "node.definition.associationDirection": function (directionn) {
+      this.updateAssociationMarker(directionn);
     }
   },
   mounted() {
@@ -120,18 +116,18 @@ export default {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
     },
-    updateAssociationMarker(direction) {
-      if (direction === this.associationDirection.none) {
+    updateAssociationMarker(directionn) {
+      if (directionn === this.associationDirection.none) {
         this.shape.attr("line/targetMarker/display", "none");
         this.shape.attr("line/sourceMarker/display", "none");
       }
 
-      if (direction === this.associationDirection.one) {
+      if (directionn === this.associationDirection.one) {
         this.shape.attr("line/targetMarker/display", "block");
         this.shape.attr("line/sourceMarker/display", "none");
       }
 
-      if (direction === this.associationDirection.both) {
+      if (directionn === this.associationDirection.both) {
         this.shape.attr("line/targetMarker/display", "block");
         this.shape.attr("line/sourceMarker/display", "block");
       }

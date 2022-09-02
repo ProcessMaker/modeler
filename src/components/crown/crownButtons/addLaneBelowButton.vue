@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import laneBelowIcon from "@/assets/lane-below.svg";
-import CrownButton from "@/components/crown/crownButtons/crownButton";
+import laneBelowIcon from "!!svg-inline-loader!@/assets/lane-below.svg";
+import CrownButton from "@/components/crown/crownButtons/crownButton.vue";
 
 export default {
   components: { CrownButton },

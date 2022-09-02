@@ -50,6 +50,7 @@ describe("CycleManager", () => {
   it("returns the start date and selected week days correctly", () => {
     manager.selectedWeekdays = [3, 4, 5, 6];
 
+    // eslint-disable-next-line max-len
     const expected = `${startDate}|R/2020-03-04T14:00:00.000Z/P1W|R/2020-03-05T14:00:00.000Z/P1W|R/2020-03-06T14:00:00.000Z/P1W|R/2020-02-29T14:00:00.000Z/P1W`;
     expect(manager.dateIntervalString()).toBe(expected);
   });

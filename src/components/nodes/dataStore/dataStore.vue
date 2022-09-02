@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import CrownConfig from "@/components/crown/crownConfig/crownConfig";
 import highlightConfig from "@/mixins/highlightConfig";
 import hideLabelOnDrag from "@/mixins/hideLabelOnDrag";
 import portsConfig from "@/mixins/portsConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 import DataStoreShape from "./shape";
 
 export default {

@@ -33,7 +33,7 @@ describe("Boundary Signal Event", () => {
     const signalRef = "global_1";
     const signalName = "global signal 1";
     typeIntoTextInput("[name=name]", name);
-    selectOptionByName('[data-test="signalRef:select"]', signalName);
+    selectOptionByName(`[data-test="signalRef:select"]`, signalName);
 
     assertDownloadedXmlContainsExpected(`
       <bpmn:boundaryEvent id="node_3" name="${name}" attachedToRef="node_2">
@@ -63,7 +63,8 @@ CommonBoundaryEventBehaviour({
   type: "Boundary Signal Event",
   nodeType: nodeTypes.boundarySignalEvent,
   eventXMLSnippet:
-    '<bpmn:boundaryEvent id="node_3" name="Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
+    // eslint-disable-next-line max-len
+    `<bpmn:boundaryEvent id="node_3" name="Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>`,
   taskType: nodeTypes.task,
   taskTypeSelector: "switch-to-user-task",
   invalidTargets: [{ type: nodeTypes.startEvent }]

@@ -1,5 +1,5 @@
 <script>
-import GatewayComponent from "@/components/nodes/gateway/gateway";
+import GatewayComponent from "@/components/nodes/gateway/gateway.vue";
 import parallelGatewaySymbol from "!!svg-inline-loader!@/assets/parallel-gateway-symbol.svg";
 import updateIconColor from "@/mixins/updateIconColor";
 

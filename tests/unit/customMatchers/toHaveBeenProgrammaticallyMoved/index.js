@@ -1,5 +1,5 @@
 import get from "lodash/get";
-import passes from "./predicate.js";
+import passes from "./predicate";
 
 const failMessage = (shape, utils) => () =>
   `${utils.matcherHint(".toHaveBeenProgrammaticallyMoved", "shape", "")}\n\nExpected:` +
