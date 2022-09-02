@@ -132,3 +132,4 @@ workflows:
       - cypress/report:
           requires:
             - lint
+  version: 2
