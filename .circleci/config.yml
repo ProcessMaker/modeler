@@ -3,7 +3,7 @@ jobs:
   cypress/build:
     resource_class: xlarge
     docker:
-      - image: cypress/base:16.14.2
+      - image: cypress/browsers:node16.14.0-chrome99-ff97
     steps:
       - checkout
       - restore_cache:
