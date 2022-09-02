@@ -35,6 +35,7 @@ module.exports = {
     "no-continue": "warn",
     "prefer-destructuring": "warn",
     "import/no-cycle": "warn",
+    "import/no-webpack-loader-syntax": 0,
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off"
   },
