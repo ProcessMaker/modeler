@@ -50,20 +50,16 @@ jobs:
     docker:
       - image: cypress/base:14.16.0
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: ~/
       - run:
           command: npm run lint
   unit-test:
     docker:
       - image: cypress/base:14.16.0
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: ~/
       - run:
           command: npm run test-unit
 
