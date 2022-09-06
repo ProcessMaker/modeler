@@ -3,7 +3,7 @@ import coloredIcon from "@/components/iconColors";
 export default {
   data() {
     return {
-      iconName: ""
+      iconName: "",
     };
   },
 
@@ -19,11 +19,11 @@ export default {
         return;
       }
       this.shape.attr("image/xlink:href", coloredIcon(atob(base64Icon), this.node));
-    }
+    },
   },
   mounted() {
     if (this.node.definition.get("customIcon")) {
       this.setCustomIcon(this.node.definition.get("customIcon"));
     }
-  }
+  },
 };

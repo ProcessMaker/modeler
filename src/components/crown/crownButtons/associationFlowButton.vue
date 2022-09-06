@@ -22,7 +22,7 @@ export default {
   props: ["node", "moddle", "shape"],
   data() {
     return {
-      connectIcon
+      connectIcon,
     };
   },
   methods: {
@@ -31,11 +31,11 @@ export default {
       const associationLink = this.moddle.create("bpmn:Association", {
         sourceRef: this.shape.component.node.definition,
         targetRef: { x, y },
-        associationDirection: direction.none
+        associationDirection: direction.none,
       });
 
       this.$emit("add-node", new Node("processmaker-modeler-association", associationLink, this.moddle.create("bpmndi:BPMNEdge")));
-    }
-  }
+    },
+  },
 };
 </script>

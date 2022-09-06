@@ -5,7 +5,7 @@ import {
   moveShapeMiddleXTo,
   moveShapeMiddleYTo,
   moveShapeRightTo,
-  moveShapeTopTo
+  moveShapeTopTo,
 } from "@/components/nodes/utilities/shapeMovement";
 
 export function alignLeft(shapes) {

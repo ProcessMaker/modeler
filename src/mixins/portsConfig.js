@@ -22,7 +22,7 @@ const edgePorts = [top, topLeft, topRight, right, rightTop, rightBottom, bottom,
 const toGroup = (groupName) => (position) => ({
   group: groupName,
   args: position,
-  markup
+  markup,
 });
 
 const defaultPorts = [top, right, left, bottom, center].map(toGroup(defaultGroup));
@@ -37,20 +37,20 @@ export default {
     this.shape.attributes.ports.groups = {
       [defaultGroup]: {
         position: {
-          name: "absolute"
-        }
+          name: "absolute",
+        },
       },
       [boundaryGroup]: {
         position: {
-          name: "absolute"
-        }
+          name: "absolute",
+        },
       },
       [rectangleGroup]: {
         position: {
-          name: "absolute"
-        }
-      }
+          name: "absolute",
+        },
+      },
     };
     this.shape.addPorts([...defaultPorts, ...boundaryPorts, ...rectangularPorts]);
-  }
+  },
 };

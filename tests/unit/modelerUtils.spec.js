@@ -7,7 +7,7 @@ describe("keepOriginalName", () => {
     ["Start Event", "processmaker-modeler-start-timer-event"],
     ["End Event", "processmaker-modeler-message-end-event"],
     ["Intermediate Message Catch Event", "processmaker-modeler-intermediate-catch-timer-event"],
-    ["Exclusive Gateway", "processmaker-modeler-parallel-gateway"]
+    ["Exclusive Gateway", "processmaker-modeler-parallel-gateway"],
   ];
 
   it.each(nodeTypes)("Should keep unique %s name", (name, type) => {

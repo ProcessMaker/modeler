@@ -5,7 +5,7 @@ import {
   shapeCenterY,
   shapeLeft,
   shapeRight,
-  shapeTop
+  shapeTop,
 } from "@/components/nodes/utilities/shapeMetrics";
 import { alignBottom, alignLeft, alignRight, alignTop, centerHorizontally, centerVertically } from "@/components/nodes/utilities/align";
 import { distributeHorizontalSpacingEvenly, distributeVerticalSpacingEvenly } from "@/components/nodes/utilities/distribute";
@@ -25,7 +25,7 @@ export function getBoundingBox(shapes) {
       width: 0,
       height: 0,
       vMiddle: 0,
-      hMiddle: 0
+      hMiddle: 0,
     };
   }
 
@@ -49,7 +49,7 @@ export function getBoundingBox(shapes) {
     width,
     height,
     vMiddle: minY + height / 2,
-    hMiddle: minX + width / 2
+    hMiddle: minX + width / 2,
   };
 }
 
@@ -68,12 +68,12 @@ export function getShapesOptions(shapes) {
         right: enoughShapes && alignableShapes.some((shape) => shapeRight(shape) !== bounds.right),
         bottom: enoughShapes && alignableShapes.some((shape) => shapeBottom(shape) !== bounds.bottom),
         verticalCenter: enoughShapes && alignableShapes.some((shape) => shapeCenterY(shape) !== bounds.vMiddle),
-        top: enoughShapes && alignableShapes.some((shape) => shapeTop(shape) !== bounds.top)
+        top: enoughShapes && alignableShapes.some((shape) => shapeTop(shape) !== bounds.top),
       },
       distribute: {
         horizontally: enoughShapes && alignableShapes.length > 2,
-        vertically: enoughShapes && alignableShapes.length > 2
-      }
+        vertically: enoughShapes && alignableShapes.length > 2,
+      },
     },
     align: {
       left: () => alignLeft(alignableShapes),
@@ -81,11 +81,11 @@ export function getShapesOptions(shapes) {
       right: () => alignRight(alignableShapes),
       bottom: () => alignBottom(alignableShapes),
       verticalCenter: () => centerVertically(alignableShapes),
-      top: () => alignTop(alignableShapes)
+      top: () => alignTop(alignableShapes),
     },
     distribute: {
       horizontally: () => distributeHorizontalSpacingEvenly(alignableShapes),
-      vertically: () => distributeVerticalSpacingEvenly(alignableShapes)
-    }
+      vertically: () => distributeVerticalSpacingEvenly(alignableShapes),
+    },
   };
 }

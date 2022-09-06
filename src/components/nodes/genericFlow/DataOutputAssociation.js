@@ -31,7 +31,7 @@ export default class DataOutputAssociation extends DataAssociation {
 
     node.dataAssociationProps = {
       sourceShape,
-      targetCoords: { x: undefined, y: undefined }
+      targetCoords: { x: undefined, y: undefined },
     };
     const sourceNode = get(sourceShape, "component.node");
     const existingOutputAssociations = sourceNode.definition.get("dataOutputAssociations") || [];

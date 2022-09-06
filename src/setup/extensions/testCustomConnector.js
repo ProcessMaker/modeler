@@ -13,7 +13,7 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
     extends: Task,
     mounted() {
       this.shape.attr("image/xlink:href", testIcon);
-    }
+    },
   };
 
   const nodeType = {
@@ -29,15 +29,15 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
       return moddle.create("bpmn:ServiceTask", {
         name: "Test Connector",
         implementation,
-        config: JSON.stringify({ testMessage: "" })
+        config: JSON.stringify({ testMessage: "" }),
       });
     },
     diagram(moddle) {
       return moddle.create("bpmndi:BPMNShape", {
         bounds: moddle.create("dc:Bounds", {
           height: 76,
-          width: 116
-        })
+          width: 116,
+        }),
       });
     },
     /* Map values from inspector data to node definition  */
@@ -83,12 +83,12 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
             component: "FormText",
             config: {
               label: "Test Connector",
-              fontSize: "2em"
-            }
+              fontSize: "2em",
+            },
           },
           {
             component: "FormInput",
-            config: idConfigSettings
+            config: idConfigSettings,
           },
           {
             component: "FormTextArea",
@@ -96,12 +96,12 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
               label: "Test Message",
               helper: "The Body of The Message to Send",
               name: "testMessage",
-              defaultValue: { mode: "basic", value: "" }
-            }
-          }
-        ]
-      }
-    ]
+              defaultValue: { mode: "basic", value: "" },
+            },
+          },
+        ],
+      },
+    ],
   };
 
   registerNode(nodeType);

@@ -49,17 +49,17 @@ export default {
   props: {
     dropdownOpen: {
       type: Boolean,
-      required: true
+      required: true,
     },
     dropdownData: Array,
     nodeRegistry: Object,
     moddle: Object,
     node: Object,
-    shape: Object
+    shape: Object,
   },
   data() {
     return {
-      boundaryEventIcon
+      boundaryEventIcon,
     };
   },
   created() {
@@ -91,8 +91,8 @@ export default {
       store.commit("highlightNode", node);
 
       this.$emit("add-node", node);
-    }
-  }
+    },
+  },
 };
 </script>
 

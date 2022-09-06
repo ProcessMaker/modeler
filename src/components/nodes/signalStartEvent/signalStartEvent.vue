@@ -6,16 +6,16 @@ export default {
   extends: baseStartEvent,
   data() {
     return {
-      nodeIcon: signalStartEventIcon
+      nodeIcon: signalStartEventIcon,
     };
   },
   mounted() {
     this.shape.attr({
       image: {
         "ref-x": 5,
-        "ref-y": 3
-      }
+        "ref-y": 3,
+      },
     });
-  }
+  },
 };
 </script>

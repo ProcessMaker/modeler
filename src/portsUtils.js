@@ -83,7 +83,7 @@ function getShapeCenterPosition(shape) {
 
   return {
     x: x + width / 2,
-    y: y + height / 2
+    y: y + height / 2,
   };
 }
 

@@ -8,12 +8,12 @@ export default {
     initiallyOpen: false,
     label: "Advanced",
     icon: "cogs",
-    name: "advanced-accordion"
+    name: "advanced-accordion",
   },
   items: [
     {
       component: NodeIdentifierInput,
-      config: idConfigSettings
-    }
-  ]
+      config: idConfigSettings,
+    },
+  ],
 };

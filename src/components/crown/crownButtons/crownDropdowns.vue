@@ -46,19 +46,19 @@ export default {
     shape: Object,
     taskDropdownInitiallyOpen: {
       type: Boolean,
-      required: true
+      required: true,
     },
     showCustomIconPicker: Boolean,
     iconName: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   data() {
     return {
       taskDropdownOpen: this.taskDropdownInitiallyOpen,
       boundaryEventDropdownOpen: false,
-      colorDropdownOpen: false
+      colorDropdownOpen: false,
     };
   },
   methods: {
@@ -76,8 +76,8 @@ export default {
       this.taskDropdownOpen = false;
       this.boundaryEventDropdownOpen = false;
       this.colorDropdownOpen = value;
-    }
-  }
+    },
+  },
 };
 </script>
 

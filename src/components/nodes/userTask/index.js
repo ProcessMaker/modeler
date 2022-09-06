@@ -3,5 +3,5 @@ import taskConfig from "../task";
 
 export default {
   ...taskConfig,
-  component
+  component,
 };

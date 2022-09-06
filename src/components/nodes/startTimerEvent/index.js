@@ -15,15 +15,15 @@ export default merge(cloneDeep(baseStartEventConfig), {
   label: defaultNames[id],
   definition(moddle, $t) {
     const startEventDefinition = moddle.create("bpmn:StartEvent", {
-      name: $t(defaultNames[id])
+      name: $t(defaultNames[id]),
     });
 
     startEventDefinition.eventDefinitions = [
       moddle.create("bpmn:TimerEventDefinition", {
         timeCycle: moddle.create("bpmn:Expression", {
-          body: ""
-        })
-      })
+          body: "",
+        }),
+      }),
     ];
 
     return startEventDefinition;
@@ -47,7 +47,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
         }
 
         const eventDefinition = {
-          timeCycle: moddle.create("bpmn:Expression", { body })
+          timeCycle: moddle.create("bpmn:Expression", { body }),
         };
 
         const eventDefinitions = [moddle.create("bpmn:TimerEventDefinition", eventDefinition)];
@@ -67,7 +67,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
           config: {
             label: "Timing Control",
             icon: "clock",
-            name: "inspector-accordion-start-timer-timing-control"
+            name: "inspector-accordion-start-timer-timing-control",
           },
           items: [
             {
@@ -75,14 +75,14 @@ export default merge(cloneDeep(baseStartEventConfig), {
               config: {
                 label: "Name",
                 helper: "Time expression",
-                name: "eventDefinitions"
-              }
-            }
-          ]
+                name: "eventDefinitions",
+              },
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 });

@@ -8,7 +8,7 @@ function definitionsFactory(definitionIds = [], diagramIds = []) {
     bpmnElement: { $type: "bpmn:task", id: definitionId },
     get(key) {
       return this[key];
-    }
+    },
   }));
   return {
     diagrams: [
@@ -19,17 +19,17 @@ function definitionsFactory(definitionIds = [], diagramIds = []) {
           planeElement,
           get(key) {
             return this[key];
-          }
-        }
-      }
-    ]
+          },
+        },
+      },
+    ],
   };
 }
 
 describe("NodeIdGenerator", () => {
   it.each([
     ["definition", 0],
-    ["diagram", 1]
+    ["diagram", 1],
   ])("should generate unique %s IDs", (name, idIndex) => {
     const generator = new NodeIdGenerator(definitionsFactory());
     const ids = [];

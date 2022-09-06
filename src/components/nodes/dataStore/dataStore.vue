@@ -25,7 +25,7 @@ import DataStoreShape from "./shape";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, hideLabelOnDrag, portsConfig],
   props: [
@@ -39,19 +39,19 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
       shape: null,
       definition: null,
-      dropdownData: []
+      dropdownData: [],
     };
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   mounted() {
     this.shape = new DataStoreShape();
@@ -62,6 +62,6 @@ export default {
     this.shape.resize(bounds.width, bounds.height);
     this.shape.addTo(this.graph);
     this.shape.component = this;
-  }
+  },
 };
 </script>

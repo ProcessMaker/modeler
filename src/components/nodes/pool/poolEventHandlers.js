@@ -52,11 +52,11 @@ export default class PoolEventHandlers {
 
     if (this.previousValidPosition) {
       this.draggingElement.position(this.previousValidPosition.x, this.previousValidPosition.y, {
-        deep: true
+        deep: true,
       });
       store.commit("updateNodeBounds", {
         node: this.draggingElement.component.node,
-        bounds: this.previousValidPosition
+        bounds: this.previousValidPosition,
       });
     }
 
@@ -94,7 +94,7 @@ export default class PoolEventHandlers {
       x,
       y,
       width,
-      height
+      height,
     };
 
     const elementsUnderArea = this.graph.findModelsInArea(area);

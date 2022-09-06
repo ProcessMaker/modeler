@@ -3,7 +3,7 @@ import defaultNames from "@/components/nodes/task/defaultNames";
 import advancedAccordionConfigWithMarkerFlags from "@/components/inspectors/advancedAccordionConfigWithMarkerFlags";
 import loopCharacteristicsInspector, {
   loopCharacteristicsData,
-  loopCharacteristicsHandler
+  loopCharacteristicsHandler,
 } from "@/components/inspectors/LoopCharacteristics";
 import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
 import omit from "lodash/omit";
@@ -38,15 +38,15 @@ export default {
   definition(moddle, $t) {
     return moddle.create("bpmn:Task", {
       name: $t(defaultNames[id]),
-      assignment: "requester"
+      assignment: "requester",
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: taskHeight,
-        width: taskWidth
-      })
+        width: taskWidth,
+      }),
     });
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
@@ -58,7 +58,7 @@ export default {
     const inspectorData = defaultDataTransform(node);
     loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
     inspectorData.markerFlags = {
-      isForCompensation: inspectorData.isForCompensation
+      isForCompensation: inspectorData.isForCompensation,
     };
     delete inspectorData.isForCompensation;
 
@@ -75,22 +75,22 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-task"
+            name: "inspector-accordion-task",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         loopCharacteristicsInspector,
         documentationAccordionConfig,
-        advancedAccordionConfigWithMarkerFlags
-      ]
-    }
+        advancedAccordionConfigWithMarkerFlags,
+      ],
+    },
   ],
   // reference for packages
   loopCharacteristicsHandler,
-  loopCharacteristicsData
+  loopCharacteristicsData,
 };

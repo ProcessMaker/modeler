@@ -9,7 +9,7 @@ export default dia.Element.define("processmaker.components.nodes.gateway.Shape",
       strokeWidth: 2,
       stroke: "#000000",
       refPointsKeepOffset: "40,0, 80,40, 40,80, 0,40",
-      fill: "#FFFFFF"
+      fill: "#FFFFFF",
     },
     label: {
       textVerticalAnchor: "top",
@@ -17,7 +17,7 @@ export default dia.Element.define("processmaker.components.nodes.gateway.Shape",
       refX: "50%",
       refY: "50",
       fontSize: 14,
-      fill: "#333333"
+      fill: "#333333",
     },
     image: {
       width: iconSize,
@@ -27,7 +27,7 @@ export default dia.Element.define("processmaker.components.nodes.gateway.Shape",
       refX: "50%",
       refX2: -(iconSize / 2),
       refY: "50%",
-      refY2: -(iconSize / 2)
-    }
-  }
+      refY2: -(iconSize / 2),
+    },
+  },
 });

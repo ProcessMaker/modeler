@@ -16,12 +16,12 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-process"
+            name: "inspector-accordion-process",
           },
           items: [
             {
               component: "FormInput",
-              config: idConfigSettings
+              config: idConfigSettings,
             },
             {
               component: "FormInput",
@@ -29,12 +29,12 @@ export default {
                 label: "Name",
                 helper: "The Name of the Process",
                 name: "name",
-                placeholder: ""
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ]
+                placeholder: "",
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

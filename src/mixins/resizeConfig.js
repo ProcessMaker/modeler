@@ -18,7 +18,7 @@ export default {
       elementTopY: null,
       elementRightX: null,
       elementBottomY: null,
-      elementLeftX: null
+      elementLeftX: null,
     };
   },
   watch: {
@@ -34,7 +34,7 @@ export default {
       } else {
         this.removeResizeAnchors();
       }
-    }
+    },
   },
   computed: {
     poolComponent() {
@@ -42,7 +42,7 @@ export default {
     },
     isLane() {
       return this.node.type === "processmaker-modeler-lane";
-    }
+    },
   },
   methods: {
     calculateElementLimits() {
@@ -163,14 +163,14 @@ export default {
           this.poolComponent.sortedLanes().forEach((laneShape) => {
             store.commit("updateNodeBounds", {
               node: laneShape.component.node,
-              bounds: laneShape.getBBox()
+              bounds: laneShape.getBBox(),
             });
           });
         }
 
         store.commit("updateNodeBounds", {
           node: this.poolComponent.node,
-          bounds: this.poolComponent.shape.getBBox()
+          bounds: this.poolComponent.shape.getBBox(),
         });
 
         this.$emit("save-state");
@@ -225,7 +225,7 @@ export default {
         } else {
           const aboveLane = sortedLanes[sortedLanes.indexOf(this.shape) - 1];
           this.shape.resize(maxLaneWidth, Math.min(laneY + laneHeight - (aboveLane.getBBox().y + minLaneHeight), maxLaneHeight), {
-            direction
+            direction,
           });
 
           point.set("previousPosition", { x, y });
@@ -282,7 +282,7 @@ export default {
         } else {
           const aboveLane = sortedLanes[sortedLanes.indexOf(this.shape) - 1];
           this.shape.resize(maxLaneWidth, Math.min(laneY + laneHeight - (aboveLane.getBBox().y + minLaneHeight), maxLaneHeight), {
-            direction
+            direction,
           });
 
           point.set("previousPosition", { x, y });
@@ -469,7 +469,7 @@ export default {
         body: {
           fill: "#fff",
           stroke: " #fff",
-          opacity: 0.8
+          opacity: 0.8,
         },
         image: {
           xlinkHref: resizeIcon,
@@ -477,10 +477,10 @@ export default {
           buttonId,
           refWidth: 20,
           refHeight: 20,
-          resetOffset: true
-        }
+          resetOffset: true,
+        },
       });
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -488,5 +488,5 @@ export default {
        * This will ensure this.shape is defined. */
       this.configureResize();
     });
-  }
+  },
 };

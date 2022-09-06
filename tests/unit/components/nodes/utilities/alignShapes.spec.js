@@ -3,13 +3,6 @@ import { dummyShape } from "../../../utilities/dummies";
 import toHaveBeenProgrammaticallyMoved from "../../../customMatchers/toHaveBeenProgrammaticallyMoved";
 import toHaveBeenProgrammaticallyMovedBy from "../../../customMatchers/toHaveBeenProgrammaticallyMovedBy";
 
-/**
- * This is just to make sure that the IDE doesn't bug me about the extensions
- * made to the jest matcher.
- * @type {Function}
- */
-const expect = require("expect");
-
 expect.extend({ toHaveBeenProgrammaticallyMoved, toHaveBeenProgrammaticallyMovedBy });
 
 describe("Shape Alignment", () => {

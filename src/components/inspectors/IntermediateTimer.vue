@@ -24,23 +24,23 @@ import CycleExpression from "./CycleExpression.vue";
 const types = {
   timeDuration: "DurationExpression",
   timeDate: "DateTimeExpression",
-  timeCycle: "CycleExpression"
+  timeCycle: "CycleExpression",
 };
 
 export default {
   components: {
     DurationExpression,
     DateTimeExpression,
-    CycleExpression
+    CycleExpression,
   },
   props: {
     value: {
-      type: Object
+      type: Object,
     },
     typeHelper: {
       type: String,
-      default: "Select the type of delay"
-    }
+      default: "Select the type of delay",
+    },
   },
   computed: {
     component() {
@@ -52,11 +52,11 @@ export default {
       },
       set(timerProperty) {
         this.emitChange(this.value.type, timerProperty);
-      }
+      },
     },
     timerPropertyName() {
       return this.value.type;
-    }
+    },
   },
   methods: {
     changeType(type) {
@@ -71,7 +71,7 @@ export default {
     },
     emitChange(type, body) {
       this.$emit("input", { type, body });
-    }
-  }
+    },
+  },
 };
 </script>

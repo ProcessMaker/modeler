@@ -8,7 +8,7 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: intermediateSignalCatchEventSymbol
+      nodeIcon: intermediateSignalCatchEventSymbol,
     };
   },
   mounted() {
@@ -17,9 +17,9 @@ export default {
         "ref-x": 7,
         "ref-y": 5,
         width: 22,
-        height: 22
-      }
+        height: 22,
+      },
     });
-  }
+  },
 };
 </script>

@@ -1,6 +1,6 @@
 export default {
   props: {
-    isActive: Boolean
+    isActive: Boolean,
   },
   methods: {
     hideLabel(element, newPosition, options) {
@@ -20,7 +20,7 @@ export default {
       this.shape.attr("label/display", "initial");
       await this.$nextTick();
       this.shape.once("change:position", this.hideLabel);
-    }
+    },
   },
   async mounted() {
     await this.$nextTick();
@@ -30,5 +30,5 @@ export default {
     });
     this.shape.listenTo(this.paper, "cell:pointerup blank:pointerup", this.showLabel);
     this.shape.once("change:parent", this.showLabel);
-  }
+  },
 };

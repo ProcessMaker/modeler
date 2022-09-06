@@ -78,23 +78,23 @@ export default {
   props: {
     dropdownOpen: {
       type: Boolean,
-      required: true
+      required: true,
     },
     node: Object,
     showCustomIconPicker: {
       type: Boolean,
-      default: false
+      default: false,
     },
     iconName: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   data() {
     return {
       colors: baseNodeColors,
       selectedColor: this.node.definition.get("color"),
-      colorPickerOpen: false
+      colorPickerOpen: false,
     };
   },
   watch: {
@@ -105,7 +105,7 @@ export default {
       }
 
       this.setNodeColor(color);
-    }
+    },
   },
   created() {
     this.$t = this.$t.bind(this);
@@ -148,8 +148,8 @@ export default {
     },
     openIconSelector() {
       this.$refs["icon-selector-modal"].show();
-    }
-  }
+    },
+  },
 };
 </script>
 

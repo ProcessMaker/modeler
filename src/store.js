@@ -37,7 +37,7 @@ export default new Vuex.Store({
     rootElements: [],
     autoValidate: false,
     globalProcesses: [],
-    allowSavingElementPosition: true
+    allowSavingElementPosition: true,
   },
   getters: {
     nodes: (state) => state.nodes,
@@ -49,7 +49,7 @@ export default new Vuex.Store({
     autoValidate: (state) => state.autoValidate,
     globalProcesses: (state) => state.globalProcesses,
     globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map((process) => process.events)),
-    allowSavingElementPosition: (state) => state.allowSavingElementPosition
+    allowSavingElementPosition: (state) => state.allowSavingElementPosition,
   },
   mutations: {
     preventSavingElementPosition(state) {
@@ -125,7 +125,7 @@ export default new Vuex.Store({
     },
     setGlobalProcesses(state, globalProcesses) {
       state.globalProcesses = globalProcesses;
-    }
+    },
   },
   actions: {
     async fetchGlobalProcesses({ commit }) {
@@ -135,14 +135,14 @@ export default new Vuex.Store({
             order_direction: "asc",
             per_page: 1000,
             status: "all",
-            include: "events,category"
-          }
+            include: "events,category",
+          },
         });
         commit("setGlobalProcesses", data.data);
         window.ProcessMaker.globalProcesses = data.data;
       } catch (error) {
         /* Ignore error */
       }
-    }
-  }
+    },
+  },
 });

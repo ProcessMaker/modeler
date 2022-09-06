@@ -8,8 +8,8 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: errorBoltIcon
+      nodeIcon: errorBoltIcon,
     };
-  }
+  },
 };
 </script>

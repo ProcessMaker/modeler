@@ -8,7 +8,7 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: conditionalIcon
+      nodeIcon: conditionalIcon,
     };
   },
   mounted() {
@@ -18,9 +18,9 @@ export default {
         "ref-x": 9,
         "ref-y": 9,
         width: bounds.get("width") - 18,
-        height: bounds.get("height") - 18
-      }
+        height: bounds.get("height") - 18,
+      },
     });
-  }
+  },
 };
 </script>

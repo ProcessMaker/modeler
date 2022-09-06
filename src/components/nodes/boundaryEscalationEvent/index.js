@@ -19,18 +19,18 @@ export default merge(cloneDeep(boundaryEventConfig), {
     return moddle.create("bpmn:BoundaryEvent", {
       name: $t("Boundary Escalation Event"),
       cancelActivity: true,
-      eventDefinitions: [moddle.create("bpmn:EscalationEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:EscalationEventDefinition")],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, interruptingToggleConfig]
+          items: [{}, interruptingToggleConfig],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 });

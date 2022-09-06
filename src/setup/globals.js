@@ -31,7 +31,7 @@ mock.onGet(/\/processes\/\d+/).reply((config) => {
 
 window.ProcessMaker = {
   navbar: {
-    alerts: []
+    alerts: [],
   },
   EventBus: new Vue(),
   apiClient: axios,
@@ -44,14 +44,14 @@ window.ProcessMaker = {
       alertText: msg,
       alertShow: showValue,
       alertVariant: String(variant),
-      stayNextScreen
+      stayNextScreen,
     });
 
     window.ProcessMaker.EventBus.$emit("alert", window.ProcessMaker.navbar.alerts);
   },
   modeler: {
     process: {
-      id: 1
-    }
-  }
+      id: 1,
+    },
+  },
 };

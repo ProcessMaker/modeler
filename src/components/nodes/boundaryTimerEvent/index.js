@@ -23,10 +23,10 @@ export default merge(cloneDeep(boundaryEventConfig), {
       eventDefinitions: [
         moddle.create("bpmn:TimerEventDefinition", {
           timeDuration: moddle.create("bpmn:Expression", {
-            body: defaultDurationValue
-          })
-        })
-      ]
+            body: defaultDurationValue,
+          }),
+        }),
+      ],
     });
   },
   inspectorData(node) {
@@ -59,7 +59,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         }
 
         const eventDefinition = {
-          [type]: moddle.create("bpmn:Expression", { body })
+          [type]: moddle.create("bpmn:Expression", { body }),
         };
 
         const eventDefinitions = [moddle.create("bpmn:TimerEventDefinition", eventDefinition)];
@@ -73,7 +73,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
     {
       items: [
         {
-          items: [{}, interruptingToggleConfig]
+          items: [{}, interruptingToggleConfig],
         },
         {
           component: "FormAccordion",
@@ -81,7 +81,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
           config: {
             label: "Timing Control",
             icon: "clock",
-            name: "inspector-accordion-boundary-timer-event"
+            name: "inspector-accordion-boundary-timer-event",
           },
           items: [
             {
@@ -89,14 +89,14 @@ export default merge(cloneDeep(boundaryEventConfig), {
               config: {
                 label: "Name",
                 helper: "Time expression",
-                name: "eventDefinitions"
-              }
-            }
-          ]
+                name: "eventDefinitions",
+              },
+            },
+          ],
         },
         advancedAccordionConfig,
-        documentationAccordionConfig
-      ]
-    }
-  ]
+        documentationAccordionConfig,
+      ],
+    },
+  ],
 });

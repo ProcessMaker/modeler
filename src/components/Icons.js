@@ -20,7 +20,7 @@ const common = [
   "dollar-sign",
   "users",
   "user-circle",
-  "trophy"
+  "trophy",
 ];
 
 const exclusions = [
@@ -70,7 +70,7 @@ const exclusions = [
   "joint",
   "lungs",
   "republican",
-  "upload"
+  "upload",
 ];
 
 export default class {
@@ -95,7 +95,7 @@ export default class {
   static grouped() {
     const list = [
       { group: "Common", icons: [] },
-      { group: "All Icons", icons: [] }
+      { group: "All Icons", icons: [] },
     ];
 
     for (const [value, icon] of Object.entries(icons)) {
@@ -137,7 +137,7 @@ export default class {
     const object = {
       value,
       label: icon.label,
-      search: `${icon.search.terms.join()},${value},${icon.label.toLowerCase()}`
+      search: `${icon.search.terms.join()},${value},${icon.label.toLowerCase()}`,
     };
 
     if (object.label.startsLowerCase()) {

@@ -8,7 +8,7 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: parallelGatewaySymbol
+      nodeIcon: parallelGatewaySymbol,
     };
   },
   watch: {
@@ -18,8 +18,8 @@ export default {
       handler() {
         // insure that parallel gateways don't have the 'default' attribute
         delete this.node.definition.default;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>

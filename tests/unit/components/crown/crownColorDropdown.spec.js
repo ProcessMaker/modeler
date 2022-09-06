@@ -17,18 +17,18 @@ describe("crownColorDropdown.vue", () => {
     store = jest.requireMock("../../../../src/store.js");
     node = {
       definition: {
-        get() {}
-      }
+        get() {},
+      },
     };
     wrapper = shallowMount(crownColorDropdown, {
       localVue,
       propsData: {
         dropdownOpen: true,
-        node
+        node,
       },
       mocks: {
-        $t() {}
-      }
+        $t() {},
+      },
     });
   });
 
@@ -45,7 +45,7 @@ describe("crownColorDropdown.vue", () => {
     expect(store.commit).toHaveBeenNthCalledWith(1, "updateNodeProp", {
       node,
       key: "color",
-      value: colorToSelect
+      value: colorToSelect,
     });
     expect(node.definition).toHaveProperty("color", colorToSelect);
   });

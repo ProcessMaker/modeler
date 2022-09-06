@@ -27,11 +27,11 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
             this.$delete(this.markers.topRight, "vocabulary");
             this.$delete(this.markers.topRight, "clock");
         }
-      }
+      },
     },
     mounted() {
       this.$set(this.markers.topRight, "vocabulary", bookIcon);
-    }
+    },
   };
 
   const nodeType = {
@@ -46,15 +46,15 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
       return moddle.create("bpmn:ScriptTask", {
         name: "Task with Marker",
         implementation,
-        config: JSON.stringify({})
+        config: JSON.stringify({}),
       });
     },
     diagram(moddle) {
       return moddle.create("bpmndi:BPMNShape", {
         bounds: moddle.create("dc:Bounds", {
           height: 76,
-          width: 116
-        })
+          width: 116,
+        }),
       });
     },
     inspectorConfig: [
@@ -65,24 +65,24 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
             component: "FormText",
             config: {
               label: "Send Tweet",
-              fontSize: "2em"
-            }
+              fontSize: "2em",
+            },
           },
           {
             component: "FormInput",
-            config: idConfigSettings
+            config: idConfigSettings,
           },
           {
             component: "FormInput",
             config: {
               label: "Name",
               helper: "Name",
-              name: "name"
-            }
-          }
-        ]
-      }
-    ]
+              name: "name",
+            },
+          },
+        ],
+      },
+    ],
   };
 
   registerNode(nodeType, (definition) => {

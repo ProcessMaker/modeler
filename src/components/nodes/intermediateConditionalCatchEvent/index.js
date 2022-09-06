@@ -20,19 +20,19 @@ export default merge(cloneDeep(intermediateEventConfig), {
       eventDefinitions: [
         moddle.create("bpmn:ConditionalEventDefinition", {
           condition: moddle.create("bpmn:FormalExpression", {
-            body: ""
-          })
-        })
-      ]
+            body: "",
+          }),
+        }),
+      ],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, ...inspector()]
-        }
-      ]
-    }
-  ]
+          items: [{}, ...inspector()],
+        },
+      ],
+    },
+  ],
 });

@@ -26,7 +26,7 @@ import { labelWidth } from "../pool/poolSizes";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, resizeConfig],
   props: [
@@ -41,18 +41,18 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
       shape: null,
-      definition: null
+      definition: null,
     };
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Rectangle();
@@ -64,13 +64,13 @@ export default {
     this.shape.set("elementMove", false);
     this.shape.attr("body/cursor", "default");
     this.shape.attr("body", {
-      fill: poolColor
+      fill: poolColor,
     });
     this.shape.attr("label", {
       text: util.breakText(this.node.definition.get("name"), { width: bounds.height }),
       fill: "black",
       transform: "rotate(-90)",
-      refX: labelWidth / 2
+      refX: labelWidth / 2,
     });
 
     this.shape.component = this;
@@ -94,6 +94,6 @@ export default {
       poolComponent.containingProcess.set("laneSets", []);
       poolComponent.laneSet = null;
     }
-  }
+  },
 };
 </script>

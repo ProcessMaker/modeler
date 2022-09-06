@@ -9,7 +9,7 @@ describe("nodeManager", () => {
       const diagramId = "diagram_id";
       const node = new Node("foo", { id: nodeId }, {});
       const nodeIdGenerator = {
-        generate: () => [newNodeId, diagramId]
+        generate: () => [newNodeId, diagramId],
       };
 
       node.setIds(nodeIdGenerator);
@@ -22,7 +22,7 @@ describe("nodeManager", () => {
     it("should not throw if node does not have a diagram", () => {
       const node = new Node("foo", { id: 123 }, {});
       const nodeIdGenerator = {
-        generate: () => []
+        generate: () => [],
       };
 
       expect(() => node.setIds(nodeIdGenerator)).not.toThrow();
@@ -68,12 +68,12 @@ describe("nodeManager", () => {
             lanes: [],
             get(key) {
               return this[key];
-            }
-          }
+            },
+          },
         ],
         get(key) {
           return this[key];
-        }
+        },
       };
 
       addNodeToProcess(node, targetProcess);
@@ -90,7 +90,7 @@ describe("nodeManager", () => {
           artifacts: [],
           get(key) {
             return this[key];
-          }
+          },
         };
 
         addNodeToProcess(node, targetProcess);
@@ -106,7 +106,7 @@ describe("nodeManager", () => {
         flowElements: [],
         get(key) {
           return this[key];
-        }
+        },
       };
 
       addNodeToProcess(node, targetProcess);
@@ -138,11 +138,11 @@ describe("nodeManager", () => {
               processRef: { id: targetProcessId },
               get(key) {
                 return this[key];
-              }
+              },
             },
             {}
-          )
-        }
+          ),
+        },
       };
       const processes = [{}, {}, process, {}, {}];
 

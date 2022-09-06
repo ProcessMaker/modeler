@@ -25,7 +25,7 @@ import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [linkConfig],
   props: [
@@ -39,12 +39,12 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
       shape: null,
-      initialDataAssociationDirection: this.node.definition.dataAssociationDirection
+      initialDataAssociationDirection: this.node.definition.dataAssociationDirection,
     };
   },
   computed: {
@@ -60,7 +60,7 @@ export default {
         this.targetConfig.bpmnType !== "bpmn:DataObjectReference" && this.targetConfig.bpmnType !== "bpmn:DataStoreReference";
 
       return !invalidIncoming;
-    }
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link({ router: { name: "normal" } });
@@ -76,9 +76,9 @@ export default {
           "xlink:href": associationHead,
           width: 20,
           height: 20,
-          y: -10
-        }
-      }
+          y: -10,
+        },
+      },
     });
 
     this.shape.addTo(this.graph);
@@ -109,7 +109,7 @@ export default {
       this.node.definition.set("targetRef", this.targetNode.definition);
       const existingOutputAssociations = this.sourceNode.definition.get("dataOutputAssociations") || [];
       this.sourceNode.definition.set("dataOutputAssociations", [...existingOutputAssociations, this.node.definition]);
-    }
-  }
+    },
+  },
 };
 </script>

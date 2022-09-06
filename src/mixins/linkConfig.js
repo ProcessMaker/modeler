@@ -7,7 +7,7 @@ import resetShapeColor from "@/components/resetShapeColor";
 
 const endpoints = {
   source: "source",
-  target: "target"
+  target: "target",
 };
 
 function isPoint(item) {
@@ -22,7 +22,7 @@ export default {
       target: null,
       listeningToMouseup: false,
       vertices: null,
-      anchorPointFunction: getDefaultAnchorPoint
+      anchorPointFunction: getDefaultAnchorPoint,
     };
   },
   watch: {
@@ -42,14 +42,14 @@ export default {
       if (highlighted) {
         this.shape.attr({
           line: { stroke: "#5096db" },
-          ".joint-highlight-stroke": { display: "none" }
+          ".joint-highlight-stroke": { display: "none" },
         });
         this.shapeView.showTools();
       } else {
         resetShapeColor(this.shape);
         this.shapeView.hideTools();
       }
-    }
+    },
   },
   computed: {
     shapeView() {
@@ -69,7 +69,7 @@ export default {
     },
     elementPadding() {
       return this.shape && this.shape.source().id === this.shape.target().id ? 20 : 1;
-    }
+    },
   },
   methods: {
     findSourceShape() {
@@ -82,9 +82,9 @@ export default {
         return this.shape[endpoint](shape, {
           anchor: {
             name: "modelCenter",
-            args: { padding: 25 }
+            args: { padding: 25 },
           },
-          connectionPoint: { name: "boundary" }
+          connectionPoint: { name: "boundary" },
         });
       }
 
@@ -96,7 +96,7 @@ export default {
 
       this.shape[endpoint](shape, {
         anchor: () => this.getAnchorPointFunction(endpoint)(getConnectionPoint(), shape.findView(this.paper)),
-        connectionPoint: { name: "boundary" }
+        connectionPoint: { name: "boundary" },
       });
     },
     setSource(sourceShape, connectionPoint) {
@@ -145,7 +145,7 @@ export default {
 
         this.shape.target({
           x: localMousePosition.x,
-          y: localMousePosition.y
+          y: localMousePosition.y,
         });
 
         if (this.target) {
@@ -205,13 +205,13 @@ export default {
       const verticesTool = new linkTools.Vertices();
 
       const sourceAnchorTool = new linkTools.SourceAnchor({
-        snap: this.getAnchorPointFunction("source")
+        snap: this.getAnchorPointFunction("source"),
       });
       const targetAnchorTool = new linkTools.TargetAnchor({
-        snap: this.getAnchorPointFunction("target")
+        snap: this.getAnchorPointFunction("target"),
       });
       const toolsView = new dia.ToolsView({
-        tools: [verticesTool, sourceAnchorTool, targetAnchorTool]
+        tools: [verticesTool, sourceAnchorTool, targetAnchorTool],
       });
 
       this.shapeView.addTools(toolsView);
@@ -224,7 +224,7 @@ export default {
         document.removeEventListener("mouseup", this.emitSave);
         this.listeningToMouseup = false;
       }
-    }
+    },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
@@ -259,13 +259,13 @@ export default {
       const { x: targetX, y: targetY } = targetShape.position();
       const targetAnchorOffset = {
         x: targetAnchorPoint.x - targetX,
-        y: targetAnchorPoint.y - targetY
+        y: targetAnchorPoint.y - targetY,
       };
 
       const { x: sourceX, y: sourceY } = this.sourceShape.position();
       const sourceAnchorOffset = {
         x: sourceAnchorPoint.x - sourceX,
-        y: sourceAnchorPoint.y - sourceY
+        y: sourceAnchorPoint.y - sourceY,
       };
 
       if (sequenceFlowWaypoints) {
@@ -298,5 +298,5 @@ export default {
   },
   destroyed() {
     this.updateWaypoints.cancel();
-  }
+  },
 };

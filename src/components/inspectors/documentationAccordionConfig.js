@@ -7,7 +7,7 @@ export default {
     initiallyOpen: false,
     label: "Documentation",
     icon: "book",
-    name: "documentation-accordion"
+    name: "documentation-accordion",
   },
   items: [
     {
@@ -15,8 +15,8 @@ export default {
       config: {
         label: "Description",
         name: "documentation",
-        helper: ""
-      }
-    }
-  ]
+        helper: "",
+      },
+    },
+  ],
 };

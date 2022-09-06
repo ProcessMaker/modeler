@@ -24,7 +24,7 @@ const periodNames = {
   hour: "hour",
   day: "day",
   week: "week",
-  month: "month"
+  month: "month",
 };
 
 export default {
@@ -35,13 +35,13 @@ export default {
       { name: periodNames.hour, value: "H", isTime: true },
       { name: periodNames.day, value: "D" },
       { name: periodNames.week, value: "W" },
-      { name: periodNames.month, value: "M" }
+      { name: periodNames.month, value: "M" },
     ];
 
     return {
       repeat: null,
       periodicity: null,
-      periods
+      periods,
     };
   },
   computed: {
@@ -51,7 +51,7 @@ export default {
       }
 
       return `P${this.repeat}${this.periodicity.value}`;
-    }
+    },
   },
   watch: {
     value: {
@@ -59,14 +59,14 @@ export default {
         this.periodicity = this.getPeriodFromDelayString(value);
         this.repeat = this.getRepeatNumberFromDelayString(value);
       },
-      immediate: true
+      immediate: true,
     },
     durationExpression: {
       handler(durationExpression) {
         this.$emit("input", durationExpression);
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     getPeriodFromDelayString(delayString) {
@@ -87,7 +87,7 @@ export default {
     getRepeatNumberFromDelayString(delayString) {
       const match = delayString.match(/\d+/);
       return match && match[0];
-    }
-  }
+    },
+  },
 };
 </script>

@@ -6,7 +6,7 @@ export default {
   extends: baseStartEvent,
   data() {
     return {
-      nodeIcon: conditionalIcon
+      nodeIcon: conditionalIcon,
     };
   },
   mounted() {
@@ -16,9 +16,9 @@ export default {
         "ref-x": 7,
         "ref-y": 7,
         width: bounds.get("width") - 14,
-        height: bounds.get("height") - 14
-      }
+        height: bounds.get("height") - 14,
+      },
     });
-  }
+  },
 };
 </script>

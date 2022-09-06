@@ -40,7 +40,7 @@ import {
   FormMultiSelect,
   FormRadioButtonGroup,
   FormSelect,
-  FormTextArea
+  FormTextArea,
 } from "@processmaker/vue-form-elements";
 import "@processmaker/vue-form-elements/dist/vue-form-elements.css";
 import store from "@/store";
@@ -69,7 +69,7 @@ export default {
       data: {},
       config: [],
       inspectorHandler: null,
-      translated: []
+      translated: [],
     };
   },
   computed: {
@@ -112,7 +112,7 @@ export default {
     },
     isProcessNodeActive() {
       return this.highlightedNode === this.processNode;
-    }
+    },
   },
   watch: {
     highlightedNode() {
@@ -137,7 +137,7 @@ export default {
     },
     "highlightedNode.definition.assignmentRules": function (current, previous) {
       this.handleAssignmentChanges(current, previous);
-    }
+    },
   },
   methods: {
     handleAssignmentChanges(currentValue, previousValue) {
@@ -150,7 +150,7 @@ export default {
       if (!this.highlightedNode) {
         this.config = {
           name: "Empty",
-          items: []
+          items: [],
         };
         return this.config;
       }
@@ -173,8 +173,8 @@ export default {
           config: {
             label: this.$t("Expression"),
             helper,
-            name: "conditionExpression"
-          }
+            name: "conditionExpression",
+          },
         };
 
         // Always move the Expression Field below the Name field in the inspector
@@ -245,8 +245,8 @@ export default {
     },
     updateState() {
       this.$emit("save-state");
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" src="./inspector.scss" scoped />

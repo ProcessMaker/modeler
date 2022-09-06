@@ -30,7 +30,7 @@ import isValidBoundaryEventTarget from "./validBoundaryEventTargets";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   props: [
@@ -45,14 +45,14 @@ export default {
     "processNode",
     "planeElements",
     "isRendering",
-    "isActive"
+    "isActive",
   ],
   data() {
     return {
       shape: null,
       previousPosition: null,
       validPosition: null,
-      invalidTargetElement: null
+      invalidTargetElement: null,
     };
   },
   watch: {
@@ -61,7 +61,7 @@ export default {
     },
     "node.definition.cancelActivity": function (isCancelActivity) {
       this.toggleInterruptingStyle(isCancelActivity);
-    }
+    },
   },
   async mounted() {
     this.shape = new EventShape();
@@ -85,11 +85,11 @@ export default {
     setShapeBorderDashSpacing(dashLength) {
       this.shape.attr({
         body: {
-          strokeDasharray: dashLength
+          strokeDasharray: dashLength,
         },
         body2: {
-          strokeDasharray: dashLength
-        }
+          strokeDasharray: dashLength,
+        },
       });
     },
     setSolidShapeBorder() {
@@ -125,7 +125,7 @@ export default {
 
       return {
         x: x + width / 2,
-        y: y + height / 2
+        y: y + height / 2,
       };
     },
     updateShapePosition(task) {
@@ -211,7 +211,7 @@ export default {
       }
 
       this.invalidTargetElement = targetElement;
-    }
-  }
+    },
+  },
 };
 </script>

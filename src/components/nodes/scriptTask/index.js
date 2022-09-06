@@ -21,15 +21,15 @@ export default {
       name: $t(defaultNames[id]),
       scriptRef: null,
       loopCharacteristics: null,
-      ioSpecification: null
+      ioSpecification: null,
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: taskHeight,
-        width: taskWidth
-      })
+        width: taskWidth,
+      }),
     });
   },
   inspectorConfig: [
@@ -43,18 +43,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-script-task"
+            name: "inspector-accordion-script-task",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

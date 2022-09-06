@@ -7,7 +7,7 @@ const validBoundaryEventTargets = [
   "bpmn:UserTask",
   "bpmn:GlobalTask",
   "bpmn:ManualTask",
-  "bpmn:CallActivity"
+  "bpmn:CallActivity",
 ];
 
 export default function isValidBoundaryEventTarget(component) {

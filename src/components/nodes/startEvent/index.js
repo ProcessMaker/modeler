@@ -16,7 +16,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
   rank: 10,
   definition(moddle, $t) {
     return moddle.create("bpmn:StartEvent", {
-      name: $t(defaultNames[id])
+      name: $t(defaultNames[id]),
     });
-  }
+  },
 });

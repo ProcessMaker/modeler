@@ -24,13 +24,13 @@ export default {
   props: ["node", "moddle", "shape"],
   data() {
     return {
-      connectIcon
+      connectIcon,
     };
   },
   computed: {
     allowOutgoingDataAssociationFlow() {
       return DataAssociation.isADataNode(this.node);
-    }
+    },
   },
   methods: {
     addDataAssociation() {
@@ -46,11 +46,11 @@ export default {
 
       node.dataAssociationProps = {
         sourceShape: this.shape,
-        targetCoords: { x: undefined, y: undefined }
+        targetCoords: { x: undefined, y: undefined },
       };
 
       this.$emit("add-node", node);
-    }
-  }
+    },
+  },
 };
 </script>

@@ -17,7 +17,7 @@ export function markersMarkup(selector) {
   return {
     tagName: "g",
     selector,
-    children
+    children,
   };
 }
 
@@ -36,7 +36,7 @@ export function markersAttrs(name, base, inverted = 1) {
       "ref-x": i * markerSize * inverted,
       "ref-y": 0,
       width: markerSize,
-      height: markerSize
+      height: markerSize,
     };
   }
   return attrs;
@@ -51,8 +51,8 @@ export default {
         topRight: {},
         bottomLeft: {},
         bottomCenter: {},
-        bottomRight: {}
-      }
+        bottomRight: {},
+      },
     };
   },
   watch: {
@@ -60,12 +60,12 @@ export default {
       deep: true,
       handler() {
         this.recalcMarkersAlignment();
-      }
-    }
+      },
+    },
   },
   methods: {
     recalcMarkersAlignment() {
       recalculateMarkerAlignment(this.markers, this.shape);
-    }
-  }
+    },
+  },
 };

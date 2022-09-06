@@ -25,7 +25,7 @@ import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, hideLabelOnDrag, portsConfig],
   inheritAttrs: false,
@@ -40,19 +40,19 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
       shape: null,
       definition: null,
-      dropdownData: []
+      dropdownData: [],
     };
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Path();
@@ -60,10 +60,10 @@ export default {
     this.shape.attr("label", {
       refY: 65,
       text: this.node.definition.get("name"),
-      fill: "black"
+      fill: "black",
     });
     this.shape.attr("body", {
-      refD: "M1,1 L25,1 L35,10 L35,49 L1,49 L1,1 M24,1 L24,10 L35,10"
+      refD: "M1,1 L25,1 L35,10 L35,49 L1,49 L1,1 M24,1 L24,10 L35,10",
     });
 
     const { bounds } = this.node.diagram;
@@ -72,6 +72,6 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-  }
+  },
 };
 </script>

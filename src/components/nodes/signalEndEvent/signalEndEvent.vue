@@ -8,15 +8,15 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: signalEndEventIcon
+      nodeIcon: signalEndEventIcon,
     };
   },
   mounted() {
     this.shape.attr({
       image: {
-        "ref-y": 3
-      }
+        "ref-y": 3,
+      },
     });
-  }
+  },
 };
 </script>

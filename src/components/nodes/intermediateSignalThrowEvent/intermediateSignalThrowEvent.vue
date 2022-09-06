@@ -9,7 +9,7 @@ export default {
   props: ["moddle", "rootElements", "id"],
   data() {
     return {
-      nodeIcon: intermediateSignalSymbol
+      nodeIcon: intermediateSignalSymbol,
     };
   },
   mounted() {
@@ -18,9 +18,9 @@ export default {
         "ref-x": 7,
         "ref-y": 5,
         width: 22,
-        height: 22
-      }
+        height: 22,
+      },
     });
-  }
+  },
 };
 </script>

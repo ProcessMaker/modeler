@@ -10,7 +10,7 @@ export default class DataAssociation extends Flow {
     "bpmn:Participant",
     "bpmn:Lane",
     "bpmn:TextAnnotation",
-    "bpmn:Association"
+    "bpmn:Association",
   ];
 
   static isADataNode(node) {

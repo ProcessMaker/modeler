@@ -7,8 +7,8 @@ export function messageSelector(helper) {
     config: {
       label: "Message",
       name: "messageRef",
-      helper
-    }
+      helper,
+    },
   };
 }
 
@@ -37,10 +37,10 @@ export default {
     if (!message && value.messageRef) {
       message = moddle.create("bpmn:Message", {
         id: value.messageRef,
-        name: value.messageRef
+        name: value.messageRef,
       });
       definitions.rootElements.push(message);
     }
     node.definition.get("eventDefinitions")[0].messageRef = message;
-  }
+  },
 };

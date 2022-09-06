@@ -6,8 +6,8 @@ export default {
   extends: baseStartEvent,
   data() {
     return {
-      nodeIcon: startMailSymbol
+      nodeIcon: startMailSymbol,
     };
-  }
+  },
 };
 </script>

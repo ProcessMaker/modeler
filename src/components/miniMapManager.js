@@ -13,7 +13,7 @@ export default class MiniMapManager {
       model: graph,
       width: 230,
       height: 200,
-      interactive: false
+      interactive: false,
     });
 
     return new this(miniMap);
@@ -32,7 +32,7 @@ export default class MiniMapManager {
 
     return {
       newX: clientWidth / 2 - x * scaleX,
-      newY: clientHeight / 2 - y * scaleY
+      newY: clientHeight / 2 - y * scaleY,
     };
   }
 }

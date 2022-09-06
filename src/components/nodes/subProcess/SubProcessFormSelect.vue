@@ -54,7 +54,7 @@ export default {
       name: "",
       loading: false,
       processes: [],
-      selectedProcessInfo: null
+      selectedProcessInfo: null,
     };
   },
   computed: {
@@ -77,7 +77,7 @@ export default {
         return parseInt(match[1]);
       }
       return null;
-    }
+    },
   },
   watch: {
     selectedProcess() {
@@ -104,8 +104,8 @@ export default {
         this.config = JSON.parse(this.value);
         this.loadSelectedProcessInfo();
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   created() {
     if (this.processList.length === 0) {
@@ -171,7 +171,7 @@ export default {
         calledElement: `${this.selectedStartEvent.ownerProcessId}-${this.selectedProcess.id}`,
         processId: this.selectedProcess.id,
         startEvent: this.selectedStartEvent.id,
-        name
+        name,
       };
       const stringValue = JSON.stringify(emit);
       this.$emit("input", stringValue);
@@ -186,7 +186,7 @@ export default {
         order_direction: "asc",
         per_page: 20,
         status: "all",
-        include: "events,category"
+        include: "events,category",
       };
 
       if (filter) {
@@ -195,7 +195,7 @@ export default {
 
       window.ProcessMaker.apiClient
         .get("processes", {
-          params
+          params,
         })
         .then((response) => {
           this.loading = false;
@@ -210,14 +210,14 @@ export default {
         window.ProcessMaker.apiClient
           .get(`processes/${this.config.processId}`, {
             params: {
-              include: "events,category"
-            }
+              include: "events,category",
+            },
           })
           .then((response) => {
             this.selectedProcessInfo = response.data;
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>

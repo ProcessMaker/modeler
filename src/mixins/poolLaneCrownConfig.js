@@ -2,7 +2,7 @@ export default {
   computed: {
     isLane() {
       return this.node.type === "processmaker-modeler-lane";
-    }
+    },
   },
   methods: {
     configurePoolLane() {
@@ -11,7 +11,7 @@ export default {
           "processmaker-modeler-pool",
           "processmaker-modeler-sequence-flow",
           "processmaker-modeler-association",
-          "processmaker-modeler-message-flow"
+          "processmaker-modeler-message-flow",
         ].includes(this.node.type)
       ) {
         return;
@@ -57,7 +57,7 @@ export default {
       if (!lanes.includes(this.node.definition)) {
         lanes.push(this.node.definition);
       }
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -66,5 +66,5 @@ export default {
 
       this.configurePoolLane();
     });
-  }
+  },
 };

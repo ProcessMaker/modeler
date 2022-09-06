@@ -30,7 +30,7 @@ function isDraggingBoundaryEvent(bpmnType) {
 export function getLocalMousePosition(clientX, clientY, paper) {
   return paper.clientToLocalPoint({
     x: clientX,
-    y: clientY
+    y: clientY,
   });
 }
 
@@ -43,7 +43,7 @@ function getPoolUnderPosition(clientX, clientY, paper, graph) {
 export default function getValidationProperties(clientX, clientY, control, paper, graph, collaboration, paperContainer) {
   const returnValue = {
     allowDrop: false,
-    poolTarget: null
+    poolTarget: null,
   };
   if (!isPointOverPaper(clientX, clientY, paperContainer)) {
     returnValue.allowDrop = false;

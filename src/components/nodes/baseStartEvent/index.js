@@ -13,8 +13,8 @@ export default {
         height: startEventDiameter,
         width: startEventDiameter,
         x: null,
-        y: null
-      })
+        y: null,
+      }),
     });
   },
   /**
@@ -35,18 +35,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-start-event"
+            name: "inspector-accordion-start-event",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

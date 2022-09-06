@@ -11,7 +11,7 @@ export default {
   label: "Service Task",
   definition(moddle, $t) {
     return moddle.create("bpmn:ServiceTask", {
-      name: $t("Service Task")
+      name: $t("Service Task"),
     });
   },
   inspectorConfig: [
@@ -25,18 +25,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-service-task"
+            name: "inspector-accordion-service-task",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

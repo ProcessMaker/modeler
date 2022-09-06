@@ -9,12 +9,12 @@ export default {
     initiallyOpen: false,
     label: "Advanced",
     icon: "cogs",
-    name: "advanced-accordion"
+    name: "advanced-accordion",
   },
   items: [
     {
       component: NodeIdentifierInput,
-      config: idConfigSettings
+      config: idConfigSettings,
     },
     {
       component: MarkerFlags,
@@ -22,8 +22,8 @@ export default {
       config: {
         label: "Marker Flags",
         name: "markerFlags",
-        style: "display:none"
-      }
-    }
-  ]
+        style: "display:none",
+      },
+    },
+  ],
 };

@@ -161,29 +161,29 @@ export default {
     name: String,
     placeholder: {
       type: String,
-      default: "Select option"
+      default: "Select option",
     },
     helper: String,
     canEdit: {
       type: Boolean,
-      default: true
+      default: true,
     },
     trackBy: {
       type: String,
-      default: "id"
+      default: "id",
     },
     label: {
       type: String,
-      default: "name"
+      default: "name",
     },
     api: {
       type: String,
-      default: "signals"
+      default: "signals",
     },
     multiple: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -196,7 +196,7 @@ export default {
       showConfirmDelete: false,
       deleteSignal: null,
       signalId: "",
-      signalName: ""
+      signalName: "",
     };
   },
   computed: {
@@ -211,7 +211,7 @@ export default {
     },
     validUpdate() {
       return this.getValidationErrorForNameUpdate(this.signalName) === "";
-    }
+    },
   },
   watch: {
     value: {
@@ -222,8 +222,8 @@ export default {
         if (value && !this.selectedOption) {
           this.loadSelected(value);
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     deleteSignalUsage(id) {
@@ -321,7 +321,7 @@ export default {
       if (!signal) {
         signal = window.ProcessMaker.$modeler.moddle.create("bpmn:Signal", {
           id: value.id,
-          name: value.name
+          name: value.name,
         });
         store.getters.rootElements.push(signal);
       }
@@ -361,7 +361,7 @@ export default {
     addSignal() {
       const signal = window.ProcessMaker.$modeler.moddle.create("bpmn:Signal", {
         id: this.signalId,
-        name: this.signalName
+        name: this.signalName,
       });
       store.getters.rootElements.push(signal);
       this.showNewSignal = false;
@@ -384,7 +384,7 @@ export default {
       if (signal) {
         this.selectedOption = {
           id: signal.id,
-          name: signal.name
+          name: signal.name,
         };
       } else {
         this.$emit("input", "");
@@ -394,8 +394,8 @@ export default {
     loadOptionsDebounced() {},
     can(permission) {
       return get(window, `ProcessMaker.modeler.signalPermissions.${permission}`, false);
-    }
-  }
+    },
+  },
 };
 </script>
 

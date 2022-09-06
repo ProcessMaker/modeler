@@ -10,8 +10,8 @@ export default {
   components: { CrownButton },
   data() {
     return {
-      laneBelowIcon
+      laneBelowIcon,
     };
-  }
+  },
 };
 </script>

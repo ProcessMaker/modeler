@@ -1,6 +1,6 @@
 import loopCharacteristicsInspector, {
   loopCharacteristicsData,
-  loopCharacteristicsHandler
+  loopCharacteristicsHandler,
 } from "@/components/inspectors/LoopCharacteristics";
 import NodeIdentifierInput from "../inspectors/NodeIdentifierInput.vue";
 

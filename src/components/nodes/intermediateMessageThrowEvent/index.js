@@ -19,16 +19,16 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:IntermediateThrowEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, messageSelector("Select the message reference that this element throws")]
-        }
-      ]
-    }
-  ]
+          items: [{}, messageSelector("Select the message reference that this element throws")],
+        },
+      ],
+    },
+  ],
 });

@@ -23,13 +23,13 @@ export default {
     return {
       copyCount: 0,
       copyIcon,
-      validCopyElements
+      validCopyElements,
     };
   },
   methods: {
     copyElement() {
       this.$emit("copy-element", this.node, ++this.copyCount);
-    }
-  }
+    },
+  },
 };
 </script>

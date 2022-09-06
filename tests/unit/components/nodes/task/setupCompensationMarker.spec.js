@@ -6,14 +6,14 @@ describe("setupCompensationMarker", () => {
     const $set = jest.fn();
 
     const markers = {
-      bottomCenter: {}
+      bottomCenter: {},
     };
 
     const nodeDefinition = {
       isForCompensation: true,
       get(prop) {
         return this[prop];
-      }
+      },
     };
 
     setupCompensationMarker(nodeDefinition, markers, $set);

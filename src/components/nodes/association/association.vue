@@ -25,7 +25,7 @@ import { direction } from "./associationConfig";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [linkConfig],
   props: [
@@ -39,13 +39,13 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
       shape: null,
       initialAssociationDirection: this.node.definition.associationDirection,
-      associationDirection: direction
+      associationDirection: direction,
     };
   },
   computed: {
@@ -71,12 +71,12 @@ export default {
         this.sourceConfig.validateAssociationOutgoing && !this.sourceConfig.validateAssociationOutgoing(this.targetNode);
 
       return !(invalidIncoming || invalidOutgoing);
-    }
+    },
   },
   watch: {
     "node.definition.associationDirection": function (directionn) {
       this.updateAssociationMarker(directionn);
-    }
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link({ router: { name: "normal" } });
@@ -92,16 +92,16 @@ export default {
           "xlink:href": associationHead,
           width: 20,
           height: 20,
-          y: -10
+          y: -10,
         },
         sourceMarker: {
           type: "image",
           "xlink:href": associationHead,
           width: 20,
           height: 20,
-          y: -10
-        }
-      }
+          y: -10,
+        },
+      },
     });
 
     this.shape.addTo(this.graph);
@@ -131,7 +131,7 @@ export default {
         this.shape.attr("line/targetMarker/display", "block");
         this.shape.attr("line/sourceMarker/display", "block");
       }
-    }
-  }
+    },
+  },
 };
 </script>

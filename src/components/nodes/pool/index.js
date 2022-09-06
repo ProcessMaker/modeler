@@ -16,15 +16,15 @@ export default {
   rank: 60,
   definition(moddle, $t) {
     return moddle.create("bpmn:Participant", {
-      name: $t("Pool")
+      name: $t("Pool"),
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: 300,
-        width: 600
-      })
+        width: 600,
+      }),
     });
   },
   inspectorConfig: [
@@ -38,18 +38,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-pool"
+            name: "inspector-accordion-pool",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

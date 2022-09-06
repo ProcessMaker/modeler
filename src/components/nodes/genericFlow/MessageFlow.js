@@ -45,7 +45,7 @@ export default class MessageFlow extends Flow {
       "bpmn:IntermediateCatchEvent",
       "bpmn:Participant",
       "bpmn:StartEvent",
-      "bpmn:BoundaryEvent"
+      "bpmn:BoundaryEvent",
     ].some((type) => targetNode.isBpmnType(type));
   }
 }

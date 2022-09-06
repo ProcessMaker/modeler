@@ -17,7 +17,7 @@ const validCopyElements = [
   "bpmn:InclusiveGateway",
   "bpmn:Gateway",
   "bpmn:EventBasedGateway",
-  "bpmn:TextAnnotation"
+  "bpmn:TextAnnotation",
 ];
 
 export default validCopyElements;

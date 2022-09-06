@@ -12,9 +12,9 @@ export default {
     return {
       error: this.moddle.create("bpmn:Error", {
         id: `${this.id}_error`,
-        name: `${this.id}_error`
+        name: `${this.id}_error`,
       }),
-      nodeIcon: errorIcon
+      nodeIcon: errorIcon,
     };
   },
   mounted() {
@@ -32,11 +32,11 @@ export default {
 
       this.error = this.moddle.create("bpmn:Error", {
         id: `${this.id}_error`,
-        name: `${this.id}_error`
+        name: `${this.id}_error`,
       });
       this.rootElements.push(this.error);
       this.node.definition.get("eventDefinitions")[0].errorRef = this.error;
-    }
-  }
+    },
+  },
 };
 </script>

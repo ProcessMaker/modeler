@@ -23,10 +23,10 @@ Vue.config.productionTip = false;
 
 i18next.init({
   lng: "en",
-  resources: { en: { translation: translations } }
+  resources: { en: { translation: translations } },
 });
 Vue.mixin({ i18n: new VueI18Next(i18next) });
 
 new Vue({
-  render: (h) => h(ModelerApp)
+  render: (h) => h(ModelerApp),
 }).$mount("#modeler-app");

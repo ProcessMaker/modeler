@@ -16,15 +16,15 @@ export default {
   rank: 70,
   definition(moddle, $t) {
     return moddle.create("bpmn:TextAnnotation", {
-      text: $t("Text Annotation")
+      text: $t("Text Annotation"),
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: 30,
-        width: 150
-      })
+        width: 150,
+      }),
     });
   },
   /**
@@ -52,7 +52,7 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-text-annotation"
+            name: "inspector-accordion-text-annotation",
           },
           items: [
             {
@@ -61,14 +61,14 @@ export default {
                 label: "Text to Show",
                 helper: "Body of the text annotation",
                 name: "text",
-                placeholder: "Text Annotation"
-              }
-            }
-          ]
+                placeholder: "Text Annotation",
+              },
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

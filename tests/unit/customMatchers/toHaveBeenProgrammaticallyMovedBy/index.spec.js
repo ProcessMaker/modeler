@@ -53,7 +53,7 @@ describe("toHaveBeenProgrammaticallyMovedBy", () => {
 
   it("fails when the shape's translate is not a jest.fn()", () => {
     const testShape = {
-      translate: undefined
+      translate: undefined,
     };
     const dx = 1;
     const dy = 2;

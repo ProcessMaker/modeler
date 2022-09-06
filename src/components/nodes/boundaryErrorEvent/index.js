@@ -17,18 +17,18 @@ export default merge(cloneDeep(boundaryEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:BoundaryEvent", {
       name: $t("Boundary Error Event"),
-      eventDefinitions: [moddle.create("bpmn:ErrorEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:ErrorEventDefinition")],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}]
+          items: [{}],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 });

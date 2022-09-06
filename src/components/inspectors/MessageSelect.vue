@@ -160,25 +160,25 @@ export default {
     name: String,
     placeholder: {
       type: String,
-      default: "Select option"
+      default: "Select option",
     },
     helper: String,
     trackBy: {
       type: String,
-      default: "id"
+      default: "id",
     },
     label: {
       type: String,
-      default: "name"
+      default: "name",
     },
     api: {
       type: String,
-      default: "messages"
+      default: "messages",
     },
     multiple: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -191,7 +191,7 @@ export default {
       showConfirmDelete: false,
       deleteMessage: null,
       messageId: "",
-      messageName: ""
+      messageName: "",
     };
   },
   computed: {
@@ -206,7 +206,7 @@ export default {
     },
     validUpdate() {
       return this.getValidationErrorForNameUpdate(this.messageName) === "";
-    }
+    },
   },
   watch: {
     value: {
@@ -217,8 +217,8 @@ export default {
         if (value && !this.selectedOption) {
           this.loadSelected(value);
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     deleteMessageUsage(id) {
@@ -312,7 +312,7 @@ export default {
       if (!message) {
         message = window.ProcessMaker.$modeler.moddle.create("bpmn:Message", {
           id: value.id,
-          name: value.name
+          name: value.name,
         });
         store.getters.rootElements.push(message);
       }
@@ -348,7 +348,7 @@ export default {
     addMessage() {
       const message = window.ProcessMaker.$modeler.moddle.create("bpmn:Message", {
         id: this.messageId,
-        name: this.messageName
+        name: this.messageName,
       });
       store.getters.rootElements.push(message);
       this.showNewMessage = false;
@@ -364,15 +364,15 @@ export default {
       if (message) {
         this.selectedOption = {
           id: message.id,
-          name: message.name
+          name: message.name,
         };
       } else {
         this.$emit("input", "");
         this.refreshVueMultiselectValue();
       }
     },
-    loadOptionsDebounced() {}
-  }
+    loadOptionsDebounced() {},
+  },
 };
 </script>
 

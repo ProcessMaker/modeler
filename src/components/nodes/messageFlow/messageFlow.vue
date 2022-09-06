@@ -26,7 +26,7 @@ import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [linkConfig],
   props: [
@@ -40,11 +40,11 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
-      shape: null
+      shape: null,
     };
   },
   computed: {
@@ -52,7 +52,7 @@ export default {
       return MessageFlow.isValid({
         sourceShape: this.sourceShape,
         targetShape: this.target,
-        sourceConfig: this.sourceConfig
+        sourceConfig: this.sourceConfig,
       });
     },
     targetType() {
@@ -60,13 +60,13 @@ export default {
     },
     sourceType() {
       return get(this.sourceNode, "type");
-    }
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link({
       router: {
-        name: "orthogonal"
-      }
+        name: "orthogonal",
+      },
     });
 
     this.shape.attr("line", {
@@ -75,14 +75,14 @@ export default {
         type: "circle",
         r: 5,
         "stroke-width": 2,
-        fill: "#fff"
+        fill: "#fff",
       },
       targetMarker: {
         type: "path",
         fill: "#fff",
         "stroke-width": 2,
-        d: "M 10 -5 0 0 10 5 Z"
-      }
+        d: "M 10 -5 0 0 10 5 Z",
+      },
     });
 
     this.shape.addTo(this.graph);
@@ -95,7 +95,7 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
       this.node.definition.targetRef = targetShape.component.node.definition;
-    }
-  }
+    },
+  },
 };
 </script>

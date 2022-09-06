@@ -13,9 +13,9 @@ export default {
     return {
       message: this.moddle.create("bpmn:Message", {
         id: `${this.id}_message`,
-        name: `${this.id}_message`
+        name: `${this.id}_message`,
       }),
-      nodeIcon: intermediateMailSymbol
+      nodeIcon: intermediateMailSymbol,
     };
   },
   mounted() {
@@ -24,8 +24,8 @@ export default {
         width: 22,
         height: 20,
         y: 3,
-        x: 2
-      }
+        x: 2,
+      },
     });
 
     this.addMessageRef();
@@ -43,11 +43,11 @@ export default {
 
       this.message = this.moddle.create("bpmn:Message", {
         id: `${this.id}_message`,
-        name: `${this.id}_message`
+        name: `${this.id}_message`,
       });
       this.rootElements.push(this.message);
       this.node.definition.get("eventDefinitions")[0].messageRef = this.message;
-    }
-  }
+    },
+  },
 };
 </script>

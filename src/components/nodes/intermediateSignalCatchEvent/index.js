@@ -18,7 +18,7 @@ export default merge(cloneDeep(intermediateEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:IntermediateCatchEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")],
     });
   },
   inspectorConfig: [
@@ -30,11 +30,11 @@ export default merge(cloneDeep(intermediateEventConfig), {
             signalSelector("Signal that will catch this intermediate event", false),
             {
               component: "FormInput",
-              config: requestVariableSettings
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              config: requestVariableSettings,
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });

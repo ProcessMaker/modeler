@@ -12,7 +12,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create("bpmn:SequenceFlow", {
-      name: null
+      name: null,
     });
   },
   diagram(moddle) {
@@ -68,18 +68,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-sequence-flow"
+            name: "inspector-accordion-sequence-flow",
           },
           items: [
             {
               component: "FormInput",
-              config: { ...nameConfigSettings, validation: null }
-            }
-          ]
+              config: { ...nameConfigSettings, validation: null },
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

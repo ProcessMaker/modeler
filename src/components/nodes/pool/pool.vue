@@ -40,7 +40,7 @@ export default {
   components: {
     CrownConfig,
     AddLaneAboveButton,
-    AddLaneBelowButton
+    AddLaneBelowButton,
   },
   mixins: [highlightConfig, resizeConfig, portsConfig],
   props: [
@@ -59,7 +59,7 @@ export default {
     "planeElements",
     "isRendering",
     "paperManager",
-    "nodeIdGenerator"
+    "nodeIdGenerator",
   ],
   data() {
     return {
@@ -67,7 +67,7 @@ export default {
       definition: null,
       laneSet: null,
       isAddingLaneAbove: false,
-      anchorPointFunction: aPortEveryXPixels(20)
+      anchorPointFunction: aPortEveryXPixels(20),
     };
   },
   computed: {
@@ -77,12 +77,12 @@ export default {
       }
 
       return this.processes.find((process) => process.id === this.node.definition.get("processRef").id);
-    }
+    },
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   mounted() {
     // Do some initialization on parent
@@ -145,7 +145,7 @@ export default {
         x,
         y,
         width,
-        height
+        height,
       };
 
       return graph.findModelsInArea(area);
@@ -259,7 +259,7 @@ export default {
       // eslint-disable-next-line no-nested-ternary
       laneElement.position(labelWidth, isFirstLane ? 0 : this.isAddingLaneAbove ? -laneHeight : height, { parentRelative: true });
       pool.resize(width, isFirstLane ? height : height + laneHeight, {
-        direction: this.isAddingLaneAbove ? "top-right" : "bottom-right"
+        direction: this.isAddingLaneAbove ? "top-right" : "bottom-right",
       });
 
       this.fixResizeRounding();
@@ -273,7 +273,7 @@ export default {
 
       store.commit("updateNodeBounds", {
         node: this.node,
-        bounds: pool.getBBox()
+        bounds: pool.getBBox(),
       });
     },
     expandToFitElement(element, pool) {
@@ -324,7 +324,7 @@ export default {
 
       if (newWidth || newHeight) {
         pool.resize(Math.max(newWidth, width), Math.max(newHeight, height), {
-          direction: `${directionHeight}-${directionWidth}`
+          direction: `${directionHeight}-${directionWidth}`,
         });
 
         this.fixResizeRounding();
@@ -337,14 +337,14 @@ export default {
           this.sortedLanes().forEach((laneShape) => {
             store.commit("updateNodeBounds", {
               node: laneShape.component.node,
-              bounds: laneShape.getBBox()
+              bounds: laneShape.getBBox(),
             });
           });
         }
 
         store.commit("updateNodeBounds", {
           node: this.node,
-          bounds: pool.getBBox()
+          bounds: pool.getBBox(),
         });
 
         this.$emit("save-state");
@@ -378,7 +378,7 @@ export default {
       const laneToResize = this.sortedLanes()[resizingLaneIndex + (direction.includes("top") ? -1 : 1)];
 
       laneToResize.resize(resizingLaneWidth, laneToResize.getBBox().height + heightDiff, {
-        direction: resizeDirection
+        direction: resizeDirection,
       });
       this.shape.resize(resizingLaneWidth + labelWidth, poolHeight, { direction: resizeDirection });
 
@@ -427,7 +427,7 @@ export default {
       this.shape.fitEmbeds({ padding: poolPadding + labelWidth });
       this.shape.resize(this.shape.getBBox().width - labelWidth, this.shape.getBBox().height - labelWidth);
       this.shape.resize(this.shape.getBBox().width, this.shape.getBBox().height - labelWidth, {
-        direction: "top"
+        direction: "top",
       });
     },
     resizePool(pool) {
@@ -478,7 +478,7 @@ export default {
           store.commit("updateNodeProp", {
             node: laneShape.component.node,
             key: "flowNodeRef",
-            value: newRefs || []
+            value: newRefs || [],
           });
         }
       });
@@ -497,7 +497,7 @@ export default {
       this.node.diagram.bounds.y = y;
       this.node.diagram.bounds.width = newWidth;
       this.node.diagram.bounds.height = newHeight;
-    }
-  }
+    },
+  },
 };
 </script>

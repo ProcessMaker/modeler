@@ -9,7 +9,7 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
   const nodeId = "processmaker-script-task-test";
 
   const component = {
-    extends: task.component
+    extends: task.component,
   };
 
   const nodeType = {
@@ -24,15 +24,15 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
       return moddle.create("bpmn:ScriptTask", {
         name: "Script",
         implementation,
-        config: JSON.stringify({})
+        config: JSON.stringify({}),
       });
     },
     diagram(moddle) {
       return moddle.create("bpmndi:BPMNShape", {
         bounds: moddle.create("dc:Bounds", {
           height: 76,
-          width: 116
-        })
+          width: 116,
+        }),
       });
     },
     inspectorConfig: [
@@ -43,24 +43,24 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
             component: "FormText",
             config: {
               label: "Send Tweet",
-              fontSize: "2em"
-            }
+              fontSize: "2em",
+            },
           },
           {
             component: "FormInput",
-            config: idConfigSettings
+            config: idConfigSettings,
           },
           {
             component: "FormTextArea",
             config: {
               label: "Config",
               helper: "Script configuration",
-              name: "config"
-            }
-          }
-        ]
-      }
-    ]
+              name: "config",
+            },
+          },
+        ],
+      },
+    ],
   };
 
   registerNode(nodeType, (definition) => {

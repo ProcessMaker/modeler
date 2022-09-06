@@ -22,13 +22,13 @@ export default {
     },
     messageId() {
       return this.value ? this.value.id : "";
-    }
+    },
   },
   methods: {
     emitMessage(messageId) {
       const message = getMessage(store, messageId);
       this.$emit("input", message);
-    }
-  }
+    },
+  },
 };
 </script>

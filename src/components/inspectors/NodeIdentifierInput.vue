@@ -10,22 +10,22 @@ import store from "@/store";
 export default {
   props: {
     label: {
-      type: String
+      type: String,
     },
     helper: {
-      type: String
+      type: String,
     },
     value: {
-      default: null
+      default: null,
     },
     validation: {
-      type: String
-    }
+      type: String,
+    },
   },
   data() {
     return {
       localValue: this.value,
-      error: ""
+      error: "",
     };
   },
   methods: {
@@ -44,7 +44,7 @@ export default {
         return true;
       }
       return false;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -8,10 +8,10 @@ const errorHighlighter = {
       attrs: {
         stroke: "red",
         "stroke-width": 10,
-        opacity: 0.3
-      }
-    }
-  }
+        opacity: 0.3,
+      },
+    },
+  },
 };
 
 const defaultHighlighter = {
@@ -20,10 +20,10 @@ const defaultHighlighter = {
     options: {
       attrs: {
         stroke: "#5096db",
-        "stroke-width": 3
-      }
-    }
-  }
+        "stroke-width": 3,
+      },
+    },
+  },
 };
 
 export default {
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       shape: null,
-      currentBorderOutline: null
+      currentBorderOutline: null,
     };
   },
   watch: {
@@ -48,8 +48,8 @@ export default {
       deep: true,
       handler(borderOutline) {
         this.setBorderOutline(borderOutline);
-      }
-    }
+      },
+    },
   },
   computed: {
     shapeView() {
@@ -57,7 +57,7 @@ export default {
     },
     shapeBody() {
       return this.shapeView.$el.find("[joint-selector=body]");
-    }
+    },
   },
   methods: {
     setShapeHighlight() {
@@ -81,7 +81,7 @@ export default {
       if (this.currentBorderOutline) {
         this.shapeView.highlight(this.shapeBody, this.currentBorderOutline);
       }
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -92,5 +92,5 @@ export default {
         });
       });
     });
-  }
+  },
 };

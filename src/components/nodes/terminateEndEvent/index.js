@@ -14,7 +14,7 @@ export default merge(cloneDeep(endEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:EndEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:TerminateEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:TerminateEventDefinition")],
     });
-  }
+  },
 });

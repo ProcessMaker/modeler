@@ -7,7 +7,7 @@ const definitionFactory = (props = {}) => ({
   },
   set(prop, val) {
     this[prop] = val;
-  }
+  },
 });
 const mockType = "some-type";
 const mockNodeRegistry = {
@@ -17,8 +17,8 @@ const mockNodeRegistry = {
     },
     diagram() {
       return { bounds: {} };
-    }
-  }
+    },
+  },
 };
 
 describe("Node", () => {
@@ -32,7 +32,7 @@ describe("Node", () => {
       x: 1,
       y: 2,
       width: 3,
-      height: 4
+      height: 4,
     };
     node = new Node(mockType, definition, { bpmnElement: definition, bounds });
   });

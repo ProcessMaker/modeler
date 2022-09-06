@@ -13,9 +13,9 @@ export default {
     return {
       message: this.moddle.create("bpmn:Message", {
         id: `${this.id}_message`,
-        name: `${this.id}_message`
+        name: `${this.id}_message`,
       }),
-      nodeIcon: messageEndEventSymbol
+      nodeIcon: messageEndEventSymbol,
     };
   },
   mounted() {
@@ -34,11 +34,11 @@ export default {
 
       this.message = this.moddle.create("bpmn:Message", {
         id: `${this.id}_message`,
-        name: `${this.id}_message`
+        name: `${this.id}_message`,
       });
       this.rootElements.push(this.message);
       this.node.definition.get("eventDefinitions")[0].messageRef = this.message;
-    }
-  }
+    },
+  },
 };
 </script>

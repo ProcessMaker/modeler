@@ -26,7 +26,7 @@ const dontShowOn = [
   "processmaker-modeler-signal-end-event",
   "processmaker-modeler-terminate-end-event",
   "processmaker-modeler-text-annotation",
-  "processmaker-modeler-sequence-flow"
+  "processmaker-modeler-sequence-flow",
 ];
 
 export default {
@@ -34,7 +34,7 @@ export default {
   props: ["node", "moddle", "nodeRegistry"],
   data() {
     return {
-      sequenceFlow: Flow
+      sequenceFlow: Flow,
     };
   },
   computed: {
@@ -49,7 +49,7 @@ export default {
 
       // return !this.node.isBpmnType(...sequenceFlowBlacklist) &&
       //     (this.node.isBpmnType('bpmn:EndEvent') && this.node.isType('processmaker-modeler-message-end-event'));
-    }
+    },
   },
   created() {
     this.$t = this.$t.bind(this);
@@ -60,11 +60,11 @@ export default {
       const flowPlaceholderDefinition = this.moddle.create("bpmn:SequenceFlow", {
         name: "",
         sourceRef: this.node.definition,
-        targetRef: { x, y }
+        targetRef: { x, y },
       });
 
       this.$emit("add-node", new Node(genericFlowId, flowPlaceholderDefinition, this.moddle.create("bpmndi:BPMNEdge")));
-    }
-  }
+    },
+  },
 };
 </script>

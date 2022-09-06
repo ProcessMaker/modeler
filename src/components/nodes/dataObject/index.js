@@ -21,15 +21,15 @@ export default {
   },
   definition(moddle, $t) {
     return moddle.create("bpmn:DataObjectReference", {
-      name: $t(defaultNames[id])
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: 50,
-        width: 36
-      })
+        width: 36,
+      }),
     });
   },
   inspectorConfig: [
@@ -43,18 +43,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-data-object"
+            name: "inspector-accordion-data-object",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

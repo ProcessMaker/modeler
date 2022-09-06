@@ -3,11 +3,6 @@ import { dummyShape } from "../../../utilities/dummies";
 import toHaveBeenProgrammaticallyMoved from "../../../customMatchers/toHaveBeenProgrammaticallyMoved";
 import toHaveBeenProgrammaticallyMovedBy from "../../../customMatchers/toHaveBeenProgrammaticallyMovedBy";
 
-/**
- * @type {Function}
- */
-const expect = require("expect");
-
 expect.extend({ toHaveBeenProgrammaticallyMoved, toHaveBeenProgrammaticallyMovedBy });
 
 describe("Shape Distribution", () => {

@@ -9,8 +9,8 @@ export default {
   data() {
     return {
       nodeIcon: scriptIcon,
-      iconName: ""
+      iconName: "",
     };
-  }
+  },
 };
 </script>

@@ -65,7 +65,7 @@ const blankDefaultIcon = `<svg version="1.1"
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon],
   props: [
@@ -80,7 +80,7 @@ export default {
     "processNode",
     "planeElements",
     "isRendering",
-    "paperManager"
+    "paperManager",
   ],
   data() {
     return {
@@ -91,27 +91,27 @@ export default {
         {
           label: defaultNames["processmaker-modeler-task"],
           nodeType: "processmaker-modeler-task",
-          dataTest: "switch-to-user-task"
+          dataTest: "switch-to-user-task",
         },
         {
           label: defaultNames["processmaker-modeler-manual-task"],
           nodeType: "processmaker-modeler-manual-task",
-          dataTest: "switch-to-manual-task"
+          dataTest: "switch-to-manual-task",
         },
         {
           label: defaultNames["processmaker-modeler-script-task"],
           nodeType: "processmaker-modeler-script-task",
-          dataTest: "switch-to-script-task"
+          dataTest: "switch-to-script-task",
         },
         {
           label: defaultNames["processmaker-modeler-call-activity"],
           nodeType: "processmaker-modeler-call-activity",
-          dataTest: "switch-to-sub-process"
-        }
+          dataTest: "switch-to-sub-process",
+        },
       ],
       nodeIcon: blankDefaultIcon,
       iconName: "",
-      anchorPointFunction: getRectangleAnchorPoint
+      anchorPointFunction: getRectangleAnchorPoint,
     };
   },
   computed: {
@@ -123,7 +123,7 @@ export default {
     },
     subprocessName() {
       return this.node.definition.get("name");
-    }
+    },
   },
   watch: {
     "node.definition.name": function (name) {
@@ -145,7 +145,7 @@ export default {
       store.commit("updateNodeProp", {
         node: this.node,
         key: "config",
-        value: config
+        value: config,
       });
       this.$emit("save-state");
     },
@@ -154,7 +154,7 @@ export default {
     },
     "node.definition.loopCharacteristics": function () {
       setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
-    }
+    },
   },
   mounted() {
     this.shape = new TaskShape();
@@ -167,12 +167,12 @@ export default {
       body: {
         rx: 8,
         ry: 8,
-        strokeWidth: 4
+        strokeWidth: 4,
       },
       label: {
         text: util.breakText(this.node.definition.get("name"), { width: bounds.width }),
-        fill: "black"
-      }
+        fill: "black",
+      },
     });
 
     this.shape.addTo(this.graph);
@@ -216,7 +216,7 @@ export default {
         .catch(() => {
           this.failedToLoadPreview = true;
         });
-    }
-  }
+    },
+  },
 };
 </script>

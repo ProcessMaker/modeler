@@ -3,7 +3,7 @@ import moveShapeByKeypress, { moveAmount } from "@/components/modeler/moveWithAr
 const shapeFactory = (type = "foo") => ({
   translate: jest.fn(),
   get: jest.fn(() => type),
-  getParentCell: () => null
+  getParentCell: () => null,
 });
 
 describe("moveWithArrowKeys", () => {

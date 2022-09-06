@@ -22,15 +22,15 @@ export default {
       name: $t(defaultNames[id]),
       assignment: "requester",
       loopCharacteristics: null,
-      ioSpecification: null
+      ioSpecification: null,
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: taskHeight,
-        width: 116
-      })
+        width: 116,
+      }),
     });
   },
   inspectorConfig: [
@@ -44,18 +44,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-manual-task"
+            name: "inspector-accordion-manual-task",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

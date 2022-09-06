@@ -3,7 +3,7 @@ import {
   defaultGatewayNames,
   defaultIntermediateNames,
   defaultStartNames,
-  defaultTaskNames
+  defaultTaskNames,
 } from "@/components/nodes/defaultNames";
 
 function getDefaultNames(node) {

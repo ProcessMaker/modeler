@@ -73,7 +73,7 @@ export default {
     AssociationFlowButton,
     CopyButton,
     DefaultFlow,
-    DataAssociationFlowButton
+    DataAssociationFlowButton,
   },
   mixins: [poolLaneCrownConfig],
   props: {
@@ -90,20 +90,20 @@ export default {
     isRendering: Boolean,
     dropdownData: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     boundaryEventDropdownData: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     showCustomIconPicker: {
       type: Boolean,
-      default: false
+      default: false,
     },
     iconName: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   data() {
     return {
@@ -113,7 +113,7 @@ export default {
       style: null,
       taskDropdownInitiallyOpen: this.paperNotRendered(),
       showReplaceModal: false,
-      nodeToReplace: null
+      nodeToReplace: null,
     };
   },
   computed: {
@@ -126,14 +126,14 @@ export default {
     process() {
       return this.node.pool ? this.node.pool.component.containingProcess : this.processNode.definition;
     },
-    highlightedShapes: () => store.getters.highlightedShapes
+    highlightedShapes: () => store.getters.highlightedShapes,
   },
   watch: {
     "node.definition.color": {
       handler() {
         this.setNodeColor();
       },
-      deep: true
+      deep: true,
     },
     highlightedShapes(shapes, prevShapes) {
       if (isEqual(shapes, prevShapes)) {
@@ -151,7 +151,7 @@ export default {
       if (this.highlighted) {
         this.showCrown = true;
       }
-    }
+    },
   },
   created() {
     this.$t = this.$t.bind(this);
@@ -215,13 +215,13 @@ export default {
       }
 
       const { x, y, width } = shapeView.getBBox({
-        useModelGeometry: !this.isTextAnnotation && !this.isFlow
+        useModelGeometry: !this.isTextAnnotation && !this.isFlow,
       });
 
       this.style = {
         top: `${y - 45}px`,
         left: `${x + width - 20}px`,
-        cursor: "pointer"
+        cursor: "pointer",
       };
     },
     async paperDoneRendering() {
@@ -267,8 +267,8 @@ export default {
           this.savePositionOnPointerupEventSet = true;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

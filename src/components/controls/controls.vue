@@ -41,7 +41,7 @@ export default {
       draggingElement: null,
       draggingControl: null,
       xOffset: null,
-      yOffset: null
+      yOffset: null,
     };
   },
   computed: {
@@ -53,17 +53,17 @@ export default {
           icon: nodeType.icon,
           label: nodeType.label,
           bpmnType: nodeType.bpmnType,
-          rank: nodeType.rank || BOTTOM
+          rank: nodeType.rank || BOTTOM,
         }))
         .sort((node1, node2) => node1.rank - node2.rank);
-    }
+    },
   },
   watch: {
     allowDrop(allowDrop) {
       if (this.draggingElement) {
         this.draggingElement.classList.toggle("no-drop", !allowDrop);
       }
-    }
+    },
   },
   methods: {
     startDrag(event, control) {
@@ -105,8 +105,8 @@ export default {
       this.draggingElement.style.left = `${pageX - this.xOffset}px`;
       this.draggingElement.style.top = `${pageY - this.yOffset}px`;
       this.$emit("drag", { clientX, clientY, control: this.draggingControl });
-    }
-  }
+    },
+  },
 };
 </script>
 

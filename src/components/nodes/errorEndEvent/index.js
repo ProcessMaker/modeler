@@ -15,7 +15,7 @@ export default merge(cloneDeep(endEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:EndEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:ErrorEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:ErrorEventDefinition")],
     });
   },
   inspectorData(node) {
@@ -54,12 +54,12 @@ export default merge(cloneDeep(endEventConfig), {
               config: {
                 label: "Error Name",
                 name: "errorName",
-                helper: "Enter the error name that is unique from all other elements in the diagram"
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ]
+                helper: "Enter the error name that is unique from all other elements in the diagram",
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });

@@ -115,7 +115,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
       dataInputs: [],
       dataOutputs: [],
       inputSets: [],
-      outputSets: []
+      outputSets: [],
     });
   }
   // Check if dataInput exists
@@ -128,7 +128,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
       moddle.create("bpmn:DataInput", {
         id: dataInputId,
         isCollection: "false",
-        name: sourceNode.name
+        name: sourceNode.name,
       })
     );
     task.definition.ioSpecification.set("dataInputs", task.definition.ioSpecification.dataInputs);
@@ -138,16 +138,16 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   if (!task.definition.ioSpecification.outputSets) {
     task.definition.ioSpecification.set("outputSets", [
       moddle.create("bpmn:OutputSet", {
-        dataOutputRefs: []
-      })
+        dataOutputRefs: [],
+      }),
     ]);
   }
   let outputSet = task.definition.ioSpecification.outputSets[0];
   if (!outputSet) {
     task.definition.ioSpecification.set("outputSets", [
       moddle.create("bpmn:OutputSet", {
-        dataOutputRefs: []
-      })
+        dataOutputRefs: [],
+      }),
     ]);
   }
   outputSet = task.definition.ioSpecification.outputSets[0];
@@ -155,16 +155,16 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   if (!task.definition.ioSpecification.inputSets) {
     task.definition.ioSpecification.set("inputSets", [
       moddle.create("bpmn:InputSet", {
-        dataInputRefs: []
-      })
+        dataInputRefs: [],
+      }),
     ]);
   }
   let inputSet = task.definition.ioSpecification.inputSets[0];
   if (!inputSet) {
     task.definition.ioSpecification.set("inputSets", [
       moddle.create("bpmn:InputSet", {
-        dataInputRefs: []
-      })
+        dataInputRefs: [],
+      }),
     ]);
   }
   inputSet = task.definition.ioSpecification.inputSets[0];

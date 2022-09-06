@@ -27,7 +27,7 @@ import EventShape from "../baseStartEvent/eventShape";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   props: [
@@ -41,7 +41,7 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
@@ -50,35 +50,35 @@ export default {
       dropdownData: [
         {
           label: defaultNames["processmaker-modeler-end-event"],
-          nodeType: "processmaker-modeler-end-event"
+          nodeType: "processmaker-modeler-end-event",
         },
         {
           label: defaultNames["processmaker-modeler-message-end-event"],
           nodeType: "processmaker-modeler-message-end-event",
-          dataTest: "switch-to-message-end-event"
+          dataTest: "switch-to-message-end-event",
         },
         {
           label: defaultNames["processmaker-modeler-error-end-event"],
           nodeType: "processmaker-modeler-error-end-event",
-          dataTest: "switch-to-error-end-event"
+          dataTest: "switch-to-error-end-event",
         },
         {
           label: defaultNames["processmaker-modeler-signal-end-event"],
           nodeType: "processmaker-modeler-signal-end-event",
-          dataTest: "switch-to-signal-end-event"
+          dataTest: "switch-to-signal-end-event",
         },
         {
           label: defaultNames["processmaker-modeler-terminate-end-event"],
           nodeType: "processmaker-modeler-terminate-end-event",
-          dataTest: "switch-to-terminate-end-event"
-        }
-      ]
+          dataTest: "switch-to-terminate-end-event",
+        },
+      ],
     };
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   mounted() {
     this.shape = new EventShape();
@@ -89,15 +89,15 @@ export default {
     this.shape.attr({
       body: {
         fill: endColor,
-        stroke: endColorStroke
+        stroke: endColorStroke,
       },
       label: {
         text: this.node.definition.get("name"),
-        refY: "130%"
-      }
+        refY: "130%",
+      },
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
-  }
+  },
 };
 </script>

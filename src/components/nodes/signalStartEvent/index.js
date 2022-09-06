@@ -16,7 +16,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:StartEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")],
     });
   },
   inspectorConfig: [
@@ -28,11 +28,11 @@ export default merge(cloneDeep(baseStartEventConfig), {
             signalSelector("Signal that will trigger this start event", false),
             {
               component: "FormInput",
-              config: requestVariableSettings
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              config: requestVariableSettings,
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });

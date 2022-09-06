@@ -95,7 +95,7 @@ import validationErrorList from "./errorListUtil";
 
 export default {
   components: {
-    FontAwesomeIcon
+    FontAwesomeIcon,
   },
   props: ["validationErrors", "warnings", "xmlManager"],
   data() {
@@ -107,7 +107,7 @@ export default {
       faTimesCircle,
       faChevronUp,
       faChevronDown,
-      faCheck
+      faCheck,
     };
   },
   computed: {
@@ -117,7 +117,7 @@ export default {
       },
       set(autoValidate) {
         store.commit("setAutoValidate", autoValidate);
-      }
+      },
     },
     errorList() {
       return validationErrorList(this.validationErrors);
@@ -130,13 +130,13 @@ export default {
     },
     chevronIcon() {
       return this.shouldDisplayProblemsPanel ? faChevronUp : faChevronDown;
-    }
+    },
   },
   methods: {
     isErrorCategory(error) {
       return error.category === "error";
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" src="./validationStatus.scss" scoped />

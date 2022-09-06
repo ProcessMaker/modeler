@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       incoming: this.node.definition.get("incoming"),
-      nodeIcon: inclusiveGatewaySymbol
+      nodeIcon: inclusiveGatewaySymbol,
     };
   },
   watch: {
@@ -18,7 +18,7 @@ export default {
       const direction = incoming.length <= 1 ? gatewayDirection.diverging : gatewayDirection.converging;
 
       this.node.definition.set("gatewayDirection", direction);
-    }
-  }
+    },
+  },
 };
 </script>

@@ -30,7 +30,7 @@ const BpmnFlows = [DataOutputAssociation, SequenceFlow, MessageFlow];
 export default {
   name: id,
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [linkConfig],
   props: [
@@ -44,11 +44,11 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
-      shape: null
+      shape: null,
     };
   },
   computed: {
@@ -58,7 +58,7 @@ export default {
           sourceShape: this.sourceShape,
           targetShape: this.target,
           sourceConfig: this.sourceConfig,
-          targetConfig: this.targetConfig
+          targetConfig: this.targetConfig,
         })
       );
     },
@@ -75,11 +75,11 @@ export default {
       set(text = "") {
         this.shape.label(0, {
           attrs: {
-            text: { text }
-          }
+            text: { text },
+          },
         });
-      }
-    }
+      },
+    },
   },
   watch: {
     "node.definition": {
@@ -91,14 +91,14 @@ export default {
         }
         this.setDefaultMarker(this.isDefaultFlow());
       },
-      deep: true
+      deep: true,
     },
     "node.definition.sourceRef": {
       handler() {
         this.setDefaultMarker(this.isDefaultFlow());
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link();
@@ -115,7 +115,7 @@ export default {
           sourceShape: this.sourceShape,
           targetShape: this.target,
           sourceConfig: this.sourceConfig,
-          targetConfig: this.targetConfig
+          targetConfig: this.targetConfig,
         })
       );
       const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
@@ -123,7 +123,7 @@ export default {
       this.$emit("replace-generic-flow", {
         actualFlow: flow.makeFlowNode(this.sourceShape, this.target, genericLink),
         genericFlow: this.node,
-        targetNode: get(this.target, "component.node")
+        targetNode: get(this.target, "component.node"),
       });
     },
     updateRouter() {
@@ -132,9 +132,9 @@ export default {
     createDefaultFlowMarker() {
       this.shape.attr("line", {
         strokeWidth: 1,
-        strokeDasharray: "2 2"
+        strokeDasharray: "2 2",
       });
-    }
-  }
+    },
+  },
 };
 </script>

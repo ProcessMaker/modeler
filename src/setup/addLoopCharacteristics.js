@@ -1,6 +1,6 @@
 import loopCharacteristicsInspector, {
   loopCharacteristicsData,
-  loopCharacteristicsHandler
+  loopCharacteristicsHandler,
 } from "@/components/inspectors/LoopCharacteristics";
 
 const validTasks = ["bpmn:ServiceTask", "bpmn:ManualTask", "bpmn:CallActivity", "bpmn:ScriptTask"];

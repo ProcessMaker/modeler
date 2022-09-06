@@ -17,16 +17,16 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-data-input-association"
+            name: "inspector-accordion-data-input-association",
           },
           items: [
             {
               component: "FormInput",
-              config: idConfigSettings
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              config: idConfigSettings,
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

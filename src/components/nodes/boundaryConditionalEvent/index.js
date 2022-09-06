@@ -20,21 +20,21 @@ export default merge(cloneDeep(boundaryEventConfig), {
       eventDefinitions: [
         moddle.create("bpmn:ConditionalEventDefinition", {
           condition: moddle.create("bpmn:FormalExpression", {
-            body: ""
-          })
-        })
-      ]
+            body: "",
+          }),
+        }),
+      ],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, ...inspector(), interruptingToggleConfig]
+          items: [{}, ...inspector(), interruptingToggleConfig],
         },
         advancedAccordionConfig,
-        documentationAccordionConfig
-      ]
-    }
-  ]
+        documentationAccordionConfig,
+      ],
+    },
+  ],
 });

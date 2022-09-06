@@ -27,8 +27,8 @@ export default {
 
         this.nodeIcon = null;
         this.shape.attr("image/xlink:href", null);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>

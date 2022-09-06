@@ -5,7 +5,7 @@ import {
   shapeCenterY,
   shapeLeft,
   shapeRight,
-  shapeTop
+  shapeTop,
 } from "@/components/nodes/utilities/shapeMetrics";
 import { shapeTypes } from "../../../../tests/e2e/support/constants";
 

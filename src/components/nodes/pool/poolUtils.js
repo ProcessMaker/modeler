@@ -15,11 +15,11 @@ function createPool(node, graph) {
   pool.attr(
     "label/text",
     util.breakText(node.definition.get("name"), {
-      width: bounds.width
+      width: bounds.width,
     })
   );
   pool.attr("body", {
-    fill: poolColor
+    fill: poolColor,
   });
   pool.addTo(graph);
   return pool;

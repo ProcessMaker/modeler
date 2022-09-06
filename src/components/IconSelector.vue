@@ -70,20 +70,20 @@ import FileUploadButton from "./FileUploadButton.vue";
 
 export default {
   components: {
-    FileUploadButton
+    FileUploadButton,
   },
   props: {
     value: {
-      required: false
+      required: false,
     },
     allowCustom: {
       type: Boolean,
-      default: true
+      default: true,
     },
     default: {
       type: String,
-      default: "search"
-    }
+      default: "search",
+    },
   },
   data() {
     return {
@@ -95,7 +95,7 @@ export default {
       loading: true,
       placeholder: this.$t("Icon"),
       query: "",
-      uploadedFile: null
+      uploadedFile: null,
     };
   },
   computed: {
@@ -106,11 +106,11 @@ export default {
       if (this.allowCustom) {
         return {
           icon: this.icon ? this.icon.value : null,
-          file: this.file
+          file: this.file,
         };
       }
       return this.icon ? this.icon.value : null;
-    }
+    },
   },
   watch: {
     value() {
@@ -153,7 +153,7 @@ export default {
           };
         }
       }
-    }
+    },
   },
   beforeMount() {
     this.list = this.all;
@@ -196,8 +196,8 @@ export default {
     },
     triggerUpload() {
       this.$refs.fileUploadButton.trigger();
-    }
-  }
+    },
+  },
 };
 </script>
 

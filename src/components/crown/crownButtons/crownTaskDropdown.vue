@@ -45,8 +45,8 @@ export default {
     node: Object,
     dropdownOpen: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     isDisabled(disabled, node, target) {
@@ -61,8 +61,8 @@ export default {
         return;
       }
       this.$emit("replace-node-type", data);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" src="./crownDropdown.scss" scoped />

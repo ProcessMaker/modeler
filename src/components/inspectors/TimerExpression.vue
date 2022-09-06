@@ -94,7 +94,7 @@ const periods = {
   day: "D",
   week: "W",
   month: "M",
-  year: "Y"
+  year: "Y",
 };
 
 export default {
@@ -103,32 +103,32 @@ export default {
     value: [Array, String],
     hasEnds: {
       type: Boolean,
-      default: true
+      default: true,
     },
     hasRepeat: {
       type: Boolean,
-      default: true
+      default: true,
     },
     repeatLabel: {
       type: String,
-      default: "Repeat every"
+      default: "Repeat every",
     },
     weekLabel: {
       type: String,
-      default: "Repeat on"
+      default: "Repeat on",
     },
     startDateHelper: {
       type: String,
-      default: "Select the date to initially trigger this element"
+      default: "Select the date to initially trigger this element",
     },
     repeatHelper: {
       type: String,
-      default: "Set the periodic interval to trigger this element again"
+      default: "Set the periodic interval to trigger this element again",
     },
     periodicityHelper: {
       type: String,
-      default: "Select the day(s) of the week in which to trigger this element"
-    }
+      default: "Select the day(s) of the week in which to trigger this element",
+    },
   },
   data() {
     return {
@@ -140,7 +140,7 @@ export default {
       ends: "never",
       endDate: DateTime.local().toUTC().toISO(),
       times: "1",
-      selectedWeekdays: []
+      selectedWeekdays: [],
     };
   },
   computed: {
@@ -153,15 +153,15 @@ export default {
       }
       const period = getPeriod(this.repeat, this.periodicityValue);
       return getIso8601FormattedDateString(this.startDate, this.endDate, period, this.ends, this.times);
-    }
+    },
   },
   watch: {
     timerExpression: {
       handler(timerExpression) {
         this.$emit("input", timerExpression);
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   created() {
     this.parseTimerConfig(this.value);
@@ -174,7 +174,7 @@ export default {
       this.startDate = DateTime.fromISO(startDateString, { zone: "utc" })
         .set({
           seconds: 0,
-          milliseconds: 0
+          milliseconds: 0,
         })
         .toUTC()
         .toISO();
@@ -186,7 +186,7 @@ export default {
           hours: startDate.hour,
           minutes: startDate.minute,
           seconds: 0,
-          milliseconds: 0
+          milliseconds: 0,
         })
         .toUTC()
         .toISO();
@@ -253,8 +253,8 @@ export default {
       this.ends = "never";
       this.expression = null;
       this.selectedWeekdays = [];
-    }
-  }
+    },
+  },
 };
 </script>
 

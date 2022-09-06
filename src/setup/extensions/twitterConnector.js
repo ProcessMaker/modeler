@@ -9,7 +9,7 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
   const nodeId = "processmaker-connectors-social-twitter-send";
 
   const component = {
-    extends: Task
+    extends: Task,
   };
 
   const nodeType = {
@@ -25,15 +25,15 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
       return moddle.create("bpmn:ServiceTask", {
         name: "Send Tweet",
         implementation,
-        config: JSON.stringify({ tweet: "" })
+        config: JSON.stringify({ tweet: "" }),
       });
     },
     diagram(moddle) {
       return moddle.create("bpmndi:BPMNShape", {
         bounds: moddle.create("dc:Bounds", {
           height: 76,
-          width: 116
-        })
+          width: 116,
+        }),
       });
     },
     /* Map values from inspector data to node definition  */
@@ -79,12 +79,12 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
             component: "FormText",
             config: {
               label: "Send Tweet",
-              fontSize: "2em"
-            }
+              fontSize: "2em",
+            },
           },
           {
             component: "FormInput",
-            config: idConfigSettings
+            config: idConfigSettings,
           },
           {
             component: "FormTextArea",
@@ -92,12 +92,12 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerNode }) => {
               label: "Tweet Body",
               helper: "The Body Of The Tweet to Send",
               name: "tweet",
-              defaultValue: { mode: "basic", value: "" }
-            }
-          }
-        ]
-      }
-    ]
+              defaultValue: { mode: "basic", value: "" },
+            },
+          },
+        ],
+      },
+    ],
   };
 
   registerNode(nodeType);

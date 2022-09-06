@@ -39,7 +39,7 @@ export default class SequenceFlow extends Flow {
       sequenceFlowDefinition.sourceRef.$type === "bpmn:InclusiveGateway"
     ) {
       sequenceFlowDefinition.conditionExpression = this.moddle.create("bpmn:FormalExpression", {
-        body: ""
+        body: "",
       });
     }
 

@@ -13,7 +13,7 @@ export default {
   label: "Lane",
   definition(moddle) {
     return moddle.create("bpmn:Lane", {
-      name: ""
+      name: "",
     });
   },
   diagram: (moddle) =>
@@ -22,8 +22,8 @@ export default {
         height: 150,
         width: 600,
         x: null,
-        y: null
-      })
+        y: null,
+      }),
     }),
   inspectorConfig: [
     {
@@ -36,18 +36,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-pool-lane"
+            name: "inspector-accordion-pool-lane",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

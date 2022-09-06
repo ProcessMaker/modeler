@@ -21,13 +21,13 @@ export default {
   props: { graph: Object, shape: Object, node: Object },
   data() {
     return {
-      trashIcon
+      trashIcon,
     };
   },
   computed: {
     isPoolLane() {
       return this.node.type === "processmaker-modeler-lane";
-    }
+    },
   },
   methods: {
     removeFlows,
@@ -55,8 +55,8 @@ export default {
       }
 
       poolComponent.fillLanes(this.shape, "bottom-right", true);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

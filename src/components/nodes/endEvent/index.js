@@ -18,7 +18,7 @@ export default {
   rank: 30,
   definition(moddle, $t) {
     return moddle.create("bpmn:EndEvent", {
-      name: $t(defaultNames[id])
+      name: $t(defaultNames[id]),
     });
   },
   diagram(moddle) {
@@ -27,8 +27,8 @@ export default {
         height: 36,
         width: 36,
         x: null,
-        y: null
-      })
+        y: null,
+      }),
     });
   },
   inspectorConfig: [
@@ -42,18 +42,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-end-event"
+            name: "inspector-accordion-end-event",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

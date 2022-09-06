@@ -17,16 +17,16 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:IntermediateCatchEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, messageSelector("Message that will catch this intermediate event")]
-        }
-      ]
-    }
-  ]
+          items: [{}, messageSelector("Message that will catch this intermediate event")],
+        },
+      ],
+    },
+  ],
 });

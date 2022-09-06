@@ -33,7 +33,7 @@ export default function toHaveBeenProgrammaticallyMovedBy(shape, dx, dy) {
   if (!shape || !shape.translate) {
     return {
       pass: this.isNot,
-      message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`
+      message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`,
     };
   }
 

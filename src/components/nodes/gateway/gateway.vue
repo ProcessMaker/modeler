@@ -28,7 +28,7 @@ const hasDefaultFlow = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway"];
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
   props: [
@@ -42,7 +42,7 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
@@ -52,17 +52,17 @@ export default {
       dropdownData: [
         {
           label: defaultNames["processmaker-modeler-exclusive-gateway"],
-          nodeType: "processmaker-modeler-exclusive-gateway"
+          nodeType: "processmaker-modeler-exclusive-gateway",
         },
         {
           label: defaultNames["processmaker-modeler-inclusive-gateway"],
           nodeType: "processmaker-modeler-inclusive-gateway",
-          dataTest: "switch-to-inclusive-gateway"
+          dataTest: "switch-to-inclusive-gateway",
         },
         {
           label: defaultNames["processmaker-modeler-parallel-gateway"],
           nodeType: "processmaker-modeler-parallel-gateway",
-          dataTest: "switch-to-parallel-gateway"
+          dataTest: "switch-to-parallel-gateway",
         },
         {
           label: defaultNames["processmaker-modeler-event-based-gateway"],
@@ -75,15 +75,15 @@ export default {
               return invalid ? "It must be connected only to catch events" : false;
             }
             return false;
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   created() {
     const flow = this.node.definition.default || null;
@@ -100,12 +100,12 @@ export default {
     this.shape.attr({
       label: {
         text: this.node.definition.get("name"),
-        fill: "black"
-      }
+        fill: "black",
+      },
     });
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
-  }
+  },
 };
 </script>

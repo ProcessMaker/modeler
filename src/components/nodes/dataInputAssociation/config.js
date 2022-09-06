@@ -4,7 +4,7 @@ export const bpmnType = "bpmn:DataInputAssociation";
 
 export function definition(moddle) {
   return moddle.create("bpmn:DataInputAssociation", {
-    targetRef: { x: undefined, y: undefined }
+    targetRef: { x: undefined, y: undefined },
   });
 }
 

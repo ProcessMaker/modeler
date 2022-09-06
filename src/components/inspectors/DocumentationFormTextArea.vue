@@ -56,23 +56,23 @@ export default {
   props: {
     value: {
       type: [String, Array],
-      default: ""
+      default: "",
     },
     label: {
       type: String,
-      default: "Description"
-    }
+      default: "Description",
+    },
   },
   computed: {
     textValue() {
       return isString(this.value) ? this.value : get(this.value[0], "text", "");
-    }
+    },
   },
   methods: {
     emitValue(value) {
       this.$emit("input", value);
-    }
-  }
+    },
+  },
 };
 </script>
 

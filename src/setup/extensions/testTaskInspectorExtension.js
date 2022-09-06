@@ -11,8 +11,8 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerInspectorExtension }
       placeholder: "72 hours",
       helper: "Enter the hours until this Task is overdue",
       name: "dueIn",
-      validation: "numeric|min:1"
-    }
+      validation: "numeric|min:1",
+    },
   });
 
   registerInspectorExtension(task, {
@@ -23,8 +23,8 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerInspectorExtension }
       placeholder: "Select a user",
       helper: "Assign user to task",
       name: "assignedUsers",
-      options: [{}, { value: "John Smith", content: "John Smith" }, { value: "Jane Smith", content: "Jane Smith" }]
-    }
+      options: [{}, { value: "John Smith", content: "John Smith" }, { value: "Jane Smith", content: "Jane Smith" }],
+    },
   });
 
   registerInspectorExtension(task, {
@@ -34,7 +34,7 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerInspectorExtension }
       initiallyOpen: false,
       label: "Assignment Rules",
       icon: "users",
-      name: "inspector-accordion"
+      name: "inspector-accordion",
     },
     items: [
       {
@@ -42,9 +42,9 @@ window.ProcessMaker.EventBus.$on("modeler-init", ({ registerInspectorExtension }
         config: {
           label: "Task Assignment",
           helper: "Select the Task assignee",
-          name: "taskAssignment"
-        }
-      }
-    ]
+          name: "taskAssignment",
+        },
+      },
+    ],
   });
 });

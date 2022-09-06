@@ -7,9 +7,9 @@ export function inspector() {
       config: {
         label: "Condition",
         name: "condition",
-        helper: "Expression to evaluate condition"
-      }
-    }
+        helper: "Expression to evaluate condition",
+      },
+    },
   ];
 }
 
@@ -35,5 +35,5 @@ export default {
         setNodeProp(node, key, value[key]);
       }
     }
-  }
+  },
 };

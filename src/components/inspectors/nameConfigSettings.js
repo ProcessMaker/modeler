@@ -2,7 +2,7 @@ const nameConfigSettings = {
   label: "Name",
   name: "name",
   helper: "Enter the name of this element",
-  validation: "required"
+  validation: "required",
 };
 
 export default nameConfigSettings;

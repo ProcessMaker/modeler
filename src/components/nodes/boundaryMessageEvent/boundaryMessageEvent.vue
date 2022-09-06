@@ -9,7 +9,7 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: boundaryMessageMailSymbol
+      nodeIcon: boundaryMessageMailSymbol,
     };
   },
   mounted() {
@@ -20,7 +20,7 @@ export default {
     isValidBoundaryEventTarget(model) {
       const { component } = model;
       return component && component.node.isBpmnType("bpmn:CallActivity");
-    }
-  }
+    },
+  },
 };
 </script>

@@ -7,7 +7,7 @@ function MessageFactory(id, name) {
     $type: "bpmn:Message",
     get(key) {
       return this[key];
-    }
+    },
   };
 }
 
@@ -17,7 +17,7 @@ function NotMessageFactory() {
 
 function StoreFactory(rootElements) {
   return {
-    getters: { rootElements }
+    getters: { rootElements },
   };
 }
 
@@ -27,12 +27,12 @@ describe("intermediateMessageCatchEventUtils", () => {
       MessageFactory("message_1", "Message 1"),
       NotMessageFactory(),
       MessageFactory("message_2", "Message 2"),
-      NotMessageFactory()
+      NotMessageFactory(),
     ]);
 
     expect(getMessagesList(store)).toEqual([
       { value: "message_1", content: "Message 1" },
-      { value: "message_2", content: "Message 2" }
+      { value: "message_2", content: "Message 2" },
     ]);
   });
 

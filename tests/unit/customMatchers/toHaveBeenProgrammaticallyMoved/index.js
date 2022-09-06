@@ -24,7 +24,7 @@ export default function toHaveBeenProgrammaticallyMoved(shape) {
   if (!shape || !shape.translate || !shape.translate.mock) {
     return {
       pass: this.isNot,
-      message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`
+      message: () => `${this.utils.printReceived(shape)} does not seem to be a movable shape.`,
     };
   }
 

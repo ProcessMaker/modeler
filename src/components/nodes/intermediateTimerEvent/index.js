@@ -24,10 +24,10 @@ export default {
       eventDefinitions: [
         moddle.create("bpmn:TimerEventDefinition", {
           timeDuration: moddle.create("bpmn:Expression", {
-            body: defaultDurationValue
-          })
-        })
-      ]
+            body: defaultDurationValue,
+          }),
+        }),
+      ],
     });
   },
   diagram(moddle) {
@@ -36,8 +36,8 @@ export default {
         height: 36,
         width: 36,
         x: null,
-        y: null
-      })
+        y: null,
+      }),
     });
   },
   inspectorData(node) {
@@ -71,7 +71,7 @@ export default {
         }
 
         const eventDefinition = {
-          [type]: moddle.create("bpmn:Expression", { body })
+          [type]: moddle.create("bpmn:Expression", { body }),
         };
 
         const eventDefinitions = [moddle.create("bpmn:TimerEventDefinition", eventDefinition)];
@@ -92,14 +92,14 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-intermediate-timer-config"
+            name: "inspector-accordion-intermediate-timer-config",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         {
           component: "FormAccordion",
@@ -107,7 +107,7 @@ export default {
           config: {
             label: "Timing Control",
             icon: "clock",
-            name: "inspector-accordion-intermediate-timer-event-timing-control"
+            name: "inspector-accordion-intermediate-timer-event-timing-control",
           },
           items: [
             {
@@ -115,14 +115,14 @@ export default {
               config: {
                 label: "Name",
                 helper: "Time expression",
-                name: "eventDefinitions"
-              }
-            }
-          ]
+                name: "eventDefinitions",
+              },
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

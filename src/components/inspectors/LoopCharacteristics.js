@@ -27,7 +27,7 @@ export const loopCharacteristicsData = function (inspectorData, node, defaultDat
   inspectorData.$loopCharactetistics = nodeInspector.getDefinitionProps({
     id: node.definition.id,
     loopCharacteristics: node.definition.loopCharacteristics,
-    ioSpecification: node.definition.ioSpecification
+    ioSpecification: node.definition.ioSpecification,
   });
   delete inspectorData.loopCharacteristics;
   delete inspectorData.ioSpecification;
@@ -40,15 +40,15 @@ export default {
     initiallyOpen: false,
     label: "Loop Activity",
     icon: "redo",
-    name: "loop-characteristics-accordion"
+    name: "loop-characteristics-accordion",
   },
   items: [
     {
       component: LoopCharactetistics,
       name: "LoopCharactetistics",
       config: {
-        name: "$loopCharactetistics"
-      }
-    }
-  ]
+        name: "$loopCharactetistics",
+      },
+    },
+  ],
 };

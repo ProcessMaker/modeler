@@ -4,7 +4,7 @@ const defaultNames = {
   "processmaker-modeler-script-task": "Script Task",
   "processmaker-modeler-call-activity": "Sub Process",
   "processmaker-modeler-data-object": "Data Object",
-  "processmaker-modeler-data-store": "Data Store"
+  "processmaker-modeler-data-store": "Data Store",
 };
 
 export default defaultNames;

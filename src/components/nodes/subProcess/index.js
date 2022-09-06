@@ -23,15 +23,15 @@ export default {
       calledElement: "",
       config: "{}",
       loopCharacteristics: null,
-      ioSpecification: null
+      ioSpecification: null,
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: taskHeight,
-        width: taskWidth
-      })
+        width: taskWidth,
+      }),
     });
   },
   inspectorHandler(value, node, setNodeProp) {
@@ -60,24 +60,24 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-subprocess"
+            name: "inspector-accordion-subprocess",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
+              config: nameConfigSettings,
             },
             {
               component: SubProcessFormSelect,
               config: {
-                name: "config"
-              }
-            }
-          ]
+                name: "config",
+              },
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

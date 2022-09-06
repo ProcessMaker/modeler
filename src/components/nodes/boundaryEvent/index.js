@@ -11,15 +11,15 @@ export default {
   definition(moddle, $t) {
     return moddle.create("bpmn:BoundaryEvent", {
       name: $t("Boundary Event"),
-      cancelActivity: true
+      cancelActivity: true,
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36
-      })
+        width: 36,
+      }),
     });
   },
   validateIncoming() {
@@ -36,16 +36,16 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-boundary-event"
+            name: "inspector-accordion-boundary-event",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              config: nameConfigSettings,
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

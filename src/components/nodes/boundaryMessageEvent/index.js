@@ -20,18 +20,18 @@ export default merge(cloneDeep(boundaryEventConfig), {
     return moddle.create("bpmn:BoundaryEvent", {
       name: $t("Boundary Message Event"),
       cancelActivity: true,
-      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition")],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, interruptingToggleConfig, messageSelector("Message that will trigger this boundary event")]
+          items: [{}, interruptingToggleConfig, messageSelector("Message that will trigger this boundary event")],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 });

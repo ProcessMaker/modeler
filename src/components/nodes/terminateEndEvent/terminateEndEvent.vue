@@ -9,8 +9,8 @@ export default {
   props: ["moddle", "rootElements", "id"],
   data() {
     return {
-      nodeIcon: terminateIcon
+      nodeIcon: terminateIcon,
     };
-  }
+  },
 };
 </script>

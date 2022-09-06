@@ -11,7 +11,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create("bpmn:MessageFlow", {
-      name: ""
+      name: "",
     });
   },
   diagram(moddle) {
@@ -28,18 +28,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-message-flow"
+            name: "inspector-accordion-message-flow",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

@@ -33,7 +33,7 @@ const periodNames = {
   hour: "hour",
   day: "day",
   week: "week",
-  month: "month"
+  month: "month",
 };
 
 export default {
@@ -45,7 +45,7 @@ export default {
       { name: periodNames.hour, value: "H", isTime: true },
       { name: periodNames.day, value: "D" },
       { name: periodNames.week, value: "W", isWeek: true },
-      { name: periodNames.month, value: "M" }
+      { name: periodNames.month, value: "M" },
     ];
 
     return {
@@ -54,7 +54,7 @@ export default {
       periodicity: null,
       expression: null,
       periods,
-      selectedWeekdays: null
+      selectedWeekdays: null,
     };
   },
   computed: {
@@ -66,7 +66,7 @@ export default {
         return this.expression;
       }
       return `R/P${this.repeat}${this.periodicity.value}`;
-    }
+    },
   },
   watch: {
     value: {
@@ -75,14 +75,14 @@ export default {
         this.repeat = this.getRepeatNumberFromDelayString(value);
         this.selectedWeekdays = this.getSelectedWeekdaysFromDelayString(value);
       },
-      immediate: true
+      immediate: true,
     },
     cycleExpression: {
       handler(cycleExpression) {
         this.$emit("input", cycleExpression);
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     getSelectedWeekdaysFromDelayString(delayString) {
@@ -115,7 +115,7 @@ export default {
     getRepeatNumberFromDelayString(delayString) {
       const match = delayString.match(/PT?(\d+)/);
       return match ? match[1] : 1;
-    }
-  }
+    },
+  },
 };
 </script>

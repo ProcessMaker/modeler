@@ -127,7 +127,7 @@ import {
   removeNodeFlows,
   removeNodeMessageFlows,
   removeOutgoingAndIncomingRefsToFlow,
-  removeSourceDefault
+  removeSourceDefault,
 } from "@/components/crown/utils";
 import { getInvalidNodes } from "@/components/modeler/modelerUtils";
 import { NodeMigrator } from "@/components/modeler/NodeMigrator";
@@ -153,7 +153,7 @@ export default {
     controls,
     InspectorPanel,
     MiniPaper,
-    ProcessmakerModelerGenericFlow
+    ProcessmakerModelerGenericFlow,
   },
   props: {
     owner: Object,
@@ -161,8 +161,8 @@ export default {
       type: Object,
       default() {
         return {};
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -205,7 +205,7 @@ export default {
       breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
-      previouslyStackedShape: null
+      previouslyStackedShape: null,
     };
   },
   computed: {
@@ -228,7 +228,7 @@ export default {
     highlightedNodes: () => store.getters.highlightedNodes,
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
-    }
+    },
   },
   watch: {
     isRendering() {
@@ -253,7 +253,7 @@ export default {
     },
     autoValidate() {
       this.validateIfAutoValidateIsOn();
-    }
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -269,7 +269,7 @@ export default {
      *
      */
     window.ProcessMaker.EventBus.$emit("modeler-before-init", {
-      registerComponentMixin: this.registerComponentMixin
+      registerComponentMixin: this.registerComponentMixin,
     });
 
     this.registerNode(Process);
@@ -278,7 +278,7 @@ export default {
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
-      registerStatusBar: this.registerStatusBar
+      registerStatusBar: this.registerStatusBar,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -293,7 +293,7 @@ export default {
     store.commit("setGraph", this.graph);
     this.graph.set("interactiveFunc", (cellView) => ({
       elementMove: cellView.model.get("elementMove"),
-      labelMove: false
+      labelMove: false,
     }));
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get("interactiveFunc"), this.graph);
@@ -387,7 +387,7 @@ export default {
         undoRedoStore.dispatch("pushState", xml);
       },
       addWarnings: (warnings) => this.$emit("warnings", warnings),
-      addBreadcrumbs: (breadcrumbs) => this.breadcrumbData.push(breadcrumbs)
+      addBreadcrumbs: (breadcrumbs) => this.breadcrumbData.push(breadcrumbs),
     });
   },
   methods: {
@@ -429,7 +429,7 @@ export default {
         .filter((diagram) => !diagram.bpmnElement)
         .map((diagram) => ({
           title: this.$t("Non-existent Element"),
-          text: this.$t("bpmdi:BPMNShape ") + diagram.id + this.$t(" references a non-existent element and was not parsed")
+          text: this.$t("bpmdi:BPMNShape ") + diagram.id + this.$t(" references a non-existent element and was not parsed"),
         }))
         .forEach((warning) => this.addWarning(warning));
     },
@@ -727,7 +727,7 @@ export default {
     handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram) {
       this.addWarning({
         title: this.$t("Unsupported Element"),
-        text: bpmnType + this.$t(" is an unsupported element type in parse")
+        text: bpmnType + this.$t(" is an unsupported element type in parse"),
       });
 
       pull(flowElements, definition);
@@ -904,7 +904,7 @@ export default {
           messageFlowId,
           dataOutputAssociationFlowId,
           dataInputAssociationFlowId,
-          genericFlowId
+          genericFlowId,
         ].includes(node.type)
       ) {
         return;
@@ -942,7 +942,7 @@ export default {
             clientX,
             clientY,
             control: { type: typeToReplaceWith },
-            nodeThatWillBeReplaced: node
+            nodeThatWillBeReplaced: node,
           });
 
           await this.removeNode(node, { removeRelationships: false });
@@ -1049,8 +1049,8 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" src="./modeler.scss" />

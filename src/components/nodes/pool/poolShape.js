@@ -7,15 +7,15 @@ const Pool = shapes.standard.Rectangle.define("processmaker.modeler.bpmn.pool", 
     label: {
       fill: "black",
       transform: "rotate(-90)",
-      refX: labelWidth / 2
+      refX: labelWidth / 2,
     },
     polyline: {
       refPointsKeepOffset: `${labelWidth},0 ${labelWidth},200`,
       stroke: "#000",
       fill: "#fff",
-      strokeWidth: 2
-    }
-  }
+      strokeWidth: 2,
+    },
+  },
 });
 
 export default Pool;

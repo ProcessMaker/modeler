@@ -34,7 +34,7 @@ describe("toHaveBeenProgrammaticallyMoved", () => {
 
   it("fails when the shape's translate is not a jest.fn()", () => {
     const testShape = {
-      translate: undefined
+      translate: undefined,
     };
     expect(() => expect(testShape).toHaveBeenProgrammaticallyMoved()).toThrow();
   });

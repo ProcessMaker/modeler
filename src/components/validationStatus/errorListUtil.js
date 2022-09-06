@@ -3,7 +3,7 @@ export default function errorList(validationErrors) {
     errors.flatMap((error) => ({
       ...error,
       errorKey,
-      ...{ errorId: `${error.id}_${error.message.split(" ").join("_")}` }
+      ...{ errorId: `${error.id}_${error.message.split(" ").join("_")}` },
     }))
   );
 }

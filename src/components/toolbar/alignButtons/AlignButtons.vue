@@ -105,25 +105,25 @@ export default {
       alignLeftIcon: faAlignLeft,
       alignRightIcon: faAlignRight,
       distHIcon: distributeHorizontallyIcon,
-      distVIcon: distributeVerticallyIcon
+      distVIcon: distributeVerticallyIcon,
     };
   },
   computed: {
     selectedShapes() {
       return getShapesOptions(store.getters.highlightedShapes);
-    }
+    },
   },
   watch: {
     selectedShapes() {
       this.$root.$emit("bv::hide::tooltip");
-    }
+    },
   },
   methods: {
     undoableAction(actionFn) {
       actionFn();
       this.$emit("save-state");
-    }
-  }
+    },
+  },
 };
 </script>
 

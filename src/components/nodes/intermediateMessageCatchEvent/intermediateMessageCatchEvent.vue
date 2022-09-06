@@ -10,12 +10,12 @@ export default {
   mixins: [updateIconColor],
   data() {
     return {
-      nodeIcon: intermediateMailSymbol
+      nodeIcon: intermediateMailSymbol,
     };
   },
   mounted() {
     const shapeAttributes = getIntermediateMailIconShapeAttributes(intermediateColorStroke, 2, intermediateColor);
     this.shape.attr(shapeAttributes);
-  }
+  },
 };
 </script>

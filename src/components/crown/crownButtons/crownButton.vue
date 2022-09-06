@@ -13,13 +13,13 @@ export default {
     src: String,
     width: {
       type: Number,
-      default: 19
+      default: 19,
     },
     height: {
       type: Number,
-      default: 20
-    }
-  }
+      default: 20,
+    },
+  },
 };
 </script>
 

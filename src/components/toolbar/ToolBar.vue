@@ -116,12 +116,12 @@ export default {
     cursor: {},
     paperManager: {},
     isRendering: {
-      type: Boolean
+      type: Boolean,
     },
     breadcrumbData: {
-      type: Array
+      type: Array,
     },
-    panelsCompressed: Boolean
+    panelsCompressed: Boolean,
   },
   data() {
     return {
@@ -137,7 +137,7 @@ export default {
       expandIcon: faExpand,
       undoIcon: faUndo,
       redoIcon: faRedo,
-      saveIcon: faSave
+      saveIcon: faSave,
     };
   },
   computed: {
@@ -146,7 +146,7 @@ export default {
     },
     canRedo() {
       return undoRedoStore.getters.canRedo;
-    }
+    },
   },
   watch: {
     scale(scale) {
@@ -167,7 +167,7 @@ export default {
       if (!canRedo) {
         this.$root.$emit("bv::hide::tooltip");
       }
-    }
+    },
   },
   methods: {
     undo() {
@@ -187,8 +187,8 @@ export default {
         .dispatch("redo")
         .then(() => this.$emit("load-xml"))
         .then(() => window.ProcessMaker.EventBus.$emit("modeler-change"));
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" src="./toolbar.scss" />

@@ -17,15 +17,15 @@ export default {
   definition(moddle, $t) {
     return moddle.create("bpmn:InclusiveGateway", {
       name: $t(defaultNames[id]),
-      gatewayDirection: gatewayDirection.diverging
+      gatewayDirection: gatewayDirection.diverging,
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36
-      })
+        width: 36,
+      }),
     });
   },
   inspectorConfig: [
@@ -39,14 +39,14 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-inclusive-gateway-config"
+            name: "inspector-accordion-inclusive-gateway-config",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         {
           component: "FormAccordion",
@@ -55,12 +55,12 @@ export default {
             initiallyOpen: false,
             label: "Advanced",
             icon: "cogs",
-            name: "inspector-accordion-inclusive-gateway-advanced"
+            name: "inspector-accordion-inclusive-gateway-advanced",
           },
           items: [
             {
               component: "FormInput",
-              config: idConfigSettings
+              config: idConfigSettings,
             },
             {
               component: "FormSelect",
@@ -70,20 +70,20 @@ export default {
                 name: "gatewayDirection",
                 options: [
                   { value: gatewayDirection.diverging, content: "Diverging" },
-                  { value: gatewayDirection.converging, content: "Converging" }
-                ]
-              }
+                  { value: gatewayDirection.converging, content: "Converging" },
+                ],
+              },
             },
             {
               component: DocumentationFormTextArea,
               config: {
                 label: "Description",
-                name: "documentation"
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ]
+                name: "documentation",
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

@@ -26,8 +26,8 @@ export default class PaperManager {
       perpendicularLinks: true,
       interactive: interactiveFunc,
       highlighting: {
-        default: { options: { padding: defaultPadding } }
-      }
+        default: { options: { padding: defaultPadding } },
+      },
     });
 
     paper.translate(168, 20);
@@ -89,7 +89,7 @@ export default class PaperManager {
 
     return {
       x: this.roundToNearestGridMultiple((clientX - paperOrigin.x) / scale.sx),
-      y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy)
+      y: this.roundToNearestGridMultiple((clientY - paperOrigin.y) / scale.sy),
     };
   }
 

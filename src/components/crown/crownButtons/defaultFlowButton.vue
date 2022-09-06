@@ -20,13 +20,13 @@ export default {
   props: ["node"],
   data() {
     return {
-      icon
+      icon,
     };
   },
   methods: {
     click() {
       this.$emit("default-flow", this.node);
-    }
-  }
+    },
+  },
 };
 </script>

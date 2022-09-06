@@ -85,10 +85,10 @@ export default {
       default() {
         return {
           loopCharacteristics: null,
-          ioSpecification: null
+          ioSpecification: null,
         };
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -96,7 +96,7 @@ export default {
         { text: this.$t("No Loop Mode"), value: "no_loop" },
         { text: this.$t("Loop"), value: "loop" },
         { text: this.$t("Multi-Instance (Parallel)"), value: "parallel_mi" },
-        { text: this.$t("Multi-Instance (Sequential)"), value: "sequential_mi" }
+        { text: this.$t("Multi-Instance (Sequential)"), value: "sequential_mi" },
       ],
       showAdvanced: false,
       previous: {
@@ -104,15 +104,15 @@ export default {
         completionCondition: null,
         inputData: null,
         outputData: null,
-        inputDataItem: null
+        inputDataItem: null,
       },
       local: {
         loopCharacteristics: {
           $type: null,
-          isSequential: false
+          isSequential: false,
         },
         loopMaximum: 0,
-        loopCondition: null
+        loopCondition: null,
       },
       loopType: null,
       multiType: null,
@@ -123,7 +123,7 @@ export default {
       outputData: null,
       outputDataItem: null,
       loopMaximum: 0,
-      loopCondition: null
+      loopCondition: null,
     };
   },
   watch: {
@@ -133,8 +133,8 @@ export default {
         if (!isEqual(this.local, value)) {
           this.loadData();
         }
-      }
-    }
+      },
+    },
   },
   mounted() {
     this.loadData();
@@ -209,7 +209,7 @@ export default {
       this.local.loopCharacteristics.outputDataItem = {
         $type: "bpmn:DataInput",
         isCollection: true,
-        name: value
+        name: value,
       };
     },
     getLoopDataOutputRef() {
@@ -224,7 +224,7 @@ export default {
         $type: "bpmn:DataOutput",
         id: `${this.local.id}_output_1`,
         isCollection: true,
-        name: value
+        name: value,
       };
       dataDef.name = value;
       this.local.ioSpecification.dataOutputs = [dataDef];
@@ -239,7 +239,7 @@ export default {
       this.local.loopCharacteristics.inputDataItem = {
         $type: "bpmn:DataInput",
         isCollection: true,
-        name: value
+        name: value,
       };
     },
     getLoopDataInputRef() {
@@ -251,7 +251,7 @@ export default {
         $type: "bpmn:DataInput",
         id: `${this.local.id}_input_1`,
         isCollection: true,
-        name: value
+        name: value,
       };
       if (!this.local.ioSpecification) {
         this.initIoSpecification();
@@ -266,7 +266,7 @@ export default {
         dataInputs: [],
         dataOutputs: [],
         inputSets: [{ $type: "bpmn:InputSet", dataInputRefs: [] }],
-        outputSets: [{ $type: "bpmn:OutputSet", dataOutputRefs: [] }]
+        outputSets: [{ $type: "bpmn:OutputSet", dataOutputRefs: [] }],
       };
     },
     getLoopCardinality() {
@@ -280,13 +280,13 @@ export default {
     setLoopCardinality(value) {
       this.local.loopCharacteristics.loopCardinality = {
         $type: "bpmn:Expression",
-        body: value
+        body: value,
       };
     },
     setCompletionCondition(value) {
       this.local.loopCharacteristics.completionCondition = {
         $type: "bpmn:Expression",
-        body: value
+        body: value,
       };
     },
     getMultiType() {
@@ -297,11 +297,11 @@ export default {
       if (value === "loopCardinality") {
         this.local.loopCharacteristics.loopCardinality = {
           $type: "bpmn:Expression",
-          body: this.previous.loopCardinality || "3"
+          body: this.previous.loopCardinality || "3",
         };
         this.local.loopCharacteristics.completionCondition = {
           $type: "bpmn:Expression",
-          body: this.previous.completionCondition || ""
+          body: this.previous.completionCondition || "",
         };
         this.previous.inputData = this.inputData;
         this.previous.outputData = this.outputData;
@@ -375,13 +375,13 @@ export default {
     setLoopCondition(value) {
       this.local.loopCharacteristics.loopCondition = {
         $type: "bpmn:Expression",
-        body: value
+        body: value,
       };
     },
     getLoopCondition() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopCondition) return null;
       return this.local.loopCharacteristics.loopCondition.body;
-    }
-  }
+    },
+  },
 };
 </script>

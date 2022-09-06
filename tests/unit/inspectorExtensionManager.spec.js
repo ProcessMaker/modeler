@@ -10,14 +10,14 @@ describe("Inspector Extension Manager", () => {
         {
           items: [
             {
-              id: 1
+              id: 1,
             },
             {
-              id: 2
-            }
-          ]
-        }
-      ]
+              id: 2,
+            },
+          ],
+        },
+      ],
     };
 
     config = {
@@ -25,8 +25,8 @@ describe("Inspector Extension Manager", () => {
       container: true,
       name: "inspector-accordion",
       config: {
-        label: "Advanced"
-      }
+        label: "Advanced",
+      },
     };
   });
 
@@ -36,8 +36,8 @@ describe("Inspector Extension Manager", () => {
       id: "no-advanced-accordion",
       container: true,
       config: {
-        label: "Non-advanced"
-      }
+        label: "Non-advanced",
+      },
     });
 
     const [lastItem] = node.inspectorConfig[0].items.slice(-1);
@@ -59,7 +59,7 @@ describe("Inspector Extension Manager", () => {
     const secondConfig = {
       id: 6,
       name: "Not advanced",
-      container: true
+      container: true,
     };
 
     registerInspectorExtension(node, config);
@@ -74,15 +74,15 @@ describe("Inspector Extension Manager", () => {
       container: true,
       config: {
         label: "First",
-        name: "byName"
-      }
+        name: "byName",
+      },
     });
     registerInspectorExtension(node, {
       container: true,
       config: {
         label: "Second",
-        name: "byName"
-      }
+        name: "byName",
+      },
     });
 
     const [lastItem] = node.inspectorConfig[0].items.splice(-1);
@@ -95,19 +95,19 @@ describe("Inspector Extension Manager", () => {
       container: true,
       config: {
         label: "Advanced",
-        name: "custom-accordion"
+        name: "custom-accordion",
       },
       items: [
         {
-          id: 5
-        }
-      ]
+          id: 5,
+        },
+      ],
     });
     const newField = {
       config: {
         label: "New Field",
-        name: "field"
-      }
+        name: "field",
+      },
     };
     registerInspectorExtension(node, newField, "custom-accordion");
 

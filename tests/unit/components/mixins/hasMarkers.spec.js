@@ -7,19 +7,19 @@ describe("hasMarkers", () => {
       children: [
         {
           selector: "topLeft.0",
-          tagName: "image"
+          tagName: "image",
         },
         {
           selector: "topLeft.1",
-          tagName: "image"
+          tagName: "image",
         },
         {
           selector: "topLeft.2",
-          tagName: "image"
-        }
+          tagName: "image",
+        },
       ],
       selector: "topLeft",
-      tagName: "g"
+      tagName: "g",
     };
 
     expect(markersMarkup(selector)).toEqual(expected);
@@ -31,26 +31,26 @@ describe("hasMarkers", () => {
         ref: "circle",
         "ref-padding-x": 0,
         "ref-x": 26,
-        "ref-y": -20
+        "ref-y": -20,
       },
       "topRight.0": {
         height: 16,
         "ref-x": -0,
         "ref-y": 0,
-        width: 16
+        width: 16,
       },
       "topRight.1": {
         height: 16,
         "ref-x": -16,
         "ref-y": 0,
-        width: 16
+        width: 16,
       },
       "topRight.2": {
         height: 16,
         "ref-x": -32,
         "ref-y": 0,
-        width: 16
-      }
+        width: 16,
+      },
     };
 
     expect(
@@ -60,7 +60,7 @@ describe("hasMarkers", () => {
           ref: "circle",
           "ref-x": 26,
           "ref-y": -20,
-          "ref-padding-x": 0
+          "ref-padding-x": 0,
         },
         -1
       )
@@ -70,26 +70,26 @@ describe("hasMarkers", () => {
   it("markersAttrs generates the shape attributes for the marker", () => {
     const expected = {
       bottomCenter: {
-        ref: "rect"
+        ref: "rect",
       },
       "bottomCenter.0": {
         height: 16,
         "ref-x": 0,
         "ref-y": 0,
-        width: 16
+        width: 16,
       },
       "bottomCenter.1": {
         height: 16,
         "ref-x": 16,
         "ref-y": 0,
-        width: 16
+        width: 16,
       },
       "bottomCenter.2": {
         height: 16,
         "ref-x": 32,
         "ref-y": 0,
-        width: 16
-      }
+        width: 16,
+      },
     };
 
     expect(markersAttrs("bottomCenter", { ref: "rect" })).toEqual(expected);

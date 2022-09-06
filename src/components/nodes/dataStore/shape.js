@@ -5,7 +5,7 @@ export default shapes.standard.Cylinder.extend({
     ...shapes.standard.Cylinder.prototype.markup,
     { tagName: "ellipse", selector: "thirdLine" },
     { tagName: "ellipse", selector: "secondLine" },
-    { tagName: "ellipse", selector: "firstLine" }
+    { tagName: "ellipse", selector: "firstLine" },
   ],
   defaults: util.deepSupplement(
     {
@@ -17,7 +17,7 @@ export default shapes.standard.Cylinder.extend({
           refRy: "20%",
           "stroke-width": 2,
           fill: "#fff",
-          stroke: "#000"
+          stroke: "#000",
         },
         secondLine: {
           refCx: "50%",
@@ -26,7 +26,7 @@ export default shapes.standard.Cylinder.extend({
           refRy: "20%",
           "stroke-width": 2,
           fill: "#fff",
-          stroke: "#000"
+          stroke: "#000",
         },
         firstLine: {
           refCx: "50%",
@@ -35,11 +35,11 @@ export default shapes.standard.Cylinder.extend({
           refRy: "20%",
           "stroke-width": 2,
           fill: "#fff",
-          stroke: "#000"
+          stroke: "#000",
         },
-        label: { refY: 50, fill: "#000" }
-      }
+        label: { refY: 50, fill: "#000" },
+      },
     },
     shapes.standard.Cylinder.prototype.defaults
-  )
+  ),
 });

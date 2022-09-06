@@ -11,24 +11,24 @@ export default {
   props: {
     isOpen: { type: Boolean },
     paperManager: { type: Object },
-    graph: { type: Object }
+    graph: { type: Object },
   },
   data() {
     return {
-      miniMapManager: null
+      miniMapManager: null,
     };
   },
   computed: {
     miniMap() {
       return this.miniMapManager.miniMap;
-    }
+    },
   },
   watch: {
     isOpen(isOpen) {
       if (isOpen) {
         this.miniMapManager.scaleMiniMap();
       }
-    }
+    },
   },
   async mounted() {
     await this.$nextTick();
@@ -47,8 +47,8 @@ export default {
       const { clientWidth, clientHeight } = this.paperManager.paper.el;
       const { newX, newY } = this.miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
       this.paperManager.translate(newX, newY);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" src="./miniPaper.scss" scoped />

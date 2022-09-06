@@ -27,7 +27,7 @@ import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
   props: [
@@ -41,7 +41,7 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
@@ -51,40 +51,40 @@ export default {
         {
           label: defaultNames["processmaker-modeler-intermediate-catch-timer-event"],
           nodeType: "processmaker-modeler-intermediate-catch-timer-event",
-          dataTest: "switch-to-intermediate-timer-catch-event"
+          dataTest: "switch-to-intermediate-timer-catch-event",
         },
         {
           label: defaultNames["processmaker-modeler-intermediate-signal-catch-event"],
           nodeType: "processmaker-modeler-intermediate-signal-catch-event",
-          dataTest: "switch-to-intermediate-signal-catch-event"
+          dataTest: "switch-to-intermediate-signal-catch-event",
         },
         {
           label: defaultNames["processmaker-modeler-intermediate-signal-throw-event"],
           nodeType: "processmaker-modeler-intermediate-signal-throw-event",
-          dataTest: "switch-to-intermediate-signal-throw-event"
+          dataTest: "switch-to-intermediate-signal-throw-event",
         },
         {
           label: defaultNames["processmaker-modeler-intermediate-message-catch-event"],
           nodeType: "processmaker-modeler-intermediate-message-catch-event",
-          dataTest: "switch-to-intermediate-message-catch-event"
+          dataTest: "switch-to-intermediate-message-catch-event",
         },
         {
           label: defaultNames["processmaker-modeler-intermediate-message-throw-event"],
           nodeType: "processmaker-modeler-intermediate-message-throw-event",
-          dataTest: "switch-to-intermediate-message-throw-event"
+          dataTest: "switch-to-intermediate-message-throw-event",
         },
         {
           label: defaultNames["processmaker-modeler-intermediate-conditional-catch-event"],
           nodeType: "processmaker-modeler-intermediate-conditional-catch-event",
-          dataTest: "switch-to-intermediate-conditional-catch-event"
-        }
-      ]
+          dataTest: "switch-to-intermediate-conditional-catch-event",
+        },
+      ],
     };
   },
   watch: {
     "node.definition.name": function (name) {
       this.shape.attr("label/text", name);
-    }
+    },
   },
   mounted() {
     // Now, let's add a rounded rect to the graph
@@ -95,11 +95,11 @@ export default {
     this.shape.attr({
       label: {
         text: this.node.definition.get("name"),
-        refY: "130%"
-      }
+        refY: "130%",
+      },
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
-  }
+  },
 };
 </script>

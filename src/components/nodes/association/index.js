@@ -11,7 +11,7 @@ export default {
   control: false,
   definition(moddle) {
     return moddle.create("bpmn:Association", {
-      associationDirection: `${direction.none}`
+      associationDirection: `${direction.none}`,
     });
   },
   inspectorConfig: [
@@ -25,12 +25,12 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-association"
+            name: "inspector-accordion-association",
           },
           items: [
             {
               component: "FormInput",
-              config: idConfigSettings
+              config: idConfigSettings,
             },
             {
               component: "FormSelect",
@@ -41,13 +41,13 @@ export default {
                 options: [
                   { value: `${direction.none}`, content: "None" },
                   { value: `${direction.one}`, content: "One" },
-                  { value: `${direction.both}`, content: "Both" }
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ]
+                  { value: `${direction.both}`, content: "Both" },
+                ],
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

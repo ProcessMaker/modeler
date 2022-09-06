@@ -5,7 +5,7 @@ function isMessageElement(element) {
 function toDropdownFormat(element) {
   return {
     value: element.get("id"),
-    content: element.get("name")
+    content: element.get("name"),
   };
 }
 

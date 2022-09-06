@@ -38,92 +38,92 @@ export default {
   props: {
     // Component
     value: {
-      default: null
+      default: null,
     },
     // Button
     block: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     size: {
       type: String,
-      default: "md"
+      default: "md",
     },
     variant: {
       type: String,
-      default: "secondary"
+      default: "secondary",
     },
     type: {
       type: String,
-      default: "button"
+      default: "button",
     },
     tag: {
       type: String,
-      default: "button"
+      default: "button",
     },
     pill: {
       type: Boolean,
-      default: false
+      default: false,
     },
     squared: {
       type: Boolean,
-      default: false
+      default: false,
     },
     pressed: {
       type: Boolean,
-      default: null
+      default: null,
     },
     // File Upload
     accept: {
       type: String,
-      default: ""
+      default: "",
     },
     capture: {
       type: Boolean,
-      default: false
+      default: false,
     },
     multiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
     directory: {
       type: Boolean,
-      default: false
+      default: false,
     },
     noTraverse: {
       type: Boolean,
-      default: false
+      default: false,
     },
     noDrop: {
       type: Boolean,
-      default: false
+      default: false,
     },
     fileNameFormatter: {
       type: Function,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
-      file: null
+      file: null,
     };
   },
   watch: {
     file: {
       handler(value) {
         this.$emit("input", value);
-      }
+      },
     },
     value: {
       handler(value) {
         this.file = value;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
     onClick() {
@@ -140,8 +140,8 @@ export default {
     },
     trigger() {
       this.$refs.fileUpload.$el.click();
-    }
-  }
+    },
+  },
 };
 </script>
 

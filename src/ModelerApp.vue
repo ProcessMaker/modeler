@@ -61,19 +61,19 @@ export default {
   components: {
     Modeler,
     FileUpload,
-    ValidationStatus
+    ValidationStatus,
   },
   data() {
     return {
       validationBar: [],
       decorations: {
-        borderOutline: {}
+        borderOutline: {},
       },
       validationErrors: {},
       uploadedXml: null,
       xmlFile: [],
       warnings: [],
-      xmlManager: null
+      xmlManager: null,
     };
   },
   watch: {
@@ -81,7 +81,7 @@ export default {
       if (fileObject) {
         reader.readAsText(fileObject.file);
       }
-    }
+    },
   },
   created() {
     reader.onload = this.setUploadedXml;
@@ -100,8 +100,8 @@ export default {
     },
     setUploadedXml(event) {
       this.uploadedXml = event.target.result;
-    }
-  }
+    },
+  },
 };
 </script>
 

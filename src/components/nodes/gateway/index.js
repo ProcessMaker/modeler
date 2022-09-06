@@ -12,15 +12,15 @@ export default {
   label: "Gateway",
   definition(moddle, $t) {
     return moddle.create("bpmn:Gateway", {
-      name: $t("Gateway")
+      name: $t("Gateway"),
     });
   },
   diagram(moddle) {
     return moddle.create("bpmndi:BPMNShape", {
       bounds: moddle.create("dc:Bounds", {
         height: 36,
-        width: 36
-      })
+        width: 36,
+      }),
     });
   },
   inspectorConfig: [
@@ -34,26 +34,26 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-gateway"
+            name: "inspector-accordion-gateway",
           },
           items: [
             {
               component: "FormInput",
-              config: idConfigSettings
+              config: idConfigSettings,
             },
             {
               component: "FormInput",
               config: {
                 label: "Name",
                 helper: "The Name of the Gateway",
-                name: "name"
-              }
-            }
-          ]
+                name: "name",
+              },
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };

@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     stack: [],
     position: null,
-    disabled: false
+    disabled: false,
   },
   getters: {
     canUndo(state) {
@@ -18,7 +18,7 @@ export default new Vuex.Store({
     },
     currentState(state) {
       return state.stack[state.position];
-    }
+    },
   },
   mutations: {
     setPosition(state, position) {
@@ -36,7 +36,7 @@ export default new Vuex.Store({
     },
     enableSavingState(state) {
       state.disabled = false;
-    }
+    },
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
@@ -60,6 +60,6 @@ export default new Vuex.Store({
       }
 
       commit("setPosition", state.position + 1);
-    }
-  }
+    },
+  },
 });

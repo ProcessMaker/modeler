@@ -8,8 +8,8 @@ export function signalSelector(helper, editEnabled = true) {
       label: "Signal",
       name: "signalRef",
       helper,
-      canEdit: editEnabled
-    }
+      canEdit: editEnabled,
+    },
   };
 }
 
@@ -38,10 +38,10 @@ export default {
     if (!signal && value.signalRef) {
       signal = moddle.create("bpmn:Signal", {
         id: value.signalRef,
-        name: value.signalRef
+        name: value.signalRef,
       });
       definitions.rootElements.push(signal);
     }
     node.definition.get("eventDefinitions")[0].signalRef = signal;
-  }
+  },
 };

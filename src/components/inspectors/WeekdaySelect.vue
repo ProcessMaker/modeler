@@ -26,44 +26,44 @@ export default {
   props: {
     selectWeekdays: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     startDate: {
       type: String,
-      default: DateTime.local().toUTC().toISO()
+      default: DateTime.local().toUTC().toISO(),
     },
     endDate: {
       type: String,
-      default: null
+      default: null,
     },
     ends: {
       type: String,
-      default: "never"
+      default: "never",
     },
     times: {
       type: [Number, String],
-      default: 1
+      default: 1,
     },
     periodicityValue: {
       type: String,
-      required: true
+      required: true,
     },
     repeat: {
       type: [String, Number],
-      default: 1
+      default: 1,
     },
     hasEnds: {
       type: Boolean,
-      default: true
+      default: true,
     },
     weekLabel: {
       type: String,
-      default: "Repeat on"
+      default: "Repeat on",
     },
     periodicityHelper: {
       type: String,
-      default: "Select the day(s) of the week in which to trigger this element"
-    }
+      default: "Select the day(s) of the week in which to trigger this element",
+    },
   },
   data() {
     return {
@@ -74,38 +74,38 @@ export default {
         {
           day: 7,
           initial: "S",
-          selected: false
+          selected: false,
         },
         {
           day: 1,
           initial: "M",
-          selected: false
+          selected: false,
         },
         {
           day: 2,
           initial: "T",
-          selected: false
+          selected: false,
         },
         {
           day: 3,
           initial: "W",
-          selected: false
+          selected: false,
         },
         {
           day: 4,
           initial: "T",
-          selected: false
+          selected: false,
         },
         {
           day: 5,
           initial: "F",
-          selected: false
+          selected: false,
         },
         {
           day: 6,
           initial: "S",
-          selected: false
-        }
+          selected: false,
+        },
       ],
       cycleManager: new CycleManager(
         this.startDate,
@@ -115,7 +115,7 @@ export default {
         this.endDate,
         this.ends,
         this.times
-      )
+      ),
     };
   },
   computed: {
@@ -133,7 +133,7 @@ export default {
     },
     selectedWeekdays() {
       return this.weekdays.filter(({ selected }) => selected).map(({ day }) => day);
-    }
+    },
   },
   watch: {
     startDate(value) {
@@ -159,7 +159,7 @@ export default {
     },
     dateIntervalString() {
       this.update();
-    }
+    },
   },
   mounted() {
     this.selectWeekdays.forEach((dayOfWeek) => {
@@ -178,8 +178,8 @@ export default {
     },
     update() {
       this.$emit("input", this.dateIntervalString);
-    }
-  }
+    },
+  },
 };
 </script>
 

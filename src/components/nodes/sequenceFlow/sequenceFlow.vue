@@ -25,7 +25,7 @@ import { namePosition } from "./sequenceFlowConfig";
 
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [linkConfig],
   props: [
@@ -39,11 +39,11 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
-      shape: null
+      shape: null,
     };
   },
   computed: {
@@ -51,7 +51,7 @@ export default {
       return SequenceFlow.isValid({
         sourceShape: this.sourceShape,
         targetShape: this.target,
-        targetConfig: this.targetConfig
+        targetConfig: this.targetConfig,
       });
     },
     targetType() {
@@ -67,11 +67,11 @@ export default {
       set(text = "") {
         this.shape.label(0, {
           attrs: {
-            text: { text }
-          }
+            text: { text },
+          },
         });
-      }
-    }
+      },
+    },
   },
   watch: {
     "node.definition": {
@@ -83,14 +83,14 @@ export default {
         }
         this.setDefaultMarker(this.isDefaultFlow());
       },
-      deep: true
+      deep: true,
     },
     "node.definition.sourceRef": {
       handler() {
         this.setDefaultMarker(this.isDefaultFlow());
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
     this.shape = new shapes.standard.Link();
@@ -105,8 +105,8 @@ export default {
     setDefaultMarker(value) {
       this.shape.attr("line", {
         sourceMarker: {
-          "stroke-width": value ? 2 : 0
-        }
+          "stroke-width": value ? 2 : 0,
+        },
       });
     },
     isDefaultFlow() {
@@ -131,11 +131,11 @@ export default {
         {
           attrs: {
             text: {
-              text: this.shapeName
-            }
+              text: this.shapeName,
+            },
           },
-          position: namePosition
-        }
+          position: namePosition,
+        },
       ]);
     },
     createDefaultFlowMarker() {
@@ -143,10 +143,10 @@ export default {
         sourceMarker: {
           type: "polyline",
           "stroke-width": this.isDefaultFlow() ? 2 : 0,
-          points: "2,6 6,-6"
-        }
+          points: "2,6 6,-6",
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>

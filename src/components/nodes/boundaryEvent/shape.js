@@ -4,20 +4,20 @@ export default shapes.standard.Circle.extend({
   markup: [
     {
       tagName: "circle",
-      selector: "body"
+      selector: "body",
     },
     {
       tagName: "circle",
-      selector: "body2"
+      selector: "body2",
     },
     {
       tagName: "text",
-      selector: "label"
+      selector: "label",
     },
     {
       tagName: "image",
-      selector: "image"
-    }
+      selector: "image",
+    },
   ],
 
   defaults: util.deepSupplement(
@@ -26,12 +26,12 @@ export default shapes.standard.Circle.extend({
       size: { width: 36, height: 36 },
       attrs: {
         label: {
-          refY: "130%"
+          refY: "130%",
         },
         body: {
           stroke: "#212529",
           strokeWidth: 0.85,
-          fill: "#FFF"
+          fill: "#FFF",
         },
         body2: {
           cx: 18,
@@ -39,17 +39,17 @@ export default shapes.standard.Circle.extend({
           r: 15,
           strokeWidth: 0.85,
           stroke: "#212529",
-          fill: "#FFF"
+          fill: "#FFF",
         },
         image: {
           refX: 5,
           refY: 5,
           ref: "circle",
           width: 26,
-          height: 26
-        }
-      }
+          height: 26,
+        },
+      },
     },
     shapes.standard.Circle.prototype.defaults
-  )
+  ),
 });

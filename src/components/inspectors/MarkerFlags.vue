@@ -16,21 +16,21 @@ export default {
       type: Object,
       default() {
         return {
-          isForCompensation: false
+          isForCompensation: false,
         };
-      }
-    }
+      },
+    },
   },
   data() {
     return {
-      isForCompensation: this.value.isForCompensation
+      isForCompensation: this.value.isForCompensation,
     };
   },
   watch: {
     isForCompensation(newVal) {
       this.$emit("input", { isForCompensation: newVal });
-    }
-  }
+    },
+  },
 };
 </script>
 

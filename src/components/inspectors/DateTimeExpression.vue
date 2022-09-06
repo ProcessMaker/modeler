@@ -19,11 +19,11 @@ import { DateTime } from "luxon";
 
 export default {
   props: {
-    value: String
+    value: String,
   },
   data() {
     return {
-      DateTime
+      DateTime,
     };
   },
   methods: {
@@ -41,7 +41,7 @@ export default {
       const utcDatetimeString = DateTime.fromISO(localDatetimeString).toUTC().toISO();
 
       this.$emit("input", utcDatetimeString);
-    }
-  }
+    },
+  },
 };
 </script>

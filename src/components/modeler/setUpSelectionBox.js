@@ -22,9 +22,9 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
           fill: "lightblue",
           opacity: 0.3,
           stroke: "blue",
-          strokeWidth: 1
-        }
-      }
+          strokeWidth: 1,
+        },
+      },
     });
   }
 

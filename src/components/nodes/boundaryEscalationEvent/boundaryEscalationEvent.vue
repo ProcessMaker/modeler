@@ -11,7 +11,7 @@ export default {
   methods: {
     isValidBoundaryEventTarget(model) {
       return isValidBoundaryEscalationEvent(model.component);
-    }
-  }
+    },
+  },
 };
 </script>

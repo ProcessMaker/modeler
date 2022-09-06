@@ -5,22 +5,22 @@ export default shapes.standard.Rectangle.extend({
   markup: [
     {
       tagName: "rect",
-      selector: "body"
+      selector: "body",
     },
     {
       tagName: "text",
-      selector: "label"
+      selector: "label",
     },
     {
       tagName: "image",
-      selector: "image"
+      selector: "image",
     },
     markersMarkup("topLeft"),
     markersMarkup("topCenter"),
     markersMarkup("topRight"),
     markersMarkup("bottomLeft"),
     markersMarkup("bottomCenter"),
-    markersMarkup("bottomRight")
+    markersMarkup("bottomRight"),
   ],
 
   defaults: util.deepSupplement(
@@ -34,16 +34,16 @@ export default shapes.standard.Rectangle.extend({
           ref: "rect",
           width: 16,
           height: 16,
-          "data-test": "nodeIcon"
+          "data-test": "nodeIcon",
         },
         ...markersAttrs("topLeft", { "ref-y": 4, ref: "rect" }),
         ...markersAttrs("topCenter", { "ref-y": 4, ref: "rect" }),
         ...markersAttrs("topRight", { "ref-y": 4, "ref-x": 96, ref: "rect" }, -1),
         ...markersAttrs("bottomLeft", { ref: "rect" }),
         ...markersAttrs("bottomCenter", { ref: "rect" }),
-        ...markersAttrs("bottomRight", { "ref-x": 96, ref: "rect" }, -1)
-      }
+        ...markersAttrs("bottomRight", { "ref-x": 96, ref: "rect" }, -1),
+      },
     },
     shapes.standard.Rectangle.prototype.defaults
-  )
+  ),
 });

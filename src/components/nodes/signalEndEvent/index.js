@@ -16,16 +16,16 @@ export default merge(cloneDeep(endEventConfig), {
   definition(moddle, $t) {
     return moddle.create("bpmn:EndEvent", {
       name: $t(defaultNames[id]),
-      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")]
+      eventDefinitions: [moddle.create("bpmn:SignalEventDefinition")],
     });
   },
   inspectorConfig: [
     {
       items: [
         {
-          items: [{}, signalSelector("Select the signal reference that this element throws")]
-        }
-      ]
-    }
-  ]
+          items: [{}, signalSelector("Select the signal reference that this element throws")],
+        },
+      ],
+    },
+  ],
 });

@@ -24,7 +24,7 @@ import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 export const maxTextAnnotationWidth = 160;
 export default {
   components: {
-    CrownConfig
+    CrownConfig,
   },
   mixins: [highlightConfig, portsConfig],
   props: [
@@ -39,19 +39,19 @@ export default {
     "collaboration",
     "processNode",
     "planeElements",
-    "isRendering"
+    "isRendering",
   ],
   data() {
     return {
       shape: null,
       definition: null,
-      nodeWidth: 10
+      nodeWidth: 10,
     };
   },
   watch: {
     "node.definition.text": function (text) {
       this.updateNodeText(text);
-    }
+    },
   },
   mounted() {
     const { bounds } = this.node.diagram;
@@ -63,15 +63,15 @@ export default {
     this.shape.attr({
       body: {
         refPoints: "25 10 3 10 3 3 25 3",
-        fill: "none"
+        fill: "none",
       },
       label: {
         fill: "black",
         yAlignment: "left",
         xAlignment: "left",
         refX: "5",
-        refY: "5"
-      }
+        refY: "5",
+      },
     });
 
     this.shape.addTo(this.graph);
@@ -104,17 +104,17 @@ export default {
         body: { refPoints },
         label: {
           text: util.breakText(text, {
-            width: maxTextAnnotationWidth
+            width: maxTextAnnotationWidth,
           }),
-          textAnchor: "left"
-        }
+          textAnchor: "left",
+        },
       });
 
       this.paperManager.awaitScheduledUpdates().then(() => {
         this.shape.resize(this.nodeWidth, this.calculateNewHeight(height, text, bounds.height));
         this.setShapeHighlight();
       });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -13,7 +13,7 @@ export default {
   definition(moddle, $t) {
     return moddle.create("bpmn:IntermediateEvent", {
       name: $t("Intermediate Message Event"),
-      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition", {})]
+      eventDefinitions: [moddle.create("bpmn:MessageEventDefinition", {})],
     });
   },
   diagram(moddle) {
@@ -22,8 +22,8 @@ export default {
         height: 36,
         width: 36,
         x: null,
-        y: null
-      })
+        y: null,
+      }),
     });
   },
   inspectorConfig: [
@@ -37,18 +37,18 @@ export default {
             initiallyOpen: true,
             label: "Configuration",
             icon: "cog",
-            name: "inspector-accordion-intermediate-message-event"
+            name: "inspector-accordion-intermediate-message-event",
           },
           items: [
             {
               component: "FormInput",
-              config: nameConfigSettings
-            }
-          ]
+              config: nameConfigSettings,
+            },
+          ],
         },
         documentationAccordionConfig,
-        advancedAccordionConfig
-      ]
-    }
-  ]
+        advancedAccordionConfig,
+      ],
+    },
+  ],
 };
