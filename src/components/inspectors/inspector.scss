@@ -1,27 +1,27 @@
 $inspector-column-max-width: 265px;
 
 .inspector-column {
-  max-width: $inspector-column-max-width;
+	max-width: $inspector-column-max-width;
 }
 
 .inspector {
-  z-index: 1;
+	z-index: 1;
 
-  &-container {
-    text-align: left;
-    user-select: none;
-    padding-bottom: $toolbar-height;
+	&-container {
+		text-align: left;
+		user-select: none;
+		padding-bottom: $toolbar-height;
 
-    .form-group {
-      padding: 0 0.5rem;
+		.form-group {
+			padding: 0 0.5rem;
 
-      > label {
-        font-size: 0.8125rem;
-      }
-    }
+			> label {
+				font-size: 0.8125rem;
+			}
+		}
 
-    .inspector-font-size {
-      font-size: 0.875rem;
-    }
-  }
+		.inspector-font-size {
+			font-size: 0.875rem;
+		}
+	}
 }

@@ -1,9 +1,9 @@
 <template>
   <div class="btn-group btn-group-sm mr-2" role="group">
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-align-left"
       data-test="align-left"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.left"
       :title="$t('Align Left')"
       @click="undoableAction(selectedShapes.align.left)"
@@ -12,9 +12,9 @@
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-align-center"
       data-test="align-center"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.horizontalCenter"
       :title="$t('Center Horizontally')"
       @click="undoableAction(selectedShapes.align.horizontalCenter)"
@@ -23,9 +23,9 @@
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-align-right mr-1"
       data-test="align-right"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.right"
       :title="$t('Align Right')"
       @click="undoableAction(selectedShapes.align.right)"
@@ -34,9 +34,9 @@
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-align-bottom"
       data-test="align-bottom"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.bottom"
       :title="$t('Align Bottom')"
       @click="undoableAction(selectedShapes.align.bottom)"
@@ -45,9 +45,9 @@
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-align-vertical-center"
       data-test="align-vertical-center"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.verticalCenter"
       :title="$t('Center Vertically')"
       @click="undoableAction(selectedShapes.align.verticalCenter)"
@@ -56,9 +56,9 @@
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-align-top mr-1"
       data-test="align-top"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.align.top"
       :title="$t('Align Top')"
       @click="undoableAction(selectedShapes.align.top)"
@@ -67,44 +67,35 @@
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-distribute-horizontal d-flex align-items-center"
       data-test="distribute-horizontal"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.distribute.horizontally"
       :title="$t('Distribute Horizontally')"
       @click="undoableAction(selectedShapes.distribute.horizontally)"
     >
-      <img
-        :src="distHIcon"
-        alt=""
-        height="16"
-      >
+      <img :src="distHIcon" alt="" height="16" />
     </b-button>
 
     <b-button
+      v-b-tooltip.hover
       class="btn btn-sm btn-secondary btn-distribute-vertical d-flex align-items-center"
       data-test="distribute-vertical"
-      v-b-tooltip.hover
       :disabled="!selectedShapes.can.distribute.vertically"
       :title="$t('Distribute Vertically')"
       @click="undoableAction(selectedShapes.distribute.vertically)"
     >
-      <img
-        :src="distVIcon"
-        alt=""
-        height="16"
-      >
+      <img :src="distVIcon" alt="" height="16" />
     </b-button>
   </div>
 </template>
 <script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faAlignCenter, faAlignLeft, faAlignRight } from '@fortawesome/free-solid-svg-icons';
-import store from '@/store';
-import { getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
-import distributeHorizontallyIcon from '@/assets/distribute-horizontally-icon.svg';
-import distributeVerticallyIcon from '@/assets/distribute-vertically-icon.svg';
-
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faAlignCenter, faAlignLeft, faAlignRight } from "@fortawesome/free-solid-svg-icons";
+import store from "@/store";
+import { getShapesOptions } from "@/components/nodes/utilities/shapeGroup";
+import distributeHorizontallyIcon from "!!svg-inline-loader!@/assets/distribute-horizontally-icon.svg";
+import distributeVerticallyIcon from "!!svg-inline-loader!@/assets/distribute-vertically-icon.svg";
 
 export default {
   components: { FontAwesomeIcon },
@@ -117,12 +108,6 @@ export default {
       distVIcon: distributeVerticallyIcon,
     };
   },
-  methods: {
-    undoableAction(actionFn) {
-      actionFn();
-      this.$emit('save-state');
-    },
-  },
   computed: {
     selectedShapes() {
       return getShapesOptions(store.getters.highlightedShapes);
@@ -130,7 +115,13 @@ export default {
   },
   watch: {
     selectedShapes() {
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit("bv::hide::tooltip");
+    },
+  },
+  methods: {
+    undoableAction(actionFn) {
+      actionFn();
+      this.$emit("save-state");
     },
   },
 };

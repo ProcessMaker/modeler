@@ -5,7 +5,7 @@
     :graph="graph"
     :shape="shape"
     :node="node"
-    :nodeRegistry="nodeRegistry"
+    :node-registry="nodeRegistry"
     :moddle="moddle"
     :collaboration="collaboration"
     :process-node="processNode"
@@ -16,31 +16,31 @@
 </template>
 
 <script>
-import { shapes } from 'jointjs';
-import linkConfig from '@/mixins/linkConfig';
-import get from 'lodash/get';
-import associationHead from '!!url-loader!@/assets/association-head.svg';
-import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { pull } from 'lodash';
+import { shapes } from "jointjs";
+import linkConfig from "@/mixins/linkConfig";
+import get from "lodash/get";
+import associationHead from "!!svg-inline-loader!@/assets/association-head.svg";
+import { pull } from "lodash";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
 
 export default {
   components: {
     CrownConfig,
   },
-  props: [
-    'graph',
-    'node',
-    'id',
-    'highlighted',
-    'nodeRegistry',
-    'moddle',
-    'paper',
-    'collaboration',
-    'processNode',
-    'planeElements',
-    'isRendering',
-  ],
   mixins: [linkConfig],
+  props: [
+    "graph",
+    "node",
+    "id",
+    "highlighted",
+    "nodeRegistry",
+    "moddle",
+    "paper",
+    "collaboration",
+    "processNode",
+    "planeElements",
+    "isRendering",
+  ],
   data() {
     return {
       shape: null,
@@ -49,58 +49,34 @@ export default {
   },
   computed: {
     isValidConnection() {
-      const targetType = get(this.target, 'component.node.type');
+      const targetType = get(this.target, "component.node.type");
 
       if (!targetType) {
         return false;
       }
 
       /* A data association can only be connected to a data store or data object */
-      const invalidIncoming = this.targetConfig.bpmnType !== 'bpmn:DataObjectReference' &&
-          this.targetConfig.bpmnType !== 'bpmn:DataStoreReference';
+      const invalidIncoming =
+        this.targetConfig.bpmnType !== "bpmn:DataObjectReference" && this.targetConfig.bpmnType !== "bpmn:DataStoreReference";
 
-      if (invalidIncoming) {
-        return false;
-      }
-
-      return true;
-    },
-  },
-  methods: {
-    findSourceShape() {
-      if (this.node.dataAssociationProps) {
-        return this.node.dataAssociationProps.sourceShape;
-      }
-
-      return this.graph.getElements().find(element => {
-        return element.component && element.component.node.definition.get('dataOutputAssociations') &&
-            element.component.node.definition.get('dataOutputAssociations').includes(this.node.definition);
-      });
-    },
-    updateRouter() {
-      this.shape.router('normal', { elementPadding: this.elementPadding });
-    },
-    updateDefinitionLinks() {
-      this.node.definition.set('targetRef', this.targetNode.definition);
-      const existingOutputAssociations = this.sourceNode.definition.get('dataOutputAssociations') || [];
-      this.sourceNode.definition.set('dataOutputAssociations', [...existingOutputAssociations, this.node.definition]);
+      return !invalidIncoming;
     },
   },
   mounted() {
-    this.shape = new shapes.standard.Link({ router: { name: 'normal' } });
+    this.shape = new shapes.standard.Link({ router: { name: "normal" } });
     this.shape.attr({
       line: {
-        stroke: 'black',
-        strokeWidth: '4',
-        strokeLinecap: 'round',
-        strokeDasharray: '1, 8',
-        strokeDashoffset: '5',
+        stroke: "black",
+        strokeWidth: "4",
+        strokeLinecap: "round",
+        strokeDasharray: "1, 8",
+        strokeDashoffset: "5",
         targetMarker: {
-          'type': 'image',
-          'xlink:href': associationHead,
-          'width': 20,
-          'height': 20,
-          'y': -10,
+          type: "image",
+          "xlink:href": associationHead,
+          width: 20,
+          height: 20,
+          y: -10,
         },
       },
     });
@@ -109,7 +85,31 @@ export default {
     this.shape.component = this;
   },
   destroyed() {
-    pull(this.sourceNode.definition.get('dataOutputAssociations'), this.node.definition);
+    pull(this.sourceNode.definition.get("dataOutputAssociations"), this.node.definition);
+  },
+  methods: {
+    findSourceShape() {
+      if (this.node.dataAssociationProps) {
+        return this.node.dataAssociationProps.sourceShape;
+      }
+
+      return this.graph
+        .getElements()
+        .find(
+          (element) =>
+            element.component &&
+            element.component.node.definition.get("dataOutputAssociations") &&
+            element.component.node.definition.get("dataOutputAssociations").includes(this.node.definition)
+        );
+    },
+    updateRouter() {
+      this.shape.router("normal", { elementPadding: this.elementPadding });
+    },
+    updateDefinitionLinks() {
+      this.node.definition.set("targetRef", this.targetNode.definition);
+      const existingOutputAssociations = this.sourceNode.definition.get("dataOutputAssociations") || [];
+      this.sourceNode.definition.set("dataOutputAssociations", [...existingOutputAssociations, this.node.definition]);
+    },
   },
 };
 </script>

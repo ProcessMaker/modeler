@@ -1,31 +1,21 @@
 <template>
-  <button
-    v-on="$listeners"
-    :id="id"
-    :aria-label="ariaLabel"
-    class="btn"
-  >
+  <button :id="id" :aria-label="ariaLabel" class="btn" v-on="$listeners">
     <slot>
-      <img
-        :src="src"
-        width="width"
-        height="height"
-      >
+      <img :src="src" width="width" height="height" />
     </slot>
   </button>
 </template>
 <script>
-
 export default {
   props: {
-    'id': String,
-    'ariaLabel': String,
-    'src': String,
-    'width': {
+    id: String,
+    ariaLabel: String,
+    src: String,
+    width: {
       type: Number,
       default: 19,
     },
-    'height': {
+    height: {
       type: Number,
       default: 20,
     },
@@ -44,6 +34,7 @@ img {
   margin: 0px 10px;
   height: 15px;
 }
+
 i {
   margin: 0px 10px;
   font-size: 15px;

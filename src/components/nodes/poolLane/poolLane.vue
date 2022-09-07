@@ -5,7 +5,7 @@
     :graph="graph"
     :shape="shape"
     :node="node"
-    :nodeRegistry="nodeRegistry"
+    :node-registry="nodeRegistry"
     :moddle="moddle"
     :collaboration="collaboration"
     :process-node="processNode"
@@ -16,33 +16,33 @@
 </template>
 
 <script>
-import { shapes, util } from 'jointjs';
-import resizeConfig from '@/mixins/resizeConfig';
-import { labelWidth } from '../pool/poolSizes';
-import pull from 'lodash/pull';
-import { poolColor } from '@/components/nodeColors';
-import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import highlightConfig from '@/mixins/highlightConfig';
+import { shapes, util } from "jointjs";
+import resizeConfig from "@/mixins/resizeConfig";
+import pull from "lodash/pull";
+import { poolColor } from "@/components/nodeColors";
+import highlightConfig from "@/mixins/highlightConfig";
+import CrownConfig from "@/components/crown/crownConfig/crownConfig.vue";
+import { labelWidth } from "../pool/poolSizes";
 
 export default {
   components: {
     CrownConfig,
   },
-  props: [
-    'graph',
-    'node',
-    'nodes',
-    'id',
-    'highlighted',
-    'nodeRegistry',
-    'moddle',
-    'paper',
-    'collaboration',
-    'processNode',
-    'planeElements',
-    'isRendering',
-  ],
   mixins: [highlightConfig, resizeConfig],
+  props: [
+    "graph",
+    "node",
+    "nodes",
+    "id",
+    "highlighted",
+    "nodeRegistry",
+    "moddle",
+    "paper",
+    "collaboration",
+    "processNode",
+    "planeElements",
+    "isRendering",
+  ],
   data() {
     return {
       shape: null,
@@ -50,26 +50,26 @@ export default {
     };
   },
   watch: {
-    'node.definition.name'(name) {
-      this.shape.attr('label/text', name);
+    "node.definition.name": function (name) {
+      this.shape.attr("label/text", name);
     },
   },
   mounted() {
     this.shape = new shapes.standard.Rectangle();
-    this.shape.set('type', 'PoolLane');
-    const bounds = this.node.diagram.bounds;
+    this.shape.set("type", "PoolLane");
+    const { bounds } = this.node.diagram;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
 
-    this.shape.set('elementMove', false);
-    this.shape.attr('body/cursor', 'default');
-    this.shape.attr('body', {
+    this.shape.set("elementMove", false);
+    this.shape.attr("body/cursor", "default");
+    this.shape.attr("body", {
       fill: poolColor,
     });
-    this.shape.attr('label', {
-      text: util.breakText(this.node.definition.get('name'), { width: bounds.height }),
-      fill: 'black',
-      transform: 'rotate(-90)',
+    this.shape.attr("label", {
+      text: util.breakText(this.node.definition.get("name"), { width: bounds.height }),
+      fill: "black",
+      transform: "rotate(-90)",
       refX: labelWidth / 2,
     });
 
@@ -85,16 +85,14 @@ export default {
      * If this was the 2nd last lane, remove all lanes and revert the pool back to normal. */
 
     const poolComponent = this.node.pool.component;
-    const lanes = poolComponent.laneSet.get('lanes');
+    const lanes = poolComponent.laneSet.get("lanes");
 
     pull(lanes, this.node.definition);
 
     if (lanes.length === 0) {
       /* Last lane being removed; remove laneSet */
-      poolComponent.containingProcess.set('laneSets', []);
+      poolComponent.containingProcess.set("laneSets", []);
       poolComponent.laneSet = null;
-
-      return;
     }
   },
 };

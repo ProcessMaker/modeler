@@ -1,13 +1,13 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
 
 const errorHighlighter = {
   highlighter: {
-    name: 'stroke',
+    name: "stroke",
     options: {
       padding: 10,
       attrs: {
-        stroke: 'red',
-        'stroke-width': 10,
+        stroke: "red",
+        "stroke-width": 10,
         opacity: 0.3,
       },
     },
@@ -16,24 +16,18 @@ const errorHighlighter = {
 
 const defaultHighlighter = {
   highlighter: {
-    name: 'stroke',
+    name: "stroke",
     options: {
       attrs: {
-        stroke: '#5096db',
-        'stroke-width': 3,
+        stroke: "#5096db",
+        "stroke-width": 3,
       },
     },
   },
 };
 
 export default {
-  props: [
-    'highlighted',
-    'paperManager',
-    'hasError',
-    'autoValidate',
-    'borderOutline',
-  ],
+  props: ["highlighted", "paperManager", "hasError", "autoValidate", "borderOutline"],
   data() {
     return {
       shape: null,
@@ -62,7 +56,7 @@ export default {
       return this.shape.findView(this.paperManager.paper);
     },
     shapeBody() {
-      return this.shapeView.$el.find('[joint-selector=body]');
+      return this.shapeView.$el.find("[joint-selector=body]");
     },
   },
   methods: {
@@ -91,13 +85,12 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.paperManager.awaitScheduledUpdates()
-        .then(() => {
-          this.setShapeHighlight();
-          this.shape.on('change:size', () => {
-            this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
-          });
+      this.paperManager.awaitScheduledUpdates().then(() => {
+        this.setShapeHighlight();
+        this.shape.on("change:size", () => {
+          this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
         });
+      });
     });
   },
 };

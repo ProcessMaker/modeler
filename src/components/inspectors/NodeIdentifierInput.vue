@@ -1,19 +1,11 @@
 <template>
   <div>
-    <FormInput
-      name="id"
-      v-model="localValue"
-      :label="label"
-      :helper="helper"
-      @input="onInput"
-      :error="error"
-      :validation="validation"
-    />
+    <FormInput v-model="localValue" name="id" :label="label" :helper="helper" :error="error" :validation="validation" @input="onInput" />
   </div>
 </template>
 
 <script>
-import store from '@/store';
+import store from "@/store";
 
 export default {
   props: {
@@ -33,26 +25,25 @@ export default {
   data() {
     return {
       localValue: this.value,
-      error: '',
+      error: "",
     };
   },
   methods: {
     onInput(value) {
       if (this.value !== value) {
         if (!this.isUnique(value)) {
-          this.error = this.$t('Must be unique');
+          this.error = this.$t("Must be unique");
         } else {
-          this.error = '';
-          this.$emit('input', value);
+          this.error = "";
+          this.$emit("input", value);
         }
       }
     },
     isUnique(value) {
-      if (store.state.nodes.every(node => node.definition.id !== value)) {
+      if (store.state.nodes.every((node) => node.definition.id !== value)) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
 };

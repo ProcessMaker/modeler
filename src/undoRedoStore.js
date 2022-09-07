@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from "vue";
+import Vuex from "vuex";
 
 Vue.use(Vuex);
 
@@ -44,22 +44,22 @@ export default new Vuex.Store({
         return;
       }
 
-      commit('setState', newState);
-      commit('setPosition', state.stack.length - 1);
+      commit("setState", newState);
+      commit("setPosition", state.stack.length - 1);
     },
     undo({ state, getters, commit }) {
       if (!getters.canUndo) {
         return;
       }
 
-      commit('setPosition', state.position - 1);
+      commit("setPosition", state.position - 1);
     },
     redo({ state, getters, commit }) {
       if (!getters.canRedo) {
         return;
       }
 
-      commit('setPosition', state.position + 1);
+      commit("setPosition", state.position + 1);
     },
   },
 });

@@ -13,8 +13,9 @@
     @click="onClick"
   >
     <b-form-file
-      plain
+      ref="fileUpload"
       v-model="file"
+      plain
       v-bind="$attrs"
       class="file-upload-control"
       :accept="accept"
@@ -26,9 +27,8 @@
       :file-name-formatter="fileNameFormatter"
       @change="onChange"
       @input="onInput"
-      ref="fileUpload"
     />
-    <slot/>
+    <slot />
   </b-button>
 </template>
 
@@ -51,19 +51,19 @@ export default {
     },
     size: {
       type: String,
-      default: 'md',
+      default: "md",
     },
     variant: {
       type: String,
-      default: 'secondary',
+      default: "secondary",
     },
     type: {
       type: String,
-      default: 'button',
+      default: "button",
     },
     tag: {
       type: String,
-      default: 'button',
+      default: "button",
     },
     pill: {
       type: Boolean,
@@ -80,7 +80,7 @@ export default {
     // File Upload
     accept: {
       type: String,
-      default: '',
+      default: "",
     },
     capture: {
       type: Boolean,
@@ -115,7 +115,7 @@ export default {
   watch: {
     file: {
       handler(value) {
-        this.$emit('input', value);
+        this.$emit("input", value);
       },
     },
     value: {
@@ -130,10 +130,10 @@ export default {
       this.$refs.fileUpload.$el.click();
     },
     onChange(event) {
-      this.$emit('change', event);
+      this.$emit("change", event);
     },
     onInput(file) {
-      this.$emit('input', file);
+      this.$emit("input", file);
     },
     reset() {
       this.$refs.fileUpload.reset();

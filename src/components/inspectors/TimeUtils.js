@@ -3,12 +3,11 @@
  * @returns {string}
  */
 function toIsoDateTimeString(date) {
-
   if (date === null) {
-    return '';
+    return "";
   }
 
-  if (typeof date === 'string') {
+  if (typeof date === "string") {
     return date;
   }
 
@@ -19,20 +18,13 @@ function toIsoDateTimeString(date) {
  * @param {Date|DateTime} startDate
  * @returns {string}
  */
-export function getIso8601FormattedDateString(
-  startDate,
-  endDate,
-  period,
-  ends,
-  times) {
-
+export function getIso8601FormattedDateString(startDate, endDate, period, ends, times) {
   const isoStartDate = toIsoDateTimeString(startDate);
   const isoEndDate = toIsoDateTimeString(endDate);
-  const numberOfRepetition = ends === 'after' ? times : '';
-  const endOnDate = ends === 'ondate' ? isoEndDate : '';
+  const numberOfRepetition = ends === "after" ? times : "";
+  const endOnDate = ends === "ondate" ? isoEndDate : "";
 
-  return `R${numberOfRepetition}/${isoStartDate}/${period}`
-    + (endOnDate ? '/' + endOnDate : '');
+  return `R${numberOfRepetition}/${isoStartDate}/${period}${endOnDate ? `/${endOnDate}` : ""}`;
 }
 
 export function getPeriod(repeat, periodicityValue) {

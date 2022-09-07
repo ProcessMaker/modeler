@@ -1,7 +1,8 @@
+import recalculateMarkerAlignment from "@/mixins/modules/recalculateMarkerAlignment";
+
 export const markersLimit = 3;
 export const markerSize = 16;
 export const markerPadding = 4;
-import recalculateMarkerAlignment from '@/mixins/modules/recalculateMarkerAlignment';
 
 /**
  * Prepare nodes for the Markers to be inserted inside the shapes.
@@ -11,10 +12,10 @@ import recalculateMarkerAlignment from '@/mixins/modules/recalculateMarkerAlignm
 export function markersMarkup(selector) {
   const children = [];
   for (let i = 0; i < markersLimit; i++) {
-    children.push({ tagName: 'image', selector: selector + '.' + i });
+    children.push({ tagName: "image", selector: `${selector}.${i}` });
   }
   return {
-    tagName: 'g',
+    tagName: "g",
     selector,
     children,
   };
@@ -28,10 +29,15 @@ export function markersMarkup(selector) {
  * @param int length
  */
 export function markersAttrs(name, base, inverted = 1) {
-  let attrs = {};
+  const attrs = {};
   attrs[name] = base;
   for (let i = 0; i < markersLimit; i++) {
-    attrs[name + '.' + i] = { 'ref-x': i * markerSize * inverted, 'ref-y': 0, width: markerSize, height: markerSize };
+    attrs[`${name}.${i}`] = {
+      "ref-x": i * markerSize * inverted,
+      "ref-y": 0,
+      width: markerSize,
+      height: markerSize,
+    };
   }
   return attrs;
 }

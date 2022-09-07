@@ -1,9 +1,9 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
 
   return {
-    presets: ['@vue/app'],
-    plugins: ['@babel/plugin-proposal-private-methods'],
-    sourceType: 'unambiguous',
+    presets: ["@vue/app"],
+    plugins: ["@babel/plugin-proposal-private-methods"],
+    sourceType: "unambiguous",
   };
 };

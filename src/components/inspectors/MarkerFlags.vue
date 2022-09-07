@@ -1,13 +1,16 @@
 <template>
   <div>
     <b-form-group>
-      <b-form-checkbox data-test="for-compensation" v-model="isForCompensation" name="for-compensation">{{ $t('For Compensation') }}</b-form-checkbox>
+      <b-form-checkbox v-model="isForCompensation" data-test="for-compensation" name="for-compensation"
+        >{{ $t("For Compensation") }}
+      </b-form-checkbox>
     </b-form-group>
   </div>
 </template>
 
 <script>
 export default {
+  name: "MarkerFlags",
   props: {
     value: {
       type: Object,
@@ -18,7 +21,6 @@ export default {
       },
     },
   },
-  name: 'MarkerFlags',
   data() {
     return {
       isForCompensation: this.value.isForCompensation,
@@ -26,12 +28,10 @@ export default {
   },
   watch: {
     isForCompensation(newVal) {
-      this.$emit('input', { isForCompensation: newVal });
+      this.$emit("input", { isForCompensation: newVal });
     },
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

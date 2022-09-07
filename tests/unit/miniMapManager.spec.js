@@ -1,6 +1,6 @@
-import MiniMapManager from '@/components/miniMapManager.js';
+import MiniMapManager from "@/components/miniMapManager";
 
-describe('Mini Map Manager', () => {
+describe("Mini Map Manager", () => {
   const positionData = [
     [
       71,
@@ -44,17 +44,12 @@ describe('Mini Map Manager', () => {
     miniMapManager = new MiniMapManager(miniMapPaper);
   });
 
-  it.each(positionData)('Can calculate a new position for the main paper',
+  it.each(positionData)(
+    "Can calculate a new position for the main paper",
     (offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight, localPoint, expected) => {
       miniMapPaper.paperToLocalPoint = () => localPoint;
-      const actual = miniMapManager.calculateNewPaperPosition(
-        offsetX,
-        offsetY,
-        scaleX,
-        scaleY,
-        clientWidth,
-        clientHeight,
-      );
+      const actual = miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
       expect(actual).toEqual(expected);
-    });
+    }
+  );
 });

@@ -1,22 +1,27 @@
 <template>
-  <div class="mini-paper-container position-absolute" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
+  <div class="mini-paper-container position-absolute" :class="isOpen ? 'opened' : 'closed'" @click="movePaper">
     <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>
 
 <script>
-import MiniMapManager from '../miniMapManager';
+import MiniMapManager from "../miniMapManager";
 
 export default {
+  props: {
+    isOpen: { type: Boolean },
+    paperManager: { type: Object },
+    graph: { type: Object },
+  },
   data() {
     return {
       miniMapManager: null,
     };
   },
-  props: {
-    isOpen: { type: Boolean },
-    paperManager: { type: Object },
-    graph: { type: Object },
+  computed: {
+    miniMap() {
+      return this.miniMapManager.miniMap;
+    },
   },
   watch: {
     isOpen(isOpen) {
@@ -25,10 +30,16 @@ export default {
       }
     },
   },
-  computed: {
-    miniMap() {
-      return this.miniMapManager.miniMap;
-    },
+  async mounted() {
+    await this.$nextTick();
+
+    this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);
+
+    this.paperManager.addEventHandler("render:done", this.miniMapManager.scaleMiniMap, this);
+    window.ProcessMaker.EventBus.$on("modeler-change", () => this.miniMapManager.scaleMiniMap());
+  },
+  beforeDestroy() {
+    this.paperManager.removeEventHandler("render:done", this.miniMapManager.scaleMiniMap, this);
   },
   methods: {
     movePaper({ offsetX, offsetY }) {
@@ -37,18 +48,6 @@ export default {
       const { newX, newY } = this.miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
       this.paperManager.translate(newX, newY);
     },
-  },
-  async mounted() {
-    await this.$nextTick();
-
-    this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);
-
-    this.paperManager.addEventHandler('render:done', this.miniMapManager.scaleMiniMap, this);
-    window.ProcessMaker.EventBus.$on('modeler-change', () => this.miniMapManager.scaleMiniMap());
-
-  },
-  beforeDestroy() {
-    this.paperManager.removeEventHandler('render:done', this.miniMapManager.scaleMiniMap, this);
   },
 };
 </script>

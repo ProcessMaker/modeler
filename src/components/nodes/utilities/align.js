@@ -1,4 +1,4 @@
-import { getBoundingBox } from '@/components/nodes/utilities/shapeGroup';
+import { getBoundingBox } from "@/components/nodes/utilities/shapeGroup";
 import {
   moveShapeBottomTo,
   moveShapeLeftTo,
@@ -6,7 +6,7 @@ import {
   moveShapeMiddleYTo,
   moveShapeRightTo,
   moveShapeTopTo,
-} from '@/components/nodes/utilities/shapeMovement';
+} from "@/components/nodes/utilities/shapeMovement";
 
 export function alignLeft(shapes) {
   const bounds = getBoundingBox(shapes);

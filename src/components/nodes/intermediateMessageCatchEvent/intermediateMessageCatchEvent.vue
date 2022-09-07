@@ -1,9 +1,9 @@
 <script>
-import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import getIntermediateMailIconShapeAttributes from '@/mixins/intermediateMailIcon';
-import intermediateMailSymbol from '!!svg-inline-loader!@/assets/intermediate-mail.svg';
-import { intermediateColor, intermediateColorStroke } from '@/components/nodeColors';
-import updateIconColor from '@/mixins/updateIconColor';
+import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent.vue";
+import getIntermediateMailIconShapeAttributes from "@/mixins/intermediateMailIcon";
+import intermediateMailSymbol from "!!svg-inline-loader!@/assets/intermediate-mail.svg";
+import { intermediateColor, intermediateColorStroke } from "@/components/nodeColors";
+import updateIconColor from "@/mixins/updateIconColor";
 
 export default {
   extends: IntermediateEvent,
@@ -14,11 +14,7 @@ export default {
     };
   },
   mounted() {
-    const shapeAttributes = getIntermediateMailIconShapeAttributes(
-      intermediateColorStroke,
-      2,
-      intermediateColor,
-    );
+    const shapeAttributes = getIntermediateMailIconShapeAttributes(intermediateColorStroke, 2, intermediateColor);
     this.shape.attr(shapeAttributes);
   },
 };

@@ -1,7 +1,7 @@
 <script>
-import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import clockIcon from '!!svg-inline-loader!@/assets/intermediate-clock.svg';
-import updateIconColor from '@/mixins/updateIconColor';
+import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent.vue";
+import clockIcon from "!!svg-inline-loader!@/assets/intermediate-clock.svg";
+import updateIconColor from "@/mixins/updateIconColor";
 
 export default {
   extends: IntermediateEvent,

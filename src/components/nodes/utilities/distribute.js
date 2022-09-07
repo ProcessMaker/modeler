@@ -1,6 +1,6 @@
-import { moveShapeLeftTo, moveShapeMiddleYTo, moveShapeTopTo } from '@/components/nodes/utilities/shapeMovement';
-import { getBoundingBox } from '@/components/nodes/utilities/shapeGroup';
-import { shapeCenterX, shapeCenterY } from '@/components/nodes/utilities/shapeMetrics';
+import { moveShapeLeftTo, moveShapeMiddleYTo, moveShapeTopTo } from "@/components/nodes/utilities/shapeMovement";
+import { getBoundingBox } from "@/components/nodes/utilities/shapeGroup";
+import { shapeCenterX, shapeCenterY } from "@/components/nodes/utilities/shapeMetrics";
 
 export function distributeVerticalCentersEvenly(shapes) {
   const bounds = getBoundingBox(shapes);
@@ -13,12 +13,10 @@ export function distributeVerticalCentersEvenly(shapes) {
   const topShape = topToBottom[0];
   const bottomShape = topToBottom[itemCount - 1];
 
-  const availableHeight = bounds.height
-    - (topShape.size().height / 2)
-    - (bottomShape.size().height / 2);
+  const availableHeight = bounds.height - topShape.size().height / 2 - bottomShape.size().height / 2;
 
   const distanceBetweenCenters = availableHeight / (itemCount - 1);
-  const offset = bounds.top + (topShape.size().height / 2);
+  const offset = bounds.top + topShape.size().height / 2;
   topToBottom.forEach((shape, idx) => {
     if (idx === 0) {
       return;

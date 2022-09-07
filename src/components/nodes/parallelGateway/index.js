@@ -1,25 +1,25 @@
-import component from './parallelGateway.vue';
-import { gatewayDirection } from '../gateway/gatewayConfig';
-import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import DocumentationFormTextArea from '@/components/inspectors/DocumentationFormTextArea';
+import idConfigSettings from "@/components/inspectors/idConfigSettings";
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import DocumentationFormTextArea from "@/components/inspectors/DocumentationFormTextArea.vue";
+import { gatewayDirection } from "../gateway/gatewayConfig";
+import component from "./parallelGateway.vue";
 
 export default {
-  id: 'processmaker-modeler-parallel-gateway',
+  id: "processmaker-modeler-parallel-gateway",
   component,
-  bpmnType: 'bpmn:ParallelGateway',
+  bpmnType: "bpmn:ParallelGateway",
   control: false,
-  category: 'BPMN',
-  label: 'Parallel Gateway',
+  category: "BPMN",
+  label: "Parallel Gateway",
   definition(moddle, $t) {
-    return moddle.create('bpmn:ParallelGateway', {
-      name: $t('Parallel Gateway'),
+    return moddle.create("bpmn:ParallelGateway", {
+      name: $t("Parallel Gateway"),
       gatewayDirection: gatewayDirection.diverging,
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 36,
         width: 36,
       }),
@@ -27,55 +27,55 @@ export default {
   },
   inspectorConfig: [
     {
-      name: 'Parallel Gateway',
+      name: "Parallel Gateway",
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-parallel-gateway-config',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-parallel-gateway-config",
           },
           items: [
             {
-              component: 'FormInput',
+              component: "FormInput",
               config: nameConfigSettings,
             },
           ],
         },
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: false,
-            label: 'Advanced',
-            icon: 'cogs',
-            name: 'inspector-accordion-parallel-gateway-direction',
+            label: "Advanced",
+            icon: "cogs",
+            name: "inspector-accordion-parallel-gateway-direction",
           },
           items: [
             {
-              component: 'FormInput',
+              component: "FormInput",
               config: idConfigSettings,
             },
             {
-              component: 'FormSelect',
+              component: "FormSelect",
               config: {
-                label: 'Direction',
-                helper: 'Select the direction of workflow for this element',
-                name: 'gatewayDirection',
+                label: "Direction",
+                helper: "Select the direction of workflow for this element",
+                name: "gatewayDirection",
                 options: [
-                  { value: gatewayDirection.diverging, content: 'Diverging' },
-                  { value: gatewayDirection.converging, content: 'Converging' },
+                  { value: gatewayDirection.diverging, content: "Diverging" },
+                  { value: gatewayDirection.converging, content: "Converging" },
                 ],
               },
             },
             {
               component: DocumentationFormTextArea,
               config: {
-                label: 'Description',
-                name: 'documentation',
+                label: "Description",
+                name: "documentation",
               },
             },
           ],

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <label>{{ $t('Type') }}</label>
+    <label>{{ $t("Type") }}</label>
     <b-input-group>
       <b-form-select :value="timerPropertyName" data-test="intermediateTypeSelect" @change="changeType">
-        <option value="timeDuration">{{ $t('Duration') }}</option>
-        <option value="timeDate">{{ $t('Date/Time') }}</option>
-        <option value="timeCycle">{{ $t('Cycle') }}</option>
+        <option value="timeDuration">{{ $t("Duration") }}</option>
+        <option value="timeDate">{{ $t("Date/Time") }}</option>
+        <option value="timeCycle">{{ $t("Cycle") }}</option>
       </b-form-select>
     </b-input-group>
 
@@ -15,32 +15,32 @@
 </template>
 
 <script>
-import DurationExpression from './DurationExpression';
-import DateTimeExpression from './DateTimeExpression';
-import CycleExpression from './CycleExpression';
-import { DateTime } from 'luxon';
-import { defaultDurationValue } from '@/components/nodes/intermediateTimerEvent';
+import { DateTime } from "luxon";
+import { defaultDurationValue } from "@/components/nodes/intermediateTimerEvent";
+import DurationExpression from "./DurationExpression.vue";
+import DateTimeExpression from "./DateTimeExpression.vue";
+import CycleExpression from "./CycleExpression.vue";
 
 const types = {
-  timeDuration: 'DurationExpression',
-  timeDate: 'DateTimeExpression',
-  timeCycle: 'CycleExpression',
+  timeDuration: "DurationExpression",
+  timeDate: "DateTimeExpression",
+  timeCycle: "CycleExpression",
 };
 
 export default {
+  components: {
+    DurationExpression,
+    DateTimeExpression,
+    CycleExpression,
+  },
   props: {
     value: {
       type: Object,
     },
     typeHelper: {
       type: String,
-      default: 'Select the type of delay',
+      default: "Select the type of delay",
     },
-  },
-  components: {
-    DurationExpression,
-    DateTimeExpression,
-    CycleExpression,
   },
   computed: {
     component() {
@@ -60,12 +60,7 @@ export default {
   },
   methods: {
     changeType(type) {
-      const defaultValue = (this.isDelayType(type) || this.isCycleType(type))
-        ? defaultDurationValue
-        : DateTime
-          .local()
-          .toUTC()
-          .toISO();
+      const defaultValue = this.isDelayType(type) || this.isCycleType(type) ? defaultDurationValue : DateTime.local().toUTC().toISO();
       this.emitChange(type, defaultValue);
     },
     isDelayType(type) {
@@ -75,7 +70,7 @@ export default {
       return types[type] === types.timeCycle;
     },
     emitChange(type, body) {
-      this.$emit('input', { type, body });
+      this.$emit("input", { type, body });
     },
   },
 };

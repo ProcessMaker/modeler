@@ -1,28 +1,29 @@
-import component from './intermediateTimerEvent.vue';
-import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
-import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
-import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import nameConfigSettings from "@/components/inspectors/nameConfigSettings";
+import advancedAccordionConfig from "@/components/inspectors/advancedAccordionConfig";
+import documentationAccordionConfig from "@/components/inspectors/documentationAccordionConfig";
+import defaultNames from "@/components/nodes/intermediateEvent/defaultNames";
+import GenericIntermediateEventSvg from "@/assets/toolpanel/generic-intermediate-event.svg";
+import IntermediateTimer from "../../inspectors/IntermediateTimer.vue";
+import component from "./intermediateTimerEvent.vue";
 
-export const defaultDurationValue = 'PT1H';
-const id = 'processmaker-modeler-intermediate-catch-timer-event';
+export const defaultDurationValue = "PT1H";
+const id = "processmaker-modeler-intermediate-catch-timer-event";
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:IntermediateCatchEvent',
+  bpmnType: "bpmn:IntermediateCatchEvent",
   control: true,
-  category: 'BPMN',
-  icon: require('@/assets/toolpanel/generic-intermediate-event.svg'),
-  label: 'Intermediate Event',
+  category: "BPMN",
+  icon: GenericIntermediateEventSvg,
+  label: "Intermediate Event",
   rank: 20,
   definition(moddle, $t) {
-    return moddle.create('bpmn:IntermediateCatchEvent', {
+    return moddle.create("bpmn:IntermediateCatchEvent", {
       name: $t(defaultNames[id]),
       eventDefinitions: [
-        moddle.create('bpmn:TimerEventDefinition', {
-          timeDuration: moddle.create('bpmn:Expression', {
+        moddle.create("bpmn:TimerEventDefinition", {
+          timeDuration: moddle.create("bpmn:Expression", {
             body: defaultDurationValue,
           }),
         }),
@@ -30,8 +31,8 @@ export default {
     });
   },
   diagram(moddle) {
-    return moddle.create('bpmndi:BPMNShape', {
-      bounds: moddle.create('dc:Bounds', {
+    return moddle.create("bpmndi:BPMNShape", {
+      bounds: moddle.create("dc:Bounds", {
         height: 36,
         width: 36,
         x: null,
@@ -41,9 +42,9 @@ export default {
   },
   inspectorData(node) {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
-      if (key === 'eventDefinitions') {
+      if (key === "eventDefinitions") {
         const type = Object.keys(value[0])[1];
-        const body = value[0][type].body;
+        const { body } = value[0][type];
         data[key] = { type, body };
       } else {
         data[key] = value;
@@ -53,7 +54,7 @@ export default {
     }, {});
   },
   inspectorHandler(value, node, setNodeProp, moddle) {
-    const definition = node.definition;
+    const { definition } = node;
 
     // Go through each property and rebind it to our data
     for (const key in value) {
@@ -61,7 +62,7 @@ export default {
         continue;
       }
 
-      if (key === 'eventDefinitions') {
+      if (key === "eventDefinitions") {
         const { type, body } = value[key];
 
         const expression = definition.get(key)[0][type];
@@ -70,13 +71,11 @@ export default {
         }
 
         const eventDefinition = {
-          [type]: moddle.create('bpmn:Expression', { body }),
+          [type]: moddle.create("bpmn:Expression", { body }),
         };
 
-        const eventDefinitions = [
-          moddle.create('bpmn:TimerEventDefinition', eventDefinition),
-        ];
-        setNodeProp(node, 'eventDefinitions', eventDefinitions);
+        const eventDefinitions = [moddle.create("bpmn:TimerEventDefinition", eventDefinition)];
+        setNodeProp(node, "eventDefinitions", eventDefinitions);
       } else {
         setNodeProp(node, key, value[key]);
       }
@@ -87,36 +86,36 @@ export default {
       name: defaultNames[id],
       items: [
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
-            icon: 'cog',
-            name: 'inspector-accordion-intermediate-timer-config',
+            label: "Configuration",
+            icon: "cog",
+            name: "inspector-accordion-intermediate-timer-config",
           },
           items: [
             {
-              component: 'FormInput',
+              component: "FormInput",
               config: nameConfigSettings,
             },
           ],
         },
         {
-          component: 'FormAccordion',
+          component: "FormAccordion",
           container: true,
           config: {
-            label: 'Timing Control',
-            icon: 'clock',
-            name: 'inspector-accordion-intermediate-timer-event-timing-control',
+            label: "Timing Control",
+            icon: "clock",
+            name: "inspector-accordion-intermediate-timer-event-timing-control",
           },
           items: [
             {
               component: IntermediateTimer,
               config: {
-                label: 'Name',
-                helper: 'Time expression',
-                name: 'eventDefinitions',
+                label: "Name",
+                helper: "Time expression",
+                name: "eventDefinitions",
               },
             },
           ],

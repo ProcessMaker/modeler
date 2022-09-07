@@ -4,7 +4,7 @@ import {
   defaultIntermediateNames,
   defaultStartNames,
   defaultTaskNames,
-} from '@/components/nodes/defaultNames';
+} from "@/components/nodes/defaultNames";
 
 function getDefaultNames(node) {
   if (node.isStartEvent()) {
@@ -35,18 +35,17 @@ export function keepOriginalName(node) {
 
 export function getAssociationFlowsForNode(node, processes) {
   return processes
-    .reduce((artifacts, process) => artifacts.concat(process.get('artifacts')), [])
-    .filter(artifact => artifact.$type === 'bpmn:Association')
-    .filter(association => association.targetRef === node.definition);
+    .reduce((artifacts, process) => artifacts.concat(process.get("artifacts")), [])
+    .filter((artifact) => artifact.$type === "bpmn:Association")
+    .filter((association) => association.targetRef === node.definition);
 }
 
 export function getInvalidNodes(validationErrors, nodes) {
-  const invalidNodes = Object.values(validationErrors)
-    .flatMap(errors => {
-      return errors.map(error => nodes.find(node => node.id === error.id));
-    });
+  const invalidNodes = Object.values(validationErrors).flatMap((errors) =>
+    errors.map((error) => nodes.find((node) => node.id === error.id))
+  );
 
-  const nodesWithoutIds = nodes.filter(node => !node.id);
+  const nodesWithoutIds = nodes.filter((node) => !node.id);
 
   return [...invalidNodes, ...nodesWithoutIds];
 }

@@ -1,7 +1,7 @@
 <script>
-import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import conditionalIcon from '!!svg-inline-loader!@/assets/conditional-icon.svg';
-import updateIconColor from '@/mixins/updateIconColor';
+import IntermediateEvent from "@/components/nodes/intermediateEvent/intermediateEvent.vue";
+import conditionalIcon from "!!svg-inline-loader!@/assets/conditional-icon.svg";
+import updateIconColor from "@/mixins/updateIconColor";
 
 export default {
   extends: IntermediateEvent,
@@ -12,13 +12,13 @@ export default {
     };
   },
   mounted() {
-    const bounds = this.node.diagram.bounds;
+    const { bounds } = this.node.diagram;
     this.shape.attr({
       image: {
-        'ref-x': 9,
-        'ref-y': 9,
-        'width': bounds.get('width') - 18,
-        'height': bounds.get('height') - 18,
+        "ref-x": 9,
+        "ref-y": 9,
+        width: bounds.get("width") - 18,
+        height: bounds.get("height") - 18,
       },
     });
   },

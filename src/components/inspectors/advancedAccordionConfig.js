@@ -1,14 +1,14 @@
-import idConfigSettings from './idConfigSettings';
-import NodeIdentifierInput from './NodeIdentifierInput';
+import idConfigSettings from "./idConfigSettings";
+import NodeIdentifierInput from "./NodeIdentifierInput.vue";
 
 export default {
-  component: 'FormAccordion',
+  component: "FormAccordion",
   container: true,
   config: {
     initiallyOpen: false,
-    label: 'Advanced',
-    icon: 'cogs',
-    name: 'advanced-accordion',
+    label: "Advanced",
+    icon: "cogs",
+    name: "advanced-accordion",
   },
   items: [
     {

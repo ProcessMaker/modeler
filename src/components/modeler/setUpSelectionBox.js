@@ -1,12 +1,8 @@
-import { g, shapes } from 'jointjs';
-import store from '@/store';
-import { canMoveProgrammatically } from '@/components/nodes/utilities/shapeMovement';
+import { g, shapes } from "jointjs";
+import store from "@/store";
+import { canMoveProgrammatically } from "@/components/nodes/utilities/shapeMovement";
 
-const shapesToNotTranslate = [
-  'processmaker.modeler.bpmn.pool',
-  'PoolLane',
-  'processmaker.components.nodes.boundaryEvent.Shape',
-];
+const shapesToNotTranslate = ["processmaker.modeler.bpmn.pool", "PoolLane", "processmaker.components.nodes.boundaryEvent.Shape"];
 
 export default function setUpSelectionBox(setCursor, resetCursor, paperManager, graph) {
   let initialPosition;
@@ -14,32 +10,29 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   let selectionBox;
   let selectionboxMousedownPosition;
 
-  document.addEventListener('keydown', shiftKeyDownListener);
-  document.addEventListener('keyup', shiftKeyUpListener);
-  document.addEventListener('mousedown', mousedownListener);
-  document.addEventListener('mouseup', mouseupListener);
-  document.addEventListener('mousemove', mousemoveListener);
-  paperManager.addEventHandler('cell:pointerdown', cellView => {
-    if (!cellView.model.component) {
-      return;
-    }
+  function createSelectionBox(p1, p2) {
+    const { x, y, width, height } = new g.Line(p1, p2).bbox();
 
-    initialPosition = cellView.model.position();
-    cellView.model.on('change:position', moveAllOtherHighlightedShapes);
-  });
-  paperManager.addEventHandler('cell:pointerup link:pointerup element:pointerup blank:pointerup', cellView => {
-    if (!cellView.model) {
-      return;
-    }
-
-    cellView.model.off('change:position', moveAllOtherHighlightedShapes);
-  });
+    return new shapes.standard.Rectangle({
+      position: { x, y },
+      size: { width, height },
+      type: "selectionBox",
+      attrs: {
+        body: {
+          fill: "lightblue",
+          opacity: 0.3,
+          stroke: "blue",
+          strokeWidth: 1,
+        },
+      },
+    });
+  }
 
   function resetMultiSelect() {
     resetCursor();
     shiftKeyPressed = false;
     paperManager.preventTranslate = false;
-    paperManager.paper.setInteractivity(graph.get('interactiveFunc'));
+    paperManager.paper.setInteractivity(graph.get("interactiveFunc"));
   }
 
   function shiftKeyDownListener(event) {
@@ -48,7 +41,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       return;
     }
 
-    if (event.key !== 'Shift' || shiftKeyPressed) {
+    if (event.key !== "Shift" || shiftKeyPressed) {
       return;
     }
 
@@ -59,7 +52,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   }
 
   function shiftKeyUpListener({ key }) {
-    if (key !== 'Shift' || !shiftKeyPressed) {
+    if (key !== "Shift" || !shiftKeyPressed) {
       return;
     }
     resetMultiSelect();
@@ -96,10 +89,10 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
 
     const selectedNodes = paperManager.paper
       .findViewsInArea(selectionBox.getBBox(), { strict: true })
-      .filter(shape => shape.model.component)
-      .map(shape => shape.model.component.node);
+      .filter((shape) => shape.model.component)
+      .map((shape) => shape.model.component.node);
 
-    store.commit('addToHighlightedNodes', selectedNodes);
+    store.commit("addToHighlightedNodes", selectedNodes);
 
     graph.removeCells(selectionBox);
     selectionBox = null;
@@ -120,27 +113,30 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     const dy = newPosition.y - y;
 
     store.getters.highlightedShapes
-      .filter(shape => shape !== element && !shapesToNotTranslate.includes(shape.get('type')))
-      .forEach(shape => shape.translate(dx, dy));
+      .filter((shape) => shape !== element && !shapesToNotTranslate.includes(shape.get("type")))
+      .forEach((shape) => shape.translate(dx, dy));
 
     initialPosition = newPosition;
   }
 
-  function createSelectionBox(p1, p2) {
-    const { x, y, width, height } = new g.Line(p1, p2).bbox();
+  document.addEventListener("keydown", shiftKeyDownListener);
+  document.addEventListener("keyup", shiftKeyUpListener);
+  document.addEventListener("mousedown", mousedownListener);
+  document.addEventListener("mouseup", mouseupListener);
+  document.addEventListener("mousemove", mousemoveListener);
+  paperManager.addEventHandler("cell:pointerdown", (cellView) => {
+    if (!cellView.model.component) {
+      return;
+    }
 
-    return new shapes.standard.Rectangle({
-      position: { x, y },
-      size: { width, height },
-      type: 'selectionBox',
-      attrs: {
-        body: {
-          fill: 'lightblue',
-          opacity: 0.3,
-          stroke: 'blue',
-          strokeWidth: 1,
-        },
-      },
-    });
-  }
+    initialPosition = cellView.model.position();
+    cellView.model.on("change:position", moveAllOtherHighlightedShapes);
+  });
+  paperManager.addEventHandler("cell:pointerup link:pointerup element:pointerup blank:pointerup", (cellView) => {
+    if (!cellView.model) {
+      return;
+    }
+
+    cellView.model.off("change:position", moveAllOtherHighlightedShapes);
+  });
 }

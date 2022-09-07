@@ -11,7 +11,7 @@
     <crown-boundary-event-dropdown
       :dropdown-data="boundaryEventDropdownData"
       :dropdown-open="boundaryEventDropdownOpen"
-      :nodeRegistry="nodeRegistry"
+      :node-registry="nodeRegistry"
       :moddle="moddle"
       :node="node"
       :shape="shape"
@@ -22,20 +22,20 @@
     <crown-color-dropdown
       :dropdown-open="colorDropdownOpen"
       :node="node"
-      :showCustomIconPicker="showCustomIconPicker"
-      :iconName="iconName"
+      :show-custom-icon-picker="showCustomIconPicker"
+      :icon-name="iconName"
       v-on="$listeners"
       @toggle-dropdown-state="colorDropdownToggle"
     />
   </div>
 </template>
 <script>
-import CrownTaskDropdown from '@/components/crown/crownButtons/crownTaskDropdown';
-import CrownBoundaryEventDropdown from '@/components/crown/crownButtons/crownBoundaryEventDropdown';
-import CrownColorDropdown from '@/components/crown/crownButtons/crownColorDropdown';
+import CrownTaskDropdown from "@/components/crown/crownButtons/crownTaskDropdown.vue";
+import CrownBoundaryEventDropdown from "@/components/crown/crownButtons/crownBoundaryEventDropdown.vue";
+import CrownColorDropdown from "@/components/crown/crownButtons/crownColorDropdown.vue";
 
 export default {
-  name: 'CrownDropdowns',
+  name: "CrownDropdowns",
   components: { CrownTaskDropdown, CrownBoundaryEventDropdown, CrownColorDropdown },
   props: {
     dropdownData: Array,
@@ -51,7 +51,7 @@ export default {
     showCustomIconPicker: Boolean,
     iconName: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   data() {
