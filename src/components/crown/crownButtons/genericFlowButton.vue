@@ -5,10 +5,14 @@
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Flow')"
     aria-label="Create a flow"
-    :src="sequenceFlow"
     role="menuitem"
     @click="addSequence"
-  />
+  >
+    <img
+      :src="sequenceFlow"
+      aria-hidden="true"
+    >
+  </crown-button>
 </template>
 <script>
 import Flow from "!!svg-inline-loader!@/assets/connect-elements.svg";

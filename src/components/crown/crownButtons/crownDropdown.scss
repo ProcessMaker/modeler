@@ -9,11 +9,12 @@ $crown-left-chevron: 0.3rem;
 	position: relative;
 	display: flex;
 
-	&--button {
-		background: none;
-		border: none;
-		color: $primary-white;
-	}
+  &--button {
+    background: none;
+    border: none;
+    color: $primary-white;
+    height: 15px;
+  }
 }
 
 .element-list {
