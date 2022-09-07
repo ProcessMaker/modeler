@@ -1,6 +1,9 @@
 <template>
-  <crown-button id="lane-above-button" aria-label="Add lane above icon" :width="25" v-on="$listeners">
-    <img :src="laneAboveIcon" aria-hidden="true" />
+  <crown-button id="lane-above-button" aria-label="Add lane above icon" v-on="$listeners" :width="25">
+    <img
+      :src="laneAboveIcon"
+      aria-hidden="true"
+    >
   </crown-button>
 </template>
 
