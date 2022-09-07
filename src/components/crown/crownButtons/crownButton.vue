@@ -1,7 +1,7 @@
 <template>
   <button :id="id" :aria-label="ariaLabel" class="btn" v-on="$listeners">
     <slot>
-      <img :src="src" alt="" width="width" height="height" />
+      <img :src="src" width="width" height="height" />
     </slot>
   </button>
 </template>
@@ -31,9 +31,13 @@ export default {
   display: flex;
 }
 
-img,
+img {
+  margin: 0px 10px;
+  height: 15px;
+}
+
 i {
-  margin: 5px 10px;
-  width: 15px;
+  margin: 0px 10px;
+  font-size: 15px;
 }
 </style>

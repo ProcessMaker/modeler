@@ -6,9 +6,10 @@
     aria-label="Default Flow"
     data-test="default-flow"
     role="menuitem"
-    :src="icon"
     @click="click"
-  />
+  >
+    <img :src="icon" aria-hidden="true" />
+  </crown-button>
 </template>
 
 <script>

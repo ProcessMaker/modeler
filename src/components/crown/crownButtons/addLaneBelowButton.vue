@@ -1,5 +1,7 @@
 <template>
-  <crown-button id="lane-below-button" aria-label="Add lane below icon" :src="laneBelowIcon" :width="25" v-on="$listeners" />
+  <crown-button id="lane-below-button" aria-label="Add lane below icon" :width="25" v-on="$listeners">
+    <img :src="laneBelowIcon" aria-hidden="true" />
+  </crown-button>
 </template>
 
 <script>

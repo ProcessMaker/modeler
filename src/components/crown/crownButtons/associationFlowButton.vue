@@ -5,10 +5,11 @@
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     :title="$t('Association Flow')"
     aria-label="Add association flow"
-    :src="connectIcon"
     role="menuitem"
     @click="addAssociation"
-  />
+  >
+    <img :src="connectIcon" aria-hidden="true" />
+  </crown-button>
 </template>
 
 <script>

@@ -7,7 +7,7 @@
     aria-label="Delete this node"
     @click="isPoolLane ? removePoolLaneShape() : removeShape()"
   >
-    <img :src="trashIcon" aria-hidden="true" data-prefix="fas" data-icon="trash-alt" class="fa-trash-alt trash-icon" alt="" />
+    <img :src="trashIcon" aria-hidden="true" data-prefix="fas" data-icon="trash-alt" class="fa-trash-alt trash-icon" />
   </crown-button>
 </template>
 
@@ -59,8 +59,3 @@ export default {
   },
 };
 </script>
-<style>
-.trash-icon {
-  height: 13.25px;
-}
-</style>
