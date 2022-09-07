@@ -22,6 +22,7 @@ export default class Node {
     this.type = type;
     this.definition = definition;
     this.diagram = diagram;
+    this.definition.noCache = true;
   }
 
   isBpmnType(...types) {
