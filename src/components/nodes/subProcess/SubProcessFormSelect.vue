@@ -6,8 +6,7 @@
       :helper="$t('Select which Process this element calls')"
       v-model="selectedProcess"
       :showLabels="false"
-      :allow-empty="false"
-      :disabled="processList.length === 0"
+      :allow-empty="true"
       :options="processList"
       optionContent="name"
       class="p-0 mb-2"
@@ -15,7 +14,7 @@
       @search-change="searchChange"
       :searchable="true"
       :internal-search="false"
-      :preserve-search="true"
+      :preserve-search="false"
       :clear-on-select="false"
     />
 
