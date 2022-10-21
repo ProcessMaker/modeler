@@ -8,6 +8,7 @@
       :showLabels="false"
       :allow-empty="true"
       :options="processList"
+      :loading="loading"
       optionContent="name"
       class="p-0 mb-2"
       validation="required"
