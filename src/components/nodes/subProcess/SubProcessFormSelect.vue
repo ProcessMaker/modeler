@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
 
 export default {
@@ -106,7 +107,7 @@ export default {
   },
   methods: {
     searchChange(filter) {
-      this.loadProcesses(filter);
+      this.loadProcessesDebounced(filter);
     },
     filterValidProcesses(processes) {
       return processes.filter(process => {
@@ -204,6 +205,9 @@ export default {
     },
   },
   created() {
+    this.loadProcessesDebounced = debounce((filter) => {
+      this.loadProcesses(filter);
+    }, 500);
     if (this.processList.length === 0) {
       this.loadProcesses();
     } else {
