@@ -6,16 +6,16 @@
       :helper="$t('Select which Process this element calls')"
       v-model="selectedProcess"
       :showLabels="false"
-      :allow-empty="false"
-      :disabled="processList.length === 0"
+      :allow-empty="true"
       :options="processList"
+      :loading="loading"
       optionContent="name"
       class="p-0 mb-2"
       validation="required"
       @search-change="searchChange"
       :searchable="true"
       :internal-search="false"
-      :preserve-search="true"
+      :preserve-search="false"
       :clear-on-select="false"
     />
 
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
 
 export default {
@@ -107,7 +108,7 @@ export default {
   },
   methods: {
     searchChange(filter) {
-      this.loadProcesses(filter);
+      this.loadProcessesDebounced(filter);
     },
     filterValidProcesses(processes) {
       return processes.filter(process => {
@@ -205,6 +206,9 @@ export default {
     },
   },
   created() {
+    this.loadProcessesDebounced = debounce((filter) => {
+      this.loadProcesses(filter);
+    }, 500);
     if (this.processList.length === 0) {
       this.loadProcesses();
     } else {
