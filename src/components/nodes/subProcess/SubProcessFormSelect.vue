@@ -6,12 +6,12 @@
       :helper="$t('Select which Process this element calls')"
       v-model="selectedProcess"
       :showLabels="false"
-      :allow-empty="true"
+      :allow-empty="false"
       :options="processList"
       :loading="loading"
       optionContent="name"
       class="p-0 mb-2"
-      validation="required"
+      :validation="validation"
       @search-change="searchChange"
       :searchable="true"
       :internal-search="false"
@@ -58,6 +58,7 @@ export default {
       loading: false ,
       processes: [],
       selectedProcessInfo: null,
+      validation: '',
     };
   },
   inheritAttrs: false,
@@ -146,6 +147,9 @@ export default {
       this.selectedProcess = this.processList.find(p => p.id === this.config.processId);
       this.selectedStartEvent = this.startEventList.find(se => se.id === this.config.startEvent);
       this.$nextTick(() => {
+        if (!this.selectedProcess) {
+          this.validation = 'required';
+        }
         this.loading = false;
       });
     },
@@ -206,6 +210,7 @@ export default {
     },
   },
   created() {
+    this.validation = !this.config.processId ? 'required' : '';
     this.loadProcessesDebounced = debounce((filter) => {
       this.loadProcesses(filter);
     }, 500);
