@@ -181,7 +181,6 @@ export default {
       const params = {
         order_direction: 'asc',
         per_page: 20,
-        status: 'all',
         include: 'events,category',
       };
 
