@@ -182,6 +182,7 @@ export default {
         order_direction: 'asc',
         per_page: 20,
         include: 'events,category',
+        filter_without_assignments: true,
       };
 
       if (filter) {
@@ -202,6 +203,7 @@ export default {
       if (this.config.processId) {
         window.ProcessMaker.apiClient.get('processes/' + this.config.processId, { params: {
           include: 'events,category',
+          filter_without_assignments: true,
         } }).then(response => {
           this.selectedProcessInfo = response.data;
         });
