@@ -1,7 +1,7 @@
 import { g, shapes } from 'jointjs';
 import store from '@/store';
 import { canMoveProgrammatically } from '@/components/nodes/utilities/shapeMovement';
-
+import { getBoundingBox } from '@/components/nodes/utilities/shapeGroup';
 const shapesToNotTranslate = [
   'processmaker.modeler.bpmn.pool',
   'PoolLane',
@@ -45,6 +45,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   function shiftKeyDownListener(event) {
     if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
       resetMultiSelect();
+   
       return;
     }
 
@@ -53,7 +54,9 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     }
 
     setCursor();
+    console.log('init selection');
     shiftKeyPressed = true;
+    graph.removeCells(selectionBox);
     paperManager.preventTranslate = true;
     paperManager.paper.setInteractivity(false);
   }
@@ -66,24 +69,30 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
   }
 
   function mousedownListener({ clientX, clientY }) {
+   
     if (!shiftKeyPressed) {
       return;
     }
-
+    console.log('mousedownListener');
+    
     selectionboxMousedownPosition = paperManager.clientToGridPoint(clientX, clientY);
   }
 
   function mousemoveListener({ clientX, clientY }) {
+    
     if (!selectionboxMousedownPosition) {
       return;
     }
 
     if (selectionBox) {
+      
       graph.removeCells(selectionBox);
     }
 
     const { x, y } = paperManager.clientToGridPoint(clientX, clientY);
     selectionBox = createSelectionBox(selectionboxMousedownPosition, { x, y });
+
+    console.log('mousemoveListener');
     graph.addCell(selectionBox);
   }
 
@@ -98,14 +107,25 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       .findViewsInArea(selectionBox.getBBox(), { strict: true })
       .filter(shape => shape.model.component)
       .map(shape => shape.model.component.node);
-
+    console.log('mouseupListener');
+    console.log(paperManager.paper);
+    
     store.commit('addToHighlightedNodes', selectedNodes);
 
-    graph.removeCells(selectionBox);
-    selectionBox = null;
+    // graph.removeCells(selectionBox);
+    // const shapes = paperManager.paper.findViewsInArea(
+    //   selectionBox.getBBox(), { strict: true }).filter(shape => shape.model.component
+    // );
+    const boundingBox = getBoundingBox(store.getters.highlightedShapes);
+    console.log(store.getters.highlightedShapes);
+    console.log(boundingBox);
+    selectionBox.position(boundingBox.left-2, boundingBox.top-2);
+    selectionBox.resize(boundingBox.width +5,boundingBox.height+5);
+    // selectionBox = null;
   }
 
   function moveAllOtherHighlightedShapes(element, newPosition, { movedWithArrowKeys }) {
+    
     if (
       movedWithArrowKeys ||
       !canMoveProgrammatically(element) ||
@@ -114,7 +134,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     ) {
       return;
     }
-
+    console.log('moveAllOtherHighlightedShapes');
     const { x, y } = initialPosition;
     const dx = newPosition.x - x;
     const dy = newPosition.y - y;
@@ -138,7 +158,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
           fill: 'lightblue',
           opacity: 0.3,
           stroke: 'blue',
-          strokeWidth: 1,
+          strokeWidth: 4,
         },
       },
     });

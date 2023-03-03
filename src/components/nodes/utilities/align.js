@@ -9,6 +9,7 @@ import {
 } from '@/components/nodes/utilities/shapeMovement';
 
 export function alignLeft(shapes) {
+  console.log(shapes);
   const bounds = getBoundingBox(shapes);
   shapes.forEach((shape) => {
     moveShapeLeftTo(shape, bounds.left);
