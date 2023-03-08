@@ -90,14 +90,14 @@
           </div>
         </div>
         <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
-          <div class="d-flex justify-content-center align-items-center" style="font-size: 13px;">
+          <!-- <div class="d-flex justify-content-center align-items-center" style="font-size: 13px;">
             <span class="text-secondary mr-1">
               {{ $t('Saved') }}
             </span>
             <span>
               <font-awesome-icon class="text-success" :icon="savedIcon" />
             </span>
-          </div>
+          </div> -->
           <button
             class="btn btn-sm btn-primary mini-map-btn mx-3"
             type="button"
