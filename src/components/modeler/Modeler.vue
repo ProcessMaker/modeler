@@ -930,6 +930,9 @@ export default {
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
+    showSavedNotification() {
+      undoRedoStore.dispatch('saved');
+    },
   },
   created() {
     if (runningInCypressTest()) {
