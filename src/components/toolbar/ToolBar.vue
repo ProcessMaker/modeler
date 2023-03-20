@@ -99,6 +99,7 @@
   </b-row>
 </template>
 <script>
+import paperManagerStore from '@/store/index';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
@@ -123,6 +124,7 @@ export default {
   watch: {
     scale(scale) {
       this.paperManager.scale = scale;
+      paperManagerStore.commit('setPaperManager', this.paperManager.paper);
       if (scale === this.initialScale) {
         this.$root.$emit('bv::hide::tooltip');
       }

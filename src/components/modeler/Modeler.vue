@@ -113,9 +113,8 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
-import store from '@/store';
+import { store, undoRedoStore, paperManagerStore } from '@/store/index';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
-import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
 import NodeIdGenerator from '../../NodeIdGenerator';
@@ -971,6 +970,7 @@ export default {
     });
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
+    paperManagerStore.commit('setPaperManager', this.paperManager);
     this.paper = this.paperManager.paper;
 
     this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
