@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { util } from 'jointjs';
+import { util, g } from 'jointjs';
 export default {
   name: 'Selection',
   props: {
@@ -89,9 +89,10 @@ export default {
       const scale = paper.scale();
       width /= scale.sx;
       height /= scale.sy;
-      // let i = paper.rect(f.x, f.y, width, height);
 
-      // console.log(i);
+      let selectedArea = g.rect(f.x, f.y, width, height);
+
+      console.log(selectedArea);
       console.log('endSelection');
       this.isSelecting = false;
       this.start = null;
