@@ -42,7 +42,7 @@ export default {
     },
 
     updateSelection(event, paper) {
-      if (this.isSelecting) {
+      if (this.isSelecting &&  this.start) {
         const nEvent= util.normalizeEvent(event);
         console.log('update selection');
 
@@ -72,45 +72,6 @@ export default {
       console.log('endSelection');
       this.isSelecting = false;
       this.start = null;
-    },
-    isSelected(index) {
-      if (!this.start || !this.end) {
-        return false;
-      }
-
-      const rect = this.$el.getBoundingClientRect();
-      const start = {
-        x: Math.min(this.start.x, this.end.x) - rect.left,
-        y: Math.min(this.start.y, this.end.y) - rect.top,
-      };
-      const end = {
-        x: Math.max(this.start.x, this.end.x) - rect.left,
-        y: Math.max(this.start.y, this.end.y) - rect.top,
-      };
-
-      const elementRect = this.$el.children[index].getBoundingClientRect();
-      const elementPosition = {
-        x: elementRect.left - rect.left,
-        y: elementRect.top - rect.top,
-      };
-      const elementSize = {
-        width: elementRect.width,
-        height: elementRect.height,
-      };
-
-      const overlapX = Math.max(
-        0,
-        Math.min(end.x, elementPosition.x + elementSize.width) -
-          Math.max(start.x, elementPosition.x)
-      );
-      const overlapY = Math.max(
-        0,
-        Math.min(end.y, elementPosition.y + elementSize.height) -
-          Math.max(start.y, elementPosition.y)
-      );
-      const overlapArea = overlapX * overlapY;
-
-      return overlapArea > 0;
     },
   },
 };
