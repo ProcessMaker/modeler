@@ -68,10 +68,34 @@ export default {
         
       }
     },
-    endSelection() {
+    endSelection(paper) {
+
+      const selectorOffset = {
+        left: this.$el.offsetLeft,
+        top: this.$el.offsetTop,
+      };
+      let width = this.$el.clientWidth;
+      let height = this.$el.clientHeight;
+
+      console.log(selectorOffset);
+      console.log(width);
+      console.log(height);
+      console.log(paper);
+      // const f =paper.toLocalPoint(selectorOffset.left, selectorOffset.top);
+      const f = paper.clientToLocalPoint(selectorOffset.left, selectorOffset.top);
+      console.log(f);
+      f.x -= window.pageXOffset;
+      f.y -= window.pageYOffset;
+      const scale = paper.scale();
+      width /= scale.sx;
+      height /= scale.sy;
+      // let i = paper.rect(f.x, f.y, width, height);
+
+      // console.log(i);
       console.log('endSelection');
       this.isSelecting = false;
       this.start = null;
+
     },
   },
 };

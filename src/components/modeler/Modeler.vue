@@ -1013,7 +1013,7 @@ export default {
       // this.isGrabbing = false;
       this.isSelecting = false;
       this.activeNode = null;
-      this.$refs.selector.endSelection();
+      this.$refs.selector.endSelection(this.paperManager.paper);
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
