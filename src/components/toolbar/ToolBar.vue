@@ -94,13 +94,23 @@
         >
           <font-awesome-icon :icon="saveIcon" />
         </b-button>
+
+        <b-button
+          class="btn btn-sm btn-secondary ml-auto"
+          data-test="publish-template"
+          @click="$emit('publishTemplate')"
+          v-b-tooltip.hover
+          :title="$t('Publish as Template')"
+        >
+          <font-awesome-icon :icon="templateIcon" />
+        </b-button>
       </div>
     </div>
   </b-row>
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faLayerGroup, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
@@ -164,6 +174,7 @@ export default {
       undoIcon: faUndo,
       redoIcon: faRedo,
       saveIcon: faSave,
+      templateIcon: faLayerGroup,
     };
   },
   methods: {

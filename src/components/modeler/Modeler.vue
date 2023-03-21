@@ -11,6 +11,7 @@
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
+      @publishTemplate="publishTemplate"
       @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
@@ -286,6 +287,9 @@ export default {
       const svgString = (new XMLSerializer()).serializeToString(svg);
 
       this.$emit('saveBpmn', { xml, svg: svgString });
+    },
+    publishTemplate() {
+      this.$emit('publishTemplate');
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
