@@ -21,6 +21,7 @@ const defaultHighlighter = {
       attrs: {
         stroke: '#5096db',
         'stroke-width': 3,
+        'data-cy': 'selected',
       },
     },
   },
