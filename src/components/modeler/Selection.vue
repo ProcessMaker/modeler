@@ -1,5 +1,5 @@
 <template>
-  <div v-if="start && size" class="box" :style="{ left: start.x + 'px', top: start.y + 'px', height: size.height + 'px', width: size.width + 'px' }" />
+  <div v-if="start" class="box" />
 </template>
 
 <script>
@@ -13,8 +13,8 @@ export default {
     return {
       test: 'test',
       start: null,
-      end: null,
-      size: null,
+      // end: null,
+      // size: null,
       isSelecting: false,
     };
   },
@@ -27,13 +27,17 @@ export default {
         x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
         y: nEvent.clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
       };
-      this.end = {
-        x: this.start.x,
-        y: this.start.y,
-      };
-      this.size = {
-        height: 0,
-        width: 0,
+      // this.end = {
+      //   x: this.start.x,
+      //   y: this.start.y,
+      // };
+      // this.size = {
+      //   height: 0,
+      //   width: 0,
+      // };
+      this._offset = {
+        x: nEvent.offsetX,
+        y: nEvent.offsetY,
       };
     },
 
@@ -53,12 +57,15 @@ export default {
           width: end.x - this.start.x,
         };
         console.log(size.height, size.width);
+        // Set the position of the element
+        this.$el.style.position = 'absolute';
+        this.$el.style.left =`${size.width < 0 ? this._offset.x + size.width: this.start.x}px`;
+        this.$el.style.top = `${size.height < 0 ? this._offset.y + size.height: this.start.y}px`;
+
+        // Set the dimensions of the element
+        this.$el.style.width = `${Math.abs(size.width)}px`;
+        this.$el.style.height = `${Math.abs(size.height)}px`;
         
-        this.size = {
-          height: Math.abs(size.height),
-          width: Math.abs(size.width),
-        };
-        console.log(this.size.height, this.size.width);
       }
     },
     endSelection() {
