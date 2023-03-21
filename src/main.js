@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import ScreenBuilder from '@processmaker/screen-builder';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import store from '@/store';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -28,5 +29,5 @@ i18next.init({
 Vue.mixin({ i18n: new VueI18Next(i18next) });
 
 new Vue({
-  render: h => h(ModelerApp),
+  render: (h) => h(ModelerApp),
 }).$mount('#modeler-app');

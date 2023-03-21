@@ -1,29 +1,10 @@
 import Vue from 'vue';
 import flatten from 'lodash/flatten';
 import uniq from 'lodash/uniq';
-
-function setDefinitionPropertyReactive(definition, key, value) {
-  if (definition.hasOwnProperty(key)) {
-    definition.set(key, value);
-    return;
-  }
-
-  delete Object.getPrototypeOf(definition)[key];
-  Vue.set(definition, key, value);
-}
-
-function removeRef(state, ref, callBack) {
-  state.nodes.filter(({ definition }) => (
-    definition.$type === 'bpmn:IntermediateCatchEvent' ||
-    definition.$type === 'bpmn:StartEvent'
-  )
-    && definition.eventDefinitions && definition.eventDefinitions.some(callBack)).forEach(({ definition }) => {
-    definition.eventDefinitions[0][ref] = null;
-  });
-}
+import { removeRef, setDefinitionPropertyReactive } from '@/store/utils.js';
 
 // State
-const state = {
+const state = () => ({
   graph: null,
   paper: null,
   highlightedNodes: [],
@@ -32,25 +13,28 @@ const state = {
   autoValidate: false,
   globalProcesses: [],
   allowSavingElementPosition: true,
-};
+});
 
 // Getters
 const getters = {
-  nodes: state => state.nodes,
-  highlightedNodes: state => state.highlightedNodes,
-  nodeShape: state => node => {
-    return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
+  nodes: (state) => state.nodes,
+  highlightedNodes: (state) => state.highlightedNodes,
+  nodeShape: (state) => (node) => {
+    return state.graph
+      .getCells()
+      .find((cell) => cell.component && cell.component.node === node);
   },
   highlightedShapes: (state, getters) => {
     return getters.highlightedNodes
-      .filter(node => node.type !== 'processmaker-modeler-process')
+      .filter((node) => node.type !== 'processmaker-modeler-process')
       .map(getters.nodeShape);
   },
-  rootElements: state => state.rootElements,
-  autoValidate: state => state.autoValidate,
-  globalProcesses: state => state.globalProcesses,
-  globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
-  allowSavingElementPosition: state => state.allowSavingElementPosition,
+  rootElements: (state) => state.rootElements,
+  autoValidate: (state) => state.autoValidate,
+  globalProcesses: (state) => state.globalProcesses,
+  globalProcessEvents: (state, getters) =>
+    flatten(getters.globalProcesses.map((process) => process.events)),
+  allowSavingElementPosition: (state) => state.allowSavingElementPosition,
 };
 
 // Mutations
@@ -77,8 +61,8 @@ const mutations = {
     });
   },
   updateNodeProp(state, { node, key, value }) {
-    if (key == 'id' && node.definition.id !== value) {
-      if (state.nodes.some(node => node.definition.id === value)) {
+    if (key === 'id' && node.definition.id !== value) {
+      if (state.nodes.some((node) => node.definition.id === value)) {
         return;
       }
     }
@@ -99,9 +83,9 @@ const mutations = {
   },
   addNode(state, node) {
     /* Add an unchanging ID that Vue can use to track the component
-       * (used in v-for when rendering the node). Relying on the
-       * definition ID will cause issues as the user can change the
-       * ID of elements. */
+     * (used in v-for when rendering the node). Relying on the
+     * definition ID will cause issues as the user can change the
+     * ID of elements. */
     node._modelerId = '_modelerId_' + node.definition.get('id');
 
     state.nodes.push(node);
@@ -151,6 +135,7 @@ const actions = {
 };
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations,

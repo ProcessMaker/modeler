@@ -1,9 +1,9 @@
 // State
-const state = {
+const state = () => ({
   stack: [],
   position: null,
   disabled: false,
-};
+});
 
 // Getters
 const getters = {
@@ -65,6 +65,7 @@ const actions = {
 };
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations,
