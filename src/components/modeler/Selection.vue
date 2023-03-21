@@ -1,5 +1,5 @@
 <template>
-  <div v-if="start" class="box" />
+  <div v-if="isSelecting" class="box" />
 </template>
 
 <script>
@@ -72,7 +72,6 @@ export default {
       console.log('endSelection');
       this.isSelecting = false;
       this.start = null;
-      this.end = null;
     },
     isSelected(index) {
       if (!this.start || !this.end) {
@@ -119,7 +118,7 @@ export default {
 
 <style>
 .box {
-  position: absolute;
-  border-style: groove;
+  border: 1px solid #5faaee;
+  background:rgba(13, 153, 255, .1);
 }
 </style>
