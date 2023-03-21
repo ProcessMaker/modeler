@@ -30,4 +30,5 @@ Vue.mixin({ i18n: new VueI18Next(i18next) });
 
 new Vue({
   render: (h) => h(ModelerApp),
+  store,
 }).$mount('#modeler-app');
