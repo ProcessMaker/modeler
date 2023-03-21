@@ -18,26 +18,10 @@ export default {
       isSelecting: false,
     };
   },
-  computed: {
-    boxLeft(){
-      return this.options.left;
-    },
-    boxTop(){
-      return this.options.top;
-    },
-    height(){
-      return this.options.height;
-    },
-    width(){
-      return this.options.width;
-    },
-  },
   methods: {
     startSelection(event, paper) {
       const nEvent= util.normalizeEvent(event);
       this.isSelecting = true;
-
-
       const paperOffset = paper.$el.offset();
       this.start = {
         x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
@@ -52,35 +36,27 @@ export default {
         width: 0,
       };
     },
+
     updateSelection(event, paper) {
       if (this.isSelecting) {
         const nEvent= util.normalizeEvent(event);
         console.log('update selection');
 
         const paperOffset = paper.$el.offset();
-        this.end = {
+        const end = {
           x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
           y: nEvent.clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
         };
 
-        // const rect = this.$el.getBoundingClientRect();
-        // const start = {
-        //   x: Math.min(this.start.x, this.end.x),
-        //   y: Math.min(this.start.y, this.end.y),
-        // };
-        // const end = {
-        //   x: Math.max(this.start.x, this.end.x),
-        //   y: Math.max(this.start.y, this.end.y),
-        // };
-
-        const size ={
-          height: this.end.y - this.start.y,
-          width: this.end.x - this.start.x,
+        const size = {
+          height: end.y - this.start.y,
+          width: end.x - this.start.x,
         };
-        this.size = {
-          height: size.height,
-          width: size.width,
+        console.log(size.height, size.width);
         
+        this.size = {
+          height: Math.abs(size.height),
+          width: Math.abs(size.width),
         };
         console.log(this.size.height, this.size.width);
       }
