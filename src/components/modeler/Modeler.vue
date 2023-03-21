@@ -100,8 +100,8 @@
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
       />
-      <selection 
-        v-if="isSelecting"
+      <selection
+        ref="selector" 
         :options="selectorOptions"
       />
     </b-row>
@@ -220,8 +220,8 @@ export default {
       selectorOptions: {
         top: 100,
         left: 300,
-        height: 0,
-        width: 0,
+        height: 100,
+        width: 100,
       },
     };
   },
@@ -1004,11 +1004,8 @@ export default {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       console.log('(x,y)', x,y);
-      this.isSelecting = true;
-      this.selectorOptions.top = event.offsetY;
-      this.selectorOptions.left = event.offsetX;
-      this.selectorOptions.height = 0;
-      this.selectorOptions.width = 0;
+      this.$refs.selector.startSelection(event, this.paperManager.paper);
+ 
       // this.isGrabbing = true;
     }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
@@ -1016,21 +1013,13 @@ export default {
       // this.isGrabbing = false;
       this.isSelecting = false;
       this.activeNode = null;
+      this.$refs.selector.endSelection();
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
-      //console.log('(offsetX, offsetY)' ,event.offsetX, event.offsetY);
-
-      
-      if (this.isSelecting) {
-        this.selectorOptions.height = event.offsetY - this.selectorOptions.top;
-        this.selectorOptions.width = event.offsetX - this.selectorOptions.left;
-        console.log('(height,width)', this.selectorOptions.height, this.selectorOptions.width);
-      }
-      
-
+      this.$refs.selector.updateSelection(event, this.paperManager.paper);
     });
-
+    
     // this.$el.addEventListener('mousemove', event => {
     //   if (this.canvasDragPosition) {
     //     this.paperManager.translate(
