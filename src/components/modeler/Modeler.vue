@@ -139,6 +139,7 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import zoomCanvas from '@/components/modeler/hotkeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
@@ -209,6 +210,7 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
+      canvasScale: 1,
     };
   },
   watch: {
@@ -237,6 +239,10 @@ export default {
     autoValidate() {
       this.validateIfAutoValidateIsOn();
     },
+    canvasScale(canvasScale) {
+      this.paperManager.scale = canvasScale;
+    },
+
   },
   computed: {
     noElementsSelected() {
@@ -898,10 +904,24 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
+    keyupListener(event) {
+      if (event.key === 'Control') {
+        this.ctrlModActive = false;
+      }
+    },
     keydownListener(event) {
       const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
       if (focusIsOutsideDiagram) {
         return;
+      }
+
+      if (event.key === 'Control') {
+        this.ctrlModActive = true;
+      }
+
+      if ((event.key === '+' || event.key === '-') && this.ctrlModActive) {
+        event.preventDefault();
+        this.canvasScale = zoomCanvas(event.key, this.canvasScale);
       }
 
       moveShapeByKeypress(
@@ -960,6 +980,7 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.keydownListener);
+    document.addEventListener('keyup', this.keyupListener);
 
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
