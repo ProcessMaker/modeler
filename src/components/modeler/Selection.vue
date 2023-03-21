@@ -1,34 +1,47 @@
 <template>
-  <div class="selector" />
+  
+  <div class="box" :style="{ left: boxLeft + 'px', top: boxTop + 'px', height: height + 'px', width: width + 'px' }" />
 </template>
 
 <script>
-
 export default {
   name: 'Selection',
- 
+  props: {
+    options: Object,
+  },
   data() {
     return {
-      selection: 'selection',
+      test: 'test',
     };
   },
+  computed: {
+    boxLeft(){
+      return this.options.left;
+    },
+    boxTop(){
+      return this.options.top;
+    },
+    height(){
+      return this.options.height;
+    },
+    width(){
+      return this.options.width;
+    },
+  },
   methods: {
-  },
-  created() {
-  },
-  mounted() {
-
+    // moveBox(event) {
+    //   this.boxLeft = event.clientX;
+    //   this.boxTop = event.clientY;
+    // },
   },
 };
 </script>
 
-<style lang="scss">
-.selector {
+<style>
+
+
+.box {
   position: absolute;
-  left: 248px;
-  top: 300px;
-  height: 100px;
-  width: 100px;
   border-style: groove;
 }
 </style>

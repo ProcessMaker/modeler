@@ -100,7 +100,10 @@
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
       />
-      <selection/>
+      <selection 
+        v-if="isSelecting"
+        :options="selectorOptions"
+      />
     </b-row>
   </span>
 </template>
@@ -213,6 +216,13 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
+      isSelecting: false,
+      selectorOptions: {
+        top: 100,
+        left: 300,
+        height: 0,
+        width: 0,
+      },
     };
   },
   watch: {
@@ -993,13 +1003,33 @@ export default {
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
+      console.log('(x,y)', x,y);
+      this.isSelecting = true;
+      this.selectorOptions.top = event.offsetY;
+      this.selectorOptions.left = event.offsetX;
+      this.selectorOptions.height = 0;
+      this.selectorOptions.width = 0;
       // this.isGrabbing = true;
     }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
       // this.isGrabbing = false;
+      this.isSelecting = false;
       this.activeNode = null;
     }, this);
+
+    this.$el.addEventListener('mousemove', event => {
+      //console.log('(offsetX, offsetY)' ,event.offsetX, event.offsetY);
+
+      
+      if (this.isSelecting) {
+        this.selectorOptions.height = event.offsetY - this.selectorOptions.top;
+        this.selectorOptions.width = event.offsetX - this.selectorOptions.left;
+        console.log('(height,width)', this.selectorOptions.height, this.selectorOptions.width);
+      }
+      
+
+    });
 
     // this.$el.addEventListener('mousemove', event => {
     //   if (this.canvasDragPosition) {
