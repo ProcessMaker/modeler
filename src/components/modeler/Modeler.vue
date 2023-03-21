@@ -100,6 +100,7 @@
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
       />
+      <selection/>
     </b-row>
   </span>
 </template>
@@ -139,7 +140,7 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
-import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+// import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
@@ -150,6 +151,8 @@ import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
+import Selection from './Selection';
+
 export default {
   components: {
     ToolBar,
@@ -157,6 +160,7 @@ export default {
     InspectorPanel,
     MiniPaper,
     ProcessmakerModelerGenericFlow,
+    Selection,
   },
   props: {
     owner: Object,
@@ -972,7 +976,7 @@ export default {
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
-
+    
     this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
     this.handleResize();
@@ -989,22 +993,22 @@ export default {
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      this.isGrabbing = true;
+      // this.isGrabbing = true;
     }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
       this.canvasDragPosition = null;
-      this.isGrabbing = false;
+      // this.isGrabbing = false;
       this.activeNode = null;
     }, this);
 
-    this.$el.addEventListener('mousemove', event => {
-      if (this.canvasDragPosition) {
-        this.paperManager.translate(
-          event.offsetX - this.canvasDragPosition.x,
-          event.offsetY - this.canvasDragPosition.y,
-        );
-      }
-    }, this);
+    // this.$el.addEventListener('mousemove', event => {
+    //   if (this.canvasDragPosition) {
+    //     this.paperManager.translate(
+    //       event.offsetX - this.canvasDragPosition.x,
+    //       event.offsetY - this.canvasDragPosition.y,
+    //     );
+    //   }
+    // }, this);
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
@@ -1030,13 +1034,13 @@ export default {
       this.activeNode = shape.component.node;
     });
 
-    let cursor;
-    const setCursor = () => {
-      cursor = this.cursor;
-      this.cursor = 'crosshair';
-    };
-    const resetCursor = () => this.cursor = cursor;
-    setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
+    // let cursor;
+    // const setCursor = () => {
+    //   cursor = this.cursor;
+    //   this.cursor = 'crosshair';
+    // };
+    // const resetCursor = () => this.cursor = cursor;
+    // setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
