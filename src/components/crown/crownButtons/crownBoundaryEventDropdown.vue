@@ -39,7 +39,6 @@ import CrownButton from '@/components/crown/crownButtons/crownButton';
 import boundaryEventIcon from '@/assets/boundary-event.svg';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
-import store from '@/store';
 import Node from '@/components/nodes/node';
 
 export default {
@@ -86,7 +85,7 @@ export default {
       const node = new Node(nodeType, definition, diagram);
       node.pool = this.node.pool;
 
-      store.commit('highlightNode', node);
+      this.$store.commit('store/highlightNode', node);
 
       this.$emit('add-node', node);
     },

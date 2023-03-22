@@ -51,7 +51,6 @@
 import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
 import ValidationStatus from '@/components/validationStatus/ValidationStatus';
-import undoRedoStore from '@/undoRedoStore';
 
 const reader = new FileReader();
 
@@ -85,7 +84,7 @@ export default {
   methods: {
     loadXmlIntoModeler() {
       this.$refs.modeler.loadXML(this.uploadedXml);
-      undoRedoStore.dispatch('pushState', this.uploadedXml);
+      this.$store.dispatch('undoRedoStore/pushState', this.uploadedXml);
     },
     clearUpload() {
       this.uploadedXml = null;

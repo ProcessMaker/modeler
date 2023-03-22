@@ -100,7 +100,6 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faAlignCenter, faAlignLeft, faAlignRight } from '@fortawesome/free-solid-svg-icons';
-import store from '@/store';
 import { getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
 import distributeHorizontallyIcon from '@/assets/distribute-horizontally-icon.svg';
 import distributeVerticallyIcon from '@/assets/distribute-vertically-icon.svg';
@@ -125,7 +124,7 @@ export default {
   },
   computed: {
     selectedShapes() {
-      return getShapesOptions(store.getters.highlightedShapes);
+      return getShapesOptions(this.$store.getters['store/highlightedShapes']);
     },
   },
   watch: {

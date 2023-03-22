@@ -1,7 +1,6 @@
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { defaultNodeColor, invalidNodeColor, poolColor } from '@/components/nodeColors';
-import store from '@/store';
 
 export default class PoolEventHandlers {
   constructor(graph, paper, paperManager, shape, component) {
@@ -47,7 +46,7 @@ export default class PoolEventHandlers {
 
     if (this.previousValidPosition) {
       this.draggingElement.position(this.previousValidPosition.x, this.previousValidPosition.y, { deep: true });
-      store.commit('updateNodeBounds', {
+      this.$store.commit('store/updateNodeBounds', {
         node: this.draggingElement.component.node,
         bounds: this.previousValidPosition,
       });
@@ -99,7 +98,7 @@ export default class PoolEventHandlers {
         this.invalidPool = null;
       }
 
-      store.commit('preventSavingElementPosition');
+      this.$store.commit('store/preventSavingElementPosition');
       this.paperManager.setStateInvalid();
     } else if (pool.component !== this.component && this.graph.getConnectedLinks(element).length > 0) {
       if (!this.previousValidPosition) {
@@ -109,7 +108,7 @@ export default class PoolEventHandlers {
       this.invalidPool = pool.component.shape;
       this.invalidPool.attr('body/fill', invalidNodeColor);
 
-      store.commit('preventSavingElementPosition');
+      this.$store.commit('store/preventSavingElementPosition');
       this.paperManager.setStateValid();
     } else {
       this.paper.drawBackground({ color: defaultNodeColor });
@@ -124,7 +123,7 @@ export default class PoolEventHandlers {
         ? pool
         : null;
 
-      store.commit('allowSavingElementPosition');
+      this.$store.commit('store/allowSavingElementPosition');
       this.paperManager.setStateValid();
     }
   }

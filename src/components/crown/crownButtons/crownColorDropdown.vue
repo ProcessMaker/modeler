@@ -79,7 +79,6 @@
 
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import store from '@/store';
 import Vue from 'vue';
 import { baseNodeColors } from '@/components/nodeColors';
 import { Sketch } from 'vue-color';
@@ -130,12 +129,12 @@ export default {
       this.resetCustomIcon();
     },
     setNodeColor(color) {
-      store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
+      this.$store.commit('store/updateNodeProp', { node: this.node, key: 'color', value: color });
       Vue.set(this.node.definition, 'color', color);
       this.$emit('save-state');
     },
     resetNodeColor() {
-      store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
+      this.$store.commit('store/updateNodeProp', { node: this.node, key: 'color', value: undefined });
       Vue.set(this.node.definition, 'color', undefined);
       this.$emit('save-state');
     },
@@ -145,13 +144,13 @@ export default {
       }
       const { html: iconSvg } = icon({ prefix: 'fas', iconName: customIconName });
       const base64Icon = btoa(iconSvg);
-      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  base64Icon });
+      this.$store.commit('store/updateNodeProp', { node:this.node, key: 'customIcon', value:  base64Icon });
       Vue.set(this.node.definition, 'customIcon', base64Icon);
       this.$emit('set-custom-icon-name', customIconName);
       this.$emit('save-state');
     },
     resetCustomIcon() {
-      store.commit('updateNodeProp', { node:this.node, key: 'customIcon', value:  undefined });
+      this.$store.commit('store/updateNodeProp', { node:this.node, key: 'customIcon', value:  undefined });
       Vue.set(this.node.definition, 'customIcon', undefined);
       this.$emit('reset-custom-icon-name');
       this.$emit('save-state');

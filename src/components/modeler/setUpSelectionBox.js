@@ -1,5 +1,4 @@
 import { g, shapes } from 'jointjs';
-import store from '@/store';
 import { canMoveProgrammatically } from '@/components/nodes/utilities/shapeMovement';
 
 const shapesToNotTranslate = [
@@ -99,7 +98,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       .filter(shape => shape.model.component)
       .map(shape => shape.model.component.node);
 
-    store.commit('addToHighlightedNodes', selectedNodes);
+    this.$store.commit('store/addToHighlightedNodes', selectedNodes);
 
     graph.removeCells(selectionBox);
     selectionBox = null;
@@ -109,7 +108,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     if (
       movedWithArrowKeys ||
       !canMoveProgrammatically(element) ||
-      !store.getters.highlightedShapes.includes(element) ||
+      !this.$store.getters['store/highlightedShapes'].includes(element) ||
       element.component.node.pool
     ) {
       return;
@@ -119,7 +118,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
     const dx = newPosition.x - x;
     const dy = newPosition.y - y;
 
-    store.getters.highlightedShapes
+    this.$store.getters['store/highlightedShapes']
       .filter(shape => shape !== element && !shapesToNotTranslate.includes(shape.get('type')))
       .forEach(shape => shape.translate(dx, dy));
 

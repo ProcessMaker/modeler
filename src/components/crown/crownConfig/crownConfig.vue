@@ -83,7 +83,6 @@ import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import DefaultFlow from '@/components/crown/crownButtons/defaultFlowButton.vue';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
 import pull from 'lodash/pull';
-import store from '@/store';
 import isEqual from 'lodash/isEqual';
 import { getDefaultNodeColors, setShapeColor } from '@/components/nodeColors';
 import runningInCypressTest from '@/runningInCypressTest';
@@ -182,7 +181,7 @@ export default {
         ? this.node.pool.component.containingProcess
         : this.processNode.definition;
     },
-    highlightedShapes: () => store.getters.highlightedShapes,
+    highlightedShapes: () => this.$store.getters['store/highlightedShapes'],
   },
   methods: {
     setNodeColor() {
@@ -209,7 +208,7 @@ export default {
       this.shape.stopListening(this.paper, 'element:pointerup', this.setNodePosition);
       this.savePositionOnPointerupEventSet = false;
 
-      if (!store.getters.allowSavingElementPosition) {
+      if (!this.$store.getters['store/allowSavingElementPosition']) {
         return;
       }
 

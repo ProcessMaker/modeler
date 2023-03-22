@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import store from '@/store';
 
 export default {
   props: {
@@ -48,7 +47,7 @@ export default {
       }
     },
     isUnique(value) {
-      if (store.state.nodes.every(node => node.definition.id !== value)) {
+      if (this.$store.state.state.nodes.every(node => node.definition.id !== value)) {
         return true;
       } else {
         return false;

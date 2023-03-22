@@ -111,7 +111,6 @@
 </template>
 
 <script>
-import store from '@/store';
 import { get,uniqBy } from 'lodash';
 
 export default {
@@ -149,7 +148,7 @@ export default {
       return !this.value;
     },
     localSignals() {
-      return store.getters.rootElements
+      return this.$store.getters['store/rootElements']
         .filter(element => element.$type === 'bpmn:Signal');
     },
     validNew() {
@@ -183,7 +182,7 @@ export default {
     },
     signalUsage(signalId) {
       const usage = [];
-      store.getters.rootElements.forEach(node => {
+      this.$store.getters['store/rootElements'].forEach(node => {
         if (node.$type === 'bpmn:Process') {
           node.flowElements.forEach(element => {
             if (element.eventDefinitions) {
@@ -203,7 +202,7 @@ export default {
       if (!id) {
         return this.$t('Signal ID is required');
       }
-      const exists = store.getters.rootElements.find((element) => {
+      const exists = this.$store.getters['store/rootElements'].find((element) => {
         return element.id === id;
       });
       if (exists) {
@@ -219,7 +218,7 @@ export default {
       if (!name) {
         return this.$t('Signal Name is required');
       }
-      const exists = store.getters.rootElements.find((element) => {
+      const exists = this.$store.getters['store/rootElements'].find((element) => {
         return element.$type === 'bpmn:Signal' && element.name === name;
       });
       if (exists) {
@@ -231,7 +230,7 @@ export default {
       if (!name) {
         return this.$t('Signal Name is required');
       }
-      const exists = store.getters.rootElements.find((element) => {
+      const exists = this.$store.getters['store/rootElements'].find((element) => {
         return element.$type === 'bpmn:Signal' && element.name === name && element.id !== this.signalId;
       });
       if (exists) {
@@ -241,9 +240,9 @@ export default {
     },
     confirmDeleteSignal() {
       this.showConfirmDelete = false;
-      const index = store.getters.rootElements.findIndex(element => element.id === this.deleteSignal.id);
+      const index = this.$store.getters['store/rootElements'].findIndex(element => element.id === this.deleteSignal.id);
       if (index > -1) {
-        store.getters.rootElements.splice(index, 1);
+        this.$store.getters['store/rootElements'].splice(index, 1);
       }
     },
     removeSignal(signal) {
@@ -263,7 +262,7 @@ export default {
       this.showEditSignal = true;
     },
     getSignalById(id) {
-      return store.getters.rootElements.find(element => element.id === id);
+      return this.$store.getters['store/rootElements'].find(element => element.id === id);
     },
     change(value) {
       if (!value) {
@@ -277,7 +276,7 @@ export default {
           id: value.id,
           name: value.name,
         });
-        store.getters.rootElements.push(signal);
+        this.$store.getters['store/rootElements'].push(signal);
       }
       this.$emit('input', get(value, this.trackBy));
       this.refreshVueMultiselectValue();
@@ -317,7 +316,7 @@ export default {
         id: this.signalId,
         name: this.signalName,
       });
-      store.getters.rootElements.push(signal);
+      this.$store.getters['store/rootElements'].push(signal);
       this.showNewSignal = false;
     },
     updateOptions(globalSignals) {
@@ -334,7 +333,7 @@ export default {
         });
     },
     loadSelected(value) {
-      const signal = store.getters.rootElements.find(element => element.id === value);
+      const signal = this.$store.getters['store/rootElements'].find(element => element.id === value);
       if (signal) {
         this.selectedOption = {
           id: signal.id,

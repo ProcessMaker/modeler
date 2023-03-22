@@ -99,10 +99,8 @@
   </b-row>
 </template>
 <script>
-import paperManagerStore from '@/store/index';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
-import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
@@ -124,7 +122,7 @@ export default {
   watch: {
     scale(scale) {
       this.paperManager.scale = scale;
-      paperManagerStore.commit('setPaperManager', this.paperManager.paper);
+      this.$store.commit('paperManagerStore/setPaperManager', this.paperManager.paper);
       if (scale === this.initialScale) {
         this.$root.$emit('bv::hide::tooltip');
       }
@@ -145,10 +143,10 @@ export default {
   },
   computed: {
     canUndo() {
-      return undoRedoStore.getters.canUndo;
+      return this.$store.getters['undoRedoStore/canUndo'];
     },
     canRedo() {
-      return undoRedoStore.getters.canRedo;
+      return this.$store.getters['undoRedoStore/canRedo'];
     },
   },
   data() {
@@ -173,8 +171,8 @@ export default {
       if (this.isRendering) {
         return;
       }
-      undoRedoStore
-        .dispatch('undo')
+      this.$store
+        .dispatch('undoRedoStore/undo')
         .then(() => this.$emit('load-xml'))
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
@@ -182,8 +180,8 @@ export default {
       if (this.isRendering) {
         return;
       }
-      undoRedoStore
-        .dispatch('redo')
+      this.$store
+        .dispatch('undoRedoStore/redo')
         .then(() => this.$emit('load-xml'))
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },

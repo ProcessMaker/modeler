@@ -36,7 +36,6 @@ import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { labelWidth, poolPadding } from './poolSizes';
 import pull from 'lodash/pull';
-import store from '@/store';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
@@ -251,7 +250,7 @@ export default {
       elementBounds.set('width', laneElement.get('size').width);
       elementBounds.set('height', laneElement.get('size').height);
 
-      store.commit('updateNodeBounds', {
+      this.$store.commit('store/updateNodeBounds', {
         node: this.node,
         bounds: pool.getBBox(),
       });
@@ -315,14 +314,14 @@ export default {
           this.resizeLanes();
 
           this.sortedLanes().forEach(laneShape => {
-            store.commit('updateNodeBounds', {
+            this.$store.commit('store/updateNodeBounds', {
               node: laneShape.component.node,
               bounds: laneShape.getBBox(),
             });
           });
         }
 
-        store.commit('updateNodeBounds', {
+        this.$store.commit('store/updateNodeBounds', {
           node: this.node,
           bounds: pool.getBBox(),
         });
@@ -461,7 +460,7 @@ export default {
           : currentRefs.length > 0;
 
         if (hasChanged) {
-          store.commit('updateNodeProp', {
+          this.$store.commit('store/updateNodeProp', {
             node: laneShape.component.node,
             key: 'flowNodeRef',
             value: newRefs || [],

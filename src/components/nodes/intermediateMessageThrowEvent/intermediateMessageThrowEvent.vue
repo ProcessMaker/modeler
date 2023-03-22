@@ -2,7 +2,6 @@
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
 import intermediateMailSymbol from '!!svg-inline-loader!@/assets/intermediate-mail-alt.svg';
 import pull from 'lodash/pull';
-import store from '@/store';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {
@@ -47,7 +46,7 @@ export default {
   },
   destroyed() {
     pull(this.rootElements, this.message);
-    store.commit('removeMessageRef', this.message);
+    this.$store.commit('store/removeMessageRef', this.message);
   },
 };
 </script>

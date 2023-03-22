@@ -107,7 +107,6 @@
 </template>
 
 <script>
-import store from '@/store';
 import { get,uniqBy } from 'lodash';
 
 export default {
@@ -141,7 +140,7 @@ export default {
       return !this.value;
     },
     localMessages() {
-      return store.getters.rootElements
+      return this.$store.getters['store/rootElements']
         .filter(element => element.$type === 'bpmn:Message');
     },
     validNew() {
@@ -175,7 +174,7 @@ export default {
     },
     messageUsage(messageId) {
       const usage = [];
-      store.getters.rootElements.forEach(node => {
+      this.$store.getters['store/rootElements'].forEach(node => {
         if (node.$type === 'bpmn:Process') {
           node.flowElements.forEach(element => {
             if (element.eventDefinitions) {
@@ -195,7 +194,7 @@ export default {
       if (!id) {
         return this.$t('Message ID is required');
       }
-      const exists = store.getters.rootElements.find((element) => {
+      const exists = this.$store.getters['store/rootElements'].find((element) => {
         return element.id === id;
       });
       if (exists) {
@@ -211,7 +210,7 @@ export default {
       if (!name) {
         return this.$t('Message Name is required');
       }
-      const exists = store.getters.rootElements.find((element) => {
+      const exists = this.$store.getters['store/rootElements'].find((element) => {
         return element.$type === 'bpmn:Message' && element.name === name;
       });
       if (exists) {
@@ -223,7 +222,7 @@ export default {
       if (!name) {
         return this.$t('Message Name is required');
       }
-      const exists = store.getters.rootElements.find((element) => {
+      const exists = this.$store.getters['store/rootElements'].find((element) => {
         return element.$type === 'bpmn:Message' && element.name === name && element.id !== this.messageId;
       });
       if (exists) {
@@ -233,9 +232,9 @@ export default {
     },
     confirmDeleteMessage() {
       this.showConfirmDelete = false;
-      const index = store.getters.rootElements.findIndex(element => element.id === this.deleteMessage.id);
+      const index = this.$store.getters['store/rootElements'].findIndex(element => element.id === this.deleteMessage.id);
       if (index > -1) {
-        store.getters.rootElements.splice(index, 1);
+        this.$store.getters['store/rootElements'].splice(index, 1);
       }
     },
     removeMessage(message) {
@@ -251,7 +250,7 @@ export default {
       this.showEditMessage = true;
     },
     getMessageById(id) {
-      return store.getters.rootElements.find(element => element.id === id);
+      return this.$store.getters['store/rootElements'].find(element => element.id === id);
     },
     change(value) {
       if (!value) {
@@ -265,7 +264,7 @@ export default {
           id: value.id,
           name: value.name,
         });
-        store.getters.rootElements.push(message);
+        this.$store.getters['store/rootElements'].push(message);
       }
       this.$emit('input', get(value, this.trackBy));
       this.refreshVueMultiselectValue();
@@ -301,7 +300,7 @@ export default {
         id: this.messageId,
         name: this.messageName,
       });
-      store.getters.rootElements.push(message);
+      this.$store.getters['rootElements'].push(message);
       this.showNewMessage = false;
     },
     updateOptions(globalMessages) {
@@ -311,7 +310,7 @@ export default {
       this.updateOptions([]);
     },
     loadSelected(value) {
-      const message = store.getters.rootElements.find(element => element.id === value);
+      const message = this.$store.getters['store/rootElements'].find(element => element.id === value);
       if (message) {
         this.selectedOption = {
           id: message.id,

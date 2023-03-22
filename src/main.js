@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import i18next from 'i18next';
 import VueI18Next from '@panter/vue-i18next';
 import ModelerApp from './ModelerApp.vue';
@@ -14,6 +15,7 @@ import store from '@/store';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
+Vue.use(Vuex);
 Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);
 Vue.use(VueI18Next);

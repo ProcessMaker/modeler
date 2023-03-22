@@ -80,7 +80,6 @@
 <script>
 import { faCheck, faChevronDown, faChevronUp, faExclamationTriangle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import store from '@/store';
 import validationErrorList from './errorListUtil';
 
 export default {
@@ -103,10 +102,10 @@ export default {
   computed: {
     autoValidate: {
       get() {
-        return store.getters.autoValidate;
+        return this.$store.getters['store/autoValidate'];
       },
       set(autoValidate) {
-        store.commit('setAutoValidate', autoValidate);
+        this.$store.commit('store/setAutoValidate', autoValidate);
       },
     },
     errorList() {

@@ -25,7 +25,6 @@ import { invalidNodeColor } from '@/components/nodeColors';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import store from '@/store';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 
 export default {
@@ -142,7 +141,7 @@ export default {
     },
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
-      store.commit('allowSavingElementPosition');
+      this.$store.commit('store/allowSavingElementPosition');
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -166,14 +165,14 @@ export default {
         return;
       }
 
-      store.commit('preventSavingElementPosition');
+      this.$store.commit('store/preventSavingElementPosition');
       this.validPosition = this.shape.position();
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
         this.resetInvalidTarget();
         this.$emit('save-state');
 
-        store.commit('allowSavingElementPosition');
+        this.$.commit('store/allowSavingElementPosition');
       });
     },
     turnInvalidTargetRed() {

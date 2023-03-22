@@ -42,7 +42,6 @@ import {
   FormTextArea,
 } from '@processmaker/vue-form-elements';
 import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
-import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
@@ -86,7 +85,7 @@ export default {
   },
   computed: {
     highlightedNode() {
-      return store.getters.highlightedNodes[0];
+      return this.$store.getters['store/highlightedNodes'][0];
     },
     isAnyNodeActive() {
       return this.highlightedNode;
@@ -212,7 +211,7 @@ export default {
       return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
     },
     setNodeProp(node, key, value) {
-      store.commit('updateNodeProp', { node, key, value });
+      this.$store.commit('store/updateNodeProp', { node, key, value });
     },
     defaultInspectorHandler(value) {
       /* Go through each property and rebind it to our data */

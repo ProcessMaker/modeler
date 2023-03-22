@@ -10,6 +10,7 @@ const mutations = {
     return (state.paperManager.scale = newScale);
   },
 };
+
 export default {
   namespaced: true,
   state,

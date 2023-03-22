@@ -113,7 +113,6 @@ import BpmnModdle from 'bpmn-moddle';
 import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
-import { store, undoRedoStore, paperManagerStore } from '@/store/index';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -247,14 +246,14 @@ export default {
       }
       return undefined;
     },
-    autoValidate: () => store.getters.autoValidate,
-    nodes: () => store.getters.nodes,
+    autoValidate: () => this.$store.getters['store/autoValidate'],
+    nodes: () => this.$store.getters['store/nodes'],
     currentXML() {
-      return undoRedoStore.getters.currentState;
+      return this.$store.getters['undoRedoStore/currentState'];
     },
     /* connectors expect a highlightedNode property */
-    highlightedNode: () => store.getters.highlightedNodes[0],
-    highlightedNodes: () => store.getters.highlightedNodes,
+    highlightedNode: () => this.$store.getters['store/highlightedNodes'][0],
+    highlightedNodes: () => this.$store.getters['store/highlightedNodes'],
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
@@ -328,7 +327,7 @@ export default {
     async pushToUndoStack() {
       try {
         const xml = await this.getXmlFromDiagram();
-        undoRedoStore.dispatch('pushState', xml);
+        this.$store.dispatch('undoRedoStore/pushState', xml);
 
         window.ProcessMaker.EventBus.$emit('modeler-change');
       } catch (invalidXml) {
@@ -348,8 +347,8 @@ export default {
       });
     },
     async validateBpmnDiagram() {
-      if (!store.getters.globalProcesses || store.getters.globalProcesses.length === 0) {
-        await store.dispatch('fetchGlobalProcesses');
+      if (!this.$store.getters['store/globalProcesses'] || this.$store.getters['store/globalProcesses'].length === 0) {
+        await this.$store.dispatch('store/fetchGlobalProcesses');
       }
       this.validationErrors = await this.linter.lint(this.definitions);
       this.$emit('validate', this.validationErrors);
@@ -395,14 +394,14 @@ export default {
       }
 
       if (event && event.shiftKey) {
-        store.commit('addToHighlightedNodes', [node]);
+        this.$store.commit('store/addToHighlightedNodes', [node]);
         return;
       }
 
       let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
 
       if (!isSameHighlightedNode) {
-        store.commit('highlightNode', node);  
+        this.$store.commit('store/highlightNode', node);  
       }
 
       return;
@@ -547,11 +546,11 @@ export default {
         this.loadDataAssociations(flowElements);
       });
 
-      store.commit('setRootElements', this.definitions.rootElements);
+      this.$store.commit('store/setRootElements', this.definitions.rootElements);
 
       this.addMessageFlows();
 
-      store.commit('highlightNode', this.processNode);
+      this.$store.commit('store/highlightNode', this.processNode);
     },
     getCollaboration() {
       return this.definitions.rootElements.find(({ $type }) => $type === 'bpmn:Collaboration');
@@ -643,7 +642,7 @@ export default {
 
       const node = this.createNode(type, definition, diagram);
 
-      store.commit('addNode', node);
+      this.$store.commit('store/addNode', node);
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
@@ -684,7 +683,7 @@ export default {
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
       this.xmlManager.definitions = this.definitions;
       this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
-      store.commit('clearNodes');
+      this.$store.commit('store/clearNodes');
       this.renderPaper();
     },
     getBoundaryEvents(process) {
@@ -776,7 +775,7 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
-      store.commit('addNode', node);
+      this.$store.commit('store/addNode', node);
       this.poolTarget = null;
 
       // add processmaker-modeler-generic-flow
@@ -811,8 +810,8 @@ export default {
 
       this.removeNodesFromLane(node);
       this.removeNodesFromPool(node);
-      store.commit('removeNode', node);
-      store.commit('highlightNode', this.processNode);
+      this.$store.commit('store/removeNode', node);
+      this.$store.commit('store/highlightNode', this.processNode);
       await this.$nextTick();
       this.pushToUndoStack();
     },
@@ -837,16 +836,16 @@ export default {
           await this.highlightNode(null);
           await this.$nextTick();
           await this.addNode(actualFlow);
-          await store.commit('removeNode', genericFlow);
+          await this.$store.commit('store/removeNode', genericFlow);
           await this.$nextTick();
           await this.highlightNode(targetNode);
         });
       });
     },
     async performSingleUndoRedoTransaction(cb) {
-      undoRedoStore.commit('disableSavingState');
+      this.$store.commit('undoRedoStore/disableSavingState');
       await cb();
-      undoRedoStore.commit('enableSavingState');
+      this.$store.commit('undoRedoStore/enableSavingState');
       this.pushToUndoStack();
     },
     removeNodesFromLane(node) {
@@ -905,7 +904,7 @@ export default {
 
       moveShapeByKeypress(
         event.key,
-        store.getters.highlightedShapes,
+        this.$store.getters['store/highlightedShapes'],
         this.pushToUndoStack,
       );
     },
@@ -929,7 +928,7 @@ export default {
   created() {
     if (runningInCypressTest()) {
       /* Add reference to store on window; this is used in testing to verify rendered nodes */
-      window.store = store;
+      window.store = this.$store.store;
     }
 
     this.$t = this.$t.bind(this);
@@ -961,7 +960,7 @@ export default {
     document.addEventListener('keydown', this.keydownListener);
 
     this.graph = new dia.Graph();
-    store.commit('setGraph', this.graph);
+    this.$store.commit('store/setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
       return {
         elementMove: cellView.model.get('elementMove'),
@@ -970,7 +969,7 @@ export default {
     });
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
-    paperManagerStore.commit('setPaperManager', this.paperManager);
+    this.$store.commit('paperManagerStore/setPaperManager', this.paperManager);
     this.paper = this.paperManager.paper;
 
     this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
@@ -978,10 +977,10 @@ export default {
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    store.commit('setPaper', this.paperManager.paper);
+    this.$store.commit('store/setPaper', this.paperManager.paper);
 
     this.paperManager.addEventHandler('blank:pointerclick', () => {
-      store.commit('highlightNode', this.processNode);
+      this.$store.commit('store/highlightNode', this.processNode);
     }, this);
 
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
@@ -1042,7 +1041,7 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: xml => {
         this.loadXML(xml);
-        undoRedoStore.dispatch('pushState', xml);
+        this.$store.dispatch('undoRedoStore/pushState', xml);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),

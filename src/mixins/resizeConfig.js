@@ -3,7 +3,6 @@ import resizeIcon from '@/assets/highlight-shape.svg';
 import { labelWidth, minPoolHeight, minPoolWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 import { minLaneHeight, minLaneWidth } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';
-import store from '@/store';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 
 export default {
@@ -166,14 +165,14 @@ export default {
           this.poolComponent.updateLaneChildren();
 
           this.poolComponent.sortedLanes().forEach(laneShape => {
-            store.commit('updateNodeBounds', {
+            this.$store.commit('store/updateNodeBounds', {
               node: laneShape.component.node,
               bounds: laneShape.getBBox(),
             });
           });
         }
 
-        store.commit('updateNodeBounds', {
+        this.$store.commit('store/updateNodeBounds', {
           node: this.poolComponent.node,
           bounds: this.poolComponent.shape.getBBox(),
         });
