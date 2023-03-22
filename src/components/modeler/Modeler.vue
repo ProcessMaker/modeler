@@ -1000,6 +1000,8 @@ export default {
 
     this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
+      this.$refs.selector.initSelection();
+
     }, this);
 
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
@@ -1007,9 +1009,7 @@ export default {
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      console.log('(x,y)', x,y);
       this.$refs.selector.startSelection(event, this.paperManager.paper);
- 
       // this.isGrabbing = true;
     }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {

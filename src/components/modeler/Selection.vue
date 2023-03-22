@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isSelecting" class="box" />
+  <div v-if="isSelecting" class="box" @mouseover="handleMouseOver"/>
 </template>
 
 <script>
@@ -18,18 +18,22 @@ export default {
     return {
       start: null,
       isSelecting: false,
-      selected: null,
+      selected: [],
     };
   },
   mounted(){
-
     this.paper.on('scale:changed ', this.updateSelectionBox);
+    this.paper.on('element:pointerclick', this.addToSelection);
   },
   methods: {
+    initSelection(){
+      this.isSelecting = false;
+      this.selected = [];
+      this.start = null;
+    },
     startSelection(event, paper) {
       const nEvent= util.normalizeEvent(event);
       this.isSelecting = true;
-      // store.commit('clearNodes');
       store.commit('highlightNode');
       const paperOffset = paper.$el.offset();
       this.start = {
@@ -90,13 +94,12 @@ export default {
       const selectedNodes = this.selected.filter(shape => shape.model.component)
         .map(shape => shape.model.component.node);
       store.commit('addToHighlightedNodes', selectedNodes);
-      console.log(selectedNodes);
-      // console.log('endSelection');
-
-      this.updateSelectionBox();
-      // this.isSelecting = false;
+      if (this.selected && this.selected.length > 0) {
+        this.updateSelectionBox();
+      } else {
+        this.isSelecting = false;
+      }
       this.start = null;  
-
     },
     getElementsInSelectedArea(a) {
       const b = this.paper;
@@ -130,6 +133,17 @@ export default {
       }
      
     },
+    addToSelection(elementView){
+      if (this.isSelecting && elementView) {
+        this.selected.push(elementView);
+        this.updateSelectionBox();
+      }
+
+    },
+    handleMouseOver(event){
+      console.log('handleMouseOver');
+      console.log(event);
+    },
   },
 };
 </script>
@@ -137,6 +151,7 @@ export default {
 <style>
 .box {
   border: 1px solid #5faaee;
-  background:rgba(13, 153, 255, .1);
+  pointer-events: none;
+  /* background:rgba(13, 153, 255, .1); */
 }
 </style>
