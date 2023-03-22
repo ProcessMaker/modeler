@@ -100,10 +100,10 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faAlignCenter, faAlignLeft, faAlignRight } from '@fortawesome/free-solid-svg-icons';
+import { mapGetters } from 'vuex';
 import { getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
 import distributeHorizontallyIcon from '@/assets/distribute-horizontally-icon.svg';
 import distributeVerticallyIcon from '@/assets/distribute-vertically-icon.svg';
-
 
 export default {
   components: { FontAwesomeIcon },
@@ -123,8 +123,11 @@ export default {
     },
   },
   computed: {
+    ...mapGetters('store', [
+      'highlightedShapes',
+    ]),
     selectedShapes() {
-      return getShapesOptions(this.$store.getters['store/highlightedShapes']);
+      return getShapesOptions(this.highlightedShapes);
     },
   },
   watch: {
