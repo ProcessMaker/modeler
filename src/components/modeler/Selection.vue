@@ -23,6 +23,7 @@ export default {
   },
   mounted(){
     this.paper.on('scale:changed ', this.updateSelectionBox);
+    this.paper.on('translate:changed ', this.translateChanged);
     this.paper.on('element:pointerclick', this.selectOrUnselectItem);
   },
   methods: {
@@ -134,7 +135,7 @@ export default {
      
     },
     selectOrUnselectItem(elementView){
-      console.log('addToSelection');
+      // console.log('addToSelection');
       if (this.isSelecting && elementView) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
@@ -147,6 +148,11 @@ export default {
       }
 
     },
+    translateChanged() {
+      if (this.isSelecting) {
+        this.updateSelectionBox();
+      }
+    },  
     handleMouseOver(event){
       console.log('handleMouseOver');
       console.log(event);
