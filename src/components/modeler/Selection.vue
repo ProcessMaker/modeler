@@ -5,22 +5,32 @@
 <script>
 import { util, g, V } from 'jointjs';
 import store from '@/store';
+
 export default {
   name: 'Selection',
   props: {
     options: Object,
     paper: Object,
+    paperManager: Object,
+    useModelGeometry: Boolean,
   },
   data() {
     return {
       start: null,
       isSelecting: false,
+      selected: null,
     };
+  },
+  mounted(){
+
+    this.paper.on('scale:changed ', this.updateSelectionBox);
   },
   methods: {
     startSelection(event, paper) {
       const nEvent= util.normalizeEvent(event);
       this.isSelecting = true;
+      // store.commit('clearNodes');
+      store.commit('highlightNode');
       const paperOffset = paper.$el.offset();
       this.start = {
         x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
@@ -75,18 +85,50 @@ export default {
       height /= scale.sy;
 
       let selectedArea = g.rect(f.x, f.y, width, height);
-      let selectedNodes = this.getElementsInSelectedArea(selectedArea);
+      this.selected= this.getElementsInSelectedArea(selectedArea);
+
+      const selectedNodes = this.selected.filter(shape => shape.model.component)
+        .map(shape => shape.model.component.node);
       store.commit('addToHighlightedNodes', selectedNodes);
       console.log(selectedNodes);
-      console.log('endSelection');
-      this.isSelecting = false;
-      this.start = null;
+      // console.log('endSelection');
+
+      this.updateSelectionBox();
+      // this.isSelecting = false;
+      this.start = null;  
 
     },
     getElementsInSelectedArea(a) {
       const b = this.paper;
       const c = { strict: false };
       return b.findViewsInArea(a, c);
+    },
+    updateSelectionBox(){
+      if (this.isSelecting) {
+        debugger;
+        const point = { x : 1 / 0, y: 1 / 0 };
+        const size = { width: 0, height: 0 };
+        const useModelGeometry = this.useModelGeometry;
+        this.selected.map(function(view) {
+          const box = view.getBBox({
+            useModelGeometry,
+          });
+          
+          point.x = Math.min(point.x, box.x);
+          point.y = Math.min(point.y, box.y);
+          size.width = Math.max(size.width, box.x + box.width);
+          size.height= Math.max(size.height, box.y + box.height);
+        });
+        // Set the position of the element
+        this.$el.style.left =`${point.x}px`;
+        this.$el.style.top = `${point.y}px`;
+
+        // Set the dimensions of the element
+        this.$el.style.width = `${size.width - point.x}px`;
+        this.$el.style.height = `${size.height - point.y}px`;
+
+      }
+     
     },
   },
 };

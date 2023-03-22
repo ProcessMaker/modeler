@@ -105,6 +105,8 @@
         ref="selector" 
         :options="selectorOptions"
         :paper="paper"
+        :paperManager="paperManager"
+        :useModelGeometry="false"
       />
     </b-row>
   </span>
