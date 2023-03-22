@@ -23,7 +23,7 @@ export default {
   },
   mounted(){
     this.paper.on('scale:changed ', this.updateSelectionBox);
-    this.paper.on('element:pointerclick', this.addToSelection);
+    this.paper.on('element:pointerclick', this.selectOrUnselectItem);
   },
   methods: {
     initSelection(){
@@ -133,7 +133,7 @@ export default {
       }
      
     },
-    addToSelection(elementView){
+    selectOrUnselectItem(elementView){
       console.log('addToSelection');
       if (this.isSelecting && elementView) {
         const element = this.selected.find( item => item.id === elementView.id);
