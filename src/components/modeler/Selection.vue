@@ -134,8 +134,15 @@ export default {
      
     },
     addToSelection(elementView){
+      console.log('addToSelection');
       if (this.isSelecting && elementView) {
-        this.selected.push(elementView);
+        const element = this.selected.find( item => item.id === elementView.id);
+        if (!element) {
+          this.selected.push(elementView);
+        } else {
+          this.selected = this.selected.filter(item => item.id !== elementView.id);
+        }
+        // last we need update the selection box
         this.updateSelectionBox();
       }
 
