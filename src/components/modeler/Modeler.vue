@@ -101,8 +101,10 @@
         @default-flow="toggleDefaultFlow"
       />
       <selection
+        v-if="paper"
         ref="selector" 
         :options="selectorOptions"
+        :paper="paper"
       />
     </b-row>
   </span>

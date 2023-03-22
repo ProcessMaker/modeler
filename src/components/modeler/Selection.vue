@@ -3,18 +3,17 @@
 </template>
 
 <script>
-import { util, g } from 'jointjs';
+import { util, g, V } from 'jointjs';
+import store from '@/store';
 export default {
   name: 'Selection',
   props: {
     options: Object,
+    paper: Object,
   },
   data() {
     return {
-      test: 'test',
       start: null,
-      // end: null,
-      // size: null,
       isSelecting: false,
     };
   },
@@ -27,14 +26,6 @@ export default {
         x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
         y: nEvent.clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
       };
-      // this.end = {
-      //   x: this.start.x,
-      //   y: this.start.y,
-      // };
-      // this.size = {
-      //   height: 0,
-      //   width: 0,
-      // };
       this._offset = {
         x: nEvent.offsetX,
         y: nEvent.offsetY,
@@ -44,7 +35,6 @@ export default {
     updateSelection(event, paper) {
       if (this.isSelecting &&  this.start) {
         const nEvent= util.normalizeEvent(event);
-        console.log('update selection');
 
         const paperOffset = paper.$el.offset();
         const end = {
@@ -56,7 +46,6 @@ export default {
           height: end.y - this.start.y,
           width: end.x - this.start.x,
         };
-        console.log(size.height, size.width);
         // Set the position of the element
         this.$el.style.position = 'absolute';
         this.$el.style.left =`${size.width < 0 ? this._offset.x + size.width: this.start.x}px`;
@@ -69,21 +58,16 @@ export default {
       }
     },
     endSelection(paper) {
+      const paperOffset = paper.$el.offset();
 
       const selectorOffset = {
-        left: this.$el.offsetLeft,
-        top: this.$el.offsetTop,
+        left: this.$el.offsetLeft + paperOffset.left,
+        top: this.$el.offsetTop + paperOffset.top, 
       };
       let width = this.$el.clientWidth;
       let height = this.$el.clientHeight;
 
-      console.log(selectorOffset);
-      console.log(width);
-      console.log(height);
-      console.log(paper);
-      // const f =paper.toLocalPoint(selectorOffset.left, selectorOffset.top);
-      const f = paper.clientToLocalPoint(selectorOffset.left, selectorOffset.top);
-      console.log(f);
+      const f = V(paper.viewport).toLocalPoint(selectorOffset.left, selectorOffset.top);
       f.x -= window.pageXOffset;
       f.y -= window.pageYOffset;
       const scale = paper.scale();
@@ -91,12 +75,18 @@ export default {
       height /= scale.sy;
 
       let selectedArea = g.rect(f.x, f.y, width, height);
-
-      console.log(selectedArea);
+      let selectedNodes = this.getElementsInSelectedArea(selectedArea);
+      store.commit('addToHighlightedNodes', selectedNodes);
+      console.log(selectedNodes);
       console.log('endSelection');
       this.isSelecting = false;
       this.start = null;
 
+    },
+    getElementsInSelectedArea(a) {
+      const b = this.paper;
+      const c = { strict: false };
+      return b.findViewsInArea(a, c);
     },
   },
 };

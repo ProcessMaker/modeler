@@ -100,7 +100,7 @@ export default function setUpSelectionBox(setCursor, resetCursor, paperManager, 
       .map(shape => shape.model.component.node);
 
     store.commit('addToHighlightedNodes', selectedNodes);
-
+    
     graph.removeCells(selectionBox);
     selectionBox = null;
   }
