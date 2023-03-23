@@ -136,7 +136,7 @@ export default {
       return b.findViewsInArea(a, c);
     },
     updateSelectionBox(){
-      if (this.isSelecting) {
+      if (this.isSelecting && this.$el.style) {
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
         const useModelGeometry = this.useModelGeometry;
