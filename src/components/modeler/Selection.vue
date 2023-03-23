@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isSelecting" class="box" @mouseover="handleMouseOver"/>
+  <div ref="drag" v-if="isSelecting" class="box" @mousedown="startDrag"/>
 </template>
 
 <script>
@@ -19,6 +19,13 @@ export default {
       start: null,
       isSelecting: false,
       selected: [],
+      dragging: false,
+      mouseX: 0,
+      mouseY: 0,
+      top: 0,
+      left: 0,
+      snappedClientX: 0,
+      snappedClientY: 0,
     };
   },
   mounted(){
@@ -73,34 +80,36 @@ export default {
       }
     },
     endSelection(paper) {
-      const paperOffset = paper.$el.offset();
+      if (this.isSelecting ) {
+        const paperOffset = paper.$el.offset();
 
-      const selectorOffset = {
-        left: this.$el.offsetLeft + paperOffset.left,
-        top: this.$el.offsetTop + paperOffset.top, 
-      };
-      let width = this.$el.clientWidth;
-      let height = this.$el.clientHeight;
+        const selectorOffset = {
+          left: this.$el.offsetLeft + paperOffset.left,
+          top: this.$el.offsetTop + paperOffset.top, 
+        };
+        let width = this.$el.clientWidth;
+        let height = this.$el.clientHeight;
 
-      const f = V(paper.viewport).toLocalPoint(selectorOffset.left, selectorOffset.top);
-      f.x -= window.pageXOffset;
-      f.y -= window.pageYOffset;
-      const scale = paper.scale();
-      width /= scale.sx;
-      height /= scale.sy;
+        const f = V(paper.viewport).toLocalPoint(selectorOffset.left, selectorOffset.top);
+        f.x -= window.pageXOffset;
+        f.y -= window.pageYOffset;
+        const scale = paper.scale();
+        width /= scale.sx;
+        height /= scale.sy;
 
-      let selectedArea = g.rect(f.x, f.y, width, height);
-      this.selected= this.getElementsInSelectedArea(selectedArea);
+        let selectedArea = g.rect(f.x, f.y, width, height);
+        this.selected= this.getElementsInSelectedArea(selectedArea);
 
-      const selectedNodes = this.selected.filter(shape => shape.model.component)
-        .map(shape => shape.model.component.node);
-      store.commit('addToHighlightedNodes', selectedNodes);
-      if (this.selected && this.selected.length > 0) {
-        this.updateSelectionBox();
-      } else {
-        this.isSelecting = false;
+        const selectedNodes = this.selected.filter(shape => shape.model.component)
+          .map(shape => shape.model.component.node);
+        store.commit('addToHighlightedNodes', selectedNodes);
+        if (this.selected && this.selected.length > 0) {
+          this.updateSelectionBox();
+        } else {
+          this.isSelecting = false;
+        }
+        this.start = null;  
       }
-      this.start = null;  
     },
     getElementsInSelectedArea(a) {
       const b = this.paper;
@@ -108,6 +117,7 @@ export default {
       return b.findViewsInArea(a, c);
     },
     updateSelectionBox(){
+      console.log('updateSelectionBox');
       if (this.isSelecting) {
         debugger;
         const point = { x : 1 / 0, y: 1 / 0 };
@@ -134,9 +144,10 @@ export default {
       }
      
     },
-    selectOrUnselectItem(elementView){
-      // console.log('addToSelection');
+    
+    selectOrUnselectItem(elementView) {
       if (this.isSelecting && elementView) {
+        console.log('addToSelection');
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
@@ -153,9 +164,52 @@ export default {
         this.updateSelectionBox();
       }
     },  
-    handleMouseOver(event){
-      console.log('handleMouseOver');
-      console.log(event);
+    startDrag(event) {
+      console.log('startDrag');
+      this.dragging = true;
+      const nEvent= util.normalizeEvent(event);
+      this.mouseX = nEvent.clientX;
+      this.mouseY = nEvent.clientY;
+      this.top = this.$refs.drag.offsetTop;
+      this.left = this.$refs.drag.offsetLeft;
+
+      const snapToGrid = this.paperManager.paper.snapToGrid({ x: nEvent.clientX, y: nEvent.clientY });
+      this.snappedClientX = snapToGrid.x;
+      this.snappedClientY = snapToGrid.y;
+
+      window.addEventListener('mousemove', this.drag);
+      window.addEventListener('mouseup', this.stopDrag);
+    },
+    drag(event) {
+      console.log('drag selector');
+      if (!this.dragging) return;
+      const nEvent= util.normalizeEvent(event);
+      // var point = this.paperManager.paper.snapToGrid({ x: nEvent.clientX, y: nEvent.clientY });
+      // console.log(point);
+      const deltaX = nEvent.clientX - this.mouseX;
+      const deltaY = nEvent.clientY - this.mouseY;
+      this.top += deltaY;
+      this.left += deltaX;
+      this.mouseX = nEvent.clientX;
+      this.mouseY = nEvent.clientY;
+      // Set the position of the element
+      this.$el.style.position = 'absolute';
+
+      this.$el.style.left =`${this.left}px`;
+      this.$el.style.top = `${this.top}px`;
+      const scale = this.paperManager.paper.scale();
+      store.getters.highlightedShapes.forEach(shape => {
+        shape.translate(deltaX/scale.sx, deltaY/scale.sy);
+        // this.graph.getConnectedLinks(shape);
+      });
+
+    },
+
+    stopDrag() {
+      console.log('stop drag selector');
+      this.dragging = false;
+      window.removeEventListener('mousemove', this.drag);
+      window.removeEventListener('mouseup', this.stopDrag);
     },
   },
 };
@@ -164,7 +218,7 @@ export default {
 <style>
 .box {
   border: 1px solid #5faaee;
-  pointer-events: none;
+  /* pointer-events: none; */
   /* background:rgba(13, 153, 255, .1); */
 }
 </style>
