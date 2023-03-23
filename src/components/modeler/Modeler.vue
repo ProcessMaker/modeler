@@ -139,7 +139,6 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
-import zoomCanvas from '@/components/modeler/hotkeys';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
@@ -211,6 +210,9 @@ export default {
       xmlManager: null,
       previouslyStackedShape: null,
       canvasScale: 1,
+      initialScale: 1,
+      minimumScale: 0.2,
+      scaleStep: 0.1,
     };
   },
   watch: {
@@ -904,24 +906,10 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
-    keyupListener(event) {
-      if (event.key === 'Control') {
-        this.ctrlModActive = false;
-      }
-    },
     keydownListener(event) {
       const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
       if (focusIsOutsideDiagram) {
         return;
-      }
-
-      if (event.key === 'Control') {
-        this.ctrlModActive = true;
-      }
-
-      if ((event.key === '+' || event.key === '-') && this.ctrlModActive) {
-        event.preventDefault();
-        this.canvasScale = zoomCanvas(event.key, this.canvasScale);
       }
 
       moveShapeByKeypress(
@@ -945,6 +933,12 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
+    },
+    zoomIn() {
+      this.canvasScale += this.scaleStep;
+    },
+    zoomOut() {
+      this.canvasScale = Math.max(this.minimumScale, this.canvasScale -= this.scaleStep);
     },
   },
   created() {
@@ -980,7 +974,18 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.keydownListener);
-    document.addEventListener('keyup', this.keyupListener);
+    this.$mousetrap.bind(['command+plus', 'ctrl+plus'], (e) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      this.zoomIn();
+    });
+    this.$mousetrap.bind(['command+-', 'ctrl+-'], (e) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      this.zoomOut();
+    });
 
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
