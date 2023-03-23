@@ -145,6 +145,7 @@ import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, remove
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
+import { mapGetters } from 'vuex';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
@@ -246,14 +247,13 @@ export default {
       }
       return undefined;
     },
-    autoValidate: () => this.$store.getters['store/autoValidate'],
-    nodes: () => this.$store.getters['store/nodes'],
-    currentXML() {
-      return this.$store.getters['undoRedoStore/currentState'];
-    },
-    /* connectors expect a highlightedNode property */
-    highlightedNode: () => this.$store.getters['store/highlightedNodes'][0],
-    highlightedNodes: () => this.$store.getters['store/highlightedNodes'],
+    ...mapGetters({
+      autoValidate: 'store/autoValidate',
+      nodes: 'store/nodes',
+      currentXml: 'undoRedoStore/currentState',
+      highlightedNode: 'store/highlightedNodes'[0],
+      highlightedNodes: 'store/highlightedNodes',
+    }),
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
