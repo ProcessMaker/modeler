@@ -1,13 +1,29 @@
 <template>
-  <div ref="drag" v-if="isSelecting" class="box" @mousedown="startDrag"/>
+  <div ref="drag" v-if="isSelecting" class="box" @mousedown="startDrag">
+    <crown-multiselect
+      :paper="paper"
+      :graph="$parent.graph"
+      :moddle="$parent.moddle"
+      :collaboration="$parent.collaboration"
+      :process-node="$parent.processNode"
+      :plane-elements="$parent.planeElements"
+      :is-rendering="$parent.isRendering"
+      :dropdown-data="[]"
+      v-on="$listeners"
+    />
+  </div>
 </template>
 
 <script>
 import { util, g, V } from 'jointjs';
 import store from '@/store';
+import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 
 export default {
   name: 'Selection',
+  components: {
+    CrownMultiselect,
+  },
   props: {
     options: Object,
     paper: Object,
@@ -34,6 +50,9 @@ export default {
     this.paper.on('element:pointerclick', this.selectOrUnselectItem);
   },
   methods: {
+    clearSelection() {
+      this.initSelection();
+    },
     initSelection(){
       this.isSelecting = false;
       this.selected = [];
@@ -119,7 +138,6 @@ export default {
     updateSelectionBox(){
       console.log('updateSelectionBox');
       if (this.isSelecting) {
-        debugger;
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
         const useModelGeometry = this.useModelGeometry;

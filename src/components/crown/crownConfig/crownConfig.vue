@@ -1,5 +1,5 @@
 <template>
-  <div class="crown-config" :style="style" v-if="showCrown" role="menu">
+  <div class="crown-config" :style="style" v-if="showCrown && !isMultiselect" role="menu">
     <slot />
 
     <association-flow-button
@@ -168,6 +168,10 @@ export default {
     this.$t = this.$t.bind(this);
   },
   computed: {
+    isMultiselect() {
+      const countSelected = store.getters.highlightedShapes.length;
+      return countSelected > 1;
+    },
     isFlow() {
       return [
         'processmaker-modeler-sequence-flow',
