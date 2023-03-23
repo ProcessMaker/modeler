@@ -136,7 +136,6 @@ export default {
       return b.findViewsInArea(a, c);
     },
     updateSelectionBox(){
-      console.log('updateSelectionBox');
       if (this.isSelecting) {
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
@@ -165,7 +164,6 @@ export default {
     
     selectOrUnselectItem(elementView) {
       if (this.isSelecting && elementView) {
-        console.log('addToSelection');
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
@@ -183,7 +181,6 @@ export default {
       }
     },  
     startDrag(event) {
-      console.log('startDrag');
       this.dragging = true;
       const nEvent= util.normalizeEvent(event);
       this.mouseX = nEvent.clientX;
@@ -199,11 +196,8 @@ export default {
       window.addEventListener('mouseup', this.stopDrag);
     },
     drag(event) {
-      console.log('drag selector');
       if (!this.dragging) return;
       const nEvent= util.normalizeEvent(event);
-      // var point = this.paperManager.paper.snapToGrid({ x: nEvent.clientX, y: nEvent.clientY });
-      // console.log(point);
       const deltaX = nEvent.clientX - this.mouseX;
       const deltaY = nEvent.clientY - this.mouseY;
       this.top += deltaY;
@@ -218,13 +212,11 @@ export default {
       const scale = this.paperManager.paper.scale();
       store.getters.highlightedShapes.forEach(shape => {
         shape.translate(deltaX/scale.sx, deltaY/scale.sy);
-        // this.graph.getConnectedLinks(shape);
       });
 
     },
 
     stopDrag() {
-      console.log('stop drag selector');
       this.dragging = false;
       window.removeEventListener('mousemove', this.drag);
       window.removeEventListener('mouseup', this.stopDrag);
@@ -236,7 +228,7 @@ export default {
 <style>
 .box {
   border: 1px solid #5faaee;
-  /* pointer-events: none; */
+  pointer-events: none;
   /* background:rgba(13, 153, 255, .1); */
 }
 </style>
