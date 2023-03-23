@@ -99,6 +99,7 @@ export default {
 
         let selectedArea = g.rect(f.x, f.y, width, height);
         this.selected= this.getElementsInSelectedArea(selectedArea);
+        console.log(this.selected);
 
         const selectedNodes = this.selected.filter(shape => shape.model.component)
           .map(shape => shape.model.component.node);
@@ -117,9 +118,8 @@ export default {
       return b.findViewsInArea(a, c);
     },
     updateSelectionBox(){
-      console.log('updateSelectionBox');
       if (this.isSelecting) {
-        debugger;
+        console.log('updateSelectionBox');
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
         const useModelGeometry = this.useModelGeometry;
@@ -165,7 +165,7 @@ export default {
       }
     },  
     startDrag(event) {
-      console.log('startDrag');
+      console.log('start Drag');
       this.dragging = true;
       const nEvent= util.normalizeEvent(event);
       this.mouseX = nEvent.clientX;
@@ -182,6 +182,9 @@ export default {
     },
     drag(event) {
       console.log('drag selector');
+      const shapesToNotTranslate = [
+        'PoolLane',
+      ];
       if (!this.dragging) return;
       const nEvent= util.normalizeEvent(event);
       // var point = this.paperManager.paper.snapToGrid({ x: nEvent.clientX, y: nEvent.clientY });
@@ -198,9 +201,10 @@ export default {
       this.$el.style.left =`${this.left}px`;
       this.$el.style.top = `${this.top}px`;
       const scale = this.paperManager.paper.scale();
-      store.getters.highlightedShapes.forEach(shape => {
-        shape.translate(deltaX/scale.sx, deltaY/scale.sy);
-        // this.graph.getConnectedLinks(shape);
+      this.selected.forEach(shape => {
+        if (!shape.model.getParentCell() && !shapesToNotTranslate.includes(shape.model.get('type'))){
+          shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
+        }
       });
 
     },
