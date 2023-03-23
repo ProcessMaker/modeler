@@ -30,7 +30,9 @@ const getters = {
       .map(getters.nodeShape);
   },
   rootElements: (state) => state.rootElements,
-  autoValidate: (state) => state.autoValidate,
+  autoValidate: (state) => {
+    return state.autoValidate;
+  },
   globalProcesses: (state) => state.globalProcesses,
   globalProcessEvents: (state, getters) =>
     flatten(getters.globalProcesses.map((process) => process.events)),
@@ -131,6 +133,12 @@ const actions = {
     } catch (error) {
       /* Ignore error */
     }
+  },
+  clearNodes({ commit }) {
+    commit('clearNodes');
+  },
+  setGraph({ commit }, payload) {
+    commit('setGraph', payload);
   },
 };
 

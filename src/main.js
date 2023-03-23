@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
 import i18next from 'i18next';
 import VueI18Next from '@panter/vue-i18next';
 import ModelerApp from './ModelerApp.vue';
@@ -11,11 +10,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import ScreenBuilder from '@processmaker/screen-builder';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
-import store from '@/store';
+import store from './store';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-Vue.use(Vuex);
 Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);
 Vue.use(VueI18Next);

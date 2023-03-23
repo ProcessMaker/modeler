@@ -8,7 +8,7 @@ const debug = process.env.NODE_ENV !== 'production';
 
 Vue.use(Vuex);
 
-export const storee = new Vuex.Store({
+export default new Vuex.Store({
   modules: {
     store,
     paperManagerStore,

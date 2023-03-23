@@ -960,7 +960,7 @@ export default {
     document.addEventListener('keydown', this.keydownListener);
 
     this.graph = new dia.Graph();
-    this.$store.commit('store/setGraph', this.graph);
+    this.$store.dispatch('store/setGraph', _.cloneDeep(this.graph));
     this.graph.set('interactiveFunc', cellView => {
       return {
         elementMove: cellView.model.get('elementMove'),
