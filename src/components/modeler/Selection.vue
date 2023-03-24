@@ -1,13 +1,29 @@
 <template>
-  <div ref="drag" v-if="showLasso" class="box" @mousedown="startDrag"/>
+  <div ref="drag" v-if="showLasso" class="box" @mousedown="startDrag">
+    <crown-multiselect
+      :paper="paper"
+      :graph="$parent.graph"
+      :moddle="$parent.moddle"
+      :collaboration="$parent.collaboration"
+      :process-node="$parent.processNode"
+      :plane-elements="$parent.planeElements"
+      :is-rendering="$parent.isRendering"
+      :dropdown-data="[]"
+      v-on="$listeners"
+    />
+  </div>
 </template>
 
 <script>
 import { util, g, V } from 'jointjs';
 import store from '@/store';
+import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 
 export default {
   name: 'Selection',
+  components: {
+    CrownMultiselect,
+  },
   props: {
     options: Object,
     paper: Object,
@@ -36,8 +52,10 @@ export default {
     this.paper.on('element:pointerclick', this.selectOrUnselectItem);
   },
   methods: {
-    initSelector(){
-      this.dragging = false;
+    clearSelection() {
+      this.initSelection();
+    },
+    initSelection(){
       this.isSelecting = false;
       this.start = null;
       this.selected = [];
@@ -60,7 +78,7 @@ export default {
           y: nEvent.offsetY,
         };
       } else {
-        this.initSelector();
+        this.clearSelection();
       }
     },
 
@@ -118,7 +136,7 @@ export default {
           this.isSelected = true;
           this.start = null;
         } else {
-          this.initSelector();
+          this.clearSelection();
         }
       }
     },
@@ -128,8 +146,7 @@ export default {
       return b.findViewsInArea(a, c);
     },
     updateSelectionBox(){
-      if (this.isSelecting || this.isSelected) {
-        console.log('updateSelectionBox');
+      if (this.isSelecting && this.$el.style) {
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
         const useModelGeometry = this.useModelGeometry;
@@ -156,7 +173,7 @@ export default {
     },
     
     selectOrUnselectItem(elementView) {
-      if (this.isSelected && elementView) {
+      if (this.isSelecting && elementView) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
@@ -240,7 +257,7 @@ export default {
         this.updateSelectionBox();
         this.addToHighlightedNodes();
       } else {
-        this.initSelector();
+        this.clearSelection();
         this.removeListeners();
       }
     },

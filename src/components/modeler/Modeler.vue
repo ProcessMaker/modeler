@@ -107,6 +107,7 @@
         :paper="paper"
         :paperManager="paperManager"
         :useModelGeometry="false"
+        @remove-nodes="removeNodes"
       />
     </b-row>
   </span>
@@ -834,6 +835,19 @@ export default {
       store.commit('highlightNode', this.processNode);
       await this.$nextTick();
       this.pushToUndoStack();
+    },
+    async removeNodes() {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
+          const waitPromises = [];
+          this.highlightedNodes.forEach((node) =>
+            waitPromises.push(this.removeNode(node, { removeRelationships: true }))
+          );
+          await Promise.all(waitPromises);
+          store.commit('highlightNode');
+          this.$refs.selector.clearSelection();
+        });
+      });
     },
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {

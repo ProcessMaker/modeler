@@ -30,7 +30,7 @@ export default class PaperManager {
       },
     });
 
-    // paper.translate(168, 20);
+    paper.translate(168, 20);
 
     return new this(paper);
   }
