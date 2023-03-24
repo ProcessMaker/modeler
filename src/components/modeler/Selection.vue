@@ -50,12 +50,15 @@ export default {
       hasMouseDown: false,
       hasMouseMoved: false,
       showLasso: false,
+      shiftKeyPressed: false,
     };
   },
   mounted(){
     this.paper.on('scale:changed ', this.updateSelectionBox);
     this.paper.on('translate:changed ', this.translateChanged);
-    this.paper.on('element:pointerclick', this.selectOrUnselectItem);
+    this.paper.on('element:pointerclick', this.selectShiftPressed);
+    document.addEventListener('keydown', this.shiftKeyDownListener);
+    document.addEventListener('keyup', this.shiftKeyUpListener);
   },
   methods: {
     clearSelection() {
@@ -112,10 +115,6 @@ export default {
       }
     },
     endSelection(paper) {
-      // if (this.isSelected && this.dragging) {
-      //   this.stopDrag();
-      //   return;
-      // } 
       if (this.isSelecting && !this.isSelected) {
         const paperOffset = paper.$el.offset();
 
@@ -135,7 +134,6 @@ export default {
 
         let selectedArea = g.rect(f.x, f.y, width, height);
         this.selected= this.getElementsInSelectedArea(selectedArea);
-        console.log(this.selected);
         if (this.selected && this.selected.length > 0) {
           this.updateSelectionBox();
           this. addToHighlightedNodes();
@@ -178,17 +176,20 @@ export default {
      
     },
     
-    selectOrUnselectItem(elementView) {
-      if (this.isSelecting && elementView) {
+    selectShiftPressed(elementView) {
+      if (this.isSelecting && elementView && this.shiftKeyPressed){
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
-        }
-        if (this.selected && this.selected.length > 0) {
           this.updateSelectionBox();
           this. addToHighlightedNodes();
         }
+      } else {
+        this.clearSelection();
+        this.removeListeners();
       }
+      
+      
     },
     translateChanged() {
       if (this.isSelecting) {
@@ -198,7 +199,7 @@ export default {
     startDrag(event) {
       this.dragging = true;
       this.hasMouseMoved = false;
-      console.log('start Drag');
+      // console.log('start Drag');
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
       this.top = this.$refs.drag.offsetTop;
@@ -206,9 +207,10 @@ export default {
 
       window.addEventListener('mousemove', this.drag);
       window.addEventListener('mouseup', this.stopDrag);
+      
     },
     drag(event) {
-      console.log('drag selector');
+      // console.log('drag selector');
       const shapesToNotTranslate = [
         'PoolLane',
       ];
@@ -237,23 +239,32 @@ export default {
 
     stopDrag(event) {
       if (this.hasMouseMoved) {
-        console.log('stop drag selector');
+        // console.log('stop drag selector');
         this.hasMouseDown = false;
         
         this.updateSelectionBox();
       } else {
-        this.selectShapeInSelector(event);
-        this.removeListeners();
+        if (!this.shiftKeyPressed) {
+          this.selectShapeInLasso(event);
+          this.removeListeners();
+        } else {
+          this.unselectShapeInLasso(event);
+        }
       }
       this.dragging = false;
     },
-    selectShapeInSelector(event){
+    
+    getShapesFromPoint(event){
       const nEvent= util.normalizeEvent(event);
       const mouseX = nEvent.clientX;
       const mouseY = nEvent.clientY;
       const point = V(this.paperManager.paper.viewport).toLocalPoint(mouseX, mouseY);
-      const elements = this.paperManager.paper.findViewsFromPoint(point);
+      return this.paperManager.paper.findViewsFromPoint(point);
+    },
+    selectShapeInLasso(event){
+      const elements = this.getShapesFromPoint(event);
       this.selected = [];
+
       elements.forEach(shape => {
         this.selected.push(shape);
       });
@@ -268,6 +279,22 @@ export default {
         this.removeListeners();
       }
     },
+    unselectShapeInLasso(event){
+      const elements = this.getShapesFromPoint(event);
+      if (this.shiftKeyPressed) {
+        this.selected = this.selected.filter(item => {
+          return !elements.some(otherItem => {
+            return item.id === otherItem.id && item.name === otherItem.name;
+          });
+        });
+        if (this.selected.length > 0) {
+          this.updateSelectionBox();
+        } else {
+          this.clearSelection;
+        }
+        
+      }
+    },
     addToHighlightedNodes(){
       const selectedNodes = this.selected.filter(shape => shape.model.component)
         .map(shape => shape.model.component.node);
@@ -276,6 +303,21 @@ export default {
     removeListeners(){
       window.removeEventListener('mousemove', this.drag);
       window.removeEventListener('mouseup', this.stopDrag);
+    },
+    shiftKeyDownListener(event) {
+      if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
+        return;
+      }
+      if (event.key !== 'Shift' || this.shiftKeyPressed) {
+        return;
+      }
+      this.shiftKeyPressed = true;
+    },
+    shiftKeyUpListener({ key }) {
+      if (key !== 'Shift' || !this.shiftKeyPressed) {
+        return;
+      }
+      this.shiftKeyPressed = false;
     },
   },
 };
