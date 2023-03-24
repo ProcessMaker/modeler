@@ -930,10 +930,33 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
+
+    keyupListener(event) {
+      if (event.code === 'Space') {
+        this.isGrabbing = false;
+        this.paperManager.removeEventHandler('blank:pointermove');
+      }
+    },
     keydownListener(event) {
       const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
       if (focusIsOutsideDiagram) {
         return;
+      }
+
+      if (event.code === 'Space') {
+        this.isGrabbing = true;
+        this.paperManager.addOnceHandler('blank:pointermove', (event, x, y) => {
+          if (!this.canvasDragPosition) {
+            const scale = this.paperManager.scale;
+            this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
+          }
+          if (this.canvasDragPosition) {
+            this.paperManager.translate(
+              event.offsetX - this.canvasDragPosition.x,
+              event.offsetY - this.canvasDragPosition.y
+            );
+          }
+        });
       }
 
       moveShapeByKeypress(
@@ -993,6 +1016,8 @@ export default {
   mounted() {
     document.addEventListener('keydown', this.keydownListener);
 
+    document.addEventListener('keyup', this.keyupListener);
+
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -1019,6 +1044,7 @@ export default {
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
+      if (this.isGrabbing) return;
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.$refs.selector.startSelection(event, this.paperManager.paper);
@@ -1035,15 +1061,6 @@ export default {
     this.$el.addEventListener('mousemove', event => {
       this.$refs.selector.updateSelection(event, this.paperManager.paper);
     });
-    
-    // this.$el.addEventListener('mousemove', event => {
-    //   if (this.canvasDragPosition) {
-    //     this.paperManager.translate(
-    //       event.offsetX - this.canvasDragPosition.x,
-    //       event.offsetY - this.canvasDragPosition.y,
-    //     );
-    //   }
-    // }, this);
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
