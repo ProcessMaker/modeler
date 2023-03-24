@@ -1,5 +1,11 @@
 <template>
-  <div ref="drag" v-if="showLasso" class="box" @mousedown="startDrag">
+  <div
+    ref="drag"
+    v-if="showLasso"
+    class="box"
+    data-cy="selection-box"
+    @mousedown="startDrag"
+  >
     <crown-multiselect
       :paper="paper"
       :graph="$parent.graph"

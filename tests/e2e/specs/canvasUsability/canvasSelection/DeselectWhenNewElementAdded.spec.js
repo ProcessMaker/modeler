@@ -32,11 +32,12 @@ describe('Canvas Selection', () => {
     // Select all elements
     cy.get('.paper-container').as('paperContainer').click();
     // @todo: Remove these commented lines, Shift key is pressed (for OLD version of Modeler)
+    cy.wait(1000);
     // cy.get('body').type('{shift}', { release: false });
-    cy.get('@paperContainer').trigger('mousedown', 'topLeft');
-    cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
+    cy.get('.paper-container').trigger('mousedown', 'topLeft');
+    cy.get('.paper-container').trigger('mousemove', 'bottomRight');
     waitToRenderAllShapes();
-    cy.get('@paperContainer').trigger('mouseup');
+    cy.get('.paper-container').trigger('mouseup', 'bottomRight');
     // cy.get('body').type('{shift}', { release: true });
 
     // Validation 1: Verify that controls are selected inside a selection box
