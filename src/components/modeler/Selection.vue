@@ -255,7 +255,8 @@ export default {
       store.state.highlightedNodes = updatedCollection;
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
-        this.addToHighlightedNodes();
+        store.commit('highlightNode', this.selected[0].model.component.node);
+        this.clearSelection();
       } else {
         this.clearSelection();
         this.removeListeners();
