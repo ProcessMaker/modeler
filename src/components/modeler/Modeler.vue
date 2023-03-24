@@ -1000,8 +1000,6 @@ export default {
 
     this.paperManager.addEventHandler('blank:pointerclick', () => {
       store.commit('highlightNode', this.processNode);
-      this.$refs.selector.initSelection();
-
     }, this);
 
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);

@@ -1,5 +1,5 @@
 <template>
-  <div ref="drag" v-if="isSelecting" class="box" @mousedown="startDrag"/>
+  <div ref="drag" v-if="showLasso" class="box" @mousedown="startDrag"/>
 </template>
 
 <script>
@@ -18,14 +18,16 @@ export default {
     return {
       start: null,
       isSelecting: false,
+      isSelected: false,
       selected: [],
       dragging: false,
       mouseX: 0,
       mouseY: 0,
       top: 0,
       left: 0,
-      snappedClientX: 0,
-      snappedClientY: 0,
+      hasMouseDown: false,
+      hasMouseMoved: false,
+      showLasso: false,
     };
   },
   mounted(){
@@ -34,30 +36,37 @@ export default {
     this.paper.on('element:pointerclick', this.selectOrUnselectItem);
   },
   methods: {
-    initSelection(){
+    initSelector(){
+      this.dragging = false;
       this.isSelecting = false;
-      this.selected = [];
       this.start = null;
+      this.selected = [];
+      this.showLasso = false;
+      this.isSelected = false;
     },
     startSelection(event, paper) {
-      const nEvent= util.normalizeEvent(event);
-      this.isSelecting = true;
-      store.commit('highlightNode');
-      const paperOffset = paper.$el.offset();
-      this.start = {
-        x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
-        y: nEvent.clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
-      };
-      this._offset = {
-        x: nEvent.offsetX,
-        y: nEvent.offsetY,
-      };
+      if (!this.isSelected) {
+        const nEvent= util.normalizeEvent(event);
+        this.isSelecting = true;
+        this.showLasso = true;
+        // store.commit('highlightNode');
+        const paperOffset = paper.$el.offset();
+        this.start = {
+          x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
+          y: nEvent.clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
+        };
+        this._offset = {
+          x: nEvent.offsetX,
+          y: nEvent.offsetY,
+        };
+      } else {
+        this.initSelector();
+      }
     },
 
     updateSelection(event, paper) {
-      if (this.isSelecting &&  this.start) {
+      if (this.isSelecting && !this.isSelected && this.start) {
         const nEvent= util.normalizeEvent(event);
-
         const paperOffset = paper.$el.offset();
         const end = {
           x: nEvent.clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
@@ -76,11 +85,14 @@ export default {
         // Set the dimensions of the element
         this.$el.style.width = `${Math.abs(size.width)}px`;
         this.$el.style.height = `${Math.abs(size.height)}px`;
-        
       }
     },
     endSelection(paper) {
-      if (this.isSelecting ) {
+      // if (this.isSelected && this.dragging) {
+      //   this.stopDrag();
+      //   return;
+      // } 
+      if (this.isSelecting && !this.isSelected) {
         const paperOffset = paper.$el.offset();
 
         const selectorOffset = {
@@ -100,16 +112,14 @@ export default {
         let selectedArea = g.rect(f.x, f.y, width, height);
         this.selected= this.getElementsInSelectedArea(selectedArea);
         console.log(this.selected);
-
-        const selectedNodes = this.selected.filter(shape => shape.model.component)
-          .map(shape => shape.model.component.node);
-        store.commit('addToHighlightedNodes', selectedNodes);
         if (this.selected && this.selected.length > 0) {
           this.updateSelectionBox();
+          this. addToHighlightedNodes();
+          this.isSelected = true;
+          this.start = null;
         } else {
-          this.isSelecting = false;
+          this.initSelector();
         }
-        this.start = null;  
       }
     },
     getElementsInSelectedArea(a) {
@@ -118,7 +128,7 @@ export default {
       return b.findViewsInArea(a, c);
     },
     updateSelectionBox(){
-      if (this.isSelecting) {
+      if (this.isSelecting || this.isSelected) {
         console.log('updateSelectionBox');
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
@@ -146,18 +156,16 @@ export default {
     },
     
     selectOrUnselectItem(elementView) {
-      if (this.isSelecting && elementView) {
-        console.log('addToSelection');
+      if (this.isSelected && elementView) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
-        } else {
-          this.selected = this.selected.filter(item => item.id !== elementView.id);
         }
-        // last we need update the selection box
-        this.updateSelectionBox();
+        if (this.selected && this.selected.length > 0) {
+          this.updateSelectionBox();
+          this. addToHighlightedNodes();
+        }
       }
-
     },
     translateChanged() {
       if (this.isSelecting) {
@@ -165,17 +173,13 @@ export default {
       }
     },  
     startDrag(event) {
-      console.log('start Drag');
       this.dragging = true;
-      const nEvent= util.normalizeEvent(event);
-      this.mouseX = nEvent.clientX;
-      this.mouseY = nEvent.clientY;
+      this.hasMouseMoved = false;
+      console.log('start Drag');
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
       this.top = this.$refs.drag.offsetTop;
       this.left = this.$refs.drag.offsetLeft;
-
-      const snapToGrid = this.paperManager.paper.snapToGrid({ x: nEvent.clientX, y: nEvent.clientY });
-      this.snappedClientX = snapToGrid.x;
-      this.snappedClientY = snapToGrid.y;
 
       window.addEventListener('mousemove', this.drag);
       window.addEventListener('mouseup', this.stopDrag);
@@ -186,32 +190,71 @@ export default {
         'PoolLane',
       ];
       if (!this.dragging) return;
+      this.hasMouseMoved = true;
       const nEvent= util.normalizeEvent(event);
-      // var point = this.paperManager.paper.snapToGrid({ x: nEvent.clientX, y: nEvent.clientY });
-      // console.log(point);
       const deltaX = nEvent.clientX - this.mouseX;
       const deltaY = nEvent.clientY - this.mouseY;
       this.top += deltaY;
       this.left += deltaX;
-      this.mouseX = nEvent.clientX;
-      this.mouseY = nEvent.clientY;
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
       // Set the position of the element
       this.$el.style.position = 'absolute';
-
+      //set position
+      const scale = this.paperManager.paper.scale();
       this.$el.style.left =`${this.left}px`;
       this.$el.style.top = `${this.top}px`;
-      const scale = this.paperManager.paper.scale();
+      
       this.selected.forEach(shape => {
         if (!shape.model.getParentCell() && !shapesToNotTranslate.includes(shape.model.get('type'))){
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         }
       });
-
     },
 
-    stopDrag() {
-      console.log('stop drag selector');
+    stopDrag(event) {
+      if (this.hasMouseMoved) {
+        console.log('stop drag selector');
+        this.hasMouseDown = false;
+        
+        this.updateSelectionBox();
+      } else {
+        this.selectShapeInSelector(event);
+        this.removeListeners();
+      }
       this.dragging = false;
+    },
+    selectShapeInSelector(event){
+      const nEvent= util.normalizeEvent(event);
+      const mouseX = nEvent.clientX;
+      const mouseY = nEvent.clientY;
+      const point = V(this.paperManager.paper.viewport).toLocalPoint(mouseX, mouseY);
+      const elements = this.paperManager.paper.findViewsFromPoint(point);
+      this.selected = [];
+      elements.forEach(shape => {
+        this.selected.push(shape);
+      });
+      if (this.selected && this.selected.length > 0) {
+        this.updateSelectionBox();
+
+      } else {
+        this.initSelector();
+        // store.commit('highlightNode');
+
+        console.log(store.state.highlightedNodes);
+        const updatedCollection = store.state.highlightedNodes.filter(node => node.type === 'processmaker-modeler-process');
+        store.state.highlightedNodes = updatedCollection;
+    
+        this.removeListeners();
+      }
+      this.addToHighlightedNodes();
+    },
+    addToHighlightedNodes(){
+      const selectedNodes = this.selected.filter(shape => shape.model.component)
+        .map(shape => shape.model.component.node);
+      store.commit('addToHighlightedNodes', selectedNodes);
+    },
+    removeListeners(){
       window.removeEventListener('mousemove', this.drag);
       window.removeEventListener('mouseup', this.stopDrag);
     },
@@ -222,7 +265,5 @@ export default {
 <style>
 .box {
   border: 1px solid #5faaee;
-  /* pointer-events: none; */
-  /* background:rgba(13, 153, 255, .1); */
 }
 </style>
