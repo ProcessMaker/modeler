@@ -9,6 +9,7 @@ export default new Vuex.Store({
     position: null,
     disabled: false,
     saved: false,
+    isVersionsInstalled: false,
   },
   getters: {
     canUndo(state) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     saved(state) {
       return state.saved;
+    },
+    isVersionsInstalled(state) {
+      return state.isVersionsInstalled;
     },
   },
   mutations: {
@@ -43,6 +47,9 @@ export default new Vuex.Store({
     },
     savedState(state, payload) {
       state.saved = payload;
+    },
+    isVersionsInstalled(state, payload) {
+      state.isVersionsInstalled = payload;
     },
   },
   actions: {
@@ -75,6 +82,9 @@ export default new Vuex.Store({
       setTimeout(() => {
         commit('savedState', false);
       }, 2000);
+    },
+    enableVersions({ commit }) {
+      commit('isVersionsInstalled', true);
     },
   },
 });

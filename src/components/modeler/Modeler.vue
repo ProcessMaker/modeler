@@ -933,6 +933,9 @@ export default {
     showSavedNotification() {
       undoRedoStore.dispatch('saved');
     },
+    enableVersions() {
+      undoRedoStore.dispatch('enableVersions');
+    },
   },
   created() {
     if (runningInCypressTest()) {

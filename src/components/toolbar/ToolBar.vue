@@ -84,36 +84,48 @@
             <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
           </b-button>
         </div>
-        <div class="btn-group btn-group-sm mx-3">
+        <div v-if="isVersionsInstalled" class="btn-group btn-group-sm mx-3">
           <div class="d-flex justify-content-center">
             <div class="bg-secondary" style="width: 2px; height: 25px"/>
           </div>
         </div>
         <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
-          <div v-if="saved" class="d-flex justify-content-center align-items-center" style="font-size: 13px;">
-            <span class="text-secondary mr-1">
-              {{ $t('Saved') }}
-            </span>
-            <span>
-              <font-awesome-icon class="text-success" :icon="savedIcon" />
-            </span>
-          </div>
-          <button
-            class="btn btn-sm btn-primary mini-map-btn mx-3"
-            type="button"
+          <template v-if="isVersionsInstalled">
+            <div v-if="saved" class="d-flex justify-content-center align-items-center" style="font-size: 13px;">
+              <span class="text-secondary mr-1">
+                {{ $t('Saved') }}
+              </span>
+              <span>
+                <font-awesome-icon class="text-success" :icon="savedIcon" />
+              </span>
+            </div>
+            <button
+              class="btn btn-sm btn-primary mini-map-btn mx-3"
+              type="button"
+              data-test="mini-map-btn"
+              @click="$emit('saveBpmn')"
+            >
+              {{ $t('PUBLISH') }}
+            </button>
+            <button
+              class="btn btn-sm btn-link mini-map-btn text-secondary"
+              type="button"
+              data-test="mini-map-btn"
+              @click="$emit('close')"
+            >
+              {{ $t('CLOSE') }}
+            </button>
+          </template>
+          <b-button
+            v-else
+            class="btn btn-sm btn-secondary mini-map-btn mx-1"
             data-test="mini-map-btn"
             @click="$emit('saveBpmn')"
+            v-b-tooltip.hover
+            :title="$t('Save')"
           >
-            {{ $t('PUBLISH') }}
-          </button>
-          <button
-            class="btn btn-sm btn-link mini-map-btn text-secondary"
-            type="button"
-            data-test="mini-map-btn"
-            @click="$emit('close')"
-          >
-            {{ $t('CLOSE') }}
-          </button>
+            <font-awesome-icon :icon="saveIcon" />
+          </b-button>
         </div>
       </div>
     </div>
@@ -121,7 +133,7 @@
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
@@ -172,6 +184,9 @@ export default {
     saved() {
       return undoRedoStore.getters.saved;
     },
+    isVersionsInstalled() {
+      return undoRedoStore.getters.isVersionsInstalled;
+    },
   },
   data() {
     return {
@@ -187,6 +202,7 @@ export default {
       expandIcon: faExpand,
       undoIcon: faUndo,
       redoIcon: faRedo,
+      saveIcon: faSave,
       savedIcon: faCheckCircle,
     };
   },
