@@ -234,20 +234,15 @@ export default {
       elements.forEach(shape => {
         this.selected.push(shape);
       });
+      const updatedCollection = store.state.highlightedNodes.filter(node => node.type === 'processmaker-modeler-process');
+      store.state.highlightedNodes = updatedCollection;
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
-
+        this.addToHighlightedNodes();
       } else {
         this.initSelector();
-        // store.commit('highlightNode');
-
-        console.log(store.state.highlightedNodes);
-        const updatedCollection = store.state.highlightedNodes.filter(node => node.type === 'processmaker-modeler-process');
-        store.state.highlightedNodes = updatedCollection;
-    
         this.removeListeners();
       }
-      this.addToHighlightedNodes();
     },
     addToHighlightedNodes(){
       const selectedNodes = this.selected.filter(shape => shape.model.component)
