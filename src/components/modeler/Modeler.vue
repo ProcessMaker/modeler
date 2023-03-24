@@ -426,7 +426,7 @@ export default {
 
       if (!isSameHighlightedNode) {
         // this.$refs.selector.selectElement(node);
-        store.commit('highlightNode', node);  
+        store.commit('highlightNode', node);
       }
 
       return;
@@ -808,7 +808,7 @@ export default {
       store.commit('addNode', node);
       this.poolTarget = null;
       // Clear the selction box
-      
+
       // add processmaker-modeler-generic-flow
       if ([
         sequenceFlowId,
