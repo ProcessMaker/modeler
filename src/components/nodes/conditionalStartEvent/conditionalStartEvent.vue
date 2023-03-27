@@ -1,6 +1,6 @@
 <script>
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
-import conditionalIcon from '!!svg-inline-loader!@/assets/conditional-icon.svg';
+import conditionalIcon from '@/assets/conditional-icon.svg';
 
 export default {
   extends: baseStartEvent,

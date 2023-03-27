@@ -1,6 +1,6 @@
 <script>
 import Task from '../task/task';
-import userIcon from '!!svg-inline-loader!@/assets/user-task.svg';
+import userIcon from '@/assets/user-task.svg';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

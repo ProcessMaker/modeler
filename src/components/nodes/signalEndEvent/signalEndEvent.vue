@@ -1,6 +1,6 @@
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-import signalEndEventIcon from '!!svg-inline-loader!@/assets/signal-end-event.svg';
+import signalEndEventIcon from '@/assets/signal-end-event.svg';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

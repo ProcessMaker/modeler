@@ -1,7 +1,7 @@
 import Task from '@/components/nodes/task/task';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
-import bookIcon from '!!url-loader!@/assets/book.svg';
-import clockIcon from '!!url-loader!@/assets/clock.svg';
+import bookIcon from '@/assets/book.svg';
+import clockIcon from '@/assets/clock.svg';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
