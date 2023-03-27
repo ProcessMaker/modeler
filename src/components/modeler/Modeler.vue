@@ -766,7 +766,7 @@ export default {
 
       this.highlightNode(newNode);
       await this.addNode(newNode);
-
+      this.$refs.selector.markSelectedByPoint({ clientX, clientY });
       if (!nodeThatWillBeReplaced) {
         return;
       }

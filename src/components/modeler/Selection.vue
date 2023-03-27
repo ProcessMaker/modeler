@@ -387,6 +387,16 @@ export default {
       }
       this.shiftKeyPressed = false;
     },
+    markSelectedByPoint(client) {
+      const elements = this.getShapesFromPoint(client);
+      elements.forEach(shape => {
+        this.selected.push(shape);
+      });
+      this.isSelecting = true;
+      this.isSelected = true;
+      this.showLasso = true;
+      this.updateSelectionBox();
+    },
   },
 };
 </script>
