@@ -798,7 +798,8 @@ export default {
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
       this.poolTarget = null;
-
+      // Clear the selction box
+      this.$refs.selector.clearSelection();
       // add processmaker-modeler-generic-flow
       if ([
         sequenceFlowId,
