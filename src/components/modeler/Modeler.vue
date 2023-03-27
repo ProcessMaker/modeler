@@ -11,6 +11,7 @@
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
+      @close="close"
       @save-state="pushToUndoStack"
     />
     <b-row class="modeler h-100">
@@ -275,6 +276,9 @@ export default {
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
     },
+    async close() {
+      this.$emit('close');
+    },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
@@ -403,7 +407,7 @@ export default {
       let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
 
       if (!isSameHighlightedNode) {
-        store.commit('highlightNode', node);  
+        store.commit('highlightNode', node);
       }
 
       return;
@@ -925,6 +929,9 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
+    },
+    showSavedNotification() {
+      undoRedoStore.dispatch('saved');
     },
   },
   created() {

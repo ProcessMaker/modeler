@@ -8,6 +8,7 @@ export default new Vuex.Store({
     stack: [],
     position: null,
     disabled: false,
+    saved: false,
   },
   getters: {
     canUndo(state) {
@@ -18,6 +19,9 @@ export default new Vuex.Store({
     },
     currentState(state) {
       return state.stack[state.position];
+    },
+    saved(state) {
+      return state.saved;
     },
   },
   mutations: {
@@ -36,6 +40,9 @@ export default new Vuex.Store({
     },
     enableSavingState(state) {
       state.disabled = false;
+    },
+    savedState(state, payload) {
+      state.saved = payload;
     },
   },
   actions: {
@@ -60,6 +67,14 @@ export default new Vuex.Store({
       }
 
       commit('setPosition', state.position + 1);
+    },
+    saved({ commit }) {
+      commit('savedState', true);
+
+      // Automatically remove the notification after 2 seconds.
+      setTimeout(() => {
+        commit('savedState', false);
+      }, 2000);
     },
   },
 });
