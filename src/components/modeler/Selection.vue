@@ -328,18 +328,20 @@ export default {
      */
     unselectShapeInLasso(event){
       const elements = this.getShapesFromPoint(event);
-      if (this.shiftKeyPressed) {
+      if (this.shiftKeyPressed && elements) {
+        const updatedCollection = store.state.highlightedNodes.filter(node => node.type === 'processmaker-modeler-process');
+        store.state.highlightedNodes = updatedCollection;
         this.selected = this.selected.filter(item => {
           return !elements.some(otherItem => {
             return item.id === otherItem.id && item.name === otherItem.name;
           });
         });
         if (this.selected.length > 0) {
-          this.updateSelectionBox();
+          this. updateSelectionBox();
+          this.addToHighlightedNodes();
         } else {
           this.clearSelection;
         }
-        
       }
     },
     /**
