@@ -8,7 +8,7 @@
     :style="style"
   > 
     <crown-multiselect
-      :paper="paper"
+      :paper="paperManager.paper"
       :graph="$parent.graph"
       :moddle="$parent.moddle"
       :collaboration="$parent.collaboration"
@@ -33,7 +33,7 @@ export default {
   },
   props: {
     options: Object,
-    paper: Object,
+    graph: Object,
     paperManager: Object,
     useModelGeometry: Boolean,
   },
@@ -62,9 +62,9 @@ export default {
     };
   },
   mounted(){
-    this.paper.on('scale:changed ', this.updateSelectionBox);
-    this.paper.on('translate:changed ', this.translateChanged);
-    this.paper.on('element:pointerclick', this.selectShiftPressed);
+    this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
+    this.paperManager.paper.on('translate:changed ', this.translateChanged);
+    this.paperManager.paper.on('element:pointerclick', this.elementClickHandler);
     document.addEventListener('keydown', this.shiftKeyDownListener);
     document.addEventListener('keyup', this.shiftKeyUpListener);
   },
@@ -159,12 +159,15 @@ export default {
       this.selected= this.getElementsInSelectedArea(selectedArea);
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
-        this. addToHighlightedNodes();
         this.isSelected = true;
-        this.start = null;
       } else {
         this.clearSelection();
+        this.isSelected = false;
+        this.start = null;
       }
+      this.start = null;
+      this.addToHighlightedNodes();
+
     },
     /**
      * Get elements into a selected area
@@ -178,7 +181,7 @@ export default {
     /**
      * Update the selection Box
      */
-    updateSelectionBox(){
+    updateSelectionBox() {
       if (this.isSelecting && this.style) {
         const point = { x : 1 / 0, y: 1 / 0 };
         const size = { width: 0, height: 0 };
@@ -186,7 +189,7 @@ export default {
         this.selected.map(function(view) {
           const box = view.getBBox({
             useModelGeometry,
-          });
+          }).inflate(6);
           
           point.x = Math.min(point.x, box.x);
           point.y = Math.min(point.y, box.y);
@@ -205,18 +208,21 @@ export default {
      * Update the selected box if a user select a element with shift key pressed 
      * @param {Object} elementView 
      */
-    selectShiftPressed(elementView) {
-      if (this.isSelecting && elementView && this.shiftKeyPressed){
+    elementClickHandler(elementView) {
+      if (this.shiftKeyPressed) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
-          this.updateSelectionBox();
           this.addToHighlightedNodes();
         }
       } else {
-        this.clearSelection();
-        this.removeListeners();
+        this.selected = [elementView];
+        store.commit('highlightNode', this.selected[0].model.component.node);
       }
+      this.isSelecting = true;
+      this.isSelected = true;
+      this.showLasso = true;
+      this.updateSelectionBox();
     },
     /**
      * Pan papae handler
@@ -316,7 +322,6 @@ export default {
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
         store.commit('highlightNode', this.selected[0].model.component.node);
-        this.clearSelection();
       } else {
         this.clearSelection();
         this.removeListeners();
@@ -348,6 +353,7 @@ export default {
      * Add an element into the highlighted nodes
      */
     addToHighlightedNodes(){
+      store.commit('highlightNode');
       const selectedNodes = this.selected.filter(shape => shape.model.component)
         .map(shape => shape.model.component.node);
       store.commit('addToHighlightedNodes', selectedNodes);

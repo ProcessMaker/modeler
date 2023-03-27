@@ -104,7 +104,7 @@
         v-if="paper"
         ref="selector" 
         :options="selectorOptions"
-        :paper="paper"
+        :graph="paper"
         :paperManager="paperManager"
         :useModelGeometry="false"
         @remove-nodes="removeNodes"
@@ -409,19 +409,20 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    highlightNode(node, event) {
+    highlightNode(node) {
       if (!node || !this.highlightedNode) {
         return;
       }
 
-      if (event && event.shiftKey) {
-        store.commit('addToHighlightedNodes', [node]);
-        return;
-      }
+      // if (event && event.shiftKey) {
+      //   store.commit('addToHighlightedNodes', [node]);
+      //   return;
+      // }
 
       let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
 
       if (!isSameHighlightedNode) {
+        // this.$refs.selector.selectElement(node);
         store.commit('highlightNode', node);  
       }
 
@@ -796,10 +797,11 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
+      this.$refs.selector.clearSelection();
       store.commit('addNode', node);
       this.poolTarget = null;
       // Clear the selction box
-      this.$refs.selector.clearSelection();
+      
       // add processmaker-modeler-generic-flow
       if ([
         sequenceFlowId,
@@ -834,6 +836,7 @@ export default {
       this.removeNodesFromPool(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
+      this.$refs.selector.clearSelection();
       await this.$nextTick();
       this.pushToUndoStack();
     },
