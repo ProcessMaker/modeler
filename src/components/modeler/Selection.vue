@@ -345,7 +345,7 @@ export default {
           this. updateSelectionBox();
           this.addToHighlightedNodes();
         } else {
-          this.clearSelection;
+          this.clearSelection();
         }
       }
     },
