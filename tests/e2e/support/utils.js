@@ -401,3 +401,24 @@ export function getPeriodicityStringUSFormattedDate(date, time = false) {
   }
   return dateString;
 }
+
+export function createSimpleProcess() {
+  const initialNumberOfElements = 1;
+  waitToRenderAllShapes();
+  const startEventPosition = { x: 150, y: 150 };
+  getGraphElements().should('have.length', initialNumberOfElements);
+
+  //Drag Task component
+  const taskPosition = { x: 300, y: 130 };
+  dragFromSourceToDest(nodeTypes.task, taskPosition);
+
+  //Drag End Event
+  const endEventPosition = { x: 500, y: 150 };
+  dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+
+  //Connect the Start Event with Task
+  connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
+
+  //Connect the Task with End Event
+  connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
+}
