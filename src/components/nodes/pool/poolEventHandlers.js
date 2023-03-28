@@ -25,6 +25,7 @@ export default class PoolEventHandlers {
 
   onPointerDown(cellView) {
     if (this.isNotPoolChild(cellView.model)) {
+      this.component.$emit('clearSelection');
       return;
     }
 
@@ -54,6 +55,7 @@ export default class PoolEventHandlers {
     }
 
     if (this.invalidPool) {
+      console.log('invalid 8888');
       this.invalidPool.attr('body/fill', poolColor);
       this.invalidPool = null;
     }

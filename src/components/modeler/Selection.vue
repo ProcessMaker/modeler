@@ -36,6 +36,7 @@ export default {
     graph: Object,
     paperManager: Object,
     useModelGeometry: Boolean,
+    processNode: Object,
   },
   data() {
     return {
@@ -271,7 +272,7 @@ export default {
       this.style.top = `${this.top}px`;
       
       this.selected.forEach(shape => {
-        if (!shape.model.getParentCell() && !shapesToNotTranslate.includes(shape.model.get('type'))){
+        if (!shapesToNotTranslate.includes(shape.model.get('type'))){
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         }
       });
@@ -293,6 +294,7 @@ export default {
           this.unselectShapeInLasso(event);
         }
       }
+      this.$emit('save-state');
       this.dragging = false;
     },
     /**
@@ -310,21 +312,19 @@ export default {
      * Select a element that is into the selection box
      * @param {*} event 
      */
-    selectShapeInLasso(event){
-      const elements = this.getShapesFromPoint(event);
+    selectShapeInLasso(event) {
+      const element = this.getNotEmbeddedShape(event);
       this.selected = [];
-
-      elements.forEach(shape => {
-        this.selected.push(shape);
-      });
-      const updatedCollection = store.state.highlightedNodes.filter(node => node.type === 'processmaker-modeler-process');
-      store.state.highlightedNodes = updatedCollection;
+      if (element) { 
+        this.selected = [element];
+      }
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
         store.commit('highlightNode', this.selected[0].model.component.node);
       } else {
         this.clearSelection();
         this.removeListeners();
+        store.commit('highlightNode', this.processNode);
       }
     },
     /**
@@ -334,8 +334,7 @@ export default {
     unselectShapeInLasso(event){
       const elements = this.getShapesFromPoint(event);
       if (this.shiftKeyPressed && elements) {
-        const updatedCollection = store.state.highlightedNodes.filter(node => node.type === 'processmaker-modeler-process');
-        store.state.highlightedNodes = updatedCollection;
+        store.commit('highlightNode', this.processNode);
         this.selected = this.selected.filter(item => {
           return !elements.some(otherItem => {
             return item.id === otherItem.id && item.name === otherItem.name;
@@ -387,15 +386,27 @@ export default {
       }
       this.shiftKeyPressed = false;
     },
-    markSelectedByPoint(client) {
-      const elements = this.getShapesFromPoint(client);
-      elements.forEach(shape => {
-        this.selected.push(shape);
+    getNotEmbeddedShape(point){
+      let result = null;
+      const views = this.getShapesFromPoint(point);
+      views.forEach(shape => {
+        if (shape.model.getEmbeddedCells().length === 0){
+          result = shape;
+        } 
       });
-      this.isSelecting = true;
-      this.isSelected = true;
-      this.showLasso = true;
-      this.updateSelectionBox();
+      return result;
+    },
+    markSelectedByPoint(point) {
+      const element = this.getNotEmbeddedShape(point);
+      if (element) { 
+        this.selected = [element];
+      }
+      if (this.selected.length > 0) {
+        this.isSelected = true;
+        this.isSelecting = true;
+        this.showLasso = true;
+        this.updateSelectionBox();
+      }
     },
   },
 };

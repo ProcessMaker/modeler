@@ -57,6 +57,7 @@ export default class PaperManager {
   }
 
   translate(x, y) {
+    console.log('translate');
     if (this.preventTranslate) {
       return;
     }

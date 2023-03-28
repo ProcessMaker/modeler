@@ -12,6 +12,7 @@
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
       @save-state="pushToUndoStack"
+      @clearSelection="clearSelection"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -91,6 +92,7 @@
         @set-pool-target="poolTarget = $event"
         @click="highlightNode(node, $event)"
         @unset-pools="unsetPools"
+        @clearSelection="clearSelection"
         @set-pools="setPools"
         @save-state="pushToUndoStack"
         @set-shape-stacking="setShapeStacking"
@@ -108,6 +110,8 @@
         :paperManager="paperManager"
         :useModelGeometry="false"
         @remove-nodes="removeNodes"
+        :processNode="processNode"
+        @save-state="pushToUndoStack"
       />
     </b-row>
   </span>
@@ -349,7 +353,6 @@ export default {
       try {
         const xml = await this.getXmlFromDiagram();
         undoRedoStore.dispatch('pushState', xml);
-
         window.ProcessMaker.EventBus.$emit('modeler-change');
       } catch (invalidXml) {
         // eslint-disable-next-line no-console
@@ -766,7 +769,11 @@ export default {
 
       this.highlightNode(newNode);
       await this.addNode(newNode);
-      this.$refs.selector.markSelectedByPoint({ clientX, clientY });
+      const point = {
+        clientX: clientX + 5,
+        clientY: clientY + 5,
+      };
+      this.$refs.selector.markSelectedByPoint(point);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -849,7 +856,6 @@ export default {
           );
           await Promise.all(waitPromises);
           store.commit('highlightNode');
-          this.$refs.selector.clearSelection();
         });
       });
     },
@@ -961,6 +967,9 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
+    },
+    clearSelection(){
+      this.$refs.selector.clearSelection();
     },
   },
   created() {
