@@ -34,8 +34,8 @@ describe('Canvas Selection', () => {
         //Validation 1: Verify the rectangle of the selection cover the element with the large name
         cy.get('[data-cy="selection-box"]').should('exist')
           .invoke('width').then((val) => {
-            cy.log('with initial of rectagle', value);
-            cy.log('with with of rectagle with large name ', val);
+            cy.log('with initial of rectangle', value);
+            cy.log('with with of rectangle with large name ', val);
             expect(val).to.be.greaterThan(value);
           });
       });

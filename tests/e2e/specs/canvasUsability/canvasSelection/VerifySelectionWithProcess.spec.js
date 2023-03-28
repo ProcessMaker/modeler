@@ -14,11 +14,11 @@ describe('Canvas Selection', () => {
     const startEventPosition = { x: 150, y: 150 };
     getGraphElements().should('have.length', initialNumberOfElements);
 
-    //Step 2: Darg Task componet
+    //Step 2: Drag Task component
     const taskPosition = { x: 300, y: 130 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
 
-    //Step 3: Darg End Event
+    //Step 3: Drag End Event
     const endEventPosition = { x: 500, y: 150 };
     dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
 
