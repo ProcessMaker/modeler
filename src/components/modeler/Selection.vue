@@ -503,6 +503,7 @@ export default {
       if (selected.length > 0) {
         const { model } = selected;
         console.log('@todo pool handler: ', model);
+
       }
     },
 
