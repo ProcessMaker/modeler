@@ -31,20 +31,21 @@ describe('Canvas Selection', () => {
 
     // Select all elements
     cy.get('.paper-container').as('paperContainer').click();
-    // @todo: Remove these commented lines, Shift key is pressed (for OLD version of Modeler)
-    cy.wait(1000);
-    // cy.get('body').type('{shift}', { release: false });
     cy.get('.paper-container').trigger('mousedown', 'topLeft');
     cy.get('.paper-container').trigger('mousemove', 'bottomRight');
     waitToRenderAllShapes();
     cy.get('.paper-container').trigger('mouseup', 'bottomRight');
-    // cy.get('body').type('{shift}', { release: true });
 
     // Validation 1: Verify that controls are selected inside a selection box
     cy.get('[data-cy="selection-box"]').should('exist');
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"] [data-cy="selected"]').should('exist');
     cy.get('[data-type="processmaker.components.nodes.task.Shape"] [data-cy="selected"]').should('exist');
     cy.get('[data-type="processmaker.components.nodes.endEvent.Shape"] [data-cy="selected"]').should('exist');
+    // Check the selection is large enough to contain all elements
+    cy.get('[data-cy="selection-box"]').then($selectionBox => {
+      const selectionBoxWidth = $selectionBox.width();
+      expect(selectionBoxWidth).to.be.greaterThan(400);
+    });
 
     // Drag another element in the modeler
     const newTaskPosition = {
@@ -53,10 +54,14 @@ describe('Canvas Selection', () => {
     };
     dragFromSourceToDest(nodeTypes.task, newTaskPosition);
 
-    // Validation 2: Verify that selection was lost after dragging another element
-    cy.get('[data-cy="selection-box"]').should('not.exist');
+    // Validation 2: Verify that the previous selection was lost after dragging another element
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"] [data-cy="selected"]').should('not.exist');
     cy.get('[data-type="processmaker.components.nodes.task.Shape"] [data-cy="selected"]').should('have.length', 1); // the new added task
     cy.get('[data-type="processmaker.components.nodes.endEvent.Shape"] [data-cy="selected"]').should('not.exist');
+    // Check the selection is smaller than the previous one since it only contains the new element
+    cy.get('[data-cy="selection-box"]').then($selectionBox => {
+      const selectionBoxWidth = $selectionBox.width();
+      expect(selectionBoxWidth).to.be.lessThan(400);
+    });
   });
 });
