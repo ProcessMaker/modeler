@@ -27,7 +27,7 @@ import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
-
+import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 export default {
   name: 'Selection',
   components: {
@@ -179,29 +179,41 @@ export default {
       return paper.findViewsInArea(area, options);
     },
     /**
+     * Return the bounding box of the selected elements,
+     * @param {Array} selected 
+     */
+    getSelectionVertex(selected, byModel = false) {
+      const point = { x : 1 / 0, y: 1 / 0 };
+      const size = { width: 0, height: 0 };
+      const useModelGeometry = this.useModelGeometry;
+      selected.map(function(view) {
+        const box = byModel ?
+          view.model.getBBox({ useModelGeometry }) :
+          view.getBBox({ useModelGeometry }).inflate(4);
+        point.x = Math.min(point.x, box.x);
+        point.y = Math.min(point.y, box.y);
+        size.width = Math.max(size.width, box.x + box.width);
+        size.height= Math.max(size.height, box.y + box.height);
+      });
+      return {
+        minX: point.x,
+        minY: point.y,
+        maxX: size.width,
+        maxY: size.height,
+      };
+    },
+    /**
      * Update the selection Box
      */
     updateSelectionBox() {
       if (this.isSelecting && this.style) {
-        const point = { x : 1 / 0, y: 1 / 0 };
-        const size = { width: 0, height: 0 };
-        const useModelGeometry = this.useModelGeometry;
-        this.selected.map(function(view) {
-          const box = view.getBBox({
-            useModelGeometry,
-          }).inflate(6);
-          
-          point.x = Math.min(point.x, box.x);
-          point.y = Math.min(point.y, box.y);
-          size.width = Math.max(size.width, box.x + box.width);
-          size.height= Math.max(size.height, box.y + box.height);
-        });
+        const box = this.getSelectionVertex(this.selected);
         // Set the position of the element
-        this.style.left = `${point.x}px`;
-        this.style.top = `${point.y}px`;
+        this.style.left = `${box.minX}px`;
+        this.style.top = `${box.minY}px`;
         // Set the dimensions of the element
-        this.style.width = `${size.width - point.x}px`;
-        this.style.height = `${size.height - point.y}px`;
+        this.style.width = `${box.maxX - box.minX}px`;
+        this.style.height = `${box.maxY - box.minY}px`;
       }
     },
     /**
@@ -389,6 +401,10 @@ export default {
       }
       this.shiftKeyPressed = false;
     },
+    /**
+     * Gets the not embedded shape
+     * @param {object} point 
+     */
     getNotEmbeddedShape(point){
       let result = null;
       const views = this.getShapesFromPoint(point);
@@ -398,18 +414,6 @@ export default {
         } 
       });
       return result;
-    },
-    markSelectedByPoint(point) {
-      const element = this.getNotEmbeddedShape(point);
-      if (element) { 
-        this.selected = [element];
-      }
-      if (this.selected.length > 0) {
-        this.isSelected = true;
-        this.isSelecting = true;
-        this.showLasso = true;
-        this.updateSelectionBox();
-      }
     },
     /**
      * Get the elements that are inside the selector box
@@ -478,6 +482,8 @@ export default {
       }
       if (this.isOutOfThePool) {
         this.rollbackSelection();
+      } else {
+        this.expandToFitElement(this.selected);
       }
     },
     /**
@@ -497,12 +503,72 @@ export default {
       this.paperManager.setStateValid();
     },
     /**
-     * auto resize
+     * Expand and fit the pool container
      */
     expandToFitElement(selected) {
       if (selected.length > 0) {
-        const { model } = selected;
-        console.log('@todo pool handler: ', model);
+        const model = selected[0].model;
+        const pool = model.getParentCell();
+        const selectionBBox = this.getSelectionVertex(this.selected, true);
+        const { x: poolX, y: poolY, width, height } = pool.getBBox();
+
+        const elementWidth = selectionBBox.maxX - selectionBBox.minX;
+        const elementHeight = selectionBBox.maxY - selectionBBox.minY;
+       
+        const relativeX = selectionBBox.minX - poolX;
+        const relativeY = selectionBBox.minY  - poolY;
+
+        const rightEdge = relativeX + elementWidth;
+        const leftEdge = relativeX;
+        const topEdge = relativeY;
+        const bottomEdge = relativeY + elementHeight;
+
+        let newWidth = 0;
+        let newHeight = 0;
+        let directionHeight = 'bottom';
+        let directionWidth = 'right';
+
+        if (rightEdge > width - poolPadding) {
+          newWidth = rightEdge + poolPadding;
+        }
+
+        if (leftEdge < labelWidth + poolPadding) {
+          newWidth = width + ((labelWidth + poolPadding) - leftEdge);
+          directionWidth = 'left';
+        }
+
+        if (topEdge < poolPadding) {
+          newHeight = (poolPadding - topEdge) + height;
+          directionHeight = 'top';
+        }
+
+        if (bottomEdge > height) {
+          newHeight = bottomEdge + poolPadding;
+        }
+        if (newWidth || newHeight) {
+          pool.resize(Math.max(newWidth, width), Math.max(newHeight, height), {
+            direction: `${directionHeight}-${directionWidth}`,
+          });
+
+          pool.component.fixResizeRounding();
+          if (pool.component.laneSet) {
+            /* Expand any lanes within the pool */
+            pool.component.resizeLanes();
+
+            pool.component.sortedLanes().forEach(laneShape => {
+              store.commit('updateNodeBounds', {
+                node: laneShape.component.node,
+                bounds: laneShape.getBBox(),
+              });
+            });
+          }
+          pool.component.updateAnchorPointPosition();
+          store.commit('updateNodeBounds', {
+            node: pool.component.node,
+            bounds: pool.getBBox(),
+          });
+          this.$emit('save-state');
+        } 
 
       }
     },

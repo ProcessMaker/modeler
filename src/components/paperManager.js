@@ -98,7 +98,6 @@ export default class PaperManager {
   }
 
   setStateInvalid() {
-    console.log('setStateInvalid');
     this.paper.drawBackground({ color: invalidNodeColor });
   }
 
