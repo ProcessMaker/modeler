@@ -25,7 +25,7 @@ export default class PoolEventHandlers {
 
   onPointerDown(cellView) {
     if (this.isNotPoolChild(cellView.model)) {
-      this.component.$emit('clearSelection');
+      this.component.$emit('select-pool');
       return;
     }
 
