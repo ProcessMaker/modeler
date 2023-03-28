@@ -138,7 +138,7 @@ import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
-import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import hotkeys from '@/components/hotkeys/main';
 import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
@@ -167,6 +167,7 @@ export default {
       },
     },
   },
+  mixins: [hotkeys],
   data() {
     return {
       tooltipTarget: null,
@@ -209,6 +210,7 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
+      keyMod: this.isAppleOS() ? 'Command' : 'Control',
       canvasScale: 1,
       initialScale: 1,
       minimumScale: 0.2,
@@ -269,6 +271,9 @@ export default {
     },
   },
   methods: {
+    isAppleOS() {
+      return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
+    },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
       if (source.default && source.default.id === flow.id) {
@@ -906,18 +911,6 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
-    keydownListener(event) {
-      const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
-      if (focusIsOutsideDiagram) {
-        return;
-      }
-
-      moveShapeByKeypress(
-        event.key,
-        store.getters.highlightedShapes,
-        this.pushToUndoStack,
-      );
-    },
     validateDropTarget({ clientX, clientY, control }) {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
@@ -933,12 +926,6 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
-    },
-    zoomIn() {
-      this.canvasScale += this.scaleStep;
-    },
-    zoomOut() {
-      this.canvasScale = Math.max(this.minimumScale, this.canvasScale -= this.scaleStep);
     },
   },
   created() {
@@ -973,20 +960,6 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
-    document.addEventListener('keydown', this.keydownListener);
-    this.$mousetrap.bind(['command+plus', 'ctrl+plus'], (e) => {
-      if (e.preventDefault) {
-        e.preventDefault();
-      }
-      this.zoomIn();
-    });
-    this.$mousetrap.bind(['command+-', 'ctrl+-'], (e) => {
-      if (e.preventDefault) {
-        e.preventDefault();
-      }
-      this.zoomOut();
-    });
-
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {

@@ -60,7 +60,7 @@
           >
             {{ $t('Reset') }}
           </b-button>
-          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          <span v-if="paperManager" class="btn btn-sm btn-secondary scale-value">{{ Math.round(paperManager.scale.sx*100) }}%</span>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
