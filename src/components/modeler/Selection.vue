@@ -210,7 +210,6 @@ export default {
      */
     elementClickHandler(elementView) {
       if (this.shiftKeyPressed) {
-        console.log('elementClickHandler');
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
@@ -373,7 +372,6 @@ export default {
      * @param {*} event 
      */
     shiftKeyDownListener(event) {
-      console.log('shiftKeyDownListener');
       if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
         return;
       }
