@@ -500,7 +500,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .box {
   border: 1px solid #5faaee;
   position: absolute;
