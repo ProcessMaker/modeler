@@ -487,8 +487,8 @@ export default {
     expandToFitElement(selected) {
       if (selected.length > 0) {
         const { model } = selected;
-        const pool = model.getParentCell();
-        console.log('@todo pool habdler: ',pool);
+        // const pool = model.getParentCell();
+        console.log('@todo pool habdler: ', model);
         // return !(model.component &&
         //   model.component.node.type !== laneId &&
         //   model.getParentCell() && model.getParentCell().component.node.type === poolId);
