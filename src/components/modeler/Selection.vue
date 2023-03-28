@@ -57,7 +57,7 @@ export default {
       mouseY: 0,
       top: 0,
       left: 0,
-      
+      initialPosition: null,
       hasMouseDown: false,
       hasMouseMoved: false,
       showLasso: false,
@@ -157,7 +157,7 @@ export default {
       height /= scale.sy;
 
       let selectedArea = g.rect(f.x, f.y, width, height);
-      this.selected= this.getElementsInSelectedArea(selectedArea);
+      this.selected= this.getElementsInSelectedArea(selectedArea, { strict: false });
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
         this.isSelected = true;
@@ -174,9 +174,8 @@ export default {
      * Get elements into a selected area
      * @param {Object} area 
      */
-    getElementsInSelectedArea(area) {
+    getElementsInSelectedArea(area, options) {
       const { paper } = this.paperManager;
-      const options = { strict: false };
       return paper.findViewsInArea(area, options);
     },
     /**
@@ -211,6 +210,7 @@ export default {
      */
     elementClickHandler(elementView) {
       if (this.shiftKeyPressed) {
+        console.log('elementClickHandler');
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
@@ -244,7 +244,10 @@ export default {
       this.mouseY = event.clientY;
       this.top = this.$refs.drag.offsetTop;
       this.left = this.$refs.drag.offsetLeft;
-
+      this.initialPosition = {
+        top: this.top,
+        left: this.left,
+      },
       window.addEventListener('mousemove', this.drag);
       window.addEventListener('mouseup', this.stopDrag);
       
@@ -275,7 +278,7 @@ export default {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         }
       });
-      this.overPoolDrag();
+      this.overPoolDrag(event);
     },
     /**
      * Stop drag procedure
@@ -370,6 +373,7 @@ export default {
      * @param {*} event 
      */
     shiftKeyDownListener(event) {
+      console.log('shiftKeyDownListener');
       if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
         return;
       }
@@ -431,7 +435,7 @@ export default {
       height /= scale.sy;
 
       let selectedArea = g.rect(f.x, f.y, width, height);
-      return this.getElementsInSelectedArea(selectedArea);
+      return this.getElementsInSelectedArea(selectedArea, { strict: false });
     },
     /**
      * Check that they are not in a pool
@@ -449,11 +453,11 @@ export default {
     /**
      * Movement controller of the elements that are inside a pool
      */
-    overPoolDrag() {
+    overPoolDrag(event) {
       if (this.isNotPoolChilds(this.selected)) {
         return;
       }
-      const elementsUnderDivArea = this.getElementsInsideSelector();
+      const elementsUnderDivArea = this.getShapesFromPoint(event);
       const pool = elementsUnderDivArea.find(item => {
         return item.model.component && item.model.component.node.type === poolId;
       });
@@ -462,6 +466,7 @@ export default {
         store.commit('preventSavingElementPosition');
         this.paperManager.setStateInvalid();
       } else {
+        this.isOutOfThePool = false;
         store.commit('preventSavingElementPosition');
         this.paperManager.setStateValid();
       }
@@ -474,9 +479,24 @@ export default {
         return;
       }
       if (this.isOutOfThePool) {
-        this.expandToFitElement(this.selected);
-
+        this.rollbackSelection();
       }
+    },
+    /**
+     * Rollback drag an element outside it's pool parent
+     */
+    rollbackSelection(){
+      const deltaX = this.initialPosition.left  - this.left;
+      const deltaY = this.initialPosition.top - this.top;
+      this.style.left = `${this.initialPosition.left}px`;
+      this.style.top = `${this.initialPosition.top}px`;
+      const scale = this.paperManager.paper.scale();
+      this.selected.forEach(shape => {
+        shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
+      });
+      this.isOutOfThePool = false;
+      store.commit('allowSavingElementPosition');
+      this.paperManager.setStateValid();
     },
     /**
      * auto resize
@@ -484,13 +504,8 @@ export default {
     expandToFitElement(selected) {
       if (selected.length > 0) {
         const { model } = selected;
-        // const pool = model.getParentCell();
-        console.log('@todo pool habdler: ', model);
-        // return !(model.component &&
-        //   model.component.node.type !== laneId &&
-        //   model.getParentCell() && model.getParentCell().component.node.type === poolId);
+        console.log('@todo pool handler: ', model);
       }
-
     },
 
   },

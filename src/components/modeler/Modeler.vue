@@ -1004,7 +1004,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
-    document.addEventListener('keydown', this.keydownListener);
+    // document.addEventListener('keydown', this.keydownListener);
 
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
