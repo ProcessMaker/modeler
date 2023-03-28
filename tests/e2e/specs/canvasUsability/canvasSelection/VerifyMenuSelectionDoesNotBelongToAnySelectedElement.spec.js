@@ -3,7 +3,7 @@ import {
 } from '../../../support/utils';
 
 describe('Canvas Selection', () => {
-  it('TCP4-2694: Verify that menu of the selection belong to task element', () => {
+  it('TCP4-2694: Verify that menu of the selection does not belong to any selected element', () => {
 
     //Step 1: Drag Start Event
     //Step 2: Drag Task component
