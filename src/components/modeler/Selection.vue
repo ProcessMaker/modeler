@@ -95,19 +95,16 @@ export default {
      */
     startSelection(event) {
       const { paper } = this.paperManager;
-      if (!this.isSelected) {
-        const { clientX, clientY, offsetX, offsetY } = util.normalizeEvent(event);
-        const paperOffset = paper.$el.offset();
-        this.isSelecting = true;
-        this.showLasso = true;
-        this.start = {
-          x: clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
-          y: clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
-        };
-        this._offset = { x: offsetX, y: offsetY };
-      } else {
-        this.clearSelection();
-      } 
+      const { clientX, clientY, offsetX, offsetY } = util.normalizeEvent(event);
+      const paperOffset = paper.$el.offset();
+      this.clearSelection();
+      this.isSelecting = true;
+      this.showLasso = true;
+      this.start = {
+        x: clientX - paperOffset.left + window.pageXOffset + paper.$el.scrollLeft(),
+        y: clientY - paperOffset.top + window.pageYOffset + paper.$el.scrollTop(),
+      };
+      this._offset = { x: offsetX, y: offsetY };
     },
     /**
      * Updates the selection box
