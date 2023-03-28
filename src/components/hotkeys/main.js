@@ -1,6 +1,6 @@
 import ZoomInOut from './zoomInOut';
 import store from '@/store';
-import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import moveShapeByKeypress from './moveWithArrowKeys';
 
 export default {
   mixins: [ZoomInOut],

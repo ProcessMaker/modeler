@@ -10,7 +10,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import ScreenBuilder from '@processmaker/screen-builder';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
-import VueMousetrapPlugin from 'vue-mousetrap/vue2';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -18,7 +17,6 @@ Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);
 Vue.use(VueI18Next);
 Vue.use(ScreenBuilder);
-Vue.use(VueMousetrapPlugin);
 Vue.component('Multiselect', Multiselect);
 
 Vue.config.productionTip = false;
