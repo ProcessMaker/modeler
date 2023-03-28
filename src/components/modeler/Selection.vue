@@ -416,6 +416,22 @@ export default {
       return result;
     },
     /**
+     * 
+     * @param {object} point 
+     */
+    markSelectedByPoint(point) {
+      const element = this.getNotEmbeddedShape(point);
+      if (element) { 
+        this.selected = [element];
+      }
+      if (this.selected.length > 0) {
+        this.isSelected = true;
+        this.isSelecting = true;
+        this.showLasso = true;
+        this.updateSelectionBox();
+      }
+    },
+    /**
      * Get the elements that are inside the selector box
      */
     getElementsInsideSelector() {
