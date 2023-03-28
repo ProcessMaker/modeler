@@ -57,7 +57,6 @@ export default class PaperManager {
   }
 
   translate(x, y) {
-    console.log('translate');
     if (this.preventTranslate) {
       return;
     }
@@ -99,6 +98,7 @@ export default class PaperManager {
   }
 
   setStateInvalid() {
+    console.log('setStateInvalid');
     this.paper.drawBackground({ color: invalidNodeColor });
   }
 

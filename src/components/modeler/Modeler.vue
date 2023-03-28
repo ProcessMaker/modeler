@@ -106,7 +106,7 @@
         v-if="paper"
         ref="selector" 
         :options="selectorOptions"
-        :graph="paper"
+        :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
         @remove-nodes="removeNodes"

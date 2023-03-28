@@ -25,6 +25,8 @@
 import { util, g, V } from 'jointjs';
 import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
+import { id as poolId } from '@/components/nodes/pool/config';
+import { id as laneId } from '@/components/nodes/poolLane/config';
 
 export default {
   name: 'Selection',
@@ -60,6 +62,7 @@ export default {
       hasMouseMoved: false,
       showLasso: false,
       shiftKeyPressed: false,
+      isOutOfThePool: false,
     };
   },
   mounted(){
@@ -270,12 +273,12 @@ export default {
       const scale = this.paperManager.paper.scale();
       this.style.left =`${this.left}px`;
       this.style.top = `${this.top}px`;
-      
       this.selected.forEach(shape => {
-        if (!shapesToNotTranslate.includes(shape.model.get('type'))){
+        if (!shapesToNotTranslate.includes(shape.model.get('type'))) {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         }
       });
+      this.overPoolDrag();
     },
     /**
      * Stop drag procedure
@@ -294,6 +297,7 @@ export default {
           this.unselectShapeInLasso(event);
         }
       }
+      this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
     },
@@ -329,7 +333,7 @@ export default {
     },
     /**
      * Unselect an element that is not into the selection box
-     * @param {*} event 
+     * @param {Object} event 
      */
     unselectShapeInLasso(event){
       const elements = this.getShapesFromPoint(event);
@@ -408,6 +412,90 @@ export default {
         this.updateSelectionBox();
       }
     },
+    /**
+     * Get the elements that are inside the selector box
+     */
+    getElementsInsideSelector() {
+      const { paper } = this.paperManager;
+      const paperOffset = paper.$el.offset();
+
+      const selectorOffset = {
+        left: this.$el.offsetLeft + paperOffset.left,
+        top: this.$el.offsetTop + paperOffset.top, 
+      };
+      let width = this.$el.clientWidth;
+      let height = this.$el.clientHeight;
+
+      const f = V(paper.viewport).toLocalPoint(selectorOffset.left, selectorOffset.top);
+      f.x -= window.pageXOffset;
+      f.y -= window.pageYOffset;
+      const scale = paper.scale();
+      width /= scale.sx;
+      height /= scale.sy;
+
+      let selectedArea = g.rect(f.x, f.y, width, height);
+      return this.getElementsInSelectedArea(selectedArea);
+    },
+    /**
+     * Check that they are not in a pool
+     * @param {Array} elements 
+     */
+    isNotPoolChilds(elements) {
+      if (elements.length > 0) {
+        const model = elements[0].model;
+        return !(model.component &&
+          model.component.node.type !== laneId &&
+          model.getParentCell() && model.getParentCell().component.node.type === poolId);
+      }
+      return false;
+    },
+    /**
+     * Movement controller of the elements that are inside a pool
+     */
+    overPoolDrag() {
+      if (this.isNotPoolChilds(this.selected)) {
+        return;
+      }
+      const elementsUnderDivArea = this.getElementsInsideSelector();
+      const pool = elementsUnderDivArea.find(item => {
+        return item.model.component && item.model.component.node.type === poolId;
+      });
+      if (!pool) {
+        this.isOutOfThePool = true;
+        store.commit('preventSavingElementPosition');
+        this.paperManager.setStateInvalid();
+      } else {
+        store.commit('preventSavingElementPosition');
+        this.paperManager.setStateValid();
+      }
+    },
+    /**
+     * Stop dragging elements that are in a pool
+     */
+    overPoolStopDrag(){
+      if (this.isNotPoolChilds(this.selected)) {
+        return;
+      }
+      if (this.isOutOfThePool) {
+        this.expandToFitElement(this.selected);
+
+      }
+    },
+    /**
+     * auto resize
+     */
+    expandToFitElement(selected) {
+      if (selected.length > 0) {
+        const { model } = selected;
+        const pool = model.getParentCell();
+        console.log('@todo pool habdler: ',pool);
+        // return !(model.component &&
+        //   model.component.node.type !== laneId &&
+        //   model.getParentCell() && model.getParentCell().component.node.type === poolId);
+      }
+
+    },
+
   },
 };
 </script>
