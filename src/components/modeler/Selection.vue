@@ -168,7 +168,6 @@ export default {
       }
       this.start = null;
       this.addToHighlightedNodes();
-
     },
     /**
      * Get elements into a selected area
@@ -328,7 +327,7 @@ export default {
      * @param {*} event 
      */
     selectShapeInLasso(event) {
-      const element = this.getNotEmbeddedShape(event);
+      const element = this.getChildShape(event);
       this.selected = [];
       if (element) { 
         this.selected = [element];
@@ -402,14 +401,17 @@ export default {
       this.shiftKeyPressed = false;
     },
     /**
-     * Gets the not embedded shape
+     * Gets the child shape
      * @param {object} point 
      */
-    getNotEmbeddedShape(point){
+    getChildShape(point) {
       let result = null;
       const views = this.getShapesFromPoint(point);
+      if (views.length === 1 ) {
+        return views[0];
+      }
       views.forEach(shape => {
-        if (shape.model.getEmbeddedCells().length === 0){
+        if (shape.model.get('parent') && shape.model.component.node.type !== laneId) {
           result = shape;
         } 
       });
@@ -420,7 +422,7 @@ export default {
      * @param {object} point 
      */
     markSelectedByPoint(point) {
-      const element = this.getNotEmbeddedShape(point);
+      const element = this.getChildShape(point);
       if (element) { 
         this.selected = [element];
       }
@@ -584,11 +586,9 @@ export default {
             bounds: pool.getBBox(),
           });
           this.$emit('save-state');
-        } 
-
+        }
       }
     },
-
   },
 };
 </script>
