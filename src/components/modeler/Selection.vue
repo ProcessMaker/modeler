@@ -4,6 +4,7 @@
     v-if="showLasso && style"
     class="box"
     data-cy="selection-box"
+    :data-length="selected.length"
     @mousedown="startDrag"
     :style="style"
   > 
@@ -158,6 +159,7 @@ export default {
 
       let selectedArea = g.rect(f.x, f.y, width, height);
       this.selected= this.getElementsInSelectedArea(selectedArea, { strict: false });
+      this.filterSelected();
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
         this.isSelected = true;
@@ -224,6 +226,7 @@ export default {
         const element = this.selected.find( item => item.id === elementView.id);
         if (!element) {
           this.selected.push(elementView);
+          this.filterSelected();
           this.addToHighlightedNodes();
         }
       } else {
@@ -234,6 +237,19 @@ export default {
       this.isSelected = true;
       this.showLasso = true;
       this.updateSelectionBox();
+    },
+    filterSelected() {
+      // remove from selection the selected child nodes in the pool
+      const selectedPoolsIds = this.selected
+        .filter(shape => shape.model.component)
+        .filter(shape => shape.model.component.node.type === 'processmaker-modeler-pool')
+        .map(shape => shape.model.component.node.id);
+      this.selected = this.selected.filter(shape => {
+        if (shape.model.component && shape.model.component.node.pool) {
+          return !selectedPoolsIds.includes(shape.model.component.node.pool?.component?.node?.id);
+        }
+        return true;
+      });
     },
     /**
      * Pan papae handler
@@ -383,22 +399,18 @@ export default {
      * @param {*} event 
      */
     shiftKeyDownListener(event) {
-      if (event.shiftKey && (event.ctrlKey || event.altKey || event.metaKey)) {
-        return;
+      // check if shift key is pressed without any other key
+      if (event.key === 'Shift' && !event.ctrlKey && !event.altKey && !event.metaKey) {
+        this.shiftKeyPressed = true;
       }
-      if (event.key !== 'Shift' || this.shiftKeyPressed) {
-        return;
-      }
-      this.shiftKeyPressed = true;
     },
     /**
      * Shift Key Up Handler
      */
     shiftKeyUpListener({ key }) {
-      if (key !== 'Shift' || !this.shiftKeyPressed) {
-        return;
+      if (key === 'Shift') {
+        this.shiftKeyPressed = false;
       }
-      this.shiftKeyPressed = false;
     },
     /**
      * Gets the child shape
