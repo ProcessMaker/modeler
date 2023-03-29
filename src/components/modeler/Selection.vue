@@ -433,12 +433,12 @@ export default {
       return result;
     },
     /**
-     * 
-     * @param {object} point 
+     *
+     * @param {object} point
      */
     markSelectedByPoint(point) {
-      const element = this.getChildShape(point);
-      if (element) { 
+      const element = this.getNotEmbeddedShape(point);
+      if (element) {
         this.selected = [element];
       }
       if (this.selected.length > 0) {
