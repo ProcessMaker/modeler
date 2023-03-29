@@ -105,7 +105,6 @@
       <selection
         v-if="paper"
         ref="selector" 
-        :options="selectorOptions"
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
@@ -164,6 +163,7 @@ import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
+import { id as poolId } from '@/components/nodes/pool/config';
 
 export default {
   components: {
@@ -225,13 +225,9 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
-      isSelecting: false,
-      selectorOptions: {
-        top: 100,
-        left: 300,
-        height: 100,
-        width: 100,
-      },
+      isDragging: false,
+      isOverShape: false,
+      shapeRef: null, 
     };
   },
   watch: {
@@ -426,7 +422,7 @@ export default {
 
       if (!isSameHighlightedNode) {
         // this.$refs.selector.selectElement(node);
-        store.commit('highlightNode', node);  
+        // store.commit('highlightNode', node);  
       }
 
       return;
@@ -971,6 +967,83 @@ export default {
     clearSelection(){
       this.$refs.selector.clearSelection();
     },
+    isPointInSelection(event) {
+      const selector = this.$refs.selector.$el;
+      if (typeof selector.getBoundingClientRect === 'function') {
+        // check if mouse was clicked inside the selector
+        const { x: sx, y: sy, width:swidth, height: sheight } = selector.getBoundingClientRect();
+        if (event.clientX >= sx && event.clientX <= sx + swidth && event.clientY >= sy && event.clientY <= sy + sheight) {
+          return true;
+        }
+      }
+      return false;
+    },
+    pointerDowInShape(event, element) {
+      console.log('pointerDowInShape');
+      console.log(element);
+      const shapeView = this.paper.findViewByModel(element);
+      if (this.isPointInSelection(event)) {
+        this.isDragging = true;
+        // validate if the starts in an empty space over the pool
+        if (element.component.node.type !== poolId){
+          this.$refs.selector.startDrag({
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }, shapeView);
+          
+        } else {
+          event.stop.propagation();
+          this.$refs.selector.startDrag({
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }, null);
+        }
+        
+      } else {
+        this.shapeRef = shapeView;
+      }
+    },
+    pointerDownHandler(event, element = null ) {
+      console.log('pointerDownHandler');
+      if (this.isPointInSelection(event)) {
+        this.$refs.selector.startDrag({
+          clientX: event.clientX,
+          clientY: event.clientY,
+        }, element);
+        this.isDragging = true;
+      } else {
+        this.isDragging = false;
+        if (!this.isOverShape) {
+          this.$refs.selector.startSelection(event);
+        } else {
+          this.$refs.selector.startDrag({
+            clientX: event.clientX,
+            clientY: event.clientY,
+          });
+        }
+      }
+      
+    },
+    pointerMoveHandler(event) {
+      if (!this.isDragging){
+        this.$refs.selector.updateSelection(event, this.paperManager.paper);
+      } else {
+        this.$refs.selector.drag(event);
+      }
+    },
+    pointerUpHandler(event) {
+      if (this.isDragging) {
+        this.isDragging = false;
+        this.$refs.selector.stopDrag(event);
+
+      } else {
+        this.$refs.selector.endSelection(this.paperManager.paper);
+      }
+      if (this.shapeRef){
+        this.$refs.selector.elementClickHandler(this.shapeRef);
+      }
+      this.shapeRef = null;
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1034,20 +1107,23 @@ export default {
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      this.$refs.selector.startSelection(event, this.paperManager.paper);
+      this.isOverShape = false;
+      this.pointerDownHandler(event);
       // this.isGrabbing = true;
     }, this);
-    this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
+    this.paperManager.addEventHandler('cell:pointerup blank:pointerup', (event) => {
       this.canvasDragPosition = null;
       // this.isGrabbing = false;
-      this.isSelecting = false;
       this.activeNode = null;
-      this.$refs.selector.endSelection(this.paperManager.paper);
+      this.pointerUpHandler(event);
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
-      this.$refs.selector.updateSelection(event, this.paperManager.paper);
+      this.pointerMoveHandler(event);
     });
+    // this.paperManager.addEventHandler('cell:pointermove blank:pointermove', (event) => {
+    //   this.pointerMoveHandler(event);
+    // }, this);
     
     // this.$el.addEventListener('mousemove', event => {
     //   if (this.canvasDragPosition) {
@@ -1073,13 +1149,14 @@ export default {
       shape.component.$emit('click', event);
     });
 
-    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }) => {
+    this.paperManager.addEventHandler('cell:pointerdown', ( { model: shape }, event) => {
       if (!this.isBpmnNode(shape)) {
         return;
       }
-
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
+      this.isOverShape = true;
+      this.pointerDowInShape(event, shape);
     });
 
     // let cursor;
