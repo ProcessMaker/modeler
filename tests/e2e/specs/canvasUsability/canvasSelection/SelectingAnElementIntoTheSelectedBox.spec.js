@@ -2,7 +2,6 @@ import {
   dragFromSourceToDest,
   connectNodesWithFlow,
   waitToRenderAllShapes,
-  getElementAtPosition,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
