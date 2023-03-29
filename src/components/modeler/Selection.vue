@@ -73,6 +73,12 @@ export default {
     document.addEventListener('keydown', this.shiftKeyDownListener);
     document.addEventListener('keyup', this.shiftKeyUpListener);
   },
+  watch: {
+    // whenever selected changes
+    selected(newSelected) {
+      this.addToHighlightedNodes(newSelected);
+    },
+  },
   methods: {
     clearSelection() {
       this.initSelection();
@@ -169,7 +175,6 @@ export default {
         this.start = null;
       }
       this.start = null;
-      this.addToHighlightedNodes();
     },
     /**
      * Get elements into a selected area
@@ -227,11 +232,9 @@ export default {
         if (!element) {
           this.selected.push(elementView);
           this.filterSelected();
-          this.addToHighlightedNodes();
         }
       } else {
         this.selected = [elementView];
-        store.commit('highlightNode', this.selected[0].model.component.node);
       }
       this.isSelecting = true;
       this.isSelected = true;
@@ -350,11 +353,9 @@ export default {
       }
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
-        store.commit('highlightNode', this.selected[0].model.component.node);
       } else {
         this.clearSelection();
         this.removeListeners();
-        store.commit('highlightNode', this.processNode);
       }
     },
     /**
@@ -364,7 +365,6 @@ export default {
     unselectShapeInLasso(event){
       const elements = this.getShapesFromPoint(event);
       if (this.shiftKeyPressed && elements) {
-        store.commit('highlightNode', this.processNode);
         this.selected = this.selected.filter(item => {
           return !elements.some(otherItem => {
             return item.id === otherItem.id && item.name === otherItem.name;
@@ -372,7 +372,6 @@ export default {
         });
         if (this.selected.length > 0) {
           this. updateSelectionBox();
-          this.addToHighlightedNodes();
         } else {
           this.clearSelection();
         }
@@ -381,11 +380,15 @@ export default {
     /**
      * Add an element into the highlighted nodes
      */
-    addToHighlightedNodes(){
+    addToHighlightedNodes(selected){
       store.commit('highlightNode');
-      const selectedNodes = this.selected.filter(shape => shape.model.component)
-        .map(shape => shape.model.component.node);
-      store.commit('addToHighlightedNodes', selectedNodes);
+      if (selected.length > 0) {
+        const selectedNodes = selected.filter(shape => shape.model.component)
+          .map(shape => shape.model.component.node);
+        store.commit('addToHighlightedNodes', selectedNodes);
+      } else {
+        store.commit('highlightNode', this.processNode);
+      }
     },
     /**
      * remove window listeners
