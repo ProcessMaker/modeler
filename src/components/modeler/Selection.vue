@@ -267,7 +267,7 @@ export default {
         .map(shape => shape.model.component.node.id);
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
-          return !selectedPoolsIds.includes(shape.model.component.node.pool?.component?.node?.id);
+          return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
         }
         return true;
       });
