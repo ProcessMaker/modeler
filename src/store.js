@@ -101,7 +101,7 @@ export default new Vuex.Store({
       state.highlightedNodes = highlightedNodes
         // remove from selection the selected child nodes in the pool
         .filter(node => {
-          if (node.pool?.component?.node?.id) {
+          if (node.pool && node.pool.component.node.id) {
             return !selectedPoolsIds.includes(node.pool.component.node.id);
           }
           return true;

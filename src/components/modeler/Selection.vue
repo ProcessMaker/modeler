@@ -5,7 +5,6 @@
     class="box"
     data-cy="selection-box"
     :data-length="selected.length"
-    @mousedown="startDrag"
     :style="style"
   > 
     <crown-multiselect
@@ -35,7 +34,6 @@ export default {
     CrownMultiselect,
   },
   props: {
-    options: Object,
     graph: Object,
     paperManager: Object,
     useModelGeometry: Boolean,
@@ -69,7 +67,6 @@ export default {
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
-    this.paperManager.paper.on('element:pointerclick', this.elementClickHandler);
     document.addEventListener('keydown', this.shiftKeyDownListener);
     document.addEventListener('keyup', this.shiftKeyUpListener);
   },
@@ -80,6 +77,15 @@ export default {
     },
   },
   methods: {
+    async selectElement(view) {
+      this.showLasso = true;
+      this.isSelected = true;
+      this.isSelecting = true;
+      this.start = null;
+      this.selected = [view];
+      await this.$nextTick();
+      this.updateSelectionBox();
+    },
     clearSelection() {
       this.initSelection();
     },
@@ -164,7 +170,7 @@ export default {
       height /= scale.sy;
 
       let selectedArea = g.rect(f.x, f.y, width, height);
-      this.selected= this.getElementsInSelectedArea(selectedArea, { strict: false });
+      this.selected = this.getElementsInSelectedArea(selectedArea, { strict: false });
       this.filterSelected();
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
@@ -195,7 +201,7 @@ export default {
       selected.map(function(view) {
         const box = byModel ?
           view.model.getBBox({ useModelGeometry }) :
-          view.getBBox({ useModelGeometry }).inflate(4);
+          view.getBBox({ useModelGeometry }).inflate(7);
         point.x = Math.min(point.x, box.x);
         point.y = Math.min(point.y, box.y);
         size.width = Math.max(size.width, box.x + box.width);
@@ -213,13 +219,19 @@ export default {
      */
     updateSelectionBox() {
       if (this.isSelecting && this.style) {
-        const box = this.getSelectionVertex(this.selected);
-        // Set the position of the element
-        this.style.left = `${box.minX}px`;
-        this.style.top = `${box.minY}px`;
-        // Set the dimensions of the element
-        this.style.width = `${box.maxX - box.minX}px`;
-        this.style.height = `${box.maxY - box.minY}px`;
+        if (this.selected.length > 0) {
+          const box = this.getSelectionVertex(this.selected);
+          // Set the position of the element
+          this.style.left = `${box.minX}px`;
+          this.style.top = `${box.minY}px`;
+          this.left = this.style.left;
+          this.top = this.style.top;
+          // Set the dimensions of the element
+          this.style.width = `${box.maxX - box.minX}px`;
+          this.style.height = `${box.maxY - box.minY}px`;
+        } else {
+          this.clearSelection();
+        }
       }
     },
     /**
@@ -229,7 +241,10 @@ export default {
     elementClickHandler(elementView) {
       if (this.shiftKeyPressed) {
         const element = this.selected.find( item => item.id === elementView.id);
-        if (!element) {
+        if (element) {
+          this.selected = this.selected.filter(item => item.id !== elementView.id);
+          this.filterSelected();
+        } else {
           this.selected.push(elementView);
           this.filterSelected();
         }
@@ -249,13 +264,13 @@ export default {
         .map(shape => shape.model.component.node.id);
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
-          return !selectedPoolsIds.includes(shape.model.component.node.pool?.component?.node?.id);
+          return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
         }
         return true;
       });
     },
     /**
-     * Pan papae handler
+     * Pan paper handler
      */
     translateChanged() {
       if (this.isSelecting) {
@@ -266,19 +281,23 @@ export default {
      * Start the drag procedure for the selext box
      * @param {Object} event 
      */
-    startDrag(event) {
+    startDrag(event, ref) {
       this.dragging = true;
       this.hasMouseMoved = false;
-      this.mouseX = event.clientX;
-      this.mouseY = event.clientY;
+      const nEvent= util.normalizeEvent(event);
+      this.mouseX = nEvent.clientX;
+      this.mouseY = nEvent.clientY;
       this.top = this.$refs.drag.offsetTop;
       this.left = this.$refs.drag.offsetLeft;
       this.initialPosition = {
         top: this.top,
         left: this.left,
-      },
-      window.addEventListener('mousemove', this.drag);
-      window.addEventListener('mouseup', this.stopDrag);
+      };
+      if (ref) {
+        this.drafRef = ref;
+      } else {
+        this.drafRef = null;
+      }
       
     },
     /**
@@ -286,9 +305,6 @@ export default {
      * @param {*} event 
      */
     drag(event) {
-      const shapesToNotTranslate = [
-        'PoolLane',
-      ];
       if (!this.dragging) return;
       this.hasMouseMoved = true;
       const nEvent= util.normalizeEvent(event);
@@ -296,39 +312,42 @@ export default {
       const deltaY = nEvent.clientY - this.mouseY;
       this.top += deltaY;
       this.left += deltaX;
-      this.mouseX = event.clientX;
-      this.mouseY = event.clientY;
+      this.mouseX = nEvent.clientX;
+      this.mouseY = nEvent.clientY;
       // Set the position of the element
       const scale = this.paperManager.paper.scale();
       this.style.left =`${this.left}px`;
       this.style.top = `${this.top}px`;
-      this.selected.forEach(shape => {
-        if (!shapesToNotTranslate.includes(shape.model.get('type'))) {
-          shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
-        }
-      });
+      this.translateSelectedShapes(deltaX/scale.sx, deltaY/scale.sy);
       this.overPoolDrag(event);
     },
     /**
      * Stop drag procedure
      * @param {Object} event 
      */
-    stopDrag(event) {
-      if (this.hasMouseMoved) {
-        this.hasMouseDown = false;
-        
-        this.updateSelectionBox();
-      } else {
-        if (!this.shiftKeyPressed) {
-          this.selectShapeInLasso(event);
-          this.removeListeners();
-        } else {
-          this.unselectShapeInLasso(event);
-        }
+    stopDrag() {
+      if (!this.hasMouseMoved  && this.drafRef) {
+        this.hasMouseMoved = false;
+        this.elementClickHandler(this.drafRef);
+        return;
       }
       this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
+    },
+    translateSelectedShapes(x, y, drafRef) { 
+      const shapesToNotTranslate = [
+        'PoolLane',
+      ];
+      let shapes = this.selected.filter(shape => {
+        return !shapesToNotTranslate.includes(shape.model.get('type'));
+      });
+      if (drafRef) {
+        shapes.filter(shape =>{
+          return drafRef.model.get('id') !== shape.model.get('id');
+        });
+      }
+      shapes.forEach((shape)=> shape.model.translate(x, y));
     },
     /**
      * Gets shape from a point object
@@ -342,42 +361,6 @@ export default {
       return this.paperManager.paper.findViewsFromPoint(point);
     },
     /**
-     * Select a element that is into the selection box
-     * @param {*} event 
-     */
-    selectShapeInLasso(event) {
-      const element = this.getChildShape(event);
-      this.selected = [];
-      if (element) { 
-        this.selected = [element];
-      }
-      if (this.selected && this.selected.length > 0) {
-        this.updateSelectionBox();
-      } else {
-        this.clearSelection();
-        this.removeListeners();
-      }
-    },
-    /**
-     * Unselect an element that is not into the selection box
-     * @param {Object} event 
-     */
-    unselectShapeInLasso(event){
-      const elements = this.getShapesFromPoint(event);
-      if (this.shiftKeyPressed && elements) {
-        this.selected = this.selected.filter(item => {
-          return !elements.some(otherItem => {
-            return item.id === otherItem.id && item.name === otherItem.name;
-          });
-        });
-        if (this.selected.length > 0) {
-          this. updateSelectionBox();
-        } else {
-          this.clearSelection();
-        }
-      }
-    },
-    /**
      * Add an element into the highlighted nodes
      */
     addToHighlightedNodes(selected){
@@ -389,13 +372,6 @@ export default {
       } else {
         store.commit('highlightNode', this.processNode);
       }
-    },
-    /**
-     * remove window listeners
-     */
-    removeListeners(){
-      window.removeEventListener('mousemove', this.drag);
-      window.removeEventListener('mouseup', this.stopDrag);
     },
     /**
      * Shift Key Down Handler
@@ -612,5 +588,6 @@ export default {
 .box {
   border: 1px solid #5faaee;
   position: absolute;
+  pointer-events: none;
 }
 </style>

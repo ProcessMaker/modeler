@@ -2,6 +2,7 @@ import {
   dragFromSourceToDest,
   connectNodesWithFlow,
   waitToRenderAllShapes,
+  getElementAtPosition,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
@@ -48,8 +49,7 @@ describe('Canvas Selection', () => {
     });
 
     //Validation 2: Click in the task the task must be selected
-    cy.get('[data-cy="selection-box"]').trigger('mousedown', 180, 530, { force: true });
-    cy.get('[data-cy="selection-box"]').trigger('mouseup',{force: true});
+    getElementAtPosition(taskFormPosition).click();
     cy.get('[data-cy="selection-box"]').then($selectionBox => {
       const { top: newTop, left: newLeft } = $selectionBox.position();
       expect(newTop).to.be.greaterThan(100);

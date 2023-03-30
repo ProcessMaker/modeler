@@ -22,6 +22,8 @@ export default class PaperManager {
       sorting: 'sorting-approximate',
       gridSize: PaperManager.gridSize,
       drawGrid: true,
+      snapLinks: false, // disable snapping of links
+      snapElements: false, // disable snapping of elements
       clickThreshold: 10,
       perpendicularLinks: true,
       interactive: interactiveFunc,

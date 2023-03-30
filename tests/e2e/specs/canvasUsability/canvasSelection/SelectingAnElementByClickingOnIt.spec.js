@@ -32,7 +32,7 @@ describe('Canvas Selection', () => {
 
     waitToRenderAllShapes();
     
-    //Validation 1: Click in the task the task must be selected
+    // Validation 1: Click in the task the task must be selected
     getElementAtPosition(taskFormPosition).click();
 
     cy.get('[data-cy="selection-box"]').then($selectionBox => {

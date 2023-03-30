@@ -148,11 +148,13 @@ export function waitToRenderNodeUpdates() {
 }
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center') {
+  const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
   return getElementAtPosition(startPosition)
-    .click({ force: true })
+    .trigger('mousedown', mouseEvent, { force: true })
+    .trigger('mouseup', mouseEvent,  { force: true })
     .then($element => {
       return getCrownButtonForElement($element, flowType)
-        .click({ force: true });
+        .click();
     })
     .then(() => {
       getElementAtPosition(endPosition).then($endElement => {
