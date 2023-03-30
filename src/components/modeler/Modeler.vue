@@ -821,8 +821,6 @@ export default {
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
       this.poolTarget = null;
-      // Select the node after it has been added to the store
-      this.selectNewNode(node);
 
       // add processmaker-modeler-generic-flow
       if ([
@@ -836,6 +834,9 @@ export default {
       ].includes(node.type)) {
         return;
       }
+
+      // Select the node after it has been added to the store (does not apply to flows)
+      this.selectNewNode(node);
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1122,11 +1123,9 @@ export default {
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isOverShape = false;
       this.pointerDownHandler(event);
-      // this.isGrabbing = true;
     }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', (event) => {
       this.canvasDragPosition = null;
-      // this.isGrabbing = false;
       this.activeNode = null;
       this.pointerUpHandler(event);
     }, this);
@@ -1150,7 +1149,7 @@ export default {
       shape.component.$emit('click', event);
     });
 
-    this.paperManager.addEventHandler('cell:pointerdown', ( { model: shape }, event) => {
+    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
       if (!this.isBpmnNode(shape)) {
         return;
       }
@@ -1159,14 +1158,6 @@ export default {
       this.isOverShape = true;
       this.pointerDowInShape(event, shape);
     });
-
-    // let cursor;
-    // const setCursor = () => {
-    //   cursor = this.cursor;
-    //   this.cursor = 'crosshair';
-    // };
-    // const resetCursor = () => this.cursor = cursor;
-    // setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {

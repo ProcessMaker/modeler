@@ -409,7 +409,7 @@ export default {
       return result;
     },
     /**
-     *
+     * Mark a shape as selected
      * @param {object} point
      */
     markSelectedByPoint(point) {
