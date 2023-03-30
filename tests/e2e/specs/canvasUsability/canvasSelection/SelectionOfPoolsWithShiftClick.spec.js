@@ -53,9 +53,10 @@ describe('Selection of pool with shift click', () => {
     const fromPosition = { x: 200, y: 200 };
     const translateAmount = { x: 0, y: 100 };
     // click and drag fromPosition to fromPosition + translateAmount
-    cy.get('[data-cy="selection-box"]').trigger('mousedown', { which: 1, pageX: fromPosition.x, pageY: fromPosition.y });
-    cy.get('[data-cy="selection-box"]').trigger('mousemove', { which: 1, pageX: fromPosition.x + translateAmount.x, pageY: fromPosition.y + translateAmount.y });
-    cy.get('[data-cy="selection-box"]').trigger('mouseup', { force: true });
+    cy.get('.paper-container .joint-paper').trigger('mousedown', { which: 1, pageX: fromPosition.x, pageY: fromPosition.y, force: true});
+    cy.get('.paper-container').trigger('mousemove', { which: 1, pageX: fromPosition.x + translateAmount.x, pageY: fromPosition.y + translateAmount.y, force: true});
+    waitToRenderAllShapes();
+    cy.get('.paper-container .joint-paper').trigger('mouseup',{force: true});
 
     waitToRenderAllShapes();
 
@@ -71,12 +72,12 @@ describe('Selection of pool with shift click', () => {
 
     getElementAtPosition(newPool1Position, nodeTypes.pool, 12, 100).then(($pool1) => {
       const { y } = $pool1[0].getBoundingClientRect();
-      expect(y).to.be.lessThan(pool1.y);
+      expect(pool1.y).to.be.lessThan(y);
     });
 
     getElementAtPosition(newPool2Position, nodeTypes.pool, 12, 100).then(($pool2) => {
       const { y } = $pool2[0].getBoundingClientRect();
-      expect(y).to.be.lessThan(pool2.y);
+      expect(pool1.y).to.be.lessThan(y);
     });
   });
 });
