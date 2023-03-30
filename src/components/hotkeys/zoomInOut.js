@@ -19,13 +19,11 @@ export default {
     },
     zoomIn(event) {
       event.preventDefault();
-      this.canvasScale += this.scaleStep;
-      event.stopPropagation();
+      this.canvasScale = this.paperManager.scale.sx + this.scaleStep;
     },
     zoomOut(event) {
       event.preventDefault();
-      this.canvasScale = Math.max(this.minimumScale, this.canvasScale -= this.scaleStep);
-      event.stopPropagation();
+      this.canvasScale = Math.max(this.minimumScale, this.paperManager.scale.sx -= this.scaleStep);
     },
   },
 };
