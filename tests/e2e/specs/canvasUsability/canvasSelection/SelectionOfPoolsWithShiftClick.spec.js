@@ -38,12 +38,14 @@ describe('Selection of pool with shift click', () => {
     cy.get('[data-cy="selection-box"]').should('have.attr', 'data-length', '2');
 
     // get current position of pool 1
+    // eslint-disable-next-line no-unused-vars
     let pool1;
     getElementAtPosition(pool1Position, nodeTypes.pool, 12, 100).then(($pool1) => {
-      pool1 = $pool1[0].getBoundingClientRect();
+      const pool1 = $pool1[0].getBoundingClientRect();
     });
 
     // get current position of pool 1
+    // eslint-disable-next-line no-unused-vars
     let pool2;
     getElementAtPosition(pool2Position, nodeTypes.pool, 12, 100).then(($pool2) => {
       pool2 = $pool2[0].getBoundingClientRect();
