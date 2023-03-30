@@ -51,6 +51,7 @@
 
       <InspectorPanel
         ref="inspector-panel"
+        v-show="!(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
