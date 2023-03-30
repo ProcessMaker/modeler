@@ -409,15 +409,15 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    highlightNode(node) {
+    highlightNode(node, event) {
       if (!node || !this.highlightedNode) {
         return;
       }
 
-      // if (event && event.shiftKey) {
-      //   store.commit('addToHighlightedNodes', [node]);
-      //   return;
-      // }
+      if (event && event.shiftKey) {
+        store.commit('addToHighlightedNodes', [node]);
+        return;
+      }
 
       let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
 
