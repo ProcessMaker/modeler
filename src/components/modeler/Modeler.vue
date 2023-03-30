@@ -1137,18 +1137,6 @@ export default {
     this.$el.addEventListener('mousemove', event => {
       this.pointerMoveHandler(event);
     });
-    // this.paperManager.addEventHandler('cell:pointermove blank:pointermove', (event) => {
-    //   this.pointerMoveHandler(event);
-    // }, this);
-    
-    // this.$el.addEventListener('mousemove', event => {
-    //   if (this.canvasDragPosition) {
-    //     this.paperManager.translate(
-    //       event.offsetX - this.canvasDragPosition.x,
-    //       event.offsetY - this.canvasDragPosition.y,
-    //     );
-    //   }
-    // }, this);
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');

@@ -67,7 +67,6 @@ export default {
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
-    // this.paperManager.paper.on('element:pointerclick', this.elementClickHandler);
     document.addEventListener('keydown', this.shiftKeyDownListener);
     document.addEventListener('keyup', this.shiftKeyUpListener);
   },
@@ -243,11 +242,9 @@ export default {
       if (this.shiftKeyPressed) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (element) {
-          // this.selected.push(elementView);
           this.selected = this.selected.filter(item => item.id !== elementView.id);
           this.filterSelected();
         } else {
-          // this.selected = [elementView];
           this.selected.push(elementView);
           this.filterSelected();
         }
@@ -287,11 +284,9 @@ export default {
     startDrag(event, ref) {
       this.dragging = true;
       this.hasMouseMoved = false;
-      const snaped  = this.paperManager.paper.snapToGrid({ x: event.clientX, y: event.clientY });
-      // this.mouseX = snaped.clientX;
-      // this.mouseY = event.clientY;
-      this.mouseX = snaped.x;
-      this.mouseY = snaped.y;
+      const nEvent= util.normalizeEvent(event);
+      this.mouseX = nEvent.clientX;
+      this.mouseY = nEvent.clientY;
       this.top = this.$refs.drag.offsetTop;
       this.left = this.$refs.drag.offsetLeft;
       this.initialPosition = {
@@ -312,20 +307,15 @@ export default {
     drag(event) {
       if (!this.dragging) return;
       this.hasMouseMoved = true;
-      // const nEvent= util.normalizeEvent(event);
-      const snaped  = this.paperManager.paper.snapToGrid({ x: event.clientX, y: event.clientY });
-      const deltaX = snaped.x - this.mouseX;
-      const deltaY = snaped.y - this.mouseY;
+      const nEvent= util.normalizeEvent(event);
+      const deltaX = nEvent.clientX - this.mouseX;
+      const deltaY = nEvent.clientY - this.mouseY;
       this.top += deltaY;
       this.left += deltaX;
-      this.mouseX = snaped.x;
-      this.mouseY = snaped.y;
+      this.mouseX = nEvent.clientX;
+      this.mouseY = nEvent.clientY;
       // Set the position of the element
       const scale = this.paperManager.paper.scale();
-      // const snaped  = this.paperManager.paper.snapToGrid({ x: this.left, y: this.top});
-
-      // this.style.left =`${snaped.x}px`;
-      // this.style.top = `${snaped.y}px`
       this.style.left =`${this.left}px`;
       this.style.top = `${this.top}px`;
       this.translateSelectedShapes(deltaX/scale.sx, deltaY/scale.sy);
@@ -370,41 +360,6 @@ export default {
       const point = V(this.paperManager.paper.viewport).toLocalPoint(mouseX, mouseY);
       return this.paperManager.paper.findViewsFromPoint(point);
     },
-    /**
-     * Select a element that is into the selection box
-     * @param {*} event 
-     */
-    // selectShapeInLasso(event) {
-    //   const element = this.getChildShape(event);
-    //   this.selected = [];
-    //   if (element) { 
-    //     this.selected = [element];
-    //   }
-    //   if (this.selected && this.selected.length > 0) {
-    //     this.updateSelectionBox();
-    //   } else {
-    //     this.clearSelection();
-    //   }
-    // },
-    /**
-     * Unselect an element that is not into the selection box
-     * @param {Object} event 
-     */
-    // unselectShapeInLasso(event){
-    //   const elements = this.getShapesFromPoint(event);
-    //   if (this.shiftKeyPressed && elements) {
-    //     this.selected = this.selected.filter(item => {
-    //       return !elements.some(otherItem => {
-    //         return item.id === otherItem.id && item.name === otherItem.name;
-    //       });
-    //     });
-    //     if (this.selected.length > 0) {
-    //       this. updateSelectionBox();
-    //     } else {
-    //       this.clearSelection();
-    //     }
-    //   }
-    // },
     /**
      * Add an element into the highlighted nodes
      */
