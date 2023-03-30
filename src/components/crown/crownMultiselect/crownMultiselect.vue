@@ -75,11 +75,13 @@ export default {
   methods: {
     copyElement() {
       // @todo: Implement copyElement
+      // eslint-disable-next-line no-console
       console.log('@todo: Implement copyElement');
       this.$emit('copy-nodes');
     },
     deleteElement() {
       // @todo: Implement deleteElement
+      // eslint-disable-next-line no-console
       console.log('@todo: Implement deleteElement');
       this.$emit('remove-nodes');
     },
