@@ -978,10 +978,9 @@ export default {
       }
       return false;
     },
-    pointerDowInShape(event, element) {
-      console.log('pointerDowInShape');
-      console.log(element);
+    async pointerDowInShape(event, element) {
       const shapeView = this.paper.findViewByModel(element);
+      const shiftKeyPressed = this.$refs.selector.shiftKeyPressed;
       if (this.isPointInSelection(event)) {
         this.isDragging = true;
         // validate if the starts in an empty space over the pool
@@ -992,7 +991,6 @@ export default {
           }, shapeView);
           
         } else {
-          event.stop.propagation();
           this.$refs.selector.startDrag({
             clientX: event.clientX,
             clientY: event.clientY,
@@ -1001,10 +999,18 @@ export default {
         
       } else {
         this.shapeRef = shapeView;
+        if (!shiftKeyPressed) {
+          await this.$refs.selector.selectElement(shapeView);
+          this.isDragging = true;
+          await this.$nextTick();
+          this.$refs.selector.startDrag({
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }, null);
+        }
       }
     },
     pointerDownHandler(event, element = null ) {
-      console.log('pointerDownHandler');
       if (this.isPointInSelection(event)) {
         this.$refs.selector.startDrag({
           clientX: event.clientX,
@@ -1082,8 +1088,9 @@ export default {
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
+      const isPoolEdge = cellView.model.get('type') === 'standard.EmbeddedImage';
       return {
-        elementMove: cellView.model.get('elementMove'),
+        elementMove: isPoolEdge,
         labelMove: false,
       };
     });
