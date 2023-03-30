@@ -171,7 +171,7 @@ export default {
       height /= scale.sy;
 
       let selectedArea = g.rect(f.x, f.y, width, height);
-      this.selected= this.getElementsInSelectedArea(selectedArea, { strict: false });
+      this.selected = this.getElementsInSelectedArea(selectedArea, { strict: false });
       this.filterSelected();
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
@@ -245,10 +245,11 @@ export default {
         if (element) {
           // this.selected.push(elementView);
           this.selected = this.selected.filter(item => item.id !== elementView.id);
-          // this.filterSelected();
+          this.filterSelected();
         } else {
           // this.selected = [elementView];
           this.selected.push(elementView);
+          this.filterSelected();
         }
       } else {
         this.selected = [elementView];
@@ -272,7 +273,7 @@ export default {
       });
     },
     /**
-     * Pan papae handler
+     * Pan paper handler
      */
     translateChanged() {
       if (this.isSelecting) {
