@@ -809,8 +809,6 @@ export default {
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
       this.poolTarget = null;
-      // Select the node after it has been added to the store
-      this.selectNewNode(node);
 
       // add processmaker-modeler-generic-flow
       if ([
@@ -824,6 +822,9 @@ export default {
       ].includes(node.type)) {
         return;
       }
+
+      // Select the node after it has been added to the store (does not apply to flows)
+      this.selectNewNode(node);
 
       return new Promise(resolve => {
         setTimeout(() => {
