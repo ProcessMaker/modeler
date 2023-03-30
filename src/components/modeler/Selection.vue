@@ -338,6 +338,7 @@ export default {
     translateSelectedShapes(x, y, drafRef) { 
       const shapesToNotTranslate = [
         'PoolLane',
+        'standard.Link',
       ];
       let shapes = this.selected.filter(shape => {
         return !shapesToNotTranslate.includes(shape.model.get('type'));
