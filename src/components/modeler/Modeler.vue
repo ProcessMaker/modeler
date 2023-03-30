@@ -102,6 +102,7 @@
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
+        @shape-resize="shapeResize"
       />
       <selection
         v-if="paper"
@@ -280,6 +281,11 @@ export default {
     },
   },
   methods: {
+    async shapeResize() {
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.$refs.selector.updateSelectionBox(true);
+    },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
       if (source.default && source.default.id === flow.id) {

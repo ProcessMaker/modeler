@@ -217,8 +217,8 @@ export default {
     /**
      * Update the selection Box
      */
-    updateSelectionBox() {
-      if (this.isSelecting && this.style) {
+    updateSelectionBox(force=false) {
+      if (force || this.isSelecting && this.style) {
         if (this.selected.length > 0) {
           const box = this.getSelectionVertex(this.selected);
           // Set the position of the element

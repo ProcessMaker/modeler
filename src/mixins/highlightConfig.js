@@ -97,6 +97,7 @@ export default {
           this.setShapeHighlight();
           this.shape.on('change:size', () => {
             this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
+            this.$emit('shape-resize', this.shape);
           });
         });
     });
