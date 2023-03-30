@@ -67,6 +67,7 @@
         v-for="node in nodes"
         :is="node.type"
         :key="node._modelerId"
+        ref="nodeComponent"
         :graph="graph"
         :paper="paper"
         :node="node"
@@ -790,7 +791,14 @@ export default {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
     },
-    addNode(node) {
+    async selectNewNode(node) {
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      const newNodeComponent = this.$refs.nodeComponent.find(component => component.node === node);
+      const view = newNodeComponent.shapeView;
+      await this.$refs.selector.selectElement(view);
+    },
+    async addNode(node) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
@@ -800,11 +808,11 @@ export default {
       node.setIds(this.nodeIdGenerator);
 
       this.planeElements.push(node.diagram);
-      this.$refs.selector.clearSelection();
       store.commit('addNode', node);
       this.poolTarget = null;
-      // Clear the selction box
-      
+      // Select the node after it has been added to the store
+      this.selectNewNode(node);
+
       // add processmaker-modeler-generic-flow
       if ([
         sequenceFlowId,
@@ -867,6 +875,7 @@ export default {
 
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
+          this.selectNewNode(newNode);
         });
       });
     },
