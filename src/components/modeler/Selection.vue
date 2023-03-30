@@ -6,7 +6,7 @@
     data-cy="selection-box"
     :data-length="selected.length"
     :style="style"
-  > 
+  >
     <crown-multiselect
       :paper="paperManager.paper"
       :graph="$parent.graph"
@@ -157,7 +157,7 @@ export default {
 
       const selectorOffset = {
         left: this.$el.offsetLeft + paperOffset.left,
-        top: this.$el.offsetTop + paperOffset.top, 
+        top: this.$el.offsetTop + paperOffset.top,
       };
       let width = this.$el.clientWidth;
       let height = this.$el.clientHeight;
@@ -184,7 +184,7 @@ export default {
     },
     /**
      * Get elements into a selected area
-     * @param {Object} area 
+     * @param {Object} area
      */
     getElementsInSelectedArea(area, options) {
       const { paper } = this.paperManager;
@@ -192,7 +192,7 @@ export default {
     },
     /**
      * Return the bounding box of the selected elements,
-     * @param {Array} selected 
+     * @param {Array} selected
      */
     getSelectionVertex(selected, byModel = false) {
       const point = { x : 1 / 0, y: 1 / 0 };
@@ -235,8 +235,8 @@ export default {
       }
     },
     /**
-     * Update the selected box if a user select a element with shift key pressed 
-     * @param {Object} elementView 
+     * Update the selected box if a user select a element with shift key pressed
+     * @param {Object} elementView
      */
     elementClickHandler(elementView) {
       if (this.shiftKeyPressed) {
@@ -276,10 +276,10 @@ export default {
       if (this.isSelecting) {
         this.updateSelectionBox();
       }
-    },  
+    },
     /**
      * Start the drag procedure for the selext box
-     * @param {Object} event 
+     * @param {Object} event
      */
     startDrag(event, ref) {
       this.dragging = true;
@@ -298,11 +298,11 @@ export default {
       } else {
         this.drafRef = null;
       }
-      
+
     },
     /**
      * on Drag procedure
-     * @param {*} event 
+     * @param {*} event
      */
     drag(event) {
       if (!this.dragging) return;
@@ -323,7 +323,7 @@ export default {
     },
     /**
      * Stop drag procedure
-     * @param {Object} event 
+     * @param {Object} event
      */
     stopDrag() {
       if (!this.hasMouseMoved  && this.drafRef) {
@@ -335,7 +335,7 @@ export default {
       this.$emit('save-state');
       this.dragging = false;
     },
-    translateSelectedShapes(x, y, drafRef) { 
+    translateSelectedShapes(x, y, drafRef) {
       const shapesToNotTranslate = [
         'PoolLane',
       ];
@@ -351,7 +351,7 @@ export default {
     },
     /**
      * Gets shape from a point object
-     * @param {Object} event 
+     * @param {Object} event
      */
     getShapesFromPoint(event){
       const nEvent= util.normalizeEvent(event);
@@ -375,7 +375,7 @@ export default {
     },
     /**
      * Shift Key Down Handler
-     * @param {*} event 
+     * @param {*} event
      */
     shiftKeyDownListener(event) {
       // check if shift key is pressed without any other key
@@ -393,7 +393,7 @@ export default {
     },
     /**
      * Gets the child shape
-     * @param {object} point 
+     * @param {object} point
      */
     getChildShape(point) {
       let result = null;
@@ -404,7 +404,7 @@ export default {
       views.forEach(shape => {
         if (shape.model.get('parent') && shape.model.component.node.type !== laneId) {
           result = shape;
-        } 
+        }
       });
       return result;
     },
@@ -413,7 +413,7 @@ export default {
      * @param {object} point
      */
     markSelectedByPoint(point) {
-      const element = this.getNotEmbeddedShape(point);
+      const element = this.getChildShape(point);
       if (element) {
         this.selected = [element];
       }
@@ -433,7 +433,7 @@ export default {
 
       const selectorOffset = {
         left: this.$el.offsetLeft + paperOffset.left,
-        top: this.$el.offsetTop + paperOffset.top, 
+        top: this.$el.offsetTop + paperOffset.top,
       };
       let width = this.$el.clientWidth;
       let height = this.$el.clientHeight;
@@ -450,7 +450,7 @@ export default {
     },
     /**
      * Check that they are not in a pool
-     * @param {Array} elements 
+     * @param {Array} elements
      */
     isNotPoolChilds(elements) {
       if (elements.length > 0) {
@@ -523,7 +523,7 @@ export default {
 
         const elementWidth = selectionBBox.maxX - selectionBBox.minX;
         const elementHeight = selectionBBox.maxY - selectionBBox.minY;
-       
+
         const relativeX = selectionBBox.minX - poolX;
         const relativeY = selectionBBox.minY  - poolY;
 

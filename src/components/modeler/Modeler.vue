@@ -422,8 +422,7 @@ export default {
       let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
 
       if (!isSameHighlightedNode) {
-        // this.$refs.selector.selectElement(node);
-        // store.commit('highlightNode', node);
+        store.commit('highlightNode', node);
       }
 
       return;
@@ -1073,7 +1072,6 @@ export default {
       if (this.isDragging) {
         this.isDragging = false;
         this.$refs.selector.stopDrag(event);
-
       } else {
         this.$refs.selector.endSelection(this.paperManager.paper);
       }
