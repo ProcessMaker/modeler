@@ -151,8 +151,8 @@ import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
-import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
-// import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
+import hotkeys from '@/components/hotkeys/main';
+import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
@@ -184,6 +184,7 @@ export default {
       },
     },
   },
+  mixins: [hotkeys],
   data() {
     return {
       tooltipTarget: null,
@@ -226,6 +227,11 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
+      keyMod: this.isAppleOS() ? 'Command' : 'Control',
+      canvasScale: 1,
+      initialScale: 1,
+      minimumScale: 0.2,
+      scaleStep: 0.1,
       isDragging: false,
       isOverShape: false,
       shapeRef: null,
@@ -257,6 +263,10 @@ export default {
     autoValidate() {
       this.validateIfAutoValidateIsOn();
     },
+    canvasScale(canvasScale) {
+      this.paperManager.scale = canvasScale;
+    },
+
   },
   computed: {
     noElementsSelected() {
@@ -281,6 +291,9 @@ export default {
     },
   },
   methods: {
+    isAppleOS() {
+      return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
+    },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
       if (source.default && source.default.id === flow.id) {
@@ -944,41 +957,6 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
-
-    keyupListener(event) {
-      if (event.code === 'Space') {
-        this.isGrabbing = false;
-        this.paperManager.removeEventHandler('blank:pointermove');
-      }
-    },
-    keydownListener(event) {
-      const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
-      if (focusIsOutsideDiagram) {
-        return;
-      }
-
-      if (event.code === 'Space') {
-        this.isGrabbing = true;
-        this.paperManager.addEventHandler('blank:pointermove', (event, x, y) => {
-          if (!this.canvasDragPosition) {
-            const scale = this.paperManager.scale;
-            this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-          }
-          if (this.canvasDragPosition) {
-            this.paperManager.translate(
-              event.offsetX - this.canvasDragPosition.x,
-              event.offsetY - this.canvasDragPosition.y
-            );
-          }
-        });
-      }
-
-      moveShapeByKeypress(
-        event.key,
-        store.getters.highlightedShapes,
-        this.pushToUndoStack,
-      );
-    },
     validateDropTarget({ clientX, clientY, control }) {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
@@ -1113,10 +1091,6 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
-    document.addEventListener('keydown', this.keydownListener);
-
-    document.addEventListener('keyup', this.keyupListener);
-
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -1129,7 +1103,7 @@ export default {
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
-    
+
     this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
     this.handleResize();

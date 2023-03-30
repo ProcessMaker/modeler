@@ -1,4 +1,4 @@
-import moveShapeByKeypress, { moveAmount } from '@/components/modeler/moveWithArrowKeys';
+import moveShapeByKeypress, { moveAmount } from '@/components/hotkeys/moveWithArrowKeys';
 
 const shapeFactory = (type = 'foo') => ({
   translate: jest.fn(),
