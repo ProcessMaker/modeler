@@ -41,7 +41,7 @@ describe('Selection of pool with shift click', () => {
     // eslint-disable-next-line no-unused-vars
     let pool1;
     getElementAtPosition(pool1Position, nodeTypes.pool, 12, 100).then(($pool1) => {
-      const pool1 = $pool1[0].getBoundingClientRect();
+      pool1 = $pool1[0].getBoundingClientRect();
     });
 
     // get current position of pool 1
