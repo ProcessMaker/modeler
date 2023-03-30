@@ -27,8 +27,13 @@ $controls-transition: 0.3s;
   background: #f7f7f7;
 }
 
-.list-group-item:first-child {
-  border-top: 0;
+.list-group-item {
+  &:focus-visible {
+    outline: none;
+  }
+  &:first-child {
+    border-top: 0;
+  }
 }
 
 .tool {
