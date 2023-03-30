@@ -152,7 +152,6 @@ import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
-// import setUpSelectionBox from '@/components/modeler/setUpSelectionBox';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
@@ -1106,7 +1105,7 @@ export default {
 
     this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
     this.paper = this.paperManager.paper;
-    
+
     this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
     this.handleResize();
@@ -1125,11 +1124,9 @@ export default {
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isOverShape = false;
       this.pointerDownHandler(event);
-      // this.isGrabbing = true;
     }, this);
     this.paperManager.addEventHandler('cell:pointerup blank:pointerup', (event) => {
       this.canvasDragPosition = null;
-      // this.isGrabbing = false;
       this.activeNode = null;
       this.pointerUpHandler(event);
     }, this);
@@ -1162,14 +1159,6 @@ export default {
       this.isOverShape = true;
       this.pointerDowInShape(event, shape);
     });
-
-    // let cursor;
-    // const setCursor = () => {
-    //   cursor = this.cursor;
-    //   this.cursor = 'crosshair';
-    // };
-    // const resetCursor = () => this.cursor = cursor;
-    // setUpSelectionBox(setCursor, resetCursor, this.paperManager, this.graph);
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
