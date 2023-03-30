@@ -409,21 +409,20 @@ export default {
       this.plane.set('bpmnElement', this.processNode.definition);
       this.collaboration = null;
     },
-    highlightNode(node) {
+    highlightNode(node, event) {
       if (!node || !this.highlightedNode) {
         return;
       }
 
-      // if (event && event.shiftKey) {
-      //   store.commit('addToHighlightedNodes', [node]);
-      //   return;
-      // }
+      if (event && event.shiftKey) {
+        store.commit('addToHighlightedNodes', [node]);
+        return;
+      }
 
       let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
 
       if (!isSameHighlightedNode) {
-        // this.$refs.selector.selectElement(node);
-        // store.commit('highlightNode', node);  
+        store.commit('highlightNode', node);
       }
 
       return;
