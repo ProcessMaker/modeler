@@ -62,6 +62,7 @@ export default {
       showLasso: false,
       shiftKeyPressed: false,
       isOutOfThePool: false,
+      stopForceMove: false,
     };
   },
   mounted(){
@@ -286,7 +287,22 @@ export default {
       if (this.isSelecting) {
         this.updateSelectionBox();
       }
-    },  
+    },
+    /**
+     * Verify if has selected lanes
+     */
+    hasLanes(selected) {
+      const shapesToNotTranslate = [
+        'processmaker-modeler-lane',
+      ];
+      const shapes = selected.find(shape => {
+        return shapesToNotTranslate.includes(shape.model.component.node.type);
+      });
+      if (shapes) {
+        return true;
+      } 
+      return false;
+    },
     /**
      * Start the drag procedure for the selext box
      * @param {Object} event 
@@ -295,6 +311,7 @@ export default {
       if (!this.$refs.drag) {
         return;
       }
+      this.stopForceMove = false;
       this.dragging = true;
       this.hasMouseMoved = false;
       const nEvent= util.normalizeEvent(event);
@@ -311,13 +328,17 @@ export default {
       } else {
         this.drafRef = null;
       }
-      
+      if (this.hasLanes(this.selected)) {
+        this.stopForceMove = true;
+        return;
+      }
     },
     /**
      * on Drag procedure
      * @param {*} event 
      */
     drag(event) {
+      if (this.stopForceMove) return;
       if (!this.dragging) return;
       this.hasMouseMoved = true;
       const nEvent= util.normalizeEvent(event);
@@ -353,6 +374,7 @@ export default {
       this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
+      this.stopForceMove = false;
     },
     translateSelectedShapes(x, y, drafRef) { 
       const shapesToNotTranslate = [
