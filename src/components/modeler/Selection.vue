@@ -194,7 +194,7 @@ export default {
      * Return the bounding box of the selected elements,
      * @param {Array} selected 
      */
-    getSelectionVertex(selected, byModel = false) {
+    getSelectionVertex(selected, byModel = false, includeAll = false) {
       const point = { x : 1 / 0, y: 1 / 0 };
       const size = { width: 0, height: 0 };
       const useModelGeometry = this.useModelGeometry;
@@ -202,7 +202,7 @@ export default {
         'PoolLane',
         'standard.Link',
       ];
-      selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+      selected.filter(shape => includeAll || !shapesToNotTranslate.includes(shape.model.get('type')))
         .map(function(view) {
           const box = byModel ?
             view.model.getBBox({ useModelGeometry }) :
@@ -225,7 +225,7 @@ export default {
     updateSelectionBox(force=false) {
       if (force || this.isSelecting && this.style) {
         if (this.selected.length > 0) {
-          const box = this.getSelectionVertex(this.selected);
+          const box = this.getSelectionVertex(this.selected, false, true);
           // Set the position of the element
           this.style.left = `${box.minX}px`;
           this.style.top = `${box.minY}px`;
@@ -472,13 +472,17 @@ export default {
     /**
      * Check that they are not in a pool
      * @param {Array} elements 
+     * @return true if there is a pool in the selection or if none of the selected elements are in a pool
      */
     isNotPoolChilds(elements) {
       if (elements.length > 0) {
-        const model = elements[0].model;
-        return !(model.component &&
-          model.component.node.type !== laneId &&
-          model.getParentCell() && model.getParentCell().component.node.type === poolId);
+        const poolInSelection = elements.find(({ model }) => {
+          return model.component && model.component.node.type === poolId;
+        });
+        const elementInAPool = elements.find(({ model }) => {
+          return (model.getParentCell() && model.getParentCell().component.node.type === poolId);
+        });
+        return !!poolInSelection || !elementInAPool;
       }
       return false;
     },
