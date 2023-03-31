@@ -229,8 +229,8 @@ export default {
           // Set the position of the element
           this.style.left = `${box.minX}px`;
           this.style.top = `${box.minY}px`;
-          this.left = this.style.left;
-          this.top = this.style.top;
+          this.left = parseInt(this.style.left);
+          this.top = parseInt(this.style.top);
           // Set the dimensions of the element
           this.style.width = `${box.maxX - box.minX}px`;
           this.style.height = `${box.maxY - box.minY}px`;
