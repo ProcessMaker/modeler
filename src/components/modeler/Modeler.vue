@@ -93,7 +93,6 @@
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
-        @click="highlightNode(node, $event)"
         @unset-pools="unsetPools"
         @clearSelection="clearSelection"
         @set-pools="setPools"
