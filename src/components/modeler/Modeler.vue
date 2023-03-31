@@ -1125,10 +1125,6 @@ export default {
 
     store.commit('setPaper', this.paperManager.paper);
 
-    this.paperManager.addEventHandler('blank:pointerclick', () => {
-      store.commit('highlightNode', this.processNode);
-    }, this);
-
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {

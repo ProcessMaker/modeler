@@ -340,10 +340,16 @@ export default {
      * @param {Object} event 
      */
     stopDrag() {
-      if (!this.hasMouseMoved  && this.drafRef) {
+      if (!this.hasMouseMoved) {
         this.hasMouseMoved = false;
-        this.elementClickHandler(this.drafRef);
-        return;
+        if (this.drafRef) {
+          this.elementClickHandler(this.drafRef);
+          this.drafRef = null;
+          return;
+        } else {
+          this.clearSelection();
+          return;
+        } 
       }
       this.overPoolStopDrag();
       this.$emit('save-state');
