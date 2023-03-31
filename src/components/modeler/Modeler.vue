@@ -107,7 +107,7 @@
       />
       <selection
         v-if="paper"
-        ref="selector" 
+        ref="selector"
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
@@ -153,7 +153,7 @@ import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
-import moveShapeByKeypress from '@/components/modeler/moveWithArrowKeys';
+import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
@@ -185,6 +185,7 @@ export default {
       },
     },
   },
+  mixins: [hotkeys],
   data() {
     return {
       tooltipTarget: null,
@@ -227,10 +228,15 @@ export default {
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
+      keyMod: this.isAppleOS() ? 'Command' : 'Control',
+      canvasScale: 1,
+      initialScale: 1,
+      minimumScale: 0.2,
+      scaleStep: 0.1,
       isDragging: false,
       wasDragged: false,
       isOverShape: false,
-      shapeRef: null, 
+      shapeRef: null,
     };
   },
   watch: {
@@ -259,6 +265,10 @@ export default {
     autoValidate() {
       this.validateIfAutoValidateIsOn();
     },
+    canvasScale(canvasScale) {
+      this.paperManager.scale = canvasScale;
+    },
+
   },
   computed: {
     noElementsSelected() {
@@ -283,6 +293,9 @@ export default {
     },
   },
   methods: {
+    isAppleOS() {
+      return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
+    },
     async shapeResize() {
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
@@ -952,18 +965,6 @@ export default {
 
       this.paperManager.setPaperDimensions(clientWidth, clientHeight);
     },
-    keydownListener(event) {
-      const focusIsOutsideDiagram = !event.target.toString().toLowerCase().includes('body');
-      if (focusIsOutsideDiagram) {
-        return;
-      }
-
-      moveShapeByKeypress(
-        event.key,
-        store.getters.highlightedShapes,
-        this.pushToUndoStack,
-      );
-    },
     validateDropTarget({ clientX, clientY, control }) {
       const { allowDrop, poolTarget } = getValidationProperties(clientX, clientY, control, this.paperManager.paper, this.graph, this.collaboration, this.$refs['paper-container']);
       this.allowDrop = allowDrop;
@@ -1006,7 +1007,7 @@ export default {
             clientX: event.clientX,
             clientY: event.clientY,
           }, shapeView);
-          
+
         } else {
           this.shapeRef = shapeView;
           this.$refs.selector.startDrag({
@@ -1014,7 +1015,7 @@ export default {
             clientY: event.clientY,
           }, null);
         }
-        
+
       } else {
         this.shapeRef = shapeView;
         if (!shiftKeyPressed) {
@@ -1047,7 +1048,7 @@ export default {
           });
         }
       }
-      
+
     },
     pointerMoveHandler(event) {
       if (!this.isDragging){
@@ -1061,7 +1062,6 @@ export default {
       if (this.isDragging) {
         this.isDragging = false;
         this.$refs.selector.stopDrag(event);
-
       } else {
         this.$refs.selector.endSelection(this.paperManager.paper);
       }
@@ -1103,8 +1103,6 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
-    document.addEventListener('keydown', this.keydownListener);
-
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -1128,6 +1126,7 @@ export default {
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
+      if (this.isGrabbing) return;
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isOverShape = false;

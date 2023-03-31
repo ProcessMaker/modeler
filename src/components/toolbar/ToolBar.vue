@@ -34,7 +34,7 @@
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <b-button
             class="btn btn-sm btn-secondary"
-            @click="scale += scaleStep"
+            @click="paperManager.scale = paperManager.scale.sx + scaleStep"
             data-test="zoom-in"
             v-b-tooltip.hover
             :title="$t('Zoom In')"
@@ -43,7 +43,7 @@
           </b-button>
           <b-button
             class="btn btn-sm btn-secondary"
-            @click="scale = Math.max(minimumScale, scale -= scaleStep)"
+            @click="paperManager.scale = Math.max(minimumScale, paperManager.scale.sx -= scaleStep)"
             data-test="zoom-out"
             v-b-tooltip.hover
             :title="$t('Zoom Out')"
@@ -51,16 +51,17 @@
             <font-awesome-icon :icon="minusIcon" />
           </b-button>
           <b-button
+            v-if="paperManager"
             class="btn btn-sm btn-secondary"
-            @click="scale = initialScale"
-            :disabled="scale === initialScale"
+            @click="paperManager.scale = initialScale"
+            :disabled="paperManager.scale.sx === initialScale"
             data-test="zoom-reset"
             v-b-tooltip.hover
             :title="$t('Reset to initial scale')"
           >
             {{ $t('Reset') }}
           </b-button>
-          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          <span v-if="paperManager" class="btn btn-sm btn-secondary scale-value">{{ Math.round(paperManager.scale.sx*100) }}%</span>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
@@ -121,12 +122,6 @@ export default {
     panelsCompressed: Boolean,
   },
   watch: {
-    scale(scale) {
-      this.paperManager.scale = scale;
-      if (scale === this.initialScale) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);
     },

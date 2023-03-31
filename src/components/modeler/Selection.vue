@@ -6,7 +6,7 @@
     data-cy="selection-box"
     :data-length="selected.length"
     :style="style"
-  > 
+  >
     <crown-multiselect
       :paper="paperManager.paper"
       :graph="$parent.graph"
@@ -158,7 +158,7 @@ export default {
 
       const selectorOffset = {
         left: this.$el.offsetLeft + paperOffset.left,
-        top: this.$el.offsetTop + paperOffset.top, 
+        top: this.$el.offsetTop + paperOffset.top,
       };
       let width = this.$el.clientWidth;
       let height = this.$el.clientHeight;
@@ -185,7 +185,7 @@ export default {
     },
     /**
      * Get elements into a selected area
-     * @param {Object} area 
+     * @param {Object} area
      */
     getElementsInSelectedArea(area, options) {
       const { paper } = this.paperManager;
@@ -193,7 +193,7 @@ export default {
     },
     /**
      * Return the bounding box of the selected elements,
-     * @param {Array} selected 
+     * @param {Array} selected
      */
     getSelectionVertex(selected, byModel = false, includeAll = false) {
       const point = { x : 1 / 0, y: 1 / 0 };
@@ -241,8 +241,8 @@ export default {
       }
     },
     /**
-     * Update the selected box if a user select a element with shift key pressed 
-     * @param {Object} elementView 
+     * Update the selected box if a user select a element with shift key pressed
+     * @param {Object} elementView
      */
     elementClickHandler(elementView) {
       const shapesToNotSelect = [
@@ -305,7 +305,7 @@ export default {
     },
     /**
      * Start the drag procedure for the selext box
-     * @param {Object} event 
+     * @param {Object} event
      */
     startDrag(event, ref) {
       if (!this.$refs.drag) {
@@ -335,7 +335,7 @@ export default {
     },
     /**
      * on Drag procedure
-     * @param {*} event 
+     * @param {*} event
      */
     drag(event) {
       if (this.stopForceMove) return;
@@ -357,7 +357,7 @@ export default {
     },
     /**
      * Stop drag procedure
-     * @param {Object} event 
+     * @param {Object} event
      */
     stopDrag() {
       if (!this.hasMouseMoved) {
@@ -376,7 +376,7 @@ export default {
       this.dragging = false;
       this.stopForceMove = false;
     },
-    translateSelectedShapes(x, y, drafRef) { 
+    translateSelectedShapes(x, y, drafRef) {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
@@ -393,7 +393,7 @@ export default {
     },
     /**
      * Gets shape from a point object
-     * @param {Object} event 
+     * @param {Object} event
      */
     getShapesFromPoint(event){
       const nEvent= util.normalizeEvent(event);
@@ -417,7 +417,7 @@ export default {
     },
     /**
      * Shift Key Down Handler
-     * @param {*} event 
+     * @param {*} event
      */
     shiftKeyDownListener(event) {
       // check if shift key is pressed without any other key
@@ -435,7 +435,7 @@ export default {
     },
     /**
      * Gets the child shape
-     * @param {object} point 
+     * @param {object} point
      */
     getChildShape(point) {
       let result = null;
@@ -446,17 +446,17 @@ export default {
       views.forEach(shape => {
         if (shape.model.get('parent') && shape.model.component.node.type !== laneId) {
           result = shape;
-        } 
+        }
       });
       return result;
     },
     /**
      * Mark a shape as selected
-     * @param {object} point 
+     * @param {object} point
      */
     markSelectedByPoint(point) {
       const element = this.getChildShape(point);
-      if (element) { 
+      if (element) {
         this.selected = [element];
       }
       if (this.selected.length > 0) {
@@ -475,7 +475,7 @@ export default {
 
       const selectorOffset = {
         left: this.$el.offsetLeft + paperOffset.left,
-        top: this.$el.offsetTop + paperOffset.top, 
+        top: this.$el.offsetTop + paperOffset.top,
       };
       let width = this.$el.clientWidth;
       let height = this.$el.clientHeight;
@@ -578,7 +578,7 @@ export default {
 
         const elementWidth = selectionBBox.maxX - selectionBBox.minX;
         const elementHeight = selectionBBox.maxY - selectionBBox.minY;
-       
+
         const relativeX = selectionBBox.minX - poolX;
         const relativeY = selectionBBox.minY  - poolY;
 
