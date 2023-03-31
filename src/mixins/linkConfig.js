@@ -248,6 +248,9 @@ export default {
         this.setupLinkTools();
       });
     });
+    this.shape.on('change:vertices', function() {
+      this.component.$emit('shape-resize');
+    });
 
     const targetRef = this.getTargetRef
       ? this.getTargetRef()

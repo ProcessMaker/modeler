@@ -172,6 +172,8 @@ export default {
 
       let selectedArea = g.rect(f.x, f.y, width, height);
       this.selected = this.getElementsInSelectedArea(selectedArea, { strict: false });
+
+      
       this.filterSelected();
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
@@ -187,9 +189,27 @@ export default {
      * Get elements into a selected area
      * @param {Object} area
      */
-    getElementsInSelectedArea(area, options) {
+    getElementsInSelectedArea(area, options, addLinks=true) {
       const { paper } = this.paperManager;
-      return paper.findViewsInArea(area, options);
+      // get shapes
+      const elements =  paper.findViewsInArea(area, options);
+      
+      if (!addLinks) {
+        return elements;
+      }
+      // get flows
+      this.graph.getLinks().forEach(function(link) {
+        console.log(link);
+        // Check if the link is within the selected area
+        // if (selectedArea.containsRect(link.getBBox())) {
+        if (area.intersect(link.getBBox())) {
+          // The link is within the selected area
+          // Do something with the link, such as highlighting it
+          link.attr('line/stroke', 'red');
+          elements.push(paper.findViewByModel(link));
+        }
+      });
+      return elements;
     },
     /**
      * Return the bounding box of the selected elements,
@@ -371,6 +391,10 @@ export default {
           return;
         } 
       }
+
+      
+
+      
       this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
