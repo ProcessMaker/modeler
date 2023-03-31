@@ -51,6 +51,7 @@
 
       <InspectorPanel
         ref="inspector-panel"
+        v-show="!(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -228,6 +229,7 @@ export default {
       xmlManager: null,
       previouslyStackedShape: null,
       isDragging: false,
+      wasDragged: false,
       isOverShape: false,
       shapeRef: null, 
     };
@@ -996,6 +998,7 @@ export default {
     async pointerDowInShape(event, element) {
       const shapeView = this.paper.findViewByModel(element);
       const shiftKeyPressed = this.$refs.selector.shiftKeyPressed;
+      this.wasDragged = false;
       if (this.isPointInSelection(event)) {
         this.isDragging = true;
         // validate if the starts in an empty space over the pool
@@ -1006,6 +1009,7 @@ export default {
           }, shapeView);
           
         } else {
+          this.shapeRef = shapeView;
           this.$refs.selector.startDrag({
             clientX: event.clientX,
             clientY: event.clientY,
@@ -1026,6 +1030,7 @@ export default {
       }
     },
     pointerDownHandler(event, element = null ) {
+      this.wasDragged = false;
       if (this.isPointInSelection(event)) {
         this.$refs.selector.startDrag({
           clientX: event.clientX,
@@ -1049,6 +1054,7 @@ export default {
       if (!this.isDragging){
         this.$refs.selector.updateSelection(event, this.paperManager.paper);
       } else {
+        this.wasDragged = true;
         this.$refs.selector.drag(event);
       }
     },
@@ -1060,7 +1066,7 @@ export default {
       } else {
         this.$refs.selector.endSelection(this.paperManager.paper);
       }
-      if (this.shapeRef){
+      if (this.shapeRef && !this.wasDragged){
         this.$refs.selector.elementClickHandler(this.shapeRef);
       }
       this.shapeRef = null;

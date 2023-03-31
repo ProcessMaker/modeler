@@ -198,15 +198,20 @@ export default {
       const point = { x : 1 / 0, y: 1 / 0 };
       const size = { width: 0, height: 0 };
       const useModelGeometry = this.useModelGeometry;
-      selected.map(function(view) {
-        const box = byModel ?
-          view.model.getBBox({ useModelGeometry }) :
-          view.getBBox({ useModelGeometry }).inflate(7);
-        point.x = Math.min(point.x, box.x);
-        point.y = Math.min(point.y, box.y);
-        size.width = Math.max(size.width, box.x + box.width);
-        size.height= Math.max(size.height, box.y + box.height);
-      });
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+      ];
+      selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .map(function(view) {
+          const box = byModel ?
+            view.model.getBBox({ useModelGeometry }) :
+            view.getBBox({ useModelGeometry }).inflate(7);
+          point.x = Math.min(point.x, box.x);
+          point.y = Math.min(point.y, box.y);
+          size.width = Math.max(size.width, box.x + box.width);
+          size.height= Math.max(size.height, box.y + box.height);
+        });
       return {
         minX: point.x,
         minY: point.y,
@@ -514,9 +519,14 @@ export default {
       this.style.left = `${this.initialPosition.left}px`;
       this.style.top = `${this.initialPosition.top}px`;
       const scale = this.paperManager.paper.scale();
-      this.selected.forEach(shape => {
-        shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
-      });
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+      ];
+      this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
+        });
       this.isOutOfThePool = false;
       store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
