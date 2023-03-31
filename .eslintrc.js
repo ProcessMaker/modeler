@@ -17,7 +17,6 @@ module.exports = {
     quotes: ['error', 'single'],
     'object-curly-spacing': ['warn', 'always', { 'arraysInObjects': false }],
     'no-debugger': 'off',
-    'no-console': 'off',
     'object-shorthand': 'error',
     'space-before-function-paren': ['error', 'never'],
     'keyword-spacing': 'error',
