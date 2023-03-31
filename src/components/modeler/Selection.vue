@@ -243,10 +243,13 @@ export default {
      * Update the selected box if a user select a element with shift key pressed 
      * @param {Object} elementView 
      */
-    elementClickHandler(elementView) {
-      const shapesToNotSelect = [
-      ];
-      if (shapesToNotSelect.includes(elementView.model.get('type'))) {
+    async elementClickHandler(elementView) {
+      const isALane = elementView.model.get('type') === 'PoolLane';
+      if (isALane) {
+        this.clearSelection();
+        await this.$nextTick();
+        const lane = elementView.model.component.node;
+        store.commit('highlightNode', lane);
         return;
       }
       if (this.shiftKeyPressed) {
