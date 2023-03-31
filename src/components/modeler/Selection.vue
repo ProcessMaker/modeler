@@ -199,7 +199,6 @@ export default {
       }
       // get flows
       this.graph.getLinks().forEach(function(link) {
-        console.log(link);
         // Check if the link is within the selected area
         // if (selectedArea.containsRect(link.getBBox())) {
         if (area.intersect(link.getBBox())) {
