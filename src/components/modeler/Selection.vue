@@ -545,8 +545,12 @@ export default {
      */
     expandToFitElement(selected) {
       if (selected.length > 0) {
-        const model = selected[0].model;
-        const pool = model.getParentCell();
+        const pool = selected.find(({ model }) => {
+          if (model.getParentCell()) {
+            return model.getParentCell().component.node.type === poolId;
+          }
+          return false;
+        }).model.getParentCell();
         const selectionBBox = this.getSelectionVertex(this.selected, true);
         const { x: poolX, y: poolY, width, height } = pool.getBBox();
 
