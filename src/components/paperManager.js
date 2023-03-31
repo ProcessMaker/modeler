@@ -2,7 +2,6 @@ import { dia, util } from 'jointjs';
 import { defaultNodeColor, invalidNodeColor } from '@/components/nodeColors';
 import { gridSize } from '@/graph';
 
-
 export default class PaperManager {
   #paper;
   preventTranslate = false;

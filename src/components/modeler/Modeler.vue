@@ -51,6 +51,7 @@
 
       <InspectorPanel
         ref="inspector-panel"
+        v-show="!(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -61,6 +62,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         :compressed="panelsCompressed && noElementsSelected"
+        @shape-resize="shapeResize"
       />
 
       <component
@@ -91,7 +93,6 @@
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
-        @click="highlightNode(node, $event)"
         @unset-pools="unsetPools"
         @clearSelection="clearSelection"
         @set-pools="setPools"
@@ -102,6 +103,7 @@
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
         @default-flow="toggleDefaultFlow"
+        @shape-resize="shapeResize"
       />
       <selection
         v-if="paper"
@@ -232,6 +234,7 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       isDragging: false,
+      wasDragged: false,
       isOverShape: false,
       shapeRef: null,
     };
@@ -292,6 +295,11 @@ export default {
   methods: {
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
+    },
+    async shapeResize() {
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.$refs.selector.updateSelectionBox(true);
     },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
@@ -990,6 +998,7 @@ export default {
     async pointerDowInShape(event, element) {
       const shapeView = this.paper.findViewByModel(element);
       const shiftKeyPressed = this.$refs.selector.shiftKeyPressed;
+      this.wasDragged = false;
       if (this.isPointInSelection(event)) {
         this.isDragging = true;
         // validate if the starts in an empty space over the pool
@@ -1000,6 +1009,7 @@ export default {
           }, shapeView);
 
         } else {
+          this.shapeRef = shapeView;
           this.$refs.selector.startDrag({
             clientX: event.clientX,
             clientY: event.clientY,
@@ -1020,6 +1030,7 @@ export default {
       }
     },
     pointerDownHandler(event, element = null ) {
+      this.wasDragged = false;
       if (this.isPointInSelection(event)) {
         this.$refs.selector.startDrag({
           clientX: event.clientX,
@@ -1043,6 +1054,7 @@ export default {
       if (!this.isDragging){
         this.$refs.selector.updateSelection(event, this.paperManager.paper);
       } else {
+        this.wasDragged = true;
         this.$refs.selector.drag(event);
       }
     },
@@ -1053,7 +1065,7 @@ export default {
       } else {
         this.$refs.selector.endSelection(this.paperManager.paper);
       }
-      if (this.shapeRef){
+      if (this.shapeRef && !this.wasDragged){
         this.$refs.selector.elementClickHandler(this.shapeRef);
       }
       this.shapeRef = null;
@@ -1110,10 +1122,6 @@ export default {
     window.addEventListener('resize', this.handleResize);
 
     store.commit('setPaper', this.paperManager.paper);
-
-    this.paperManager.addEventHandler('blank:pointerclick', () => {
-      store.commit('highlightNode', this.processNode);
-    }, this);
 
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 

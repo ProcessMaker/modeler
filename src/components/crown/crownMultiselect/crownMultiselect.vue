@@ -67,22 +67,14 @@ export default {
       const countSelected = store.getters.highlightedShapes.length;
       return countSelected > 1;
     },
-    isFlow() {
-      return false;
-    },
     highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
     copyElement() {
       // @todo: Implement copyElement
-      // eslint-disable-next-line no-console
-      console.log('@todo: Implement copyElement');
       this.$emit('copy-nodes');
     },
     deleteElement() {
-      // @todo: Implement deleteElement
-      // eslint-disable-next-line no-console
-      console.log('@todo: Implement deleteElement');
       this.$emit('remove-nodes');
     },
     paperNotRendered() {
@@ -102,7 +94,6 @@ export default {
 
       this.$emit('save-state');
     },
-    repositionCrown() {},
     paperDoneRendering() {
       if (!this.isRendering) {
         return;
@@ -123,7 +114,6 @@ export default {
     await this.paperDoneRendering();
     this.setUpCrownConfig();
   },
-  destroyed() {},
 };
 </script>
 

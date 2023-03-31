@@ -194,19 +194,24 @@ export default {
      * Return the bounding box of the selected elements,
      * @param {Array} selected
      */
-    getSelectionVertex(selected, byModel = false) {
+    getSelectionVertex(selected, byModel = false, includeAll = false) {
       const point = { x : 1 / 0, y: 1 / 0 };
       const size = { width: 0, height: 0 };
       const useModelGeometry = this.useModelGeometry;
-      selected.map(function(view) {
-        const box = byModel ?
-          view.model.getBBox({ useModelGeometry }) :
-          view.getBBox({ useModelGeometry }).inflate(7);
-        point.x = Math.min(point.x, box.x);
-        point.y = Math.min(point.y, box.y);
-        size.width = Math.max(size.width, box.x + box.width);
-        size.height= Math.max(size.height, box.y + box.height);
-      });
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+      ];
+      selected.filter(shape => includeAll || !shapesToNotTranslate.includes(shape.model.get('type')))
+        .map(function(view) {
+          const box = byModel ?
+            view.model.getBBox({ useModelGeometry }) :
+            view.getBBox({ useModelGeometry }).inflate(7);
+          point.x = Math.min(point.x, box.x);
+          point.y = Math.min(point.y, box.y);
+          size.width = Math.max(size.width, box.x + box.width);
+          size.height= Math.max(size.height, box.y + box.height);
+        });
       return {
         minX: point.x,
         minY: point.y,
@@ -217,15 +222,15 @@ export default {
     /**
      * Update the selection Box
      */
-    updateSelectionBox() {
-      if (this.isSelecting && this.style) {
+    updateSelectionBox(force=false) {
+      if (force || this.isSelecting && this.style) {
         if (this.selected.length > 0) {
-          const box = this.getSelectionVertex(this.selected);
+          const box = this.getSelectionVertex(this.selected, false, true);
           // Set the position of the element
           this.style.left = `${box.minX}px`;
           this.style.top = `${box.minY}px`;
-          this.left = this.style.left;
-          this.top = this.style.top;
+          this.left = parseInt(this.style.left);
+          this.top = parseInt(this.style.top);
           // Set the dimensions of the element
           this.style.width = `${box.maxX - box.minX}px`;
           this.style.height = `${box.maxY - box.minY}px`;
@@ -239,6 +244,11 @@ export default {
      * @param {Object} elementView
      */
     elementClickHandler(elementView) {
+      const shapesToNotSelect = [
+      ];
+      if (shapesToNotSelect.includes(elementView.model.get('type'))) {
+        return;
+      }
       if (this.shiftKeyPressed) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (element) {
@@ -282,6 +292,9 @@ export default {
      * @param {Object} event
      */
     startDrag(event, ref) {
+      if (!this.$refs.drag) {
+        return;
+      }
       this.dragging = true;
       this.hasMouseMoved = false;
       const nEvent= util.normalizeEvent(event);
@@ -326,10 +339,16 @@ export default {
      * @param {Object} event
      */
     stopDrag() {
-      if (!this.hasMouseMoved  && this.drafRef) {
+      if (!this.hasMouseMoved) {
         this.hasMouseMoved = false;
-        this.elementClickHandler(this.drafRef);
-        return;
+        if (this.drafRef) {
+          this.elementClickHandler(this.drafRef);
+          this.drafRef = null;
+          return;
+        } else {
+          this.clearSelection();
+          return;
+        } 
       }
       this.overPoolStopDrag();
       this.$emit('save-state');
@@ -338,6 +357,7 @@ export default {
     translateSelectedShapes(x, y, drafRef) {
       const shapesToNotTranslate = [
         'PoolLane',
+        'standard.Link',
       ];
       let shapes = this.selected.filter(shape => {
         return !shapesToNotTranslate.includes(shape.model.get('type'));
@@ -450,14 +470,18 @@ export default {
     },
     /**
      * Check that they are not in a pool
-     * @param {Array} elements
+     * @param {Array} elements 
+     * @return true if there is a pool in the selection or if none of the selected elements are in a pool
      */
     isNotPoolChilds(elements) {
       if (elements.length > 0) {
-        const model = elements[0].model;
-        return !(model.component &&
-          model.component.node.type !== laneId &&
-          model.getParentCell() && model.getParentCell().component.node.type === poolId);
+        const poolInSelection = elements.find(({ model }) => {
+          return model.component && model.component.node.type === poolId;
+        });
+        const elementInAPool = elements.find(({ model }) => {
+          return (model.getParentCell() && model.getParentCell().component.node.type === poolId);
+        });
+        return !!poolInSelection || !elementInAPool;
       }
       return false;
     },
@@ -504,9 +528,14 @@ export default {
       this.style.left = `${this.initialPosition.left}px`;
       this.style.top = `${this.initialPosition.top}px`;
       const scale = this.paperManager.paper.scale();
-      this.selected.forEach(shape => {
-        shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
-      });
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+      ];
+      this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
+        });
       this.isOutOfThePool = false;
       store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
@@ -516,8 +545,12 @@ export default {
      */
     expandToFitElement(selected) {
       if (selected.length > 0) {
-        const model = selected[0].model;
-        const pool = model.getParentCell();
+        const pool = selected.find(({ model }) => {
+          if (model.getParentCell()) {
+            return model.getParentCell().component.node.type === poolId;
+          }
+          return false;
+        }).model.getParentCell();
         const selectionBBox = this.getSelectionVertex(this.selected, true);
         const { x: poolX, y: poolY, width, height } = pool.getBBox();
 
