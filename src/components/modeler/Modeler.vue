@@ -61,6 +61,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         :compressed="panelsCompressed && noElementsSelected"
+        @shape-resize="shapeResize"
       />
 
       <component
@@ -356,7 +357,6 @@ export default {
         const xml = await this.getXmlFromDiagram();
         undoRedoStore.dispatch('pushState', xml);
         window.ProcessMaker.EventBus.$emit('modeler-change');
-        this.shapeResize();
       } catch (invalidXml) {
         // eslint-disable-next-line no-console
         console.warn(invalidXml.message);

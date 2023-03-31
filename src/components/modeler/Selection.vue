@@ -239,6 +239,12 @@ export default {
      * @param {Object} elementView 
      */
     elementClickHandler(elementView) {
+      const shapesToNotSelect = [
+        'standard.Link',
+      ];
+      if (shapesToNotSelect.includes(elementView.model.get('type'))) {
+        return;
+      }
       if (this.shiftKeyPressed) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (element) {
@@ -282,6 +288,9 @@ export default {
      * @param {Object} event 
      */
     startDrag(event, ref) {
+      if (!this.$refs.drag) {
+        return;
+      }
       this.dragging = true;
       this.hasMouseMoved = false;
       const nEvent= util.normalizeEvent(event);
