@@ -245,7 +245,6 @@ export default {
      */
     elementClickHandler(elementView) {
       const shapesToNotSelect = [
-        'standard.Link',
       ];
       if (shapesToNotSelect.includes(elementView.model.get('type'))) {
         return;
