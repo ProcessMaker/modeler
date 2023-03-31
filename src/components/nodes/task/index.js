@@ -4,16 +4,25 @@ import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
 import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
-import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
+import {
+  loopCharacteristicsHandler,
+  loopCharacteristicsData,
+} from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
+import DynamicNameInput from './DynamicNameInput.vue';
 
 export const id = 'processmaker-modeler-task';
 
 export default {
   id: 'processmaker-modeler-task',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
+  bpmnType: [
+    'bpmn:Task',
+    'bpmn:UserTask',
+    'bpmn:GlobalTask',
+    'bpmn:SubProcess',
+  ],
   control: true,
   category: 'BPMN',
   rank: 40,
@@ -23,6 +32,7 @@ export default {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
       assignment: 'requester',
+      config: JSON.stringify({ dynamic_name: '' }),
     });
   },
   diagram(moddle) {
@@ -33,14 +43,26 @@ export default {
       }),
     });
   },
-  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
+  inspectorHandler(
+    value,
+    node,
+    setNodeProp,
+    moddle,
+    definitions,
+    defaultInspectorHandler
+  ) {
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'));
   },
   inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
-    loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
+    loopCharacteristicsData(
+      inspectorData,
+      node,
+      defaultDataTransform,
+      inspector
+    );
     inspectorData.markerFlags = {
       isForCompensation: inspectorData.isForCompensation,
     };
@@ -66,6 +88,12 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
+            {
+              component: DynamicNameInput,
+              config: {
+                name: 'config',
+              },
+            },
           ],
         },
         loopCharacteristicsInspector,
@@ -84,10 +112,14 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
     return;
   }
 
-  const currentIsForCompensationValue = node.definition.get('isForCompensation');
+  const currentIsForCompensationValue =
+    node.definition.get('isForCompensation');
   const newIsForCompensationValue = markerFlags.isForCompensation;
 
-  if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
+  if (
+    newIsForCompensationValue != null &&
+    newIsForCompensationValue !== currentIsForCompensationValue
+  ) {
     setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
   }
 }
