@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form-input v-model="name" :label="$t('Dynamic Name')" />
+    <form-input v-model="name" :label="$t('Request Name')" />
   </div>
 </template>
 
