@@ -163,6 +163,7 @@ export default {
   },
   methods: {
     undo() {
+      this.$emit('clearSelection');
       if (this.isRendering) {
         return;
       }
@@ -172,6 +173,7 @@ export default {
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     redo() {
+      this.$emit('clearSelection');
       if (this.isRendering) {
         return;
       }

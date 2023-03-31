@@ -94,7 +94,18 @@ export default new Vuex.Store({
       state.highlightedNodes = node ? [node] : [];
     },
     addToHighlightedNodes(state, nodes) {
-      state.highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);
+      const highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);
+      const selectedPoolsIds = highlightedNodes
+        .filter(node => node.type === 'processmaker-modeler-pool')
+        .map(node => node.id);
+      state.highlightedNodes = highlightedNodes
+        // remove from selection the selected child nodes in the pool
+        .filter(node => {
+          if (node.pool && node.pool.component.node.id) {
+            return !selectedPoolsIds.includes(node.pool.component.node.id);
+          }
+          return true;
+        });
     },
     addNode(state, node) {
       /* Add an unchanging ID that Vue can use to track the component
