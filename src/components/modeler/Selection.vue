@@ -311,10 +311,6 @@ export default {
       if (!this.$refs.drag) {
         return;
       }
-      if (this.hasLanes(this.selected)) {
-        this.stopForceMove = true;
-        return;
-      }
       this.stopForceMove = false;
       this.dragging = true;
       this.hasMouseMoved = false;
@@ -331,6 +327,10 @@ export default {
         this.drafRef = ref;
       } else {
         this.drafRef = null;
+      }
+      if (this.hasLanes(this.selected)) {
+        this.stopForceMove = true;
+        return;
       }
     },
     /**
