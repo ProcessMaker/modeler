@@ -18,7 +18,6 @@
 
 <script>
 import portsConfig from '@/mixins/portsConfig';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import EventShape from '../baseStartEvent/eventShape';
 import { endColor, endColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
@@ -42,7 +41,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig],
   data() {
     return {
       shape: null,

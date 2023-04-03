@@ -28,7 +28,6 @@ import portsConfig from '@/mixins/portsConfig';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
 import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import customIcon from '@/mixins/customIcon';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import { gridSize } from '@/graph';
@@ -58,7 +57,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon],
+  mixins: [highlightConfig, portsConfig, hasMarkers, customIcon],
   data() {
     return {
       shape: null,

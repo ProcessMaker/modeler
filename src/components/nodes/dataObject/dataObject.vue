@@ -19,7 +19,6 @@
 <script>
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { shapes } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
 
@@ -41,7 +40,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, hideLabelOnDrag, portsConfig],
+  mixins: [highlightConfig, portsConfig],
   data() {
     return {
       shape: null,

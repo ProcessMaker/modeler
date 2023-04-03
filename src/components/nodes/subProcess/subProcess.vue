@@ -47,7 +47,6 @@ import TaskShape from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task/taskConfig';
 import store from '@/store';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
@@ -83,7 +82,7 @@ export default {
     'isRendering',
     'paperManager',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon],
+  mixins: [highlightConfig, portsConfig, hasMarkers, updateIconColor, customIcon],
   data() {
     return {
       subProcessSvg: null,

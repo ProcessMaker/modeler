@@ -20,7 +20,6 @@
 import portsConfig from '@/mixins/portsConfig';
 import EventShape from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { startColor, startColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
@@ -44,7 +43,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor],
+  mixins: [highlightConfig, portsConfig, hasMarkers, updateIconColor],
   data() {
     return {
       shape: new EventShape(),

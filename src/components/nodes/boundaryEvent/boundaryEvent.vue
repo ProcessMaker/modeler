@@ -22,7 +22,6 @@ import isValidBoundaryEventTarget from './validBoundaryEventTargets';
 import resetShapeColor from '@/components/resetShapeColor';
 import { getBoundaryAnchorPoint } from '@/portsUtils';
 import { invalidNodeColor } from '@/components/nodeColors';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import store from '@/store';
@@ -46,7 +45,7 @@ export default {
     'isRendering',
     'isActive',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig],
   data() {
     return {
       shape: null,

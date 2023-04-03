@@ -170,8 +170,6 @@ export default {
 
       let selectedArea = g.rect(f.x, f.y, width, height);
       this.selected = this.getElementsInSelectedArea(selectedArea, { strict: false });
-
-      
       this.filterSelected();
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
@@ -286,7 +284,7 @@ export default {
       const selectedPoolsIds = this.selected
         .filter(shape => shape.model.component)
         .filter(shape => shape.model.component.node.type === 'processmaker-modeler-pool')
-        .map(shape => shape.model.component.node.id);     
+        .map(shape => shape.model.component.node.id);
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);

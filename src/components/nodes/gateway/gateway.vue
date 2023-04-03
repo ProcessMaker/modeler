@@ -19,7 +19,6 @@
 <script>
 import portsConfig from '@/mixins/portsConfig';
 import GatewayShape from '@/components/nodes/gateway/shape';
-import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
@@ -46,7 +45,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig],
   created() {
     const flow = this.node.definition.default || null;
     delete this.node.definition.default;
