@@ -26,8 +26,7 @@ import { util, g, V } from 'jointjs';
 import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
-import { id as laneId } from '@/components/nodes/poolLane/config';
-import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
+import { labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 export default {
   name: 'Selection',
   components: {
@@ -62,7 +61,6 @@ export default {
       showLasso: false,
       shiftKeyPressed: false,
       isOutOfThePool: false,
-      stopForceMove: false,
     };
   },
   mounted(){
@@ -197,14 +195,11 @@ export default {
       if (!addLinks) {
         return elements;
       }
-      // get flows
+      // get links
       this.graph.getLinks().forEach(function(link) {
-        // Check if the link is within the selected area
-        // if (selectedArea.containsRect(link.getBBox())) {
+        // Check if the link is intersected with the selected area
         if (area.intersect(link.getBBox())) {
-          // The link is within the selected area
-          // Do something with the link, such as highlighting it
-          link.attr('line/stroke', 'red');
+          // The link is intersected with the selected area
           elements.push(paper.findViewByModel(link));
         }
       });
@@ -291,10 +286,15 @@ export default {
       const selectedPoolsIds = this.selected
         .filter(shape => shape.model.component)
         .filter(shape => shape.model.component.node.type === 'processmaker-modeler-pool')
-        .map(shape => shape.model.component.node.id);
+        .map(shape => shape.model.component.node.id);     
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
+        }
+        return true;
+      }).filter(shape => {
+        if (shape.model.getParentCell() && shape.model.getParentCell().get('parent')){
+          return false;
         }
         return true;
       });
@@ -308,21 +308,6 @@ export default {
       }
     },
     /**
-     * Verify if has selected lanes
-     */
-    hasLanes(selected) {
-      const shapesToNotTranslate = [
-        'processmaker-modeler-lane',
-      ];
-      const shapes = selected.find(shape => {
-        return shapesToNotTranslate.includes(shape.model.component.node.type);
-      });
-      if (shapes) {
-        return true;
-      } 
-      return false;
-    },
-    /**
      * Start the drag procedure for the selext box
      * @param {Object} event
      */
@@ -330,7 +315,6 @@ export default {
       if (!this.$refs.drag) {
         return;
       }
-      this.stopForceMove = false;
       this.dragging = true;
       this.hasMouseMoved = false;
       const nEvent= util.normalizeEvent(event);
@@ -346,10 +330,6 @@ export default {
         this.drafRef = ref;
       } else {
         this.drafRef = null;
-      }
-      if (this.hasLanes(this.selected)) {
-        this.stopForceMove = true;
-        return;
       }
     },
     /**
@@ -373,6 +353,7 @@ export default {
       this.style.top = `${this.top}px`;
       this.translateSelectedShapes(deltaX/scale.sx, deltaY/scale.sy);
       this.overPoolDrag(event);
+      this.updateSelectionBox();
     },
     /**
      * Stop drag procedure
@@ -390,14 +371,9 @@ export default {
           return;
         } 
       }
-
-      
-
-      
       this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
-      this.stopForceMove = false;
     },
     translateSelectedShapes(x, y, drafRef) {
       const shapesToNotTranslate = [
@@ -413,17 +389,6 @@ export default {
         });
       }
       shapes.forEach((shape)=> shape.model.translate(x, y));
-    },
-    /**
-     * Gets shape from a point object
-     * @param {Object} event
-     */
-    getShapesFromPoint(event){
-      const nEvent= util.normalizeEvent(event);
-      const mouseX = nEvent.clientX;
-      const mouseY = nEvent.clientY;
-      const point = V(this.paperManager.paper.viewport).toLocalPoint(mouseX, mouseY);
-      return this.paperManager.paper.findViewsFromPoint(point);
     },
     /**
      * Add an element into the highlighted nodes
@@ -457,39 +422,6 @@ export default {
       }
     },
     /**
-     * Gets the child shape
-     * @param {object} point
-     */
-    getChildShape(point) {
-      let result = null;
-      const views = this.getShapesFromPoint(point);
-      if (views.length === 1 ) {
-        return views[0];
-      }
-      views.forEach(shape => {
-        if (shape.model.get('parent') && shape.model.component.node.type !== laneId) {
-          result = shape;
-        }
-      });
-      return result;
-    },
-    /**
-     * Mark a shape as selected
-     * @param {object} point
-     */
-    markSelectedByPoint(point) {
-      const element = this.getChildShape(point);
-      if (element) {
-        this.selected = [element];
-      }
-      if (this.selected.length > 0) {
-        this.isSelected = true;
-        this.isSelecting = true;
-        this.showLasso = true;
-        this.updateSelectionBox();
-      }
-    },
-    /**
      * Get the elements that are inside the selector box
      */
     getElementsInsideSelector() {
@@ -512,6 +444,17 @@ export default {
 
       let selectedArea = g.rect(f.x, f.y, width, height);
       return this.getElementsInSelectedArea(selectedArea, { strict: false });
+    },
+    /**
+     * Gets shape from a point object
+     * @param {Object} event
+     */
+    getShapesFromPoint(event){
+      const nEvent= util.normalizeEvent(event);
+      const mouseX = nEvent.clientX;
+      const mouseY = nEvent.clientY;
+      const point = V(this.paperManager.paper.viewport).toLocalPoint(mouseX, mouseY);
+      return this.paperManager.paper.findViewsFromPoint(point);
     },
     /**
      * Check that they are not in a pool

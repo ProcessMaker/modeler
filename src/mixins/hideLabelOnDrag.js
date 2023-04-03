@@ -23,11 +23,5 @@ export default {
   },
   async mounted() {
     await this.$nextTick();
-
-    this.$once('click', () => {
-      this.shape.once('change:position', this.hideLabel);
-    });
-    this.shape.listenTo(this.paper, 'cell:pointerup blank:pointerup', this.showLabel);
-    this.shape.once('change:parent', this.showLabel);
   },
 };
