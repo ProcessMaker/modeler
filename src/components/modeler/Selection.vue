@@ -26,6 +26,13 @@ import { util, g, V } from 'jointjs';
 import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
+import { id as laneId } from '@/components/nodes/poolLane/config';
+// import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
+// import { id as associationFlowId } from '@/components/nodes/association';
+// import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
+// import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
+// import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
+// import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 export default {
   name: 'Selection',
@@ -61,6 +68,16 @@ export default {
       showLasso: false,
       shiftKeyPressed: false,
       isOutOfThePool: false,
+      hideSelectionOnMove: true,
+      draggableBlackList: [
+        laneId,
+        // sequenceFlowId,
+        // associationFlowId,
+        // messageFlowId,
+        // dataOutputAssociationFlowId,
+        // dataInputAssociationFlowId,
+        // genericFlowId,
+      ],
     };
   },
   mounted(){
@@ -306,6 +323,18 @@ export default {
       }
     },
     /**
+     * filter the dragable elements by 
+     */
+    filterDraggableElements(selected, draggableBlackList = []) {
+      const shapes = selected.find(shape => {
+        return shape.model.component && draggableBlackList.includes(shape.model.component.node.type);
+      });
+      if (shapes) {
+        return true;
+      } 
+      return false;
+    },
+    /**
      * Start the drag procedure for the selext box
      * @param {Object} event
      */
@@ -329,6 +358,12 @@ export default {
       } else {
         this.drafRef = null;
       }
+      if (this.filterDraggableElements(this.selected, this.draggableBlackList)) {
+        this.hideSelectionOnMove = true;
+        this.showLasso = false;
+        return;
+      }
+
     },
     /**
      * on Drag procedure
@@ -351,7 +386,7 @@ export default {
       this.style.top = `${this.top}px`;
       this.translateSelectedShapes(deltaX/scale.sx, deltaY/scale.sy);
       this.overPoolDrag(event);
-      this.updateSelectionBox();
+      // this.updateSelectionBox();
     },
     /**
      * Stop drag procedure
@@ -368,6 +403,11 @@ export default {
           this.clearSelection();
           return;
         } 
+      }
+      if (this.hideSelectionOnMove) {
+        this.hideSelectionOnMove = false;
+        this.showLasso = true;
+        this.updateSelectionBox();
       }
       this.overPoolStopDrag();
       this.$emit('save-state');
