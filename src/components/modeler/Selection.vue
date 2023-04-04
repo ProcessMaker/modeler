@@ -205,7 +205,7 @@ export default {
       // get links
       this.graph.getLinks().forEach(function(link) {
         // Check if the link is intersected with the selected area
-        if (area.containsRect(link.getBBox())) {
+        if (area.intersect(link.getBBox())) {
           // The link is intersected with the selected area
           elements.push(paper.findViewByModel(link));
         }
