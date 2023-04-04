@@ -27,12 +27,6 @@ import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
-// import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
-// import { id as associationFlowId } from '@/components/nodes/association';
-// import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
-// import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
-// import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
-// import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 export default {
   name: 'Selection',
@@ -303,11 +297,6 @@ export default {
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
-        }
-        return true;
-      }).filter(shape => {
-        if (shape.model.getParentCell() && shape.model.getParentCell().get('parent')){
-          return false;
         }
         return true;
       });
