@@ -380,13 +380,12 @@ export default {
       if (this.hasLanes(this.selected)) {
         this.preventDrag = true;
       }
-      
+      // validate if the selection can be dragged
       if (!this.canDragTheSelectionBox(this.selected, this.draggableBlackList)) {
         this.hideSelectionOnMove = true;
         this.showLasso = false;
         return;
       }
-
     },
     /**
      * on Drag procedure
