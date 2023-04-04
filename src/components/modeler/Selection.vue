@@ -257,6 +257,11 @@ export default {
         this.selectionBlackList.includes(elementView.model.component.node.type)) {
         return;
       }
+      // verify if the selected elements is not in dragable black list
+      if (elementView && elementView.model && elementView.model.component &&
+        this.draggableBlackList.includes(elementView.model.component.node.type)) {
+        this.selected = [];
+      }
       if (this.shiftKeyPressed) {
         const element = this.selected.find( item => item.id === elementView.id);
         if (element) {
