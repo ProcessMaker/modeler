@@ -101,7 +101,7 @@ export default class PoolEventHandlers {
       }
 
       store.commit('preventSavingElementPosition');
-      this.paperManager.setStateInvalid();
+      // this.paperManager.setStateInvalid();
     } else if (pool.component !== this.component && this.graph.getConnectedLinks(element).length > 0) {
       if (!this.previousValidPosition) {
         this.previousValidPosition = newPosition;

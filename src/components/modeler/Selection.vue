@@ -68,15 +68,13 @@ export default {
       showLasso: false,
       shiftKeyPressed: false,
       isOutOfThePool: false,
+      preventDrag: false,
       hideSelectionOnMove: true,
       draggableBlackList: [
         laneId,
-        // sequenceFlowId,
-        // associationFlowId,
-        // messageFlowId,
-        // dataOutputAssociationFlowId,
-        // dataInputAssociationFlowId,
-        // genericFlowId,
+      ],
+      selectionBlackList:[
+        'processmaker-modeler-generic-flow',
       ],
     };
   },
@@ -273,10 +271,10 @@ export default {
      * Update the selected box if a user select a element with shift key pressed
      * @param {Object} elementView
      */
-    elementClickHandler(elementView) {
-      const shapesToNotSelect = [
-      ];
-      if (shapesToNotSelect.includes(elementView.model.get('type'))) {
+    elementClickHandler(elementView ) {
+      // verify if element is not black listed 
+      if (elementView && elementView.model && elementView.model.component &&
+        this.selectionBlackList.includes(elementView.model.component.node.type)) {
         return;
       }
       if (this.shiftKeyPressed) {
@@ -323,16 +321,47 @@ export default {
       }
     },
     /**
-     * filter the dragable elements by 
-     */
-    filterDraggableElements(selected, draggableBlackList = []) {
+    * Verify if has selected lanes
+    */
+    hasLanes(selected) {
+      const shapesToNotTranslate = [
+        'processmaker-modeler-lane',
+      ];
       const shapes = selected.find(shape => {
-        return shape.model.component && draggableBlackList.includes(shape.model.component.node.type);
+        return shapesToNotTranslate.includes(shape.model.component.node.type);
       });
       if (shapes) {
         return true;
       } 
       return false;
+    },
+    
+    /**
+     * validate if the selection can be dragged
+     */
+    canDragTheSelectionBox(selected, draggableBlackList = []) {
+      const { paper } = this.paperManager;
+      let result = true;
+      selected.forEach(shape => {
+        if (shape.model.get('type') === 'standard.Link') {
+          const source = paper.findViewByModel(shape.model.getSourceElement());
+          const foundSource = selected.find(obj => obj.model.get('id') === source.model.get('id'));
+          const target = paper.findViewByModel(shape.model.getTargetElement());
+          const foundTarget = selected.find(obj => obj.model.get('id') === target.model.get('id'));
+          if (foundSource && foundTarget) {
+            result = true;
+          } else {
+            result = false;
+          }
+        } 
+        if (shape.model.component && draggableBlackList.includes(shape.model.component.node.type)) {
+          result = false;
+        }
+        if (shape.model.component && this.selectionBlackList.includes(shape.model.component.node.type)) {
+          result = false;
+        }
+      });
+      return result;
     },
     /**
      * Start the drag procedure for the selext box
@@ -343,6 +372,7 @@ export default {
         return;
       }
       this.dragging = true;
+      this.preventDrag = false;
       this.hasMouseMoved = false;
       const nEvent= util.normalizeEvent(event);
       this.mouseX = nEvent.clientX;
@@ -358,7 +388,11 @@ export default {
       } else {
         this.drafRef = null;
       }
-      if (this.filterDraggableElements(this.selected, this.draggableBlackList)) {
+      if (this.hasLanes(this.selected)) {
+        this.preventDrag = true;
+      }
+      
+      if (!this.canDragTheSelectionBox(this.selected, this.draggableBlackList)) {
         this.hideSelectionOnMove = true;
         this.showLasso = false;
         return;
@@ -370,7 +404,7 @@ export default {
      * @param {*} event
      */
     drag(event) {
-      if (this.stopForceMove) return;
+      if (this.preventDrag) return;
       if (!this.dragging) return;
       this.hasMouseMoved = true;
       const nEvent= util.normalizeEvent(event);
@@ -386,7 +420,6 @@ export default {
       this.style.top = `${this.top}px`;
       this.translateSelectedShapes(deltaX/scale.sx, deltaY/scale.sy);
       this.overPoolDrag(event);
-      // this.updateSelectionBox();
     },
     /**
      * Stop drag procedure
@@ -516,6 +549,9 @@ export default {
      */
     overPoolDrag(event) {
       if (this.isNotPoolChilds(this.selected)) {
+        return;
+      }
+      if (this.hasLanes(this.selected)) {
         return;
       }
       const elementsUnderDivArea = this.getShapesFromPoint(event);
