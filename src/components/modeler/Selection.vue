@@ -27,6 +27,7 @@ import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 export default {
   name: 'Selection',
@@ -63,6 +64,12 @@ export default {
       shiftKeyPressed: false,
       isOutOfThePool: false,
       stopForceMove: false,
+      draggableBlackList: [
+        laneId,
+      ],
+      selectionBlackList:[
+        genericFlowId,
+      ],
     };
   },
   mounted(){
@@ -245,9 +252,9 @@ export default {
      * @param {Object} elementView
      */
     elementClickHandler(elementView) {
-      const shapesToNotSelect = [
-      ];
-      if (shapesToNotSelect.includes(elementView.model.get('type'))) {
+      // verify if element is not black listed 
+      if (elementView && elementView.model && elementView.model.component &&
+        this.selectionBlackList.includes(elementView.model.component.node.type)) {
         return;
       }
       if (this.shiftKeyPressed) {
@@ -276,6 +283,11 @@ export default {
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
+        }
+        return true;
+      }).filter(shape => {
+        if (shape.model.getParentCell() && shape.model.getParentCell().get('parent')){
+          return false;
         }
         return true;
       });

@@ -785,11 +785,6 @@ export default {
 
       this.highlightNode(newNode);
       await this.addNode(newNode);
-      const point = {
-        clientX: clientX + 5,
-        clientY: clientY + 5,
-      };
-      this.$refs.selector.markSelectedByPoint(point);
       if (!nodeThatWillBeReplaced) {
         return;
       }
