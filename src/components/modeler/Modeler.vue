@@ -7,6 +7,7 @@
       :paper-manager="paperManager"
       :breadcrumb-data="breadcrumbData"
       :panelsCompressed="panelsCompressed"
+      :reviewMode="reviewMode"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -26,6 +27,7 @@
         :compressed="panelsCompressed"
         :parent-height="parentHeight"
         :allowDrop="allowDrop"
+        :reviewMode="reviewMode"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
         class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
@@ -55,6 +57,7 @@
         :moddle="moddle"
         :definitions="definitions"
         :processNode="processNode"
+        :reviewMode="reviewMode"
         @save-state="pushToUndoStack"
         class="inspector h-100"
         :parent-height="parentHeight"
@@ -166,6 +169,7 @@ export default {
         return {};
       },
     },
+    reviewMode: Boolean,
   },
   data() {
     return {

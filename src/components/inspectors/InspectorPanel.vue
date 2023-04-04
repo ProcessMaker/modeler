@@ -10,6 +10,7 @@
         no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0"
         data-test="inspector-container"
         :style="{ height: parentHeight }"
+        :disabled="reviewMode === true"
       >
         <vue-form-renderer
           :key="highlightedNode._modelerId"
@@ -62,7 +63,7 @@ Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
-  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'compressed', 'definitions'],
+  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'compressed', 'definitions', 'reviewMode'],
   data() {
     return {
       data: {},
@@ -226,6 +227,9 @@ export default {
       this.$emit('save-state');
     },
   },
+//   mounted() {
+//     console.log('reviewMode', this.reviewMode);
+//   },
 };
 </script>
 <style lang="scss" src="./inspector.scss" scoped />

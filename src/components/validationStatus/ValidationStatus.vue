@@ -3,7 +3,7 @@
     <slot />
     <b-btn
       class="mr-auto"
-      :disabled="!xmlManager"
+      :disabled="!xmlManager || reviewMode === true"
       variant="secondary"
       size="sm"
       data-test="downloadXMLBtn"
@@ -35,6 +35,7 @@
       <span class="divider"/>
 
       <b-form-checkbox
+        :disabled="reviewMode === true"
         data-test="validation-toggle"
         class="h-100 d-flex align-items-center"
         v-model="autoValidate"
@@ -87,7 +88,7 @@ export default {
   components: {
     FontAwesomeIcon,
   },
-  props: ['validationErrors', 'warnings', 'xmlManager'],
+  props: ['validationErrors', 'warnings', 'xmlManager', 'reviewMode'],
   data() {
     return {
       shouldDisplayProblemsPanel: false,

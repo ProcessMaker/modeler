@@ -10,7 +10,7 @@
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
           <b-button
             class="btn btn-sm btn-secondary btn-undo"
-            :disabled="!canUndo"
+            :disabled="!canUndo || reviewMode === true"
             data-test="undo"
             v-b-tooltip.hover
             :title="$t('Undo')"
@@ -21,7 +21,7 @@
 
           <b-button
             class="btn btn-sm btn-secondary btn-redo"
-            :disabled="!canRedo"
+            :disabled="!canRedo || reviewMode === true"
             data-test="redo"
             v-b-tooltip.hover
             :title="$t('Redo')"
@@ -35,6 +35,7 @@
           <b-button
             class="btn btn-sm btn-secondary"
             @click="scale += scaleStep"
+            :disabled="reviewMode === true"
             data-test="zoom-in"
             v-b-tooltip.hover
             :title="$t('Zoom In')"
@@ -44,6 +45,7 @@
           <b-button
             class="btn btn-sm btn-secondary"
             @click="scale = Math.max(minimumScale, scale -= scaleStep)"
+            :disabled="reviewMode === true"
             data-test="zoom-out"
             v-b-tooltip.hover
             :title="$t('Zoom Out')"
@@ -53,14 +55,14 @@
           <b-button
             class="btn btn-sm btn-secondary"
             @click="scale = initialScale"
-            :disabled="scale === initialScale"
+            :disabled="scale === initialScale || reviewMode === true"
             data-test="zoom-reset"
             v-b-tooltip.hover
             :title="$t('Reset to initial scale')"
           >
             {{ $t('Reset') }}
           </b-button>
-          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          <span class="btn btn-sm btn-secondary scale-value" :disabled="reviewMode === true">{{ Math.round(scale*100) }}%</span>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
@@ -68,6 +70,7 @@
             class="btn btn-sm btn-secondary ml-auto"
             data-test="panels-btn"
             @click="$emit('toggle-panels-compressed')"
+            :disabled="reviewMode === true"
             v-b-tooltip.hover
             :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
           >
@@ -78,6 +81,7 @@
             class="btn btn-sm btn-secondary mini-map-btn ml-auto"
             data-test="mini-map-btn"
             @click="miniMapOpen = !miniMapOpen"
+            :disabled="reviewMode === true"
             v-b-tooltip.hover
             :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
           >
@@ -89,6 +93,7 @@
           class="btn btn-sm btn-secondary mini-map-btn ml-auto"
           data-test="mini-map-btn"
           @click="$emit('saveBpmn')"
+          :disabled="reviewMode === true"
           v-b-tooltip.hover
           :title="$t('Save')"
         >
@@ -119,6 +124,7 @@ export default {
       type: Array,
     },
     panelsCompressed: Boolean,
+    reviewMode: Boolean,
   },
   watch: {
     scale(scale) {

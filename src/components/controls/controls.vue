@@ -13,6 +13,7 @@
           class="control-item border-right-0 flex-grow-1"
           :class="compressed ? 'p-0 pt-2 pb-2 w-100 d-flex justify-content-center' : 'p-2'"
           :data-test="control.type"
+          :disabled="reviewMode === true"
           @dragstart="$event.preventDefault()"
           @mousedown="startDrag($event, control)"
         >
@@ -35,7 +36,7 @@
 import { BOTTOM } from '@/components/controls/rankConstants';
 
 export default {
-  props: ['allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight', 'nodeTypes'],
+  props: ['allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight', 'nodeTypes', 'reviewMode'],
   watch: {
     allowDrop(allowDrop) {
       if (this.draggingElement) {
