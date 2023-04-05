@@ -939,6 +939,9 @@ export default {
     setVersionIndicator(isDraft) {
       undoRedoStore.dispatch('setVersionIndicator', isDraft);
     },
+    setLoadingState(isLoading) {
+      undoRedoStore.dispatch('setLoadingState', isLoading);
+    },
   },
   created() {
     if (runningInCypressTest()) {

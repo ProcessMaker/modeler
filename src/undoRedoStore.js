@@ -9,8 +9,9 @@ export default new Vuex.Store({
     position: null,
     disabled: false,
     saved: false,
-    isVersionsInstalled: false,
+    isVersionsInstalled: true,
     isDraft: false,
+    isLoading: false,
   },
   getters: {
     canUndo(state) {
@@ -30,6 +31,9 @@ export default new Vuex.Store({
     },
     isDraft(state) {
       return state.isDraft;
+    },
+    isLoading(state) {
+      return state.isLoading;
     },
   },
   mutations: {
@@ -57,6 +61,9 @@ export default new Vuex.Store({
     },
     isDraft(state, payload) {
       state.isDraft = payload;
+    },
+    isLoading(state, payload) {
+      state.isLoading = payload;
     },
   },
   actions: {
@@ -95,6 +102,9 @@ export default new Vuex.Store({
     },
     setVersionIndicator({ commit }, newState) {
       commit('isDraft', newState);
+    },
+    setLoadingState({ commit }, newState) {
+      commit('isLoading', newState);
     },
   },
 });

@@ -93,29 +93,28 @@
             </div>
             <div class="d-flex justify-content-center align-items-center text-black text-capitalize mx-2" :style="{ width: '60px' }">
               <span class="toolbar-item mr-1" :style="{ fontWeight: 400 }">
-                {{ $t('Saved') }}
+                {{ loadingStatus }}
               </span>
               <span>
-                <font-awesome-icon class="text-success" :icon="savedIcon" />
+                <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
               </span>
             </div>
-            <button
+            <a
               class="btn btn-sm btn-primary mini-map-btn text-uppercase mx-2"
-              type="button"
               data-test="publish-btn"
               :title="$t('Publish')"
               @click="$emit('saveBpmn')"
             >
               {{ $t('Publish') }}
-            </button>
-            <button
+            </a>
+            <a
               class="btn btn-sm btn-link toolbar-item mini-map-btn text-black text-uppercase"
-              type="button"
               data-test="close-btn"
+              :title="$t('Close')"
               @click="$emit('close')"
             >
               {{ $t('Close') }}
-            </button>
+            </a>
           </template>
           <b-button
             v-else
@@ -134,7 +133,7 @@
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
@@ -192,6 +191,16 @@ export default {
     isVersionsInstalled() {
       return undoRedoStore.getters.isVersionsInstalled;
     },
+    isLoading() {
+      return undoRedoStore.getters.isLoading;
+    },
+    loadingStatus() {
+      const status = this.isLoading ? 'Saving' : 'Saved';
+      return this.$t(status);
+    },
+    loadingIcon() {
+      return this.isLoading ? this.spinner : this.savedIcon;
+    },
   },
   data() {
     return {
@@ -209,6 +218,7 @@ export default {
       redoIcon: faRedo,
       saveIcon: faSave,
       savedIcon: faCheckCircle,
+      spinner: faSpinner,
     };
   },
   methods: {
