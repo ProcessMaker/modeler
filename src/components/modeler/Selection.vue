@@ -27,6 +27,7 @@ import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 export default {
   name: 'Selection',
@@ -60,16 +61,16 @@ export default {
       hasMouseDown: false,
       hasMouseMoved: false,
       showLasso: false,
-      shiftKeyPressed: false,
       isOutOfThePool: false,
       stopForceMove: false,
+      selectableBlackList:[
+        genericFlowId,
+      ],
     };
   },
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
-    document.addEventListener('keydown', this.shiftKeyDownListener);
-    document.addEventListener('keyup', this.shiftKeyUpListener);
   },
   watch: {
     // whenever selected changes
@@ -78,15 +79,7 @@ export default {
     },
   },
   methods: {
-    async selectElement(view) {
-      this.showLasso = true;
-      this.isSelected = true;
-      this.isSelecting = true;
-      this.start = null;
-      this.selected = [view];
-      await this.$nextTick();
-      this.updateSelectionBox();
-    },
+
     clearSelection() {
       this.initSelection();
     },
@@ -102,6 +95,41 @@ export default {
         width: '0px',
         height: '0px',
       };
+    },
+    /**
+     * Select an element dinamically.
+     * Shift key will manage the condition to push to selection
+     * @param {Object} view
+     * @param {Boolean} shiftKey
+     */
+    async selectElement(view, shiftKey = false) {
+      if (view.model.component && this.selectableBlackList.includes(view.model.component.node.type)) {
+        return;
+      }
+      this.showLasso = true;
+      this.isSelected = true;
+      this.isSelecting = true;
+      this.start = null;
+      if (shiftKey) {
+        this.shiftKeySelectionHandler(view);
+      } else {
+        this.selected = [view];
+      }
+      this.filterSelected();
+      await this.$nextTick();
+      this.updateSelectionBox();
+    },
+    /**
+     * Select or unselect an element whe shift key is pressed
+     * @param {Object} view
+     */
+    shiftKeySelectionHandler(view){
+      const element = this.selected.find( item => item.id === view.id);
+      if (element) {
+        this.selected = this.selected.filter(item => item.id !== view.id);
+      } else {
+        this.selected.push(view);
+      }
     },
     /**
      * Starts the selection box
@@ -199,13 +227,10 @@ export default {
       }
       // get flows
       this.graph.getLinks().forEach(function(link) {
-        console.log(link);
         // Check if the link is within the selected area
-        // if (selectedArea.containsRect(link.getBBox())) {
         if (area.intersect(link.getBBox())) {
           // The link is within the selected area
           // Do something with the link, such as highlighting it
-          link.attr('line/stroke', 'red');
           elements.push(paper.findViewByModel(link));
         }
       });
@@ -327,7 +352,7 @@ export default {
      * Start the drag procedure for the selext box
      * @param {Object} event
      */
-    startDrag(event, ref) {
+    startDrag(event) {
       if (!this.$refs.drag) {
         return;
       }
@@ -343,11 +368,6 @@ export default {
         top: this.top,
         left: this.left,
       };
-      if (ref) {
-        this.drafRef = ref;
-      } else {
-        this.drafRef = null;
-      }
       if (this.hasLanes(this.selected)) {
         this.stopForceMove = true;
         return;
@@ -380,21 +400,6 @@ export default {
      * @param {Object} event
      */
     stopDrag() {
-      if (!this.hasMouseMoved) {
-        this.hasMouseMoved = false;
-        if (this.drafRef) {
-          this.elementClickHandler(this.drafRef);
-          this.drafRef = null;
-          return;
-        } else {
-          this.clearSelection();
-          return;
-        } 
-      }
-
-      
-
-      
       this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
@@ -437,24 +442,6 @@ export default {
         store.commit('addToHighlightedNodes', selectedNodes);
       } else {
         store.commit('highlightNode', this.processNode);
-      }
-    },
-    /**
-     * Shift Key Down Handler
-     * @param {*} event
-     */
-    shiftKeyDownListener(event) {
-      // check if shift key is pressed without any other key
-      if (event.key === 'Shift' && !event.ctrlKey && !event.altKey && !event.metaKey) {
-        this.shiftKeyPressed = true;
-      }
-    },
-    /**
-     * Shift Key Up Handler
-     */
-    shiftKeyUpListener({ key }) {
-      if (key === 'Shift') {
-        this.shiftKeyPressed = false;
       }
     },
     /**

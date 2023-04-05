@@ -163,9 +163,7 @@ import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
-
 import Selection from './Selection';
-import { id as poolId } from '@/components/nodes/pool/config';
 
 export default {
   components: {
@@ -234,9 +232,9 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       isDragging: false,
-      wasDragged: false,
-      isOverShape: false,
-      shapeRef: null,
+      isSelecting: false,
+      isIntoTheSelection: false,
+      dragStart: null,
     };
   },
   watch: {
@@ -785,11 +783,6 @@ export default {
 
       this.highlightNode(newNode);
       await this.addNode(newNode);
-      const point = {
-        clientX: clientX + 5,
-        clientY: clientY + 5,
-      };
-      this.$refs.selector.markSelectedByPoint(point);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -995,80 +988,73 @@ export default {
       }
       return false;
     },
-    async pointerDowInShape(event, element) {
+    async pointerDowInShape(event, x, y, element) {
       const shapeView = this.paper.findViewByModel(element);
-      const shiftKeyPressed = this.$refs.selector.shiftKeyPressed;
-      this.wasDragged = false;
+      this.isDragging = false;
+      this.isSelecting = false;
+      this.isIntoTheSelection = false;
+      this.dragStart = { x, y };
+      // Verify if is in the selection box
       if (this.isPointInSelection(event)) {
-        this.isDragging = true;
-        // validate if the starts in an empty space over the pool
-        if (element.component.node.type !== poolId){
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }, shapeView);
-
-        } else {
-          this.shapeRef = shapeView;
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }, null);
-        }
-
+        this.isIntoTheSelection = true;
       } else {
-        this.shapeRef = shapeView;
-        if (!shiftKeyPressed) {
+        if (!event.shiftKey) {
           await this.$refs.selector.selectElement(shapeView);
-          this.isDragging = true;
           await this.$nextTick();
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }, null);
         }
       }
+      this.$refs.selector.startDrag({
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
     },
-    pointerDownHandler(event, element = null ) {
-      this.wasDragged = false;
+    pointerDownHandler(event, x, y) {
+      this.isDragging = false;
+      this.isSelecting = false;
+      this.isIntoTheSelection = false;
+      this.dragStart = { x, y };
+      // Verify if is in the selection box
       if (this.isPointInSelection(event)) {
+        this.isIntoTheSelection = true;
         this.$refs.selector.startDrag({
           clientX: event.clientX,
           clientY: event.clientY,
-        }, element);
-        this.isDragging = true;
+        });
       } else {
-        this.isDragging = false;
-        if (!this.isOverShape) {
-          this.$refs.selector.startSelection(event);
+        this.isSelecting = true;
+        this.$refs.selector.startSelection(event);
+      }
+    },
+    pointerMoveHandler(event, x, y) {
+      if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
+        this.isDragging = true;
+        this.dragStart = null;
+      } else {
+        if (this.isSelecting) {
+          this.$refs.selector.updateSelection(event);
         } else {
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          });
+          this.$refs.selector.drag(event);
         }
       }
-
     },
-    pointerMoveHandler(event) {
-      if (!this.isDragging){
-        this.$refs.selector.updateSelection(event, this.paperManager.paper);
+    pointerUpHandler(event, x, y, cellView) {
+      if (!this.isDragging && this.dragStart) {
+        // is clicked over the shape
+        if (cellView) {
+          this.$refs.selector.selectElement(cellView, event.shiftKey);
+        } else {
+          this.clearSelection();
+        }
       } else {
-        this.wasDragged = true;
-        this.$refs.selector.drag(event);
+        if (this.isSelecting) {
+          this.$refs.selector.endSelection(this.paperManager.paper);
+        } else {
+          this.$refs.selector.stopDrag(event);
+        }
       }
-    },
-    pointerUpHandler(event) {
-      if (this.isDragging) {
-        this.isDragging = false;
-        this.$refs.selector.stopDrag(event);
-      } else {
-        this.$refs.selector.endSelection(this.paperManager.paper);
-      }
-      if (this.shapeRef && !this.wasDragged){
-        this.$refs.selector.elementClickHandler(this.shapeRef);
-      }
-      this.shapeRef = null;
+      this.isDragging = false;
+      this.dragStart = null;
+      this.isSelecting = false;
     },
   },
   created() {
@@ -1129,18 +1115,24 @@ export default {
       if (this.isGrabbing) return;
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      this.isOverShape = false;
-      this.pointerDownHandler(event);
+      this.pointerDownHandler(event, x, y);
     }, this);
-    this.paperManager.addEventHandler('cell:pointerup blank:pointerup', (event) => {
+    this.paperManager.addEventHandler('blank:pointerup', (event, x, y) => {
       this.canvasDragPosition = null;
       this.activeNode = null;
-      this.pointerUpHandler(event);
+      this.pointerUpHandler(event, x, y);
     }, this);
-
-    this.$el.addEventListener('mousemove', event => {
-      this.pointerMoveHandler(event);
-    });
+    this.paperManager.addEventHandler('cell:pointerup', (cellView, event, x, y) => {
+      this.canvasDragPosition = null;
+      this.activeNode = null;
+      this.pointerUpHandler(event, x, y, cellView);
+    }, this);
+    this.paperManager.addEventHandler('blank:pointermove', (event,x,y) => {
+      this.pointerMoveHandler(event, x, y);
+    }, this, 'selectorMoveHandler');
+    this.paperManager.addEventHandler('cell:pointermove', (cellView, event, x, y) => {
+      this.pointerMoveHandler(event, x, y, cellView);
+    }, this);
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
       const clickHandler = cellView.model.get('onClick');
@@ -1157,14 +1149,13 @@ export default {
       shape.component.$emit('click', event);
     });
 
-    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
+    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event, x, y) => {
       if (!this.isBpmnNode(shape)) {
         return;
       }
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
-      this.isOverShape = true;
-      this.pointerDowInShape(event, shape);
+      this.pointerDowInShape(event, x, y, shape);
     });
 
     /* Register custom nodes */

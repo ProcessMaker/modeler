@@ -16,7 +16,7 @@ export default {
     keyupListener(event) {
       if (event.code === 'Space') {
         this.isGrabbing = false;
-        this.paperManager.removeEventHandler('blank:pointermove');
+        this.paperManager.paper.stopListening(this.paperManager.paper, 'blank:pointermove');
       }
     },
     keydownListener(event) {
@@ -38,7 +38,7 @@ export default {
 
       if (event.code === 'Space') {
         this.isGrabbing = true;
-        this.paperManager.addEventHandler('blank:pointermove', (event, x, y) => {
+        this.paperManager.paper.listenTo(this.paperManager.paper, 'blank:pointermove',  (event, x, y) => {
           if (!this.canvasDragPosition) {
             const scale = this.paperManager.scale;
             this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
