@@ -84,15 +84,15 @@
             <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
           </b-button>
         </div>
-        <div v-if="isVersionsInstalled" class="btn-group btn-group-sm mx-3">
-          <div class="d-flex justify-content-center">
-            <div class="bg-secondary" style="width: 2px; height: 25px"/>
-          </div>
-        </div>
         <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
           <template v-if="isVersionsInstalled">
-            <div v-if="saved" class="d-flex justify-content-center align-items-center" style="font-size: 13px;">
-              <span class="text-secondary mr-1">
+            <div class="d-flex justify-content-center align-items-center text-black text-capitalize" :style="{ width: '65px' }">
+              <span class="toolbar-item mr-1" :style="{ fontWeight: 600 }">
+                {{ versionStatus }}
+              </span>
+            </div>
+            <div class="d-flex justify-content-center align-items-center text-black text-capitalize mx-2" :style="{ width: '60px' }">
+              <span class="toolbar-item mr-1" :style="{ fontWeight: 400 }">
                 {{ $t('Saved') }}
               </span>
               <span>
@@ -100,29 +100,30 @@
               </span>
             </div>
             <button
-              class="btn btn-sm btn-primary mini-map-btn mx-3"
+              class="btn btn-sm btn-primary mini-map-btn text-uppercase mx-2"
               type="button"
-              data-test="mini-map-btn"
+              data-test="publish-btn"
+              :title="$t('Publish')"
               @click="$emit('saveBpmn')"
             >
-              {{ $t('PUBLISH') }}
+              {{ $t('Publish') }}
             </button>
             <button
-              class="btn btn-sm btn-link mini-map-btn text-secondary"
+              class="btn btn-sm btn-link toolbar-item mini-map-btn text-black text-uppercase"
               type="button"
-              data-test="mini-map-btn"
+              data-test="close-btn"
               @click="$emit('close')"
             >
-              {{ $t('CLOSE') }}
+              {{ $t('Close') }}
             </button>
           </template>
           <b-button
             v-else
             class="btn btn-sm btn-secondary mini-map-btn mx-1"
             data-test="mini-map-btn"
-            @click="$emit('saveBpmn')"
             v-b-tooltip.hover
             :title="$t('Save')"
+            @click="$emit('saveBpmn')"
           >
             <font-awesome-icon :icon="saveIcon" />
           </b-button>
@@ -183,6 +184,10 @@ export default {
     },
     saved() {
       return undoRedoStore.getters.saved;
+    },
+    versionStatus() {
+      const status = undoRedoStore.getters.isDraft ? 'Draft' : 'Published';
+      return this.$t(status);
     },
     isVersionsInstalled() {
       return undoRedoStore.getters.isVersionsInstalled;

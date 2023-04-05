@@ -10,6 +10,7 @@ export default new Vuex.Store({
     disabled: false,
     saved: false,
     isVersionsInstalled: false,
+    isDraft: false,
   },
   getters: {
     canUndo(state) {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
     },
     isVersionsInstalled(state) {
       return state.isVersionsInstalled;
+    },
+    isDraft(state) {
+      return state.isDraft;
     },
   },
   mutations: {
@@ -50,6 +54,9 @@ export default new Vuex.Store({
     },
     isVersionsInstalled(state, payload) {
       state.isVersionsInstalled = payload;
+    },
+    isDraft(state, payload) {
+      state.isDraft = payload;
     },
   },
   actions: {
@@ -85,6 +92,9 @@ export default new Vuex.Store({
     },
     enableVersions({ commit }) {
       commit('isVersionsInstalled', true);
+    },
+    setVersionIndicator({ commit }, newState) {
+      commit('isDraft', newState);
     },
   },
 });
