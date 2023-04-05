@@ -102,6 +102,8 @@
         @replace-node="replaceNode"
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
+        @duplicate-element="duplicateElement"
+        @duplicate-selection="duplicateSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
       />
@@ -111,6 +113,7 @@
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
+        @duplicate-selection="duplicateSelection"
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
@@ -308,12 +311,29 @@ export default {
       }
       source.set('default', flow);
     },
-    copyElement(node, copyCount) {
+    duplicateElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
+    },
+    copyElement() {
+      // This is the true copy, where a node or selection (nodes passed as argument) will be copied to clipboard
+      // Serialize node(s)
+      // Copy to clipboard
+    },
+    duplicateSelection() {
+      let clonedNodes = [];
+      const nodes = this.highlightedNodes;
+      nodes.forEach(node => {
+        const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+        const yOffset = (node.diagram.bounds.height + 30);
+  
+        clonedNode.diagram.bounds.y += yOffset;
+        clonedNodes.push(clonedNode);
+      });
+      this.addClonedNodes(clonedNodes);
     },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
@@ -850,6 +870,40 @@ export default {
         setTimeout(() => {
           this.pushToUndoStack();
           resolve();
+        });
+      });
+    },
+    async addClonedNodes(nodes) {
+      nodes.forEach(node => {
+        if (!node.pool) {
+          node.pool = this.poolTarget;
+        }
+  
+        const targetProcess = node.getTargetProcess(this.processes, this.processNode);
+        addNodeToProcess(node, targetProcess);
+        node.setIds(this.nodeIdGenerator);
+  
+        this.planeElements.push(node.diagram);
+        store.commit('addNode', node);
+
+        // add processmaker-modeler-generic-flow
+        if ([
+          sequenceFlowId,
+          laneId,
+          associationId,
+          messageFlowId,
+          dataOutputAssociationFlowId,
+          dataInputAssociationFlowId,
+          genericFlowId,
+        ].includes(node.type)) {
+          return;
+        }
+
+        return new Promise(resolve => {
+          setTimeout(() => {
+            this.pushToUndoStack();
+            resolve();
+          });
         });
       });
     },

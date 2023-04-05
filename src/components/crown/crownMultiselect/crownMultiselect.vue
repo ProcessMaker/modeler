@@ -42,11 +42,18 @@ export default {
       nodeToReplace: null,
       buttons: [
         {
-          label: 'Copy Element',
-          icon: 'copy',
+          label: 'Copy Seletion',
+          icon: 'clipboard',
           testId: 'copy-button',
           role: 'menuitem',
-          action: this.copyElement,
+          action: this.copySelection,
+        },
+        {
+          label: 'Duplicate Selection',
+          icon: 'copy',
+          testId: 'duplicate-button',
+          role: 'menuitem',
+          action: this.duplicateSelection,
         },
         {
           label: 'Delete Element',
@@ -70,9 +77,13 @@ export default {
     highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
-    copyElement() {
-      // @todo: Implement copyElement
-      this.$emit('copy-nodes');
+    copySelection() {
+      // @todo: Implement copySelection
+      this.$emit('copy-selection');
+    },
+    duplicateSelection() {
+      // @todo: Implement duplicateSelection
+      this.$emit('duplicate-selection');
     },
     deleteElement() {
       this.$emit('remove-nodes');

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   defaultEndNames,
   defaultGatewayNames,
@@ -89,6 +90,9 @@ export default class Node {
 
     clonedNode.id = null;
     clonedNode.pool = this.pool;
+    clonedNode.definition.incoming = this.definition.incoming;
+    clonedNode.definition.outgoing = this.definition.outgoing;
+
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
     Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
       const definition = this.definition.get(key);
