@@ -200,8 +200,6 @@ export default {
 
       let selectedArea = g.rect(f.x, f.y, width, height);
       this.selected = this.getElementsInSelectedArea(selectedArea, { strict: false });
-
-      
       this.filterSelected();
       if (this.selected && this.selected.length > 0) {
         this.updateSelectionBox();
