@@ -113,11 +113,7 @@ export default {
      * @param {Object} view
      */
     shiftKeySelectionHandler(view){
-      if (view && view.model && view.model.component &&
-        this.draggableBlackList.includes(view.model.component.node.type)) {
-        return;
-      }
-      // validate if current shape is a lane
+      // validate if current shape is black listed
       if (view && view.model && view.model.component &&
         this.draggableBlackList.includes(view.model.component.node.type)) {
         return;
