@@ -143,8 +143,8 @@ export default {
       this.selectOrUnselectShape(view);
     },
     /**
-     * Select if there there is not this shape
-     * Unselect if there there is not thisshape
+     * Select an shape if it is not in the collection
+     * Unselect an shape if it is in the collection
      */
     selectOrUnselectShape(view){
       const element = this.selected.find( item => item.id === view.id);
