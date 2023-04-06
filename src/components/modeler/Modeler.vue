@@ -1015,7 +1015,6 @@ export default {
       this.isDragging = false;
       this.isSelecting = false;
       this.isIntoTheSelection = false;
-      this.isPointerDown =
       this.dragStart = { x, y };
       // Verify if is in the selection box
       if (this.isPointInSelection(event)) {
