@@ -35,6 +35,8 @@ export default new Vuex.Store({
     autoValidate: false,
     globalProcesses: [],
     allowSavingElementPosition: true,
+    clientX: null,
+    clientY: null,
   },
   getters: {
     nodes: state => state.nodes,
@@ -52,6 +54,8 @@ export default new Vuex.Store({
     globalProcesses: state => state.globalProcesses,
     globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
     allowSavingElementPosition: state => state.allowSavingElementPosition,
+    clientX: state => state.clientX,
+    clientY: state => state.clientY,
   },
   mutations: {
     preventSavingElementPosition(state) {
@@ -137,6 +141,14 @@ export default new Vuex.Store({
     },
     setGlobalProcesses(state, globalProcesses) {
       state.globalProcesses = globalProcesses;
+    },
+    setClientMousePosition(state, position) {
+      const { clientX, clientY } = position;
+      state = { clientX, clientY };
+    },
+    clientLeftPaper(state) {
+      state.clientX = null;
+      state.clientY = null;
     },
   },
   actions: {

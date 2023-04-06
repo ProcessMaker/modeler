@@ -1198,7 +1198,13 @@ export default {
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
+      const { clientX, clientY } = event;
       this.pointerMoveHandler(event);
+      store.commit('setClientMousePosition', { clientX, clientY });
+    });
+
+    this.$el.addEventListener('mouseleave', () => {
+      store.commit('clientLeftPaper');
     });
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
