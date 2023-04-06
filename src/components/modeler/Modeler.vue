@@ -165,7 +165,6 @@ import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-import { id as poolId } from '@/components/nodes/pool/config';
 
 export default {
   components: {
@@ -234,9 +233,9 @@ export default {
       minimumScale: 0.2,
       scaleStep: 0.1,
       isDragging: false,
-      wasDragged: false,
-      isOverShape: false,
-      shapeRef: null,
+      isSelecting: false,
+      isIntoTheSelection: false,
+      dragStart: null,
     };
   },
   watch: {
@@ -991,79 +990,79 @@ export default {
       return false;
     },
     async pointerDowInShape(event, element) {
+      const { clientX: x, clientY: y } = event;
       const shapeView = this.paper.findViewByModel(element);
-      const shiftKeyPressed = this.$refs.selector.shiftKeyPressed;
-      this.wasDragged = false;
+      this.isDragging = false;
+      this.isSelecting = false;
+      this.isIntoTheSelection = false;
+      this.dragStart = { x, y };
+      // Verify if is in the selection box
       if (this.isPointInSelection(event)) {
-        this.isDragging = true;
-        // validate if the starts in an empty space over the pool
-        if (element.component.node.type !== poolId){
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }, shapeView);
-
-        } else {
-          this.shapeRef = shapeView;
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }, null);
-        }
-
+        this.isIntoTheSelection = true;
       } else {
-        this.shapeRef = shapeView;
-        if (!shiftKeyPressed) {
+        if (!event.shiftKey) {
           await this.$refs.selector.selectElement(shapeView);
-          this.isDragging = true;
           await this.$nextTick();
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }, null);
         }
       }
+      this.$refs.selector.startDrag({
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
     },
-    pointerDownHandler(event, element = null ) {
-      this.wasDragged = false;
+    pointerDownHandler(event) {
+      const { clientX: x, clientY: y } = event;
+      this.isDragging = false;
+      this.isSelecting = false;
+      this.isIntoTheSelection = false;
+      this.isPointerDown =
+      this.dragStart = { x, y };
+      // Verify if is in the selection box
       if (this.isPointInSelection(event)) {
+        this.isIntoTheSelection = true;
         this.$refs.selector.startDrag({
           clientX: event.clientX,
           clientY: event.clientY,
-        }, element);
-        this.isDragging = true;
+        });
       } else {
-        this.isDragging = false;
-        if (!this.isOverShape) {
-          this.$refs.selector.startSelection(event);
-        } else {
-          this.$refs.selector.startDrag({
-            clientX: event.clientX,
-            clientY: event.clientY,
-          });
-        }
+        this.isSelecting = true;
+        this.$refs.selector.startSelection(event);
       }
-
     },
     pointerMoveHandler(event) {
-      if (!this.isDragging){
-        this.$refs.selector.updateSelection(event, this.paperManager.paper);
+      const { clientX: x, clientY: y } = event;
+      if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
+        this.isDragging = true;
+        this.dragStart = null;
       } else {
-        this.wasDragged = true;
-        this.$refs.selector.drag(event);
+        if (this.isSelecting) {
+          this.$refs.selector.updateSelection(event);
+        } else {
+          if (this.isDragging) {
+            this.$refs.selector.drag(event);
+          }
+        }
       }
     },
-    pointerUpHandler(event) {
-      if (this.isDragging) {
-        this.isDragging = false;
-        this.$refs.selector.stopDrag(event);
+    pointerUpHandler(event, cellView) {
+      if (!this.isDragging && this.dragStart) {
+        // is clicked over the shape
+        if (cellView) {
+          this.$refs.selector.stopDrag(event);
+          this.$refs.selector.selectElement(cellView, event.shiftKey);
+        } else {
+          this.clearSelection();
+        }
       } else {
-        this.$refs.selector.endSelection(this.paperManager.paper);
+        if (this.isSelecting) {
+          this.$refs.selector.endSelection(this.paperManager.paper);
+        } else {
+          this.$refs.selector.stopDrag(event);
+        }
       }
-      if (this.shapeRef && !this.wasDragged){
-        this.$refs.selector.elementClickHandler(this.shapeRef);
-      }
-      this.shapeRef = null;
+      this.isDragging = false;
+      this.dragStart = null;
+      this.isSelecting = false;
     },
   },
   created() {
@@ -1127,10 +1126,15 @@ export default {
       this.isOverShape = false;
       this.pointerDownHandler(event);
     }, this);
-    this.paperManager.addEventHandler('cell:pointerup blank:pointerup', (event) => {
+    this.paperManager.addEventHandler('blank:pointerup', (event) => {
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event);
+    }, this);
+    this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
+      this.canvasDragPosition = null;
+      this.activeNode = null;
+      this.pointerUpHandler(event, cellView);
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
