@@ -1,9 +1,10 @@
 import ZoomInOut from './zoomInOut';
+import CopyPaste from './copyPaste.js';
 import store from '@/store';
 import moveShapeByKeypress from './moveWithArrowKeys';
 
 export default {
-  mixins: [ZoomInOut],
+  mixins: [ZoomInOut, CopyPaste],
   mounted() {
     document.addEventListener('keydown', this.keydownListener);
     document.addEventListener('keyup', this.keyupListener);
@@ -12,6 +13,7 @@ export default {
     handleHotkeys(event, options) {
       // Pass event to all handlers
       this.zoomInOutHandler(event, options);
+      this.copyPasteHandler(event, options);
     },
     keyupListener(event) {
       if (event.code === 'Space') {
