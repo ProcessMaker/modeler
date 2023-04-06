@@ -441,10 +441,14 @@ export default {
       this.dragging = false;
       this.stopForceMove = false;
     },
+    /**
+     * Translate the Selected shapes adding some custom validations
+     */
     translateSelectedShapes(x, y, drafRef) {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       let shapes = this.selected.filter(shape => {
         return !shapesToNotTranslate.includes(shape.model.get('type'));
@@ -453,6 +457,13 @@ export default {
         shapes.filter(shape =>{
           return drafRef.model.get('id') !== shape.model.get('id');
         });
+      }
+      // allow movement only if one lane boundary event is selected;
+      if (this.selected && this.selected.length === 1 && 
+        this.selected[0].model.get('type') === 'processmaker.components.nodes.boundaryEvent.Shape') {
+
+        this.selected[0].model.translate(x, y);
+        return;
       }
       shapes.forEach((shape)=> shape.model.translate(x, y));
     },

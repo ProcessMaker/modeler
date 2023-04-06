@@ -154,11 +154,13 @@ export default {
 
       this.attachBoundaryEventToTask(task);
       this.updateShapePosition(task);
+      this.$emit('shape-resize');
     },
     resetInvalidTarget() {
       if (this.invalidTargetElement) {
         resetShapeColor(this.invalidTargetElement);
         this.invalidTargetElement = null;
+        this.$emit('shape-resize');
       }
     },
     attachToValidTarget(cellView) {
