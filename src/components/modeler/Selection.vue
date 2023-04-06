@@ -134,18 +134,25 @@ export default {
       if (view.model.component && view.model.component.node.type === poolId) {
         //validate if previous selection are all pools
         if (this.hasOnlyPools(this.selected)) {
-          this.selected.push(view);
+          this.selectOrUnselectShape(view);
         } else {
           this.selected = [view];
         }
         return;
       }
+      this.selectOrUnselectShape(view);
+    },
+    /**
+     * Select if there there is not this shape
+     * Unselect if there there is not thisshape
+     */
+    selectOrUnselectShape(view){
       const element = this.selected.find( item => item.id === view.id);
       if (element) {
         this.selected = this.selected.filter(item => item.id !== view.id);
       } else {
         this.selected.push(view);
-      }      
+      }     
     },
     clearSelection() {
       this.initSelection();
