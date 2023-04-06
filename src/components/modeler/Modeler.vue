@@ -326,13 +326,18 @@ export default {
     duplicateSelection() {
       let clonedNodes = [];
       const nodes = this.highlightedNodes;
-      nodes.forEach(node => {
-        const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
-        const yOffset = (node.diagram.bounds.height + 30);
-  
-        clonedNode.diagram.bounds.y += yOffset;
-        clonedNodes.push(clonedNode);
-      });
+      const selector = this.$refs.selector.$el;
+      if (typeof selector.getBoundingClientRect === 'function') {
+        // get selector height
+        const { height: sheight } = selector.getBoundingClientRect();
+        nodes.forEach(node => {
+          const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+          const yOffset = node.diagram.bounds.height + sheight + 10;
+          clonedNode.diagram.bounds.y += yOffset;
+          clonedNodes.push(clonedNode);
+        });
+
+      }
       this.addClonedNodes(clonedNodes);
     },
     async saveBpmn() {
