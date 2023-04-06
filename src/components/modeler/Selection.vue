@@ -315,10 +315,7 @@ export default {
         }
         return true;
       }).filter(shape => {
-        if (shape.model.getParentCell() && shape.model.getParentCell().get('parent')){
-          return false;
-        }
-        return true;
+        return !(shape.model.getParentCell() && shape.model.getParentCell().get('parent'));
       });
     },
     /**
