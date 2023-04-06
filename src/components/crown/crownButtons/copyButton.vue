@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     copyElement() {
-      this.$emit('copy-element');
+      this.$emit('copy-element', this.node);
     },
   },
 };
