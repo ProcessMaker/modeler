@@ -254,9 +254,23 @@ export default {
      * Get elements into a selected area
      * @param {Object} area
      */
-    getElementsInSelectedArea(area, options) {
+    getElementsInSelectedArea(area, options, addLinks=true) {
       const { paper } = this.paperManager;
-      return paper.findViewsInArea(area, options);
+      const elements =  paper.findViewsInArea(area, options);
+
+      if (!addLinks) {
+        return elements;
+      }
+      // get flows
+      this.graph.getLinks().forEach(function(link) {
+        // Check if the link is within the selected area
+        if (area.intersect(link.getBBox())) {
+          // The link is within the selected area
+          // Do something with the link, such as highlighting it
+          elements.push(paper.findViewByModel(link));
+        }
+      });
+      return elements;
     },
     /**
      * Return the bounding box of the selected elements,
