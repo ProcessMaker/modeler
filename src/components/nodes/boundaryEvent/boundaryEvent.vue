@@ -143,6 +143,7 @@ export default {
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
       store.commit('allowSavingElementPosition');
+      this.$emit('shape-resize');
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
