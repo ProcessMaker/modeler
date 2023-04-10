@@ -27,6 +27,7 @@ import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 export default {
   name: 'Selection',
@@ -60,16 +61,22 @@ export default {
       hasMouseDown: false,
       hasMouseMoved: false,
       showLasso: false,
-      shiftKeyPressed: false,
       isOutOfThePool: false,
       stopForceMove: false,
+      draggableBlackList: [
+        laneId,
+      ],
+      selectionBlackList:[
+        genericFlowId,
+      ],
+      selectableBlackList:[
+        genericFlowId,
+      ],
     };
   },
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
-    document.addEventListener('keydown', this.shiftKeyDownListener);
-    document.addEventListener('keyup', this.shiftKeyUpListener);
   },
   watch: {
     // whenever selected changes
@@ -78,14 +85,70 @@ export default {
     },
   },
   methods: {
-    async selectElement(view) {
+    /**
+     * Select an element dinamically.
+     * Shift key will manage the condition to push to selection
+     * @param {Object} view
+     * @param {Boolean} shiftKey
+     */
+    async selectElement(view, shiftKey = false) {
+      if (view.model.component && this.selectableBlackList.includes(view.model.component.node.type)) {
+        return;
+      }
       this.showLasso = true;
       this.isSelected = true;
       this.isSelecting = true;
       this.start = null;
-      this.selected = [view];
+      if (shiftKey) {
+        this.shiftKeySelectionHandler(view);
+      } else {
+        this.selected = [view];
+      }
+      this.filterSelected();
       await this.$nextTick();
       this.updateSelectionBox();
+    },
+    /**
+     * Select or unselect an element with shift key pressed
+     * @param {Object} view
+     */
+    shiftKeySelectionHandler(view){
+      // validate if current shape is black listed
+      if (view && view.model && view.model.component &&
+        this.draggableBlackList.includes(view.model.component.node.type)) {
+        return;
+      }
+      // validate if there is a lane previously selected
+      let lane = this.selected.find(view => {
+        return this.draggableBlackList.includes(view.model.component.node.type);
+      });
+      if (lane) {
+        this.selected = [view];
+        return;
+      } 
+      // validate if the current selection is a pool
+      if (view.model.component && view.model.component.node.type === poolId) {
+        //validate if previous selection are all pools
+        if (this.hasOnlyPools(this.selected)) {
+          this.selectOrUnselectShape(view);
+        } else {
+          this.selected = [view];
+        }
+        return;
+      }
+      this.selectOrUnselectShape(view);
+    },
+    /**
+     * Select an shape if it is not in the collection
+     * Unselect an shape if it is in the collection
+     */
+    selectOrUnselectShape(view){
+      const element = this.selected.find( item => item.id === view.id);
+      if (element) {
+        this.selected = this.selected.filter(item => item.id !== view.id);
+      } else {
+        this.selected.push(view);
+      }     
     },
     clearSelection() {
       this.initSelection();
@@ -187,9 +250,23 @@ export default {
      * Get elements into a selected area
      * @param {Object} area
      */
-    getElementsInSelectedArea(area, options) {
+    getElementsInSelectedArea(area, options, addLinks=true) {
       const { paper } = this.paperManager;
-      return paper.findViewsInArea(area, options);
+      const elements =  paper.findViewsInArea(area, options);
+
+      if (!addLinks) {
+        return elements;
+      }
+      // get flows
+      this.graph.getLinks().forEach(function(link) {
+        // Check if the link is within the selected area
+        if (area.intersect(link.getBBox())) {
+          // The link is within the selected area
+          // Do something with the link, such as highlighting it
+          elements.push(paper.findViewByModel(link));
+        }
+      });
+      return elements;
     },
     /**
      * Return the bounding box of the selected elements,
@@ -241,32 +318,8 @@ export default {
       }
     },
     /**
-     * Update the selected box if a user select a element with shift key pressed
-     * @param {Object} elementView
+     * Filter the selected elements
      */
-    elementClickHandler(elementView) {
-      const shapesToNotSelect = [
-      ];
-      if (shapesToNotSelect.includes(elementView.model.get('type'))) {
-        return;
-      }
-      if (this.shiftKeyPressed) {
-        const element = this.selected.find( item => item.id === elementView.id);
-        if (element) {
-          this.selected = this.selected.filter(item => item.id !== elementView.id);
-          this.filterSelected();
-        } else {
-          this.selected.push(elementView);
-          this.filterSelected();
-        }
-      } else {
-        this.selected = [elementView];
-      }
-      this.isSelecting = true;
-      this.isSelected = true;
-      this.showLasso = true;
-      this.updateSelectionBox();
-    },
     filterSelected() {
       // remove from selection the selected child nodes in the pool
       const selectedPoolsIds = this.selected
@@ -278,6 +331,8 @@ export default {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
         }
         return true;
+      }).filter(shape => {
+        return !(shape.model.getParentCell() && shape.model.getParentCell().get('parent'));
       });
     },
     /**
@@ -304,11 +359,29 @@ export default {
       return false;
     },
     /**
+     * Verify if has only flows
+     */
+    hasOnlyLinks(selected) {
+      let shapes = this.selected.filter(shape => {
+        return shape.model.get('type') === 'standard.Link';
+      });
+      return shapes && selected.length === shapes.length;
+    },
+    /**
+     * Verify if has selected one Pools
+     */
+    hasOnlyPools(selected) {
+      let shapes = this.selected.filter(shape => {
+        return shape.model.component && shape.model.component.node.type === poolId;
+      });
+      return shapes && selected.length === shapes.length;
+    },
+    /**
      * Start the drag procedure for the selext box
      * @param {Object} event
      */
-    startDrag(event, ref) {
-      if (!this.$refs.drag) {
+    startDrag(event) {
+      if (!this.$refs.drag){
         return;
       }
       this.stopForceMove = false;
@@ -323,12 +396,11 @@ export default {
         top: this.top,
         left: this.left,
       };
-      if (ref) {
-        this.drafRef = ref;
-      } else {
-        this.drafRef = null;
-      }
       if (this.hasLanes(this.selected)) {
+        this.stopForceMove = true;
+        return;
+      }
+      if (this.hasOnlyLinks(this.selected)) {
         this.stopForceMove = true;
         return;
       }
@@ -360,17 +432,6 @@ export default {
      * @param {Object} event
      */
     stopDrag() {
-      if (!this.hasMouseMoved) {
-        this.hasMouseMoved = false;
-        if (this.drafRef) {
-          this.elementClickHandler(this.drafRef);
-          this.drafRef = null;
-          return;
-        } else {
-          this.clearSelection();
-          return;
-        } 
-      }
       this.overPoolStopDrag();
       this.$emit('save-state');
       this.dragging = false;
@@ -413,24 +474,6 @@ export default {
         store.commit('addToHighlightedNodes', selectedNodes);
       } else {
         store.commit('highlightNode', this.processNode);
-      }
-    },
-    /**
-     * Shift Key Down Handler
-     * @param {*} event
-     */
-    shiftKeyDownListener(event) {
-      // check if shift key is pressed without any other key
-      if (event.key === 'Shift' && !event.ctrlKey && !event.altKey && !event.metaKey) {
-        this.shiftKeyPressed = true;
-      }
-    },
-    /**
-     * Shift Key Up Handler
-     */
-    shiftKeyUpListener({ key }) {
-      if (key === 'Shift') {
-        this.shiftKeyPressed = false;
       }
     },
     /**
