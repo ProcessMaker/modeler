@@ -212,6 +212,7 @@ export default {
       return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
     },
     setNodeProp(node, key, value) {
+      this.$emit('shape-resize');
       store.commit('updateNodeProp', { node, key, value });
     },
     defaultInspectorHandler(value) {

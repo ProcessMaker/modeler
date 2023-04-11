@@ -4,7 +4,7 @@ $crown-left-chevron: 0.3rem;
 .crown-config {
   background-color: $primary-color;
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
