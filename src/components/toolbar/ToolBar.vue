@@ -116,6 +116,11 @@
             >
               {{ $t('Close') }}
             </a>
+            <EllipsisMenu
+              @navigate="onNavigate"
+              :actions="ellipsisMenuActions"
+              :divider="false"
+            />
           </template>
           <b-button
             v-else
@@ -214,6 +219,13 @@ export default {
       saveIcon: faSave,
       savedIcon: faCheckCircle,
       spinner: faSpinner,
+      ellipsisMenuActions: [
+        {
+          value: 'discard-draft',
+          content: this.$t('Discard Draft'),
+          icon: '',
+        },
+      ],
     };
   },
   methods: {
@@ -236,6 +248,15 @@ export default {
         .dispatch('redo')
         .then(() => this.$emit('load-xml'))
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
+    },
+    onNavigate(action) {
+      switch (action.value) {
+        case 'discard-draft':
+          window.ProcessMaker.EventBus.$emit('open-versions-discard-modal');
+          break;
+        default:
+          break;
+      }
     },
   },
 };

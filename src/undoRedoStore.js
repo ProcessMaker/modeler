@@ -9,7 +9,7 @@ export default new Vuex.Store({
     position: null,
     disabled: false,
     saved: false,
-    isVersionsInstalled: true,
+    isVersionsInstalled: false,
     isDraft: false,
     isLoading: false,
   },
