@@ -11,6 +11,7 @@
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
+      @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
     />
@@ -313,6 +314,9 @@ export default {
 
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
+    },
+    async close() {
+      this.$emit('close');
     },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
@@ -974,6 +978,18 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
+    },
+    showSavedNotification() {
+      undoRedoStore.dispatch('saved');
+    },
+    enableVersions() {
+      undoRedoStore.dispatch('enableVersions');
+    },
+    setVersionIndicator(isDraft) {
+      undoRedoStore.dispatch('setVersionIndicator', isDraft);
+    },
+    setLoadingState(isLoading) {
+      undoRedoStore.dispatch('setLoadingState', isLoading);
     },
     clearSelection(){
       this.$refs.selector.clearSelection();
