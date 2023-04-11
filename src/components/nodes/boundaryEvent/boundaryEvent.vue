@@ -143,6 +143,7 @@ export default {
     resetToInitialPosition() {
       this.shape.position(this.validPosition.x, this.validPosition.y);
       store.commit('allowSavingElementPosition');
+      this.$emit('shape-resize');
     },
     moveBoundaryEventIfOverTask() {
       const task = this.getTaskUnderShape();
@@ -154,11 +155,13 @@ export default {
 
       this.attachBoundaryEventToTask(task);
       this.updateShapePosition(task);
+      this.$emit('shape-resize');
     },
     resetInvalidTarget() {
       if (this.invalidTargetElement) {
         resetShapeColor(this.invalidTargetElement);
         this.invalidTargetElement = null;
+        this.$emit('shape-resize');
       }
     },
     attachToValidTarget(cellView) {
