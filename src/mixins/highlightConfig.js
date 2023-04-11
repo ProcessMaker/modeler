@@ -21,6 +21,7 @@ const defaultHighlighter = {
       attrs: {
         stroke: '#5096db',
         'stroke-width': 3,
+        'data-cy': 'selected',
       },
     },
   },
@@ -96,6 +97,7 @@ export default {
           this.setShapeHighlight();
           this.shape.on('change:size', () => {
             this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
+            this.$emit('shape-resize', this.shape);
           });
         });
     });

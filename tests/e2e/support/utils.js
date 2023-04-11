@@ -39,13 +39,13 @@ export function getGraphElements() {
     .then(cells => cells.filter(cell => cell.component));
 }
 
-export function getElementAtPosition(position, componentType) {
+export function getElementAtPosition(position, componentType, offsetX = 0, offsetY = 0) {
   const paperGridSize = gridSize;
   const searchRectangle = {
     width: paperGridSize,
     height: paperGridSize,
-    x: position.x - paperGridSize / 2,
-    y: position.y - paperGridSize / 2,
+    x: position.x - paperGridSize / 2 + offsetX,
+    y: position.y - paperGridSize / 2 + offsetY,
   };
 
   return cy.window()
@@ -148,11 +148,13 @@ export function waitToRenderNodeUpdates() {
 }
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center') {
+  const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
   return getElementAtPosition(startPosition)
-    .click({ force: true })
+    .trigger('mousedown', mouseEvent, { force: true })
+    .trigger('mouseup', mouseEvent,  { force: true })
     .then($element => {
       return getCrownButtonForElement($element, flowType)
-        .click({ force: true });
+        .click();
     })
     .then(() => {
       getElementAtPosition(endPosition).then($endElement => {
