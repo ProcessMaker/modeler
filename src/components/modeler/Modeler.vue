@@ -323,20 +323,68 @@ export default {
       // Copy to clipboard
     },
     duplicateSelection() {
-      let clonedNodes = [];
+      let clonedNodes = [], clonedFlows = [], originalFlows = [];
       const nodes = this.highlightedNodes;
       const selector = this.$refs.selector.$el;
       if (typeof selector.getBoundingClientRect === 'function') {
         // get selector height
         const { height: sheight } = selector.getBoundingClientRect();
         nodes.forEach(node => {
-          const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
-          const yOffset = node.diagram.bounds.height + sheight + 10;
-          clonedNode.diagram.bounds.y += yOffset;
-          clonedNodes.push(clonedNode);
-        });
+          // Add flows described in the definitions property
+          if (node.definition.incoming || node.definition.outgoing) {
+            // Since both incoming and outgoing reference the same flow, any of them is copied
+            let flowsToCopy = [...(node.definition.incoming || node.definition.outgoing)];
+            // Check if flow is already in array before pushing
+            flowsToCopy.forEach(flow => {
+              if (!originalFlows.some(el => el.id === flow.id)) {
+                originalFlows.push(flow);
+              }
+            });
+          }
 
+          // Check node type to clone
+          if ([
+            sequenceFlowId,
+            laneId,
+            associationId,
+            messageFlowId,
+            dataOutputAssociationFlowId,
+            dataInputAssociationFlowId,
+            genericFlowId,
+          ].includes(node.type)) {
+            // Add offset for all waypoints on cloned flow
+            const clonedFlow = node.cloneFlow(this.nodeRegistry, this.moddle, this.$t);
+            clonedFlow.diagram.waypoint.forEach(point => {
+              point.x += 10;
+              point.y += sheight + 10;
+            });
+            clonedFlow.setIds(this.nodeIdGenerator);
+            clonedFlows.push(clonedFlow);
+            clonedNodes.push(clonedFlow);
+          } else {
+            // Clone node and calculate offset
+            const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+            const yOffset = node.diagram.bounds.height + sheight + 10;
+            clonedNode.diagram.bounds.y += yOffset;
+            // Set cloned node id
+            clonedNode.setIds(this.nodeIdGenerator);
+            clonedNodes.push(clonedNode);
+          }
+        });
       }
+
+      // Connect flows
+      clonedFlows.forEach(flow => {
+        // Look up the original flow
+        const flowClonedFrom = originalFlows.find(el => el.id === flow.definition.cloneOf);
+        // Get the id's of the sourceRef and targetRef of original flow
+        const src = flowClonedFrom.sourceRef;
+        const target = flowClonedFrom.targetRef;
+        // Connect the clones accordingly
+        flow.definition.sourceRef = clonedNodes.find(node => node.definition.cloneOf === src.id).definition;
+        flow.definition.targetRef = clonedNodes.find(node => node.definition.cloneOf === target.id).definition;
+      });
+
       this.addClonedNodes(clonedNodes);
     },
     async saveBpmn() {
@@ -880,23 +928,10 @@ export default {
   
         const targetProcess = node.getTargetProcess(this.processes, this.processNode);
         addNodeToProcess(node, targetProcess);
-        node.setIds(this.nodeIdGenerator);
   
         this.planeElements.push(node.diagram);
         store.commit('addNode', node);
-
-        // add processmaker-modeler-generic-flow
-        if ([
-          sequenceFlowId,
-          laneId,
-          associationId,
-          messageFlowId,
-          dataOutputAssociationFlowId,
-          dataInputAssociationFlowId,
-          genericFlowId,
-        ].includes(node.type)) {
-          return;
-        }
+        this.poolTarget = null;
 
         return new Promise(resolve => {
           setTimeout(() => {
