@@ -409,18 +409,18 @@ export function getPeriodicityStringUSFormattedDate(date, time = false) {
  * @return iframe od documentation
  */
 export function getIframeDocumnetation() {
-    cy.get('[id="accordion-button-documentation-accordion"]').click();
-    const getIframeDocument = () => {
-        return cy
-            .get('iframe[id *= "documentation-editor"]')
-            .its('0.contentDocument').should("exist");
-    };
-    const getIframeBody = () => {
-        return getIframeDocument()
-            .its('body').should("not.be.undefined")
-            .then(cy.wrap);
-    };
-    return getIframeBody();
+  cy.get('[id="accordion-button-documentation-accordion"]').click();
+  const getIframeDocument = () => {
+    return cy
+      .get('iframe[id *= "documentation-editor"]')
+      .its('0.contentDocument').should('exist');
+  };
+  const getIframeBody = () => {
+    return getIframeDocument()
+      .its('body').should('not.be.undefined')
+      .then(cy.wrap);
+  };
+  return getIframeBody();
 }
 
 /**
@@ -430,8 +430,8 @@ export function getIframeDocumnetation() {
  * @return nothing returns
  */
 export function selectComponentType(component, type) {
-    cy.get(component).first().click({force:true});
-    cy.get('[data-test="select-type-dropdown"]').click();
-    cy.get('[data-test="'+type+'"]').click();
-    cy.get('[class="btn btn-primary"]').should('be.visible').click();
+  cy.get(component).first().click({force:true});
+  cy.get('[data-test="select-type-dropdown"]').click();
+  cy.get('[data-test="'+type+'"]').click();
+  cy.get('[class="btn btn-primary"]').should('be.visible').click();
 }

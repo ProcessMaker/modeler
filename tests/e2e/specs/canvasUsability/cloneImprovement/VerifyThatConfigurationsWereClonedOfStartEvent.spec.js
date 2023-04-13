@@ -13,12 +13,11 @@ describe('Clone Improvement', () => {
 
     //Step 1: Drag Start Event
     waitToRenderAllShapes();
-    const startEventPosition = { x: 150, y: 150 };
     getGraphElements().should('have.length', initialNumberOfElements);
 
     //Step 2: Set Name in Start Event
     cy.get(selectorStartEvent).first().click();
-    cy.get('[name="name"]').should('be.visible').clear().type("Start Event Test 1");
+    cy.get('[name="name"]').should('be.visible').clear().type('Start Event Test 1');
 
     //Step 3: Set Description on Documentation
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Start Event');
