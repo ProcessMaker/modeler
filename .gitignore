@@ -26,3 +26,4 @@ yarn-error.log*
 nbproject/
 test_summary_reports/mocha/test-results.xml
 test_summary_reports/jest/junit.xml
+.editorconfig

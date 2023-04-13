@@ -305,6 +305,9 @@ export default {
     }
 
     this.updateRouter();
+    this.shape.on('change:vertices', function() {
+      this.component.$emit('shape-resize');
+    });
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.emitSave);

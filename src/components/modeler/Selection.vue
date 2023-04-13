@@ -27,6 +27,7 @@ import store from '@/store';
 import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultiselect';
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 export default {
   name: 'Selection',
@@ -60,23 +61,25 @@ export default {
       hasMouseDown: false,
       hasMouseMoved: false,
       showLasso: false,
-      shiftKeyPressed: false,
       isOutOfThePool: false,
-      preventDrag: false,
-      hideSelectionOnMove: true,
+      stopForceMove: false,
       draggableBlackList: [
         laneId,
       ],
       selectionBlackList:[
         'processmaker-modeler-generic-flow',
+        genericFlowId,
       ],
+      selectableBlackList:[
+        genericFlowId,
+      ],
+      preventDrag: false,
+      hideSelectionOnMove: true,
     };
   },
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
-    document.addEventListener('keydown', this.shiftKeyDownListener);
-    document.addEventListener('keyup', this.shiftKeyUpListener);
   },
   watch: {
     // whenever selected changes
@@ -85,14 +88,70 @@ export default {
     },
   },
   methods: {
-    async selectElement(view) {
+    /**
+     * Select an element dinamically.
+     * Shift key will manage the condition to push to selection
+     * @param {Object} view
+     * @param {Boolean} shiftKey
+     */
+    async selectElement(view, shiftKey = false) {
+      if (view.model.component && this.selectableBlackList.includes(view.model.component.node.type)) {
+        return;
+      }
       this.showLasso = true;
       this.isSelected = true;
       this.isSelecting = true;
       this.start = null;
-      this.selected = [view];
+      if (shiftKey) {
+        this.shiftKeySelectionHandler(view);
+      } else {
+        this.selected = [view];
+      }
+      this.filterSelected();
       await this.$nextTick();
       this.updateSelectionBox();
+    },
+    /**
+     * Select or unselect an element with shift key pressed
+     * @param {Object} view
+     */
+    shiftKeySelectionHandler(view){
+      // validate if current shape is black listed
+      if (view && view.model && view.model.component &&
+        this.draggableBlackList.includes(view.model.component.node.type)) {
+        return;
+      }
+      // validate if there is a lane previously selected
+      let lane = this.selected.find(view => {
+        return this.draggableBlackList.includes(view.model.component.node.type);
+      });
+      if (lane) {
+        this.selected = [view];
+        return;
+      }
+      // validate if the current selection is a pool
+      if (view.model.component && view.model.component.node.type === poolId) {
+        //validate if previous selection are all pools
+        if (this.hasOnlyPools(this.selected)) {
+          this.selectOrUnselectShape(view);
+        } else {
+          this.selected = [view];
+        }
+        return;
+      }
+      this.selectOrUnselectShape(view);
+    },
+    /**
+     * Select an shape if it is not in the collection
+     * Unselect an shape if it is in the collection
+     */
+    selectOrUnselectShape(view){
+      const element = this.selected.find( item => item.id === view.id);
+      if (element) {
+        this.selected = this.selected.filter(item => item.id !== view.id);
+      } else {
+        this.selected.push(view);
+      }
     },
     clearSelection() {
       this.initSelection();
@@ -193,12 +252,14 @@ export default {
     /**
      * Get elements into a selected area
      * @param {Object} area
+     * @param options
+     * @param {Boolean} addLinks
      */
     getElementsInSelectedArea(area, options, addLinks=true) {
       const { paper } = this.paperManager;
       // get shapes
-      const elements =  paper.findViewsInArea(area, options);
-      
+      const elements = paper.findViewsInArea(area, options);
+
       if (!addLinks) {
         return elements;
       }
@@ -215,6 +276,8 @@ export default {
     /**
      * Return the bounding box of the selected elements,
      * @param {Array} selected
+     * @param byModel
+     * @param {Boolean} includeAll
      */
     getSelectionVertex(selected, byModel = false, includeAll = false) {
       const point = { x : 1 / 0, y: 1 / 0 };
@@ -262,11 +325,10 @@ export default {
       }
     },
     /**
-     * Update the selected box if a user select a element with shift key pressed
-     * @param {Object} elementView
+     * Filter the selected elements
      */
     elementClickHandler(elementView ) {
-      // verify if element is not black listed 
+      // verify if element is not black listed
       if (elementView && elementView.model && elementView.model.component &&
         this.selectionBlackList.includes(elementView.model.component.node.type)) {
         return;
@@ -299,6 +361,8 @@ export default {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
         }
         return true;
+      }).filter(shape => {
+        return !(shape.model.getParentCell() && shape.model.getParentCell().get('parent'));
       });
     },
     /**
@@ -319,12 +383,10 @@ export default {
       const shapes = selected.find(shape => {
         return shapesToNotTranslate.includes(shape.model.component.node.type);
       });
-      if (shapes) {
-        return true;
-      } 
-      return false;
+      return !!shapes;
+
     },
-    
+
     /**
      * validate if the selection can be dragged
      */
@@ -337,12 +399,8 @@ export default {
           const foundSource = selected.find(obj => obj.model.get('id') === source.model.get('id'));
           const target = paper.findViewByModel(shape.model.getTargetElement());
           const foundTarget = selected.find(obj => obj.model.get('id') === target.model.get('id'));
-          if (foundSource && foundTarget) {
-            result = true;
-          } else {
-            result = false;
-          }
-        } 
+          result = !!(foundSource && foundTarget);
+        }
         if (shape.model.component && draggableBlackList.includes(shape.model.component.node.type)) {
           result = false;
         }
@@ -353,11 +411,29 @@ export default {
       return result;
     },
     /**
+     * Verify if has only flows
+     */
+    hasOnlyLinks(selected) {
+      let shapes = this.selected.filter(shape => {
+        return shape.model.get('type') === 'standard.Link';
+      });
+      return shapes && selected.length === shapes.length;
+    },
+    /**
+     * Verify if has selected one Pools
+     */
+    hasOnlyPools(selected) {
+      let shapes = this.selected.filter(shape => {
+        return shape.model.component && shape.model.component.node.type === poolId;
+      });
+      return shapes && selected.length === shapes.length;
+    },
+    /**
      * Start the drag procedure for the selext box
      * @param {Object} event
      */
-    startDrag(event, ref) {
-      if (!this.$refs.drag) {
+    startDrag(event) {
+      if (!this.$refs.drag){
         return;
       }
       this.dragging = true;
@@ -372,11 +448,6 @@ export default {
         top: this.top,
         left: this.left,
       };
-      if (ref) {
-        this.drafRef = ref;
-      } else {
-        this.drafRef = null;
-      }
       if (this.hasLanes(this.selected)) {
         this.preventDrag = true;
       }
@@ -385,6 +456,14 @@ export default {
         this.hideSelectionOnMove = true;
         this.showLasso = false;
         return;
+      }
+      if (this.hasOnlyLinks(this.selected)) {
+        this.stopForceMove = true;
+        return;
+      }
+      if (this.selected && this.selected.length === 1 &&
+        this.selected[0].model.get('type') === 'processmaker.components.nodes.boundaryEvent.Shape') {
+        this.selected[0].model.component.attachToValidTarget(this.selected[0]);
       }
     },
     /**
@@ -411,7 +490,6 @@ export default {
     },
     /**
      * Stop drag procedure
-     * @param {Object} event
      */
     stopDrag() {
       if (!this.hasMouseMoved) {
@@ -434,10 +512,14 @@ export default {
       this.$emit('save-state');
       this.dragging = false;
     },
+    /**
+     * Translate the Selected shapes adding some custom validations
+     */
     translateSelectedShapes(x, y, drafRef) {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       let shapes = this.selected.filter(shape => {
         return !shapesToNotTranslate.includes(shape.model.get('type'));
@@ -446,6 +528,12 @@ export default {
         shapes.filter(shape =>{
           return drafRef.model.get('id') !== shape.model.get('id');
         });
+      }
+      // allow movement only if one lane boundary event is selected;
+      if (this.selected && this.selected.length === 1 &&
+        this.selected[0].model.get('type') === 'processmaker.components.nodes.boundaryEvent.Shape') {
+        this.selected[0].model.translate(x, y);
+        return;
       }
       shapes.forEach((shape)=> shape.model.translate(x, y));
     },
@@ -478,6 +566,39 @@ export default {
     shiftKeyUpListener({ key }) {
       if (key === 'Shift') {
         this.shiftKeyPressed = false;
+      }
+    },
+    /**
+     * Gets the child shape
+     * @param {object} point
+     */
+    getChildShape(point) {
+      let result = null;
+      const views = this.getShapesFromPoint(point);
+      if (views.length === 1 ) {
+        return views[0];
+      }
+      views.forEach(shape => {
+        if (shape.model.get('parent') && shape.model.component.node.type !== laneId) {
+          result = shape;
+        }
+      });
+      return result;
+    },
+    /**
+     * Mark a shape as selected
+     * @param {object} point
+     */
+    markSelectedByPoint(point) {
+      const element = this.getChildShape(point);
+      if (element) {
+        this.selected = [element];
+      }
+      if (this.selected.length > 0) {
+        this.isSelected = true;
+        this.isSelecting = true;
+        this.showLasso = true;
+        this.updateSelectionBox();
       }
     },
     /**
