@@ -29,6 +29,13 @@ import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
+const boundaryElements = [
+  'processmaker-modeler-boundary-timer-event',
+  'processmaker-modeler-boundary-error-event',
+  'processmaker-modeler-boundary-signal-event',
+  'processmaker-modeler-boundary-conditional-event',
+  'processmaker-modeler-boundary-message-event',
+];
 export default {
   name: 'Selection',
   components: {
@@ -321,19 +328,36 @@ export default {
      * Filter the selected elements
      */
     filterSelected() {
-      // remove from selection the selected child nodes in the pool
+      // Get the selected pools IDs
       const selectedPoolsIds = this.selected
         .filter(shape => shape.model.component)
         .filter(shape => shape.model.component.node.type === 'processmaker-modeler-pool')
         .map(shape => shape.model.component.node.id);
+      // remove from selection the selected children that belongs to a selected pool
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
         }
         return true;
-      }).filter(shape => {
-        return !(shape.model.getParentCell() && shape.model.getParentCell().get('parent'));
       });
+      // A boundary event could only be selected alone
+      const firstSelectedBoundary = this.selected.find(shape => {
+        return shape.model.component &&
+          boundaryElements.includes(shape.model.component.node.type);
+      });
+      const firstSelectedElement = this.selected[0];
+      if (firstSelectedBoundary) {
+        this.selected = this.selected.filter(shape => {
+          if (firstSelectedElement === firstSelectedBoundary) {
+            // boundary event selected alone
+            return shape.model.component &&
+              shape === firstSelectedBoundary;
+          }
+          // do not allow to select a boundary event with another element
+          return shape.model.component &&
+            !boundaryElements.includes(shape.model.component.node.type);
+        });
+      }
     },
     /**
      * Pan paper handler
@@ -377,7 +401,7 @@ export default {
       return shapes && selected.length === shapes.length;
     },
     /**
-     * Start the drag procedure for the selext box
+     * Start the drag procedure for the select box
      * @param {Object} event
      */
     startDrag(event) {
