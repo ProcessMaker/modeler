@@ -25,7 +25,7 @@ describe('Clone Improvement', () => {
 
     //Step 3: Set title in Text Annotation
     cy.get(selectorTextAnnotation).first().click();
-    cy.get('[name="text"]').should('be.visible').clear().type("Text Annotation Test 1");
+    cy.get('[name="text"]').should('be.visible').clear().type('Text Annotation Test 1');
 
     //Step 4: Set Description on Documentation
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Text Annotation');

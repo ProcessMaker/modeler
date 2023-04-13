@@ -28,7 +28,7 @@ describe('Clone Improvement', () => {
     cy.get('[name="name"]').clear().type('Exclusive Gateway Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find("p").should("exist").click().type("Documentation to Gateway");
+    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Gateway');
 
     //Step 5: Clone the element
     cy.get('[data-test="duplicate-button"]').click();

@@ -24,7 +24,7 @@ describe('Clone Improvement', () => {
     cy.get('[name="name"]').clear().type('Intermediate Event Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find("p").should("exist").click().type("Documentation to Intermediate Event");
+    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Intermediate Event');
 
     //Step 5: Clone the element
     cy.get('[data-test="duplicate-button"]').click();
