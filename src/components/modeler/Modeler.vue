@@ -326,7 +326,6 @@ export default {
       // Serialize node(s)
       // Copy to clipboard
       store.commit('setCopiedElements', this.cloneSelection());
-      console.log('copied');
       // TODO add message that the element was succesfully copied
     },
     async pasteElements() {
