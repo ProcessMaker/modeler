@@ -102,7 +102,8 @@
         @replace-node="replaceNode"
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
-        @copy-selection="copyElements"
+        @copy-selection="copyElement"
+        @paste-element="pasteElements"
         @duplicate-element="duplicateElement"
         @duplicate-selection="duplicateSelection"
         @default-flow="toggleDefaultFlow"
@@ -289,6 +290,7 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
+    copiedElements: () => store.getters.copiedElements,
     /* connectors expect a highlightedNode property */
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
@@ -319,17 +321,19 @@ export default {
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
     },
-    copyElement() {},
-    copyElements() {
-      this.internalClipboard = this.cloneSelection();
-      // @todo Serialize node(s)
-      // @todo Copy to clipboard
+    copyElement() {
+      // This is the true copy, where a node or selection (nodes passed as argument) will be copied to clipboard
+      // Serialize node(s)
+      // Copy to clipboard
+      store.commit('setCopiedElements', this.cloneSelection());
+      console.log('copied');
+      // TODO add message that the element was succesfully copied
     },
     async pasteElements() {
-      if (this.internalClipboard) {
-        await this.addClonedNodes(this.internalClipboard);
-        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.internalClipboard));
-        this.internalClipboard = this.cloneSelection();
+      if (this.copiedElements) {
+        await this.addClonedNodes(this.copiedElements);
+        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        store.commit('setCopiedElements', this.cloneSelection());
       }
     },
     cloneSelection() {
@@ -950,10 +954,10 @@ export default {
         if (!node.pool) {
           node.pool = this.poolTarget;
         }
-  
+
         const targetProcess = node.getTargetProcess(this.processes, this.processNode);
         addNodeToProcess(node, targetProcess);
-  
+
         this.planeElements.push(node.diagram);
         store.commit('addNode', node);
         this.poolTarget = null;
