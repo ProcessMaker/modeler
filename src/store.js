@@ -35,6 +35,7 @@ export default new Vuex.Store({
     autoValidate: false,
     globalProcesses: [],
     allowSavingElementPosition: true,
+    copiedElements: [],
     clientX: null,
     clientY: null,
   },
@@ -54,6 +55,7 @@ export default new Vuex.Store({
     globalProcesses: state => state.globalProcesses,
     globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
     allowSavingElementPosition: state => state.allowSavingElementPosition,
+    copiedElements: state => state.copiedElements,
     clientX: state => state.clientX,
     clientY: state => state.clientY,
   },
@@ -141,6 +143,10 @@ export default new Vuex.Store({
     },
     setGlobalProcesses(state, globalProcesses) {
       state.globalProcesses = globalProcesses;
+    },
+    // Copy Nodes to the clipboard or in this case, to the state
+    setCopiedElements(state, elements) {
+      state.copiedElements = elements;
     },
     setClientMousePosition(state, position) {
       const { clientX, clientY } = position;
