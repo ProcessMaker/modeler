@@ -2,6 +2,7 @@
   <transition name="inspector">
     <b-col
       v-show="!compressed"
+      id="inspector"
       class="pl-0 h-100 overflow-hidden inspector-column"
       :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : compressed }]"
       data-test="inspector-column"

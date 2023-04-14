@@ -117,9 +117,11 @@
               {{ $t('Close') }}
             </a>
             <EllipsisMenu
-              @navigate="onNavigate"
               :actions="ellipsisMenuActions"
               :divider="false"
+              @navigate="onNavigate"
+              @show="onShow"
+              @hide="onHide"
             />
           </template>
           <b-button
@@ -256,6 +258,18 @@ export default {
           break;
         default:
           break;
+      }
+    },
+    onShow() {
+      const inspectorDiv = document.getElementById('inspector');
+      if (inspectorDiv) {
+        inspectorDiv.style.zIndex = '1';
+      }
+    },
+    onHide() {
+      const inspectorDiv = document.getElementById('inspector');
+      if (inspectorDiv) {
+        inspectorDiv.style.zIndex = '2';
       }
     },
   },
