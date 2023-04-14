@@ -322,6 +322,8 @@ export default {
       this.addNode(clonedNode);
     },
     copyElement() {
+      // Checking if User selected a single flow and tries to copy it, to deny it.
+      if (this.highlightedNodes.length === 1 && this.highlightedNodes[0].type === 'processmaker-modeler-sequence-flow') return;
       store.commit('setCopiedElements', this.cloneSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
