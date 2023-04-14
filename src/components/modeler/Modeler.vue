@@ -957,14 +957,9 @@ export default {
         this.planeElements.push(node.diagram);
         store.commit('addNode', node);
         this.poolTarget = null;
-
-        return new Promise(resolve => {
-          setTimeout(() => {
-            this.pushToUndoStack();
-            resolve();
-          });
-        });
       });
+
+      await this.pushToUndoStack();
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (removeRelationships) {
