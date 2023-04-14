@@ -325,10 +325,10 @@ export default {
       // @todo Serialize node(s)
       // @todo Copy to clipboard
     },
-    pasteElements() {
+    async pasteElements() {
       if (this.internalClipboard) {
-        this.addClonedNodes(this.internalClipboard);
-        this.$refs.selector.selectElements(this.internalClipboard);
+        await this.addClonedNodes(this.internalClipboard);
+        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.internalClipboard));
         this.internalClipboard = this.cloneSelection();
       }
     },
@@ -400,10 +400,17 @@ export default {
       });
       return clonedNodes;
     },
-    duplicateSelection() {
+    async duplicateSelection() {
       const clonedNodes = this.cloneSelection();
-      this.addClonedNodes(clonedNodes);
-      this.$refs.selector.selectElements(clonedNodes);
+      await this.addClonedNodes(clonedNodes);
+      this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+    },
+    findViewElementsFromNodes(nodes) {
+      return nodes.map(node => {
+        const component = this.$refs.nodeComponent.find(cmp => cmp.node === node);
+        const shape = component.shape;
+        return this.paper.findViewByModel(shape);
+      });
     },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
