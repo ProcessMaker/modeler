@@ -85,6 +85,9 @@ export default {
     },
   },
   methods: {
+    selectElements() {
+      // @todo
+    },
     /**
      * Select an element dinamically.
      * Shift key will manage the condition to push to selection
