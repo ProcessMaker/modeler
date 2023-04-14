@@ -13,7 +13,7 @@
       aria-hidden="true"
     >
   </crown-button>
-  
+
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     copyElement() {
-      this.$emit('copy-element', this.node);
+      this.$emit('copy-element');
     },
   },
 };
