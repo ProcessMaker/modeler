@@ -78,11 +78,9 @@ export default {
   },
   methods: {
     copySelection() {
-      // @todo: Implement copySelection
       this.$emit('copy-selection');
     },
     duplicateSelection() {
-      // @todo: Implement duplicateSelection
       this.$emit('duplicate-selection');
     },
     deleteElement() {
