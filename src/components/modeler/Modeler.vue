@@ -322,11 +322,8 @@ export default {
       this.addNode(clonedNode);
     },
     copyElement() {
-      // This is the true copy, where a node or selection (nodes passed as argument) will be copied to clipboard
-      // Serialize node(s)
-      // Copy to clipboard
       store.commit('setCopiedElements', this.cloneSelection());
-      // TODO add message that the element was succesfully copied
+      this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
       if (this.copiedElements) {

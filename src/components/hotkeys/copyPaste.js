@@ -13,9 +13,11 @@ export default {
     },
     copy(event) {
       event.preventDefault();
+      window.ProcessMaker.$modeler.copyElement();
     },
     paste(event) {
       event.preventDefault();
+      window.ProcessMaker.$modeler.pasteElements();
     },
   },
 };
