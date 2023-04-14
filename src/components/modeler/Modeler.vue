@@ -102,6 +102,7 @@
         @replace-node="replaceNode"
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
+        @copy-selection="copyElements"
         @duplicate-element="duplicateElement"
         @duplicate-selection="duplicateSelection"
         @default-flow="toggleDefaultFlow"
@@ -190,6 +191,7 @@ export default {
   mixins: [hotkeys],
   data() {
     return {
+      internalClipboard: [],
       tooltipTarget: null,
 
       /* Custom parsers for handling certain bpmn node types */
@@ -317,12 +319,20 @@ export default {
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
     },
-    copyElement() {
-      // This is the true copy, where a node or selection (nodes passed as argument) will be copied to clipboard
-      // Serialize node(s)
-      // Copy to clipboard
+    copyElement() {},
+    copyElements() {
+      this.internalClipboard = this.cloneSelection();
+      // @todo Serialize node(s)
+      // @todo Copy to clipboard
     },
-    duplicateSelection() {
+    pasteElements() {
+      if (this.internalClipboard) {
+        this.addClonedNodes(this.internalClipboard);
+        this.$refs.selector.selectElements(this.internalClipboard);
+        this.internalClipboard = this.cloneSelection();
+      }
+    },
+    cloneSelection() {
       let clonedNodes = [], clonedFlows = [], originalFlows = [];
       const nodes = this.highlightedNodes;
       const selector = this.$refs.selector.$el;
@@ -368,7 +378,6 @@ export default {
           }
         });
       }
-
       // Connect flows
       clonedFlows.forEach(flow => {
         // Look up the original flow
@@ -389,8 +398,12 @@ export default {
           point.y += sheight;
         });
       });
-
+      return clonedNodes;
+    },
+    duplicateSelection() {
+      const clonedNodes = this.cloneSelection();
       this.addClonedNodes(clonedNodes);
+      this.$refs.selector.selectElements(clonedNodes);
     },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
