@@ -11,6 +11,7 @@
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
+      @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
     />
@@ -411,6 +412,9 @@ export default {
         const shape = component.shape;
         return this.paper.findViewByModel(shape);
       });
+    },
+    async close() {
+      this.$emit('close');
     },
     async saveBpmn() {
       const svg = document.querySelector('.mini-paper svg');
@@ -950,10 +954,10 @@ export default {
         if (!node.pool) {
           node.pool = this.poolTarget;
         }
-  
+
         const targetProcess = node.getTargetProcess(this.processes, this.processNode);
         addNodeToProcess(node, targetProcess);
-  
+
         this.planeElements.push(node.diagram);
         store.commit('addNode', node);
         this.poolTarget = null;
@@ -1088,6 +1092,18 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
+    },
+    showSavedNotification() {
+      undoRedoStore.dispatch('saved');
+    },
+    enableVersions() {
+      undoRedoStore.dispatch('enableVersions');
+    },
+    setVersionIndicator(isDraft) {
+      undoRedoStore.dispatch('setVersionIndicator', isDraft);
+    },
+    setLoadingState(isLoading) {
+      undoRedoStore.dispatch('setLoadingState', isLoading);
     },
     clearSelection(){
       this.$refs.selector.clearSelection();
