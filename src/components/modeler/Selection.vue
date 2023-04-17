@@ -89,7 +89,6 @@ export default {
       await this.$nextTick();
       this.clearSelection();
       this.selected = elements;
-      // this.filterSelected();
       this.showLasso = true;
       this.isSelected = true;
       this.isSelecting = true;

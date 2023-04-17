@@ -408,7 +408,7 @@ export function getPeriodicityStringUSFormattedDate(date, time = false) {
  * This method is responsible to enter inside component iframe
  * @return iframe od documentation
  */
-export function getIframeDocumnetation() {
+export function getIframeDocumentation() {
   cy.get('[id="accordion-button-documentation-accordion"]').click();
   const getIframeDocument = () => {
     return cy
