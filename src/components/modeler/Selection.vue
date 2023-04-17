@@ -85,6 +85,17 @@ export default {
     },
   },
   methods: {
+    async selectElements(elements) {
+      await this.$nextTick();
+      this.clearSelection();
+      this.selected = elements;
+      this.showLasso = true;
+      this.isSelected = true;
+      this.isSelecting = true;
+      this.start = null;
+      await this.$nextTick();
+      this.updateSelectionBox();
+    },
     /**
      * Select an element dinamically.
      * Shift key will manage the condition to push to selection

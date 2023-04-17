@@ -1,15 +1,15 @@
 <template>
   <crown-button
     v-if="node.isBpmnType(...validCopyElements)"
-    :title="$t('Copy Element')"
+    :title="$t('Duplicate Element')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
-    aria-label="Copy Element"
-    data-test="copy-button"
+    aria-label="Duplicate Element"
+    data-test="duplicate-button"
     role="menuitem"
-    @click="copyElement"
+    @click="duplicateElement"
   >
     <img
-      :src="copyIcon"
+      :src="duplicateIcon"
       aria-hidden="true"
     >
   </crown-button>
@@ -18,7 +18,7 @@
 
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import copyIcon from '@/assets/clipboard.svg';
+import duplicateIcon from '@/assets/copy-regular.svg';
 import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 
 export default {
@@ -27,13 +27,13 @@ export default {
   data() {
     return {
       copyCount: 0,
-      copyIcon,
+      duplicateIcon,
       validCopyElements,
     };
   },
   methods: {
-    copyElement() {
-      this.$emit('copy-element');
+    duplicateElement() {
+      this.$emit('duplicate-element', this.node, ++this.copyCount);
     },
   },
 };
