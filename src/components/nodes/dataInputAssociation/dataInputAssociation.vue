@@ -57,7 +57,7 @@ export default {
       }
 
       /* A data input association can be connected to anything that isn't a data store or object or a start event */
-      const invalidTarget = this.targetNode.isBpmnType('bpmn:DataObjectReference', 'bpmn:DataStoreReference', 'bpmn:StartEvent');
+      const invalidTarget = !this.targetNode.isBpmnType('bpmn:Task', 'bpmn:SubProcess', 'bpmn:CallActivity', 'bpmn:ManualTask', 'bpmn:ScriptTask', 'bpmn:ServiceTask');
 
       if (invalidTarget) {
         return false;
