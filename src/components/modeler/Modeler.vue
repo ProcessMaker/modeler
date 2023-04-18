@@ -103,6 +103,10 @@
         @replace-node="replaceNode"
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
+        @copy-selection="copyElement"
+        @paste-element="pasteElements"
+        @duplicate-element="duplicateElement"
+        @duplicate-selection="duplicateSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
       />
@@ -112,6 +116,7 @@
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
+        @duplicate-selection="duplicateSelection"
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
@@ -188,6 +193,7 @@ export default {
   mixins: [hotkeys],
   data() {
     return {
+      internalClipboard: [],
       tooltipTarget: null,
 
       /* Custom parsers for handling certain bpmn node types */
@@ -285,6 +291,7 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
+    copiedElements: () => store.getters.copiedElements,
     /* connectors expect a highlightedNode property */
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
@@ -308,12 +315,111 @@ export default {
       }
       source.set('default', flow);
     },
-    copyElement(node, copyCount) {
+    duplicateElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
+    },
+    copyElement() {
+      // Checking if User selected a single flow and tries to copy it, to deny it.
+      const flows = [
+        sequenceFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        genericFlowId,
+      ];
+      if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
+      store.commit('setCopiedElements', this.cloneSelection());
+      this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
+    },
+    async pasteElements() {
+      if (this.copiedElements) {
+        await this.addClonedNodes(this.copiedElements);
+        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        store.commit('setCopiedElements', this.cloneSelection());
+      }
+    },
+    cloneSelection() {
+      let clonedNodes = [], clonedFlows = [], originalFlows = [];
+      const nodes = this.highlightedNodes;
+      const selector = this.$refs.selector.$el;
+      const { height: sheight } = selector.getBoundingClientRect();
+      if (typeof selector.getBoundingClientRect === 'function') {
+        // get selector height
+        nodes.forEach(node => {
+          // Add flows described in the definitions property
+          if (node.definition.incoming || node.definition.outgoing) {
+            // Since both incoming and outgoing reference the same flow, any of them is copied
+            let flowsToCopy = [...(node.definition.incoming || node.definition.outgoing)];
+            // Check if flow is already in array before pushing
+            flowsToCopy.forEach(flow => {
+              if (!originalFlows.some(el => el.id === flow.id)) {
+                originalFlows.push(flow);
+              }
+            });
+          }
+
+          // Check node type to clone
+          if ([
+            sequenceFlowId,
+            laneId,
+            associationId,
+            messageFlowId,
+            dataOutputAssociationFlowId,
+            dataInputAssociationFlowId,
+            genericFlowId,
+          ].includes(node.type)) {
+            // Add offset for all waypoints on cloned flow
+            const clonedFlow = node.cloneFlow(this.nodeRegistry, this.moddle, this.$t);
+            clonedFlow.setIds(this.nodeIdGenerator);
+            clonedFlows.push(clonedFlow);
+            clonedNodes.push(clonedFlow);
+          } else {
+            // Clone node and calculate offset
+            const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+            const yOffset = sheight;
+            clonedNode.diagram.bounds.y += yOffset;
+            // Set cloned node id
+            clonedNode.setIds(this.nodeIdGenerator);
+            clonedNodes.push(clonedNode);
+          }
+        });
+      }
+      // Connect flows
+      clonedFlows.forEach(flow => {
+        // Look up the original flow
+        const flowClonedFrom = { definition: originalFlows.find(el => el.id === flow.definition.cloneOf) };
+        // Get the id's of the sourceRef and targetRef of original flow
+        const src = flowClonedFrom.definition.sourceRef;
+        const target = flowClonedFrom.definition.targetRef;
+        const srcClone = clonedNodes.find(node => node.definition.cloneOf === src.id);
+        const targetClone = clonedNodes.find(node => node.definition.cloneOf === target.id);
+        // Reference the elements to the flow that connects them
+        flow.definition.sourceRef = srcClone.definition;
+        flow.definition.targetRef = targetClone.definition;
+        // Reference the flow to the elements that are connected by it
+        srcClone.definition.outgoing ? srcClone.definition.outgoing.push(flow.definition) : srcClone.definition.outgoing = [flow.definition];
+        targetClone.definition.incoming ? targetClone.definition.incoming.push(flow.definition) : targetClone.definition.incoming = [flow.definition];
+        // Translate flow waypoints to where they should be
+        flow.diagram.waypoint.forEach(point => {
+          point.y += sheight;
+        });
+      });
+      return clonedNodes;
+    },
+    async duplicateSelection() {
+      const clonedNodes = this.cloneSelection();
+      await this.addClonedNodes(clonedNodes);
+      this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+    },
+    findViewElementsFromNodes(nodes) {
+      return nodes.map(node => {
+        const component = this.$refs.nodeComponent.find(cmp => cmp.node === node);
+        const shape = component.shape;
+        return this.paper.findViewByModel(shape);
+      });
     },
     async close() {
       this.$emit('close');
@@ -851,6 +957,22 @@ export default {
         });
       });
     },
+    async addClonedNodes(nodes) {
+      nodes.forEach(node => {
+        if (!node.pool) {
+          node.pool = this.poolTarget;
+        }
+
+        const targetProcess = node.getTargetProcess(this.processes, this.processNode);
+        addNodeToProcess(node, targetProcess);
+
+        this.planeElements.push(node.diagram);
+        store.commit('addNode', node);
+        this.poolTarget = null;
+      });
+
+      await this.pushToUndoStack();
+    },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (removeRelationships) {
         removeNodeFlows(node, this);
@@ -1153,7 +1275,13 @@ export default {
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
+      const { clientX, clientY } = event;
       this.pointerMoveHandler(event);
+      store.commit('setClientMousePosition', { clientX, clientY });
+    });
+
+    this.$el.addEventListener('mouseleave', () => {
+      store.commit('clientLeftPaper');
     });
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
