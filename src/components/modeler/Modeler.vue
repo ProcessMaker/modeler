@@ -404,6 +404,9 @@ export default {
     async duplicateSelection() {
       const clonedNodes = this.cloneSelection();
       await this.addClonedNodes(clonedNodes);
+      // await this.$nextTick();
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
       this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
     },
     findViewElementsFromNodes(nodes) {
@@ -962,13 +965,7 @@ export default {
         store.commit('addNode', node);
         this.poolTarget = null;
       });
-
-      return new Promise(resolve => {
-        setTimeout(() => {
-          this.pushToUndoStack();
-          resolve();
-        });
-      });
+      this.pushToUndoStack();
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (removeRelationships) {
