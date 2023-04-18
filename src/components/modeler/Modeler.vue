@@ -337,6 +337,8 @@ export default {
     async pasteElements() {
       if (this.copiedElements) {
         await this.addClonedNodes(this.copiedElements);
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
         this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
         store.commit('setCopiedElements', this.cloneSelection());
       }
