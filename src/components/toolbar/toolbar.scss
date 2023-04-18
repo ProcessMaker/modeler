@@ -27,3 +27,14 @@ $toolbar-background-color: #fff;
 .cursor-default {
   cursor: default !important;
 }
+
+.autosave-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-ellipsis {
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+}

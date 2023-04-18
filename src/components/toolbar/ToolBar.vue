@@ -101,7 +101,7 @@
               </span>
             </div>
             <a
-              class="btn btn-sm btn-primary mini-map-btn text-uppercase mx-2"
+              class="btn btn-sm btn-primary autosave-btn text-uppercase mx-2"
               data-test="publish-btn"
               :title="$t('Publish')"
               @click="$emit('saveBpmn')"
@@ -109,7 +109,7 @@
               {{ $t('Publish') }}
             </a>
             <a
-              class="btn btn-sm btn-link toolbar-item mini-map-btn text-black text-uppercase"
+              class="btn btn-sm btn-link toolbar-item autosave-btn text-black text-uppercase"
               data-test="close-btn"
               :title="$t('Close')"
               @click="$emit('close')"
@@ -117,9 +117,11 @@
               {{ $t('Close') }}
             </a>
             <EllipsisMenu
-              @navigate="onNavigate"
               :actions="ellipsisMenuActions"
               :divider="false"
+              @navigate="onNavigate"
+              @show="onShow"
+              @hide="onHide"
             />
           </template>
           <b-button
@@ -256,6 +258,18 @@ export default {
           break;
         default:
           break;
+      }
+    },
+    onShow() {
+      const inspectorDiv = document.getElementById('inspector');
+      if (inspectorDiv) {
+        inspectorDiv.style.zIndex = '1';
+      }
+    },
+    onHide() {
+      const inspectorDiv = document.getElementById('inspector');
+      if (inspectorDiv) {
+        inspectorDiv.style.zIndex = '2';
       }
     },
   },
