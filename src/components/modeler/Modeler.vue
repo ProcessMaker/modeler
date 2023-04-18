@@ -963,7 +963,12 @@ export default {
         this.poolTarget = null;
       });
 
-      await this.pushToUndoStack();
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.pushToUndoStack();
+          resolve();
+        });
+      });
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (removeRelationships) {
