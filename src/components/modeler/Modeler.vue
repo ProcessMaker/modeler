@@ -103,7 +103,8 @@
         @replace-node="replaceNode"
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
-        @copy-selection="copyElements"
+        @copy-selection="copyElement"
+        @paste-element="pasteElements"
         @duplicate-element="duplicateElement"
         @duplicate-selection="duplicateSelection"
         @default-flow="toggleDefaultFlow"
@@ -290,6 +291,7 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
+    copiedElements: () => store.getters.copiedElements,
     /* connectors expect a highlightedNode property */
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
@@ -320,17 +322,23 @@ export default {
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
     },
-    copyElement() {},
-    copyElements() {
-      this.internalClipboard = this.cloneSelection();
-      // @todo Serialize node(s)
-      // @todo Copy to clipboard
+    copyElement() {
+      // Checking if User selected a single flow and tries to copy it, to deny it.
+      const flows = [
+        sequenceFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        genericFlowId,
+      ];
+      if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
+      store.commit('setCopiedElements', this.cloneSelection());
+      this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
-      if (this.internalClipboard) {
-        await this.addClonedNodes(this.internalClipboard);
-        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.internalClipboard));
-        this.internalClipboard = this.cloneSelection();
+      if (this.copiedElements) {
+        await this.addClonedNodes(this.copiedElements);
+        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        store.commit('setCopiedElements', this.cloneSelection());
       }
     },
     cloneSelection() {
@@ -1267,7 +1275,13 @@ export default {
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
+      const { clientX, clientY } = event;
       this.pointerMoveHandler(event);
+      store.commit('setClientMousePosition', { clientX, clientY });
+    });
+
+    this.$el.addEventListener('mouseleave', () => {
+      store.commit('clientLeftPaper');
     });
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
