@@ -103,7 +103,8 @@
         @replace-node="replaceNode"
         @replace-generic-flow="replaceGenericFlow"
         @copy-element="copyElement"
-        @copy-selection="copyElements"
+        @copy-selection="copyElement"
+        @paste-element="pasteElements"
         @duplicate-element="duplicateElement"
         @duplicate-selection="duplicateSelection"
         @default-flow="toggleDefaultFlow"
@@ -290,6 +291,7 @@ export default {
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
+    copiedElements: () => store.getters.copiedElements,
     /* connectors expect a highlightedNode property */
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
@@ -320,39 +322,33 @@ export default {
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
     },
-    copyElement() {},
-    copyElements() {
-      this.internalClipboard = this.cloneSelection();
-      // @todo Serialize node(s)
-      // @todo Copy to clipboard
+    copyElement() {
+      // Checking if User selected a single flow and tries to copy it, to deny it.
+      const flows = [
+        sequenceFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        genericFlowId,
+      ];
+      if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
+      store.commit('setCopiedElements', this.cloneSelection());
+      this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
-      if (this.internalClipboard) {
-        await this.addClonedNodes(this.internalClipboard);
-        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.internalClipboard));
-        this.internalClipboard = this.cloneSelection();
+      if (this.copiedElements) {
+        await this.addClonedNodes(this.copiedElements);
+        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        store.commit('setCopiedElements', this.cloneSelection());
       }
     },
     cloneSelection() {
-      let clonedNodes = [], clonedFlows = [], originalFlows = [];
+      let clonedNodes = [], clonedFlows = [];
       const nodes = this.highlightedNodes;
       const selector = this.$refs.selector.$el;
       const { height: sheight } = selector.getBoundingClientRect();
       if (typeof selector.getBoundingClientRect === 'function') {
         // get selector height
         nodes.forEach(node => {
-          // Add flows described in the definitions property
-          if (node.definition.incoming || node.definition.outgoing) {
-            // Since both incoming and outgoing reference the same flow, any of them is copied
-            let flowsToCopy = [...(node.definition.incoming || node.definition.outgoing)];
-            // Check if flow is already in array before pushing
-            flowsToCopy.forEach(flow => {
-              if (!originalFlows.some(el => el.id === flow.id)) {
-                originalFlows.push(flow);
-              }
-            });
-          }
-
           // Check node type to clone
           if ([
             sequenceFlowId,
@@ -382,7 +378,7 @@ export default {
       // Connect flows
       clonedFlows.forEach(flow => {
         // Look up the original flow
-        const flowClonedFrom = { definition: originalFlows.find(el => el.id === flow.definition.cloneOf) };
+        const flowClonedFrom = this.nodes.find(node => node.definition.id === flow.definition.cloneOf);
         // Get the id's of the sourceRef and targetRef of original flow
         const src = flowClonedFrom.definition.sourceRef;
         const target = flowClonedFrom.definition.targetRef;
@@ -968,7 +964,12 @@ export default {
       await this.pushToUndoStack();
     },
     async removeNode(node, { removeRelationships = true } = {}) {
+      if (!node) {
+        // already removed
+        return;
+      }
       if (removeRelationships) {
+
         removeNodeFlows(node, this);
         removeNodeMessageFlows(node, this);
         removeNodeAssociations(node, this);
@@ -1269,7 +1270,13 @@ export default {
     }, this);
 
     this.$el.addEventListener('mousemove', event => {
+      const { clientX, clientY } = event;
       this.pointerMoveHandler(event);
+      store.commit('setClientMousePosition', { clientX, clientY });
+    });
+
+    this.$el.addEventListener('mouseleave', () => {
+      store.commit('clientLeftPaper');
     });
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
