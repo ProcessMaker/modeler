@@ -102,7 +102,8 @@ export default {
       const targetShape = this.shape.getTargetElement();
       const dataInput = getOrFindDataInput(this.moddle, targetShape.component.node, this.sourceNode.definition);
       this.node.definition.set('targetRef', dataInput);
-      this.node.definition.set('sourceRef', this.sourceNode.definition);
+      // @todo Review why this needs to be and array. When saving the BPMN, if this is not an array the sourceRef is not stored
+      this.node.definition.set('sourceRef', [this.sourceNode.definition]);
       targetShape.component.node.definition.set('dataInputAssociations', [this.node.definition]);
     },
   },
