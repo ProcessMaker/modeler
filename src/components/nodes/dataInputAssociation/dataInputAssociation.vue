@@ -102,7 +102,7 @@ export default {
       const targetShape = this.shape.getTargetElement();
       const dataInput = getOrFindDataInput(this.moddle, targetShape.component.node, this.sourceNode.definition);
       this.node.definition.set('targetRef', dataInput);
-      this.node.definition.set('sourceRef', [this.sourceNode.definition]);
+      this.node.definition.set('sourceRef', this.sourceNode.definition);
       targetShape.component.node.definition.set('dataInputAssociations', [this.node.definition]);
     },
   },
