@@ -399,6 +399,9 @@ export default {
     },
     async duplicateSelection() {
       const clonedNodes = this.cloneSelection();
+      if (clonedNodes && clonedNodes.length === 0) {
+        return;
+      }
       this.$refs.selector.clearSelection();
       await this.addClonedNodes(clonedNodes);
       await this.$nextTick();
