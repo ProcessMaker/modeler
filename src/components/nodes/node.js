@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
-  static definitionPropertiesToNotCopy = ['$type', 'id'];
+  static definitionPropertiesToNotCopy = ['$type', 'id', 'ioSpecification'];
   static flowDefinitionPropertiesToNotCopy = ['$type', 'id', 'sourceRef', 'targetRef'];
   static eventDefinitionPropertiesToNotCopy = ['errorRef', 'messageRef'];
 
