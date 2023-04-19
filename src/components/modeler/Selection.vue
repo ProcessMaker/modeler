@@ -29,13 +29,7 @@ import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
-const boundaryElements = [
-  'processmaker-modeler-boundary-timer-event',
-  'processmaker-modeler-boundary-error-event',
-  'processmaker-modeler-boundary-signal-event',
-  'processmaker-modeler-boundary-conditional-event',
-  'processmaker-modeler-boundary-message-event',
-];
+
 export default {
   name: 'Selection',
   components: {
@@ -351,24 +345,6 @@ export default {
         }
         return true;
       });
-      // A boundary event could only be selected alone
-      const firstSelectedBoundary = this.selected.find(shape => {
-        return shape.model.component &&
-          boundaryElements.includes(shape.model.component.node.type);
-      });
-      const firstSelectedElement = this.selected[0];
-      if (firstSelectedBoundary) {
-        this.selected = this.selected.filter(shape => {
-          if (firstSelectedElement === firstSelectedBoundary) {
-            // boundary event selected alone
-            return shape.model.component &&
-              shape === firstSelectedBoundary;
-          }
-          // do not allow to select a boundary event with another element
-          return shape.model.component &&
-            !boundaryElements.includes(shape.model.component.node.type);
-        });
-      }
     },
     /**
      * Pan paper handler
@@ -475,6 +451,9 @@ export default {
       this.$emit('save-state');
       this.dragging = false;
       this.stopForceMove = false;
+      // Readjusts the selection box, taking into consideration elements
+      // that are anchored and did not move, such as boundary events. 
+      this.updateSelectionBox();
     },
     /**
      * Translate the Selected shapes adding some custom validations
