@@ -163,7 +163,7 @@ import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault } from '@/components/crown/utils';
+import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault, getOrFindDataInput } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
@@ -341,6 +341,22 @@ export default {
         store.commit('setCopiedElements', this.cloneSelection());
       }
     },
+    // Returns the Flow Element (Task| DataStore| DataObject)  that is the target of the association
+    getDataInputOutputAssociationTargetRef(association) {
+      if (association.targetRef.$type === 'bpmn:DataInput') {
+        return association.targetRef.$parent.$parent;
+      } else {
+        return association.targetRef;
+      }
+    },
+    // Returns the Flow Element (Task| DataStore| DataObject)  that is the source of the association
+    getDataInputOutputAssociationSourceRef(association) {
+      if (association.sourceRef.$type === 'bpmn:DataOutput') {
+        return association.sourceRef.$parent.$parent;
+      } else {
+        return association.sourceRef;
+      }
+    },
     cloneSelection() {
       let clonedNodes = [], clonedFlows = [];
       const nodes = this.highlightedNodes;
@@ -380,16 +396,54 @@ export default {
         // Look up the original flow
         const flowClonedFrom = this.nodes.find(node => node.definition.id === flow.definition.cloneOf);
         // Get the id's of the sourceRef and targetRef of original flow
-        const src = flowClonedFrom.definition.sourceRef;
+        let src;
+        if (flowClonedFrom.definition.$type === 'bpmn:DataInputAssociation') {
+          src = flowClonedFrom.definition.sourceRef[0];
+        } else {
+          src = flowClonedFrom.definition.sourceRef;
+        }
         const target = flowClonedFrom.definition.targetRef;
         const srcClone = clonedNodes.find(node => node.definition.cloneOf === src.id);
-        const targetClone = clonedNodes.find(node => node.definition.cloneOf === target.id);
-        // Reference the elements to the flow that connects them
-        flow.definition.sourceRef = srcClone.definition;
-        flow.definition.targetRef = targetClone.definition;
-        // Reference the flow to the elements that are connected by it
-        srcClone.definition.outgoing ? srcClone.definition.outgoing.push(flow.definition) : srcClone.definition.outgoing = [flow.definition];
-        targetClone.definition.incoming ? targetClone.definition.incoming.push(flow.definition) : targetClone.definition.incoming = [flow.definition];
+        let targetClone;
+        let targetClonedNode;
+        if (flowClonedFrom.definition.$type === 'bpmn:DataInputAssociation') {
+          // always: DataStore|DataObject -> Task
+          const targetElement = this.getDataInputOutputAssociationTargetRef(flowClonedFrom.definition);
+          if (targetElement.$type === 'bpmn:DataObjectReference' || targetElement.$type === 'bpmn:DataStoreReference') {
+            targetClone = clonedNodes.find(node => node.definition.cloneOf === targetElement.id);
+          } else {
+            // is a Task, UserTask, ManualTask, CallActivity...
+            targetClonedNode = clonedNodes.find(node => node.definition.cloneOf === targetElement.id);
+            // target = bpmn:DataInput
+            // eslint-disable-next-line no-console
+            console.log(targetClonedNode);
+            // const clonedDataInput = targetClonedNode.definition.get('ioSpecification').dataInputs.find(di => di.id === target.id);
+            // targetClone = clonedDataInput;
+            // clonedDataInput.set('id', clonedDataInput.id + '_clone');
+            // targetClonedNode.definition.get('ioSpecification').set('id', targetClonedNode.definition.get('ioSpecification').id + '_clone');
+            // targetClonedNode.definition.get('ioSpecification').inputSets.forEach(inputSet => {
+            //   inputSet.set('id', inputSet.id + '_clone');
+            // });
+            targetClone = getOrFindDataInput(this.moddle, targetClonedNode, srcClone.definition);
+          }
+        } else {
+          targetClone = clonedNodes.find(node => node.definition.cloneOf === target.id);
+        }
+        if (flowClonedFrom.definition.$type === 'bpmn:DataInputAssociation') {
+          // Reference the elements to the flow that connects them
+          flow.definition.set('sourceRef', [srcClone.definition]);
+          flow.definition.set('targetRef', targetClone);
+          // eslint-disable-next-line no-console
+          console.log(flow);
+          targetClonedNode.definition.set('dataInputAssociations', [flow.definition]);
+        } else {
+          // Reference the elements to the flow that connects them
+          flow.definition.sourceRef = srcClone.definition;
+          flow.definition.targetRef = targetClone.definition;
+          // Reference the flow to the elements that are connected by it
+          srcClone.definition.outgoing ? srcClone.definition.outgoing.push(flow.definition) : srcClone.definition.outgoing = [flow.definition];
+          targetClone.definition.incoming ? targetClone.definition.incoming.push(flow.definition) : targetClone.definition.incoming = [flow.definition];
+        }
         // Translate flow waypoints to where they should be
         flow.diagram.waypoint.forEach(point => {
           point.y += sheight;
