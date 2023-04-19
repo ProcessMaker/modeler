@@ -439,8 +439,8 @@ export default {
           // is a Task, UserTask, ManualTask, CallActivity...
           clonedElement = clonedNodes.find(node => node.definition.cloneOf === originalElement.id);
           clonedDataInput = getOrFindDataInput(this.moddle, clonedElement, srcClone.definition);
-          console.log('originalAssociation', originalAssociation);
-          console.log('clonedAssociation', clonedAssociation);
+          // console.log('originalAssociation', originalAssociation);
+          // console.log('clonedAssociation', clonedAssociation);
 
           clonedAssociation.definition.sourceRef = [srcClone.definition];
           clonedAssociation.definition.targetRef = clonedDataInput;
