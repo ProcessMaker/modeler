@@ -72,16 +72,16 @@ export default {
         return this.node.dataAssociationProps.sourceShape;
       }
 
-      const taskWithInputAssociation = this.graph.getElements().find(element => {
-        return element.component && element.component.node.definition.get('dataInputAssociations') &&
-            element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
+      const taskWithInputAssociation = this.$parent.nodes.find(element => {
+        return element.definition.get('dataInputAssociations') &&
+            element.definition.get('dataInputAssociations')[0].definition === this.node.definition;
       });
 
-      const dataObjectDefinition = taskWithInputAssociation.component.node.definition.get('dataInputAssociations')[0].sourceRef[0];
-
-      return this.graph.getElements().find(element => {
-        return element.component && element.component.node.definition === dataObjectDefinition;
-      });
+      const dataObjectDefinition = taskWithInputAssociation.definition.get('dataInputAssociations')[0].definition.sourceRef[0];
+      return dataObjectDefinition;
+      // return this.$parent.nodes.find(element => {
+      //   return element.definition === dataObjectDefinition;
+      // });
     },
     getTargetRef() {
       if (this.node.dataAssociationProps) {

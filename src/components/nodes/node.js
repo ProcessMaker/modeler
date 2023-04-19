@@ -138,7 +138,7 @@ export default class Node {
         }
       }
       clonedFlow.definition.set(key, clonedDefinition);
-      clonedFlow.definition.sourceRef = clonedFlow.definition.targetRef  = null;
+      clonedFlow.definition.sourceRef = clonedFlow.definition.targetRef = null;
     });
 
     Node.eventDefinitionPropertiesToNotCopy.forEach(

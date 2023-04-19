@@ -358,97 +358,96 @@ export default {
       }
     },
     cloneSelection() {
-      let clonedNodes = [], clonedFlows = [];
+      let clonedNodes = [], clonedFlows = [], clonedDataAssociations = [];
       const nodes = this.highlightedNodes;
       const selector = this.$refs.selector.$el;
-      const { height: sheight } = selector.getBoundingClientRect();
+      // Get selector height
+      const { height: selectorHeight } = selector.getBoundingClientRect();
+      const { sy } = this.paper.scale();
+      const yOffset = selectorHeight / sy;
       if (typeof selector.getBoundingClientRect === 'function') {
-        // get selector height
         nodes.forEach(node => {
           // Check node type to clone
           if ([
             sequenceFlowId,
             laneId,
             associationId,
-            messageFlowId,
             dataOutputAssociationFlowId,
             dataInputAssociationFlowId,
+            messageFlowId,
             genericFlowId,
           ].includes(node.type)) {
-            // Add offset for all waypoints on cloned flow
+            // Clone flow and Set new ID
             const clonedFlow = node.cloneFlow(this.nodeRegistry, this.moddle, this.$t);
             clonedFlow.setIds(this.nodeIdGenerator);
-            clonedFlows.push(clonedFlow);
+            // Separate flows (DataAssociations into their own array)
+            [dataOutputAssociationFlowId,
+              dataInputAssociationFlowId,
+            ].includes(node.type)
+              ? clonedDataAssociations.push(clonedFlow)
+              : clonedFlows.push(clonedFlow);
+            // Push to all cloned nodes
             clonedNodes.push(clonedFlow);
           } else {
-            // Clone node and calculate offset
-            const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
-            const yOffset = sheight;
-            clonedNode.diagram.bounds.y += yOffset;
-            // Set cloned node id
-            clonedNode.setIds(this.nodeIdGenerator);
-            clonedNodes.push(clonedNode);
+            // Clone element and calculate offset
+            const clonedElement = node.clone(this.nodeRegistry, this.moddle, this.$t);
+            clonedElement.diagram.bounds.y += yOffset;
+            // Set cloned node ID
+            clonedElement.setIds(this.nodeIdGenerator);
+            // Push to all cloned nodes
+            clonedNodes.push(clonedElement);
           }
         });
       }
+
       // Connect flows
-      clonedFlows.forEach(flow => {
+      clonedFlows.forEach(clonedFlow => {
         // Look up the original flow
-        const flowClonedFrom = this.nodes.find(node => node.definition.id === flow.definition.cloneOf);
+        const originalFlow = this.nodes.find(node => node.definition.id === clonedFlow.definition.cloneOf);
         // Get the id's of the sourceRef and targetRef of original flow
-        let src;
-        if (flowClonedFrom.definition.$type === 'bpmn:DataInputAssociation') {
-          src = flowClonedFrom.definition.sourceRef[0];
-        } else {
-          src = flowClonedFrom.definition.sourceRef;
-        }
-        const target = flowClonedFrom.definition.targetRef;
+        const src = originalFlow.definition.sourceRef;
+        const target = originalFlow.definition.targetRef;
         const srcClone = clonedNodes.find(node => node.definition.cloneOf === src.id);
-        let targetClone;
-        let targetClonedNode;
-        if (flowClonedFrom.definition.$type === 'bpmn:DataInputAssociation') {
-          // always: DataStore|DataObject -> Task
-          const targetElement = this.getDataInputOutputAssociationTargetRef(flowClonedFrom.definition);
-          if (targetElement.$type === 'bpmn:DataObjectReference' || targetElement.$type === 'bpmn:DataStoreReference') {
-            targetClone = clonedNodes.find(node => node.definition.cloneOf === targetElement.id);
-          } else {
-            // is a Task, UserTask, ManualTask, CallActivity...
-            targetClonedNode = clonedNodes.find(node => node.definition.cloneOf === targetElement.id);
-            // target = bpmn:DataInput
-            // eslint-disable-next-line no-console
-            console.log(targetClonedNode);
-            // const clonedDataInput = targetClonedNode.definition.get('ioSpecification').dataInputs.find(di => di.id === target.id);
-            // targetClone = clonedDataInput;
-            // clonedDataInput.set('id', clonedDataInput.id + '_clone');
-            // targetClonedNode.definition.get('ioSpecification').set('id', targetClonedNode.definition.get('ioSpecification').id + '_clone');
-            // targetClonedNode.definition.get('ioSpecification').inputSets.forEach(inputSet => {
-            //   inputSet.set('id', inputSet.id + '_clone');
-            // });
-            targetClone = getOrFindDataInput(this.moddle, targetClonedNode, srcClone.definition);
-          }
-        } else {
-          targetClone = clonedNodes.find(node => node.definition.cloneOf === target.id);
-        }
-        if (flowClonedFrom.definition.$type === 'bpmn:DataInputAssociation') {
-          // Reference the elements to the flow that connects them
-          flow.definition.set('sourceRef', [srcClone.definition]);
-          flow.definition.set('targetRef', targetClone);
-          // eslint-disable-next-line no-console
-          console.log(flow);
-          targetClonedNode.definition.set('dataInputAssociations', [flow.definition]);
-        } else {
-          // Reference the elements to the flow that connects them
-          flow.definition.sourceRef = srcClone.definition;
-          flow.definition.targetRef = targetClone.definition;
-          // Reference the flow to the elements that are connected by it
-          srcClone.definition.outgoing ? srcClone.definition.outgoing.push(flow.definition) : srcClone.definition.outgoing = [flow.definition];
-          targetClone.definition.incoming ? targetClone.definition.incoming.push(flow.definition) : targetClone.definition.incoming = [flow.definition];
-        }
+        const targetClone = clonedNodes.find(node => node.definition.cloneOf === target.id);
+        // Reference the elements to the flow that connects them
+        clonedFlow.definition.set('sourceRef', [srcClone.definition]);
+        clonedFlow.definition.set('targetRef', targetClone);
+        // Reference the elements to the flow that connects them
+        clonedFlow.definition.sourceRef = srcClone.definition;
+        clonedFlow.definition.targetRef = targetClone.definition;
+        // Reference the flow to the elements that are connected by it
+        srcClone.definition.outgoing ? srcClone.definition.outgoing.push(clonedFlow.definition) : srcClone.definition.outgoing = [clonedFlow.definition];
+        targetClone.definition.incoming ? targetClone.definition.incoming.push(clonedFlow.definition) : targetClone.definition.incoming = [clonedFlow.definition];
         // Translate flow waypoints to where they should be
-        flow.diagram.waypoint.forEach(point => {
-          point.y += sheight;
+        clonedFlow.diagram.waypoint.forEach(point => {
+          point.y += selectorHeight;
         });
       });
+
+      clonedDataAssociations.forEach(clonedAssociation => {
+        let clonedElement;
+        let clonedDataInput;
+        const originalAssociation = this.nodes.find(node => node.definition.id === clonedAssociation.definition.cloneOf);
+        const src = originalAssociation.definition.sourceRef[0];
+        const srcClone = clonedNodes.find(node => node.definition.cloneOf === src.id);
+        // DataInput always: DataStore|DataObject -> Task
+        // DataOutput always: DataStore|DataObject <- Task
+        const originalElement = this.getDataInputOutputAssociationTargetRef(originalAssociation.definition);
+        if (originalElement.$type === 'bpmn:DataObjectReference' || originalElement.$type === 'bpmn:DataStoreReference') {
+          clonedDataInput = clonedNodes.find(node => node.definition.cloneOf === originalElement.id);
+        } else {
+          // is a Task, UserTask, ManualTask, CallActivity...
+          clonedElement = clonedNodes.find(node => node.definition.cloneOf === originalElement.id);
+          clonedDataInput = getOrFindDataInput(this.moddle, clonedElement, srcClone.definition);
+          console.log('originalAssociation', originalAssociation);
+          console.log('clonedAssociation', clonedAssociation);
+
+          clonedAssociation.definition.sourceRef = [srcClone.definition];
+          clonedAssociation.definition.targetRef = clonedDataInput;
+          clonedElement.definition.set('dataInputAssociations', [clonedAssociation]);
+        }
+      });
+
       return clonedNodes;
     },
     async duplicateSelection() {
