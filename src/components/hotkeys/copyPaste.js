@@ -1,8 +1,9 @@
 export default {
   methods: {
     copyPasteHandler(event, options) {
-      const isCopy = event.key === 'c';
-      const isPaste = event.key === 'v';
+      const key = event.key.toLowerCase();
+      const isCopy = key === 'c';
+      const isPaste = key === 'v';
 
       if (isCopy && options.mod) {
         this.copy(event);
