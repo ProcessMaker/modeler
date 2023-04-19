@@ -86,23 +86,6 @@ export default {
     },
   },
   watch: {
-    'node.definition': {
-      handler() {
-        const newNameLabel = this.shapeName;
-
-        if (newNameLabel !== this.nameLabel) {
-          this.nameLabel = newNameLabel;
-        }
-        this.setDefaultMarker(this.isDefaultFlow());
-      },
-      deep: true,
-    },
-    'node.definition.sourceRef': {
-      handler() {
-        this.setDefaultMarker(this.isDefaultFlow());
-      },
-      deep: true,
-    },
   },
   methods: {
     completeLink() {
