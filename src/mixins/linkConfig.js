@@ -78,7 +78,7 @@ export default {
       });
     },
     setEndpoint(shape, endpoint, connectionOffset) {
-      if (isPoint(shape)) {
+      if (shape && isPoint(shape)) {
         return this.shape[endpoint](shape, {
           anchor: {
             name: 'modelCenter',
@@ -252,6 +252,9 @@ export default {
     const targetRef = this.getTargetRef
       ? this.getTargetRef()
       : this.node.definition.get('targetRef');
+
+    // if flow doesn't have a targetRef such as incomplete node, return
+    if (!targetRef) return;
 
     if (targetRef.id) {
       const targetShape = this.graph.getElements().find(element => {

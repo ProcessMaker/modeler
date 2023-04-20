@@ -82,6 +82,10 @@ export default {
         const target = originalFlow.definition.targetRef;
         const srcClone = clonedNodes.find(node => node.cloneOf === src.id);
         const targetClone = clonedNodes.find(node => node.cloneOf === target.id);
+        if (!srcClone || !targetClone) {
+          clonedNodes.splice(clonedNodes.indexOf(clonedFlow), 1);
+          return;
+        }
         clonedFlow.definition.set('sourceRef', [srcClone.definition]);
         clonedFlow.definition.set('targetRef', targetClone);
         clonedFlow.definition.sourceRef = srcClone.definition;
