@@ -114,6 +114,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
       inputSets: [],
       outputSets: [],
     });
+    task.definition.ioSpecification.$parent = task.definition;
   }
   // Check if dataInput exists
   if (!task.definition.ioSpecification.dataInputs) {
@@ -126,6 +127,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
       isCollection: 'false',
       name: sourceNode.name,
     }));
+    task.definition.ioSpecification.dataInputs[task.definition.ioSpecification.dataInputs.length - 1].$parent = task.definition.ioSpecification;
     task.definition.ioSpecification.set('dataInputs', task.definition.ioSpecification.dataInputs);
   }
   dataInput = task.definition.ioSpecification.dataInputs.find(input => input.id === dataInputId);

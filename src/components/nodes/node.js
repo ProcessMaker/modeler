@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
-  static definitionPropertiesToNotCopy = ['$type', 'id'];
+  static definitionPropertiesToNotCopy = ['$type', 'id', 'ioSpecification', 'dataOutputAssociations'];
   static flowDefinitionPropertiesToNotCopy = ['$type', 'id', 'sourceRef', 'targetRef'];
   static eventDefinitionPropertiesToNotCopy = ['errorRef', 'messageRef'];
 
@@ -90,7 +90,7 @@ export default class Node {
 
     clonedNode.id = null;
     clonedNode.pool = this.pool;
-    clonedNode.definition.cloneOf = this.id;
+    clonedNode.cloneOf = this.id;
 
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
     Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
@@ -122,7 +122,7 @@ export default class Node {
 
     clonedFlow.id = null;
     clonedFlow.pool = this.pool;
-    clonedFlow.definition.cloneOf = this.id;
+    clonedFlow.cloneOf = this.id;
     clonedFlow.diagram.waypoint = [];
 
     this.diagram.waypoint.forEach(point => clonedFlow.diagram.waypoint.push(point));
@@ -138,7 +138,7 @@ export default class Node {
         }
       }
       clonedFlow.definition.set(key, clonedDefinition);
-      clonedFlow.definition.sourceRef = clonedFlow.definition.targetRef  = null;
+      clonedFlow.definition.sourceRef = clonedFlow.definition.targetRef = null;
     });
 
     Node.eventDefinitionPropertiesToNotCopy.forEach(
