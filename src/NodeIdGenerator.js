@@ -1,11 +1,13 @@
 export default class NodeIdGenerator {
   static prefix = 'node_';
 
-  #counter = 1;
-  #diagramCounter = 1;
+  static #counter = 1;
+  static #diagramCounter = 1;
 
   constructor(definitions) {
     this.definitions = definitions;
+    this.refreshLastIdCounter();
+    this.refreshLastDiagramIdCounter();
   }
 
   findById(id, root = this.definitions.rootElements, walked = []) {
@@ -22,19 +24,42 @@ export default class NodeIdGenerator {
     return found;
   }
 
-  refreshLastIdCounter() {
-    let lastIdCounter = 0;
-    const idRegex = new RegExp(`^${NodeIdGenerator.prefix}(\\d+)$`);
-    this.definitions.rootElements.forEach(element => {
-      const id = element.id;
-      if (idRegex.test(id)) {
-        const idCounter = parseInt(id.match(idRegex)[1]);
+  matchIds(idRegex, root, walked = [], lastIdCounter = 0) {
+    if (walked.indexOf(root) > -1) return lastIdCounter;
+    if (root instanceof Array) {
+      walked.push(root);
+      root.forEach(item => lastIdCounter = this.matchIds(idRegex, item, walked, lastIdCounter));
+    } else if (root instanceof Object) {
+      walked.push(root);
+      if (root.id) {
+        const match = String(root.id).match(idRegex);
+        const idCounter = match ? parseInt(match[1]) : 0;
         if (idCounter > lastIdCounter) {
           lastIdCounter = idCounter;
         }
       }
-    });
-    this.#counter = lastIdCounter + 1;
+      Object.getOwnPropertyNames(root).forEach(key => {
+        if (!(root[key] instanceof Function) && (key.substring(0, 1) !== '$')) {
+          lastIdCounter = this.matchIds(idRegex, root[key], walked, lastIdCounter);
+        }
+      });
+    }
+    return lastIdCounter;
+  }
+
+  refreshLastIdCounter() {
+    let lastIdCounter = this.matchIds(new RegExp(`^${NodeIdGenerator.prefix}(\\d+)$`), this.definitions.rootElements);
+    NodeIdGenerator.#counter = lastIdCounter + 1;
+  }
+
+  getCounter() {
+    this.refreshLastIdCounter();
+    return NodeIdGenerator.#counter;
+  }
+
+  refreshLastDiagramIdCounter() {
+    let lastIdCounter = this.matchIds(new RegExp(`^${NodeIdGenerator.prefix}(\\d+)_di$`), this.definitions.diagrams);
+    NodeIdGenerator.#diagramCounter = lastIdCounter + 1;
   }
 
   generate() {
@@ -44,25 +69,17 @@ export default class NodeIdGenerator {
   }
 
   #generateDefinitionId = () => {
-    const id = NodeIdGenerator.prefix + this.#counter;
-    this.#counter++;
+    const id = NodeIdGenerator.prefix + NodeIdGenerator.#counter;
+    NodeIdGenerator.#counter++;
 
     return id;
   };
 
   #generateDiagramId = () => {
-    const id = NodeIdGenerator.prefix + this.#diagramCounter + '_di';
-    this.#diagramCounter++;
+    const id = NodeIdGenerator.prefix + NodeIdGenerator.#diagramCounter + '_di';
+    NodeIdGenerator.#diagramCounter++;
 
     return id;
-  };
-
-  #isDefinitionIdUnique = id => {
-    return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
-  };
-
-  #isDiagramIdUnique = id => {
-    return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
   };
 }
 
