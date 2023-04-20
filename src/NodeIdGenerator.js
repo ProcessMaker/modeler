@@ -17,23 +17,29 @@ export default class NodeIdGenerator {
     } else if (root instanceof Object && root.$type) {
       walked.push(root);
       if (root.id === id) return root;
-      Object.getOwnPropertyNames(root).find(key => found = !(root[key] instanceof Function) && this.findById(id, root[key], walked));
+      Object.getOwnPropertyNames(root).find(key => found = !(root[key] instanceof Function) && (key.substring(0, 1) !== '$') && this.findById(id, root[key], walked));
     }
     return found;
+  }
+
+  refreshLastIdCounter() {
+    let lastIdCounter = 0;
+    const idRegex = new RegExp(`^${NodeIdGenerator.prefix}(\\d+)$`);
+    this.definitions.rootElements.forEach(element => {
+      const id = element.id;
+      if (idRegex.test(id)) {
+        const idCounter = parseInt(id.match(idRegex)[1]);
+        if (idCounter > lastIdCounter) {
+          lastIdCounter = idCounter;
+        }
+      }
+    });
+    this.#counter = lastIdCounter + 1;
   }
 
   generate() {
     let definitionId = this.#generateDefinitionId();
     let diagramId = this.#generateDiagramId();
-
-    while (!this.#isDefinitionIdUnique(definitionId)) {
-      definitionId = this.#generateDefinitionId();
-    }
-
-    while (!this.#isDiagramIdUnique(diagramId)) {
-      diagramId = this.#generateDiagramId();
-    }
-
     return [definitionId, diagramId];
   }
 
@@ -58,4 +64,14 @@ export default class NodeIdGenerator {
   #isDiagramIdUnique = id => {
     return !this.findById(id) && !this.findById(id, this.definitions.diagrams);
   };
+}
+
+// Singleton instance
+let singleton = null;
+
+export function getNodeIdGenerator(definitions) {
+  if (!singleton) {
+    singleton = new NodeIdGenerator(definitions);
+  }
+  return singleton;
 }

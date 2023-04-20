@@ -81,6 +81,14 @@ export default class Node {
       this.diagram.id = diagramId;
       this.diagram.bpmnElement = this.definition;
     }
+    // eslint-disable-next-line no-console
+    console.log(this.definition);
+    if (this.definition.loopCharacteristics) {
+      this.definition.loopCharacteristics.set('id', nodeIdGenerator.generate()[0]);
+      if (this.definition.loopCharacteristics.loopCondition) {
+        this.definition.loopCharacteristics.get('loopCondition').set('id', nodeIdGenerator.generate()[0]);
+      }
+    }
   }
 
   clone(nodeRegistry, moddle, $t) {
@@ -99,7 +107,7 @@ export default class Node {
       if (key === 'eventDefinitions') {
         for (var i in clonedDefinition) {
           if (definition[i].signalRef && !clonedDefinition[i].signalRef) {
-            clonedDefinition[i].signalRef = { ...definition[i].signalRef };
+            clonedDefinition[i].set('signalRef', { ...definition[i].signalRef });
           }
         }
       }
@@ -133,12 +141,13 @@ export default class Node {
       if (key === 'eventDefinitions') {
         for (var i in clonedDefinition) {
           if (definition[i].signalRef && !clonedDefinition[i].signalRef) {
-            clonedDefinition[i].signalRef = { ...definition[i].signalRef };
+            clonedDefinition[i].set('signalRef', { ...definition[i].signalRef });
           }
         }
       }
       clonedFlow.definition.set(key, clonedDefinition);
-      clonedFlow.definition.sourceRef = clonedFlow.definition.targetRef = null;
+      clonedFlow.definition.set('sourceRef', null);
+      clonedFlow.definition.set('targetRef', null);
     });
 
     Node.eventDefinitionPropertiesToNotCopy.forEach(

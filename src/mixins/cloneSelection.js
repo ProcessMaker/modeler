@@ -91,21 +91,19 @@ export default {
           clonedNodes.splice(clonedNodes.indexOf(clonedFlow), 1);
           return;
         }
-        clonedFlow.definition.set('sourceRef', [srcClone.definition]);
-        clonedFlow.definition.set('targetRef', targetClone);
-        clonedFlow.definition.sourceRef = srcClone.definition;
-        clonedFlow.definition.targetRef = targetClone.definition;
+        clonedFlow.definition.set('sourceRef', srcClone.definition);
+        clonedFlow.definition.set('targetRef', targetClone.definition);
 
         if (srcClone.definition.outgoing) {
           srcClone.definition.outgoing.push(clonedFlow.definition);
         } else {
-          srcClone.definition.outgoing = [clonedFlow.definition];
+          srcClone.definition.set('outgoing', [clonedFlow.definition]);
         }
 
         if (targetClone.definition.incoming) {
           targetClone.definition.incoming.push(clonedFlow.definition);
         } else {
-          targetClone.definition.incoming = [clonedFlow.definition];
+          targetClone.definition.set('incoming', [clonedFlow.definition]);
         }
 
         clonedFlow.diagram.waypoint.forEach(point => {
@@ -123,8 +121,8 @@ export default {
         const clonedElement = clonedNodes.find(node => node.cloneOf === originalTargetElement.id);
         const clonedDataInput = getOrFindDataInput(this.moddle, clonedElement, srcClone.definition);
 
-        clonedAssociation.definition.sourceRef = [srcClone.definition];
-        clonedAssociation.definition.targetRef = clonedDataInput;
+        clonedAssociation.definition.set('sourceRef', [srcClone.definition]);
+        clonedAssociation.definition.set('targetRef', clonedDataInput);
         clonedElement.definition.set('dataInputAssociations', [clonedAssociation.definition]);
       });
     },
