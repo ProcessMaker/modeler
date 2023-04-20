@@ -1,6 +1,6 @@
 import idConfigSettings from './idConfigSettings';
 
-export default {
+const process = {
   id: 'processmaker-modeler-process',
   bpmnType: 'bpmn:Process',
   control: false,
@@ -38,3 +38,7 @@ export default {
     },
   ],
 };
+
+export const id = process.id;
+
+export default process;

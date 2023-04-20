@@ -1,14 +1,16 @@
 export default {
   methods: {
     copyPasteHandler(event, options) {
+      const node = event.target.nodeName.toLowerCase();
+      const isBody = node === 'body';
       const key = event.key.toLowerCase();
       const isCopy = key === 'c';
       const isPaste = key === 'v';
 
-      if (isCopy && options.mod) {
+      if (isBody && isCopy && options.mod) {
         this.copy(event);
       }
-      if (isPaste && options.mod) {
+      if (isBody && isPaste && options.mod) {
         this.paste(event);
       }
     },
