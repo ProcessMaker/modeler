@@ -21,7 +21,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { getOrFindDataInput, removeDataInput } from '@/components/crown/utils';
+import { getOrFindDataInput, removeDataInput, findIOSpecificationOwner } from '@/components/crown/utils';
 import { pull } from 'lodash';
 
 export default {
@@ -98,13 +98,7 @@ export default {
       if (this.node.dataAssociationProps) {
         return this.node.dataAssociationProps.targetCoords;
       }
-
-      const taskWithInputAssociation = this.graph.getElements().find(element => {
-        return element.component && element.component.node.definition.get('dataInputAssociations') &&
-            element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
-      });
-
-      return taskWithInputAssociation.component.node.definition;
+      return findIOSpecificationOwner(this.node.definition.targetRef.$parent, this.$parent);
     },
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
