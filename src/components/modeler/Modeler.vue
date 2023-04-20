@@ -145,6 +145,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
@@ -329,6 +330,7 @@ export default {
         dataOutputAssociationFlowId,
         dataInputAssociationFlowId,
         genericFlowId,
+        processId,
       ];
       if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
       store.commit('setCopiedElements', this.cloneSelection());
