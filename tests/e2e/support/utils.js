@@ -39,13 +39,13 @@ export function getGraphElements() {
     .then(cells => cells.filter(cell => cell.component));
 }
 
-export function getElementAtPosition(position, componentType) {
+export function getElementAtPosition(position, componentType, offsetX = 0, offsetY = 0) {
   const paperGridSize = gridSize;
   const searchRectangle = {
     width: paperGridSize,
     height: paperGridSize,
-    x: position.x - paperGridSize / 2,
-    y: position.y - paperGridSize / 2,
+    x: position.x - paperGridSize / 2 + offsetX,
+    y: position.y - paperGridSize / 2 + offsetY,
   };
 
   return cy.window()
@@ -148,11 +148,13 @@ export function waitToRenderNodeUpdates() {
 }
 
 export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center') {
+  const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
   return getElementAtPosition(startPosition)
-    .click({ force: true })
+    .trigger('mousedown', mouseEvent, { force: true })
+    .trigger('mouseup', mouseEvent,  { force: true })
     .then($element => {
       return getCrownButtonForElement($element, flowType)
-        .click({ force: true });
+        .click();
     })
     .then(() => {
       getElementAtPosition(endPosition).then($endElement => {
@@ -400,4 +402,36 @@ export function getPeriodicityStringUSFormattedDate(date, time = false) {
     dateString += ' ' + timeString;
   }
   return dateString;
+}
+
+/**
+ * This method is responsible to enter inside component iframe
+ * @return iframe od documentation
+ */
+export function getIframeDocumentation() {
+  cy.get('[id="accordion-button-documentation-accordion"]').click();
+  const getIframeDocument = () => {
+    return cy
+      .get('iframe[id *= "documentation-editor"]')
+      .its('0.contentDocument').should('exist');
+  };
+  const getIframeBody = () => {
+    return getIframeDocument()
+      .its('body').should('not.be.undefined')
+      .then(cy.wrap);
+  };
+  return getIframeBody();
+}
+
+/**
+ * This method is responsible to change the component type of an element
+ * @param component: selector of the component
+ * @param type: component type, example: switch-to-signal-end-event
+ * @return nothing returns
+ */
+export function selectComponentType(component, type) {
+  cy.get(component).first().click({force:true});
+  cy.get('[data-test="select-type-dropdown"]').click();
+  cy.get('[data-test="'+type+'"]').click();
+  cy.get('[class="btn btn-primary"]').should('be.visible').click();
 }

@@ -34,7 +34,7 @@
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
           <b-button
             class="btn btn-sm btn-secondary"
-            @click="scale += scaleStep"
+            @click="paperManager.scale = paperManager.scale.sx + scaleStep"
             data-test="zoom-in"
             v-b-tooltip.hover
             :title="$t('Zoom In')"
@@ -43,7 +43,7 @@
           </b-button>
           <b-button
             class="btn btn-sm btn-secondary"
-            @click="scale = Math.max(minimumScale, scale -= scaleStep)"
+            @click="paperManager.scale = Math.max(minimumScale, paperManager.scale.sx -= scaleStep)"
             data-test="zoom-out"
             v-b-tooltip.hover
             :title="$t('Zoom Out')"
@@ -51,16 +51,17 @@
             <font-awesome-icon :icon="minusIcon" />
           </b-button>
           <b-button
+            v-if="paperManager"
             class="btn btn-sm btn-secondary"
-            @click="scale = initialScale"
-            :disabled="scale === initialScale"
+            @click="paperManager.scale = initialScale"
+            :disabled="paperManager.scale.sx === initialScale"
             data-test="zoom-reset"
             v-b-tooltip.hover
             :title="$t('Reset to initial scale')"
           >
             {{ $t('Reset') }}
           </b-button>
-          <span class="btn btn-sm btn-secondary scale-value">{{ Math.round(scale*100) }}%</span>
+          <span v-if="paperManager" class="btn btn-sm btn-secondary scale-value">{{ Math.round(paperManager.scale.sx*100) }}%</span>
         </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
@@ -84,23 +85,63 @@
             <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
           </b-button>
         </div>
-
-        <b-button
-          class="btn btn-sm btn-secondary mini-map-btn ml-auto"
-          data-test="mini-map-btn"
-          @click="$emit('saveBpmn')"
-          v-b-tooltip.hover
-          :title="$t('Save')"
-        >
-          <font-awesome-icon :icon="saveIcon" />
-        </b-button>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
+          <template v-if="isVersionsInstalled">
+            <div class="d-flex justify-content-center align-items-center text-black text-capitalize" :style="{ width: '65px' }">
+              <span class="toolbar-item mr-1" :style="{ fontWeight: 600 }">
+                {{ versionStatus }}
+              </span>
+            </div>
+            <div class="d-flex justify-content-center align-items-center text-black text-capitalize mx-2" :style="{ width: '60px' }">
+              <span class="toolbar-item mr-1" :style="{ fontWeight: 400 }">
+                {{ loadingStatus }}
+              </span>
+              <span>
+                <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
+              </span>
+            </div>
+            <a
+              class="btn btn-sm btn-primary autosave-btn text-uppercase mx-2"
+              data-test="publish-btn"
+              :title="$t('Publish')"
+              @click="$emit('saveBpmn')"
+            >
+              {{ $t('Publish') }}
+            </a>
+            <a
+              class="btn btn-sm btn-link toolbar-item autosave-btn text-black text-uppercase"
+              data-test="close-btn"
+              :title="$t('Close')"
+              @click="$emit('close')"
+            >
+              {{ $t('Close') }}
+            </a>
+            <EllipsisMenu
+              :actions="ellipsisMenuActions"
+              :divider="false"
+              @navigate="onNavigate"
+              @show="onShow"
+              @hide="onHide"
+            />
+          </template>
+          <b-button
+            v-else
+            class="btn btn-sm btn-secondary mini-map-btn mx-1"
+            data-test="mini-map-btn"
+            v-b-tooltip.hover
+            :title="$t('Save')"
+            @click="$emit('saveBpmn')"
+          >
+            <font-awesome-icon :icon="saveIcon" />
+          </b-button>
+        </div>
       </div>
     </div>
   </b-row>
 </template>
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
@@ -121,12 +162,6 @@ export default {
     panelsCompressed: Boolean,
   },
   watch: {
-    scale(scale) {
-      this.paperManager.scale = scale;
-      if (scale === this.initialScale) {
-        this.$root.$emit('bv::hide::tooltip');
-      }
-    },
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);
     },
@@ -148,6 +183,26 @@ export default {
     canRedo() {
       return undoRedoStore.getters.canRedo;
     },
+    saved() {
+      return undoRedoStore.getters.saved;
+    },
+    versionStatus() {
+      const status = undoRedoStore.getters.isDraft ? 'Draft' : 'Published';
+      return this.$t(status);
+    },
+    isVersionsInstalled() {
+      return undoRedoStore.getters.isVersionsInstalled;
+    },
+    isLoading() {
+      return undoRedoStore.getters.isLoading;
+    },
+    loadingStatus() {
+      const status = this.isLoading ? 'Saving' : 'Saved';
+      return this.$t(status);
+    },
+    loadingIcon() {
+      return this.isLoading ? this.spinner : this.savedIcon;
+    },
   },
   data() {
     return {
@@ -164,10 +219,20 @@ export default {
       undoIcon: faUndo,
       redoIcon: faRedo,
       saveIcon: faSave,
+      savedIcon: faCheckCircle,
+      spinner: faSpinner,
+      ellipsisMenuActions: [
+        {
+          value: 'discard-draft',
+          content: this.$t('Discard Draft'),
+          icon: '',
+        },
+      ],
     };
   },
   methods: {
     undo() {
+      this.$emit('clearSelection');
       if (this.isRendering) {
         return;
       }
@@ -177,6 +242,7 @@ export default {
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
     },
     redo() {
+      this.$emit('clearSelection');
       if (this.isRendering) {
         return;
       }
@@ -184,6 +250,27 @@ export default {
         .dispatch('redo')
         .then(() => this.$emit('load-xml'))
         .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
+    },
+    onNavigate(action) {
+      switch (action.value) {
+        case 'discard-draft':
+          window.ProcessMaker.EventBus.$emit('open-versions-discard-modal');
+          break;
+        default:
+          break;
+      }
+    },
+    onShow() {
+      const inspectorDiv = document.getElementById('inspector');
+      if (inspectorDiv) {
+        inspectorDiv.style.zIndex = '1';
+      }
+    },
+    onHide() {
+      const inspectorDiv = document.getElementById('inspector');
+      if (inspectorDiv) {
+        inspectorDiv.style.zIndex = '2';
+      }
     },
   },
 };

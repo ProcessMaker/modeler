@@ -35,6 +35,9 @@ export default new Vuex.Store({
     autoValidate: false,
     globalProcesses: [],
     allowSavingElementPosition: true,
+    copiedElements: [],
+    clientX: null,
+    clientY: null,
   },
   getters: {
     nodes: state => state.nodes,
@@ -52,6 +55,9 @@ export default new Vuex.Store({
     globalProcesses: state => state.globalProcesses,
     globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
     allowSavingElementPosition: state => state.allowSavingElementPosition,
+    copiedElements: state => state.copiedElements,
+    clientX: state => state.clientX,
+    clientY: state => state.clientY,
   },
   mutations: {
     preventSavingElementPosition(state) {
@@ -94,7 +100,18 @@ export default new Vuex.Store({
       state.highlightedNodes = node ? [node] : [];
     },
     addToHighlightedNodes(state, nodes) {
-      state.highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);
+      const highlightedNodes = uniq([...state.highlightedNodes, ...nodes]);
+      const selectedPoolsIds = highlightedNodes
+        .filter(node => node.type === 'processmaker-modeler-pool')
+        .map(node => node.id);
+      state.highlightedNodes = highlightedNodes
+        // remove from selection the selected child nodes in the pool
+        .filter(node => {
+          if (node.pool && node.pool.component.node.id) {
+            return !selectedPoolsIds.includes(node.pool.component.node.id);
+          }
+          return true;
+        });
     },
     addNode(state, node) {
       /* Add an unchanging ID that Vue can use to track the component
@@ -126,6 +143,18 @@ export default new Vuex.Store({
     },
     setGlobalProcesses(state, globalProcesses) {
       state.globalProcesses = globalProcesses;
+    },
+    // Copy Nodes to the clipboard or in this case, to the state
+    setCopiedElements(state, elements) {
+      state.copiedElements = elements;
+    },
+    setClientMousePosition(state, position) {
+      const { clientX, clientY } = position;
+      state = { clientX, clientY };
+    },
+    clientLeftPaper(state) {
+      state.clientX = null;
+      state.clientY = null;
     },
   },
   actions: {

@@ -19,3 +19,10 @@ export default {
   },
 };
 </script>
+<style lang="css" scoped>
+@media screen and (max-width: 1365px) {
+  #breadcrumbs {
+    width: 290px;
+  }
+}
+</style>
