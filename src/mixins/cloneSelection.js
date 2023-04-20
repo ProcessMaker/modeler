@@ -122,7 +122,7 @@ export default {
     connectClonedDataOutputAssociations(clonedDataOutputAssociations, clonedNodes) {
       clonedDataOutputAssociations.forEach(clonedAssociation => {
         const originalAssociation = this.nodes.find(node => node.definition.id === clonedAssociation.cloneOf);
-        const src = originalAssociation.definition.sourceRef;
+        const src = originalAssociation.definition.sourceRef || originalAssociation.definition.$parent;
         const target = originalAssociation.definition.targetRef;
         const srcClone = clonedNodes.find(node => node.cloneOf === src.id);
         const targetClone = clonedNodes.find(node => node.cloneOf === target.id);
