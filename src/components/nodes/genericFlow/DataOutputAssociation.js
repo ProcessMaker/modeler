@@ -65,11 +65,7 @@ export default class DataOutputAssociation extends DataAssociation {
     if (targetIsDataStore && dataStoreValidSources.includes(sourceType)) {
       return true;
     }
-    if (targetIsDataObject && dataObjectValidSources.includes(sourceType)) {
-      return true;
-    }
-
-    return false;
+    return (targetIsDataObject && dataObjectValidSources.includes(sourceType));
   }
 
   makeFlowNode(sourceShape, targetShape, genericLink) {

@@ -81,10 +81,7 @@ export default {
       if (sourceIsDataStore && dataStoreValidTargets.includes(targetType)) {
         return true;
       }
-      if (sourceIsDataObject && dataObjectValidTargets.includes(targetType)) {
-        return true;
-      }
-      return false;
+      return (sourceIsDataObject && dataObjectValidTargets.includes(targetType));
     },
   },
   methods: {
