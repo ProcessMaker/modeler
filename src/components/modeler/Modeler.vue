@@ -167,7 +167,6 @@ import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, remove
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
-import cloneSelection from '../../mixins/cloneSelection';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
@@ -191,7 +190,7 @@ export default {
       },
     },
   },
-  mixins: [hotkeys, cloneSelection],
+  mixins: [hotkeys],
   data() {
     return {
       internalClipboard: [],
@@ -342,6 +341,62 @@ export default {
         await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
         store.commit('setCopiedElements', this.cloneSelection());
       }
+    },
+    cloneSelection() {
+      let clonedNodes = [], clonedFlows = [];
+      const nodes = this.highlightedNodes;
+      const selector = this.$refs.selector.$el;
+      const { height: sheight } = selector.getBoundingClientRect();
+      if (typeof selector.getBoundingClientRect === 'function') {
+        // get selector height
+        nodes.forEach(node => {
+          // Check node type to clone
+          if ([
+            sequenceFlowId,
+            laneId,
+            associationId,
+            messageFlowId,
+            dataOutputAssociationFlowId,
+            dataInputAssociationFlowId,
+            genericFlowId,
+          ].includes(node.type)) {
+            // Add offset for all waypoints on cloned flow
+            const clonedFlow = node.cloneFlow(this.nodeRegistry, this.moddle, this.$t);
+            clonedFlow.setIds(this.nodeIdGenerator);
+            clonedFlows.push(clonedFlow);
+            clonedNodes.push(clonedFlow);
+          } else {
+            // Clone node and calculate offset
+            const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
+            const yOffset = sheight;
+            clonedNode.diagram.bounds.y += yOffset;
+            // Set cloned node id
+            clonedNode.setIds(this.nodeIdGenerator);
+            clonedNodes.push(clonedNode);
+          }
+        });
+      }
+      // Connect flows
+      clonedFlows.forEach(flow => {
+        // Look up the original flow
+        const flowClonedFrom = this.nodes.find(node => node.definition.id === flow.definition.cloneOf);
+        // Get the id's of the sourceRef and targetRef of original flow
+        const src = flowClonedFrom.definition.sourceRef;
+        const target = flowClonedFrom.definition.targetRef;
+        const srcClone = clonedNodes.find(node => node.definition.cloneOf === src.id);
+        const targetClone = clonedNodes.find(node => node.definition.cloneOf === target.id);
+        // Reference the elements to the flow that connects them
+        flow.definition.sourceRef = srcClone.definition;
+        flow.definition.targetRef = targetClone.definition;
+        // Reference the flow to the elements that are connected by it
+        srcClone.definition.outgoing ? srcClone.definition.outgoing.push(flow.definition) : srcClone.definition.outgoing = [flow.definition];
+        targetClone.definition.incoming ? targetClone.definition.incoming.push(flow.definition) : targetClone.definition.incoming = [flow.definition];
+        // Translate flow waypoints to where they should be
+        flow.diagram.waypoint.forEach(point => {
+          point.y += sheight;
+        });
+      });
+      return clonedNodes;
     },
     async duplicateSelection() {
       const clonedNodes = this.cloneSelection();

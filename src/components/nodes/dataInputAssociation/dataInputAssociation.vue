@@ -57,7 +57,7 @@ export default {
       }
 
       /* A data input association can be connected to anything that isn't a data store or object or a start event */
-      const invalidTarget = !this.targetNode.isBpmnType('bpmn:Task', 'bpmn:SubProcess', 'bpmn:CallActivity', 'bpmn:ManualTask', 'bpmn:ScriptTask', 'bpmn:ServiceTask');
+      const invalidTarget = this.targetNode.isBpmnType('bpmn:DataObjectReference', 'bpmn:DataStoreReference', 'bpmn:StartEvent');
 
       if (invalidTarget) {
         return false;
@@ -71,10 +71,17 @@ export default {
       if (this.node.dataAssociationProps) {
         return this.node.dataAssociationProps.sourceShape;
       }
-      const source = this.node.definition.sourceRef[0];
-      // find shape
-      const shape = this.graph.getElements().find(e=>e.component.node.definition === source);
-      return shape;
+
+      const taskWithInputAssociation = this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition.get('dataInputAssociations') &&
+            element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
+      });
+
+      const dataObjectDefinition = taskWithInputAssociation.component.node.definition.get('dataInputAssociations')[0].sourceRef[0];
+
+      return this.graph.getElements().find(element => {
+        return element.component && element.component.node.definition === dataObjectDefinition;
+      });
     },
     getTargetRef() {
       if (this.node.dataAssociationProps) {
@@ -95,7 +102,6 @@ export default {
       const targetShape = this.shape.getTargetElement();
       const dataInput = getOrFindDataInput(this.moddle, targetShape.component.node, this.sourceNode.definition);
       this.node.definition.set('targetRef', dataInput);
-      // @todo Review why this needs to be and array. When saving the BPMN, if this is not an array the sourceRef is not stored
       this.node.definition.set('sourceRef', [this.sourceNode.definition]);
       targetShape.component.node.definition.set('dataInputAssociations', [this.node.definition]);
     },
