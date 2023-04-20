@@ -71,17 +71,10 @@ export default {
       if (this.node.dataAssociationProps) {
         return this.node.dataAssociationProps.sourceShape;
       }
-
-      const taskWithInputAssociation = this.$parent.nodes.find(element => {
-        return element.definition.get('dataInputAssociations') &&
-            element.definition.get('dataInputAssociations')[0].definition === this.node.definition;
-      });
-
-      const dataObjectDefinition = taskWithInputAssociation.definition.get('dataInputAssociations')[0].definition.sourceRef[0];
-      return dataObjectDefinition;
-      // return this.$parent.nodes.find(element => {
-      //   return element.definition === dataObjectDefinition;
-      // });
+      const source = this.node.definition.sourceRef[0];
+      // find shape
+      const shape = this.graph.getElements().find(e=>e.component.node.definition === source);
+      return shape;
     },
     getTargetRef() {
       if (this.node.dataAssociationProps) {
