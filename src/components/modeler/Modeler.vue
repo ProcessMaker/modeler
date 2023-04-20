@@ -337,10 +337,11 @@ export default {
     },
     async pasteElements() {
       if (this.copiedElements) {
+        this.scrollToSelection();
         await this.addClonedNodes(this.copiedElements);
         await this.$nextTick();
         await this.paperManager.awaitScheduledUpdates();
-        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
         store.commit('setCopiedElements', this.cloneSelection());
       }
     },
@@ -349,11 +350,18 @@ export default {
       if (clonedNodes && clonedNodes.length === 0) {
         return;
       }
+      this.scrollToSelection();
       this.$refs.selector.clearSelection();
       await this.addClonedNodes(clonedNodes);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+      await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes), true);
+    },
+    scrollToSelection() {
+      const selector = this.$refs.selector.$el;
+      const { height } = selector.getBoundingClientRect();
+      const currentPosition = this.paper.translate();
+      this.paper.translate(currentPosition.tx, currentPosition.ty - height * 0.9);
     },
     findViewElementsFromNodes(nodes) {
       return nodes.map(node => {
