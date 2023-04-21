@@ -46,7 +46,6 @@ export default {
       if (event.code === 'Space') {
         this.isGrabbing = true;
         this.paperManager.addEventHandler('blank:pointermove', (event, x, y) => {
-          // console.log({ x: event.clientX, y: event.clientY });
           if (!this.canvasDragPosition) {
             const scale = this.paperManager.scale;
             this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
