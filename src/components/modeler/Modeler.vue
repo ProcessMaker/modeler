@@ -342,8 +342,9 @@ export default {
         await this.addClonedNodes(this.copiedElements);
         await this.$nextTick();
         await this.paperManager.awaitScheduledUpdates();
-        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
         store.commit('setCopiedElements', this.cloneSelection());
+        this.scrollToSelection();
       }
     },
     async duplicateSelection() {
@@ -355,7 +356,19 @@ export default {
       await this.addClonedNodes(clonedNodes);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+      await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+      this.scrollToSelection();
+    },
+    scrollToSelection() {
+      const containerRect = this.$refs['paper-container'].getBoundingClientRect();
+      const selector = this.$refs.selector;
+      const selectorRect = selector.$el.getBoundingClientRect();
+      // Scroll to the cloned elements only when they are not visible on the screen.
+      if (selectorRect.right > containerRect.right || selectorRect.bottom > containerRect.bottom || selectorRect.left < containerRect.left || selectorRect.top < containerRect.top) {
+        const currentPosition = this.paper.translate();
+        this.paper.translate(currentPosition.tx, currentPosition.ty - selectorRect.height);
+        selector.updateSelectionBox(true);
+      }
     },
     findViewElementsFromNodes(nodes) {
       return nodes.map(node => {
