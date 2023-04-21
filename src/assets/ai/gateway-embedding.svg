@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0.707107" y="9" width="11.7279" height="11.7279" transform="rotate(-45 0.707107 9)"
+    fill="white" stroke="#D9D9D9" />
+  <circle cx="9.00003" cy="5.46451" r="0.914214" fill="#D9D9D9" stroke="#D9D9D9" />
+  <circle cx="5.46451" cy="10.4142" r="0.914214" fill="#D9D9D9" stroke="#D9D9D9" />
+  <circle cx="9.00003" cy="10.4142" r="0.914214" fill="#D9D9D9" stroke="#D9D9D9" />
+  <circle cx="12.5356" cy="10.4142" r="0.914214" fill="#D9D9D9" stroke="#D9D9D9" />
+  <line x1="9.20343" y1="5.60979" x2="5.6679" y2="10.5595" stroke="#D9D9D9" stroke-width="0.5" />
+  <line x1="9.25" y1="5.46448" x2="9.25" y2="10.4142" stroke="#D9D9D9" stroke-width="0.5" />
+  <line x1="9.20343" y1="5.31917" x2="12.739" y2="10.2689" stroke="#D9D9D9" stroke-width="0.5" />
+</svg>
