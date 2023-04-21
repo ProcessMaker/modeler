@@ -366,7 +366,8 @@ export default {
       // Scroll to the cloned elements only when they are not visible on the screen.
       if (selectorRect.right > containerRect.right || selectorRect.bottom > containerRect.bottom || selectorRect.left < containerRect.left || selectorRect.top < containerRect.top) {
         const currentPosition = this.paper.translate();
-        this.paper.translate(currentPosition.tx, currentPosition.ty - selectorRect.height);
+        const newTy = currentPosition.ty - (selectorRect.top - containerRect.top - selectorRect.height);
+        this.paper.translate(currentPosition.tx, newTy);
         selector.updateSelectionBox(true);
       }
     },
