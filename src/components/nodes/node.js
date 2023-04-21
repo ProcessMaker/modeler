@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 export default class Node {
   static diagramPropertiesToCopy = ['x', 'y', 'width', 'height'];
-  static definitionPropertiesToNotCopy = ['$type', 'id', 'ioSpecification', 'dataOutputAssociations'];
+  static definitionPropertiesToNotCopy = ['$type', 'id', 'dataOutputAssociations'];
   static flowDefinitionPropertiesToNotCopy = ['$type', 'id', 'sourceRef', 'targetRef'];
   static eventDefinitionPropertiesToNotCopy = ['errorRef', 'messageRef'];
 
@@ -81,12 +81,68 @@ export default class Node {
       this.diagram.id = diagramId;
       this.diagram.bpmnElement = this.definition;
     }
-    // eslint-disable-next-line no-console
-    console.log(this.definition);
-    if (this.definition.loopCharacteristics) {
+    if (this.definition.loopCharacteristics && this.definition.loopCharacteristics.$type === 'bpmn:StandardLoopCharacteristics') {
       this.definition.loopCharacteristics.set('id', nodeIdGenerator.generate()[0]);
       if (this.definition.loopCharacteristics.loopCondition) {
         this.definition.loopCharacteristics.get('loopCondition').set('id', nodeIdGenerator.generate()[0]);
+      }
+    }
+    let dataInputRef, dataOutputRef;
+    if (this.definition.ioSpecification) {
+      this.definition.ioSpecification.set('id', nodeIdGenerator.generate()[0]);
+      const taskId = this.definition.id;
+      if (this.definition.ioSpecification.get('dataInputs')) {
+        this.definition.ioSpecification.get('dataInputs').forEach(dataInput => {
+          const id = dataInput.get('id');
+          if (id.substring(0, this.cloneOf.length) === this.cloneOf) {
+            dataInput.set('id', id.replace(this.cloneOf + '_', taskId + '_'));
+            dataInputRef = dataInput;
+          } else {
+            dataInput.set('id', nodeIdGenerator.generate()[0]);
+          }
+        });
+      }
+      if (this.definition.ioSpecification.get('dataOutputs')) {
+        this.definition.ioSpecification.get('dataOutputs').forEach(dataOutput => {
+          const id = dataOutput.get('id');
+          if (id.substring(0, this.cloneOf.length) === this.cloneOf) {
+            dataOutput.set('id', id.replace(this.cloneOf + '_', taskId + '_'));
+            dataOutputRef = dataOutput;
+          } else {
+            dataOutput.set('id', nodeIdGenerator.generate()[0]);
+          }
+        });
+      }
+      if (this.definition.ioSpecification.get('inputSets')) {
+        this.definition.ioSpecification.get('inputSets').forEach(inputSet => {
+          inputSet.set('id', nodeIdGenerator.generate()[0]);
+        });
+      }
+      if (this.definition.ioSpecification.get('outputSets')) {
+        this.definition.ioSpecification.get('outputSets').forEach(outputSet => {
+          outputSet.set('id', nodeIdGenerator.generate()[0]);
+        });
+      }
+    }
+    if (this.definition.loopCharacteristics && this.definition.loopCharacteristics.$type === 'bpmn:MultiInstanceLoopCharacteristics') {
+      this.definition.loopCharacteristics.set('id', nodeIdGenerator.generate()[0]);
+      if (this.definition.loopCharacteristics.loopCardinality) {
+        this.definition.loopCharacteristics.get('loopCardinality').set('id', nodeIdGenerator.generate()[0]);
+      }
+      if (this.definition.loopCharacteristics.loopDataInputRef && dataInputRef) {
+        this.definition.loopCharacteristics.set('loopDataInputRef', dataInputRef);
+      }
+      if (this.definition.loopCharacteristics.loopDataOutputRef && dataOutputRef) {
+        this.definition.loopCharacteristics.set('loopDataOutputRef', dataOutputRef);
+      }
+      if (this.definition.loopCharacteristics.inputDataItem) {
+        this.definition.loopCharacteristics.get('inputDataItem').set('id', nodeIdGenerator.generate()[0]);
+      }
+      if (this.definition.loopCharacteristics.outputDataItem) {
+        this.definition.loopCharacteristics.get('outputDataItem').set('id', nodeIdGenerator.generate()[0]);
+      }
+      if (this.definition.loopCharacteristics.completionCondition) {
+        this.definition.loopCharacteristics.get('completionCondition').set('id', nodeIdGenerator.generate()[0]);
       }
     }
   }
