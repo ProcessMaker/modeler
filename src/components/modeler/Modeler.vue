@@ -342,7 +342,7 @@ export default {
         await this.addClonedNodes(this.copiedElements);
         await this.$nextTick();
         await this.paperManager.awaitScheduledUpdates();
-        this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
+        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
         store.commit('setCopiedElements', this.cloneSelection());
       }
     },
@@ -355,7 +355,7 @@ export default {
       await this.addClonedNodes(clonedNodes);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+      await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
     },
     findViewElementsFromNodes(nodes) {
       return nodes.map(node => {
