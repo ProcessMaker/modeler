@@ -5,7 +5,7 @@ import { id as messageFlowId } from '../components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../components/nodes/dataInputAssociation/config';
 import { id as genericFlowId } from '../components/nodes/genericFlow/config';
-import { getOrFindDataInput } from '../components/crown/utils';
+import { getOrFindDataInput, findIOSpecificationOwner } from '../components/crown/utils';
 
 export default {
   methods: {
@@ -57,7 +57,12 @@ export default {
     // Returns the Flow Element (Task| DataStore| DataObject)  that is the target of the association
     getDataInputOutputAssociationTargetRef(association) {
       if (association.targetRef.$type === 'bpmn:DataInput') {
-        return association.targetRef.$parent.$parent;
+        const ioSpec = association.targetRef.$parent;
+        return findIOSpecificationOwner(ioSpec, this);
+      }
+      if (association.targetRef.$type === 'bpmn:DataInputAssociation') {
+        const ioSpec = association.targetRef.$parent;
+        return findIOSpecificationOwner(ioSpec, this);
       }
       return association.targetRef;
     },

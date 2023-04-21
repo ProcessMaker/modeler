@@ -21,7 +21,7 @@ import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import associationHead from '!!url-loader!@/assets/association-head.svg';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
-import { getOrFindDataInput, removeDataInput } from '@/components/crown/utils';
+import { getOrFindDataInput, removeDataInput, findIOSpecificationOwner } from '@/components/crown/utils';
 import { pull } from 'lodash';
 
 export default {
@@ -50,20 +50,38 @@ export default {
   },
   computed: {
     isValidConnection() {
-      const targetType = get(this.target, 'component.node.type');
+      const targetType = get(this.target, 'component.node.definition.$type');
 
       if (!targetType) {
         return false;
       }
 
-      /* A data input association can be connected to anything that isn't a data store or object or a start event */
-      const invalidTarget = !this.targetNode.isBpmnType('bpmn:Task', 'bpmn:SubProcess', 'bpmn:CallActivity', 'bpmn:ManualTask', 'bpmn:ScriptTask', 'bpmn:ServiceTask');
+      const dataStoreValidTargets = [
+        'bpmn:Task',
+        'bpmn:SubProcess',
+        'bpmn:CallActivity',
+        'bpmn:ManualTask',
+        'bpmn:ScriptTask',
+        'bpmn:ServiceTask',
+      ];
+      const dataObjectValidTargets = [
+        'bpmn:Task',
+        'bpmn:SubProcess',
+        'bpmn:CallActivity',
+        'bpmn:ManualTask',
+        'bpmn:ScriptTask',
+        'bpmn:ServiceTask',
+        'bpmn:IntermediateThrowEvent',
+        'bpmn:EndEvent',
+      ];
 
-      if (invalidTarget) {
-        return false;
+      const sourceIsDataStore = this.sourceNode.definition.$type === 'bpmn:DataStoreReference';
+      const sourceIsDataObject = this.sourceNode.definition.$type === 'bpmn:DataObjectReference';
+
+      if (sourceIsDataStore && dataStoreValidTargets.includes(targetType)) {
+        return true;
       }
-
-      return true;
+      return (sourceIsDataObject && dataObjectValidTargets.includes(targetType));
     },
   },
   methods: {
@@ -80,13 +98,7 @@ export default {
       if (this.node.dataAssociationProps) {
         return this.node.dataAssociationProps.targetCoords;
       }
-
-      const taskWithInputAssociation = this.graph.getElements().find(element => {
-        return element.component && element.component.node.definition.get('dataInputAssociations') &&
-            element.component.node.definition.get('dataInputAssociations')[0] === this.node.definition;
-      });
-
-      return taskWithInputAssociation.component.node.definition;
+      return findIOSpecificationOwner(this.node.definition.targetRef.$parent, this.$parent);
     },
     updateRouter() {
       this.shape.router('normal', { elementPadding: this.elementPadding });
@@ -123,6 +135,10 @@ export default {
     this.shape.component = this;
   },
   destroyed() {
+    // when a association was not completed this.targetNode will be undefined
+    if (!this.targetNode) {
+      return;
+    }
     removeDataInput(this.targetNode, this.sourceNode.definition);
     pull(this.targetNode.definition.get('dataInputAssociations'), this.node.definition);
   },
