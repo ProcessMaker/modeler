@@ -5,6 +5,11 @@ import moveShapeByKeypress from './moveWithArrowKeys';
 
 export default {
   mixins: [ZoomInOut, CopyPaste],
+  computed: {
+    clientLeftPaper() {
+      return store.getters.clientLeftPaper;
+    },
+  },
   mounted() {
     document.addEventListener('keydown', this.keydownListener);
     document.addEventListener('keyup', this.keyupListener);
@@ -41,11 +46,12 @@ export default {
       if (event.code === 'Space') {
         this.isGrabbing = true;
         this.paperManager.addEventHandler('blank:pointermove', (event, x, y) => {
+          // console.log({ x: event.clientX, y: event.clientY });
           if (!this.canvasDragPosition) {
             const scale = this.paperManager.scale;
             this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
           }
-          if (this.canvasDragPosition) {
+          if (this.canvasDragPosition && !this.clientLeftPaper) {
             this.paperManager.translate(
               event.offsetX - this.canvasDragPosition.x,
               event.offsetY - this.canvasDragPosition.y

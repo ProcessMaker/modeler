@@ -1222,14 +1222,17 @@ export default {
       this.pointerUpHandler(event, cellView);
     }, this);
 
+    this.$el.addEventListener('mouseenter', () => {
+      store.commit('setClientLeftPaper', false);
+    });
+
     this.$el.addEventListener('mousemove', event => {
-      const { clientX, clientY } = event;
       this.pointerMoveHandler(event);
-      store.commit('setClientMousePosition', { clientX, clientY });
     });
 
     this.$el.addEventListener('mouseleave', () => {
-      store.commit('clientLeftPaper');
+      this.paperManager.removeEventHandler('blank:pointermove');
+      store.commit('setClientLeftPaper', true);
     });
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
