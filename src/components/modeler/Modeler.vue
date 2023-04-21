@@ -346,6 +346,7 @@ export default {
           await this.$nextTick();
           await this.paperManager.awaitScheduledUpdates();
           await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
+          await this.$nextTick();
           await store.commit('setCopiedElements', this.cloneSelection());
           this.scrollToSelection();
         } finally {
