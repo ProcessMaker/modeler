@@ -195,6 +195,7 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      pasteInProgress: false,
       internalClipboard: [],
       tooltipTarget: null,
 
@@ -338,13 +339,19 @@ export default {
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
-      if (this.copiedElements) {
-        await this.addClonedNodes(this.copiedElements);
-        await this.$nextTick();
-        await this.paperManager.awaitScheduledUpdates();
-        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
-        store.commit('setCopiedElements', this.cloneSelection());
-        this.scrollToSelection();
+      if (this.copiedElements && !this.pasteInProgress) {
+        this.pasteInProgress = true;
+        try {
+          await this.addClonedNodes(this.copiedElements);
+          await this.$nextTick();
+          await this.paperManager.awaitScheduledUpdates();
+          await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
+          await this.$nextTick();
+          await store.commit('setCopiedElements', this.cloneSelection());
+          this.scrollToSelection();
+        } finally {
+          this.pasteInProgress = false;
+        }
       }
     },
     async duplicateSelection() {
