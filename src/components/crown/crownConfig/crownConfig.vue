@@ -140,7 +140,6 @@ export default {
       handler() {
         this.setNodeColor();
       },
-      deep: true,
     },
     highlightedShapes(shapes, prevShapes) {
       if (isEqual(shapes, prevShapes)) {

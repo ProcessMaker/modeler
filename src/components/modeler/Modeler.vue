@@ -139,7 +139,7 @@ import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
-import NodeIdGenerator from '../../NodeIdGenerator';
+import { getNodeIdGenerator } from '../../NodeIdGenerator';
 import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
@@ -795,7 +795,7 @@ export default {
     async loadXML(xml = this.currentXML) {
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
       this.xmlManager.definitions = this.definitions;
-      this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
+      this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
       this.renderPaper();
     },

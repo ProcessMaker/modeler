@@ -166,7 +166,7 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   }
   inputSet = task.definition.ioSpecification.inputSets[0];
   // Check if dataInputRef exists
-  const dataInputRef = inputSet.dataInputRefs.find(ref => ref.id === dataInputId);
+  const dataInputRef = inputSet.get('dataInputRefs').find(ref => ref.id === dataInputId);
   if (!dataInputRef) {
     inputSet.dataInputRefs.push(dataInput);
   }

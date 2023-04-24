@@ -115,6 +115,9 @@ export default {
         },
         loopMaximum: 0,
         loopCondition: null,
+        ioSpecification: {
+          dataInputs: [],
+        },
       },
       loopType: null,
       multiType: null,
@@ -218,7 +221,7 @@ export default {
     },
     getLoopDataOutputRef() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataOutputRef) return null;
-      return this.local.ioSpecification.dataOutputs[0].name;
+      return this.local.ioSpecification?.dataOutputs[0].name;
     },
     setLoopDataOutputRef(value) {
       if (!this.local.ioSpecification) {
@@ -252,7 +255,7 @@ export default {
     },
     getLoopDataInputRef() {
       if (!this.local.loopCharacteristics || !this.local.loopCharacteristics.loopDataInputRef) return null;
-      return this.local.ioSpecification.dataInputs[0].name;
+      return this.local.ioSpecification?.dataInputs[0].name;
     },
     setLoopDataInputRef(value) {
       const dataDef = {
