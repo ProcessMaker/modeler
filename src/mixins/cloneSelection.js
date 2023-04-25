@@ -5,7 +5,7 @@ import { id as messageFlowId } from '../components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../components/nodes/dataInputAssociation/config';
 import { id as genericFlowId } from '../components/nodes/genericFlow/config';
-import { getOrFindDataInput } from '../components/crown/utils';
+import { getOrFindDataInput, findIOSpecificationOwner } from '../components/crown/utils';
 
 export default {
   methods: {
@@ -57,7 +57,12 @@ export default {
     // Returns the Flow Element (Task| DataStore| DataObject)  that is the target of the association
     getDataInputOutputAssociationTargetRef(association) {
       if (association.targetRef.$type === 'bpmn:DataInput') {
-        return association.targetRef.$parent.$parent;
+        const ioSpec = association.targetRef.$parent;
+        return findIOSpecificationOwner(ioSpec, this);
+      }
+      if (association.targetRef.$type === 'bpmn:DataInputAssociation') {
+        const ioSpec = association.targetRef.$parent;
+        return findIOSpecificationOwner(ioSpec, this);
       }
       return association.targetRef;
     },
@@ -82,21 +87,23 @@ export default {
         const target = originalFlow.definition.targetRef;
         const srcClone = clonedNodes.find(node => node.cloneOf === src.id);
         const targetClone = clonedNodes.find(node => node.cloneOf === target.id);
-        clonedFlow.definition.set('sourceRef', [srcClone.definition]);
-        clonedFlow.definition.set('targetRef', targetClone);
-        clonedFlow.definition.sourceRef = srcClone.definition;
-        clonedFlow.definition.targetRef = targetClone.definition;
+        if (!srcClone || !targetClone) {
+          clonedNodes.splice(clonedNodes.indexOf(clonedFlow), 1);
+          return;
+        }
+        clonedFlow.definition.set('sourceRef', srcClone.definition);
+        clonedFlow.definition.set('targetRef', targetClone.definition);
 
         if (srcClone.definition.outgoing) {
           srcClone.definition.outgoing.push(clonedFlow.definition);
         } else {
-          srcClone.definition.outgoing = [clonedFlow.definition];
+          srcClone.definition.set('outgoing', [clonedFlow.definition]);
         }
 
         if (targetClone.definition.incoming) {
           targetClone.definition.incoming.push(clonedFlow.definition);
         } else {
-          targetClone.definition.incoming = [clonedFlow.definition];
+          targetClone.definition.set('incoming', [clonedFlow.definition]);
         }
 
         clonedFlow.diagram.waypoint.forEach(point => {
@@ -114,15 +121,15 @@ export default {
         const clonedElement = clonedNodes.find(node => node.cloneOf === originalTargetElement.id);
         const clonedDataInput = getOrFindDataInput(this.moddle, clonedElement, srcClone.definition);
 
-        clonedAssociation.definition.sourceRef = [srcClone.definition];
-        clonedAssociation.definition.targetRef = clonedDataInput;
+        clonedAssociation.definition.set('sourceRef', [srcClone.definition]);
+        clonedAssociation.definition.set('targetRef', clonedDataInput);
         clonedElement.definition.set('dataInputAssociations', [clonedAssociation.definition]);
       });
     },
     connectClonedDataOutputAssociations(clonedDataOutputAssociations, clonedNodes) {
       clonedDataOutputAssociations.forEach(clonedAssociation => {
         const originalAssociation = this.nodes.find(node => node.definition.id === clonedAssociation.cloneOf);
-        const src = originalAssociation.definition.sourceRef;
+        const src = originalAssociation.definition.sourceRef || originalAssociation.definition.$parent;
         const target = originalAssociation.definition.targetRef;
         const srcClone = clonedNodes.find(node => node.cloneOf === src.id);
         const targetClone = clonedNodes.find(node => node.cloneOf === target.id);

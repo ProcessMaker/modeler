@@ -139,12 +139,13 @@ import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
-import NodeIdGenerator from '../../NodeIdGenerator';
+import { getNodeIdGenerator } from '../../NodeIdGenerator';
 import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
 import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '@/components/nodes/poolLane/config';
+import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
@@ -194,6 +195,7 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      pasteInProgress: false,
       internalClipboard: [],
       tooltipTarget: null,
 
@@ -330,25 +332,51 @@ export default {
         dataOutputAssociationFlowId,
         dataInputAssociationFlowId,
         genericFlowId,
+        processId,
       ];
       if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
       store.commit('setCopiedElements', this.cloneSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
-      if (this.copiedElements) {
-        await this.addClonedNodes(this.copiedElements);
-        await this.paperManager.awaitScheduledUpdates();
-        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements));
-        store.commit('setCopiedElements', this.cloneSelection());
+      if (this.copiedElements && !this.pasteInProgress) {
+        this.pasteInProgress = true;
+        try {
+          await this.addClonedNodes(this.copiedElements);
+          await this.$nextTick();
+          await this.paperManager.awaitScheduledUpdates();
+          await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
+          await this.$nextTick();
+          await store.commit('setCopiedElements', this.cloneSelection());
+          this.scrollToSelection();
+        } finally {
+          this.pasteInProgress = false;
+        }
       }
     },
     async duplicateSelection() {
       const clonedNodes = this.cloneSelection();
+      if (clonedNodes && clonedNodes.length === 0) {
+        return;
+      }
+      this.$refs.selector.clearSelection();
       await this.addClonedNodes(clonedNodes);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+      await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+      this.scrollToSelection();
+    },
+    scrollToSelection() {
+      const containerRect = this.$refs['paper-container'].getBoundingClientRect();
+      const selector = this.$refs.selector;
+      const selectorRect = selector.$el.getBoundingClientRect();
+      // Scroll to the cloned elements only when they are not visible on the screen.
+      if (selectorRect.right > containerRect.right || selectorRect.bottom > containerRect.bottom || selectorRect.left < containerRect.left || selectorRect.top < containerRect.top) {
+        const currentPosition = this.paper.translate();
+        const newTy = currentPosition.ty - (selectorRect.top - containerRect.top - selectorRect.height);
+        this.paper.translate(currentPosition.tx, newTy);
+        selector.updateSelectionBox(true);
+      }
     },
     findViewElementsFromNodes(nodes) {
       return nodes.map(node => {
@@ -768,7 +796,7 @@ export default {
     async loadXML(xml = this.currentXML) {
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
       this.xmlManager.definitions = this.definitions;
-      this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
+      this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
       this.renderPaper();
     },
@@ -1215,14 +1243,17 @@ export default {
       this.pointerUpHandler(event, cellView);
     }, this);
 
+    this.$el.addEventListener('mouseenter', () => {
+      store.commit('setClientLeftPaper', false);
+    });
+
     this.$el.addEventListener('mousemove', event => {
-      const { clientX, clientY } = event;
       this.pointerMoveHandler(event);
-      store.commit('setClientMousePosition', { clientX, clientY });
     });
 
     this.$el.addEventListener('mouseleave', () => {
-      store.commit('clientLeftPaper');
+      this.paperManager.removeEventHandler('blank:pointermove');
+      store.commit('setClientLeftPaper', true);
     });
 
     this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {

@@ -166,13 +166,22 @@ export function getOrFindDataInput(moddle, task, sourceNode) {
   }
   inputSet = task.definition.ioSpecification.inputSets[0];
   // Check if dataInputRef exists
-  const dataInputRef = inputSet.dataInputRefs.find(ref => ref.id === dataInputId);
+  const dataInputRef = inputSet.get('dataInputRefs').find(ref => ref.id === dataInputId);
   if (!dataInputRef) {
     inputSet.dataInputRefs.push(dataInput);
   }
   return dataInput;
 }
 
+export function findIOSpecificationOwner(ioSpec, modeler) {
+  const owner = ioSpec.$parent;
+  if (!owner) {
+    return modeler.nodes.find(node => node.definition.ioSpecification === ioSpec ||
+      node.definition.ioSpecification?.id === ioSpec.id
+    )?.definition;
+  }
+  return owner;
+}
 
 export function removeDataInput(task, sourceNode) {
   if (sourceNode.$type !== 'bpmn:DataObjectReference' && sourceNode.$type !== 'bpmn:DataStoreReference') {

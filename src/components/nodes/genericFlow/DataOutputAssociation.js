@@ -12,8 +12,60 @@ export default class DataOutputAssociation extends DataAssociation {
       return false;
     }
 
-    return DataAssociation.isADataNode(targetNode) &&
-      DataOutputAssociation.isValidSourceNode(sourceNode);
+    const dataStoreValidSources = [
+      'bpmn:Task',
+      'bpmn:SubProcess',
+      'bpmn:CallActivity',
+      'bpmn:ManualTask',
+      'bpmn:ScriptTask',
+      'bpmn:ServiceTask',
+    ];
+    const dataStoreValidTargets = [
+      'bpmn:Task',
+      'bpmn:SubProcess',
+      'bpmn:CallActivity',
+      'bpmn:ManualTask',
+      'bpmn:ScriptTask',
+      'bpmn:ServiceTask',
+    ];
+    const dataObjectValidSources = [
+      'bpmn:Task',
+      'bpmn:SubProcess',
+      'bpmn:CallActivity',
+      'bpmn:ManualTask',
+      'bpmn:ScriptTask',
+      'bpmn:ServiceTask',
+      'bpmn:IntermediateCatchEvent',
+      'bpmn:StartEvent',
+    ];
+    const dataObjectValidTargets = [
+      'bpmn:Task',
+      'bpmn:SubProcess',
+      'bpmn:CallActivity',
+      'bpmn:ManualTask',
+      'bpmn:ScriptTask',
+      'bpmn:ServiceTask',
+      'bpmn:IntermediateThrowEvent',
+      'bpmn:EndEvent',
+    ];
+
+    const sourceType = sourceNode.definition.$type;
+    const targetType = targetNode.definition.$type;
+    const sourceIsDataStore = sourceNode.definition.$type === 'bpmn:DataStoreReference';
+    const sourceIsDataObject = sourceNode.definition.$type === 'bpmn:DataObjectReference';
+    const targetIsDataStore = targetNode.definition.$type === 'bpmn:DataStoreReference';
+    const targetIsDataObject = targetNode.definition.$type === 'bpmn:DataObjectReference';
+    
+    if (sourceIsDataStore && dataStoreValidTargets.includes(targetType)) {
+      return true;
+    }
+    if (sourceIsDataObject && dataObjectValidTargets.includes(targetType)) {
+      return true;
+    }
+    if (targetIsDataStore && dataStoreValidSources.includes(sourceType)) {
+      return true;
+    }
+    return (targetIsDataObject && dataObjectValidSources.includes(sourceType));
   }
 
   makeFlowNode(sourceShape, targetShape, genericLink) {
