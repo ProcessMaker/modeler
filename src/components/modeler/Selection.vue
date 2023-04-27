@@ -16,6 +16,7 @@
       :plane-elements="$parent.planeElements"
       :is-rendering="$parent.isRendering"
       :dropdown-data="[]"
+      :has-pools="hasPoolsOrLanesSelected"
       v-on="$listeners"
     />
   </div>
@@ -83,6 +84,14 @@ export default {
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
+  },
+  computed: {
+    hasPoolsOrLanesSelected() {
+      return this.selected.some((view) => {
+        return view.model.component.node.type === poolId ||
+        view.model.component.node.type === laneId;
+      });
+    },
   },
   watch: {
     // whenever selected changes
