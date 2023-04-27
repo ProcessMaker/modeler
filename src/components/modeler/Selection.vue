@@ -28,6 +28,13 @@ import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultisele
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
+
+import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
+import { id as associationId } from '@/components/nodes/association';
+import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
+import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
+import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
+
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 
 export default {
@@ -333,6 +340,13 @@ export default {
      * Filter the selected elements
      */
     filterSelected() {
+      const flowTypes = [
+        sequenceFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        associationId,
+        messageFlowId,
+      ];
       // Get the selected pools IDs
       const selectedPoolsIds = this.selected
         .filter(shape => shape.model.component)
@@ -342,6 +356,11 @@ export default {
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
+        }
+        // remove from selection the selected flows that belongs to a selected pools
+        if (shape.model.component && shape.model.component.node && flowTypes.includes(shape.model.component.node.type)) {
+          const parent = shape.model.getParentCell();
+          return parent && parent.component.node.pool && !selectedPoolsIds.includes(parent.component.node.pool.component.node.id);
         }
         return true;
       });
