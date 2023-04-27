@@ -63,7 +63,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         :compressed="panelsCompressed && noElementsSelected"
-        @shape-resize="shapeResize"
+        @shape-resize="shapeResize(false)"
       />
 
       <component
@@ -306,10 +306,10 @@ export default {
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
     },
-    async shapeResize() {
+    async shapeResize(clearIfEmpty=true) {
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.updateSelectionBox(true);
+      this.$refs.selector.updateSelectionBox(true, clearIfEmpty);
     },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
