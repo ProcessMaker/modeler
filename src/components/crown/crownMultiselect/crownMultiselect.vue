@@ -42,7 +42,7 @@ export default {
       nodeToReplace: null,
       buttons: [
         {
-          label: 'Copy Seletion',
+          label: 'Copy Selection',
           icon: 'clipboard',
           testId: 'copy-button',
           role: 'menuitem',

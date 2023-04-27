@@ -1,9 +1,9 @@
 <template>
   <crown-button
     v-if="node.isBpmnType(...validCopyElements)"
-    :title="$t('Clone element')"
+    :title="$t('Clone Element')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
-    aria-label="Clone element"
+    aria-label="Clone Element"
     data-test="clone-button"
     role="menuitem"
     @click="cloneElement"
