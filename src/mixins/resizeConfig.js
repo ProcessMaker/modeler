@@ -1,5 +1,5 @@
 import { shapes } from 'jointjs';
-import resizeIcon from '@/assets/highlight-shape.svg';
+import resizeIcon from '@/assets/highlight-shape.svg?url';
 import { labelWidth, minPoolHeight, minPoolWidth, poolPadding } from '@/components/nodes/pool/poolSizes';
 import { minLaneHeight, minLaneWidth } from '@/components/nodes/poolLane/laneSizes';
 import get from 'lodash/get';

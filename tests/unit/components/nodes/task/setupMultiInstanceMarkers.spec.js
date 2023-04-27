@@ -1,7 +1,7 @@
 import setupMultiInstanceMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
-import sequentialIcon from '@/assets/sequential.svg';
-import parallelIcon from '@/assets/parallel.svg';
-import loopIcon from '@/assets/loop.svg';
+import sequentialIcon from '@/assets/sequential.svg?url';
+import parallelIcon from '@/assets/parallel.svg?url';
+import loopIcon from '@/assets/loop.svg?url';
 
 describe('setupMultiInstanceMarkers', () => {
   let $set = jest.fn();

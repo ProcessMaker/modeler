@@ -2,6 +2,7 @@ import {
   task,
 } from '@/components/nodes';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import icon from '@/assets/toolpanel/task.svg?url';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
@@ -19,7 +20,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     bpmnType: 'bpmn:ScriptTask',
     control: true,
     category: 'Other',
-    icon: require('@/assets/toolpanel/task.svg'),
+    icon,
     label: 'Script',
     definition(moddle) {
       return moddle.create('bpmn:ScriptTask', {

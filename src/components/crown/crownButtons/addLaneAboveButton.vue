@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import laneAboveIcon from '@/assets/lane-above.svg';
+import laneAboveIcon from '@/assets/lane-above.svg?url';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 
 export default {

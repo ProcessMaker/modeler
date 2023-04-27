@@ -1,6 +1,7 @@
 import component from './textAnnotation.vue';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import icon from '@/assets/toolpanel/text-annotation.svg?url';
 
 export const id = 'processmaker-modeler-text-annotation';
 
@@ -10,7 +11,7 @@ export default {
   bpmnType: 'bpmn:TextAnnotation',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/text-annotation.svg'),
+  icon,
   label: 'Text Annotation',
   rank: 70,
   definition(moddle, $t) {

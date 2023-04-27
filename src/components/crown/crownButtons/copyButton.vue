@@ -18,7 +18,7 @@
 
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import copyIcon from '@/assets/clipboard.svg';
+import copyIcon from '@/assets/clipboard.svg?url';
 import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 
 export default {

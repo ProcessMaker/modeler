@@ -9,14 +9,17 @@ import * as VueDeepSet from 'vue-deepset';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import ScreenBuilder from '@processmaker/screen-builder';
-import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import Multiselect from '@processmaker/vue-multiselect';
+import './polyfills.js'
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);
 Vue.use(VueI18Next);
 Vue.use(ScreenBuilder);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('Multiselect', Multiselect);
 
 Vue.config.productionTip = false;

@@ -1,5 +1,5 @@
 <script>
-import startMailSymbol from '@/assets/start-event-mail.svg';
+import startMailSymbol from '@/assets/start-event-mail.svg?raw';
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
 
 export default {

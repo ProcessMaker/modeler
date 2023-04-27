@@ -1,6 +1,6 @@
-import sequentialIcon from '@/assets/sequential.svg';
-import parallelIcon from '@/assets/parallel.svg';
-import loopIcon from '@/assets/loop.svg';
+import sequentialIcon from '@/assets/sequential.svg?url';
+import parallelIcon from '@/assets/parallel.svg?url';
+import loopIcon from '@/assets/loop.svg?url';
 
 const standardLoop = 'bpmn:StandardLoopCharacteristics';
 const multiInstanceLoop = 'bpmn:MultiInstanceLoopCharacteristics';

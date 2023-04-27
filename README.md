@@ -4,20 +4,21 @@
 
 `@processmaker/modeler` is a Vue.js based BPMN modeler scaffolded using [Vue CLI 3](https://cli.vuejs.org/).
 
-- [Project setup](#project-setup)
-- [Testing](#testing)
-- [Architecture](#architecture)
-  - [Global event bus](#global-event-bus)
-    - [`modeler-init`](#modeler-init)
-    - [`modeler-start`](#modeler-start)
-    - [`modeler-validate`](#modeler-validate)
-    - [`modeler-change`](#modeler-change)
-  - [Undo/redo store](#undoredo-store)
-  - [Validation](#validation)
-    - [Adding a new lint rule](#adding-a-new-lint-rule)
-    - [Adding validation rules during runtime](#adding-validation-rules-during-runtime)
-- [Examples](#examples)
-  - [Adding a new component](#adding-a-new-component)
+- [ProcessMaker BPMN modeler](#processmaker-bpmn-modeler)
+  - [Project setup](#project-setup)
+  - [Testing](#testing)
+  - [Architecture](#architecture)
+    - [Global event bus](#global-event-bus)
+      - [`modeler-init`](#modeler-init)
+      - [`modeler-start`](#modeler-start)
+      - [`modeler-validate`](#modeler-validate)
+      - [`modeler-change`](#modeler-change)
+    - [Undo/redo store](#undoredo-store)
+    - [Validation](#validation)
+      - [Adding a new lint rule](#adding-a-new-lint-rule)
+      - [Adding validation rules during runtime](#adding-validation-rules-during-runtime)
+  - [Examples](#examples)
+    - [Adding a new component](#adding-a-new-component)
 
 ## Project setup
 
@@ -43,7 +44,7 @@ npm run lint
 
 ## Testing
 
-Unit tests are set up using jest and end-to-end tests are set up using Cypress. Unit and end-to-end tests can be run separately or together. Code coverage is collected for both types of tests and combined into a single coverage report for the entire project. 
+Unit tests are set up using jest and end-to-end tests are set up using Cypress. Unit and end-to-end tests can be run separately or together. Code coverage is collected for both types of tests and combined into a single coverage report for the entire project.
 
 Tests can be run locally with the following commands:
 
@@ -201,6 +202,7 @@ First, create your component config, and save it in a `.js` file:
 
 ```javascript
 // CustomComponentConfig.js
+import icon from '@/assets/toolpanel/scriptTask.svg';
 
 export default {
   // A unique ID that will be used to identify your component
@@ -220,7 +222,7 @@ export default {
   category: 'BPMN',
 
   // The icon representing the component in the controls panel
-  icon: require('@/assets/toolpanel/scriptTask.svg'),
+  icon,
 
   // The label for the component in the controls panel
   label: 'Script Task',
@@ -250,7 +252,7 @@ export default {
     {
       name: 'CustomComponent',
       items: [
-        // Each item corresponds to a form element. 
+        // Each item corresponds to a form element.
         {
           // Component can be a custom Vue component or a reference to a form component from @processmaker/vue-form-elements
           component: 'FormText',

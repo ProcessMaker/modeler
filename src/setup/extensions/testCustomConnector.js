@@ -1,6 +1,7 @@
 import Task from '@/components/nodes/task/task';
-import testIcon from '@/assets/connect-artifacts.svg';
+import testIcon from '@/assets/connect-artifacts.svg?url';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
+import icon from '@/assets/toolpanel/task.svg?url';
 
 window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
   /* Add a custom node example */
@@ -21,7 +22,7 @@ window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode }) => {
     bpmnType: 'bpmn:ServiceTask',
     control: true,
     category: 'Social',
-    icon: require('@/assets/toolpanel/task.svg'),
+    icon,
     label: 'Test',
     implementation,
     definition(moddle) {

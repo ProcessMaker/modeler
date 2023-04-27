@@ -4,21 +4,32 @@ import svgLoader from 'vite-svg-loader';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import bpmnlint from 'rollup-plugin-bpmnlint';
 
-
 import { resolve } from 'path';
 
 const libraryName = 'modeler';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [createVuePlugin(), svgLoader(), ViteYaml(), bpmnlint({
-    include: '**/.bpmnlintrc',
-  })],
+  plugins: [
+    createVuePlugin(),
+    svgLoader(),
+    ViteYaml(),
+    bpmnlint({
+      include: '**/.bpmnlintrc',
+    }),
+  ],
+  define: {
+    'process.env': process.env,
+  },
   resolve: {
     alias: [
       {
         find: '@',
         replacement: resolve(__dirname, 'src'),
+      },
+      {
+        find: 'vue',
+        replacement: 'vue/dist/vue.esm.js',
       },
     ],
     extensions: ['.js', '.mjs', '.vue', '.json'],

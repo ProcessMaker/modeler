@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import { id } from './config';
+import icon from '@/assets/toolpanel/pool.svg?url';
 
 
 export default {
@@ -11,7 +12,7 @@ export default {
   bpmnType: 'bpmn:Participant',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/pool.svg'),
+  icon,
   label: 'Pool',
   rank: 60,
   definition(moddle, $t) {

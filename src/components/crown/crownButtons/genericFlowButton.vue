@@ -15,7 +15,7 @@
   </crown-button>
 </template>
 <script>
-import Flow from '@/assets/connect-elements.svg';
+import Flow from '@/assets/connect-elements.svg?url';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';

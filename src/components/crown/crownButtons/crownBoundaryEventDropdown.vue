@@ -36,7 +36,7 @@
 </template>
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import boundaryEventIcon from '@/assets/boundary-event.svg';
+import boundaryEventIcon from '@/assets/boundary-event.svg?url';
 import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 import store from '@/store';

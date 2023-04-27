@@ -42,7 +42,7 @@ import {
   FormSelect,
   FormTextArea,
 } from '@processmaker/vue-form-elements';
-import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
+// import '@processmaker/vue-form-elements/dist/vue-form-elements.css';
 import store from '@/store';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
 import noop from 'lodash/noop';

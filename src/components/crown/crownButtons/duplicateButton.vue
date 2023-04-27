@@ -13,12 +13,12 @@
       aria-hidden="true"
     >
   </crown-button>
-  
+
 </template>
 
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import duplicateIcon from '@/assets/copy-regular.svg';
+import duplicateIcon from '@/assets/copy-regular.svg?url';
 import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 
 export default {

@@ -140,7 +140,6 @@
   </b-row>
 </template>
 <script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
@@ -148,7 +147,7 @@ import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
+  components: { Breadcrumb, AlignButtons },
   props: {
     canvasDragPosition: {},
     cursor: {},

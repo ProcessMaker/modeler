@@ -1,6 +1,6 @@
 <script>
 import GatewayComponent from '@/components/nodes/gateway/gateway';
-import eventBasedSymbol from '@/assets/event-based-gateway-symbol.svg';
+import eventBasedSymbol from '@/assets/event-based-gateway-symbol.svg?raw';
 import updateIconColor from '@/mixins/updateIconColor';
 
 

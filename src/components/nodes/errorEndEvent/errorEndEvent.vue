@@ -1,6 +1,6 @@
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-import errorIcon from '@/assets/error.svg';
+import errorIcon from '@/assets/error.svg?raw';
 import pull from 'lodash/pull';
 import updateIconColor from '@/mixins/updateIconColor';
 

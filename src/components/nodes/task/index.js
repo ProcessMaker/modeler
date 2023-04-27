@@ -7,6 +7,7 @@ import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteri
 import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
+import icon from '@/assets/toolpanel/task.svg?url';
 
 export const id = 'processmaker-modeler-task';
 
@@ -17,7 +18,7 @@ export default {
   control: true,
   category: 'BPMN',
   rank: 40,
-  icon: require('@/assets/toolpanel/task.svg'),
+  icon,
   label: 'Task',
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {

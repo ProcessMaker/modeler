@@ -4,6 +4,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import icon from '@/assets/toolpanel/generic-intermediate-event.svg?url';
 
 export const defaultDurationValue = 'PT1H';
 const id = 'processmaker-modeler-intermediate-catch-timer-event';
@@ -14,7 +15,7 @@ export default {
   bpmnType: 'bpmn:IntermediateCatchEvent',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/generic-intermediate-event.svg'),
+  icon,
   label: 'Intermediate Event',
   rank: 20,
   definition(moddle, $t) {

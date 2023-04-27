@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import icon from '@/assets/toolpanel/manualTask.svg?url';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-manual-task';
@@ -13,7 +14,7 @@ export default {
   bpmnType: 'bpmn:ManualTask',
   control: false,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/manualTask.svg'),
+  icon,
   label: defaultNames[id],
   loopInspectorIndex: 1,
   definition(moddle, $t) {

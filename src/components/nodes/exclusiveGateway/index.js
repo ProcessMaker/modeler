@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
+import icon from '@/assets/toolpanel/generic-gateway.svg?url';
 
 const id = 'processmaker-modeler-exclusive-gateway';
 
@@ -12,7 +13,7 @@ export default {
   bpmnType: 'bpmn:ExclusiveGateway',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/generic-gateway.svg'),
+  icon,
   label: 'Gateway',
   rank: 50,
   definition(moddle, $t) {

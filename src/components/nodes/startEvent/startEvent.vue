@@ -1,6 +1,6 @@
 <script>
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
-import webEntryIcon from '@/assets/webentry.svg';
+import webEntryIcon from '@/assets/webentry.svg?raw';
 import coloredIcon from '@/components/iconColors';
 
 function isWebEntryEnabled(config) {

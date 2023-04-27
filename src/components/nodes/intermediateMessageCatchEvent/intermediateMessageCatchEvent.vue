@@ -1,7 +1,7 @@
 <script>
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
 import getIntermediateMailIconShapeAttributes from '@/mixins/intermediateMailIcon';
-import intermediateMailSymbol from '@/assets/intermediate-mail.svg';
+import intermediateMailSymbol from '@/assets/intermediate-mail.svg?raw';
 import { intermediateColor, intermediateColorStroke } from '@/components/nodeColors';
 import updateIconColor from '@/mixins/updateIconColor';
 
