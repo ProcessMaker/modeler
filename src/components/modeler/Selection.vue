@@ -356,9 +356,11 @@ export default {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
         }
         // remove from selection the selected flows that belongs to a selected pools
-        if (shape.model.component && shape.model.component.node && flowTypes.includes(shape.model.component.node.type)) {
+        if (shape.model.component  && flowTypes.includes(shape.model.component.node.type)) {
           const parent = shape.model.getParentCell();
-          return parent && parent.component.node.pool && !selectedPoolsIds.includes(parent.component.node.pool.component.node.id);
+          if (parent.component && parent.component.node.pool) {
+            return !selectedPoolsIds.includes(parent.component.node.pool.component.node.id);
+          }
         }
         return true;
       });
