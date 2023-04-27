@@ -339,7 +339,7 @@ export default {
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
-      if (this.copiedElements && !this.pasteInProgress) {
+      if (this.copiedElements.length > 0 && !this.pasteInProgress) {
         this.pasteInProgress = true;
         try {
           await this.addClonedNodes(this.copiedElements);
