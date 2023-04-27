@@ -52,6 +52,12 @@ export default {
       this.connectClonedDataInputAssociations(clonedDataInputAssociations, clonedNodes);
       this.connectClonedDataOutputAssociations(clonedDataOutputAssociations, clonedNodes);
 
+      clonedNodes.forEach(node => {
+        if (node.cloneOf) {
+          delete node.cloneOf;
+        }
+      });
+
       return clonedNodes;
     },
     // Returns the Flow Element (Task| DataStore| DataObject)  that is the target of the association
