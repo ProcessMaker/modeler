@@ -31,7 +31,7 @@ describe('Clone Improvement', () => {
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Gateway');
 
     //Step 5: Clone the element
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that gateway was cloned
     cy.get(selectorExclusiveGateway).eq(1).should('be.visible');
@@ -58,7 +58,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorExclusiveGateway,'switch-to-inclusive-gateway');
 
     //Step 4: Clone the Gateway
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Inclusive Gateway was cloned
     cy.get(selectorExclusiveGateway).eq(1).should('be.visible');
@@ -69,7 +69,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorExclusiveGateway,'switch-to-parallel-gateway');
 
     //Step 6: Clone the Gateway
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 2: Verify that Parallel Gateway was cloned
     cy.get(selectorExclusiveGateway).eq(1).should('be.visible');
@@ -80,7 +80,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorExclusiveGateway,'switch-to-event-based-gateway');
 
     //Step 8: Clone the Gateway
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 3: Verify that Event Based in Gateway was cloned
     cy.get(selectorExclusiveGateway).eq(1).should('be.visible');

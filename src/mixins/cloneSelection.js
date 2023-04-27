@@ -9,7 +9,7 @@ import { getOrFindDataInput, findIOSpecificationOwner } from '../components/crow
 
 export default {
   methods: {
-    cloneSelection() {
+    cloneNodesSelection() {
       let clonedNodes = [], clonedFlows = [], clonedDataInputAssociations = [], clonedDataOutputAssociations = [];
       const nodes = this.highlightedNodes;
       const selector = this.$refs.selector.$el;

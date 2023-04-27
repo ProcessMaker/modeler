@@ -50,7 +50,7 @@
       v-on="$listeners"
     />
 
-    <duplicate-button
+    <clone-button
       :node="node"
       v-on="$listeners"
     />
@@ -84,7 +84,7 @@ import GenericFlowButton from '@/components/crown/crownButtons/genericFlowButton
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
 import DataAssociationFlowButton from '@/components/crown/crownButtons/dataAssociationFlowButton';
 import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
-import DuplicateButton from '@/components/crown/crownButtons/duplicateButton.vue';
+import CloneButton from '@/components/crown/crownButtons/cloneButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import DefaultFlow from '@/components/crown/crownButtons/defaultFlowButton.vue';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
@@ -101,7 +101,7 @@ export default {
     GenericFlowButton,
     AssociationFlowButton,
     CopyButton,
-    DuplicateButton,
+    CloneButton,
     DefaultFlow,
     DataAssociationFlowButton,
   },

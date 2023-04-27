@@ -34,7 +34,7 @@ describe('Clone Improvement', () => {
     cy.get('[class="element-list color-list"]>button:nth-child(1)').click();
 
     //Step 6: Clone the element
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Start Event was cloned successfully
     cy.get(selectorTextAnnotation).eq(1).should('be.visible');

@@ -42,18 +42,18 @@ export default {
       nodeToReplace: null,
       buttons: [
         {
-          label: 'Copy Seletion',
+          label: 'Copy Selection',
           icon: 'clipboard',
           testId: 'copy-button',
           role: 'menuitem',
           action: this.copySelection,
         },
         {
-          label: 'Duplicate Selection',
+          label: 'Clone Selection',
           icon: 'copy',
-          testId: 'duplicate-button',
+          testId: 'clone-button',
           role: 'menuitem',
-          action: this.duplicateSelection,
+          action: this.cloneSelection,
         },
         {
           label: 'Delete Element',
@@ -80,8 +80,8 @@ export default {
     copySelection() {
       this.$emit('copy-selection');
     },
-    duplicateSelection() {
-      this.$emit('duplicate-selection');
+    cloneSelection() {
+      this.$emit('clone-selection');
     },
     deleteElement() {
       this.$emit('remove-nodes');
