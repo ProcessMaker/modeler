@@ -28,10 +28,11 @@ $toolbar-background-color: #fff;
   cursor: default !important;
 }
 
-.autosave-btn {
+.btn-autosave {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 4px !important;
 }
 
 .btn-ellipsis {
