@@ -312,7 +312,7 @@ export default {
     /**
      * Update the selection Box
      */
-    updateSelectionBox(force=false) {
+    updateSelectionBox(force=false, clearIfEmpty=true) {
       if (force || this.isSelecting && this.style) {
         if (this.selected.length > 0) {
           const box = this.getSelectionVertex(this.selected, false, true);
@@ -324,7 +324,7 @@ export default {
           // Set the dimensions of the element
           this.style.width = `${box.maxX - box.minX}px`;
           this.style.height = `${box.maxY - box.minY}px`;
-        } else {
+        } else if (clearIfEmpty) {
           this.clearSelection();
         }
       }
