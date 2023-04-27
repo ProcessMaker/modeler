@@ -27,7 +27,7 @@ describe('Clone Improvement', () => {
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Form Task');
 
     //Step 5: Clone the element
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Task event was cloned
     cy.get(selectorFormTask).eq(1).should('be.visible');
@@ -55,7 +55,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorFormTask,'switch-to-manual-task');
 
     //Step 4: Clone the Manual Task
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Manual was cloned
     cy.get(selectorFormTask).eq(1).should('be.visible');
@@ -66,7 +66,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorFormTask,'switch-to-script-task');
 
     //Step 6: Clone the Script Task
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 2: Verify that Script Task was cloned
     cy.get(selectorFormTask).eq(1).should('be.visible');
@@ -77,7 +77,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorFormTask,'switch-to-sub-process');
 
     //Step 8: Clone the Sub-process
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 3: Verify that Sub-process was cloned
     cy.get(selectorFormTask).eq(1).should('be.visible');

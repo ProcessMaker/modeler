@@ -51,7 +51,7 @@ export default {
         {
           label: 'Duplicate Selection',
           icon: 'copy',
-          testId: 'duplicate-button',
+          testId: 'clone-button',
           role: 'menuitem',
           action: this.duplicateSelection,
         },

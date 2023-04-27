@@ -29,7 +29,7 @@ describe('Clone Improvement', () => {
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to End Event');
 
     //Step 5: Clone the element
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that End event was cloned
     cy.get(selectorEndEvent).eq(1).should('be.visible');
@@ -57,7 +57,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorEndEvent,'switch-to-message-end-event');
 
     //Step 4: Clone the End Event
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Message End Event was cloned
     cy.get(selectorEndEvent).eq(1).should('be.visible');
@@ -68,7 +68,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorEndEvent,'switch-to-error-end-event');
 
     //Step 6: Clone the Error End Event
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 2: Verify that Error End Event was cloned
     cy.get(selectorEndEvent).eq(1).should('be.visible');
@@ -79,7 +79,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorEndEvent,'switch-to-signal-end-event');
 
     //Step 8: Clone the End Event
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 3: Verify that Signal End Event was cloned
     cy.get(selectorEndEvent).eq(1).should('be.visible');
@@ -90,7 +90,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorEndEvent,'switch-to-terminate-end-event');
 
     //Step 8: Clone the End Event
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 3: Verify that Terminate End Event was cloned
     cy.get(selectorEndEvent).eq(1).should('be.visible');

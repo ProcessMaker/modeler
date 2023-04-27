@@ -23,7 +23,7 @@ describe('Clone Improvement', () => {
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Start Event');
 
     //Step 4: Clone the element
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Start Event was cloned successfully
     cy.get(selectorStartEvent).eq(1).should('be.visible');
@@ -46,7 +46,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorStartEvent,'switch-to-start-timer-event');
 
     //Step 3: Clone Start Timer Event
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Start Timer Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
@@ -57,7 +57,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorStartEvent,'switch-to-signal-start-event');
 
     //Step 5: Clone the Signal Start Event
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 2: Verify that Signal Start Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
@@ -68,7 +68,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorStartEvent,'switch-to-message-start-event');
 
     //Step 7: Clone the Message Start Event
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 3: Verify that Message Start Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
@@ -79,7 +79,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorStartEvent,'switch-to-conditional-start-event');
 
     //Step 9: Clone the Conditional Start Event
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 4: Verify that Conditional Start Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
