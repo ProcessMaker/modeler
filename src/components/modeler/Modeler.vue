@@ -793,12 +793,20 @@ export default {
       this.isRendering = false;
       this.$emit('parsed');
     },
-    async loadXML(xml = this.currentXML) {
+    async loadXML(xml = null) {
+      let emitChangeEvent = false;
+      if (xml === null) {
+        xml = this.currentXML;
+        emitChangeEvent = true;
+      }
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
       this.xmlManager.definitions = this.definitions;
       this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
       this.renderPaper();
+      if (emitChangeEvent) {
+        window.ProcessMaker.EventBus.$emit('modeler-change');
+      }
     },
     getBoundaryEvents(process) {
       return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
@@ -1069,9 +1077,6 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
-    },
-    showSavedNotification() {
-      undoRedoStore.dispatch('saved');
     },
     enableVersions() {
       undoRedoStore.dispatch('enableVersions');
