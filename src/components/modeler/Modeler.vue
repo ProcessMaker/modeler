@@ -11,6 +11,7 @@
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
+      @publishTemplate="publishTemplate"
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
@@ -337,6 +338,9 @@ export default {
       if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
       store.commit('setCopiedElements', this.cloneNodesSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
+    },
+    publishTemplate() {
+      this.$emit('publishTemplate');
     },
     async pasteElements() {
       if (this.copiedElements.length > 0 && !this.pasteInProgress) {

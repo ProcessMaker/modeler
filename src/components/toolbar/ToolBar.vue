@@ -227,6 +227,11 @@ export default {
           content: this.$t('Discard Draft'),
           icon: '',
         },
+        {
+          value: 'save-template',
+          content: this.$t('Save as Template'),
+          icon: '',
+        },
       ],
     };
   },
@@ -256,6 +261,9 @@ export default {
         case 'discard-draft':
           window.ProcessMaker.EventBus.$emit('open-versions-discard-modal');
           break;
+        case 'save-template':
+          this.$emit('publishTemplate');
+          break;
         default:
           break;
       }
@@ -272,6 +280,15 @@ export default {
         inspectorDiv.style.zIndex = '2';
       }
     },
+  },
+  mounted() {
+    if (this.$root.$children[0].process.is_template) {
+      const indexOfActions = this.ellipsisMenuActions.findIndex(object => {
+        return object.value === 'save-template';
+      });
+
+      this.ellipsisMenuActions.splice(indexOfActions, 1);
+    }
   },
 };
 </script>
