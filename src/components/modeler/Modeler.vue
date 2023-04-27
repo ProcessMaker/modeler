@@ -105,8 +105,8 @@
         @copy-element="copyElement"
         @copy-selection="copyElement"
         @paste-element="pasteElements"
-        @duplicate-element="duplicateElement"
-        @duplicate-selection="duplicateSelection"
+        @clone-element="cloneElement"
+        @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
       />
@@ -116,7 +116,7 @@
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
-        @duplicate-selection="duplicateSelection"
+        @clone-selection="cloneSelection"
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
@@ -318,7 +318,7 @@ export default {
       }
       source.set('default', flow);
     },
-    duplicateElement(node, copyCount) {
+    cloneElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
@@ -335,7 +335,7 @@ export default {
         processId,
       ];
       if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
-      store.commit('setCopiedElements', this.cloneSelection());
+      store.commit('setCopiedElements', this.cloneNodesSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
@@ -347,15 +347,15 @@ export default {
           await this.paperManager.awaitScheduledUpdates();
           await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
           await this.$nextTick();
-          await store.commit('setCopiedElements', this.cloneSelection());
+          await store.commit('setCopiedElements', this.cloneNodesSelection());
           this.scrollToSelection();
         } finally {
           this.pasteInProgress = false;
         }
       }
     },
-    async duplicateSelection() {
-      const clonedNodes = this.cloneSelection();
+    async cloneSelection() {
+      const clonedNodes = this.cloneNodesSelection();
       if (clonedNodes && clonedNodes.length === 0) {
         return;
       }

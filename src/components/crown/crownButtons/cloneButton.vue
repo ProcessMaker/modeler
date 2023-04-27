@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     cloneElement() {
-      this.$emit('duplicate-element', this.node, ++this.copyCount);
+      this.$emit('clone-element', this.node, ++this.copyCount);
     },
   },
 };
