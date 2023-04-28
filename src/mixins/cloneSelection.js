@@ -10,7 +10,7 @@ import { getOrFindDataInput, findIOSpecificationOwner } from '../components/crow
 export default {
   methods: {
     cloneNodesSelection() {
-      let clonedNodes = [], clonedFlows = [], clonedDataInputAssociations = [], clonedDataOutputAssociations = [];
+      let clonedNodes = [], clonedFlows = [], clonedBoundaryEvents = [], clonedDataInputAssociations = [], clonedDataOutputAssociations = [];
       const nodes = this.highlightedNodes;
       const selector = this.$refs.selector.$el;
       const flowNodeTypes = [
@@ -42,12 +42,18 @@ export default {
             clonedDataOutputAssociations.push(clonedFlow);
             clonedNodes.push(clonedFlow);
           } else {
+            // Validate boundary events and collect in clonedBoundaryEvents array
             const clonedElement = this.cloneElementAndCalculateOffset(node);
-            clonedNodes.push(clonedElement);
+            if (node.definition && node.definition.$type !== 'bpmn:BoundaryEvent') {
+              clonedNodes.push(clonedElement);
+            }  else {
+              clonedBoundaryEvents.push(clonedElement);
+            }
           }
         });
       }
-
+      // Sets the clonedBoundaryEvents at the end of the array
+      clonedNodes = [...clonedNodes, ...clonedBoundaryEvents];
       this.connectClonedFlows(clonedFlows, clonedNodes);
       this.connectClonedDataInputAssociations(clonedDataInputAssociations, clonedNodes);
       this.connectClonedDataOutputAssociations(clonedDataOutputAssociations, clonedNodes);
