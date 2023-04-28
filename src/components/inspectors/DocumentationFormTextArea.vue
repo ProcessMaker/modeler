@@ -12,6 +12,7 @@
       data-test="documentation-text-area"
       id="documentation-editor"
       @input="$emit('input', $event)"
+      @blur="onBlur"
     />
 
     <b-modal
@@ -34,6 +35,7 @@
         data-test="documentation-modal-text-area"
         id="documentation-editor-modal"
         @input="$emit('input', $event)"
+        @blur="onBlur"
       />
     </b-modal>
   </div>
@@ -63,8 +65,10 @@ export default {
     },
   },
   methods: {
-    emitValue(value) {
-      this.$emit('input', value);
+    onBlur() {
+      // Update the undoStack when the Editor loses focus to trigger the autosave.
+      const child = this.$root.$children.find((c) => c.$refs.modeler);
+      child.$refs.modeler.pushToUndoStack();
     },
   },
 };
