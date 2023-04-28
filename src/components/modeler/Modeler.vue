@@ -442,7 +442,7 @@ export default {
     async pushToUndoStack() {
       try {
         const xml = await this.getXmlFromDiagram();
-        undoRedoStore.dispatch('pushState', xml);
+        await undoRedoStore.dispatch('pushState', xml);
         window.ProcessMaker.EventBus.$emit('modeler-change');
       } catch (invalidXml) {
         // eslint-disable-next-line no-console
@@ -798,7 +798,7 @@ export default {
       this.xmlManager.definitions = this.definitions;
       this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
-      this.renderPaper();
+      await this.renderPaper();
     },
     getBoundaryEvents(process) {
       return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
@@ -958,10 +958,10 @@ export default {
       store.commit('highlightNode', this.processNode);
       this.$refs.selector.clearSelection();
       await this.$nextTick();
-      this.pushToUndoStack();
+      await this.pushToUndoStack();
     },
     async removeNodes() {
-      this.performSingleUndoRedoTransaction(async() => {
+      await this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const waitPromises = [];
           this.highlightedNodes.forEach((node) =>
@@ -1004,7 +1004,7 @@ export default {
       undoRedoStore.commit('disableSavingState');
       await cb();
       undoRedoStore.commit('enableSavingState');
-      this.pushToUndoStack();
+      await this.pushToUndoStack();
     },
     removeNodesFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
@@ -1283,9 +1283,9 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
-      loadXML: xml => {
-        this.loadXML(xml);
-        undoRedoStore.dispatch('pushState', xml);
+      loadXML: async(xml) => {
+        await this.loadXML(xml);
+        await undoRedoStore.dispatch('pushState', xml);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
