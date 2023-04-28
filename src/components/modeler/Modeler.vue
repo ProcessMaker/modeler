@@ -196,6 +196,7 @@ export default {
   data() {
     return {
       pasteInProgress: false,
+      cloneInProgress: false,
       internalClipboard: [],
       tooltipTarget: null,
 
@@ -351,6 +352,7 @@ export default {
           this.scrollToSelection();
         } finally {
           this.pasteInProgress = false;
+          await this.pushToUndoStack();
         }
       }
     },
@@ -359,12 +361,18 @@ export default {
       if (clonedNodes && clonedNodes.length === 0) {
         return;
       }
-      this.$refs.selector.clearSelection();
-      await this.addClonedNodes(clonedNodes);
-      await this.$nextTick();
-      await this.paperManager.awaitScheduledUpdates();
-      await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
-      this.scrollToSelection();
+      try {
+        this.cloneInProgress = true;
+        this.$refs.selector.clearSelection();
+        await this.addClonedNodes(clonedNodes);
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+        this.scrollToSelection();
+      } finally {
+        this.cloneInProgress = false;
+        await this.pushToUndoStack();
+      }
     },
     scrollToSelection() {
       const containerRect = this.$refs['paper-container'].getBoundingClientRect();
@@ -440,6 +448,9 @@ export default {
       }
     },
     async pushToUndoStack() {
+      if (this.pasteInProgress || this.cloneInProgress) {
+        return;
+      }
       try {
         const xml = await this.getXmlFromDiagram();
         await undoRedoStore.dispatch('pushState', xml);
@@ -934,8 +945,6 @@ export default {
         store.commit('addNode', node);
         this.poolTarget = null;
       });
-
-      await this.pushToUndoStack();
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (!node) {
