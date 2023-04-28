@@ -42,7 +42,7 @@ export default {
             clonedDataOutputAssociations.push(clonedFlow);
             clonedNodes.push(clonedFlow);
           } else {
-            //validate boundary events and collect in clonedBoundaryEvents array
+            // Validate boundary events and collect in clonedBoundaryEvents array
             const clonedElement = this.cloneElementAndCalculateOffset(node);
             if (node.definition && node.definition.$type !== 'bpmn:BoundaryEvent') {
               clonedNodes.push(clonedElement);
@@ -52,7 +52,7 @@ export default {
           }
         });
       }
-      //attach the cloned boundary events alway at the end off the cloned nodes
+      // Sets the clonedBoundaryEvents at the end of the array
       clonedNodes = [...clonedNodes, ...clonedBoundaryEvents];
       this.connectClonedFlows(clonedFlows, clonedNodes);
       this.connectClonedDataInputAssociations(clonedDataInputAssociations, clonedNodes);
