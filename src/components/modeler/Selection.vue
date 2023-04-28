@@ -643,7 +643,7 @@ export default {
     /**
      * Rollback drag an element outside it's pool parent
      */
-    rollbackSelection(){
+    async rollbackSelection(){
       const deltaX = this.initialPosition.left  - this.left;
       const deltaY = this.initialPosition.top - this.top;
       this.style.left = `${this.initialPosition.left}px`;
@@ -652,14 +652,18 @@ export default {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
         .forEach(shape => {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         });
       this.isOutOfThePool = false;
-      store.commit('allowSavingElementPosition');
+      await store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.updateSelectionBox(true);
     },
     /**
      * Expand and fit the pool container
