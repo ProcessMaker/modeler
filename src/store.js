@@ -71,6 +71,9 @@ export default new Vuex.Store({
       state.rootElements = rootElements;
     },
     updateNodeBounds(state, { node, bounds }) {
+      if (!bounds) {
+        return;
+      }
       Object.entries(bounds).forEach(([key, val]) => {
         if (key === '$type') {
           return;

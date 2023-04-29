@@ -46,14 +46,6 @@ export default class PoolEventHandlers {
       return;
     }
 
-    if (this.previousValidPosition) {
-      this.draggingElement.position(this.previousValidPosition.x, this.previousValidPosition.y, { deep: true });
-      store.commit('updateNodeBounds', {
-        node: this.draggingElement.component.node,
-        bounds: this.previousValidPosition,
-      });
-    }
-
     if (this.invalidPool) {
       this.invalidPool.attr('body/fill', poolColor);
       this.invalidPool = null;
@@ -64,7 +56,6 @@ export default class PoolEventHandlers {
       this.component.moveElement(this.draggingElement, this.newPool);
       this.newPool = null;
     } else {
-      this.component.expandToFitElement(this.draggingElement, this.shape);
       this.component.laneSet && this.component.updateLaneChildren();
     }
 
