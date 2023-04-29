@@ -8,7 +8,7 @@
     <slot />
 
     <button
-      v-for="button in buttons"
+      v-for="button in availableButtons"
       :key="button.label"
       :aria-label="button.label"
       class="btn"
@@ -30,6 +30,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 export default {
   props: {
     paper: Object,
+    hasPools: Boolean,
   },
   data() {
     return {
@@ -42,18 +43,18 @@ export default {
       nodeToReplace: null,
       buttons: [
         {
-          label: 'Copy Seletion',
+          label: 'Copy Selection',
           icon: 'clipboard',
           testId: 'copy-button',
           role: 'menuitem',
           action: this.copySelection,
         },
         {
-          label: 'Duplicate Selection',
+          label: 'Clone Selection',
           icon: 'copy',
-          testId: 'duplicate-button',
+          testId: 'clone-button',
           role: 'menuitem',
-          action: this.duplicateSelection,
+          action: this.cloneSelection,
         },
         {
           label: 'Delete Element',
@@ -75,13 +76,25 @@ export default {
       return countSelected > 1;
     },
     highlightedShapes: () => store.getters.highlightedShapes,
+    availableButtons() {
+      const hasPoolsSelected = this.hasPools;
+      return this.buttons.filter(button => {
+        if (button.testId === 'copy-button') {
+          return !hasPoolsSelected;
+        }
+        if (button.testId === 'clone-button') {
+          return !hasPoolsSelected;
+        }
+        return true;
+      });
+    },
   },
   methods: {
     copySelection() {
       this.$emit('copy-selection');
     },
-    duplicateSelection() {
-      this.$emit('duplicate-selection');
+    cloneSelection() {
+      this.$emit('clone-selection');
     },
     deleteElement() {
       this.$emit('remove-nodes');

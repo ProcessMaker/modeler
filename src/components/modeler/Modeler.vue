@@ -63,7 +63,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         :compressed="panelsCompressed && noElementsSelected"
-        @shape-resize="shapeResize"
+        @shape-resize="shapeResize(false)"
       />
 
       <component
@@ -105,8 +105,8 @@
         @copy-element="copyElement"
         @copy-selection="copyElement"
         @paste-element="pasteElements"
-        @duplicate-element="duplicateElement"
-        @duplicate-selection="duplicateSelection"
+        @clone-element="cloneElement"
+        @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
       />
@@ -116,7 +116,7 @@
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
-        @duplicate-selection="duplicateSelection"
+        @clone-selection="cloneSelection"
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
@@ -196,6 +196,7 @@ export default {
   data() {
     return {
       pasteInProgress: false,
+      cloneInProgress: false,
       internalClipboard: [],
       tooltipTarget: null,
 
@@ -306,10 +307,10 @@ export default {
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
     },
-    async shapeResize() {
+    async shapeResize(clearIfEmpty=true) {
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.updateSelectionBox(true);
+      this.$refs.selector.updateSelectionBox(true, clearIfEmpty);
     },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
@@ -318,7 +319,7 @@ export default {
       }
       source.set('default', flow);
     },
-    duplicateElement(node, copyCount) {
+    cloneElement(node, copyCount) {
       const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
       const yOffset = (node.diagram.bounds.height + 30) * copyCount;
 
@@ -335,11 +336,11 @@ export default {
         processId,
       ];
       if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
-      store.commit('setCopiedElements', this.cloneSelection());
+      store.commit('setCopiedElements', this.cloneNodesSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
     async pasteElements() {
-      if (this.copiedElements && !this.pasteInProgress) {
+      if (this.copiedElements.length > 0 && !this.pasteInProgress) {
         this.pasteInProgress = true;
         try {
           await this.addClonedNodes(this.copiedElements);
@@ -347,24 +348,31 @@ export default {
           await this.paperManager.awaitScheduledUpdates();
           await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
           await this.$nextTick();
-          await store.commit('setCopiedElements', this.cloneSelection());
+          await store.commit('setCopiedElements', this.cloneNodesSelection());
           this.scrollToSelection();
         } finally {
           this.pasteInProgress = false;
+          await this.pushToUndoStack();
         }
       }
     },
-    async duplicateSelection() {
-      const clonedNodes = this.cloneSelection();
+    async cloneSelection() {
+      const clonedNodes = this.cloneNodesSelection();
       if (clonedNodes && clonedNodes.length === 0) {
         return;
       }
-      this.$refs.selector.clearSelection();
-      await this.addClonedNodes(clonedNodes);
-      await this.$nextTick();
-      await this.paperManager.awaitScheduledUpdates();
-      await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
-      this.scrollToSelection();
+      try {
+        this.cloneInProgress = true;
+        this.$refs.selector.clearSelection();
+        await this.addClonedNodes(clonedNodes);
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
+        this.scrollToSelection();
+      } finally {
+        this.cloneInProgress = false;
+        await this.pushToUndoStack();
+      }
     },
     scrollToSelection() {
       const containerRect = this.$refs['paper-container'].getBoundingClientRect();
@@ -440,9 +448,12 @@ export default {
       }
     },
     async pushToUndoStack() {
+      if (this.pasteInProgress || this.cloneInProgress) {
+        return;
+      }
       try {
         const xml = await this.getXmlFromDiagram();
-        undoRedoStore.dispatch('pushState', xml);
+        await undoRedoStore.dispatch('pushState', xml);
         window.ProcessMaker.EventBus.$emit('modeler-change');
       } catch (invalidXml) {
         // eslint-disable-next-line no-console
@@ -803,7 +814,7 @@ export default {
       this.xmlManager.definitions = this.definitions;
       this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
-      this.renderPaper();
+      await this.renderPaper();
       if (emitChangeEvent) {
         window.ProcessMaker.EventBus.$emit('modeler-change');
       }
@@ -942,8 +953,6 @@ export default {
         store.commit('addNode', node);
         this.poolTarget = null;
       });
-
-      await this.pushToUndoStack();
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (!node) {
@@ -966,10 +975,10 @@ export default {
       store.commit('highlightNode', this.processNode);
       this.$refs.selector.clearSelection();
       await this.$nextTick();
-      this.pushToUndoStack();
+      await this.pushToUndoStack();
     },
     async removeNodes() {
-      this.performSingleUndoRedoTransaction(async() => {
+      await this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const waitPromises = [];
           this.highlightedNodes.forEach((node) =>
@@ -1012,7 +1021,7 @@ export default {
       undoRedoStore.commit('disableSavingState');
       await cb();
       undoRedoStore.commit('enableSavingState');
-      this.pushToUndoStack();
+      await this.pushToUndoStack();
     },
     removeNodesFromLane(node) {
       const containingLane = node.pool && node.pool.component.laneSet &&
@@ -1077,6 +1086,9 @@ export default {
 
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
+    },
+    showSavedNotification() {
+      undoRedoStore.dispatch('saved');
     },
     enableVersions() {
       undoRedoStore.dispatch('enableVersions');
@@ -1288,9 +1300,9 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
-      loadXML: xml => {
-        this.loadXML(xml);
-        undoRedoStore.dispatch('pushState', xml);
+      loadXML: async(xml) => {
+        await this.loadXML(xml);
+        await undoRedoStore.dispatch('pushState', xml);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),

@@ -27,7 +27,7 @@ describe('Clone Improvement', () => {
     getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Intermediate Event');
 
     //Step 5: Clone the element
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Intermediate event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
@@ -54,7 +54,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-signal-catch-event');
 
     //Step 4: Clone the Intermediate Event
-    cy.get('[data-test="duplicate-button"]').click();
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Intermediate Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
@@ -65,7 +65,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-message-catch-event');
 
     //Step 6: Clone the Intermediate Event
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 2: Verify that Intermediate Message Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
@@ -76,7 +76,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-conditional-catch-event');
 
     //Step 8: Clone the Intermediate Event
-    cy.get('[data-test="duplicate-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 3: Verify that Intermediate Conditional Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');

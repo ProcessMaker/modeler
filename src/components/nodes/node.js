@@ -187,9 +187,17 @@ export default class Node {
     clonedFlow.id = null;
     clonedFlow.pool = this.pool;
     clonedFlow.cloneOf = this.id;
-    clonedFlow.diagram.waypoint = [];
+    clonedFlow.diagram = moddle.create('bpmndi:BPMNEdge', {
+      waypoint: [],
+    });
 
-    this.diagram.waypoint.forEach(point => clonedFlow.diagram.waypoint.push(point));
+    this.diagram.waypoint.forEach(point => {
+      const waypoint = moddle.create('dc:Point', {
+        x: point.x,
+        y: point.y,
+      });
+      clonedFlow.diagram.waypoint.push(waypoint);
+    });
 
     Object.keys(this.definition).filter(key => !Node.flowDefinitionPropertiesToNotCopy.includes(key)).forEach(key => {
       const definition = this.definition.get(key);

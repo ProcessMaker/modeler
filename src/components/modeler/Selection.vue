@@ -16,6 +16,7 @@
       :plane-elements="$parent.planeElements"
       :is-rendering="$parent.isRendering"
       :dropdown-data="[]"
+      :has-pools="hasPoolsOrLanesSelected"
       v-on="$listeners"
     />
   </div>
@@ -28,6 +29,11 @@ import CrownMultiselect from '@/components/crown/crownMultiselect/crownMultisele
 import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
+import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
+import { id as associationId } from '@/components/nodes/association';
+import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
+import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
+import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 
 export default {
@@ -78,6 +84,14 @@ export default {
   mounted(){
     this.paperManager.paper.on('scale:changed ', this.updateSelectionBox);
     this.paperManager.paper.on('translate:changed ', this.translateChanged);
+  },
+  computed: {
+    hasPoolsOrLanesSelected() {
+      return this.selected.some((view) => {
+        return view.model.component.node.type === poolId ||
+        view.model.component.node.type === laneId;
+      });
+    },
   },
   watch: {
     // whenever selected changes
@@ -312,7 +326,7 @@ export default {
     /**
      * Update the selection Box
      */
-    updateSelectionBox(force=false) {
+    updateSelectionBox(force=false, clearIfEmpty=true) {
       if (force || this.isSelecting && this.style) {
         if (this.selected.length > 0) {
           const box = this.getSelectionVertex(this.selected, false, true);
@@ -324,7 +338,7 @@ export default {
           // Set the dimensions of the element
           this.style.width = `${box.maxX - box.minX}px`;
           this.style.height = `${box.maxY - box.minY}px`;
-        } else {
+        } else if (clearIfEmpty) {
           this.clearSelection();
         }
       }
@@ -333,6 +347,13 @@ export default {
      * Filter the selected elements
      */
     filterSelected() {
+      const flowTypes = [
+        sequenceFlowId,
+        dataOutputAssociationFlowId,
+        dataInputAssociationFlowId,
+        associationId,
+        messageFlowId,
+      ];
       // Get the selected pools IDs
       const selectedPoolsIds = this.selected
         .filter(shape => shape.model.component)
@@ -342,6 +363,13 @@ export default {
       this.selected = this.selected.filter(shape => {
         if (shape.model.component && shape.model.component.node.pool) {
           return shape.model.component.node.pool && !selectedPoolsIds.includes(shape.model.component.node.pool.component.node.id);
+        }
+        // remove from selection the selected flows that belongs to a selected pools
+        if (shape.model.component  && flowTypes.includes(shape.model.component.node.type)) {
+          const parent = shape.model.getParentCell();
+          if (parent.component && parent.component.node.pool) {
+            return !selectedPoolsIds.includes(parent.component.node.pool.component.node.id);
+          }
         }
         return true;
       });
@@ -615,7 +643,7 @@ export default {
     /**
      * Rollback drag an element outside it's pool parent
      */
-    rollbackSelection(){
+    async rollbackSelection(){
       const deltaX = this.initialPosition.left  - this.left;
       const deltaY = this.initialPosition.top - this.top;
       this.style.left = `${this.initialPosition.left}px`;
@@ -624,14 +652,18 @@ export default {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
         .forEach(shape => {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         });
       this.isOutOfThePool = false;
-      store.commit('allowSavingElementPosition');
+      await store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.updateSelectionBox(true);
     },
     /**
      * Expand and fit the pool container
