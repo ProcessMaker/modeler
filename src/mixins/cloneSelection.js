@@ -112,9 +112,11 @@ export default {
           targetClone.definition.set('incoming', [clonedFlow.definition]);
         }
 
+        const { height: selectorHeight } = this.$refs.selector.$el.getBoundingClientRect();
+        const { sy } = this.paper.scale();
+        const yOffset = selectorHeight / sy;
         clonedFlow.diagram.waypoint.forEach(point => {
-          const { height: selectorHeight } = this.$refs.selector.$el.getBoundingClientRect();
-          point.y += selectorHeight;
+          point.y += yOffset;
         });
       });
     },
