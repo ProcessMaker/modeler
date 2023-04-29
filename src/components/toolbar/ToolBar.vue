@@ -101,7 +101,7 @@
               </span>
             </div>
             <a
-              class="btn btn-sm btn-primary autosave-btn text-uppercase mx-2"
+              class="btn btn-sm btn-primary btn-autosave text-uppercase mx-2"
               data-test="publish-btn"
               :title="$t('Publish')"
               @click="$emit('saveBpmn')"
@@ -109,7 +109,7 @@
               {{ $t('Publish') }}
             </a>
             <a
-              class="btn btn-sm btn-link toolbar-item autosave-btn text-black text-uppercase"
+              class="btn btn-sm btn-link toolbar-item btn-autosave text-black text-uppercase"
               data-test="close-btn"
               :title="$t('Close')"
               @click="$emit('close')"
@@ -183,9 +183,6 @@ export default {
     canRedo() {
       return undoRedoStore.getters.canRedo;
     },
-    saved() {
-      return undoRedoStore.getters.saved;
-    },
     versionStatus() {
       const status = undoRedoStore.getters.isDraft ? 'Draft' : 'Published';
       return this.$t(status);
@@ -238,8 +235,7 @@ export default {
       }
       undoRedoStore
         .dispatch('undo')
-        .then(() => this.$emit('load-xml'))
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
+        .then(() => this.$emit('load-xml'));
     },
     redo() {
       this.$emit('clearSelection');
@@ -248,8 +244,7 @@ export default {
       }
       undoRedoStore
         .dispatch('redo')
-        .then(() => this.$emit('load-xml'))
-        .then(() => window.ProcessMaker.EventBus.$emit('modeler-change'));
+        .then(() => this.$emit('load-xml'));
     },
     onNavigate(action) {
       switch (action.value) {
