@@ -41,6 +41,13 @@ npm run build-bundle
 npm run lint
 ```
 
+## Docker Env
+If you prefer to run Modeler using Docker
+```bash
+# Using Docker Compose
+docker compose up
+```
+
 ## Testing
 
 Unit tests are set up using jest and end-to-end tests are set up using Cypress. Unit and end-to-end tests can be run separately or together. Code coverage is collected for both types of tests and combined into a single coverage report for the entire project. 
