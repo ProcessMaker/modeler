@@ -61,7 +61,10 @@ export default {
       const flowPlaceholderDefinition = this.moddle.create('bpmn:SequenceFlow', {
         name: '',
         sourceRef: this.node.definition,
-        targetRef: { x, y },
+        targetRef: {
+          x: x ? x : this.node.diagram.bounds.x + this.node.diagram.bounds.width + 50,
+          y: y ? y : this.node.diagram.bounds.y + (this.node.diagram.bounds.height / 2),
+        },
       });
 
       this.$emit('add-node', new Node(
