@@ -21,6 +21,10 @@
     user-select: none;
   }
 
+  .joint-element {
+    cursor: default;
+  }
+
   .joint-marker-vertex:hover {
     fill: $error-color;
     cursor: url('../../assets/delete-icon-vertex.png') 0 0, pointer;
