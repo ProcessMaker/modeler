@@ -1255,7 +1255,7 @@ export default {
       this.pointerDownHandler(event);
     }, this);
 
-    this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }, event) => {
+    this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }) => {
       if (this.isBpmnNode(shape) && shape.attr('body/cursor') !== 'default' && !this.isGrabbing) {
         shape.attr('body/cursor', 'move');
       }
@@ -1333,7 +1333,7 @@ export default {
           );
         }
       }
-    })
+    });
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
