@@ -19,6 +19,7 @@ import Flow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
+import store from '@/store';
 
 // Don't show the magic flow button on:
 const dontShowOn = [
@@ -42,6 +43,7 @@ export default {
     };
   },
   computed: {
+    paper: () => store.getters.paper,
     sequenceFlowConfig() {
       return this.nodeRegistry[genericFlowId];
     },
@@ -58,11 +60,12 @@ export default {
   methods: {
     addSequence(cellView, evt, x, y) {
       this.$emit('toggle-crown-state', false);
+      const { sx } = this.paper.scale();
       const flowPlaceholderDefinition = this.moddle.create('bpmn:SequenceFlow', {
         name: '',
         sourceRef: this.node.definition,
         targetRef: {
-          x: x ? x : this.node.diagram.bounds.x + this.node.diagram.bounds.width + 50,
+          x: x ? x : this.node.diagram.bounds.x + (this.node.diagram.bounds.width + (50 * sx)),
           y: y ? y : this.node.diagram.bounds.y + (this.node.diagram.bounds.height / 2),
         },
       });

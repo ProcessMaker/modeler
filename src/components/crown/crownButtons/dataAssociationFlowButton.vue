@@ -22,6 +22,7 @@ import Node from '@/components/nodes/node';
 import * as dataOutputConfig from '@/components/nodes/dataOutputAssociation/config';
 import * as dataInputConfig from '@/components/nodes/dataInputAssociation/config';
 import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
+import store from '@/store';
 
 export default {
   components: { CrownButton },
@@ -32,6 +33,7 @@ export default {
     };
   },
   computed: {
+    paper: () => store.getters.paper,
     allowOutgoingDataAssociationFlow() {
       return DataAssociation.isADataNode(this.node);
     },
@@ -40,6 +42,7 @@ export default {
     addDataAssociation() {
       this.$emit('toggle-crown-state', false);
 
+      const { sx } = this.paper.scale();
       const comingFromDataStoreOrDataObject = this.node.isBpmnType('bpmn:DataStoreReference', 'bpmn:DataObjectReference');
 
       const dataAssociationConfig = comingFromDataStoreOrDataObject
@@ -56,7 +59,10 @@ export default {
 
       node.dataAssociationProps = {
         sourceShape: this.shape,
-        targetCoords: { x: undefined, y: undefined },
+        targetCoords: {
+          x: this.node.diagram.bounds.x + (this.node.diagram.bounds.width + (50 * sx)),
+          y: this.node.diagram.bounds.y + (this.node.diagram.bounds.height / 2),
+        },
       };
 
       this.$emit('add-node', node);
