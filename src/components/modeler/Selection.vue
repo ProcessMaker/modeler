@@ -503,20 +503,17 @@ export default {
       this.updateFlowsWaypoint();
       this.overPoolStopDrag();
     },
+    /**
+     * Selector will update the waypoints of the related flows
+     */
     updateFlowsWaypoint(){
       this.conectedLinks.forEach((link)=> {
         if (link.model.component && link.model.get('type') === 'standard.Link'){
-          // console.log('old: shape.model.component.node.diagram.waypoint');
-          // console.log(link.model.component.node.diagram.waypoint);
           const start = link.sourceAnchor;
           const end = link.targetAnchor;
-
           link.model.component.node.diagram.waypoint = [start,
             ...link.model.component.shape.vertices(),
             end].map(point => link.model.component.moddle.create('dc:Point', point));
-          
-          // console.log('new: shape.model.component.node.diagram.waypoint');
-          // console.log(link.model.component.node.diagram.waypoint);
         }
       });
     },
