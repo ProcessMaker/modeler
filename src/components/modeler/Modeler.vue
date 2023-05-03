@@ -153,6 +153,12 @@ import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -336,7 +342,15 @@ export default {
         genericFlowId,
         processId,
       ];
-      if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
+      const boundaryEvents = [
+        boundaryErrorEventId,
+        boundaryConditionalEventId,
+        boundaryEscalationEventId,
+        boundaryMessageEventId,
+        boundarySignalEventId,
+        boundaryTimerEventId,
+      ];
+      if (this.highlightedNodes.length === 1 && (flows.includes(this.highlightedNodes[0].type) || boundaryEvents.includes(this.highlightedNodes[0].type))) return;
       store.commit('setCopiedElements', this.cloneNodesSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
@@ -1158,6 +1172,7 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
+      if (this.isGrabbing) return;
       if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
         this.isDragging = true;
         this.dragStart = null;
@@ -1253,6 +1268,16 @@ export default {
       this.isOverShape = false;
       this.pointerDownHandler(event);
     }, this);
+
+    this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }) => {
+      if (this.isBpmnNode(shape) && shape.attr('body/cursor') !== 'default' && !this.isGrabbing) {
+        shape.attr('body/cursor', 'move');
+      }
+      // If the user is panning the Paper while hovering an element, ignore the default move cursor
+      if (this.isGrabbing && this.isBpmnNode(shape)) {
+        shape.attr('body/cursor', 'grabbing');
+      }
+    });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
       this.canvasDragPosition = null;
       this.activeNode = null;
@@ -1289,6 +1314,9 @@ export default {
         return;
       }
 
+      // ignore click event if the user is Grabbing the paper
+      if (this.isGrabbing) return;
+
       shape.component.$emit('click', event);
     });
 
@@ -1296,10 +1324,29 @@ export default {
       if (!this.isBpmnNode(shape)) {
         return;
       }
+      // If the user is pressing Space (grabbing) and clicking on a Cell, return
+      if (this.isGrabbing) {
+        return;
+      }
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
       this.isOverShape = true;
       this.pointerDowInShape(event, shape);
+    });
+    // If the user is grabbing the paper while he clicked in a cell, move the paper and not the cell
+    this.paperManager.addEventHandler('cell:pointermove', (_, event, x, y) => {
+      if (this.isGrabbing) {
+        if (!this.canvasDragPosition) {
+          const scale = this.paperManager.scale;
+          this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
+        }
+        if (this.canvasDragPosition && !this.clientLeftPaper) {
+          this.paperManager.translate(
+            event.offsetX - this.canvasDragPosition.x,
+            event.offsetY - this.canvasDragPosition.y
+          );
+        }
+      }
     });
 
     /* Register custom nodes */
