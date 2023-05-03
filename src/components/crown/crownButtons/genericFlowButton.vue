@@ -19,6 +19,8 @@ import Flow from '@/assets/connect-elements.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
+import store from '@/store';
+import { V } from 'jointjs';
 
 // Don't show the magic flow button on:
 const dontShowOn = [
@@ -42,6 +44,7 @@ export default {
     };
   },
   computed: {
+    paper: () => store.getters.paper,
     sequenceFlowConfig() {
       return this.nodeRegistry[genericFlowId];
     },
@@ -58,10 +61,18 @@ export default {
   methods: {
     addSequence(cellView, evt, x, y) {
       this.$emit('toggle-crown-state', false);
+      const { clientX, clientY } = cellView;
+      let point = null;
+      if (cellView){
+        point = V(this.paper.viewport).toLocalPoint(clientX, clientY);
+      }
       const flowPlaceholderDefinition = this.moddle.create('bpmn:SequenceFlow', {
         name: '',
         sourceRef: this.node.definition,
-        targetRef: { x, y },
+        targetRef: {
+          x: x ? x : point.x,
+          y: y ? y : point.y,
+        },
       });
 
       this.$emit('add-node', new Node(

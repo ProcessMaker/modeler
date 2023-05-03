@@ -39,6 +39,7 @@ export default new Vuex.Store({
     clientLeftPaper: false,
   },
   getters: {
+    paper: state => state.paper,
     nodes: state => state.nodes,
     highlightedNodes: state => state.highlightedNodes,
     nodeShape: state => node => {
