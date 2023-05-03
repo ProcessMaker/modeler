@@ -53,6 +53,7 @@ export default {
       isSelecting: false,
       isSelected: false,
       selected: [],
+      conectedLinks:[],
       dragging: false,
       style:  {
         left: '0px',
@@ -96,6 +97,7 @@ export default {
   watch: {
     // whenever selected changes
     selected(newSelected) {
+      this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
     },
   },
@@ -295,6 +297,24 @@ export default {
       return elements;
     },
     /**
+     * Prepare the conectedLinks collection
+     * @param {Array} shapes 
+     */
+    prepareConectedLinks(shapes){
+      const { paper } = this.paperManager;
+      this.conectedLinks = [];
+      shapes.forEach((shape) => {
+        const conectedLinks = this.graph.getConnectedLinks(shape.model);
+        conectedLinks.forEach((link) => {
+          const linkView = paper.findViewByModel(link);
+          if (!this.conectedLinks.some(obj => obj.id === linkView.id)) {
+            this.conectedLinks.push(linkView);
+          }
+        });
+ 
+      });
+    },
+    /**
      * Return the bounding box of the selected elements,
      * @param {Array} selected
      */
@@ -475,13 +495,30 @@ export default {
      * @param {Object} event
      */
     stopDrag() {
-      this.overPoolStopDrag();
-      this.$emit('save-state');
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
       // that are anchored and did not move, such as boundary events. 
       this.updateSelectionBox();
+      this.updateFlowsWaypoint();
+      this.overPoolStopDrag();
+    },
+    updateFlowsWaypoint(){
+      this.conectedLinks.forEach((link)=> {
+        if (link.model.component && link.model.get('type') === 'standard.Link'){
+          // console.log('old: shape.model.component.node.diagram.waypoint');
+          // console.log(link.model.component.node.diagram.waypoint);
+          const start = link.sourceAnchor;
+          const end = link.targetAnchor;
+
+          link.model.component.node.diagram.waypoint = [start,
+            ...link.model.component.shape.vertices(),
+            end].map(point => link.model.component.moddle.create('dc:Point', point));
+          
+          // console.log('new: shape.model.component.node.diagram.waypoint');
+          // console.log(link.model.component.node.diagram.waypoint);
+        }
+      });
     },
     /**
      * Translate the Selected shapes adding some custom validations
@@ -632,12 +669,14 @@ export default {
      */
     overPoolStopDrag(){
       if (this.isNotPoolChilds(this.selected)) {
+        this.$emit('save-state');
         return;
       }
       if (this.isOutOfThePool) {
         this.rollbackSelection();
       } else {
         this.expandToFitElement(this.selected);
+        this.$emit('save-state');
       }
     },
     /**
@@ -734,7 +773,7 @@ export default {
             node: pool.component.node,
             bounds: pool.getBBox(),
           });
-          this.$emit('save-state');
+          // this.$emit('save-state');
         }
       }
     },

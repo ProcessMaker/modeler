@@ -222,8 +222,6 @@ export default {
       if (!store.getters.allowSavingElementPosition) {
         return;
       }
-
-      this.$emit('save-state');
     },
     repositionCrown() {
       const shapeView = this.shape.findView(this.paper);
