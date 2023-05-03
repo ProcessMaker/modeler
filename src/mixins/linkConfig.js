@@ -118,9 +118,6 @@ export default {
       const targetShape = this.shape.getTargetElement();
       resetShapeColor(targetShape);
 
-      // this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
-      // this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
-      // this.shape.on('change:source change:target', this.updateWaypoints);
       this.shape.on('change:vertices', this.onChangeVertices);
 
       const sourceShape = this.shape.getSourceElement();
