@@ -7,9 +7,10 @@ import advancedAccordionConfig from '@/components/inspectors/advancedAccordionCo
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import { default as eventDefinition, inspector } from '../conditionalEventDefinition';
 
+export const id = 'processmaker-modeler-boundary-conditional-event';
 export default merge(cloneDeep(boundaryEventConfig), {
   ...eventDefinition,
-  id: 'processmaker-modeler-boundary-conditional-event',
+  id,
   component,
   control: false,
   label: 'Boundary Conditional Event',

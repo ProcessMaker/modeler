@@ -153,6 +153,12 @@ import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
@@ -336,7 +342,15 @@ export default {
         genericFlowId,
         processId,
       ];
-      if (this.highlightedNodes.length === 1 && flows.includes(this.highlightedNodes[0].type)) return;
+      const boundaryEvents = [
+        boundaryErrorEventId,
+        boundaryConditionalEventId,
+        boundaryEscalationEventId,
+        boundaryMessageEventId,
+        boundarySignalEventId,
+        boundaryTimerEventId,
+      ];
+      if (this.highlightedNodes.length === 1 && (flows.includes(this.highlightedNodes[0].type) || boundaryEvents.includes(this.highlightedNodes[0].type))) return;
       store.commit('setCopiedElements', this.cloneNodesSelection());
       this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
     },
