@@ -771,7 +771,6 @@ export default {
             node: pool.component.node,
             bounds: pool.getBBox(),
           });
-          // this.$emit('save-state');
         }
       }
     },
