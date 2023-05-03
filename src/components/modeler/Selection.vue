@@ -698,6 +698,7 @@ export default {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         });
       this.isOutOfThePool = false;
+      this.updateFlowsWaypoint();
       await store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
       await this.$nextTick();
