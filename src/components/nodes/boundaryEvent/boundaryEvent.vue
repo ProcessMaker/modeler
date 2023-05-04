@@ -218,7 +218,6 @@ export default {
     this.updateShapePosition(task);
 
     this.shape.on('change:position', this.turnInvalidTargetRed);
-    this.shape.listenTo(this.paper, 'element:pointerdown', this.attachToValidTarget);
   },
 };
 </script>
