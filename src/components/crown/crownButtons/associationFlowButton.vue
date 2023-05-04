@@ -20,6 +20,8 @@ import connectIcon from '@/assets/connect-artifacts.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { direction } from '@/components/nodes/association/associationConfig';
 import Node from '@/components/nodes/node';
+import store from '@/store';
+import { V } from 'jointjs';
 
 export default {
   components: { CrownButton },
@@ -29,12 +31,23 @@ export default {
       connectIcon,
     };
   },
+  computed: {
+    paper: () => store.getters.paper,
+  },
   methods: {
     addAssociation(cellView, evt, x, y) {
       this.$emit('toggle-crown-state', false);
+      const { clientX, clientY } = cellView;
+      let point = null;
+      if (cellView){
+        point = V(this.paper.viewport).toLocalPoint(clientX, clientY);
+      }
       const associationLink = this.moddle.create('bpmn:Association', {
         sourceRef: this.shape.component.node.definition,
-        targetRef: { x, y },
+        targetRef: {
+          x: x ? x : point.x,
+          y: y ? y : point.y,
+        },
         associationDirection: direction.none,
       });
 
