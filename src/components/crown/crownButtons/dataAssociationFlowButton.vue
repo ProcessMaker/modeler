@@ -23,6 +23,7 @@ import * as dataOutputConfig from '@/components/nodes/dataOutputAssociation/conf
 import * as dataInputConfig from '@/components/nodes/dataInputAssociation/config';
 import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
 import store from '@/store';
+import { V } from 'jointjs';
 
 export default {
   components: { CrownButton },
@@ -39,10 +40,13 @@ export default {
     },
   },
   methods: {
-    addDataAssociation() {
+    addDataAssociation(cellView, x, y) {
       this.$emit('toggle-crown-state', false);
-
-      const { sx } = this.paper.scale();
+      const { clientX, clientY } = cellView;
+      let point = null;
+      if (cellView){
+        point = V(this.paper.viewport).toLocalPoint(clientX, clientY);
+      }
       const comingFromDataStoreOrDataObject = this.node.isBpmnType('bpmn:DataStoreReference', 'bpmn:DataObjectReference');
 
       const dataAssociationConfig = comingFromDataStoreOrDataObject
@@ -60,8 +64,8 @@ export default {
       node.dataAssociationProps = {
         sourceShape: this.shape,
         targetCoords: {
-          x: this.node.diagram.bounds.x + (this.node.diagram.bounds.width + (50 * sx)),
-          y: this.node.diagram.bounds.y + (this.node.diagram.bounds.height / 2),
+          x: x ? x : point.x,
+          y: y ? y : point.y,
         },
       };
 
