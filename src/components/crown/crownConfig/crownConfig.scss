@@ -11,6 +11,7 @@ $crown-left-chevron: 0.3rem;
   width: auto;
   height: 1.85rem;
   border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 
   &::after {
     @include chevron($crown-top-chevron, $crown-left-chevron);
