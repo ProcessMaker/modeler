@@ -25,5 +25,12 @@ $controls-transition: 0.3s;
 		padding: 0.5rem 1rem;
 		display: flex;
 		align-items: center;
+		img {
+			height: 1.5rem;
+			width: 1.5rem;
+		}
+		span {
+			margin-left: 0.8rem;
+		}
 	}
 }
