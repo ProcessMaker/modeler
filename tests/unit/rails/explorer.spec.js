@@ -16,7 +16,7 @@ localVue.use(BootstrapVue);
 
 describe('Explorer Rail', () => {
   let wrapper;
-  beforeAll(() => {
+  beforeEach(() => {
     wrapper = shallowMount(explorerRail, {
       propsData: {
         nodeTypes,
@@ -32,6 +32,24 @@ describe('Explorer Rail', () => {
     expect(wrapper.vm.$el).toMatchSnapshot();
   });
   it('should check for vdata defaults', () => {
-    expect(wrapper.vm.expanded).toBeFalsy();
+    expect(wrapper.vm.expanded).toBe(false);
+    expect(wrapper.vm.tabs).toHaveLength(2);
+    expect(wrapper.vm.tabIndex).toBe(0);
+  });
+  it('should set the tab index', () => {
+    wrapper.vm.setTabIndex(1);
+    expect(wrapper.vm.tabIndex).toBe(1);
+  });
+  it('should toggle the rail', () => {
+    expect(wrapper.vm.expanded).toBe(false);
+    wrapper.vm.toggleRail();
+    expect(wrapper.vm.expanded).toBe(true);
+  });
+  it('should close the rail', () => {
+    // toggling the rail to be opened
+    wrapper.vm.toggleRail();
+    expect(wrapper.vm.expanded).toBe(true);
+    wrapper.vm.closeRail();
+    expect(wrapper.vm.expanded).toBe(false);
   });
 });
