@@ -1,0 +1,38 @@
+.ur {
+  &-box {
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  &-button {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: #ffffff;
+    border: 0 none;
+    border-radius: 4px;
+    color: #333344;
+    cursor: pointer;
+    outline: none;
+
+    // &:hover {
+    //   background-color: #ebeef2;
+    // }
+
+    &:disabled {
+      background-color: #ffffff;
+      color: #7e7e92;
+      cursor: default;
+    }
+  }
+
+  &-divider {
+    width: 1px;
+    height: 28px;
+    border-right: thin solid #B6BFC6;
+  }
+}

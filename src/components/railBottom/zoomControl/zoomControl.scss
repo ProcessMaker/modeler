@@ -1,0 +1,32 @@
+.zoom {
+  &-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  &-button,
+  &-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    border-right: thin solid #B6BFC6;
+    color: #333344;
+    cursor: pointer;
+
+    &:last-child {
+      border-right: 0 none;
+    }
+  }
+
+  &-text {
+    font-size: 14px;
+    font-weight: 700;
+    user-select: none;
+  }
+}
