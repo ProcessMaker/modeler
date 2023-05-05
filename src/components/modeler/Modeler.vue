@@ -34,6 +34,9 @@
         class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
         :canvas-drag-position="canvasDragPosition"
       />
+      <explorer-rail
+        :node-types="nodeTypes"
+      />
       <b-col
         class="paper-container h-100 pr-4"
         ref="paper-container"
@@ -133,6 +136,7 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import controls from '../controls/controls';
+import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
@@ -179,6 +183,7 @@ export default {
   components: {
     ToolBar,
     controls,
+    ExplorerRail,
     InspectorPanel,
     MiniPaper,
     ProcessmakerModelerGenericFlow,

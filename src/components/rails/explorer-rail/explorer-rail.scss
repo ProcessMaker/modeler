@@ -1,0 +1,29 @@
+$controls-transition: 0.3s;
+
+#explorer-rail {
+	max-width: 355px;
+	background-color: white;
+	width: 100%;
+	transition: all $controls-transition ease-out;
+	z-index: 2;
+	border-radius: 4px;
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rail-menu {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.node-types {
+	&__container {
+
+	}
+
+	&__item {
+		padding: 0.5rem 1rem;
+		display: flex;
+		align-items: center;
+	}
+}
