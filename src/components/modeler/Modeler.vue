@@ -1,6 +1,7 @@
 <template>
   <span data-test="body-container">
     <tool-bar
+      v-if="showToolbar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -25,6 +26,7 @@
       />
 
       <controls
+        v-if="showControls"
         :nodeTypes="nodeTypes"
         :compressed="panelsCompressed"
         :parent-height="parentHeight"
@@ -53,6 +55,7 @@
 
       <InspectorPanel
         ref="inspector-panel"
+        v-if="showInspector"
         v-show="!(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
@@ -198,6 +201,10 @@ export default {
         return {};
       },
     },
+    inflight: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [hotkeys, cloneSelection],
   data() {
@@ -288,6 +295,18 @@ export default {
 
   },
   computed: {
+    isInflightEnabled() {
+      return this.inflight;
+    },
+    showToolbar() {
+      return !this.isInflightEnabled;
+    },
+    showInspector() {
+      return !this.isInflightEnabled;
+    },
+    showControls() {
+      return !this.isInflightEnabled;
+    },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
     },
