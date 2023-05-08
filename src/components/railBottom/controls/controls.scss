@@ -1,0 +1,68 @@
+.control {
+  &-list {
+    display: flex;
+    align-items: center;
+    margin: 0px;
+    padding: 4px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    list-style: none;
+  }
+
+  &-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      background: #ebeef2;
+    }
+
+    &-options {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 3px;
+      transform: rotate(47.59deg);
+      cursor: pointer;
+
+      & > span {
+        display: block;
+        width: 4px;
+        height: 3px;
+        background-color: #44494e;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        clip-path: padding-box;
+      }
+    }
+  }
+
+  &-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: #00AD73;
+    border-radius: 2px;
+    font-size: 13px;
+    color: #ffffff;
+  }
+
+  & > img {
+    width: 24px;
+    height: 24px;
+  }
+}
