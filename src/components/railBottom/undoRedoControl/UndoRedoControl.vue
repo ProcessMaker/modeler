@@ -4,7 +4,7 @@
       class="ur-button"
       data-test="undo"
     >
-      <img :src="undoIcon" alt="Undo" >
+      <img :src="undoIcon" :alt="$t('Undo')" >
     </button>
 
     <div class="ur-divider" />
@@ -13,7 +13,7 @@
       class="ur-button"
       data-test="redo"
     >
-      <img :src="redoIcon" alt="Redo" >
+      <img :src="redoIcon" :alt="$t('Redo')" >
     </button>
   </div>
 </template>

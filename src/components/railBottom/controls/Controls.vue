@@ -41,7 +41,7 @@
 
     <li class="control-item">
       <div class="control-add">
-        <img :src="plusIcon" alt="Add">
+        <img :src="plusIcon" :alt="$t('Add')">
       </div>
     </li>
   </ul>

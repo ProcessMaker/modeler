@@ -7,7 +7,7 @@
       v-b-tooltip.hover
       :title="$t('Zoom Out')"
     >
-      <img :src="minusIcon" alt="Zoom Out" >
+      <img :src="minusIcon" :alt="$t('Zoom Out')" >
     </div>
 
     <div v-if="paperManager" class="zoom-text">
@@ -21,7 +21,7 @@
       v-b-tooltip.hover
       :title="$t('Zoom In')"
     >
-      <img :src="plusIcon" alt="Zoom In" >
+      <img :src="plusIcon" :alt="$t('Zoom In')" >
     </div>
   </div>
 </template>
