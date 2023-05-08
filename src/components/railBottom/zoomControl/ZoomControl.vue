@@ -4,7 +4,7 @@
       class="zoom-button"
       data-test="zoom-out"
     >
-      <img :src="minusIcon" alt="Zoom Out" >
+      <img :src="minusIcon" :alt="$t('Zoom Out')" >
     </div>
 
     <div class="zoom-text">100%</div>
@@ -13,7 +13,7 @@
       class="zoom-button"
       data-test="zoom-in"
     >
-      <img :src="plusIcon" alt="Zoom In" >
+      <img :src="plusIcon" :alt="$t('Zoom In')" >
     </div>
   </div>
 </template>
