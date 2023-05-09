@@ -9,7 +9,11 @@
     </div>
 
     <div class="rail-center">
-      <UndoRedoControl />
+      <UndoRedoControl
+        :is-rendering="isRendering"
+        @load-xml="$emit('load-xml')"
+        @clearSelection="$emit('clearSelection')"
+      />
 
       <Controls />
     </div>
@@ -31,6 +35,9 @@ export default {
   },
   props: {
     paperManager: {},
+    isRendering: {
+      type: Boolean,
+    },
   },
 };
 </script>
