@@ -36,15 +36,15 @@ export default {
 
 <style lang="scss" scoped>
 .crown-button {
-  border: none;
-  padding: 0;
+  border:none;
   display: flex;
   background-color: $primary-white;
   border-radius: 4px;
   color: $crown-icon-neutral;
-  width: 25px;
-  height: 25px;
-  font-size: 15px;
+  width: 35px;
+  height: 35px;
+  font-size: 20px;
+  padding: 4px;
 }
 .crown-button:hover {
   background-color: $crown-icon-hover-bg;
