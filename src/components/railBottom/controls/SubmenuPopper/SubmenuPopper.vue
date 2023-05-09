@@ -1,6 +1,5 @@
 <template>
   <popper
-
     trigger="clickToToggle"
     :options="{
       placement: 'top',
@@ -18,16 +17,11 @@
         </li>
       </ul>
     </div>
-
-    <!-- <button slot="reference"> -->
-    <!-- Reference Element -->
     <div slot="reference">
-      <div class="control-item-options">
+      <div class="control-submenu-options">
         <span />
-        
       </div>
       <img :src=data.iconSrc :alt=data.label>
-  
     </div>
   </popper>
 </template>
@@ -56,34 +50,20 @@ export default ({
   flex-direction: column;
   align-items: flex-start;
   padding: 10px;
-  // gap: 10px;
-
-  // position: absolute;
   width: 255px;
-  // height: 204px;
   left: 616px;
   background: #FFFFFF;
-  /* Shadow(SM) */
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-  // border-radius: 4px;
+  border-radius: 4px;
   list-style: none;
-
   &-list {
-    /* Auto layout */
-
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 12px 2px;
     gap: 8px;
-
     width: 235px;
     height: 40px;
-
-    background: #FFFFFF;
-
-    /* Inside auto layout */
-
     flex: none;
     order: 0;
     align-self: stretch;
@@ -91,12 +71,31 @@ export default ({
     &:hover {
       background: #EBEEF2;
     }
+   
     & > img {
       width: 24px;
       height: 24px;
     }
   }
-  
+  &-options {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 3px;
+    transform: rotate(47.59deg);
+    cursor: pointer;
+
+    & > span {
+      display: block;
+      width: 4px;
+      height: 3px;
+      background-color: #44494e;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      clip-path: padding-box;
+    }
+    
+  }
 }
+
 </style>
   

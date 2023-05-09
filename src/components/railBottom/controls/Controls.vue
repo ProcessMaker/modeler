@@ -59,31 +59,131 @@ export default ({
           ],
         },
         {
-          // iconSrc: '/img/generic-intermediate-event.ba2e1d71.svg',
           iconSrc: require('@/assets/toolpanel/generic-intermediate-event.svg'),
           label: this.$t('Intermediate Event'),
           id: 'intermediateEvent',
+          items: [
+            {
+              iconSrc: require('@/assets/toolpanel/intermediate-timer-event.svg'),
+              label: this.$t('Intermediate Timer Event'),    
+              id: 'intermediateTimerEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/intermediate-signal-catch-event.svg'),
+              label: this.$t('Intermediate Signal Catch Event'),    
+              id: 'intermediateSignalCatchEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/intermediate-signal-throw-event.svg'),
+              label: this.$t('Intermediate Signal Throw Event'),    
+              id: 'intermediateSignalThrowEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/intermediate-message-catch-event.svg'),
+              label: this.$t('Intermediate Message Catch Event'),    
+              id: 'intermediateMessageCatchEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),
+              label: this.$t('Intermediate Message Throw Event'),    
+              id: 'intermediateMessageThrowEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/intermediate-conditional-catch-event.svg'),
+              label: this.$t('Intermediate Conditional Catch Event'),    
+              id: 'intermediateConditionalCatchEvent',
+            },
+          ],
         },
         {
-          // iconSrc: '/img/end-event.1ad31396.svg',
           iconSrc: require('@/assets/toolpanel/end-event.svg'),
           label: this.$t('End Event'),
           id: 'endEvent',
+          items: [
+            {
+              iconSrc: require('@/assets/toolpanel/end-event.svg'),
+              label: this.$t('End Event'),    
+              id: 'genericEndEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/message-end-event.svg'),
+              label: this.$t('Message End Event'),    
+              id: 'messageEndEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/end-event.svg'),
+              label: this.$t('Error End Event'),    
+              id: 'errorEndEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/signal-end-event.svg'),
+              label: this.$t('Signal End Event'),    
+              id: 'signalEndEvent',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/terminate-end-event.svg'),
+              label: this.$t('Terminate End Event'),    
+              id: 'terminateEndEvent',
+            },
+          ],
         },
         {
-          // iconSrc: '/img/task.e7419065.svg',
           iconSrc: require('@/assets/toolpanel/task.svg'),
-          label: this.$t('Task'),
+          label: this.$t('Form Task'),
           id: 'task',
+          items: [
+            {
+              iconSrc: require('@/assets/toolpanel/task.svg'),
+              label: this.$t('Form Task'),    
+              id: 'formTask',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/manual-task.svg'),
+              label: this.$t('Manual Task'),    
+              id: 'manualTask',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/script-task.svg'),
+              label: this.$t('Script Task'),    
+              id: 'script',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/task.svg'),
+              label: this.$t('Sub Process'),    
+              id: 'subProcess',
+            },
+          ],
         },
         {
-          //iconSrc: '/img/generic-gateway.3a76fc75.svg',
           iconSrc: require('@/assets/toolpanel/generic-gateway.svg'),
           label: this.$t('Gateway'),
           id: 'gateway',
+          items: [
+            {
+              iconSrc: require('@/assets/toolpanel/exclusive-gateway.svg'),
+              label: this.$t('Exclusive Gateway'),    
+              id: 'exclusiveGateway',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/inclusive-gateway.svg'),
+              label: this.$t('Inclusive Gateway'),    
+              id: 'inclusiveGateway',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/parallel-gateway.svg'),
+              label: this.$t('Parallel Gateway'),    
+              id: 'parallelGateway',
+            },
+            {
+              iconSrc: require('@/assets/toolpanel/generic-gateway.svg'),
+              label: this.$t('Event Based Gateway'),    
+              id: 'eventBasedGateway',
+            },
+            
+          ],
         },
+        
         {
-          // iconSrc: '/img/pool.ac62ddae.svg',
           iconSrc: require('@/assets/toolpanel/pool.svg'),
           label: this.$t('Pool'),
           id: 'pool',
