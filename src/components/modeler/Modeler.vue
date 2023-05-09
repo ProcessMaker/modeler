@@ -112,7 +112,9 @@
         @shape-resize="shapeResize"
       />
 
-      <RailBottom />
+      <RailBottom
+        :paper-manager="paperManager"
+      />
 
       <selection
         v-if="paper"

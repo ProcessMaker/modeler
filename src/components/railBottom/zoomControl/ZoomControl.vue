@@ -1,30 +1,49 @@
 <template>
   <div class="zoom-box">
-    <div
+    <button
+      type="button"
       class="zoom-button"
       data-test="zoom-out"
+      @click="paperManager.scale = Math.max(minimumScale, paperManager.scale.sx -= scaleStep)"
+      v-b-tooltip.hover
+      :title="$t('Zoom Out')"
     >
-      <img :src="minusIcon" :alt="$t('Zoom Out')" >
+      <MinusIcon />
+    </button>
+
+    <div v-if="paperManager" class="zoom-text">
+      {{ Math.round(paperManager.scale.sx*100) }}%
     </div>
 
-    <div class="zoom-text">100%</div>
-
-    <div
+    <button
+      type="button"
       class="zoom-button"
       data-test="zoom-in"
+      @click="paperManager.scale = paperManager.scale.sx + scaleStep"
+      v-b-tooltip.hover
+      :title="$t('Zoom In')"
     >
-      <img :src="plusIcon" :alt="$t('Zoom In')" >
-    </div>
+      <PlusIcon />
+    </button>
   </div>
 </template>
 
 <script>
+import { MinusIcon, PlusIcon } from '@/components/railBottom/icons';
 
 export default ({
+  components: {
+    MinusIcon,
+    PlusIcon,
+  },
+  props: {
+    paperManager: {},
+  },
   data() {
     return {
-      minusIcon: require('@/assets/railBottom/dash-lg.svg'),
-      plusIcon: require('@/assets/railBottom/plus-lg.svg'),
+      initialScale: 1,
+      minimumScale: 0.2,
+      scaleStep: 0.1,
     };
   },
 });
