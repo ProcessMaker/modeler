@@ -3,13 +3,14 @@
     v-on="$listeners"
     :id="id"
     :aria-label="ariaLabel"
-    class="btn"
+    class="crown-button"
   >
     <slot>
       <img
         :src="src"
         width="width"
         height="height"
+        class="crown-icon"
       >
     </slot>
   </button>
@@ -33,19 +34,40 @@ export default {
 };
 </script>
 
-<style scoped>
-.btn {
+<style lang="scss" scoped>
+.crown-button {
   border: none;
   padding: 0;
-  margin-top: 0;
   display: flex;
-}
-img {
-  margin: 0px 10px;
-  height: 15px;
-}
-i {
-  margin: 0px 10px;
+  background-color: $primary-white;
+  border-radius: 4px;
+  color: $crown-icon-neutral;
+  width: 25px;
+  height: 25px;
   font-size: 15px;
+}
+.crown-button:hover {
+  background-color: $crown-icon-hover-bg;
+  color: $crown-icon-neutral;
+}
+.crown-button:active {
+  background-color: $cronw-icon-active-bg;
+  color: $crown-icon-active;
+}
+
+.crown-button:focus {
+  background-color: #DEEBFF;
+  color: $crown-icon-active;
+}
+
+img {
+  margin: 0px 5px;
+  height: 20px;
+  width: 20px;
+  padding:2px;
+  fill: #5faaee;
+}
+.crown-button svg {
+  margin:auto;
 }
 </style>

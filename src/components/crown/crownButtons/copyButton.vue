@@ -8,10 +8,7 @@
     role="menuitem"
     @click="copyElement"
   >
-    <img
-      :src="copyIcon"
-      aria-hidden="true"
-    >
+    <i class="fas fa-clipboard cog-container--button"/>
   </crown-button>
 
 </template>
