@@ -1,7 +1,7 @@
 <script>
-import { BOTTOM } from '@/components/controls/rankConstants.js';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import nodeTypesStore from '@/nodeTypesStore';
 
 export default {
   name: 'ExplorerRail',
@@ -27,18 +27,15 @@ export default {
     };
   },
   computed: {
-    controls() {
-      return this.nodeTypes
-        .filter(nodeType => nodeType.control)
-        .map(nodeType => ({
-          type: nodeType.id,
-          icon: nodeType.icon,
-          label: nodeType.label,
-          bpmnType: nodeType.bpmnType,
-          rank: nodeType.rank || BOTTOM,
-        }))
-        .sort((node1, node2) => node1.rank - node2.rank);
+    objects() {
+      return nodeTypesStore.getters.getNodeTypes;
     },
+    pinnedObjects() {
+      return nodeTypesStore.getters.getPinnedNodeTypes;
+    },
+  },
+  created() {
+    nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
   },
   methods: {
     faTimes() {
@@ -73,13 +70,21 @@ export default {
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
-      <!--   Here goes the template checking if pinned objects exist   -->
-      <template v-if="controls.length > 0">
+      <template v-if="pinnedObjects.length > 0">
+        <p>{{ $t('Pinned Objects') }}</p>
+        <template v-for="pinnedObject in pinnedObjects">
+          <div class="node-types__item" :key="pinnedObject.id">
+            <img :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
+            <span>{{ $t(pinnedObject.label) }}</span>
+          </div>
+        </template>
+      </template>
+      <template v-if="objects.length > 0">
         <p>{{ $t('Object Category') }}</p>
-        <template v-for="control in controls">
-          <div class="node-types__item" :key="control.id">
-            <img :src="control.icon" :alt="$t(control.label)">
-            <span>{{ $t(control.label) }}</span>
+        <template v-for="object in objects">
+          <div class="node-types__item" :key="object.id">
+            <img :src="object.icon" :alt="$t(object.label)">
+            <span>{{ $t(object.label) }}</span>
           </div>
         </template>
       </template>
