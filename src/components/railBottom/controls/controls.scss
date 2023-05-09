@@ -1,4 +1,5 @@
 .control {
+
   &-list {
     display: flex;
     align-items: center;
@@ -65,4 +66,21 @@
     width: 24px;
     height: 24px;
   }
+}
+
+.popper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 8px;
+
+  position: absolute;
+  width: 255px;
+  height: 204px;
+  left: 616px;
+  background: #FFFFFF;
+  /* Shadow(SM) */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
