@@ -1,5 +1,5 @@
 <template>
-  <div class="mini-paper-container position-absolute" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
+  <div class="mini-paper-container" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
     <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>

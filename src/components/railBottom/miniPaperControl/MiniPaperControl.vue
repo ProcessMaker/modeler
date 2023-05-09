@@ -11,18 +11,27 @@
     >
       <MiniMapIcon />
     </button>
+
+    <mini-paper
+      :isOpen="miniMapOpen"
+      :paperManager="paperManager"
+      :graph="graph"
+    />
   </div>
 </template>
 
 <script>
 import { MiniMapIcon } from '@/components/railBottom/icons';
+import MiniPaper from '@/components/miniPaper/MiniPaper.vue';
 
 export default ({
   components: {
     MiniMapIcon,
+    MiniPaper,
   },
-  miniMapOpen(isOpen) {
-    this.$emit('toggle-mini-map-open', isOpen);
+  props: {
+    paperManager: {},
+    graph: null,
   },
   data() {
     return {

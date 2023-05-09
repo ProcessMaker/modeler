@@ -1,7 +1,10 @@
 <template>
   <div class="rail-container">
     <div class="rail-left">
-      <MiniPaperControl />
+      <MiniPaperControl
+        :paper-manager="paperManager"
+        :graph="graph"
+      />
 
       <ZoomControl
         :paper-manager="paperManager"
@@ -31,6 +34,7 @@ export default {
   },
   props: {
     paperManager: {},
+    graph: null,
   },
 };
 </script>

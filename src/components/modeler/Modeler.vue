@@ -44,13 +44,6 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
-      <mini-paper
-        :isOpen="miniMapOpen"
-        :paperManager="paperManager"
-        :graph="graph"
-        :class="{ 'expanded' : panelsCompressed }"
-      />
-
       <InspectorPanel
         ref="inspector-panel"
         v-show="!(highlightedNodes.length > 1)"
@@ -114,6 +107,7 @@
 
       <RailBottom
         :paper-manager="paperManager"
+        :graph="graph"
       />
 
       <selection
@@ -149,7 +143,6 @@ import { getNodeIdGenerator } from '../../NodeIdGenerator';
 import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
-import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
@@ -192,7 +185,6 @@ export default {
     ToolBar,
     controls,
     InspectorPanel,
-    MiniPaper,
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
