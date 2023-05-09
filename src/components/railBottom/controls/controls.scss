@@ -1,4 +1,5 @@
 .control {
+
   &-list {
     display: flex;
     align-items: center;
@@ -29,6 +30,7 @@
     &:hover {
       background: #ebeef2;
     }
+
 
     &-options {
       position: absolute;
