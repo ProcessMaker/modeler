@@ -3,7 +3,9 @@
     <div class="rail-left">
       <MiniPaperControl />
 
-      <ZoomControl />
+      <ZoomControl
+        :paper-manager="paperManager"
+      />
     </div>
 
     <div class="rail-center">
@@ -26,6 +28,9 @@ export default {
     ZoomControl,
     UndoRedoControl,
     Controls,
+  },
+  props: {
+    paperManager: {},
   },
 };
 </script>
