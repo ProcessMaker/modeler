@@ -63,19 +63,25 @@ export default {
     <div class="rail-menu">
       <b-tabs class="tabs--container">
         <template v-for="tab in tabs">
-          <b-tab class="tab" :title="$t(tab.label)" :active="tab.idx === tabIndex" @click="setTabIndex(tab.idx)" :key="tab.idx"/>
+          <b-tab class="tab" :title="$t(tab.label)" :active="tab.idx === tabIndex"
+            @click="setTabIndex(tab.idx)" :key="tab.idx"
+          />
         </template>
       </b-tabs>
       <div class="close--container" @click="closeRail()">
-        <font-awesome-icon :icon="faTimes()" />
+        <font-awesome-icon :icon="faTimes()"/>
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
-      <template v-for="control in controls">
-        <div class="node-types__item" :key="control.id">
-          <img :src="control.icon" :alt="$t(control.label)">
-          <span>{{ $t(control.label) }}</span>
-        </div>
+      <!--   Here goes the template checking if pinned objects exist   -->
+      <template v-if="controls.length > 0">
+        <p>{{ $t('Object Category') }}</p>
+        <template v-for="control in controls">
+          <div class="node-types__item" :key="control.id">
+            <img :src="control.icon" :alt="$t(control.label)">
+            <span>{{ $t(control.label) }}</span>
+          </div>
+        </template>
       </template>
     </div>
     <div class="pm-blocks__container">

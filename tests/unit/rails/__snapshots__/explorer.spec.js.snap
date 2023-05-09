@@ -34,7 +34,9 @@ exports[`Explorer Rail should render the component 1`] = `
    
   <div
     class="node-types__container"
-  />
+  >
+    <!---->
+  </div>
    
   <div
     class="pm-blocks__container"
