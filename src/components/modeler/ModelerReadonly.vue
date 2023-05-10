@@ -3,18 +3,18 @@
     <b-row class="modeler h-100">
       <controls
         v-if="showControls"
+        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
         :nodeTypes="nodeTypes"
         :compressed="panelsCompressed"
         :parent-height="parentHeight"
         :allowDrop="allowDrop"
+        :canvas-drag-position="canvasDragPosition"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
-        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-        :canvas-drag-position="canvasDragPosition"
       />
       <b-col
-        class="paper-container h-100 pr-4"
         ref="paper-container"
+        class="paper-container h-100 pr-4"
         :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
         :style="{ width: parentWidth, height: parentHeight }"
       >
@@ -23,10 +23,10 @@
       </b-col>
 
       <component
+        ref="nodeComponent"
         v-for="node in nodes"
         :is="node.type"
         :key="node._modelerId"
-        ref="nodeComponent"
         :graph="graph"
         :paper="paper"
         :node="node"
@@ -54,7 +54,7 @@
         @set-shape-stacking="setShapeStacking"
         @default-flow="toggleDefaultFlow"
       />
-      <selection
+      <Selection
         v-if="paper"
         ref="selector"
         :graph="graph"
@@ -76,7 +76,6 @@ import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
-import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -84,7 +83,6 @@ import { getNodeIdGenerator } from '../../NodeIdGenerator';
 import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
-import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
@@ -97,7 +95,6 @@ import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
-import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import TimerEventNode from '@/components/nodes/timerEventNode';
@@ -105,16 +102,11 @@ import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInput
 import XMLManager from '@/components/modeler/XMLManager';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
-import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 import Selection from './Selection';
 
 export default {
   components: {
-    ToolBar,
     controls,
-    InspectorPanel,
-    MiniPaper,
-    ProcessmakerModelerGenericFlow,
     Selection,
   },
   props: {
@@ -125,7 +117,7 @@ export default {
         return {};
       },
     },
-    inflight: {
+    readOnly: {
       type: Boolean,
       default: true,
     },
@@ -215,15 +207,8 @@ export default {
 
   },
   computed: {
-    isInflightEnabled() {
-      return this.inflight;
-    },
-    showInspector() {
-      return !this.isInflightEnabled;
-    },
     showControls() {
-      return true;
-      // return !this.isInflightEnabled;
+      return !this.readOnly;
     },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
@@ -769,18 +754,6 @@ export default {
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
-    showSavedNotification() {
-      undoRedoStore.dispatch('saved');
-    },
-    enableVersions() {
-      undoRedoStore.dispatch('enableVersions');
-    },
-    setVersionIndicator(isDraft) {
-      undoRedoStore.dispatch('setVersionIndicator', isDraft);
-    },
-    setLoadingState(isLoading) {
-      undoRedoStore.dispatch('setLoadingState', isLoading);
-    },
     clearSelection(){
       this.$refs.selector.clearSelection();
     },
@@ -817,20 +790,13 @@ export default {
       });
     },
     pointerUpHandler(event, cellView) {
-      if (!this.isDragging) {
-        // is clicked over the shape
-        if (cellView) {
-          this.$refs.selector.selectElement(cellView, event.shiftKey);
-        } else {
-          this.clearSelection();
-        }
+      // is clicked over the shape
+      if (cellView) {
+        this.$refs.selector.selectElement(cellView);
       } else {
-        if (this.isSelecting) {
-          this.$refs.selector.endSelection(this.paperManager.paper);
-        } else {
-          this.$refs.selector.stopDrag(event);
-        }
+        this.clearSelection();
       }
+
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
@@ -867,6 +833,8 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    store.commit('setReadOnly', this.readOnly);
+
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -976,7 +944,6 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: async(xml) => {
         await this.loadXML(xml);
-        await undoRedoStore.dispatch('pushState', xml);
       },
     });
   },
