@@ -1,5 +1,5 @@
 <template>
-  <div class="rail-container">
+  <div class="rail-container" data-cy="rail-bottom">
     <div class="rail-left">
       <MiniPaperControl />
 
