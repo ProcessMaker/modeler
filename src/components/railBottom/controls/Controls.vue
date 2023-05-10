@@ -1,20 +1,16 @@
 <template>
-  <div>
-    <ul class="control-list">
+  <ul class="control-list">
 
-      <li v-for="(item, key) in controlList" class="control-item" :id="item.id" :key="key">
-        <SubmenuPopper :data="item"/>
-      </li>
+    <li v-for="(item, key) in controlList" class="control-item" :id="item.id" :key="key">
+      <SubmenuPopper :data="item"/>
+    </li>
 
-      <li class="control-item">
-        <div class="control-add">
-          <img :src="plusIcon" :alt="$t('Add')">
-        </div>
-      </li>
-    </ul>
-    
-  </div>
-
+    <li class="control-item">
+      <div class="control-add">
+        <img :src="plusIcon" :alt="$t('Add')">
+      </div>
+    </li>
+  </ul>
 </template>
 
 <script>
