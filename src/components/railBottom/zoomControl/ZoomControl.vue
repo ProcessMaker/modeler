@@ -4,7 +4,7 @@
       type="button"
       class="zoom-button"
       data-test="zoom-out"
-      @click="paperManager.scale = Math.max(minimumScale, paperManager.scale.sx -= scaleStep)"
+      @click="onClickZoomOut"
       v-b-tooltip.hover
       :title="$t('Zoom Out')"
     >
@@ -19,7 +19,7 @@
       type="button"
       class="zoom-button"
       data-test="zoom-in"
-      @click="paperManager.scale = paperManager.scale.sx + scaleStep"
+      @click="onClickZoomIn"
       v-b-tooltip.hover
       :title="$t('Zoom In')"
     >
@@ -37,7 +37,7 @@ export default ({
     PlusIcon,
   },
   props: {
-    paperManager: {},
+    paperManager: Object,
   },
   data() {
     return {
@@ -45,6 +45,17 @@ export default ({
       minimumScale: 0.2,
       scaleStep: 0.1,
     };
+  },
+  methods: {
+    onClickZoomOut() {
+      this.paperManager.scale = Math.max(
+        this.minimumScale, 
+        this.paperManager.scale.sx -= this.scaleStep
+      );
+    },
+    onClickZoomIn() {
+      this.paperManager.scale = this.paperManager.scale.sx + this.scaleStep;
+    },
   },
 });
 

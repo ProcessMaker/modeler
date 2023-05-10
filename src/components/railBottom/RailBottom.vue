@@ -30,7 +30,7 @@ export default {
     Controls,
   },
   props: {
-    paperManager: {},
+    paperManager: Object,
   },
 };
 </script>
