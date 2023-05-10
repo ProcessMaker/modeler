@@ -58,9 +58,9 @@ export default {
   <!--  todo add v-if for expanded-->
   <div id="explorer-rail" data-test="explorer-rail">
     <div class="rail-menu">
-      <b-tabs class="tabs--container">
+      <b-tabs class="tabs--container" :no-nav-style="true">
         <template v-for="tab in tabs">
-          <b-tab class="tab" :title="$t(tab.label)" :active="tab.idx === tabIndex"
+          <b-tab :title="$t(tab.label)" :active="tab.idx === tabIndex"
             @click="setTabIndex(tab.idx)" :key="tab.idx"
           />
         </template>
@@ -95,4 +95,4 @@ export default {
   </div>
 </template>
 
-<style scoped lang="scss" src="./explorer-rail.scss"></style>
+<style lang="scss" src="./explorer-rail.scss"></style>

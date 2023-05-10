@@ -10,15 +10,14 @@ exports[`Explorer Rail should render the component 1`] = `
   >
     <b-tabs-stub
       class="tabs--container"
+      nonavstyle="true"
       tag="div"
     >
       <b-tab-stub
         active="true"
-        class="tab"
         tag="div"
       />
       <b-tab-stub
-        class="tab"
         tag="div"
       />
     </b-tabs-stub>
