@@ -3,8 +3,12 @@
     <button type="button"
       class="ur-button"
       data-test="undo"
+      :disabled="!canUndo"
+      v-b-tooltip.hover
+      :title="$t('Undo')"
+      @click="undo"
     >
-      <img :src="undoIcon" :alt="$t('Undo')" >
+      <UndoIcon />
     </button>
 
     <div class="ur-divider" />
@@ -12,20 +16,69 @@
     <button type="button"
       class="ur-button"
       data-test="redo"
+      :disabled="!canRedo"
+      v-b-tooltip.hover
+      :title="$t('Redo')"
+      @click="redo"
     >
-      <img :src="redoIcon" :alt="$t('Redo')" >
+      <RedoIcon />
     </button>
   </div>
 </template>
 
 <script>
+import { UndoIcon, RedoIcon } from '@/components/railBottom/icons';
+import undoRedoStore from '@/undoRedoStore';
 
 export default ({
-  data() {
-    return {
-      undoIcon: require('@/assets/railBottom/undo.svg'),
-      redoIcon: require('@/assets/railBottom/redo.svg'),
-    };
+  components: {
+    UndoIcon,
+    RedoIcon,
+  },
+  props: {
+    isRendering: {
+      type: Boolean,
+    },
+  },
+  watch: {
+    canUndo(canUndo) {
+      if (!canUndo) {
+        this.$root.$emit('bv::hide::tooltip');
+      }
+    },
+    canRedo(canRedo) {
+      if (!canRedo) {
+        this.$root.$emit('bv::hide::tooltip');
+      }
+    },
+  },
+  computed: {
+    canUndo() {
+      return undoRedoStore.getters.canUndo;
+    },
+    canRedo() {
+      return undoRedoStore.getters.canRedo;
+    },
+  },
+  methods: {
+    undo() {
+      this.$emit('clearSelection');
+      if (this.isRendering) {
+        return;
+      }
+      undoRedoStore
+        .dispatch('undo')
+        .then(() => this.$emit('load-xml'));
+    },
+    redo() {
+      this.$emit('clearSelection');
+      if (this.isRendering) {
+        return;
+      }
+      undoRedoStore
+        .dispatch('redo')
+        .then(() => this.$emit('load-xml'));
+    },
   },
 });
 </script>

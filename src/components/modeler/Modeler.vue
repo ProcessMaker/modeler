@@ -108,6 +108,9 @@
       <RailBottom
         :paper-manager="paperManager"
         :graph="graph"
+        :is-rendering="isRendering"
+        @load-xml="loadXML"
+        @clearSelection="clearSelection"
       />
 
       <selection
