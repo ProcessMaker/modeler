@@ -9,6 +9,7 @@ $secondary-color-nav: #6c757d;
 	z-index: 2;
 	border-radius: 4px;
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+	padding-left: 1rem;
 }
 
 .rail-menu {
@@ -29,6 +30,11 @@ $secondary-color-nav: #6c757d;
 		width: 50px;
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		height: 40px;
+		&:hover {
+			cursor: pointer;
+		}
 	}
 }
 
