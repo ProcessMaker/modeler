@@ -27,7 +27,10 @@ export default new Vuex.Store({
         .sort((node1, node2) => node1.rank - node2.rank);
     },
     setPinnedNodes(state, payload) {
-      state.pinnedNodeTypes = payload;
+      state.pinnedNodeTypes.push(payload);
+    },
+    setUnpinNode(state, payload) {
+      state.pinnedNodeTypes = state.pinnedNodeTypes.filter(node => node !== payload);
     },
   },
   actions: {

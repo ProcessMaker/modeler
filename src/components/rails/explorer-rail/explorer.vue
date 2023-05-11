@@ -2,10 +2,13 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import nodeTypesStore from '@/nodeTypesStore';
+import pinIcon from '@/assets/pin-angle.svg';
+import pinFillIcon from '@/assets/pin-angle-fill.svg';
 
 export default {
   name: 'ExplorerRail',
   props: {
+    explorerExpanded: Boolean,
     nodeTypes: {
       type: Array,
     },
@@ -15,7 +18,9 @@ export default {
   },
   data() {
     return {
-      expanded: false,
+      pinIcon,
+      pinFillIcon,
+      expanded: this.explorerExpanded,
       tabs: [{
         idx: 0,
         label: 'Add Object',
@@ -33,6 +38,9 @@ export default {
     pinnedObjects() {
       return nodeTypesStore.getters.getPinnedNodeTypes;
     },
+    unpinnedObjects() {
+      return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
+    },
   },
   created() {
     nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
@@ -49,6 +57,12 @@ export default {
     },
     closeRail() {
       this.expanded = false;
+    },
+    pinObject(object) {
+      nodeTypesStore.commit('setPinnedNodes', object);
+    },
+    unpinObject(object) {
+      nodeTypesStore.commit('setUnpinNode', object);
     },
   },
 };
@@ -70,23 +84,31 @@ export default {
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
-      <template v-if="pinnedObjects.length > 0">
-        <p>{{ $t('Pinned Objects') }}</p>
-        <template v-for="pinnedObject in pinnedObjects">
-          <div class="node-types__item" :key="pinnedObject.id">
-            <img :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
-            <span>{{ $t(pinnedObject.label) }}</span>
-          </div>
-        </template>
+      <p>{{ $t('Pinned Objects') }}</p>
+      <template v-for="pinnedObject in pinnedObjects">
+        <div class="node-types__item" :key="pinnedObject.id">
+          <img :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
+          <span>{{ $t(pinnedObject.label) }}</span>
+          <button class="pinIcon" @click="unpinObject(pinnedObject)">
+            <img
+              :src="pinFillIcon"
+              alt="Unpin Element"
+            >
+          </button>
+        </div>
       </template>
-      <template v-if="objects.length > 0">
-        <p>{{ $t('Object Category') }}</p>
-        <template v-for="object in objects">
-          <div class="node-types__item" :key="object.id">
-            <img :src="object.icon" :alt="$t(object.label)">
-            <span>{{ $t(object.label) }}</span>
-          </div>
-        </template>
+      <p>{{ $t('Object Category') }}</p>
+      <template v-for="object in unpinnedObjects">
+        <div class="node-types__item" :key="object.id">
+          <img :src="object.icon" :alt="$t(object.label)">
+          <span>{{ $t(object.label) }}</span>
+          <button class="pinIcon" @click="pinObject(object)">
+            <img
+              :src="pinIcon"
+              alt="Pin Element"
+            >
+          </button>
+        </div>
       </template>
     </div>
     <div class="pm-blocks__container">

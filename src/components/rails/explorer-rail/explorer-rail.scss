@@ -1,8 +1,10 @@
+$controls-column-max-width: 265px;
 $controls-transition: 0.3s;
 $secondary-color-nav: #6c757d;
 
 #explorer-rail {
-	max-width: 355px;
+	overflow: hidden;
+	max-width: $controls-column-max-width;
 	background-color: white;
 	width: 100%;
 	transition: all $controls-transition ease-out;
@@ -44,6 +46,9 @@ $secondary-color-nav: #6c757d;
 			height: 1.5rem;
 			width: 1.5rem;
 		}
+		button.pinIcon {
+			margin-left: auto;
+		}
 		span {
 			margin-left: 0.8rem;
 			font-size: 14px;
@@ -51,3 +56,4 @@ $secondary-color-nav: #6c757d;
 		}
 	}
 }
+

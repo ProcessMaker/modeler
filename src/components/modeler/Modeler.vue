@@ -24,7 +24,7 @@
         :title="tooltipTitle"
       />
 
-      <controls
+      <!-- <controls
         :nodeTypes="nodeTypes"
         :compressed="panelsCompressed"
         :parent-height="parentHeight"
@@ -33,7 +33,7 @@
         @handleDrop="handleDrop"
         class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
         :canvas-drag-position="canvasDragPosition"
-      />
+        /> -->
       <explorer-rail
         :node-types="nodeTypes"
       />
@@ -1213,6 +1213,9 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-before-init', {
       registerComponentMixin: this.registerComponentMixin,
     });
+
+    // eslint-disable-next-line no-console
+    console.log(Process);
 
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
