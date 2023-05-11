@@ -36,10 +36,6 @@ export default ({
   components: {
     Popper,
   },
-  data() {
-    return {
-    };
-  },
 });
 
 </script>

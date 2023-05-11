@@ -1,5 +1,5 @@
 <template>
-  <div class="rail-container">
+  <div class="rail-container" data-cy="rail-bottom">
     <div class="rail-left">
       <MiniPaperControl />
 
@@ -34,10 +34,8 @@ export default {
     Controls,
   },
   props: {
-    paperManager: {},
-    isRendering: {
-      type: Boolean,
-    },
+    paperManager: Object,
+    graph: Object,
   },
 };
 </script>
