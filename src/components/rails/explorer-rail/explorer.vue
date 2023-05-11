@@ -15,7 +15,8 @@ export default {
   },
   data() {
     return {
-      expanded: false,
+      // TODO set to false when the bottom control rail is merged
+      expanded: true,
       tabs: [{
         idx: 0,
         label: 'Add Object',
@@ -55,8 +56,7 @@ export default {
 </script>
 
 <template>
-  <!--  todo add v-if for expanded-->
-  <div id="explorer-rail" data-test="explorer-rail">
+  <div id="explorer-rail" data-test="explorer-rail" v-if="!expanded">
     <div class="rail-menu">
       <b-tabs class="tabs--container" :no-nav-style="true">
         <template v-for="tab in tabs">
