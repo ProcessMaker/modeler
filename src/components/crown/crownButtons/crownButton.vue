@@ -70,7 +70,4 @@ img {
 .crown-button svg {
   margin:auto;
 }
-.crown-button i {
-  margin:auto;
-}
 </style>

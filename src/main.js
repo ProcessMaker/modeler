@@ -12,17 +12,11 @@ import ScreenBuilder from '@processmaker/screen-builder';
 import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBoundaryEvent } from '@/components/crown/crownButtons/icons';
-
-library.add(faBoundaryEvent);
 
 Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);
 Vue.use(VueI18Next);
 Vue.use(ScreenBuilder);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('Multiselect', Multiselect);
 
 Vue.config.productionTip = false;
