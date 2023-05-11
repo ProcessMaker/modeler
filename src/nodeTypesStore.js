@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { BOTTOM } from '@/components/controls/rankConstants';
+import { BOTTOM } from '@/components/rails/explorer-rail/rankConstants';
 
 Vue.use(Vuex);
 
