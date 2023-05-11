@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <div id="explorer-rail" data-test="explorer-rail" v-if="!expanded">
+  <div id="explorer-rail" data-test="explorer-rail" v-if="expanded">
     <div class="rail-menu">
       <b-tabs class="tabs--container" :no-nav-style="true">
         <template v-for="tab in tabs">
