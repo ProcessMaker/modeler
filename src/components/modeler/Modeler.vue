@@ -114,6 +114,9 @@
 
       <RailBottom
         :paper-manager="paperManager"
+        :is-rendering="isRendering"
+        @load-xml="loadXML"
+        @clearSelection="clearSelection"
       />
 
       <selection
