@@ -181,6 +181,8 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 
+//import { dom } from '@fortawesome/fontawesome-svg-core';
+
 export default {
   components: {
     ToolBar,
@@ -1236,7 +1238,13 @@ export default {
     this.linter = new Linter(linterConfig);
     this.xmlManager = new XMLManager(this.moddle);
     this.$emit('set-xml-manager', this.xmlManager);
+
+    //watch for custom fonts (fontawsome)
+    // dom.watch();
   },
+  // destroyed() {
+  //dom.unwatch();
+  // },
   mounted() {
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);

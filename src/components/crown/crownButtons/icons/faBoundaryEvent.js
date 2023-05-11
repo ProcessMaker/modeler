@@ -1,6 +1,6 @@
 export const faBoundaryEvent = {
-  prefix: 'fab',
-  iconName: 'boundary-event',
+  prefix: 'fpm',
+  iconName: 'fa-boundary-event',
   icon: [
     112,
     112,
