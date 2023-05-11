@@ -8,7 +8,7 @@
     role="menuitem"
     @click="copyElement"
   >
-    <i class="fas fa-clipboard cog-container--button"/>
+    <i class="fas fa-clipboard"/>
   </crown-button>
 
 </template>

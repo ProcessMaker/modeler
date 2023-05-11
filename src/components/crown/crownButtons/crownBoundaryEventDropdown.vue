@@ -10,7 +10,7 @@
       :title="$t('Boundary Events')"
       role="menuitem"
     >
-      <i class="fab fa-boundary-event"/>
+      <font-awesome-icon :icon="['fpm', 'fa-boundary-event']"/>
     </crown-button>
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
@@ -43,7 +43,7 @@ import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 import store from '@/store';
 import Node from '@/components/nodes/node';
-import { library, dom } from '@fortawesome/fontawesome-svg-core';
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBoundaryEvent } from './icons';
 
 export default {
@@ -98,7 +98,6 @@ export default {
   created() {
     this.$t = this.$t.bind(this);
     library.add(faBoundaryEvent);
-    dom.watch();
   },
 };
 </script>
