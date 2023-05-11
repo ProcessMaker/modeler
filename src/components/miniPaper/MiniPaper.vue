@@ -1,5 +1,10 @@
 <template>
-  <div class="mini-paper-container" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
+  <div
+    class="mini-paper-container"
+    @click="movePaper"
+    :class="isOpen ? 'opened' : 'closed'"
+    data-cy="mini-map-box"
+  >
     <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>
