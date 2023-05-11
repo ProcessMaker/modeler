@@ -36,6 +36,12 @@ export default ({
   components: {
     Popper,
   },
+  methods: {
+    onMouseDown() {
+      // eslint-disable-next-line no-console
+      console.log('onMouseDown');
+    },
+  },
 });
 
 </script>

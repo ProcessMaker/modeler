@@ -114,6 +114,7 @@
 
       <RailBottom
         :paper-manager="paperManager"
+        @set-cursor="cursor = $event"
       />
 
       <selection
@@ -1300,6 +1301,8 @@ export default {
     });
 
     this.$el.addEventListener('mousemove', event => {
+      // eslint-disable-next-line no-console
+      // console.log('mouse-move');
       this.pointerMoveHandler(event);
     });
 

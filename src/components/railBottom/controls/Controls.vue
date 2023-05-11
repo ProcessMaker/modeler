@@ -1,11 +1,16 @@
 <template>
   <ul class="control-list">
-
-    <li v-for="(item, key) in controlList" class="control-item" :id="item.id" :key="key">
+    <li 
+      v-for="(item, key) in controlList"
+      class="control-item"
+      :id="item.id"
+      :key="key"
+      @mousedown="onMouseDown"
+    >
       <SubmenuPopper :data="item"/>
     </li>
 
-    <li class="control-item">
+    <li class="control-item" >
       <div class="control-add">
         <img :src="plusIcon" :alt="$t('Add')">
       </div>
@@ -26,31 +31,37 @@ export default ({
           iconSrc: require('@/assets/toolpanel/start-event.svg'),
           label: this.$t('Start Event'),
           id: 'startEvent',
+          bpmnType: 'bpmn:StartEvent',
           items: [
             {
               iconSrc: require('@/assets/toolpanel/start-event.svg'),
               label: this.$t('Start Event'),    
               id: 'genericStartEvent',
+              bpmnType: 'bpmn:StartEvent',
             },
             {
               iconSrc: require('@/assets/toolpanel/message-start-event.svg'),
               label: this.$t('Message Start Event'),    
               id: 'messageStartEvent',
+              bpmnType: 'bpmn:StartEvent',
             },
             {
               iconSrc: require('@/assets/toolpanel/conditional-start-event.svg'),
               label: this.$t('Conditional Start Event'),    
               id: 'conditionalStartEvent',
+              bpmnType: 'bpmn:StartEvent',
             },
             {
               iconSrc: require('@/assets/toolpanel/signal-start-event.svg'),
               label: this.$t('Signal Start Event'),    
               id: 'signalStartEvent',
+              bpmnType: 'bpmn:StartEvent',
             },
             {
               iconSrc: require('@/assets/toolpanel/timer-start-event.svg'),
               label: this.$t('Start Timer Event'),    
               id: 'timerStartEvent',
+              bpmnType: 'bpmn:StartEvent',
             },
           ],
         },
@@ -186,7 +197,79 @@ export default ({
         },
       ],
       plusIcon: require('@/assets/railBottom/plus-lg-light.svg'),
+      dragStart: null,
+      isDragging: false,
     };
+  },
+  methods: {
+    onMouseDown(event, control) {
+      // eslint-disable-next-line no-console
+      console.log('onMouseDown');
+
+      this.draggingControl = control;
+      this.isDragging = false;
+      document.addEventListener('mousemove', this.setDraggingPosition);
+      document.addEventListener('mouseup', this.dropElement);
+      document.addEventListener('keyup', this.stopDrag);
+      // this.draggingControl = control;
+      this.dragStart = { 
+        x: event.clientX,
+        y: event.clientY,
+      };
+      // eslint-disable-next-line no-console
+      console.log('onMouseDown',this.dragStart);
+      this.setDraggingPosition(event);
+    },
+    stopDrag(event) {
+      if (event && event.key !== 'Escape') {
+        return;
+      }
+
+      document.removeEventListener('mousemove', this.setDraggingPosition);
+      document.removeEventListener('mouseup', this.dropElement);
+      document.removeEventListener('keyup', this.stopDrag);
+
+      // document.body.removeChild(this.draggingElement);
+      this.draggingElement = null;
+      this.draggingControl = null;
+    },
+    dropElement({ clientX, clientY }) {
+      if (!this.isDragging && this.dragStart) {
+        // is clicked over the shape
+        // eslint-disable-next-line no-console
+        console.log('clicked');
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('dropElement x,y :', clientX, clientY);
+      }
+     
+      this.isDragging = false;
+      this.dragStart = null;
+      // this.$emit('handleDrop', { clientX, clientY, control: this.draggingControl });
+      this.stopDrag();
+      // this.dragStart = null;
+    },
+    setDraggingPosition({ clientX, clientY }) {
+      if (this.dragStart && (Math.abs(clientX - this.dragStart.x) > 5 || Math.abs(clientY- this.dragStart.y) > 5)) {
+       
+        this.isDragging = true;
+        this.dragStart = null;
+        // eslint-disable-next-line no-console
+        
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('setDraggingPosition x, y :', clientX, clientY);
+      }
+      // this.draggingElement.style.left = pageX - this.xOffset + 'px';
+      // this.draggingElement.style.top = pageY - this.yOffset + 'px';
+      // eslint-disable-next-line no-console
+      
+      // this.$emit('drag', { clientX, clientY, control: this.draggingControl });
+    },
+    onMouseUp() {
+      // eslint-disable-next-line no-console
+      console.log('onMouseUp');
+    },
   },
 });
 
