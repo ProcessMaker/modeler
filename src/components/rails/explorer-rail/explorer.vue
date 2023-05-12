@@ -2,6 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import nodeTypesStore from '@/nodeTypesStore';
+import FilterNodeTypes from '@/components/rails/explorer-rail/filterNodeTypes/filterNodeTypes.vue';
 
 export default {
   name: 'ExplorerRail',
@@ -12,6 +13,7 @@ export default {
   },
   components: {
     FontAwesomeIcon,
+    FilterNodeTypes,
   },
   data() {
     return {
@@ -33,6 +35,9 @@ export default {
     },
     pinnedObjects() {
       return nodeTypesStore.getters.getPinnedNodeTypes;
+    },
+    filteredNodes() {
+      return nodeTypesStore.getters.getFilteredNodeTypes;
     },
   },
   created() {
@@ -70,6 +75,7 @@ export default {
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
+      <filter-node-types />
       <template v-if="pinnedObjects.length > 0">
         <p>{{ $t('Pinned Objects') }}</p>
         <template v-for="pinnedObject in pinnedObjects">

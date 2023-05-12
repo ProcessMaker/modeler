@@ -8,10 +8,12 @@ export default new Vuex.Store({
   state: {
     nodeTypes: [],
     pinnedNodeTypes: [],
+    filteredNodeTypes: [],
   },
   getters: {
     getNodeTypes: state => state.nodeTypes,
     getPinnedNodeTypes: state => state.pinnedNodeTypes,
+    getFilteredNodeTypes: state => state.filteredNodeTypes,
   },
   mutations: {
     setNodeTypes(state, nodeTypes) {
@@ -28,6 +30,17 @@ export default new Vuex.Store({
     },
     setPinnedNodes(state, payload) {
       state.pinnedNodeTypes = payload;
+    },
+    setFilteredNodeTypes(state, searchTerm) {
+      const pinnedNodeTypes = state.pinnedNodeTypes;
+      const nodeTypes = state.nodeTypes;
+      const allNodes = [...pinnedNodeTypes, ...nodeTypes];
+      state.filteredNodeTypes = allNodes.filter(node => {
+        return node.label.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    },
+    clearFilteredNodes(state) {
+      state.filteredNodeTypes.length = 0;
     },
   },
   actions: {
