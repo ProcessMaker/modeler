@@ -47,19 +47,4 @@ $secondary-color-nav: #6c757d;
 			color: #000;
 		}
 	}
-
-	&__item {
-		display: flex;
-		margin-bottom: 1rem;
-		align-items: center;
-		img {
-			height: 1.5rem;
-			width: 1.5rem;
-		}
-		span {
-			margin-left: 0.8rem;
-			font-size: 13px;
-			line-height: 19px;
-		}
-	}
 }
