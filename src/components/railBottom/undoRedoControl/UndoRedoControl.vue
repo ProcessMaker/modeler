@@ -3,6 +3,8 @@
     <button type="button"
       class="ur-button"
       data-test="undo"
+      v-b-tooltip.hover
+      :title="$t('Undo')"
     >
       <img :src="undoIcon" :alt="$t('Undo')" >
     </button>
@@ -12,6 +14,8 @@
     <button type="button"
       class="ur-button"
       data-test="redo"
+      v-b-tooltip.hover
+      :title="$t('Redo')"
     >
       <img :src="redoIcon" :alt="$t('Redo')" >
     </button>
