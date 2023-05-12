@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { BOTTOM } from '@/components/controls/rankConstants';
+import { BOTTOM } from '@/components/rails/explorer-rail/rankConstants';
 
 Vue.use(Vuex);
 
@@ -8,10 +8,12 @@ export default new Vuex.Store({
   state: {
     nodeTypes: [],
     pinnedNodeTypes: [],
+    filteredNodeTypes: [],
   },
   getters: {
     getNodeTypes: state => state.nodeTypes,
     getPinnedNodeTypes: state => state.pinnedNodeTypes,
+    getFilteredNodeTypes: state => state.filteredNodeTypes,
   },
   mutations: {
     setNodeTypes(state, nodeTypes) {
@@ -31,6 +33,17 @@ export default new Vuex.Store({
     },
     setUnpinNode(state, payload) {
       state.pinnedNodeTypes = state.pinnedNodeTypes.filter(node => node !== payload);
+    },
+    setFilteredNodeTypes(state, searchTerm) {
+      const pinnedNodeTypes = state.pinnedNodeTypes;
+      const nodeTypes = state.nodeTypes;
+      const allNodes = [...pinnedNodeTypes, ...nodeTypes];
+      state.filteredNodeTypes = allNodes.filter(node => {
+        return node.label.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    },
+    clearFilteredNodes(state) {
+      state.filteredNodeTypes.length = 0;
     },
   },
   actions: {

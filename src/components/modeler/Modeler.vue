@@ -23,19 +23,9 @@
         :target="getTooltipTarget"
         :title="tooltipTitle"
       />
-
-      <!-- <controls
-        :nodeTypes="nodeTypes"
-        :compressed="panelsCompressed"
-        :parent-height="parentHeight"
-        :allowDrop="allowDrop"
-        @drag="validateDropTarget"
-        @handleDrop="handleDrop"
-        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-        :canvas-drag-position="canvasDragPosition"
-        /> -->
       <explorer-rail
         :node-types="nodeTypes"
+        :explorerExpanded="true"
       />
       <b-col
         class="paper-container h-100 pr-4"
@@ -135,7 +125,6 @@ import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
-import controls from '../controls/controls';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -182,7 +171,6 @@ import Selection from './Selection';
 export default {
   components: {
     ToolBar,
-    controls,
     ExplorerRail,
     InspectorPanel,
     MiniPaper,

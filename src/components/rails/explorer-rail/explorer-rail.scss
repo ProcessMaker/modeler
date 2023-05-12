@@ -11,12 +11,14 @@ $secondary-color-nav: #6c757d;
 	z-index: 2;
 	border-radius: 4px;
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+	padding-left: 1rem;
 }
 
 .rail-menu {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	padding: 0.5rem 0;
 	.nav-link {
 		color: $secondary-color-nav;
 		&.active {
@@ -25,35 +27,31 @@ $secondary-color-nav: #6c757d;
 			color: #000;
 		}
 	}
-}
 
-
-
-.nav-tabs {
-	background-color: pink;
+	.close--container {
+		width: 50px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 40px;
+		&:hover {
+			cursor: pointer;
+		}
+	}
 }
 
 .node-types {
 	&__container {
 		padding: 0.5rem 1rem;
-	}
-
-	&__item {
-		display: flex;
-		margin-bottom: 1rem;
-		align-items: center;
-		img {
-			height: 1.5rem;
-			width: 1.5rem;
-		}
-		button.pinIcon {
-			margin-left: auto;
-		}
-		span {
-			margin-left: 0.8rem;
-			font-size: 14px;
+		p {
+			font-size: 13px;
 			line-height: 19px;
+			color: #000;
 		}
 	}
+}
+
+.pinIcon {
+	margin-left: auto;
 }
 
