@@ -2,6 +2,8 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import nodeTypesStore from '@/nodeTypesStore';
+import FilterNodeTypes from '@/components/rails/explorer-rail/filterNodeTypes/filterNodeTypes.vue';
+import NodeTypesLoop from '@/components/rails/explorer-rail/nodeTypesLoop/nodeTypesLoop.vue';
 
 export default {
   name: 'ExplorerRail',
@@ -12,6 +14,8 @@ export default {
   },
   components: {
     FontAwesomeIcon,
+    FilterNodeTypes,
+    NodeTypesLoop,
   },
   data() {
     return {
@@ -33,6 +37,9 @@ export default {
     },
     pinnedObjects() {
       return nodeTypesStore.getters.getPinnedNodeTypes;
+    },
+    filteredNodes() {
+      return nodeTypesStore.getters.getFilteredNodeTypes;
     },
   },
   created() {
@@ -70,23 +77,19 @@ export default {
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
-      <template v-if="pinnedObjects.length > 0">
-        <p>{{ $t('Pinned Objects') }}</p>
-        <template v-for="pinnedObject in pinnedObjects">
-          <div class="node-types__item" :key="pinnedObject.id">
-            <img :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
-            <span>{{ $t(pinnedObject.label) }}</span>
-          </div>
-        </template>
+      <filter-node-types />
+      <template v-if="filteredNodes.length > 0">
+        <node-types-loop :nodeTypes="filteredNodes" />
       </template>
-      <template v-if="objects.length > 0">
-        <p>{{ $t('Object Category') }}</p>
-        <template v-for="object in objects">
-          <div class="node-types__item" :key="object.id">
-            <img :src="object.icon" :alt="$t(object.label)">
-            <span>{{ $t(object.label) }}</span>
-          </div>
-        </template>
+      <template v-else>
+        <node-types-loop  v-if="pinnedObjects.length > 0" 
+          label="Pinned Objects"
+          :nodeTypes="pinnedObjects"
+        />
+        <node-types-loop v-if="objects.length > 0"
+          label="Object Category"
+          :nodeTypes="objects"
+        />
       </template>
     </div>
     <div class="pm-blocks__container">
