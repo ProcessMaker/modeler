@@ -181,6 +181,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 
+
 export default {
   components: {
     ToolBar,

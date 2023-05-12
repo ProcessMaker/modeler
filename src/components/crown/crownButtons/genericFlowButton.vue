@@ -8,10 +8,7 @@
     role="menuitem"
     @click="addSequence"
   >
-    <img
-      :src="sequenceFlow"
-      aria-hidden="true"
-    >
+    <font-awesome-icon :icon="['fpm', 'fa-connect-elements']"/>
   </crown-button>
 </template>
 <script>
@@ -21,6 +18,8 @@ import Node from '@/components/nodes/node';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import store from '@/store';
 import { V } from 'jointjs';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faConnectElements } from './icons';
 
 // Don't show the magic flow button on:
 const dontShowOn = [
@@ -84,6 +83,7 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
+    library.add(faConnectElements);
   },
 };
 </script>

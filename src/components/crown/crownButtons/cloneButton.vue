@@ -5,14 +5,9 @@
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     aria-label="Clone Element"
     data-test="clone-button"
-    role="menuitem"
     @click="cloneElement"
   >
-    <img
-      :src="cloneIcon"
-      aria-hidden="true"
-      alt="Clone element icon"
-    >
+    <i class="fas fa-paste"/>
   </crown-button>
   
 </template>

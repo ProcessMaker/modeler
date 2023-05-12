@@ -233,7 +233,7 @@ export default {
       const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation && !this.isFlow });
 
       this.style = {
-        top: `${y - 45}px`,
+        top: `${y - 52}px`,
         left: `${x + width - 20}px`,
         cursor: 'pointer',
       };
