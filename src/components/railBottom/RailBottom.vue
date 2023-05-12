@@ -39,6 +39,7 @@ export default {
   props: {
     paperManager: Object,
     graph: Object,
+    isRendering: Boolean,
   },
 };
 </script>

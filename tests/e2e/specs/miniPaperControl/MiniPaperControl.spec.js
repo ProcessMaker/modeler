@@ -1,25 +1,24 @@
-// import paperManager from '../../../../../src/components/paperManager';
-import {
-  waitToRenderAllShapes,
-} from '../../support/utils';
-
-describe('Mini-paper control', () => {
+describe('Mini Paper control test', () => {
   const miniPaperSelector = '[data-cy="mini-paper-button"]';
   const miniMapSelector = '[data-cy="mini-map-box"]';
 
   const positions = [
     {
-      offsetX: 119,
+      offsetX: 28,
+      offsetY: 30,
+    },
+    {
+      offsetX: 98,
       offsetY: 140,
-      scaleX: 1,
-      scaleY: 1,
-      clientWidth: 1138,
-      clientHeight: 845,
+    },
+    {
+      offsetX: 40,
+      offsetY: 60,
     },
   ];
 
-  it('should be render new mini-paper button', () => {
-    waitToRenderAllShapes();
+  it('should render new mini-paper button', () => {
+    // waitToRenderAllShapes();
 
     cy.get(miniPaperSelector)
       .should('be.visible')
@@ -27,7 +26,7 @@ describe('Mini-paper control', () => {
         // Checks button style
         expect($btn).to.have.css('background-color', 'rgb(255, 255, 255)');
 
-        // Checks if button icon style
+        // Checks button icon style
         const icon = $btn.children('svg');
         expect(icon).to.have.css('fill', 'rgb(51, 51, 68)');
 
@@ -36,8 +35,8 @@ describe('Mini-paper control', () => {
       });
   });
 
-  it('should be show mini-map', () => {
-    waitToRenderAllShapes();
+  it('should show mini-map', () => {
+    // waitToRenderAllShapes();
 
     cy.get(miniPaperSelector)
       .should('be.visible')
@@ -54,5 +53,26 @@ describe('Mini-paper control', () => {
         cy.get(miniMapSelector)
           .should('have.class', 'opened');
       });
+  });
+
+  positions.forEach(position => {
+    it(`should update the paper according to the mini-paper (${position.offsetX} - ${position.offsetY}) selection`, () => {
+      cy.get(miniPaperSelector)
+        .should('be.visible')
+        .click()
+        .then(($btn) => {
+          // Checks if mini-map is open
+          cy.get(miniMapSelector)
+            .should('have.class', 'opened')
+            .click(position.offsetX, position.offsetY)
+            .then(($e) => {
+              // Checks if the new coordinates are the correct ones
+              cy.window().its('store.state.paper').then(paper => {
+                expect($e['0'].__vue__.newX).to.equal(paper.localToPaperPoint().x);
+                expect($e['0'].__vue__.newY).to.equal(paper.localToPaperPoint().y);
+              });
+            });
+        });
+    });
   });
 });

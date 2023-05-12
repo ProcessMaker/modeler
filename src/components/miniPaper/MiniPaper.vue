@@ -16,6 +16,8 @@ export default {
   data() {
     return {
       miniMapManager: null,
+      newX: 0,
+      newY: 0,
     };
   },
   props: {
@@ -40,7 +42,10 @@ export default {
       const { sx: scaleX, sy: scaleY } = this.paperManager.scale;
       const { clientWidth, clientHeight } = this.paperManager.paper.el;
       const { newX, newY } = this.miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
-      this.paperManager.translate(newX, newY);
+      this.newX = newX;
+      this.newY = newY;
+
+      this.paperManager.translate(this.newX, this.newY);
     },
   },
   async mounted() {
