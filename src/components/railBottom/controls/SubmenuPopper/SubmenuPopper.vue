@@ -21,11 +21,16 @@
       <div class="control-submenu-options">
         <span />
       </div>
-      <img :src=data.iconSrc :alt=data.label>
+      <img
+        :src=data.iconSrc
+        :alt=data.label
+        :title="$t(data.label)"
+        v-b-tooltip.hover
+      >
     </div>
   </popper>
 </template>
-  
+
 <script>
 import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
@@ -39,7 +44,7 @@ export default ({
 });
 
 </script>
-  
+
 <style lang="scss" scoped>
 .control-submenu {
   display: flex;
@@ -67,7 +72,7 @@ export default ({
     &:hover {
       background: #EBEEF2;
     }
-   
+
     & > img {
       width: 24px;
       height: 24px;
@@ -89,9 +94,8 @@ export default ({
       clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
       clip-path: padding-box;
     }
-    
+
   }
 }
 
 </style>
-  
