@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Explorer Rail should render the component 1`] = `
+<div
+  data-test="explorer-rail"
+  id="explorer-rail"
+>
+  <div
+    class="rail-menu"
+  >
+    <b-tabs-stub
+      class="tabs--container"
+      nonavstyle="true"
+      tag="div"
+    >
+      <b-tab-stub
+        active="true"
+        tag="div"
+      />
+      <b-tab-stub
+        tag="div"
+      />
+    </b-tabs-stub>
+     
+    <div
+      class="close--container"
+    >
+      <font-awesome-icon-stub
+        icon="[object Object]"
+      />
+    </div>
+  </div>
+   
+  <div
+    class="node-types__container"
+  >
+    <!---->
+     
+    <!---->
+  </div>
+   
+  <div
+    class="pm-blocks__container"
+  />
+</div>
+`;
