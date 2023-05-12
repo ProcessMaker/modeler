@@ -1,3 +1,5 @@
+import { waitToRenderAllShapes } from '../../support/utils';
+
 describe('Mini Paper control test', () => {
   const miniPaperSelector = '[data-cy="mini-paper-button"]';
   const miniMapSelector = '[data-cy="mini-map-box"]';
@@ -18,7 +20,7 @@ describe('Mini Paper control test', () => {
   ];
 
   it('should render new mini-paper button', () => {
-    // waitToRenderAllShapes();
+    waitToRenderAllShapes();
 
     cy.get(miniPaperSelector)
       .should('be.visible')
@@ -36,7 +38,7 @@ describe('Mini Paper control test', () => {
   });
 
   it('should show mini-map', () => {
-    // waitToRenderAllShapes();
+    waitToRenderAllShapes();
 
     cy.get(miniPaperSelector)
       .should('be.visible')
@@ -56,11 +58,13 @@ describe('Mini Paper control test', () => {
   });
 
   positions.forEach(position => {
-    it(`should update the paper according to the mini-paper (${position.offsetX} - ${position.offsetY}) selection`, () => {
+    it(`should update the paper according t the mini-paper (${position.offsetX} - ${position.offsetY}) selection`, () => {
+      waitToRenderAllShapes();
+
       cy.get(miniPaperSelector)
         .should('be.visible')
         .click()
-        .then(($btn) => {
+        .then(() => {
           // Checks if mini-map is open
           cy.get(miniMapSelector)
             .should('have.class', 'opened')
