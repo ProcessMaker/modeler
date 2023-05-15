@@ -9,8 +9,10 @@ import documentationAccordionConfig from '@/components/inspectors/documentationA
 
 export const defaultDurationValue = 'PT1H';
 
+export const id = 'processmaker-modeler-boundary-timer-event';
+
 export default merge(cloneDeep(boundaryEventConfig), {
-  id: 'processmaker-modeler-boundary-timer-event',
+  id,
   component,
   control: false,
   label: 'Boundary Timer Event',

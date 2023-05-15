@@ -1,0 +1,27 @@
+.mini-paper {
+  &-box {
+    display: flex;
+    margin-right: 14px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+  }
+
+  &-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 48px;
+    padding: 16px 14px;
+    background-color: transparent;
+    border: 0 none;
+    color: #333344;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #DEEEFA;
+    }
+  }
+
+}

@@ -8,7 +8,7 @@
       @click="$emit('toggle-dropdown-state', !dropdownOpen)"
       data-test="picker-dropdown-button"
     >
-      <i class="fas fa-palette cog-container--button"/>
+      <i class="fas fa-palette "/>
     </crown-button>
 
     <div class="element-list color-list" v-if="dropdownOpen">

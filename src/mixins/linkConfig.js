@@ -118,13 +118,22 @@ export default {
       const targetShape = this.shape.getTargetElement();
       resetShapeColor(targetShape);
 
-      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
-      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
-      this.shape.on('change:vertices change:source change:target', this.updateWaypoints);
+      this.shape.on('change:vertices', this.onChangeVertices);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
       this.$emit('set-shape-stacking', sourceShape);
+    },
+    /**
+     * On Change vertices handler
+     * @param {Object} link 
+     * @param {Array} vertices 
+     * @param {Object} options 
+     */
+    onChangeVertices(link, vertices, options){
+      if (options && options.ui) {
+        this.updateWaypoints();
+      }
     },
     updateWaypoints() {
       const linkView = this.shape.findView(this.paper);

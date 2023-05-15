@@ -88,7 +88,7 @@ export default {
         <node-types-loop :nodeTypes="filteredNodes" />
       </template>
       <template v-else>
-        <node-types-loop v-if="pinnedObjects.length > 0" 
+        <node-types-loop v-if="pinnedObjects.length > 0"
           label="Pinned Objects"
           :nodeTypes="pinnedObjects"
           :pinned="true"

@@ -38,7 +38,7 @@ export default {
   <div>
     <p>{{ $t(label) }}</p>
     <template v-for="nodeType in nodeTypes">
-      <div 
+      <div
         class="node-types__item"
         :key="nodeType.id"
         @mouseover="showPin = true"
@@ -46,7 +46,7 @@ export default {
       >
         <img :src="nodeType.icon" :alt="$t(nodeType.label)">
         <span>{{ $t(nodeType.label) }}</span>
-        
+
         <button
           v-if="pinned"
           class="pinIcon"
@@ -57,7 +57,7 @@ export default {
             alt="Unpin Element"
           >
         </button>
-        
+
         <button
           v-else-if="showPin"
           class="pinIcon"

@@ -3,7 +3,7 @@ $chevron-height: 1.25rem;
 
 @mixin chevron($top, $left) {
   content: '';
-  background-color: $primary-color;
+  background-color: $primary-white;
   width: $chevron-width;
   height: $chevron-height;
   position: absolute;

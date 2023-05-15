@@ -7,13 +7,7 @@
     @click="isPoolLane ? removePoolLaneShape() : removeShape()"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
-    <img
-      :src="trashIcon"
-      aria-hidden="true"
-      data-prefix="fas"
-      data-icon="trash-alt"
-      class="fa-trash-alt trash-icon"
-    >
+    <i class="fas fa-trash-alt cog-container--button"/>
   </crown-button>
 </template>
 
