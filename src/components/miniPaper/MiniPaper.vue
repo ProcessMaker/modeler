@@ -49,6 +49,10 @@ export default {
     },
   },
   async mounted() {
+    if (window.Cypress) {
+      window.MiniPaper = this;
+    }
+
     await this.$nextTick();
 
     this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);

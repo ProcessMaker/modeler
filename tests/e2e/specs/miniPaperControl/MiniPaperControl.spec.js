@@ -58,7 +58,7 @@ describe('Mini Paper control test', () => {
   });
 
   positions.forEach(position => {
-    it(`should update the paper according t the mini-paper (${position.offsetX} - ${position.offsetY}) selection`, () => {
+    it(`should update the paper according the mini-paper control (${position.offsetX} - ${position.offsetY}) selection`, () => {
       waitToRenderAllShapes();
 
       cy.get(miniPaperSelector)
@@ -69,11 +69,11 @@ describe('Mini Paper control test', () => {
           cy.get(miniMapSelector)
             .should('have.class', 'opened')
             .click(position.offsetX, position.offsetY)
-            .then(($e) => {
+            .then(() => {
               // Checks if the new coordinates are the correct ones
-              cy.window().its('store.state.paper').then(paper => {
-                expect($e['0'].__vue__.newX).to.equal(paper.localToPaperPoint().x);
-                expect($e['0'].__vue__.newY).to.equal(paper.localToPaperPoint().y);
+              cy.window().then(win => {
+                expect(win.MiniPaper.newX).to.equal(win.store.state.paper.localToPaperPoint().x);
+                expect(win.MiniPaper.newY).to.equal(win.store.state.paper.localToPaperPoint().y);
               });
             });
         });
