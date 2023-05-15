@@ -9,7 +9,11 @@
     </div>
 
     <div class="rail-center">
-      <UndoRedoControl />
+      <UndoRedoControl
+        :is-rendering="isRendering"
+        @load-xml="$emit('load-xml')"
+        @clearSelection="$emit('clearSelection')"
+      />
 
       <Controls @onCreateElement="onCreateElementHandler"  @onSetCursor="onSetCursorHandler"/>
     </div>
@@ -31,6 +35,7 @@ export default {
   },
   props: {
     paperManager: Object,
+    graph: Object,
   },
   methods: {
     onCreateElementHandler(data){
