@@ -84,6 +84,8 @@ export default {
     },
   },
   mounted() {
+    // eslint-disable-next-line no-console
+    console.log('baseStartEvent-mounted');
     this.shape.set('type', 'processmaker.components.nodes.startEvent.Shape');
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));

@@ -84,6 +84,8 @@ export default new Vuex.Store({
       });
     },
     updateNodeProp(state, { node, key, value }) {
+      // eslint-disable-next-line no-console
+      console.log('updateNodeProp');
       if (key == 'id' && node.definition.id !== value) {
         if (state.nodes.some(node => node.definition.id === value)) {
           return;

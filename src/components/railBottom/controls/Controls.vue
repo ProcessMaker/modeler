@@ -2,12 +2,15 @@
   <ul class="control-list">
     <li 
       v-for="(item, key) in controlList"
-      class="control-item"
+      :class="{ 'control-item active': item.isActive, 'control-item': !item.isActive }"
       :id="item.id"
       :key="key"
-      @mousedown="onMouseDown"
+      @click="onClickHandler($event, item)"
     >
-      <SubmenuPopper :data="item"/>
+      <SubmenuPopper 
+        :data="item" 
+        @clickToSubmenu="clickToSubmenuHandler"  
+      />
     </li>
 
     <li class="control-item">
@@ -32,36 +35,50 @@ export default ({
           label: this.$t('Start Event'),
           id: 'startEvent',
           bpmnType: 'bpmn:StartEvent',
+          type: 'processmaker-modeler-start-event',
+          rank: 10,
+          isActive: false,
           items: [
             {
               iconSrc: require('@/assets/toolpanel/start-event.svg'),
               label: this.$t('Start Event'),
               id: 'genericStartEvent',
               bpmnType: 'bpmn:StartEvent',
+              type: 'processmaker-modeler-start-event',
+              rank: 10,
+              isActive: false,
             },
             {
               iconSrc: require('@/assets/toolpanel/message-start-event.svg'),
               label: this.$t('Message Start Event'),
               id: 'messageStartEvent',
+              type: 'processmaker-modeler-message-start-event',
               bpmnType: 'bpmn:StartEvent',
+              isActive: false,
             },
             {
               iconSrc: require('@/assets/toolpanel/conditional-start-event.svg'),
               label: this.$t('Conditional Start Event'),
               id: 'conditionalStartEvent',
               bpmnType: 'bpmn:StartEvent',
+              type: 'processmaker-modeler-conditional-start-event',
+              isActive: false,
             },
             {
               iconSrc: require('@/assets/toolpanel/signal-start-event.svg'),
               label: this.$t('Signal Start Event'),
               id: 'signalStartEvent',
               bpmnType: 'bpmn:StartEvent',
+              type: 'processmaker-modeler-signal-start-event',
+              isActive: false,
             },
             {
               iconSrc: require('@/assets/toolpanel/timer-start-event.svg'),
               label: this.$t('Start Timer Event'),
               id: 'timerStartEvent',
               bpmnType: 'bpmn:StartEvent',
+              type: 'processmaker-modeler-start-timer-event',
+              isActive: false,
             },
           ],
         },
@@ -69,6 +86,7 @@ export default ({
           iconSrc: require('@/assets/toolpanel/generic-intermediate-event.svg'),
           label: this.$t('Intermediate Event'),
           id: 'intermediateEvent',
+          isActive: false,
           items: [
             {
               iconSrc: require('@/assets/toolpanel/intermediate-timer-event.svg'),
@@ -197,78 +215,44 @@ export default ({
         },
       ],
       plusIcon: require('@/assets/railBottom/plus-lg-light.svg'),
-      dragStart: null,
-      isDragging: false,
+      wasClicked: false,
+      element: null,
+      isActive: false,
     };
   },
   methods: {
-    onMouseDown(event, control) {
-      // eslint-disable-next-line no-console
-      console.log('onMouseDown');
-
-      this.draggingControl = control;
-      this.isDragging = false;
-      document.addEventListener('mousemove', this.setDraggingPosition);
-      document.addEventListener('mouseup', this.dropElement);
-      document.addEventListener('keyup', this.stopDrag);
-      // this.draggingControl = control;
-      this.dragStart = { 
-        x: event.clientX,
-        y: event.clientY,
-      };
-      // eslint-disable-next-line no-console
-      console.log('onMouseDown',this.dragStart);
-      this.setDraggingPosition(event);
+    clickToSubmenuHandler(data){
+      window.ProcessMaker.EventBus.$off('custom-pointerclick');
+      this.wasClicked = false;
+      this.parent = this.element;
+      this.element = null;
+      this.onClickHandler(data.event, data.control);
     },
-    stopDrag(event) {
-      if (event && event.key !== 'Escape') {
-        return;
+    onClickHandler(event, control) {
+      if (!this.wasClicked && !this.element) {  
+        this.wasClicked = true;
+        this.element = control;
+        this.$emit('onSetCursor', 'crosshair');
+        event.preventDefault();
+        this.element.isActive = true;
+        window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
+          window.ProcessMaker.EventBus.$off('custom-pointerclick');
+          this.onCreateElement(message);
+        });
       }
-
-      document.removeEventListener('mousemove', this.setDraggingPosition);
-      document.removeEventListener('mouseup', this.dropElement);
-      document.removeEventListener('keyup', this.stopDrag);
-
-      // document.body.removeChild(this.draggingElement);
-      this.draggingElement = null;
-      this.draggingControl = null;
     },
-    dropElement({ clientX, clientY }) {
-      if (!this.isDragging && this.dragStart) {
-        // is clicked over the shape
-        // eslint-disable-next-line no-console
-        console.log('clicked');
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('dropElement x,y :', clientX, clientY);
-      }
-     
-      this.isDragging = false;
-      this.dragStart = null;
-      // this.$emit('handleDrop', { clientX, clientY, control: this.draggingControl });
-      this.stopDrag();
-      // this.dragStart = null;
-    },
-    setDraggingPosition({ clientX, clientY }) {
-      if (this.dragStart && (Math.abs(clientX - this.dragStart.x) > 5 || Math.abs(clientY- this.dragStart.y) > 5)) {
-       
-        this.isDragging = true;
-        this.dragStart = null;
-        // eslint-disable-next-line no-console
-        
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('setDraggingPosition x, y :', clientX, clientY);
-      }
-      // this.draggingElement.style.left = pageX - this.xOffset + 'px';
-      // this.draggingElement.style.top = pageY - this.yOffset + 'px';
-      // eslint-disable-next-line no-console
-      
-      // this.$emit('drag', { clientX, clientY, control: this.draggingControl });
-    },
-    onMouseUp() {
-      // eslint-disable-next-line no-console
-      console.log('onMouseUp');
+    onCreateElement(event){
+      if (this.wasClicked && this.element) {
+        this.element.isActive = false;
+        if (this.parent) {
+          this.parent.isActive = false;
+        }
+        this.$emit('onCreateElement', { event, control: this.element });
+        this.$emit('onSetCursor', 'none');
+        event.preventDefault();
+        this.wasClicked = false;
+        this.element = null;
+      } 
     },
   },
 });

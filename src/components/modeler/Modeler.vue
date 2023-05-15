@@ -115,6 +115,7 @@
       <RailBottom
         :paper-manager="paperManager"
         @set-cursor="cursor = $event"
+        @onCreateElement="onCreateElementHandler"
       />
 
       <selection
@@ -880,6 +881,15 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
+
+    onCreateElementHandler({ event, control }) {
+      this. handleDrop({ 
+        clientX: event.clientX,
+        clientY: event.clientY,
+        control,
+      });
+    },
+    
     async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
       this.validateDropTarget({ clientX, clientY, control });
 
@@ -1179,6 +1189,8 @@ export default {
       }
     },
     pointerMoveHandler(event) {
+      // eslint-disable-next-line no-console
+      console.log('pointerMoveHandler');
       const { clientX: x, clientY: y } = event;
       if (this.isGrabbing) return;
       if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
@@ -1289,11 +1301,13 @@ export default {
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event);
+      window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
     }, this);
     this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event, cellView);
+      window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
     }, this);
 
     this.$el.addEventListener('mouseenter', () => {
@@ -1301,8 +1315,6 @@ export default {
     });
 
     this.$el.addEventListener('mousemove', event => {
-      // eslint-disable-next-line no-console
-      // console.log('mouse-move');
       this.pointerMoveHandler(event);
     });
 

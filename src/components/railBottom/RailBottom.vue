@@ -11,7 +11,7 @@
     <div class="rail-center">
       <UndoRedoControl />
 
-      <Controls />
+      <Controls @onCreateElement="onCreateElementHandler"  @onSetCursor="onSetCursorHandler"/>
     </div>
   </div>
 </template>
@@ -31,6 +31,14 @@ export default {
   },
   props: {
     paperManager: Object,
+  },
+  methods: {
+    onCreateElementHandler(data){
+      this.$emit('onCreateElement', data);
+    },
+    onSetCursorHandler(data) {
+      this.$emit('set-cursor', data);
+    },
   },
 };
 </script>
