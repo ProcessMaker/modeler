@@ -891,6 +891,8 @@ export default {
     },
     
     async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
+      // eslint-disable-next-line no-console
+      console.log('handleDrop', control);
       this.validateDropTarget({ clientX, clientY, control });
 
       if (!this.allowDrop) {

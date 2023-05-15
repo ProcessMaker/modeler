@@ -1,5 +1,6 @@
 <template>
   <popper
+    v-if="data.items"
     trigger="clickToToggle"
     :options="{
       placement: 'top',
@@ -10,7 +11,7 @@
     <div v-if="data.items">
       <ul class="control-submenu">
         <li v-for="(item, key) in data.items"
-          :class="{ 'control-submenu-list active': item.isActive, 'control-submenu-list': !item.isActive }"
+          :class="{ 'control-submenu-list active': item.active, 'control-submenu-list': !item.active }"
           :key="key"
           @click="onClickHandler($event, item)"
         >
@@ -32,7 +33,19 @@
         v-b-tooltip.hover
       >
     </div>
+    
   </popper>
+  <div v-else>
+    <div class="control-submenu-options">
+      <!-- <span /> -->
+    </div>
+    <img
+      :src=data.iconSrc
+      :alt=data.label
+      :title="$t(data.label)"
+      v-b-tooltip.hover
+    >
+  </div>
 </template>
 
 <script>
