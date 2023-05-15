@@ -3,8 +3,10 @@
     <button type="button"
       class="ur-button"
       data-test="undo"
+      :disabled="!canUndo"
       v-b-tooltip.hover
       :title="$t('Undo')"
+      @click="undo"
     >
       <UndoIcon />
     </button>
@@ -14,8 +16,10 @@
     <button type="button"
       class="ur-button"
       data-test="redo"
+      :disabled="!canRedo"
       v-b-tooltip.hover
       :title="$t('Redo')"
+      @click="redo"
     >
       <RedoIcon />
     </button>
