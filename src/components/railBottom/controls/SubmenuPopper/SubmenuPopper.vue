@@ -1,6 +1,6 @@
 <template>
   <popper
-    v-if="data.items"
+    v-if="items"
     trigger="clickToToggle"
     :options="{
       placement: 'top',
@@ -8,38 +8,36 @@
     }"
     :visible-arrow=false
   >
-    <div v-if="data.items">
+    <div>
       <ul class="control-submenu">
-        <li v-for="(item, key) in data.items"
+        <li v-for="(item, key) in items"
           :class="{ 'control-submenu-list active': item.active, 'control-submenu-list': !item.active }"
           :key="key"
           @click="onClickHandler($event, item)"
         >
-          <img :src=item.iconSrc :alt=item.label>
+          <img :src=item.icon :alt=item.label>
           <div class="control-submenu-list-label">
             {{ item.label }}
           </div>
         </li>
       </ul>
     </div>
-    <div slot="reference">
+    <div slot="reference" >
       <div class="control-submenu-options">
         <span />
       </div>
       <img
-        :src=data.iconSrc
+        :src=data.icon
         :alt=data.label
         :title="$t(data.label)"
         v-b-tooltip.hover
       >
     </div>
   </popper>
-  <div v-else>
-    <div class="control-submenu-options">
-      <!-- <span /> -->
-    </div>
+  
+  <div v-else :class="{ 'control-submenu-item active': data.active, 'control-submenu-item': !data.active }">
     <img
-      :src=data.iconSrc
+      :src=data.icon
       :alt=data.label
       :title="$t(data.label)"
       v-b-tooltip.hover
@@ -48,6 +46,7 @@
 </template>
 
 <script>
+import { BOTTOM } from '@/components/controls/rankConstants';
 import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
 export default ({
@@ -62,6 +61,21 @@ export default ({
       wasClickedSubmenu: false,
       element: null,
     };
+  },
+  computed: {
+    items() {
+      return  this.data.items && this.data.items
+        .filter(item => item.control)
+        .map(item => ({
+          type: item.id,
+          icon: item.icon,
+          label: item.label,
+          bpmnType: item.bpmnType,
+          rank: item.rank || BOTTOM,
+          items: item.items || null,
+        }))
+        .sort((node1, node2) => node1.rank - node2.rank);
+    },
   },
   methods: {
     onClickHandler(event, control) {
@@ -84,6 +98,15 @@ export default ({
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   list-style: none;
+  &-item {
+    & > img {
+      width: 24px;
+      height: 24px;
+    }
+    &.active {
+      background: #EBEEF2;
+    }
+  }
   &-list {
     display: flex;
     flex-direction: row;

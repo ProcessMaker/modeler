@@ -106,6 +106,7 @@
       />
 
       <RailBottom
+        :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
         :is-rendering="isRendering"
@@ -1211,7 +1212,6 @@ export default {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
           this.$refs.selector.stopDrag(event);
-          // window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);

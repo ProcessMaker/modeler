@@ -19,6 +19,7 @@
       />
 
       <Controls
+        :nodeTypes="nodeTypes"
         @onCreateElement="onCreateElementHandler"
         @onSetCursor="onSetCursorHandler"
       />
@@ -43,6 +44,7 @@ export default {
     paperManager: Object,
     graph: Object,
     isRendering: Boolean,
+    nodeTypes: Array,
   },
   methods: {
     onCreateElementHandler(data){

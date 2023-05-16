@@ -1,8 +1,11 @@
 <template>
-  <ul class="control-list">
+  <ul
+    v-if="controls"
+    class="control-list"
+  >
 
     <li 
-      v-for="(item, key) in controlList"
+      v-for="(item, key) in controls"
       :class="{ 'control-item active': item.active, 'control-item': !item.active }"
       :id="item.id"
       :key="key"
@@ -23,10 +26,14 @@
 </template>
 
 <script>
+import { BOTTOM } from '@/components/controls/rankConstants';
 import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
 export default ({
   components: {
     SubmenuPopper,
+  },
+  props: {
+    nodeTypes: Array,
   },
   data() {
     return {
@@ -294,6 +301,21 @@ export default ({
       element: null,
       isActive: false,
     };
+  },
+  computed: {
+    controls() {
+      return this.nodeTypes
+        .filter(nodeType => nodeType.control)
+        .map(nodeType => ({
+          type: nodeType.id,
+          icon: nodeType.icon,
+          label: nodeType.label,
+          bpmnType: nodeType.bpmnType,
+          rank: nodeType.rank || BOTTOM,
+          items: nodeType.items || null,
+        }))
+        .sort((node1, node2) => node1.rank - node2.rank);
+    },
   },
   methods: {
     clickToSubmenuHandler(data){
