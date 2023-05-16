@@ -111,6 +111,8 @@
         :is-rendering="isRendering"
         @load-xml="loadXML"
         @clearSelection="clearSelection"
+        @set-cursor="cursor = $event"
+        @onCreateElement="onCreateElementHandler"
       />
 
       <selection
@@ -874,9 +876,17 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
+    onCreateElementHandler({ event, control }) {
+      // eslint-disable-next-line no-console
+      console.log('onCreateElementHandler', control);
+      this. handleDrop({ 
+        clientX: event.clientX,
+        clientY: event.clientY,
+        control,
+      });
+    },
     async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
       this.validateDropTarget({ clientX, clientY, control });
-
       if (!this.allowDrop) {
         return;
       }
@@ -1201,8 +1211,10 @@ export default {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
           this.$refs.selector.stopDrag(event);
+          // window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
         }
       }
+      window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;

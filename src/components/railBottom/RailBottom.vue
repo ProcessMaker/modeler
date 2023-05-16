@@ -18,7 +18,10 @@
         @clearSelection="$emit('clearSelection')"
       />
 
-      <Controls />
+      <Controls
+        @onCreateElement="onCreateElementHandler"
+        @onSetCursor="onSetCursorHandler"
+      />
     </div>
   </div>
 </template>
@@ -40,6 +43,14 @@ export default {
     paperManager: Object,
     graph: Object,
     isRendering: Boolean,
+  },
+  methods: {
+    onCreateElementHandler(data){
+      this.$emit('onCreateElement', data);
+    },
+    onSetCursorHandler(data) {
+      this.$emit('set-cursor', data);
+    },
   },
 };
 </script>

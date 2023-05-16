@@ -1,5 +1,6 @@
 <template>
   <popper
+    v-if="data.items"
     trigger="clickToToggle"
     :options="{
       placement: 'top',
@@ -9,9 +10,13 @@
   >
     <div v-if="data.items">
       <ul class="control-submenu">
-        <li v-for="(item, key) in data.items" class="control-submenu-list"  :key="key">
+        <li v-for="(item, key) in data.items"
+          :class="{ 'control-submenu-list active': item.active, 'control-submenu-list': !item.active }"
+          :key="key"
+          @click="onClickHandler($event, item)"
+        >
           <img :src=item.iconSrc :alt=item.label>
-          <div>
+          <div class="control-submenu-list-label">
             {{ item.label }}
           </div>
         </li>
@@ -29,6 +34,17 @@
       >
     </div>
   </popper>
+  <div v-else>
+    <div class="control-submenu-options">
+      <!-- <span /> -->
+    </div>
+    <img
+      :src=data.iconSrc
+      :alt=data.label
+      :title="$t(data.label)"
+      v-b-tooltip.hover
+    >
+  </div>
 </template>
 
 <script>
@@ -40,6 +56,17 @@ export default ({
   },
   components: {
     Popper,
+  },
+  data() {
+    return {
+      wasClickedSubmenu: false,
+      element: null,
+    };
+  },
+  methods: {
+    onClickHandler(event, control) {
+      this.$emit('clickToSubmenu', { event, control });
+    },
   },
 });
 
@@ -69,6 +96,9 @@ export default ({
     order: 0;
     align-self: stretch;
     flex-grow: 0;
+    &.active {
+      background: #EBEEF2;
+    }
     &:hover {
       background: #EBEEF2;
     }
@@ -76,6 +106,15 @@ export default ({
     & > img {
       width: 24px;
       height: 24px;
+    }
+    &-label{
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 21px;
+      letter-spacing: -0.02em;
+      color: #000000;
     }
   }
   &-options {

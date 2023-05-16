@@ -30,8 +30,9 @@
     &:hover {
       background: #ebeef2;
     }
-
-
+    &.active {
+      background: #ebeef2;
+    }
     &-options {
       position: absolute;
       top: 0;
