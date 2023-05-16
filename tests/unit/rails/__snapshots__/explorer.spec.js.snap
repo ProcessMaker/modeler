@@ -36,9 +36,7 @@ exports[`Explorer Rail should render the component 1`] = `
   >
     <filter-node-types-stub />
      
-    <!---->
-     
-    <!---->
+    <node-types-loop-stub />
   </div>
    
   <div

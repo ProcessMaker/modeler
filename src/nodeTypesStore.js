@@ -45,17 +45,6 @@ export default new Vuex.Store({
     clearFilteredNodes(state) {
       state.filteredNodeTypes.length = 0;
     },
-    setFilteredNodeTypes(state, searchTerm) {
-      const pinnedNodeTypes = state.pinnedNodeTypes;
-      const nodeTypes = state.nodeTypes;
-      const allNodes = [...pinnedNodeTypes, ...nodeTypes];
-      state.filteredNodeTypes = allNodes.filter(node => {
-        return node.label.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-    },
-    clearFilteredNodes(state) {
-      state.filteredNodeTypes.length = 0;
-    },
   },
   actions: {
     // eslint-disable-next-line no-unused-vars

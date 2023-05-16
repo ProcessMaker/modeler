@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       // TODO set to false when the bottom control rail is merged
-      expanded: this.explorerExpanded,
+      expanded: true,
       tabs: [{
         idx: 0,
         label: 'Add Object',
@@ -84,21 +84,7 @@ export default {
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
       <filter-node-types />
-      <template v-if="filteredNodes.length > 0">
-        <node-types-loop :nodeTypes="filteredNodes" />
-      </template>
-      <template v-else>
-        <node-types-loop v-if="pinnedObjects.length > 0"
-          label="Pinned Objects"
-          :nodeTypes="pinnedObjects"
-          :pinned="true"
-        />
-        <node-types-loop v-if="unpinnedObjects.length > 0"
-          label="Object Category"
-          :nodeTypes="unpinnedObjects"
-          :pinned="false"
-        />
-      </template>
+      <node-types-loop />
     </div>
     <div class="pm-blocks__container">
       <!--   Here goes the PM Blocks   -->

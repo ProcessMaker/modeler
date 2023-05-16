@@ -25,7 +25,6 @@
       />
       <explorer-rail
         :node-types="nodeTypes"
-        :explorerExpanded="true"
       />
       <b-col
         class="paper-container h-100 pr-4"
