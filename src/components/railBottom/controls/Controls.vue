@@ -6,7 +6,12 @@
     </li>
 
     <li class="control-item">
-      <div class="control-add" :title="$t('Add')" v-b-tooltip.hover>
+      <div
+        :class="{'control-add': true, 'control-active': explorerOpen}"
+        :title="$t('Add')"
+        v-b-tooltip.hover
+        @click="toggleExplorer"
+      >
         <img :src="plusIcon" :alt="$t('Add')">
       </div>
     </li>
@@ -15,6 +20,8 @@
 
 <script>
 import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
+import nodeTypesStore from '@/nodeTypesStore';
+
 export default ({
   components: {
     SubmenuPopper,
@@ -187,6 +194,16 @@ export default ({
       ],
       plusIcon: require('@/assets/railBottom/plus-lg-light.svg'),
     };
+  },
+  methods: {
+    toggleExplorer() {
+      nodeTypesStore.commit('toggleExplorer');
+    },
+  },
+  computed: {
+    explorerOpen() {
+      return nodeTypesStore.getters.getExplorerOpen;
+    },
   },
 });
 
