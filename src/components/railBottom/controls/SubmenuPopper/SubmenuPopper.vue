@@ -161,5 +161,27 @@ export default ({
 
   }
 }
+// .is-dragging {
+//   background: $primary-color;
+//   color: $primary-white;
+//   position: absolute;
+//   z-index: 10;
+//   box-shadow: 5px 5px 8px 0px #0000004a;
+//   // cursor: grabbing;
+//   padding: 0.5rem;
+//   pointer-events: none;
+
+//   &.no-drop {
+//     opacity: 0.8;
+//     cursor: no-drop;
+//     pointer-events: none;
+//   }
+
+//   &:hover {
+//     background-color: $primary-color;
+//     color: $primary-white;
+//     pointer-events: none;
+//   }
+// }
 
 </style>

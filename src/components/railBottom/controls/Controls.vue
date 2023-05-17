@@ -42,7 +42,7 @@ export default ({
       element: null,
       selectedItem: '',
       selectedSubmenuItem: '',
-    };
+    }; 
   },
   computed: {
     controls() {
@@ -68,22 +68,6 @@ export default ({
       this.onClickHandler(data.event, data.control);
     },
     onClickHandler(event, control) {
-      const sourceElement = event.target;
-      const duplicateElement = sourceElement.cloneNode(true);
-      duplicateElement.classList.add('is-dragging');
-      duplicateElement.classList.toggle('no-drop', !this.allowDrop);
-
-      document.body.appendChild(duplicateElement);
-      this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
-      this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
-      // this.draggingElement = duplicateElement;
-      // this.draggingControl = control;
-
-
-
-
-
-
       this.wasClicked = true;
       this.element = control;
       this.$emit('onSetCursor', 'crosshair');
