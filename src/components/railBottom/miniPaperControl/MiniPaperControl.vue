@@ -4,7 +4,6 @@
       type="button"
       class="mini-paper-button"
       :class="miniMapOpen ? 'mini-paper-button-active' : ''"
-      data-test="mini-map-btn"
       data-cy="mini-paper-button"
       @click="miniMapOpen = !miniMapOpen"
       v-b-tooltip.hover

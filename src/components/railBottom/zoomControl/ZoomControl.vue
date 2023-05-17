@@ -3,7 +3,7 @@
     <button
       type="button"
       class="zoom-button"
-      data-test="zoom-out"
+      data-cy="zoom-out-control"
       @click="onClickZoomOut"
       v-b-tooltip.hover
       :title="$t('Zoom Out')"
@@ -18,7 +18,7 @@
     <button
       type="button"
       class="zoom-button"
-      data-test="zoom-in"
+      data-cy="zoom-in-control"
       @click="onClickZoomIn"
       v-b-tooltip.hover
       :title="$t('Zoom In')"
@@ -49,7 +49,7 @@ export default ({
   methods: {
     onClickZoomOut() {
       this.paperManager.scale = Math.max(
-        this.minimumScale, 
+        this.minimumScale,
         this.paperManager.scale.sx -= this.scaleStep
       );
     },

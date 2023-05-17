@@ -2,7 +2,7 @@
   <div class="ur-box">
     <button type="button"
       class="ur-button"
-      data-test="undo"
+      data-cy="undo-control"
       :disabled="!canUndo"
       v-b-tooltip.hover
       :title="$t('Undo')"
@@ -15,7 +15,7 @@
 
     <button type="button"
       class="ur-button"
-      data-test="redo"
+      data-cy="redo-control"
       :disabled="!canRedo"
       v-b-tooltip.hover
       :title="$t('Redo')"
