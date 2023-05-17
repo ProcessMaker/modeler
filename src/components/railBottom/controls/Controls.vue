@@ -42,6 +42,8 @@ export default ({
       element: null,
       selectedItem: '',
       selectedSubmenuItem: '',
+      xOffset: 0,
+      yOffset: 0,
     }; 
   },
   computed: {
