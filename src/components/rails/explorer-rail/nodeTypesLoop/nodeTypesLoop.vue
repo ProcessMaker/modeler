@@ -13,8 +13,11 @@ export default {
     };
   },
   methods: {
-    unPin(object, idx) {
-      if (this.pinnedObjects.find(obj => obj.id === idx)) return nodeTypesStore.commit('setUnpinNode', object);
+    nodeTypeAlreadyPinned(object, type) {
+      return !!this.pinnedObjects.find(obj => obj.type === type);
+    },
+    unPin(object) {
+      return nodeTypesStore.commit('setUnpinNode', object);
     },
     addPin(object) {
       return nodeTypesStore.commit('setPinnedNodes', object);
@@ -30,56 +33,93 @@ export default {
     unpinnedObjects() {
       return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
     },
+    filteredNodes() {
+      return nodeTypesStore.getters.getFilteredNodeTypes;
+    },
   },
 };
 </script>
 
 <template>
-  <div>
-    <div class="pinnedObjects" v-if="pinnedObjects.length > 0">
-      <p>{{ $t('Pinned Objects') }}</p>
-      <template v-for="pinnedObject in pinnedObjects">
+  <div id="nodeTypesList">
+    <div id="filteredNodes-container" v-if="filteredNodes.length > 0">
+      <template v-for="object in filteredNodes">
         <div
           class="node-types__item"
-          :key="pinnedObject.id"
+          :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
         >
-          <img class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
-          <span>{{ $t(pinnedObject.label) }}</span>
+          <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
+          <span>{{ $t(object.label) }}</span>
           <img
+            v-if="nodeTypeAlreadyPinned(object, object.type)"
             :src="pinFillIcon"
             class="pinIcon"
-            alt="Pin/Unpin Element"
-            @click="unPin(pinnedObject, pinnedObject.id)"
+            alt="Unpin Element"
+            @click="unPin(object)"
           >
-        </div>
-      </template>
-    </div>
-    <div class="objectCategory">
-      <p>{{ $t('Object Category') }}</p>
-      <template v-for="nodeType in unpinnedObjects">
-        <div
-          class="node-types__item"
-          :key="nodeType.id"
-          @mouseover="showPin = true"
-          @mouseleave="showPin = false"
-        >
-          <img class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
-          <span>{{ $t(nodeType.label) }}</span>
           <img
+            v-else
             :src="pinIcon"
             class="pinIcon"
-            alt="Pin/Unpin Element"
-            @click="addPin(nodeType)"
+            alt="Pin Element"
+            @click="addPin(object)"
           >
         </div>
       </template>
     </div>
+    <template v-else>
+      <div class="pinnedObjects" v-if="pinnedObjects.length > 0">
+        <p>{{ $t('Pinned Objects') }}</p>
+        <template v-for="pinnedObject in pinnedObjects">
+          <div
+            class="node-types__item"
+            :key="pinnedObject.id"
+            @mouseover="showPin = true"
+            @mouseleave="showPin = false"
+          >
+            <img class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
+            <span>{{ $t(pinnedObject.label) }}</span>
+            <img
+              :src="pinFillIcon"
+              class="pinIcon"
+              alt="Pin/Unpin Element"
+              @click="unPin(pinnedObject)"
+            >
+          </div>
+        </template>
+      </div>
+      <div class="objectCategory">
+        <p>{{ $t('Object Category') }}</p>
+        <template v-for="nodeType in unpinnedObjects">
+          <div
+            class="node-types__item"
+            :key="nodeType.id"
+            @mouseover="showPin = true"
+            @mouseleave="showPin = false"
+          >
+            <img class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
+            <span>{{ $t(nodeType.label) }}</span>
+            <img
+              :src="pinIcon"
+              class="pinIcon"
+              alt="Pin/Unpin Element"
+              @click="addPin(nodeType)"
+            >
+          </div>
+        </template>
+      </div>
+    </template>
   </div>
 </template>
 
 <style lang="scss">
+#nodeTypesList {
+  .pinnedObjects {
+    margin-bottom: 1rem;
+  }
+}
 .node-types {
   &__item {
     display: flex;

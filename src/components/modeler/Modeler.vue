@@ -1223,9 +1223,6 @@ export default {
       registerComponentMixin: this.registerComponentMixin,
     });
 
-    // eslint-disable-next-line no-console
-    console.log(Process);
-
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
