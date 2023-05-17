@@ -134,7 +134,9 @@ export default {
       }
       this.filterSelected();
       await this.$nextTick();
-      this.updateSelectionBox();
+      if (store.getters.isReadOnly === false) {
+        this.updateSelectionBox();
+      }
     },
     /**
      * Select or unselect an element with shift key pressed
@@ -153,7 +155,7 @@ export default {
       if (lane) {
         this.selected = [view];
         return;
-      } 
+      }
       // validate if the current selection is a pool
       if (view.model.component && view.model.component.node.type === poolId) {
         //validate if previous selection are all pools
@@ -176,7 +178,7 @@ export default {
         this.selected = this.selected.filter(item => item.id !== view.id);
       } else {
         this.selected.push(view);
-      }     
+      }
     },
     clearSelection() {
       this.initSelection();
@@ -298,7 +300,7 @@ export default {
     },
     /**
      * Prepare the conectedLinks collection
-     * @param {Array} shapes 
+     * @param {Array} shapes
      */
     prepareConectedLinks(shapes){
       const { paper } = this.paperManager;
@@ -311,7 +313,7 @@ export default {
             this.conectedLinks.push(linkView);
           }
         });
- 
+
       });
     },
     /**
@@ -414,7 +416,7 @@ export default {
       });
       if (shapes) {
         return true;
-      } 
+      }
       return false;
     },
     /**
@@ -498,7 +500,7 @@ export default {
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
-      // that are anchored and did not move, such as boundary events. 
+      // that are anchored and did not move, such as boundary events.
       this.updateSelectionBox();
       this.updateFlowsWaypoint();
       this.overPoolStopDrag();
@@ -535,7 +537,7 @@ export default {
         });
       }
       // allow movement only if one lane boundary event is selected;
-      if (this.selected && this.selected.length === 1 && 
+      if (this.selected && this.selected.length === 1 &&
         this.selected[0].model.get('type') === 'processmaker.components.nodes.boundaryEvent.Shape') {
         this.selected[0].model.translate(x, y);
         return;
@@ -625,7 +627,7 @@ export default {
     },
     /**
      * Check that they are not in a pool
-     * @param {Array} elements 
+     * @param {Array} elements
      * @return true if there is a pool in the selection or if none of the selected elements are in a pool
      */
     isNotPoolChilds(elements) {
