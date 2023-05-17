@@ -9,7 +9,6 @@
       :id="item.id" 
       :key="key"
       @click="onClickHandler($event, item)"
-      @mouseenter="onMouseEnter"
     >
       <SubmenuPopper 
         :data="item" 
@@ -130,13 +129,6 @@ export default ({
       document.body.appendChild(this.draggingElement);
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
-    },
-    onMouseEnter(){
-      if (this.draggingElement) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.draggingElement);
-        this.draggingElement = null;
-      }
     },
   },
 });
