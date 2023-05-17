@@ -15,7 +15,7 @@
           :key="key"
           @click="onClickHandler($event, item)"
         >
-          <img :src=item.icon :alt=item.label>
+          <img :src=item.icon :alt=item.label class='icon'>
           <div class="control-submenu-list-label">
             {{ item.label }}
           </div>
@@ -161,6 +161,7 @@ export default ({
 
   }
 }
+
 .is-dragging {
   background: $primary-color;
   color: $primary-white;
@@ -169,7 +170,9 @@ export default ({
   box-shadow: 5px 5px 8px 0px #0000004a;
   padding: 0.5rem;
   pointer-events: none;
-
+  width: 40px;
+  height: 40px;
+  background: green;
   &.no-drop {
     opacity: 0.8;
     cursor: no-drop;

@@ -9,6 +9,7 @@
       :id="item.id" 
       :key="key"
       @click="onClickHandler($event, item)"
+      @mouseenter="onMouseEnter"
     >
       <SubmenuPopper 
         :data="item" 
@@ -44,6 +45,17 @@ export default ({
       selectedSubmenuItem: '',
       xOffset: 0,
       yOffset: 0,
+      draggingElement: null,
+      isDragging: false,
+      helperStyles: {
+        backgroundColor:'#ffffff',
+        position: 'absolute',
+        height: '40px',
+        width: '40px',
+        zIndex: '10',
+        opacity: '0.5',
+        pointerEvents: 'none',
+      },
     }; 
   },
   computed: {
@@ -70,12 +82,21 @@ export default ({
       this.onClickHandler(data.event, data.control);
     },
     onClickHandler(event, control) {
+      this.createDraggingHelper(event, control);
+      document.addEventListener('mousemove', this.setDraggingPosition);
+      this.setDraggingPosition(event);
       this.wasClicked = true;
       this.element = control;
       this.$emit('onSetCursor', 'crosshair');
       this.selectedItem=control.type;
       window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
         window.ProcessMaker.EventBus.$off('custom-pointerclick');
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        if (this.draggingElement) {
+          document.body.removeChild(this.draggingElement);
+        }
+        
+        this.draggingElement = null;
         this.onCreateElement(message);
       });
     },
@@ -89,6 +110,33 @@ export default ({
         event.preventDefault();
         this.wasClicked = false;
       } 
+    },
+    setDraggingPosition({ pageX, pageY }) {
+      this.draggingElement.style.left = pageX  + 'px';
+      this.draggingElement.style.top = pageY + 'px';
+    },
+    createDraggingHelper(event, control) {
+      if (this.draggingElement) {
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        document.body.removeChild(this.draggingElement);
+        this.draggingElement = null;
+      }
+      const sourceElement = event.target;
+      this.draggingElement = document.createElement('img');
+      Object.keys(this.helperStyles).forEach((property) => {
+        this.draggingElement.style[property] = this.helperStyles[property];
+      });
+      this.draggingElement.src = control.icon;
+      document.body.appendChild(this.draggingElement);
+      this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
+      this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
+    },
+    onMouseEnter(){
+      if (this.draggingElement) {
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        document.body.removeChild(this.draggingElement);
+        this.draggingElement = null;
+      }
     },
   },
 });
