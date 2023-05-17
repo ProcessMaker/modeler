@@ -11,7 +11,7 @@
     <div>
       <ul class="control-submenu">
         <li v-for="(item, key) in items"
-          :class="{ 'control-submenu-list active': item.active, 'control-submenu-list': !item.active }"
+          :class="{'control-submenu-list active': selectedItem === item.type, 'control-submenu-list': selectedItem !== item.type}"
           :key="key"
           @click="onClickHandler($event, item)"
         >
@@ -34,8 +34,7 @@
       >
     </div>
   </popper>
-  
-  <div v-else :class="{ 'control-submenu-item active': data.active, 'control-submenu-item': !data.active }">
+  <div v-else class="control-submenu-item ">
     <img
       :src=data.icon
       :alt=data.label
@@ -52,6 +51,7 @@ import 'vue-popperjs/dist/vue-popper.css';
 export default ({
   props: {
     data: { type: Object },
+    selectedItem: { type: String },
   },
   components: {
     Popper,
@@ -60,6 +60,7 @@ export default ({
     return {
       wasClickedSubmenu: false,
       element: null,
+      wasClicked: false,
     };
   },
   computed: {
@@ -79,6 +80,7 @@ export default ({
   },
   methods: {
     onClickHandler(event, control) {
+      event.stopPropagation();
       this.$emit('clickToSubmenu', { event, control });
     },
   },
