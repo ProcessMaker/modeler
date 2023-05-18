@@ -8,6 +8,9 @@ import NodeTypesLoop from '@/components/rails/explorer-rail/nodeTypesLoop/nodeTy
 export default {
   name: 'ExplorerRail',
   props: {
+    explorerExpanded: {
+      type: Boolean,
+    },
     nodeTypes: {
       type: Array,
     },
@@ -40,6 +43,9 @@ export default {
     },
     filteredNodes() {
       return nodeTypesStore.getters.getFilteredNodeTypes;
+    },
+    unpinnedObjects() {
+      return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
     },
   },
   created() {
@@ -78,19 +84,7 @@ export default {
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
       <filter-node-types />
-      <template v-if="filteredNodes.length > 0">
-        <node-types-loop :nodeTypes="filteredNodes" />
-      </template>
-      <template v-else>
-        <node-types-loop  v-if="pinnedObjects.length > 0" 
-          label="Pinned Objects"
-          :nodeTypes="pinnedObjects"
-        />
-        <node-types-loop v-if="objects.length > 0"
-          label="Object Category"
-          :nodeTypes="objects"
-        />
-      </template>
+      <node-types-loop />
     </div>
     <div class="pm-blocks__container">
       <!--   Here goes the PM Blocks   -->
