@@ -8,12 +8,13 @@
       :class="{ 'control-item active': selectedItem === item.type, 'control-item': selectedItem !== item.type }"
       :id="item.id" 
       :key="key"
-      @click="onClickHandler($event, item)"
+      @click.stop="onClickHandler($event, item)"
     >
       <SubmenuPopper 
         :data="item" 
         @clickToSubmenu="clickToSubmenuHandler" 
         :selectedItem = "selectedSubmenuItem"
+        :popperType = "popperType"
       />
     </li>
 
@@ -40,8 +41,8 @@ export default ({
       plusIcon: require('@/assets/railBottom/plus-lg-light.svg'),
       wasClicked: false,
       element: null,
-      selectedItem: '',
-      selectedSubmenuItem: '',
+      selectedItem: null,
+      selectedSubmenuItem: null,
       xOffset: 0,
       yOffset: 0,
       draggingElement: null,
@@ -55,6 +56,7 @@ export default ({
         opacity: '0.5',
         pointerEvents: 'none',
       },
+      popperType: null,
     }; 
   },
   computed: {
@@ -87,14 +89,19 @@ export default ({
       this.wasClicked = true;
       this.element = control;
       this.$emit('onSetCursor', 'crosshair');
-      this.selectedItem=control.type;
+      if (!this.parent) {
+        this.selectedItem=control.type;
+        this.popperType = control.type;
+      }
       window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
         window.ProcessMaker.EventBus.$off('custom-pointerclick');
         document.removeEventListener('mousemove', this.setDraggingPosition);
         if (this.draggingElement) {
           document.body.removeChild(this.draggingElement);
         }
-        
+        this.popperType = null;
+        this.selectedSubmenuItem = null;
+        this.selectedItem = null;
         this.draggingElement = null;
         this.onCreateElement(message);
       });

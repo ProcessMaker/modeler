@@ -1,12 +1,13 @@
 <template>
   <popper
     v-if="items"
-    trigger="clickToToggle"
+    trigger="clickToOpen"
     :options="{
       placement: 'top',
       modifiers: { offset: { offset: '0,20px' } }
     }"
     :visible-arrow=false
+    :force-show="popperType === data.type"
   >
     <div>
       <ul class="control-submenu">
@@ -52,6 +53,7 @@ export default ({
   props: {
     data: { type: Object },
     selectedItem: { type: String },
+    popperType: { type: String },
   },
   components: {
     Popper,
