@@ -89,7 +89,9 @@ export default {
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
       <filter-node-types />
-      <node-types-loop />
+      <node-types-loop
+        v-on="$listeners"
+      />
     </div>
     <div class="pm-blocks__container">
       <!--   Here goes the PM Blocks   -->
