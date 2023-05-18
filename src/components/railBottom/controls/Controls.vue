@@ -45,7 +45,7 @@ export default ({
       selectedSubmenuItem: null,
       xOffset: 0,
       yOffset: 0,
-      draggingElement: null,
+      movedElement: null,
       isDragging: false,
       helperStyles: {
         backgroundColor:'#ffffff',
@@ -96,13 +96,13 @@ export default ({
       window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
         window.ProcessMaker.EventBus.$off('custom-pointerclick');
         document.removeEventListener('mousemove', this.setDraggingPosition);
-        if (this.draggingElement) {
-          document.body.removeChild(this.draggingElement);
+        if (this.movedElement) {
+          document.body.removeChild(this.movedElement);
         }
         this.popperType = null;
         this.selectedSubmenuItem = null;
         this.selectedItem = null;
-        this.draggingElement = null;
+        this.movedElement = null;
         this.onCreateElement(message);
       });
     },
@@ -118,22 +118,22 @@ export default ({
       } 
     },
     setDraggingPosition({ pageX, pageY }) {
-      this.draggingElement.style.left = pageX  + 'px';
-      this.draggingElement.style.top = pageY + 'px';
+      this.movedElement.style.left = pageX  + 'px';
+      this.movedElement.style.top = pageY + 'px';
     },
     createDraggingHelper(event, control) {
-      if (this.draggingElement) {
+      if (this.movedElement) {
         document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.draggingElement);
-        this.draggingElement = null;
+        document.body.removeChild(this.movedElement);
+        this.movedElement = null;
       }
       const sourceElement = event.target;
-      this.draggingElement = document.createElement('img');
+      this.movedElement = document.createElement('img');
       Object.keys(this.helperStyles).forEach((property) => {
-        this.draggingElement.style[property] = this.helperStyles[property];
+        this.movedElement.style[property] = this.helperStyles[property];
       });
-      this.draggingElement.src = control.icon;
-      document.body.appendChild(this.draggingElement);
+      this.movedElement.src = control.icon;
+      document.body.appendChild(this.movedElement);
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
     },
