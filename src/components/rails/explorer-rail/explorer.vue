@@ -79,14 +79,21 @@ export default {
     <div class="node-types__container" v-if="tabIndex === 0">
       <filter-node-types />
       <template v-if="filteredNodes.length > 0">
-        <node-types-loop :nodeTypes="filteredNodes" />
+        <node-types-loop
+          v-on="$listeners"
+          :nodeTypes="filteredNodes"
+        />
       </template>
       <template v-else>
-        <node-types-loop  v-if="pinnedObjects.length > 0" 
+        <node-types-loop
+          v-if="pinnedObjects.length > 0"
+          v-on="$listeners"
           label="Pinned Objects"
           :nodeTypes="pinnedObjects"
         />
-        <node-types-loop v-if="objects.length > 0"
+        <node-types-loop
+          v-if="objects.length > 0"
+          v-on="$listeners"
           label="Object Category"
           :nodeTypes="objects"
         />
