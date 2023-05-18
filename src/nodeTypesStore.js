@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { uniqueId, uniqBy } from 'lodash';
 import { BOTTOM } from '@/components/rails/explorer-rail/rankConstants';
 
 Vue.use(Vuex);
@@ -22,6 +23,7 @@ export default new Vuex.Store({
       state.nodeTypes = nodeTypes
         .filter(nodeType => nodeType.control)
         .map(nodeType => ({
+          id: uniqueId('nodeType_'),
           type: nodeType.id,
           icon: nodeType.icon,
           label: nodeType.label,
@@ -31,18 +33,21 @@ export default new Vuex.Store({
         .sort((node1, node2) => node1.rank - node2.rank);
     },
     setPinnedNodes(state, payload) {
-      state.pinnedNodeTypes = payload;
+      state.pinnedNodeTypes.push(payload);
+    },
+    setUnpinNode(state, payload) {
+      state.pinnedNodeTypes = state.pinnedNodeTypes.filter(node => node !== payload);
     },
     setFilteredNodeTypes(state, searchTerm) {
       const pinnedNodeTypes = state.pinnedNodeTypes;
       const nodeTypes = state.nodeTypes;
-      const allNodes = [...pinnedNodeTypes, ...nodeTypes];
+      const allNodes = uniqBy([...pinnedNodeTypes, ...nodeTypes], 'id');
       state.filteredNodeTypes = allNodes.filter(node => {
         return node.label.toLowerCase().includes(searchTerm.toLowerCase());
       });
     },
     clearFilteredNodes(state) {
-      state.filteredNodeTypes.length = 0;
+      state.filteredNodeTypes = [];
     },
     closeExplorer(state) {
       state.explorerOpen = false;
