@@ -950,3 +950,8 @@ export default {
 };
 </script>
 <style lang="scss" src="./modeler.scss" />
+<style>
+svg {
+  overflow: visible !important;
+}
+</style>
