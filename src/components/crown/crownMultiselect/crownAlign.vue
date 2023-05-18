@@ -1,6 +1,6 @@
 <template>
   <div
-    class="crown-config crown-multiselect"
+    class="crown-config crown-align"
     :style="style"
     v-if="isMultiSelect"
     role="menu"
@@ -16,31 +16,36 @@
       :data-test="button.testId"
       :role="button.role"
       @mousedown.stop.prevent
-      @click="button.action"
+      @click.stop.prevent="button.action"
     >
-      <font-awesome-icon v-if="button.iconPrefix === 'fpm'" :icon="[button.iconPrefix, `fa-${button.icon}`]"/>
-      <i v-else :class="`${button.iconPrefix} fa-${button.icon} text-dark`" />
+      <font-awesome-icon :icon="['fpm', `fa-${button.icon}`]"/>
     </button>
-    <crown-align v-show="showAlignmentButtons" :paper="paper"/>
   </div>
 </template>
 
 <script>
 import store from '@/store';
 import runningInCypressTest from '@/runningInCypressTest';
-import crownAlign from './crownAlign';
+import { getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCenterVertically } from '../crownButtons/icons';
+import {
+  faAlignBottom,
+  faAlignTop,
+  faAlignRight,
+  faAlignLeft,
+  faCenterHorizontally,
+  faCenterVertically,
+  faDistributeVertically,
+  faDistributeHorizontally,
+} from '../crownButtons/icons';
 
 export default {
   props: {
     paper: Object,
     hasPools: Boolean,
   },
-  components:{ crownAlign },
   data() {
     return {
-      showAlignmentButtons: false,
       runningInCypressTest: runningInCypressTest(),
       showCrown: false,
       savePositionOnPointerupEventSet: false,
@@ -50,36 +55,60 @@ export default {
       nodeToReplace: null,
       buttons: [
         {
-          label: 'Copy Selection',
-          iconPrefix: 'fa',
-          icon: 'clipboard',
-          testId: 'copy-button',
+          label: this.$t('Align Left'),
+          icon: 'align-left',
+          testId: 'align-left',
           role: 'menuitem',
-          action: this.copySelection,
+          action: this.alignLeft,
         },
         {
-          label: 'Clone Selection',
-          iconPrefix: 'fa',
-          icon: 'copy',
-          testId: 'clone-button',
+          label: this.$t('Center Horizontally'),
+          icon: 'center-horizontally',
+          testId: 'align-horizontally',
           role: 'menuitem',
-          action: this.cloneSelection,
+          action: this.centerHorizontally,
         },
         {
-          label: 'Align',
-          iconPrefix: 'fpm',
+          label: this.$t('Align Right'),
+          icon: 'align-right',
+          testId: 'align-right',
+          role: 'menuitem',
+          action: this.alignRight,
+        },
+        {
+          label: this.$t('Align Bottom'),
+          icon: 'align-bottom',
+          testId: 'align-bottom',
+          role: 'menuitem',
+          action: this.alignBottom,
+        },
+        {
+          label: this.$t('Center Vertically'),
           icon: 'center-vertically',
-          testId: 'align',
+          testId: 'center-vertically',
           role: 'menuitem',
-          action: this.showAlign,
+          action: this.centerVertically,
         },
         {
-          label: 'Delete Element',
-          iconPrefix: 'fa',
-          icon: 'trash-alt',
-          testId: 'delete-button',
+          label: this.$t('Align Top'),
+          icon: 'align-top',
+          testId: 'align-top',
           role: 'menuitem',
-          action: this.deleteElement,
+          action: this.alignTop,
+        },
+        {
+          label: this.$t('Distribute Horizontally'),
+          icon: 'distribute-horizontally',
+          testId: 'distribute-horizontally',
+          role: 'menuitem',
+          action: this.distributeHorizontally,
+        },
+        {
+          label: this.$t('Distribute Vertically'),
+          icon: 'distribute-vertically',
+          testId: 'distribute-vertically',
+          role: 'menuitem',
+          action: this.distributeVertically,
         },
         // add more buttons as necessary
       ],
@@ -87,9 +116,19 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
+    library.add(faAlignRight);
+    library.add(faAlignLeft);
+    library.add(faAlignBottom);
+    library.add(faAlignTop);
     library.add(faCenterVertically);
+    library.add(faCenterHorizontally);
+    library.add(faDistributeVertically);
+    library.add(faDistributeHorizontally);
   },
   computed: {
+    selectedShapes() {
+      return getShapesOptions(store.getters.highlightedShapes);
+    },
     isMultiSelect() {
       const countSelected = store.getters.highlightedShapes.length;
       return countSelected > 1;
@@ -109,18 +148,36 @@ export default {
     },
   },
   methods: {
-    showAlign() {
-      this.showAlignmentButtons = !this.showAlignmentButtons;
+    alignLeft() {
+      this.undoableAction(this.selectedShapes.align.left);
     },
-    copySelection() {
-      this.$emit('copy-selection');
+    centerHorizontally() {
+      this.undoableAction(this.selectedShapes.align.horizontalCenter);
     },
-    cloneSelection() {
-      this.$emit('clone-selection');
+    alignRight() {
+      this.undoableAction(this.selectedShapes.align.right);
     },
-    deleteElement() {
-      this.$emit('remove-nodes');
+    alignBottom() {
+      this.undoableAction(this.selectedShapes.align.bottom);
     },
+    centerVertically() {
+      this.undoableAction(this.selectedShapes.align.verticalCenter);
+    },
+    alignTop() {
+      this.undoableAction(this.selectedShapes.align.top);
+    },
+    distributeHorizontally() {
+      this.undoableAction(this.selectedShapes.distribute.horizontally);
+    },
+    distributeVertically() {
+      this.undoableAction(this.selectedShapes.distribute.vertically);
+    },
+
+    undoableAction(actionFn) {
+      actionFn();
+      this.$emit('save-state');
+    },
+
     paperNotRendered() {
       return !this.isRendering;
     },
@@ -161,11 +218,10 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
-.crown-multiselect {
-  top: -38px;
-  left: 50%;
+.crown-align {
+  top: -58px;
+  left: -35%;
   pointer-events: auto;
 }
 .crown-button {
@@ -207,3 +263,5 @@ img {
   margin:auto;
 }
 </style>
+
+<style lang="scss" src="./crownAlign.scss" />
