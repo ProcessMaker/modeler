@@ -38,7 +38,7 @@ export default {
       id: 'processmaker-modeler-parallel-gateway',
     },
     {
-      icon: require('@/assets/toolpanel/generic-gateway.svg'),
+      icon: require('@/assets/toolpanel/event-based-gateway.svg'),
       label: 'Event Based Gateway',
       control: true,
       rank: 54,

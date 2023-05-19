@@ -16,39 +16,42 @@
           :key="key"
           @click="onClickHandler($event, item)"
         >
-          <img :src=item.icon :alt=item.label class='icon'>
+          <inline-svg :src="item.icon" :alt=item.label />
           <div class="control-submenu-list-label">
             {{ item.label }}
           </div>
         </li>
       </ul>
     </div>
-    <div slot="reference" >
-      <div class="control-submenu-options">
-        <span />
-      </div>
-      <img
-        :src=data.icon
-        :alt=data.label
-        :title="$t(data.label)"
-        v-b-tooltip.hover
-      >
-    </div>
-  </popper>
-  <div v-else class="control-submenu-item ">
-    <img
-      :src=data.icon
+    <a
+      class="control-submenu-item "
+      slot="reference"
       :alt=data.label
       :title="$t(data.label)"
       v-b-tooltip.hover
     >
-  </div>
+      <div class="control-submenu-options">
+        <span />
+      </div>
+
+      <inline-svg :src="data.icon" />
+    </a>
+  </popper>
+  <a v-else class="control-submenu-item"
+    :alt=data.label
+    :title="$t(data.label)"
+    v-b-tooltip.hover
+  >
+    <inline-svg :src=data.icon />
+  </a>
 </template>
 
 <script>
 import { BOTTOM } from '@/components/controls/rankConstants';
 import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
+import InlineSvg from 'vue-inline-svg';
+
 export default ({
   props: {
     data: { type: Object },
@@ -57,6 +60,7 @@ export default ({
   },
   components: {
     Popper,
+    InlineSvg,
   },
   data() {
     return {
@@ -103,12 +107,16 @@ export default ({
   border-radius: 4px;
   list-style: none;
   &-item {
-    & > img {
+    & > svg {
       width: 24px;
       height: 24px;
     }
     &.active {
-      background: #EBEEF2;
+      background-color: #EBEEF2;
+
+      & > svg {
+        fill: peru;
+      }
     }
   }
   &-list {
@@ -123,14 +131,19 @@ export default ({
     order: 0;
     align-self: stretch;
     flex-grow: 0;
+
     &.active {
-      background: #EBEEF2;
+      background-color: #DEEBFF;
+
+      & svg {
+        fill: #1264AA;
+      }
     }
     &:hover {
-      background: #EBEEF2;
+      background-color: #EBEEF2;
     }
 
-    & > img {
+    & > svg {
       width: 24px;
       height: 24px;
     }
@@ -161,6 +174,10 @@ export default ({
       clip-path: padding-box;
     }
 
+    & ~ svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 
