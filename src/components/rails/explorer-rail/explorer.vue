@@ -8,6 +8,9 @@ import NodeTypesLoop from '@/components/rails/explorer-rail/nodeTypesLoop/nodeTy
 export default {
   name: 'ExplorerRail',
   props: {
+    explorerExpanded: {
+      type: Boolean,
+    },
     nodeTypes: {
       type: Array,
     },
@@ -40,6 +43,9 @@ export default {
     },
     filteredNodes() {
       return nodeTypesStore.getters.getFilteredNodeTypes;
+    },
+    unpinnedObjects() {
+      return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
     },
   },
   created() {
