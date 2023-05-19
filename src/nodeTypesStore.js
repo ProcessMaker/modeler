@@ -10,11 +10,13 @@ export default new Vuex.Store({
     nodeTypes: [],
     pinnedNodeTypes: [],
     filteredNodeTypes: [],
+    searchTerm: '',
   },
   getters: {
     getNodeTypes: state => state.nodeTypes,
     getPinnedNodeTypes: state => state.pinnedNodeTypes,
     getFilteredNodeTypes: state => state.filteredNodeTypes,
+    getSearchTerm: state => state.searchTerm,
   },
   mutations: {
     setNodeTypes(state, nodeTypes) {
@@ -39,6 +41,7 @@ export default new Vuex.Store({
     setFilteredNodeTypes(state, searchTerm) {
       const pinnedNodeTypes = state.pinnedNodeTypes;
       const nodeTypes = state.nodeTypes;
+      state.searchTerm = searchTerm;
       const allNodes = uniqBy([...pinnedNodeTypes, ...nodeTypes], 'id');
       state.filteredNodeTypes = allNodes.filter(node => {
         return node.label.toLowerCase().includes(searchTerm.toLowerCase());
@@ -46,6 +49,7 @@ export default new Vuex.Store({
     },
     clearFilteredNodes(state) {
       state.filteredNodeTypes = [];
+      state.searchTerm = '';
     },
   },
   actions: {
