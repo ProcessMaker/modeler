@@ -3,7 +3,7 @@
     <div
       class="rail-left"
       :style="[overlap ? { position: 'relative'} : { position: 'absolute' }]"
-      id="rail-left-box"
+      ref="railLeftBox"
     >
       <MiniPaperControl
         :paper-manager="paperManager"
@@ -12,19 +12,19 @@
 
       <ZoomControl
         :paper-manager="paperManager"
+        ref="zoomBox"
       />
     </div>
 
     <div
       class="rail-center"
-      id="rail-center"
       :style="[overlap ? { width: 'auto'} : { width: '100%'}]"
     >
       <UndoRedoControl
         :is-rendering="isRendering"
         @load-xml="$emit('load-xml')"
         @clearSelection="$emit('clearSelection')"
-        id="undo-redo-box"
+        ref="undoRedoBox"
       />
 
       <Controls
@@ -60,30 +60,13 @@ export default {
   data() {
     return {
       overlap: false,
-      initialWidthControl: 0,
-      widthControlBox: 0,
-      margin: 0,
+      widthOverlapControl: 0,
+      leftOverlapUndoRedo: 0,
+      controlObserver: null,
     };
   },
-  watch: {
-    widthControlBox(newValue) {
-      if (newValue < this.initialWidthControl) {
-        // const ml = parseInt(getComputedStyle(document.getElementById('rail-center')).getPropertyValue('margin-left'), 10);
-        // this.overlap = false;
-
-        this.margin += 40;
-        document.getElementById('rail-center').style.marginLeft = `-${this.margin}px`;
-      }
-
-      document.getElementById('rail-center').style.marginLeft = 0;
-
-
-      // window.console.log(overlap);
-
-      // if (overlap) {
-      //   this.overlap = true;
-      // }
-    },
+  created() {
+    this.controlObserver = new ResizeObserver(this.onControlObserver);
   },
   methods: {
     onCreateElementHandler(data){
@@ -92,38 +75,44 @@ export default {
     onSetCursorHandler(data) {
       this.$emit('set-cursor', data);
     },
-    initObserver() {
-      const observer = new ResizeObserver((entries) => {
-        const entry = entries[0].target;
-        this.widthControlBox = entry.getBoundingClientRect().width;
+    onControlObserver(entries) {
+      // Control coordinates
+      const controlEl = entries[0].target.getBoundingClientRect();
+      // Zoom coordinates
+      const zoomEl = this.$refs.zoomBox.$el.getBoundingClientRect();
+      // Undo/Redo coordinates
+      const undoRedoEl = this.$refs.undoRedoBox.$el.getBoundingClientRect();
 
-        const el1 = document.getElementById('rail-left-box');
-        const el2 = document.getElementById('undo-redo-box');
-
-        const domRect1 = el1.getBoundingClientRect();
-        const domRect2 = el2.getBoundingClientRect();
-
-        const overlap = !(
-          domRect1.top > domRect2.bottom ||
-          domRect1.right < domRect2.left ||
-          domRect1.bottom < domRect2.top ||
-          domRect1.left > domRect2.right
-        );
-
-        if (overlap) {
-          window.console.log(overlap);
-          debugger;
+      // Checks overlapping
+      if (this.overlap) {
+        if (controlEl.width < this.widthOverlapControl) {
+          // Get the computed styles of the ZoomControl
+          const zoomStyles = window.getComputedStyle(this.$refs.zoomBox.$el);
+          // Calculate the total padding of the ZoomControl element
+          const zoomPadding = parseInt(zoomStyles.paddingLeft, 10) + parseInt(zoomStyles.paddingRight, 10);
+          // Get the computed styles of the RailLeftBox
+          const railLeftBoxStyles = window.getComputedStyle(this.$refs.railLeftBox);
+          // Calculate the total padding of the RailLeftBox element
+          const railLeftBoxPadding = parseInt(railLeftBoxStyles.paddingLeft, 10) + parseInt(railLeftBoxStyles.paddingRight, 10);
+          // Calculate the left position of the Controls element when it is overlapped with the UndoRedoControl and ZoomControl elements
+          const vLeft = this.leftOverlapUndoRedo + (this.widthOverlapControl - controlEl.width) - zoomPadding - railLeftBoxPadding;
+          // Checks if the left position of the Controls element when it is overlapped with the
+          // UndoRedoControl and ZoomControl elements is greater than the right position of the ZoomControl element
+          if (vLeft > zoomEl.right) {
+            this.overlap = false;
+          }
         }
-      });
-
-      observer.observe(this.$refs.controlBox.$el);
+      } else if (undoRedoEl.left < zoomEl.right) {
+        this.overlap = true;
+        this.widthOverlapControl = controlEl.width;
+        this.leftOverlapUndoRedo = undoRedoEl.left;
+      }
     },
   },
   async mounted() {
     await nextTick();
-    // this.initialWidthControl = this.$refs.controlBox.$el.getBoundingClientRect().width;
 
-    this.initObserver();
+    this.controlObserver.observe(this.$refs.controlBox.$el);
   },
 };
 </script>
