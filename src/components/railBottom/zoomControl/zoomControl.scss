@@ -10,8 +10,7 @@
     border-radius: 8px;
   }
 
-  &-button,
-  &-text {
+  &-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,20 +50,17 @@
     }
   }
 
-  &-text {
-    height: 28px;
-    margin-right: 0;
+  &-reset {
     padding: {
-      left: 30px;
-      right: 30px;
+      left: 24px;
+      right: 24px;
     };
-    border: {
-      left: thin solid #B6BFC6;
-      right: thin solid #B6BFC6;
-    };
-    border-radius: 0;
     font-size: 14px;
     font-weight: 700;
     user-select: none;
+
+    &:active {
+      color: #1264AA;
+    }
   }
 }

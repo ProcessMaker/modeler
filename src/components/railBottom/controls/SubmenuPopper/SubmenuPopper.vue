@@ -113,10 +113,6 @@ export default ({
     }
     &.active {
       background-color: #EBEEF2;
-
-      & > svg {
-        fill: peru;
-      }
     }
   }
   &-list {

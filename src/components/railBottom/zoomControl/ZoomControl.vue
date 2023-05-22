@@ -11,9 +11,14 @@
       <inline-svg :src="minusIcon" />
     </button>
 
-    <div v-if="paperManager" class="zoom-text">
-      {{ Math.round(paperManager.scale.sx*100) }}%
-    </div>
+    <button
+      v-if="paperManager"
+      @click="onClickReset"
+      class="zoom-button zoom-reset"
+      data-cy="zoom-reset-control"
+    >
+      {{ percentageText }}
+    </button>
 
     <button
       type="button"
@@ -47,6 +52,11 @@ export default ({
       plusIcon: require('@/assets/railBottom/plus.svg'),
     };
   },
+  computed: {
+    percentageText() {
+      return `${Math.round(this.$props.paperManager.scale.sx * 100)}%`;
+    },
+  },
   methods: {
     onClickZoomOut() {
       this.paperManager.scale = Math.max(
@@ -56,6 +66,9 @@ export default ({
     },
     onClickZoomIn() {
       this.paperManager.scale = this.paperManager.scale.sx + this.scaleStep;
+    },
+    onClickReset() {
+      this.paperManager.scale = this.initialScale;
     },
   },
 });

@@ -11,8 +11,6 @@
       <inline-svg :src="undoIcon" />
     </button>
 
-    <div class="ur-divider" />
-
     <button type="button"
       class="ur-button"
       data-cy="redo-control"

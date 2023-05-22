@@ -42,24 +42,10 @@
       cursor: not-allowed;
     }
 
-    &:first-child {
-      margin-right: 4px;
-    }
-
-    &:last-child {
-      margin-left: 4px;
-    }
-
     & > svg {
       width: 24px;
       height: 24px;
       fill: #333344;
     }
-  }
-
-  &-divider {
-    width: 1px;
-    height: 28px;
-    border-right: thin solid #B6BFC6;
   }
 }
