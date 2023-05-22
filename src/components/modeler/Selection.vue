@@ -297,6 +297,20 @@ export default {
       return elements;
     },
     /**
+     * Check if a point is into the area
+     * @param {Object} position
+     * @param {Object} area
+     */
+    isPositionWithinArea(position, area) {
+      const { x, y, width, height } = area;
+      return (
+        position.x >= x &&
+        position.x <= x + width &&
+        position.y >= y &&
+        position.y <= y + height
+      );
+    },
+    /**
      * Prepare the conectedLinks collection
      * @param {Array} shapes 
      */
@@ -304,7 +318,21 @@ export default {
       const { paper } = this.paperManager;
       this.conectedLinks = [];
       shapes.forEach((shape) => {
-        const conectedLinks = this.graph.getConnectedLinks(shape.model);
+        let conectedLinks = this.graph.getConnectedLinks(shape.model);
+        // if the shape is a container
+        const area = shape.model.getBBox();
+        const linksInArea = paper.model.getLinks().filter((link) => {
+          const sourcePosition = link.getSourcePoint();
+          const targetPosition = link.getTargetPoint();
+
+          return (
+            this.isPositionWithinArea(sourcePosition, area) &&
+            this.isPositionWithinArea(targetPosition, area)
+          );
+        });
+        if (linksInArea) {
+          conectedLinks = [...conectedLinks, ...linksInArea];
+        }
         conectedLinks.forEach((link) => {
           const linkView = paper.findViewByModel(link);
           if (!this.conectedLinks.some(obj => obj.id === linkView.id)) {
@@ -494,12 +522,14 @@ export default {
      * Stop drag procedure
      * @param {Object} event
      */
-    stopDrag() {
+    async stopDrag() {
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
       // that are anchored and did not move, such as boundary events. 
       this.updateSelectionBox();
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
       this.updateFlowsWaypoint();
       this.overPoolStopDrag();
     },
