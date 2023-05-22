@@ -53,6 +53,7 @@ export default {
       isSelecting: false,
       isSelected: false,
       selected: [],
+      conectedLinks:[],
       dragging: false,
       style:  {
         left: '0px',
@@ -96,6 +97,7 @@ export default {
   watch: {
     // whenever selected changes
     selected(newSelected) {
+      this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
     },
   },
@@ -694,12 +696,14 @@ export default {
      */
     overPoolStopDrag(){
       if (this.isNotPoolChilds(this.selected)) {
+        this.$emit('save-state');
         return;
       }
       if (this.isOutOfThePool) {
         this.rollbackSelection();
       } else {
         this.expandToFitElement(this.selected);
+        this.$emit('save-state');
       }
     },
     /**
