@@ -17,7 +17,7 @@
       class="zoom-button zoom-reset"
       data-cy="zoom-reset-control"
     >
-      {{ Math.round(paperManager.scale.sx * 100) }}%
+      {{ percentageText }}
     </button>
 
     <button
@@ -51,6 +51,11 @@ export default ({
       minusIcon: require('@/assets/railBottom/minus.svg'),
       plusIcon: require('@/assets/railBottom/plus.svg'),
     };
+  },
+  computed: {
+    percentageText() {
+      return `${Math.round(this.$props.paperManager.scale.sx * 100)}%`;
+    },
   },
   methods: {
     onClickZoomOut() {
