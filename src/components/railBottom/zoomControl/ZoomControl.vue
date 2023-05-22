@@ -11,9 +11,14 @@
       <inline-svg :src="minusIcon" />
     </button>
 
-    <div v-if="paperManager" class="zoom-text">
-      {{ Math.round(paperManager.scale.sx*100) }}%
-    </div>
+    <button
+      v-if="paperManager"
+      @click="onClickReset"
+      class="zoom-button zoom-reset"
+      data-cy="zoom-reset-control"
+    >
+      {{ Math.round(paperManager.scale.sx * 100) }}%
+    </button>
 
     <button
       type="button"
@@ -56,6 +61,9 @@ export default ({
     },
     onClickZoomIn() {
       this.paperManager.scale = this.paperManager.scale.sx + this.scaleStep;
+    },
+    onClickReset() {
+      this.paperManager.scale = this.initialScale;
     },
   },
 });
