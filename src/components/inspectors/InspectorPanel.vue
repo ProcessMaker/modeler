@@ -51,6 +51,7 @@ import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 import Process from './process';
 import isString from 'lodash/isString';
+import undoRedoStore from '@/undoRedoStore';
 
 Vue.component('FormText', renderer.FormText);
 Vue.component('FormInput', FormInput);
@@ -225,7 +226,9 @@ export default {
       }
     },
     updateState() {
-      this.$emit('save-state');
+      undoRedoStore.dispatch('undoRedoTransaction', async() => {
+        this.$emit('save-state');
+      });
     },
   },
 };

@@ -469,14 +469,15 @@ export default {
       if (this.pasteInProgress || this.cloneInProgress) {
         return;
       }
-      try {
-        const xml = await this.getXmlFromDiagram();
-        await undoRedoStore.dispatch('pushState', xml);
-        window.ProcessMaker.EventBus.$emit('modeler-change');
-      } catch (invalidXml) {
-        // eslint-disable-next-line no-console
-        console.warn(invalidXml.message);
-      }
+      await undoRedoStore.dispatch('pushState', async() => {
+        try {
+          return await this.getXmlFromDiagram();
+        } catch (invalidXml) {
+          // eslint-disable-next-line no-console
+          console.warn(invalidXml.message);
+        }
+      });
+      window.ProcessMaker.EventBus.$emit('modeler-change');
     },
     getXmlFromDiagram() {
       return new Promise((resolve, reject) => {
@@ -1353,7 +1354,7 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: async(xml) => {
         await this.loadXML(xml);
-        await undoRedoStore.dispatch('pushState', xml);
+        await undoRedoStore.dispatch('loadXML', xml);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),

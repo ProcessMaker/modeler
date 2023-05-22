@@ -33,6 +33,7 @@
 
 <script>
 import { BOTTOM } from '@/components/controls/rankConstants';
+import undoRedoStore from '@/undoRedoStore';
 
 export default {
   props: ['allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight', 'nodeTypes'],
@@ -97,9 +98,11 @@ export default {
       this.draggingElement = null;
       this.draggingControl = null;
     },
-    dropElement({ clientX, clientY }) {
-      this.$emit('handleDrop', { clientX, clientY, control: this.draggingControl });
-      this.stopDrag();
+    async dropElement({ clientX, clientY }) {
+      undoRedoStore.dispatch('undoRedoTransaction', () => {
+        this.$emit('handleDrop', { clientX, clientY, control: this.draggingControl });
+        this.stopDrag();
+      });
     },
     setDraggingPosition({ pageX, pageY, clientX, clientY }) {
       this.draggingElement.style.left = pageX - this.xOffset + 'px';

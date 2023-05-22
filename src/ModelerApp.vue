@@ -85,7 +85,7 @@ export default {
   methods: {
     loadXmlIntoModeler() {
       this.$refs.modeler.loadXML(this.uploadedXml);
-      undoRedoStore.dispatch('pushState', this.uploadedXml);
+      undoRedoStore.dispatch('loadXML', this.uploadedXml);
     },
     clearUpload() {
       this.uploadedXml = null;

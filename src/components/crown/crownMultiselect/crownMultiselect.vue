@@ -26,6 +26,7 @@
 <script>
 import store from '@/store';
 import runningInCypressTest from '@/runningInCypressTest';
+import undoRedoStore from '@/undoRedoStore';
 
 export default {
   props: {
@@ -103,18 +104,18 @@ export default {
       return !this.isRendering;
     },
     setNodePosition() {
-      this.shape.stopListening(
-        this.paper,
-        'element:pointerup',
-        this.setNodePosition
-      );
-      this.savePositionOnPointerupEventSet = false;
+      undoRedoStore.dispatch('undoRedoTransaction', () => {
+        this.shape.stopListening(
+          this.paper,
+          'element:pointerup',
+          this.setNodePosition
+        );
+        this.savePositionOnPointerupEventSet = false;
 
-      if (!store.getters.allowSavingElementPosition) {
-        return;
-      }
-
-      this.$emit('save-state');
+        if (!store.getters.allowSavingElementPosition) {
+          return;
+        }
+      });
     },
     paperDoneRendering() {
       if (!this.isRendering) {
