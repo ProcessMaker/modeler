@@ -5,6 +5,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    transaction: null,
+    transactionResolve: null,
+    transactionReject: null,
+    transactionState: null,
     stack: [],
     position: null,
     disabled: false,
@@ -33,6 +37,20 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    startTransaction(state) {
+      state.transaction = new Promise((resolve, reject) => {
+        state.transactionResolve = resolve;
+        state.transactionReject = reject;
+      });
+    },
+    updateTransaction(state, getNewState) {
+      state.transactionResolve();
+      state.transactionState = getNewState;
+    },
+    resetState(state, newState) {
+      state.stack = [ newState ];
+      state.position = 0;
+    },
     setPosition(state, position) {
       state.position = position;
     },
@@ -60,13 +78,32 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    pushState({ state, getters, commit }, newState) {
-      if (newState === getters.currentState || state.disabled) {
+    async undoRedoTransaction({ commit, state, getters }, callBack) {
+      // eslint-disable-next-line no-console
+      console.log('start transaction');
+      commit('startTransaction');
+      const transaction = state.transaction;
+      callBack();
+      // wait 500ms for all updates(save-state) to be done
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await transaction;
+      const getNewState = state.transactionState;
+      const newState = await getNewState();
+      // eslint-disable-next-line no-console
+      console.log('commit state');
+      if (newState === getters.currentState) {
         return;
       }
-
       commit('setState', newState);
       commit('setPosition', state.stack.length - 1);
+    },
+    loadXML({ commit }, newState) {
+      commit('resetState', newState);
+    },
+    async pushState({ commit }, getNewState) {
+      // eslint-disable-next-line no-console
+      console.log('- update state');
+      commit('updateTransaction', getNewState);
     },
     undo({ state, getters, commit }) {
       if (!getters.canUndo) {

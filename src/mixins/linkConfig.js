@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce';
 import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
+import undoRedoStore from '@/undoRedoStore';
 
 const endpoints = {
   source: 'source',
@@ -127,18 +128,20 @@ export default {
       this.$emit('set-shape-stacking', sourceShape);
     },
     updateWaypoints() {
-      const linkView = this.shape.findView(this.paper);
-      const start = linkView.sourceAnchor;
-      const end = linkView.targetAnchor;
+      undoRedoStore.dispatch('undoRedoTransaction', () => {
+        const linkView = this.shape.findView(this.paper);
+        const start = linkView.sourceAnchor;
+        const end = linkView.targetAnchor;
 
-      this.node.diagram.waypoint = [start,
-        ...this.shape.vertices(),
-        end].map(point => this.moddle.create('dc:Point', point));
+        this.node.diagram.waypoint = [start,
+          ...this.shape.vertices(),
+          end].map(point => this.moddle.create('dc:Point', point));
 
-      if (!this.listeningToMouseup) {
-        this.listeningToMouseup = true;
-        document.addEventListener('mouseup', this.emitSave);
-      }
+        if (!this.listeningToMouseup) {
+          this.listeningToMouseup = true;
+          document.addEventListener('mouseup', this.emitSave);
+        }
+      });
     },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
@@ -170,15 +173,15 @@ export default {
 
       this.paper.el.removeEventListener('mousemove', this.updateLinkTarget);
       this.shape.listenToOnce(this.paper, 'cell:pointerclick', () => {
-        this.completeLink();
-        this.updateWaypoints();
-        this.updateWaypoints.flush();
+        undoRedoStore.dispatch('undoRedoTransaction', () => {
+          this.completeLink();
+          this.updateWaypoints();
+          this.updateWaypoints.flush();
 
-        if (this.updateDefinitionLinks) {
-          this.updateDefinitionLinks();
-        }
-
-        this.$emit('save-state');
+          if (this.updateDefinitionLinks) {
+            this.updateDefinitionLinks();
+          }
+        });
       });
 
       this.shape.listenToOnce(this.paper, 'cell:mouseleave', () => {

@@ -277,7 +277,7 @@ export default {
     },
   },
   mounted() {
-    if (this.$root.$children[0].process.is_template) {
+    if (this.$root.$children[0].process && this.$root.$children[0].process.is_template) {
       const indexOfActions = this.ellipsisMenuActions.findIndex(object => {
         return object.value === 'save-template';
       });

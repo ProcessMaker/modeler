@@ -21,6 +21,7 @@
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { removeFlows } from '@/components/crown/utils.js';
+import undoRedoStore from '@/undoRedoStore';
 
 export default {
   components: { CrownButton },
@@ -37,10 +38,11 @@ export default {
   },
   methods: {
     removeFlows,
-    removeShape() {
-      // @todo this should be handled by the Modeler.vue
-      this.removeFlows(this.graph, this.shape);
-      this.$emit('remove-node', this.node);
+    async removeShape() {
+      undoRedoStore.dispatch('undoRedoTransaction', () => {
+        this.removeFlows(this.graph, this.shape);
+        this.$emit('remove-node', this.node);
+      });
     },
     removePoolLaneShape() {
       this.$emit('remove-node', this.node);
