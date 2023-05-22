@@ -53,7 +53,6 @@ export default {
       isSelecting: false,
       isSelected: false,
       selected: [],
-      conectedLinks:[],
       dragging: false,
       style:  {
         left: '0px',
@@ -97,7 +96,6 @@ export default {
   watch: {
     // whenever selected changes
     selected(newSelected) {
-      this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
     },
   },
@@ -415,7 +413,7 @@ export default {
         // remove from selection the selected flows that belongs to a selected pools
         if (shape.model.component  && flowTypes.includes(shape.model.component.node.type)) {
           const parent = shape.model.getParentCell();
-          if (parent.component && parent.component.node.pool) {
+          if (parent && parent.component && parent.component.node.pool) {
             return !selectedPoolsIds.includes(parent.component.node.pool.component.node.id);
           }
         }
@@ -696,14 +694,12 @@ export default {
      */
     overPoolStopDrag(){
       if (this.isNotPoolChilds(this.selected)) {
-        this.$emit('save-state');
         return;
       }
       if (this.isOutOfThePool) {
         this.rollbackSelection();
       } else {
         this.expandToFitElement(this.selected);
-        this.$emit('save-state');
       }
     },
     /**
@@ -725,7 +721,6 @@ export default {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         });
       this.isOutOfThePool = false;
-      this.updateFlowsWaypoint();
       await store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
       await this.$nextTick();
@@ -801,6 +796,7 @@ export default {
             node: pool.component.node,
             bounds: pool.getBBox(),
           });
+          this.$emit('save-state');
         }
       }
     },

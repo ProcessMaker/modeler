@@ -40,6 +40,7 @@ export default new Vuex.Store({
   },
   getters: {
     nodes: state => state.nodes,
+    paper: state => state.paper,
     highlightedNodes: state => state.highlightedNodes,
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
