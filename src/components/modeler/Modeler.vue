@@ -878,9 +878,7 @@ export default {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
     onCreateElementHandler({ event, control }) {
-      // eslint-disable-next-line no-console
-      console.log('onCreateElementHandler', control);
-      this.handleDrop({ 
+      this.handleDrop({
         clientX: event.clientX,
         clientY: event.clientY,
         control,

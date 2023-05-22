@@ -5,7 +5,7 @@
   >
     <li
       v-for="(item, key) in controls"
-      :class="{ 'control-item active': selectedItem === item.type, 'control-item': selectedItem !== item.type }"
+      :class="['control-item', {'active': selectedItem === item.type}]"
       :id="item.id"
       :key="key"
       @click.stop="onClickHandler($event, item)"
@@ -13,8 +13,8 @@
       <SubmenuPopper
         :data="item"
         @clickToSubmenu="clickToSubmenuHandler"
-        :selectedItem = "selectedSubmenuItem"
-        :popperType = "popperType"
+        :selectedItem="selectedSubmenuItem"
+        :popperType="popperType"
       />
     </li>
 
@@ -92,7 +92,7 @@ export default ({
       this.element = control;
       this.$emit('onSetCursor', 'crosshair');
       if (!this.parent) {
-        this.selectedItem=control.type;
+        this.selectedItem = control.type;
         this.popperType = control.type;
       }
       window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
@@ -120,8 +120,8 @@ export default ({
       }
     },
     setDraggingPosition({ pageX, pageY }) {
-      this.movedElement.style.left = pageX  + 'px';
-      this.movedElement.style.top = pageY + 'px';
+      this.movedElement.style.left = `${pageX}px`;
+      this.movedElement.style.top = `${pageY}px`;
     },
     createDraggingHelper(event, control) {
       if (this.movedElement) {

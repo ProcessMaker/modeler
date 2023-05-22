@@ -12,7 +12,7 @@
     <div>
       <ul class="control-submenu">
         <li v-for="(item, key) in items"
-          :class="{'control-submenu-list active': selectedItem === item.type, 'control-submenu-list': selectedItem !== item.type}"
+          :class="['control-submenu-list', {'active': selectedItem === item.type}]"
           :key="key"
           @click="onClickHandler($event, item)"
         >
