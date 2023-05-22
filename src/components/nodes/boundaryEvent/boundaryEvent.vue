@@ -218,5 +218,6 @@ export default {
     this.updateShapePosition(task);
 
     this.shape.on('change:position', this.turnInvalidTargetRed);
+  },
 };
 </script>
