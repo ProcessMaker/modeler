@@ -42,7 +42,7 @@ export default {
       id: 'processmaker-modeler-script-task',
     },
     {
-      icon: require('@/assets/toolpanel/task.svg'),
+      icon: require('@/assets/toolpanel/sub-task.svg'),
       label: 'Sub Process',
       control: true,
       rank: 44,

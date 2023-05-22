@@ -3,16 +3,16 @@
     v-if="controls"
     class="control-list"
   >
-    <li 
+    <li
       v-for="(item, key) in controls"
       :class="{ 'control-item active': selectedItem === item.type, 'control-item': selectedItem !== item.type }"
-      :id="item.id" 
+      :id="item.id"
       :key="key"
       @click.stop="onClickHandler($event, item)"
     >
-      <SubmenuPopper 
-        :data="item" 
-        @clickToSubmenu="clickToSubmenuHandler" 
+      <SubmenuPopper
+        :data="item"
+        @clickToSubmenu="clickToSubmenuHandler"
         :selectedItem = "selectedSubmenuItem"
         :popperType = "popperType"
       />
@@ -20,7 +20,7 @@
 
     <li class="control-item">
       <div class="control-add" :title="$t('Add')" v-b-tooltip.hover>
-        <img :src="plusIcon" :alt="$t('Add')">
+        <inline-svg :src="plusIcon" />
       </div>
     </li>
   </ul>
@@ -29,16 +29,18 @@
 <script>
 import { BOTTOM } from '@/components/controls/rankConstants';
 import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
+import InlineSvg from 'vue-inline-svg';
 export default ({
   components: {
     SubmenuPopper,
+    InlineSvg,
   },
   props: {
     nodeTypes: Array,
   },
   data() {
     return {
-      plusIcon: require('@/assets/railBottom/plus-lg-light.svg'),
+      plusIcon: require('@/assets/railBottom/plus.svg'),
       wasClicked: false,
       element: null,
       selectedItem: null,
@@ -57,7 +59,7 @@ export default ({
         pointerEvents: 'none',
       },
       popperType: null,
-    }; 
+    };
   },
   computed: {
     controls() {
@@ -78,8 +80,8 @@ export default ({
     clickToSubmenuHandler(data){
       window.ProcessMaker.EventBus.$off('custom-pointerclick');
       this.wasClicked = false;
-      this.parent = this.element; 
-      this.selectedSubmenuItem = data.control.type;  
+      this.parent = this.element;
+      this.selectedSubmenuItem = data.control.type;
       this.onClickHandler(data.event, data.control);
     },
     onClickHandler(event, control) {
@@ -115,7 +117,7 @@ export default ({
         this.$emit('onSetCursor', 'none');
         event.preventDefault();
         this.wasClicked = false;
-      } 
+      }
     },
     setDraggingPosition({ pageX, pageY }) {
       this.movedElement.style.left = pageX  + 'px';

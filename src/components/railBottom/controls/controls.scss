@@ -28,11 +28,17 @@
     }
 
     &:hover {
-      background: #ebeef2;
+      background-color: #ebeef2;
     }
+
     &.active {
-      background: #ebeef2;
+      background-color: #D4D7F4;
+
+      &::v-deep a > svg {
+        fill: #1264AA;
+      }
     }
+
     &-options {
       position: absolute;
       top: 0;
@@ -61,17 +67,14 @@
     background-color: #00AD73;
     border-radius: 2px;
     font-size: 13px;
-    color: #ffffff;
-  }
 
-  & > img {
-    width: 24px;
-    height: 24px;
+    & > svg {
+      fill: #ffffff;
+    }
   }
 }
 
 .is-dragging {
-  // background: $primary-color;
   color: $primary-white;
   position: absolute;
   z-index: 10;
@@ -80,7 +83,7 @@
   pointer-events: none;
   width: 40px;
   height: 40px;
-  background: green;
+  background-color: green;
   &.no-drop {
     opacity: 0.8;
     cursor: no-drop;

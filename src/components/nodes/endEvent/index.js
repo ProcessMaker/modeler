@@ -31,7 +31,7 @@ export default {
       id: 'processmaker-modeler-message-end-event',
     },
     {
-      icon: require('@/assets/toolpanel/end-event.svg'),
+      icon: require('@/assets/toolpanel/error-end-event.svg'),
       label: defaultNames['processmaker-modeler-error-end-event'],
       control: true,
       rank: 33,

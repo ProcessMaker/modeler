@@ -8,7 +8,7 @@
       :title="$t('Undo')"
       @click="undo"
     >
-      <UndoIcon />
+      <inline-svg :src="undoIcon" />
     </button>
 
     <div class="ur-divider" />
@@ -21,24 +21,29 @@
       :title="$t('Redo')"
       @click="redo"
     >
-      <RedoIcon />
+      <inline-svg :src="redoIcon" />
     </button>
   </div>
 </template>
 
 <script>
-import { UndoIcon, RedoIcon } from '@/components/railBottom/icons';
+import InlineSvg from 'vue-inline-svg';
 import undoRedoStore from '@/undoRedoStore';
 
 export default ({
   components: {
-    UndoIcon,
-    RedoIcon,
+    InlineSvg,
   },
   props: {
     isRendering: {
       type: Boolean,
     },
+  },
+  data() {
+    return {
+      undoIcon: require('@/assets/railBottom/undo.svg'),
+      redoIcon: require('@/assets/railBottom/redo.svg'),
+    };
   },
   watch: {
     canUndo(canUndo) {
