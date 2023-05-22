@@ -1,6 +1,7 @@
 describe('Zoom control test', () => {
   const zoomOutSelector = '[data-cy="zoom-out-control"]';
   const zoomInSelector = '[data-cy="zoom-in-control"]';
+  const zoomResetSelector = '[data-cy="zoom-reset-control"]';
 
   const buttonBgColorDefault = 'rgb(255, 255, 255)';
   const iconFillColorDefault = 'rgb(51, 51, 68)';
@@ -71,6 +72,37 @@ describe('Zoom control test', () => {
 
         expect(expectedScale).eq(Math.round(paper.scale().sx * 10) / 10);
         expect(expectedScale).eq(Math.round(paper.scale().sy * 10) / 10);
+      });
+  });
+
+  it(`should reset modeler after (+) zoom-in (${numZoomInTimes}) times`, () => {
+    const numClicks = Array.from({length: numZoomInTimes}, (_, index) => index + 1);
+
+    numClicks.forEach(() => {
+      cy.get(zoomInSelector).click();
+    });
+
+    cy.window()
+      .its('store.state.paper')
+      .then(paper => {
+        const expectedScale = initialScale + (scaleStep * numZoomInTimes);
+
+        cy.wait(500);
+
+        expect(expectedScale).eq(Math.round(paper.scale().sx * 10) / 10);
+        expect(expectedScale).eq(Math.round(paper.scale().sy * 10) / 10);
+      });
+
+    cy.wait(500);
+    cy.get(zoomResetSelector).click();
+
+    cy.window()
+      .its('store.state.paper')
+      .then(paper => {
+        cy.wait(500);
+
+        cy.log(paper.scale().sx);
+        expect(paper.scale().sx).eq(initialScale);
       });
   });
 });
