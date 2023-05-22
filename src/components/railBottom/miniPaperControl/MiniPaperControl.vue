@@ -9,7 +9,7 @@
       v-b-tooltip.hover
       :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
     >
-      <MiniMapIcon />
+      <inline-svg :src="miniMapIcon" />
     </button>
 
     <mini-paper
@@ -21,12 +21,12 @@
 </template>
 
 <script>
-import { MiniMapIcon } from '@/components/railBottom/icons';
+import InlineSvg from 'vue-inline-svg';
 import MiniPaper from '@/components/miniPaper/MiniPaper.vue';
 
 export default ({
   components: {
-    MiniMapIcon,
+    InlineSvg,
     MiniPaper,
   },
   props: {
@@ -36,6 +36,7 @@ export default ({
   data() {
     return {
       miniMapOpen: false,
+      miniMapIcon: require('@/assets/railBottom/mini-map.svg'),
     };
   },
 });

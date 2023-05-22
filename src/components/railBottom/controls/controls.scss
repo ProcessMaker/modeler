@@ -67,12 +67,10 @@
     background-color: #00AD73;
     border-radius: 2px;
     font-size: 13px;
-    color: #ffffff;
-  }
 
-  & > img {
-    width: 24px;
-    height: 24px;
+    & > svg {
+      fill: #ffffff;
+    }
   }
 }
 
