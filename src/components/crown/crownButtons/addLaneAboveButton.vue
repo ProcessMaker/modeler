@@ -5,16 +5,15 @@
     v-on="$listeners"
     :width="25"
   >
-    <img
-      :src="laneAboveIcon"
-      aria-hidden="true"
-    >
+    <font-awesome-icon :icon="['fpm', 'fa-lane-above']"/>
   </crown-button>
 </template>
 
 <script>
 import laneAboveIcon from '@/assets/lane-above.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faLaneAbove } from './icons';
 
 export default {
   components: { CrownButton },
@@ -22,6 +21,9 @@ export default {
     return {
       laneAboveIcon,
     };
+  },
+  created() {
+    library.add(faLaneAbove);
   },
 };
 </script>

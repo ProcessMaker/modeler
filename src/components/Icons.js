@@ -151,7 +151,7 @@ export default class
 
 String.prototype.startsLowerCase = function() {
   let firstLetter = this.substring(0,1);
-  return firstLetter == firstLetter.toLowerCase();
+  return firstLetter === firstLetter.toLowerCase();
 };
 
 String.prototype.unSlug = function() {
