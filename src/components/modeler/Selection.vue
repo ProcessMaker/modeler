@@ -528,11 +528,11 @@ export default {
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
       // that are anchored and did not move, such as boundary events. 
-      this.updateSelectionBox();
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
       this.updateFlowsWaypoint();
       this.overPoolStopDrag();
+      this.updateSelectionBox();
     },
     /**
      * Selector will update the waypoints of the related flows
