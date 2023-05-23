@@ -320,7 +320,7 @@ export default {
       shapes.forEach((shape) => {
         let conectedLinks = this.graph.getConnectedLinks(shape.model);
         // if the shape is a container
-        if (shape.model.get('type') === poolId) {
+        if ( shape.model.component && shape.model.component.node.type === poolId) {
           const area = shape.model.getBBox();
           const linksInArea = paper.model.getLinks().filter((link) => {
             const sourcePosition = link.getSourcePoint();
