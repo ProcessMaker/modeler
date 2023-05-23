@@ -61,8 +61,6 @@ export default new Vuex.Store({
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
-      // eslint-disable-next-line no-console
-      console.log('pushState');
       if (newState === getters.currentState || state.disabled) {
         return;
       }

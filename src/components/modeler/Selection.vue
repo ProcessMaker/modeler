@@ -326,7 +326,7 @@ export default {
           const targetPosition = link.getTargetPoint();
 
           return (
-            this.isPositionWithinArea(sourcePosition, area) &&
+            this.isPositionWithinArea(sourcePosition, area) ||
             this.isPositionWithinArea(targetPosition, area)
           );
         });
