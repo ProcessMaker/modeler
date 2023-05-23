@@ -320,18 +320,19 @@ export default {
       shapes.forEach((shape) => {
         let conectedLinks = this.graph.getConnectedLinks(shape.model);
         // if the shape is a container
-        const area = shape.model.getBBox();
-        const linksInArea = paper.model.getLinks().filter((link) => {
-          const sourcePosition = link.getSourcePoint();
-          const targetPosition = link.getTargetPoint();
-
-          return (
-            this.isPositionWithinArea(sourcePosition, area) ||
-            this.isPositionWithinArea(targetPosition, area)
-          );
-        });
-        if (linksInArea) {
-          conectedLinks = [...conectedLinks, ...linksInArea];
+        if (shape.model.get('type') === poolId) {
+          const area = shape.model.getBBox();
+          const linksInArea = paper.model.getLinks().filter((link) => {
+            const sourcePosition = link.getSourcePoint();
+            const targetPosition = link.getTargetPoint();
+            return (
+              this.isPositionWithinArea(sourcePosition, area) ||
+              this.isPositionWithinArea(targetPosition, area)
+            );
+          });
+          if (linksInArea) {
+            conectedLinks = [...conectedLinks, ...linksInArea];
+          }
         }
         conectedLinks.forEach((link) => {
           const linkView = paper.findViewByModel(link);
