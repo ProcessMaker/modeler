@@ -174,8 +174,6 @@ export default {
       this.shape.listenToOnce(this.paper, 'cell:pointerup blank:pointerup', () => {
         this.moveBoundaryEventIfOverTask();
         this.resetInvalidTarget();
-        this.$emit('save-state');
-
         store.commit('allowSavingElementPosition');
       });
     },
@@ -218,6 +216,7 @@ export default {
     this.updateShapePosition(task);
 
     this.shape.on('change:position', this.turnInvalidTargetRed);
+    // this.shape.listenTo(this.paper, 'element:pointerdown', this.attachToValidTarget);
   },
 };
 </script>
