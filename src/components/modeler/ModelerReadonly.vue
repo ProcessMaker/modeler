@@ -54,6 +54,15 @@
         @set-shape-stacking="setShapeStacking"
         @default-flow="toggleDefaultFlow"
       />
+
+      <div class="rail-container">
+        <div class="rail-left">
+          <ZoomControl
+            :paper-manager="paperManager"
+          />
+        </div>
+      </div>
+
       <Selection
         v-if="paper"
         ref="selector"
@@ -103,11 +112,13 @@ import XMLManager from '@/components/modeler/XMLManager';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import Selection from './Selection';
+import ZoomControl from '@/components/railBottom/zoomControl/ZoomControl.vue';
 
 export default {
   components: {
     controls,
     Selection,
+    ZoomControl,
   },
   props: {
     owner: Object,
@@ -950,8 +961,36 @@ export default {
 };
 </script>
 <style lang="scss" src="./modeler.scss" />
-<style>
+<style lang="scss">
 svg {
   overflow: visible !important;
+}
+
+.rail {
+  &-container {
+    position: relative;
+    bottom: 70px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    max-height: 48px;
+    z-index: 2;
+  }
+
+  &-left {
+    position: absolute;
+    display: flex;
+    width: auto;
+    padding: 0 35px;
+  }
+
+  &-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 22px;
+    width: 100%;
+  }
 }
 </style>
