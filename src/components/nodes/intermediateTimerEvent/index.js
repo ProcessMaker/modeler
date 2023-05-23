@@ -44,7 +44,7 @@ export default {
       label: 'Intermediate Message Catch Event',
       control: true,
       rank: 24,
-      id: 'processmaker-modeler-intermediate-signal-catch-event',
+      id: 'processmaker-modeler-intermediate-message-catch-event',
     },
     {
       icon: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),

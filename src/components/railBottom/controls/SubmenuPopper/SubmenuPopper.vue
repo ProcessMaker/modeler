@@ -1,6 +1,6 @@
 <template>
   <popper
-    v-if="items"
+    v-if="data.items"
     trigger="clickToOpen"
     :options="{
       placement: 'top',
@@ -11,7 +11,7 @@
   >
     <div>
       <ul class="control-submenu">
-        <li v-for="(item, key) in items"
+        <li v-for="(item, key) in data.items"
           :class="['control-submenu-list', {'active': selectedItem === item.type}]"
           :key="key"
           @click="onClickHandler($event, item)"
@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import { BOTTOM } from '@/components/controls/rankConstants';
 import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
 import InlineSvg from 'vue-inline-svg';
@@ -68,21 +67,6 @@ export default ({
       element: null,
       wasClicked: false,
     };
-  },
-  computed: {
-    items() {
-      return  this.data.items && this.data.items
-        .filter(item => item.control)
-        .map(item => ({
-          type: item.id,
-          icon: item.icon,
-          label: item.label,
-          bpmnType: item.bpmnType,
-          rank: item.rank || BOTTOM,
-          items: item.items || null,
-        }))
-        .sort((node1, node2) => node1.rank - node2.rank);
-    },
   },
   methods: {
     onClickHandler(event, control) {
@@ -119,7 +103,7 @@ export default ({
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 12px 2px;
+    padding: 12px 5px;
     gap: 8px;
     width: 235px;
     height: 40px;
