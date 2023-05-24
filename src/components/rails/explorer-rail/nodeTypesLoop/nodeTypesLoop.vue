@@ -17,10 +17,10 @@ export default {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
-      return nodeTypesStore.commit('setUnpinNode', object);
+      return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
-      return nodeTypesStore.commit('setPinnedNodes', object);
+      return nodeTypesStore.dispatch('addUserPinnedObject', object);
     },
   },
   computed: {

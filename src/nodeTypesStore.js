@@ -63,8 +63,22 @@ export default new Vuex.Store({
           console.error(e);
         });
     },
-    setUserPinnedObjects({ commit }, pinnedNodes) {
-      commit('setPinnedNodes', pinnedNodes);
+    addUserPinnedObject({ commit, state }, pinnedNode) {
+      commit('setPinnedNodes', pinnedNode);
+      let pinnedNodes = state.pinnedNodeTypes;
+      if (!window.ProcessMaker.user) {
+        return;
+      }
+      let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinnned_controls`, { pinnedNodes })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error(e);
+        });
+    },
+    removeUserPinnedObject({ commit, state }, nodeToUnpin) {
+      commit('setUnpinNode', nodeToUnpin);
+      let pinnedNodes = state.pinnedNodeTypes;
       if (!window.ProcessMaker.user) {
         return;
       }
