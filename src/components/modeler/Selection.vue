@@ -80,6 +80,8 @@ export default {
       selectableBlackList:[
         genericFlowId,
       ],
+      newPool: null,
+      oldPool: null,
     };
   },
   mounted(){
@@ -654,6 +656,21 @@ export default {
       let selectedArea = g.rect(f.x, f.y, width, height);
       return this.getElementsInSelectedArea(selectedArea, { strict: false });
     },
+    getPool(elements){
+      const { paper } = this.paperManager;
+      let pool = null;
+      if (elements.length > 0) {
+        elements.forEach(({ model }) => {
+          if (pool) {
+            return;
+          }
+          if (model.getParentCell() && model.getParentCell().component.node.type === poolId){
+            pool = model.getParentCell();
+          }
+        });
+      }
+      return paper.findViewByModel(pool);
+    },
     /**
      * Check that they are not in a pool
      * @param {Array} elements 
@@ -678,6 +695,7 @@ export default {
       if (this.isNotPoolChilds(this.selected)) {
         return;
       }
+      const currentPool = this.getPool(this.selected);
       const elementsUnderDivArea = this.getShapesFromPoint(event);
       const pool = elementsUnderDivArea.find(item => {
         return item.model.component && item.model.component.node.type === poolId;
@@ -687,6 +705,8 @@ export default {
         store.commit('preventSavingElementPosition');
         this.paperManager.setStateInvalid();
       } else {
+        this.newPool = currentPool.model.get('id') !== pool.model.get('id')? pool: null;
+        this.oldPool = currentPool;
         this.isOutOfThePool = false;
         store.commit('preventSavingElementPosition');
         this.paperManager.setStateValid();
@@ -703,8 +723,20 @@ export default {
       if (this.isOutOfThePool) {
         this.rollbackSelection();
       } else {
-        this.expandToFitElement(this.selected);
-        this.$emit('save-state');
+
+        if (this.newPool){
+          /* Remove the shape from its current pool */
+          this.moveElements(this.selected, this.oldPool, this.newPool);
+          this.newPool = null;
+          this.oldPool = null;
+          this.updateLaneChildren(this.selected);
+          this.$emit('save-state');
+        } else {
+          this.expandToFitElement(this.selected);
+          this.updateLaneChildren(this.selected);
+          this.$emit('save-state');
+        }
+        
       }
     },
     /**
@@ -801,9 +833,35 @@ export default {
             node: pool.component.node,
             bounds: pool.getBBox(),
           });
-          this.$emit('save-state');
         }
       }
+    },
+    /**
+     * Updates the lane children when a element is moved into the pool
+     * @param {Array} selected
+     */
+    updateLaneChildren(selected){
+      if (!selected) {
+        return;
+      }
+      const pool = selected.find(({ model }) => {
+        if (model.getParentCell()) {
+          return model.getParentCell().component.node.type === poolId;
+        }
+        return false;
+      }).model.getParentCell();
+      pool.component.laneSet && pool.component.updateLaneChildren();
+    },
+    moveElements(selected, oldPool, newPool){
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
+      ];
+      selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          oldPool.model.component.moveElement(shape.model, newPool.model);
+        });
     },
   },
 };
