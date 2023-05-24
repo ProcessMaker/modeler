@@ -49,6 +49,7 @@ export default {
     },
   },
   created() {
+    nodeTypesStore.dispatch('getUserPinnedObjects');
     nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
   },
   methods: {

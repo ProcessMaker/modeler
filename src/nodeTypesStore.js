@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { uniqueId, uniqBy } from 'lodash';
 import { BOTTOM } from '@/components/rails/explorer-rail/rankConstants';
+import axios from 'axios';
 
 Vue.use(Vuex);
 
@@ -49,9 +50,31 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    // eslint-disable-next-line no-unused-vars
-    getUserPinnedObjects(state) {
-      // here goes the axios call to get the user pinned objects
+    getUserPinnedObjects({ commit }) {
+      if (!window.ProcessMaker.user) {
+        return;
+      }
+      let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+      let nodes = axios.get(`users/${user}/get_pinnned_controls`)
+        .then(() => {
+          commit('setPinnedNode', nodes);
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error(e);
+        });
+    },
+    setUserPinnedObjects({ commit }, pinnedNodes) {
+      commit('setPinnedNodes', pinnedNodes);
+      if (!window.ProcessMaker.user) {
+        return;
+      }
+      let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+      axios.put(`users/${user}/update_pinnned_controls`, { pinnedNodes })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error(e);
+        });
     },
   },
 });
