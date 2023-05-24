@@ -869,10 +869,9 @@ export default {
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
-      if (this.isGrabbing) return;
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      this.isOverShape = false;
+      this.isGrabbing = true;
     }, this);
 
     this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }) => {
@@ -886,13 +885,24 @@ export default {
     });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
       this.canvasDragPosition = null;
+      this.isGrabbing = false;
       this.activeNode = null;
       this.pointerUpHandler(event);
     }, this);
+
     this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event, cellView);
+    }, this);
+
+    this.$el.addEventListener('mousemove', event => {
+      if (this.canvasDragPosition) {
+        this.paperManager.translate(
+          event.offsetX - this.canvasDragPosition.x,
+          event.offsetY - this.canvasDragPosition.y,
+        );
+      }
     }, this);
 
     this.$el.addEventListener('mouseenter', () => {
