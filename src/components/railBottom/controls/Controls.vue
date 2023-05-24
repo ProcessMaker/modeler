@@ -198,6 +198,7 @@ export default ({
   methods: {
     toggleExplorer() {
       nodeTypesStore.commit('toggleExplorer');
+      nodeTypesStore.commit('clearFilteredNodes');
     },
   },
   computed: {
