@@ -1190,6 +1190,7 @@ export default {
       if (!this.isDragging && this.dragStart) {
         // is clicked over the shape
         if (cellView) {
+          this.$refs.selector.stopDrag(event);
           this.$refs.selector.selectElement(cellView, event.shiftKey);
         } else {
           this.clearSelection();
