@@ -122,6 +122,8 @@ export default {
      * @param {Boolean} shiftKey
      */
     async selectElement(view, shiftKey = false) {
+      // eslint-disable-next-line no-console
+      console.log('selectElement', view);
       if (view.model.component && this.selectableBlackList.includes(view.model.component.node.type)) {
         return;
       }
@@ -705,7 +707,7 @@ export default {
         store.commit('preventSavingElementPosition');
         this.paperManager.setStateInvalid();
       } else {
-        this.newPool = currentPool.model.get('id') !== pool.model.get('id')? pool: null;
+        this.newPool = currentPool && currentPool.model.get('id') !== pool.model.get('id')? pool: null;
         this.oldPool = currentPool;
         this.isOutOfThePool = false;
         store.commit('preventSavingElementPosition');
@@ -849,8 +851,11 @@ export default {
           return model.getParentCell().component.node.type === poolId;
         }
         return false;
-      }).model.getParentCell();
-      pool.component.laneSet && pool.component.updateLaneChildren();
+      });
+      if (pool){
+        pool.model.getParentCell();
+        pool.model.component.laneSet && pool.component.updateLaneChildren();
+      }
     },
     moveElements(selected, oldPool, newPool){
       const shapesToNotTranslate = [
