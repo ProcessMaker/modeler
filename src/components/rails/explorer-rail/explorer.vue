@@ -53,11 +53,21 @@ export default {
     faTimes() {
       return faTimes;
     },
+    /**
+     * @param {string} idx
+     * @return void
+     */
     setTabIndex(idx) {
+      if (this.tabIndex === idx) return;
       this.tabIndex = idx;
+      this.clearPinnedObjects();
     },
     closeRail() {
       nodeTypesStore.commit('closeExplorer');
+      this.clearPinnedObjects();
+    },
+    clearPinnedObjects() {
+      nodeTypesStore.commit('clearFilteredNodes');
     },
   },
 };
