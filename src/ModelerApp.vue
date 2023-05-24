@@ -99,6 +99,7 @@ export default {
     reader.onload = this.setUploadedXml;
   },
   mounted() {
+    console.log('compilado...');
     window.ProcessMaker.$modeler = this.$refs.modeler;
   },
 };
