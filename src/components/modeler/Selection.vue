@@ -122,8 +122,6 @@ export default {
      * @param {Boolean} shiftKey
      */
     async selectElement(view, shiftKey = false) {
-      // eslint-disable-next-line no-console
-      console.log('selectElement', view);
       if (view.model.component && this.selectableBlackList.includes(view.model.component.node.type)) {
         return;
       }
