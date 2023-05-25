@@ -767,6 +767,10 @@ export default {
       }
       if (this.isOutOfThePool) {
         this.rollbackSelection();
+        if (this.invalidPool) {
+          this.invalidPool.model.component.shape.attr('body/fill', poolColor);
+          this.invalidPool = null;
+        }
       } else {
 
         if (this.newPool){
