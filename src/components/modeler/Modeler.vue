@@ -23,8 +23,16 @@
         :target="getTooltipTarget"
         :title="tooltipTitle"
       />
-      <explorer-rail
-        :node-types="nodeTypes"
+
+      <controls
+        :nodeTypes="nodeTypes"
+        :compressed="panelsCompressed"
+        :parent-height="parentHeight"
+        :allowDrop="allowDrop"
+        @drag="validateDropTarget"
+        @handleDrop="handleDrop"
+        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
+        :canvas-drag-position="canvasDragPosition"
       />
       <b-col
         class="paper-container h-100 pr-4"
@@ -103,11 +111,6 @@
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
       />
-
-      <RailBottom
-        :paper-manager="paperManager"
-      />
-
       <selection
         v-if="paper"
         ref="selector"
@@ -129,7 +132,7 @@ import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
-import ExplorerRail from '../rails/explorer-rail/explorer';
+import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
@@ -173,7 +176,6 @@ import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
-import RailBottom from '@/components/railBottom/RailBottom.vue';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
@@ -183,12 +185,11 @@ import Selection from './Selection';
 export default {
   components: {
     ToolBar,
-    ExplorerRail,
+    controls,
     InspectorPanel,
     MiniPaper,
     ProcessmakerModelerGenericFlow,
     Selection,
-    RailBottom,
   },
   props: {
     owner: Object,
