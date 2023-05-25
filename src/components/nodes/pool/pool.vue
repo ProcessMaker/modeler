@@ -42,7 +42,6 @@ import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
 import { configurePool, elementShouldHaveFlowNodeRef } from '@/components/nodes/pool/poolUtils';
-// import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
 import { aPortEveryXPixels } from '@/portsUtils';
 
