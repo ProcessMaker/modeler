@@ -466,8 +466,6 @@ export default {
       }
     },
     async pushToUndoStack() {
-      // eslint-disable-next-line no-console
-      console.log('pushToUndoStack');
       if (this.pasteInProgress || this.cloneInProgress) {
         return;
       }

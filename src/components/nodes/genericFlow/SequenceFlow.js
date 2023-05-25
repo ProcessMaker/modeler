@@ -9,16 +9,7 @@ export default class SequenceFlow extends Flow {
  
     const targetNode = get(targetShape, 'component.node');
     const sourceNode = get(sourceShape, 'component.node');
-    // eslint-disable-next-line no-console
-    console.log('isValid', Flow.hasTargetType(targetShape) &&
-    Flow.targetIsNotSource(sourceNode, targetNode) &&
-    SequenceFlow.targetIsNotALane(targetNode) &&
-    SequenceFlow.targetIsInSamePool(sourceShape, targetShape) &&
-    SequenceFlow.eventBasedGatewayTarget(sourceNode, targetNode) &&
-    SequenceFlow.isValidSource(sourceShape, targetConfig) &&
-    SequenceFlow.sourceIsNotPool(sourceNode) &&
-    !DataAssociation.isADataNode(sourceNode) &&
-    !DataAssociation.isADataNode(targetNode));
+    
     return Flow.hasTargetType(targetShape) &&
       Flow.targetIsNotSource(sourceNode, targetNode) &&
       SequenceFlow.targetIsNotALane(targetNode) &&
