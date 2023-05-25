@@ -903,6 +903,7 @@ export default {
     moveElements(selected, oldPool, newPool){
       const shapesToMove= [
         'PoolLane',
+        'standard.Link',
       ];
       selected.filter(shape => !shapesToMove.includes(shape.model.get('type')))
         .forEach(shape => {
