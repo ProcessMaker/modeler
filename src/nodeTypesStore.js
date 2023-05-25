@@ -70,7 +70,7 @@ export default new Vuex.Store({
         return;
       }
       let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
-      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinnned_controls`, { pinnedNodes })
+      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
