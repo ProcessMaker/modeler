@@ -10,11 +10,13 @@ export default new Vuex.Store({
     nodeTypes: [],
     pinnedNodeTypes: [],
     filteredNodeTypes: [],
+    explorerOpen: false,
   },
   getters: {
     getNodeTypes: state => state.nodeTypes,
     getPinnedNodeTypes: state => state.pinnedNodeTypes,
     getFilteredNodeTypes: state => state.filteredNodeTypes,
+    getExplorerOpen: state => state.explorerOpen,
   },
   mutations: {
     setNodeTypes(state, nodeTypes) {
@@ -46,6 +48,12 @@ export default new Vuex.Store({
     },
     clearFilteredNodes(state) {
       state.filteredNodeTypes = [];
+    },
+    closeExplorer(state) {
+      state.explorerOpen = false;
+    },
+    toggleExplorer(state) {
+      state.explorerOpen = !state.explorerOpen;
     },
   },
   actions: {
