@@ -901,12 +901,11 @@ export default {
       }
     },
     moveElements(selected, oldPool, newPool){
-      const shapesToNotTranslate = [
+      const shapesToMove= [
         'PoolLane',
         'standard.Link',
-        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
-      selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+      selected.filter(shape => !shapesToMove.includes(shape.model.get('type')))
         .forEach(shape => {
           oldPool.model.component.moveElement(shape.model, newPool.model);
         });

@@ -305,7 +305,8 @@ export default {
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
 
       this.$emit('set-cursor', 'not-allowed');
-
+      // eslint-disable-next-line no-console
+      console.log('this.isValidConnection',this.isValidConnection);
       if (this.isValidConnection) {
         this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
       } else {
