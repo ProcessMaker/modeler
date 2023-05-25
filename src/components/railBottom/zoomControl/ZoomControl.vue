@@ -16,6 +16,8 @@
       @click="onClickReset"
       class="zoom-button zoom-reset"
       data-cy="zoom-reset-control"
+      v-b-tooltip.hover
+      :title="$t('Reset to initial scale')"
     >
       {{ percentageText }}
     </button>
