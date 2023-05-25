@@ -98,7 +98,7 @@ export default class PoolEventHandlers {
         this.previousValidPosition = newPosition;
       }
 
-      this.invalidPool = pool.component.shape;
+      this.invalidPool = pool.model.component.shape;
       this.invalidPool.attr('body/fill', invalidNodeColor);
 
       store.commit('preventSavingElementPosition');

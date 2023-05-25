@@ -35,6 +35,7 @@ import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
+import { invalidNodeColor, poolColor } from '@/components/nodeColors';
 
 export default {
   name: 'Selection',
@@ -82,6 +83,8 @@ export default {
       ],
       newPool: null,
       oldPool: null,
+      isValidSelectionLinks: true,
+      invalidPool: null,
     };
   },
   mounted(){
@@ -165,6 +168,14 @@ export default {
           this.selected = [view];
         }
         return;
+      }
+      // prevent select out of the current pool container
+      if (view.model.component && view.model.component.node.pool){
+        const pool = this.getPool(this.selected);
+        if (pool && view.model.component.node.pool.id !== pool.model.get('id')) {
+          this.selected = [view];
+          return;
+        }
       }
       this.selectOrUnselectShape(view);
     },
@@ -319,6 +330,7 @@ export default {
     prepareConectedLinks(shapes){
       const { paper } = this.paperManager;
       this.conectedLinks = [];
+      this.isValidSelectionLinks = true;
       shapes.forEach((shape) => {
         let conectedLinks = this.graph.getConnectedLinks(shape.model);
         // if the shape is a container
@@ -340,10 +352,29 @@ export default {
           const linkView = paper.findViewByModel(link);
           if (!this.conectedLinks.some(obj => obj.id === linkView.id)) {
             this.conectedLinks.push(linkView);
+            this.validateSelectionLinks(linkView);
           }
         });
- 
       });
+    },
+    /**
+     * Validate if the selection is valid to drag and drop in other container
+     * @param {Object} linkView
+     */
+    validateSelectionLinks(linkView){
+      if (this.isValidSelectionLinks) {
+        const source = this.selected.find(shape => {
+          return shape.model.get('id') === linkView.model.getSourceElement().get('id');
+        });
+        const target = this.selected.find(shape => {
+          return shape.model.get('id') === linkView.model.getTargetElement().get('id');
+        });
+        if (source && target) {
+          this.isValidSelectionLinks = true;
+        } else {
+          this.isValidSelectionLinks = false;
+        }
+      }
     },
     /**
      * Return the bounding box of the selected elements,
@@ -700,16 +731,30 @@ export default {
       const pool = elementsUnderDivArea.find(item => {
         return item.model.component && item.model.component.node.type === poolId;
       });
+      this.newPool = null;
+      this.oldPool = null;
       if (!pool) {
         this.isOutOfThePool = true;
         store.commit('preventSavingElementPosition');
         this.paperManager.setStateInvalid();
       } else {
-        this.newPool = currentPool && currentPool.model.get('id') !== pool.model.get('id')? pool: null;
-        this.oldPool = currentPool;
-        this.isOutOfThePool = false;
-        store.commit('preventSavingElementPosition');
         this.paperManager.setStateValid();
+
+        if (this.invalidPool) {
+          this.invalidPool.model.component.shape.attr('body/fill', poolColor);
+          this.invalidPool = null;
+        }
+        if (currentPool && currentPool.model.get('id') !== pool.model.get('id')) {
+          this.newPool = pool;
+          this.oldPool = currentPool;
+          this.isOutOfThePool = false;
+          if (!this.isValidSelectionLinks){
+            this.isOutOfThePool = true;
+            this.invalidPool = pool;
+            pool.model.component.shape.attr('body/fill', invalidNodeColor);
+            store.commit('preventSavingElementPosition');
+          }
+        }
       }
     },
     /**
