@@ -4,10 +4,10 @@
     class="control-list"
   >
     <li
-      v-for="(item, key) in controls"
+      v-for="item in controls"
       :class="['control-item', {'active': selectedItem === item.type}]"
       :id="item.id"
-      :key="key"
+      :key="item.id"
       @click.stop="onClickHandler($event, item)"
     >
       <SubmenuPopper
@@ -64,7 +64,7 @@ export default ({
   },
   computed: {
     controls() {
-      return nodeTypesStore.getters.getNodeTypes;
+      return nodeTypesStore.getters.getPinnedNodeTypes;
     },
   },
   methods: {

@@ -28,16 +28,12 @@ export default new Vuex.Store({
           bpmnType: nodeType.bpmnType,
           rank: nodeType.rank || BOTTOM,
           items: nodeType.items && nodeType.items
-            .filter(item => item.control)
             .map(item => ({
               type: item.id,
               icon: item.icon,
               label: item.label,
               bpmnType: item.bpmnType,
-              rank: item.rank || BOTTOM,
-              items: item.items || null,
-            }))
-            .sort((node1, node2) => node1.rank - node2.rank),
+            })),
         }))
         .sort((node1, node2) => node1.rank - node2.rank);
     },
