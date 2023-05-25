@@ -28,7 +28,9 @@ export default {
       }
 
       if (highlighted) {
-        this.addResizeAnchors();
+        if (store.getters.isReadOnly === false) {
+          this.addResizeAnchors();
+        }
         this.calculateElementLimits();
         this.updateAnchorPointPosition();
       } else {

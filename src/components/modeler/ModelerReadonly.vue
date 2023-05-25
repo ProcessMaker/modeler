@@ -1,6 +1,6 @@
 <template>
   <span data-test="body-container">
-    <b-row class="modeler h-100">
+    <div class="modeler h-100">
       <controls
         v-if="showControls"
         class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
@@ -71,7 +71,7 @@
         :useModelGeometry="false"
         :processNode="processNode"
       />
-    </b-row>
+    </div>
   </span>
 </template>
 
@@ -979,10 +979,8 @@ svg {
 .rail {
   &-container {
     position: relative;
-    bottom: 70px;
-    display: flex;
-    align-items: center;
-    width: 100%;
+    bottom: 60px;
+    display: inline-block;
     height: 48px;
     max-height: 48px;
     z-index: 2;
@@ -990,17 +988,9 @@ svg {
 
   &-left {
     position: absolute;
-    display: flex;
+    display: inline;
     width: auto;
-    padding: 0 35px;
-  }
-
-  &-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 22px;
-    width: 100%;
+    padding: 0 12px;
   }
 }
 </style>
