@@ -15,7 +15,6 @@
       :title="button.label"
       :data-test="button.testId"
       :role="button.role"
-      @mousedown.stop.prevent
       @click="button.action"
     >
       <font-awesome-icon v-if="button.iconPrefix === 'fpm'" :icon="[button.iconPrefix, `fa-${button.icon}`]"/>

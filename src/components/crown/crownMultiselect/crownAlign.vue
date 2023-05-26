@@ -2,8 +2,7 @@
   <div
     class="crown-config crown-align"
     :style="style"
-    v-if="isMultiSelect"
-    role="menu"
+    v-if="isMultiSelect" role="menu"
   >
     <slot />
 
@@ -15,6 +14,7 @@
       :title="button.label"
       :data-test="button.testId"
       :role="button.role"
+      :disabled="button.disabled"
       @mousedown.stop.prevent
       @click.stop.prevent="button.action"
     >
@@ -38,6 +38,7 @@ import {
   faDistributeVertically,
   faDistributeHorizontally,
 } from '../crownButtons/icons';
+import { get } from 'lodash';
 
 export default {
   props: {
@@ -60,6 +61,8 @@ export default {
           testId: 'align-left',
           role: 'menuitem',
           action: this.alignLeft,
+          condition: 'align.left',
+          disabled: false,
         },
         {
           label: this.$t('Center Horizontally'),
@@ -67,6 +70,8 @@ export default {
           testId: 'align-horizontally',
           role: 'menuitem',
           action: this.centerHorizontally,
+          condition: 'align.horizontalCenter',
+          disabled: false,
         },
         {
           label: this.$t('Align Right'),
@@ -74,6 +79,8 @@ export default {
           testId: 'align-right',
           role: 'menuitem',
           action: this.alignRight,
+          condition: 'align.right',
+          disabled: false,
         },
         {
           label: this.$t('Align Bottom'),
@@ -81,6 +88,8 @@ export default {
           testId: 'align-bottom',
           role: 'menuitem',
           action: this.alignBottom,
+          condition: 'align.bottom',
+          disabled: false,
         },
         {
           label: this.$t('Center Vertically'),
@@ -88,6 +97,8 @@ export default {
           testId: 'center-vertically',
           role: 'menuitem',
           action: this.centerVertically,
+          condition: 'align.verticalCenter',
+          disabled: false,
         },
         {
           label: this.$t('Align Top'),
@@ -95,6 +106,8 @@ export default {
           testId: 'align-top',
           role: 'menuitem',
           action: this.alignTop,
+          condition: 'align.top',
+          disabled: false,
         },
         {
           label: this.$t('Distribute Horizontally'),
@@ -102,6 +115,8 @@ export default {
           testId: 'distribute-horizontally',
           role: 'menuitem',
           action: this.distributeHorizontally,
+          condition: 'distribute.horizontally',
+          disabled: false,
         },
         {
           label: this.$t('Distribute Vertically'),
@@ -109,6 +124,8 @@ export default {
           testId: 'distribute-vertically',
           role: 'menuitem',
           action: this.distributeVertically,
+          condition: 'distribute.vertically',
+          disabled: false,
         },
         // add more buttons as necessary
       ],
@@ -125,8 +142,14 @@ export default {
     library.add(faDistributeVertically);
     library.add(faDistributeHorizontally);
   },
+  watch: {
+    selectedShapes() {
+      this.$root.$emit('bv::hide::tooltip');
+    },
+  },
   computed: {
     selectedShapes() {
+      this.disableButtons();
       return getShapesOptions(store.getters.highlightedShapes);
     },
     isMultiSelect() {
@@ -148,6 +171,12 @@ export default {
     },
   },
   methods: {
+    disableButtons() {
+      let shapes = getShapesOptions(store.getters.highlightedShapes);
+      this.buttons.forEach(button => {
+        button.disabled = !get(shapes.can, button.condition, true);
+      });
+    },
     alignLeft() {
       this.undoableAction(this.selectedShapes.align.left);
     },
@@ -176,6 +205,7 @@ export default {
     undoableAction(actionFn) {
       actionFn();
       this.$emit('save-state');
+      this.disableButtons();
     },
 
     paperNotRendered() {
@@ -241,6 +271,11 @@ export default {
 }
 .crown-button:active {
   background-color: $cronw-icon-active-bg;
+  color: $crown-icon-active;
+}
+
+.crown-button:disabled {
+  background-color: #eaeaea;
   color: $crown-icon-active;
 }
 
