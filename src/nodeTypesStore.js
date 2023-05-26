@@ -70,8 +70,10 @@ export default new Vuex.Store({
         .then((res) => {
           // eslint-disable-next-line no-console
           console.log('getNodesResponse', res);
-          res.data.forEach(node => {
-            commit('setPinnedNode', node);
+          let savedNodes = res.data;
+          savedNodes.sort((node1, node2) => node2.rank - node1.rank);
+          savedNodes.forEach(node => {
+            commit('setPinnedNodes', node);
           });
         })
         .catch((e) => {
