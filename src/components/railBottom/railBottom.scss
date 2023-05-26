@@ -1,7 +1,8 @@
 .rail {
   &-container {
-    position: relative;
-    bottom: 126px;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
     display: flex;
     align-items: center;
     width: 100%;
