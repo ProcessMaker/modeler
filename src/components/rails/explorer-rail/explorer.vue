@@ -33,22 +33,12 @@ export default {
     };
   },
   computed: {
-    objects() {
-      return nodeTypesStore.getters.getNodeTypes;
-    },
-    pinnedObjects() {
-      return nodeTypesStore.getters.getPinnedNodeTypes;
-    },
-    filteredNodes() {
-      return nodeTypesStore.getters.getFilteredNodeTypes;
-    },
     explorerOpen() {
       return nodeTypesStore.getters.getExplorerOpen;
     },
   },
   created() {
     nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
-    nodeTypesStore.dispatch('getUserPinnedObjects');
   },
   methods: {
     faTimes() {
@@ -61,13 +51,13 @@ export default {
     setTabIndex(idx) {
       if (this.tabIndex === idx) return;
       this.tabIndex = idx;
-      this.clearPinnedObjects();
+      this.clearFilteredObjects();
     },
     closeRail() {
       nodeTypesStore.commit('closeExplorer');
-      this.clearPinnedObjects();
+      this.clearFilteredObjects();
     },
-    clearPinnedObjects() {
+    clearFilteredObjects() {
       nodeTypesStore.commit('clearFilteredNodes');
     },
   },

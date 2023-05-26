@@ -12,6 +12,9 @@ export default {
       showPin: false,
     };
   },
+  created() {
+    nodeTypesStore.dispatch('getUserPinnedObjects');
+  },
   methods: {
     nodeTypeAlreadyPinned(object, type) {
       return !!this.pinnedObjects.find(obj => obj.type === type);
@@ -31,7 +34,8 @@ export default {
       return nodeTypesStore.getters.getNodeTypes;
     },
     unpinnedObjects() {
-      return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
+      const objects = this.objects;
+      return objects.filter((obj) => !this.pinnedObjects.some(pinnedObj => pinnedObj.type === obj.type));
     },
     filteredNodes() {
       return nodeTypesStore.getters.getFilteredNodeTypes;

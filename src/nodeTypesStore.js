@@ -36,6 +36,7 @@ export default new Vuex.Store({
     },
     setPinnedNodes(state, payload) {
       state.pinnedNodeTypes.push(payload);
+      state.pinnedNodeTypes.sort((node1, node2) => node1.rank - node2.rank);
     },
     setUnpinNode(state, payload) {
       state.pinnedNodeTypes = state.pinnedNodeTypes.filter(node => node !== payload);
@@ -68,11 +69,7 @@ export default new Vuex.Store({
       let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
       window.ProcessMaker.apiClient.get(`/users/${user}/get_pinnned_controls`)
         .then((res) => {
-          // eslint-disable-next-line no-console
-          console.log('getNodesResponse', res);
-          let savedNodes = res.data;
-          savedNodes.sort((node1, node2) => node2.rank - node1.rank);
-          savedNodes.forEach(node => {
+          res.data.forEach(node => {
             commit('setPinnedNodes', node);
           });
         })
@@ -101,7 +98,7 @@ export default new Vuex.Store({
         return;
       }
       let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
-      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinnned_controls`, { pinnedNodes })
+      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
