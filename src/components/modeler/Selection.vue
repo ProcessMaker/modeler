@@ -606,10 +606,12 @@ export default {
           return drafRef.model.get('id') !== shape.model.get('id');
         });
       }
-      // allow movement only if one lane boundary event is selected;
+      // allow movements only if one boundary event is selected;
       if (this.selected && this.selected.length === 1 && 
         this.selected[0].model.get('type') === 'processmaker.components.nodes.boundaryEvent.Shape') {
         this.selected[0].model.translate(x, y);
+        // validation about boundary event movements
+        this.selected[0].model.component.turnInvalidTargetRed();
         return;
       }
       shapes.forEach((shape)=> shape.model.translate(x, y));

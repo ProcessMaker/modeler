@@ -214,8 +214,6 @@ export default {
     const task = this.getTaskUnderShape();
     this.attachBoundaryEventToTask(task);
     this.updateShapePosition(task);
-
-    this.shape.on('change:position', this.turnInvalidTargetRed);
   },
 };
 </script>
