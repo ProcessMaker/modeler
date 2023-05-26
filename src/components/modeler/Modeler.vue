@@ -874,6 +874,13 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
+    onCreateElementHandler({ event, control }) {
+      this.handleDrop({
+        clientX: event.clientX,
+        clientY: event.clientY,
+        control,
+      });
+    },
     async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
       this.validateDropTarget({ clientX, clientY, control });
 
@@ -1203,6 +1210,7 @@ export default {
           this.$refs.selector.stopDrag(event);
         }
       }
+      window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
