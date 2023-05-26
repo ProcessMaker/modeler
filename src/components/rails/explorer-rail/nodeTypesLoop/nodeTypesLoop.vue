@@ -25,6 +25,21 @@ export default {
         opacity: '0.5',
         pointerEvents: 'none',
       },
+      wasClicked: false,
+      element: null,
+      selectedItem: null,
+      xOffset: 0,
+      yOffset: 0,
+      movedElement: null,
+      helperStyles: {
+        backgroundColor:'#ffffff',
+        position: 'absolute',
+        height: '40px',
+        width: '40px',
+        zIndex: '10',
+        opacity: '0.5',
+        pointerEvents: 'none',
+      },
     };
   },
   methods: {
