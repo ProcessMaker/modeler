@@ -66,9 +66,11 @@ export default new Vuex.Store({
         return;
       }
       let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
-      let nodes = window.ProcessMaker.apiClient.get(`/users/${user}/get_pinnned_controls`)
-        .then(() => {
-          commit('setPinnedNode', nodes);
+      window.ProcessMaker.apiClient.get(`/users/${user}/get_pinnned_controls`)
+        .then((res) => {
+          // eslint-disable-next-line no-console
+          console.log('getNodesResponse', res);
+          commit('setPinnedNode', res.data);
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
