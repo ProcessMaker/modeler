@@ -152,13 +152,21 @@ export default {
         return;
       }
       // validate if there is a lane previously selected
-      let lane = this.selected.find(view => {
-        return this.draggableBlackList.includes(view.model.component.node.type);
+      let lane = this.selected.find(shape => {
+        return this.draggableBlackList.includes(shape.model.component.node.type);
       });
       if (lane) {
         this.selected = [view];
         return;
-      } 
+      }
+      // validate if there is a lane previously selected
+      let pool = this.selected.find(shape => {
+        return shape.model.component.node.type === poolId;
+      });
+      if (pool && view.model.component.node.type !== poolId) {
+        this.selected = [view];
+        return;
+      }
       // validate if the current selection is a pool
       if (view.model.component && view.model.component.node.type === poolId) {
         //validate if previous selection are all pools
