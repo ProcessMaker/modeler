@@ -19,7 +19,12 @@
     </li>
 
     <li class="control-item">
-      <div class="control-add" :title="$t('Add')" v-b-tooltip.hover>
+      <div
+        :class="{'control-add': true, 'control-active': explorerOpen}"
+        :title="$t('Add')"
+        v-b-tooltip.hover
+        @click="toggleExplorer"
+      >
         <inline-svg :src="plusIcon" />
       </div>
     </li>
@@ -65,6 +70,9 @@ export default ({
   computed: {
     controls() {
       return nodeTypesStore.getters.getPinnedNodeTypes;
+    },
+    explorerOpen() {
+      return nodeTypesStore.getters.getExplorerOpen;
     },
   },
   methods: {
@@ -113,6 +121,10 @@ export default ({
     setDraggingPosition({ pageX, pageY }) {
       this.movedElement.style.left = `${pageX}px`;
       this.movedElement.style.top = `${pageY}px`;
+    },
+    toggleExplorer() {
+      nodeTypesStore.commit('toggleExplorer');
+      nodeTypesStore.commit('clearFilteredNodes');
     },
     createDraggingHelper(event, control) {
       if (this.movedElement) {

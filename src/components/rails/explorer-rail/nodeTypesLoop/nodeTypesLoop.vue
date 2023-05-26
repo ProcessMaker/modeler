@@ -36,6 +36,9 @@ export default {
     filteredNodes() {
       return nodeTypesStore.getters.getFilteredNodeTypes;
     },
+    searchTerm() {
+      return nodeTypesStore.getters.getSearchTerm;
+    },
   },
 };
 </script>
@@ -69,7 +72,7 @@ export default {
         </div>
       </template>
     </div>
-    <template v-else>
+    <template v-if="filteredNodes.length === 0 && !searchTerm">
       <div class="pinnedObjects" v-if="pinnedObjects.length > 0">
         <p>{{ $t('Pinned Objects') }}</p>
         <template v-for="pinnedObject in pinnedObjects">
@@ -126,6 +129,7 @@ export default {
     padding: 0.5rem 0.3rem;
     align-items: center;
     border-radius: 4px;
+    user-select: none;
     &:hover {
       background-color: #EBEEF2;
       .pinIcon {

@@ -22,8 +22,6 @@ export default {
   },
   data() {
     return {
-      // TODO set to false when the bottom control rail is merged
-      expanded: true,
       tabs: [{
         idx: 0,
         label: 'Add Object',
@@ -44,8 +42,8 @@ export default {
     filteredNodes() {
       return nodeTypesStore.getters.getFilteredNodeTypes;
     },
-    unpinnedObjects() {
-      return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
+    explorerOpen() {
+      return nodeTypesStore.getters.getExplorerOpen;
     },
   },
   created() {
@@ -55,21 +53,28 @@ export default {
     faTimes() {
       return faTimes;
     },
+    /**
+     * @param {string} idx
+     * @return void
+     */
     setTabIndex(idx) {
+      if (this.tabIndex === idx) return;
       this.tabIndex = idx;
-    },
-    toggleRail() {
-      this.expanded = !this.expanded;
+      this.clearPinnedObjects();
     },
     closeRail() {
-      this.expanded = false;
+      nodeTypesStore.commit('closeExplorer');
+      this.clearPinnedObjects();
+    },
+    clearPinnedObjects() {
+      nodeTypesStore.commit('clearFilteredNodes');
     },
   },
 };
 </script>
 
 <template>
-  <div id="explorer-rail" data-test="explorer-rail" v-if="expanded">
+  <div id="explorer-rail" data-test="explorer-rail" v-if="explorerOpen">
     <div class="rail-menu">
       <b-tabs class="tabs--container" :no-nav-style="true">
         <template v-for="tab in tabs">
