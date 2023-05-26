@@ -11,6 +11,9 @@ export default {
     explorerExpanded: {
       type: Boolean,
     },
+    nodeTypes: {
+      type: Array,
+    },
   },
   components: {
     FontAwesomeIcon,
@@ -44,6 +47,7 @@ export default {
     },
   },
   created() {
+    nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
     nodeTypesStore.dispatch('getUserPinnedObjects');
   },
   methods: {

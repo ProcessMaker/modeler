@@ -23,7 +23,9 @@
         :target="getTooltipTarget"
         :title="tooltipTitle"
       />
-      <explorer-rail/>
+      <explorer-rail
+        :node-types="nodeTypes"
+      />
       <b-col
         class="paper-container h-100 pr-4"
         ref="paper-container"
