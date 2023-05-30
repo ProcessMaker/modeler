@@ -38,7 +38,7 @@ jobs:
         run: npm run test-unit
 
       - name: Cypress run
-        uses: cypress-io/github-action@v1
+        uses: cypress-io/github-action@v5
         with:
           start: npm run serve
           wait-on: http://localhost:8080/
