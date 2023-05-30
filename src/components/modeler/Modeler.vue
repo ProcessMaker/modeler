@@ -129,6 +129,7 @@
 <script>
 import Vue from 'vue';
 import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
@@ -497,6 +498,8 @@ export default {
       this.$emit('validate', this.validationErrors);
     },
     setPools(poolDefinition) {
+      // eslint-disable-next-line no-console
+      console.log('setPools');
       if (!this.collaboration) {
         this.collaboration = this.moddle.create('bpmn:Collaboration');
         this.definitions.get('rootElements').push(this.collaboration);
@@ -518,7 +521,7 @@ export default {
       } else {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
-        const processId = _.uniqueId('process_');
+        const processId = 'process_' + uuidv4();
         process.set('id', processId);
         this.definitions.get('rootElements').push(process);
       }
@@ -1190,7 +1193,6 @@ export default {
       if (!this.isDragging && this.dragStart) {
         // is clicked over the shape
         if (cellView) {
-          this.$refs.selector.stopDrag(event);
           this.$refs.selector.selectElement(cellView, event.shiftKey);
         } else {
           this.clearSelection();
