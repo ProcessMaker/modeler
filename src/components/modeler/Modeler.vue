@@ -498,8 +498,6 @@ export default {
       this.$emit('validate', this.validationErrors);
     },
     setPools(poolDefinition) {
-      // eslint-disable-next-line no-console
-      console.log('setPools');
       if (!this.collaboration) {
         this.collaboration = this.moddle.create('bpmn:Collaboration');
         this.definitions.get('rootElements').push(this.collaboration);
@@ -1330,7 +1328,6 @@ export default {
       if (this.isGrabbing) {
         return;
       }
-
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
       this.isOverShape = true;
