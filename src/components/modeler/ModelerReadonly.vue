@@ -132,6 +132,12 @@ export default {
       type: Boolean,
       default: true,
     },
+    tokens: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -184,6 +190,7 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      coordinates: { x: 0, y: 0 },
     };
   },
   watch: {
@@ -215,7 +222,12 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-
+    highlightedNode(newValue) {
+      this.$emit('highlighted-node',newValue.definition);
+    },
+    coordinates(newCoordinates) {
+      this.$emit('click-coordinates', newCoordinates);
+    },
   },
   computed: {
     showControls() {
@@ -928,8 +940,9 @@ export default {
 
       // ignore click event if the user is Grabbing the paper
       if (this.isGrabbing) return;
-
+      this.coordinates = { x: event.clientX, y: event.clientY };
       shape.component.$emit('click', event);
+      
     });
 
     this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
