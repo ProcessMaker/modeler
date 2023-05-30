@@ -25,21 +25,6 @@ export default {
         opacity: '0.5',
         pointerEvents: 'none',
       },
-      wasClicked: false,
-      element: null,
-      selectedItem: null,
-      xOffset: 0,
-      yOffset: 0,
-      movedElement: null,
-      helperStyles: {
-        backgroundColor:'#ffffff',
-        position: 'absolute',
-        height: '40px',
-        width: '40px',
-        zIndex: '10',
-        opacity: '0.5',
-        pointerEvents: 'none',
-      },
     };
   },
   methods: {
@@ -56,6 +41,16 @@ export default {
       this.createDraggingHelper(event, control);
       document.addEventListener('mousemove', this.setDraggingPosition);
       this.setDraggingPosition(event);
+      // Deselect control on click if same control is already selected
+      if (this.selectedItem === control.type) {
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        document.body.removeChild(this.movedElement);
+        this.$emit('onSetCursor', 'none');
+        this.selectedItem = null;
+        this.movedElement = null;
+        this.wasClicked = false;
+        return;
+      }
       this.wasClicked = true;
       this.element = control;
       this.$emit('onSetCursor', 'crosshair');
