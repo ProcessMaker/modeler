@@ -571,7 +571,6 @@ export default {
       // that are anchored and did not move, such as boundary events. 
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      this.updateFlowsWaypoint();
       this.overPoolStopDrag();
       this.updateSelectionBox();
     },
@@ -772,6 +771,7 @@ export default {
      */
     overPoolStopDrag(){
       if (this.isNotPoolChilds(this.selected)) {
+        this.updateFlowsWaypoint();
         this.$emit('save-state');
         return;
       }
@@ -782,7 +782,7 @@ export default {
           this.invalidPool = null;
         }
       } else {
-
+        this.updateFlowsWaypoint();
         if (this.newPool){
           /* Remove the shape from its current pool */
           this.moveElements(this.selected, this.oldPool, this.newPool);
