@@ -518,8 +518,8 @@ export default {
       } else {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
-        process.set('id', `process_${this.processes.length}`);
-
+        const processId = _.uniqueId('process_');
+        process.set('id', processId);
         this.definitions.get('rootElements').push(process);
       }
 
@@ -1328,6 +1328,7 @@ export default {
       if (this.isGrabbing) {
         return;
       }
+
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
       this.isOverShape = true;
