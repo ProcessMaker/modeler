@@ -64,12 +64,17 @@ export default new Vuex.Store({
   actions: {
     getUserPinnedObjects({ commit }) {
       if (!window.ProcessMaker.user) {
+        // For standalone version of Modeler
+        const pinnedNodes = localStorage.pinnedNodes ? JSON.parse(localStorage.pinnedNodes) : [] ;
+        pinnedNodes.forEach(node => {
+          commit('setPinnedNodes', node);
+        });
         return;
       }
-      let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+      const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
       window.ProcessMaker.apiClient.get(`/users/${user}/get_pinnned_controls`)
-        .then((res) => {
-          res.data.forEach(node => {
+        .then(({ data }) => {
+          data.forEach(node => {
             commit('setPinnedNodes', node);
           });
         })
@@ -80,11 +85,13 @@ export default new Vuex.Store({
     },
     addUserPinnedObject({ commit, state }, pinnedNode) {
       commit('setPinnedNodes', pinnedNode);
-      let pinnedNodes = state.pinnedNodeTypes;
+      const pinnedNodes = state.pinnedNodeTypes;
       if (!window.ProcessMaker.user) {
+        // For standalone version of Modeler
+        localStorage.pinnedNodes = JSON.stringify(pinnedNodes);
         return;
       }
-      let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+      const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
       window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
         .catch((e) => {
           // eslint-disable-next-line no-console
@@ -93,11 +100,13 @@ export default new Vuex.Store({
     },
     removeUserPinnedObject({ commit, state }, nodeToUnpin) {
       commit('setUnpinNode', nodeToUnpin);
-      let pinnedNodes = state.pinnedNodeTypes;
+      const pinnedNodes = state.pinnedNodeTypes;
       if (!window.ProcessMaker.user) {
+        // For standalone version of Modeler
+        localStorage.pinnedNodes = JSON.stringify(pinnedNodes);
         return;
       }
-      let user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+      const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
       window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
         .catch((e) => {
           // eslint-disable-next-line no-console
