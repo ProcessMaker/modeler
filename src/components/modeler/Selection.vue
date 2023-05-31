@@ -53,7 +53,6 @@ export default {
       isSelecting: false,
       isSelected: false,
       selected: [],
-      conectedLinks:[],
       dragging: false,
       style:  {
         left: '0px',
@@ -97,7 +96,6 @@ export default {
   watch: {
     // whenever selected changes
     selected(newSelected) {
-      this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
     },
   },
@@ -134,7 +132,9 @@ export default {
       }
       this.filterSelected();
       await this.$nextTick();
-      this.updateSelectionBox();
+      if (store.getters.isReadOnly === false) {
+        this.updateSelectionBox();
+      }
     },
     /**
      * Select or unselect an element with shift key pressed
@@ -153,7 +153,7 @@ export default {
       if (lane) {
         this.selected = [view];
         return;
-      } 
+      }
       // validate if the current selection is a pool
       if (view.model.component && view.model.component.node.type === poolId) {
         //validate if previous selection are all pools
@@ -176,7 +176,7 @@ export default {
         this.selected = this.selected.filter(item => item.id !== view.id);
       } else {
         this.selected.push(view);
-      }     
+      }
     },
     clearSelection() {
       this.initSelection();
@@ -297,24 +297,6 @@ export default {
       return elements;
     },
     /**
-     * Prepare the conectedLinks collection
-     * @param {Array} shapes 
-     */
-    prepareConectedLinks(shapes){
-      const { paper } = this.paperManager;
-      this.conectedLinks = [];
-      shapes.forEach((shape) => {
-        const conectedLinks = this.graph.getConnectedLinks(shape.model);
-        conectedLinks.forEach((link) => {
-          const linkView = paper.findViewByModel(link);
-          if (!this.conectedLinks.some(obj => obj.id === linkView.id)) {
-            this.conectedLinks.push(linkView);
-          }
-        });
- 
-      });
-    },
-    /**
      * Return the bounding box of the selected elements,
      * @param {Array} selected
      */
@@ -414,7 +396,7 @@ export default {
       });
       if (shapes) {
         return true;
-      } 
+      }
       return false;
     },
     /**
@@ -495,27 +477,13 @@ export default {
      * @param {Object} event
      */
     stopDrag() {
+      this.overPoolStopDrag();
+      this.$emit('save-state');
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
-      // that are anchored and did not move, such as boundary events. 
+      // that are anchored and did not move, such as boundary events.
       this.updateSelectionBox();
-      this.updateFlowsWaypoint();
-      this.overPoolStopDrag();
-    },
-    /**
-     * Selector will update the waypoints of the related flows
-     */
-    updateFlowsWaypoint(){
-      this.conectedLinks.forEach((link)=> {
-        if (link.model.component && link.model.get('type') === 'standard.Link'){
-          const start = link.sourceAnchor;
-          const end = link.targetAnchor;
-          link.model.component.node.diagram.waypoint = [start,
-            ...link.model.component.shape.vertices(),
-            end].map(point => link.model.component.moddle.create('dc:Point', point));
-        }
-      });
     },
     /**
      * Translate the Selected shapes adding some custom validations
@@ -535,7 +503,7 @@ export default {
         });
       }
       // allow movement only if one lane boundary event is selected;
-      if (this.selected && this.selected.length === 1 && 
+      if (this.selected && this.selected.length === 1 &&
         this.selected[0].model.get('type') === 'processmaker.components.nodes.boundaryEvent.Shape') {
         this.selected[0].model.translate(x, y);
         return;
@@ -625,7 +593,7 @@ export default {
     },
     /**
      * Check that they are not in a pool
-     * @param {Array} elements 
+     * @param {Array} elements
      * @return true if there is a pool in the selection or if none of the selected elements are in a pool
      */
     isNotPoolChilds(elements) {
@@ -666,14 +634,12 @@ export default {
      */
     overPoolStopDrag(){
       if (this.isNotPoolChilds(this.selected)) {
-        this.$emit('save-state');
         return;
       }
       if (this.isOutOfThePool) {
         this.rollbackSelection();
       } else {
         this.expandToFitElement(this.selected);
-        this.$emit('save-state');
       }
     },
     /**
@@ -695,7 +661,6 @@ export default {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         });
       this.isOutOfThePool = false;
-      this.updateFlowsWaypoint();
       await store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
       await this.$nextTick();
@@ -771,6 +736,7 @@ export default {
             node: pool.component.node,
             bounds: pool.getBBox(),
           });
+          this.$emit('save-state');
         }
       }
     },

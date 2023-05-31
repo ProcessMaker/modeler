@@ -1,42 +1,20 @@
 <template>
   <span data-test="body-container">
-    <tool-bar
-      :canvas-drag-position="canvasDragPosition"
-      :cursor="cursor"
-      :is-rendering="isRendering"
-      :paper-manager="paperManager"
-      :breadcrumb-data="breadcrumbData"
-      :panelsCompressed="panelsCompressed"
-      @load-xml="loadXML"
-      @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
-      @toggle-mini-map-open="miniMapOpen = $event"
-      @saveBpmn="saveBpmn"
-      @publishTemplate="publishTemplate"
-      @close="close"
-      @save-state="pushToUndoStack"
-      @clearSelection="clearSelection"
-    />
-    <b-row class="modeler h-100">
-      <b-tooltip
-        v-if="tooltipTarget"
-        :key="tooltipTarget.id"
-        :target="getTooltipTarget"
-        :title="tooltipTitle"
-      />
-
+    <div class="modeler h-100">
       <controls
+        v-if="showControls"
+        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
         :nodeTypes="nodeTypes"
         :compressed="panelsCompressed"
         :parent-height="parentHeight"
         :allowDrop="allowDrop"
+        :canvas-drag-position="canvasDragPosition"
         @drag="validateDropTarget"
         @handleDrop="handleDrop"
-        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-        :canvas-drag-position="canvasDragPosition"
       />
       <b-col
-        class="paper-container h-100 pr-4"
         ref="paper-container"
+        class="paper-container h-100 pr-4"
         :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
         :style="{ width: parentWidth, height: parentHeight }"
       >
@@ -44,40 +22,16 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
-      <mini-paper
-        :isOpen="miniMapOpen"
-        :paperManager="paperManager"
-        :graph="graph"
-        :class="{ 'expanded' : panelsCompressed }"
-      />
-
-      <InspectorPanel
-        ref="inspector-panel"
-        v-show="!(highlightedNodes.length > 1)"
-        :style="{ height: parentHeight }"
-        :nodeRegistry="nodeRegistry"
-        :moddle="moddle"
-        :definitions="definitions"
-        :processNode="processNode"
-        @save-state="pushToUndoStack"
-        class="inspector h-100"
-        :parent-height="parentHeight"
-        :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed && noElementsSelected"
-        @shape-resize="shapeResize(false)"
-      />
-
       <component
+        ref="nodeComponent"
         v-for="node in nodes"
         :is="node.type"
         :key="node._modelerId"
-        ref="nodeComponent"
         :graph="graph"
         :paper="paper"
         :node="node"
         :id="node.id"
         :highlighted="highlightedNodes.includes(node)"
-        :has-error="invalidNodes.includes(node)"
         :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
@@ -92,37 +46,32 @@
         :is-active="node === activeNode"
         :node-id-generator="nodeIdGenerator"
         @add-node="addNode"
-        @remove-node="removeNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
         @clearSelection="clearSelection"
         @set-pools="setPools"
-        @save-state="pushToUndoStack"
         @set-shape-stacking="setShapeStacking"
-        @setTooltip="tooltipTarget = $event"
-        @replace-node="replaceNode"
-        @replace-generic-flow="replaceGenericFlow"
-        @copy-element="copyElement"
-        @copy-selection="copyElement"
-        @paste-element="pasteElements"
-        @clone-element="cloneElement"
-        @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
-        @shape-resize="shapeResize"
       />
-      <selection
+
+      <div class="rail-container">
+        <div class="rail-left">
+          <ZoomControl
+            :paper-manager="paperManager"
+          />
+        </div>
+      </div>
+
+      <Selection
         v-if="paper"
         ref="selector"
         :graph="graph"
         :paperManager="paperManager"
         :useModelGeometry="false"
-        @clone-selection="cloneSelection"
-        @remove-nodes="removeNodes"
         :processNode="processNode"
-        @save-state="pushToUndoStack"
       />
-    </b-row>
+    </div>
   </span>
 </template>
 
@@ -136,7 +85,6 @@ import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
-import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -144,51 +92,33 @@ import { getNodeIdGenerator } from '../../NodeIdGenerator';
 import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
-import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '@/components/nodes/poolLane/config';
-import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
 import { id as associationId } from '../nodes/association';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
-import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
-import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
-import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
-import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
-import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
-import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 
 import PaperManager from '../paperManager';
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
 import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
-import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
-import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault } from '@/components/crown/utils';
-import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
-import cloneSelection from '../../mixins/cloneSelection';
-
-import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
-
 import Selection from './Selection';
+import ZoomControl from '@/components/railBottom/zoomControl/ZoomControl.vue';
 
 export default {
   components: {
-    ToolBar,
     controls,
-    InspectorPanel,
-    MiniPaper,
-    ProcessmakerModelerGenericFlow,
     Selection,
+    ZoomControl,
   },
   props: {
     owner: Object,
@@ -198,14 +128,16 @@ export default {
         return {};
       },
     },
+    readOnly: {
+      type: Boolean,
+      default: true,
+    },
   },
-  mixins: [hotkeys, cloneSelection],
   data() {
     return {
       pasteInProgress: false,
       cloneInProgress: false,
       internalClipboard: [],
-      tooltipTarget: null,
 
       /* Custom parsers for handling certain bpmn node types */
       parsers: {},
@@ -241,11 +173,9 @@ export default {
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
-      breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
-      keyMod: this.isAppleOS() ? 'Command' : 'Control',
       canvasScale: 1,
       initialScale: 1,
       minimumScale: 0.2,
@@ -288,37 +218,19 @@ export default {
 
   },
   computed: {
-    noElementsSelected() {
-      return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
-    },
-    tooltipTitle() {
-      if (this.tooltipTarget) {
-        return this.tooltipTarget.$el.data('title');
-      }
-      return undefined;
+    showControls() {
+      return !this.readOnly;
     },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
-    copiedElements: () => store.getters.copiedElements,
     /* connectors expect a highlightedNode property */
     highlightedNode: () => store.getters.highlightedNodes[0],
     highlightedNodes: () => store.getters.highlightedNodes,
-    invalidNodes() {
-      return getInvalidNodes(this.validationErrors, this.nodes);
-    },
   },
   methods: {
-    isAppleOS() {
-      return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
-    },
-    async shapeResize(clearIfEmpty=true) {
-      await this.$nextTick();
-      await this.paperManager.awaitScheduledUpdates();
-      this.$refs.selector.updateSelectionBox(true, clearIfEmpty);
-    },
     toggleDefaultFlow(flow) {
       const source = flow.definition.sourceRef;
       if (source.default && source.default.id === flow.id) {
@@ -326,127 +238,11 @@ export default {
       }
       source.set('default', flow);
     },
-    cloneElement(node, copyCount) {
-      const clonedNode = node.clone(this.nodeRegistry, this.moddle, this.$t);
-      const yOffset = (node.diagram.bounds.height + 30) * copyCount;
-
-      clonedNode.diagram.bounds.y += yOffset;
-      this.addNode(clonedNode);
-    },
-    copyElement() {
-      // Checking if User selected a single flow and tries to copy it, to deny it.
-      const flows = [
-        sequenceFlowId,
-        dataOutputAssociationFlowId,
-        dataInputAssociationFlowId,
-        genericFlowId,
-        processId,
-      ];
-      const boundaryEvents = [
-        boundaryErrorEventId,
-        boundaryConditionalEventId,
-        boundaryEscalationEventId,
-        boundaryMessageEventId,
-        boundarySignalEventId,
-        boundaryTimerEventId,
-      ];
-      if (this.highlightedNodes.length === 1 && (flows.includes(this.highlightedNodes[0].type) || boundaryEvents.includes(this.highlightedNodes[0].type))) return;
-      store.commit('setCopiedElements', this.cloneNodesSelection());
-      this.$bvToast.toast(this.$t('Object(s) have been copied'), { noCloseButton:true, variant: 'success', solid: true, toaster: 'b-toaster-top-center' });
-    },
-    publishTemplate() {
-      this.$emit('publishTemplate');
-    },
-    async pasteElements() {
-      if (this.copiedElements.length > 0 && !this.pasteInProgress) {
-        this.pasteInProgress = true;
-        try {
-          await this.addClonedNodes(this.copiedElements);
-          await this.$nextTick();
-          await this.paperManager.awaitScheduledUpdates();
-          await this.$refs.selector.selectElements(this.findViewElementsFromNodes(this.copiedElements), true);
-          await this.$nextTick();
-          await store.commit('setCopiedElements', this.cloneNodesSelection());
-          this.scrollToSelection();
-        } finally {
-          this.pasteInProgress = false;
-          await this.pushToUndoStack();
-        }
-      }
-    },
-    async cloneSelection() {
-      const clonedNodes = this.cloneNodesSelection();
-      if (clonedNodes && clonedNodes.length === 0) {
-        return;
-      }
-      try {
-        this.cloneInProgress = true;
-        this.$refs.selector.clearSelection();
-        await this.addClonedNodes(clonedNodes);
-        await this.$nextTick();
-        await this.paperManager.awaitScheduledUpdates();
-        await this.$refs.selector.selectElements(this.findViewElementsFromNodes(clonedNodes));
-        this.scrollToSelection();
-      } finally {
-        this.cloneInProgress = false;
-        await this.pushToUndoStack();
-      }
-    },
-    scrollToSelection() {
-      const containerRect = this.$refs['paper-container'].getBoundingClientRect();
-      const selector = this.$refs.selector;
-      const selectorRect = selector.$el.getBoundingClientRect();
-      // Scroll to the cloned elements only when they are not visible on the screen.
-      if (selectorRect.right > containerRect.right || selectorRect.bottom > containerRect.bottom || selectorRect.left < containerRect.left || selectorRect.top < containerRect.top) {
-        const currentPosition = this.paper.translate();
-        const newTy = currentPosition.ty - (selectorRect.top - containerRect.top - selectorRect.height);
-        this.paper.translate(currentPosition.tx, newTy);
-        selector.updateSelectionBox(true);
-      }
-    },
-    findViewElementsFromNodes(nodes) {
-      return nodes.map(node => {
-        const component = this.$refs.nodeComponent.find(cmp => cmp.node === node);
-        const shape = component.shape;
-        return this.paper.findViewByModel(shape);
-      });
-    },
-    async close() {
-      this.$emit('close');
-    },
-    async saveBpmn() {
-      const svg = document.querySelector('.mini-paper svg');
-      const css = 'text { font-family: sans-serif; }';
-      const style = document.createElement('style');
-      style.appendChild(document.createTextNode(css));
-
-      svg.appendChild(style);
-      const xml = await this.getXmlFromDiagram();
-      const svgString = (new XMLSerializer()).serializeToString(svg);
-
-      this.$emit('saveBpmn', { xml, svg: svgString });
-    },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
     },
-    addWarning(warning) {
-      this.allWarnings.push(warning);
-      this.$emit('warnings', this.allWarnings);
-    },
-    validatePlaneElements() {
-      this.planeElements
-        .filter(diagram => !diagram.bpmnElement)
-        .map(diagram => ({
-          title: this.$t('Non-existent Element'),
-          text: this.$t('bpmdi:BPMNShape ') + diagram.id + this.$t(' references a non-existent element and was not parsed'),
-        }))
-        .forEach(warning => this.addWarning(warning));
-    },
     cleanPlaneElements() {
       remove(this.planeElements, diagram => !diagram.bpmnElement);
-    },
-    getTooltipTarget() {
-      return this.tooltipTarget.$el[0];
     },
     validateIfAutoValidateIsOn() {
       if (this.autoValidate) {
@@ -463,19 +259,6 @@ export default {
 
       if (inspectorConfig.items) {
         inspectorConfig.items.forEach(this.translateConfig);
-      }
-    },
-    async pushToUndoStack() {
-      if (this.pasteInProgress || this.cloneInProgress) {
-        return;
-      }
-      try {
-        const xml = await this.getXmlFromDiagram();
-        await undoRedoStore.dispatch('pushState', xml);
-        window.ProcessMaker.EventBus.$emit('modeler-change');
-      } catch (invalidXml) {
-        // eslint-disable-next-line no-console
-        console.warn(invalidXml.message);
       }
     },
     getXmlFromDiagram() {
@@ -713,7 +496,6 @@ export default {
       this.plane = this.getPlane();
       this.planeElements = this.getPlaneElements();
 
-      this.validatePlaneElements();
       this.cleanPlaneElements();
 
       this.processNode = new Node(
@@ -742,11 +524,6 @@ export default {
       return customParser || implementationParser || defaultParser;
     },
     handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram) {
-      this.addWarning({
-        title: this.$t('Unsupported Element'),
-        text: bpmnType + this.$t(' is an unsupported element type in parse'),
-      });
-
       pull(flowElements, definition);
       pull(artifacts, definition);
       pull(this.planeElements, diagram);
@@ -950,13 +727,6 @@ export default {
 
       // Select the node after it has been added to the store (does not apply to flows)
       this.selectNewNode(node);
-
-      return new Promise(resolve => {
-        setTimeout(() => {
-          this.pushToUndoStack();
-          resolve();
-        });
-      });
     },
     async addClonedNodes(nodes) {
       nodes.forEach(node => {
@@ -971,116 +741,6 @@ export default {
         store.commit('addNode', node);
         this.poolTarget = null;
       });
-    },
-    async removeNode(node, { removeRelationships = true } = {}) {
-      if (!node) {
-        // already removed
-        return;
-      }
-      if (removeRelationships) {
-
-        removeNodeFlows(node, this);
-        removeNodeMessageFlows(node, this);
-        removeNodeAssociations(node, this);
-      }
-      removeOutgoingAndIncomingRefsToFlow(node);
-      removeBoundaryEvents(this.graph, node, this.removeNode);
-      removeSourceDefault(node);
-
-      this.removeNodesFromLane(node);
-      this.removeNodesFromPool(node);
-      store.commit('removeNode', node);
-      store.commit('highlightNode', this.processNode);
-      this.$refs.selector.clearSelection();
-      await this.$nextTick();
-      await this.pushToUndoStack();
-    },
-    async removeNodes() {
-      await this.performSingleUndoRedoTransaction(async() => {
-        await this.paperManager.performAtomicAction(async() => {
-          const waitPromises = [];
-          this.highlightedNodes.forEach((node) =>
-            waitPromises.push(this.removeNode(node, { removeRelationships: true }))
-          );
-          await Promise.all(waitPromises);
-          store.commit('highlightNode');
-        });
-      });
-    },
-    replaceNode({ node, typeToReplaceWith }) {
-      this.performSingleUndoRedoTransaction(async() => {
-        await this.paperManager.performAtomicAction(async() => {
-          const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDrop({
-            clientX, clientY,
-            control: { type: typeToReplaceWith },
-            nodeThatWillBeReplaced: node,
-          });
-
-          await this.removeNode(node, { removeRelationships: false });
-          this.highlightNode(newNode);
-          this.selectNewNode(newNode);
-        });
-      });
-    },
-    replaceGenericFlow({ actualFlow, genericFlow, targetNode }) {
-      this.performSingleUndoRedoTransaction(async() => {
-        await this.paperManager.performAtomicAction(async() => {
-          await this.highlightNode(null);
-          await this.$nextTick();
-          await this.addNode(actualFlow);
-          await store.commit('removeNode', genericFlow);
-          await this.$nextTick();
-          await this.highlightNode(targetNode);
-        });
-      });
-    },
-    async performSingleUndoRedoTransaction(cb) {
-      undoRedoStore.commit('disableSavingState');
-      await cb();
-      undoRedoStore.commit('enableSavingState');
-      await this.pushToUndoStack();
-    },
-    removeNodesFromLane(node) {
-      const containingLane = node.pool && node.pool.component.laneSet &&
-        node.pool.component.laneSet.get('lanes').find(lane => {
-          return lane.get('flowNodeRef').includes(node.definition);
-        });
-
-      if (!containingLane) {
-        return;
-      }
-
-      pull(containingLane.get('flowNodeRef'), node.definition);
-    },
-    removeNodesFromPool(node) {
-      if (node.type === 'processmaker-modeler-pool' && node.definition.processRef) {
-        if (node.definition.processRef.artifacts) {
-          node.definition.processRef.artifacts.forEach(artifact => {
-            const nodeToRemove = this.nodes.find(n => n.definition === artifact);
-            if (nodeToRemove) {
-              this.removeNode(nodeToRemove);
-            }
-          });
-        }
-        if (node.definition.processRef.flowElements) {
-          node.definition.processRef.flowElements.forEach(flowElement => {
-            const nodeToRemove = this.nodes.find(n => n.definition === flowElement);
-            if (nodeToRemove) {
-              this.removeNode(nodeToRemove);
-            }
-          });
-        }
-        let laneSets = node.definition.processRef.laneSets;
-        if (!!laneSets && laneSets.length > 0) {
-          laneSets[0].lanes.forEach(lane => {
-            const nodeToRemove = this.nodes.find(n => n.definition === lane);
-            if (nodeToRemove) {
-              this.removeNode(nodeToRemove);
-            }
-          });
-        }
-      }
     },
     handleResize() {
       const { clientWidth, clientHeight } = this.$el.parentElement;
@@ -1105,18 +765,6 @@ export default {
       this.previouslyStackedShape = shape;
       this.paperManager.performAtomicAction(() => ensureShapeIsNotCovered(shape, this.graph));
     },
-    showSavedNotification() {
-      undoRedoStore.dispatch('saved');
-    },
-    enableVersions() {
-      undoRedoStore.dispatch('enableVersions');
-    },
-    setVersionIndicator(isDraft) {
-      undoRedoStore.dispatch('setVersionIndicator', isDraft);
-    },
-    setLoadingState(isLoading) {
-      undoRedoStore.dispatch('setLoadingState', isLoading);
-    },
     clearSelection(){
       this.$refs.selector.clearSelection();
     },
@@ -1131,7 +779,7 @@ export default {
       }
       return false;
     },
-    async pointerDowInShape(event, element) {
+    async pointerDownInShape(event, element) {
       const { clientX: x, clientY: y } = event;
       const shapeView = this.paper.findViewByModel(element);
       this.isDragging = false;
@@ -1152,56 +800,14 @@ export default {
         clientY: event.clientY,
       });
     },
-    pointerDownHandler(event) {
-      const { clientX: x, clientY: y } = event;
-      this.isDragging = false;
-      this.isSelecting = false;
-      this.isIntoTheSelection = false;
-      this.dragStart = { x, y };
-      // Verify if is in the selection box
-      if (this.isPointInSelection(event)) {
-        this.isIntoTheSelection = true;
-        this.$refs.selector.startDrag({
-          clientX: event.clientX,
-          clientY: event.clientY,
-        });
-      } else {
-        this.isSelecting = true;
-        this.$refs.selector.startSelection(event);
-      }
-    },
-    pointerMoveHandler(event) {
-      const { clientX: x, clientY: y } = event;
-      if (this.isGrabbing) return;
-      if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
-        this.isDragging = true;
-        this.dragStart = null;
-      } else {
-        if (this.isSelecting) {
-          this.$refs.selector.updateSelection(event);
-        } else {
-          if (this.isDragging) {
-            this.$refs.selector.drag(event);
-          }
-        }
-      }
-    },
     pointerUpHandler(event, cellView) {
-      if (!this.isDragging && this.dragStart) {
-        // is clicked over the shape
-        if (cellView) {
-          this.$refs.selector.stopDrag(event);
-          this.$refs.selector.selectElement(cellView, event.shiftKey);
-        } else {
-          this.clearSelection();
-        }
+      // is clicked over the shape
+      if (cellView) {
+        this.$refs.selector.selectElement(cellView);
       } else {
-        if (this.isSelecting) {
-          this.$refs.selector.endSelection(this.paperManager.paper);
-        } else {
-          this.$refs.selector.stopDrag(event);
-        }
+        this.clearSelection();
       }
+
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
@@ -1218,7 +824,6 @@ export default {
      * Before Initialize the BpmnModdle and its extensions.
      * In this stage the node components were not yet registered,
      * so they could be extended.
-     *
      */
     window.ProcessMaker.EventBus.$emit('modeler-before-init', {
       registerComponentMixin: this.registerComponentMixin,
@@ -1239,6 +844,8 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    store.commit('setReadOnly', this.readOnly);
+
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -1262,11 +869,9 @@ export default {
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
-      if (this.isGrabbing) return;
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      this.isOverShape = false;
-      this.pointerDownHandler(event);
+      this.isGrabbing = true;
     }, this);
 
     this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }) => {
@@ -1280,21 +885,28 @@ export default {
     });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
       this.canvasDragPosition = null;
+      this.isGrabbing = false;
       this.activeNode = null;
       this.pointerUpHandler(event);
     }, this);
+
     this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event, cellView);
     }, this);
 
+    this.$el.addEventListener('mousemove', event => {
+      if (this.canvasDragPosition) {
+        this.paperManager.translate(
+          event.offsetX - this.canvasDragPosition.x,
+          event.offsetY - this.canvasDragPosition.y,
+        );
+      }
+    }, this);
+
     this.$el.addEventListener('mouseenter', () => {
       store.commit('setClientLeftPaper', false);
-    });
-
-    this.$el.addEventListener('mousemove', event => {
-      this.pointerMoveHandler(event);
     });
 
     this.$el.addEventListener('mouseleave', () => {
@@ -1331,7 +943,7 @@ export default {
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
       this.isOverShape = true;
-      this.pointerDowInShape(event, shape);
+      this.pointerDownInShape(event, shape);
     });
     // If the user is grabbing the paper while he clicked in a cell, move the paper and not the cell
     this.paperManager.addEventHandler('cell:pointermove', (_, event, x, y) => {
@@ -1353,12 +965,32 @@ export default {
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: async(xml) => {
         await this.loadXML(xml);
-        await undoRedoStore.dispatch('pushState', xml);
       },
-      addWarnings: warnings => this.$emit('warnings', warnings),
-      addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
     });
   },
 };
 </script>
 <style lang="scss" src="./modeler.scss" />
+<style lang="scss">
+svg {
+  overflow: visible !important;
+}
+
+.rail {
+  &-container {
+    position: relative;
+    bottom: 60px;
+    display: inline-block;
+    height: 48px;
+    max-height: 48px;
+    z-index: 2;
+  }
+
+  &-left {
+    position: absolute;
+    display: inline;
+    width: auto;
+    padding: 0 12px;
+  }
+}
+</style>
