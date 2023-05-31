@@ -1,8 +1,21 @@
 <template>
-  <ul class="control-list">
-
-    <li v-for="(item, key) in controlList" class="control-item" :id="item.id" :key="key">
-      <SubmenuPopper :data="item"/>
+  <ul
+    v-if="controls"
+    class="control-list"
+  >
+    <li
+      v-for="item in controls"
+      :class="['control-item', {'active': selectedItem === item.type}]"
+      :id="item.id"
+      :key="item.id"
+      @click.stop="onClickHandler($event, item)"
+    >
+      <SubmenuPopper
+        :data="item"
+        @clickToSubmenu="clickToSubmenuHandler"
+        :selectedItem="selectedSubmenuItem"
+        :popperType="popperType"
+      />
     </li>
 
     <li class="control-item">
@@ -12,202 +25,124 @@
         v-b-tooltip.hover
         @click="toggleExplorer"
       >
-        <img :src="plusIcon" :alt="$t('Add')">
+        <inline-svg :src="plusIcon" />
       </div>
     </li>
   </ul>
 </template>
 
 <script>
-import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
+import InlineSvg from 'vue-inline-svg';
 import nodeTypesStore from '@/nodeTypesStore';
+import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
 
 export default ({
   components: {
     SubmenuPopper,
+    InlineSvg,
+  },
+  props: {
+    nodeTypes: Array,
   },
   data() {
     return {
-      controlList:[
-        {
-          iconSrc: require('@/assets/toolpanel/start-event.svg'),
-          label: this.$t('Start Event'),
-          id: 'startEvent',
-          items: [
-            {
-              iconSrc: require('@/assets/toolpanel/start-event.svg'),
-              label: this.$t('Start Event'),
-              id: 'genericStartEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/message-start-event.svg'),
-              label: this.$t('Message Start Event'),
-              id: 'messageStartEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/conditional-start-event.svg'),
-              label: this.$t('Conditional Start Event'),
-              id: 'conditionalStartEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/signal-start-event.svg'),
-              label: this.$t('Signal Start Event'),
-              id: 'signalStartEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/timer-start-event.svg'),
-              label: this.$t('Start Timer Event'),
-              id: 'timerStartEvent',
-            },
-          ],
-        },
-        {
-          iconSrc: require('@/assets/toolpanel/generic-intermediate-event.svg'),
-          label: this.$t('Intermediate Event'),
-          id: 'intermediateEvent',
-          items: [
-            {
-              iconSrc: require('@/assets/toolpanel/intermediate-timer-event.svg'),
-              label: this.$t('Intermediate Timer Event'),
-              id: 'intermediateTimerEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/intermediate-signal-catch-event.svg'),
-              label: this.$t('Intermediate Signal Catch Event'),
-              id: 'intermediateSignalCatchEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/intermediate-signal-throw-event.svg'),
-              label: this.$t('Intermediate Signal Throw Event'),
-              id: 'intermediateSignalThrowEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/intermediate-message-catch-event.svg'),
-              label: this.$t('Intermediate Message Catch Event'),
-              id: 'intermediateMessageCatchEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),
-              label: this.$t('Intermediate Message Throw Event'),
-              id: 'intermediateMessageThrowEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/intermediate-conditional-catch-event.svg'),
-              label: this.$t('Intermediate Conditional Catch Event'),
-              id: 'intermediateConditionalCatchEvent',
-            },
-          ],
-        },
-        {
-          iconSrc: require('@/assets/toolpanel/end-event.svg'),
-          label: this.$t('End Event'),
-          id: 'endEvent',
-          items: [
-            {
-              iconSrc: require('@/assets/toolpanel/end-event.svg'),
-              label: this.$t('End Event'),
-              id: 'genericEndEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/message-end-event.svg'),
-              label: this.$t('Message End Event'),
-              id: 'messageEndEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/end-event.svg'),
-              label: this.$t('Error End Event'),
-              id: 'errorEndEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/signal-end-event.svg'),
-              label: this.$t('Signal End Event'),
-              id: 'signalEndEvent',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/terminate-end-event.svg'),
-              label: this.$t('Terminate End Event'),
-              id: 'terminateEndEvent',
-            },
-          ],
-        },
-        {
-          iconSrc: require('@/assets/toolpanel/task.svg'),
-          label: this.$t('Form Task'),
-          id: 'task',
-          items: [
-            {
-              iconSrc: require('@/assets/toolpanel/task.svg'),
-              label: this.$t('Form Task'),
-              id: 'formTask',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/manual-task.svg'),
-              label: this.$t('Manual Task'),
-              id: 'manualTask',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/script-task.svg'),
-              label: this.$t('Script Task'),
-              id: 'script',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/task.svg'),
-              label: this.$t('Sub Process'),
-              id: 'subProcess',
-            },
-          ],
-        },
-        {
-          iconSrc: require('@/assets/toolpanel/generic-gateway.svg'),
-          label: this.$t('Gateway'),
-          id: 'gateway',
-          items: [
-            {
-              iconSrc: require('@/assets/toolpanel/exclusive-gateway.svg'),
-              label: this.$t('Exclusive Gateway'),
-              id: 'exclusiveGateway',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/inclusive-gateway.svg'),
-              label: this.$t('Inclusive Gateway'),
-              id: 'inclusiveGateway',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/parallel-gateway.svg'),
-              label: this.$t('Parallel Gateway'),
-              id: 'parallelGateway',
-            },
-            {
-              iconSrc: require('@/assets/toolpanel/generic-gateway.svg'),
-              label: this.$t('Event Based Gateway'),
-              id: 'eventBasedGateway',
-            },
-
-          ],
-        },
-
-        {
-          iconSrc: require('@/assets/toolpanel/pool.svg'),
-          label: this.$t('Pool'),
-          id: 'pool',
-        },
-      ],
-      plusIcon: require('@/assets/railBottom/plus-lg-light.svg'),
+      plusIcon: require('@/assets/railBottom/plus.svg'),
+      wasClicked: false,
+      element: null,
+      selectedItem: null,
+      selectedSubmenuItem: null,
+      xOffset: 0,
+      yOffset: 0,
+      movedElement: null,
+      isDragging: false,
+      helperStyles: {
+        backgroundColor:'#ffffff',
+        position: 'absolute',
+        height: '40px',
+        width: '40px',
+        zIndex: '10',
+        opacity: '0.5',
+        pointerEvents: 'none',
+      },
+      popperType: null,
     };
   },
-  methods: {
-    toggleExplorer() {
-      nodeTypesStore.commit('toggleExplorer');
-      nodeTypesStore.commit('clearFilteredNodes');
-    },
-  },
   computed: {
+    controls() {
+      return nodeTypesStore.getters.getPinnedNodeTypes;
+    },
     explorerOpen() {
       return nodeTypesStore.getters.getExplorerOpen;
     },
   },
+  methods: {
+    clickToSubmenuHandler(data){
+      window.ProcessMaker.EventBus.$off('custom-pointerclick');
+      this.wasClicked = false;
+      this.parent = this.element;
+      this.selectedSubmenuItem = data.control.type;
+      this.onClickHandler(data.event, data.control);
+    },
+    onClickHandler(event, control) {
+      this.createDraggingHelper(event, control);
+      document.addEventListener('mousemove', this.setDraggingPosition);
+      this.setDraggingPosition(event);
+      this.wasClicked = true;
+      this.element = control;
+      this.$emit('onSetCursor', 'crosshair');
+      if (!this.parent) {
+        this.selectedItem = control.type;
+        this.popperType = control.type;
+      }
+      window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
+        window.ProcessMaker.EventBus.$off('custom-pointerclick');
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        if (this.movedElement) {
+          document.body.removeChild(this.movedElement);
+        }
+        this.popperType = null;
+        this.selectedSubmenuItem = null;
+        this.selectedItem = null;
+        this.movedElement = null;
+        this.onCreateElement(message);
+      });
+    },
+    onCreateElement(event){
+      if (this.wasClicked && this.element) {
+        if (this.parent) {
+          this.parent = null;
+        }
+        this.$emit('onCreateElement', { event, control: this.element });
+        this.$emit('onSetCursor', 'none');
+        event.preventDefault();
+        this.wasClicked = false;
+      }
+    },
+    setDraggingPosition({ pageX, pageY }) {
+      this.movedElement.style.left = `${pageX}px`;
+      this.movedElement.style.top = `${pageY}px`;
+    },
+    toggleExplorer() {
+      nodeTypesStore.commit('toggleExplorer');
+      nodeTypesStore.commit('clearFilteredNodes');
+    },
+    createDraggingHelper(event, control) {
+      if (this.movedElement) {
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        document.body.removeChild(this.movedElement);
+        this.movedElement = null;
+      }
+      const sourceElement = event.target;
+      this.movedElement = document.createElement('img');
+      Object.keys(this.helperStyles).forEach((property) => {
+        this.movedElement.style[property] = this.helperStyles[property];
+      });
+      this.movedElement.src = control.icon;
+      document.body.appendChild(this.movedElement);
+      this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
+      this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
+    },
+  },
 });
-
 </script>
-
 <style lang="scss" scoped src="./controls.scss"></style>

@@ -31,6 +31,7 @@ export default new Vuex.Store({
           label: nodeType.label,
           bpmnType: nodeType.bpmnType,
           rank: nodeType.rank || BOTTOM,
+          items: nodeType.items?.map(item => ({ ...item, type: item.id })),
         }))
         .sort((node1, node2) => node1.rank - node2.rank);
     },
