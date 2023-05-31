@@ -84,6 +84,12 @@ export default ({
       this.onClickHandler(data.event, data.control);
     },
     onClickHandler(event, control) {
+      // Checks if another submenu was opened
+      if (this.wasClicked) {
+        this.parent = null;
+        this.selectedSubmenuItem = null;
+      }
+
       this.createDraggingHelper(event, control);
       document.addEventListener('mousemove', this.setDraggingPosition);
       this.setDraggingPosition(event);
@@ -123,6 +129,19 @@ export default ({
       this.movedElement.style.top = `${pageY}px`;
     },
     toggleExplorer() {
+      // Remove control click & drop selection when the Add button is clicked
+      if (this.movedElement) {
+        document.removeEventListener('mousemove', this.setDraggingPosition);
+        document.body.removeChild(this.movedElement);
+        this.$emit('onSetCursor', 'none');
+        this.movedElement = null;
+      }
+
+      this.popperType = null;
+      this.selectedSubmenuItem = null;
+      this.selectedItem = null;
+
+      // Toggle left explorer
       nodeTypesStore.commit('toggleExplorer');
       nodeTypesStore.commit('clearFilteredNodes');
     },
