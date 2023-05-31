@@ -63,6 +63,8 @@ export default {
     'hasError',
     'autoValidate',
     'borderOutline',
+    'isCompleted',
+    'isInProgress',
   ],
   data() {
     return {
@@ -98,6 +100,14 @@ export default {
   methods: {
     setShapeHighlight() {
       if (store.getters.isReadOnly) {
+        this.shapeView.unhighlight(this.shapeBody, completedHighlighter);
+        if (this.isCompleted) {
+          this.shapeView.highlight(this.shapeBody, completedHighlighter);
+        }
+        this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
+        if (this.isInProgress) {
+          this.shapeView.highlight(this.shapeBody, inProgressHighlighter);
+        }
         return;
       }
 

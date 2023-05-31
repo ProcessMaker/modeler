@@ -31,7 +31,6 @@
         :paper="paper"
         :node="node"
         :id="node.id"
-        :highlighted="highlightedNodes.includes(node)"
         :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
         :process-node="processNode"
@@ -40,11 +39,14 @@
         :moddle="moddle"
         :nodeRegistry="nodeRegistry"
         :root-elements="definitions.get('rootElements')"
-        :isRendering="isRendering"
         :paperManager="paperManager"
         :auto-validate="autoValidate"
-        :is-active="node === activeNode"
         :node-id-generator="nodeIdGenerator"
+        :highlighted="highlightedNodes.includes(node)"
+        :is-active="node === activeNode"
+        :is-rendering="isRendering"
+        :is-completed="requestCompletedNodes.includes(node.definition.id)"
+        :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
         @add-node="addNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
@@ -131,6 +133,14 @@ export default {
     readOnly: {
       type: Boolean,
       default: true,
+    },
+    requestCompletedNodes: {
+      type: Array,
+      default: () => [],
+    },
+    requestInProgressNodes: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
