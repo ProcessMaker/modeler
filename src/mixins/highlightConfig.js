@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
+import store from '@/store';
 
 const errorHighlighter = {
   highlighter: {
@@ -22,6 +24,33 @@ const defaultHighlighter = {
         stroke: '#5096db',
         'stroke-width': 3,
         'data-cy': 'selected',
+      },
+    },
+  },
+};
+
+const completedHighlighter = {
+  highlighter: {
+    name: 'stroke',
+    options: {
+      attrs: {
+        stroke: '#1572C2',
+        'stroke-width': 2,
+        'data-cy': 'completed',
+      },
+    },
+  },
+};
+
+const inProgressHighlighter = {
+  highlighter: {
+    name: 'stroke',
+    options: {
+      attrs: {
+        stroke: '#00875A',
+        'stroke-width': 2,
+        'stroke-dasharray': '4 4',
+        'data-cy': 'in-progress',
       },
     },
   },
@@ -68,6 +97,10 @@ export default {
   },
   methods: {
     setShapeHighlight() {
+      if (store.getters.isReadOnly) {
+        return;
+      }
+
       if (!this.shapeView) {
         return;
       }
@@ -84,7 +117,9 @@ export default {
       if (this.currentBorderOutline) {
         this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline);
       }
-      this.currentBorderOutline = borderOutline ? cloneDeep(borderOutline) : null;
+      this.currentBorderOutline = borderOutline
+        ? cloneDeep(borderOutline)
+        : null;
       if (this.currentBorderOutline) {
         this.shapeView.highlight(this.shapeBody, this.currentBorderOutline);
       }
@@ -92,14 +127,15 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.paperManager.awaitScheduledUpdates()
-        .then(() => {
-          this.setShapeHighlight();
-          this.shape.on('change:size', () => {
-            this.paperManager.awaitScheduledUpdates().then(this.setShapeHighlight);
-            this.$emit('shape-resize', this.shape);
-          });
+      this.paperManager.awaitScheduledUpdates().then(() => {
+        this.setShapeHighlight();
+        this.shape.on('change:size', () => {
+          this.paperManager
+            .awaitScheduledUpdates()
+            .then(this.setShapeHighlight);
+          this.$emit('shape-resize', this.shape);
         });
+      });
     });
   },
 };
