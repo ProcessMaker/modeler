@@ -25,6 +25,8 @@
       />
       <explorer-rail
         :node-types="nodeTypes"
+        @set-cursor="cursor = $event"
+        @onCreateElement="onCreateElementHandler"
       />
       <b-col
         class="paper-container h-100 pr-4"
