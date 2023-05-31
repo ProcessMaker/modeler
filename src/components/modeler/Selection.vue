@@ -179,7 +179,7 @@ export default {
       }
       // prevent select out of the current pool container
       if (view.model.component && view.model.component.node.pool){
-        const pool = this.getPool(this.selected);
+        pool = this.getPool(this.selected);
         if (pool && view.model.component.node.pool.id !== pool.model.get('id')) {
           this.selected = [view];
           return;
@@ -699,7 +699,7 @@ export default {
     getPool(elements){
       const { paper } = this.paperManager;
       let pool = null;
-      if (elements.length > 0) {
+      if (elements && elements.length > 0) {
         elements.forEach(({ model }) => {
           if (pool) {
             return;
