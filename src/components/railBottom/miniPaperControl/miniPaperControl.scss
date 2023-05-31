@@ -1,0 +1,45 @@
+.mini-paper {
+  &-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    margin-right: 14px;
+    padding: 6px 4px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 0 none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    & > svg {
+      fill: #333344;
+    }
+
+    &:hover:not(.mini-paper-button-active) {
+      background-color: #ebeef2;
+    }
+
+    &:active,
+    &-active {
+      background-color: #DEEBFF;
+
+      & > svg {
+        fill: #1264AA;
+      }
+    }
+  }
+
+}
