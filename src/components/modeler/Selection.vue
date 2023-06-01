@@ -786,6 +786,7 @@ export default {
         if (this.newPool){
           /* Remove the shape from its current pool */
           this.moveElements(this.selected, this.oldPool, this.newPool);
+          this.moveConectedLinks(this.conectedLinks, this.oldPool, this.newPool);
           this.newPool = null;
           this.oldPool = null;
           this.updateLaneChildren(this.selected);
@@ -924,6 +925,11 @@ export default {
         .forEach(shape => {
           oldPool.model.component.moveElement(shape.model, newPool.model);
         });
+    },
+    moveConectedLinks(links, oldPool, newPool){
+      links.forEach(link => {
+        oldPool.model.component.moveFlow(link.model, newPool.model);
+      });
     },
   },
 };
