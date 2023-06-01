@@ -35,8 +35,7 @@ const completedHighlighter = {
     options: {
       attrs: {
         stroke: '#1572C2',
-        'stroke-width': 2,
-        'data-cy': 'completed',
+        'stroke-width': 3,
       },
     },
   },
@@ -48,9 +47,8 @@ const inProgressHighlighter = {
     options: {
       attrs: {
         stroke: '#00875A',
-        'stroke-width': 2,
+        'stroke-width': 3,
         'stroke-dasharray': '4 4',
-        'data-cy': 'in-progress',
       },
     },
   },
