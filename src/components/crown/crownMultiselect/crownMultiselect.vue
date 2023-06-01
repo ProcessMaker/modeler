@@ -20,7 +20,7 @@
       <font-awesome-icon v-if="button.iconPrefix === 'fpm'" :icon="[button.iconPrefix, `fa-${button.icon}`]"/>
       <i v-else :class="`${button.iconPrefix} fa-${button.icon} text-dark`" />
     </button>
-    <crown-align v-show="showAlignmentButtons" :paper="paper"/>
+    <crown-align v-show="showAlignmentButtons" :paper="paper" @save-state="$emit('save-state')" />
   </div>
 </template>
 
