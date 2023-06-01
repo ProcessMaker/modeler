@@ -40,6 +40,9 @@ export default {
       }
     },
     highlighted(highlighted) {
+      if (store.getters.isReadOnly) {
+        return;
+      }
       if (highlighted) {
         this.shape.attr({
           line: { stroke: '#5096db' },
@@ -246,9 +249,10 @@ export default {
 
     this.$once('click', () => {
       this.$nextTick(() => {
-        if (store.getters.isReadOnly === false) {
-          this.setupLinkTools();
+        if (store.getters.isReadOnly) {
+          return;
         }
+        this.setupLinkTools();
       });
     });
 
