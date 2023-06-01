@@ -3,48 +3,75 @@
     <button
       type="button"
       class="zoom-button"
-      data-test="zoom-out"
-      @click="paperManager.scale = Math.max(minimumScale, paperManager.scale.sx -= scaleStep)"
+      data-cy="zoom-out-control"
+      @click="onClickZoomOut"
       v-b-tooltip.hover
       :title="$t('Zoom Out')"
     >
-      <MinusIcon />
+      <inline-svg :src="minusIcon" />
     </button>
 
-    <div v-if="paperManager" class="zoom-text">
-      {{ Math.round(paperManager.scale.sx*100) }}%
-    </div>
+    <button
+      v-if="paperManager"
+      @click="onClickReset"
+      class="zoom-button zoom-reset"
+      data-cy="zoom-reset-control"
+      v-b-tooltip.hover
+      :title="$t('Reset to initial scale')"
+    >
+      {{ percentageText }}
+    </button>
 
     <button
       type="button"
       class="zoom-button"
-      data-test="zoom-in"
-      @click="paperManager.scale = paperManager.scale.sx + scaleStep"
+      data-cy="zoom-in-control"
+      @click="onClickZoomIn"
       v-b-tooltip.hover
       :title="$t('Zoom In')"
     >
-      <PlusIcon />
+      <inline-svg :src="plusIcon" />
     </button>
   </div>
 </template>
 
 <script>
-import { MinusIcon, PlusIcon } from '@/components/railBottom/icons';
+import InlineSvg from 'vue-inline-svg';
 
 export default ({
   components: {
-    MinusIcon,
-    PlusIcon,
+    InlineSvg,
   },
   props: {
-    paperManager: {},
+    paperManager: Object,
   },
   data() {
     return {
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
+      minusIcon: require('@/assets/railBottom/minus.svg'),
+      plusIcon: require('@/assets/railBottom/plus.svg'),
     };
+  },
+  computed: {
+    percentageText() {
+      return `${Math.round(this.$props.paperManager.scale.sx * 100)}%`;
+    },
+  },
+  methods: {
+    onClickZoomOut() {
+      this.paperManager.scale = Math.max(
+        this.minimumScale,
+        this.paperManager.scale.sx -= this.scaleStep
+      );
+    },
+    onClickZoomIn() {
+      this.paperManager.scale = this.paperManager.scale.sx + this.scaleStep;
+    },
+    onClickReset() {
+      this.paperManager.scale = this.initialScale;
+    },
   },
 });
 
