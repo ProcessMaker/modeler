@@ -8,13 +8,6 @@ $crown-left-chevron: 0.3rem;
 .cog-container {
   position: relative;
   display: flex;
-
-  &--button {
-    background: none;
-    border: none;
-    color: $primary-white;
-    height: 15px;
-  }
 }
 
 .element-list {
@@ -23,8 +16,10 @@ $crown-left-chevron: 0.3rem;
   top: $element-list-top;
   left: $element-list-left;
   border-radius: 5px;
-  background-color: $primary-color;
+  background-color: $primary-white;
   padding: 0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+
 
   &::after {
     @include chevron($element-list-top-chevron, $element-list-left-chevron);
@@ -37,7 +32,7 @@ $crown-left-chevron: 0.3rem;
       background: none;
       padding: 0.25rem 0.85rem;
       border: none;
-      color: $primary-white;
+      color: $primary-black;
       font-size: 0.85rem;
 
       &:disabled {
