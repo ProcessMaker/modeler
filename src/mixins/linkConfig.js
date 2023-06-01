@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce';
 import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
+import store from '@/store';
 
 const endpoints = {
   source: 'source',
@@ -254,7 +255,9 @@ export default {
 
     this.$once('click', () => {
       this.$nextTick(() => {
-        this.setupLinkTools();
+        if (store.getters.isReadOnly === false) {
+          this.setupLinkTools();
+        }
       });
     });
 
