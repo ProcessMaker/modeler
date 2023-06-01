@@ -918,6 +918,7 @@ export default {
       const shapesToMove= [
         'PoolLane',
         'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       selected.filter(shape => !shapesToMove.includes(shape.model.get('type')))
         .forEach(shape => {
