@@ -16,6 +16,7 @@
       :plane-elements="$parent.planeElements"
       :is-rendering="$parent.isRendering"
       :dropdown-data="[]"
+      @save-state="$emit('save-state')"
       :has-pools="hasPoolsOrLanesSelected"
       v-on="$listeners"
     />
