@@ -4,9 +4,10 @@
       aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
-      <div class="mr-3">
-        <align-buttons @save-state="$emit('save-state')" />
+      <div class="mr-3" style="display: flex;">
+        <TopRail />
 
+        <align-buttons @save-state="$emit('save-state')" />
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
           <b-button
@@ -78,11 +79,17 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
+import TopRail from '@/components/topRail/TopRail.vue';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
+  components: {
+    Breadcrumb,
+    TopRail,
+    FontAwesomeIcon,
+    AlignButtons,
+  },
   props: {
     canvasDragPosition: {},
     cursor: {},
