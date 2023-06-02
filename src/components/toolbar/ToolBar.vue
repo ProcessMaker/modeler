@@ -5,7 +5,11 @@
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="mr-3" style="display: flex;">
-        <TopRail />
+        <TopRail
+          :validation-errors="$props.validationErrors"
+          :warnings="$props.warnings"
+          :xml-manager="$props.xmlManager"
+        />
 
         <align-buttons @save-state="$emit('save-state')" />
 
@@ -90,18 +94,17 @@ export default {
     FontAwesomeIcon,
     AlignButtons,
   },
-  props: {
-    canvasDragPosition: {},
-    cursor: {},
-    paperManager: {},
-    isRendering: {
-      type: Boolean,
-    },
-    breadcrumbData: {
-      type: Array,
-    },
-    panelsCompressed: Boolean,
-  },
+  props: [
+    'canvasDragPosition',
+    'cursor',
+    'paperManager',
+    'isRendering',
+    'breadcrumbData',
+    'panelsCompressed',
+    'validationErrors',
+    'warnings',
+    'xmlManager',
+  ],
   watch: {
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);
@@ -225,6 +228,10 @@ export default {
 
       this.ellipsisMenuActions.splice(indexOfActions, 1);
     }
+
+    window.console.log('TOOL BAR########################');
+    window.console.log(this.warnings);
+    window.console.log('########################');
   },
 };
 </script>

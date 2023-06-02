@@ -3,6 +3,8 @@
     <ValidateIssue
       v-show="isOpenValidate"
       :handle-open-panel="handleOpenPanel"
+      :error-list="errorList"
+      :warnings="warnings"
     />
 
     <ValidateButton
@@ -10,11 +12,15 @@
       :handle-open="handleOpenValidate"
     />
 
-    <ValidatePanel v-show="isOpenValidate && isOpenPanel" />
+    <ValidatePanel
+      v-show="isOpenValidate && isOpenPanel"
+      :error-list="errorList"
+    />
   </div>
 </template>
 
 <script>
+import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
 
 export default {
@@ -23,15 +29,31 @@ export default {
     ValidateIssue,
     ValidatePanel,
   },
+  props: ['validationErrors', 'warnings', 'xmlManager'],
   data() {
     return {
       isOpenValidate: false,
       isOpenPanel: false,
     };
   },
+  computed: {
+    errorList() {
+      return Object.entries(this.validationErrors).flatMap(([errorKey, errors]) => {
+        return errors.flatMap(error => {
+          return {
+            ...error,
+            errorKey,
+            ...{ 'errorId': `${error.id}_${error.message.split(' ').join('_')}` },
+          };
+        });
+      });
+    },
+  },
   methods: {
     handleOpenValidate() {
       this.isOpenValidate = !this.isOpenValidate;
+
+      store.commit('setAutoValidate', this.isOpenValidate);
     },
     handleOpenPanel() {
       this.isOpenPanel = !this.isOpenPanel;

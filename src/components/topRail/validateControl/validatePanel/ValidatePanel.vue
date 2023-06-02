@@ -1,49 +1,13 @@
 <template>
   <div class="validate-container">
-    <div class="validate-item-box">
+    <div v-for="(error, index) in errorList" :key="`${error.errorId}_${index}`" class="validate-item-box">
       <vue-inline-svg :src="issueIcon" />
 
       <div class="validate-item-info">
-        <div class="validate-item-title">No-Gateway-Join-Fork</div>
-        <div class="validate-item-description">Gateway forks and joins</div>
-        <div class="validate-item-node">
-          <span class="validate-item-node-title">Node ID:</span> node_14
-        </div>
-      </div>
-    </div>
-
-    <div class="validate-item-box">
-      <vue-inline-svg :src="issueIcon" />
-
-      <div class="validate-item-info">
-        <div class="validate-item-title">No-Gateway-Join-Fork</div>
-        <div class="validate-item-description">Gateway forks and joins</div>
-        <div class="validate-item-node">
-          <span class="validate-item-node-title">Node ID:</span> node_14
-        </div>
-      </div>
-    </div>
-
-    <div class="validate-item-box">
-      <vue-inline-svg :src="issueIcon" />
-
-      <div class="validate-item-info">
-        <div class="validate-item-title">No-Gateway-Join-Fork</div>
-        <div class="validate-item-description">Gateway forks and joins</div>
-        <div class="validate-item-node">
-          <span class="validate-item-node-title">Node ID:</span> node_14
-        </div>
-      </div>
-    </div>
-
-    <div class="validate-item-box">
-      <vue-inline-svg :src="issueIcon" />
-
-      <div class="validate-item-info">
-        <div class="validate-item-title">No-Gateway-Join-Fork</div>
-        <div class="validate-item-description">Gateway forks and joins</div>
-        <div class="validate-item-node">
-          <span class="validate-item-node-title">Node ID:</span> node_14
+        <div class="validate-item-title">{{ error.errorKey }}</div>
+        <div class="validate-item-description">{{ error.message }}.</div>
+        <div class="validate-item-node" v-if="error.id">
+          <span class="validate-item-node-title">{{ $t('Node ID') }}:</span> {{ error.id }}
         </div>
       </div>
     </div>
@@ -57,6 +21,7 @@ export default {
   components: {
     VueInlineSvg,
   },
+  props: ['errorList'],
   data() {
     return {
       issueIcon: require('@/assets/topRail/issue-item.svg'),

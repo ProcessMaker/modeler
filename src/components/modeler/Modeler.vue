@@ -7,6 +7,9 @@
       :paper-manager="paperManager"
       :breadcrumb-data="breadcrumbData"
       :panelsCompressed="panelsCompressed"
+      :validation-errors="validationErrors"
+      :warnings="allWarnings"
+      :xml-manager="xmlManager"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -449,7 +452,7 @@ export default {
       return this.tooltipTarget.$el[0];
     },
     validateIfAutoValidateIsOn() {
-      if (this.autoValidate) {
+      if (!this.autoValidate) {
         this.validateBpmnDiagram();
       }
     },
