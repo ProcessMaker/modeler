@@ -769,7 +769,8 @@ export default {
     /**
      * Stop dragging elements that are in a pool
      */
-    overPoolStopDrag(){
+    async overPoolStopDrag(){
+      
       if (this.isNotPoolChilds(this.selected)) {
         this.updateFlowsWaypoint();
         this.$emit('save-state');

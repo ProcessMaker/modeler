@@ -129,7 +129,6 @@
 <script>
 import Vue from 'vue';
 import _ from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
@@ -519,8 +518,7 @@ export default {
       } else {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
-        const processId = 'process_' + uuidv4();
-        process.set('id', processId);
+        process.set('id', this.nodeIdGenerator.generateProcessId());
         this.definitions.get('rootElements').push(process);
       }
 

@@ -1,13 +1,15 @@
 export default class NodeIdGenerator {
   static prefix = 'node_';
-
+  static processPrefix = 'Process_';
   static #counter = 1;
   static #diagramCounter = 1;
+  static #processCounter = 1;
 
   constructor(definitions) {
     this.definitions = definitions;
     this.refreshLastIdCounter();
     this.refreshLastDiagramIdCounter();
+    this.refreshLastProcessIdCounter();
   }
 
   findById(id, root = this.definitions.rootElements, walked = []) {
@@ -61,11 +63,18 @@ export default class NodeIdGenerator {
     let lastIdCounter = this.matchIds(new RegExp(`^${NodeIdGenerator.prefix}(\\d+)_di$`), this.definitions.diagrams);
     NodeIdGenerator.#diagramCounter = lastIdCounter + 1;
   }
+  refreshLastProcessIdCounter() {
+    let lastIdCounter = this.matchIds(new RegExp(`^${NodeIdGenerator.processPrefix}(\\d+)$`), this.definitions.rootElements);
+    NodeIdGenerator.#processCounter = lastIdCounter + 1;
+  }
 
   generate() {
     let definitionId = this.#generateDefinitionId();
     let diagramId = this.#generateDiagramId();
     return [definitionId, diagramId];
+  }
+  generateProcessId() {
+    return this.#generateProcessId();
   }
 
   #generateDefinitionId = () => {
@@ -78,6 +87,12 @@ export default class NodeIdGenerator {
   #generateDiagramId = () => {
     const id = NodeIdGenerator.prefix + NodeIdGenerator.#diagramCounter + '_di';
     NodeIdGenerator.#diagramCounter++;
+
+    return id;
+  };
+  #generateProcessId = () => {
+    const id = NodeIdGenerator.processPrefix + NodeIdGenerator.#processCounter;
+    NodeIdGenerator.#processCounter++;
 
     return id;
   };
