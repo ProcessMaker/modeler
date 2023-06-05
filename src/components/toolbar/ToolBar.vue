@@ -154,13 +154,18 @@ export default {
       spinner: faSpinner,
       ellipsisMenuActions: [
         {
-          value: 'discard-draft',
-          content: this.$t('Discard Draft'),
+          value: 'save-template',
+          content: this.$t('Save as Template'),
           icon: '',
         },
         {
-          value: 'save-template',
-          content: this.$t('Save as Template'),
+          value: 'save-pm-block',
+          content: this.$t('Save as PM Block'),
+          icon: '',
+        },
+        {
+          value: 'discard-draft',
+          content: this.$t('Discard Draft'),
           icon: '',
         },
       ],
@@ -192,6 +197,9 @@ export default {
           break;
         case 'save-template':
           this.$emit('publishTemplate');
+          break;
+        case 'save-pm-block':
+          this.$emit('publishPmBlock');
           break;
         default:
           break;

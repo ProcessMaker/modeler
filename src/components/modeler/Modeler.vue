@@ -12,6 +12,7 @@
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
       @publishTemplate="publishTemplate"
+      @publishPmBlock="publishPmBlock"
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
@@ -356,6 +357,9 @@ export default {
     },
     publishTemplate() {
       this.$emit('publishTemplate');
+    },
+    publishPmBlock() {
+      this.$emit('publishPmBlock');
     },
     async pasteElements() {
       if (this.copiedElements.length > 0 && !this.pasteInProgress) {
