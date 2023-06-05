@@ -993,6 +993,16 @@ export default {
       this.$refs.selector.clearSelection();
       await this.$nextTick();
       await this.pushToUndoStack();
+      // force to update the processNode property in every delete
+      this.processes = this.getProcesses();
+      if (this.processes  && this.processes.length > 0) {
+        this.processNode = new Node(
+          'processmaker-modeler-process',
+          this.processes[0],
+          this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+        );
+      }
+      
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
@@ -1054,16 +1064,6 @@ export default {
     },
     removeNodesFromPool(node) {
       if (node.type === 'processmaker-modeler-pool' && node.definition.processRef) {
-        if (this.processes.length > 1) {
-          this.processes = this.processes.filter(process => {
-            return process !== node.definition.processRef;
-          });
-          this.processNode = new Node(
-            'processmaker-modeler-process',
-            this.processes[0],
-            this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
-          );
-        }
         if (node.definition.processRef.artifacts) {
           node.definition.processRef.artifacts.forEach(artifact => {
             const nodeToRemove = this.nodes.find(n => n.definition === artifact);

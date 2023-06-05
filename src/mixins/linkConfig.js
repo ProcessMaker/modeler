@@ -240,7 +240,7 @@ export default {
     },
   },
   created() {
-    this.updateWaypoints = debounce(this.updateWaypoints, 100);
+    this.updateWaypoints = debounce(this.updateWaypoints, 5);
     this.emitSave.bind(this);
   },
   async mounted() {
