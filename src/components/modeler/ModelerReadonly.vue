@@ -225,7 +225,6 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-
   },
   computed: {
     showControls() {
@@ -936,10 +935,16 @@ export default {
         return;
       }
 
-      // ignore click event if the user is Grabbing the paper
-      if (this.isGrabbing) return;
+      // ignore click event if the user is grabbing the paper.
+      if (this.isGrabbing) {
+        return;
+      }
 
       shape.component.$emit('click', event);
+      this.$emit('click', {
+        event,
+        node: this.highlightedNode.definition,
+      });
     });
 
     this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
