@@ -1,20 +1,17 @@
 <template>
   <div class="top-rail-container">
     <ValidateIssue
-      v-show="isOpenValidate"
-      :handle-open-panel="handleOpenPanel"
-      :error-list="errorList"
-      :warnings="warnings"
+      v-show="isOpenIssue"
+      :number-of-errors="numberOfErrors"
+      @openPanel="handleOpenPanel"
     />
 
-    <ValidateButton
-      :is-open="isOpenValidate"
-      :handle-open="handleOpenValidate"
-    />
+    <ValidateButton @openIssue="handleOpenIssue" />
 
     <ValidatePanel
-      v-show="isOpenValidate && isOpenPanel"
+      v-show="isOpenIssue && isOpenPanel"
       :error-list="errorList"
+      :warnings="warnings"
     />
   </div>
 </template>
@@ -29,34 +26,48 @@ export default {
     ValidateIssue,
     ValidatePanel,
   },
-  props: ['validationErrors', 'warnings', 'xmlManager'],
+  props: ['validationErrors', 'warnings'],
   data() {
     return {
-      isOpenValidate: false,
+      isOpenIssue: false,
       isOpenPanel: false,
     };
   },
   computed: {
     errorList() {
-      return Object.entries(this.validationErrors).flatMap(([errorKey, errors]) => {
-        return errors.flatMap(error => {
-          return {
+      // Get a formatted error list to show in the issue panel
+      return Object.entries(this.validationErrors)
+        .flatMap(([errorKey, errors]) => (
+          errors.flatMap(error => ({
             ...error,
             errorKey,
             ...{ 'errorId': `${error.id}_${error.message.split(' ').join('_')}` },
-          };
-        });
-      });
+          }))
+        ));
+    },
+    numberOfErrors() {
+      // Get the number of errors
+      return this.errorList.length + this.warnings.length;
+    },
+  },
+  watch: {
+    numberOfErrors(newValue) {
+      // Checks the number of errors, if it is "0" hides the panel errors
+      if (newValue === 0) {
+        this.isOpenPanel = false;
+      }
     },
   },
   methods: {
-    handleOpenValidate() {
-      this.isOpenValidate = !this.isOpenValidate;
-
-      store.commit('setAutoValidate', this.isOpenValidate);
+    handleOpenIssue(value) {
+      // Show/hide the issue button
+      this.isOpenIssue = value;
+      // Set the auto-validate value store
+      store.commit('setAutoValidate', this.isOpenIssue);
     },
-    handleOpenPanel() {
-      this.isOpenPanel = !this.isOpenPanel;
+    handleOpenPanel(value) {
+      // Show/hide the issue panel
+      this.isOpenPanel = value;
     },
   },
 };

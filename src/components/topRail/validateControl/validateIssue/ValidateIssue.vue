@@ -1,13 +1,18 @@
 <template>
-  <div class="issue-box">
+  <button
+    type="button"
+    :disabled="numberOfErrors === 0"
+    @click.prevent="handleOpen"
+    class="issue-box"
+  >
     <span class="issue-title">Issues</span>
 
     <span class="issue-badge">{{ numberOfErrors }}</span>
 
-    <button type="button" @click.prevent="handleOpen" class="issue-button">
+    <span class="issue-icon">
       <inline-svg :src="isOpen ? issueOpenIcon : issueCloseIcon" />
-    </button>
-  </div>
+    </span>
+  </button>
 </template>
 
 <script>
@@ -17,7 +22,7 @@ export default {
   components: {
     InlineSvg,
   },
-  props: ['handleOpenPanel', 'errorList', 'warnings'],
+  props: ['numberOfErrors'],
   data() {
     return {
       isOpen: false,
@@ -25,16 +30,20 @@ export default {
       issueOpenIcon: require('@/assets/topRail/issue-open.svg'),
     };
   },
-  computed: {
-    numberOfErrors() {
-      return this.errorList.length + this.warnings.length;
+  watch: {
+    numberOfErrors(newValue) {
+      // Checks the number of errors if it is "0" reset the issue icon
+      if (newValue === 0) {
+        this.isOpen = false;
+      }
     },
   },
   methods: {
     handleOpen() {
+      // Show/hide issue panel
       this.isOpen = !this.isOpen;
 
-      this.handleOpenPanel();
+      this.$emit('openPanel', this.isOpen);
     },
   },
 };

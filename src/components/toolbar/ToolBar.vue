@@ -6,9 +6,8 @@
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="mr-3" style="display: flex;">
         <TopRail
-          :validation-errors="$props.validationErrors"
-          :warnings="$props.warnings"
-          :xml-manager="$props.xmlManager"
+          :validation-errors="validationErrors"
+          :warnings="warnings"
         />
 
         <align-buttons @save-state="$emit('save-state')" />
@@ -228,10 +227,6 @@ export default {
 
       this.ellipsisMenuActions.splice(indexOfActions, 1);
     }
-
-    window.console.log('TOOL BAR########################');
-    window.console.log(this.warnings);
-    window.console.log('########################');
   },
 };
 </script>

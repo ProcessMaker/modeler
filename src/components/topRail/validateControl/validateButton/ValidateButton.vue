@@ -15,12 +15,20 @@ export default {
   components: {
     InlineSvg,
   },
-  props: ['isOpen', 'handleOpen'],
   data() {
     return {
+      isOpen: false,
       validateCloseIcon: require('@/assets/topRail/validate-close.svg'),
       validateOpenIcon: require('@/assets/topRail/validate-open.svg'),
     };
+  },
+  methods: {
+    handleOpen() {
+      // Show/hide issue button
+      this.isOpen = !this.isOpen;
+
+      this.$emit('openIssue', this.isOpen);
+    },
   },
 };
 </script>

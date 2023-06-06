@@ -452,7 +452,7 @@ export default {
       return this.tooltipTarget.$el[0];
     },
     validateIfAutoValidateIsOn() {
-      if (!this.autoValidate) {
+      if (this.autoValidate) {
         this.validateBpmnDiagram();
       }
     },

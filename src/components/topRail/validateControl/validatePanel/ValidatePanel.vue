@@ -11,6 +11,15 @@
         </div>
       </div>
     </div>
+
+    <div v-for="(warning, index) in warnings" :key="warning.title + index" class="validate-item-box">
+      <vue-inline-svg :src="issueIcon" />
+
+      <div class="validate-item-info">
+        <div class="validate-item-title">{{ warning.title }}</div>
+        <div class="validate-item-description">{{ warning.text }}.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,7 +30,7 @@ export default {
   components: {
     VueInlineSvg,
   },
-  props: ['errorList'],
+  props: ['errorList', 'warnings'],
   data() {
     return {
       issueIcon: require('@/assets/topRail/issue-item.svg'),
