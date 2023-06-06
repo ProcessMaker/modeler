@@ -30,7 +30,16 @@ export default {
   components: {
     VueInlineSvg,
   },
-  props: ['errorList', 'warnings'],
+  props: {
+    errorList: {
+      type: Array,
+      required: true,
+    },
+    warnings: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       issueIcon: require('@/assets/topRail/issue-item.svg'),

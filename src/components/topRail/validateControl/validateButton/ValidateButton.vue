@@ -23,8 +23,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Show/hide issue button
+     */
     handleOpen() {
-      // Show/hide issue button
       this.isOpen = !this.isOpen;
 
       this.$emit('openIssue', this.isOpen);

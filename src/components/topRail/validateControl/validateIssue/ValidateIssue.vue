@@ -22,7 +22,12 @@ export default {
   components: {
     InlineSvg,
   },
-  props: ['numberOfErrors'],
+  props: {
+    numberOfErrors: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       isOpen: false,
@@ -39,8 +44,10 @@ export default {
     },
   },
   methods: {
+    /**
+     * Show/hide the issue panel
+     */
     handleOpen() {
-      // Show/hide issue panel
       this.isOpen = !this.isOpen;
 
       this.$emit('openPanel', this.isOpen);

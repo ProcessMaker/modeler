@@ -26,7 +26,16 @@ export default {
     ValidateIssue,
     ValidatePanel,
   },
-  props: ['validationErrors', 'warnings'],
+  props: {
+    validationErrors: {
+      type: Object,
+      required: true,
+    },
+    warnings: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       isOpenIssue: false,
@@ -59,14 +68,20 @@ export default {
     },
   },
   methods: {
+    /**
+     * Show/hide the issue button
+     * @param {boolean} value
+     */
     handleOpenIssue(value) {
-      // Show/hide the issue button
       this.isOpenIssue = value;
       // Set the auto-validate value store
       store.commit('setAutoValidate', this.isOpenIssue);
     },
+    /**
+     * Show/hide the issue panel
+     * @param {boolean} value
+     */
     handleOpenPanel(value) {
-      // Show/hide the issue panel
       this.isOpenPanel = value;
     },
   },
