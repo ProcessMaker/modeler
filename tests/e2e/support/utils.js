@@ -100,8 +100,9 @@ export function dragFromSourceToDest(source, position) {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      cy.get(`[data-test=${source}]`).trigger('mousedown', { force: true });
-      cy.document().trigger('mousemove', mouseEvent);
+      cy.get(`[data-test="${source}-main"]`).click();
+      cy.get(`[data-test="${source}"]`).click();
+      cy.document().trigger('mouseover', mouseEvent);
       cy.document().trigger('mouseup', mouseEvent);
     });
   });
