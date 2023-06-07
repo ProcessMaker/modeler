@@ -17,7 +17,6 @@
 import './commands';
 import '@cypress/code-coverage/support';
 import { waitToRenderAllShapes } from './utils';
-import { nodeTypes } from './constants';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
