@@ -38,7 +38,7 @@ Cypress.on('scrolled', $el => {
 
 beforeEach(() => {
   cy.loadModeler();
-  dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
+  // dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
   waitToRenderAllShapes();
   cy.get('.paper-container').click();
 });

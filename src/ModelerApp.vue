@@ -3,18 +3,18 @@
 
     <b-card no-body class="h-100 rounded-0">
       <!--   TODO Remove me when the time comes   -->
-      <!--      <b-card-header class="d-flex align-items-center header">-->
-      <!--        <b-card-text class="m-0 font-weight-bolder">-->
-      <!--          {{ $t('ProcessMaker Modeler') }}-->
-      <!--        </b-card-text>-->
+      <b-card-header class="d-flex align-items-center header">x
+        <b-card-text class="m-0 font-weight-bolder">
+          {{ $t('ProcessMaker Modeler') }}
+        </b-card-text>
 
-      <!--        <div class="ml-auto">-->
-      <!--          <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">-->
-      <!--            <i class="fas fa-upload mr-1"/>-->
-      <!--            {{ $t('Upload XML') }}-->
-      <!--          </b-btn>-->
-      <!--        </div>-->
-      <!--      </b-card-header>-->
+        <div class="ml-auto">
+          <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">-->
+            <i class="fas fa-upload mr-1"/>
+            {{ $t('Upload XML') }}
+          </b-btn>
+        </div>
+      </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
         <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" />
       </b-card-body>
