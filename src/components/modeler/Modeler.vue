@@ -1258,6 +1258,7 @@ export default {
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
+      registerPmBlock: this.registerPmBlock,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
