@@ -241,6 +241,7 @@ export default {
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
+      pmBlockNodes: [],
       breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
@@ -612,6 +613,26 @@ export default {
           return;
         }
 
+        this.parsers[bpmnType].default.push(defaultParser);
+      });
+    },
+    registerPmBlock(pmBlockNode) {
+      console.log('REGISTER PM BLOCK NODE', pmBlockNode);
+      const defaultParser = () => pmBlockNode.id;
+
+      this.translateConfig(pmBlockNode.inspectorConfig[0]);
+      addLoopCharacteristics(pmBlockNode);
+      this.nodeRegistry[pmBlockNode.id] = pmBlockNode;
+
+      Vue.component(pmBlockNode.id, pmBlockNode.component);
+      this.pmBlockNodes.push(pmBlockNode);
+      console.log('PM BLOCK NODES REGISTER', this.pmBlockNodes);
+
+      const types = Array.isArray(pmBlockNode.bpmnType)
+        ? pmBlockNode.bpmnType
+        : [pmBlockNode.bpmnType];
+
+      types.forEach(bpmnType => {
         this.parsers[bpmnType].default.push(defaultParser);
       });
     },
