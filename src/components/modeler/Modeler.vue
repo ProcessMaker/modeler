@@ -25,6 +25,7 @@
       />
       <explorer-rail
         :node-types="nodeTypes"
+        :pm-block-nodes="pmBlockNodes"
         @set-cursor="cursor = $event"
         @onCreateElement="onCreateElementHandler"
       />
