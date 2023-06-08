@@ -10,6 +10,7 @@ export default new Vuex.Store({
     nodeTypes: [],
     pinnedNodeTypes: [],
     filteredNodeTypes: [],
+    pmBlockNodeTypes: [],
     explorerOpen: false,
     searchTerm: '',
   },
@@ -19,6 +20,8 @@ export default new Vuex.Store({
     getFilteredNodeTypes: state => state.filteredNodeTypes,
     getExplorerOpen: state => state.explorerOpen,
     getSearchTerm: state => state.searchTerm,
+    getPmBlockNodeTypes: state => state.pmBlockNodeTypes,
+    getFilteredPmBlockNodeTypes: state => state.filteredPmBlockNodeTypes,
   },
   mutations: {
     setNodeTypes(state, nodeTypes) {
@@ -51,9 +54,40 @@ export default new Vuex.Store({
         return node.label.toLowerCase().includes(searchTerm.toLowerCase());
       });
     },
+    setPmBlockNodeTypes(state, pmBlockNodeTypes) {
+      state.pmBlockNodeTypes = pmBlockNodeTypes
+        .filter(pmBlockNode => pmBlockNode.control)
+        .map(pmBlockNode => ({
+          id: uniqueId('pmBlockNode_'),
+          type: pmBlockNode.id,
+          icon: pmBlockNode.icon,
+          label: pmBlockNode.label,
+          description: pmBlockNode.description,
+          bpmnType: pmBlockNode.bpmnType,
+          rank: pmBlockNode.rank || BOTTOM,
+          items: pmBlockNode.items?.map(item => ({ ...item, type: item.id })),
+        }))
+        .sort((node1, node2) => node1.rank - node2.rank);
+    },
+    setFilteredPmBlockNodeTypes(state, searchTerm) {
+      // TODO: Configure Pm Block search bar
+      console.log('FILTER PM BLOCK NODE TYPES', state, searchTerm);
+      // const nodeTypes = state.nodeTypes;
+      // state.searchTerm = searchTerm;
+      // const allNodes = uniqBy([...pinnedNodeTypes, ...nodeTypes], 'id');
+      // state.filteredNodeTypes = allNodes.filter(node => {
+      //   return node.label.toLowerCase().includes(searchTerm.toLowerCase());
+      // });
+    },
     clearFilteredNodes(state) {
       state.filteredNodeTypes = [];
       state.searchTerm = '';
+    },
+    clearFilteredPmBlockNodes(state) {
+      // TODO: Clear Pm Block search bar
+      console.log('CLEAR FILTER PM BLOCK NODE', state);
+      // state.filteredNodeTypes = [];
+      // state.searchTerm = '';
     },
     closeExplorer(state) {
       state.explorerOpen = false;
