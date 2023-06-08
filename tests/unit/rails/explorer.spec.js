@@ -10,7 +10,7 @@ const nodeTypes = [
   },
 ];
 
-const pmBlockNodes = [
+const pmBlockNodeTypes = [
   {
     id: 'processmaker-modeler-call-activity',
     bpmnType: 'bpmn:CallActivity',
@@ -28,7 +28,7 @@ describe('Explorer Rail', () => {
     wrapper = shallowMount(explorerRail, {
       propsData: {
         nodeTypes,
-        pmBlockNodes,
+        pmBlockNodeTypes,
       },
       mocks: {
         $t() {},
