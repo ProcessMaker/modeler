@@ -28,7 +28,7 @@ describe('Explorer Rail', () => {
     wrapper = shallowMount(explorerRail, {
       propsData: {
         nodeTypes,
-        pmBlockNodeTypes
+        pmBlockNodeTypes,
       },
       mocks: {
         $t() {},
