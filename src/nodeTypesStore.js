@@ -62,7 +62,6 @@ export default new Vuex.Store({
           type: pmBlockNode.id,
           icon: pmBlockNode.icon,
           label: pmBlockNode.label,
-          description: pmBlockNode.description,
           bpmnType: pmBlockNode.bpmnType,
           rank: pmBlockNode.rank || BOTTOM,
           items: pmBlockNode.items?.map(item => ({ ...item, type: item.id })),
