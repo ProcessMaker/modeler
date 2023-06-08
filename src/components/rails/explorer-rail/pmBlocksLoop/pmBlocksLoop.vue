@@ -113,54 +113,43 @@ export default {
     </div> -->
     <template>
       <!-- <template v-if="filteredPmBlockNodes.length === 0 && !searchTerm"> -->
-      <div class="pmBlocksContainer">
+      <div class="pmBlocksContainer p-2">
         <template v-for="nodeType in pmBlockNodeTypes">
           <div
-            class="pm-block-node-types__item"
+            class="pm-block-node-types__item p-2 d-block"
             :key="nodeType.id"
             @click.stop="onClickHandler($event, nodeType)"
           >
-            <img class="pm-block-node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
-            <span>{{ $t(nodeType.label) }}</span>
+            <label>{{ $t(nodeType.label) }}</label>
+            <span class="d-block">{{ nodeType.description }}</span>
           </div>
         </template>
       </div>
+      <!-- </template> -->
     </template>
   </div>
 </template>
 
 <style lang="scss">
-#pmBlockNodeTypesList {
-  .pinnedObjects {
-    margin-bottom: 1rem;
-  }
-}
-.node-types {
+.pm-block-node-types {
   &__item {
-    display: flex;
-    padding: 0.5rem 0.3rem;
-    align-items: center;
+    display: block;
     border-radius: 4px;
     user-select: none;
+    margin-bottom: 8px;
+    border: 1px solid #b6bfc6;
     &:hover {
       background-color: #EBEEF2;
-      .pinIcon {
-        background-color: #DADDDF;
-      }
     }
-    &__icon {
-      width: 1.5rem;
-      height: 1.5rem;
+    label {
+      font-size: 14px;
+      line-height: 8px;
+      font-weight: 600;
+      color: #104A75;
     }
     span {
-      margin-left: 0.8rem;
-      font-size: 13px;
-      line-height: 19px;
-    }
-    .pinIcon {
-      margin-left: auto;
-      border-radius: 4px;
-      padding: 0.3rem;
+      font-size: 12px;
+      color:#6C757D;
     }
   }
 }
