@@ -18,14 +18,6 @@
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
         <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" />
       </b-card-body>
-      <!--   TODO remove me when the time comes   -->
-      <!--      <validation-status ref="validationStatus"-->
-      <!--        :validation-errors="validationErrors"-->
-      <!--        :warnings="warnings"-->
-      <!--        :xml-manager="xmlManager"-->
-      <!--      >-->
-      <!--        <component v-for="(component, index) in validationBar" :key="index" :is="component" />-->
-      <!--      </validation-status>-->
     </b-card>
 
     <b-modal
@@ -64,7 +56,6 @@ export default {
   },
   data() {
     return {
-      validationBar: [],
       decorations: {
         borderOutline: {},
       },
