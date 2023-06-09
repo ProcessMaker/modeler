@@ -148,6 +148,8 @@ export default ({
     if (window.Cypress) {
       const objects = nodeTypesStore.getters.getNodeTypes;
       nodeTypesStore.dispatch('addUserPinnedObject', objects[0]);
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[3]);
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[4]);
     }
   },
 });

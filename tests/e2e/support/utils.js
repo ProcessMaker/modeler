@@ -92,18 +92,27 @@ export function getComponentsEmbeddedInShape($element) {
     });
 }
 
-export function dragFromSourceToDest(source, position) {
+export function dragFromSourceToDest(sourceMain, position, source=null) {
   cy.window().its('store.state.paper').then(paper => {
+    paper.translate(0, 0);
     const { tx, ty } = paper.translate();
 
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      cy.get(`[data-test="${source}-main"]`).click();
-      cy.get(`[data-test="${source}"]`).click();
+      cy.get(`[data-test="${sourceMain}-main"]`).click();
+
+      if (source) {
+        cy.get(`[data-test="${source}"]`).click();
+      } else {
+        cy.get(`[data-test="${sourceMain}"]`).click();
+      }
+
       cy.document().trigger('mouseover', mouseEvent);
       cy.document().trigger('mouseup', mouseEvent);
+
+      cy.get('.paper-container').click(position);
     });
   });
 
