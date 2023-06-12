@@ -1,7 +1,6 @@
 import {saveDebounce} from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
 import {boundaryEventSelector, nodeTypes, taskSelector} from './constants';
-import {gridSize} from '../../../src/graph';
 
 const renderTime = 300;
 
@@ -40,7 +39,7 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType, offsetX = 0, offsetY = 0) {
-  const paperGridSize = gridSize;
+  const paperGridSize = 150;
   const searchRectangle = {
     width: paperGridSize,
     height: paperGridSize,
@@ -292,6 +291,8 @@ export function testNumberOfVertices(expectedVertices) {
         return;
       }
 
+      /* Uncomment the following line when the new download XML button will be re-added
+
       cy.get('[data-test=downloadXMLBtn]').click();
       cy.window()
         .its('xml')
@@ -308,7 +309,7 @@ export function testNumberOfVertices(expectedVertices) {
           } else {
             expect(waypoints.length).to.equal(numberOfStartAndEndVertices, `Expected ${numberOfStartAndEndVertices} (just start + end) vertices in the downloaded XML`);
           }
-        });
+        }); */
     });
 }
 
