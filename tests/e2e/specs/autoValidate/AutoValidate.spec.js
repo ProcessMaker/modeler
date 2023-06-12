@@ -1,15 +1,5 @@
 import { nodeTypes } from '../../support/constants';
-import {
-  dragFromSourceToDest,
-  // waitToRenderAllShapes,
-  // getGraphElements,
-  // getElementAtPosition,
-  // getCrownButtonForElement,
-  // getLinksConnectedToElement,
-  // testNumberOfVertices,
-  // connectNodesWithFlow,
-  // setBoundaryEvent,
-} from '../../support/utils';
+import { dragFromSourceToDest } from '../../support/utils';
 
 describe('Auto Validate test', { scrollBehavior: false }, () => {
   const validateButtonSelector = '[data-cy="validate-button"]';
@@ -100,7 +90,7 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
       });
 
     // Add a form task control
-    const taskPosition = { x: 300, y: 300 };
+    const taskPosition = { x: 300, y: 150 };
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     const currentNumberOfErrorsWithTask = defaultNumberOfErrors + 1;
 
@@ -116,7 +106,7 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
       }));
 
     // Add a inclusive gateway control
-    const gatewayPosition = { x: 450, y: 450 };
+    const gatewayPosition = { x: 300, y: 300 };
     dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition, nodeTypes.inclusiveGateway);
     const currentNumberOfErrorsWithGateway = defaultNumberOfErrors + 3;
 
