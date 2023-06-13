@@ -1,6 +1,13 @@
-/* eslint-disable no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import store from '@/store';
+
+const COLOR_DEFAULT = '#5096db';
+const COLOR_ERROR = '##FF0000';
+const COLOR_IN_PROGRESS = '#1572C2';
+// eslint-disable-next-line no-unused-vars
+const COLOR_IDLE = '#6d747c';
+const COLOR_COMPLETED = '#00875A';
+const COLOR_COMPLETED_FILL = '#edfffc';
 
 const errorHighlighter = {
   highlighter: {
@@ -8,7 +15,7 @@ const errorHighlighter = {
     options: {
       padding: 10,
       attrs: {
-        stroke: 'red',
+        stroke: COLOR_ERROR,
         'stroke-width': 10,
         opacity: 0.3,
       },
@@ -21,7 +28,7 @@ const defaultHighlighter = {
     name: 'stroke',
     options: {
       attrs: {
-        stroke: '#5096db',
+        stroke: COLOR_DEFAULT,
         'stroke-width': 3,
         'data-cy': 'selected',
       },
@@ -34,7 +41,7 @@ const completedHighlighter = {
     name: 'stroke',
     options: {
       attrs: {
-        stroke: '#1572C2',
+        stroke: COLOR_COMPLETED,
         'stroke-width': 3,
       },
     },
@@ -46,7 +53,7 @@ const inProgressHighlighter = {
     name: 'stroke',
     options: {
       attrs: {
-        stroke: '#00875A',
+        stroke: COLOR_IN_PROGRESS,
         'stroke-width': 3,
         'stroke-dasharray': '4 4',
       },
@@ -100,6 +107,7 @@ export default {
       if (store.getters.isReadOnly) {
         this.shapeView.unhighlight(this.shapeBody, completedHighlighter);
         if (this.isCompleted) {
+          this.shape.attr('body/fill', COLOR_COMPLETED_FILL);
           this.shapeView.highlight(this.shapeBody, completedHighlighter);
         }
         this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
