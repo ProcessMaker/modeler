@@ -10,9 +10,11 @@
           :warnings="warnings"
         />
 
-        <align-buttons @save-state="$emit('save-state')" />
+        <!-- TODO Remove this line when redesigning -->
+        <!-- <align-buttons @save-state="$emit('save-state')" /> -->
 
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
+        <!-- TODO Remove this block when redesigning -->
+        <!-- <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
           <b-button
             class="btn btn-sm btn-secondary ml-auto"
             data-test="panels-btn"
@@ -22,24 +24,21 @@
           >
             <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
           </b-button>
-        </div>
-        <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
+        </div> -->
+
+        <div class="d-flex align-items-center btn-group btn-group-sm" role="group" aria-label="Publish controls">
           <template v-if="isVersionsInstalled">
-            <div class="d-flex justify-content-center align-items-center text-black text-capitalize" :style="{ width: '65px' }">
-              <span class="toolbar-item mr-1" :style="{ fontWeight: 600 }">
-                {{ versionStatus }}
-              </span>
+            <div class="toolbar-item toolbar-version-status">
+              {{ versionStatus }}
             </div>
-            <div class="d-flex justify-content-center align-items-center text-black text-capitalize mx-2" :style="{ width: '60px' }">
-              <span class="toolbar-item mr-1" :style="{ fontWeight: 400 }">
+            <div class="toolbar-item toolbar-loading-status">
+              <span>
                 {{ loadingStatus }}
               </span>
-              <span>
-                <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
-              </span>
+              <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
             </div>
             <a
-              class="btn btn-sm btn-primary btn-autosave text-uppercase mx-2"
+              class="toolbar-item toolbar-publish"
               data-test="publish-btn"
               :title="$t('Publish')"
               @click="$emit('saveBpmn')"
@@ -47,7 +46,7 @@
               {{ $t('Publish') }}
             </a>
             <a
-              class="btn btn-sm btn-link toolbar-item btn-autosave text-black text-uppercase"
+              class="toolbar-item toolbar-autosave"
               data-test="close-btn"
               :title="$t('Close')"
               @click="$emit('close')"
@@ -62,7 +61,8 @@
               @hide="onHide"
             />
           </template>
-          <b-button
+          <!-- Remove this block when redesigning -->
+          <!-- <b-button
             v-else
             class="btn btn-sm btn-secondary mini-map-btn mx-1"
             data-test="mini-map-btn"
@@ -71,7 +71,7 @@
             @click="$emit('saveBpmn')"
           >
             <font-awesome-icon :icon="saveIcon" />
-          </b-button>
+          </b-button> -->
         </div>
       </div>
     </div>
@@ -83,7 +83,6 @@ import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faS
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import TopRail from '@/components/topRail/TopRail.vue';
-import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
@@ -91,7 +90,6 @@ export default {
     Breadcrumb,
     TopRail,
     FontAwesomeIcon,
-    AlignButtons,
   },
   props: [
     'canvasDragPosition',

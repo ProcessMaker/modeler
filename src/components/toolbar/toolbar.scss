@@ -10,14 +10,61 @@ $toolbar-background-color: #fff;
   > button {
     cursor: pointer;
   }
-}
 
-.toolbar-item {
-  font-family: "Open Sans";
-  font-style: normal;
-  font-size: 14px;
-  letter-spacing: -0.02em;
-  line-height: 21px;
+  &-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Open Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    color: #000000;
+    text-transform: capitalize;
+  }
+
+  &-version-status {
+    margin: 0 12px;
+    padding-left: 12px;
+    border-left: 1px solid #ADB3B8;
+    font-weight: 600;
+    color: #6C757D;
+  }
+
+  &-loading-status {
+    margin-right: 21px;
+
+    > svg {
+      margin-left: 5px;
+    }
+  }
+
+  &-publish {
+    width: 72px;
+    height: 30px;
+    margin-right: 21px;
+    background-color: #1572C2;
+    border-radius: 4px;
+    color: #FFFFFF !important;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    cursor: pointer;
+    outline: none;
+
+    &:hover {
+      background-color: #065c9d;
+    }
+  }
+
+  &-autosave {
+    width: 42px;
+    height: 22px;
+    margin-right: 21px;
+    color: #000000 !important;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none !important;
+  }
 }
 
 .text-black {
@@ -26,13 +73,6 @@ $toolbar-background-color: #fff;
 
 .cursor-default {
   cursor: default !important;
-}
-
-.btn-autosave {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px !important;
 }
 
 .btn-ellipsis {
