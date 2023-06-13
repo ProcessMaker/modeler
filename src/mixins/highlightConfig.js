@@ -4,8 +4,7 @@ import store from '@/store';
 const COLOR_DEFAULT = '#5096db';
 const COLOR_ERROR = '##FF0000';
 const COLOR_IN_PROGRESS = '#1572C2';
-// eslint-disable-next-line no-unused-vars
-const COLOR_IDLE = '#6d747c';
+const COLOR_IDLE = '#ced4da';
 const COLOR_COMPLETED = '#00875A';
 const COLOR_COMPLETED_FILL = '#edfffc';
 
@@ -61,6 +60,18 @@ const inProgressHighlighter = {
   },
 };
 
+const idleHighlighter = {
+  highlighter: {
+    name: 'stroke',
+    options: {
+      attrs: {
+        stroke: COLOR_IDLE,
+        'stroke-width': 3,
+      },
+    },
+  },
+};
+
 export default {
   props: [
     'highlighted',
@@ -70,6 +81,7 @@ export default {
     'borderOutline',
     'isCompleted',
     'isInProgress',
+    'isIdle',
   ],
   data() {
     return {
@@ -113,6 +125,10 @@ export default {
         this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
         if (this.isInProgress) {
           this.shapeView.highlight(this.shapeBody, inProgressHighlighter);
+        }
+        if (this.isIdle) {
+          this.shape.attr('body/fill', COLOR_IDLE);
+          this.shapeView.highlight(this.shapeBody, idleHighlighter);
         }
         return;
       }
