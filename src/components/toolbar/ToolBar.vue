@@ -10,9 +10,6 @@
           :warnings="warnings"
         />
 
-        <!-- TODO Remove this line when redesigning -->
-        <!-- <align-buttons @save-state="$emit('save-state')" /> -->
-
         <!-- TODO Remove this block when redesigning -->
         <!-- <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
           <b-button
@@ -73,17 +70,6 @@
               data-cy="ellipsis-menu"
             />
           </template>
-          <!-- Remove this block when redesigning -->
-          <!-- <b-button
-            v-else
-            class="btn btn-sm btn-secondary mini-map-btn mx-1"
-            data-test="mini-map-btn"
-            v-b-tooltip.hover
-            :title="$t('Save')"
-            @click="$emit('saveBpmn')"
-          >
-            <font-awesome-icon :icon="saveIcon" />
-          </b-button> -->
         </div>
       </div>
     </div>
