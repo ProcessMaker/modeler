@@ -1,5 +1,8 @@
 <template>
-  <div class="validate-container">
+  <div
+    class="validate-container"
+    data-cy="validate-panel"
+  >
     <div v-for="(error, index) in errorList" :key="`${error.errorId}_${index}`" class="validate-item-box">
       <vue-inline-svg :src="issueIcon" />
 

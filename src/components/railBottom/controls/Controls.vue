@@ -9,6 +9,7 @@
       :id="item.id"
       :key="item.id"
       @click.stop="onClickHandler($event, item)"
+      :data-test="`${item.type}-main`"
     >
       <SubmenuPopper
         :data="item"
@@ -142,6 +143,14 @@ export default ({
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
     },
+  },
+  async mounted() {
+    if (window.Cypress) {
+      const objects = nodeTypesStore.getters.getNodeTypes;
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[0]);
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[3]);
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[4]);
+    }
   },
 });
 </script>
