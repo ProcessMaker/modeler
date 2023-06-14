@@ -10,6 +10,7 @@
       :validation-errors="validationErrors"
       :warnings="allWarnings"
       :xml-manager="xmlManager"
+      :validationBar="validationBar"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -201,6 +202,7 @@ export default {
         return {};
       },
     },
+    validationBar: Array,
   },
   mixins: [hotkeys, cloneSelection],
   data() {

@@ -8,7 +8,13 @@
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
-        />
+        >
+          <component
+            :is="component.button"
+            v-for="(component, index) in validationBar"
+            :key="`validation-status-${index}`"
+          />
+        </TopRail>
 
         <align-buttons @save-state="$emit('save-state')" />
 
@@ -103,6 +109,7 @@ export default {
     'validationErrors',
     'warnings',
     'xmlManager',
+    'validationBar',
   ],
   watch: {
     miniMapOpen(isOpen) {
