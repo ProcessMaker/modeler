@@ -44,7 +44,6 @@ export default {
   },
   created() {
     nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
-    nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
   },
   methods: {
     faTimes() {
