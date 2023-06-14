@@ -73,16 +73,9 @@ export default ({
     },
     toggleExplorer() {
       // Remove control click & drop selection when the Add button is clicked
-      if (this.movedElement) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.movedElement);
-        this.$emit('onSetCursor', 'none');
-        this.movedElement = null;
-      }
-
+      this.deselectControl();
       this.popperType = null;
       this.selectedSubmenuItem = null;
-      this.selectedItem = null;
 
       // Toggle left explorer
       nodeTypesStore.commit('toggleExplorer');
