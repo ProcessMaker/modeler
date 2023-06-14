@@ -26,30 +26,41 @@
           </b-button>
         </div> -->
 
-        <div class="d-flex align-items-center btn-group btn-group-sm" role="group" aria-label="Publish controls">
+        <div
+          class="d-flex align-items-center btn-group btn-group-sm"
+          role="group"
+          aria-label="Publish controls"
+          data-cy="publish-control"
+        >
           <template v-if="isVersionsInstalled">
-            <div class="toolbar-item toolbar-version-status">
+            <div
+              class="toolbar-item toolbar-version-status"
+              data-cy="publish-version-status"
+            >
               {{ versionStatus }}
             </div>
-            <div class="toolbar-item toolbar-loading-status">
+            <div
+              class="toolbar-item toolbar-loading-status"
+              data-cy="publish-loading-status"
+            >
               <span>
                 {{ loadingStatus }}
               </span>
               <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
             </div>
             <a
-              class="toolbar-item toolbar-publish"
-              data-test="publish-btn"
               :title="$t('Publish')"
               @click="$emit('saveBpmn')"
+              class="toolbar-item toolbar-publish"
+              data-cy="publish-btn"
             >
               {{ $t('Publish') }}
             </a>
             <a
-              class="toolbar-item toolbar-autosave"
-              data-test="close-btn"
               :title="$t('Close')"
               @click="$emit('close')"
+              class="toolbar-item toolbar-close"
+              data-cy="close-btn"
             >
               {{ $t('Close') }}
             </a>
@@ -59,6 +70,7 @@
               @navigate="onNavigate"
               @show="onShow"
               @hide="onHide"
+              data-cy="ellipsis-menu"
             />
           </template>
           <!-- Remove this block when redesigning -->
