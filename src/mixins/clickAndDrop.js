@@ -20,17 +20,30 @@ export default {
     };
   },
   methods: {
+    deselectControl() {
+      document.removeEventListener('mousemove', this.setDraggingPosition);
+      if (this.movedElement) {
+        document.body.removeChild(this.movedElement);
+      }
+      nodeTypesStore.commit('clearSelectedNode');
+      nodeTypesStore.commit('setGhostNode', null);
+      this.$emit('onSetCursor', 'none');
+      window.ProcessMaker.EventBus.$off('custom-pointerclick');
+    },
     onClickHandler(event, control) {
+      // Checks if another submenu was opened
+      if (this.wasClicked || !nodeTypesStore.getters.getGhostNode) {
+        this.parent = null;
+        this.selectedSubmenuItem = null;
+        this.deselectControl();
+      }
+
       this.createDraggingHelper(event, control);
       document.addEventListener('mousemove', this.setDraggingPosition);
       this.setDraggingPosition(event);
       // Deselect control on click if same control is already selected
       if (this.selectedItem && (this.selectedItem.type === control.type)) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.movedElement);
-        this.$emit('onSetCursor', 'none');
-        nodeTypesStore.commit('clearSelectedNode');
-        nodeTypesStore.commit('setGhostNode', null);
+        this.deselectControl();
         this.wasClicked = false;
         return;
       }
@@ -66,9 +79,12 @@ export default {
     },
     setDraggingPosition({ pageX, pageY }) {
       let tempGhost = this.movedElement;
-      tempGhost.style.left = `${pageX}px`;
-      tempGhost.style.top = `${pageY}px`;
-      nodeTypesStore.commit('setGhostNode', tempGhost);
+
+      if (tempGhost) {
+        tempGhost.style.left = `${pageX}px`;
+        tempGhost.style.top = `${pageY}px`;
+        nodeTypesStore.commit('setGhostNode', tempGhost);
+      }
     },
     createDraggingHelper(event, control) {
       if (this.movedElement) {
