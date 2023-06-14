@@ -7,6 +7,9 @@
       :paper-manager="paperManager"
       :breadcrumb-data="breadcrumbData"
       :panelsCompressed="panelsCompressed"
+      :validation-errors="validationErrors"
+      :warnings="allWarnings"
+      :xml-manager="xmlManager"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -25,6 +28,8 @@
       />
       <explorer-rail
         :node-types="nodeTypes"
+        @set-cursor="cursor = $event"
+        @onCreateElement="onCreateElementHandler"
       />
       <b-col
         class="paper-container h-100 pr-4"

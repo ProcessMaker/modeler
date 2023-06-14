@@ -1,0 +1,20 @@
+$crown-top-chevron: 1.8rem;
+$crown-right-chevron: 8.1rem;
+
+.crown-align {
+  background-color: $primary-white;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding: 0 3px 0 3px;
+  height: 2.5rem;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+
+  &::after {
+    @include chevron($crown-top-chevron, $crown-right-chevron);
+  }
+}

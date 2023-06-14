@@ -2,9 +2,11 @@
 import pinIcon from '@/assets/pin-angle.svg';
 import pinFillIcon from '@/assets/pin-angle-fill.svg';
 import nodeTypesStore from '@/nodeTypesStore';
+import clickAndDrop from '@/mixins/clickAndDrop';
 
 export default {
   name: 'NodeTypesLoop',
+  mixins: [clickAndDrop],
   data() {
     return {
       pinIcon,
@@ -12,15 +14,18 @@ export default {
       showPin: false,
     };
   },
+  created() {
+    nodeTypesStore.dispatch('getUserPinnedObjects');
+  },
   methods: {
     nodeTypeAlreadyPinned(object, type) {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
-      return nodeTypesStore.commit('setUnpinNode', object);
+      return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
-      return nodeTypesStore.commit('setPinnedNodes', object);
+      return nodeTypesStore.dispatch('addUserPinnedObject', object);
     },
   },
   computed: {
@@ -31,7 +36,8 @@ export default {
       return nodeTypesStore.getters.getNodeTypes;
     },
     unpinnedObjects() {
-      return this.objects.filter((obj) => !this.pinnedObjects.includes(obj));
+      const objects = this.objects;
+      return objects.filter((obj) => !this.pinnedObjects.some(pinnedObj => pinnedObj.type === obj.type));
     },
     filteredNodes() {
       return nodeTypesStore.getters.getFilteredNodeTypes;
@@ -52,6 +58,7 @@ export default {
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
+          @click.stop="onClickHandler($event, object)"
         >
           <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
           <span>{{ $t(object.label) }}</span>
@@ -81,6 +88,7 @@ export default {
             :key="pinnedObject.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
+            @click.stop="onClickHandler($event, pinnedObject)"
           >
             <img class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
             <span>{{ $t(pinnedObject.label) }}</span>
@@ -101,6 +109,7 @@ export default {
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
+            @click.stop="onClickHandler($event, nodeType)"
           >
             <img class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
             <span>{{ $t(nodeType.label) }}</span>

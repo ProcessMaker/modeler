@@ -11,29 +11,35 @@
       v-for="button in availableButtons"
       :key="button.label"
       :aria-label="button.label"
-      class="btn"
+      class="crown-button"
       :title="button.label"
       :data-test="button.testId"
       :role="button.role"
-      @mousedown.stop.prevent
-      @click.stop.prevent="button.action"
+      @click="button.action"
     >
-      <i :class="`fa fa-${button.icon} text-white`" />
+      <font-awesome-icon v-if="button.iconPrefix === 'fpm'" :icon="[button.iconPrefix, `fa-${button.icon}`]"/>
+      <i v-else :class="`${button.iconPrefix} fa-${button.icon} text-dark`" />
     </button>
+    <crown-align v-show="showAlignmentButtons" :paper="paper" @save-state="$emit('save-state')" />
   </div>
 </template>
 
 <script>
 import store from '@/store';
 import runningInCypressTest from '@/runningInCypressTest';
+import crownAlign from './crownAlign';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCenterVertically } from '../crownButtons/icons';
 
 export default {
   props: {
     paper: Object,
     hasPools: Boolean,
   },
+  components:{ crownAlign },
   data() {
     return {
+      showAlignmentButtons: false,
       runningInCypressTest: runningInCypressTest(),
       showCrown: false,
       savePositionOnPointerupEventSet: false,
@@ -44,6 +50,7 @@ export default {
       buttons: [
         {
           label: 'Copy Selection',
+          iconPrefix: 'fa',
           icon: 'clipboard',
           testId: 'copy-button',
           role: 'menuitem',
@@ -51,13 +58,23 @@ export default {
         },
         {
           label: 'Clone Selection',
+          iconPrefix: 'fa',
           icon: 'copy',
           testId: 'clone-button',
           role: 'menuitem',
           action: this.cloneSelection,
         },
         {
+          label: 'Align',
+          iconPrefix: 'fpm',
+          icon: 'center-vertically',
+          testId: 'align',
+          role: 'menuitem',
+          action: this.showAlign,
+        },
+        {
           label: 'Delete Element',
+          iconPrefix: 'fa',
           icon: 'trash-alt',
           testId: 'delete-button',
           role: 'menuitem',
@@ -69,6 +86,7 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
+    library.add(faCenterVertically);
   },
   computed: {
     isMultiSelect() {
@@ -90,6 +108,9 @@ export default {
     },
   },
   methods: {
+    showAlign() {
+      this.showAlignmentButtons = !this.showAlignmentButtons;
+    },
     copySelection() {
       this.$emit('copy-selection');
     },
@@ -139,24 +160,49 @@ export default {
 };
 </script>
 
-<style scoped>
+
+<style lang="scss" scoped>
 .crown-multiselect {
   top: -38px;
   left: 50%;
   pointer-events: auto;
 }
-.btn {
-  border: none;
-  padding: 0;
-  margin-top: 0;
+.crown-button {
+  border:none;
   display: flex;
+  background-color: $primary-white;
+  border-radius: 4px;
+  color: $crown-icon-neutral;
+  width: 35px;
+  height: 35px;
+  font-size: 20px;
+  padding: 4px;
 }
+.crown-button:hover {
+  background-color: $crown-icon-hover-bg;
+  color: $crown-icon-neutral;
+}
+.crown-button:active {
+  background-color: $cronw-icon-active-bg;
+  color: $crown-icon-active;
+}
+
+.crown-button:focus {
+  background-color: #DEEBFF;
+  color: $crown-icon-active;
+}
+
 img {
-  margin: 0px 10px;
-  height: 15px;
+  margin: 0px 5px;
+  height: 20px;
+  width: 20px;
+  padding:2px;
+  fill: #5faaee;
 }
-i {
-  margin: 0px 10px;
-  font-size: 15px;
+.crown-button svg {
+  margin:auto;
+}
+.crown-button i {
+  margin:auto;
 }
 </style>
