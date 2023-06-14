@@ -1222,6 +1222,7 @@ export default {
     if (runningInCypressTest()) {
       /* Add reference to store on window; this is used in testing to verify rendered nodes */
       window.store = store;
+      window.undoRedoStore = undoRedoStore;
     }
 
     this.$t = this.$t.bind(this);
