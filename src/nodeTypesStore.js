@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import _ from 'lodash';
 import { uniqueId, uniqBy } from 'lodash';
 import { BOTTOM } from '@/components/rails/explorer-rail/rankConstants';
 
@@ -42,7 +43,7 @@ export default new Vuex.Store({
     setPinnedNodes(state, payload) {
       state.pinnedNodeTypes.push(payload);
       // Remove duplicates
-      state.pinnedNodeTypes = [...new Map(state.pinnedNodeTypes.map(node => [node['type'], node])).values()];
+      state.pinnedNodeTypes = _.uniqBy(state.pinnedNodeTypes, 'type');
       state.pinnedNodeTypes.sort((node1, node2) => node1.rank - node2.rank);
     },
     setUnpinNode(state, payload) {
