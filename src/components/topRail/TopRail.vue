@@ -85,11 +85,6 @@ export default {
       this.isOpenPanel = value;
     },
   },
-  mounted() {
-    if (window.Cypress) {
-      window.TopRail = this;
-    }
-  },
 };
 </script>
 
