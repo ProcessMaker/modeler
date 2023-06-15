@@ -4,9 +4,13 @@
       aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
-      <div class="mr-3">
-        <align-buttons @save-state="$emit('save-state')" />
+      <div class="d-flex mr-3">
+        <TopRail
+          :validation-errors="validationErrors"
+          :warnings="warnings"
+        />
 
+        <align-buttons @save-state="$emit('save-state')" />
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
           <b-button
@@ -78,23 +82,28 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
+import TopRail from '@/components/topRail/TopRail.vue';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
-  props: {
-    canvasDragPosition: {},
-    cursor: {},
-    paperManager: {},
-    isRendering: {
-      type: Boolean,
-    },
-    breadcrumbData: {
-      type: Array,
-    },
-    panelsCompressed: Boolean,
+  components: {
+    Breadcrumb,
+    TopRail,
+    FontAwesomeIcon,
+    AlignButtons,
   },
+  props: [
+    'canvasDragPosition',
+    'cursor',
+    'paperManager',
+    'isRendering',
+    'breadcrumbData',
+    'panelsCompressed',
+    'validationErrors',
+    'warnings',
+    'xmlManager',
+  ],
   watch: {
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);
