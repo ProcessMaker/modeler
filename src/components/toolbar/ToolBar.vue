@@ -8,7 +8,13 @@
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
-        />
+        >
+          <component
+            :is="component.button"
+            v-for="(component, index) in validationBar"
+            :key="`validation-status-${index}`"
+          />
+        </TopRail>
 
         <!-- TODO Remove this block when redesigning -->
         <!-- <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
@@ -99,6 +105,7 @@ export default {
     'validationErrors',
     'warnings',
     'xmlManager',
+    'validationBar',
   ],
   watch: {
     miniMapOpen(isOpen) {
