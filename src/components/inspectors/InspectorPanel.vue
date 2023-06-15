@@ -1,10 +1,9 @@
 <template>
   <transition name="inspector">
     <b-col
-      v-show="!compressed"
       id="inspector"
       class="pl-0 h-100 overflow-hidden inspector-column"
-      :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : compressed }]"
+      :class="[{ 'ignore-pointer': canvasDragPosition }]"
       data-test="inspector-column"
     >
       <b-card
@@ -71,7 +70,7 @@ Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
-  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'compressed', 'definitions'],
+  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions'],
   data() {
     return {
       data: {},
