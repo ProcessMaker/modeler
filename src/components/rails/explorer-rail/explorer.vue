@@ -94,7 +94,6 @@ export default {
       <pm-blocks-loop
         v-on="$listeners"
       />
-      <!--   Here goes the PM Blocks   -->
     </div>
   </div>
 </template>
