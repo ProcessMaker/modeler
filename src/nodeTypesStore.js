@@ -90,8 +90,7 @@ export default new Vuex.Store({
       state.searchTerm = '';
     },
     clearFilteredPmBlockNodes(state) {
-      // TODO: Clear Pm Block search bar
-      state.filteredNodeTypes = []
+      state.filteredNodeTypes = [];
       state.filteredPmBlockNodeTypes = [];
       state.searchTerm = '';
     },
