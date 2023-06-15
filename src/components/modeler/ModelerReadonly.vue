@@ -184,6 +184,7 @@ export default {
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
+      pmBlockNodes: [],
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
