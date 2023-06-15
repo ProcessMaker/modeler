@@ -50,6 +50,7 @@
         :definitions="definitions"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
