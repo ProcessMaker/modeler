@@ -6,6 +6,7 @@
     <li
       v-for="item in controls"
       :class="['control-item', {'active': selectedItem && (selectedItem.type === item.type)}]"
+      :data-test="item.type"
       :id="item.id"
       :key="item.id"
       @click.stop="onClickHandler($event, item)"
