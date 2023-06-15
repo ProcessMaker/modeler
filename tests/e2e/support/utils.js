@@ -92,7 +92,7 @@ export function getComponentsEmbeddedInShape($element) {
     });
 }
 
-export function clickAndDropElement(source, position) {
+export function dragFromSourceToDest(source, position) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
 
