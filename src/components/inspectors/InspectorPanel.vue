@@ -140,9 +140,10 @@ export default {
     },
   },
   methods: {
+    /**
+     * On Close even handler 
+     */
     onClose(){
-      // eslint-disable-next-line no-console
-      console.log('onClose');
       this.$emit('toggle-panels-compressed');
     },
     handleAssignmentChanges(currentValue, previousValue) {
