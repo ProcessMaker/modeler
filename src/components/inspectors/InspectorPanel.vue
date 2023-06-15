@@ -12,6 +12,14 @@
         data-test="inspector-container"
         :style="{ height: parentHeight }"
       >
+        <template #header>
+          <div class="inspector-header">
+            <div class="inspector-header-title">
+              {{ $t('Configuration') }}
+            </div>
+            <button type="button" aria-label="Close" class="close" @click="onClose">×</button>
+          </div>
+        </template>
         <vue-form-renderer
           :key="highlightedNode._modelerId"
           v-if="highlightedNode"
@@ -70,6 +78,7 @@ export default {
       config: [],
       inspectorHandler: null,
       translated: [],
+      isVisible: true,
     };
   },
   watch: {
@@ -131,6 +140,11 @@ export default {
     },
   },
   methods: {
+    onClose(){
+      // eslint-disable-next-line no-console
+      console.log('onClose');
+      this.$emit('toggle-panels-compressed');
+    },
     handleAssignmentChanges(currentValue, previousValue) {
       if (currentValue === previousValue) {
         return;

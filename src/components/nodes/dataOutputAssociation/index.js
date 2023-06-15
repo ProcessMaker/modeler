@@ -15,7 +15,7 @@ export default {
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
+            label: 'ConfiguPropertiesration',
             icon: 'cog',
             name: 'inspector-accordion-data-output-association',
           },
