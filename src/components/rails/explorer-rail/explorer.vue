@@ -85,12 +85,13 @@ export default {
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
-      <filter-node-types />
+      <filter-node-types :type="'object'"/>
       <node-types-loop
         v-on="$listeners"
       />
     </div>
     <div class="pm-blocks__container"  v-if="tabIndex === 1">
+      <filter-node-types :type="'pmBlock'"/>
       <pm-blocks-loop
         v-on="$listeners"
       />

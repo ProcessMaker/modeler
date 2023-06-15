@@ -73,6 +73,7 @@ export default ({
     toggleExplorer() {
       nodeTypesStore.commit('toggleExplorer');
       nodeTypesStore.commit('clearFilteredNodes');
+      nodeTypesStore.commit('clearFilteredPmBlockNodes');
     },
   },
 });
