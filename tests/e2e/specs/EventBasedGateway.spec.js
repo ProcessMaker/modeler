@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   getGraphElements,
@@ -32,7 +32,7 @@ describe('Event-Based Gateway', () => {
     connectNodesWithFlow('generic-flow-button', startEventPosition, eventBasedGatewayPosition);
 
     const intermediateCatchEventPosition = { x: 500, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, intermediateCatchEventPosition);
 
     const intermediateMessageCatchEventPosition = { x: 500, y: 100 };
@@ -40,7 +40,7 @@ describe('Event-Based Gateway', () => {
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, intermediateMessageCatchEventPosition);
 
     const endEventPosition = { x: 500, y: 350 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, endEventPosition);
 
     const totalNumberOfValidElements = 8;
@@ -53,7 +53,7 @@ describe('Event-Based Gateway', () => {
       });
 
     const taskPosition = { x: 450, y: 350 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, taskPosition);
 
     getGraphElements().should('have.length', totalNumberOfValidElements);
@@ -65,7 +65,7 @@ describe('Event-Based Gateway', () => {
       });
 
     const scriptTaskPosition = { x: 450, y: 350 };
-    dragFromSourceToDest(nodeTypes.task, scriptTaskPosition);
+    clickAndDropElement(nodeTypes.task, scriptTaskPosition);
     cy.get('[data-test=switch-to-script-task]').click();
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, scriptTaskPosition);
 
@@ -78,7 +78,7 @@ describe('Event-Based Gateway', () => {
       });
 
     const exclusiveGatewayPosition = { x: 450, y: 350 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, exclusiveGatewayPosition);
 
     getGraphElements().should('have.length', totalNumberOfValidElements);
@@ -126,7 +126,7 @@ describe('Event-Based Gateway', () => {
       });
 
     const textAnnotationPosition = { x: 450, y: 350 };
-    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, textAnnotationPosition);
 
     getGraphElements().should('have.length', totalNumberOfValidElements);
@@ -147,7 +147,7 @@ describe('Event-Based Gateway', () => {
     waitToRenderAllShapes();
 
     const taskPosition = { x: 500, y: 250 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, taskPosition);
     getElementAtPosition(eventBasedGatewayPosition).click();
 

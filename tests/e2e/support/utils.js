@@ -92,7 +92,7 @@ export function getComponentsEmbeddedInShape($element) {
     });
 }
 
-export function dragFromSourceToDest(source, position) {
+export function clickAndDropElement(source, position) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
 
@@ -378,7 +378,7 @@ export function assertBoundaryEventIsCloseToTask() {
 }
 
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
-  dragFromSourceToDest(genericNode, nodePosition);
+  clickAndDropElement(genericNode, nodePosition);
   waitToRenderAllShapes();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
   cy.wait(300);
@@ -443,6 +443,10 @@ export function clickAndDropElement(node, position) {
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
+      // Handle coordinates if Explorer Rail is expanded
+      if (document.querySelectorAll('[data-test=explorer-rail]')) {
+        position.x += 200;
+      }
 
       cy.get(`[data-test=${node}]`).click();
       cy.document().trigger('mousemove', mouseEvent);

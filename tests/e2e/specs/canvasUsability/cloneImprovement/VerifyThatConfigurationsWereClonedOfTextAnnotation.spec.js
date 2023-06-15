@@ -2,7 +2,7 @@ import {
   waitToRenderAllShapes,
   getGraphElements,
   getIframeDocumnetation,
-  dragFromSourceToDest,
+  clickAndDropElement,
 } from '../../../support/utils';
 import {nodeTypes} from '../../../support/constants';
 
@@ -19,7 +19,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Drag Text Annotation
     const textAnnotationPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Set title in Text Annotation

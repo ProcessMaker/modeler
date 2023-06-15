@@ -1,7 +1,7 @@
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   uploadXml,
 } from '../support/utils';
@@ -26,7 +26,7 @@ describe('Crown color picker', () => {
 
   it('should clear color from element', () => {
     const poolPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    clickAndDropElement(nodeTypes.pool, poolPosition);
 
     getElementAtPosition(poolPosition, nodeTypes.pool).click();
     cy.get('[data-test="picker-dropdown-button"]').click({ force: true });

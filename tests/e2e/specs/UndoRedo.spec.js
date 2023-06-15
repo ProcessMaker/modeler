@@ -1,7 +1,7 @@
 import {
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   getGraphElements,
@@ -18,10 +18,10 @@ const TOOLBAR_HEIGHT = 64;
 describe('Undo/redo', () => {
   it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 + TOOLBAR_HEIGHT };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', exclusiveGatewayPosition, taskPosition);
 
@@ -65,7 +65,7 @@ describe('Undo/redo', () => {
   it('Can undo and redo adding a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();
@@ -83,7 +83,7 @@ describe('Undo/redo', () => {
   it('Can undo and redo deleting a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition)
       .click()
@@ -136,7 +136,7 @@ describe('Undo/redo', () => {
     const taskPosition1 = { x: 150, y: 400 };
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
     const taskPosition3 = { x: taskPosition2.x + 200, y: taskPosition2.y };
-    dragFromSourceToDest(nodeTypes.task, taskPosition1);
+    clickAndDropElement(nodeTypes.task, taskPosition1);
 
     getElementAtPosition(taskPosition1)
       .moveTo(taskPosition2.x, taskPosition2.y)
@@ -152,10 +152,10 @@ describe('Undo/redo', () => {
 
   it('Can undo and redo adding message flows', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
 
     connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
 
@@ -199,10 +199,10 @@ describe('Undo/redo', () => {
     waitToRenderAllShapes();
 
     const testConnectorPosition = { x: 150, y: 300 };
-    dragFromSourceToDest(nodeTypes.testConnector, testConnectorPosition);
+    clickAndDropElement(nodeTypes.testConnector, testConnectorPosition);
 
     const sendTweetPosition = { x: 150, y: 450 };
-    dragFromSourceToDest(nodeTypes.sendTweet, sendTweetPosition);
+    clickAndDropElement(nodeTypes.sendTweet, sendTweetPosition);
 
     const testConnector = '<bpmn:serviceTask id="node_2" name="Test Connector" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" implementation="test-message" />';
     const sendTweet = '<bpmn:serviceTask id="node_3" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />';
@@ -225,7 +225,7 @@ describe('Undo/redo', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 300, y: 300 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     const initialNumberOfWaypoints = 4;
@@ -257,7 +257,7 @@ describe('Undo/redo', () => {
   it('Can undo/redo modifying association flow vertices', () => {
     const startEventPosition = { x: 150, y: 150 };
     const textAnnotationPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, startEventPosition);
 
     const initialNumberOfWaypoints = 2;
@@ -288,7 +288,7 @@ describe('Undo/redo', () => {
 
   it('undo/redo boundary timer event', () => {
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 

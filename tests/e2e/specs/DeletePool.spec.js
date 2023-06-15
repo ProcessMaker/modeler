@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   getCrownButtonForElement,
   typeIntoTextInput,
@@ -27,7 +27,7 @@ function addPool()
 {
   return new Promise(resolve => {
     const poolPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    clickAndDropElement(nodeTypes.pool, poolPosition);
     getElementAtPosition(poolPosition, nodeTypes.pool).then(element => {
       resolve(element);
     });

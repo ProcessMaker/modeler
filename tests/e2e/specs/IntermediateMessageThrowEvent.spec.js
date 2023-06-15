@@ -4,7 +4,7 @@ import {
   assertDownloadedXmlContainsSubstringNTimes,
   assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   getNumberOfLinks,
@@ -154,9 +154,9 @@ describe('Intermediate Message Throw Event', () => {
 
   it('allows connection between pools', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
-    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
+    clickAndDropElement(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 100, y: 450 };
-    dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
+    clickAndDropElement(nodeTypes.pool, secondPoolPosition);
 
     connectNodesWithFlow('generic-flow-button', intermediateMessageThrowEventPosition, secondPoolPosition);
     getNumberOfLinks().should('equal', 1);
@@ -165,9 +165,9 @@ describe('Intermediate Message Throw Event', () => {
 
   it('allows valid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
-    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
+    clickAndDropElement(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 150, y: 450 };
-    dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
+    clickAndDropElement(nodeTypes.pool, secondPoolPosition);
 
     const validMessageThrowEventTargets = [
       { genericNode: nodeTypes.startEvent, nodeToSwitchTo: 'switch-to-message-start-event' },
@@ -190,9 +190,9 @@ describe('Intermediate Message Throw Event', () => {
 
   it('disallows invalid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
-    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 150 });
+    clickAndDropElement(nodeTypes.pool, { x: 150, y: 150 });
     const secondPoolPosition = { x: 150, y: 450 };
-    dragFromSourceToDest(nodeTypes.pool, { x: 150, y: 450 });
+    clickAndDropElement(nodeTypes.pool, { x: 150, y: 450 });
 
     const invalidMessageThrowEventTargets = [
       { genericNode: nodeTypes.endEvent, nodeToSwitchTo: 'switch-to-message-end-event' },

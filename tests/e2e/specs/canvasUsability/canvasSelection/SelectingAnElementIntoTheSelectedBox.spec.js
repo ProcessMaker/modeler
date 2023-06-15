@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   connectNodesWithFlow,
   waitToRenderAllShapes,
   getElementAtPosition,
@@ -19,13 +19,13 @@ describe('Canvas Selection', () => {
     };
 
     // Drag a Task Form
-    dragFromSourceToDest(nodeTypes.task, taskFormPosition);
+    clickAndDropElement(nodeTypes.task, taskFormPosition);
 
     // Connect the Start Event with Task Form
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskFormPosition);
 
     // Drag an End Event
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     // Connect the Task Form with End Event
     connectNodesWithFlow('generic-flow-button', taskFormPosition, endEventPosition);
