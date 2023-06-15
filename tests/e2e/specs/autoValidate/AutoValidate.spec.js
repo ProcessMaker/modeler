@@ -30,17 +30,20 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
   });
 
   it('should render new validate issue button', () => {
-    cy.get(validateButtonSelector).click()
+    cy.get(validateButtonSelector)
+      .click()
       .then(() => {
         cy.get(validateButtonSelector).should('have.css', 'background-color', buttonBgColorActive);
 
-        cy.get(validateButtonIssueSelector).should('be.visible');
-        cy.get(validatePanelSelector).should('not.be.visible');
+        cy.get(validateButtonIssueSelector)
+          .should('be.visible')
+          .then($btn => {
+            const issueBadge = $btn.children('.issue-badge');
+            expect(issueBadge).to.have.text(defaultNumberOfErrors);
 
-        cy.window().then(win => {
-          // Checks default number of errors when clicks on validate button
-          expect(win.TopRail.numberOfErrors).to.equal(defaultNumberOfErrors);
-        });
+          });
+
+        cy.get(validatePanelSelector).should('not.be.visible');
       });
   });
 
@@ -51,14 +54,13 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
         cy.get(validatePanelSelector).should('not.be.visible');
       });
 
-    cy.get(validateButtonIssueSelector).click()
-      .then(() => {
-        cy.window().then(win => {
-          // Checks default number of errors when clicks on validate button
-          expect(win.TopRail.numberOfErrors).to.equal(defaultNumberOfErrors);
-        });
+    cy.get(validateButtonIssueSelector).click();
+    cy.get(validateButtonIssueSelector)
+      .should('be.visible')
+      .then($btn => {
+        const issueBadge = $btn.children('.issue-badge');
+        expect(issueBadge).to.have.text(defaultNumberOfErrors);
 
-        // Checks default message errors when clicks on validate issue button
         cy.get(validatePanelSelector)
           .should('be.visible')
           .then(($panel => {
@@ -74,14 +76,13 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
         cy.get(validatePanelSelector).should('not.be.visible');
       });
 
-    cy.get(validateButtonIssueSelector).click()
-      .then(() => {
-        cy.window().then(win => {
-          // Checks default number of errors when clicks on validate button
-          expect(win.TopRail.numberOfErrors).to.equal(defaultNumberOfErrors);
-        });
+    cy.get(validateButtonIssueSelector).click();
+    cy.get(validateButtonIssueSelector)
+      .should('be.visible')
+      .then($btn => {
+        const issueBadge = $btn.children('.issue-badge');
+        expect(issueBadge).to.have.text(defaultNumberOfErrors);
 
-        // Checks default message errors when clicks on validate issue button
         cy.get(validatePanelSelector)
           .should('be.visible')
           .then(($panel => {
@@ -94,10 +95,11 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
     dragFromSourceToDest(nodeTypes.task, taskPosition);
     const currentNumberOfErrorsWithTask = defaultNumberOfErrors + 1;
 
-    cy.window().then(win => {
-      // Checks default number of errors when clicks on validate button
-      expect(win.TopRail.numberOfErrors).to.equal(currentNumberOfErrorsWithTask);
-    });
+    cy.get(validateButtonIssueSelector)
+      .then($btn => {
+        const issueBadge = $btn.children('.issue-badge');
+        expect(issueBadge).to.have.text(currentNumberOfErrorsWithTask);
+      });
 
     cy.get(validatePanelSelector)
       .should('be.visible')
@@ -110,10 +112,11 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
     dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition, nodeTypes.inclusiveGateway);
     const currentNumberOfErrorsWithGateway = defaultNumberOfErrors + 3;
 
-    cy.window().then(win => {
-      // Checks default number of errors when clicks on validate button
-      expect(win.TopRail.numberOfErrors).to.equal(currentNumberOfErrorsWithGateway);
-    });
+    cy.get(validateButtonIssueSelector)
+      .then($btn => {
+        const issueBadge = $btn.children('.issue-badge');
+        expect(issueBadge).to.have.text(currentNumberOfErrorsWithGateway);
+      });
 
     cy.get(validatePanelSelector)
       .should('be.visible')
