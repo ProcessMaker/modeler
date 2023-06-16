@@ -41,9 +41,11 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <InspectorButton @toggleInspector="handleToggleInspector" />
+
       <InspectorPanel
         ref="inspector-panel"
-        v-show="!(highlightedNodes.length > 1)"
+        v-show="isOpenInspector && !(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -54,7 +56,6 @@
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed && noElementsSelected"
         @shape-resize="shapeResize(false)"
       />
 
@@ -139,6 +140,7 @@ import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
+import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
@@ -189,6 +191,7 @@ export default {
   components: {
     ToolBar,
     ExplorerRail,
+    InspectorButton,
     InspectorPanel,
     ProcessmakerModelerGenericFlow,
     Selection,
@@ -241,6 +244,7 @@ export default {
       validationErrors: {},
       miniMapOpen: false,
       panelsCompressed: false,
+      isOpenInspector: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -315,6 +319,9 @@ export default {
     },
   },
   methods: {
+    handleToggleInspector(value) {
+      this.isOpenInspector = value;
+    },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
     },
