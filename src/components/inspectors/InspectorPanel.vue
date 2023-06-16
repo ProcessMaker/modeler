@@ -143,7 +143,7 @@ export default {
      * On Close even handler 
      */
     onClose(){
-      this.$emit('toggle-panels-compressed');
+      this.$emit('toggleInspector', false);
     },
     handleAssignmentChanges(currentValue, previousValue) {
       if (currentValue === previousValue) {
