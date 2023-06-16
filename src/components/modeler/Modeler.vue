@@ -41,7 +41,10 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
-      <InspectorButton @toggleInspector="handleToggleInspector" />
+      <InspectorButton
+        :showInspector="isOpenInspector"
+        @toggleInspector="handleToggleInspector"
+      />
 
       <InspectorPanel
         ref="inspector-panel"
@@ -52,11 +55,11 @@
         :definitions="definitions"
         :processNode="processNode"
         @save-state="pushToUndoStack"
-        @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         @shape-resize="shapeResize(false)"
+        @toggleInspector="handleToggleInspector"
       />
 
       <component

@@ -15,17 +15,20 @@ export default {
   components: {
     InlineSvg,
   },
+  props: {
+    showInspector: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
-      showInspector: false,
       inspectorIcon: require('@/assets/inspector.svg'),
     };
   },
   methods: {
     toggleInspector() {
-      this.showInspector = !this.showInspector;
-
-      this.$emit('toggleInspector', this.showInspector);
+      this.$emit('toggleInspector', !this.showInspector);
     },
   },
 };
