@@ -74,7 +74,7 @@
     "@babel/core": "^7.12.7",
     "@cypress/code-coverage": "^1.14.0",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/processmaker-bpmn-moddle": "0.13.0",
+    "@processmaker/processmaker-bpmn-moddle": "0.14.0",
     "@types/jest": "^24.9.1",
     "@vue/babel-preset-app": "^5.0.4",
     "@vue/cli-plugin-babel": "^4.5.9",
