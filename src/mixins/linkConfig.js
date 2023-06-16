@@ -15,8 +15,11 @@ function isPoint(item) {
   return item.x && item.y;
 }
 
+const COLOR_IDLE = '#ced4da';
+const COLOR_COMPLETED = '#00875A';
+
 export default {
-  props: ['highlighted', 'paper'],
+  props: ['highlighted', 'paper', 'paperManager', 'isCompleted'],
   data() {
     return {
       sourceShape: null,
@@ -76,6 +79,12 @@ export default {
     },
   },
   methods: {
+    setShapeHighlight() {
+      const COLOR = this.isCompleted ? COLOR_COMPLETED : COLOR_IDLE;
+      this.shape.attr({
+        line: { stroke: COLOR },
+      });
+    },
     findSourceShape() {
       return this.graph.getElements().find(element => {
         return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
@@ -323,6 +332,14 @@ export default {
     this.shape.on('change:vertices', function() {
       this.component.$emit('shape-resize');
     });
+
+    if (store.getters.isReadOnly) {
+      this.$nextTick(() => {
+        this.paperManager.awaitScheduledUpdates().then(() => {
+          this.setShapeHighlight();
+        });
+      });
+    }
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.emitSave);
