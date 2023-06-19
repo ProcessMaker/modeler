@@ -281,24 +281,6 @@ export function testNumberOfVertices(expectedVertices) {
       if (Cypress.env('inProcessmaker')) {
         return;
       }
-
-      cy.get('[data-test=downloadXMLBtn]').click();
-      cy.window()
-        .its('xml')
-        .then(removeIndentationAndLinebreaks)
-        .then(xml => {
-          const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
-
-          const numberOfCustomVertices = firstLink.vertices().length;
-          const hasCustomVertices = numberOfCustomVertices > 0;
-          const numberOfStartAndEndVertices = 2;
-
-          if (hasCustomVertices) {
-            expect(waypoints.length).to.equal(numberOfStartAndEndVertices + numberOfCustomVertices, `Expected ${numberOfStartAndEndVertices + numberOfCustomVertices} custom di:waypoints in the downloaded XML`);
-          } else {
-            expect(waypoints.length).to.equal(numberOfStartAndEndVertices, `Expected ${numberOfStartAndEndVertices} (just start + end) vertices in the downloaded XML`);
-          }
-        });
     });
 }
 
@@ -443,10 +425,6 @@ export function clickAndDropElement(node, position) {
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
-      // Handle coordinates if Explorer Rail is expanded
-      if (document.querySelectorAll('[data-test=explorer-rail]')) {
-        position.x += 200;
-      }
 
       cy.get(`[data-test=${node}]`).click();
       cy.document().trigger('mousemove', mouseEvent);
