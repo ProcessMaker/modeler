@@ -10,13 +10,22 @@
         no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0"
         data-test="inspector-container"
         :style="{ height: parentHeight }"
+        data-cy="inspector-panel"
       >
         <template #header>
           <div class="inspector-header">
             <div class="inspector-header-title">
               {{ $t('Configuration') }}
             </div>
-            <button type="button" aria-label="Close" class="close" @click="onClose">×</button>
+            <button
+              type="button"
+              aria-label="Close"
+              class="close"
+              @click="onClose"
+              data-cy="inspector-close-button"
+            >
+              ×
+            </button>
           </div>
         </template>
         <vue-form-renderer
@@ -140,7 +149,7 @@ export default {
   },
   methods: {
     /**
-     * On Close even handler 
+     * On Close even handler
      */
     onClose(){
       this.$emit('toggleInspector', false);

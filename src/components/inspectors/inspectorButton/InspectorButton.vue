@@ -3,6 +3,7 @@
     type="button"
     @click="toggleInspector"
     class="inspector-button"
+    data-cy="inspector-button"
   >
     <inline-svg :src="inspectorIcon" />
   </button>
