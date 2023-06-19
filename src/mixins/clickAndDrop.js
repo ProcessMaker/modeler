@@ -21,6 +21,12 @@ export default {
   },
   methods: {
     onClickHandler(event, control) {
+      // Checks if another submenu was opened
+      if (this.wasClicked || !nodeTypesStore.getters.getGhostNode) {
+        this.parent = null;
+        this.selectedSubmenuItem = null;
+        this.deselect();
+      }
       this.createDraggingHelper(event, control);
       document.addEventListener('mousemove', this.setDraggingPosition);
       this.setDraggingPosition(event);

@@ -71,6 +71,12 @@ export default ({
       this.onClickHandler(data.event, data.control);
     },
     toggleExplorer() {
+      // Remove control click & drop selection when the Add button is clicked
+      this.deselect();
+      this.popperType = null;
+      this.selectedSubmenuItem = null;
+
+      // Toggle left explorer
       nodeTypesStore.commit('toggleExplorer');
       nodeTypesStore.commit('clearFilteredNodes');
     },
