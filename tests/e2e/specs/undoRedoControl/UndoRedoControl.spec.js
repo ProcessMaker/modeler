@@ -67,7 +67,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(taskPosition)
+    getElementAtPosition(taskPosition, null, 0, 65)
       .click()
       .then($task => {
         getCrownButtonForElement($task, 'delete-button').click();
@@ -80,7 +80,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     waitToRenderAllShapes();
 
-    // The task should now be re-added
+    // The task element should now be re-added
     getGraphElements().should('have.length', 2);
   });
 
@@ -94,7 +94,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);
 
-    getElementAtPosition(startEventPosition)
+    getElementAtPosition(startEventPosition, null, 0, 70)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click('topRight', { force: true });
@@ -102,12 +102,14 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
 
     cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
+    waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
     waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
+
     waitToRenderAllShapes();
 
-    const updatedNumberOfWaypoints = 8;
+    const updatedNumberOfWaypoints = 6;
     testNumberOfVertices(updatedNumberOfWaypoints);
 
     cy.get(undoSelector).click({ force: true });

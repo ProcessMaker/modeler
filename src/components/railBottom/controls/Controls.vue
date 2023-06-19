@@ -10,6 +10,7 @@
       :id="item.id"
       :key="item.id"
       @click.stop="onClickHandler($event, item)"
+      :data-test="`${item.type}-main`"
     >
       <SubmenuPopper
         :data="item"
@@ -81,6 +82,14 @@ export default ({
       nodeTypesStore.commit('toggleExplorer');
       nodeTypesStore.commit('clearFilteredNodes');
     },
+  },
+  async mounted() {
+    if (window.Cypress) {
+      const objects = nodeTypesStore.getters.getNodeTypes;
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[0]);
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[3]);
+      nodeTypesStore.dispatch('addUserPinnedObject', objects[4]);
+    }
   },
 });
 </script>

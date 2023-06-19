@@ -15,6 +15,7 @@
           :class="['control-submenu-list', {'active': selectedItem === item.type}]"
           :key="key"
           @click="onClickHandler($event, item)"
+          :data-test="item.type"
         >
           <inline-svg :src="item.icon" :alt=item.label />
           <div class="control-submenu-list-label">
