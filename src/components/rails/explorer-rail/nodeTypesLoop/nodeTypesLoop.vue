@@ -22,11 +22,11 @@ export default {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
-      nodeTypesStore.commit('clearSelectedNode');
+      this.deselect();
       return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
-      nodeTypesStore.commit('clearSelectedNode');
+      this.deselect();
       return nodeTypesStore.dispatch('addUserPinnedObject', object);
     },
   },
