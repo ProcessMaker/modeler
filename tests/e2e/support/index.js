@@ -42,7 +42,6 @@ beforeEach(() => {
   const explorerX = 200;
   clickAndDropElement(nodeTypes.startEvent, { x: 10 + explorerX, y: 200 });
   waitToRenderAllShapes();
-  cy.get('.paper-container').click();
 });
 
 require('./printLogsToTerminal');

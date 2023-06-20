@@ -8,49 +8,49 @@
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
-        />
+        >
+          <component
+            :is="component.button"
+            v-for="(component, index) in validationBar"
+            :key="`validation-status-${index}`"
+          />
+        </TopRail>
 
-        <align-buttons @save-state="$emit('save-state')" />
-
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <b-button
-            class="btn btn-sm btn-secondary ml-auto"
-            data-test="panels-btn"
-            @click="$emit('toggle-panels-compressed')"
-            v-b-tooltip.hover
-            :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
-          >
-            <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-          </b-button>
-        </div>
-        <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
+        <div
+          class="d-flex align-items-center btn-group btn-group-sm"
+          role="group"
+          aria-label="Publish controls"
+          data-cy="publish-control"
+        >
           <template v-if="isVersionsInstalled">
-            <div class="d-flex justify-content-center align-items-center text-black text-capitalize" :style="{ width: '65px' }">
-              <span class="toolbar-item mr-1" :style="{ fontWeight: 600 }">
-                {{ versionStatus }}
-              </span>
+            <div
+              class="toolbar-item toolbar-version-status"
+              data-cy="publish-version-status"
+            >
+              {{ versionStatus }}
             </div>
-            <div class="d-flex justify-content-center align-items-center text-black text-capitalize mx-2" :style="{ width: '60px' }">
-              <span class="toolbar-item mr-1" :style="{ fontWeight: 400 }">
+            <div
+              class="toolbar-item toolbar-loading-status"
+              data-cy="publish-loading-status"
+            >
+              <span>
                 {{ loadingStatus }}
               </span>
-              <span>
-                <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
-              </span>
+              <font-awesome-icon class="text-success" :icon="loadingIcon" :spin="isLoading" />
             </div>
             <a
-              class="btn btn-sm btn-primary btn-autosave text-uppercase mx-2"
-              data-test="publish-btn"
               :title="$t('Publish')"
               @click="$emit('saveBpmn')"
+              class="toolbar-item toolbar-publish"
+              data-cy="publish-btn"
             >
               {{ $t('Publish') }}
             </a>
             <a
-              class="btn btn-sm btn-link toolbar-item btn-autosave text-black text-uppercase"
-              data-test="close-btn"
               :title="$t('Close')"
               @click="$emit('close')"
+              class="toolbar-item toolbar-close"
+              data-cy="close-btn"
             >
               {{ $t('Close') }}
             </a>
@@ -60,18 +60,9 @@
               @navigate="onNavigate"
               @show="onShow"
               @hide="onHide"
+              data-cy="ellipsis-menu"
             />
           </template>
-          <b-button
-            v-else
-            class="btn btn-sm btn-secondary mini-map-btn mx-1"
-            data-test="mini-map-btn"
-            v-b-tooltip.hover
-            :title="$t('Save')"
-            @click="$emit('saveBpmn')"
-          >
-            <font-awesome-icon :icon="saveIcon" />
-          </b-button>
         </div>
       </div>
     </div>
@@ -83,7 +74,6 @@ import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faS
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import TopRail from '@/components/topRail/TopRail.vue';
-import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
@@ -91,7 +81,6 @@ export default {
     Breadcrumb,
     TopRail,
     FontAwesomeIcon,
-    AlignButtons,
   },
   props: [
     'canvasDragPosition',
@@ -103,6 +92,7 @@ export default {
     'validationErrors',
     'warnings',
     'xmlManager',
+    'validationBar',
   ],
   watch: {
     miniMapOpen(isOpen) {

@@ -3,6 +3,7 @@
     type="button"
     @click.prevent="handleOpen"
     :class="['validate-button', { 'validate-button-active': isOpen }]"
+    data-cy="validate-button"
   >
     <inline-svg :src="isOpen ? validateOpenIcon : validateCloseIcon" />
   </button>

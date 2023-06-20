@@ -11,7 +11,7 @@ import {
   setBoundaryEvent,
 } from '../../support/utils';
 
-describe('Undo/Redo control test', () => {
+describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   const undoSelector = '[data-cy="undo-control"]';
   const redoSelector = '[data-cy="redo-control"]';
 
@@ -65,7 +65,7 @@ describe('Undo/Redo control test', () => {
 
     clickAndDropElement(nodeTypes.task, taskPosition);
 
-    getElementAtPosition(taskPosition)
+    getElementAtPosition(taskPosition, null, 0, 65)
       .click()
       .then($task => {
         getCrownButtonForElement($task, 'delete-button').click();
@@ -78,7 +78,7 @@ describe('Undo/Redo control test', () => {
 
     waitToRenderAllShapes();
 
-    // The task should now be re-added
+    // The task element should now be re-added
     getGraphElements().should('have.length', 2);
   });
 
@@ -92,7 +92,7 @@ describe('Undo/Redo control test', () => {
     const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);
 
-    getElementAtPosition(startEventPosition)
+    getElementAtPosition(startEventPosition, null, 0, 70)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click('topRight', { force: true });
@@ -100,12 +100,15 @@ describe('Undo/Redo control test', () => {
     waitToRenderAllShapes();
 
     cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
+    waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
+    waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
-
+    waitToRenderAllShapes();
+    cy.get('[data-tool-name=vertices]').click({ force: true });
     waitToRenderAllShapes();
 
-    const updatedNumberOfWaypoints = 8;
+    const updatedNumberOfWaypoints = 6;
     testNumberOfVertices(updatedNumberOfWaypoints);
 
     cy.get(undoSelector).click({ force: true });
@@ -116,7 +119,7 @@ describe('Undo/Redo control test', () => {
   });
 
   it('should undo/redo boundary timer event', () => {
-    const taskPosition = { x: 200, y: 200 };
+    const taskPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
