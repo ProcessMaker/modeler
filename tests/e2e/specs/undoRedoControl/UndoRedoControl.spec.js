@@ -18,6 +18,17 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   const buttonBgColorDefault = 'rgb(255, 255, 255)';
   const iconFillColorDefault = 'rgb(51, 51, 68)';
 
+  beforeEach(() => {
+    cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
+    cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
+    waitToRenderAllShapes();
+
+    cy.get('.control-add').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=explorer-rail]').should('not.exist');
+    waitToRenderAllShapes();
+  });
+
   it('should render new undo/redo controls', () => {
     cy.get(undoSelector)
       .should('be.visible')
@@ -94,7 +105,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);
 
-    getElementAtPosition(startEventPosition, null, 0, 70)
+    getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click('topRight', { force: true });
@@ -109,7 +120,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     waitToRenderAllShapes();
 
-    const updatedNumberOfWaypoints = 6;
+    const updatedNumberOfWaypoints = 8;
     testNumberOfVertices(updatedNumberOfWaypoints);
 
     cy.get(undoSelector).click({ force: true });

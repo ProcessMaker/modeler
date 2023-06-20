@@ -10,7 +10,17 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
   const inspectorPanelSelector = '[data-cy="inspector-panel"]';
   const inspectorCloseButton = '[data-cy="inspector-close-button"]';
 
-  // should render new inspector button
+  beforeEach(() => {
+    cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
+    cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
+    waitToRenderAllShapes();
+
+    cy.get('.control-add').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=explorer-rail]').should('not.exist');
+    waitToRenderAllShapes();
+  });
+
   it('should render new inspector button', () => {
     cy.get(inspectorButtonSelector)
       .should('be.visible')
@@ -46,7 +56,7 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
     cy.wait(500);
 
     const startPosition = { x: 210, y: 200 };
-    const taskPosition = { x: 300, y: 200 };
+    const taskPosition = { x: 350, y: 200 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -68,7 +78,7 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
     cy.wait(500);
 
     const startPosition = { x: 210, y: 200 };
-    const taskPosition = { x: 300, y: 200 };
+    const taskPosition = { x: 350, y: 200 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
 

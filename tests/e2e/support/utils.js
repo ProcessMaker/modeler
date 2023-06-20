@@ -447,7 +447,7 @@ export function selectComponentType(component, type) {
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
 }
 
-export function clickAndDropElement(node, position) {
+export function clickAndDropElement(node, position, nodeChild = null) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
 
@@ -455,7 +455,18 @@ export function clickAndDropElement(node, position) {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      cy.get(`[data-test=${node}]`).click();
+      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').length === 1;
+
+      if (existExplorerRail) {
+        cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
+      } else {
+        cy.get(`[data-test=${node}-main]`).click();
+
+        if (nodeChild) {
+          cy.get(`[data-test=${nodeChild}]`).click();
+        }
+      }
+
       cy.document().trigger('mousemove', mouseEvent);
       cy.wait(300);
       cy.get('.paper-container').trigger('mousedown', mouseEvent);
