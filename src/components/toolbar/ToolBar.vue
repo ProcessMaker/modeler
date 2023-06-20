@@ -16,19 +16,6 @@
           />
         </TopRail>
 
-        <!-- TODO Remove this block when redesigning -->
-        <!-- <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
-          <b-button
-            class="btn btn-sm btn-secondary ml-auto"
-            data-test="panels-btn"
-            @click="$emit('toggle-panels-compressed')"
-            v-b-tooltip.hover
-            :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
-          >
-            <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-          </b-button>
-        </div> -->
-
         <div
           class="d-flex align-items-center btn-group btn-group-sm"
           role="group"
