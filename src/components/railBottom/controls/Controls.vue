@@ -72,7 +72,7 @@ export default ({
     },
     toggleExplorer() {
       // Remove control click & drop selection when the Add button is clicked
-      this.deselectControl();
+      this.deselect();
       this.popperType = null;
       this.selectedSubmenuItem = null;
 
