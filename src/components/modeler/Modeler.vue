@@ -10,6 +10,7 @@
       :validation-errors="validationErrors"
       :warnings="allWarnings"
       :xml-manager="xmlManager"
+      :validationBar="validationBar"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -208,6 +209,7 @@ export default {
         return {};
       },
     },
+    validationBar: Array,
   },
   mixins: [hotkeys, cloneSelection],
   data() {
@@ -1231,6 +1233,7 @@ export default {
     if (runningInCypressTest()) {
       /* Add reference to store on window; this is used in testing to verify rendered nodes */
       window.store = store;
+      window.undoRedoStore = undoRedoStore;
     }
 
     this.$t = this.$t.bind(this);

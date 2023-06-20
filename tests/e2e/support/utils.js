@@ -290,26 +290,6 @@ export function testNumberOfVertices(expectedVertices) {
       if (Cypress.env('inProcessmaker')) {
         return;
       }
-
-      /* Uncomment the following line when the new download XML button will be re-added
-
-      cy.get('[data-test=downloadXMLBtn]').click();
-      cy.window()
-        .its('xml')
-        .then(removeIndentationAndLinebreaks)
-        .then(xml => {
-          const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
-
-          const numberOfCustomVertices = firstLink.vertices().length;
-          const hasCustomVertices = numberOfCustomVertices > 0;
-          const numberOfStartAndEndVertices = 2;
-
-          if (hasCustomVertices) {
-            expect(waypoints.length).to.equal(numberOfStartAndEndVertices + numberOfCustomVertices, `Expected ${numberOfStartAndEndVertices + numberOfCustomVertices} custom di:waypoints in the downloaded XML`);
-          } else {
-            expect(waypoints.length).to.equal(numberOfStartAndEndVertices, `Expected ${numberOfStartAndEndVertices} (just start + end) vertices in the downloaded XML`);
-          }
-        }); */
     });
 }
 

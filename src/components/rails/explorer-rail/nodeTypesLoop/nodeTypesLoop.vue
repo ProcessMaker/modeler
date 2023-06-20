@@ -22,9 +22,11 @@ export default {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
+      this.deselect();
       return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
+      this.deselect();
       return nodeTypesStore.dispatch('addUserPinnedObject', object);
     },
   },
