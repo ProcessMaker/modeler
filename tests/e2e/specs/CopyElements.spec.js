@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlContainsSubstringNTimes,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -47,7 +47,7 @@ describe('Copy element', () => {
   it('should copy tasks', () => {
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).click();
 
@@ -104,7 +104,7 @@ describe('Copy element', () => {
     waitToRenderAllShapes();
 
     const intermediateMessageThrowEventPosition = { x: 250, y: 450 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
     cy.get('[data-test=copy-button]').click();
     waitToRenderAllShapes();
@@ -139,12 +139,12 @@ describe('Copy element', () => {
     const firstPoolPosition = { x: 100, y: 150 };
     const secondPoolPosition = { x: 100, y: 450 };
 
-    dragFromSourceToDest(nodeTypes.pool, firstPoolPosition);
+    clickAndDropElement(nodeTypes.pool, firstPoolPosition);
     waitToRenderAllShapes();
-    dragFromSourceToDest(nodeTypes.pool, secondPoolPosition);
+    clickAndDropElement(nodeTypes.pool, secondPoolPosition);
 
     const taskInSecondPoolPosition = {x: 150, y: 500};
-    dragFromSourceToDest(nodeTypes.task, taskInSecondPoolPosition);
+    clickAndDropElement(nodeTypes.task, taskInSecondPoolPosition);
 
     cy.get('[data-test="copy-button"]').click();
     waitToRenderAllShapes();

@@ -1,7 +1,7 @@
 import {
   addNodeTypeToPaper,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getComponentsEmbeddedInShape,
   getCrownButtonForElement,
   getElementAtPosition,
@@ -37,7 +37,7 @@ function configurePool(poolPosition, nodeType, taskType, taskTypeSelector) {
 
   addNodeTypeToPaper({ x: 250, y: 250 }, nodeTypes.task, taskTypeSelector);
   setBoundaryEvent(nodeType, taskPosition, taskType);
-  dragFromSourceToDest(nodeTypes.pool, poolPosition);
+  clickAndDropElement(nodeTypes.pool, poolPosition);
 }
 
 export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, taskType, taskTypeSelector, invalidTargets, skip = false }) {
@@ -281,7 +281,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       const invalidNodeTargetPosition = { x: 450, y: 150 };
 
       invalidTargets.forEach(invalidTargetNode => {
-        dragFromSourceToDest(invalidTargetNode.type, invalidNodeTargetPosition);
+        clickAndDropElement(invalidTargetNode.type, invalidNodeTargetPosition);
 
         cy.window().its('store.state.paper').then(paper => {
           const newPosition = paper.localToPagePoint(invalidNodeTargetPosition.x, invalidNodeTargetPosition.y);
@@ -329,7 +329,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
     });
 
     it('should turn pool red when hovered over and then back to default colour when no longer over pool', () => {
-      dragFromSourceToDest(nodeTypes.pool, taskPosition);
+      clickAndDropElement(nodeTypes.pool, taskPosition);
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
       getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {

@@ -1,4 +1,4 @@
-import { dragFromSourceToDest, getElementAtPosition, waitToRenderAllShapes } from '../support/utils';
+import { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 const CYPRESS_UNDO_SCROLL_ADJUSTMENT = 60.5;
@@ -6,7 +6,7 @@ const CYPRESS_UNDO_SCROLL_ADJUSTMENT = 60.5;
 describe('Keyboard movement interaction', () => {
   it('Can move a node using the keyboard arrows', () => {
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).then($task => {
       const { top, left } = $task.position();
@@ -25,7 +25,7 @@ describe('Keyboard movement interaction', () => {
 
   it('can undo keyboard moves', () => {
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     getElementAtPosition(taskPosition).then($task => {
       const { top, left } = $task.position();
 

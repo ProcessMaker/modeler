@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
 } from '../support/utils';
@@ -34,7 +34,7 @@ describe('Inclusive Gateway', () => {
     assertDownloadedXmlContainsExpected(divergingString);
 
     const taskPosition = { x: 350, y: 350 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, inclusivePosition);
 

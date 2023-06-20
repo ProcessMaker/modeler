@@ -57,6 +57,7 @@ export default {
       <template v-for="object in filteredNodes">
         <div
           class="node-types__item"
+          :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
@@ -87,6 +88,7 @@ export default {
         <template v-for="pinnedObject in pinnedObjects">
           <div
             class="node-types__item"
+            :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
@@ -108,6 +110,7 @@ export default {
         <template v-for="nodeType in unpinnedObjects">
           <div
             class="node-types__item"
+            :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
