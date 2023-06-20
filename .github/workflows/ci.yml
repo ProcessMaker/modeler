@@ -8,21 +8,20 @@ on:
 
 jobs:
   ci:
-    runs-on: ${{ matrix.os }}
-
+    runs-on: 'ubuntu-latest'
     strategy:
+      fail-fast: false # https://github.com/cypress-io/github-action/issues/48
       matrix:
-        os: [ ubuntu-latest ]
-        node: [ 16 ]
+        containers: [ 0, 1, 2, 3, 4 ]
 
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
       - name: Setup node env 🏗
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@master
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
           check-latest: true
           cache: 'npm'
 
@@ -38,10 +37,43 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
+          install: false
           start: npm run serve
           wait-on: http://localhost:8080/
-          config_file: cypress.json
+          config-file: cypress.json
           spec: "tests/e2e/**/*"
+          record: true
+          parallel: true
+        env:
+          # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
+          # in GitHub repo → Settings → Secrets → Actions
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # Creating a token https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Cypress Screenshots
+        uses: actions/upload-artifact@v3
+        # Only capture images on failure
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/e2e/screenshots
+
+      - name: Upload Cypress Videos
+        uses: actions/upload-artifact@v3
+        # Only capture videos on failure
+        if: failure()
+        with:
+          name: cypress-videos
+          path: tests/e2e/videos
+
+      - name: Run Coverage
+        run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
+
+      - name: Store Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: combined-coverage
 
       - name: Run build bundle 📦
         run: npm run build-bundle
