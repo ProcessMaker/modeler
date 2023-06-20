@@ -1,5 +1,5 @@
 import { nodeTypes } from '../../support/constants';
-import { dragFromSourceToDest } from '../../support/utils';
+import { clickAndDropElement, waitToRenderAllShapes } from '../../support/utils';
 
 describe('Auto Validate test', { scrollBehavior: false }, () => {
   const validateButtonSelector = '[data-cy="validate-button"]';
@@ -11,6 +11,17 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
   const buttonBgColorActive = 'rgb(16, 74, 117)';
 
   const defaultNumberOfErrors = 2;
+
+  beforeEach(() => {
+    cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
+    cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
+    cy.get('[data-test=processmaker-modeler-exclusive-gateway] > .pinIcon').click();
+
+    cy.get('.control-add').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=explorer-rail]').should('not.exist');
+    waitToRenderAllShapes();
+  });
 
   it('should render new auto validate control', () => {
     cy.get(validateButtonSelector)
@@ -91,8 +102,9 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
       });
 
     // Add a form task control
-    const taskPosition = { x: 300, y: 150 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    const taskPosition = { x: 200, y: 300 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
     const currentNumberOfErrorsWithTask = defaultNumberOfErrors + 1;
 
     cy.get(validateButtonIssueSelector)
@@ -108,8 +120,9 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
       }));
 
     // Add a inclusive gateway control
-    const gatewayPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition, nodeTypes.inclusiveGateway);
+    const gatewayPosition = { x: 200, y: 400 };
+    clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition, nodeTypes.inclusiveGateway);
+    waitToRenderAllShapes();
     const currentNumberOfErrorsWithGateway = defaultNumberOfErrors + 3;
 
     cy.get(validateButtonIssueSelector)

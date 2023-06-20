@@ -18,6 +18,17 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   const buttonBgColorDefault = 'rgb(255, 255, 255)';
   const iconFillColorDefault = 'rgb(51, 51, 68)';
 
+  beforeEach(() => {
+    cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
+    cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
+    waitToRenderAllShapes();
+
+    cy.get('.control-add').click();
+    waitToRenderAllShapes();
+    cy.get('[data-test=explorer-rail]').should('not.exist');
+    waitToRenderAllShapes();
+  });
+
   it('should render new undo/redo controls', () => {
     cy.get(undoSelector)
       .should('be.visible')
@@ -65,6 +76,8 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     clickAndDropElement(nodeTypes.task, taskPosition);
 
+    waitToRenderAllShapes();
+
     getElementAtPosition(taskPosition, null, 0, 65)
       .click()
       .then($task => {
@@ -83,7 +96,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   });
 
   it('should undo/redo modifying sequence flow vertices', () => {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -92,7 +105,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);
 
-    getElementAtPosition(startEventPosition, null, 0, 70)
+    getElementAtPosition(startEventPosition)
       .then(getLinksConnectedToElement)
       .then($links => $links[0])
       .click('topRight', { force: true });
@@ -104,11 +117,10 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
     waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });
-    waitToRenderAllShapes();
-    cy.get('[data-tool-name=vertices]').click({ force: true });
+
     waitToRenderAllShapes();
 
-    const updatedNumberOfWaypoints = 6;
+    const updatedNumberOfWaypoints = 8;
     testNumberOfVertices(updatedNumberOfWaypoints);
 
     cy.get(undoSelector).click({ force: true });

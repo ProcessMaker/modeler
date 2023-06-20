@@ -23,5 +23,16 @@ $inspector-column-max-width: 265px;
     .inspector-font-size {
       font-size: 0.875rem;
     }
+  };
+  &-header {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    &-title {
+      flex-grow: 0;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      flex-grow: 0;
+    };
   }
 }
