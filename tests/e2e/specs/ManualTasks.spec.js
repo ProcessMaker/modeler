@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -12,7 +12,7 @@ describe('Manual Task', () => {
     const testString = 'testing';
 
     const manualTaskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, manualTaskPosition);
+    clickAndDropElement(nodeTypes.task, manualTaskPosition);
     cy.get('[data-test=switch-to-manual-task]').click();
 
     getElementAtPosition(manualTaskPosition).click();
@@ -23,7 +23,7 @@ describe('Manual Task', () => {
 
   it('Correctly renders Manual Task after undo/redo', () => {
     const manualTaskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, manualTaskPosition);
+    clickAndDropElement(nodeTypes.task, manualTaskPosition);
     cy.get('[data-test=switch-to-manual-task]').click();
 
     cy.get('[data-test=undo]').click();

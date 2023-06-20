@@ -12,6 +12,8 @@ export default new Vuex.Store({
     filteredNodeTypes: [],
     explorerOpen: false,
     searchTerm: '',
+    selectedNode: null,
+    ghostNode: null,
   },
   getters: {
     getNodeTypes: state => state.nodeTypes,
@@ -19,6 +21,8 @@ export default new Vuex.Store({
     getFilteredNodeTypes: state => state.filteredNodeTypes,
     getExplorerOpen: state => state.explorerOpen,
     getSearchTerm: state => state.searchTerm,
+    getSelectedNode: state => state.selectedNode,
+    getGhostNode: state => state.ghostNode,
   },
   mutations: {
     setNodeTypes(state, nodeTypes) {
@@ -37,6 +41,8 @@ export default new Vuex.Store({
     },
     setPinnedNodes(state, payload) {
       state.pinnedNodeTypes.push(payload);
+      // Remove duplicates
+      state.pinnedNodeTypes = uniqBy(state.pinnedNodeTypes, 'type');
       state.pinnedNodeTypes.sort((node1, node2) => node1.rank - node2.rank);
     },
     setUnpinNode(state, payload) {
@@ -60,6 +66,15 @@ export default new Vuex.Store({
     },
     toggleExplorer(state) {
       state.explorerOpen = !state.explorerOpen;
+    },
+    setSelectedNode(state, payload) {
+      state.selectedNode = payload;
+    },
+    clearSelectedNode(state) {
+      state.selectedNode = null;
+    },
+    setGhostNode(state, payload) {
+      state.ghostNode = payload;
     },
   },
   actions: {

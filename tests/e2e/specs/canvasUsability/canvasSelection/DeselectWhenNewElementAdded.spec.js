@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   connectNodesWithFlow,
   waitToRenderAllShapes,
 } from '../../../support/utils';
@@ -18,13 +18,13 @@ describe('Canvas Selection', () => {
     };
 
     // Drag a Task Form
-    dragFromSourceToDest(nodeTypes.task, taskFormPosition);
+    clickAndDropElement(nodeTypes.task, taskFormPosition);
 
     // Connect the Start Event with Task Form
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskFormPosition);
 
     // Drag an End Event
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     // Connect the Task Form with End Event
     connectNodesWithFlow('generic-flow-button', taskFormPosition, endEventPosition);
@@ -52,7 +52,7 @@ describe('Canvas Selection', () => {
       x: endEventPosition.x,
       y: endEventPosition.y + 200,
     };
-    dragFromSourceToDest(nodeTypes.task, newTaskPosition);
+    clickAndDropElement(nodeTypes.task, newTaskPosition);
 
     // Validation 2: Verify that the previous selection was lost after dragging another element
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"] [data-cy="selected"]').should('not.exist');

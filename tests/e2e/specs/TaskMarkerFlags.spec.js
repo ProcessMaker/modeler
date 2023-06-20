@@ -1,6 +1,6 @@
 import {
   assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest, uploadXml,
+  clickAndDropElement, uploadXml,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -15,7 +15,7 @@ function assertBottomCenterTaskMarkerHasImage(iconName, markerIndex = 0) {
 describe('Task Marker Flags', () => {
   beforeEach(() => {
     const taskPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     cy.contains('Advanced').click();
   });
 

@@ -1,7 +1,7 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
   waitToRenderAllShapes,
@@ -11,7 +11,7 @@ import { nodeTypes } from '../support/constants';
 describe('Intermediate Timer Event', () => {
   it('Update delay field on Intermediate Timer Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
     getElementAtPosition(intermediateCatchEventPosition).click();
 
@@ -46,7 +46,7 @@ describe('Intermediate Timer Event', () => {
   </bpmn:intermediateCatchEvent>
   `;
 
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
     getElementAtPosition(intermediateCatchEventPosition).click();
 
     typeIntoTextInput(nameInput, testString);
@@ -63,7 +63,7 @@ describe('Intermediate Timer Event', () => {
     cy.clock();
 
     const intermediateCatchEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
     getElementAtPosition(intermediateCatchEventPosition).click();
     cy.contains('Timing Control').click();

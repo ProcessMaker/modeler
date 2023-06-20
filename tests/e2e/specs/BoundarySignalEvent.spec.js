@@ -1,6 +1,6 @@
 import {
   assertDownloadedXmlContainsExpected,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   setBoundaryEvent,
   typeIntoTextInput,
@@ -21,7 +21,7 @@ describe('Boundary Signal Event', () => {
         'create-signals':true,'view-signals':true,'edit-signals':true,'delete-signals':true,
       });
     });
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundarySignalEvent, taskPosition);
   });
 

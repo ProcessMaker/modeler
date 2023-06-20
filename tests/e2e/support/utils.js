@@ -369,7 +369,7 @@ export function assertBoundaryEventIsCloseToTask() {
 }
 
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
-  dragFromSourceToDest(genericNode, nodePosition);
+  clickAndDropElement(genericNode, nodePosition);
   waitToRenderAllShapes();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
   cy.wait(300);
@@ -425,4 +425,26 @@ export function selectComponentType(component, type) {
   cy.get('[data-test="select-type-dropdown"]').click();
   cy.get('[data-test="'+type+'"]').click();
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
+}
+
+export function clickAndDropElement(node, position) {
+  cy.window().its('store.state.paper').then(paper => {
+    const { tx, ty } = paper.translate();
+
+    cy.get('.main-paper').then($paperContainer => {
+      const { x, y } = $paperContainer[0].getBoundingClientRect();
+      const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
+      // Handle coordinates if Explorer Rail is expanded
+      if (document.querySelectorAll('[data-test=explorer-rail]')) {
+        position.x += 200;
+      }
+
+      cy.get(`[data-test=${node}]`).click();
+      cy.document().trigger('mousemove', mouseEvent);
+      cy.wait(300);
+      cy.get('.paper-container').trigger('mousedown', mouseEvent);
+      cy.wait(300);
+      cy.get('.paper-container').trigger('mouseup', mouseEvent);
+    });
+  });
 }

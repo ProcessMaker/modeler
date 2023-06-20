@@ -16,7 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@cypress/code-coverage/support';
-import { dragFromSourceToDest, waitToRenderAllShapes } from './utils';
+import { clickAndDropElement, waitToRenderAllShapes } from './utils';
 import { nodeTypes } from './constants';
 
 // Alternatively you can use CommonJS syntax:
@@ -38,7 +38,9 @@ Cypress.on('scrolled', $el => {
 
 beforeEach(() => {
   cy.loadModeler();
-  dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
+  cy.get('.control-add').click();
+  const explorerX = 200;
+  clickAndDropElement(nodeTypes.startEvent, { x: 10 + explorerX, y: 200 });
   waitToRenderAllShapes();
 });
 

@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce';
 import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
+import store from '@/store';
 
 const endpoints = {
   source: 'source',
@@ -39,6 +40,9 @@ export default {
       }
     },
     highlighted(highlighted) {
+      if (store.getters.isReadOnly) {
+        return;
+      }
       if (highlighted) {
         this.shape.attr({
           line: { stroke: '#5096db' },
@@ -125,11 +129,11 @@ export default {
       this.$emit('set-shape-stacking', sourceShape);
     },
     /**
-     * On Change vertices handler
-     * @param {Object} link 
-     * @param {Array} vertices 
-     * @param {Object} options 
-     */
+      * On Change vertices handler
+      * @param {Object} link 
+      * @param {Array} vertices 
+      * @param {Object} options 
+      */
     onChangeVertices(link, vertices, options){
       if (options && options.ui) {
         this.updateWaypoints();
@@ -254,6 +258,9 @@ export default {
 
     this.$once('click', () => {
       this.$nextTick(() => {
+        if (store.getters.isReadOnly) {
+          return;
+        }
         this.setupLinkTools();
       });
     });
@@ -305,7 +312,6 @@ export default {
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
 
       this.$emit('set-cursor', 'not-allowed');
-
       if (this.isValidConnection) {
         this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
       } else {

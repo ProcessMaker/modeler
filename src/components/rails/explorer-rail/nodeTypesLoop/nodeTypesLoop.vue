@@ -2,29 +2,16 @@
 import pinIcon from '@/assets/pin-angle.svg';
 import pinFillIcon from '@/assets/pin-angle-fill.svg';
 import nodeTypesStore from '@/nodeTypesStore';
+import clickAndDrop from '@/mixins/clickAndDrop';
 
 export default {
   name: 'NodeTypesLoop',
+  mixins: [clickAndDrop],
   data() {
     return {
       pinIcon,
       pinFillIcon,
       showPin: false,
-      wasClicked: false,
-      element: null,
-      selectedItem: null,
-      xOffset: 0,
-      yOffset: 0,
-      movedElement: null,
-      helperStyles: {
-        backgroundColor:'#ffffff',
-        position: 'absolute',
-        height: '40px',
-        width: '40px',
-        zIndex: '10',
-        opacity: '0.5',
-        pointerEvents: 'none',
-      },
     };
   },
   created() {
@@ -35,67 +22,12 @@ export default {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
+      this.deselect();
       return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
+      this.deselect();
       return nodeTypesStore.dispatch('addUserPinnedObject', object);
-    },
-    onClickHandler(event, control) {
-      this.createDraggingHelper(event, control);
-      document.addEventListener('mousemove', this.setDraggingPosition);
-      this.setDraggingPosition(event);
-      // Deselect control on click if same control is already selected
-      if (this.selectedItem === control.type) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.movedElement);
-        this.$emit('onSetCursor', 'none');
-        this.selectedItem = null;
-        this.movedElement = null;
-        this.wasClicked = false;
-        return;
-      }
-      this.wasClicked = true;
-      this.element = control;
-      this.$emit('onSetCursor', 'crosshair');
-      this.selectedItem = control.type;
-      window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
-        window.ProcessMaker.EventBus.$off('custom-pointerclick');
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        if (this.movedElement) {
-          document.body.removeChild(this.movedElement);
-        }
-        this.selectedItem = null;
-        this.movedElement = null;
-        this.onCreateElement(message);
-      });
-    },
-    createDraggingHelper(event, control) {
-      if (this.movedElement) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.movedElement);
-        this.movedElement = null;
-      }
-      const sourceElement = event.target;
-      this.movedElement = document.createElement('img');
-      Object.keys(this.helperStyles).forEach((property) => {
-        this.movedElement.style[property] = this.helperStyles[property];
-      });
-      this.movedElement.src = control.icon;
-      document.body.appendChild(this.movedElement);
-      this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
-      this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
-    },
-    setDraggingPosition({ pageX, pageY }) {
-      this.movedElement.style.left = pageX  + 'px';
-      this.movedElement.style.top = pageY + 'px';
-    },
-    onCreateElement(event){
-      if (this.wasClicked && this.element) {
-        this.$emit('onCreateElement', { event, control: this.element });
-        this.$emit('onSetCursor', 'none');
-        event.preventDefault();
-        this.wasClicked = false;
-      }
     },
   },
   computed: {
@@ -125,6 +57,7 @@ export default {
       <template v-for="object in filteredNodes">
         <div
           class="node-types__item"
+          :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
@@ -155,6 +88,7 @@ export default {
         <template v-for="pinnedObject in pinnedObjects">
           <div
             class="node-types__item"
+            :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
@@ -176,6 +110,7 @@ export default {
         <template v-for="nodeType in unpinnedObjects">
           <div
             class="node-types__item"
+            :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"

@@ -42,7 +42,6 @@ import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
 import { configurePool, elementShouldHaveFlowNodeRef } from '@/components/nodes/pool/poolUtils';
-import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
 import { aPortEveryXPixels } from '@/portsUtils';
 
@@ -500,13 +499,6 @@ export default {
     }
     this.setPoolSize(this.shape);
     this.$emit('set-shape-stacking', this.shape);
-
-    this.$nextTick(() => {
-      const handler = new PoolEventHandlers(this.graph, this.paper, this.paperManager, this.shape, this);
-      this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => handler.onChangePosition(element, newPosition));
-      this.shape.listenTo(this.paper, 'cell:pointerdown', (cellView) => handler.onPointerDown(cellView));
-      this.shape.listenTo(this.paper, 'cell:pointerup', (cellView) => handler.onPointerUp(cellView));
-    });
   },
   beforeDestroy() {
     const participants = this.collaboration.get('participants');

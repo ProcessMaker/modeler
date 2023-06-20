@@ -1,6 +1,6 @@
 import { nodeTypes } from '../../support/constants';
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements,
   getElementAtPosition,
@@ -45,7 +45,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   it('should undo/redo adding a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     cy.get(undoSelector).click();
     waitToRenderAllShapes();
@@ -63,7 +63,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   it('should undo/redo deleting a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition, null, 0, 65)
       .click()
@@ -86,7 +86,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 300, y: 300 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
     const initialNumberOfWaypoints = 4;
@@ -120,7 +120,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
   it('should undo/redo boundary timer event', () => {
     const taskPosition = { x: 300, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 

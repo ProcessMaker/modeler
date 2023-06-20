@@ -5,7 +5,7 @@
   >
     <li
       v-for="item in controls"
-      :class="['control-item', {'active': selectedItem === item.type}]"
+      :class="['control-item', {'active': selectedItem && (selectedItem.type === item.type)}]"
       :id="item.id"
       :key="item.id"
       @click.stop="onClickHandler($event, item)"
@@ -36,6 +36,7 @@
 import InlineSvg from 'vue-inline-svg';
 import nodeTypesStore from '@/nodeTypesStore';
 import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
+import clickAndDrop from '@/mixins/clickAndDrop';
 
 export default ({
   components: {
@@ -45,28 +46,14 @@ export default ({
   props: {
     nodeTypes: Array,
   },
+  mixins: [clickAndDrop],
   data() {
     return {
       plusIcon: require('@/assets/railBottom/plus.svg'),
-      wasClicked: false,
-      element: null,
-      selectedItem: null,
-      selectedSubmenuItem: null,
-      xOffset: 0,
-      yOffset: 0,
-      movedElement: null,
-      isDragging: false,
-      helperStyles: {
-        backgroundColor:'#ffffff',
-        position: 'absolute',
-        height: '40px',
-        width: '40px',
-        zIndex: '10',
-        opacity: '0.5',
-        pointerEvents: 'none',
-      },
-      popperType: null,
     };
+  },
+  created() {
+    nodeTypesStore.dispatch('getUserPinnedObjects');
   },
   computed: {
     controls() {
@@ -80,68 +67,19 @@ export default ({
     clickToSubmenuHandler(data){
       window.ProcessMaker.EventBus.$off('custom-pointerclick');
       this.wasClicked = false;
-      this.parent = this.element;
+      this.parent = this.selectedItem;
       this.selectedSubmenuItem = data.control.type;
       this.onClickHandler(data.event, data.control);
     },
-    onClickHandler(event, control) {
-      this.createDraggingHelper(event, control);
-      document.addEventListener('mousemove', this.setDraggingPosition);
-      this.setDraggingPosition(event);
-      this.wasClicked = true;
-      this.element = control;
-      this.$emit('onSetCursor', 'crosshair');
-      if (!this.parent) {
-        this.selectedItem = control.type;
-        this.popperType = control.type;
-      }
-      window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
-        window.ProcessMaker.EventBus.$off('custom-pointerclick');
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        if (this.movedElement) {
-          document.body.removeChild(this.movedElement);
-        }
-        this.popperType = null;
-        this.selectedSubmenuItem = null;
-        this.selectedItem = null;
-        this.movedElement = null;
-        this.onCreateElement(message);
-      });
-    },
-    onCreateElement(event){
-      if (this.wasClicked && this.element) {
-        if (this.parent) {
-          this.parent = null;
-        }
-        this.$emit('onCreateElement', { event, control: this.element });
-        this.$emit('onSetCursor', 'none');
-        event.preventDefault();
-        this.wasClicked = false;
-      }
-    },
-    setDraggingPosition({ pageX, pageY }) {
-      this.movedElement.style.left = `${pageX}px`;
-      this.movedElement.style.top = `${pageY}px`;
-    },
     toggleExplorer() {
+      // Remove control click & drop selection when the Add button is clicked
+      this.deselect();
+      this.popperType = null;
+      this.selectedSubmenuItem = null;
+
+      // Toggle left explorer
       nodeTypesStore.commit('toggleExplorer');
       nodeTypesStore.commit('clearFilteredNodes');
-    },
-    createDraggingHelper(event, control) {
-      if (this.movedElement) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.movedElement);
-        this.movedElement = null;
-      }
-      const sourceElement = event.target;
-      this.movedElement = document.createElement('img');
-      Object.keys(this.helperStyles).forEach((property) => {
-        this.movedElement.style[property] = this.helperStyles[property];
-      });
-      this.movedElement.src = control.icon;
-      document.body.appendChild(this.movedElement);
-      this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
-      this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
     },
   },
   async mounted() {
