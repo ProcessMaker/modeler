@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements,
   getIframeDocumnetation,
@@ -20,7 +20,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add End Event
     const endEventPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     //Step 3: Config The End Event
     cy.get('[name="name"]').clear().type('End Event Test 1');
@@ -50,7 +50,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add End Event
     const endEventPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the End Event to Message End Event

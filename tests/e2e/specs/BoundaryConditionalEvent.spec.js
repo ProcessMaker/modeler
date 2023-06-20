@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   setBoundaryEvent,
   waitToRenderAllShapes,
@@ -13,7 +13,7 @@ describe('Boundary Conditional Event', () => {
   const boundaryConditionalEventPosition = { x: 260, y: 200 };
 
   beforeEach(() => {
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryConditionalEvent, taskPosition);
   });
 

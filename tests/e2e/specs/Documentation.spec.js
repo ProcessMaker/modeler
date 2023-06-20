@@ -2,7 +2,7 @@ import {nodeTypes} from '../support/constants';
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   getTinyMceEditor,
@@ -37,7 +37,7 @@ describe('Documentation accordion', () => {
       .forEach(type => {
         cy.clock();
 
-        dragFromSourceToDest(type, position);
+        clickAndDropElement(type, position);
         cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
         cy.contains('Advanced').click();
         cy.tick(accordionOpenAnimationTime);
@@ -58,7 +58,7 @@ describe('Documentation accordion', () => {
         cy.clock();
         const docString = `${type} doc!`;
 
-        dragFromSourceToDest(type, position);
+        clickAndDropElement(type, position);
         cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
         getTinyMceEditor().clear().type(docString);
@@ -74,7 +74,7 @@ describe('Documentation accordion', () => {
   });
 
   it('can allow the documentation editor modal to edit the documentation', () => {
-    dragFromSourceToDest(nodeTypes.task, position);
+    clickAndDropElement(nodeTypes.task, position);
     cy.contains('Documentation').click();
     cy.wait(accordionOpenAnimationTime);
 

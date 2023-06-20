@@ -9,6 +9,7 @@
       :id="item.id"
       :key="item.id"
       @click.stop="onClickHandler($event, item)"
+      :data-test="`${item.type}-main`"
     >
       <SubmenuPopper
         :data="item"

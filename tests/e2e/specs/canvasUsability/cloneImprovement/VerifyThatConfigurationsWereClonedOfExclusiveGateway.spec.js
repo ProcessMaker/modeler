@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements,
   getIframeDocumnetation,
@@ -20,7 +20,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add Exclusive Gateway
     const gatewayPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Config Exclusive Gateway
@@ -51,7 +51,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add Exclusive Gateway
     const gatewayPosition = { x: 250, y: 350 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the Exclusive Gateway to Inclusive Gateway

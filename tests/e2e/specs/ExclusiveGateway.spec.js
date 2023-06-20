@@ -1,4 +1,4 @@
-import { dragFromSourceToDest, getElementAtPosition, typeIntoTextInput } from '../support/utils';
+import { clickAndDropElement, getElementAtPosition, typeIntoTextInput } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
@@ -7,7 +7,7 @@ describe('Exclusive Gateway', () => {
     const testString = 'testing';
     const exclusiveGatewayPosition = { x: 200, y: 200 };
 
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     getElementAtPosition(exclusiveGatewayPosition).click();
 

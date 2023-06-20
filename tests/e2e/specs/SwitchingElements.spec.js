@@ -3,7 +3,7 @@ import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   uploadXml,
   getLinksConnectedToElement, modalAnimationTime, modalConfirm, setBoundaryEvent, waitToRenderAllShapes,
@@ -45,8 +45,8 @@ describe('Switching elements', () => {
   it('Switching an exclusive gateway to a parallel gateway should remove conditions from flows', () => {
     const gatewayPosition = {x: 300, y: 150};
     const taskPosition = {x: 450, y: 150};
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', gatewayPosition, taskPosition);
 
     const flowExpression = '1234 == 1234';

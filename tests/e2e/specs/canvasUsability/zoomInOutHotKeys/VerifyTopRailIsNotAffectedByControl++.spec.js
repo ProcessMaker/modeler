@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   connectNodesWithFlow,
   waitToRenderAllShapes,
   getGraphElements,
@@ -17,11 +17,11 @@ describe('Zoom In/Out Hot keys', () => {
 
     //Step 2: Drag Task component
     const taskPosition = { x: 300, y: 130 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     //Step 3: Drag End Event
     const endEventPosition = { x: 500, y: 150 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     //Step 4: Connect the Start Event with Task
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);

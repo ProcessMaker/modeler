@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   getLinksConnectedToElement,
@@ -19,10 +19,10 @@ import { nodeTypes } from '../support/constants';
 describe('Message Flows', () => {
   it('Can connect two pools with a message flow', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
 
     connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
 
@@ -39,14 +39,14 @@ describe('Message Flows', () => {
 
   it('Can connect elements in pools with a message flow', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
 
     const offset = 100;
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
@@ -68,14 +68,14 @@ describe('Message Flows', () => {
 
   it('Can connect pool to a task in a different pool', () => {
     const pool1Position = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
 
     const pool2Position = { x: 250, y: 500 };
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
 
     const offset = 100;
     const taskPosition = { x: pool2Position.x + offset, y: pool2Position.y + offset };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', pool1Position, taskPosition);
 
@@ -93,10 +93,10 @@ describe('Message Flows', () => {
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 400 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    clickAndDropElement(nodeTypes.pool, poolPosition);
 
     const taskPosition = {x: 250, y: 250};
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     cy.get('[data-test=switch-to-user-task').click();
 
     getElementAtPosition(poolPosition, nodeTypes.pool)
@@ -120,11 +120,11 @@ describe('Message Flows', () => {
     addNodeTypeToPaper(endEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
     const poolPosition = { x: 100, y: 250 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    clickAndDropElement(nodeTypes.pool, poolPosition);
 
     const offset = 100;
     const taskPosition = { x: poolPosition.x + offset, y: poolPosition.y + offset };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
     cy.get('[data-test=switch-to-user-task').click();
 
     getElementAtPosition(poolPosition, nodeTypes.pool)
@@ -153,13 +153,13 @@ describe('Message Flows', () => {
 
   it('Adding a pool and lanes does not overlap message flow', () => {
     const poolPosition = { x: 150, y: 300 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    clickAndDropElement(nodeTypes.pool, poolPosition);
 
     const poolTwoPosition = { x: 150, y: 600 };
-    dragFromSourceToDest(nodeTypes.pool, poolTwoPosition);
+    clickAndDropElement(nodeTypes.pool, poolTwoPosition);
 
     const taskPosition = { x: 200, y: 600 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     const startEventPosition = { x: 150, y: 150 };
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
@@ -197,9 +197,9 @@ describe('Message Flows', () => {
     removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
@@ -236,8 +236,8 @@ describe('Message Flows', () => {
     removeStartEvent();
     addNodeTypeToPaper(startEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
 
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
     connectNodesWithFlow('generic-flow-button', startEventPosition, boundaryEventPosition, 'center');

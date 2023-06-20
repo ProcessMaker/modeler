@@ -1,7 +1,7 @@
 import {
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
 } from '../support/utils';
@@ -14,7 +14,7 @@ describe('Text Annotation', () => {
     const testString = 'testing';
 
     const textAnnotationPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
 
     getElementAtPosition(textAnnotationPosition).click();
 
@@ -24,10 +24,10 @@ describe('Text Annotation', () => {
 
   it('should be able to add a text annotation outside of a pool', () => {
     const poolPosition = { x: 250, y: 200 };
-    dragFromSourceToDest(nodeTypes.pool, poolPosition);
+    clickAndDropElement(nodeTypes.pool, poolPosition);
 
     const textAnnotationPosition = { x: 400, y: 50 };
-    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, poolPosition);
 
@@ -45,7 +45,7 @@ describe('Text Annotation', () => {
   it('keeps custom color when updating node text', () => {
     const colorToSelect = baseNodeColors[0];
     const textAnnotationPosition = { x: 400, y: 100 };
-    dragFromSourceToDest(nodeTypes.textAnnotation, textAnnotationPosition);
+    clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
 
     getElementAtPosition(textAnnotationPosition).click();
     cy.get('[data-test="picker-dropdown-button"]').click();
