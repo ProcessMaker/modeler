@@ -37,9 +37,11 @@ export default new Vuex.Store({
     allowSavingElementPosition: true,
     copiedElements: [],
     clientLeftPaper: false,
+    readOnly: false,
   },
   getters: {
     nodes: state => state.nodes,
+    paper: state => state.paper,
     highlightedNodes: state => state.highlightedNodes,
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
@@ -56,8 +58,12 @@ export default new Vuex.Store({
     allowSavingElementPosition: state => state.allowSavingElementPosition,
     copiedElements: state => state.copiedElements,
     clientLeftPaper: state => state.clientLeftPaper,
+    isReadOnly: state => state.readOnly,
   },
   mutations: {
+    setReadOnly(state, value) {
+      state.readOnly = value;
+    },
     preventSavingElementPosition(state) {
       state.allowSavingElementPosition = false;
     },

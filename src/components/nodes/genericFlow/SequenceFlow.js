@@ -6,9 +6,10 @@ import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
 
 export default class SequenceFlow extends Flow {
   static isValid({ sourceShape, targetShape, targetConfig }) {
+ 
     const targetNode = get(targetShape, 'component.node');
     const sourceNode = get(sourceShape, 'component.node');
-
+    
     return Flow.hasTargetType(targetShape) &&
       Flow.targetIsNotSource(sourceNode, targetNode) &&
       SequenceFlow.targetIsNotALane(targetNode) &&
