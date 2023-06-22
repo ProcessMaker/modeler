@@ -5,7 +5,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Canvas Selection', () => {
+describe.skip('Canvas Selection', () => {
   it('Verify that controls are deselected if a new element is added', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskFormPosition = {

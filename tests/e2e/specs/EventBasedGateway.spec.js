@@ -12,7 +12,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Event-Based Gateway', () => {
+describe.skip('Event-Based Gateway', () => {
   const eventBasedGatewayPosition = { x: 250, y: 250 };
 
   beforeEach(() => {

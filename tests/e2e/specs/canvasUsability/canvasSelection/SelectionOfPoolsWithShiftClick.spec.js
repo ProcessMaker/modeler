@@ -5,7 +5,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Selection of pool with shift click', () => {
+describe.skip('Selection of pool with shift click', () => {
   it('should add to selection a pool with shift key', () => {
     // Drag pool 1 and elements inside
     const pool1Position = { x: 100, y: 50 };

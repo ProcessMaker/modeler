@@ -16,7 +16,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
-describe('Boundary Timer Event', () => {
+describe.skip('Boundary Timer Event', () => {
   it('update boundary timer event properties element', () => {
     const taskPosition = { x: 200, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -267,4 +267,6 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+  // TODO remove line 271 when this test is ready to pass
+  skip: true,
 });

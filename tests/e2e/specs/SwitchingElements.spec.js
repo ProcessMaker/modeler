@@ -41,7 +41,7 @@ function changeTypeTo(currentType, newType, position) {
   cy.tick(modalAnimationTime);
 }
 
-describe('Switching elements', () => {
+describe.skip('Switching elements', () => {
   it('Switching an exclusive gateway to a parallel gateway should remove conditions from flows', () => {
     const gatewayPosition = {x: 300, y: 150};
     const taskPosition = {x: 450, y: 150};

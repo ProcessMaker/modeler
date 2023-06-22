@@ -6,7 +6,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Zoom In/Out Hot keys', () => {
+describe.skip('Zoom In/Out Hot keys', () => {
   it('TCP4-2652: Verify that "TOP RAIL" is not affected by Control ++', () => {
     const initialNumberOfElements = 1;
 

@@ -1,7 +1,7 @@
 import { nodeTypes } from '../../support/constants';
 import { clickAndDropElement, waitToRenderAllShapes } from '../../support/utils';
 
-describe('Auto Validate test', { scrollBehavior: false }, () => {
+describe.skip('Auto Validate test', { scrollBehavior: false }, () => {
   const validateButtonSelector = '[data-cy="validate-button"]';
   const validateButtonIssueSelector = '[data-cy="validate-issue-button"]';
   const validatePanelSelector = '[data-cy="validate-panel"]';

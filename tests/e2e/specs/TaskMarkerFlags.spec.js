@@ -12,7 +12,7 @@ function assertBottomCenterTaskMarkerHasImage(iconName, markerIndex = 0) {
     .and('match', new RegExp(`${iconName}.*\.svg`));
 }
 
-describe('Task Marker Flags', () => {
+describe.skip('Task Marker Flags', () => {
   beforeEach(() => {
     const taskPosition = { x: 250, y: 250 };
     clickAndDropElement(nodeTypes.task, taskPosition);

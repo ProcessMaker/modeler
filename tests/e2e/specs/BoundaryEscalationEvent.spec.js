@@ -64,5 +64,6 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
+  // TODO remove line 68 when this test is ready to pass
   skip: true,
 });

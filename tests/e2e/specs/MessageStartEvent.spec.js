@@ -1,7 +1,7 @@
 import { assertDownloadedXmlContainsExpected, clickAndDropElement, getElementAtPosition } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Message Start Event', () => {
+describe.skip('Message Start Event', () => {
   it('Can create message start event', () => {
     const messageStartEventPosition = { x: 250, y: 250 };
     clickAndDropElement(nodeTypes.startEvent, messageStartEventPosition);

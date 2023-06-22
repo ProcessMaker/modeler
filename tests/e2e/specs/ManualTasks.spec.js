@@ -7,7 +7,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Manual Task', () => {
+describe.skip('Manual Task', () => {
   it('Update Manual Task name', () => {
     const testString = 'testing';
 

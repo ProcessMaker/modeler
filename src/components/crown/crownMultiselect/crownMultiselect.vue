@@ -30,13 +30,15 @@ import runningInCypressTest from '@/runningInCypressTest';
 import crownAlign from './crownAlign';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCenterVertically } from '../crownButtons/icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 export default {
   props: {
     paper: Object,
     hasPools: Boolean,
   },
-  components:{ crownAlign },
+  components:{ crownAlign, FontAwesomeIcon },
   data() {
     return {
       showAlignmentButtons: false,

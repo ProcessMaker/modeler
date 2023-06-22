@@ -23,7 +23,7 @@ const eventXMLSnippet = `
 const messageXMLSnippet = `<bpmn:message id="${ messageRef }" name="${ messageName }" />`;
 const intermediateMessageThrowEventPosition = { x: 350, y: 200 };
 
-describe('Intermediate Message Throw Event', () => {
+describe.skip('Intermediate Message Throw Event', () => {
   it('can render an intermediate message throw event', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 

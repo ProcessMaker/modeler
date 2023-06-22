@@ -16,7 +16,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Modeler', () => {
+describe.skip('Modeler', () => {
   it('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;

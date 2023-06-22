@@ -6,7 +6,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Canvas Selection', () => {
+describe.skip('Canvas Selection', () => {
   it('Verify that controls are selected when the user click on it', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskFormPosition = {

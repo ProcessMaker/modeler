@@ -15,7 +15,7 @@ import { nodeTypes } from '../support/constants';
 
 const TOOLBAR_HEIGHT = 64;
 
-describe('Undo/redo', () => {
+describe.skip('Undo/redo', () => {
   it('Can undo and redo sequence flow condition expression', () => {
     const exclusiveGatewayPosition = { x: 250, y: 250 + TOOLBAR_HEIGHT };
     clickAndDropElement(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);

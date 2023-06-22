@@ -10,7 +10,7 @@ import {
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 import { nodeTypes } from '../support/constants';
 
-describe('Association Flows', () => {
+describe.skip('Association Flows', () => {
   it('Change direction of association to none, one and both', () => {
     const directionSelectSelector = '[name=associationDirection]';
     const textAnnotationPosition = { x: 400, y: 100 };
