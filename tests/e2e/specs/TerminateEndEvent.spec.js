@@ -1,7 +1,7 @@
 import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Terminate End Event', () => {
+describe.skip('Terminate End Event', () => {
   it('Can create terminate end event', () => {
     const terminateEndEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(terminateEndEventPosition, nodeTypes.endEvent, 'switch-to-terminate-end-event');

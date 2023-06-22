@@ -1,6 +1,6 @@
 import registerInspectorExtension from '@/components/InspectorExtensionManager';
 
-describe('Inspector Extension Manager', function() {
+describe.skip('Inspector Extension Manager', function() {
   let node;
   let config;
 

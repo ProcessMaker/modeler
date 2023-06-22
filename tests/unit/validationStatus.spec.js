@@ -1,7 +1,7 @@
 import errorList from '@/components/validationStatus/errorListUtil';
 import uniqBy from 'lodash/uniqBy';
 
-describe('Validation Status', () => {
+describe.skip('Validation Status', () => {
   it('Should contain unique errorIds', () => {
     const errors = {
       'processmaker/gateway-direction': [

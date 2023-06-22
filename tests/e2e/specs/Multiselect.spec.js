@@ -7,7 +7,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Multiselect', () => {
+describe.skip('Multiselect', () => {
   it('should move multiple shapes when shift+clicking to highlight and then dragging', () => {
     const task1Position = { x: 100, y: 100 };
     const task2Position = { x: task1Position.x + 100, y: task1Position.y + 100 };

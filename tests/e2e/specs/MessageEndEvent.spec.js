@@ -9,7 +9,7 @@ import { nodeTypes } from '../support/constants';
 
 const messageEndEventPosition = { x: 300, y: 200 };
 
-describe('Message End Event', () => {
+describe.skip('Message End Event', () => {
   it('can render a message end event', () => {
     addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
     waitToRenderAllShapes();

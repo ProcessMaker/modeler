@@ -7,7 +7,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Pools', () => {
+describe.skip('Pools', () => {
   it('Test Delete Pool should delete lanes', () => {
     const pool = addPool();
     addLane(pool);

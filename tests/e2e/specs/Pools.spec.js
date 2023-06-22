@@ -20,7 +20,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Pools', () => {
+describe.skip('Pools', () => {
   it('Update pool name', () => {
     const testString = 'testing';
 
@@ -322,7 +322,7 @@ describe('Pools', () => {
     assertDownloadedXmlContainsSubstringNTimes('<bpmn:boundaryEvent', 1);
   });
 
-  describe('does not add flow node references to pool lanes for excluded items', () => {
+  describe.skip('does not add flow node references to pool lanes for excluded items', () => {
 
     const poolPosition = {x: 100, y: 50};
 

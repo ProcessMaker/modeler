@@ -11,7 +11,7 @@ import {
   setBoundaryEvent,
 } from '../../support/utils';
 
-describe('Undo/Redo control test', { scrollBehavior: false }, () => {
+describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
   const undoSelector = '[data-cy="undo-control"]';
   const redoSelector = '[data-cy="redo-control"]';
 

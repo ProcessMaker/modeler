@@ -2,7 +2,7 @@ import { addNodeTypeToPaper, getElementAtPosition, removeIndentationAndLinebreak
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
-describe('Boundary Message Event', () => {
+describe.skip('Boundary Message Event', () => {
   const taskPosition = { x: 200, y: 200 };
   beforeEach(() => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');

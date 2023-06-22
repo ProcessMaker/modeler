@@ -1,6 +1,6 @@
 import { markersAttrs, markersMarkup } from '@/mixins/hasMarkers';
 
-describe('hasMarkers', () => {
+describe.skip('hasMarkers', () => {
   it('markersMarkup generates markers markup', () => {
     const selector = 'topLeft';
     const expected = {

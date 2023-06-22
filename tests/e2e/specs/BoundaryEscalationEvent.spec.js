@@ -3,7 +3,7 @@ import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 import { defaultNodeColor } from '../../../src/components/nodeColors';
 
-describe.skip('Boundary Escalation Event', () => {
+describe('Boundary Escalation Event', () => {
 
   it('can toggle interrupting on Boundary Escalation Events', () => {
     const taskPosition = { x: 200, y: 200 };

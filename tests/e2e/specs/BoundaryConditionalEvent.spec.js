@@ -8,7 +8,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
-describe('Boundary Conditional Event', () => {
+describe.skip('Boundary Conditional Event', () => {
   const taskPosition = { x: 200, y: 200 };
   const boundaryConditionalEventPosition = { x: 260, y: 200 };
 

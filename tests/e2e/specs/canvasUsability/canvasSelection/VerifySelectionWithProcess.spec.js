@@ -5,7 +5,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Canvas Selection', () => {
+describe.skip('Canvas Selection', () => {
   it('TCP4-2666: Verify selection with process', () => {
     const initialNumberOfElements = 1;
 

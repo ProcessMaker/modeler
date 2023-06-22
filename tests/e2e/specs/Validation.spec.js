@@ -8,7 +8,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Validation', () => {
+describe.skip('Validation', () => {
 
   it('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };

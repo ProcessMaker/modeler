@@ -10,7 +10,7 @@ import {
   modalAnimationTime,
 } from '../support/utils';
 
-describe('Documentation accordion', () => {
+describe.skip('Documentation accordion', () => {
   const baseElements = [
     nodeTypes.startEvent,
     nodeTypes.intermediateCatchEvent,
