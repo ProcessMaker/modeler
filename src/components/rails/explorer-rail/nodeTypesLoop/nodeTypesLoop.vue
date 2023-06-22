@@ -61,7 +61,7 @@ export default {
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
-          @click.stop="onClickHandler($event, object)"
+          @click.self="onClickHandler($event, object)"
         >
           <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
           <span>{{ $t(object.label) }}</span>
