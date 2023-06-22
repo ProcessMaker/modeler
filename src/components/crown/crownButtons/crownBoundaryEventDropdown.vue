@@ -45,10 +45,11 @@ import store from '@/store';
 import Node from '@/components/nodes/node';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBoundaryEvent } from './icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
   name: 'CrownBoundaryEventDropdown',
-  components: { CrownButton },
+  components: { CrownButton, FontAwesomeIcon },
   props: {
     dropdownOpen: {
       type: Boolean,
