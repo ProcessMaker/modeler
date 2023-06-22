@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { BOTTOM } from '@/components/controls/rankConstants';
+import nodeTypesStore from '@/nodeTypesStore';
 
 export default {
   props: ['allowDrop', 'compressed', 'canvasDragPosition', 'parentHeight', 'nodeTypes'],
@@ -53,16 +53,7 @@ export default {
   },
   computed: {
     controls() {
-      return this.nodeTypes
-        .filter(nodeType => nodeType.control)
-        .map(nodeType => ({
-          type: nodeType.id,
-          icon: nodeType.icon,
-          label: nodeType.label,
-          bpmnType: nodeType.bpmnType,
-          rank: nodeType.rank || BOTTOM,
-        }))
-        .sort((node1, node2) => node1.rank - node2.rank);
+      return nodeTypesStore.getters.getNodeTypes;
     },
   },
   methods: {
