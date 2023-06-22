@@ -52,6 +52,7 @@ export default {
         this.onCreateElement(message);
         nodeTypesStore.commit('clearSelectedNode');
         nodeTypesStore.commit('setGhostNode', null);
+        this.$emit('onSetCursor', 'none');
       });
     },
     onCreateElement(event){
@@ -60,9 +61,8 @@ export default {
           this.parent = null;
         }
         this.$emit('onCreateElement', { event, control: this.selectedItem });
-        this.$emit('onSetCursor', 'none');
-        event.preventDefault();
         this.wasClicked = false;
+        event.preventDefault();
       }
     },
     setDraggingPosition({ pageX, pageY }) {
@@ -92,14 +92,14 @@ export default {
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
     },
     deselect() {
+      document.removeEventListener('mousemove', this.setDraggingPosition);
       if (this.movedElement) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
         document.body.removeChild(this.movedElement);
-        this.$emit('onSetCursor', 'none');
-        nodeTypesStore.commit('clearSelectedNode');
-        nodeTypesStore.commit('setGhostNode', null);
-        this.wasClicked = false;
       }
+      this.$emit('onSetCursor', 'none');
+      this.wasClicked = false;
+      nodeTypesStore.commit('clearSelectedNode');
+      nodeTypesStore.commit('setGhostNode', null);
     },
   },
   computed: {
