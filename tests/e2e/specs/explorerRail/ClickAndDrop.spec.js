@@ -1,11 +1,7 @@
-
-// import {
-//   waitToRenderAllShapes,
-// } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
 const { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } = require('../../support/utils');
 
-describe.skip('Click and Drop' , () => {
+describe('Click and Drop' , () => {
   it('Elements are clicked and dropped into canvas', () => {
     const explorerX = 200;
     const task1Position = { x: 100 + explorerX, y: 200 };
