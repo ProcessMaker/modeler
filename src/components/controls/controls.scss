@@ -1,0 +1,69 @@
+$controls-column-max-width: 265px;
+$controls-column-compressed-max-width: 95px;
+$controls-transition: 0.3s;
+
+.controls {
+  z-index: 2;
+  padding-bottom: $toolbar-height;
+
+  &-column {
+    max-width: $controls-column-max-width;
+    transition: all $controls-transition ease-out;
+
+    .list-group {
+      &:last-child {
+        border-bottom: 1px solid $border-color;
+      }
+    }
+  }
+
+  &-column-compressed {
+    max-width: $controls-column-compressed-max-width;
+    transition: all $controls-transition ease-in;
+  }
+}
+
+.card-header {
+  background: #f7f7f7;
+}
+
+.list-group-item {
+  &:focus-visible {
+    outline: none;
+  }
+  &:first-child {
+    border-top: 0;
+  }
+}
+
+.tool {
+  cursor: grab;
+  user-select: none;
+  font-size: 0.875rem;
+}
+
+.is-dragging {
+  background: $primary-color;
+  color: $primary-white;
+  position: absolute;
+  z-index: 10;
+  box-shadow: 5px 5px 8px 0px #0000004a;
+  cursor: grabbing;
+  padding: 0.5rem;
+
+  &.no-drop {
+    opacity: 0.8;
+    cursor: no-drop;
+  }
+
+  &:hover {
+    background-color: $primary-color;
+    color: $primary-white;
+  }
+}
+
+.tool-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  pointer-events: none;
+}

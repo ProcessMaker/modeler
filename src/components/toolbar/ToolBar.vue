@@ -4,65 +4,13 @@
       aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
-      <div class="mr-3">
+      <div class="d-flex mr-3">
+        <TopRail
+          :validation-errors="validationErrors"
+          :warnings="warnings"
+        />
+
         <align-buttons @save-state="$emit('save-state')" />
-
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Undo/redo controls">
-          <b-button
-            class="btn btn-sm btn-secondary btn-undo"
-            :disabled="!canUndo"
-            data-test="undo"
-            v-b-tooltip.hover
-            :title="$t('Undo')"
-            @click="undo"
-          >
-            <font-awesome-icon :icon="undoIcon" />
-          </b-button>
-
-          <b-button
-            class="btn btn-sm btn-secondary btn-redo"
-            :disabled="!canRedo"
-            data-test="redo"
-            v-b-tooltip.hover
-            :title="$t('Redo')"
-            @click="redo"
-          >
-            <font-awesome-icon :icon="redoIcon" />
-          </b-button>
-        </div>
-
-        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Zoom controls">
-          <b-button
-            class="btn btn-sm btn-secondary"
-            @click="paperManager.scale = paperManager.scale.sx + scaleStep"
-            data-test="zoom-in"
-            v-b-tooltip.hover
-            :title="$t('Zoom In')"
-          >
-            <font-awesome-icon :icon="plusIcon" />
-          </b-button>
-          <b-button
-            class="btn btn-sm btn-secondary"
-            @click="paperManager.scale = Math.max(minimumScale, paperManager.scale.sx -= scaleStep)"
-            data-test="zoom-out"
-            v-b-tooltip.hover
-            :title="$t('Zoom Out')"
-          >
-            <font-awesome-icon :icon="minusIcon" />
-          </b-button>
-          <b-button
-            v-if="paperManager"
-            class="btn btn-sm btn-secondary"
-            @click="paperManager.scale = initialScale"
-            :disabled="paperManager.scale.sx === initialScale"
-            data-test="zoom-reset"
-            v-b-tooltip.hover
-            :title="$t('Reset to initial scale')"
-          >
-            {{ $t('Reset') }}
-          </b-button>
-          <span v-if="paperManager" class="btn btn-sm btn-secondary scale-value">{{ Math.round(paperManager.scale.sx*100) }}%</span>
-        </div>
 
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Additional controls">
           <b-button
@@ -73,16 +21,6 @@
             :title="panelsCompressed ? $t('Show Menus') : $t('Hide Menus')"
           >
             <font-awesome-icon :icon="panelsCompressed ? expandIcon : compressIcon" />
-          </b-button>
-
-          <b-button
-            class="btn btn-sm btn-secondary mini-map-btn ml-auto"
-            data-test="mini-map-btn"
-            @click="miniMapOpen = !miniMapOpen"
-            v-b-tooltip.hover
-            :title="miniMapOpen ? $t('Hide Mini-Map') : $t('Show Mini-Map')"
-          >
-            <font-awesome-icon :icon="miniMapOpen ? minusIcon : mapIcon" />
           </b-button>
         </div>
         <div class="btn-group btn-group-sm" role="group" aria-label="Publish controls">
@@ -144,23 +82,28 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faSave, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
+import TopRail from '@/components/topRail/TopRail.vue';
 import AlignButtons from '@/components/toolbar/alignButtons/AlignButtons';
 
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, FontAwesomeIcon, AlignButtons },
-  props: {
-    canvasDragPosition: {},
-    cursor: {},
-    paperManager: {},
-    isRendering: {
-      type: Boolean,
-    },
-    breadcrumbData: {
-      type: Array,
-    },
-    panelsCompressed: Boolean,
+  components: {
+    Breadcrumb,
+    TopRail,
+    FontAwesomeIcon,
+    AlignButtons,
   },
+  props: [
+    'canvasDragPosition',
+    'cursor',
+    'paperManager',
+    'isRendering',
+    'breadcrumbData',
+    'panelsCompressed',
+    'validationErrors',
+    'warnings',
+    'xmlManager',
+  ],
   watch: {
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);

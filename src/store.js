@@ -37,6 +37,7 @@ export default new Vuex.Store({
     allowSavingElementPosition: true,
     copiedElements: [],
     clientLeftPaper: false,
+    readOnly: false,
   },
   getters: {
     nodes: state => state.nodes,
@@ -57,8 +58,12 @@ export default new Vuex.Store({
     allowSavingElementPosition: state => state.allowSavingElementPosition,
     copiedElements: state => state.copiedElements,
     clientLeftPaper: state => state.clientLeftPaper,
+    isReadOnly: state => state.readOnly,
   },
   mutations: {
+    setReadOnly(state, value) {
+      state.readOnly = value;
+    },
     preventSavingElementPosition(state) {
       state.allowSavingElementPosition = false;
     },
