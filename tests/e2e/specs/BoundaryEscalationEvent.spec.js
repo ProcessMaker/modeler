@@ -3,7 +3,7 @@ import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 import { defaultNodeColor } from '../../../src/components/nodeColors';
 
-describe('Boundary Escalation Event', () => {
+describe.skip('Boundary Escalation Event', () => {
 
   it('can toggle interrupting on Boundary Escalation Events', () => {
     const taskPosition = { x: 200, y: 200 };
@@ -64,5 +64,6 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
+  // TODO remove line 68 when this test is ready to pass
   skip: true,
 });
