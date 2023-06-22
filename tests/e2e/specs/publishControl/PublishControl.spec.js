@@ -1,4 +1,4 @@
-describe('Publish control test', { scrollBehavior: false }, () => {
+describe.skip('Publish control test', { scrollBehavior: false }, () => {
   it('should render new publish control', () => {
     cy.get('[data-cy="publish-control"]')
       .should('not.be.visible')

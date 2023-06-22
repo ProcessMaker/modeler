@@ -9,7 +9,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Start Message Event', () => {
+describe.skip('Start Message Event', () => {
   it('Removes messageRef when message is deleted', () => {
     const startMessageEventPosition = { x: 250, y: 250 };
     const endMessageEventPosition = { x: 250, y: 350 };

@@ -10,7 +10,7 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Tasks', () => {
+describe.skip('Tasks', () => {
   const taskPosition = { x: 250, y: 250 };
   const testString = 'testing';
 

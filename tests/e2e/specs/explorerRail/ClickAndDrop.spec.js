@@ -1,7 +1,3 @@
-
-// import {
-//   waitToRenderAllShapes,
-// } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
 const { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } = require('../../support/utils');
 

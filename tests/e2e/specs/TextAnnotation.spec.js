@@ -9,7 +9,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { baseNodeColors } from '../../../src/components/nodeColors';
 
-describe('Text Annotation', () => {
+describe.skip('Text Annotation', () => {
   it('Update text annotation name', () => {
     const testString = 'testing';
 

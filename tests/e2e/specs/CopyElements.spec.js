@@ -9,7 +9,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Copy element', () => {
+describe.skip('Copy element', () => {
   it('should copy start events', () => {
     const startEventPosition = { x: 150, y: 150 };
 

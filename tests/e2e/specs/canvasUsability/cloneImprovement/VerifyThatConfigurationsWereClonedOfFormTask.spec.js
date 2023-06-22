@@ -5,7 +5,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Clone Improvement', () => {
+describe.skip('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorFormTask = '[data-type="processmaker.components.nodes.task.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';

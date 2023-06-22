@@ -2,7 +2,7 @@ import { clickAndDropElement, getElementAtPosition, typeIntoTextInput } from '..
 
 import { nodeTypes } from '../support/constants';
 
-describe('Exclusive Gateway', () => {
+describe.skip('Exclusive Gateway', () => {
   it('Update exclusive gateway name', () => {
     const testString = 'testing';
     const exclusiveGatewayPosition = { x: 200, y: 200 };

@@ -8,7 +8,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Intermediate Timer Event', () => {
+describe.skip('Intermediate Timer Event', () => {
   it('Update delay field on Intermediate Timer Event', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);

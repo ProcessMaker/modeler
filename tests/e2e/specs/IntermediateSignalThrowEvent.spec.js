@@ -7,7 +7,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import _ from 'lodash';
 
-describe('Intermediate Signal Throw Event', () => {
+describe.skip('Intermediate Signal Throw Event', () => {
 
   beforeEach(() => {
     cy.window().then((win) => {

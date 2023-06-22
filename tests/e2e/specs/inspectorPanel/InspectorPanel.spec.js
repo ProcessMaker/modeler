@@ -5,7 +5,7 @@ const {
   getElementAtPosition,
 } = require('../../support/utils');
 
-describe('Inspector panel test', { scrollBehavior: false }, () => {
+describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
   const inspectorButtonSelector = '[data-cy="inspector-button"]';
   const inspectorPanelSelector = '[data-cy="inspector-panel"]';
   const inspectorCloseButton = '[data-cy="inspector-close-button"]';

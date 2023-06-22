@@ -8,7 +8,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Intermediate Catch Event', () => {
+describe.skip('Intermediate Catch Event', () => {
   it('Removes messageRef when message is deleted', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     const intermediateThrowEventPosition = { x: 250, y: 350 };

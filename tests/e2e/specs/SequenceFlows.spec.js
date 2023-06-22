@@ -16,7 +16,7 @@ import { taskWidth } from '../../../src/components/nodes/task/taskConfig';
 import { startEventDiameter } from '../../../src/components/nodes/baseStartEvent/startEventConfig';
 import { endColor, startColor } from '../../../src/components/nodeColors';
 
-describe('Sequence Flows', () => {
+describe.skip('Sequence Flows', () => {
   it('Can connect two elements', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };

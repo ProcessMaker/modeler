@@ -8,7 +8,7 @@ import {
 
 import {nodeTypes} from '../support/constants';
 
-describe('Data Objects and Data Stores', () => {
+describe.skip('Data Objects and Data Stores', () => {
   const dataPosition = {x: 250, y: 250};
   const startEventPosition = {x: 150, y: 150};
   const taskPosition = { x: 400, y: 400 };

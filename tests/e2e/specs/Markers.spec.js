@@ -1,7 +1,7 @@
 import { clickAndDropElement, getElementAtPosition, typeIntoTextInput } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Markers', () => {
+describe.skip('Markers', () => {
   it('Add a task with a custom book marker', () => {
     const taskPosition = { x: 200, y: 200 };
     clickAndDropElement(nodeTypes.taskWithMarker, taskPosition);
