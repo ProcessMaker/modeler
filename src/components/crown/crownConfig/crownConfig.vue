@@ -1,5 +1,5 @@
 <template>
-  <div class="crown-config" :style="style" v-if="showCrown && !isMultiselect" role="menu">
+  <div class="crown-config" :style="style" v-if="showCrownConfig" role="menu">
     <slot />
 
     <association-flow-button
@@ -174,6 +174,9 @@ export default {
     this.$t = this.$t.bind(this);
   },
   computed: {
+    showCrownConfig() {
+      return this.showCrown && !this.isMultiselect && store.getters.isReadOnly === false;
+    },
     isMultiselect() {
       const countSelected = store.getters.highlightedShapes.length;
       return countSelected > 1;
@@ -233,7 +236,7 @@ export default {
       const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation && !this.isFlow });
 
       this.style = {
-        top: `${y - 45}px`,
+        top: `${y - 52}px`,
         left: `${x + width - 20}px`,
         cursor: 'pointer',
       };

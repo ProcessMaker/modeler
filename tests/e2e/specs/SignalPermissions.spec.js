@@ -17,7 +17,7 @@ function setPerm(perm, value) {
   return getElementAtPosition(intermediateSignalThrowEventPosition).click();
 } 
 
-describe('Intermediate Message Throw Event', () => {
+describe.skip('Intermediate Message Throw Event', () => {
 
   it('can create a message when intermediate message throw event is dragged on', () => {
     

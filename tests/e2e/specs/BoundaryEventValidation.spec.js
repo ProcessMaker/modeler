@@ -1,4 +1,4 @@
-import { dragFromSourceToDest, getComponentsEmbeddedInShape, getElementAtPosition, setBoundaryEvent } from '../support/utils';
+import { clickAndDropElement, getComponentsEmbeddedInShape, getElementAtPosition, setBoundaryEvent } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import uniqWith from 'lodash/uniqWith';
 import isEqual from 'lodash/isEqual';
@@ -6,7 +6,7 @@ import isEqual from 'lodash/isEqual';
 describe('Boundary event validation', () => {
   it('should add boundary events to empty ports around boundary event target, and not allow adding any more', () => {
     const taskPosition = { x: 250, y: 200 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     const numberOfPortsAroundTask = 12;
     for (let i = 0; i < numberOfPortsAroundTask; i++) {

@@ -19,6 +19,36 @@ export default {
   rank: 40,
   icon: require('@/assets/toolpanel/task.svg'),
   label: 'Task',
+  items: [
+    {
+      icon: require('@/assets/toolpanel/task.svg'),
+      label: 'Form Task',
+      control: true,
+      rank: 41,
+      id: 'processmaker-modeler-task',
+    },
+    {
+      icon: require('@/assets/toolpanel/manual-task.svg'),
+      label: 'Manual Task',
+      control: true,
+      rank: 42,
+      id: 'processmaker-modeler-manual-task',
+    },
+    {
+      icon: require('@/assets/toolpanel/script-task.svg'),
+      label: 'Script Task',
+      control: true,
+      rank: 43,
+      id: 'processmaker-modeler-script-task',
+    },
+    {
+      icon: require('@/assets/toolpanel/sub-task.svg'),
+      label: 'Sub Process',
+      control: true,
+      rank: 44,
+      id: 'processmaker-modeler-call-activity',
+    },
+  ],
   definition(moddle, $t) {
     return moddle.create('bpmn:Task', {
       name: $t(defaultNames[id]),
@@ -57,7 +87,7 @@ export default {
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
+            label: 'Properties',
             icon: 'cog',
             name: 'inspector-accordion-task',
           },

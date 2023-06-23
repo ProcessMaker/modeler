@@ -17,6 +17,50 @@ export default {
   icon: require('@/assets/toolpanel/generic-intermediate-event.svg'),
   label: 'Intermediate Event',
   rank: 20,
+  items: [
+    {
+      icon: require('@/assets/toolpanel/intermediate-timer-event.svg'),
+      label: 'Intermediate Timer Event',
+      control: true,
+      rank: 21,
+      id: 'processmaker-modeler-intermediate-catch-timer-event',
+    },
+    {
+      icon: require('@/assets/toolpanel/intermediate-signal-catch-event.svg'),
+      label: 'Intermediate Signal Catch Event',
+      control: true,
+      rank: 22,
+      id: 'processmaker-modeler-intermediate-signal-catch-event',
+    },
+    {
+      icon: require('@/assets/toolpanel/intermediate-signal-throw-event.svg'),
+      label: 'Intermediate Signal Throw Event',
+      control: true,
+      rank: 23,
+      id: 'processmaker-modeler-intermediate-signal-throw-event',
+    },
+    {
+      icon: require('@/assets/toolpanel/intermediate-message-catch-event.svg'),
+      label: 'Intermediate Message Catch Event',
+      control: true,
+      rank: 24,
+      id: 'processmaker-modeler-intermediate-message-catch-event',
+    },
+    {
+      icon: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),
+      label: 'Intermediate Message Throw Event',
+      control: true,
+      rank: 25,
+      id: 'processmaker-modeler-intermediate-message-throw-event',
+    },
+    {
+      icon: require('@/assets/toolpanel/intermediate-conditional-catch-event.svg'),
+      label: 'Intermediate Conditional Catch Event',
+      control: true,
+      rank: 26,
+      id: 'processmaker-modeler-intermediate-conditional-catch-event',
+    },
+  ],
   definition(moddle, $t) {
     return moddle.create('bpmn:IntermediateCatchEvent', {
       name: $t(defaultNames[id]),
@@ -91,7 +135,7 @@ export default {
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
+            label: 'Properties',
             icon: 'cog',
             name: 'inspector-accordion-intermediate-timer-config',
           },

@@ -1,0 +1,98 @@
+.control {
+
+  &-list {
+    display: flex;
+    align-items: center;
+    margin: 0px;
+    padding: 4px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    list-style: none;
+  }
+
+  &-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      background-color: #ebeef2;
+    }
+
+    &.active {
+      background-color: #D4D7F4;
+
+      &::v-deep a > svg {
+        fill: #1264AA;
+      }
+    }
+
+    &-options {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 3px;
+      transform: rotate(47.59deg);
+      cursor: pointer;
+
+      & > span {
+        display: block;
+        width: 4px;
+        height: 3px;
+        background-color: #44494e;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        clip-path: padding-box;
+      }
+    }
+  }
+
+  &-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    background-color: #00AD73;
+    border-radius: 2px;
+    font-size: 13px;
+
+    & > svg {
+      fill: #ffffff;
+    }
+  }
+}
+
+.is-dragging {
+  color: $primary-white;
+  position: absolute;
+  z-index: 10;
+  box-shadow: 5px 5px 8px 0px #0000004a;
+  padding: 0.5rem;
+  pointer-events: none;
+  width: 40px;
+  height: 40px;
+  background-color: green;
+  &.no-drop {
+    opacity: 0.8;
+    cursor: no-drop;
+    pointer-events: none;
+  }
+
+  &:hover {
+    background-color: $primary-color;
+    color: $primary-white;
+    pointer-events: none;
+  }
+}
