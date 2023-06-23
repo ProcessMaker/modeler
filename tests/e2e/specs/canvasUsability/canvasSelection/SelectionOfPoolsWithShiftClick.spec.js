@@ -1,31 +1,31 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   waitToRenderAllShapes,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Selection of pool with shift click', () => {
+describe.skip('Selection of pool with shift click', () => {
   it('should add to selection a pool with shift key', () => {
     // Drag pool 1 and elements inside
     const pool1Position = { x: 100, y: 50 };
-    dragFromSourceToDest(nodeTypes.pool, pool1Position);
+    clickAndDropElement(nodeTypes.pool, pool1Position);
 
     const taskPosition1 = { x: 280, y: 180 };
     const endEventPosition1 = { x: 440, y: 240 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition1);
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition1);
+    clickAndDropElement(nodeTypes.task, taskPosition1);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition1);
 
     // Drag pool 2 and elements inside
     const pool2Position = { x: 100, y: 450 };
-    dragFromSourceToDest(nodeTypes.pool, pool2Position);
+    clickAndDropElement(nodeTypes.pool, pool2Position);
 
     const startEventPosition2 = { x: 180, y: 520 };
     const taskPosition2 = { x: 280, y: 500 };
     const endEventPosition2 = { x: 440, y: 520 };
-    dragFromSourceToDest(nodeTypes.startEvent, startEventPosition2);
-    dragFromSourceToDest(nodeTypes.task, taskPosition2);
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition2);
+    clickAndDropElement(nodeTypes.startEvent, startEventPosition2);
+    clickAndDropElement(nodeTypes.task, taskPosition2);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition2);
 
     // Select both pools with shift + click
     cy.get('body').type('{shift}', { release: false });

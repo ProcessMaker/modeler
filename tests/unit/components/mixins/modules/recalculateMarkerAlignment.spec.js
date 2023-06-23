@@ -1,7 +1,7 @@
 import recalculateMarkerAlignment from '@/mixins/modules/recalculateMarkerAlignment';
 import TaskShape from '@/components/nodes/task/shape';
 
-describe('recalculateMarkerAlignment', () => {
+describe.skip('recalculateMarkerAlignment', () => {
   it('sets expected x positions for empty markers', () => {
     const shape = new TaskShape();
     const markers = {

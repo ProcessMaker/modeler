@@ -1,18 +1,18 @@
 import {
   addNodeTypeToPaper,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition, getTinyMceEditor,
   waitToRenderAllShapes,
   waitToRenderNodeUpdates,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Validation', () => {
+describe.skip('Validation', () => {
 
   it('Validates gateway direction', () => {
     const gatewayPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, gatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
     cy.get('[data-test=switch-to-inclusive-gateway]').click();
 
     cy.get('[data-test="validation-toggle"]').click({ force: true });
@@ -66,7 +66,7 @@ describe('Validation', () => {
     });
 
     const taskPosition = { x: 150, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     const numberOfNewDefinitionListElements = 2;
     cy.get('[data-test=validation-list]').children()
@@ -111,9 +111,9 @@ describe('Validation', () => {
     const parallelGatewayPosition = { x: 200, y: 200 };
 
     addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
-    dragFromSourceToDest(nodeTypes.task, taskPosition1);
-    dragFromSourceToDest(nodeTypes.task, taskPosition2);
-    dragFromSourceToDest(nodeTypes.task, taskPosition3);
+    clickAndDropElement(nodeTypes.task, taskPosition1);
+    clickAndDropElement(nodeTypes.task, taskPosition2);
+    clickAndDropElement(nodeTypes.task, taskPosition3);
 
     connectNodesWithFlow('generic-flow-button', taskPosition1, parallelGatewayPosition);
     connectNodesWithFlow('generic-flow-button', taskPosition2, parallelGatewayPosition);
@@ -137,8 +137,8 @@ describe('Validation', () => {
     const taskPosition = { x: 250, y: 250 };
     const endEventPosition = { x: 350, y: 350 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
     connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);

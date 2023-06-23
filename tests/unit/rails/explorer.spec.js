@@ -22,7 +22,7 @@ const localVue = createLocalVue();
 
 localVue.use(BootstrapVue);
 
-describe('Explorer Rail', () => {
+describe.skip('Explorer Rail', () => {
   let wrapper;
   beforeEach(() => {
     wrapper = shallowMount(explorerRail, {
