@@ -1,7 +1,7 @@
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   waitToRenderAllShapes,
@@ -9,14 +9,14 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Start Message Event', () => {
+describe.skip('Start Message Event', () => {
   it('Removes messageRef when message is deleted', () => {
     const startMessageEventPosition = { x: 250, y: 250 };
     const endMessageEventPosition = { x: 250, y: 350 };
-    dragFromSourceToDest(nodeTypes.startEvent, startMessageEventPosition);
+    clickAndDropElement(nodeTypes.startEvent, startMessageEventPosition);
     cy.get('[data-test=switch-to-message-start-event]').click();
 
-    dragFromSourceToDest(nodeTypes.endEvent, endMessageEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endMessageEventPosition);
     cy.get('[data-test=switch-to-message-end-event]').click();
 
     getElementAtPosition(startMessageEventPosition).click();

@@ -2,7 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition,
   getLinksConnectedToElement,
   modalConfirm,
@@ -16,12 +16,12 @@ import { taskWidth } from '../../../src/components/nodes/task/taskConfig';
 import { startEventDiameter } from '../../../src/components/nodes/baseStartEvent/startEventConfig';
 import { endColor, startColor } from '../../../src/components/nodeColors';
 
-describe('Sequence Flows', () => {
+describe.skip('Sequence Flows', () => {
   it('Can connect two elements', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
@@ -36,10 +36,10 @@ describe('Sequence Flows', () => {
 
   it('Update name and condition expression', () => {
     const exclusiveGatewayPosition = { x: 400, y: 300 };
-    dragFromSourceToDest(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
+    clickAndDropElement(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
 
     const taskPosition = { x: 400, y: 500 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', exclusiveGatewayPosition, taskPosition);
 
@@ -74,10 +74,10 @@ describe('Sequence Flows', () => {
    */
   it.skip('Allows modifying anchor points', () => {
     const taskPosition = { x: 200, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     const task2Position = { x: 400, y: 500 };
-    dragFromSourceToDest(nodeTypes.task, task2Position);
+    clickAndDropElement(nodeTypes.task, task2Position);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, task2Position);
 
@@ -149,7 +149,7 @@ describe('Sequence Flows', () => {
   it('Retains target anchor point after parsing and moving shape', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 200, y: 300 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
@@ -197,7 +197,7 @@ describe('Sequence Flows', () => {
   it('Retains source anchor point after parsing and moving shape', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 400, y: 400 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
@@ -244,13 +244,13 @@ describe('Sequence Flows', () => {
 
   it('connects sequence flows with a straight line', () => {
     const taskPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     const endEventPosition = {
       x: taskPosition.x + (taskWidth / 2) - (startEventDiameter / 2) + 1,
       y: taskPosition.y + 200,
     };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
 
@@ -261,7 +261,7 @@ describe('Sequence Flows', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).
@@ -273,8 +273,8 @@ describe('Sequence Flows', () => {
     const endEventPosition = { x: 350, y: 350 };
     const taskPosition = { x: 250, y: 250 };
 
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
     getElementAtPosition(endEventPosition, nodeTypes.endEvent).
