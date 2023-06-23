@@ -47,6 +47,7 @@
         :is-rendering="isRendering"
         :is-completed="requestCompletedNodes.includes(node.definition.id)"
         :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
+        :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
@@ -134,6 +135,10 @@ export default {
     readOnly: {
       type: Boolean,
       default: true,
+    },
+    requestIdleNodes: {
+      type: Array,
+      default: () => [],
     },
     requestCompletedNodes: {
       type: Array,
