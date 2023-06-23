@@ -1,11 +1,11 @@
 import {
   clickAndDropElement,
   waitToRenderAllShapes,
-  getGraphElements, getIframeDocumnetation, selectComponentType,
+  getGraphElements, getIframeDocumentation, selectComponentType, toggleInspector,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorFormTask = '[data-type="processmaker.components.nodes.task.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -20,11 +20,13 @@ describe.skip('Clone Improvement', () => {
     const taskPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
+    toggleInspector();
+
     //Step 3: Config The Form Task
     cy.get('[name="name"]').clear().type('Form Task Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Form Task');
+    getIframeDocumentation().find('p').should('exist').click().type('Documentation to Form Task');
 
     //Step 5: Clone the element
     cy.get('[data-test="clone-button"]').click();
@@ -36,7 +38,7 @@ describe.skip('Clone Improvement', () => {
     cy.get(selectorFormTask).eq(1).click();
     cy.get('[name="name"]').should('have.value','Form Task Test 1');
     cy.get('[id="accordion-button-documentation-accordion"]').click();
-    getIframeDocumnetation().find('p').should('have.text','Documentation to Form Task');
+    getIframeDocumentation().find('p').should('have.text','Documentation to Form Task');
   });
 
   it('TCP4-2727: Verify Form Task,Manual Task,Script Task and Sub-Process', () => {

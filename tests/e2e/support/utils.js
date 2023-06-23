@@ -403,7 +403,7 @@ export function getIframeDocumentation() {
   cy.get('[id="accordion-button-documentation-accordion"]').click();
   const getIframeDocument = () => {
     return cy
-      .get('iframe[id *= "documentation-editor"]')
+      .get('iframe[id*="tiny-vue_')
       .its('0.contentDocument').should('exist');
   };
   const getIframeBody = () => {
