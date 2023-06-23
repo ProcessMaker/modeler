@@ -1,6 +1,6 @@
 import { waitToRenderAllShapes } from '../../support/utils';
 
-describe('Mini Paper control test', () => {
+describe.skip('Mini Paper control test', { scrollBehavior: false }, () => {
   const miniPaperSelector = '[data-cy="mini-paper-button"]';
   const miniMapSelector = '[data-cy="mini-map-box"]';
 

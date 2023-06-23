@@ -1,4 +1,4 @@
-import { dragFromSourceToDest, getElementAtPosition, getGraphElements, waitToRenderAllShapes } from '../support/utils';
+import { clickAndDropElement, getElementAtPosition, getGraphElements, waitToRenderAllShapes } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 import { defaultNodeColor } from '../../../src/components/nodeColors';
@@ -7,10 +7,10 @@ describe.skip('Boundary Escalation Event', () => {
 
   it('can toggle interrupting on Boundary Escalation Events', () => {
     const taskPosition = { x: 200, y: 200 };
-    dragFromSourceToDest(nodeTypes.subProcess, taskPosition);
+    clickAndDropElement(nodeTypes.subProcess, taskPosition);
 
     const boundaryEscalationEventPosition = { x: 260, y: 260 };
-    dragFromSourceToDest(nodeTypes.boundaryEscalationEvent, boundaryEscalationEventPosition);
+    clickAndDropElement(nodeTypes.boundaryEscalationEvent, boundaryEscalationEventPosition);
 
     getElementAtPosition(boundaryEscalationEventPosition).click();
 
@@ -41,14 +41,14 @@ describe.skip('Boundary Escalation Event', () => {
     ];
 
     inValidBoundaryEscalationEventTargets.forEach(({ type, position }) => {
-      dragFromSourceToDest(type, position);
+      clickAndDropElement(type, position);
     });
 
     const numberOfElementsExpected = initialNumberOfElements + inValidBoundaryEscalationEventTargets.length;
     getGraphElements().should('have.length', numberOfElementsExpected);
 
     inValidBoundaryEscalationEventTargets.forEach(({ position }) => {
-      dragFromSourceToDest(nodeTypes.boundaryEscalationEvent, position);
+      clickAndDropElement(nodeTypes.boundaryEscalationEvent, position);
     });
 
     const callActivityEscalation = 1;
@@ -64,5 +64,6 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
+  // TODO remove line 68 when this test is ready to pass
   skip: true,
 });

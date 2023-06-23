@@ -1,0 +1,19 @@
+.inspector-button {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  top: 95px;
+  right: 65px;
+  padding: 4px;
+  background-color: #FFFFFF;
+  border: 0 none;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+  & > svg {
+    fill: #44494E;
+  }
+}

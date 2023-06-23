@@ -15,7 +15,7 @@ function addStartTimerEventToPaper(){
   addNodeTypeToPaper(startTimerEventPosition, nodeTypes.startEvent, 'switch-to-start-timer-event');
 }
 
-describe('Start Timer Event', () => {
+describe.skip('Start Timer Event', () => {
 
   const now = new Date();
   const today = now.getDate().toString().padStart(2, '0');

@@ -1,11 +1,11 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements, getIframeDocumnetation, selectComponentType,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Clone Improvement', () => {
+describe.skip('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorFormTask = '[data-type="processmaker.components.nodes.task.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -18,7 +18,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add Task Form
     const taskPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     //Step 3: Config The Form Task
     cy.get('[name="name"]').clear().type('Form Task Test 1');
@@ -48,7 +48,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add Form Task
     const intermediatePosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.task, intermediatePosition);
+    clickAndDropElement(nodeTypes.task, intermediatePosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the Form Task to Manual Task

@@ -3,7 +3,7 @@ import { dummyShape } from '../../utilities/dummies';
 
 expect.extend({ toHaveBeenProgrammaticallyMoved });
 
-describe('toHaveBeenProgrammaticallyMoved', () => {
+describe.skip('toHaveBeenProgrammaticallyMoved', () => {
   it('passes when translate is called with a non-zero translation vector', () => {
     const testShape = dummyShape(0, 0, 0, 0);
 

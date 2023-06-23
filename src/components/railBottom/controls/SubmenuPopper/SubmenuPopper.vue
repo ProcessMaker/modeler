@@ -15,6 +15,7 @@
           :class="['control-submenu-list', {'active': selectedItem === item.type}]"
           :key="key"
           @click="onClickHandler($event, item)"
+          :data-test="item.type"
         >
           <inline-svg :src="item.icon" :alt=item.label />
           <div class="control-submenu-list-label">
@@ -84,10 +85,10 @@ export default ({
   flex-direction: column;
   align-items: flex-start;
   padding: 10px;
-  width: 255px;
+  width: max-content;
   left: 616px;
   background: #FFFFFF;
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   list-style: none;
   &-item {
@@ -105,12 +106,12 @@ export default ({
     align-items: center;
     padding: 12px 5px;
     gap: 8px;
-    width: 235px;
     height: 40px;
     flex: none;
     order: 0;
     align-self: stretch;
     flex-grow: 0;
+    border-radius: 4px;
 
     &.active {
       background-color: #DEEBFF;
@@ -128,7 +129,6 @@ export default ({
       height: 24px;
     }
     &-label{
-      font-family: 'Open Sans';
       font-style: normal;
       font-weight: 400;
       font-size: 14px;
@@ -166,7 +166,7 @@ export default ({
   color: $primary-white;
   position: absolute;
   z-index: 10;
-  box-shadow: 5px 5px 8px 0px #0000004a;
+  box-shadow: 5px 5px 8px 0 #0000004a;
   padding: 0.5rem;
   pointer-events: none;
   width: 40px;
