@@ -772,7 +772,7 @@ export default {
     /**
      * Stop dragging elements that are in a pool
      */
-    overPoolStopDrag(){
+    async overPoolStopDrag(){
       if (this.isNotPoolChilds(this.selected)) {
         this.updateFlowsWaypoint();
         this.$emit('save-state');
@@ -789,6 +789,7 @@ export default {
         if (this.newPool){
           /* Remove the shape from its current pool */
           this.moveElements(this.selected, this.oldPool, this.newPool);
+          this.moveConectedLinks(this.conectedLinks, this.oldPool, this.newPool);
           this.newPool = null;
           this.oldPool = null;
           this.updateLaneChildren(this.selected);
@@ -921,11 +922,17 @@ export default {
       const shapesToMove= [
         'PoolLane',
         'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       selected.filter(shape => !shapesToMove.includes(shape.model.get('type')))
         .forEach(shape => {
           oldPool.model.component.moveElement(shape.model, newPool.model);
         });
+    },
+    moveConectedLinks(links, oldPool, newPool){
+      links.forEach(link => {
+        oldPool.model.component.moveFlow(link.model, newPool.model);
+      });
     },
   },
 };

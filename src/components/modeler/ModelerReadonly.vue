@@ -47,6 +47,7 @@
         :is-rendering="isRendering"
         :is-completed="requestCompletedNodes.includes(node.definition.id)"
         :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
+        :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
@@ -87,6 +88,7 @@ import controls from '../controls/controls';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
+import nodeTypesStore from '@/nodeTypesStore';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -133,6 +135,10 @@ export default {
     readOnly: {
       type: Boolean,
       default: true,
+    },
+    requestIdleNodes: {
+      type: Array,
+      default: () => [],
     },
     requestCompletedNodes: {
       type: Array,
@@ -183,6 +189,7 @@ export default {
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
+      pmBlockNodes: [],
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
@@ -406,6 +413,29 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+    },
+    registerPmBlock(pmBlockNode, customParser) {
+      const defaultParser = () => pmBlockNode.id;
+
+      this.translateConfig(pmBlockNode.inspectorConfig[0]);
+      addLoopCharacteristics(pmBlockNode);
+      this.nodeRegistry[pmBlockNode.id] = pmBlockNode;
+
+      Vue.component(pmBlockNode.id, pmBlockNode.component);
+      this.pmBlockNodes.push(pmBlockNode);
+
+      const types = Array.isArray(pmBlockNode.bpmnType)
+        ? pmBlockNode.bpmnType
+        : [pmBlockNode.bpmnType];
+
+      types.forEach(bpmnType => {
+        if (customParser) {
+          this.parsers[bpmnType].custom.push(customParser);
+          return;
+        }
+        this.parsers[bpmnType].default.push(defaultParser);
+      });
+      nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
     },
     addMessageFlows() {
       if (this.collaboration) {
@@ -845,6 +875,7 @@ export default {
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
+      registerPmBlock: this.registerPmBlock,
     });
 
     this.moddle = new BpmnModdle(this.extensions);

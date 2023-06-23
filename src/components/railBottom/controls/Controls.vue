@@ -80,6 +80,7 @@ export default ({
       // Toggle left explorer
       nodeTypesStore.commit('toggleExplorer');
       nodeTypesStore.commit('clearFilteredNodes');
+      nodeTypesStore.commit('clearFilteredPmBlockNodes');
     },
   },
 });

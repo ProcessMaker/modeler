@@ -2,16 +2,21 @@
 import nodeTypesStore from '@/nodeTypesStore';
 export default {
   name: 'FilterNodeTypes',
+  props: ['type'],
   data() {
     return {
       searchTerm: '',
-      placeholder: this.$t('Seach Objects'),
     };
   },
   watch: {
     searchTerm(value) {
-      if (value.length === 0) nodeTypesStore.commit('clearFilteredNodes');
-      if (value.length > 0) nodeTypesStore.commit('setFilteredNodeTypes', value);
+      if (this.type === 'pmBlock') {
+        if (value.length === 0) nodeTypesStore.commit('clearFilteredPmBlockNodes');
+        if (value.length > 0) nodeTypesStore.commit('setFilteredPmBlockNodeTypes', value);
+      } else  {
+        if (value.length === 0) nodeTypesStore.commit('clearFilteredNodes');
+        if (value.length > 0) nodeTypesStore.commit('setFilteredNodeTypes', value);
+      }
     },
   },
   computed: {
@@ -19,6 +24,13 @@ export default {
       const pinnedNodeTypes = nodeTypesStore.getters.getPinnedNodeTypes;
       const nodeTypes = nodeTypesStore.getters.getNodeTypes;
       return [...pinnedNodeTypes, ...nodeTypes];
+    },
+    pmBlockNodes() {
+      const pmBlockNodeTypes = nodeTypesStore.getters.getPmBlockNodeTypes;
+      return [...pmBlockNodeTypes];
+    },
+    placeholder() {
+      return this.type === 'pmBlock' ? this.$t('Search PM Blocks') : this.$t('Search Objects');
     },
   },
 };
