@@ -146,6 +146,7 @@ import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
+import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
@@ -636,8 +637,7 @@ export default {
         this.parsers[bpmnType].default.push(defaultParser);
       });
     },
-    registerPmBlock(pmBlockNode) {
-      console.log('REGISTER PM BLOCK NODE', pmBlockNode);
+    registerPmBlock(pmBlockNode, customParser) {
       const defaultParser = () => pmBlockNode.id;
 
       this.translateConfig(pmBlockNode.inspectorConfig[0]);
@@ -646,15 +646,19 @@ export default {
 
       Vue.component(pmBlockNode.id, pmBlockNode.component);
       this.pmBlockNodes.push(pmBlockNode);
-      console.log('PM BLOCK NODES REGISTER', this.pmBlockNodes);
 
       const types = Array.isArray(pmBlockNode.bpmnType)
         ? pmBlockNode.bpmnType
         : [pmBlockNode.bpmnType];
 
       types.forEach(bpmnType => {
+        if (customParser) {
+          this.parsers[bpmnType].custom.push(customParser);
+          return;
+        }
         this.parsers[bpmnType].default.push(defaultParser);
       });
+      nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
     },
     addMessageFlows() {
       if (this.collaboration) {
