@@ -121,11 +121,17 @@ export default {
     moveEmbeddedElements(currentElement, toPool) {
       this.getElementsUnderArea(currentElement, this.graph)
         .filter(element => element.isEmbeddedIn(currentElement))
-        .map(element => element.component.node.definition)
-        .forEach((elementDefinition) => {
-          pull(this.containingProcess.get('flowElements'), elementDefinition);
-          toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+        .forEach((child) => {
+          child.component.node.pool = toPool;
+          pull(this.containingProcess.get('flowElements'), child.component.node.definition);
+          toPool.component.containingProcess.get('flowElements').push(child.component.node.definition);
         });
+    },
+    moveFlow(element, toPool){
+      const elementDefinition = element.component.node.definition;
+      /* Remove references to the element from the current process */
+      pull(this.containingProcess.get('flowElements'), elementDefinition);
+      toPool.component.containingProcess.get('flowElements').push(elementDefinition);
     },
     moveElement(element, toPool) {
       const elementDefinition = element.component.node.definition;

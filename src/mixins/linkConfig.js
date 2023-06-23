@@ -123,6 +123,8 @@ export default {
       resetShapeColor(targetShape);
 
       this.shape.on('change:vertices', this.onChangeVertices);
+      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -130,13 +132,15 @@ export default {
     },
     /**
       * On Change vertices handler
-      * @param {Object} link 
-      * @param {Array} vertices 
-      * @param {Object} options 
+      * @param {Object} link
+      * @param {Array} vertices
+      * @param {Object} options
       */
-    onChangeVertices(link, vertices, options){
+    async onChangeVertices(link, vertices, options){
       if (options && options.ui) {
         this.updateWaypoints();
+        await this.$nextTick();
+        this.$emit('save-state');
       }
     },
     updateWaypoints() {
@@ -237,7 +241,6 @@ export default {
     emitSave() {
       if (this.highlighted) {
         this.updateWaypoints.flush();
-        this.$emit('save-state');
         document.removeEventListener('mouseup', this.emitSave);
         this.listeningToMouseup = false;
       }

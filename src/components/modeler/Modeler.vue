@@ -16,6 +16,7 @@
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
       @publishTemplate="publishTemplate"
+      @publishPmBlock="publishPmBlock"
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
@@ -376,6 +377,9 @@ export default {
     publishTemplate() {
       this.$emit('publishTemplate');
     },
+    publishPmBlock() {
+      this.$emit('publishPmBlock');
+    },
     async pasteElements() {
       if (this.copiedElements.length > 0 && !this.pasteInProgress) {
         this.pasteInProgress = true;
@@ -537,8 +541,7 @@ export default {
       } else {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
-        process.set('id', `process_${this.processes.length}`);
-
+        process.set('id', this.nodeIdGenerator.generateProcessId());
         this.definitions.get('rootElements').push(process);
       }
 
@@ -1042,6 +1045,16 @@ export default {
       this.$refs.selector.clearSelection();
       await this.$nextTick();
       await this.pushToUndoStack();
+      // force to update the processNode property in every delete
+      this.processes = this.getProcesses();
+      if (this.processes  && this.processes.length > 0) {
+        this.processNode = new Node(
+          'processmaker-modeler-process',
+          this.processes[0],
+          this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+        );
+      }
+      
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
