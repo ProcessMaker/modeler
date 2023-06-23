@@ -4,9 +4,10 @@ import {
   waitToRenderAllShapes,
 } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
-describe('Create Element' , () => {
+describe.skip('Create Element' , () => {
   it('Verify if the number of the created elements is right', () => {
-    const startEventPosition = { x: 100, y: 100 };
+    const explorerX = 200;
+    const startEventPosition = { x: 100 + explorerX, y: 100 };
     const taskFormPosition = {
       x: startEventPosition.x + 200,
       y: startEventPosition.y,

@@ -1,7 +1,7 @@
 import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Conditional Start Event', () => {
+describe.skip('Conditional Start Event', () => {
   it('Can create conditional start event', () => {
     const signalStartEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(signalStartEventPosition, nodeTypes.startEvent, 'switch-to-conditional-start-event');

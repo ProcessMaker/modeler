@@ -59,7 +59,7 @@ export default {
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
+            label: 'Properties',
             icon: 'cog',
             name: 'inspector-accordion-subprocess',
           },

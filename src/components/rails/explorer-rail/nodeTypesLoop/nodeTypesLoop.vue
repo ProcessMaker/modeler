@@ -22,9 +22,11 @@ export default {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
+      this.deselect();
       return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
+      this.deselect();
       return nodeTypesStore.dispatch('addUserPinnedObject', object);
     },
   },
@@ -55,10 +57,11 @@ export default {
       <template v-for="object in filteredNodes">
         <div
           class="node-types__item"
+          :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
-          @click.stop="onClickHandler($event, object)"
+          @click.self="onClickHandler($event, object)"
         >
           <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
           <span>{{ $t(object.label) }}</span>
@@ -85,6 +88,7 @@ export default {
         <template v-for="pinnedObject in pinnedObjects">
           <div
             class="node-types__item"
+            :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
@@ -106,6 +110,7 @@ export default {
         <template v-for="nodeType in unpinnedObjects">
           <div
             class="node-types__item"
+            :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"

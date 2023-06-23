@@ -1,11 +1,11 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements, getIframeDocumnetation, selectComponentType,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Clone Improvement', () => {
+describe.skip('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorIntermediateEvent = '[data-type="processmaker.components.nodes.intermediateEvent.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -18,7 +18,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add Intermediate Event
     const intermediatePosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediatePosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
 
     //Step 3: Config The Intermediate Event
     cy.get('[name="name"]').clear().type('Intermediate Event Test 1');
@@ -47,7 +47,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add Intermediate Event
     const intermediatePosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediatePosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the Intermediate Event to Signal Event

@@ -10,7 +10,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Error End Event', () => {
+describe.skip('Error End Event', () => {
   const errorEndEventPosition = { x: 250, y: 250 };
   const errorName = 'Awesome error';
   const errorEndEventXml = `

@@ -7,6 +7,7 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
   runtimeCompiler: true,
+  lintOnSave: process.env.NODE_ENV !== 'production',
   css: {
     extract: false,
     loaderOptions: {

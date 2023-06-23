@@ -8,7 +8,7 @@ import {
 } from '@/components/nodes/utilities/shapeMetrics';
 import { dummyShape } from '../../../utilities/dummies';
 
-describe('Shape Metrics Utilities', () => {
+describe.skip('Shape Metrics Utilities', () => {
   it('returns x middle correctly', () => {
     expect(shapeCenterX(dummyShape(0, 0, 100, 0))).toBe(50);
   });

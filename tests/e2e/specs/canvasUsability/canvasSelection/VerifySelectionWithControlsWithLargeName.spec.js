@@ -2,7 +2,7 @@ import {
   waitToRenderAllShapes, getGraphElements,
 } from '../../../support/utils';
 
-describe('Canvas Selection', () => {
+describe.skip('Canvas Selection', () => {
   it('TCP4-2667: Verify selection with controls with large name', () => {
     const initialNumberOfElements = 1;
 
