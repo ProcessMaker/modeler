@@ -4,6 +4,7 @@
     :disabled="numberOfErrors === 0"
     @click.prevent="handleOpen"
     class="issue-box"
+    data-cy="validate-issue-button"
   >
     <span class="issue-title">Issues</span>
 

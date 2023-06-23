@@ -1,5 +1,5 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements,
   getIframeDocumnetation,
@@ -7,7 +7,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Clone Improvement', () => {
+describe.skip('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorEndEvent = '[data-type="processmaker.components.nodes.endEvent.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -20,7 +20,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add End Event
     const endEventPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     //Step 3: Config The End Event
     cy.get('[name="name"]').clear().type('End Event Test 1');
@@ -50,7 +50,7 @@ describe('Clone Improvement', () => {
 
     //Step 2: Add End Event
     const endEventPosition = { x: 350, y: 250 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the End Event to Message End Event

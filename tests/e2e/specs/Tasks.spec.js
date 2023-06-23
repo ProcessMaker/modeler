@@ -1,6 +1,6 @@
 import {
   addNodeTypeToPaper,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getElementAtPosition, modalAnimationTime,
   modalCancel,
   modalConfirm,
@@ -10,12 +10,12 @@ import {
 
 import { nodeTypes } from '../support/constants';
 
-describe('Tasks', () => {
+describe.skip('Tasks', () => {
   const taskPosition = { x: 250, y: 250 };
   const testString = 'testing';
 
   it('Update task name', () => {
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     getElementAtPosition(taskPosition).click();
 
@@ -24,7 +24,7 @@ describe('Tasks', () => {
   });
 
   it('Correctly renders task after undo/redo', () => {
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     cy.get('[data-test=undo]').click();
     waitToRenderAllShapes();

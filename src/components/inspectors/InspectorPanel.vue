@@ -1,17 +1,33 @@
 <template>
   <transition name="inspector">
     <b-col
-      v-show="!compressed"
       id="inspector"
       class="pl-0 h-100 overflow-hidden inspector-column"
-      :class="[{ 'ignore-pointer': canvasDragPosition, 'inspector-column-compressed' : compressed }]"
+      :class="[{ 'ignore-pointer': canvasDragPosition }]"
       data-test="inspector-column"
     >
       <b-card
         no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0"
         data-test="inspector-container"
         :style="{ height: parentHeight }"
+        data-cy="inspector-panel"
       >
+        <template #header>
+          <div class="inspector-header">
+            <div class="inspector-header-title">
+              {{ $t('Configuration') }}
+            </div>
+            <button
+              type="button"
+              aria-label="Close"
+              class="close"
+              @click="onClose"
+              data-cy="inspector-close-button"
+            >
+              ×
+            </button>
+          </div>
+        </template>
         <vue-form-renderer
           :key="highlightedNode._modelerId"
           v-if="highlightedNode"
@@ -63,13 +79,14 @@ Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
-  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'compressed', 'definitions'],
+  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions'],
   data() {
     return {
       data: {},
       config: [],
       inspectorHandler: null,
       translated: [],
+      isVisible: true,
     };
   },
   watch: {
@@ -131,6 +148,12 @@ export default {
     },
   },
   methods: {
+    /**
+     * On Close even handler
+     */
+    onClose(){
+      this.$emit('toggleInspector', false);
+    },
     handleAssignmentChanges(currentValue, previousValue) {
       if (currentValue === previousValue) {
         return;

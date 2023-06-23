@@ -26,12 +26,7 @@ export default {
       this.setDraggingPosition(event);
       // Deselect control on click if same control is already selected
       if (this.selectedItem && (this.selectedItem.type === control.type)) {
-        document.removeEventListener('mousemove', this.setDraggingPosition);
-        document.body.removeChild(this.movedElement);
-        this.$emit('onSetCursor', 'none');
-        nodeTypesStore.commit('clearSelectedNode');
-        nodeTypesStore.commit('setGhostNode', null);
-        this.wasClicked = false;
+        this.deselect();
         return;
       }
       this.wasClicked = true;
@@ -51,6 +46,7 @@ export default {
         this.onCreateElement(message);
         nodeTypesStore.commit('clearSelectedNode');
         nodeTypesStore.commit('setGhostNode', null);
+        this.$emit('onSetCursor', 'none');
       });
     },
     onCreateElement(event){
@@ -59,15 +55,16 @@ export default {
           this.parent = null;
         }
         this.$emit('onCreateElement', { event, control: this.selectedItem });
-        this.$emit('onSetCursor', 'none');
-        event.preventDefault();
         this.wasClicked = false;
+        event.preventDefault();
       }
     },
     setDraggingPosition({ pageX, pageY }) {
       let tempGhost = this.movedElement;
-      tempGhost.style.left = `${pageX}px`;
-      tempGhost.style.top = `${pageY}px`;
+      if (tempGhost) {
+        tempGhost.style.left = `${pageX}px`;
+        tempGhost.style.top = `${pageY}px`;
+      }
       nodeTypesStore.commit('setGhostNode', tempGhost);
     },
     createDraggingHelper(event, control) {
@@ -87,6 +84,16 @@ export default {
       document.body.appendChild(this.movedElement);
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
+    },
+    deselect() {
+      document.removeEventListener('mousemove', this.setDraggingPosition);
+      if (this.movedElement) {
+        document.body.removeChild(this.movedElement);
+      }
+      this.$emit('onSetCursor', 'none');
+      this.wasClicked = false;
+      nodeTypesStore.commit('clearSelectedNode');
+      nodeTypesStore.commit('setGhostNode', null);
     },
   },
   computed: {

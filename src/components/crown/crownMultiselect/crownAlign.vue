@@ -39,8 +39,11 @@ import {
   faDistributeHorizontally,
 } from '../crownButtons/icons';
 import { get } from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 export default {
+  components: {FontAwesomeIcon},
   props: {
     paper: Object,
     hasPools: Boolean,
