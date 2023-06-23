@@ -4,6 +4,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import nodeTypesStore from '@/nodeTypesStore';
 import FilterNodeTypes from '@/components/rails/explorer-rail/filterNodeTypes/filterNodeTypes.vue';
 import NodeTypesLoop from '@/components/rails/explorer-rail/nodeTypesLoop/nodeTypesLoop.vue';
+import PmBlocksLoop from '@/components/rails/explorer-rail/pmBlocksLoop/pmBlocksLoop.vue';
 
 export default {
   name: 'ExplorerRail',
@@ -14,11 +15,15 @@ export default {
     nodeTypes: {
       type: Array,
     },
+    pmBlockNodes: {
+      type: Array,
+    },
   },
   components: {
     FontAwesomeIcon,
     FilterNodeTypes,
     NodeTypesLoop,
+    PmBlocksLoop,
   },
   data() {
     return {
@@ -59,6 +64,7 @@ export default {
     },
     clearFilteredObjects() {
       nodeTypesStore.commit('clearFilteredNodes');
+      nodeTypesStore.commit('clearFilteredPmBlockNodes');
     },
   },
 };
@@ -79,13 +85,16 @@ export default {
       </div>
     </div>
     <div class="node-types__container" v-if="tabIndex === 0">
-      <filter-node-types />
+      <filter-node-types :type="'object'"/>
       <node-types-loop
         v-on="$listeners"
       />
     </div>
-    <div class="pm-blocks__container">
-      <!--   Here goes the PM Blocks   -->
+    <div class="pm-blocks__container"  v-if="tabIndex === 1">
+      <filter-node-types :type="'pmBlock'"/>
+      <pm-blocks-loop
+        v-on="$listeners"
+      />
     </div>
   </div>
 </template>

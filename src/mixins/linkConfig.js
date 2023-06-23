@@ -15,8 +15,11 @@ function isPoint(item) {
   return item.x && item.y;
 }
 
+const COLOR_IDLE = '#ced4da';
+const COLOR_COMPLETED = '#00875A';
+
 export default {
-  props: ['highlighted', 'paper'],
+  props: ['highlighted', 'paper', 'paperManager', 'isCompleted'],
   data() {
     return {
       sourceShape: null,
@@ -76,6 +79,12 @@ export default {
     },
   },
   methods: {
+    setShapeHighlight() {
+      const COLOR = this.isCompleted ? COLOR_COMPLETED : COLOR_IDLE;
+      this.shape.attr({
+        line: { stroke: COLOR },
+      });
+    },
     findSourceShape() {
       return this.graph.getElements().find(element => {
         return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
@@ -123,6 +132,8 @@ export default {
       resetShapeColor(targetShape);
 
       this.shape.on('change:vertices', this.onChangeVertices);
+      this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
+      this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -130,13 +141,15 @@ export default {
     },
     /**
       * On Change vertices handler
-      * @param {Object} link 
-      * @param {Array} vertices 
-      * @param {Object} options 
+      * @param {Object} link
+      * @param {Array} vertices
+      * @param {Object} options
       */
-    onChangeVertices(link, vertices, options){
+    async onChangeVertices(link, vertices, options){
       if (options && options.ui) {
         this.updateWaypoints();
+        await this.$nextTick();
+        this.$emit('save-state');
       }
     },
     updateWaypoints() {
@@ -237,7 +250,6 @@ export default {
     emitSave() {
       if (this.highlighted) {
         this.updateWaypoints.flush();
-        this.$emit('save-state');
         document.removeEventListener('mouseup', this.emitSave);
         this.listeningToMouseup = false;
       }
@@ -323,6 +335,14 @@ export default {
     this.shape.on('change:vertices', function() {
       this.component.$emit('shape-resize');
     });
+
+    if (store.getters.isReadOnly) {
+      this.$nextTick(() => {
+        this.paperManager.awaitScheduledUpdates().then(() => {
+          this.setShapeHighlight();
+        });
+      });
+    }
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.emitSave);

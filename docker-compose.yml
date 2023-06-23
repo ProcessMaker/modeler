@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  modeler:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run serve

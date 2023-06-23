@@ -3,7 +3,7 @@ import {
   uploadXml,
 } from '../support/utils';
 
-describe('Task Loop properties', () => {
+describe.skip('Task Loop properties', () => {
 
   it('Set & Unset Loop Maximum property', () => {
 

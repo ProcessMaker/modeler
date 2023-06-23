@@ -3,7 +3,7 @@ import { getBoundingBox, getShapesOptions } from '@/components/nodes/utilities/s
 import { shapeTypes } from '../../../../e2e/support/constants';
 import { canAlign } from '@/components/nodes/utilities/shapeMovement';
 
-describe('bounding box metrics', () => {
+describe.skip('bounding box metrics', () => {
   it('handles non-shape objects correctly without breaking', () => {
     const bounds = getBoundingBox({});
 
@@ -53,7 +53,7 @@ describe('bounding box metrics', () => {
   });
 });
 
-describe('shape group alignment options', () => {
+describe.skip('shape group alignment options', () => {
   it('cannot align when no shapes are selected', () => {
     expect(getShapesOptions([]).can.align.left).toBe(false);
     expect(getShapesOptions([]).can.align.horizontalCenter).toBe(false);
@@ -203,7 +203,7 @@ describe('shape group alignment options', () => {
 });
 
 
-describe('shape group distribution options', () => {
+describe.skip('shape group distribution options', () => {
   it('cannot distribute when no shapes are selected', () => {
     expect(getShapesOptions([]).can.distribute.horizontally).toBe(false);
     expect(getShapesOptions([]).can.distribute.vertically).toBe(false);

@@ -14,9 +14,11 @@ import laneBelowIcon from '@/assets/lane-below.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faLaneBelow } from './icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 export default {
-  components: { CrownButton },
+  components: { CrownButton, FontAwesomeIcon },
   data() {
     return {
       laneBelowIcon,

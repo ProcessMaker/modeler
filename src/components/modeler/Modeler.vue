@@ -10,11 +10,13 @@
       :validation-errors="validationErrors"
       :warnings="allWarnings"
       :xml-manager="xmlManager"
+      :validationBar="validationBar"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
       @publishTemplate="publishTemplate"
+      @publishPmBlock="publishPmBlock"
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
@@ -28,6 +30,7 @@
       />
       <explorer-rail
         :node-types="nodeTypes"
+        :pm-block-nodes="pmBlockNodes"
         @set-cursor="cursor = $event"
         @onCreateElement="onCreateElementHandler"
       />
@@ -41,9 +44,14 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <InspectorButton
+        :showInspector="isOpenInspector"
+        @toggleInspector="handleToggleInspector"
+      />
+
       <InspectorPanel
         ref="inspector-panel"
-        v-show="!(highlightedNodes.length > 1)"
+        v-show="isOpenInspector && !(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -53,8 +61,8 @@
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed && noElementsSelected"
         @shape-resize="shapeResize(false)"
+        @toggleInspector="handleToggleInspector"
       />
 
       <component
@@ -138,6 +146,8 @@ import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
+import nodeTypesStore from '@/nodeTypesStore';
+import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
@@ -188,6 +198,7 @@ export default {
   components: {
     ToolBar,
     ExplorerRail,
+    InspectorButton,
     InspectorPanel,
     ProcessmakerModelerGenericFlow,
     Selection,
@@ -201,6 +212,7 @@ export default {
         return {};
       },
     },
+    validationBar: Array,
   },
   mixins: [hotkeys, cloneSelection],
   data() {
@@ -240,10 +252,12 @@ export default {
       validationErrors: {},
       miniMapOpen: false,
       panelsCompressed: false,
+      isOpenInspector: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
+      pmBlockNodes: [],
       breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
@@ -314,6 +328,9 @@ export default {
     },
   },
   methods: {
+    handleToggleInspector(value) {
+      this.isOpenInspector = value;
+    },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
     },
@@ -359,6 +376,9 @@ export default {
     },
     publishTemplate() {
       this.$emit('publishTemplate');
+    },
+    publishPmBlock() {
+      this.$emit('publishPmBlock');
     },
     async pasteElements() {
       if (this.copiedElements.length > 0 && !this.pasteInProgress) {
@@ -521,8 +541,7 @@ export default {
       } else {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
-        process.set('id', `process_${this.processes.length}`);
-
+        process.set('id', this.nodeIdGenerator.generateProcessId());
         this.definitions.get('rootElements').push(process);
       }
 
@@ -617,6 +636,29 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+    },
+    registerPmBlock(pmBlockNode, customParser) {
+      const defaultParser = () => pmBlockNode.id;
+
+      this.translateConfig(pmBlockNode.inspectorConfig[0]);
+      addLoopCharacteristics(pmBlockNode);
+      this.nodeRegistry[pmBlockNode.id] = pmBlockNode;
+
+      Vue.component(pmBlockNode.id, pmBlockNode.component);
+      this.pmBlockNodes.push(pmBlockNode);
+
+      const types = Array.isArray(pmBlockNode.bpmnType)
+        ? pmBlockNode.bpmnType
+        : [pmBlockNode.bpmnType];
+
+      types.forEach(bpmnType => {
+        if (customParser) {
+          this.parsers[bpmnType].custom.push(customParser);
+          return;
+        }
+        this.parsers[bpmnType].default.push(defaultParser);
+      });
+      nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
     },
     addMessageFlows() {
       if (this.collaboration) {
@@ -1003,6 +1045,16 @@ export default {
       this.$refs.selector.clearSelection();
       await this.$nextTick();
       await this.pushToUndoStack();
+      // force to update the processNode property in every delete
+      this.processes = this.getProcesses();
+      if (this.processes  && this.processes.length > 0) {
+        this.processNode = new Node(
+          'processmaker-modeler-process',
+          this.processes[0],
+          this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+        );
+      }
+      
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
@@ -1220,6 +1272,7 @@ export default {
     if (runningInCypressTest()) {
       /* Add reference to store on window; this is used in testing to verify rendered nodes */
       window.store = store;
+      window.undoRedoStore = undoRedoStore;
     }
 
     this.$t = this.$t.bind(this);
@@ -1240,6 +1293,7 @@ export default {
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
+      registerPmBlock: this.registerPmBlock,
     });
 
     this.moddle = new BpmnModdle(this.extensions);

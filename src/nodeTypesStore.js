@@ -10,6 +10,8 @@ export default new Vuex.Store({
     nodeTypes: [],
     pinnedNodeTypes: [],
     filteredNodeTypes: [],
+    pmBlockNodeTypes: [],
+    filteredPmBlockNodeTypes: [],
     explorerOpen: false,
     searchTerm: '',
     selectedNode: null,
@@ -21,6 +23,8 @@ export default new Vuex.Store({
     getFilteredNodeTypes: state => state.filteredNodeTypes,
     getExplorerOpen: state => state.explorerOpen,
     getSearchTerm: state => state.searchTerm,
+    getPmBlockNodeTypes: state => state.pmBlockNodeTypes,
+    getFilteredPmBlockNodeTypes: state => state.filteredPmBlockNodeTypes,
     getSelectedNode: state => state.selectedNode,
     getGhostNode: state => state.ghostNode,
   },
@@ -42,7 +46,7 @@ export default new Vuex.Store({
     setPinnedNodes(state, payload) {
       state.pinnedNodeTypes.push(payload);
       // Remove duplicates
-      state.pinnedNodeTypes = [...new Map(state.pinnedNodeTypes.map(node => [node['type'], node])).values()];
+      state.pinnedNodeTypes = uniqBy(state.pinnedNodeTypes, 'type');
       state.pinnedNodeTypes.sort((node1, node2) => node1.rank - node2.rank);
     },
     setUnpinNode(state, payload) {
@@ -57,8 +61,37 @@ export default new Vuex.Store({
         return node.label.toLowerCase().includes(searchTerm.toLowerCase());
       });
     },
+    setPmBlockNodeTypes(state, pmBlockNodeTypes) {
+      state.pmBlockNodeTypes = pmBlockNodeTypes
+        .filter(pmBlockNode => pmBlockNode.control)
+        .map(pmBlockNode => ({
+          id: uniqueId('pmBlockNode_'),
+          type: pmBlockNode.id,
+          icon: pmBlockNode.icon,
+          label: pmBlockNode.label,
+          description: pmBlockNode.description,
+          bpmnType: pmBlockNode.bpmnType,
+          rank: pmBlockNode.rank || BOTTOM,
+          items: pmBlockNode.items?.map(item => ({ ...item, type: item.id })),
+        }))
+        .sort((node1, node2) => node1.rank - node2.rank);
+    },
+    setFilteredPmBlockNodeTypes(state, searchTerm) {
+      // TODO: Configure Pm Block search bar
+      const pmBlockNodeTypes = state.pmBlockNodeTypes;
+      state.searchTerm = searchTerm;
+      const allNodes = uniqBy([...pmBlockNodeTypes], 'id');
+      state.filteredPmBlockNodeTypes = allNodes.filter(node => {
+        return node.label.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    },
     clearFilteredNodes(state) {
       state.filteredNodeTypes = [];
+      state.searchTerm = '';
+    },
+    clearFilteredPmBlockNodes(state) {
+      state.filteredNodeTypes = [];
+      state.filteredPmBlockNodeTypes = [];
       state.searchTerm = '';
     },
     closeExplorer(state) {

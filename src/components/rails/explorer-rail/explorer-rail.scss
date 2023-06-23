@@ -53,3 +53,14 @@ $secondary-color-nav: #6c757d;
 	}
 }
 
+.pm-blocks {
+	&__container {
+		padding: 0.5rem 1rem;
+		p {
+			font-size: 13px;
+			line-height: 19px;
+			color: #000;
+		}
+	}
+}
+

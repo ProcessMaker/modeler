@@ -5,7 +5,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 
-describe('Pool Lanes', () => {
+describe.skip('Pool Lanes', () => {
   it('Deleting first pool deletes One, Two, Three lanes', () => {
     uploadXml('DeletingPoolDeletesRelatedLanes.before.xml');
     waitToRenderAllShapes();

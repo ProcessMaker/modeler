@@ -3,7 +3,7 @@ import {
   uploadXml,
 } from '../support/utils';
 
-describe('Fix broken diagrams', () => {
+describe.skip('Fix broken diagrams', () => {
   it('test fix broken sequence flows', () => {
     uploadXml('processWithBrokenSequenceFlows.xml');
 

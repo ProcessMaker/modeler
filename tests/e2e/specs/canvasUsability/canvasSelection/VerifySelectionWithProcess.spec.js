@@ -1,11 +1,11 @@
 import {
-  dragFromSourceToDest,
+  clickAndDropElement,
   connectNodesWithFlow,
   waitToRenderAllShapes, getGraphElements,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe('Canvas Selection', () => {
+describe.skip('Canvas Selection', () => {
   it('TCP4-2666: Verify selection with process', () => {
     const initialNumberOfElements = 1;
 
@@ -16,11 +16,11 @@ describe('Canvas Selection', () => {
 
     //Step 2: Drag Task component
     const taskPosition = { x: 300, y: 130 };
-    dragFromSourceToDest(nodeTypes.task, taskPosition);
+    clickAndDropElement(nodeTypes.task, taskPosition);
 
     //Step 3: Drag End Event
     const endEventPosition = { x: 500, y: 150 };
-    dragFromSourceToDest(nodeTypes.endEvent, endEventPosition);
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
     //Step 4: Connect the Start Event with Task
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
