@@ -2,11 +2,13 @@ import {
   clickAndDropElement,
   connectNodesWithFlow,
   waitToRenderAllShapes,
-  getGraphElements,
+  getGraphElements, isAppleOS,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Zoom In/Out Hot keys', () => {
+const key = isAppleOS() ? '{meta}' : '{ctrl}';
+
+describe('Zoom In/Out Hot keys', () => {
   it('TCP4-2653: Verify that "TOP RAIL" is not affected by Control --', () => {
     const initialNumberOfElements = 1;
 
@@ -37,8 +39,8 @@ describe.skip('Zoom In/Out Hot keys', () => {
       .invoke('width').then((val) => {
         const width = val;
         //Step 7: Press CONTROL --
-        cy.get('body').type('{ctrl}--');
-        cy.get('.scale-value').should('have.text', '80%');
+        cy.get('body').type(`${key}--`);
+        cy.get('[data-cy="zoom-reset-control"]').should('have.text', '80%');
        
         //Validation 1: Verify that heigth "TOP RAIL" does not change
         cy.get('[role="toolbar"][aria-label="Toolbar"]').should('exist')
@@ -49,5 +51,4 @@ describe.skip('Zoom In/Out Hot keys', () => {
           });
       });
   });
-
 });

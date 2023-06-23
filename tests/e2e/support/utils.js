@@ -455,3 +455,14 @@ export function clickAndDropElement(node, position, nodeChild = null) {
     });
   });
 }
+
+export function toggleInspector() {
+  if (cy.get('[data-cy=inspector-close-button]').should('not.be.visible')) {
+    return cy.get('[data-cy=inspector-button]').click();
+  }
+  return cy.get('[data-cy=inspector-close-button]').click();
+}
+
+export function isAppleOS() {
+  return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
+}

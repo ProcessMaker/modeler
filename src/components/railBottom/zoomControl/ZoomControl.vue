@@ -18,9 +18,7 @@
       data-cy="zoom-reset-control"
       v-b-tooltip.hover
       :title="$t('Reset to initial scale')"
-    >
-      {{ percentageText }}
-    </button>
+    >{{ percentageText }}</button>
 
     <button
       type="button"

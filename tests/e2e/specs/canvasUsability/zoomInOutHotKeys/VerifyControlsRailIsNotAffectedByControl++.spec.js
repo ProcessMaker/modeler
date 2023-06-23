@@ -3,10 +3,13 @@ import {
   connectNodesWithFlow,
   waitToRenderAllShapes,
   getGraphElements,
+  isAppleOS,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Zoom In/Out Hot keys', () => {
+const key = isAppleOS() ? '{meta}' : '{ctrl}';
+
+describe('Zoom In/Out Hot keys', () => {
   it('TCP4-2650: Verify that "CONTROLS RAIL" is not affected by Control ++', () => {
     const initialNumberOfElements = 1;
 
@@ -37,8 +40,8 @@ describe.skip('Zoom In/Out Hot keys', () => {
       .invoke('height').then((val) => {
         const heigth = val;
         //Step 7: Press CONTROL + plus
-        cy.get('body').type('{ctrl}+');
-        cy.get('.scale-value').should('have.text', '110%');
+        cy.get('body').type(`${key}+`);
+        cy.get('[data-cy="zoom-reset-control"]').should('have.text', '110%');
        
         //Validation 1: Verify that heigth "CONTROL RAIL" does not change
         cy.get('[data-test="controls-column"]> div').should('exist')
