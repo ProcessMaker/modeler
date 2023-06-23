@@ -16,6 +16,7 @@
       @toggle-mini-map-open="miniMapOpen = $event"
       @saveBpmn="saveBpmn"
       @publishTemplate="publishTemplate"
+      @publishPmBlock="publishPmBlock"
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
@@ -29,6 +30,7 @@
       />
       <explorer-rail
         :node-types="nodeTypes"
+        :pm-block-nodes="pmBlockNodes"
         @set-cursor="cursor = $event"
         @onCreateElement="onCreateElementHandler"
       />
@@ -254,6 +256,7 @@ export default {
       isRendering: false,
       allWarnings: [],
       nodeTypes: [],
+      pmBlockNodes: [],
       breadcrumbData: [],
       activeNode: null,
       xmlManager: null,
@@ -372,6 +375,9 @@ export default {
     },
     publishTemplate() {
       this.$emit('publishTemplate');
+    },
+    publishPmBlock() {
+      this.$emit('publishPmBlock');
     },
     async pasteElements() {
       if (this.copiedElements.length > 0 && !this.pasteInProgress) {
@@ -534,8 +540,7 @@ export default {
       } else {
         process = this.moddle.create('bpmn:Process');
         this.processes.push(process);
-        process.set('id', `process_${this.processes.length}`);
-
+        process.set('id', this.nodeIdGenerator.generateProcessId());
         this.definitions.get('rootElements').push(process);
       }
 
@@ -628,6 +633,26 @@ export default {
           return;
         }
 
+        this.parsers[bpmnType].default.push(defaultParser);
+      });
+    },
+    registerPmBlock(pmBlockNode) {
+      console.log('REGISTER PM BLOCK NODE', pmBlockNode);
+      const defaultParser = () => pmBlockNode.id;
+
+      this.translateConfig(pmBlockNode.inspectorConfig[0]);
+      addLoopCharacteristics(pmBlockNode);
+      this.nodeRegistry[pmBlockNode.id] = pmBlockNode;
+
+      Vue.component(pmBlockNode.id, pmBlockNode.component);
+      this.pmBlockNodes.push(pmBlockNode);
+      console.log('PM BLOCK NODES REGISTER', this.pmBlockNodes);
+
+      const types = Array.isArray(pmBlockNode.bpmnType)
+        ? pmBlockNode.bpmnType
+        : [pmBlockNode.bpmnType];
+
+      types.forEach(bpmnType => {
         this.parsers[bpmnType].default.push(defaultParser);
       });
     },
@@ -1016,6 +1041,16 @@ export default {
       this.$refs.selector.clearSelection();
       await this.$nextTick();
       await this.pushToUndoStack();
+      // force to update the processNode property in every delete
+      this.processes = this.getProcesses();
+      if (this.processes  && this.processes.length > 0) {
+        this.processNode = new Node(
+          'processmaker-modeler-process',
+          this.processes[0],
+          this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
+        );
+      }
+      
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
@@ -1254,6 +1289,7 @@ export default {
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
+      registerPmBlock: this.registerPmBlock,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
