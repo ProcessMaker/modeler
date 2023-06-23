@@ -457,10 +457,19 @@ export function clickAndDropElement(node, position, nodeChild = null) {
 }
 
 export function toggleInspector() {
-  if (cy.get('[data-cy=inspector-close-button]').should('not.be.visible')) {
-    return cy.get('[data-cy=inspector-button]').click();
-  }
-  return cy.get('[data-cy=inspector-close-button]').click();
+  cy.get('[data-cy=inspector-close-button]').then(($el) => {
+    if ($el.length) return cy.get('[data-cy=inspector-button]').click();
+    return cy.get('[data-cy=inspector-close-button]').click();
+  });
+}
+
+export function toggleExplorerRail() {
+  const closeExplorerRailButton = cy.get('.close--container');
+  const toggleExplorerRailButton = cy.get('.rail-center .control-item');
+  closeExplorerRailButton.then(($el) => {
+    if ($el.length) return toggleExplorerRailButton.click();
+    return closeExplorerRailButton.click();
+  });
 }
 
 export function isAppleOS() {
