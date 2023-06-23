@@ -26,7 +26,7 @@ function isNotLane(shape) {
 function bringPoolToFront(poolShape) {
   bringShapeToFront(poolShape);
 
-  const hasLanes = poolShape.component.node.definition.processRef.laneSets[0];
+  const hasLanes = poolShape.component.node.definition.processRef && poolShape.component.node.definition.processRef.laneSets[0];
   if (!hasLanes) {
     return;
   }
