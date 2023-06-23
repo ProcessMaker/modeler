@@ -11,6 +11,7 @@ export default new Vuex.Store({
     pinnedNodeTypes: [],
     filteredNodeTypes: [],
     pmBlockNodeTypes: [],
+    filteredPmBlockNodeTypes: [],
     explorerOpen: false,
     searchTerm: '',
     selectedNode: null,
@@ -77,23 +78,21 @@ export default new Vuex.Store({
     },
     setFilteredPmBlockNodeTypes(state, searchTerm) {
       // TODO: Configure Pm Block search bar
-      console.log('FILTER PM BLOCK NODE TYPES', state, searchTerm);
-      // const nodeTypes = state.nodeTypes;
-      // state.searchTerm = searchTerm;
-      // const allNodes = uniqBy([...pinnedNodeTypes, ...nodeTypes], 'id');
-      // state.filteredNodeTypes = allNodes.filter(node => {
-      //   return node.label.toLowerCase().includes(searchTerm.toLowerCase());
-      // });
+      const pmBlockNodeTypes = state.pmBlockNodeTypes;
+      state.searchTerm = searchTerm;
+      const allNodes = uniqBy([...pmBlockNodeTypes], 'id');
+      state.filteredPmBlockNodeTypes = allNodes.filter(node => {
+        return node.label.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     },
     clearFilteredNodes(state) {
       state.filteredNodeTypes = [];
       state.searchTerm = '';
     },
     clearFilteredPmBlockNodes(state) {
-      // TODO: Clear Pm Block search bar
-      console.log('CLEAR FILTER PM BLOCK NODE', state);
-      // state.filteredNodeTypes = [];
-      // state.searchTerm = '';
+      state.filteredNodeTypes = [];
+      state.filteredPmBlockNodeTypes = [];
+      state.searchTerm = '';
     },
     closeExplorer(state) {
       state.explorerOpen = false;
