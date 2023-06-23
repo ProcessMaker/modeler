@@ -1,5 +1,10 @@
 <template>
-  <div class="mini-paper-container position-absolute" @click="movePaper" :class="isOpen ? 'opened' : 'closed'">
+  <div
+    class="mini-paper-container"
+    @click="movePaper"
+    :class="isOpen ? 'opened' : 'closed'"
+    data-cy="mini-map-box"
+  >
     <div ref="miniPaper" class="mini-paper" />
   </div>
 </template>
@@ -11,6 +16,8 @@ export default {
   data() {
     return {
       miniMapManager: null,
+      newX: 0,
+      newY: 0,
     };
   },
   props: {
@@ -35,10 +42,17 @@ export default {
       const { sx: scaleX, sy: scaleY } = this.paperManager.scale;
       const { clientWidth, clientHeight } = this.paperManager.paper.el;
       const { newX, newY } = this.miniMapManager.calculateNewPaperPosition(offsetX, offsetY, scaleX, scaleY, clientWidth, clientHeight);
-      this.paperManager.translate(newX, newY);
+      this.newX = newX;
+      this.newY = newY;
+
+      this.paperManager.translate(this.newX, this.newY);
     },
   },
   async mounted() {
+    if (window.Cypress) {
+      window.MiniPaper = this;
+    }
+
     await this.$nextTick();
 
     this.miniMapManager = MiniMapManager.factory(this.graph, this.$refs.miniPaper);

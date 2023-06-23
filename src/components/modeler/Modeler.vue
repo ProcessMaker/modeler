@@ -7,6 +7,9 @@
       :paper-manager="paperManager"
       :breadcrumb-data="breadcrumbData"
       :panelsCompressed="panelsCompressed"
+      :validation-errors="validationErrors"
+      :warnings="allWarnings"
+      :xml-manager="xmlManager"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -23,16 +26,10 @@
         :target="getTooltipTarget"
         :title="tooltipTitle"
       />
-
-      <controls
-        :nodeTypes="nodeTypes"
-        :compressed="panelsCompressed"
-        :parent-height="parentHeight"
-        :allowDrop="allowDrop"
-        @drag="validateDropTarget"
-        @handleDrop="handleDrop"
-        class="controls h-100 rounded-0 border-top-0 border-bottom-0 border-left-0"
-        :canvas-drag-position="canvasDragPosition"
+      <explorer-rail
+        :node-types="nodeTypes"
+        @set-cursor="cursor = $event"
+        @onCreateElement="onCreateElementHandler"
       />
       <b-col
         class="paper-container h-100 pr-4"
@@ -43,13 +40,6 @@
 
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
-
-      <mini-paper
-        :isOpen="miniMapOpen"
-        :paperManager="paperManager"
-        :graph="graph"
-        :class="{ 'expanded' : panelsCompressed }"
-      />
 
       <InspectorPanel
         ref="inspector-panel"
@@ -111,6 +101,18 @@
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
       />
+
+      <RailBottom
+        :nodeTypes="nodeTypes"
+        :paper-manager="paperManager"
+        :graph="graph"
+        :is-rendering="isRendering"
+        @load-xml="loadXML"
+        @clearSelection="clearSelection"
+        @set-cursor="cursor = $event"
+        @onCreateElement="onCreateElementHandler"
+      />
+
       <selection
         v-if="paper"
         ref="selector"
@@ -132,7 +134,7 @@ import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
-import controls from '../controls/controls';
+import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
@@ -144,7 +146,6 @@ import { getNodeIdGenerator } from '../../NodeIdGenerator';
 import Process from '../inspectors/process';
 import runningInCypressTest from '@/runningInCypressTest';
 import getValidationProperties from '@/targetValidationUtils';
-import MiniPaper from '@/components/miniPaper/MiniPaper';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
@@ -176,19 +177,21 @@ import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
+import RailBottom from '@/components/railBottom/RailBottom.vue';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
 
+
 export default {
   components: {
     ToolBar,
-    controls,
+    ExplorerRail,
     InspectorPanel,
-    MiniPaper,
     ProcessmakerModelerGenericFlow,
     Selection,
+    RailBottom,
   },
   props: {
     owner: Object,
@@ -872,9 +875,15 @@ export default {
     toXML(cb) {
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
+    onCreateElementHandler({ event, control }) {
+      this.handleDrop({
+        clientX: event.clientX,
+        clientY: event.clientY,
+        control,
+      });
+    },
     async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
       this.validateDropTarget({ clientX, clientY, control });
-
       if (!this.allowDrop) {
         return;
       }
@@ -1201,6 +1210,7 @@ export default {
           this.$refs.selector.stopDrag(event);
         }
       }
+      window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
