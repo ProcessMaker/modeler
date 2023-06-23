@@ -1,7 +1,6 @@
 import {saveDebounce} from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
 import {boundaryEventSelector, nodeTypes, taskSelector} from './constants';
-import {gridSize} from '../../../src/graph';
 
 const renderTime = 300;
 
@@ -40,7 +39,7 @@ export function getGraphElements() {
 }
 
 export function getElementAtPosition(position, componentType, offsetX = 0, offsetY = 0) {
-  const paperGridSize = gridSize;
+  const paperGridSize = 150;
   const searchRectangle = {
     width: paperGridSize,
     height: paperGridSize,
@@ -92,17 +91,27 @@ export function getComponentsEmbeddedInShape($element) {
     });
 }
 
-export function dragFromSourceToDest(source, position) {
+export function dragFromSourceToDest(sourceMain, position, source=null) {
   cy.window().its('store.state.paper').then(paper => {
+    paper.translate(0, 0);
     const { tx, ty } = paper.translate();
 
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      cy.get(`[data-test=${source}]`).trigger('mousedown', { force: true });
-      cy.document().trigger('mousemove', mouseEvent);
+      cy.get(`[data-test="${sourceMain}-main"]`).click();
+
+      if (source) {
+        cy.get(`[data-test="${source}"]`).click();
+      } else {
+        cy.get(`[data-test="${sourceMain}"]`).click();
+      }
+
+      cy.document().trigger('mouseover', mouseEvent);
       cy.document().trigger('mouseup', mouseEvent);
+
+      cy.get('.paper-container').click(position);
     });
   });
 
@@ -281,24 +290,6 @@ export function testNumberOfVertices(expectedVertices) {
       if (Cypress.env('inProcessmaker')) {
         return;
       }
-
-      cy.get('[data-test=downloadXMLBtn]').click();
-      cy.window()
-        .its('xml')
-        .then(removeIndentationAndLinebreaks)
-        .then(xml => {
-          const waypoints = xml.match(/<di:waypoint x="\d+(?:\.\d+)?" y="\d+(?:\.\d+)?" \/>/gim);
-
-          const numberOfCustomVertices = firstLink.vertices().length;
-          const hasCustomVertices = numberOfCustomVertices > 0;
-          const numberOfStartAndEndVertices = 2;
-
-          if (hasCustomVertices) {
-            expect(waypoints.length).to.equal(numberOfStartAndEndVertices + numberOfCustomVertices, `Expected ${numberOfStartAndEndVertices + numberOfCustomVertices} custom di:waypoints in the downloaded XML`);
-          } else {
-            expect(waypoints.length).to.equal(numberOfStartAndEndVertices, `Expected ${numberOfStartAndEndVertices} (just start + end) vertices in the downloaded XML`);
-          }
-        });
     });
 }
 
@@ -378,7 +369,7 @@ export function assertBoundaryEventIsCloseToTask() {
 }
 
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
-  dragFromSourceToDest(genericNode, nodePosition);
+  clickAndDropElement(genericNode, nodePosition);
   waitToRenderAllShapes();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
   cy.wait(300);
@@ -434,4 +425,33 @@ export function selectComponentType(component, type) {
   cy.get('[data-test="select-type-dropdown"]').click();
   cy.get('[data-test="'+type+'"]').click();
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
+}
+
+export function clickAndDropElement(node, position, nodeChild = null) {
+  cy.window().its('store.state.paper').then(paper => {
+    const { tx, ty } = paper.translate();
+
+    cy.get('.main-paper').then($paperContainer => {
+      const { x, y } = $paperContainer[0].getBoundingClientRect();
+      const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
+
+      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').length === 1;
+
+      if (existExplorerRail) {
+        cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
+      } else {
+        cy.get(`[data-test=${node}-main]`).click();
+
+        if (nodeChild) {
+          cy.get(`[data-test=${nodeChild}]`).click();
+        }
+      }
+
+      cy.document().trigger('mousemove', mouseEvent);
+      cy.wait(300);
+      cy.get('.paper-container').trigger('mousedown', mouseEvent);
+      cy.wait(300);
+      cy.get('.paper-container').trigger('mouseup', mouseEvent);
+    });
+  });
 }

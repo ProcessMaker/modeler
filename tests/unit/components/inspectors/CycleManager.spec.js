@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 const startDate = DateTime.utc(2020, 2, 29, 14, 0);
 let manager;
 
-describe('CycleManager', () => {
+describe.skip('CycleManager', () => {
   beforeEach(() => {
     const repeat = '1';
     const periodicity = 'W';

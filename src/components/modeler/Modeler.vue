@@ -10,6 +10,7 @@
       :validation-errors="validationErrors"
       :warnings="allWarnings"
       :xml-manager="xmlManager"
+      :validationBar="validationBar"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -41,9 +42,14 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <InspectorButton
+        :showInspector="isOpenInspector"
+        @toggleInspector="handleToggleInspector"
+      />
+
       <InspectorPanel
         ref="inspector-panel"
-        v-show="!(highlightedNodes.length > 1)"
+        v-show="isOpenInspector && !(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
@@ -53,8 +59,8 @@
         class="inspector h-100"
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
-        :compressed="panelsCompressed && noElementsSelected"
         @shape-resize="shapeResize(false)"
+        @toggleInspector="handleToggleInspector"
       />
 
       <component
@@ -138,6 +144,7 @@ import ExplorerRail from '../rails/explorer-rail/explorer';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
+import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
@@ -188,6 +195,7 @@ export default {
   components: {
     ToolBar,
     ExplorerRail,
+    InspectorButton,
     InspectorPanel,
     ProcessmakerModelerGenericFlow,
     Selection,
@@ -201,6 +209,7 @@ export default {
         return {};
       },
     },
+    validationBar: Array,
   },
   mixins: [hotkeys, cloneSelection],
   data() {
@@ -240,6 +249,7 @@ export default {
       validationErrors: {},
       miniMapOpen: false,
       panelsCompressed: false,
+      isOpenInspector: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -314,6 +324,9 @@ export default {
     },
   },
   methods: {
+    handleToggleInspector(value) {
+      this.isOpenInspector = value;
+    },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
     },
@@ -1220,6 +1233,7 @@ export default {
     if (runningInCypressTest()) {
       /* Add reference to store on window; this is used in testing to verify rendered nodes */
       window.store = store;
+      window.undoRedoStore = undoRedoStore;
     }
 
     this.$t = this.$t.bind(this);

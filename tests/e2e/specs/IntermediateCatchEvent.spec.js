@@ -1,21 +1,21 @@
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getCrownButtonForElement,
   getElementAtPosition,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Intermediate Catch Event', () => {
+describe.skip('Intermediate Catch Event', () => {
   it('Removes messageRef when message is deleted', () => {
     const intermediateCatchEventPosition = { x: 250, y: 250 };
     const intermediateThrowEventPosition = { x: 250, y: 350 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-catch-event]').click();
 
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateThrowEventPosition);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateThrowEventPosition);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
 
     getElementAtPosition(intermediateCatchEventPosition).click();

@@ -13,6 +13,7 @@
       :error-list="errorList"
       :warnings="warnings"
     />
+    <slot />
   </div>
 </template>
 

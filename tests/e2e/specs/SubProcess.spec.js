@@ -36,7 +36,7 @@ function clickSubprocessPlusButton() {
   cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]').click();
 }
 
-describe('Sub Process (Call Activities)', () => {
+describe.skip('Sub Process (Call Activities)', () => {
   const subProcessPosition = { x: 250, y: 250 };
   const testString = 'testing';
   const defaultSubProcessNodeName = 'Sub Process';

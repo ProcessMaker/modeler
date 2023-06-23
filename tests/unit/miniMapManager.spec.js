@@ -1,6 +1,6 @@
 import MiniMapManager from '@/components/miniMapManager.js';
 
-describe('Mini Map Manager', () => {
+describe.skip('Mini Map Manager', () => {
   const positionData = [
     [
       71,

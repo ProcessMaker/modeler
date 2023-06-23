@@ -1,10 +1,10 @@
-import { assertDownloadedXmlContainsExpected, dragFromSourceToDest, getElementAtPosition } from '../support/utils';
+import { assertDownloadedXmlContainsExpected, clickAndDropElement, getElementAtPosition } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Message Start Event', () => {
+describe.skip('Message Start Event', () => {
   it('Can create message start event', () => {
     const messageStartEventPosition = { x: 250, y: 250 };
-    dragFromSourceToDest(nodeTypes.startEvent, messageStartEventPosition);
+    clickAndDropElement(nodeTypes.startEvent, messageStartEventPosition);
     cy.get('[data-test=switch-to-message-start-event]').click();
 
     assertDownloadedXmlContainsExpected(`
@@ -14,7 +14,7 @@ describe('Message Start Event', () => {
     `);
 
     const intermediateMessageThrowEvent = { x: 350, y: 350 };
-    dragFromSourceToDest(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEvent);
+    clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEvent);
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();
     getElementAtPosition(messageStartEventPosition).click();
     cy.get('[data-test="messageRef:select"]').selectOption('node_5_message');

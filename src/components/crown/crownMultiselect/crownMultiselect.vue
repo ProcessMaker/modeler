@@ -20,7 +20,7 @@
       <font-awesome-icon v-if="button.iconPrefix === 'fpm'" :icon="[button.iconPrefix, `fa-${button.icon}`]"/>
       <i v-else :class="`${button.iconPrefix} fa-${button.icon} text-dark`" />
     </button>
-    <crown-align v-show="showAlignmentButtons" :paper="paper"/>
+    <crown-align v-show="showAlignmentButtons" :paper="paper" @save-state="$emit('save-state')" />
   </div>
 </template>
 
@@ -30,13 +30,15 @@ import runningInCypressTest from '@/runningInCypressTest';
 import crownAlign from './crownAlign';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCenterVertically } from '../crownButtons/icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 export default {
   props: {
     paper: Object,
     hasPools: Boolean,
   },
-  components:{ crownAlign },
+  components:{ crownAlign, FontAwesomeIcon },
   data() {
     return {
       showAlignmentButtons: false,
