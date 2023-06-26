@@ -1,6 +1,7 @@
 <template>
   <span data-test="body-container">
     <tool-bar
+      v-if="showComponent"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -29,6 +30,7 @@
         :title="tooltipTitle"
       />
       <explorer-rail
+        v-if="showComponent"
         :node-types="nodeTypes"
         :pm-block-nodes="pmBlockNodes"
         @set-cursor="cursor = $event"
@@ -50,6 +52,7 @@
       />
 
       <InspectorPanel
+        v-if="showComponent"
         ref="inspector-panel"
         v-show="isOpenInspector && !(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
@@ -111,6 +114,7 @@
       />
 
       <RailBottom
+        :readOnly="readOnly"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -212,6 +216,12 @@ export default {
         return {};
       },
     },
+    readOnly: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },    
     validationBar: Array,
   },
   mixins: [hotkeys, cloneSelection],
@@ -326,6 +336,9 @@ export default {
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
+    showComponent() {
+      return !this.readOnly;
+    },    
   },
   methods: {
     handleToggleInspector(value) {
@@ -1302,6 +1315,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    store.commit('setReadOnly', this.readOnly);
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {

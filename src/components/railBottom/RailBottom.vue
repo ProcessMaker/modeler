@@ -6,6 +6,7 @@
       ref="railLeftBox"
     >
       <MiniPaperControl
+        v-show="showControl"
         :paper-manager="paperManager"
         :graph="graph"
       />
@@ -21,6 +22,7 @@
       :style="[overlap ? { width: 'auto'} : { width: '100%'}]"
     >
       <UndoRedoControl
+        v-show="showControl"
         :is-rendering="isRendering"
         @load-xml="$emit('load-xml')"
         @clearSelection="$emit('clearSelection')"
@@ -28,6 +30,7 @@
       />
 
       <Controls
+        v-show="showControl"
         :nodeTypes="nodeTypes"
         @onCreateElement="onCreateElementHandler"
         @onSetCursor="onSetCursorHandler"
@@ -56,6 +59,12 @@ export default {
     graph: Object,
     isRendering: Boolean,
     nodeTypes: Array,
+    readOnly: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   data() {
     return {
@@ -109,6 +118,11 @@ export default {
       }
     },
   },
+  computed: {
+    showControl() {
+      return !this.readOnly;
+    },
+  },  
   async mounted() {
     await nextTick();
 
