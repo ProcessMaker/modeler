@@ -50,6 +50,8 @@ jobs:
           - coverage/
         key: pm-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Branch }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}-coverage.json
     - run: ls -la coverage
+    - store_artifacts:
+        path: tests/e2e/screenshots
   cypress/report:
     docker:
     - image: cypress/base:14.16.0
