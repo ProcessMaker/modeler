@@ -47,6 +47,7 @@
       </b-col>
 
       <InspectorButton
+        v-if="showComponent"
         :showInspector="isOpenInspector"
         @toggleInspector="handleToggleInspector"
       />
@@ -114,7 +115,6 @@
       />
 
       <RailBottom
-        :readOnly="readOnly"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -221,7 +221,7 @@ export default {
       default() {
         return false;
       },
-    },    
+    },
     validationBar: Array,
   },
   mixins: [hotkeys, cloneSelection],
@@ -336,9 +336,7 @@ export default {
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
-    showComponent() {
-      return !this.readOnly;
-    },    
+    showComponent: () => store.getters.showComponent,
   },
   methods: {
     handleToggleInspector(value) {
@@ -1067,7 +1065,7 @@ export default {
           this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
         );
       }
-      
+
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
@@ -1246,6 +1244,14 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
+      if (store.getters.isReadOnly) {
+        if (this.canvasDragPosition) {
+          this.paperManager.translate(
+            event.offsetX - this.canvasDragPosition.x,
+            event.offsetY - this.canvasDragPosition.y,
+          );
+        }
+      }
       if (this.isGrabbing) return;
       if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
         this.isDragging = true;
@@ -1340,6 +1346,9 @@ export default {
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       if (this.isGrabbing) return;
+      if (store.getters.isReadOnly) {
+        this.isGrabbing = true;
+      }
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isOverShape = false;
@@ -1356,6 +1365,7 @@ export default {
       }
     });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
+      this.isGrabbing = false;
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event);

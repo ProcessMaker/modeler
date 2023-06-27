@@ -6,7 +6,7 @@
       ref="railLeftBox"
     >
       <MiniPaperControl
-        v-show="showControl"
+        v-show="showComponent"
         :paper-manager="paperManager"
         :graph="graph"
       />
@@ -22,7 +22,7 @@
       :style="[overlap ? { width: 'auto'} : { width: '100%'}]"
     >
       <UndoRedoControl
-        v-show="showControl"
+        v-show="showComponent"
         :is-rendering="isRendering"
         @load-xml="$emit('load-xml')"
         @clearSelection="$emit('clearSelection')"
@@ -30,7 +30,7 @@
       />
 
       <Controls
-        v-show="showControl"
+        v-show="showComponent"
         :nodeTypes="nodeTypes"
         @onCreateElement="onCreateElementHandler"
         @onSetCursor="onSetCursorHandler"
@@ -46,6 +46,7 @@ import MiniPaperControl from '@/components/railBottom/miniPaperControl/MiniPaper
 import ZoomControl from '@/components/railBottom/zoomControl/ZoomControl.vue';
 import UndoRedoControl from '@/components/railBottom/undoRedoControl/UndoRedoControl.vue';
 import Controls from '@/components/railBottom/controls/Controls.vue';
+import store from '@/store';
 
 export default {
   components: {
@@ -59,12 +60,6 @@ export default {
     graph: Object,
     isRendering: Boolean,
     nodeTypes: Array,
-    readOnly: {
-      type: Boolean,
-      default() {
-        return false;
-      },
-    },
   },
   data() {
     return {
@@ -119,10 +114,10 @@ export default {
     },
   },
   computed: {
-    showControl() {
-      return !this.readOnly;
+    showComponent() {
+      return store.getters.showComponent;
     },
-  },  
+  },
   async mounted() {
     await nextTick();
 
