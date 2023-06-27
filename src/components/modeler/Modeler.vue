@@ -91,8 +91,11 @@
         :isRendering="isRendering"
         :paperManager="paperManager"
         :auto-validate="autoValidate"
-        :is-active="node === activeNode"
         :node-id-generator="nodeIdGenerator"
+        :is-active="node === activeNode"
+        :is-completed="requestCompletedNodes.includes(node.definition.id)"
+        :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
+        :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
@@ -223,6 +226,18 @@ export default {
       },
     },
     validationBar: Array,
+    requestIdleNodes: {
+      type: Array,
+      default: () => [],
+    },
+    requestCompletedNodes: {
+      type: Array,
+      default: () => [],
+    },
+    requestInProgressNodes: {
+      type: Array,
+      default: () => [],
+    },
   },
   mixins: [hotkeys, cloneSelection],
   data() {
@@ -1251,6 +1266,7 @@ export default {
             event.offsetY - this.canvasDragPosition.y,
           );
         }
+        return;
       }
       if (this.isGrabbing) return;
       if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
@@ -1405,6 +1421,10 @@ export default {
       if (this.isGrabbing) return;
 
       shape.component.$emit('click', event);
+      this.$emit('click', {
+        event,
+        node: this.highlightedNode.definition,
+      });
     });
 
     this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
