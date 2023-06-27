@@ -9,7 +9,7 @@ import { nodeTypes } from '../../../support/constants';
 
 const key = isAppleOS() ? '{meta}' : '{ctrl}';
 
-describe.skip('Zoom In/Out Hot keys', () => {
+describe('Zoom In/Out Hot keys', () => {
   it('TCP4-2651: Verify that "CONTROLS RAIL" is not affected by Control --', () => {
     const initialNumberOfElements = 1;
 
@@ -36,7 +36,7 @@ describe.skip('Zoom In/Out Hot keys', () => {
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click();
 
     //Step 6: Get heigth of "CONTROLS RAIL" menu
-    cy.get('[data-test="controls-column"]> div').should('be.visible')
+    cy.get('[data-cy="rail-bottom"]').should('be.visible')
       .invoke('height').then((val) => {
         const heigth = val;
         //Step 7: Press CONTROL -
@@ -44,7 +44,7 @@ describe.skip('Zoom In/Out Hot keys', () => {
         cy.get('[data-cy="zoom-reset-control"]').should('have.text', '90%');
        
         //Validation 1: Verify that heigth "CONTROL RAIL" does not change
-        cy.get('[data-test="controls-column"]> div').should('exist')
+        cy.get('[data-cy="rail-bottom"]').should('exist')
           .invoke('height').then((val) => {
             cy.log('heigth initial of CONTROLS RAIL', heigth);
             cy.log('heigth after Ctrl -', val);
