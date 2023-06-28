@@ -1,4 +1,3 @@
-import component from './boundaryConditionalEvent';
 import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
@@ -11,7 +10,7 @@ export const id = 'processmaker-modeler-boundary-conditional-event';
 export default merge(cloneDeep(boundaryEventConfig), {
   ...eventDefinition,
   id,
-  component,
+  component: () => import('./boundaryConditionalEvent.vue'),
   control: false,
   label: 'Boundary Conditional Event',
   definition(moddle, $t) {

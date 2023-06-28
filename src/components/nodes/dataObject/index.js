@@ -1,4 +1,3 @@
-import component from './dataObject.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -8,7 +7,7 @@ export const id = 'processmaker-modeler-data-object';
 
 export default {
   id,
-  component,
+  component: () => import('./dataObject.vue'),
   bpmnType: 'bpmn:DataObjectReference',
   control: true,
   category: 'BPMN',

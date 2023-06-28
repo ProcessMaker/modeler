@@ -1,4 +1,3 @@
-import component from './association.vue';
 import { direction } from './associationConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 
@@ -6,7 +5,7 @@ export const id  = 'processmaker-modeler-association';
 
 export default {
   id,
-  component,
+  component: () => import('./association.vue'),
   bpmnType: 'bpmn:Association',
   control: false,
   definition(moddle) {
