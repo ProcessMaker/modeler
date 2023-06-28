@@ -19,7 +19,7 @@ const COLOR_IDLE = '#ced4da';
 const COLOR_COMPLETED = '#00875A';
 
 export default {
-  props: ['highlighted', 'paper', 'paperManager', 'isCompleted'],
+  props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
   data() {
     return {
       sourceShape: null,
@@ -80,10 +80,16 @@ export default {
   },
   methods: {
     setShapeHighlight() {
-      const COLOR = this.isCompleted ? COLOR_COMPLETED : COLOR_IDLE;
-      this.shape.attr({
-        line: { stroke: COLOR },
-      });
+      if (this.isCompleted) {
+        this.shape.attr({
+          line: { stroke: COLOR_COMPLETED },
+        });
+      }
+      else if (this.isIdle) {
+        this.shape.attr({
+          line: { stroke: COLOR_IDLE },
+        });
+      }
     },
     findSourceShape() {
       return this.graph.getElements().find(element => {
