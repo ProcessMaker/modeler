@@ -29,7 +29,7 @@ describe('Clone Improvement', () => {
     getIframeDocumentation().find('p').should('exist').click().type('Documentation to Form Task');
 
     //Step 5: Clone the element
-    cy.get('[data-test="clone-button"]').click();
+    cy.get('[data-test="clone-button"]').click({force: true});
 
     //Validation 1: Verify that Task event was cloned
     cy.get(selectorFormTask).eq(1).should('be.visible');
