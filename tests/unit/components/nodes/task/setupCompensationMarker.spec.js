@@ -1,7 +1,7 @@
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import compensationIcon from '@/assets/compensation.svg';
 
-describe.skip('setupCompensationMarker', () => {
+describe('setupCompensationMarker', () => {
 
   it('can add a compensation marker', () => {
     const $set = jest.fn();
