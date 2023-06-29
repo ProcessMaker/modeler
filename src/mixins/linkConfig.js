@@ -5,6 +5,10 @@ import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/no
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
 import store from '@/store';
+import {
+  COLOR_IDLE,
+  COLOR_COMPLETED,
+} from '@/components/highlightColors.js';
 
 const endpoints = {
   source: 'source',
@@ -14,9 +18,6 @@ const endpoints = {
 function isPoint(item) {
   return item.x && item.y;
 }
-
-const COLOR_IDLE = '#ced4da';
-const COLOR_COMPLETED = '#00875A';
 
 export default {
   props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
