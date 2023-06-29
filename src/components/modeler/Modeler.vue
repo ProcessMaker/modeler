@@ -1235,7 +1235,6 @@ export default {
       const { clientX: x, clientY: y } = event;
       if (this.isGrabbing) return;
       if (!this.isSelecting && this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
-        alert('dragging');
         this.isDragging = true;
         this.dragStart = null;
       } else {
