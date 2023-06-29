@@ -440,18 +440,14 @@ export function clickAndDropElement(node, position, nodeChild = null) {
       if (existExplorerRail) {
         cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
       } else {
-        cy.get(`[data-test=${node}-main]`).click();
-
+        cy.get('.control-list').find(`[data-test=${node}-main]`).click();
         if (nodeChild) {
-          cy.get(`[data-test=${nodeChild}]`).click();
+          cy.get('.control-list').find(`[data-test=${nodeChild}]`).click();
         }
       }
 
-      cy.document().trigger('mousemove', mouseEvent);
       cy.wait(300);
-      cy.get('.paper-container').trigger('mousedown', mouseEvent);
-      cy.wait(300);
-      cy.get('.paper-container').trigger('mouseup', mouseEvent);
+      cy.get('.paper-container').click(mouseEvent.clientX, mouseEvent.clientY);
     });
   });
 }
