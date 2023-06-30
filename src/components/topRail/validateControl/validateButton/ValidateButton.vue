@@ -3,6 +3,8 @@
     type="button"
     @click.prevent="handleOpen"
     :class="['validate-button', { 'validate-button-active': isOpen }]"
+    :title="$t('Auto validate')"
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     data-cy="validate-button"
   >
     <inline-svg :src="isOpen ? validateOpenIcon : validateCloseIcon" />
