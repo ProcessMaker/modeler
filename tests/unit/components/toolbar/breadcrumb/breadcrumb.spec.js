@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 
-describe.skip('Breadcrumb', () => {
+describe('Breadcrumb', () => {
   it('does not render if no breadcrumbs prop is passed', function() {
     const breadcrumbs = mount(Breadcrumb);
     expect(breadcrumbs.find('nav').exists()).toBe(true);

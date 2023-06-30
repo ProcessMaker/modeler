@@ -1,7 +1,7 @@
 import passes from './predicate';
 import { dummyShape } from '../../utilities/dummies';
 
-describe.skip('toHaveBeenProgrammaticallyMovedBy predicate', () => {
+describe('toHaveBeenProgrammaticallyMovedBy predicate', () => {
   it('passes when translate() is called with the expected params', () => {
     const testShape = dummyShape(0, 0, 0, 0);
     const dx = 1;

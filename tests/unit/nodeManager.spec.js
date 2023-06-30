@@ -1,8 +1,8 @@
 import { addNodeToProcess } from '@/components/nodeManager';
 import Node from '@/components/nodes/node';
 
-describe.skip('nodeManager', () => {
-  describe.skip('add id to to node and set up diagram reference', () => {
+describe('nodeManager', () => {
+  describe('add id to to node and set up diagram reference', () => {
     it('should not change node ID if it already has an ID set', () => {
       const nodeId = 'foobar';
       const newNodeId = 'baz';
@@ -49,7 +49,7 @@ describe.skip('nodeManager', () => {
     });
   });
 
-  describe.skip('addNodeToProcess', () => {
+  describe('addNodeToProcess', () => {
     it('should not modify target process for pool nodes', () => {
       const node = new Node('processmaker-modeler-pool', {}, {});
       const targetProcess = {};
@@ -122,7 +122,7 @@ describe.skip('nodeManager', () => {
     });
   });
 
-  describe.skip('get target process', () => {
+  describe('get target process', () => {
     it('should return processNode definition for node that does not have pool', () => {
       const node = new Node('Foo', {}, {});
       const processNode = new Node('Bar', {}, {});
