@@ -1234,7 +1234,7 @@ export default {
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
       if (this.isGrabbing) return;
-      if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
+      if (!this.isSelecting && this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
         this.isDragging = true;
         this.dragStart = null;
       } else {
@@ -1248,7 +1248,7 @@ export default {
       }
     },
     pointerUpHandler(event, cellView) {
-      if (!this.isDragging && this.dragStart) {
+      if (!this.isSelecting && !this.isDragging && this.dragStart) {
         // is clicked over the shape
         if (cellView) {
           this.$refs.selector.selectElement(cellView, event.shiftKey);
