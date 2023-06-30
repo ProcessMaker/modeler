@@ -18,7 +18,7 @@ import {
 const expect = require('expect');
 expect.extend({ toHaveBeenProgrammaticallyMoved, toHaveBeenProgrammaticallyMovedBy });
 
-describe.skip('Shape Alignment', () => {
+describe('Shape Alignment', () => {
   it('can align left', () => {
     const shapes = [
       dummyShape(0, 0, 100, 50),
