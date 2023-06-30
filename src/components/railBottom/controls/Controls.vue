@@ -50,6 +50,7 @@ export default ({
   data() {
     return {
       plusIcon: require('@/assets/railBottom/plus.svg'),
+      currentType: null,
     };
   },
   created() {
@@ -78,8 +79,9 @@ export default ({
      */
     onClickControlHandler(event, control) {
       this.selectedSubmenuItem = null;
-      this.popperType = null;
+      this.popperType = this.currentType === control.type ? null : control.type;
       this.onClickHandler(event, control);
+      this.currentType = this.popperType; 
     },
     toggleExplorer() {
       // Remove control click & drop selection when the Add button is clicked
