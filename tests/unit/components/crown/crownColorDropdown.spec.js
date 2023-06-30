@@ -7,7 +7,7 @@ jest.mock('../../../../src/store.js', () => {
   return { commit: jest.fn() };
 });
 
-describe.skip('crownColorDropdown.vue', () => {
+describe('crownColorDropdown.vue', () => {
   let wrapper;
   let store;
   let node;

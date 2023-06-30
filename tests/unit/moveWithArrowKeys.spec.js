@@ -6,7 +6,7 @@ const shapeFactory = (type = 'foo') => ({
   getParentCell: () => null,
 });
 
-describe.skip('moveWithArrowKeys', () => {
+describe('moveWithArrowKeys', () => {
   it('should not translate shape if correct keys are not pressed', () => {
     const shape = shapeFactory();
     const onAfterMove = jest.fn();

@@ -1,7 +1,7 @@
 import { getInvalidNodes, keepOriginalName } from '@/components/modeler/modelerUtils';
 import Node from '@/components/nodes/node';
 
-describe.skip('keepOriginalName', () => {
+describe('keepOriginalName', () => {
   const nodeTypes = [
     ['Form Task', 'processmaker-modeler-script-task'],
     ['Start Event', 'processmaker-modeler-start-timer-event'],
@@ -29,7 +29,7 @@ describe.skip('keepOriginalName', () => {
   });
 });
 
-describe.skip('getInvalidNodes', () => {
+describe('getInvalidNodes', () => {
   it('should return node if it does not have an ID', () => {
     const node = new Node('processmaker-modeler-start-event', { id: '' });
     const nodes = getInvalidNodes({}, [node]);
