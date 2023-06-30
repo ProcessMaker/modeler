@@ -73,7 +73,7 @@ export default ({
       this.onClickHandler(data.event, data.control);
     },
     /**
-     * On click in the botton rail control handler
+     * On click on the botton rail control
      * @param {Object} event
      * @param {Object} control
      */
