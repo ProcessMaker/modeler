@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import store from '@/store';
 
 const COLOR_DEFAULT = '#5096db';
-const COLOR_ERROR = '##FF0000';
+const COLOR_ERROR = '#FF0000';
 const COLOR_IN_PROGRESS = '#1572C2';
 const COLOR_IDLE = '#ced4da';
 const COLOR_COMPLETED = '#00875A';
