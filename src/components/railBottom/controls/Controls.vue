@@ -8,7 +8,7 @@
       :class="['control-item', {'active': selectedItem && (selectedItem.type === item.type)}]"
       :id="item.id"
       :key="item.id"
-      @click.stop="onClickHandler($event, item)"
+      @click.stop="onClickControlHandler($event, item)"
       :data-test="`${item.type}-main`"
     >
       <SubmenuPopper
@@ -70,6 +70,16 @@ export default ({
       this.parent = this.selectedItem;
       this.selectedSubmenuItem = data.control.type;
       this.onClickHandler(data.event, data.control);
+    },
+    /**
+     * On click in the botton rail control handler
+     * @param {Object} event
+     * @param {Object} control
+     */
+    onClickControlHandler(event, control) {
+      this.selectedSubmenuItem = null;
+      this.popperType = null;
+      this.onClickHandler(event, control);
     },
     toggleExplorer() {
       // Remove control click & drop selection when the Add button is clicked
