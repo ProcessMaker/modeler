@@ -1,4 +1,3 @@
-import component from './startTimerEvent.vue';
 import TimerExpression from '../../inspectors/TimerExpression.vue';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -11,7 +10,7 @@ const id = 'processmaker-modeler-start-timer-event';
 
 export default merge(cloneDeep(baseStartEventConfig), {
   id,
-  component,
+  component: () => import('./startTimerEvent.vue'),
   label: defaultNames[id],
   definition(moddle, $t) {
     let startEventDefinition = moddle.create('bpmn:StartEvent', {

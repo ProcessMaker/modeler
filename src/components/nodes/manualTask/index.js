@@ -1,4 +1,3 @@
-import component from './manualTask.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -9,7 +8,7 @@ export const id = 'processmaker-modeler-manual-task';
 
 export default {
   id,
-  component,
+  component: () => import('./manualTask.vue'),
   bpmnType: 'bpmn:ManualTask',
   control: false,
   category: 'BPMN',

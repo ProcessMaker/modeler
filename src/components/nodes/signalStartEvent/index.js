@@ -1,4 +1,3 @@
-import component from './signalStartEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import requestVariableSettings from '@/components/inspectors/requestVariableSettings';
@@ -11,7 +10,7 @@ const id = 'processmaker-modeler-signal-start-event';
 export default merge(cloneDeep(baseStartEventConfig), {
   ...signalEventDefinition,
   id,
-  component,
+  component: () => import('./signalStartEvent.vue'),
   label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:StartEvent', {

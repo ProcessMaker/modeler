@@ -1,4 +1,3 @@
-import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
@@ -6,7 +5,7 @@ import DocumentationFormTextArea from '@/components/inspectors/DocumentationForm
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
-  component,
+  component: () => import('./parallelGateway.vue'),
   bpmnType: 'bpmn:ParallelGateway',
   control: false,
   category: 'BPMN',

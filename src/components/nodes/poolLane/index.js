@@ -1,4 +1,3 @@
-import component from './poolLane';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -6,7 +5,7 @@ import { id } from '@/components/nodes/poolLane/config';
 
 export default {
   id,
-  component,
+  component: () => import('./poolLane.vue'),
   bpmnType: 'bpmn:Lane',
   control: false,
   category: 'BPMN',

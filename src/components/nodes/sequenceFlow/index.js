@@ -1,4 +1,3 @@
-import component from './sequenceFlow.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -7,7 +6,7 @@ export const id = 'processmaker-modeler-sequence-flow';
 
 export default {
   id,
-  component,
+  component: () => import('./sequenceFlow.vue'),
   bpmnType: 'bpmn:SequenceFlow',
   control: false,
   definition(moddle) {

@@ -1,4 +1,3 @@
-import component from './task.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
@@ -12,7 +11,7 @@ export const id = 'processmaker-modeler-task';
 
 export default {
   id: 'processmaker-modeler-task',
-  component,
+  component: () => import('./task.vue'),
   bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
   control: true,
   category: 'BPMN',

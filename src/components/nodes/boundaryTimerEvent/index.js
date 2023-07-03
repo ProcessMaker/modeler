@@ -1,4 +1,3 @@
-import component from './boundaryTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
@@ -13,7 +12,7 @@ export const id = 'processmaker-modeler-boundary-timer-event';
 
 export default merge(cloneDeep(boundaryEventConfig), {
   id,
-  component,
+  component: () => import('./boundaryTimerEvent.vue'),
   control: false,
   label: 'Boundary Timer Event',
   icon: require('@/assets/toolpanel/boundary-timer-event.svg'),

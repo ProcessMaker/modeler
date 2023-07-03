@@ -1,4 +1,3 @@
-import component from './dataStore.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -8,7 +7,7 @@ export const id = 'processmaker-modeler-data-store';
 
 export default {
   id,
-  component,
+  component: () => import('./dataStore.vue'),
   bpmnType: 'bpmn:DataStoreReference',
   control: true,
   category: 'BPMN',

@@ -1,4 +1,3 @@
-import component from './scriptTask.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
@@ -9,7 +8,7 @@ export const id = 'processmaker-modeler-script-task';
 
 export default {
   id,
-  component,
+  component: () => import('./scriptTask.vue'),
   bpmnType: 'bpmn:ScriptTask',
   control: false,
   category: 'BPMN',

@@ -1,4 +1,3 @@
-import component from './intermediateTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
@@ -10,7 +9,7 @@ const id = 'processmaker-modeler-intermediate-catch-timer-event';
 
 export default {
   id,
-  component,
+  component: () => import('./intermediateTimerEvent.vue'),
   bpmnType: 'bpmn:IntermediateCatchEvent',
   control: true,
   category: 'BPMN',

@@ -1,4 +1,3 @@
-import component from './messageEndEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import endEventConfig from '@/components/nodes/endEvent';
@@ -10,7 +9,7 @@ const id = 'processmaker-modeler-message-end-event';
 export default merge(cloneDeep(endEventConfig), {
   ...messageEventDefinition,
   id,
-  component,
+  component: () => import('./messageEndEvent.vue'),
   control: false,
   label: defaultNames[id],
   definition(moddle, $t) {

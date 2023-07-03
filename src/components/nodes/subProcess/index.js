@@ -1,4 +1,3 @@
-import component from './subProcess';
 import SubProcessFormSelect from './SubProcessFormSelect';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
@@ -10,7 +9,7 @@ export const id = 'processmaker-modeler-call-activity';
 
 export default {
   id,
-  component,
+  component: () => import('./subProcess.vue'),
   bpmnType: 'bpmn:CallActivity',
   control: false,
   category: 'BPMN',

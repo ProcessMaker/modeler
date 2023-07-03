@@ -1,4 +1,3 @@
-import component from './intermediateConditionalCatchEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateEventConfig from '@/components/nodes/intermediateEvent';
@@ -10,7 +9,7 @@ const id = 'processmaker-modeler-intermediate-conditional-catch-event';
 export default merge(cloneDeep(intermediateEventConfig), {
   ...eventDefinition,
   id,
-  component,
+  component: () => import('./intermediateConditionalCatchEvent.vue'),
   control: false,
   bpmnType: 'bpmn:IntermediateCatchEvent',
   label: defaultNames[id],

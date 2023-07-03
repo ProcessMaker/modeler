@@ -1,4 +1,3 @@
-import component from './startEvent.vue';
 import defaultNames from '../baseStartEvent/defaultNames';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
@@ -8,7 +7,7 @@ const id = 'processmaker-modeler-start-event';
 
 export default merge(cloneDeep(baseStartEventConfig), {
   id,
-  component,
+  component: () => import('./startEvent.vue'),
   control: true,
   icon: require('@/assets/toolpanel/start-event.svg'),
   label: defaultNames[id],

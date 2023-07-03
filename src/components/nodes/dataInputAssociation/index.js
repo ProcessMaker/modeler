@@ -1,10 +1,9 @@
-import component from './dataInputAssociation.vue';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import * as config from './config';
 
 export default {
   ...config,
-  component,
+  component: () => import('./dataInputAssociation.vue'),
   control: false,
   inspectorConfig: [
     {

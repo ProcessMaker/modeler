@@ -1,4 +1,3 @@
-import component from './inclusiveGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
@@ -9,7 +8,7 @@ const id = 'processmaker-modeler-inclusive-gateway';
 
 export default {
   id,
-  component,
+  component: () => import('./inclusiveGateway.vue'),
   bpmnType: 'bpmn:InclusiveGateway',
   control: false,
   category: 'BPMN',

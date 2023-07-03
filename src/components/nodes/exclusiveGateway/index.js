@@ -1,4 +1,3 @@
-import component from './exclusiveGateway.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -8,7 +7,7 @@ const id = 'processmaker-modeler-exclusive-gateway';
 
 export default {
   id,
-  component,
+  component: () => import('./exclusiveGateway.vue'),
   bpmnType: 'bpmn:ExclusiveGateway',
   control: true,
   category: 'BPMN',

@@ -1,4 +1,3 @@
-import component from './intermediateMessageThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
@@ -10,7 +9,7 @@ const id = 'processmaker-modeler-intermediate-message-throw-event';
 export default merge(cloneDeep(intermediateMessageEventConfig), {
   ...messageEventDefinition,
   id,
-  component,
+  component: () => import('./intermediateMessageThrowEvent.vue'),
   control: false,
   bpmnType: 'bpmn:IntermediateThrowEvent',
   label: defaultNames[id],

@@ -1,4 +1,3 @@
-import component from './boundaryMessageEvent.vue';
 import boundaryEventConfig from '../boundaryEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
@@ -11,7 +10,7 @@ export const id = 'processmaker-modeler-boundary-message-event';
 export default merge(cloneDeep(boundaryEventConfig), {
   ...messageEventDefinition,
   id,
-  component,
+  component: () => import('./boundaryMessageEvent.vue'),
   control: false,
   label: 'Boundary Message Event',
   icon: require('@/assets/toolpanel/boundary-message-event.svg'),

@@ -1,4 +1,3 @@
-import component from './boundarySignalEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import boundaryEventConfig from '@/components/nodes/boundaryEvent';
@@ -12,7 +11,7 @@ export const id = 'processmaker-modeler-boundary-signal-event';
 export default merge(cloneDeep(boundaryEventConfig), {
   ...signalEventDefinition,
   id,
-  component,
+  component: () => import('./boundarySignalEvent.vue'),
   control: false,
   label: 'Boundary Signal Event',
   icon: require('@/assets/toolpanel/boundary-signal-event.svg'),

@@ -1,4 +1,3 @@
-import component from './intermediateSignalCatchEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import requestVariableSettings from '@/components/inspectors/requestVariableSettings';
@@ -11,7 +10,7 @@ const id = 'processmaker-modeler-intermediate-signal-catch-event';
 export default merge(cloneDeep(intermediateEventConfig), {
   ...signalEventDefinition,
   id,
-  component,
+  component: () => import('./intermediateSignalCatchEvent.vue'),
   control: false,
   bpmnType: 'bpmn:IntermediateCatchEvent',
   label: defaultNames[id],

@@ -1,4 +1,3 @@
-import component from './intermediateSignalThrowEvent.vue';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import intermediateEventConfig from '@/components/nodes/intermediateEvent';
@@ -10,7 +9,7 @@ const id = 'processmaker-modeler-intermediate-signal-throw-event';
 export default merge(cloneDeep(intermediateEventConfig), {
   ...signalEventDefinition,
   id,
-  component,
+  component: () => import('./intermediateSignalThrowEvent.vue'),
   control: false,
   bpmnType: 'bpmn:IntermediateThrowEvent',
   label: defaultNames[id],

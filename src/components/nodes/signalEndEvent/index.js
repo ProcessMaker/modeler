@@ -1,4 +1,3 @@
-import component from './signalEndEvent.vue';
 import endEventConfig from '../endEvent';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
@@ -10,7 +9,7 @@ export const id = 'processmaker-modeler-signal-end-event';
 export default merge(cloneDeep(endEventConfig), {
   ...signalEventDefinition,
   id,
-  component,
+  component: () => import('./signalEndEvent.vue'),
   control: false,
   label: defaultNames[id],
   definition(moddle, $t) {

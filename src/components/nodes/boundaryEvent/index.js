@@ -1,9 +1,8 @@
-import component from './boundaryEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 
 export default {
   id: 'processmaker-modeler-boundary-event',
-  component,
+  component: () => import('./boundaryEvent.vue'),
   bpmnType: 'bpmn:BoundaryEvent',
   control: true,
   category: 'BPMN',

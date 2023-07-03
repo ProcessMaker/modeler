@@ -1,4 +1,3 @@
-import component from './messageFlow.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -6,7 +5,7 @@ import { id } from '@/components/nodes/messageFlow/config';
 
 export default {
   id,
-  component,
+  component: () => import('./messageFlow.vue'),
   bpmnType: 'bpmn:MessageFlow',
   control: false,
   definition(moddle) {

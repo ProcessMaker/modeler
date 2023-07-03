@@ -1,4 +1,3 @@
-import component from './terminateEndEvent.vue';
 import endEventConfig from '../endEvent/index';
 import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
@@ -8,7 +7,7 @@ export const id = 'processmaker-modeler-terminate-end-event';
 
 export default merge(cloneDeep(endEventConfig), {
   id,
-  component,
+  component: () => import('./terminateEndEvent.vue'),
   control: false,
   label: defaultNames[id],
   definition(moddle, $t) {

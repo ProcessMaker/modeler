@@ -1,4 +1,3 @@
-import component from './pool';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -7,7 +6,7 @@ import { id } from './config';
 
 export default {
   id,
-  component,
+  component: () => import('./pool.vue'),
   bpmnType: 'bpmn:Participant',
   control: true,
   category: 'BPMN',

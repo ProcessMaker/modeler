@@ -1,4 +1,3 @@
-import component from './endEvent.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -8,7 +7,7 @@ const id = 'processmaker-modeler-end-event';
 
 export default {
   id,
-  component,
+  component: () => import('./endEvent.vue'),
   bpmnType: 'bpmn:EndEvent',
   control: true,
   category: 'BPMN',
