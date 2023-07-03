@@ -1,5 +1,5 @@
 import { nodeTypes } from '../../../support/constants';
-const { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } = require('../../../support/utils');
+import { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } from '../../../support/utils';
 
 describe('Select and Move' , () => {
   it('Elements are selected and moved', () => {
