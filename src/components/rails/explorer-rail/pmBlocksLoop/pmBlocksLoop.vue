@@ -1,4 +1,14 @@
 <script>
+Vue.filter('str_limit', function (value, size) {
+  if (!value) return '';
+  value = value.toString();
+
+  if (value.length <= size) {
+    return value;
+  }
+  return value.substr(0, size) + '...';
+});
+
 import nodeTypesStore from '@/nodeTypesStore';
 import clickAndDrop from '@/mixins/clickAndDrop';
 
@@ -28,8 +38,10 @@ export default {
           :key="object.id"
           @click.stop="onClickHandler($event, object)"
         >
-          <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
-          <span>{{ $t(object.label) }}</span>
+          <i v-if="!svgIcon" :class="object.icon"/>
+          <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
+          <label>{{ $t(object.label) }}</label>
+          <span class="d-block">{{ object.description | str_limit(35) }}</span>
         </div>
       </template>
     </div>
@@ -41,8 +53,10 @@ export default {
             :key="nodeType.id"
             @click.stop="onClickHandler($event, nodeType)"
           >
+            <i v-if="!svgIcon" :class="nodeType.icon"/>
+            <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
             <label>{{ $t(nodeType.label) }}</label>
-            <span class="d-block">{{ nodeType.description }}</span>
+            <span class="d-block">{{ nodeType.description | str_limit(35) }}</span>
           </div>
         </template>
       </div>
@@ -54,21 +68,25 @@ export default {
 .pm-block-node-types {
   &__item {
     display: block;
+    padding: 0.5rem 0.3rem;
     border-radius: 4px;
     user-select: none;
     margin-bottom: 8px;
-    border: 1px solid #b6bfc6;
     &:hover {
       background-color: #EBEEF2;
     }
+    &__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
     label {
+      margin-left: 0.8rem;
       font-size: 14px;
       line-height: 8px;
-      font-weight: 600;
-      color: #104A75;
     }
     span {
-      font-size: 12px;
+      margin-left: 1.6rem;
+      font-size: 13px;
       color:#6C757D;
     }
   }
