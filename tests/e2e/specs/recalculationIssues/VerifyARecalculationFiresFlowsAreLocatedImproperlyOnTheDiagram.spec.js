@@ -28,11 +28,8 @@ describe('Recalculations Issues', () => {
     let parameterList = [
       {element: nodeTypes.startEvent, positionElement:{ x:400, y: 150},connector:false},
       {element: nodeTypes.task, positionElement:{ x:500, y: 200},connector:false},
-      //{startPosition:{ x:400, y: 150}, endPosition:{ x:550, y: 200},connector:true},
       {element: nodeTypes.endEvent, positionElement:{ x:700, y: 250},connector:false},
-      //{startPosition:{ x:500, y: 200}, endPosition:{ x:700, y: 250},connector:true},
       {element: nodeTypes.task, positionElement:{ x:500, y: 450},connector:false},
-      //{startPosition:{ x:500, y: 200}, endPosition:{ x:550, y: 450},connector:true},
     ];
     createProcess(parameterList);
     connectNodesWithFlow('generic-flow-button',{ x:400, y: 150}, { x:550, y: 200});
@@ -42,11 +39,10 @@ describe('Recalculations Issues', () => {
     cy.get('[id="generic-flow-button"]').click();
     cy.get(taskSelector).eq(0).click();
 
-    //cy.get('[data-cy="inspector-button"]').click();
     cy.get('[data-type="standard.Link"]>path:nth-child(1)').eq(1).invoke('attr', 'd')
       .then(val => {
         const positionA = val;
-        cy.log('this is the cordinates'+ positionA);
+        cy.log('This is the coordinates'+ positionA);
 
         //Step 5: Move any element of the pool
         const taskPosition = { x:500, y: 220};
@@ -77,7 +73,7 @@ describe('Recalculations Issues', () => {
         cy.get('[data-type="standard.Link"]>path:nth-child(1)').eq(2).invoke('attr', 'd')
           .then(val => {
             const positionB = val;
-            cy.log('this is the cordinates after moved '+ positionB);
+            cy.log('This is the coordinates after moved '+ positionB);
             expect(positionA).equal(positionB);
           });
       });

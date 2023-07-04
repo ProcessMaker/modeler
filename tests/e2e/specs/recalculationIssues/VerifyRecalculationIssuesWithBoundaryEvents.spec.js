@@ -40,7 +40,7 @@ describe('Recalculations Issues', () => {
     cy.get(endEventSelector).eq(0).invoke('attr', 'transform')
       .then(val => {
         const positionA = val;
-        cy.log('this is the current possition: ', positionA);
+        cy.log('this is the current position: ', positionA);
 
         //Step 5: Move the selection out the pool toward bottom
         cy.get(endEventSelector).eq(0).trigger('mousedown',{force: true});
@@ -54,7 +54,7 @@ describe('Recalculations Issues', () => {
         cy.get(endEventSelector).eq(0).invoke('attr', 'transform')
           .then(val => {
             const positionB = val;
-            cy.log('this is the second possition: ', positionB);
+            cy.log('this is the second position: ', positionB);
             expect(positionA).equal(positionB);
           });
       });
