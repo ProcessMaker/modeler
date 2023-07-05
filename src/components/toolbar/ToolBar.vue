@@ -8,7 +8,6 @@
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
-          @saveBpmn="$emit('saveBpmn')"
         >
           <component
             :is="component.button"
