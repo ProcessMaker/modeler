@@ -1,5 +1,6 @@
 <template>
   <div class="top-rail-container">
+    <SaveButton @saveBpmn="$emit('saveBpmn')"/>
     <ValidateIssue
       v-show="isOpenIssue"
       :number-of-errors="numberOfErrors"
@@ -20,12 +21,13 @@
 <script>
 import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
-
+import SaveButton from '@/components/topRail/saveButton/saveButton.vue';
 export default {
   components: {
     ValidateButton,
     ValidateIssue,
     ValidatePanel,
+    SaveButton,
   },
   props: {
     validationErrors: {

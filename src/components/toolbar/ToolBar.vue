@@ -5,18 +5,10 @@
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
       <div class="d-flex mr-3">
-        <b-button
-          class="btn btn-sm btn-secondary mini-map-btn ml-auto"
-          data-test="mini-map-btn"
-          @click="$emit('saveBpmn')"
-          v-b-tooltip.hover
-          :title="$t('Save')"
-        >
-          <font-awesome-icon :icon="saveIcon" />
-        </b-button>
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
+          @saveBpmn="$emit('saveBpmn')"
         >
           <component
             :is="component.button"
