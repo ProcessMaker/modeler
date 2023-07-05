@@ -64,6 +64,17 @@
               data-cy="ellipsis-menu"
             />
           </template>
+          <b-button
+            v-else
+            class="btn btn-sm btn-secondary mini-map-btn mx-1"
+            data-test="mini-map-btn"
+            v-b-tooltip.hover
+            :title="$t('Save')"
+            @click="$emit('saveBpmn')"
+          >
+            <font-awesome-icon :icon="saveIcon" />
+            <span class="save-text">{{ $t('Save') }}</span>
+          </b-button>
         </div>
       </div>
     </div>
@@ -75,7 +86,6 @@ import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faS
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import TopRail from '@/components/topRail/TopRail.vue';
-
 export default {
   name: 'tool-bar',
   components: {
