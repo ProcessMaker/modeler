@@ -23,6 +23,7 @@
           aria-label="Publish controls"
           data-cy="publish-control"
         >
+          <div class="divider" />
           <template v-if="isVersionsInstalled">
             <div
               class="toolbar-item toolbar-version-status"
@@ -64,17 +65,17 @@
               data-cy="ellipsis-menu"
             />
           </template>
-          <b-button
+          <button
             v-else
-            class="btn btn-sm btn-secondary mini-map-btn mx-1"
+            class="save-button"
             data-test="mini-map-btn"
             v-b-tooltip.hover
             :title="$t('Save')"
             @click="$emit('saveBpmn')"
           >
             <font-awesome-icon :icon="saveIcon" />
-            <span class="save-text">{{ $t('Save') }}</span>
-          </b-button>
+            <span class="save-button-label">{{ $t('Save') }}</span>
+          </button>
         </div>
       </div>
     </div>

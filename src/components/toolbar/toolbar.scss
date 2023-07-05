@@ -79,6 +79,26 @@ $toolbar-background-color: #fff;
   border-top-left-radius: 4px !important;
   border-bottom-left-radius: 4px !important;
 }
-.save-text {
-  padding-left: 0.4em;
+
+.save-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  background-color: #6C757D;
+  border: 0 none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  color: #ffffff;
+  &:active {
+    background-color: #5A6268;
+  }
+  &-label {
+    padding-left: 0.4em;
+  }
+}
+.divider {
+  border-left: 1px solid #6C757D;
+  height: 80%;
+  padding-left: 11px;
 }
