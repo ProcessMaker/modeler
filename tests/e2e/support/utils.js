@@ -475,3 +475,34 @@ export function toggleExplorerRail() {
 export function isAppleOS() {
   return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
 }
+
+export function createProcess(elements){
+  let positionElement;
+  let element;
+  let connector;
+  let startPosition;
+  let endPosition;
+  let len = elements.length;
+  for (let i = 0; i < len; i++) {
+    connector = elements[i].connector;
+    if (!connector){
+      positionElement = elements[i].positionElement;
+      element = elements[i].element;
+      clickAndDropElement(element, positionElement);
+    } else {
+      startPosition = elements[i].startPosition;
+      endPosition = elements[i].endPosition;
+      connectNodesWithFlow('generic-flow-button', startPosition, endPosition);
+    }
+  }
+}
+
+export function selectElements(parameterList) {
+  let len = parameterList.length;
+  let element;
+  for (let i = 0; i <len ; i++) {
+    element = parameterList[i];
+    cy.get('body').type('{shift}', {release: false});
+    cy.get(element.element).eq(element.pos).click({force: true});
+  }
+}

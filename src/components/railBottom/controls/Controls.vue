@@ -23,7 +23,7 @@
       <div
         :class="{'control-add': true, 'control-active': explorerOpen}"
         :title="$t('Add')"
-        v-b-tooltip.hover
+        v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
         @click="toggleExplorer"
       >
         <inline-svg :src="plusIcon" />
@@ -81,7 +81,7 @@ export default ({
       this.selectedSubmenuItem = null;
       this.popperType = this.currentType === control.type ? null : control.type;
       this.onClickHandler(event, control);
-      this.currentType = this.popperType; 
+      this.currentType = this.popperType;
     },
     toggleExplorer() {
       // Remove control click & drop selection when the Add button is clicked
