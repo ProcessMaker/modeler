@@ -9,6 +9,7 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     list-style: none;
+    overflow-x: auto;
   }
 
   &-item {
@@ -17,6 +18,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-width: 40px;
     width: 40px;
     height: 40px;
     margin-right: 12px;

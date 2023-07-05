@@ -69,7 +69,7 @@ export default {
         {
           label: 'Align',
           iconPrefix: 'fpm',
-          icon: 'center-vertically',
+          icon: 'align-left',
           testId: 'align',
           role: 'menuitem',
           action: this.showAlign,
