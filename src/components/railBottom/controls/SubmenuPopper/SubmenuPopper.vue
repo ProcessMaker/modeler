@@ -4,8 +4,9 @@
     trigger="clickToOpen"
     :options="{
       placement: 'top',
-      modifiers: { offset: { offset: '0,20px' } }
+      modifiers: { offset: { offset: '0,5px' }, preventOverflow: { escapeWithReference: true } }
     }"
+    :append-to-body=true
     :visible-arrow=false
     :force-show="popperType === data.type"
   >
@@ -29,7 +30,7 @@
       slot="reference"
       :alt=data.label
       :title="$t(data.label)"
-      v-b-tooltip.hover
+      v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     >
       <div class="control-submenu-options">
         <span />
@@ -41,7 +42,7 @@
   <a v-else class="control-submenu-item"
     :alt=data.label
     :title="$t(data.label)"
-    v-b-tooltip.hover
+    v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
     <inline-svg :src=data.icon />
   </a>
@@ -85,7 +86,7 @@ export default ({
   flex-direction: column;
   align-items: flex-start;
   padding: 10px;
-  width: max-content;
+  width: 255px;
   left: 616px;
   background: #FFFFFF;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -112,6 +113,7 @@ export default ({
     align-self: stretch;
     flex-grow: 0;
     border-radius: 4px;
+    cursor: pointer;
 
     &.active {
       background-color: #DEEBFF;
