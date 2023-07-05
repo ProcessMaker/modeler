@@ -138,7 +138,6 @@
 
 <script>
 import Vue from 'vue';
-import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
@@ -561,12 +560,6 @@ export default {
       if (event && event.shiftKey) {
         store.commit('addToHighlightedNodes', [node]);
         return;
-      }
-
-      let isSameHighlightedNode = _.isEqual(node.id, this.highlightedNode.id);
-
-      if (!isSameHighlightedNode) {
-        store.commit('highlightNode', node);
       }
 
       return;
@@ -1054,7 +1047,6 @@ export default {
           this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
         );
       }
-      
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
