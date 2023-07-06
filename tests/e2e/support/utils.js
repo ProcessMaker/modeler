@@ -403,7 +403,7 @@ export function getIframeDocumentation() {
   cy.get('[id="accordion-button-documentation-accordion"]').click();
   const getIframeDocument = () => {
     return cy
-      .get('iframe[id *= "documentation-editor"]')
+      .get('iframe[id*="tiny-vue_')
       .its('0.contentDocument').should('exist');
   };
   const getIframeBody = () => {
@@ -454,6 +454,26 @@ export function clickAndDropElement(node, position, nodeChild = null) {
       cy.get('.paper-container').trigger('mouseup', mouseEvent);
     });
   });
+}
+
+export function toggleInspector() {
+  cy.get('[data-cy=inspector-close-button]').then(($el) => {
+    if ($el.length) return cy.get('[data-cy=inspector-button]').click();
+    return cy.get('[data-cy=inspector-close-button]').click();
+  });
+}
+
+export function toggleExplorerRail() {
+  const closeExplorerRailButton = cy.get('.close--container');
+  const toggleExplorerRailButton = cy.get('.rail-center .control-item');
+  closeExplorerRailButton.then(($el) => {
+    if ($el.length) return toggleExplorerRailButton.click();
+    return closeExplorerRailButton.click();
+  });
+}
+
+export function isAppleOS() {
+  return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
 }
 
 export function createProcess(elements){

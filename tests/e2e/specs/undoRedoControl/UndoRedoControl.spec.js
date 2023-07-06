@@ -11,7 +11,7 @@ import {
   setBoundaryEvent,
 } from '../../support/utils';
 
-describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
+describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   const undoSelector = '[data-cy="undo-control"]';
   const redoSelector = '[data-cy="redo-control"]';
 
@@ -53,7 +53,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
       });
   });
 
-  it('should undo/redo adding a task', () => {
+  it.skip('should undo/redo adding a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -71,7 +71,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it('should undo/redo deleting a task', () => {
+  it.skip('should undo/redo deleting a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -95,7 +95,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it('should undo/redo modifying sequence flow vertices', () => {
+  it.skip('should undo/redo modifying sequence flow vertices', () => {
     const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 300, y: 300 };
 
@@ -130,7 +130,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
     testNumberOfVertices(initialNumberOfWaypoints);
   });
 
-  it('should undo/redo boundary timer event', () => {
+  it.skip('should undo/redo boundary timer event', () => {
     const taskPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
