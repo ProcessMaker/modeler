@@ -38,9 +38,11 @@ export default {
           :key="object.id"
           @click.stop="onClickHandler($event, object)"
         >
-          <i v-if="!svgIcon" :class="object.icon"/>
-          <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
-          <label>{{ $t(object.label) }}</label>
+          <div class="d-flex">
+            <i v-if="!svgIcon" class="node-types__item__icon" :class="object.icon"/>
+            <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
+            <label>{{ $t(object.label) }}</label>
+          </div>
           <span class="d-block">{{ object.description | str_limit(35) }}</span>
         </div>
       </template>
@@ -53,9 +55,11 @@ export default {
             :key="nodeType.id"
             @click.stop="onClickHandler($event, nodeType)"
           >
-            <i v-if="!svgIcon" :class="nodeType.icon"/>
-            <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
-            <label>{{ $t(nodeType.label) }}</label>
+            <div class="d-flex">
+              <i v-if="!svgIcon" class="node-types__item__icon" :class="nodeType.icon"/>
+              <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
+              <label>{{ $t(nodeType.label) }}</label>
+            </div>
             <span class="d-block">{{ nodeType.description | str_limit(35) }}</span>
           </div>
         </template>
@@ -80,9 +84,9 @@ export default {
       height: 1.5rem;
     }
     label {
-      margin-left: 0.8rem;
+      max-width: 225px;
       font-size: 14px;
-      line-height: 8px;
+      line-height: 15px;
     }
     span {
       margin-left: 1.6rem;
