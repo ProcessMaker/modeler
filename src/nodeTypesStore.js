@@ -68,6 +68,8 @@ export default new Vuex.Store({
           id: uniqueId('pmBlockNode_'),
           type: pmBlockNode.id,
           icon: pmBlockNode.icon,
+          customIcon: pmBlockNode.customIcon,
+          svgIcon: pmBlockNode.svgIcon,
           label: pmBlockNode.label,
           description: pmBlockNode.description,
           bpmnType: pmBlockNode.bpmnType,

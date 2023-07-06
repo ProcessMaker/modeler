@@ -1,14 +1,4 @@
 <script>
-Vue.filter('str_limit', function (value, size) {
-  if (!value) return '';
-  value = value.toString();
-
-  if (value.length <= size) {
-    return value;
-  }
-  return value.substr(0, size) + '...';
-});
-
 import nodeTypesStore from '@/nodeTypesStore';
 import clickAndDrop from '@/mixins/clickAndDrop';
 
@@ -39,11 +29,10 @@ export default {
           @click.stop="onClickHandler($event, object)"
         >
           <div class="d-flex">
-            <i v-if="!svgIcon" class="node-types__item__icon" :class="object.icon"/>
-            <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
+            <i v-if="!svgIcon" class="node-types__item__icon" :class="object.customIcon"/>
+            <img v-else class="node-types__item__icon" :src="object.svgIcon" :alt="$t(object.label)">
             <label>{{ $t(object.label) }}</label>
           </div>
-          <span class="d-block">{{ object.description | str_limit(35) }}</span>
         </div>
       </template>
     </div>
@@ -56,11 +45,10 @@ export default {
             @click.stop="onClickHandler($event, nodeType)"
           >
             <div class="d-flex">
-              <i v-if="!svgIcon" class="node-types__item__icon" :class="nodeType.icon"/>
-              <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
+              <i v-if="!svgIcon" class="node-types__item__icon" :class="nodeType.customIcon"/>
+              <img v-else class="node-types__item__icon" :src="nodeType.svgIcon" :alt="$t(nodeType.label)">
               <label>{{ $t(nodeType.label) }}</label>
             </div>
-            <span class="d-block">{{ nodeType.description | str_limit(35) }}</span>
           </div>
         </template>
       </div>
