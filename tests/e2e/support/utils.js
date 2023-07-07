@@ -435,7 +435,7 @@ export function clickAndDropElement(node, position, nodeChild = null) {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').length === 1;
+      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').is(':visible');
 
       if (existExplorerRail) {
         cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();

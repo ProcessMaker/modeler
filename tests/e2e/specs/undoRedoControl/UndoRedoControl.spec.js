@@ -25,7 +25,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     cy.get('.control-add').click();
     waitToRenderAllShapes();
-    cy.get('[data-test=explorer-rail]').should('not.exist');
+    cy.get('[data-test=explorer-rail]').should('not.be.visible');
     waitToRenderAllShapes();
   });
 
@@ -53,7 +53,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
       });
   });
 
-  it.skip('should undo/redo adding a task', () => {
+  it('should undo/redo adding a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -71,7 +71,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it.skip('should undo/redo deleting a task', () => {
+  it('should undo/redo deleting a task', () => {
     const taskPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -95,7 +95,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it.skip('should undo/redo modifying sequence flow vertices', () => {
+  it('should undo/redo modifying sequence flow vertices', () => {
     const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 300, y: 300 };
 
@@ -130,7 +130,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
     testNumberOfVertices(initialNumberOfWaypoints);
   });
 
-  it.skip('should undo/redo boundary timer event', () => {
+  it('should undo/redo boundary timer event', () => {
     const taskPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
