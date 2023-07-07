@@ -29,7 +29,7 @@ import store from '@/store';
 import runningInCypressTest from '@/runningInCypressTest';
 import crownAlign from './crownAlign';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCenterVertically } from '../crownButtons/icons';
+import { faAlignLeft } from '../crownButtons/icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 
@@ -88,7 +88,7 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
-    library.add(faCenterVertically);
+    library.add(faAlignLeft);
   },
   computed: {
     isMultiSelect() {
