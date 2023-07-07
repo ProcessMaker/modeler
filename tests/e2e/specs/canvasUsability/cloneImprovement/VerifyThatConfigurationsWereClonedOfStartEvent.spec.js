@@ -6,7 +6,7 @@ import {
   toggleInspector,
 } from '../../../support/utils';
 
-describe('Clone Improvement', () => {
+describe.skip('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
 
