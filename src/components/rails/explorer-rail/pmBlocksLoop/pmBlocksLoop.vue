@@ -29,7 +29,7 @@ export default {
           @click.stop="onClickHandler($event, object)"
         >
           <div class="d-flex">
-            <i v-if="!svgIcon" class="node-types__item__icon" :class="object.customIcon"/>
+            <i v-if="!object.svgIcon" class="node-types__item__icon" :class="object.customIcon"/>
             <img v-else class="node-types__item__icon" :src="object.svgIcon" :alt="$t(object.label)">
             <label>{{ $t(object.label) }}</label>
           </div>
@@ -45,7 +45,7 @@ export default {
             @click.stop="onClickHandler($event, nodeType)"
           >
             <div class="d-flex">
-              <i v-if="!svgIcon" class="node-types__item__icon" :class="nodeType.customIcon"/>
+              <i v-if="!nodeType.svgIcon" class="node-types__item__icon" :class="nodeType.customIcon"/>
               <img v-else class="node-types__item__icon" :src="nodeType.svgIcon" :alt="$t(nodeType.label)">
               <label>{{ $t(nodeType.label) }}</label>
             </div>
