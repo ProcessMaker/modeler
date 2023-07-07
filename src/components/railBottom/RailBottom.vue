@@ -6,6 +6,7 @@
       ref="railLeftBox"
     >
       <MiniPaperControl
+        v-show="showComponent"
         :paper-manager="paperManager"
         :graph="graph"
       />
@@ -21,6 +22,7 @@
       :style="[overlap ? { width: 'auto'} : { width: '100%'}]"
     >
       <UndoRedoControl
+        v-show="showComponent"
         :is-rendering="isRendering"
         @load-xml="$emit('load-xml')"
         @clearSelection="$emit('clearSelection')"
@@ -28,6 +30,7 @@
       />
 
       <Controls
+        v-show="showComponent"
         :nodeTypes="nodeTypes"
         @onCreateElement="onCreateElementHandler"
         @onSetCursor="onSetCursorHandler"
@@ -43,6 +46,7 @@ import MiniPaperControl from '@/components/railBottom/miniPaperControl/MiniPaper
 import ZoomControl from '@/components/railBottom/zoomControl/ZoomControl.vue';
 import UndoRedoControl from '@/components/railBottom/undoRedoControl/UndoRedoControl.vue';
 import Controls from '@/components/railBottom/controls/Controls.vue';
+import store from '@/store';
 
 export default {
   components: {
@@ -107,6 +111,11 @@ export default {
         this.widthOverlapControl = controlEl.width;
         this.leftOverlapUndoRedo = undoRedoEl.left;
       }
+    },
+  },
+  computed: {
+    showComponent() {
+      return store.getters.showComponent;
     },
   },
   async mounted() {
