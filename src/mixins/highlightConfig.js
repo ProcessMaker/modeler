@@ -1,12 +1,15 @@
 import cloneDeep from 'lodash/cloneDeep';
 import store from '@/store';
-
-const COLOR_DEFAULT = '#5096db';
-const COLOR_ERROR = '##FF0000';
-const COLOR_IN_PROGRESS = '#1572C2';
-const COLOR_IDLE = '#ced4da';
-const COLOR_COMPLETED = '#00875A';
-const COLOR_COMPLETED_FILL = '#edfffc';
+import {
+  COLOR_DEFAULT,
+  COLOR_ERROR,
+  COLOR_IN_PROGRESS,
+  COLOR_IN_PROGRESS_FILL,
+  COLOR_IDLE,
+  COLOR_IDLE_FILL,
+  COLOR_COMPLETED,
+  COLOR_COMPLETED_FILL,
+} from '@/components/highlightColors.js';
 
 const errorHighlighter = {
   highlighter: {
@@ -41,7 +44,7 @@ const completedHighlighter = {
     options: {
       attrs: {
         stroke: COLOR_COMPLETED,
-        'stroke-width': 3,
+        'stroke-width': 5,
       },
     },
   },
@@ -53,8 +56,7 @@ const inProgressHighlighter = {
     options: {
       attrs: {
         stroke: COLOR_IN_PROGRESS,
-        'stroke-width': 3,
-        'stroke-dasharray': '4 4',
+        'stroke-width': 5,
       },
     },
   },
@@ -66,7 +68,7 @@ const idleHighlighter = {
     options: {
       attrs: {
         stroke: COLOR_IDLE,
-        'stroke-width': 3,
+        'stroke-width': 5,
       },
     },
   },
@@ -124,10 +126,11 @@ export default {
         }
         this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
         if (this.isInProgress) {
+          this.shape.attr('body/fill', COLOR_IN_PROGRESS_FILL);
           this.shapeView.highlight(this.shapeBody, inProgressHighlighter);
         }
         if (this.isIdle) {
-          this.shape.attr('body/fill', COLOR_IDLE);
+          this.shape.attr('body/fill', COLOR_IDLE_FILL);
           this.shapeView.highlight(this.shapeBody, idleHighlighter);
         }
         return;

@@ -1,6 +1,7 @@
 <template>
   <span data-test="body-container">
     <tool-bar
+      v-if="showComponent"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -29,6 +30,7 @@
         :title="tooltipTitle"
       />
       <explorer-rail
+        v-if="showComponent"
         :node-types="nodeTypes"
         :pm-block-nodes="pmBlockNodes"
         @set-cursor="cursor = $event"
@@ -45,11 +47,13 @@
       </b-col>
 
       <InspectorButton
+        v-if="showComponent"
         :showInspector="isOpenInspector"
         @toggleInspector="handleToggleInspector"
       />
 
       <InspectorPanel
+        v-if="showComponent"
         ref="inspector-panel"
         v-show="isOpenInspector && !(highlightedNodes.length > 1)"
         :style="{ height: parentHeight }"
@@ -87,8 +91,11 @@
         :isRendering="isRendering"
         :paperManager="paperManager"
         :auto-validate="autoValidate"
-        :is-active="node === activeNode"
         :node-id-generator="nodeIdGenerator"
+        :is-active="node === activeNode"
+        :is-completed="requestCompletedNodes.includes(node.definition.id)"
+        :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
+        :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
         @set-cursor="cursor = $event"
@@ -212,7 +219,25 @@ export default {
         return {};
       },
     },
+    readOnly: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
     validationBar: Array,
+    requestIdleNodes: {
+      type: Array,
+      default: () => [],
+    },
+    requestCompletedNodes: {
+      type: Array,
+      default: () => [],
+    },
+    requestInProgressNodes: {
+      type: Array,
+      default: () => [],
+    },
   },
   mixins: [hotkeys, cloneSelection],
   data() {
@@ -326,6 +351,7 @@ export default {
     invalidNodes() {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
+    showComponent: () => store.getters.showComponent,
   },
   methods: {
     handleToggleInspector(value) {
@@ -1054,7 +1080,7 @@ export default {
           this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
         );
       }
-      
+
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {
@@ -1233,6 +1259,15 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
+      if (store.getters.isReadOnly) {
+        if (this.canvasDragPosition) {
+          this.paperManager.translate(
+            event.offsetX - this.canvasDragPosition.x,
+            event.offsetY - this.canvasDragPosition.y,
+          );
+        }
+        return;
+      }
       if (this.isGrabbing) return;
       if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
         this.isDragging = true;
@@ -1302,6 +1337,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    store.commit('setReadOnly', this.readOnly);
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
     this.graph.set('interactiveFunc', cellView => {
@@ -1326,6 +1362,9 @@ export default {
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       if (this.isGrabbing) return;
+      if (store.getters.isReadOnly) {
+        this.isGrabbing = true;
+      }
       const scale = this.paperManager.scale;
       this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
       this.isOverShape = false;
@@ -1342,6 +1381,7 @@ export default {
       }
     });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
+      this.isGrabbing = false;
       this.canvasDragPosition = null;
       this.activeNode = null;
       this.pointerUpHandler(event);
@@ -1381,6 +1421,10 @@ export default {
       if (this.isGrabbing) return;
 
       shape.component.$emit('click', event);
+      this.$emit('click', {
+        event,
+        node: this.highlightedNode.definition,
+      });
     });
 
     this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
