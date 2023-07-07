@@ -28,8 +28,11 @@ export default {
           :key="object.id"
           @click.stop="onClickHandler($event, object)"
         >
-          <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
-          <span>{{ $t(object.label) }}</span>
+          <div class="d-flex">
+            <i v-if="!object.svgIcon" class="node-types__item__icon" :class="object.customIcon"/>
+            <img v-else class="node-types__item__icon" :src="object.svgIcon" :alt="$t(object.label)">
+            <label>{{ $t(object.label) }}</label>
+          </div>
         </div>
       </template>
     </div>
@@ -41,8 +44,11 @@ export default {
             :key="nodeType.id"
             @click.stop="onClickHandler($event, nodeType)"
           >
-            <label>{{ $t(nodeType.label) }}</label>
-            <span class="d-block">{{ nodeType.description }}</span>
+            <div class="d-flex">
+              <i v-if="!nodeType.svgIcon" class="node-types__item__icon" :class="nodeType.customIcon"/>
+              <img v-else class="node-types__item__icon" :src="nodeType.svgIcon" :alt="$t(nodeType.label)">
+              <label>{{ $t(nodeType.label) }}</label>
+            </div>
           </div>
         </template>
       </div>
@@ -54,21 +60,25 @@ export default {
 .pm-block-node-types {
   &__item {
     display: block;
+    padding: 0.5rem 0.3rem;
     border-radius: 4px;
     user-select: none;
     margin-bottom: 8px;
-    border: 1px solid #b6bfc6;
     &:hover {
       background-color: #EBEEF2;
     }
+    &__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
     label {
+      max-width: 225px;
       font-size: 14px;
-      line-height: 8px;
-      font-weight: 600;
-      color: #104A75;
+      line-height: 15px;
     }
     span {
-      font-size: 12px;
+      margin-left: 1.6rem;
+      font-size: 13px;
       color:#6C757D;
     }
   }
