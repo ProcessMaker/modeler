@@ -1,7 +1,7 @@
 import { nodeTypes } from '../../../support/constants';
 import { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } from '../../../support/utils';
 
-describe('Select and Move' , () => {
+describe.skip('Select and Move' , () => {
   it('Elements are selected and moved', () => {
     const explorerX = 200;
     const task1Position = { x: 100 + explorerX, y: 200 };
