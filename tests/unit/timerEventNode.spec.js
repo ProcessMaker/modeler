@@ -18,7 +18,7 @@ const mockNodeRegistry = {
   },
 };
 
-describe.skip('TimerEventNode', () => {
+describe('TimerEventNode', () => {
   let definition;
   let bounds;
   let node;

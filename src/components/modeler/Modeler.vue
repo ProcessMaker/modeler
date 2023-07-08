@@ -1080,7 +1080,6 @@ export default {
           this.planeElements.find(diagram => diagram.bpmnElement.id === this.processes[0].id),
         );
       }
-
     },
     async removeNodes() {
       await this.performSingleUndoRedoTransaction(async() => {

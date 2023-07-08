@@ -403,7 +403,7 @@ export function getIframeDocumentation() {
   cy.get('[id="accordion-button-documentation-accordion"]').click();
   const getIframeDocument = () => {
     return cy
-      .get('iframe[id *= "documentation-editor"]')
+      .get('iframe[id*="tiny-vue_')
       .its('0.contentDocument').should('exist');
   };
   const getIframeBody = () => {
@@ -435,7 +435,7 @@ export function clickAndDropElement(node, position, nodeChild = null) {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').length === 1;
+      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').is(':visible');
 
       if (existExplorerRail) {
         cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
@@ -454,4 +454,55 @@ export function clickAndDropElement(node, position, nodeChild = null) {
       cy.get('.paper-container').trigger('mouseup', mouseEvent);
     });
   });
+}
+
+export function toggleInspector() {
+  cy.get('[data-cy=inspector-close-button]').then(($el) => {
+    if ($el.length) return cy.get('[data-cy=inspector-button]').click();
+    return cy.get('[data-cy=inspector-close-button]').click();
+  });
+}
+
+export function toggleExplorerRail() {
+  const closeExplorerRailButton = cy.get('.close--container');
+  const toggleExplorerRailButton = cy.get('.rail-center .control-item');
+  closeExplorerRailButton.then(($el) => {
+    if ($el.length) return toggleExplorerRailButton.click();
+    return closeExplorerRailButton.click();
+  });
+}
+
+export function isAppleOS() {
+  return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
+}
+
+export function createProcess(elements){
+  let positionElement;
+  let element;
+  let connector;
+  let startPosition;
+  let endPosition;
+  let len = elements.length;
+  for (let i = 0; i < len; i++) {
+    connector = elements[i].connector;
+    if (!connector){
+      positionElement = elements[i].positionElement;
+      element = elements[i].element;
+      clickAndDropElement(element, positionElement);
+    } else {
+      startPosition = elements[i].startPosition;
+      endPosition = elements[i].endPosition;
+      connectNodesWithFlow('generic-flow-button', startPosition, endPosition);
+    }
+  }
+}
+
+export function selectElements(parameterList) {
+  let len = parameterList.length;
+  let element;
+  for (let i = 0; i <len ; i++) {
+    element = parameterList[i];
+    cy.get('body').type('{shift}', {release: false});
+    cy.get(element.element).eq(element.pos).click({force: true});
+  }
 }

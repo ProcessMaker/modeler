@@ -22,9 +22,6 @@ import { nodeTypes } from './constants';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-// Disable saving screenshots
-Cypress.Screenshot.defaults({ screenshotOnRunFailure: false });
-
 Cypress.Cookies.defaults({
   preserve: ['processmaker_session', /remember_web_.*/],
 });

@@ -25,7 +25,7 @@ function definitionsFactory(definitionIds = [], diagramIds = []) {
   };
 }
 
-describe.skip('NodeIdGenerator', () => {
+describe('NodeIdGenerator', () => {
   it.each([['definition', 0], ['diagram', 1]])('should generate unique %s IDs', (name, idIndex) => {
     const generator = new NodeIdGenerator(definitionsFactory());
     const ids = [];

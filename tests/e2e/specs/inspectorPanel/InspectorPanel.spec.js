@@ -49,7 +49,7 @@ describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
     cy.get(inspectorPanelSelector).should('not.be.visible');
   });
 
-  it('should hide inspector panel when select startElement and taskElement with shift key', () => {
+  it.skip('should hide inspector panel when select startElement and taskElement with shift key', () => {
     cy.get(inspectorButtonSelector).click();
     cy.get(inspectorPanelSelector).should('be.visible');
 
@@ -71,7 +71,7 @@ describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
     cy.get(inspectorPanelSelector).should('not.be.visible');
   });
 
-  it('should show inspector panel deselect startElement and taskElement', () => {
+  it.skip('should show inspector panel deselect startElement and taskElement', () => {
     cy.get(inspectorButtonSelector).click();
     cy.get(inspectorPanelSelector).should('be.visible');
 

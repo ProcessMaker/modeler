@@ -17,7 +17,7 @@ const mockNodeRegistry = {
   },
 };
 
-describe.skip('Node', () => {
+describe('Node', () => {
   let definition;
   let bounds;
   let node;
