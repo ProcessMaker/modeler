@@ -237,6 +237,14 @@ export default {
 
       this.ellipsisMenuActions.splice(indexOfActions, 1);
     }
+
+    if (childProcess?.asset_type === 'PM_BLOCK') {
+      const indexOfActions = this.ellipsisMenuActions.findIndex(object => {
+        return object.value === 'save-template';
+      });
+
+      this.ellipsisMenuActions.splice(indexOfActions, 2);
+    }
   },
 };
 </script>
