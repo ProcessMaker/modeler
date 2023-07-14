@@ -4,10 +4,16 @@ import {
   getCrownButtonForElement,
   typeIntoTextInput,
   removeIndentationAndLinebreaks,
+  waitToRenderAllShapes,
+  toggleInspector,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Pools', () => {
+describe('Pools', { scrollBehavior: false }, () => {
+  beforeEach(() => {
+    toggleInspector();
+  });
+
   it('Test Delete Pool should delete lanes', () => {
     const pool = addPool();
     addLane(pool);
@@ -26,8 +32,10 @@ describe.skip('Pools', () => {
 function addPool()
 {
   return new Promise(resolve => {
-    const poolPosition = { x: 200, y: 200 };
+    const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
+
     getElementAtPosition(poolPosition, nodeTypes.pool).then(element => {
       resolve(element);
     });

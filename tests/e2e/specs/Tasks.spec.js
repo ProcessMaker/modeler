@@ -4,18 +4,24 @@ import {
   getElementAtPosition, modalAnimationTime,
   modalCancel,
   modalConfirm,
+  toggleInspector,
   typeIntoTextInput, waitForAnimations,
   waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Tasks', () => {
-  const taskPosition = { x: 250, y: 250 };
+describe('Tasks', () => {
+  const taskPosition = { x: 350, y: 250 };
   const testString = 'testing';
+
+  beforeEach(() => {
+    toggleInspector();
+  });
 
   it('Update task name', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).click();
 
@@ -26,9 +32,9 @@ describe.skip('Tasks', () => {
   it('Correctly renders task after undo/redo', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
 
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-cy="undo-control"]').click();
     waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click();
+    cy.get('[data-cy="redo-control"]').click();
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
@@ -71,7 +77,7 @@ describe.skip('Tasks', () => {
   it('Does not switch task type if canceled', () => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
 
-    getElementAtPosition({ x: 150, y: 150 }).click();
+    getElementAtPosition({ x: 210, y: 200 }).click();
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
     cy.get('[data-test=select-type-dropdown]').click();

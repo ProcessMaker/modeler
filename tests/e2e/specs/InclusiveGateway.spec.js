@@ -5,13 +5,15 @@ import {
   clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
+  toggleInspector,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 import { gatewayDirection } from '../../../src/components/nodes/gateway/gatewayConfig';
 
-describe.skip('Inclusive Gateway', () => {
-  const inclusivePosition = { x: 250, y: 250 };
+describe('Inclusive Gateway', { scrollBehavior: false }, () => {
+  const inclusivePosition = { x: 350, y: 250 };
 
   beforeEach(() => {
     addNodeTypeToPaper(inclusivePosition, nodeTypes.exclusiveGateway, 'switch-to-inclusive-gateway');
@@ -19,6 +21,8 @@ describe.skip('Inclusive Gateway', () => {
 
   it('Update inclusive gateway name', () => {
     getElementAtPosition(inclusivePosition).click();
+
+    toggleInspector();
     const testString = 'testing';
     typeIntoTextInput('[name=name]', testString);
 
@@ -26,7 +30,7 @@ describe.skip('Inclusive Gateway', () => {
   });
 
   it('Detects gateway direction of converging or diverging', () => {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, inclusivePosition);
 
@@ -35,6 +39,7 @@ describe.skip('Inclusive Gateway', () => {
 
     const taskPosition = { x: 350, y: 350 };
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('generic-flow-button', taskPosition, inclusivePosition);
 

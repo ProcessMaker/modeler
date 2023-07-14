@@ -1,6 +1,6 @@
 import { uploadXml } from '../support/utils';
 
-describe.skip('Start Event', () => {
+describe('Start Event', () => {
   it('should render with web entry icon when web_entry config is enabled', () => {
     uploadXml('startEventWithWebEntry.xml');
     cy.get('.main-paper [data-type="processmaker.components.nodes.startEvent.Shape"] [joint-selector="image"]')

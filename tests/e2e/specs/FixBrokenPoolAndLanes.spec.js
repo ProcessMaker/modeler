@@ -3,7 +3,7 @@ import {
   uploadXml,
 } from '../support/utils';
 
-describe.skip('Fix broken diagrams', () => {
+describe('Fix broken diagrams', () => {
   it('test fix broken pool and lanes', () => {
     uploadXml('processWithBrokenPoolAndLanes.xml');
 

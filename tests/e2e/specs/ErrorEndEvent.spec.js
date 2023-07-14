@@ -5,13 +5,14 @@ import {
   assertDownloadedXmlDoesNotContainExpected,
   getCrownButtonForElement,
   getElementAtPosition,
+  toggleInspector,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Error End Event', () => {
-  const errorEndEventPosition = { x: 250, y: 250 };
+describe('Error End Event', () => {
+  const errorEndEventPosition = { x: 350, y: 250 };
   const errorName = 'Awesome error';
   const errorEndEventXml = `
       <bpmn:endEvent id="node_3" name="Error End Event">
@@ -30,6 +31,7 @@ describe.skip('Error End Event', () => {
 
   it('can edit the error end event name', () => {
     getElementAtPosition(errorEndEventPosition).click();
+    toggleInspector();
 
     cy.contains('Error Name').next('input').as('errorNameInput');
 
@@ -52,9 +54,9 @@ describe.skip('Error End Event', () => {
   });
 
   it('should not create duplicate errors on undo/redo', () => {
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-cy="undo-control"]').click();
     waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click();
+    cy.get('[data-cy="redo-control"]').click();
     waitToRenderAllShapes();
 
     assertDownloadedXmlContainsSubstringNTimes('<bpmn:error id=".*?" name=".*?" />', 1, 'There should only be one message element found');

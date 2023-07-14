@@ -4,12 +4,13 @@ import {
   clickAndDropElement,
   getElementAtPosition,
   uploadXml,
+  waitToRenderAllShapes,
 } from '../support/utils';
 import { baseNodeColors } from '../../../src/components/nodeColors';
 import { nodeTypes } from '../support/constants';
 import tinycolor from 'tinycolor2';
 
-describe.skip('Crown color picker', () => {
+describe('Crown color picker', () => {
   const colorToSelect = baseNodeColors[0];
 
   it('should set color on element', () => {
@@ -27,6 +28,7 @@ describe.skip('Crown color picker', () => {
   it('should clear color from element', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(poolPosition, nodeTypes.pool).click();
     cy.get('[data-test="picker-dropdown-button"]').click({ force: true });

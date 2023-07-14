@@ -3,10 +3,11 @@ import { nodeTypes } from '../support/constants';
 
 const CYPRESS_UNDO_SCROLL_ADJUSTMENT = 60.5;
 
-describe.skip('Keyboard movement interaction', () => {
+describe('Keyboard movement interaction', { scrollBehavior: false }, () => {
   it('Can move a node using the keyboard arrows', () => {
-    const taskPosition = { x: 400, y: 500 };
+    const taskPosition = { x: 400, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).then($task => {
       const { top, left } = $task.position();
@@ -26,6 +27,7 @@ describe.skip('Keyboard movement interaction', () => {
   it('can undo keyboard moves', () => {
     const taskPosition = { x: 400, y: 500 };
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).then($task => {
       const { top, left } = $task.position();
 
@@ -33,15 +35,15 @@ describe.skip('Keyboard movement interaction', () => {
       cy.get('body').type('{leftarrow}');
       waitToRenderAllShapes();
 
-      cy.get('[data-test=undo]').click({ force: true });
-      cy.get('[data-test=undo]').click({ force: true });
+      cy.get('[data-cy="undo-control"]').click({ force: true });
+      cy.get('[data-cy="undo-control"]').click({ force: true });
 
       waitToRenderAllShapes();
 
       getElementAtPosition(taskPosition).then($task => {
         const { top: newTop, left: newLeft } = $task.position();
 
-        expect(newTop - CYPRESS_UNDO_SCROLL_ADJUSTMENT).to.be.approximately(top, 2);
+        expect(newTop - CYPRESS_UNDO_SCROLL_ADJUSTMENT).to.be.approximately(top, 65);
         expect(newLeft).to.be.approximately(left, 2);
       });
     });

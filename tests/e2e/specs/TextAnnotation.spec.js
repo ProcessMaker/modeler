@@ -4,17 +4,24 @@ import {
   clickAndDropElement,
   getElementAtPosition,
   typeIntoTextInput,
+  waitToRenderAllShapes,
+  toggleInspector,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 import { baseNodeColors } from '../../../src/components/nodeColors';
 
-describe.skip('Text Annotation', () => {
+describe('Text Annotation', () => {
+  beforeEach(() => {
+    toggleInspector();
+  });
+
   it('Update text annotation name', () => {
     const testString = 'testing';
 
-    const textAnnotationPosition = { x: 200, y: 200 };
+    const textAnnotationPosition = { x: 350, y: 200 };
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(textAnnotationPosition).click();
 
@@ -25,9 +32,11 @@ describe.skip('Text Annotation', () => {
   it('should be able to add a text annotation outside of a pool', () => {
     const poolPosition = { x: 250, y: 200 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
-    const textAnnotationPosition = { x: 400, y: 50 };
+    const textAnnotationPosition = { x: 400, y: 100 };
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('association-flow-button', textAnnotationPosition, poolPosition);
 
@@ -46,6 +55,7 @@ describe.skip('Text Annotation', () => {
     const colorToSelect = baseNodeColors[0];
     const textAnnotationPosition = { x: 400, y: 100 };
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(textAnnotationPosition).click();
     cy.get('[data-test="picker-dropdown-button"]').click();

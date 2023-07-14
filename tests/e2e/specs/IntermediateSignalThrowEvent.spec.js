@@ -2,13 +2,13 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   selectOptionByName,
+  toggleInspector,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import _ from 'lodash';
 
-describe.skip('Intermediate Signal Throw Event', () => {
-
+describe('Intermediate Signal Throw Event', () => {
   beforeEach(() => {
     cy.window().then((win) => {
       _.set(win, 'ProcessMaker.modeler.signalPermissions', {
@@ -21,6 +21,7 @@ describe.skip('Intermediate Signal Throw Event', () => {
     const intermediateSignalThrowEventPosition = { x: 250, y: 250 };
     addNodeTypeToPaper(intermediateSignalThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-signal-throw-event');
     waitToRenderAllShapes();
+    toggleInspector();
     selectOptionByName('[data-test="signalRef:select"]', 'global signal 1');
 
     assertDownloadedXmlContainsExpected(`

@@ -1,10 +1,12 @@
-import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected } from '../support/utils';
+import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected, toggleInspector } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Conditional Start Event', () => {
+describe('Conditional Start Event', { scrollBehavior: false }, () => {
   it('Can create conditional start event', () => {
-    const signalStartEventPosition = { x: 250, y: 250 };
+    const signalStartEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(signalStartEventPosition, nodeTypes.startEvent, 'switch-to-conditional-start-event');
+
+    toggleInspector();
     const condition = '[name=condition]';
     cy.get(condition).clear().type('form_input_1=="one"');
 

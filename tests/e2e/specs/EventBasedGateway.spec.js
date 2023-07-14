@@ -7,13 +7,13 @@ import {
   getElementAtPosition,
   getGraphElements,
   typeIntoTextInput,
-  modalConfirm, waitToRenderAllShapes,
+  modalConfirm, waitToRenderAllShapes, toggleInspector,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Event-Based Gateway', () => {
-  const eventBasedGatewayPosition = { x: 250, y: 250 };
+describe('Event-Based Gateway', { scrollBehavior: false }, () => {
+  const eventBasedGatewayPosition = { x: 350, y: 250 };
 
   beforeEach(() => {
     addNodeTypeToPaper(eventBasedGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-event-based-gateway');
@@ -21,6 +21,7 @@ describe.skip('Event-Based Gateway', () => {
 
   it('Update event-based gateway name', () => {
     getElementAtPosition(eventBasedGatewayPosition).click();
+    toggleInspector();
     const testString = 'testing';
     typeIntoTextInput('[name=name]', testString);
 
@@ -28,7 +29,7 @@ describe.skip('Event-Based Gateway', () => {
   });
 
   it('Only connect to intermediate catch events', () => {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     connectNodesWithFlow('generic-flow-button', startEventPosition, eventBasedGatewayPosition);
 
     const intermediateCatchEventPosition = { x: 500, y: 250 };
@@ -39,7 +40,7 @@ describe.skip('Event-Based Gateway', () => {
     addNodeTypeToPaper(intermediateMessageCatchEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-catch-event');
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, intermediateMessageCatchEventPosition);
 
-    const endEventPosition = { x: 500, y: 350 };
+    const endEventPosition = { x: 500, y: 400 };
     clickAndDropElement(nodeTypes.endEvent, endEventPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, endEventPosition);
 
@@ -52,7 +53,7 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($endEvent, 'delete-button').click({ force: true });
       });
 
-    const taskPosition = { x: 450, y: 350 };
+    const taskPosition = { x: 450, y: 400 };
     clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, taskPosition);
 
@@ -64,9 +65,11 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($task, 'delete-button').click({ force: true });
       });
 
-    const scriptTaskPosition = { x: 450, y: 350 };
+    const scriptTaskPosition = { x: 450, y: 400 };
     clickAndDropElement(nodeTypes.task, scriptTaskPosition);
+    cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-script-task]').click();
+    modalConfirm();
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, scriptTaskPosition);
 
     getGraphElements().should('have.length', totalNumberOfValidElements);
@@ -77,7 +80,7 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($scriptTask, 'delete-button').click({ force: true });
       });
 
-    const exclusiveGatewayPosition = { x: 450, y: 350 };
+    const exclusiveGatewayPosition = { x: 450, y: 400 };
     clickAndDropElement(nodeTypes.exclusiveGateway, exclusiveGatewayPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, exclusiveGatewayPosition);
 
@@ -89,7 +92,7 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($exclusiveGateway, 'delete-button').click({ force: true });
       });
 
-    const parallelGatewayPosition = { x: 450, y: 350 };
+    const parallelGatewayPosition = { x: 450, y: 400 };
     addNodeTypeToPaper(parallelGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-parallel-gateway');
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, parallelGatewayPosition);
 
@@ -101,7 +104,7 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($parallelGateway, 'delete-button').click({ force: true });
       });
 
-    const inclusiveGatewayPosition = { x: 450, y: 350 };
+    const inclusiveGatewayPosition = { x: 450, y: 400 };
     addNodeTypeToPaper(inclusiveGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-inclusive-gateway');
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, inclusiveGatewayPosition);
 
@@ -113,7 +116,7 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($inclusiveGateway, 'delete-button').click({ force: true });
       });
 
-    const secondEventBasedGatewayPosition = { x: 450, y: 350 };
+    const secondEventBasedGatewayPosition = { x: 450, y: 400 };
     addNodeTypeToPaper(secondEventBasedGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-event-based-gateway');
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, secondEventBasedGatewayPosition);
 
@@ -125,7 +128,7 @@ describe.skip('Event-Based Gateway', () => {
         getCrownButtonForElement($eventBasedGateway, 'delete-button').click({ force: true });
       });
 
-    const textAnnotationPosition = { x: 450, y: 350 };
+    const textAnnotationPosition = { x: 450, y: 400 };
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     connectNodesWithFlow('generic-flow-button', eventBasedGatewayPosition, textAnnotationPosition);
 
@@ -139,7 +142,7 @@ describe.skip('Event-Based Gateway', () => {
   });
 
   it('Only convert to event based gateway with valid outgoing', () => {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     connectNodesWithFlow('generic-flow-button', startEventPosition, eventBasedGatewayPosition);
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-parallel-gateway]').click();
@@ -158,8 +161,8 @@ describe.skip('Event-Based Gateway', () => {
   });
 
   it('When convert to Event Based Gateway it should not have the property default', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const eventOnePosition = { x: 450, y: 250 };
+    const startEventPosition = { x: 210, y: 200 };
+    const eventOnePosition = { x: 550, y: 250 };
     const eventTwoPosition = { x: 250, y: 450 };
     addNodeTypeToPaper(eventOnePosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
     addNodeTypeToPaper(eventTwoPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');

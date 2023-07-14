@@ -8,9 +8,11 @@ import {
   getTinyMceEditor,
   getTinyMceEditorInModal,
   modalAnimationTime,
+  toggleInspector,
+  waitToRenderAllShapes,
 } from '../support/utils';
 
-describe.skip('Documentation accordion', () => {
+describe('Documentation accordion', { scrollBehavior: false }, () => {
   const baseElements = [
     nodeTypes.startEvent,
     nodeTypes.intermediateCatchEvent,
@@ -32,16 +34,21 @@ describe.skip('Documentation accordion', () => {
       });
   };
 
+  beforeEach(() => {
+    toggleInspector();
+  });
+
   it('has a dedicated documentation inspector accordion', () => {
     baseElements
       .forEach(type => {
         cy.clock();
 
         clickAndDropElement(type, position);
-        cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
+        waitToRenderAllShapes();
+        cy.get('iframe.tox-edit-area__iframe').should('not.be.visible');
         cy.contains('Advanced').click();
         cy.tick(accordionOpenAnimationTime);
-        cy.get('iframe#documentation-editor_ifr').should('not.be.visible');
+        cy.get('iframe.tox-edit-area__iframe').should('not.be.visible');
         cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
         getTinyMceEditor().should('be.visible');
@@ -59,6 +66,7 @@ describe.skip('Documentation accordion', () => {
         const docString = `${type} doc!`;
 
         clickAndDropElement(type, position);
+        waitToRenderAllShapes();
         cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
         getTinyMceEditor().clear().type(docString);
@@ -75,6 +83,7 @@ describe.skip('Documentation accordion', () => {
 
   it('can allow the documentation editor modal to edit the documentation', () => {
     clickAndDropElement(nodeTypes.task, position);
+    waitToRenderAllShapes();
     cy.contains('Documentation').click();
     cy.wait(accordionOpenAnimationTime);
 
