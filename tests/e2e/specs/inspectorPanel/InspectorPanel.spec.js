@@ -2,10 +2,9 @@ const { nodeTypes } = require('../../support/constants');
 const {
   clickAndDropElement,
   waitToRenderAllShapes,
-  getElementAtPosition,
 } = require('../../support/utils');
 
-describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
+describe('Inspector panel test', { scrollBehavior: false }, () => {
   const inspectorButtonSelector = '[data-cy="inspector-button"]';
   const inspectorPanelSelector = '[data-cy="inspector-panel"]';
   const inspectorCloseButton = '[data-cy="inspector-close-button"]';
@@ -17,7 +16,7 @@ describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
 
     cy.get('.control-add').click();
     waitToRenderAllShapes();
-    cy.get('[data-test=explorer-rail]').should('not.exist');
+    cy.get('[data-test=explorer-rail]').should('not.be.visible');
     waitToRenderAllShapes();
   });
 
@@ -55,18 +54,13 @@ describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
 
     cy.wait(500);
 
-    const startPosition = { x: 210, y: 200 };
-    const taskPosition = { x: 350, y: 200 };
+    const taskPosition = { x: 350, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
-
     waitToRenderAllShapes();
 
-    getElementAtPosition(startPosition)
-      .click();
-
-    getElementAtPosition(taskPosition)
-      .click({ shiftKey: true });
+    cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
+    cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click({ shiftKey: true });
 
     cy.get(inspectorPanelSelector).should('not.be.visible');
   });
@@ -77,25 +71,20 @@ describe.skip('Inspector panel test', { scrollBehavior: false }, () => {
 
     cy.wait(500);
 
-    const startPosition = { x: 210, y: 200 };
-    const taskPosition = { x: 350, y: 200 };
+    const taskPosition = { x: 350, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(startPosition)
-      .click();
-
-    getElementAtPosition(taskPosition)
-      .click({ shiftKey: true });
-
+    cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
+    cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click({ shiftKey: true });
+    
     cy.get(inspectorPanelSelector).should('not.be.visible');
-
+    
     cy.wait(500);
-
-    getElementAtPosition(startPosition)
-      .click();
+    
+    cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
 
     cy.get(inspectorPanelSelector).should('be.visible');
   });

@@ -1,12 +1,12 @@
 import {
   waitToRenderAllShapes,
   getGraphElements,
-  getIframeDocumnetation,
+  getIframeDocumentation,
   clickAndDropElement,
 } from '../../../support/utils';
 import {nodeTypes} from '../../../support/constants';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
   const selectorTextAnnotation = '[data-type="textAnnotation"]';
@@ -24,10 +24,11 @@ describe.skip('Clone Improvement', () => {
 
     //Step 3: Set title in Text Annotation
     cy.get(selectorTextAnnotation).first().click();
+    cy.get('[data-cy=inspector-button]').click();
     cy.get('[name="text"]').should('be.visible').clear().type('Text Annotation Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Text Annotation');
+    getIframeDocumentation().find('p').should('exist').click().type('Documentation to Text Annotation');
 
     //Step 5: Change color to Text Annotation
     cy.get('[data-test="picker-dropdown-button"]').click();
@@ -43,6 +44,6 @@ describe.skip('Clone Improvement', () => {
     cy.get(selectorTextAnnotation).eq(1).click();
     cy.get('[name="text"]').should('have.value','Text Annotation Test 1');
     cy.get('[id="accordion-button-documentation-accordion"]').click();
-    getIframeDocumnetation().find('p').should('have.text','Documentation to Text Annotation');
+    getIframeDocumentation().find('p').should('have.text','Documentation to Text Annotation');
   });
 });

@@ -3,7 +3,10 @@ const { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } = req
 
 describe('Click and Drop' , () => {
   it('Elements are clicked and dropped into canvas', () => {
-    const explorerX = 200;
+    let explorerX = 0;
+    if (Cypress.$('[data-test=explorer-rail]').is(':visible')) {
+      explorerX = 200;
+    }
     const task1Position = { x: 100 + explorerX, y: 200 };
     const task2Position = { x: 250 + explorerX, y: 200 };
     const endEventPosition = { x: 400 + explorerX, y: 200 };
@@ -11,8 +14,10 @@ describe('Click and Drop' , () => {
     clickAndDropElement(nodeTypes.task, task2Position);
     clickAndDropElement(nodeTypes.endEvent, endEventPosition);
     waitToRenderAllShapes();
-    getElementAtPosition(task1Position).getType().should('equal', nodeTypes.task);
-    getElementAtPosition(task2Position).getType().should('equal', nodeTypes.task);
-    getElementAtPosition(endEventPosition).getType().should('equal', nodeTypes.endEvent);
+    cy.get('.paper-container').then(() => {
+      getElementAtPosition(task1Position).getType().should('equal', nodeTypes.task);
+      getElementAtPosition(task2Position).getType().should('equal', nodeTypes.task);
+      getElementAtPosition(endEventPosition).getType().should('equal', nodeTypes.endEvent);
+    });
   });
 });

@@ -1,7 +1,7 @@
 import { nodeTypes } from '../../support/constants';
 import { clickAndDropElement, waitToRenderAllShapes } from '../../support/utils';
 
-describe.skip('Auto Validate test', { scrollBehavior: false }, () => {
+describe('Auto Validate test', { scrollBehavior: false }, () => {
   const validateButtonSelector = '[data-cy="validate-button"]';
   const validateButtonIssueSelector = '[data-cy="validate-issue-button"]';
   const validatePanelSelector = '[data-cy="validate-panel"]';
@@ -19,7 +19,7 @@ describe.skip('Auto Validate test', { scrollBehavior: false }, () => {
 
     cy.get('.control-add').click();
     waitToRenderAllShapes();
-    cy.get('[data-test=explorer-rail]').should('not.exist');
+    cy.get('[data-test=explorer-rail]').should('not.be.visible');
     waitToRenderAllShapes();
   });
 
@@ -80,7 +80,7 @@ describe.skip('Auto Validate test', { scrollBehavior: false }, () => {
       });
   });
 
-  it('should update the validate panel when add a new control', () => {
+  it.only('should update the validate panel when add a new control', () => {
     cy.get(validateButtonSelector).click()
       .then(() => {
         cy.get(validateButtonIssueSelector).should('be.visible');

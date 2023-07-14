@@ -39,13 +39,8 @@ Cypress.on('scrolled', $el => {
 beforeEach(() => {
   cy.loadModeler();
   cy.get('.control-add').click();
-  let explorerX = 0;
 
-  if (document.querySelectorAll('[data-test=explorer-rail]')) {
-    explorerX = 200;
-  }
-
-  clickAndDropElement(nodeTypes.startEvent, { x: 10 + explorerX, y: 200 });
+  clickAndDropElement(nodeTypes.startEvent, { x: 210, y: 200 });
   waitToRenderAllShapes();
 });
 

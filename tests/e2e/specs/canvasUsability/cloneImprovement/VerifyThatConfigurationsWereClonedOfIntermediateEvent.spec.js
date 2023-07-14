@@ -1,11 +1,11 @@
 import {
   clickAndDropElement,
   waitToRenderAllShapes,
-  getGraphElements, getIframeDocumnetation, selectComponentType,
+  getGraphElements, getIframeDocumentation, selectComponentType,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorIntermediateEvent = '[data-type="processmaker.components.nodes.intermediateEvent.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -21,10 +21,13 @@ describe.skip('Clone Improvement', () => {
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
 
     //Step 3: Config The Intermediate Event
-    cy.get('[name="name"]').clear().type('Intermediate Event Test 1');
+    cy.get('[data-cy=inspector-button]').click();
+    cy.get(selectorIntermediateEvent).first().click();
+    cy.get('#collapse-inspector-accordion-intermediate-timer-config > :nth-child(1) > .form-group')
+      .find('input').should('be.visible').clear().type('Intermediate Event Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Intermediate Event');
+    getIframeDocumentation().find('p').should('exist').click().type('Documentation to Intermediate Event');
 
     //Step 5: Clone the element
     cy.get('[data-test="clone-button"]').click();
@@ -36,7 +39,7 @@ describe.skip('Clone Improvement', () => {
     cy.get(selectorIntermediateEvent).eq(1).click();
     cy.get('[name="name"]').should('have.value','Intermediate Event Test 1');
     cy.get('[id="accordion-button-documentation-accordion"]').click();
-    getIframeDocumnetation().find('p').should('have.text','Documentation to Intermediate Event');
+    getIframeDocumentation().find('p').should('have.text','Documentation to Intermediate Event');
   });
 
   it('TCP4-2725: Verify Signal, Conditional and Message End event', () => {

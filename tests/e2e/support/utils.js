@@ -403,7 +403,8 @@ export function getIframeDocumentation() {
   cy.get('[id="accordion-button-documentation-accordion"]').click();
   const getIframeDocument = () => {
     return cy
-      .get('iframe[id *= "documentation-editor"]')
+      .get('#collapse-documentation-accordion > :nth-child(1) > .pl-3')
+      .find('iframe')
       .its('0.contentDocument').should('exist');
   };
   const getIframeBody = () => {
@@ -430,14 +431,18 @@ export function selectComponentType(component, type) {
 export function clickAndDropElement(node, position, nodeChild = null) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
+    const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
+
+    // Add explorer width
+    if (explorerIsVisible) {
+      position.x += 200;
+    }
 
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').length === 1;
-
-      if (existExplorerRail) {
+      if (explorerIsVisible) {
         cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
       } else {
         cy.get(`[data-test=${node}-main]`).click();

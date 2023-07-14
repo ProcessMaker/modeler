@@ -2,12 +2,12 @@ import {
   clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements,
-  getIframeDocumnetation,
+  getIframeDocumentation,
   selectComponentType,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorExclusiveGateway = '[data-type="processmaker.components.nodes.gateway.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -25,10 +25,12 @@ describe.skip('Clone Improvement', () => {
 
     //Step 3: Config Exclusive Gateway
     cy.get(selectorExclusiveGateway).first().click();
-    cy.get('[name="name"]').clear().type('Exclusive Gateway Test 1');
+    cy.get('[data-cy=inspector-button]').click();
+    cy.get('#collapse-inspector-accordion-exlcusive-gateway > :nth-child(1) > .form-group')
+      .find('input').should('be.visible').clear().type('Exclusive Gateway Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Gateway');
+    getIframeDocumentation().find('p').should('exist').click().type('Documentation to Gateway');
 
     //Step 5: Clone the element
     cy.get('[data-test="clone-button"]').click();
@@ -40,7 +42,7 @@ describe.skip('Clone Improvement', () => {
     cy.get(selectorExclusiveGateway).eq(1).click();
     cy.get('[name="name"]').should('have.value','Exclusive Gateway Test 1');
     cy.get('[id="accordion-button-documentation-accordion"]').click();
-    getIframeDocumnetation().find('p').should('have.text','Documentation to Gateway');
+    getIframeDocumentation().find('p').should('have.text','Documentation to Gateway');
   });
 
   it('TCP4-2724: Verify Inclusive,Parallel ,Gateway ', () => {

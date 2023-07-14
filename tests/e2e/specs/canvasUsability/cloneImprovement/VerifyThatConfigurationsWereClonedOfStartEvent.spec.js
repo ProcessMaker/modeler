@@ -1,11 +1,11 @@
 import {
   waitToRenderAllShapes,
   getGraphElements,
-  getIframeDocumnetation,
+  getIframeDocumentation,
   selectComponentType,
 } from '../../../support/utils';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
 
@@ -17,10 +17,12 @@ describe.skip('Clone Improvement', () => {
 
     //Step 2: Set Name in Start Event
     cy.get(selectorStartEvent).first().click();
-    cy.get('[name="name"]').should('be.visible').clear().type('Start Event Test 1');
+    cy.get('[data-cy=inspector-button]').click();
+    cy.get('#collapse-inspector-accordion-start-event > :nth-child(1) > .form-group')
+      .find('input').should('be.visible').clear().type('Start Event Test 1');
 
     //Step 3: Set Description on Documentation
-    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to Start Event');
+    getIframeDocumentation().find('p').should('exist').click().type('Documentation to Start Event');
 
     //Step 4: Clone the element
     cy.get('[data-test="clone-button"]').click();
@@ -32,7 +34,7 @@ describe.skip('Clone Improvement', () => {
     cy.get(selectorStartEvent).eq(1).click();
     cy.get('[name="name"]').should('have.value','Start Event Test 1');
     cy.get('[id="accordion-button-documentation-accordion"]').click();
-    getIframeDocumnetation().find('p').should('have.text','Documentation to Start Event');
+    getIframeDocumentation().find('p').should('have.text','Documentation to Start Event');
   });
 
   it('TCP4-2717: Verify Start Event types: Start Timer Event, Signal Start Event, Message Start Event and Conditioal Start Event', () => {

@@ -2,7 +2,7 @@ import {
   waitToRenderAllShapes, getGraphElements,
 } from '../../../support/utils';
 
-describe.skip('Canvas Selection', () => {
+describe('Canvas Selection', () => {
   it('TCP4-2667: Verify selection with controls with large name', () => {
     const initialNumberOfElements = 1;
 
@@ -23,7 +23,9 @@ describe.skip('Canvas Selection', () => {
 
         //Step 4: Set a large name in the Start Event
         cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click({force: true});
-        cy.get('[name="name"]').clear().type('New Large Name to Start event');
+        cy.get('[data-cy=inspector-button]').click();
+        cy.get('#collapse-inspector-accordion-start-event > :nth-child(1) > .form-group')
+          .find('input').should('be.visible').clear().type('New Large Name to Start event');
 
         //Step 5: Clicks and drags the mouse over the elements
         cy.get('.paper-container').click('topRight');
