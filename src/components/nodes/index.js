@@ -31,7 +31,6 @@ export { default as pool } from './pool';
 export { default as poolLane } from './poolLane';
 export { default as ValidationStatus } from '../validationStatus/ValidationStatus';
 export { default as Modeler } from '../modeler/Modeler';
-export { default as ModelerReadonly } from '../modeler/ModelerReadonly';
 export { default as manualTask } from './manualTask';
 export { default as boundaryTimerEvent } from './boundaryTimerEvent';
 export { default as boundaryMessageEvent } from './boundaryMessageEvent';

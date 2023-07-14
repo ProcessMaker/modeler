@@ -59,6 +59,7 @@ export default new Vuex.Store({
     copiedElements: state => state.copiedElements,
     clientLeftPaper: state => state.clientLeftPaper,
     isReadOnly: state => state.readOnly,
+    showComponent: state => !state.readOnly,
   },
   mutations: {
     setReadOnly(state, value) {
