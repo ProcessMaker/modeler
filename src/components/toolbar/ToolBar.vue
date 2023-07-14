@@ -230,12 +230,16 @@ export default {
   },
   mounted() {
     const childProcess = this.$root.$children[0]?.process;
-    if (childProcess?.is_template) {
-      const indexOfActions = this.ellipsisMenuActions.findIndex(object => {
-        return object.value === 'save-template';
-      });
+    const indexOfActions = this.ellipsisMenuActions.findIndex(object => {
+      return object.value === 'save-template';
+    });
 
+    if (childProcess?.is_template) {
       this.ellipsisMenuActions.splice(indexOfActions, 1);
+    }
+
+    if (childProcess?.asset_type === 'PM_BLOCK') {
+      this.ellipsisMenuActions.splice(indexOfActions, 2);
     }
   },
 };
