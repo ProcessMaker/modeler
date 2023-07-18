@@ -223,24 +223,26 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
 
     it('can successfully undo/redo after dragging onto invalid (empty) space ', { scrollBehavior: false }, () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
+      cy.wait(500);
       setBoundaryEvent(nodeType, taskPosition, taskType);
+      cy.wait(500);
 
       cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
         const boundaryEventPosition = $boundaryEvent.position();
 
         cy.wrap($boundaryEvent)
+          .click({ force: true })
           .trigger('mousedown')
           .trigger('mousedown', { which: 1, force: true })
           .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
           .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
           .trigger('mouseup');
 
-        waitToRenderAllShapes();
-
+        cy.wait(500);
         cy.get('[data-cy="undo-control"]').click({ force: true });
-        waitToRenderAllShapes();
+        cy.wait(500);
         cy.get('[data-cy="redo-control"]').click({ force: true });
-        waitToRenderAllShapes();
+        cy.wait(500);
 
         cy.get('@boundaryEvent').should($boundaryEvent => {
           const { left, top } = $boundaryEvent.position();

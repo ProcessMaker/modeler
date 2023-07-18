@@ -31,11 +31,12 @@ describe('Tasks', () => {
 
   it('Correctly renders task after undo/redo', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
+    cy.wait(500);
 
     cy.get('[data-cy="undo-control"]').click();
-    waitToRenderAllShapes();
+    cy.wait(500);
     cy.get('[data-cy="redo-control"]').click();
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.task);
   });

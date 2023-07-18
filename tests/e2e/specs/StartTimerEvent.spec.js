@@ -181,7 +181,7 @@ describe('Start Timer Event', () => {
     cy.clock(currentDate);
     addStartTimerEventToPaper();
     cy.tick(1000);
-    waitToRenderAllShapes();
+    cy.wait(1000);
 
     cy.contains('Timing Control').click({ force: true });
     cy.tick(500);
@@ -192,6 +192,7 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=day-3]').click();
     cy.tick(500);
     cy.get('[data-test=repeat-on-select]').select('month');
+    cy.wait(500);
 
     const dateExpression = `R/${currentDateString}/P1M`;
     cy.get('[data-test=downloadXMLBtn]').click();

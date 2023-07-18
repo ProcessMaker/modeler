@@ -3,7 +3,6 @@ import {
   connectNodesWithFlow,
   clickAndDropElement,
   getElementAtPosition, getTinyMceEditor,
-  waitToRenderAllShapes,
   waitToRenderNodeUpdates,
   modalConfirm,
   toggleInspector,
@@ -53,7 +52,7 @@ describe('Validation', { scrollBehavior: false }, () => {
   it('updates validation after undo/redo', () => {
     cy.get(validateButtonSelector).click({ force: true });
     cy.get(validateButtonIssueSelector).click();
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     const initialNumberOfDefinitionListElements = 2;
     cy.get(validatePanelSelector).children().should('have.length', initialNumberOfDefinitionListElements);
@@ -66,16 +65,16 @@ describe('Validation', { scrollBehavior: false }, () => {
 
     const taskPosition = { x: 350, y: 350 };
     clickAndDropElement(nodeTypes.task, taskPosition);
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     const numberOfNewDefinitionListElements = 1;
     cy.get(validatePanelSelector).children()
       .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
       .should('contain', 'node_2');
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     cy.get('[data-cy="undo-control"]').click();
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
       .then($startEvent => $startEvent.find('.joint-highlight-stroke'))
@@ -85,19 +84,19 @@ describe('Validation', { scrollBehavior: false }, () => {
       .should('have.length', initialNumberOfDefinitionListElements)
       .should('not.contain', 'node_2');
 
-    waitToRenderAllShapes();
+    cy.wait(500);
     cy.get('[data-cy="redo-control"]').click();
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     cy.get(validatePanelSelector).children()
       .should('have.length', initialNumberOfDefinitionListElements + numberOfNewDefinitionListElements)
       .should('contain', 'node_2');
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     getElementAtPosition(startEventPosition, nodeTypes.startEvent)
       .then($startEvent => $startEvent.find('.joint-highlight-stroke'))
       .should('have.attr', 'stroke', '#FF0000');
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     getElementAtPosition(taskPosition, nodeTypes.task)
       .then($task => $task.find('.joint-highlight-stroke'))

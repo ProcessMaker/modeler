@@ -236,7 +236,9 @@ describe('Undo/redo', { scrollBehavior: false }, () => {
     const taskPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
+    cy.wait(500);
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
+    cy.wait(500);
 
     const initialNumberOfWaypoints = 4;
     testNumberOfVertices(initialNumberOfWaypoints);
@@ -258,9 +260,9 @@ describe('Undo/redo', { scrollBehavior: false }, () => {
     const updatedNumberOfWaypoints = 8;
     testNumberOfVertices(updatedNumberOfWaypoints);
 
+    cy.wait(500);
     cy.get(undoSelector).click({ force: true });
-
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     testNumberOfVertices(initialNumberOfWaypoints);
   });
