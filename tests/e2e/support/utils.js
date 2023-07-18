@@ -24,11 +24,6 @@ export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.ta
   const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
   waitToRenderAllShapes();
 
-  /* const existModal = Cypress.$('.modal').length === 1;
-
-  if (existModal) {
-    modalConfirm();
-  } */
   cy.get('body').then($body => {
     if ($body.find('.modal').length > 0) {
       modalConfirm();
