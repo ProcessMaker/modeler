@@ -1,10 +1,8 @@
 name: ci
 
-on:
-  push:
-    branches:
-      - develop
+on: 
   pull_request:
+    types: [opened, reopened, synchronize, edited]
 
 jobs:
   ci:
