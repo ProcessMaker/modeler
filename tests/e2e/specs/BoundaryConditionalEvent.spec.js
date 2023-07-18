@@ -19,7 +19,9 @@ describe('Boundary Conditional Event', () => {
     removeStartEvent(startPosition);
     waitToRenderAllShapes();
     clickAndDropElement(nodeTypes.task, taskPosition);
+    cy.wait(500);
     setBoundaryEvent(nodeTypes.boundaryConditionalEvent, taskPosition);
+    cy.wait(500);
   });
 
   it('set condition on Boundary Conditional Events', () => {
@@ -41,12 +43,14 @@ describe('Boundary Conditional Event', () => {
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
 
+    cy.wait(500);
     cy.get('[data-cy="undo-control"]').click({ force: true });
-    waitToRenderAllShapes();
+    cy.wait(500);
     cy.get('[data-cy="redo-control"]').click({ force: true });
-    waitToRenderAllShapes();
+    cy.wait(500);
 
     getElementAtPosition(boundaryConditionalEventPosition, nodeTypes.boundaryConditionalEvent).click();
+    cy.wait(500);
 
     cy.get(interrupting).should('be.checked');
     cy.get(interrupting).uncheck({ force: true });
