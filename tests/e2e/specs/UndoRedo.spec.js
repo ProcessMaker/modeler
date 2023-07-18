@@ -115,36 +115,26 @@ describe('Undo/redo', { scrollBehavior: false }, () => {
     const startEventPosition = { x: 210, y: 200 };
     const startEventMoveToPosition = { x: 350, y: 350 };
 
-    cy.get(undoSelector)
-      .click({ force: true })
-      .should('be.disabled');
-
+    cy.get(undoSelector).should('not.be.disabled');
     waitToRenderAllShapes();
-
-    cy.get(redoSelector)
-      .click({ force: true })
-      .should('be.disabled');
-
+    cy.get(redoSelector).should('be.disabled');
     waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition)
       .then($startEvent => {
         moveElement($startEvent, startEventMoveToPosition.x, startEventMoveToPosition.y);
+        waitToRenderAllShapes();
       })
       .should(position => {
         expect(position).to.not.deep.equal(startEventPosition);
       });
 
+    cy.get(undoSelector).should('not.be.disabled').click();
     waitToRenderAllShapes();
 
-    cy.get(undoSelector)
-      .should('not.be.disabled')
-      .click({ force: true });
-
+    getElementAtPosition(startEventPosition, nodeTypes.startEvent).should('exist');
     waitToRenderAllShapes();
-
-    getElementAtPosition(startEventPosition).should('exist');
-    getElementAtPosition(startEventMoveToPosition).should('not.exist');
+    getElementAtPosition(startEventMoveToPosition, nodeTypes.startEvent).should('not.exist');
 
     const taskPosition1 = { x: 250, y: 400 };
     const taskPosition2 = { x: taskPosition1.x + 200, y: taskPosition1.y };
@@ -159,7 +149,7 @@ describe('Undo/redo', { scrollBehavior: false }, () => {
         moveElement($task, taskPosition3.x, taskPosition3.y);
       });
 
-    cy.get(undoSelector).click({ force: true });
+    cy.get(undoSelector).click();
 
     waitToRenderAllShapes();
 

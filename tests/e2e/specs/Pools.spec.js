@@ -70,8 +70,11 @@ describe('Pools', { scrollBehavior: false }, () => {
 
   it('Can drag elements between pools', () => {
     const startEventPosition = { x: 210, y: 200 };
+    const startEventPosition2 = { x: 300, y: 120 };
+    moveElement(startEventPosition, startEventPosition2, nodeTypes.startEvent);
+    waitToRenderAllShapes();
 
-    const pool1Position = { x: 200, y: 200 };
+    const pool1Position = { x: 200, y: 170 };
     clickAndDropElement(nodeTypes.pool, pool1Position);
     waitToRenderAllShapes();
 
@@ -85,10 +88,14 @@ describe('Pools', { scrollBehavior: false }, () => {
         expect(xml).to.contain(startEventIn1stPool);
       });
 
-    const pool2Position = { x: 300, y: 580 };
+    waitToRenderAllShapes();
+    const pool2Position = { x: 300, y: 400 };
     clickAndDropElement(nodeTypes.pool, pool2Position);
+    waitToRenderAllShapes();
 
-    moveElement(startEventPosition, pool2Position);
+    const startEventPosition3 = { x: pool2Position.x + 100, y: pool2Position.y + 150 };
+
+    moveElement(startEventPosition2, startEventPosition3, nodeTypes.startEvent);
     waitToRenderAllShapes();
 
     const empty1stPool = '<bpmn:process id="Process_1" isExecutable="true" />';
@@ -102,10 +109,11 @@ describe('Pools', { scrollBehavior: false }, () => {
         expect(xml).to.contain(startEventIn2ndPool);
       });
 
-    moveElement(pool2Position, startEventPosition);
+    moveElement(startEventPosition3, startEventPosition2, nodeTypes.startEvent);
     waitToRenderAllShapes();
 
-    getElementAtPosition(startEventPosition).click();
+    getElementAtPosition(startEventPosition2, nodeTypes.startEvent).click({ force: true });
+    waitToRenderAllShapes();
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

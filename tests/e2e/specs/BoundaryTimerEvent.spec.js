@@ -173,10 +173,12 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
   });
 
   it('moves to another task when dragged over', () => {
-    const taskPosition = { x: 300, y: 300 };
+    const taskPosition = { x: 350, y: 350 };
     const numberOfBoundaryTimerEventsAdded = 1;
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+    waitToRenderAllShapes();
 
     const taskXml = '<bpmn:task id="node_2" name="Form Task" pm:assignment="requester" />';
     const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_11" name="Boundary Timer Event" attachedToRef="node_2">';
@@ -185,6 +187,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
 
     const task2Position = { x: 500, y: 500 };
     clickAndDropElement(nodeTypes.task, task2Position);
+    waitToRenderAllShapes();
 
     const boundaryTimerEventSelector = '.main-paper ' +
       '[data-type="processmaker.components.nodes.task.Shape"] ~ ' +
@@ -193,6 +196,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     getPositionInPaperCoords(task2Position).then(newPosition => {
       cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
         cy.wrap($boundaryEvent)
+          .click({ force: true })
           .trigger('mouseover')
           .trigger('mousedown', { which: 1, force: true })
           .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
@@ -225,10 +229,13 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
   it('keeps Boundary Timer Event in correct position when dragging and dropping', () => {
     const taskPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
+    waitToRenderAllShapes();
 
     const task2Position = { x: 500, y: 500 };
     clickAndDropElement(nodeTypes.task, task2Position);
+    waitToRenderAllShapes();
 
     const boundaryTimerEventSelector = '.main-paper ' +
       '[data-type="processmaker.components.nodes.task.Shape"] ~ ' +
@@ -237,6 +244,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     getPositionInPaperCoords(task2Position).then(newPosition => {
       cy.get(boundaryTimerEventSelector).then($boundaryEvent => {
         cy.wrap($boundaryEvent)
+          .click({ force: true })
           .trigger('mouseover')
           .trigger('mousedown', { which: 1, force: true })
           .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })

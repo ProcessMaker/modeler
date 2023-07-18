@@ -205,9 +205,9 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       setBoundaryEvent(nodeType, taskPosition, taskType);
       moveElement(taskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
 
-      cy.get('[data-cy="undo-control"]').click({ force: true });
+      cy.get('[data-cy="undo-control"]').click();
       waitToRenderAllShapes();
-      cy.get('[data-cy="redo-control"]').click({ force: true });
+      cy.get('[data-cy="redo-control"]').click();
       waitToRenderAllShapes();
 
       getElementAtPosition(taskPosition, taskType)

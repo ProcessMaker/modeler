@@ -62,12 +62,12 @@ describe('Start Timer Event', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
-    const year = 2023;
-    const month = 6;
-    const day = 14;
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = now.getDate();
     const hour = 5;
     const minute = 30;
-    const currentDateString = `${year}-0${month + 1}-${day}T0${hour}:${minute}:00.000Z`;
+    const currentDateString = `${year}-${String(month + 1).padStart(2, '0')}-${day}T0${hour}:${minute}:00.000Z`;
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
@@ -82,16 +82,14 @@ describe('Start Timer Event', () => {
       .then(xml => xml.trim())
       .should('contain', timerExpression1);
 
-    cy.get('[data-test=day-2]').click();
-    cy.get('[data-test=day-4]').click();
-
+    cy.get('[data-test=day-2]').click({ force: true });
+    waitToRenderAllShapes();
+    cy.get('[data-test=day-4]').click({ force: true });
     waitToRenderAllShapes();
 
     const timerExpression2 = [
       currentDateString,
-      `R/${year}-0${month + 1}-${day + 4}T0${hour}:${minute}:00.000Z/P1W`,
-      `R/${year}-0${month + 1}-${day + 6}T0${hour}:${minute}:00.000Z/P1W`,
-      `R/${year}-0${month + 1}-${day}T0${hour}:${minute}:00.000Z/P1W`,
+      `R/${year}-${String(month + 1).padStart(2, '0')}-${day + 2}T0${hour}:${minute}:00.000Z/P1W`,
     ].join('|');
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

@@ -27,6 +27,7 @@ describe('Message Flows', { scrollBehavior: false }, () => {
     connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
 
     moveElement(pool1Position, 300, 300, nodeTypes.pool);
+    waitToRenderAllShapes();
     moveElement(pool1Position, 250, 250, nodeTypes.pool);
 
     const numberOfMessageFlowsAdded = 1;
