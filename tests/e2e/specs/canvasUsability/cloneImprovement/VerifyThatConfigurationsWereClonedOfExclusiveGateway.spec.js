@@ -4,6 +4,7 @@ import {
   getGraphElements,
   getIframeDocumentation,
   selectComponentType,
+  toggleInspector,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
@@ -22,6 +23,8 @@ describe('Clone Improvement', () => {
     const gatewayPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
     cy.get(selectorStartEvent).first().click();
+
+    toggleInspector();
 
     //Step 3: Config Exclusive Gateway
     cy.get(selectorExclusiveGateway).first().click();

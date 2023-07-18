@@ -64,9 +64,9 @@ describe.skip('Recalculations Issues', () => {
         waitToRenderAllShapes();
 
         //Step 7: Press UNDO button twice
-        cy.get('[data-cy="undo-control"]').click();
+        cy.get('[data-cy="undo-control"]').click({force: true});
         waitToRenderAllShapes();
-        cy.get('[data-cy="undo-control"]').click();
+        cy.get('[data-cy="undo-control"]').click({force: true});
         waitToRenderAllShapes();
 
         //Step 8: Verify that connector flow was not moved

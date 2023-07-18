@@ -33,7 +33,6 @@ Cypress.Commands.add('loadModeler', () => {
 
   cy.viewport(defaultViewportDimensions.width, defaultViewportDimensions.height);
   cy.visit(url);
-  cy.reload();
   waitToRenderAllShapes();
 });
 

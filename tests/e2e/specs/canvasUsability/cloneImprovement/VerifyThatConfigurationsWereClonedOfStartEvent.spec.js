@@ -3,6 +3,7 @@ import {
   getGraphElements,
   getIframeDocumentation,
   selectComponentType,
+  toggleInspector,
 } from '../../../support/utils';
 
 describe('Clone Improvement', () => {
@@ -14,6 +15,8 @@ describe('Clone Improvement', () => {
     //Step 1: Drag Start Event
     waitToRenderAllShapes();
     getGraphElements().should('have.length', initialNumberOfElements);
+
+    toggleInspector();
 
     //Step 2: Set Name in Start Event
     cy.get(selectorStartEvent).first().click();

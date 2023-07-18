@@ -22,6 +22,7 @@
           aria-label="Publish controls"
           data-cy="publish-control"
         >
+          <div class="divider" />
           <template v-if="isVersionsInstalled">
             <div
               class="toolbar-item toolbar-version-status"
@@ -63,6 +64,17 @@
               data-cy="ellipsis-menu"
             />
           </template>
+          <button
+            v-else
+            class="save-button"
+            data-test="mini-map-btn"
+            v-b-tooltip.hover
+            :title="$t('Save')"
+            @click="$emit('saveBpmn')"
+          >
+            <font-awesome-icon :icon="saveIcon" />
+            <span class="save-button-label">{{ $t('Save') }}</span>
+          </button>
         </div>
       </div>
     </div>
@@ -74,7 +86,6 @@ import { faCompress, faExpand, faMapMarked, faMinus, faPlus, faRedo, faUndo, faS
 import undoRedoStore from '@/undoRedoStore';
 import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import TopRail from '@/components/topRail/TopRail.vue';
-
 export default {
   name: 'tool-bar',
   components: {
@@ -218,7 +229,8 @@ export default {
     },
   },
   mounted() {
-    if (this.$root.$children[0]?.process?.is_template) {
+    const childProcess = this.$root.$children[0]?.process;
+    if (childProcess?.is_template) {
       const indexOfActions = this.ellipsisMenuActions.findIndex(object => {
         return object.value === 'save-template';
       });

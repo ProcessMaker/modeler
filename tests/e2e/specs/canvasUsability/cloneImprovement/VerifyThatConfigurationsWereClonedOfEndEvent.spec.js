@@ -4,6 +4,7 @@ import {
   getGraphElements,
   getIframeDocumentation,
   selectComponentType,
+  toggleInspector,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
@@ -21,6 +22,8 @@ describe('Clone Improvement', () => {
     //Step 2: Add End Event
     const endEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.endEvent, endEventPosition);
+
+    toggleInspector();
 
     //Step 3: Config The End Event
     cy.get('[data-cy=inspector-button]').click();

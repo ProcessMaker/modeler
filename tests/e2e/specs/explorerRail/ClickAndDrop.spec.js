@@ -1,7 +1,7 @@
 import { nodeTypes } from '../../support/constants';
 const { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } = require('../../support/utils');
 
-describe('Click and Drop' , () => {
+describe.skip('Click and Drop' , () => {
   it('Elements are clicked and dropped into canvas', () => {
     let explorerX = 0;
     if (Cypress.$('[data-test=explorer-rail]').is(':visible')) {

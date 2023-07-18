@@ -3,8 +3,12 @@ import {
   connectNodesWithFlow,
   waitToRenderAllShapes,
   getGraphElements,
+  isAppleOS,
+  toggleInspector,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
+
+const key = isAppleOS() ? '{meta}' : '{ctrl}';
 
 describe.skip('Zoom In/Out Hot keys', () => {
   it('TCP4-2655: Verify that "INSPECTOR RAIL" is not affected by Control --', () => {
@@ -32,13 +36,15 @@ describe.skip('Zoom In/Out Hot keys', () => {
     //Step 5: Click on Form Task
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click();
 
+    toggleInspector();
+
     //Step 6: Get heigth of "INSPECTOR RAIL" menu
     cy.get('[data-test="inspector-column"]').should('be.visible')
       .invoke('height').then((val) => {
         const heigth = val;
         //Step 7: Press CONTROL ---
-        cy.get('body').type('{ctrl}----');
-        cy.get('.scale-value').should('have.text', '60%');
+        cy.get('body').type(`${key}----`);
+        cy.get('[data-cy="zoom-reset-control"]').should('have.text', '60%');
        
         //Validation 1: Verify that heigth "INSPECTOR RAIL" does not change
         cy.get('[data-test="inspector-column"]').should('exist')
@@ -49,5 +55,4 @@ describe.skip('Zoom In/Out Hot keys', () => {
           });
       });
   });
-
 });

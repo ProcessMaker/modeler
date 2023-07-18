@@ -2,7 +2,7 @@ import {
   waitToRenderAllShapes,
   getGraphElements,
   getIframeDocumentation,
-  clickAndDropElement,
+  clickAndDropElement, toggleInspector,
 } from '../../../support/utils';
 import {nodeTypes} from '../../../support/constants';
 
@@ -21,6 +21,8 @@ describe('Clone Improvement', () => {
     const textAnnotationPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     cy.get(selectorStartEvent).first().click();
+
+    toggleInspector();
 
     //Step 3: Set title in Text Annotation
     cy.get(selectorTextAnnotation).first().click();

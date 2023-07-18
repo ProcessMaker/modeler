@@ -1,7 +1,7 @@
 import {
   clickAndDropElement,
   waitToRenderAllShapes,
-  getGraphElements, getIframeDocumentation, selectComponentType,
+  getGraphElements, getIframeDocumentation, selectComponentType, toggleInspector,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
@@ -19,6 +19,8 @@ describe('Clone Improvement', () => {
     //Step 2: Add Intermediate Event
     const intermediatePosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
+
+    toggleInspector();
 
     //Step 3: Config The Intermediate Event
     cy.get('[data-cy=inspector-button]').click();
