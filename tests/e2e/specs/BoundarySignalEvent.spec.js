@@ -6,12 +6,13 @@ import {
   typeIntoTextInput,
   selectOptionByName,
   waitToRenderAllShapes,
+  toggleInspector,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 import _ from 'lodash';
 
-describe.skip('Boundary Signal Event', () => {
+describe('Boundary Signal Event', () => {
   const taskPosition = { x: 200, y: 200 };
   const boundarySignalEventPosition = { x: 260, y: 200 };
 
@@ -26,6 +27,8 @@ describe.skip('Boundary Signal Event', () => {
   });
 
   it('update boundary signal event properties element', () => {
+    toggleInspector();
+
     const name = 'Test name';
     const signalRef = 'global_1';
     const signalName = 'global signal 1';
@@ -33,7 +36,7 @@ describe.skip('Boundary Signal Event', () => {
     selectOptionByName('[data-test="signalRef:select"]', signalName);
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:boundaryEvent id="node_3" name="${ name }" attachedToRef="node_2">
+      <bpmn:boundaryEvent id="node_11" name="${ name }" attachedToRef="node_2">
         <bpmn:signalEventDefinition signalRef="${ signalRef }" />
       </bpmn:boundaryEvent>
     `);
@@ -43,9 +46,9 @@ describe.skip('Boundary Signal Event', () => {
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).should('be.checked');
 
-    cy.get('[data-test=undo]').click({ force: true });
+    cy.get('[data-cy="undo-control"]').click({ force: true });
     waitToRenderAllShapes();
-    cy.get('[data-test=redo]').click({ force: true });
+    cy.get('[data-cy="redo-control"]').click({ force: true });
     waitToRenderAllShapes();
 
     getElementAtPosition(boundarySignalEventPosition, nodeTypes.boundarySignalEvent).click();
@@ -59,10 +62,8 @@ describe.skip('Boundary Signal Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Signal Event',
   nodeType: nodeTypes.boundarySignalEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_3" name="Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_11" name="Boundary Signal Event" attachedToRef="node_2"><bpmn:signalEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
-  // TODO remove line 67 when this test is ready to pass
-  skip: true,
 });

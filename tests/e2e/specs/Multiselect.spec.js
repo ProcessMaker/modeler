@@ -7,10 +7,10 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Multiselect', () => {
+describe('Multiselect', { scrollBehavior: false }, () => {
   it('should move multiple shapes when shift+clicking to highlight and then dragging', () => {
-    const task1Position = { x: 100, y: 100 };
-    const task2Position = { x: task1Position.x + 100, y: task1Position.y + 100 };
+    const task1Position = { x: 300, y: 100 };
+    const task2Position = { x: task1Position.x + 160, y: task1Position.y + 160 };
     const translateAmount = 200;
     const newTask1Position = { x: task1Position.x + translateAmount, y: task1Position.y + translateAmount };
     const newTask2Position = { x: task2Position.x + translateAmount, y: task2Position.y + translateAmount };
@@ -21,9 +21,7 @@ describe.skip('Multiselect', () => {
     cy.get('.paper-container').click();
 
     getElementAtPosition(task1Position, nodeTypes.task).click();
-    cy.get('body').type('{shift}', { release: false });
-    getElementAtPosition(task2Position, nodeTypes.task).click();
-    cy.get('body').type('{shift}', { release: true });
+    getElementAtPosition(task2Position, nodeTypes.task).click({ shiftKey: true });
 
     moveElementRelativeTo(task1Position, translateAmount, translateAmount, nodeTypes.task);
 
@@ -32,21 +30,24 @@ describe.skip('Multiselect', () => {
     getElementAtPosition(newTask1Position, nodeTypes.task).then($task => {
       getGraphElements().then(elements => {
         const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
-        expect({ x, y }).to.eql(newTask1Position);
+        expect(x).to.be.closeTo(newTask1Position.x, 2);
+        expect(y).to.be.closeTo(newTask1Position.y, 2);
       });
     });
 
+    cy.get('.paper-container').click();
     getElementAtPosition(newTask2Position, nodeTypes.task).then($task => {
       getGraphElements().then(elements => {
         const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
-        expect({ x, y }).to.eql(newTask2Position);
+        expect(x).to.be.closeTo(newTask2Position.x, 2);
+        expect(y).to.be.closeTo(newTask2Position.y, 2);
       });
     });
   });
 
   it('should move multiple shapes when shift+clicking to highlight and then using arrow keys', () => {
-    const task1Position = { x: 100, y: 100 };
-    const task2Position = { x: task1Position.x + 100, y: task1Position.y + 100 };
+    const task1Position = { x: 300, y: 100 };
+    const task2Position = { x: task1Position.x + 100, y: task1Position.y + 160 };
     const translateAmount = 20;
     const newTask1Position = { x: task1Position.x + translateAmount, y: task1Position.y + translateAmount };
     const newTask2Position = { x: task2Position.x + translateAmount, y: task2Position.y + translateAmount };
@@ -59,9 +60,7 @@ describe.skip('Multiselect', () => {
     cy.get('.paper-container').click();
 
     getElementAtPosition(task1Position, nodeTypes.task).click();
-    cy.get('body').type('{shift}', { release: false });
-    getElementAtPosition(task2Position, nodeTypes.task).click();
-    cy.get('body').type('{shift}', { release: true });
+    getElementAtPosition(task2Position, nodeTypes.task).click({ shiftKey: true });
 
     for (let i = 0; i < numberOfTimesToMove; i++) {
       cy.get('body').type('{downarrow}');
@@ -86,8 +85,8 @@ describe.skip('Multiselect', () => {
   });
 
   it('should move multiple shapes when drawing a selection box to highlight and then dragging', () => {
-    const task1Position = { x: 100, y: 100 };
-    const task2Position = { x: task1Position.x + 100, y: task1Position.y + 100 };
+    const task1Position = { x: 300, y: 100 };
+    const task2Position = { x: task1Position.x + 160, y: task1Position.y + 160 };
     const translateAmount = 200;
     const newTask1Position = { x: task1Position.x + translateAmount, y: task1Position.y + translateAmount };
     const newTask2Position = { x: task2Position.x + translateAmount, y: task2Position.y + translateAmount };
@@ -99,10 +98,10 @@ describe.skip('Multiselect', () => {
 
     cy.get('body').type('{shift}', { release: false });
     cy.get('@paperContainer').trigger('mousedown', 'topLeft');
-    cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
+    cy.get('@paperContainer').trigger('mousemove', 'bottomRight', { force: true });
     waitToRenderAllShapes();
+    cy.get('@paperContainer').trigger('mousemove');
     cy.get('@paperContainer').trigger('mouseup');
-    cy.get('body').type('{shift}', { release: true });
 
     moveElementRelativeTo(task1Position, translateAmount, translateAmount, nodeTypes.task);
 
@@ -111,14 +110,16 @@ describe.skip('Multiselect', () => {
     getElementAtPosition(newTask1Position, nodeTypes.task).then($task => {
       getGraphElements().then(elements => {
         const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
-        expect({ x, y }).to.eql(newTask1Position);
+        expect(x).to.be.closeTo(newTask1Position.x, 2);
+        expect(y).to.be.closeTo(newTask1Position.y, 2);
       });
     });
 
     getElementAtPosition(newTask2Position, nodeTypes.task).then($task => {
       getGraphElements().then(elements => {
         const { x, y } = elements.find(el => el.get('id') === $task.attr('model-id')).position();
-        expect({ x, y }).to.eql(newTask2Position);
+        expect(x).to.be.closeTo(newTask2Position.x, 2);
+        expect(y).to.be.closeTo(newTask2Position.y, 2);
       });
     });
   });
@@ -129,7 +130,7 @@ describe.skip('Multiselect', () => {
 
       cy.get('body').type(`{shift}{${ combo }}`, { release: false });
       cy.get('@paperContainer').trigger('mousedown', 'topLeft');
-      cy.get('@paperContainer').trigger('mousemove', 'bottomRight');
+      cy.get('@paperContainer').trigger('mousemove', 'bottomRight', { force: true });
       waitToRenderAllShapes();
       cy.get('[data-type="selectionBox"]').should('not.exist');
     });

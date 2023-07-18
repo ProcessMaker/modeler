@@ -2,6 +2,7 @@ import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
   getElementAtPosition,
+  toggleInspector,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
@@ -36,10 +37,14 @@ function clickSubprocessPlusButton() {
   cy.get('.main-paper [data-type="processmaker.components.nodes.task.Shape"] [joint-selector="bottomCenter.0"]').click();
 }
 
-describe.skip('Sub Process (Call Activities)', () => {
-  const subProcessPosition = { x: 250, y: 250 };
+describe('Sub Process (Call Activities)', { scrollBehavior: false }, () => {
+  const subProcessPosition = { x: 350, y: 250 };
   const testString = 'testing';
   const defaultSubProcessNodeName = 'Sub Process';
+
+  beforeEach(() => {
+    toggleInspector();
+  });
 
   it('Can create sub process with config', () => {
     const startEventName = 'Start Event Two';
@@ -56,7 +61,7 @@ describe.skip('Sub Process (Call Activities)', () => {
     selectCalledProcess('Process with multiple start events');
     selectSubProcessStartEvent(startEventName);
 
-    assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_3" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
+    assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_8" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
   });
 
   it('Allows typing in name field on new sub process', () => {

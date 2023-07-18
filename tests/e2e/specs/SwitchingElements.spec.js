@@ -6,7 +6,7 @@ import {
   clickAndDropElement,
   getElementAtPosition,
   uploadXml,
-  getLinksConnectedToElement, modalAnimationTime, modalConfirm, setBoundaryEvent, waitToRenderAllShapes,
+  getLinksConnectedToElement, modalAnimationTime, modalConfirm, setBoundaryEvent, waitToRenderAllShapes, toggleInspector,
 } from '../support/utils';
 import {nodeTypes} from '../support/constants';
 
@@ -41,14 +41,15 @@ function changeTypeTo(currentType, newType, position) {
   cy.tick(modalAnimationTime);
 }
 
-describe.skip('Switching elements', () => {
+describe('Switching elements', () => {
   it('Switching an exclusive gateway to a parallel gateway should remove conditions from flows', () => {
-    const gatewayPosition = {x: 300, y: 150};
-    const taskPosition = {x: 450, y: 150};
+    const gatewayPosition = {x: 350, y: 150};
+    const taskPosition = {x: 500, y: 150};
     clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
     clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', gatewayPosition, taskPosition);
 
+    toggleInspector();
     const flowExpression = '1234 == 1234';
 
     addFlowExpression(flowExpression, gatewayPosition);
@@ -71,7 +72,7 @@ describe.skip('Switching elements', () => {
     assertDownloadedXmlContainsExpected(replacementStartEvent);
     assertDownloadedXmlDoesNotContainExpected(initialStartEvent);
 
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-cy="undo-control"]').click();
     cy.tick(ms);
     // if we see two nodes here then we had an intermediate invalid undo state saved
     assertDownloadedXmlContainsExpected(initialStartEvent);
@@ -82,7 +83,7 @@ describe.skip('Switching elements', () => {
   it('deletes boundary events on tasks when the task type is switched', () => {
     cy.clock();
 
-    const taskPosition = {x: 300, y: 150};
+    const taskPosition = {x: 500, y: 150};
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-user-task');
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.task);
     changeTypeTo(nodeTypes.task, 'switch-to-manual-task', taskPosition);
@@ -97,7 +98,14 @@ describe.skip('Switching elements', () => {
     cy.get('[data-test=switch-to-script-task]').click();
     modalConfirm();
     waitToRenderAllShapes();
-    cy.get('[data-test="validation-toggle"]').click({force: true});
-    cy.get('.status-bar-container').should('contain.text', 'BPMN Valid');
+
+    cy.get('[data-cy="validate-button"]').click({force: true});
+
+    cy.get('[data-cy="validate-issue-button"]')
+      .should('be.visible')
+      .then($btn => {
+        const issueBadge = $btn.children('.issue-badge');
+        expect(issueBadge).to.have.text(0);
+      });
   });
 });

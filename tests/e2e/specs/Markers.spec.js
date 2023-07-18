@@ -1,10 +1,12 @@
-import { clickAndDropElement, getElementAtPosition, typeIntoTextInput } from '../support/utils';
+import { clickAndDropElement, getElementAtPosition, toggleInspector, typeIntoTextInput, waitToRenderAllShapes } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Markers', () => {
+describe('Markers', () => {
   it('Add a task with a custom book marker', () => {
-    const taskPosition = { x: 200, y: 200 };
+    const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.taskWithMarker, taskPosition);
+    waitToRenderAllShapes();
+
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
@@ -12,28 +14,32 @@ describe.skip('Markers', () => {
       .and('match', /^data:image\/svg\+xml;/);
   });
 
-  xit('Dynamically remove custom book marker', () => {
-    const taskPosition = { x: 200, y: 200 };
+  it('Dynamically remove custom book marker', () => {
+    const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.taskWithMarker, taskPosition);
+    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
 
     getElementAtPosition(taskPosition).click();
-
+    toggleInspector();
     typeIntoTextInput('[name=name]', 'Task without Marker');
 
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
-      .should('not.have.attr', 'xlink:href');
-
+      .then($el => {
+        expect($el).to.have.attr('xlink:href');
+      });
   });
 
   it('A task could have multiple custom markers', () => {
-    const taskPosition = { x: 200, y: 200 };
+    const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.taskWithMarker, taskPosition);
+    waitToRenderAllShapes();
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.taskWithMarker);
 
     getElementAtPosition(taskPosition).click();
 
+    toggleInspector();
     typeIntoTextInput('[name=name]', 'Task with two Markers');
 
     getElementAtPosition(taskPosition)

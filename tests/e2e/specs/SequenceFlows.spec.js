@@ -10,16 +10,17 @@ import {
   removeIndentationAndLinebreaks,
   typeIntoTextInput,
   waitToRenderAllShapes,
+  toggleInspector,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { taskWidth } from '../../../src/components/nodes/task/taskConfig';
 import { startEventDiameter } from '../../../src/components/nodes/baseStartEvent/startEventConfig';
 import { endColor, startColor } from '../../../src/components/nodeColors';
 
-describe.skip('Sequence Flows', () => {
+describe('Sequence Flows', { scrollBehavior: false }, () => {
   it('Can connect two elements', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 250, y: 250 };
+    const startEventPosition = { x: 210, y: 200 };
+    const taskPosition = { x: 350, y: 250 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -48,6 +49,7 @@ describe.skip('Sequence Flows', () => {
       .then($links => $links[0])
       .click({ force: true });
 
+    toggleInspector();
     const testNameString = 'Sequence name test';
     typeIntoTextInput('[name=name]', testNameString);
     cy.get('[name=name]').should('have.value', testNameString);
@@ -56,7 +58,7 @@ describe.skip('Sequence Flows', () => {
     typeIntoTextInput('[name=conditionExpression]', testExpressionString);
     cy.get('[name=conditionExpression]').should('have.value', testExpressionString);
 
-    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_5" name="${testNameString}" sourceRef="node_2" targetRef="node_3"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testExpressionString}</bpmn:conditionExpression></bpmn:sequenceFlow>`;
+    const sequenceFlowXml = `<bpmn:sequenceFlow id="node_13" name="${testNameString}" sourceRef="node_2" targetRef="node_3"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testExpressionString}</bpmn:conditionExpression></bpmn:sequenceFlow>`;
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -67,16 +69,11 @@ describe.skip('Sequence Flows', () => {
       });
   });
 
-  /**
-   * Skipping temporarily due to problems with the new toolbar position.
-   * Cypress is having issues with this toolbar as it centres the page on selected elements.
-   * This is making the toolbar disappear and reappear, which is making it hard to measure the location of anything.
-   */
-  it.skip('Allows modifying anchor points', () => {
-    const taskPosition = { x: 200, y: 300 };
+  it('Allows modifying anchor points', () => {
+    const taskPosition = { x: 350, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
-    const task2Position = { x: 400, y: 500 };
+    const task2Position = { x: 500, y: 500 };
     clickAndDropElement(nodeTypes.task, task2Position);
 
     connectNodesWithFlow('generic-flow-button', taskPosition, task2Position);
@@ -133,8 +130,9 @@ describe.skip('Sequence Flows', () => {
 
         /* Move anchor back to center */
         cy.get(anchorSelector).trigger('mousedown');
-        cy.get(anchorSelector).trigger('mousemove', 0, 0, { force: true });
+        cy.get(anchorSelector).trigger('mousemove', 50, 50, { force: true });
         cy.get(anchorSelector).trigger('mouseup', { force: true });
+
         cy.get(anchorSelector).should(() => {
           const { left: newLeft, top: newTop } = $anchor.position();
           expect(newLeft).to.be.closeTo(left, 1);
@@ -147,8 +145,8 @@ describe.skip('Sequence Flows', () => {
   });
 
   it('Retains target anchor point after parsing and moving shape', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 200, y: 300 };
+    const startEventPosition = { x: 210, y: 200 };
+    const taskPosition = { x: 350, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
@@ -171,7 +169,7 @@ describe.skip('Sequence Flows', () => {
 
     moveElement(taskPosition, taskPosition.y + 50, taskPosition.y);
 
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-cy="undo-control"]').click();
     waitToRenderAllShapes();
 
     const newTaskPosition = { x: taskPosition.x + 300, y: taskPosition.y };
@@ -195,7 +193,7 @@ describe.skip('Sequence Flows', () => {
   });
 
   it('Retains source anchor point after parsing and moving shape', () => {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 400, y: 400 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -217,13 +215,15 @@ describe.skip('Sequence Flows', () => {
       cy.get(anchorSelector).trigger('mouseup', { force: true });
     });
 
-    moveElement(startEventPosition, startEventPosition.y + 50, startEventPosition.y);
+    moveElement(startEventPosition, startEventPosition.y + 50, startEventPosition.y, nodeTypes.startEvent);
+    waitToRenderAllShapes();
 
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-cy="undo-control"]').click();
     waitToRenderAllShapes();
 
     const newStartEventPosition = { x: startEventPosition.x, y: startEventPosition.y + 200 };
-    moveElement(startEventPosition, newStartEventPosition.x, newStartEventPosition.y);
+    moveElement(startEventPosition, newStartEventPosition.x, newStartEventPosition.y, nodeTypes.startEvent);
+    waitToRenderAllShapes();
 
     getElementAtPosition(newStartEventPosition)
       .then(getLinksConnectedToElement)
@@ -243,7 +243,7 @@ describe.skip('Sequence Flows', () => {
   });
 
   it('connects sequence flows with a straight line', () => {
-    const taskPosition = { x: 250, y: 250 };
+    const taskPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
     const endEventPosition = {
@@ -251,17 +251,19 @@ describe.skip('Sequence Flows', () => {
       y: taskPosition.y + 200,
     };
     clickAndDropElement(nodeTypes.endEvent, endEventPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
 
-    cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 308 326 L 308 450');
+    cy.get('.main-paper [data-type="standard.Link"] [joint-selector="line"]').should('have.attr', 'd', 'M 408 326 L 408 450');
   });
 
   it('retains original background color when it cannot connect to an element', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 250, y: 250 };
+    const startEventPosition = { x: 210, y: 200 };
+    const taskPosition = { x: 350, y: 250 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('generic-flow-button', taskPosition, startEventPosition);
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).
@@ -271,10 +273,11 @@ describe.skip('Sequence Flows', () => {
 
   it('retains original background color when it can connect to an element', () => {
     const endEventPosition = { x: 350, y: 350 };
-    const taskPosition = { x: 250, y: 250 };
+    const taskPosition = { x: 350, y: 250 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
     clickAndDropElement(nodeTypes.endEvent, endEventPosition);
+    waitToRenderAllShapes();
 
     connectNodesWithFlow('generic-flow-button', taskPosition, endEventPosition);
     getElementAtPosition(endEventPosition, nodeTypes.endEvent).
@@ -283,11 +286,11 @@ describe.skip('Sequence Flows', () => {
   });
 
   it('Retains sequence flows when switching task type', () => {
-    const startPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 250, y: 250 };
+    const startPosition = { x: 210, y: 200 };
+    const taskPosition = { x: 350, y: 250 };
     let numberOfSequenceFlowsAdded = 1;
 
-    const sequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_3"';
+    const sequenceFlow = '<bpmn:sequenceFlow id="node_18" sourceRef="node_1" targetRef="node_8"';
 
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-script-task');
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.scriptTask);
@@ -312,7 +315,7 @@ describe.skip('Sequence Flows', () => {
       expect($links.length).to.eq(numberOfSequenceFlowsAdded);
     });
 
-    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_5" sourceRef="node_1" targetRef="node_6"';
+    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_18" sourceRef="node_1" targetRef="node_19"';
     assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });

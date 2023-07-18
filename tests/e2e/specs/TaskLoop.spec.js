@@ -1,11 +1,13 @@
 import {
   assertDownloadedXmlMatch,
+  toggleInspector,
   uploadXml,
 } from '../support/utils';
 
-describe.skip('Task Loop properties', () => {
+describe('Task Loop properties', () => {
 
   it('Set & Unset Loop Maximum property', () => {
+    toggleInspector();
 
     uploadXml('withLoopMarker.xml');
 

@@ -10,7 +10,7 @@ import {
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Association Flows', () => {
+describe('Association Flows', () => {
   it('Change direction of association to none, one and both', () => {
     const directionSelectSelector = '[name=associationDirection]';
     const textAnnotationPosition = { x: 400, y: 100 };
@@ -26,18 +26,18 @@ describe.skip('Association Flows', () => {
       .then($links => $links[0])
       .click();
 
-    cy.get(directionSelectSelector).select('None');
+    cy.get(directionSelectSelector).select('None', { force: true });
     cy.get(directionSelectSelector).should('have.value', direction.none);
 
-    cy.get(directionSelectSelector).select('One');
+    cy.get(directionSelectSelector).select('One', { force: true });
     cy.get(directionSelectSelector).should('have.value', direction.one);
 
-    cy.get(directionSelectSelector).select('Both');
+    cy.get(directionSelectSelector).select('Both', { force: true });
     cy.get(directionSelectSelector).should('have.value', direction.both);
   });
 
   it('should keep association flow when changing element type', () => {
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     const textAnnotationPosition = { x: 400, y: 100 };
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     waitToRenderAllShapes();
