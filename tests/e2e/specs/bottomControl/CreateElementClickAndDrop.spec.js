@@ -4,7 +4,7 @@ import {
   waitToRenderAllShapes,
 } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
-describe.skip('Create Element' , () => {
+describe('Create Element' , () => {
   it('Verify if the number of the created elements is right', () => {
     const explorerX = 200;
     const startEventPosition = { x: 100 + explorerX, y: 100 };

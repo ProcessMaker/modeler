@@ -1,6 +1,6 @@
 import PaperManager from '@/components/paperManager';
 
-describe.skip('Paper Manager', () => {
+describe('Paper Manager', () => {
   const positionData = [
     [{ sx: 1, sy: 1 }, { x: 319, y: 77 }, 711, 320, { x: 390, y: 240 }],
     [{ sx: 1, sy: 1 }, { x: 319, y: 77 }, 953, 486, { x: 630, y: 410 }],

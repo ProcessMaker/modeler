@@ -3,8 +3,11 @@ import {
   connectNodesWithFlow,
   waitToRenderAllShapes,
   getGraphElements,
+  isAppleOS,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
+
+const key = isAppleOS() ? '{meta}' : '{ctrl}';
 
 describe.skip('Zoom In/Out Hot keys', () => {
   it('TCP4-2656: Verify that "BOTTOM RAIL" is not affected by Control --', () => {
@@ -33,15 +36,15 @@ describe.skip('Zoom In/Out Hot keys', () => {
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click();
 
     //Step 6: Get width of "BOTTOM RAIL" menu
-    cy.get('div[class*="card-footer"]').should('be.visible')
+    cy.get('.rail-center').should('be.visible')
       .invoke('width').then((val) => {
         const width = val;
         //Step 7: Press CONTROL ---
-        cy.get('body').type('{ctrl}-----');
-        cy.get('.scale-value').should('have.text', '50%');
+        cy.get('body').type(`${key}-----`);
+        cy.get('[data-cy="zoom-reset-control"]').should('have.text', '50%');
        
         //Validation 1: Verify that heigth "BOTTOM RAIL" does not change
-        cy.get('div[class*="card-footer"]').should('exist')
+        cy.get('.rail-center').should('exist')
           .invoke('width').then((val) => {
             cy.log('width initial of BOTTOM RAIL', width);
             cy.log('width after Ctrl -----', val);
