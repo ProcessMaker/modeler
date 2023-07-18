@@ -21,9 +21,8 @@ describe('Clone Improvement', () => {
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
 
     toggleInspector();
-
+    
     //Step 3: Config The Intermediate Event
-    cy.get('[data-cy=inspector-button]').click();
     cy.get(selectorIntermediateEvent).first().click();
     cy.get('#collapse-inspector-accordion-intermediate-timer-config > :nth-child(1) > .form-group')
       .find('input').should('be.visible').clear().type('Intermediate Event Test 1');
