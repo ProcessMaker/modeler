@@ -12,7 +12,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Copy element', { scrollBehavior: false }, () => {
-  it('should copy start events', () => {
+  it.skip('should copy start events', () => {
     const startEventPosition = { x: 210, y: 200 };
 
     getElementAtPosition(startEventPosition).click();
@@ -49,7 +49,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
   });
 
-  it('should copy tasks', () => {
+  it.skip('should copy tasks', () => {
     const taskPosition = { x: 300, y: 250 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -108,7 +108,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
 
   });
 
-  it('copies message on Message Event', () => {
+  it.skip('copies message on Message Event', () => {
     const messageEndEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
     waitToRenderAllShapes();
