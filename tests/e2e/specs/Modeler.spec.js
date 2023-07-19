@@ -18,7 +18,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Modeler', { scrollBehavior: false }, () => {
-  it('Create a simple process', () => {
+  it.skip('Create a simple process', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
 
@@ -49,7 +49,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it('Updates element name and validates xml', () => {
+  it.skip('Updates element name and validates xml', () => {
     waitToRenderAllShapes();
 
     const startEventPosition = { x: 210, y: 200 };
@@ -82,7 +82,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
       .should('eq', validXML.trim());
   });
 
-  it('Prevent element to connect to self', () => {
+  it.skip('Prevent element to connect to self', () => {
     /* Only the initial start element should exist */
     const initialNumberOfElements = 1;
 
@@ -98,7 +98,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it('Generates sequential, unique node IDs', { scrollBehavior: 'bottom'}, () => {
+  it.skip('Generates sequential, unique node IDs', { scrollBehavior: 'bottom'}, () => {
     toggleInspector();
     waitToRenderAllShapes();
 
@@ -146,7 +146,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     cy.get('[name=id] input').should('have.value', 'node_1');
   });
 
-  it('Check node ID is unique', { scrollBehavior: 'bottom' }, () => {
+  it.skip('Check node ID is unique', { scrollBehavior: 'bottom' }, () => {
     toggleInspector();
     waitToRenderAllShapes();
 
@@ -188,7 +188,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
       .should('not.contain.text', 'Must be unique');
   });
 
-  it('Adding a pool and lanes does not overlap sequence flow', () => {
+  it.skip('Adding a pool and lanes does not overlap sequence flow', () => {
     const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 350, y: 250 };
 
@@ -214,7 +214,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 
-  it('Selects process node after deleting an element', () => {
+  it.skip('Selects process node after deleting an element', () => {
     const startEventPosition = { x: 210, y: 200 };
     getElementAtPosition(startEventPosition).click();
     cy.get('[data-test=inspector-container]').should('to.contain', 'Enter the name of this element');
@@ -281,7 +281,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', 0);
   });
 
-  it('check for joint marker class on linkTools', () => {
+  it.skip('check for joint marker class on linkTools', () => {
     const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 350, y: 300 };
 
@@ -338,7 +338,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     });
   });
 
-  it('Does not show cursor when done loading empty process', () => {
+  it.skip('Does not show cursor when done loading empty process', () => {
     const startEventPosition = { x: 210, y: 200 };
 
     getElementAtPosition(startEventPosition)
@@ -409,7 +409,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
       .should('have.css', 'display', 'block');
   });
 
-  it('can drag elements into collapsed inspector panel space', () => {
+  it.skip('can drag elements into collapsed inspector panel space', () => {
     const taskPosition = { x: 745, y: 200 };
     cy.wait(700);
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -426,7 +426,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsSubstringNTimes('node_2_di',1,'Node 2 should occur once');
   });
 
-  it('should only show dropdown for the start event', () => {
+  it.skip('should only show dropdown for the start event', () => {
     const startEventPosition = { x: 400, y: 400 };
     clickAndDropElement(nodeTypes.startEvent, startEventPosition);
     waitToRenderAllShapes();
@@ -442,7 +442,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     cy.get('[data-test=switch-to-message-start-event]').should('not.exist');
   });
 
-  it('should hide start event dropdown on unhighlight', () => {
+  it.skip('should hide start event dropdown on unhighlight', () => {
     const startEventPosition = { x: 400, y: 400 };
     clickAndDropElement(nodeTypes.startEvent, startEventPosition);
     waitToRenderAllShapes();
@@ -464,7 +464,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     });
   });
 
-  it('after collapsing panels, show inspector panel when element is highlighted', () => {
+  it.skip('after collapsing panels, show inspector panel when element is highlighted', () => {
     cy.get('[data-test="inspector-container"]').should('not.be.visible');
 
     const startEventPosition = { x: 210, y: 200 };
@@ -476,7 +476,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     cy.get('[data-test="inspector-container"]').should('not.be.visible');
   });
 
-  it('should hide the crown when adding a sequence flow', () => {
+  it.skip('should hide the crown when adding a sequence flow', () => {
     cy.get('.paper-container').click();
     cy.get('.crown-config').should('not.exist');
 

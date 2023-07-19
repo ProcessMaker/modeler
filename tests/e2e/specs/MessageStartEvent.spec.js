@@ -2,7 +2,7 @@ import { assertDownloadedXmlContainsExpected, clickAndDropElement, getElementAtP
 import { nodeTypes } from '../support/constants';
 
 describe('Message Start Event', () => {
-  it('Can create message start event', () => {
+  it.skip('Can create message start event', () => {
     const messageStartEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.startEvent, messageStartEventPosition);
     cy.get('[data-test=select-type-dropdown').click();

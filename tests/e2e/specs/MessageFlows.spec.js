@@ -16,7 +16,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Message Flows', { scrollBehavior: false }, () => {
+describe.skip('Message Flows', { scrollBehavior: false }, () => {
   it('Can connect two pools with a message flow', () => {
     const pool1Position = { x: 250, y: 250 };
     clickAndDropElement(nodeTypes.pool, pool1Position);

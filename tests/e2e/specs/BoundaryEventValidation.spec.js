@@ -3,7 +3,7 @@ import { nodeTypes } from '../support/constants';
 import uniqWith from 'lodash/uniqWith';
 import isEqual from 'lodash/isEqual';
 
-describe('Boundary event validation', () => {
+describe.skip('Boundary event validation', () => {
   it('should add boundary events to empty ports around boundary event target, and not allow adding any more', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);

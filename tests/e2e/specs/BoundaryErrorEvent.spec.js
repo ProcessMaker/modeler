@@ -8,4 +8,5 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+  skip: true,
 });

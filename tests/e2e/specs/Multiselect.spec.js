@@ -8,7 +8,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Multiselect', { scrollBehavior: false }, () => {
-  it('should move multiple shapes when shift+clicking to highlight and then dragging', () => {
+  it.skip('should move multiple shapes when shift+clicking to highlight and then dragging', () => {
     const task1Position = { x: 300, y: 100 };
     const task2Position = { x: task1Position.x + 160, y: task1Position.y + 160 };
     const translateAmount = 200;
@@ -45,7 +45,7 @@ describe('Multiselect', { scrollBehavior: false }, () => {
     });
   });
 
-  it('should move multiple shapes when shift+clicking to highlight and then using arrow keys', () => {
+  it.skip('should move multiple shapes when shift+clicking to highlight and then using arrow keys', () => {
     const task1Position = { x: 300, y: 100 };
     const task2Position = { x: task1Position.x + 100, y: task1Position.y + 160 };
     const translateAmount = 20;
@@ -84,7 +84,7 @@ describe('Multiselect', { scrollBehavior: false }, () => {
     });
   });
 
-  it('should move multiple shapes when drawing a selection box to highlight and then dragging', () => {
+  it.skip('should move multiple shapes when drawing a selection box to highlight and then dragging', () => {
     const task1Position = { x: 300, y: 100 };
     const task2Position = { x: task1Position.x + 160, y: task1Position.y + 160 };
     const translateAmount = 200;

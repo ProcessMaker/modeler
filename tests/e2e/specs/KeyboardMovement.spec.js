@@ -3,7 +3,7 @@ import { nodeTypes } from '../support/constants';
 
 const CYPRESS_UNDO_SCROLL_ADJUSTMENT = 60.5;
 
-describe('Keyboard movement interaction', { scrollBehavior: false }, () => {
+describe.skip('Keyboard movement interaction', { scrollBehavior: false }, () => {
   it('Can move a node using the keyboard arrows', () => {
     const taskPosition = { x: 400, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);

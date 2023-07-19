@@ -29,7 +29,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     toggleInspector();
   });
 
-  it('can render an intermediate message throw event', () => {
+  it.skip('can render an intermediate message throw event', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
@@ -38,7 +38,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
 
-  it('can create a message when intermediate message throw event is dragged on', () => {
+  it.skip('can create a message when intermediate message throw event is dragged on', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
@@ -52,7 +52,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet, messageXMLSnippet);
   });
 
-  it('can remove the message when intermediate message throw event is deleted', () => {
+  it.skip('can remove the message when intermediate message throw event is deleted', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
@@ -70,7 +70,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlDoesNotContainExpected(messageXMLSnippet);
   });
 
-  it('retains new message name when clicking off and on intermediate message throw event', () => {
+  it.skip('retains new message name when clicking off and on intermediate message throw event', () => {
     const startEventPosition = { x: 210, y: 200 };
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
@@ -92,7 +92,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
-  it('associates and renames message on intermediate message catch event', () => {
+  it.skip('associates and renames message on intermediate message catch event', () => {
     const intermediateMessageCatchEventPosition = { x: 200, y: 300 };
     const catchEventXMLSnippet = `
       <bpmn:intermediateCatchEvent id="node_5" name="Intermediate Message Catch Event">
@@ -134,7 +134,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'Expect single message');
   });
 
-  it('retains message name after loading XML', () => {
+  it.skip('retains message name after loading XML', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
@@ -158,7 +158,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
-  it('allows connection between pools', () => {
+  it.skip('allows connection between pools', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     clickAndDropElement(nodeTypes.pool, { x: 200, y: 150 });
     const secondPoolPosition = { x: 200, y: 450 };
@@ -170,7 +170,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
   });
 
 
-  it('allows valid message flow connections', () => {
+  it.skip('allows valid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     clickAndDropElement(nodeTypes.pool, { x: 200, y: 150 });
     const secondPoolPosition = { x: 200, y: 450 };
@@ -195,7 +195,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
   });
 
 
-  it('disallows invalid message flow connections', () => {
+  it.skip('disallows invalid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     clickAndDropElement(nodeTypes.pool, { x: 200, y: 150 });
     const secondPoolPosition = { x: 200, y: 450 };

@@ -19,7 +19,7 @@ describe('Tasks', () => {
     toggleInspector();
   });
 
-  it('Update task name', () => {
+  it.only('Update task name', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
 

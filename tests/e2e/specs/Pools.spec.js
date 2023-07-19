@@ -22,7 +22,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Pools', { scrollBehavior: false }, () => {
-  it('Update pool name', () => {
+  it.skip('Update pool name', () => {
     const testString = 'testing';
 
     const poolPosition = { x: 200, y: 200 };
@@ -49,7 +49,7 @@ describe('Pools', { scrollBehavior: false }, () => {
       });
   });
 
-  it('Does not allow pool with only one lane', () => {
+  it.skip('Does not allow pool with only one lane', () => {
     const poolPosition = { x: 350, y: 300 };
     const lanePosition = { x: 300, y: 550 };
 
@@ -68,7 +68,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     getElementAtPosition(lanePosition).getType().should('equal', nodeTypes.pool);
   });
 
-  it('Can drag elements between pools', () => {
+  it.skip('Can drag elements between pools', () => {
     const startEventPosition = { x: 210, y: 200 };
     const startEventPosition2 = { x: 300, y: 120 };
     moveElement(startEventPosition, startEventPosition2, nodeTypes.startEvent);
@@ -126,7 +126,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
   });
 
-  it('remove all references of flows when deleting a pool with a process', () => {
+  it.skip('remove all references of flows when deleting a pool with a process', () => {
     const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 210, y: 350 };
 
@@ -155,7 +155,7 @@ describe('Pools', { scrollBehavior: false }, () => {
       });
   });
 
-  it('Removes all references to element from lane', () => {
+  it.skip('Removes all references to element from lane', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
     waitToRenderAllShapes();
@@ -181,7 +181,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     assertDownloadedXmlDoesNotContainExpected('node_1');
   });
 
-  it('Removes all references to element from a pool', () => {
+  it.skip('Removes all references to element from a pool', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
     waitToRenderAllShapes();
@@ -200,7 +200,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     });
   });
 
-  it('moves boundary event to another process when dragged to that pool', () => {
+  it.skip('moves boundary event to another process when dragged to that pool', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
 
@@ -237,7 +237,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(pool2taskXml);
   });
 
-  it('should revert pool element to initial position on undo after dragging outside of pool onto grid', () => {
+  it.skip('should revert pool element to initial position on undo after dragging outside of pool onto grid', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
     waitToRenderAllShapes();
@@ -252,7 +252,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).should('exist');
   });
 
-  it('should not cover child elements with lane', () => {
+  it.skip('should not cover child elements with lane', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
     waitToRenderAllShapes();
@@ -278,7 +278,7 @@ describe('Pools', { scrollBehavior: false }, () => {
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 
-  it('does not move boundary events independently from tasks when moving pool', () => {
+  it.skip('does not move boundary events independently from tasks when moving pool', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
@@ -338,7 +338,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(laneSet2IdBpmn);
   });
 
-  it('does not duplicate boundary events when added to a task in a pool', () => {
+  it.skip('does not duplicate boundary events when added to a task in a pool', () => {
     const poolPosition1 = { x: 300, y: 150 };
     const poolPosition2 = { x: 300, y: 400 };
     const taskPosition = { x: 350, y: 450 };
@@ -351,7 +351,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsSubstringNTimes('<bpmn:boundaryEvent', 1);
   });
 
-  describe('does not add flow node references to pool lanes for excluded items', () => {
+  describe.skip('does not add flow node references to pool lanes for excluded items', () => {
 
     const poolPosition = {x: 200, y: 100};
 

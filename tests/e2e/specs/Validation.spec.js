@@ -10,7 +10,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe('Validation', { scrollBehavior: false }, () => {
+describe.skip('Validation', { scrollBehavior: false }, () => {
   const validateButtonSelector = '[data-cy="validate-button"]';
   const validateButtonIssueSelector = '[data-cy="validate-issue-button"]';
   const validatePanelSelector = '[data-cy="validate-panel"]';

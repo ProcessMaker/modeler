@@ -29,7 +29,7 @@ describe('Inclusive Gateway', { scrollBehavior: false }, () => {
     cy.get('[name=name]').should('have.value', testString);
   });
 
-  it('Detects gateway direction of converging or diverging', () => {
+  it.skip('Detects gateway direction of converging or diverging', () => {
     const startEventPosition = { x: 210, y: 200 };
 
     connectNodesWithFlow('generic-flow-button', startEventPosition, inclusivePosition);

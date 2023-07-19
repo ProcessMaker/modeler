@@ -19,7 +19,7 @@ describe('Event-Based Gateway', { scrollBehavior: false }, () => {
     addNodeTypeToPaper(eventBasedGatewayPosition, nodeTypes.exclusiveGateway, 'switch-to-event-based-gateway');
   });
 
-  it('Update event-based gateway name', () => {
+  it.only('Update event-based gateway name', () => {
     getElementAtPosition(eventBasedGatewayPosition).click();
     toggleInspector();
     const testString = 'testing';

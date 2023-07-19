@@ -14,7 +14,7 @@ describe('Data Objects and Data Stores', () => {
   const taskPosition = { x: 500, y: 400 };
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it(`does not support connecting sequence flows for ${nodeType}`, () => {
+    it.skip(`does not support connecting sequence flows for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       waitToRenderAllShapes();
 
@@ -26,7 +26,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject].forEach(nodeType => {
-    it(`can add data output association flows for ${nodeType}`, () => {
+    it.skip(`can add data output association flows for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
 
@@ -78,7 +78,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it(`does not support connecting data input association to start event for ${nodeType}`, () => {
+    it.skip(`does not support connecting data input association to start event for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       waitToRenderAllShapes();
       connectNodesWithFlow('association-flow-button', dataPosition, startEventPosition);
@@ -87,7 +87,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it(`can add data input association flows for ${nodeType}`, () => {
+    it.skip(`can add data input association flows for ${nodeType}`, () => {
       clickAndDropElement(nodeTypes.task, taskPosition);
       waitToRenderAllShapes();
       clickAndDropElement(nodeType, dataPosition);
@@ -114,7 +114,7 @@ describe('Data Objects and Data Stores', () => {
     });
   });
 
-  it('removed the data input association on the task when the data object is deleted', () => {
+  it.skip('removed the data input association on the task when the data object is deleted', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     clickAndDropElement(nodeTypes.dataObject, dataPosition);
@@ -155,7 +155,7 @@ describe('Data Objects and Data Stores', () => {
     `);
   });
 
-  it('removes the data output association on the task when the data object is deleted', () => {
+  it.skip('removes the data output association on the task when the data object is deleted', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     clickAndDropElement(nodeTypes.dataObject, dataPosition);

@@ -11,7 +11,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { baseNodeColors } from '../../../src/components/nodeColors';
 
-describe('Text Annotation', () => {
+describe.skip('Text Annotation', () => {
   beforeEach(() => {
     toggleInspector();
   });

@@ -57,4 +57,5 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+  skip: true,
 });

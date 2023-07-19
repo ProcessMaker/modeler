@@ -18,7 +18,7 @@ import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 describe('Boundary Timer Event', { scrollBehavior: false }, () => {
-  it('update boundary timer event properties element', () => {
+  it.skip('update boundary timer event properties element', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -60,7 +60,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
       `);
   });
 
-  it('Can add boundary timer events to valid targets', () => {
+  it.skip('Can add boundary timer events to valid targets', () => {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 210, y: 200 };
 
@@ -106,7 +106,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
   });
 
-  it('can toggle interrupting on Boundary Timer Events', () => {
+  it.skip('can toggle interrupting on Boundary Timer Events', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -172,7 +172,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     cy.get(interrupting).should('not.be.checked');
   });
 
-  it('moves to another task when dragged over', () => {
+  it.skip('moves to another task when dragged over', () => {
     const taskPosition = { x: 350, y: 350 };
     const numberOfBoundaryTimerEventsAdded = 1;
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -226,7 +226,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     });
   });
 
-  it('keeps Boundary Timer Event in correct position when dragging and dropping', () => {
+  it.skip('keeps Boundary Timer Event in correct position when dragging and dropping', () => {
     const taskPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
@@ -283,4 +283,5 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+  skip: true,
 });

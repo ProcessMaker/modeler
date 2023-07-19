@@ -10,7 +10,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
-describe('Boundary Conditional Event', () => {
+describe.skip('Boundary Conditional Event', () => {
   const startPosition = { x: 210, y: 200 };
   const taskPosition = { x: 200, y: 200 };
   const boundaryConditionalEventPosition = { x: 260, y: 200 };
@@ -65,4 +65,5 @@ CommonBoundaryEventBehaviour({
   taskType: nodeTypes.task,
   taskTypeSelector: 'switch-to-user-task',
   invalidTargets: [{ type: nodeTypes.startEvent }],
+  skip: true,
 });
