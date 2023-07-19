@@ -23,11 +23,8 @@ describe('Clone Improvement', () => {
 
     toggleInspector();
 
-    toggleInspector();
-
     //Step 3: Config The Form Task
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click();
-    cy.get('[data-cy=inspector-button]').click();
     cy.get('#collapse-inspector-accordion-task > :nth-child(1) > .form-group')
       .find('input').should('be.visible').clear().type('Form Task Test 1');
 

@@ -28,7 +28,6 @@ describe('Clone Improvement', () => {
 
     //Step 3: Config Exclusive Gateway
     cy.get(selectorExclusiveGateway).first().click();
-    cy.get('[data-cy=inspector-button]').click();
     cy.get('#collapse-inspector-accordion-exlcusive-gateway > :nth-child(1) > .form-group')
       .find('input').should('be.visible').clear().type('Exclusive Gateway Test 1');
 

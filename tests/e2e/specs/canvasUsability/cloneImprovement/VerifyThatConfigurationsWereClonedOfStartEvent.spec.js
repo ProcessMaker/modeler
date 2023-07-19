@@ -20,7 +20,6 @@ describe('Clone Improvement', () => {
 
     //Step 2: Set Name in Start Event
     cy.get(selectorStartEvent).first().click();
-    cy.get('[data-cy=inspector-button]').click();
     cy.get('#collapse-inspector-accordion-start-event > :nth-child(1) > .form-group')
       .find('input').should('be.visible').clear().type('Start Event Test 1');
 

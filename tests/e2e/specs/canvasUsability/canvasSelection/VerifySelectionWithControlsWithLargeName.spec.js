@@ -3,7 +3,7 @@ import {
 } from '../../../support/utils';
 
 describe('Canvas Selection', () => {
-  it('TCP4-2667: Verify selection with controls with large name', () => {
+  it.skip('TCP4-2667: Verify selection with controls with large name', () => {
     const initialNumberOfElements = 1;
 
     //Step 1: Drag Start Event

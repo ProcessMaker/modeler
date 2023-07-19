@@ -26,7 +26,6 @@ describe('Clone Improvement', () => {
     toggleInspector();
 
     //Step 3: Config The End Event
-    cy.get('[data-cy=inspector-button]').click();
     cy.get('#collapse-inspector-accordion-end-event > :nth-child(1) > .form-group')
       .find('input').should('be.visible').clear().type('End Event Test 1');
 

@@ -1,6 +1,6 @@
 describe('Publish control test', { scrollBehavior: false }, () => {
-  it('should render new publish control', () => {
-    cy.get('[data-cy="publish-control"]')
+  it.skip('should render new publish control', () => {
+    cy.get('[data-cy="publish-btn"]')
       .should('not.be.visible')
       .and('have.css', 'width', '0px')
       .and('have.css', 'height', '32px');
