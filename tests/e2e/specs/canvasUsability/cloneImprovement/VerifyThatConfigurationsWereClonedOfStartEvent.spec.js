@@ -6,7 +6,7 @@ import {
   toggleInspector,
 } from '../../../support/utils';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
 
@@ -20,7 +20,8 @@ describe.skip('Clone Improvement', () => {
 
     //Step 2: Set Name in Start Event
     cy.get(selectorStartEvent).first().click();
-    cy.get('[name="name"]').should('be.visible').clear().type('Start Event Test 1');
+    cy.get('#collapse-inspector-accordion-start-event > :nth-child(1) > .form-group')
+      .find('input').should('be.visible').clear().type('Start Event Test 1');
 
     //Step 3: Set Description on Documentation
     getIframeDocumentation().find('p').should('exist').click().type('Documentation to Start Event');

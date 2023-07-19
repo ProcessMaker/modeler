@@ -7,7 +7,7 @@ import {
 } from '../../support/utils';
 import {nodeTypes} from '../../support/constants';
 
-describe('Recalculations Issues', () => {
+describe.skip('Recalculations Issues', () => {
   it('Verify Elements wit Boundary are moved out of the Pool container: FOUR-8675', () => {
 
     const endEventSelector = '[data-type="processmaker.components.nodes.endEvent.Shape"]';

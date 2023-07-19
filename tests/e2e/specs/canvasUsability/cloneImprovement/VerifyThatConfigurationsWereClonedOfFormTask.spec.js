@@ -19,11 +19,14 @@ describe.skip('Clone Improvement', () => {
     //Step 2: Add Task Form
     const taskPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
     toggleInspector();
 
     //Step 3: Config The Form Task
-    cy.get('[name="name"]').clear().type('Form Task Test 1');
+    cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click();
+    cy.get('#collapse-inspector-accordion-task > :nth-child(1) > .form-group')
+      .find('input').should('be.visible').clear().type('Form Task Test 1');
 
     //Step 4: Set Description on Documentation
     getIframeDocumentation().find('p').should('exist').click().type('Documentation to Form Task');

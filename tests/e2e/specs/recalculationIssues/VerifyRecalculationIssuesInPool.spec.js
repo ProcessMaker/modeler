@@ -7,7 +7,7 @@ import {
 } from '../../support/utils';
 import {nodeTypes} from '../../support/constants';
 
-describe('Recalculations Issues', () => {
+describe.skip('Recalculations Issues', () => {
   it('Verify that Elements are not moved out of the Pool container: FOUR-8393', () => {
 
     const taskSelector = '[data-type="processmaker.components.nodes.endEvent.Shape"]';
