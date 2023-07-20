@@ -86,6 +86,7 @@ export default {
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
     },
     deselect() {
+      window.ProcessMaker.EventBus.$off('custom-pointerclick');
       document.removeEventListener('mousemove', this.setDraggingPosition);
       if (this.movedElement) {
         document.body.removeChild(this.movedElement);
