@@ -80,7 +80,7 @@ describe.skip('Auto Validate test', { scrollBehavior: false }, () => {
       });
   });
 
-  it('should update the validate panel when add a new control', () => {
+  it.skip('should update the validate panel when add a new control', () => {
     cy.get(validateButtonSelector).click()
       .then(() => {
         cy.get(validateButtonIssueSelector).should('be.visible');

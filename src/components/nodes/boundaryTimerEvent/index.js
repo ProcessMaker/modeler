@@ -5,8 +5,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
-
-export const defaultDurationValue = 'PT1H';
+import { defaultDurationTimerEvent } from '@/constants';
 
 export const id = 'processmaker-modeler-boundary-timer-event';
 
@@ -23,7 +22,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
-            body: defaultDurationValue,
+            body: defaultDurationTimerEvent,
           }),
         }),
       ],

@@ -24,7 +24,7 @@ function StoreFactory(rootElements) {
   };
 }
 
-describe.skip('intermediateMessageCatchEventUtils', () => {
+describe('intermediateMessageCatchEventUtils', () => {
   it('getMessagesList returns an options list of messages', () => {
     const store = StoreFactory([
       MessageFactory('message_1', 'Message 1'),

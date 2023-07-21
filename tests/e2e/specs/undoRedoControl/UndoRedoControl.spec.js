@@ -25,7 +25,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     cy.get('.control-add').click();
     waitToRenderAllShapes();
-    cy.get('[data-test=explorer-rail]').should('not.exist');
+    cy.get('[data-test=explorer-rail]').should('not.be.visible');
     waitToRenderAllShapes();
   });
 

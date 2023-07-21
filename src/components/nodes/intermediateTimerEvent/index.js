@@ -3,8 +3,8 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import { defaultDurationTimerEvent } from '@/constants';
 
-export const defaultDurationValue = 'PT1H';
 const id = 'processmaker-modeler-intermediate-catch-timer-event';
 
 export default {
@@ -66,7 +66,7 @@ export default {
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
-            body: defaultDurationValue,
+            body: defaultDurationTimerEvent,
           }),
         }),
       ],

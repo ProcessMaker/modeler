@@ -2,8 +2,9 @@ import {
   clickAndDropElement,
   waitToRenderAllShapes,
   getGraphElements,
-  getIframeDocumnetation,
+  getIframeDocumentation,
   selectComponentType,
+  toggleInspector,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
@@ -22,11 +23,13 @@ describe.skip('Clone Improvement', () => {
     const endEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.endEvent, endEventPosition);
 
+    toggleInspector();
+
     //Step 3: Config The End Event
     cy.get('[name="name"]').clear().type('End Event Test 1');
 
     //Step 4: Set Description on Documentation
-    getIframeDocumnetation().find('p').should('exist').click().type('Documentation to End Event');
+    getIframeDocumentation().find('p').should('exist').click().type('Documentation to End Event');
 
     //Step 5: Clone the element
     cy.get('[data-test="clone-button"]').click();
@@ -38,7 +41,7 @@ describe.skip('Clone Improvement', () => {
     cy.get(selectorEndEvent).eq(1).click({force:true});
     cy.get('[name="name"]').should('have.value','End Event Test 1');
     cy.get('[id="accordion-button-documentation-accordion"]').click();
-    getIframeDocumnetation().find('p').should('have.text','Documentation to End Event');
+    getIframeDocumentation().find('p').should('have.text','Documentation to End Event');
   });
 
   it('TCP4-2726: Verify Message,Error,Signal and Terminate end event', () => {

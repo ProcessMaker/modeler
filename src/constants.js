@@ -1,0 +1,1 @@
+export const defaultDurationTimerEvent = 'PT1H';

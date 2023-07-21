@@ -18,6 +18,9 @@ export default {
         if (value.length > 0) nodeTypesStore.commit('setFilteredNodeTypes', value);
       }
     },
+    type(newValue, oldValue) {
+      this.searchTerm = oldValue === newValue ? this.searchTerm: '';
+    },
   },
   computed: {
     nodeTypes() {

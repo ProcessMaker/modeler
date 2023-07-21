@@ -5,6 +5,10 @@ import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/no
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
 import store from '@/store';
+import {
+  COLOR_IDLE,
+  COLOR_COMPLETED,
+} from '@/components/highlightColors.js';
 
 const endpoints = {
   source: 'source',
@@ -15,11 +19,8 @@ function isPoint(item) {
   return item.x && item.y;
 }
 
-const COLOR_IDLE = '#ced4da';
-const COLOR_COMPLETED = '#00875A';
-
 export default {
-  props: ['highlighted', 'paper', 'paperManager', 'isCompleted'],
+  props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
   data() {
     return {
       sourceShape: null,
@@ -80,10 +81,16 @@ export default {
   },
   methods: {
     setShapeHighlight() {
-      const COLOR = this.isCompleted ? COLOR_COMPLETED : COLOR_IDLE;
-      this.shape.attr({
-        line: { stroke: COLOR },
-      });
+      if (this.isCompleted) {
+        this.shape.attr({
+          line: { stroke: COLOR_COMPLETED },
+        });
+      }
+      else if (this.isIdle) {
+        this.shape.attr({
+          line: { stroke: COLOR_IDLE },
+        });
+      }
     },
     findSourceShape() {
       return this.graph.getElements().find(element => {
