@@ -4,5 +4,6 @@ module.exports = function(api) {
   return {
     presets: ['@vue/cli-plugin-babel/preset'],
     sourceType: 'unambiguous',
+    plugins: ['istanbul'],
   };
 };
