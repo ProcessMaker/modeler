@@ -60,6 +60,7 @@ describe.skip('Clone Improvement', () => {
     selectComponentType(selectorFormTask,'switch-to-manual-task');
 
     //Step 4: Clone the Manual Task
+    cy.wait(500);
     cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Manual was cloned
