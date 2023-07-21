@@ -62,6 +62,8 @@ module.exports = {
     ],
     'vue/html-self-closing': 'error',
     'vue/mustache-interpolation-spacing': 'error',
+    'vue/multi-word-component-names' : 'off',
+    'vue/no-mutating-props': 'warn',
     'template-curly-spacing': 'error',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
   },
@@ -75,6 +77,7 @@ module.exports = {
       files: [
         '**/__tests__/*.{j,t}s?(x)',
         '**/tests/unit/**/*.spec.{j,t}s?(x)',
+        '**/tests/unit/**/*.{j,t}s?(x)',
       ],
       env: {
         'jest/globals': true,
@@ -83,6 +86,7 @@ module.exports = {
     {
       files: [
         '**/tests/e2e/**/*.cy.{j,t}s?(x)',
+        '**/tests/e2e/**/*.{j,t}s?(x)',
       ],
       rules: {
         strict: 'off',
