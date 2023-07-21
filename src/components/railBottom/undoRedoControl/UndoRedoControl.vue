@@ -4,7 +4,7 @@
       class="ur-button"
       data-cy="undo-control"
       :disabled="!canUndo"
-      v-b-tooltip.hover
+      v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       :title="$t('Undo')"
       @click="undo"
     >
@@ -15,7 +15,7 @@
       class="ur-button"
       data-cy="redo-control"
       :disabled="!canRedo"
-      v-b-tooltip.hover
+      v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       :title="$t('Redo')"
       @click="redo"
     >
