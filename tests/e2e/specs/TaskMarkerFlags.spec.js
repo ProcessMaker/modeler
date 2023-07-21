@@ -1,6 +1,6 @@
 import {
   assertDownloadedXmlContainsExpected,
-  clickAndDropElement, uploadXml,
+  clickAndDropElement, toggleInspector, uploadXml, waitToRenderAllShapes,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -12,10 +12,12 @@ function assertBottomCenterTaskMarkerHasImage(iconName, markerIndex = 0) {
     .and('match', new RegExp(`${iconName}.*\.svg`));
 }
 
-describe.skip('Task Marker Flags', () => {
+describe('Task Marker Flags', () => {
   beforeEach(() => {
-    const taskPosition = { x: 250, y: 250 };
+    const taskPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
+    toggleInspector();
     cy.contains('Advanced').click();
   });
 

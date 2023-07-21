@@ -3,15 +3,24 @@ import {
   assertDownloadedXmlContainsExpected,
   clickAndDropElement,
   getElementAtPosition,
+  toggleInspector,
   typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
 describe.skip('Intermediate Timer Event', () => {
-  it('Update delay field on Intermediate Timer Event', () => {
-    const intermediateCatchEventPosition = { x: 250, y: 250 };
+  beforeEach(() => {
+    toggleInspector();
+  });
+
+  /**
+   * TODO: this test was skipped because the Timing Control is not available
+   */
+  it.skip('Update delay field on Intermediate Timer Event', () => {
+    const intermediateCatchEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(intermediateCatchEventPosition).click();
 
@@ -32,8 +41,11 @@ describe.skip('Intermediate Timer Event', () => {
     assertDownloadedXmlContainsExpected(validIntermediateCatchEventXML);
   });
 
-  it('Update date/time field on Intermediate Timer Event', () => {
-    const intermediateCatchEventPosition = { x: 250, y: 250 };
+  /**
+   * TODO: this test was skipped because the Timing Control is not available
+   */
+  it.skip('Update date/time field on Intermediate Timer Event', () => {
+    const intermediateCatchEventPosition = { x: 350, y: 250 };
     const nameInput = '[name=name]';
     const testString = 'testing';
     const startDateTime = '02/27/2019 12:30 AM';
@@ -47,6 +59,7 @@ describe.skip('Intermediate Timer Event', () => {
   `;
 
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
+    waitToRenderAllShapes();
     getElementAtPosition(intermediateCatchEventPosition).click();
 
     typeIntoTextInput(nameInput, testString);
@@ -59,10 +72,13 @@ describe.skip('Intermediate Timer Event', () => {
     assertDownloadedXmlContainsExpected(expectedIntermediateCatchEventWithTimer);
   });
 
-  it('Sets default values when switching between types', () => {
+  /**
+   * TODO: this test was skipped because the Timing Control is not available
+   */
+  it.skip('Sets default values when switching between types', () => {
     cy.clock();
 
-    const intermediateCatchEventPosition = { x: 250, y: 250 };
+    const intermediateCatchEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
     getElementAtPosition(intermediateCatchEventPosition).click();
@@ -81,8 +97,11 @@ describe.skip('Intermediate Timer Event', () => {
     assertDownloadedXmlContainsExpected(defaultTimeDuration);
   });
 
-  it('should toggle between showing the weekday select when week is selected, and hiding it when it is not', () => {
-    const intermediateTimerEventPosition = { x: 250, y: 250 };
+  /**
+   * TODO: this test was skipped because the Timing Control is not available
+   */
+  it.skip('should toggle between showing the weekday select when week is selected, and hiding it when it is not', () => {
+    const intermediateTimerEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
     cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Cycle');

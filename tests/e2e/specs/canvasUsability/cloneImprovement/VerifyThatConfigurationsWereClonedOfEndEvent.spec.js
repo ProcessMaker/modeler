@@ -8,7 +8,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Clone Improvement', () => {
+describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorEndEvent = '[data-type="processmaker.components.nodes.endEvent.Shape"]';
   const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
@@ -26,7 +26,8 @@ describe.skip('Clone Improvement', () => {
     toggleInspector();
 
     //Step 3: Config The End Event
-    cy.get('[name="name"]').clear().type('End Event Test 1');
+    cy.get('#collapse-inspector-accordion-end-event > :nth-child(1) > .form-group')
+      .find('input').should('be.visible').clear().type('End Event Test 1');
 
     //Step 4: Set Description on Documentation
     getIframeDocumentation().find('p').should('exist').click().type('Documentation to End Event');
@@ -60,6 +61,7 @@ describe.skip('Clone Improvement', () => {
     selectComponentType(selectorEndEvent,'switch-to-message-end-event');
 
     //Step 4: Clone the End Event
+    cy.wait(500);
     cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Message End Event was cloned
