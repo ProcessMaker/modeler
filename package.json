@@ -3,28 +3,28 @@
   "version": "1.36.0",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "open-cypress": "TZ=UTC cypress open",
-    "run-cypress": "TZ=UTC cypress run",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "bundle-analyze": "npm run build-bundle -- --analyze",
     "bundle-link": "npm run build-bundle",
-    "postbundle-link": "npm link",
+    "check-peer-deps": "npm ls --depth=0",
+    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
+    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
     "lint-fix": "vue-cli-service lint",
+    "mkdir:reports": "mkdir reports || true",
+    "open-cypress": "TZ=UTC cypress open",
+    "postbundle-link": "npm link",
+    "posttest": "npm run report:combined",
+    "precombine:reports": "npm run copy:reports && mkdir .nyc_output || true",
+    "precopy:reports": "npm run mkdir:reports",
+    "prereport:combined": "npm run combine:reports",
     "pretest": "npm run check-peer-deps",
     "pretest-unit": "rm -rf .nyc_output || true",
+    "report:combined": "nyc report --reporter lcov --report-dir coverage",
+    "run-cypress": "TZ=UTC cypress run",
     "test": "npm run test-unit && npm run test-ci",
-    "check-peer-deps": "npm ls --depth=0",
-    "posttest": "npm run report:combined",
-    "test-unit": "JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit",
     "test-ci": "TZ=UTC vue-cli-service test:e2e --mode test --headless --browser chrome -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml",
-    "mkdir:reports": "mkdir reports || true",
-    "precopy:reports": "npm run mkdir:reports",
-    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
-    "precombine:reports": "npm run copy:reports && mkdir .nyc_output || true",
-    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
-    "prereport:combined": "npm run combine:reports",
-    "report:combined": "nyc report --reporter lcov --report-dir coverage"
+    "test-unit": "JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit"
   },
   "main": "./dist/modeler.common.js",
   "files": [
@@ -50,7 +50,7 @@
     "bpmn-moddle": "^6.0.0",
     "bpmnlint": "^6.4.0",
     "bpmnlint-plugin-processmaker": "1.5.0",
-    "core-js": "^3.7.0",
+    "core-js": "^3.8.3",
     "file-saver": "^2.0.5",
     "jest-junit": "^12.0.0",
     "jointjs": "^3.1.1",
@@ -77,7 +77,7 @@
     "@processmaker/processmaker-bpmn-moddle": "0.14.0",
     "@types/jest": "^24.9.1",
     "@vue/babel-preset-app": "^5.0.4",
-    "@vue/cli-plugin-babel": "^4.5.9",
+    "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-e2e-cypress": "~5.0.8",
     "@vue/cli-plugin-eslint": "^4.5.9",
     "@vue/cli-plugin-unit-jest": "^4.5.9",
@@ -139,6 +139,16 @@
     "not ie <= 8",
     "chrome >= 69"
   ],
+  "engines": {
+    "npm": ">=8",
+    "node": ">=16 <18"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./checkForOnly.sh",
+      "pre-push": "npm run lint && npm run test-unit"
+    }
+  },
   "nyc": {
     "extension": [
       ".js",
@@ -148,15 +158,5 @@
       "tests/**/*.js"
     ],
     "report-dir": "cypress-coverage"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "./checkForOnly.sh",
-      "pre-push": "npm run lint && npm run test-unit"
-    }
-  },
-  "engines": {
-    "npm": ">=8",
-    "node": ">=16 <18"
   }
 }
