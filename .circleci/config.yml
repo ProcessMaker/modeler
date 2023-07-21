@@ -4,7 +4,7 @@ jobs:
   cypress/build:
     resource_class: xlarge
     docker:
-    - image: cypress/base:14.16.0
+    - image: cypress/base:16.18.1
     steps:
     - checkout
     - restore_cache:
@@ -30,7 +30,7 @@ jobs:
   cypress/e2e-tests:
     resource_class: xlarge
     docker:
-    - image: cypress/browsers:node14.16.0-chrome89-ff86
+    - image: cypress/browsers:node-16.18.1-chrome-110.0.5481.96-1-ff-109.0-edge-110.0.1587.41-1
     parallelism: 10
     steps:
     - attach_workspace:
@@ -54,7 +54,7 @@ jobs:
         path: tests/e2e/screenshots
   cypress/report:
     docker:
-    - image: cypress/base:14.16.0
+    - image: cypress/base:16.18.1
     steps:
       - attach_workspace:
           at: ~/
