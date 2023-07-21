@@ -59,6 +59,7 @@ describe('Clone Improvement', () => {
     cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the Exclusive Gateway to Inclusive Gateway
+    cy.wait(500);
     selectComponentType(selectorExclusiveGateway,'switch-to-inclusive-gateway');
 
     //Step 4: Clone the Gateway
@@ -70,6 +71,7 @@ describe('Clone Improvement', () => {
     cy.get('[id="delete-button"]').click({force: true});
 
     //Step 5: Change the Exclusive Gateway to Parallel Gateway
+    cy.wait(500);
     selectComponentType(selectorExclusiveGateway,'switch-to-parallel-gateway');
 
     //Step 6: Clone the Gateway
@@ -81,6 +83,7 @@ describe('Clone Improvement', () => {
     cy.get('[id="delete-button"]').click({force: true});
 
     //Step 7: Change the Exclusive Gateway to Event Based in Gateway
+    cy.wait(500);
     selectComponentType(selectorExclusiveGateway,'switch-to-event-based-gateway');
 
     //Step 8: Clone the Gateway

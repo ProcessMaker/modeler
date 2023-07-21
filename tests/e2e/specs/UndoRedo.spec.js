@@ -80,6 +80,7 @@ describe('Undo/redo', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
 
     /* Only the start element should remain */
+    cy.wait(500);
     getGraphElements().should('have.length', 1);
 
     cy.get(redoSelector).click();
