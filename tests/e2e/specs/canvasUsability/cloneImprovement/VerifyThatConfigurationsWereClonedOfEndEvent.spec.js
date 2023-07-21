@@ -61,6 +61,7 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorEndEvent,'switch-to-message-end-event');
 
     //Step 4: Clone the End Event
+    cy.wait(500);
     cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Message End Event was cloned
