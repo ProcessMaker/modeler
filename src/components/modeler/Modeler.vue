@@ -1391,7 +1391,7 @@ export default {
       this.pointerUpHandler(event, cellView);
     }, this);
 
-    this.$el.addEventListener('mouseenter', () => {
+    this.$refs['paper-container'].addEventListener('mouseenter', () => {
       store.commit('setClientLeftPaper', false);
     });
 
@@ -1399,7 +1399,7 @@ export default {
       this.pointerMoveHandler(event);
     });
 
-    this.$el.addEventListener('mouseleave', () => {
+    this.$refs['paper-container'].addEventListener('mouseleave', () => {
       this.paperManager.removeEventHandler('blank:pointermove');
       store.commit('setClientLeftPaper', true);
     });
