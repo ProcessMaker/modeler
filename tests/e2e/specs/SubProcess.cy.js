@@ -6,7 +6,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 
-import {nodeTypes} from '../support/constants';
+import { nodeTypes } from '../support/constants';
 
 function selectCalledProcess(calledProcessName) {
   cy.get('[data-test="inspector-container"]')

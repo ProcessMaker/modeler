@@ -55,7 +55,7 @@ export default {
           if (this.canvasDragPosition && !this.clientLeftPaper) {
             this.paperManager.translate(
               event.offsetX - this.canvasDragPosition.x,
-              event.offsetY - this.canvasDragPosition.y
+              event.offsetY - this.canvasDragPosition.y,
             );
           }
         });

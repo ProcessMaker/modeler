@@ -95,7 +95,7 @@ describe.skip('Message Flows', () => {
     const poolPosition = { x: 100, y: 400 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
 
-    const taskPosition = {x: 250, y: 250};
+    const taskPosition = { x: 250, y: 250 };
     clickAndDropElement(nodeTypes.task, taskPosition);
     cy.get('[data-test=switch-to-user-task').click();
 

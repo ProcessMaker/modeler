@@ -8,7 +8,7 @@ import {
   uploadXml,
   getLinksConnectedToElement, modalAnimationTime, modalConfirm, setBoundaryEvent, waitToRenderAllShapes,
 } from '../support/utils';
-import {nodeTypes} from '../support/constants';
+import { nodeTypes } from '../support/constants';
 
 function addFlowExpression(flowExpression, gatewayPosition) {
   getElementAtPosition(gatewayPosition)
@@ -43,8 +43,8 @@ function changeTypeTo(currentType, newType, position) {
 
 describe.skip('Switching elements', () => {
   it('Switching an exclusive gateway to a parallel gateway should remove conditions from flows', () => {
-    const gatewayPosition = {x: 300, y: 150};
-    const taskPosition = {x: 450, y: 150};
+    const gatewayPosition = { x: 300, y: 150 };
+    const taskPosition = { x: 450, y: 150 };
     clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition);
     clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', gatewayPosition, taskPosition);
@@ -82,7 +82,7 @@ describe.skip('Switching elements', () => {
   it('deletes boundary events on tasks when the task type is switched', () => {
     cy.clock();
 
-    const taskPosition = {x: 300, y: 150};
+    const taskPosition = { x: 300, y: 150 };
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-user-task');
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.task);
     changeTypeTo(nodeTypes.task, 'switch-to-manual-task', taskPosition);
@@ -97,7 +97,7 @@ describe.skip('Switching elements', () => {
     cy.get('[data-test=switch-to-script-task]').click();
     modalConfirm();
     waitToRenderAllShapes();
-    cy.get('[data-test="validation-toggle"]').click({force: true});
+    cy.get('[data-test="validation-toggle"]').click({ force: true });
     cy.get('.status-bar-container').should('contain.text', 'BPMN Valid');
   });
 });

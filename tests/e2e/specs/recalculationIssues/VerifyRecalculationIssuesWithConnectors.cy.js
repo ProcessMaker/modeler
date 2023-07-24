@@ -3,7 +3,7 @@ import {
   createProcess,
   selectElements, waitToRenderAllShapes,
 } from '../../support/utils';
-import {nodeTypes} from '../../support/constants';
+import { nodeTypes } from '../../support/constants';
 
 describe('Recalculations Issues', () => {
   it('Veriy Elements wit connector are not moved out of the Pool container: FOUR-8674', () => {
@@ -17,9 +17,9 @@ describe('Recalculations Issues', () => {
 
     //Step 2: Create Process Task form , End Event & Boundary Event
     let parameterList = [
-      {element: nodeTypes.task, positionElement:{ x:300, y: 200},connector:false},
-      {element: nodeTypes.endEvent, positionElement:{ x:550, y: 270},connector:false},
-      {startPosition:{ x:300, y: 200}, endPosition:{ x:550, y: 270},connector:true},
+      { element: nodeTypes.task, positionElement:{ x:300, y: 200 },connector:false },
+      { element: nodeTypes.endEvent, positionElement:{ x:550, y: 270 },connector:false },
+      { startPosition:{ x:300, y: 200 }, endPosition:{ x:550, y: 270 },connector:true },
     ];
     createProcess(parameterList);
 
@@ -29,8 +29,8 @@ describe('Recalculations Issues', () => {
 
     //Step 4: Select the process inside the loop
     parameterList = [
-      {element: link, pos:0 },
-      {element: endEventSelector, pos:0 },
+      { element: link, pos:0 },
+      { element: endEventSelector, pos:0 },
     ];
     selectElements(parameterList);
 
@@ -40,7 +40,7 @@ describe('Recalculations Issues', () => {
         cy.log('this is the current position: ', positionA);
 
         //Step 5: Move the selection out the pool toward bottom
-        cy.get(endEventSelector).eq(0).trigger('mousedown',{force: true});
+        cy.get(endEventSelector).eq(0).trigger('mousedown',{ force: true });
         cy.get('.paper-container').trigger('mousemove', 'right');
         cy.get('.paper-container').trigger('mousemove', 'right');
         waitToRenderAllShapes();

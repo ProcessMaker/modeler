@@ -151,11 +151,11 @@ export default {
 
       this.poolComponent.shape.resize(
         Math.round(width),
-        Math.round(height)
+        Math.round(height),
       );
       this.poolComponent.shape.position(
         Math.round(x),
-        Math.round(y)
+        Math.round(y),
       );
     },
     resizeUpdate() {
@@ -200,21 +200,21 @@ export default {
       const maxPoolWidth = Math.max(
         (poolX + poolWidth) - (x + this.pointWidth),
         (poolX + poolWidth) - this.elementLeftX + labelWidth,
-        minPoolWidth
+        minPoolWidth,
       );
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
-        this.poolComponent.laneSet ? minHeight : minPoolHeight
+        this.poolComponent.laneSet ? minHeight : minPoolHeight,
       );
       const maxLaneWidth = Math.max(
         (laneX + laneWidth) - (x + this.pointWidth),
         (laneX + laneWidth) - this.elementLeftX + poolPadding + labelWidth,
-        minLaneWidth
+        minLaneWidth,
       );
       const maxLaneHeight = Math.max(
         (laneY + laneHeight) - (y + this.pointHeight),
-        minLaneHeight
+        minLaneHeight,
       );
 
       if (this.isLane) {
@@ -224,7 +224,7 @@ export default {
           const maxPoolWidthLane = Math.max(
             (poolX + poolWidth) - (x + this.pointWidth) + labelWidth,
             (poolX + poolWidth) - this.elementLeftX + labelWidth,
-            minPoolWidth
+            minPoolWidth,
           );
 
           this.poolComponent.shape.resize(maxPoolWidthLane, maxPoolHeight, { direction });
@@ -272,21 +272,21 @@ export default {
       const maxPoolWidth = Math.max(
         x - poolX,
         this.elementRightX - poolX,
-        minPoolWidth
+        minPoolWidth,
       );
       const maxPoolHeight = Math.max(
         (poolY + poolHeight) - (y + this.pointWidth),
         poolY + poolHeight - this.elementTopY,
-        this.poolComponent.laneSet ? minHeight : minPoolHeight
+        this.poolComponent.laneSet ? minHeight : minPoolHeight,
       );
       const maxLaneWidth = Math.max(
         x - laneX,
         this.elementRightX - laneX,
-        minLaneWidth
+        minLaneWidth,
       );
       const maxLaneHeight = Math.max(
         (laneY + laneHeight) - (y + this.pointHeight),
-        minLaneHeight
+        minLaneHeight,
       );
 
       if (this.isLane) {
@@ -340,21 +340,21 @@ export default {
       const maxPoolWidth = Math.max(
         (poolX + poolWidth) - (x + this.pointWidth),
         (poolX + poolWidth) - this.elementLeftX + labelWidth,
-        minPoolWidth
+        minPoolWidth,
       );
       const maxPoolHeight = Math.max(
         y - poolY,
         this.elementBottomY - poolY,
-        this.poolComponent.laneSet ? minHeight : minPoolHeight
+        this.poolComponent.laneSet ? minHeight : minPoolHeight,
       );
       const maxLaneWidth = Math.max(
         (laneX + laneWidth) - (x + this.pointWidth),
         (laneX + laneWidth) - this.elementLeftX + poolPadding + labelWidth,
-        minLaneWidth
+        minLaneWidth,
       );
       const maxLaneHeight = Math.max(
         y - laneY,
-        minLaneHeight
+        minLaneHeight,
       );
 
       if (this.isLane) {
@@ -365,7 +365,7 @@ export default {
           const maxPoolWidthLane = Math.max(
             (poolX + poolWidth) - (x + this.pointWidth) + labelWidth,
             (poolX + poolWidth) - this.elementLeftX + labelWidth,
-            minPoolWidth
+            minPoolWidth,
           );
 
           this.poolComponent.shape.resize(maxPoolWidthLane, maxPoolHeight, { direction });
@@ -414,16 +414,16 @@ export default {
       const maxPoolHeight = Math.max(
         y - poolY,
         this.elementBottomY - poolY,
-        this.poolComponent.laneSet ? minHeight : minPoolHeight
+        this.poolComponent.laneSet ? minHeight : minPoolHeight,
       );
       const maxLaneWidth = Math.max(
         x - laneX,
         this.elementRightX - laneX,
-        minLaneWidth
+        minLaneWidth,
       );
       const maxLaneHeight = Math.max(
         y - laneY,
-        minLaneHeight
+        minLaneHeight,
       );
 
       if (this.isLane) {

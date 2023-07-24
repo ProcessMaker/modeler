@@ -143,7 +143,7 @@ describe.skip('Copy element', () => {
     waitToRenderAllShapes();
     clickAndDropElement(nodeTypes.pool, secondPoolPosition);
 
-    const taskInSecondPoolPosition = {x: 150, y: 500};
+    const taskInSecondPoolPosition = { x: 150, y: 500 };
     clickAndDropElement(nodeTypes.task, taskInSecondPoolPosition);
 
     cy.get('[data-test="copy-button"]').click();

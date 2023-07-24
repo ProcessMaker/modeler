@@ -4,7 +4,7 @@ import {
   getIframeDocumentation,
   clickAndDropElement, toggleInspector,
 } from '../../../support/utils';
-import {nodeTypes} from '../../../support/constants';
+import { nodeTypes } from '../../../support/constants';
 
 describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;

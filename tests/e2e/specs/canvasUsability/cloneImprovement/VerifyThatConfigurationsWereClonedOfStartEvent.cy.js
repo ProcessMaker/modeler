@@ -54,7 +54,7 @@ describe.skip('Clone Improvement', () => {
     //Validation 1: Verify that Start Timer Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Start Timer Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
 
     //Step 4: Change the Start Event to Signal Start Event
     selectComponentType(selectorStartEvent,'switch-to-signal-start-event');
@@ -65,7 +65,7 @@ describe.skip('Clone Improvement', () => {
     //Validation 2: Verify that Signal Start Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Signal Start Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
 
     //Step 6: Change the Start Event to Message Start Event
     selectComponentType(selectorStartEvent,'switch-to-message-start-event');
@@ -76,7 +76,7 @@ describe.skip('Clone Improvement', () => {
     //Validation 3: Verify that Message Start Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Message Start Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
 
     //Step 8: Change the Start Event to Conditional Start Event
     selectComponentType(selectorStartEvent,'switch-to-conditional-start-event');
@@ -87,7 +87,7 @@ describe.skip('Clone Improvement', () => {
     //Validation 4: Verify that Conditional Start Event was cloned
     cy.get(selectorStartEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Conditional Start Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
   });
 
 });

@@ -153,7 +153,7 @@ describe.skip('Event-Based Gateway', () => {
 
     // Convert to event-based-gateway must be disabled
     cy.get('[data-test=select-type-dropdown]').click();
-    cy.get('li:has([data-test=switch-to-event-based-gateway])').trigger('mouseenter', {force: true});
+    cy.get('li:has([data-test=switch-to-event-based-gateway])').trigger('mouseenter', { force: true });
     cy.get('[data-test=switch-to-event-based-gateway]').should('be.disabled');
   });
 

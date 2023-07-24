@@ -4,7 +4,7 @@ import {
   waitToRenderAllShapes,
   connectNodesWithFlow,
 } from '../../support/utils';
-import {nodeTypes} from '../../support/constants';
+import { nodeTypes } from '../../support/constants';
 
 describe('Recalculations Issues', () => {
   it('Veriy Elements wit connector are not moved out of the Pool container: FOUR-8651', () => {
@@ -26,13 +26,13 @@ describe('Recalculations Issues', () => {
 
     //Step 4: Create Process Start Event, Task form, Task Form & End Event
     let parameterList = [
-      {element: nodeTypes.startEvent, positionElement:{ x:400, y: 150},connector:false},
-      {element: nodeTypes.task, positionElement:{ x:500, y: 200},connector:false},
-      {element: nodeTypes.endEvent, positionElement:{ x:700, y: 250},connector:false},
-      {element: nodeTypes.task, positionElement:{ x:500, y: 450},connector:false},
+      { element: nodeTypes.startEvent, positionElement:{ x:400, y: 150 },connector:false },
+      { element: nodeTypes.task, positionElement:{ x:500, y: 200 },connector:false },
+      { element: nodeTypes.endEvent, positionElement:{ x:700, y: 250 },connector:false },
+      { element: nodeTypes.task, positionElement:{ x:500, y: 450 },connector:false },
     ];
     createProcess(parameterList);
-    connectNodesWithFlow('generic-flow-button',{ x:400, y: 150}, { x:550, y: 200});
+    connectNodesWithFlow('generic-flow-button',{ x:400, y: 150 }, { x:550, y: 200 });
     cy.get('[id="generic-flow-button"]').click();
     cy.get(endEventSelector).first().click();
     cy.get(taskSelector).eq(1).click();
@@ -45,8 +45,8 @@ describe('Recalculations Issues', () => {
         cy.log('This is the coordinates'+ positionA);
 
         //Step 5: Move any element of the pool
-        const taskPosition = { x:500, y: 220};
-        cy.get(taskSelector).first().click().trigger('mousedown',{force: true});
+        const taskPosition = { x:500, y: 220 };
+        cy.get(taskSelector).first().click().trigger('mousedown',{ force: true });
         cy.get('.paper-container').trigger('mousemove', taskPosition);
         cy.get('.paper-container').trigger('mousemove', taskPosition);
         waitToRenderAllShapes();
@@ -54,9 +54,9 @@ describe('Recalculations Issues', () => {
         waitToRenderAllShapes();
 
         //Step 6: Move the pool
-        poolPosition = { x:300, y: 300};
-        cy.get(poolSelector).first().click({force: true});
-        cy.get(poolSelector).first().trigger('mousedown',{force: true});
+        poolPosition = { x:300, y: 300 };
+        cy.get(poolSelector).first().click({ force: true });
+        cy.get(poolSelector).first().trigger('mousedown',{ force: true });
         cy.get('.paper-container').trigger('mousemove', poolPosition);
         cy.get('.paper-container').trigger('mousemove', poolPosition);
         waitToRenderAllShapes();
@@ -64,9 +64,9 @@ describe('Recalculations Issues', () => {
         waitToRenderAllShapes();
 
         //Step 7: Press UNDO button twice
-        cy.get('[data-cy="undo-control"]').click({force: true});
+        cy.get('[data-cy="undo-control"]').click({ force: true });
         waitToRenderAllShapes();
-        cy.get('[data-cy="undo-control"]').click({force: true});
+        cy.get('[data-cy="undo-control"]').click({ force: true });
         waitToRenderAllShapes();
 
         //Step 8: Verify that connector flow was not moved

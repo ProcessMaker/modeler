@@ -38,7 +38,7 @@ describe.skip('Zoom control test', { scrollBehavior: false }, () => {
   });
 
   it(`should update modeler according (-) zoom-out (${numZoomOutTimes}) times`, () => {
-    const numClicks = Array.from({length: numZoomOutTimes}, (_, index) => index + 1);
+    const numClicks = Array.from({ length: numZoomOutTimes }, (_, index) => index + 1);
 
     numClicks.forEach(() => {
       cy.get(zoomOutSelector).click();
@@ -57,7 +57,7 @@ describe.skip('Zoom control test', { scrollBehavior: false }, () => {
   });
 
   it(`should update modeler according (+) zoom-in (${numZoomInTimes}) times`, () => {
-    const numClicks = Array.from({length: numZoomInTimes}, (_, index) => index + 1);
+    const numClicks = Array.from({ length: numZoomInTimes }, (_, index) => index + 1);
 
     numClicks.forEach(() => {
       cy.get(zoomInSelector).click();
@@ -76,7 +76,7 @@ describe.skip('Zoom control test', { scrollBehavior: false }, () => {
   });
 
   it(`should reset modeler after (+) zoom-in (${numZoomInTimes}) times`, () => {
-    const numClicks = Array.from({length: numZoomInTimes}, (_, index) => index + 1);
+    const numClicks = Array.from({ length: numZoomInTimes }, (_, index) => index + 1);
 
     numClicks.forEach(() => {
       cy.get(zoomInSelector).click();

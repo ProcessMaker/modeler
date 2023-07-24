@@ -198,7 +198,6 @@ export default {
       this.previous.inputData = this.inputData;
       this.previous.outputData = this.outputData;
       this.previous.loopCardinality = this.loopCardinality;
-      this.completionCondition = this.completionCondition;
       this.loopMaximum = this.getLoopMaximum();
       this.loopCondition = this.getLoopCondition();
     },

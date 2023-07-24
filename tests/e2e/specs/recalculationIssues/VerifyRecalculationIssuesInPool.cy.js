@@ -5,7 +5,7 @@ import {
   selectElements,
   waitToRenderAllShapes,
 } from '../../support/utils';
-import {nodeTypes} from '../../support/constants';
+import { nodeTypes } from '../../support/constants';
 
 describe('Recalculations Issues', () => {
   it('Verify that Elements are not moved out of the Pool container: FOUR-8393', () => {
@@ -22,8 +22,8 @@ describe('Recalculations Issues', () => {
     //Step 2: Create Process Task form , End Event & Boundary Event
     const taskPosition = { x: 300, y: 200 };
     let parameterList = [
-      {element: nodeTypes.task, positionElement:{ x:300, y: 200},connector:false},
-      {element: nodeTypes.endEvent, positionElement:{ x:550, y: 270},connector:false},
+      { element: nodeTypes.task, positionElement:{ x:300, y: 200 },connector:false },
+      { element: nodeTypes.endEvent, positionElement:{ x:550, y: 270 },connector:false },
     ];
     createProcess(parameterList);
     setBoundaryEvent(nodeTypes.boundaryErrorEvent, taskPosition);
@@ -37,10 +37,10 @@ describe('Recalculations Issues', () => {
 
     //Step 4: Select the process inside the loop
     parameterList = [
-      {element: taskSelector, pos:0 },
-      {element: boundaryEvent, pos:0 },
-      {element: link, pos:0 },
-      {element: endEventSelector, pos:0 },
+      { element: taskSelector, pos:0 },
+      { element: boundaryEvent, pos:0 },
+      { element: link, pos:0 },
+      { element: endEventSelector, pos:0 },
     ];
     selectElements(parameterList);
 
@@ -48,7 +48,7 @@ describe('Recalculations Issues', () => {
     cy.get('[data-test="clone-button"]').click();
 
     //Step 6: Move the selection out the pool toward bottom
-    cy.get(taskSelector).eq(1).trigger('mousedown',{force: true});
+    cy.get(taskSelector).eq(1).trigger('mousedown',{ force: true });
     cy.get('.paper-container').trigger('mousemove', 'bottom');
     cy.get('.paper-container').trigger('mousemove', 'bottom');
     waitToRenderAllShapes();
@@ -57,7 +57,7 @@ describe('Recalculations Issues', () => {
 
     //Step 7: Move the selection out the pool toward right
     cy.wait(1000);
-    cy.get(taskSelector).eq(1).trigger('mousedown',{force: true});
+    cy.get(taskSelector).eq(1).trigger('mousedown',{ force: true });
     cy.get('.paper-container').trigger('mousemove', 'left');
     cy.get('.paper-container').trigger('mousemove', 'left');
     waitToRenderAllShapes();

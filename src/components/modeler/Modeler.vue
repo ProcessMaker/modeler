@@ -1086,7 +1086,7 @@ export default {
         await this.paperManager.performAtomicAction(async() => {
           const waitPromises = [];
           this.highlightedNodes.forEach((node) =>
-            waitPromises.push(this.removeNode(node, { removeRelationships: true }))
+            waitPromises.push(this.removeNode(node, { removeRelationships: true })),
           );
           await Promise.all(waitPromises);
           store.commit('highlightNode');
@@ -1449,7 +1449,7 @@ export default {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
             event.offsetX - this.canvasDragPosition.x,
-            event.offsetY - this.canvasDragPosition.y
+            event.offsetY - this.canvasDragPosition.y,
           );
         }
       }

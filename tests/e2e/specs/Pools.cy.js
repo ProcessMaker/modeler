@@ -324,20 +324,20 @@ describe.skip('Pools', () => {
 
   describe.skip('does not add flow node references to pool lanes for excluded items', () => {
 
-    const poolPosition = {x: 100, y: 50};
+    const poolPosition = { x: 100, y: 50 };
 
     function addLaneBelow() {
-      getElementAtPosition({x: poolPosition.x + 100, y: poolPosition.y + 100}, nodeTypes.pool)
-        .click({force: true})
+      getElementAtPosition({ x: poolPosition.x + 100, y: poolPosition.y + 100 }, nodeTypes.pool)
+        .click({ force: true })
         .then($pool => {
-          getCrownButtonForElement($pool, 'lane-below-button').click({force: true});
+          getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
         });
     }
 
     function addElementsThatShouldNotHaveFlowNodeRefs() {
-      clickAndDropElement(nodeTypes.dataStore, {x: poolPosition.x + 100, y: poolPosition.y + 100});
-      clickAndDropElement(nodeTypes.dataObject, {x: poolPosition.x + 150, y: poolPosition.y + 150});
-      clickAndDropElement(nodeTypes.textAnnotation, {x: poolPosition.x + 200, y: poolPosition.y + 200});
+      clickAndDropElement(nodeTypes.dataStore, { x: poolPosition.x + 100, y: poolPosition.y + 100 });
+      clickAndDropElement(nodeTypes.dataObject, { x: poolPosition.x + 150, y: poolPosition.y + 150 });
+      clickAndDropElement(nodeTypes.textAnnotation, { x: poolPosition.x + 200, y: poolPosition.y + 200 });
     }
 
     it('when adding elements to an existing lane', () => {

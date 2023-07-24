@@ -150,8 +150,8 @@ export default {
           this.$emit(
             'error',
             this.$t(
-              'The custom icon file is too large. File size must be less than 2KB.'
-            )
+              'The custom icon file is too large. File size must be less than 2KB.',
+            ),
           );
         } else {
           this.file = value;

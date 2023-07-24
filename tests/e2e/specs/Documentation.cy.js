@@ -1,4 +1,4 @@
-import {nodeTypes} from '../support/constants';
+import { nodeTypes } from '../support/constants';
 import {
   assertDownloadedXmlContainsExpected,
   assertDownloadedXmlDoesNotContainExpected,

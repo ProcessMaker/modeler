@@ -55,10 +55,10 @@ describe.skip('Selection of pool with shift click', () => {
     const fromPosition = { x: 200, y: 200 };
     const translateAmount = { x: 0, y: 100 };
     // click and drag fromPosition to fromPosition + translateAmount
-    cy.get('.paper-container .joint-paper').trigger('mousedown', { which: 1, pageX: fromPosition.x, pageY: fromPosition.y, force: true});
-    cy.get('.paper-container').trigger('mousemove', { which: 1, pageX: fromPosition.x + translateAmount.x, pageY: fromPosition.y + translateAmount.y, force: true});
+    cy.get('.paper-container .joint-paper').trigger('mousedown', { which: 1, pageX: fromPosition.x, pageY: fromPosition.y, force: true });
+    cy.get('.paper-container').trigger('mousemove', { which: 1, pageX: fromPosition.x + translateAmount.x, pageY: fromPosition.y + translateAmount.y, force: true });
     waitToRenderAllShapes();
-    cy.get('.paper-container .joint-paper').trigger('mouseup',{force: true});
+    cy.get('.paper-container .joint-paper').trigger('mouseup',{ force: true });
 
     waitToRenderAllShapes();
 

@@ -31,7 +31,7 @@ describe.skip('Canvas Selection', () => {
     //Step 5: Clicks and drags the mouse over the elements
     cy.get('.paper-container').trigger('mousedown', 'topLeft');
     cy.get('.paper-container').trigger('mousemove', 'bottomRight');
-    cy.get('.paper-container').trigger('mouseup',{force: true});
+    cy.get('.paper-container').trigger('mouseup',{ force: true });
 
     //Validation 1: Verify that all element are selected and a rectangle highlights the selected elements
     cy.get('[data-cy="selection-box"]').should('exist');

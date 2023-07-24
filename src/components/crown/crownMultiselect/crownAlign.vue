@@ -43,7 +43,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 
 export default {
-  components: {FontAwesomeIcon},
+  components: { FontAwesomeIcon },
   props: {
     paper: Object,
     hasPools: Boolean,
@@ -218,7 +218,7 @@ export default {
       this.shape.stopListening(
         this.paper,
         'element:pointerup',
-        this.setNodePosition
+        this.setNodePosition,
       );
       this.savePositionOnPointerupEventSet = false;
 
@@ -238,7 +238,7 @@ export default {
     setUpCrownConfig() {
       this.paper.on(
         'render:done scale:changed translate:changed',
-        this.repositionCrown
+        this.repositionCrown,
       );
     },
     setUpPositionHandling() {},

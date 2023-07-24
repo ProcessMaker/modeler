@@ -61,29 +61,29 @@ describe('Clone Improvement', () => {
     //Validation 1: Verify that Intermediate Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Intermediate Signal Catch Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
 
     //Step 5: Change the Intermediate Event to Message Intermediate Event
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-message-catch-event');
 
     //Step 6: Clone the Intermediate Event
-    cy.get('[data-test="clone-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({ force: true });
 
     //Validation 2: Verify that Intermediate Message Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Intermediate Message Catch Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
 
     //Step 7: Change the Intermediate Event to Intermediate Conditional Event
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-conditional-catch-event');
 
     //Step 8: Clone the Intermediate Event
-    cy.get('[data-test="clone-button"]').click({force: true});
+    cy.get('[data-test="clone-button"]').click({ force: true });
 
     //Validation 3: Verify that Intermediate Conditional Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
     cy.get('[name="name"]').should('have.value','Intermediate Conditional Catch Event');
-    cy.get('[id="delete-button"]').click({force: true});
+    cy.get('[id="delete-button"]').click({ force: true });
   });
 
 });

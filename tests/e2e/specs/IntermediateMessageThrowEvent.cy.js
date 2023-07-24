@@ -20,7 +20,7 @@ const eventXMLSnippet = `
     <bpmn:messageEventDefinition messageRef="${messageRef}" />
   </bpmn:intermediateThrowEvent>
 `;
-const messageXMLSnippet = `<bpmn:message id="${ messageRef }" name="${ messageName }" />`;
+const messageXMLSnippet = `<bpmn:message id="${messageRef}" name="${messageName}" />`;
 const intermediateMessageThrowEventPosition = { x: 350, y: 200 };
 
 describe.skip('Intermediate Message Throw Event', () => {

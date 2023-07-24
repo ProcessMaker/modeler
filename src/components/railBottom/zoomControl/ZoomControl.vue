@@ -61,7 +61,7 @@ export default ({
     onClickZoomOut() {
       this.paperManager.scale = Math.max(
         this.minimumScale,
-        this.paperManager.scale.sx -= this.scaleStep
+        this.paperManager.scale.sx -= this.scaleStep,
       );
     },
     onClickZoomIn() {
