@@ -31,7 +31,7 @@ describe('Pools', { scrollBehavior: false }, () => {
 
 function addPool()
 {
-  return new Promise(resolve => {
+  return new Cypress.Promise(resolve => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
     waitToRenderAllShapes();
@@ -63,7 +63,7 @@ function inspector(shape, name, value)
 
 function getLane(pool, index)
 {
-  return new Promise(resolve => {
+  return new Cypress.Promise(resolve => {
     pool.then(element => {
       cy.get(element).parent().find('[data-type=PoolLane]').eq(index).then(lane => {
         resolve(lane);
