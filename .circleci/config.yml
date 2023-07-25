@@ -121,7 +121,7 @@ orbs:
 executors:
   with-chrome-and-firefox:
     docker:
-      - image: "cypress/browsers:node16.16.0-chrome105-ff104-edge"
+      - image: "cypress/browsers:node-16.18.1-chrome-110.0.5481.96-1-ff-109.0-edge-110.0.1587.41-1"
     resource_class: xlarge
     environment:
       CYPRESS_coverage: false
