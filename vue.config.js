@@ -19,7 +19,7 @@ module.exports = {
       },
     },
   },
-  transpileDependencies: true,
+  transpileDependencies: ['bpmnlint'],
   configureWebpack: {
     resolve: {
       modules: [
