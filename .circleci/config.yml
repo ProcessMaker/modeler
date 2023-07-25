@@ -226,7 +226,7 @@ linux-workflow: &linux-workflow
     - cypress_tests_linux:
         name: "UI Tests - Chrome"
         browser: chrome
-        specPattern: "tests/e2e/**/("
+        specPattern: "tests/e2e/**/*"
         ciBuildId: ${CIRCLE_SHA1:0:8}
         group: "UI - Chrome"
         requires:
