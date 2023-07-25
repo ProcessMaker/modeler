@@ -157,7 +157,7 @@ commands:
           package-manager: npm
       - run:
           name: Build CI ℹ️
-          command: npm run build
+          command: npm run build-bundle
       - run:
           name: Print machine info ℹ️
           command: npx cypress info
