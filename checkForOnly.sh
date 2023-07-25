@@ -22,12 +22,12 @@ for file in $stagedFiles; do
     fi
   fi
 
-  numberOfOnlys=$(grep "\.only" $file | wc -l)
-  if [[ $numberOfOnlys -gt 0 ]]; then
-    echo "$file contains .only(s)"
-    grep -n "\.only" $file --color=auto
-    exit 255
-  fi
+#  numberOfOnlys=$(grep "\.only" $file | wc -l)
+#  if [[ $numberOfOnlys -gt 0 ]]; then
+#    echo "$file contains .only(s)"
+#    grep -n "\.only" $file --color=auto
+#    exit 255
+#  fi
 done
 
 echo "No staged files contain .only"

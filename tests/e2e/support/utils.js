@@ -6,7 +6,7 @@ const renderTime = 300;
 
 export function getTinyMceEditor() {
   return cy
-    .get('iframe#documentation-editor_ifr')
+    .get('#collapse-documentation-accordion iframe.tox-edit-area__iframe')
     .its('0.contentDocument')
     .its('body')
     .then(cy.wrap);
@@ -14,7 +14,7 @@ export function getTinyMceEditor() {
 
 export function getTinyMceEditorInModal() {
   return cy
-    .get('iframe#documentation-editor-modal_ifr')
+    .get('#documentation-modal___BV_modal_body_ iframe.tox-edit-area__iframe')
     .its('0.contentDocument')
     .its('body')
     .then(cy.wrap);
@@ -23,6 +23,12 @@ export function getTinyMceEditorInModal() {
 export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
   const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
   waitToRenderAllShapes();
+
+  cy.get('body').then($body => {
+    if ($body.find('.modal').length > 0) {
+      modalConfirm();
+    }
+  });
 
   getElementAtPosition(taskPosition, taskType).click({ force: true });
 
@@ -156,9 +162,9 @@ export function waitToRenderNodeUpdates() {
   cy.wait(saveDebounce);
 }
 
-export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center') {
+export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center', startComponentType = null) {
   const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
-  return getElementAtPosition(startPosition)
+  return getElementAtPosition(startPosition, startComponentType)
     .trigger('mousedown', mouseEvent, { force: true })
     .trigger('mouseup', mouseEvent,  { force: true })
     .then($element => {
@@ -202,10 +208,19 @@ export function moveElement(elementPosition, x, y, componentType) {
   return cy.window().its('store.state.paper').then(paper => {
     const newPosition = paper.localToPagePoint(x, y);
 
+    const mouseMoveOptions = {
+      clientX: newPosition.x,
+      clientY: newPosition.y,
+      force: true,
+    };
+
     return getElementAtPosition(elementPosition, componentType)
+      .trigger('mouseover', { force: true })
       .trigger('mousedown', { which: 1, force: true })
-      .trigger('mousemove', { clientX: newPosition.x, clientY: newPosition.y, force: true })
-      .trigger('mouseup', { force: true });
+      .trigger('mousemove', mouseMoveOptions)
+      .trigger('mousemove', mouseMoveOptions)
+      .trigger('mouseup', { force: true })
+      .click({ force: true });
   });
 }
 
@@ -227,8 +242,10 @@ export function moveElementRelativeTo(elementPosition, x, y, componentType) {
           };
 
           cy.wrap($element)
+            .trigger('mouseover')
             .trigger('mousedown', 'topLeft', { which: 1, force: true })
             .trigger('mousemove', 'topLeft', mouseMoveOptions)
+            .trigger('mousemove', mouseMoveOptions)
             .trigger('mouseup', 'topLeft', { force: true });
         });
 
@@ -371,7 +388,15 @@ export function assertBoundaryEventIsCloseToTask() {
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   clickAndDropElement(genericNode, nodePosition);
   waitToRenderAllShapes();
+  cy.get('[data-test=select-type-dropdown]').click();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
+
+  cy.get('body').then($body => {
+    if ($body.find('.modal').length > 0) {
+      modalConfirm();
+    }
+  });
+
   cy.wait(300);
 }
 
@@ -430,14 +455,18 @@ export function selectComponentType(component, type) {
 export function clickAndDropElement(node, position, nodeChild = null) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
+    const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
+
+    // Add explorer width
+    if (explorerIsVisible) {
+      position.x += 200;
+    }
 
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
 
-      const existExplorerRail = Cypress.$('[data-test=explorer-rail]').is(':visible');
-
-      if (existExplorerRail) {
+      if (explorerIsVisible) {
         cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
       } else {
         cy.get(`[data-test=${node}-main]`).click();
@@ -458,7 +487,7 @@ export function clickAndDropElement(node, position, nodeChild = null) {
 
 export function toggleInspector() {
   cy.get('[data-cy=inspector-close-button]').then(($el) => {
-    if ($el.length) return cy.get('[data-cy=inspector-button]').click();
+    if (!$el.is(':visible')) return cy.get('[data-cy=inspector-button]').click();
     return cy.get('[data-cy=inspector-close-button]').click();
   });
 }

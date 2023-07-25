@@ -64,17 +64,42 @@
               data-cy="ellipsis-menu"
             />
           </template>
-          <button
+          <template
             v-else
-            class="save-button"
-            data-test="mini-map-btn"
-            v-b-tooltip.hover
-            :title="$t('Save')"
-            @click="$emit('saveBpmn')"
           >
-            <font-awesome-icon :icon="saveIcon" />
-            <span class="save-button-label">{{ $t('Save') }}</span>
-          </button>
+            <button
+              class="save-button"
+              data-test="mini-map-btn"
+              v-b-tooltip.hover
+              :title="$t('Save')"
+              @click="$emit('saveBpmn')"
+            >
+              <font-awesome-icon :icon="saveIcon" />
+              <span class="save-button-label">{{ $t('Save') }}</span>
+            </button>
+
+            <b-btn
+              class="ml-1 rounded"
+              :disabled="!xmlManager"
+              variant="secondary"
+              size="sm"
+              data-test="downloadXMLBtn"
+              @click="xmlManager && xmlManager.download()"
+            >
+              <i class="fas fa-download mr-1"/>
+              {{ $t('Download BPMN') }}
+            </b-btn>
+
+            <b-btn
+              variant="secondary"
+              size="sm"
+              v-b-modal="'uploadmodal'"
+              class="ml-1 rounded"
+            >
+              <i class="fas fa-upload mr-1"/>
+              {{ $t('Upload XML') }}
+            </b-btn>
+          </template>
         </div>
       </div>
     </div>

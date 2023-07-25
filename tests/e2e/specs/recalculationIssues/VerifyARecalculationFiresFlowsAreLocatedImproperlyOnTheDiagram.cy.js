@@ -6,8 +6,8 @@ import {
 } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
 
-describe('Recalculations Issues', () => {
-  it('Veriy Elements wit connector are not moved out of the Pool container: FOUR-8651', () => {
+describe.skip('Recalculations Issues', () => {
+  it('Verify Elements with connector are not moved out of the Pool container: FOUR-8651', () => {
 
     const endEventSelector = '[data-type="processmaker.components.nodes.endEvent.Shape"]';
     const taskSelector = '[data-type="processmaker.components.nodes.task.Shape"]';

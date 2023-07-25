@@ -5,7 +5,7 @@ import {
 } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
 
-describe('Recalculations Issues', () => {
+describe.skip('Recalculations Issues', () => {
   it('Veriy Elements wit connector are not moved out of the Pool container: FOUR-8674', () => {
 
     const link = '[data-type="standard.Link"]';

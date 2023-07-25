@@ -1,9 +1,9 @@
-import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected } from '../support/utils';
+import { addNodeTypeToPaper, assertDownloadedXmlContainsExpected, toggleInspector } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Signal Start Event', () => {
+describe('Signal Start Event', () => {
   it('Can create signal start event', () => {
-    const signalStartEventPosition = { x: 250, y: 250 };
+    const signalStartEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(signalStartEventPosition, nodeTypes.startEvent, 'switch-to-signal-start-event');
 
     assertDownloadedXmlContainsExpected(`
@@ -14,10 +14,11 @@ describe.skip('Signal Start Event', () => {
   });
 
   it('Configure the signal request variable', () => {
-    const signalStartEventPosition = { x: 250, y: 250 };
+    const signalStartEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(signalStartEventPosition, nodeTypes.startEvent, 'switch-to-signal-start-event');
 
     // Config the signal request variable in the inspector
+    toggleInspector();
     cy.get('input[data-cy="signal-request-variable"]').type('signalRequestVariable');
 
     assertDownloadedXmlContainsExpected(`
