@@ -35,6 +35,11 @@ export default {
       this.$emit('openIssue', this.isOpen);
     },
   },
+  mounted() {
+    window.ProcessMaker.EventBus.$on('save-changes-activate-autovalidate', () => {
+      this.handleOpen();
+    });
+  },
 };
 </script>
 

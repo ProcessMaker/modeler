@@ -43,7 +43,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 
 export default {
-  components: {FontAwesomeIcon},
+  components: { FontAwesomeIcon },
   props: {
     paper: Object,
     hasPools: Boolean,
