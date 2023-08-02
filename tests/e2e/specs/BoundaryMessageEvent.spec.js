@@ -1,9 +1,16 @@
-import { addNodeTypeToPaper, getElementAtPosition, removeIndentationAndLinebreaks, setBoundaryEvent } from '../support/utils';
+import {
+  addNodeTypeToPaper,
+  getElementAtPosition,
+  toggleInspector,
+  removeIndentationAndLinebreaks,
+  setBoundaryEvent,
+  waitToRenderAllShapes,
+} from '../support/utils';
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
-describe.skip('Boundary Message Event', () => {
-  const taskPosition = { x: 200, y: 200 };
+describe('Boundary Message Event', () => {
+  const taskPosition = { x: 300, y: 200 };
   beforeEach(() => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
   });
@@ -11,9 +18,10 @@ describe.skip('Boundary Message Event', () => {
   it('Render an interrupting boundary message event', () => {
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
 
-    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_18" name="Boundary Message Event" attachedToRef="node_8"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
+    waitToRenderAllShapes();
     cy.window()
       .its('xml')
       .then(removeIndentationAndLinebreaks)
@@ -26,9 +34,11 @@ describe.skip('Boundary Message Event', () => {
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
     getElementAtPosition(taskPosition).click();
 
+    toggleInspector();
+
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).click();
-    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" cancelActivity="false" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_18" name="Boundary Message Event" cancelActivity="false" attachedToRef="node_8"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -43,10 +53,9 @@ describe.skip('Boundary Message Event', () => {
 CommonBoundaryEventBehaviour({
   type: 'Boundary Message Event',
   nodeType: nodeTypes.boundaryMessageEvent,
-  eventXMLSnippet: '<bpmn:boundaryEvent id="node_4" name="Boundary Message Event" attachedToRef="node_3"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
+  eventXMLSnippet: '<bpmn:boundaryEvent id="node_18" name="Boundary Message Event" attachedToRef="node_8"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
   taskTypeSelector: 'switch-to-sub-process',
   invalidTargets: [{ type: nodeTypes.startEvent }],
-  // TODO remove line 51 when this test is ready to pass
   skip: true,
 });

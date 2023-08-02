@@ -5,7 +5,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 
-describe.skip('Pools', () => {
+describe('Pools', () => {
   it('Case 1 Delete a Pool should remove all elements inside it', () => {
     uploadXml('TwoPools.xml');
     waitToRenderAllShapes();

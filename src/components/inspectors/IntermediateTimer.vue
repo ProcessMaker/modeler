@@ -19,7 +19,7 @@ import DurationExpression from './DurationExpression';
 import DateTimeExpression from './DateTimeExpression';
 import CycleExpression from './CycleExpression';
 import { DateTime } from 'luxon';
-import { defaultDurationValue } from '@/components/nodes/intermediateTimerEvent';
+import { defaultDurationTimerEvent } from '@/constants';
 
 const types = {
   timeDuration: 'DurationExpression',
@@ -61,7 +61,7 @@ export default {
   methods: {
     changeType(type) {
       const defaultValue = (this.isDelayType(type) || this.isCycleType(type))
-        ? defaultDurationValue
+        ? defaultDurationTimerEvent
         : DateTime
           .local()
           .toUTC()

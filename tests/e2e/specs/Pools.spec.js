@@ -16,19 +16,21 @@ import {
   setBoundaryEvent,
   typeIntoTextInput,
   waitToRenderAllShapes,
+  toggleInspector,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Pools', () => {
-  it('Update pool name', () => {
+describe('Pools', { scrollBehavior: false }, () => {
+  it.skip('Update pool name', () => {
     const testString = 'testing';
 
     const poolPosition = { x: 200, y: 200 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
+    getElementAtPosition(poolPosition, nodeTypes.pool).click();
 
-    getElementAtPosition(poolPosition).click();
-
+    toggleInspector();
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
   });
@@ -37,8 +39,9 @@ describe.skip('Pools', () => {
     const poolPosition = { x: 300, y: 300 };
 
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
-    getElementAtPosition(poolPosition)
+    getElementAtPosition(poolPosition, nodeTypes.pool)
       .click()
       .then($pool => {
         getCrownButtonForElement($pool, 'lane-above-button').click({ force: true });
@@ -46,11 +49,12 @@ describe.skip('Pools', () => {
       });
   });
 
-  it('Does not allow pool with only one lane', () => {
-    const poolPosition = { x: 300, y: 300 };
+  it.skip('Does not allow pool with only one lane', () => {
+    const poolPosition = { x: 350, y: 300 };
     const lanePosition = { x: 300, y: 550 };
 
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(poolPosition).click().then($pool => {
       getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
@@ -64,11 +68,15 @@ describe.skip('Pools', () => {
     getElementAtPosition(lanePosition).getType().should('equal', nodeTypes.pool);
   });
 
-  it('Can drag elements between pools', () => {
-    const startEventPosition = { x: 150, y: 150 };
+  it.skip('Can drag elements between pools', () => {
+    const startEventPosition = { x: 210, y: 200 };
+    const startEventPosition2 = { x: 300, y: 120 };
+    moveElement(startEventPosition, startEventPosition2, nodeTypes.startEvent);
+    waitToRenderAllShapes();
 
-    const pool1Position = { x: 200, y: 200 };
+    const pool1Position = { x: 200, y: 170 };
     clickAndDropElement(nodeTypes.pool, pool1Position);
+    waitToRenderAllShapes();
 
     const startEventIn1stPool = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
     const startEventIn1stPoolWithNullProps = '<bpmn:process id="Process_1" isExecutable="true"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
@@ -80,14 +88,18 @@ describe.skip('Pools', () => {
         expect(xml).to.contain(startEventIn1stPool);
       });
 
-    const pool2Position = { x: 200, y: 500 };
+    waitToRenderAllShapes();
+    const pool2Position = { x: 300, y: 400 };
     clickAndDropElement(nodeTypes.pool, pool2Position);
+    waitToRenderAllShapes();
 
-    moveElement(startEventPosition, pool2Position);
+    const startEventPosition3 = { x: pool2Position.x + 100, y: pool2Position.y + 150 };
+
+    moveElement(startEventPosition2, startEventPosition3, nodeTypes.startEvent);
     waitToRenderAllShapes();
 
     const empty1stPool = '<bpmn:process id="Process_1" isExecutable="true" />';
-    const startEventIn2ndPool = '<bpmn:process id="process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
+    const startEventIn2ndPool = '<bpmn:process id="Process_2"><bpmn:startEvent id="node_1" name="Start Event" /></bpmn:process>';
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
@@ -97,10 +109,11 @@ describe.skip('Pools', () => {
         expect(xml).to.contain(startEventIn2ndPool);
       });
 
-    moveElement(pool2Position, startEventPosition);
+    moveElement(startEventPosition3, startEventPosition2, nodeTypes.startEvent);
     waitToRenderAllShapes();
 
-    getElementAtPosition(startEventPosition).click();
+    getElementAtPosition(startEventPosition2, nodeTypes.startEvent).click({ force: true });
+    waitToRenderAllShapes();
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -113,18 +126,20 @@ describe.skip('Pools', () => {
     waitToRenderAllShapes();
   });
 
-  it('remove all references of flows when deleting a pool with a process', () => {
-    const startEventPosition = { x: 150, y: 150 };
-    const taskPosition = { x: 350, y: 350 };
+  it.skip('remove all references of flows when deleting a pool with a process', () => {
+    const startEventPosition = { x: 210, y: 200 };
+    const taskPosition = { x: 210, y: 350 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
 
-    getElementAtPosition(poolPosition)
-      .click()
+    getElementAtPosition(poolPosition, nodeTypes.pool)
+      .click({ force: true })
       .then($pool => {
         getCrownButtonForElement($pool, 'delete-button').click({ force: true });
       });
@@ -140,11 +155,12 @@ describe.skip('Pools', () => {
       });
   });
 
-  it('Removes all references to element from lane', () => {
+  it.skip('Removes all references to element from lane', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
-    getElementAtPosition(poolPosition)
+    getElementAtPosition(poolPosition, nodeTypes.pool)
       .click()
       .then($pool => {
         getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
@@ -153,7 +169,7 @@ describe.skip('Pools', () => {
     const nonEmptyLane = '<bpmn:lane id="node_4" name=""><bpmn:flowNodeRef>node_1</bpmn:flowNodeRef></bpmn:lane>';
     assertDownloadedXmlContainsExpected(nonEmptyLane);
 
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     getElementAtPosition(startEventPosition)
       .click()
       .then($startEvent => {
@@ -165,11 +181,12 @@ describe.skip('Pools', () => {
     assertDownloadedXmlDoesNotContainExpected('node_1');
   });
 
-  it('Removes all references to element from a pool', () => {
+  it.skip('Removes all references to element from a pool', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     getElementAtPosition(startEventPosition).click().then($startEvent => {
       getCrownButtonForElement($startEvent, 'delete-button').click();
     });
@@ -183,55 +200,62 @@ describe.skip('Pools', () => {
     });
   });
 
-  it('moves boundary event to another process when dragged to that pool', () => {
+  it.skip('moves boundary event to another process when dragged to that pool', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
 
-    const pool2Position = { x: 100, y: 500 };
+    const pool2Position = { x: 200, y: 550 };
     clickAndDropElement(nodeTypes.pool, pool2Position);
 
-    const taskPosition = { x: 200, y: 200 };
+    const taskPosition = { x: 350, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
     const boundaryTimerEventPosition = { x: 260, y: 260 };
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
-    moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y);
+    waitToRenderAllShapes();
+    moveElement(taskPosition, boundaryTimerEventPosition.x, boundaryTimerEventPosition.y, nodeTypes.task);
+    waitToRenderAllShapes();
 
     const pool1taskXml = `
       <bpmn:process id="Process_1" isExecutable="true">
         <bpmn:startEvent id="node_1" name="Start Event" />
         <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />
-        <bpmn:boundaryEvent id="node_5" name="Boundary Timer Event" attachedToRef="node_4">
+        <bpmn:boundaryEvent id="node_13" name="Boundary Timer Event" attachedToRef="node_4">
     `;
     assertDownloadedXmlContainsExpected(pool1taskXml);
 
-    moveElement(taskPosition, 150, 550);
+    cy.get('.paper-container').click('topLeft');
+    waitToRenderAllShapes();
+
+    moveElement(taskPosition, 300, 600, nodeTypes.task);
 
     const pool2taskXml = `
-      <bpmn:process id="process_2">
+      <bpmn:process id="Process_2">
         <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />
-        <bpmn:boundaryEvent id="node_5" name="Boundary Timer Event" attachedToRef="node_4">
+        <bpmn:boundaryEvent id="node_13" name="Boundary Timer Event" attachedToRef="node_4">
     `;
     assertDownloadedXmlContainsExpected(pool2taskXml);
   });
 
-  it('should revert pool element to initial position on undo after dragging outside of pool onto grid', () => {
+  it.skip('should revert pool element to initial position on undo after dragging outside of pool onto grid', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     moveElementRelativeTo(startEventPosition, 600, 600, nodeTypes.startEvent);
 
     waitToRenderAllShapes();
-    cy.get('[data-test=undo]').click();
+    cy.get('[data-cy="undo-control"]').click();
     waitToRenderAllShapes();
 
     getElementAtPosition(startEventPosition, nodeTypes.startEvent).should('exist');
   });
 
-  it('should not cover child elements with lane', () => {
+  it.skip('should not cover child elements with lane', () => {
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
     getElementAtPosition(poolPosition, nodeTypes.pool)
       .click()
@@ -239,7 +263,7 @@ describe.skip('Pools', () => {
         getCrownButtonForElement($pool, 'lane-above-button').click({ force: true });
       });
 
-    const startEventPosition = { x: 150, y: 150 };
+    const startEventPosition = { x: 210, y: 200 };
     const topLanePosition = { x: startEventPosition.x, y: startEventPosition.y - 50 };
     getPositionInPaperCoords(startEventPosition).then(({ x, y }) => {
       getElementAtPosition(topLanePosition, nodeTypes.poolLane).click();
@@ -254,19 +278,23 @@ describe.skip('Pools', () => {
       .then(isElementCovered).should(isCovered => expect(isCovered).to.be.false);
   });
 
-  it('does not move boundary events independently from tasks when moving pool', () => {
-    const taskPosition = { x: 200, y: 200 };
+  it.skip('does not move boundary events independently from tasks when moving pool', () => {
+    const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
     setBoundaryEvent(nodeTypes.boundaryTimerEvent, taskPosition);
 
     const poolPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.pool, poolPosition);
+    waitToRenderAllShapes();
 
-    getElementAtPosition(poolPosition).then($pool => {
+    getElementAtPosition(poolPosition, nodeTypes.pool).then($pool => {
       assertBoundaryEventIsCloseToTask();
 
       cy.wrap($pool)
+        .click()
+        .trigger('mouseover')
         .trigger('mousedown', { which: 1, force: true })
+        .trigger('mousemove', { clientX: 800, clientY: 350, force: true })
         .trigger('mousemove', { clientX: 800, clientY: 350, force: true })
         .trigger('mouseup', { force: true })
         .then(waitToRenderAllShapes)
@@ -280,14 +308,15 @@ describe.skip('Pools', () => {
 
     // Add pool
     clickAndDropElement(nodeTypes.pool, poolPosition1);
+    waitToRenderAllShapes();
 
-    getElementAtPosition(poolPosition1).click().then($pool => {
+    getElementAtPosition(poolPosition1, nodeTypes.pool).click().then($pool => {
       getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
     });
 
     clickAndDropElement(nodeTypes.pool, poolPosition2);
 
-    getElementAtPosition({ x: 600, y: 600 }).click().then($pool => {
+    getElementAtPosition({ x: 600, y: 600 }).click({ force: true }).then($pool => {
       getCrownButtonForElement($pool, 'lane-below-button').click({ force: true });
     });
 
@@ -309,7 +338,7 @@ describe.skip('Pools', () => {
     assertDownloadedXmlContainsExpected(laneSet2IdBpmn);
   });
 
-  it('does not duplicate boundary events when added to a task in a pool', () => {
+  it.skip('does not duplicate boundary events when added to a task in a pool', () => {
     const poolPosition1 = { x: 300, y: 150 };
     const poolPosition2 = { x: 300, y: 400 };
     const taskPosition = { x: 350, y: 450 };
@@ -324,7 +353,7 @@ describe.skip('Pools', () => {
 
   describe.skip('does not add flow node references to pool lanes for excluded items', () => {
 
-    const poolPosition = {x: 100, y: 50};
+    const poolPosition = {x: 200, y: 100};
 
     function addLaneBelow() {
       getElementAtPosition({x: poolPosition.x + 100, y: poolPosition.y + 100}, nodeTypes.pool)
@@ -343,6 +372,7 @@ describe.skip('Pools', () => {
     it('when adding elements to an existing lane', () => {
       removeStartEvent();
       clickAndDropElement(nodeTypes.pool, poolPosition);
+      waitToRenderAllShapes();
 
       addLaneBelow();
       addElementsThatShouldNotHaveFlowNodeRefs();
@@ -353,8 +383,10 @@ describe.skip('Pools', () => {
     it('when adding elements to a pool and then adding a lane', () => {
       removeStartEvent();
       clickAndDropElement(nodeTypes.pool, poolPosition);
+      waitToRenderAllShapes();
 
       addElementsThatShouldNotHaveFlowNodeRefs();
+      waitToRenderAllShapes();
       addLaneBelow();
 
       assertDownloadedXmlDoesNotContainExpected('<bpmn:flowNodeRef');
