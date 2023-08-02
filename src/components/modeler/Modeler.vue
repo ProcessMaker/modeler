@@ -1259,7 +1259,7 @@ export default {
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
       if (store.getters.isReadOnly) {
-        if (this.canvasDragPosition) {
+        if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
             event.offsetX - this.canvasDragPosition.x,
             event.offsetY - this.canvasDragPosition.y,
