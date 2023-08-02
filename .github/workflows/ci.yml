@@ -42,6 +42,7 @@ jobs:
           spec: "tests/e2e/**/*"
           record: true
           parallel: true
+          browser: chrome
         env:
           # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
           # in GitHub repo → Settings → Secrets → Actions
