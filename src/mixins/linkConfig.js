@@ -139,12 +139,21 @@ export default {
       resetShapeColor(targetShape);
 
       this.shape.on('change:vertices', this.onChangeVertices);
+      this.shape.on('change:source', this.onChangeVertices);
+      this.shape.on('change:target', this.onChangeVertices);
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
       this.$emit('set-shape-stacking', sourceShape);
+    },
+    waitForUpdateWaypoints() {
+      return new Promise(resolve => {
+        this.updateWaypoints();
+        this.updateWaypoints.flush();
+        resolve();
+      });
     },
     /**
       * On Change vertices handler
@@ -154,7 +163,8 @@ export default {
       */
     async onChangeVertices(link, vertices, options){
       if (options && options.ui) {
-        this.updateWaypoints();
+        await this.$nextTick();
+        await this.waitForUpdateWaypoints();
         await this.$nextTick();
         this.$emit('save-state');
       }
