@@ -6,7 +6,7 @@ import uniq from 'lodash/uniq';
 Vue.use(Vuex);
 
 function setDefinitionPropertyReactive(definition, key, value) {
-  if (definition.hasOwnProperty(key)) {
+  if (Object.hasOwn(definition, key)) {
     definition.set(key, value);
     return;
   }

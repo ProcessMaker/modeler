@@ -1,6 +1,6 @@
-import {saveDebounce} from '../../../src/components/inspectors/inspectorConstants';
+import { saveDebounce } from '../../../src/components/inspectors/inspectorConstants';
 import path from 'path';
-import {boundaryEventSelector, nodeTypes, taskSelector} from './constants';
+import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
 
 const renderTime = 300;
 
@@ -30,9 +30,9 @@ export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.ta
     }
   });
 
-  getElementAtPosition(taskPosition, taskType).click({force: true});
+  getElementAtPosition(taskPosition, taskType).click({ force: true });
 
-  cy.get('[data-test="boundary-event-dropdown"]').click({force: true});
+  cy.get('[data-test="boundary-event-dropdown"]').click({ force: true });
   cy.get(`[data-test="${dataTest}"`).click({ force: true });
   waitToRenderAllShapes();
 }
@@ -266,7 +266,7 @@ export function removeElementAtPosition(elementPosition) {
     .click();
 }
 
-export function removeStartEvent(startEventPosition = {x: 150, y: 150}) {
+export function removeStartEvent(startEventPosition = { x: 150, y: 150 }) {
   removeElementAtPosition(startEventPosition);
 }
 
@@ -446,7 +446,7 @@ export function getIframeDocumentation() {
  * @return nothing returns
  */
 export function selectComponentType(component, type) {
-  cy.get(component).first().click({force:true});
+  cy.get(component).first().click({ force:true });
   cy.get('[data-test="select-type-dropdown"]').click();
   cy.get('[data-test="'+type+'"]').click();
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
@@ -531,7 +531,7 @@ export function selectElements(parameterList) {
   let element;
   for (let i = 0; i <len ; i++) {
     element = parameterList[i];
-    cy.get('body').type('{shift}', {release: false});
-    cy.get(element.element).eq(element.pos).click({force: true});
+    cy.get('body').type('{shift}', { release: false });
+    cy.get(element.element).eq(element.pos).click({ force: true });
   }
 }
