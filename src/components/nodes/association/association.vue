@@ -19,7 +19,7 @@
 import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
-import associationHead from '!!url-loader!@/assets/association-head.svg';
+import associationHead from '@/assets/association-head.svg';
 import { direction } from './associationConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 

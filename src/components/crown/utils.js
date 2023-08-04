@@ -177,7 +177,7 @@ export function findIOSpecificationOwner(ioSpec, modeler) {
   const owner = ioSpec.$parent;
   if (!owner) {
     return modeler.nodes.find(node => node.definition.ioSpecification === ioSpec ||
-      node.definition.ioSpecification?.id === ioSpec.id
+      node.definition.ioSpecification?.id === ioSpec.id,
     )?.definition;
   }
   return owner;

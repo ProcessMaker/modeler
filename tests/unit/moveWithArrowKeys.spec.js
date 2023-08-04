@@ -27,14 +27,14 @@ describe('moveWithArrowKeys', () => {
   ${'ArrowLeft'} | ${[-moveAmount, 0]}
   ${'ArrowRight'} | ${[moveAmount, 0]}
   `('should move shape $keyPress direction when the corresponding key is pressed',
-  ({ keyPress, expected }) => {
-    const shape = shapeFactory();
-    const onAfterMove = jest.fn();
-    moveShapeByKeypress(keyPress, [shape], onAfterMove);
+    ({ keyPress, expected }) => {
+      const shape = shapeFactory();
+      const onAfterMove = jest.fn();
+      moveShapeByKeypress(keyPress, [shape], onAfterMove);
 
-    expect(shape.translate).toHaveBeenCalledWith(...expected, { movedWithArrowKeys: true });
-    expect(onAfterMove).toHaveBeenCalledTimes(1);
-  });
+      expect(shape.translate).toHaveBeenCalledWith(...expected, { movedWithArrowKeys: true });
+      expect(onAfterMove).toHaveBeenCalledTimes(1);
+    });
 
   it.each([
     ['PoolLane'],
