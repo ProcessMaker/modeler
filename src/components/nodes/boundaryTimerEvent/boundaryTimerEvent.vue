@@ -11,5 +11,14 @@ export default {
       nodeIcon: timerEventIcon,
     };
   },
+  methods: {
+    addTimerEventDefinitionId() {
+      const id = `${this.id}_timer_event_definition`;
+      this.node.definition.get('eventDefinitions')[0].id = id;
+    },
+  },
+  mounted() {
+    this.addTimerEventDefinitionId();
+  },
 };
 </script>
