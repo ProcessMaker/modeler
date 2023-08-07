@@ -2,8 +2,8 @@ import component from './inclusiveGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import DocumentationFormTextArea from '@/components/inspectors/DocumentationFormTextArea';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 const id = 'processmaker-modeler-inclusive-gateway';
 
@@ -48,6 +48,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         {
           component: 'FormAccordion',
           container: true,
@@ -72,13 +73,6 @@ export default {
                   { value: gatewayDirection.diverging, content: 'Diverging' },
                   { value: gatewayDirection.converging, content: 'Converging' },
                 ],
-              },
-            },
-            {
-              component: DocumentationFormTextArea,
-              config: {
-                label: 'Description',
-                name: 'documentation',
               },
             },
           ],
