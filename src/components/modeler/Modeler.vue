@@ -637,7 +637,6 @@ export default {
       this.translateConfig(nodeType.inspectorConfig[0]);
       addLoopCharacteristics(nodeType);
       this.nodeRegistry[nodeType.id] = nodeType;
-
       Vue.component(nodeType.id, nodeType.component);
       this.nodeTypes.push(nodeType);
 
@@ -1326,7 +1325,6 @@ export default {
      */
     window.ProcessMaker.EventBus.$emit('modeler-before-init', {
       registerComponentMixin: this.registerComponentMixin,
-      registerPmBlock: this.registerPmBlock,
     });
 
     this.registerNode(Process);
@@ -1336,6 +1334,7 @@ export default {
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
+      registerPmBlock: this.registerPmBlock,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
