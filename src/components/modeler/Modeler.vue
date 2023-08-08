@@ -678,6 +678,10 @@ export default {
         : [pmBlockNode.bpmnType];
 
       types.forEach(bpmnType => {
+        if (!this.parsers[bpmnType]) {
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
+        }
+
         if (customParser) {
           this.parsers[bpmnType].custom.push(customParser);
           return;
@@ -839,14 +843,19 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
-
+      const config = definition.config ? JSON.parse(definition.config) : null;
       if (!parser) {
         this.handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram);
         return;
       }
 
       this.removeUnsupportedElementAttributes(definition);
-      const type = parser(definition, this.moddle);
+      
+      let type = parser(definition, this.moddle);
+
+      if (config?.processKey) {
+        type = config.processKey;
+      }
 
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
@@ -963,7 +972,6 @@ export default {
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
-
       const newNode = this.createNode(control.type, definition, diagram);
 
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
@@ -1318,6 +1326,7 @@ export default {
      */
     window.ProcessMaker.EventBus.$emit('modeler-before-init', {
       registerComponentMixin: this.registerComponentMixin,
+      registerPmBlock: this.registerPmBlock,
     });
 
     this.registerNode(Process);
@@ -1327,7 +1336,6 @@ export default {
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
-      registerPmBlock: this.registerPmBlock,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
