@@ -216,7 +216,7 @@ describe('Undo/redo', { scrollBehavior: false }, () => {
     clickAndDropElement(nodeTypes.sendTweet, sendTweetPosition);
 
     const testConnector = '<bpmn:serviceTask id="node_2" name="Test Connector" pm:config="{&#34;testMessage&#34;:&#34;&#34;}" implementation="test-message" />';
-    const sendTweet = '<bpmn:serviceTask id="node_6" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />';
+    const sendTweet = '<bpmn:serviceTask id="node_5" name="Send Tweet" pm:config="{&#34;tweet&#34;:&#34;&#34;}" implementation="processmaker-social-twitter-send" />';
 
     assertDownloadedXmlContainsExpected(testConnector, sendTweet);
 
