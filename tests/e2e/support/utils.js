@@ -388,8 +388,8 @@ export function assertBoundaryEventIsCloseToTask() {
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   clickAndDropElement(genericNode, nodePosition);
   waitToRenderAllShapes();
+  cy.get('[data-test=select-type-dropdown]').click();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
-
   cy.get('body').then($body => {
     if ($body.find('.modal').length > 0) {
       modalConfirm();
@@ -446,6 +446,7 @@ export function getIframeDocumentation() {
  */
 export function selectComponentType(component, type) {
   cy.get(component).first().click({ force:true });
+  cy.get('[data-test="select-type-dropdown"]').click();
   cy.get('[data-test="'+type+'"]').click();
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
 }

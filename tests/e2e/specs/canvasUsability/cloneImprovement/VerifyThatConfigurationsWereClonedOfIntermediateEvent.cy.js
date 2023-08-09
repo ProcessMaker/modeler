@@ -8,6 +8,7 @@ import { nodeTypes } from '../../../support/constants';
 describe('Clone Improvement', () => {
   const initialNumberOfElements = 1;
   const selectorIntermediateEvent = '[data-type="processmaker.components.nodes.intermediateEvent.Shape"]';
+  const selectorStartEvent = '[data-type="processmaker.components.nodes.startEvent.Shape"]';
 
   it('TCP4-2725: Verify that configurations were cloned of Intermediate Event', () => {
 
@@ -51,14 +52,15 @@ describe('Clone Improvement', () => {
     //Step 2: Add Intermediate Event
     const intermediatePosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
+    cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the Intermediate Event to Signal Event
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-signal-catch-event');
 
     //Step 4: Clone the Intermediate Event
-    cy.wait(500);
-    cy.get('[data-test="clone-button"]').click({ force: true });
-    // cy.get('[data-test="clone-button"]').click();
+    // cy.wait(500);
+    // cy.get('[data-test="clone-button"]').click({ force: true });
+    cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Intermediate Event was cloned
     cy.get(selectorIntermediateEvent).eq(1).should('be.visible');
