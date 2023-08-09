@@ -842,29 +842,27 @@ export default {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
-      const config = definition.config ? JSON.parse(definition.config) : null;
+
       if (!parser) {
         this.handleUnsupportedElement(bpmnType, flowElements, definition, artifacts, diagram);
         return;
       }
 
       this.removeUnsupportedElementAttributes(definition);
+
+      const config = definition.config ? JSON.parse(definition.config) : {};
+      const type = config?.processKey || parser(definition, this.moddle);
       
-      let type = parser(definition, this.moddle);
-
-      if (config?.processKey) {
-        type = config.processKey;
-      }
-
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
       }
 
-      const node = this.createNode(type, definition, diagram);
-
-      store.commit('addNode', node);
+      setTimeout(() => {
+        const node = this.createNode(type, definition, diagram);
+        store.commit('addNode', node);
+      }, 1500);
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
