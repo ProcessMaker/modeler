@@ -446,7 +446,6 @@ export function getIframeDocumentation() {
  */
 export function selectComponentType(component, type) {
   cy.get(component).first().click({ force:true });
-  cy.get('[data-test="select-type-dropdown"]').click();
   cy.get('[data-test="'+type+'"]').click();
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
 }
