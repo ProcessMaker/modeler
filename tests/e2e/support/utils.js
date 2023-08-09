@@ -388,7 +388,6 @@ export function assertBoundaryEventIsCloseToTask() {
 export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   clickAndDropElement(genericNode, nodePosition);
   waitToRenderAllShapes();
-  cy.get('[data-test=select-type-dropdown]').click();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
 
   cy.get('body').then($body => {
