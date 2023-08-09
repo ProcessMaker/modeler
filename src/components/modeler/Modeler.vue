@@ -862,10 +862,10 @@ export default {
       this.createNodeAsync(type, definition, diagram);
     },
     async createNodeAsync(type, definition, diagram) {
-      const node = await this.createNode(type, definition, diagram);
+      const node =  this.createNode(type, definition, diagram);
       store.commit('addNode', node);
     },
-    async createNode(type, definition, diagram) {
+    createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
         return new TimerEventNode(type, definition, diagram);
       }
@@ -970,7 +970,8 @@ export default {
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
-      const newNode = await this.createNode(control.type, definition, diagram);
+
+      const newNode = this.createNode(control.type, definition, diagram);
 
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
