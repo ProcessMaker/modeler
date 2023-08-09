@@ -838,7 +838,7 @@ export default {
         pull(flowElements, outgoingFlows);
       }
     },
-    async setNode(definition, flowElements, artifacts) {
+    setNode(definition, flowElements, artifacts) {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
@@ -859,6 +859,9 @@ export default {
         definition.set('name', '');
       }
 
+      this.createNodeAsync(type, definition, diagram);
+    },
+    async createNodeAsync(type, definition, diagram) {
       const node = await this.createNode(type, definition, diagram);
       store.commit('addNode', node);
     },
