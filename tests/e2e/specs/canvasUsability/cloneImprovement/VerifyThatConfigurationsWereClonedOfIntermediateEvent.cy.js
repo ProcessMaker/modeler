@@ -52,7 +52,6 @@ describe('Clone Improvement', () => {
     //Step 2: Add Intermediate Event
     const intermediatePosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediatePosition);
-    cy.get(selectorStartEvent).first().click();
 
     //Step 3: Change the Intermediate Event to Signal Event
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-signal-catch-event');
