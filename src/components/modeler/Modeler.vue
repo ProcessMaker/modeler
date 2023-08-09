@@ -838,7 +838,7 @@ export default {
         pull(flowElements, outgoingFlows);
       }
     },
-    setNode(definition, flowElements, artifacts) {
+    async setNode(definition, flowElements, artifacts) {
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
@@ -859,12 +859,10 @@ export default {
         definition.set('name', '');
       }
 
-      setTimeout(() => {
-        const node = this.createNode(type, definition, diagram);
-        store.commit('addNode', node);
-      }, 1500);
+      const node = await this.createNode(type, definition, diagram);
+      store.commit('addNode', node);
     },
-    createNode(type, definition, diagram) {
+    async createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
         return new TimerEventNode(type, definition, diagram);
       }
@@ -969,7 +967,7 @@ export default {
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
       diagram.bounds.x = x;
       diagram.bounds.y = y;
-      const newNode = this.createNode(control.type, definition, diagram);
+      const newNode = await this.createNode(control.type, definition, diagram);
 
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
