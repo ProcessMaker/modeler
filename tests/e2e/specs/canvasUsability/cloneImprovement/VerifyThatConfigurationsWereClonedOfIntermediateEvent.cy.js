@@ -58,6 +58,8 @@ describe('Clone Improvement', () => {
     selectComponentType(selectorIntermediateEvent,'switch-to-intermediate-signal-catch-event');
 
     //Step 4: Clone the Intermediate Event
+    // cy.wait(500);
+    // cy.get('[data-test="clone-button"]').click({ force: true });
     cy.get('[data-test="clone-button"]').click();
 
     //Validation 1: Verify that Intermediate Event was cloned

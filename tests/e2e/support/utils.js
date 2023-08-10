@@ -390,7 +390,6 @@ export function addNodeTypeToPaper(nodePosition, genericNode, nodeToSwitchTo) {
   waitToRenderAllShapes();
   cy.get('[data-test=select-type-dropdown]').click();
   cy.get(`[data-test=${nodeToSwitchTo}]`).click();
-
   cy.get('body').then($body => {
     if ($body.find('.modal').length > 0) {
       modalConfirm();

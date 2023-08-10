@@ -84,10 +84,10 @@ describe('Copy element', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
 
     cy.get('[data-test=copy-button]').click();
-
+    
     cy.get('.paper-container').click('center', { force: true });
     cy.get('body').type('{ctrl}v');
-
+    
     waitToRenderAllShapes();
 
     const process = `
