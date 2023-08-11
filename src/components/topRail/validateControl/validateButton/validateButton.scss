@@ -1,0 +1,25 @@
+.validate-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  background-color: #EBEEF2;
+  border: 0 none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  & > svg {
+    width: 18px;
+    fill: #212529;
+  }
+
+  &:active,
+  &-active {
+    background-color: #104A75;
+
+    & > svg {
+      fill: #ffffff;
+    }
+  }
+}

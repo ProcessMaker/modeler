@@ -7,11 +7,12 @@ import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspect
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import icon from '@/assets/toolpanel/boundary-timer-event.svg?url';
+import { defaultDurationTimerEvent } from '@/constants';
 
-export const defaultDurationValue = 'PT1H';
+export const id = 'processmaker-modeler-boundary-timer-event';
 
 export default merge(cloneDeep(boundaryEventConfig), {
-  id: 'processmaker-modeler-boundary-timer-event',
+  id,
   component,
   control: false,
   label: 'Boundary Timer Event',
@@ -23,7 +24,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
       eventDefinitions: [
         moddle.create('bpmn:TimerEventDefinition', {
           timeDuration: moddle.create('bpmn:Expression', {
-            body: defaultDurationValue,
+            body: defaultDurationTimerEvent,
           }),
         }),
       ],

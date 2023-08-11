@@ -42,7 +42,6 @@ import highlightConfig from '@/mixins/highlightConfig';
 import AddLaneAboveButton from '@/components/crown/crownButtons/addLaneAboveButton';
 import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButton';
 import { configurePool, elementShouldHaveFlowNodeRef } from '@/components/nodes/pool/poolUtils';
-import PoolEventHandlers from '@/components/nodes/pool/poolEventHandlers';
 import Node from '@/components/nodes/node';
 import { aPortEveryXPixels } from '@/portsUtils';
 
@@ -122,11 +121,17 @@ export default {
     moveEmbeddedElements(currentElement, toPool) {
       this.getElementsUnderArea(currentElement, this.graph)
         .filter(element => element.isEmbeddedIn(currentElement))
-        .map(element => element.component.node.definition)
-        .forEach((elementDefinition) => {
-          pull(this.containingProcess.get('flowElements'), elementDefinition);
-          toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+        .forEach((child) => {
+          child.component.node.pool = toPool;
+          pull(this.containingProcess.get('flowElements'), child.component.node.definition);
+          toPool.component.containingProcess.get('flowElements').push(child.component.node.definition);
         });
+    },
+    moveFlow(element, toPool){
+      const elementDefinition = element.component.node.definition;
+      /* Remove references to the element from the current process */
+      pull(this.containingProcess.get('flowElements'), elementDefinition);
+      toPool.component.containingProcess.get('flowElements').push(elementDefinition);
     },
     moveElement(element, toPool) {
       const elementDefinition = element.component.node.definition;
@@ -440,7 +445,7 @@ export default {
         .getEmbeddedCells()
         .filter(element =>
           elementShouldHaveFlowNodeRef(element) &&
-            element.component.node.pool === this.shape
+            element.component.node.pool === this.shape,
         )
         .forEach(element => {
           const lane = this.graph
@@ -500,13 +505,6 @@ export default {
     }
     this.setPoolSize(this.shape);
     this.$emit('set-shape-stacking', this.shape);
-
-    this.$nextTick(() => {
-      const handler = new PoolEventHandlers(this.graph, this.paper, this.paperManager, this.shape, this);
-      this.shape.listenTo(this.graph, 'change:position', (element, newPosition) => handler.onChangePosition(element, newPosition));
-      this.shape.listenTo(this.paper, 'cell:pointerdown', (cellView) => handler.onPointerDown(cellView));
-      this.shape.listenTo(this.paper, 'cell:pointerup', (cellView) => handler.onPointerUp(cellView));
-    });
   },
   beforeDestroy() {
     const participants = this.collaboration.get('participants');

@@ -1,5 +1,5 @@
 <template>
-  <div class="crown-config" :style="style" v-if="showCrown && !isMultiselect" role="menu">
+  <div class="crown-config" :style="style" v-if="showCrownConfig" role="menu">
     <slot />
 
     <association-flow-button
@@ -50,7 +50,7 @@
       v-on="$listeners"
     />
 
-    <duplicate-button
+    <clone-button
       :node="node"
       v-on="$listeners"
     />
@@ -84,7 +84,7 @@ import GenericFlowButton from '@/components/crown/crownButtons/genericFlowButton
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
 import DataAssociationFlowButton from '@/components/crown/crownButtons/dataAssociationFlowButton';
 import CopyButton from '@/components/crown/crownButtons/copyButton.vue';
-import DuplicateButton from '@/components/crown/crownButtons/duplicateButton.vue';
+import CloneButton from '@/components/crown/crownButtons/cloneButton.vue';
 import CrownDropdowns from '@/components/crown/crownButtons/crownDropdowns';
 import DefaultFlow from '@/components/crown/crownButtons/defaultFlowButton.vue';
 import poolLaneCrownConfig from '@/mixins/poolLaneCrownConfig';
@@ -101,7 +101,7 @@ export default {
     GenericFlowButton,
     AssociationFlowButton,
     CopyButton,
-    DuplicateButton,
+    CloneButton,
     DefaultFlow,
     DataAssociationFlowButton,
   },
@@ -140,7 +140,6 @@ export default {
       handler() {
         this.setNodeColor();
       },
-      deep: true,
     },
     highlightedShapes(shapes, prevShapes) {
       if (isEqual(shapes, prevShapes)) {
@@ -175,6 +174,9 @@ export default {
     this.$t = this.$t.bind(this);
   },
   computed: {
+    showCrownConfig() {
+      return this.showCrown && !this.isMultiselect && store.getters.isReadOnly === false;
+    },
     isMultiselect() {
       const countSelected = store.getters.highlightedShapes.length;
       return countSelected > 1;
@@ -223,8 +225,6 @@ export default {
       if (!store.getters.allowSavingElementPosition) {
         return;
       }
-
-      this.$emit('save-state');
     },
     repositionCrown() {
       const shapeView = this.shape.findView(this.paper);
@@ -236,7 +236,7 @@ export default {
       const { x, y, width } = shapeView.getBBox({ useModelGeometry: !this.isTextAnnotation && !this.isFlow });
 
       this.style = {
-        top: `${y - 45}px`,
+        top: `${y - 52}px`,
         left: `${x + width - 20}px`,
         cursor: 'pointer',
       };

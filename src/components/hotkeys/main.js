@@ -1,10 +1,16 @@
 import ZoomInOut from './zoomInOut';
 import CopyPaste from './copyPaste.js';
-import store from '@/store';
 import moveShapeByKeypress from './moveWithArrowKeys';
+import EscKey from './escKey';
+import store from '@/store';
 
 export default {
-  mixins: [ZoomInOut, CopyPaste],
+  mixins: [ZoomInOut, CopyPaste, EscKey],
+  computed: {
+    clientLeftPaper() {
+      return store.getters.clientLeftPaper;
+    },
+  },
   mounted() {
     document.addEventListener('keydown', this.keydownListener);
     document.addEventListener('keyup', this.keyupListener);
@@ -14,6 +20,7 @@ export default {
       // Pass event to all handlers
       this.zoomInOutHandler(event, options);
       this.copyPasteHandler(event, options);
+      this.escapeKeyHandler(event);
     },
     keyupListener(event) {
       if (event.code === 'Space') {
@@ -45,10 +52,10 @@ export default {
             const scale = this.paperManager.scale;
             this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
           }
-          if (this.canvasDragPosition) {
+          if (this.canvasDragPosition && !this.clientLeftPaper) {
             this.paperManager.translate(
               event.offsetX - this.canvasDragPosition.x,
-              event.offsetY - this.canvasDragPosition.y
+              event.offsetY - this.canvasDragPosition.y,
             );
           }
         });

@@ -1,4 +1,4 @@
-import NodeIdGenerator from './NodeIdGenerator';
+import { getNodeIdGenerator } from './NodeIdGenerator';
 import omit from 'lodash/omit';
 
 export default class NodeInspector {
@@ -6,7 +6,7 @@ export default class NodeInspector {
   constructor(definitions, options = {}) {
     this.index = window.NODE_INSPECTOR_FIRST_INDEX || new Date().getTime();
     this.definitions = definitions;
-    this.nodeIdGenerator = new NodeIdGenerator(this.definitions);
+    this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
     this.options = Object.assign({
       prefix: this.nodeIdGenerator.generate()[0],
     }, options);

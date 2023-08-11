@@ -14,6 +14,10 @@ import './polyfills.js';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBoundaryEvent } from '@/components/crown/crownButtons/icons';
+
+library.add(faBoundaryEvent);
 
 Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);

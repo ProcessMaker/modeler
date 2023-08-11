@@ -7,7 +7,7 @@
       v-on="$listeners"
       @click="$emit('toggle-dropdown-state', !dropdownOpen)"
     >
-      <i class="fas fa-cog cog-container--button" />
+      <i class="fas fa-cog" />
     </crown-button>
 
     <ul class="element-list" v-if="dropdownOpen" role="list">

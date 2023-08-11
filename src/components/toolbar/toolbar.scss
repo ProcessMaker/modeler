@@ -1,7 +1,7 @@
 $toolbar-background-color: #fff;
 
 .toolbar {
-  z-index: 2;
+  z-index: 3;
   height: $toolbar-height;
   cursor: auto;
   width: 100%;
@@ -10,14 +10,61 @@ $toolbar-background-color: #fff;
   > button {
     cursor: pointer;
   }
-}
 
-.toolbar-item {
-  font-family: "Open Sans";
-  font-style: normal;
-  font-size: 14px;
-  letter-spacing: -0.02em;
-  line-height: 21px;
+  &-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Open Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    color: #000000;
+    text-transform: capitalize;
+  }
+
+  &-version-status {
+    margin: 0 12px;
+    padding-left: 12px;
+    border-left: 1px solid #ADB3B8;
+    font-weight: 600;
+    color: #6C757D;
+  }
+
+  &-loading-status {
+    margin-right: 21px;
+
+    > svg {
+      margin-left: 5px;
+    }
+  }
+
+  &-publish {
+    width: 72px;
+    height: 30px;
+    margin-right: 21px;
+    background-color: #1572C2;
+    border-radius: 4px;
+    color: #FFFFFF !important;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    cursor: pointer;
+    outline: none;
+
+    &:hover {
+      background-color: #065c9d;
+    }
+  }
+
+  &-close {
+    width: 42px;
+    height: 22px;
+    margin-right: 21px;
+    color: #000000 !important;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none !important;
+  }
 }
 
 .text-black {
@@ -28,13 +75,30 @@ $toolbar-background-color: #fff;
   cursor: default !important;
 }
 
-.autosave-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .btn-ellipsis {
   border-top-left-radius: 4px !important;
   border-bottom-left-radius: 4px !important;
+}
+
+.save-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  background-color: #6C757D;
+  border: 0 none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  color: #ffffff;
+  &:active {
+    background-color: #5A6268;
+  }
+  &-label {
+    padding-left: 0.4em;
+  }
+}
+.divider {
+  border-left: 1px solid #6C757D;
+  height: 80%;
+  padding-left: 11px;
 }

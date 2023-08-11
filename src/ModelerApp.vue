@@ -1,29 +1,10 @@
 <template>
-  <b-container id="modeler-app" class="h-100 container position-relative p-0">
+  <b-container fluid id="modeler-app" class="h-100 position-relative p-0">
 
     <b-card no-body class="h-100 rounded-0">
-      <b-card-header class="d-flex align-items-center header">
-        <b-card-text class="m-0 font-weight-bolder">
-          {{ $t('ProcessMaker Modeler') }}
-        </b-card-text>
-
-        <div class="ml-auto">
-          <b-btn variant="secondary" size="sm" v-b-modal="'uploadmodal'" class="mr-2">
-            <i class="fas fa-upload mr-1"/>
-            {{ $t('Upload XML') }}
-          </b-btn>
-        </div>
-      </b-card-header>
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
         <modeler ref="modeler" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" />
       </b-card-body>
-      <validation-status ref="validationStatus"
-        :validation-errors="validationErrors"
-        :warnings="warnings"
-        :xml-manager="xmlManager"
-      >
-        <component v-for="(component, index) in validationBar" :key="index" :is="component" />
-      </validation-status>
     </b-card>
 
     <b-modal
@@ -50,7 +31,6 @@
 <script>
 import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
-import ValidationStatus from '@/components/validationStatus/ValidationStatus';
 import undoRedoStore from '@/undoRedoStore';
 
 const reader = new FileReader();
@@ -60,11 +40,9 @@ export default {
   components: {
     Modeler,
     FileUpload,
-    ValidationStatus,
   },
   data() {
     return {
-      validationBar: [],
       decorations: {
         borderOutline: {},
       },

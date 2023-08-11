@@ -2,7 +2,7 @@ import component from './parallelGateway.vue';
 import { gatewayDirection } from '../gateway/gatewayConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
-import DocumentationFormTextArea from '@/components/inspectors/DocumentationFormTextArea';
+import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 
 export default {
   id: 'processmaker-modeler-parallel-gateway',
@@ -34,7 +34,7 @@ export default {
           container: true,
           config: {
             initiallyOpen: true,
-            label: 'Configuration',
+            label: 'Properties',
             icon: 'cog',
             name: 'inspector-accordion-parallel-gateway-config',
           },
@@ -45,6 +45,7 @@ export default {
             },
           ],
         },
+        documentationAccordionConfig,
         {
           component: 'FormAccordion',
           container: true,
@@ -69,13 +70,6 @@ export default {
                   { value: gatewayDirection.diverging, content: 'Diverging' },
                   { value: gatewayDirection.converging, content: 'Converging' },
                 ],
-              },
-            },
-            {
-              component: DocumentationFormTextArea,
-              config: {
-                label: 'Description',
-                name: 'documentation',
               },
             },
           ],

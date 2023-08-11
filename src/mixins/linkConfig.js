@@ -4,6 +4,11 @@ import debounce from 'lodash/debounce';
 import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/nodeColors';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
+import store from '@/store';
+import {
+  COLOR_IDLE,
+  COLOR_COMPLETED,
+} from '@/components/highlightColors.js';
 
 const endpoints = {
   source: 'source',
@@ -15,7 +20,7 @@ function isPoint(item) {
 }
 
 export default {
-  props: ['highlighted', 'paper'],
+  props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
   data() {
     return {
       sourceShape: null,
@@ -39,6 +44,9 @@ export default {
       }
     },
     highlighted(highlighted) {
+      if (store.getters.isReadOnly) {
+        return;
+      }
       if (highlighted) {
         this.shape.attr({
           line: { stroke: '#5096db' },
@@ -72,13 +80,25 @@ export default {
     },
   },
   methods: {
+    setShapeHighlight() {
+      if (this.isCompleted) {
+        this.shape.attr({
+          line: { stroke: COLOR_COMPLETED },
+        });
+      }
+      else if (this.isIdle) {
+        this.shape.attr({
+          line: { stroke: COLOR_IDLE },
+        });
+      }
+    },
     findSourceShape() {
       return this.graph.getElements().find(element => {
         return element.component && element.component.node.definition === this.node.definition.get('sourceRef');
       });
     },
     setEndpoint(shape, endpoint, connectionOffset) {
-      if (isPoint(shape)) {
+      if (shape && isPoint(shape)) {
         return this.shape[endpoint](shape, {
           anchor: {
             name: 'modelCenter',
@@ -118,13 +138,36 @@ export default {
       const targetShape = this.shape.getTargetElement();
       resetShapeColor(targetShape);
 
+      this.shape.on('change:vertices', this.onChangeVertices);
+      this.shape.on('change:source', this.onChangeVertices);
+      this.shape.on('change:target', this.onChangeVertices);
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
-      this.shape.on('change:vertices change:source change:target', this.updateWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
       this.$emit('set-shape-stacking', sourceShape);
+    },
+    waitForUpdateWaypoints() {
+      return new Promise(resolve => {
+        this.updateWaypoints();
+        this.updateWaypoints.flush();
+        resolve();
+      });
+    },
+    /**
+      * On Change vertices handler
+      * @param {Object} link
+      * @param {Array} vertices
+      * @param {Object} options
+      */
+    async onChangeVertices(link, vertices, options){
+      if (options && options.ui) {
+        await this.$nextTick();
+        await this.waitForUpdateWaypoints();
+        await this.$nextTick();
+        this.$emit('save-state');
+      }
     },
     updateWaypoints() {
       const linkView = this.shape.findView(this.paper);
@@ -224,7 +267,6 @@ export default {
     emitSave() {
       if (this.highlighted) {
         this.updateWaypoints.flush();
-        this.$emit('save-state');
         document.removeEventListener('mouseup', this.emitSave);
         this.listeningToMouseup = false;
       }
@@ -245,6 +287,9 @@ export default {
 
     this.$once('click', () => {
       this.$nextTick(() => {
+        if (store.getters.isReadOnly) {
+          return;
+        }
         this.setupLinkTools();
       });
     });
@@ -252,6 +297,9 @@ export default {
     const targetRef = this.getTargetRef
       ? this.getTargetRef()
       : this.node.definition.get('targetRef');
+
+    // if flow doesn't have a targetRef such as incomplete node, return
+    if (!targetRef) return;
 
     if (targetRef.id) {
       const targetShape = this.graph.getElements().find(element => {
@@ -293,7 +341,6 @@ export default {
       this.paper.el.addEventListener('mousemove', this.updateLinkTarget);
 
       this.$emit('set-cursor', 'not-allowed');
-
       if (this.isValidConnection) {
         this.shape.stopListening(this.paper, 'blank:pointerdown link:pointerdown element:pointerdown', this.removeLink);
       } else {
@@ -305,6 +352,14 @@ export default {
     this.shape.on('change:vertices', function() {
       this.component.$emit('shape-resize');
     });
+
+    if (store.getters.isReadOnly) {
+      this.$nextTick(() => {
+        this.paperManager.awaitScheduledUpdates().then(() => {
+          this.setShapeHighlight();
+        });
+      });
+    }
   },
   beforeDestroy() {
     document.removeEventListener('mouseup', this.emitSave);

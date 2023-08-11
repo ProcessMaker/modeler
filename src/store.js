@@ -6,7 +6,7 @@ import uniq from 'lodash/uniq';
 Vue.use(Vuex);
 
 function setDefinitionPropertyReactive(definition, key, value) {
-  if (definition.hasOwnProperty(key)) {
+  if (Object.hasOwn(definition, key)) {
     definition.set(key, value);
     return;
   }
@@ -36,11 +36,12 @@ export default new Vuex.Store({
     globalProcesses: [],
     allowSavingElementPosition: true,
     copiedElements: [],
-    clientX: null,
-    clientY: null,
+    clientLeftPaper: false,
+    readOnly: false,
   },
   getters: {
     nodes: state => state.nodes,
+    paper: state => state.paper,
     highlightedNodes: state => state.highlightedNodes,
     nodeShape: state => node => {
       return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
@@ -56,10 +57,14 @@ export default new Vuex.Store({
     globalProcessEvents: (state, getters) => flatten(getters.globalProcesses.map(process => process.events)),
     allowSavingElementPosition: state => state.allowSavingElementPosition,
     copiedElements: state => state.copiedElements,
-    clientX: state => state.clientX,
-    clientY: state => state.clientY,
+    clientLeftPaper: state => state.clientLeftPaper,
+    isReadOnly: state => state.readOnly,
+    showComponent: state => !state.readOnly,
   },
   mutations: {
+    setReadOnly(state, value) {
+      state.readOnly = value;
+    },
     preventSavingElementPosition(state) {
       state.allowSavingElementPosition = false;
     },
@@ -73,6 +78,9 @@ export default new Vuex.Store({
       state.rootElements = rootElements;
     },
     updateNodeBounds(state, { node, bounds }) {
+      if (!bounds) {
+        return;
+      }
       Object.entries(bounds).forEach(([key, val]) => {
         if (key === '$type') {
           return;
@@ -148,13 +156,8 @@ export default new Vuex.Store({
     setCopiedElements(state, elements) {
       state.copiedElements = elements;
     },
-    setClientMousePosition(state, position) {
-      const { clientX, clientY } = position;
-      state = { clientX, clientY };
-    },
-    clientLeftPaper(state) {
-      state.clientX = null;
-      state.clientY = null;
+    setClientLeftPaper(state, status) {
+      state.clientLeftPaper = status;
     },
   },
   actions: {

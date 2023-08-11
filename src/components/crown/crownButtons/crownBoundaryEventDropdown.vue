@@ -4,12 +4,14 @@
       id="dropdown-button"
       aria-label="Select a boundary event"
       v-on="$listeners"
-      :src="boundaryEventIcon"
       @click="$emit('toggle-dropdown-state', !dropdownOpen)"
       data-test="boundary-event-dropdown"
       v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       :title="$t('Boundary Events')"
-    />
+      role="menuitem"
+    >
+      <font-awesome-icon :icon="['fpm', 'fa-boundary-event']"/>
+    </crown-button>
 
     <ul class="element-list" v-if="dropdownOpen" role="list">
       <li
@@ -41,10 +43,13 @@ import { getEmptyBoundaryEventPositionsForShape } from '@/portsUtils';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
 import store from '@/store';
 import Node from '@/components/nodes/node';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBoundaryEvent } from './icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
   name: 'CrownBoundaryEventDropdown',
-  components: { CrownButton },
+  components: { CrownButton, FontAwesomeIcon },
   props: {
     dropdownOpen: {
       type: Boolean,
@@ -93,6 +98,7 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
+    library.add(faBoundaryEvent);
   },
 };
 </script>

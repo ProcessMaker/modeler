@@ -8,7 +8,6 @@ export default new Vuex.Store({
     stack: [],
     position: null,
     disabled: false,
-    saved: false,
     isVersionsInstalled: false,
     isDraft: false,
     isLoading: false,
@@ -22,9 +21,6 @@ export default new Vuex.Store({
     },
     currentState(state) {
       return state.stack[state.position];
-    },
-    saved(state) {
-      return state.saved;
     },
     isVersionsInstalled(state) {
       return state.isVersionsInstalled;
@@ -52,9 +48,6 @@ export default new Vuex.Store({
     },
     enableSavingState(state) {
       state.disabled = false;
-    },
-    savedState(state, payload) {
-      state.saved = payload;
     },
     isVersionsInstalled(state, payload) {
       state.isVersionsInstalled = payload;
@@ -89,22 +82,14 @@ export default new Vuex.Store({
 
       commit('setPosition', state.position + 1);
     },
-    saved({ commit }) {
-      commit('savedState', true);
-
-      // Automatically remove the notification after 2 seconds.
-      setTimeout(() => {
-        commit('savedState', false);
-      }, 2000);
-    },
     enableVersions({ commit }) {
       commit('isVersionsInstalled', true);
     },
-    setVersionIndicator({ commit }, newState) {
-      commit('isDraft', newState);
+    setVersionIndicator({ commit }, value) {
+      commit('isDraft', value);
     },
-    setLoadingState({ commit }, newState) {
-      commit('isLoading', newState);
+    setLoadingState({ commit }, value) {
+      commit('isLoading', value);
     },
   },
 });

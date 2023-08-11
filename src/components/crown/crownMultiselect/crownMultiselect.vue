@@ -8,31 +8,40 @@
     <slot />
 
     <button
-      v-for="button in buttons"
+      v-for="button in availableButtons"
       :key="button.label"
       :aria-label="button.label"
-      class="btn"
+      class="crown-button"
       :title="button.label"
       :data-test="button.testId"
       :role="button.role"
-      @mousedown.stop.prevent
-      @click.stop.prevent="button.action"
+      @click="button.action"
     >
-      <i :class="`fa fa-${button.icon} text-white`" />
+      <font-awesome-icon v-if="button.iconPrefix === 'fpm'" :icon="[button.iconPrefix, `fa-${button.icon}`]"/>
+      <i v-else :class="`${button.iconPrefix} fa-${button.icon} text-dark`" />
     </button>
+    <crown-align v-show="showAlignmentButtons" :paper="paper" @save-state="$emit('save-state')" />
   </div>
 </template>
 
 <script>
 import store from '@/store';
 import runningInCypressTest from '@/runningInCypressTest';
+import crownAlign from './crownAlign';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faAlignLeft } from '../crownButtons/icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 export default {
   props: {
     paper: Object,
+    hasPools: Boolean,
   },
+  components:{ crownAlign, FontAwesomeIcon },
   data() {
     return {
+      showAlignmentButtons: false,
       runningInCypressTest: runningInCypressTest(),
       showCrown: false,
       savePositionOnPointerupEventSet: false,
@@ -42,21 +51,32 @@ export default {
       nodeToReplace: null,
       buttons: [
         {
-          label: 'Copy Seletion',
+          label: 'Copy Selection',
+          iconPrefix: 'fa',
           icon: 'clipboard',
           testId: 'copy-button',
           role: 'menuitem',
           action: this.copySelection,
         },
         {
-          label: 'Duplicate Selection',
+          label: 'Clone Selection',
+          iconPrefix: 'fa',
           icon: 'copy',
-          testId: 'duplicate-button',
+          testId: 'clone-button',
           role: 'menuitem',
-          action: this.duplicateSelection,
+          action: this.cloneSelection,
+        },
+        {
+          label: 'Align',
+          iconPrefix: 'fpm',
+          icon: 'align-left',
+          testId: 'align',
+          role: 'menuitem',
+          action: this.showAlign,
         },
         {
           label: 'Delete Element',
+          iconPrefix: 'fa',
           icon: 'trash-alt',
           testId: 'delete-button',
           role: 'menuitem',
@@ -68,6 +88,7 @@ export default {
   },
   created() {
     this.$t = this.$t.bind(this);
+    library.add(faAlignLeft);
   },
   computed: {
     isMultiSelect() {
@@ -75,13 +96,28 @@ export default {
       return countSelected > 1;
     },
     highlightedShapes: () => store.getters.highlightedShapes,
+    availableButtons() {
+      const hasPoolsSelected = this.hasPools;
+      return this.buttons.filter(button => {
+        if (button.testId === 'copy-button') {
+          return !hasPoolsSelected;
+        }
+        if (button.testId === 'clone-button') {
+          return !hasPoolsSelected;
+        }
+        return true;
+      });
+    },
   },
   methods: {
+    showAlign() {
+      this.showAlignmentButtons = !this.showAlignmentButtons;
+    },
     copySelection() {
       this.$emit('copy-selection');
     },
-    duplicateSelection() {
-      this.$emit('duplicate-selection');
+    cloneSelection() {
+      this.$emit('clone-selection');
     },
     deleteElement() {
       this.$emit('remove-nodes');
@@ -93,7 +129,7 @@ export default {
       this.shape.stopListening(
         this.paper,
         'element:pointerup',
-        this.setNodePosition
+        this.setNodePosition,
       );
       this.savePositionOnPointerupEventSet = false;
 
@@ -113,7 +149,7 @@ export default {
     setUpCrownConfig() {
       this.paper.on(
         'render:done scale:changed translate:changed',
-        this.repositionCrown
+        this.repositionCrown,
       );
     },
     setUpPositionHandling() {},
@@ -126,24 +162,49 @@ export default {
 };
 </script>
 
-<style scoped>
+
+<style lang="scss" scoped>
 .crown-multiselect {
   top: -38px;
   left: 50%;
   pointer-events: auto;
 }
-.btn {
-  border: none;
-  padding: 0;
-  margin-top: 0;
+.crown-button {
+  border:none;
   display: flex;
+  background-color: $primary-white;
+  border-radius: 4px;
+  color: $crown-icon-neutral;
+  width: 35px;
+  height: 35px;
+  font-size: 20px;
+  padding: 4px;
 }
+.crown-button:hover {
+  background-color: $crown-icon-hover-bg;
+  color: $crown-icon-neutral;
+}
+.crown-button:active {
+  background-color: $cronw-icon-active-bg;
+  color: $crown-icon-active;
+}
+
+.crown-button:focus {
+  background-color: #DEEBFF;
+  color: $crown-icon-active;
+}
+
 img {
-  margin: 0px 10px;
-  height: 15px;
+  margin: 0px 5px;
+  height: 20px;
+  width: 20px;
+  padding:2px;
+  fill: #5faaee;
 }
-i {
-  margin: 0px 10px;
-  font-size: 15px;
+.crown-button svg {
+  margin:auto;
+}
+.crown-button i {
+  margin:auto;
 }
 </style>

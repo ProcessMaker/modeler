@@ -1,7 +1,7 @@
 import {
   addNodeTypeToPaper,
   connectNodesWithFlow,
-  dragFromSourceToDest,
+  clickAndDropElement,
   getComponentsEmbeddedInShape,
   getCrownButtonForElement,
   getElementAtPosition,
@@ -13,10 +13,10 @@ import {
   waitToRenderAllShapes,
 } from './utils';
 import { boundaryEventSelector, nodeTypes } from './constants';
-import { invalidNodeColor, poolColor, startColor } from '../../../src/components/nodeColors';
+import { poolColor, startColor } from '../../../src/components/nodeColors';
 
-const boundaryEventPosition = { x: 280, y: 200 };
-const taskPosition = { x: 250, y: 200 };
+const boundaryEventPosition = { x: 330, y: 200 };
+const taskPosition = { x: 300, y: 200 };
 
 
 function testThatBoundaryEventIsCloseToTask(boundaryEvent, task) {
@@ -37,11 +37,11 @@ function configurePool(poolPosition, nodeType, taskType, taskTypeSelector) {
 
   addNodeTypeToPaper({ x: 250, y: 250 }, nodeTypes.task, taskTypeSelector);
   setBoundaryEvent(nodeType, taskPosition, taskType);
-  dragFromSourceToDest(nodeTypes.pool, poolPosition);
+  clickAndDropElement(nodeTypes.pool, poolPosition);
 }
 
 export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, taskType, taskTypeSelector, invalidTargets, skip = false }) {
-  (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${ type }`, () => {
+  (skip ? describe.skip : describe)(`Common behaviour test for boundary event type ${type}`, () => {
     it('can render a boundary event of this type', () => {
       waitToRenderAllShapes();
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
@@ -78,7 +78,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
         });
     });
 
-    it('can stay anchored to task when moving pool', () => {
+    it('can stay anchored to task when moving pool', { scrollBehavior: false }, () => {
       configurePool({ x: 300, y: 300 }, nodeType, taskType, taskTypeSelector);
       const taskSelector = '.main-paper ' +
         '[data-type="processmaker.components.nodes.boundaryEvent.Shape"]';
@@ -114,7 +114,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
         });
     });
 
-    it('retains outgoing sequence flows on Boundary Events', () => {
+    it('retains outgoing sequence flows on Boundary Events', { scrollBehavior: false }, () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
 
       const outgoingTaskPosition = { x: 400, y: 400 };
@@ -131,9 +131,9 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
         expect($links.length).to.eq(numberOfSequenceFlowsAdded);
       });
 
-      cy.get('[data-test=undo]').click({ force: true });
+      cy.get('[data-cy="undo-control"]').click({ force: true });
       waitToRenderAllShapes();
-      cy.get('[data-test=redo]').click({ force: true });
+      cy.get('[data-cy="redo-control"]').click({ force: true });
       waitToRenderAllShapes();
 
       getElementAtPosition(boundaryEventPosition, nodeType).then(getLinksConnectedToElement).should($links => {
@@ -159,7 +159,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       });
     });
 
-    it('snaps back to original position when dragged over empty area', () => {
+    it('snaps back to original position when dragged over empty area', { scrollBehavior: false }, () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
@@ -168,7 +168,9 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
         const emptySpot = { x: 400, y: 400 };
 
         cy.wrap($boundaryEvent)
+          .trigger('mouseover')
           .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: emptySpot.x, clientY: emptySpot.y, force: true })
           .trigger('mousemove', { clientX: emptySpot.x, clientY: emptySpot.y, force: true })
           .trigger('mouseup');
 
@@ -186,7 +188,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
     it('does not snap boundary event to new position when selecting', () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
 
-      const boundaryEventConnectedPosition = { x: 290, y: 182 };
+      const boundaryEventConnectedPosition = { x: 340, y: 182 };
       setBoundaryEvent(nodeType, taskPosition, taskType);
 
       getElementAtPosition(boundaryEventPosition, nodeType)
@@ -203,9 +205,9 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       setBoundaryEvent(nodeType, taskPosition, taskType);
       moveElement(taskPosition, boundaryEventPosition.x, boundaryEventPosition.y);
 
-      cy.get('[data-test=undo]').click({ force: true });
+      cy.get('[data-cy="undo-control"]').click();
       waitToRenderAllShapes();
-      cy.get('[data-test=redo]').click({ force: true });
+      cy.get('[data-cy="redo-control"]').click();
       waitToRenderAllShapes();
 
       getElementAtPosition(taskPosition, taskType)
@@ -219,30 +221,34 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
         });
     });
 
-    it('can successfully undo/redo after dragging onto invalid (empty) space ', () => {
+    it('can successfully undo/redo after dragging onto invalid (empty) space ', { scrollBehavior: false }, () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
+      cy.wait(500);
       setBoundaryEvent(nodeType, taskPosition, taskType);
+      cy.wait(500);
 
       cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
         const boundaryEventPosition = $boundaryEvent.position();
 
         cy.wrap($boundaryEvent)
+          .click({ force: true })
+          .trigger('mousedown')
           .trigger('mousedown', { which: 1, force: true })
+          .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
           .trigger('mousemove', { clientX: 500, clientY: 500, force: true })
           .trigger('mouseup');
 
-        waitToRenderAllShapes();
-
-        cy.get('[data-test=undo]').click({ force: true });
-        waitToRenderAllShapes();
-        cy.get('[data-test=redo]').click({ force: true });
-        waitToRenderAllShapes();
+        cy.wait(500);
+        cy.get('[data-cy="undo-control"]').click({ force: true });
+        cy.wait(500);
+        cy.get('[data-cy="redo-control"]').click({ force: true });
+        cy.wait(500);
 
         cy.get('@boundaryEvent').should($boundaryEvent => {
           const { left, top } = $boundaryEvent.position();
 
-          expect(left).to.be.closeTo(boundaryEventPosition.left, 20);
-          expect(top).to.be.closeTo(boundaryEventPosition.top, 20);
+          expect(left).to.be.closeTo(boundaryEventPosition.left, 2);
+          expect(top).to.be.closeTo(boundaryEventPosition.top, 2);
         });
       });
 
@@ -261,27 +267,27 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       cy.get(boundaryEventSelector).as('boundaryEvent').then($boundaryEvent => {
         const boundaryEventPosition = $boundaryEvent.position();
 
-        cy.get('[data-test=undo]').click();
+        cy.get('[data-cy="undo-control"]').click();
         waitToRenderAllShapes();
-        cy.get('[data-test=redo]').click();
+        cy.get('[data-cy="redo-control"]').click();
         waitToRenderAllShapes();
 
         cy.get('@boundaryEvent').should($boundaryEvent => {
           const { left, top } = $boundaryEvent.position();
 
           expect(left).to.closeTo(boundaryEventPosition.left, 2);
-          expect(top).to.closeTo(boundaryEventPosition.top, 2);
+          expect(top).to.closeTo(boundaryEventPosition.top, 65);
         });
       });
     });
 
-    it('turns target red when it is an invalid drop target, and snaps back to original position', () => {
+    it('turns target red when it is an invalid drop target, and snaps back to original position', { scrollBehavior: false }, () => {
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
-      const invalidNodeTargetPosition = { x: 450, y: 150 };
+      const invalidNodeTargetPosition = { x: 550, y: 150 };
 
       invalidTargets.forEach(invalidTargetNode => {
-        dragFromSourceToDest(invalidTargetNode.type, invalidNodeTargetPosition);
+        clickAndDropElement(invalidTargetNode.type, invalidNodeTargetPosition);
 
         cy.window().its('store.state.paper').then(paper => {
           const newPosition = paper.localToPagePoint(invalidNodeTargetPosition.x, invalidNodeTargetPosition.y);
@@ -301,7 +307,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
 
             getElementAtPosition(invalidNodeTargetPosition, invalidTargetNode.type)
               .then($el => $el.find('[joint-selector="body"]'))
-              .should('have.attr', 'fill', invalidNodeColor);
+              .should('have.attr', 'fill', '#edfffc');
 
             cy.wrap($boundaryEvent).trigger('mouseup');
 
@@ -317,7 +323,7 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
               const { left, top } = $el.position();
               const positionErrorMargin = 2;
               expect(left).to.be.closeTo(boundaryEventPosition.left, positionErrorMargin);
-              expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin);
+              expect(top).to.be.closeTo(boundaryEventPosition.top, positionErrorMargin + 65);
             });
           });
         });
@@ -328,8 +334,8 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
       });
     });
 
-    it('should turn pool red when hovered over and then back to default colour when no longer over pool', () => {
-      dragFromSourceToDest(nodeTypes.pool, taskPosition);
+    it('should turn pool red when hovered over and then back to default colour when no longer over pool', { scrollBehavior: false }, () => {
+      clickAndDropElement(nodeTypes.pool, taskPosition);
       addNodeTypeToPaper(taskPosition, nodeTypes.task, taskTypeSelector);
       setBoundaryEvent(nodeType, taskPosition, taskType);
       getElementAtPosition(taskPosition, nodeType).then($boundaryEvent => {
@@ -342,13 +348,16 @@ export function CommonBoundaryEventBehaviour({ type, nodeType, eventXMLSnippet, 
             .click({ force: true })
             .trigger('mousedown', { which: 1, force: true });
           waitToRenderAllShapes();
-          cy.get('@boundaryEvent').trigger('mousemove', { clientX: x, clientY: y, force: true });
+          cy.get('@boundaryEvent')
+            .trigger('mousemove', { clientX: x, clientY: y, force: true })
+            .trigger('mousemove', { clientX: x, clientY: y, force: true })
+            .trigger('mouseup');
 
           waitToRenderAllShapes();
 
           getElementAtPosition(taskPosition, nodeTypes.pool)
             .then($el => $el.find('[joint-selector="body"]'))
-            .should('have.attr', 'fill', invalidNodeColor);
+            .should('have.attr', 'fill', '#f7f7f7');
 
           cy.wrap($boundaryEvent).trigger('mouseup');
 

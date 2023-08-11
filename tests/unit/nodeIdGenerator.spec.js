@@ -11,6 +11,7 @@ function definitionsFactory(definitionIds = [], diagramIds = []) {
     },
   }));
   return {
+    rootElements: definitionIds.map(id => ({ $type: 'bpmn:task', id })),
     diagrams: [{
       $type: 'bpmndi:BPMNDiagram',
       plane: {

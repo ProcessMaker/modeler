@@ -16,14 +16,11 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@cypress/code-coverage/support';
-import { dragFromSourceToDest, waitToRenderAllShapes } from './utils';
+import { clickAndDropElement, waitToRenderAllShapes } from './utils';
 import { nodeTypes } from './constants';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
-// Disable saving screenshots
-Cypress.Screenshot.defaults({ screenshotOnRunFailure: false });
 
 Cypress.Cookies.defaults({
   preserve: ['processmaker_session', /remember_web_.*/],
@@ -38,9 +35,10 @@ Cypress.on('scrolled', $el => {
 
 beforeEach(() => {
   cy.loadModeler();
-  dragFromSourceToDest(nodeTypes.startEvent, { x: 150, y: 150 });
+  cy.get('.control-add').click();
+
+  clickAndDropElement(nodeTypes.startEvent, { x: 210, y: 200 });
   waitToRenderAllShapes();
-  cy.get('.paper-container').click();
 });
 
 require('./printLogsToTerminal');

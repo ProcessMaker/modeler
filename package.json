@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.27.0",
+  "version": "1.36.10",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,22 +11,24 @@
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "bundle-analyze": "npm run build-bundle -- --analyze",
     "bundle-link": "npm run build-bundle",
-    "postbundle-link": "npm link",
+    "check-peer-deps": "npm ls --depth=0",
+    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
+    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
     "lint-fix": "vue-cli-service lint",
+    "mkdir:reports": "mkdir reports || true",
+    "open-cypress": "TZ=UTC cypress open",
+    "postbundle-link": "npm link",
+    "posttest": "npm run report:combined",
+    "precombine:reports": "npm run copy:reports && mkdir .nyc_output || true",
+    "precopy:reports": "npm run mkdir:reports",
+    "prereport:combined": "npm run combine:reports",
     "pretest": "npm run check-peer-deps",
     "pretest-unit": "rm -rf .nyc_output || true",
+    "report:combined": "nyc report --reporter lcov --report-dir coverage",
+    "run-cypress": "TZ=UTC cypress run",
     "test": "npm run test-unit && npm run test-ci",
-    "check-peer-deps": "npm ls --depth=0",
-    "posttest": "npm run report:combined",
-    "test-unit": "JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit",
     "test-ci": "TZ=UTC vue-cli-service test:e2e --mode test --headless --browser chrome -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml",
-    "mkdir:reports": "mkdir reports || true",
-    "precopy:reports": "npm run mkdir:reports",
-    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
-    "precombine:reports": "npm run copy:reports && mkdir .nyc_output || true",
-    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
-    "prereport:combined": "npm run combine:reports",
-    "report:combined": "nyc report --reporter lcov --report-dir coverage"
+    "test-unit": "JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ vue-cli-service test:unit --ci --runInBand --reporters=default --reporters=jest-junit"
   },
   "main": "./dist/modeler.common.js",
   "files": [
@@ -43,16 +45,15 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
-    "@processmaker/screen-builder": "2.29.0",
-    "@processmaker/vue-form-elements": "0.29.1",
+    "@processmaker/screen-builder": "2.70.0",
+    "@processmaker/vue-form-elements": "0.45.0",
     "@processmaker/vue-multiselect": "^2.2.0",
-    "acorn": "^6.4.2",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
     "bpmn-moddle": "^6.0.0",
     "bpmnlint": "^6.4.0",
     "bpmnlint-plugin-processmaker": "1.5.0",
-    "core-js": "^3.7.0",
+    "core-js": "^3.8.3",
     "file-saver": "^2.0.5",
     "jest-junit": "^12.0.0",
     "jointjs": "^3.1.1",
@@ -66,42 +67,46 @@
     "tinycolor2": "^1.4.2",
     "vue": "^2.6.12",
     "vue-deepset": "^0.6.3",
+    "vue-inline-svg": "^2.1.3",
     "vue-monaco": "^1.2.1",
+    "vue-popperjs": "^2.3.0",
     "vue-upload-component": "^2.8.20",
     "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.7",
-    "@cypress/code-coverage": "^1.14.0",
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@cypress/code-coverage": "^3.11.0",
     "@modyfi/vite-plugin-yaml": "^1.0.4",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/processmaker-bpmn-moddle": "0.13.0",
+    "@processmaker/processmaker-bpmn-moddle": "0.14.0",
     "@types/jest": "^24.9.1",
     "@vue/babel-preset-app": "^5.0.4",
-    "@vue/cli-plugin-babel": "^4.5.9",
-    "@vue/cli-plugin-e2e-cypress": "5.0.0",
-    "@vue/cli-plugin-eslint": "^4.5.9",
-    "@vue/cli-plugin-unit-jest": "^4.5.9",
-    "@vue/cli-service": "^4.5.9",
-    "@vue/test-utils": "^1.0.0-beta.29",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-e2e-cypress": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-unit-jest": "~5.0.0",
+    "@vue/cli-service": "~5.0.8",
+    "@vue/test-utils": "^1.3.6",
+    "@vue/vue2-jest": "^27.0.0-alpha.2",
     "axios": "^0.21.0",
     "axios-mock-adapter": "^1.19.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^24.9.0",
-    "babel-plugin-istanbul": "^5.2.0",
+    "babel-jest": "^27.0.6",
     "bpmnlint-loader": "^0.1.4",
     "circular-dependency-plugin": "^5.2.2",
     "copy-webpack-plugin": "^5.1.1",
-    "cypress": "6.2.0",
-    "cypress-vue-unit-test": "^1.11.7",
-    "eslint": "^5.16.0",
+    "cypress": "10.3.0",
+    "eslint": "^7.32.0",
     "eslint-plugin-cypress": "^2.12.1",
-    "eslint-plugin-vue": "^5.2.3",
+    "eslint-plugin-jest": "^27.2.3",
+    "eslint-plugin-vue": "^8.0.3",
     "husky": "^4.3.5",
     "i18next": "^15.0.8",
-    "istanbul-lib-coverage": "^2.0.5",
+    "jest": "^27.1.0",
+    "jest-environment-jsdom": "^27.5.1",
     "nyc": "^14.1.1",
     "rollup-plugin-bpmnlint": "^0.4.1",
     "sass": "^1.51.0",
@@ -119,7 +124,6 @@
     "vue-loader": "latest",
     "vue-template-compiler": "^2.6.12",
     "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.12",
     "yargs": "^14.2.3"
   },
   "peerDependencies": {
@@ -149,6 +153,16 @@
     "not ie <= 8",
     "chrome >= 69"
   ],
+  "engines": {
+    "npm": ">=8",
+    "node": ">=16 <18"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./checkForOnly.sh",
+      "pre-push": "npm run lint && npm run test-unit"
+    }
+  },
   "nyc": {
     "extension": [
       ".js",
@@ -158,15 +172,5 @@
       "tests/**/*.js"
     ],
     "report-dir": "cypress-coverage"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "./checkForOnly.sh",
-      "pre-push": "npm run lint && npm run test-unit"
-    }
-  },
-  "engines": {
-    "npm": ">=8",
-    "node": ">=16 <18"
   }
 }
