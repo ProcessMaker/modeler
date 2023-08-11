@@ -5,8 +5,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "open-cypress": "TZ=UTC cypress open",
-    "run-cypress": "TZ=UTC cypress run",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
     "bundle-analyze": "npm run build-bundle -- --analyze",

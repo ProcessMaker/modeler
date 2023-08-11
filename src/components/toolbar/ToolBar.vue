@@ -113,18 +113,10 @@ import Breadcrumb from '@/components/toolbar/breadcrumb/Breadcrumb';
 import TopRail from '@/components/topRail/TopRail.vue';
 export default {
   name: 'tool-bar',
-  components: { Breadcrumb, AlignButtons, FontAwesomeIcon },
-  props: {
-    canvasDragPosition: {},
-    cursor: {},
-    paperManager: {},
-    isRendering: {
-      type: Boolean,
-    },
-    breadcrumbData: {
-      type: Array,
-    },
-    panelsCompressed: Boolean,
+  components: {
+    Breadcrumb,
+    TopRail,
+    FontAwesomeIcon,
   },
   props: [
     'canvasDragPosition',

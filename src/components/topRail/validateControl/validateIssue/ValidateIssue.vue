@@ -18,6 +18,8 @@
 
 <script>
 import InlineSvg from 'vue-inline-svg';
+import issueCloseIcon from '@/assets/topRail/issue-close.svg?url';
+import issueOpenIcon from '@/assets/topRail/issue-open.svg?url';
 
 export default {
   components: {
@@ -32,8 +34,8 @@ export default {
   data() {
     return {
       isOpen: false,
-      issueCloseIcon: require('@/assets/topRail/issue-close.svg'),
-      issueOpenIcon: require('@/assets/topRail/issue-open.svg'),
+      issueCloseIcon,
+      issueOpenIcon,
     };
   },
   watch: {

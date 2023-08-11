@@ -4,6 +4,10 @@ import advancedAccordionConfig from '@/components/inspectors/advancedAccordionCo
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
 import icon from '@/assets/toolpanel/generic-gateway.svg?url';
+import exclusiveGatewayIcon from '@/assets/toolpanel/exclusive-gateway.svg?url';
+import inclusiveGatewayIcon from '@/assets/toolpanel/inclusive-gateway.svg?url';
+import parallelGatewayIcon from '@/assets/toolpanel/parallel-gateway.svg?url';
+import eventBasedGatewayIcon from '@/assets/toolpanel/event-based-gateway.svg?url';
 
 const id = 'processmaker-modeler-exclusive-gateway';
 
@@ -18,28 +22,28 @@ export default {
   rank: 50,
   items: [
     {
-      icon: require('@/assets/toolpanel/exclusive-gateway.svg'),
+      icon: exclusiveGatewayIcon,
       label: 'Exclusive Gateway',
       control: true,
       rank: 51,
       id: 'processmaker-modeler-exclusive-gateway',
     },
     {
-      icon: require('@/assets/toolpanel/inclusive-gateway.svg'),
+      icon: inclusiveGatewayIcon,
       label: 'Inclusive Gateway',
       control: true,
       rank: 52,
       id: 'processmaker-modeler-inclusive-gateway',
     },
     {
-      icon: require('@/assets/toolpanel/parallel-gateway.svg'),
+      icon: parallelGatewayIcon,
       label: 'Parallel Gateway',
       control: true,
       rank: 53,
       id: 'processmaker-modeler-parallel-gateway',
     },
     {
-      icon: require('@/assets/toolpanel/event-based-gateway.svg'),
+      icon: eventBasedGatewayIcon,
       label: 'Event Based Gateway',
       control: true,
       rank: 54,
