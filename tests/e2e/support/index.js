@@ -37,7 +37,7 @@ beforeEach(() => {
   cy.loadModeler();
   cy.get('.control-add').click();
 
-  clickAndDropElement(nodeTypes.startEvent, { x: 210, y: 200 });
+  clickAndDropElement(nodeTypes.startEvent, { x: 150, y: 150 });
   waitToRenderAllShapes();
 });
 

@@ -31,6 +31,7 @@ describe.skip('Selection of pool with shift click', () => {
     cy.get('.paper-container')
       .trigger('mousedown', { x: 100, y: 20, which: 1 })
       .trigger('mousemove', { x: 680, y: 700 })
+      .trigger('mousemove', { x: 680, y: 700 })
       .trigger('mouseup', { force: true });
 
     // Validate that two pools were selected ([data-length=2])
@@ -39,14 +40,14 @@ describe.skip('Selection of pool with shift click', () => {
     // get current position of pool 1
     // eslint-disable-next-line no-unused-vars
     let pool1;
-    getElementAtPosition(pool1Position, nodeTypes.pool, 12, 100).then(($pool1) => {
+    getElementAtPosition(pool1Position, nodeTypes.pool,true, 12, 100).then(($pool1) => {
       pool1 = $pool1[0].getBoundingClientRect();
     });
 
     // get current position of pool 2
     // eslint-disable-next-line no-unused-vars
     let pool2;
-    getElementAtPosition(pool2Position, nodeTypes.pool).then(($pool2) => {
+    getElementAtPosition(pool2Position, nodeTypes.pool,true).then(($pool2) => {
       pool2 = $pool2[0].getBoundingClientRect();
     });
 
@@ -54,6 +55,7 @@ describe.skip('Selection of pool with shift click', () => {
     const translateAmount = { x: 0, y: 100 };
     // click and drag fromPosition to fromPosition + translateAmount
     cy.get('.paper-container').trigger('mousedown', { which: 1, x: pool1Position.x, y: pool1Position.y  });
+    cy.get('.paper-container').trigger('mousemove', { x: pool1Position.x + translateAmount.x, y: pool1Position.y + translateAmount.y  });
     cy.get('.paper-container').trigger('mousemove', { x: pool1Position.x + translateAmount.x, y: pool1Position.y + translateAmount.y  });
     waitToRenderAllShapes();
     cy.get('.paper-container').trigger('mouseup',{ force: true });
@@ -70,12 +72,12 @@ describe.skip('Selection of pool with shift click', () => {
       y: pool2Position.y + translateAmount.y,
     };
 
-    getElementAtPosition(newPool1Position, nodeTypes.pool).then(($pool1) => {
+    getElementAtPosition(newPool1Position, nodeTypes.pool,true).then(($pool1) => {
       const { y } = $pool1[0].getBoundingClientRect();
       expect(pool1.y).to.be.lessThan(y);
     });
 
-    getElementAtPosition(newPool2Position, nodeTypes.pool).then(($pool2) => {
+    getElementAtPosition(newPool2Position, nodeTypes.pool,true).then(($pool2) => {
       const { y } = $pool2[0].getBoundingClientRect();
       expect(pool2.y).to.be.lessThan(y);
     });

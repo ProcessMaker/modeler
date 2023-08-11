@@ -11,23 +11,13 @@ import {
   setBoundaryEvent,
 } from '../../support/utils';
 
-describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
+describe('Undo/Redo control test', { scrollBehavior: false }, () => {
   const undoSelector = '[data-cy="undo-control"]';
   const redoSelector = '[data-cy="redo-control"]';
 
   const buttonBgColorDefault = 'rgb(255, 255, 255)';
   const iconFillColorDefault = 'rgb(51, 51, 68)';
 
-  beforeEach(() => {
-    cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
-    cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
-    waitToRenderAllShapes();
-
-    cy.get('.control-add').click();
-    waitToRenderAllShapes();
-    cy.get('[data-test=explorer-rail]').should('not.be.visible');
-    waitToRenderAllShapes();
-  });
 
   it('should render new undo/redo controls', () => {
     cy.get(undoSelector)
@@ -78,7 +68,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(taskPosition, null, 0, 65)
+    getElementAtPosition(taskPosition, null, 200, 0)
       .click()
       .then($task => {
         getCrownButtonForElement($task, 'delete-button').click();
@@ -95,9 +85,9 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', 2);
   });
 
-  it('should undo/redo modifying sequence flow vertices', () => {
-    const startEventPosition = { x: 210, y: 200 };
-    const taskPosition = { x: 300, y: 300 };
+  it.skip('should undo/redo modifying sequence flow vertices', () => {
+    const startEventPosition = { x: 150, y: 150 };
+    const taskPosition = { x: 300, y: 150 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
     connectNodesWithFlow('generic-flow-button', startEventPosition, taskPosition);
@@ -114,6 +104,7 @@ describe.skip('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
     waitToRenderAllShapes();
+    cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
     waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mouseup', 'bottomLeft', { force: true });

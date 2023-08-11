@@ -1,4 +1,4 @@
-describe.skip('Explorer Rail Tests', () => {
+describe('Explorer Rail Tests', () => {
   it('Should pin an element', () => {
     // Try with Start Event
     cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();

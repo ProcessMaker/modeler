@@ -6,7 +6,7 @@ import {
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Canvas Selection', () => {
+describe('Canvas Selection', () => {
   it('Verify that controls are selected when the user click on it', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskFormPosition = {
@@ -33,6 +33,7 @@ describe.skip('Canvas Selection', () => {
     // Select all elements
     cy.get('.paper-container').as('paperContainer').click();
     cy.get('.paper-container').trigger('mousedown', 'topLeft');
+    cy.get('.paper-container').trigger('mousemove', 'bottomRight');
     cy.get('.paper-container').trigger('mousemove', 'bottomRight');
     waitToRenderAllShapes();
     cy.get('.paper-container').trigger('mouseup', 'bottomRight');

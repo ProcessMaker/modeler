@@ -20,7 +20,17 @@ export function getTinyMceEditorInModal() {
     .then(cy.wrap);
 }
 
-export function setBoundaryEvent(nodeType, taskPosition, taskType = nodeTypes.task) {
+export function setBoundaryEvent(nodeType, taskPositionA, taskType = nodeTypes.task) {
+  const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
+  let taskPosition = taskPositionA;
+
+  // Add explorer width
+  if (explorerIsVisible) {
+    taskPosition = {
+      x: taskPositionA.x + 200,
+      y: taskPositionA.y,
+    };
+  }
   const dataTest = nodeType.replace('processmaker-modeler-', 'add-');
   waitToRenderAllShapes();
 
@@ -162,7 +172,17 @@ export function waitToRenderNodeUpdates() {
   cy.wait(saveDebounce);
 }
 
-export function connectNodesWithFlow(flowType, startPosition, endPosition, clickPosition = 'center', startComponentType = null) {
+export function connectNodesWithFlow(flowType, startPositionA, endPosition, clickPosition = 'center', startComponentType = null) {
+  const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
+  let startPosition = startPositionA;
+
+  // Add explorer width
+  if (explorerIsVisible) {
+    startPosition = {
+      x: startPositionA.x + 200,
+      y: startPositionA.y,
+    };
+  }
   const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
   return getElementAtPosition(startPosition, startComponentType)
     .trigger('mousedown', mouseEvent, { force: true })
