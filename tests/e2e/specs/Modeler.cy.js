@@ -98,7 +98,7 @@ describe('Modeler', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', initialNumberOfElements + numberOfNewElementsAdded);
   });
 
-  it.skip('Generates sequential, unique node IDs', { scrollBehavior: 'bottom'}, () => {
+  it.skip('Generates sequential, unique node IDs', { scrollBehavior: 'bottom' }, () => {
     toggleInspector();
     waitToRenderAllShapes();
 

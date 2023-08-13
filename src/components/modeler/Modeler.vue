@@ -754,7 +754,7 @@ export default {
         this.ensureCancelActivityIsAddedToBoundaryEvents(process);
 
         this.addLanes(process);
-        console.log("=== SET UP DIAGRAM", process);
+        console.log('=== SET UP DIAGRAM', process);
         const flowElements = process.get('flowElements');
         console.log('==== FLOW ELEMENTS', flowElements);
         const artifacts = process.get('artifacts');
@@ -842,8 +842,8 @@ export default {
       }
     },
     setNode(definition, flowElements, artifacts) {
-      console.log("===== PLANE ELEMENTS =====", this.planeElements);
-      console.log("=== DEFINITION", definition);
+      console.log('===== PLANE ELEMENTS =====', this.planeElements);
+      console.log('=== DEFINITION', definition);
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
@@ -867,14 +867,14 @@ export default {
       this.createNodeAsync(type, definition, diagram);
     },
     async createNodeAsync(type, definition, diagram) {
-      console.log("CREATE NODE ASYNC");
+      console.log('CREATE NODE ASYNC');
       const node =  await this.createNode(type, definition, diagram);
-      console.log("AFTER CREATE NODE", node);
+      console.log('AFTER CREATE NODE', node);
       store.dispatch('addNodeSequential', node);
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
-        console.log("IS TIMER TYPE", new TimerEventNode(type, definition, diagram));
+        console.log('IS TIMER TYPE', new TimerEventNode(type, definition, diagram));
         return new TimerEventNode(type, definition, diagram);
       }
       // Remove undefined or null properties
@@ -884,7 +884,7 @@ export default {
         }
       });
       if (Node.isPmBlock(type)) {
-        console.log("IS PM BLOCK NEW PMBLOCK NODE", new PmBlockNode(type, definition, diagram));
+        console.log('IS PM BLOCK NEW PMBLOCK NODE', new PmBlockNode(type, definition, diagram));
         return new PmBlockNode(type, definition, diagram);
       }
       // console.log("IS NOT PM BLOKC", type);

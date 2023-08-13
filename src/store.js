@@ -122,7 +122,7 @@ export default new Vuex.Store({
         });
     },
     addNode(state, node) {
-      console.log("ADD NODE", state, node);
+      console.log('ADD NODE', state, node);
       /* Add an unchanging ID that Vue can use to track the component
        * (used in v-for when rendering the node). Relying on the
        * definition ID will cause issues as the user can change the
@@ -130,7 +130,7 @@ export default new Vuex.Store({
       node._modelerId = '_modelerId_' + node.definition.get('id');
 
       state.nodes.push(node);
-      console.log("NODES", state.nodes);
+      console.log('NODES', state.nodes);
     },
     removeNode(state, node) {
       const index = state.nodes.indexOf(node);
@@ -179,11 +179,11 @@ export default new Vuex.Store({
         /* Ignore error */
       }
     },
-    async addNodeSequential({commit}, node) {
+    async addNodeSequential({ commit }, node) {
       await new Promise(resolve => {
         commit('addNode', node);
         resolve();
       });
-    }
+    },
   },
 });

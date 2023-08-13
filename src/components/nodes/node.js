@@ -24,7 +24,7 @@ export default class Node {
     this.type = type;
     this.definition = definition;
     this.diagram = diagram;
-    console.log("CONSTRUCTOR", type, definition, diagram);
+    console.log('CONSTRUCTOR', type, definition, diagram);
   }
 
   isBpmnType(...types) {

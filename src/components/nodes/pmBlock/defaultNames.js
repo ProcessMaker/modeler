@@ -9,10 +9,10 @@ async function generateDefaultNames() {
       defaultNames[nodeId] = nodeNameWithSpaces;
       return defaultNames;
     }, {});
-  }
+  };
   
   try {
-    const response = await window.ProcessMaker.apiClient.get(`/modeler/pm-blocks`);
+    const response = await window.ProcessMaker.apiClient.get('/modeler/pm-blocks');
     const nodeIds = response.data;
   
     const defaultNames = convertToDefaultNames(nodeIds);
@@ -25,7 +25,7 @@ async function generateDefaultNames() {
   }
 }
 
-(async () => {
+(async() => {
   const names = await generateDefaultNames();
   console.log('Returned default names:', names);
 })();
