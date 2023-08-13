@@ -4,11 +4,15 @@ import {
   defaultIntermediateNames,
   defaultStartNames,
   defaultTaskNames,
+  defaultPmBlockNames,
 } from '@/components/nodes/defaultNames';
 
 function getDefaultNames(node) {
   if (node.isStartEvent()) {
     return defaultStartNames;
+  }
+  if (node.isPmBlock()) {
+    return defaultPmBlockNames;
   }
   if (node.isTask()) {
     return defaultTaskNames;

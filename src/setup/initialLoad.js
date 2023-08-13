@@ -5,6 +5,7 @@ import './extensions/twitterConnector';
 import './extensions/testCustomConnector';
 import './extensions/customMarker';
 import registerNodes from '@/setup/registerNodes';
+import registerPmBlocks from '@/setup/registerPmBlocks';
 
 const blank = `
 <?xml version="1.0" encoding="UTF-8"?>
@@ -16,7 +17,7 @@ const blank = `
 </bpmn:definitions>
 `;
 
-window.ProcessMaker.EventBus.$on('modeler-init', registerNodes);
+window.ProcessMaker.EventBus.$on('modeler-init', registerNodes, registerPmBlocks);
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
   loadXML(blank);
 });

@@ -4,6 +4,7 @@ import {
   defaultIntermediateNames,
   defaultStartNames,
   defaultTaskNames,
+  defaultPmBlockNames,
 } from '@/components/nodes/defaultNames';
 
 import cloneDeep from 'lodash/cloneDeep';
@@ -23,6 +24,7 @@ export default class Node {
     this.type = type;
     this.definition = definition;
     this.diagram = diagram;
+    console.log("CONSTRUCTOR", type, definition, diagram);
   }
 
   isBpmnType(...types) {
@@ -48,6 +50,10 @@ export default class Node {
 
   isEndEvent() {
     return Object.keys(defaultEndNames).includes(this.type);
+  }
+
+  isPmBlock() {
+    return Object.keys(defaultPmBlockNames).includes(this.type);
   }
 
   isTask() {
@@ -235,5 +241,9 @@ export default class Node {
       'processmaker-modeler-start-timer-event',
       'processmaker-modeler-intermediate-catch-timer-event',
     ].includes(type);
+  }
+
+  static isPmBlock(type) {
+    return type.includes('pm-block') && type.includes('call-activity');
   }
 }

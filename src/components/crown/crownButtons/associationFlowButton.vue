@@ -37,7 +37,6 @@ export default {
         targetRef: { x, y },
         associationDirection: direction.none,
       });
-
       this.$emit('add-node', new Node(
         'processmaker-modeler-association',
         associationLink,

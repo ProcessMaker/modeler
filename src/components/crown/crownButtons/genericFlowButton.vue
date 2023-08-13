@@ -76,6 +76,8 @@ export default {
         },
       });
 
+      console.log("ADD SEQUENCE ++++++");
+
       this.$emit('add-node', new Node(
         genericFlowId,
         flowPlaceholderDefinition,

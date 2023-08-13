@@ -3,3 +3,4 @@ export { default as defaultEndNames } from '@/components/nodes/endEvent/defaultN
 export { default as defaultTaskNames } from '@/components/nodes/task/defaultNames';
 export { default as defaultGatewayNames } from '@/components/nodes/gateway/defaultNames';
 export { default as defaultIntermediateNames } from '@/components/nodes/intermediateEvent/defaultNames';
+export { default as defaultPmBlockNames } from '@/components/nodes/pmBlock/defaultNames';

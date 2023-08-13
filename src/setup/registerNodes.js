@@ -105,6 +105,6 @@ export default function registerNodes({ registerNode, registerBpmnExtension }) {
   });
 
   nodeTypes.forEach(config => registerNode(config));
-
+  console.log("REGISTER NODES", nodeTypes);
   registerBpmnExtension('pm', bpmnExtension);
 }

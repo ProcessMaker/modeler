@@ -311,7 +311,9 @@ export default {
       const sequenceFlowWaypoints = this.node.diagram.waypoint;
       const sourceAnchorPoint = this.node.diagram.waypoint[0];
       const targetAnchorPoint = sequenceFlowWaypoints[sequenceFlowWaypoints.length - 1];
-
+      if (!targetShape) {
+        return;
+      }
       const { x: targetX, y: targetY } = targetShape.position();
       const targetAnchorOffset = {
         x: targetAnchorPoint.x - targetX,

@@ -198,7 +198,7 @@ export default {
 
       const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
-
+      console.log("PUSH NEW LANE");
       this.$emit('add-node', new Node(
         Lane.id,
         definition,

@@ -187,6 +187,7 @@ import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
 import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
+import PmBlockNode from '@/components/nodes/pmBlockNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
 import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault } from '@/components/crown/utils';
@@ -721,6 +722,12 @@ export default {
         });
       });
     },
+    loadFlowElements(flowElements, artifacts) {
+      flowElements
+        .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
+        .forEach(definition => this.setNode(definition, flowElements, artifacts));
+    },
+
     loadArtifacts(flowElements, artifacts) {
       artifacts
         .filter(definition => definition.$type !== 'bpmn:Association')
@@ -729,11 +736,6 @@ export default {
     loadSequenceFlows(flowElements, artifacts) {
       flowElements
         .filter(definition => definition.$type === 'bpmn:SequenceFlow' && this.hasSourceAndTarget(definition))
-        .forEach(definition => this.setNode(definition, flowElements, artifacts));
-    },
-    loadFlowElements(flowElements, artifacts) {
-      flowElements
-        .filter(definition => definition.$type !== 'bpmn:SequenceFlow')
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
     addLanes(process) {
@@ -747,20 +749,21 @@ export default {
       }
       this.collaboration.get('participants').forEach(this.setNode);
     },
-    setUpDiagram() {
+    async setUpDiagram() {
       this.processes.forEach(process => {
         this.ensureCancelActivityIsAddedToBoundaryEvents(process);
 
         this.addLanes(process);
-
+        console.log("=== SET UP DIAGRAM", process);
         const flowElements = process.get('flowElements');
+        console.log('==== FLOW ELEMENTS', flowElements);
         const artifacts = process.get('artifacts');
 
         this.loadFlowElements(flowElements, artifacts);
         this.loadSequenceFlows(flowElements, artifacts);
-        this.loadArtifacts(flowElements, artifacts);
-        this.loadAssociations(flowElements, artifacts);
-        this.loadDataAssociations(flowElements);
+        // this.loadArtifacts(flowElements, artifacts);
+        // this.loadAssociations(flowElements, artifacts);
+        // this.loadDataAssociations(flowElements);
       });
 
       store.commit('setRootElements', this.definitions.rootElements);
@@ -781,7 +784,7 @@ export default {
     getPlaneElements() {
       return this.plane.get('planeElement');
     },
-    parse() {
+    async parse() {
       this.collaboration = this.getCollaboration();
       this.processes = this.getProcesses();
       this.plane = this.getPlane();
@@ -839,6 +842,8 @@ export default {
       }
     },
     setNode(definition, flowElements, artifacts) {
+      console.log("===== PLANE ELEMENTS =====", this.planeElements);
+      console.log("=== DEFINITION", definition);
       const diagram = this.planeElements.find(diagram => diagram.bpmnElement.id === definition.id);
       const bpmnType = definition.$type;
       const parser = this.getCustomParser(definition);
@@ -862,11 +867,14 @@ export default {
       this.createNodeAsync(type, definition, diagram);
     },
     async createNodeAsync(type, definition, diagram) {
-      const node =  this.createNode(type, definition, diagram);
-      store.commit('addNode', node);
+      console.log("CREATE NODE ASYNC");
+      const node =  await this.createNode(type, definition, diagram);
+      console.log("AFTER CREATE NODE", node);
+      store.dispatch('addNodeSequential', node);
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
+        console.log("IS TIMER TYPE", new TimerEventNode(type, definition, diagram));
         return new TimerEventNode(type, definition, diagram);
       }
       // Remove undefined or null properties
@@ -875,6 +883,11 @@ export default {
           delete definition[key];
         }
       });
+      if (Node.isPmBlock(type)) {
+        console.log("IS PM BLOCK NEW PMBLOCK NODE", new PmBlockNode(type, definition, diagram));
+        return new PmBlockNode(type, definition, diagram);
+      }
+      // console.log("IS NOT PM BLOKC", type);
       return new Node(type, definition, diagram);
     },
     hasSourceAndTarget(definition) {
@@ -892,9 +905,9 @@ export default {
       this.isRendering = true;
       await this.paperManager.performAtomicAction(async() => {
         await this.waitForCursorToChange();
-        this.parse();
+        await this.parse();
         this.addPools();
-        this.setUpDiagram();
+        await this.setUpDiagram();
       });
       await this.paperManager.awaitScheduledUpdates();
       this.isRendering = false;

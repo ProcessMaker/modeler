@@ -44,6 +44,7 @@ export { default as dataStore } from './dataStore';
 export { default as dataInputAssociation } from './dataInputAssociation';
 export { default as dataOutputAssociation } from './dataOutputAssociation';
 export { default as registerNodes } from '@/setup/registerNodes';
+export { default as registerPmBlocks } from '@/setup/registerPmBlocks';
 import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
 import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import NodeIdentifierInput from '../inspectors/NodeIdentifierInput';
