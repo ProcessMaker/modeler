@@ -32,7 +32,6 @@ describe('Publish control test', { scrollBehavior: false }, () => {
             expect($el).to.have.css('font-size', '14px');
             expect($el).to.have.css('font-weight', '600');
             expect($el).to.have.css('color', 'rgb(108, 117, 125)');
-            //expect($el).to.have.css('border-left', '1px solid rgb(173, 179, 184)');
           });
       });
   });
@@ -67,8 +66,12 @@ describe('Publish control test', { scrollBehavior: false }, () => {
           .then($el => {
             expect($el).to.be.visible;
             expect($el.text().trim().toLowerCase()).to.equal('publish');
-            //expect($el).to.have.css('width', '72px');
-            //expect($el).to.have.css('height', '30px');
+            cy.get($el).should('have.css', 'width')
+              .and('include', '7')
+              .and('include', 'px');
+            cy.get($el).should('have.css', 'height')
+              .and('include', '3')
+              .and('include', 'px');
             expect($el).to.have.css('background-color', 'rgb(21, 114, 194)');
           });
       });
@@ -86,8 +89,12 @@ describe('Publish control test', { scrollBehavior: false }, () => {
           .then($el => {
             expect($el).to.be.visible;
             expect($el.text().trim().toLowerCase()).to.equal('close');
-            //expect($el).to.have.css('width', '42px');
-            //expect($el).to.have.css('height', '22px');
+            cy.get($el).should('have.css', 'width')
+              .and('include', '4')
+              .and('include', 'px');
+            cy.get($el).should('have.css', 'height')
+              .and('include', '2')
+              .and('include', 'px');
             expect($el).to.have.css('color', 'rgb(0, 0, 0)');
           });
       });
