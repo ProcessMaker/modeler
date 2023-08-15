@@ -5,6 +5,11 @@ import cloneDeep from 'lodash/cloneDeep';
 import baseStartEventConfig from '@/components/nodes/baseStartEvent';
 import icon from '@/assets/toolpanel/start-event.svg?url';
 
+import startEventIcon from '@/assets/toolpanel/start-event.svg?url';
+import messageStartEventIcon from '@/assets/toolpanel/message-start-event.svg?url';
+import conditionalStartEventIcon from '@/assets/toolpanel/conditional-start-event.svg?url';
+import signalStartEventIcon from '@/assets/toolpanel/signal-start-event.svg?url';
+import timerStartEventIcon from '@/assets/toolpanel/timer-start-event.svg?url';
 const id = 'processmaker-modeler-start-event';
 
 export default merge(cloneDeep(baseStartEventConfig), {
@@ -16,7 +21,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
   rank: 10,
   items: [
     {
-      icon: import('@/assets/toolpanel/start-event.svg?url'),
+      icon: startEventIcon,
       label: defaultNames[id],
       control: true,
       bpmnType: 'bpmn:StartEvent',
@@ -24,7 +29,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
       id: 'processmaker-modeler-start-event',
     },
     {
-      icon: import('@/assets/toolpanel/message-start-event.svg?url'),
+      icon: messageStartEventIcon,
       label: defaultNames['processmaker-modeler-message-start-event'],
       control: true,
       bpmnType: 'bpmn:StartEvent',
@@ -32,7 +37,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
       id: 'processmaker-modeler-message-start-event',
     },
     {
-      icon: import('@/assets/toolpanel/conditional-start-event.svg?url'),
+      icon:conditionalStartEventIcon,
       label: defaultNames['processmaker-modeler-conditional-start-event'],
       control: true,
       bpmnType: 'bpmn:StartEvent',
@@ -40,7 +45,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
       id: 'processmaker-modeler-conditional-start-event',
     },
     {
-      icon: import('@/assets/toolpanel/signal-start-event.svg?url'),
+      icon: signalStartEventIcon,
       label: defaultNames['processmaker-modeler-signal-start-event'],
       control: true,
       bpmnType: 'bpmn:StartEvent',
@@ -48,7 +53,7 @@ export default merge(cloneDeep(baseStartEventConfig), {
       id: 'processmaker-modeler-signal-start-event',
     },
     {
-      icon: import('@/assets/toolpanel/timer-start-event.svg?url'),
+      icon: timerStartEventIcon,
       label: defaultNames['processmaker-modeler-start-timer-event'],
       control: true,
       bpmnType: 'bpmn:StartEvent',
