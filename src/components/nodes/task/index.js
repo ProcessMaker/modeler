@@ -8,6 +8,10 @@ import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/component
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
 import icon from '@/assets/toolpanel/task.svg?url';
+import taskIcon from '@/assets/toolpanel/task.svg?url';
+import manualTaskIcon from '@/assets/toolpanel/manual-task.svg?url';
+import scriptTaskIcon from '@/assets/toolpanel/script-task.svg?url';
+import subTaskIcon from '@/assets/toolpanel/sub-task.svg?url';
 
 export const id = 'processmaker-modeler-task';
 
@@ -22,28 +26,28 @@ export default {
   label: 'Task',
   items: [
     {
-      icon: import('@/assets/toolpanel/task.svg?url'),
+      icon: taskIcon,
       label: 'Form Task',
       control: true,
       rank: 41,
       id: 'processmaker-modeler-task',
     },
     {
-      icon: import('@/assets/toolpanel/manual-task.svg?url'),
+      icon: manualTaskIcon,
       label: 'Manual Task',
       control: true,
       rank: 42,
       id: 'processmaker-modeler-manual-task',
     },
     {
-      icon: import('@/assets/toolpanel/script-task.svg?url'),
+      icon: scriptTaskIcon,
       label: 'Script Task',
       control: true,
       rank: 43,
       id: 'processmaker-modeler-script-task',
     },
     {
-      icon: import('@/assets/toolpanel/sub-task.svg?url'),
+      icon: subTaskIcon,
       label: 'Sub Process',
       control: true,
       rank: 44,
