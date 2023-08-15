@@ -33,8 +33,6 @@ import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
 import undoRedoStore from '@/undoRedoStore';
 
-import { useCounterStore } from '@/stores/counter';
-
 const reader = new FileReader();
 
 export default {
