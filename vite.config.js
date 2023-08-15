@@ -36,6 +36,7 @@ export default defineConfig({
   },
   build: {
     cssCodeSplit: false,
+    sourcemap: true,
     lib: {
       entry: resolve(__dirname, 'src/components/index.js'),
       name: libraryName,
@@ -44,7 +45,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['vue', 'moment', '@processmaker'],
+      external: ['vue', 'moment', 'moment-timezone', '@processmaker'],
       output: {
         exports: 'named',
         // Provide global variables to use in the UMD build
@@ -52,6 +53,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue',
           moment: 'moment',
+          'moment-timezone': 'moment-timezone',
         },
       },
     },
