@@ -129,7 +129,7 @@ export default {
       this.shape.stopListening(
         this.paper,
         'element:pointerup',
-        this.setNodePosition
+        this.setNodePosition,
       );
       this.savePositionOnPointerupEventSet = false;
 
@@ -149,7 +149,7 @@ export default {
     setUpCrownConfig() {
       this.paper.on(
         'render:done scale:changed translate:changed',
-        this.repositionCrown
+        this.repositionCrown,
       );
     },
     setUpPositionHandling() {},

@@ -445,7 +445,7 @@ export default {
         .getEmbeddedCells()
         .filter(element =>
           elementShouldHaveFlowNodeRef(element) &&
-            element.component.node.pool === this.shape
+            element.component.node.pool === this.shape,
         )
         .forEach(element => {
           const lane = this.graph

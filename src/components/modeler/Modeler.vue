@@ -637,7 +637,6 @@ export default {
       this.translateConfig(nodeType.inspectorConfig[0]);
       addLoopCharacteristics(nodeType);
       this.nodeRegistry[nodeType.id] = nodeType;
-
       Vue.component(nodeType.id, nodeType.component);
       this.nodeTypes.push(nodeType);
 
@@ -678,6 +677,10 @@ export default {
         : [pmBlockNode.bpmnType];
 
       types.forEach(bpmnType => {
+        if (!this.parsers[bpmnType]) {
+          this.parsers[bpmnType] = { custom: [], implementation: [], default: []};
+        }
+
         if (customParser) {
           this.parsers[bpmnType].custom.push(customParser);
           return;
@@ -846,16 +849,20 @@ export default {
       }
 
       this.removeUnsupportedElementAttributes(definition);
-      const type = parser(definition, this.moddle);
 
+      const config = definition.config ? JSON.parse(definition.config) : {};
+      const type = config?.processKey || parser(definition, this.moddle);
+      
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
         definition.set('name', '');
       }
 
-      const node = this.createNode(type, definition, diagram);
-
+      this.createNodeAsync(type, definition, diagram);
+    },
+    async createNodeAsync(type, definition, diagram) {
+      const node =  this.createNode(type, definition, diagram);
       store.commit('addNode', node);
     },
     createNode(type, definition, diagram) {
@@ -1086,7 +1093,7 @@ export default {
         await this.paperManager.performAtomicAction(async() => {
           const waitPromises = [];
           this.highlightedNodes.forEach((node) =>
-            waitPromises.push(this.removeNode(node, { removeRelationships: true }))
+            waitPromises.push(this.removeNode(node, { removeRelationships: true })),
           );
           await Promise.all(waitPromises);
           store.commit('highlightNode');
@@ -1449,7 +1456,7 @@ export default {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
             event.offsetX - this.canvasDragPosition.x,
-            event.offsetY - this.canvasDragPosition.y
+            event.offsetY - this.canvasDragPosition.y,
           );
         }
       }

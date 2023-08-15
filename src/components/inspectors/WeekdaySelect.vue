@@ -107,7 +107,7 @@ export default {
           selected: false,
         },
       ],
-      cycleManager: new CycleManager(this.startDate, this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
+      cycleManager: null,
     };
   },
   watch: {
@@ -143,6 +143,7 @@ export default {
         foundDay.selected = true;
       }
     });
+    this.cycleManager = new CycleManager(this.startDate, this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times);
   },
   computed: {
     repeatOnValidationError() {
