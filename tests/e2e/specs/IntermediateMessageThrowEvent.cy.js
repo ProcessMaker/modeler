@@ -144,7 +144,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     cy.get('[data-cy="events-save"]').click();
 
     /* Something outside of the inspector panel has to be selected to trigger the focusout event;
-     * otherwise it creates a race condition with the Undo button click event. */
+     * otheruise it creates a race condition with the Undo button click event. */
     cy.get('[aria-label="Toolbar"]').click();
 
     cy.get('[data-cy="undo-control"]').click();
@@ -155,7 +155,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
     waitToRenderAllShapes();
-    cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
+    cy.ged('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
   it.skip('allows connection between pools', () => {
