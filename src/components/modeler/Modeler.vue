@@ -52,7 +52,7 @@
         @toggleInspector="handleToggleInspector"
       />
 
-      <InspectorPanel
+      <!-- <InspectorPanel
         v-if="showComponent"
         ref="inspector-panel"
         v-show="isOpenInspector && !(highlightedNodes.length > 1)"
@@ -67,7 +67,7 @@
         :canvas-drag-position="canvasDragPosition"
         @shape-resize="shapeResize(false)"
         @toggleInspector="handleToggleInspector"
-      />
+      /> -->
 
       <component
         v-for="node in nodes"
@@ -155,7 +155,7 @@ import remove from 'lodash/remove';
 import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
-import InspectorPanel from '@/components/inspectors/InspectorPanel';
+// import InspectorPanel from '@/components/inspectors/InspectorPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -206,7 +206,7 @@ export default {
     ToolBar,
     ExplorerRail,
     InspectorButton,
-    InspectorPanel,
+    // InspectorPanel,
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,

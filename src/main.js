@@ -8,7 +8,7 @@ import translations from '@/setup/translations.json';
 import * as VueDeepSet from 'vue-deepset';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import ScreenBuilder from '@processmaker/screen-builder';
+// import ScreenBuilder from '@processmaker/screen-builder';
 import Multiselect from '@processmaker/vue-multiselect';
 import './polyfills.js';
 
@@ -22,7 +22,7 @@ library.add(faBoundaryEvent);
 Vue.use(BootstrapVue);
 Vue.use(VueDeepSet);
 Vue.use(VueI18Next);
-Vue.use(ScreenBuilder);
+// Vue.use(ScreenBuilder);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('Multiselect', Multiselect);
 
