@@ -2,9 +2,9 @@ name: Build Package Modeler
 on:
   pull_request:
     types: [opened, reopened, synchronize, edited, closed]
-  workflow_dispatch:  
+  workflow_dispatch:
 jobs:
   run_deploy:
     name: Run Build PM4-workflow
-    uses: processmaker/processmaker/.github/workflows/deploy-pm4.yml@develop
+    uses: processmaker/processmaker/.github/workflows/deploy-pm4.yml@vite-js-repos
     secrets: inherit
