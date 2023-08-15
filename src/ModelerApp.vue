@@ -33,6 +33,8 @@ import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
 import undoRedoStore from '@/undoRedoStore';
 
+import { useCounterStore } from '@/stores/counter';
+
 const reader = new FileReader();
 
 export default {
@@ -63,6 +65,7 @@ export default {
   methods: {
     loadXmlIntoModeler() {
       this.$refs.modeler.loadXML(this.uploadedXml);
+   
       undoRedoStore.dispatch('pushState', this.uploadedXml);
     },
     clearUpload() {

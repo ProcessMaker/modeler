@@ -17,6 +17,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBoundaryEvent } from '@/components/crown/crownButtons/icons';
 
+import { createPinia, PiniaVuePlugin } from 'pinia';
+
+Vue.use(PiniaVuePlugin);
+const pinia = createPinia();
+
 library.add(faBoundaryEvent);
 
 Vue.use(BootstrapVue);
@@ -36,4 +41,5 @@ Vue.mixin({ i18n: new VueI18Next(i18next) });
 
 new Vue({
   render: h => h(ModelerApp),
+  pinia,
 }).$mount('#modeler-app');
