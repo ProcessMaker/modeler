@@ -7,6 +7,7 @@ import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteri
 import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import omit from 'lodash/omit';
+import icon from '@/assets/toolpanel/task.svg?url';
 
 export const id = 'processmaker-modeler-task';
 
@@ -17,32 +18,32 @@ export default {
   control: true,
   category: 'BPMN',
   rank: 40,
-  icon: require('@/assets/toolpanel/task.svg'),
+  icon,
   label: 'Task',
   items: [
     {
-      icon: require('@/assets/toolpanel/task.svg'),
+      icon: import('@/assets/toolpanel/task.svg?url'),
       label: 'Form Task',
       control: true,
       rank: 41,
       id: 'processmaker-modeler-task',
     },
     {
-      icon: require('@/assets/toolpanel/manual-task.svg'),
+      icon: import('@/assets/toolpanel/manual-task.svg?url'),
       label: 'Manual Task',
       control: true,
       rank: 42,
       id: 'processmaker-modeler-manual-task',
     },
     {
-      icon: require('@/assets/toolpanel/script-task.svg'),
+      icon: import('@/assets/toolpanel/script-task.svg?url'),
       label: 'Script Task',
       control: true,
       rank: 43,
       id: 'processmaker-modeler-script-task',
     },
     {
-      icon: require('@/assets/toolpanel/sub-task.svg'),
+      icon: import('@/assets/toolpanel/sub-task.svg?url'),
       label: 'Sub Process',
       control: true,
       rank: 44,

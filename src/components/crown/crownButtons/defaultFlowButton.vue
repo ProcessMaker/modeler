@@ -17,7 +17,7 @@
 
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import icon from '@/assets/default-flow.svg';
+import icon from '@/assets/default-flow.svg?url';
 
 export default {
   components: { CrownButton },

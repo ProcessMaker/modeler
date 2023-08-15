@@ -1,5 +1,5 @@
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
-import compensationIcon from '@/assets/compensation.svg';
+import compensationIcon from '@/assets/compensation.svg?url';
 
 describe('setupCompensationMarker', () => {
 

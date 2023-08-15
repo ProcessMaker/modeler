@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import connectIcon from '@/assets/connect-artifacts.svg';
+import connectIcon from '@/assets/connect-artifacts.svg?url';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import Node from '@/components/nodes/node';
 import * as dataOutputConfig from '@/components/nodes/dataOutputAssociation/config';

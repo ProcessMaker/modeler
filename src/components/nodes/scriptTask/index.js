@@ -4,6 +4,7 @@ import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import icon from '@/assets/toolpanel/scriptTask.svg?url';
 
 export const id = 'processmaker-modeler-script-task';
 
@@ -13,7 +14,7 @@ export default {
   bpmnType: 'bpmn:ScriptTask',
   control: false,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/scriptTask.svg'),
+  icon,
   label: defaultNames[id],
   definition(moddle, $t) {
     return moddle.create('bpmn:ScriptTask', {

@@ -14,7 +14,7 @@
 
 <script>
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import cloneIcon from '@/assets/copy-regular.svg';
+import cloneIcon from '@/assets/copy-regular.svg?url';
 import validCopyElements from '@/components/crown/crownButtons/validCopyElements';
 
 export default {

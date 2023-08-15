@@ -102,8 +102,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faAlignCenter, faAlignLeft, faAlignRight } from '@fortawesome/free-solid-svg-icons';
 import store from '@/store';
 import { getShapesOptions } from '@/components/nodes/utilities/shapeGroup';
-import distributeHorizontallyIcon from '@/assets/distribute-horizontally-icon.svg';
-import distributeVerticallyIcon from '@/assets/distribute-vertically-icon.svg';
+import distributeHorizontallyIcon from '@/assets/distribute-horizontally-icon.svg?url';
+import distributeVerticallyIcon from '@/assets/distribute-vertically-icon.svg?url';
 
 
 export default {

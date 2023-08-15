@@ -1,6 +1,6 @@
 <script>
-import pinIcon from '@/assets/pin-angle.svg';
-import pinFillIcon from '@/assets/pin-angle-fill.svg';
+import pinIcon from '@/assets/pin-angle.svg?url';
+import pinFillIcon from '@/assets/pin-angle-fill.svg?url';
 import nodeTypesStore from '@/nodeTypesStore';
 import clickAndDrop from '@/mixins/clickAndDrop';
 

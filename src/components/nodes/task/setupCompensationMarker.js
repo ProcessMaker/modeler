@@ -1,4 +1,4 @@
-import compensationIcon from '@/assets/compensation.svg';
+import compensationIcon from '@/assets/compensation.svg?url';
 
 export default function setupCompensationMarker(nodeDefinition, markers, $set, $delete) {
   if (!nodeDefinition.isForCompensation) {

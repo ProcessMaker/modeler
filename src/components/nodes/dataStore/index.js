@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import icon from '@/assets/toolpanel/data-store.svg?url';
 
 export const id = 'processmaker-modeler-data-store';
 
@@ -12,7 +13,7 @@ export default {
   bpmnType: 'bpmn:DataStoreReference',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/data-store.svg'),
+  icon,
   label: defaultNames[id],
   rank: 90,
   validateIncoming() {

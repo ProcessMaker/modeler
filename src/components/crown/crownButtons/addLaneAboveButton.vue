@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import laneAboveIcon from '@/assets/lane-above.svg';
+import laneAboveIcon from '@/assets/lane-above.svg?url';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faLaneAbove } from './icons';

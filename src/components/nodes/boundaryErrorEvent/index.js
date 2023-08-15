@@ -4,6 +4,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import icon from '@/assets/toolpanel/boundary-error-event.svg?url';
 
 export const id = 'processmaker-modeler-boundary-error-event';
 
@@ -12,7 +13,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   component,
   control: false,
   label: 'Boundary Error Event',
-  icon: require('@/assets/toolpanel/boundary-error-event.svg'),
+  icon,
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('Boundary Error Event'),

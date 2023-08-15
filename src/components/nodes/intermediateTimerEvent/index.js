@@ -4,7 +4,14 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import icon from '@/assets/toolpanel/generic-intermediate-event.svg?url';
 import { defaultDurationTimerEvent } from '@/constants';
+import intermediateCatchTimerEventIcon from '@/assets/toolpanel/intermediate-timer-event.svg?url';
+import intermediateSignalCatchEventIcon from '@/assets/toolpanel/intermediate-signal-catch-event.svg?url';
+import intermediateSignalThrowEventIcon from '@/assets/toolpanel/intermediate-signal-throw-event.svg?url';
+import intermediateMessageCatchEventIcon from '@/assets/toolpanel/intermediate-message-catch-event.svg?url';
+import intermediateMessageThrowEventIcon from '@/assets/toolpanel/intermediate-message-throw-event.svg?url';
+import intermediateConditionalCatchEventIcon from '@/assets/toolpanel/intermediate-conditional-catch-event.svg?url';
 
 const id = 'processmaker-modeler-intermediate-catch-timer-event';
 
@@ -14,47 +21,47 @@ export default {
   bpmnType: 'bpmn:IntermediateCatchEvent',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/generic-intermediate-event.svg'),
+  icon,
   label: 'Intermediate Event',
   rank: 20,
   items: [
     {
-      icon: require('@/assets/toolpanel/intermediate-timer-event.svg'),
+      icon: intermediateCatchTimerEventIcon,
       label: 'Intermediate Timer Event',
       control: true,
       rank: 21,
       id: 'processmaker-modeler-intermediate-catch-timer-event',
     },
     {
-      icon: require('@/assets/toolpanel/intermediate-signal-catch-event.svg'),
+      icon: intermediateSignalCatchEventIcon,
       label: 'Intermediate Signal Catch Event',
       control: true,
       rank: 22,
       id: 'processmaker-modeler-intermediate-signal-catch-event',
     },
     {
-      icon: require('@/assets/toolpanel/intermediate-signal-throw-event.svg'),
+      icon: intermediateSignalThrowEventIcon,
       label: 'Intermediate Signal Throw Event',
       control: true,
       rank: 23,
       id: 'processmaker-modeler-intermediate-signal-throw-event',
     },
     {
-      icon: require('@/assets/toolpanel/intermediate-message-catch-event.svg'),
+      icon: intermediateMessageCatchEventIcon,
       label: 'Intermediate Message Catch Event',
       control: true,
       rank: 24,
       id: 'processmaker-modeler-intermediate-message-catch-event',
     },
     {
-      icon: require('@/assets/toolpanel/intermediate-message-throw-event.svg'),
+      icon: intermediateMessageThrowEventIcon,
       label: 'Intermediate Message Throw Event',
       control: true,
       rank: 25,
       id: 'processmaker-modeler-intermediate-message-throw-event',
     },
     {
-      icon: require('@/assets/toolpanel/intermediate-conditional-catch-event.svg'),
+      icon: intermediateConditionalCatchEventIcon,
       label: 'Intermediate Conditional Catch Event',
       control: true,
       rank: 26,

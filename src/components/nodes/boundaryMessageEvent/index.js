@@ -6,6 +6,7 @@ import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspect
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import { default as messageEventDefinition, messageSelector } from '../messageEventDefinition';
+import icon from '@/assets/toolpanel/boundary-message-event.svg?url';
 
 export const id = 'processmaker-modeler-boundary-message-event';
 export default merge(cloneDeep(boundaryEventConfig), {
@@ -14,7 +15,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   component,
   control: false,
   label: 'Boundary Message Event',
-  icon: require('@/assets/toolpanel/boundary-message-event.svg'),
+  icon,
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('Boundary Message Event'),

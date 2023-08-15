@@ -52,7 +52,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundaryEventDropdownData';
-import subprocessIcon from '@/assets/subprocess.svg';
+import subprocessIcon from '@/assets/subprocess.svg?url';
 import updateIconColor from '@/mixins/updateIconColor';
 import customIcon from '@/mixins/customIcon';
 import { getRectangleAnchorPoint } from '@/portsUtils';

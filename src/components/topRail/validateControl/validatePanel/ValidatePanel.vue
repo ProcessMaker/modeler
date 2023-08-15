@@ -28,6 +28,7 @@
 
 <script>
 import VueInlineSvg from 'vue-inline-svg';
+import issueIcon from '@/assets/topRail/issue-item.svg?url';
 
 export default {
   components: {
@@ -45,7 +46,7 @@ export default {
   },
   data() {
     return {
-      issueIcon: require('@/assets/topRail/issue-item.svg'),
+      issueIcon,
     };
   },
 };
