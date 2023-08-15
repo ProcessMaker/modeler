@@ -10,7 +10,6 @@ module.exports = {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest',
-    '\\.svg$': '<rootDir>/fileTransformer.js',
     '\\.yml$': '<rootDir>/fileTransformer.js',
   },
 
@@ -19,6 +18,7 @@ module.exports = {
   ],
 
   moduleNameMapper: {
+    '.+\\.(svg)(\\?url)?$': '<rootDir>/tests/unit/svgMock.vue',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^js-yaml-loader\\!@fortawesome/(.*)\\.yml$': '<rootDir>/node_modules/@fortawesome/$1.yml',
   },
@@ -39,5 +39,5 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'jest-coverage',
   testEnvironment: 'jsdom',
-  preset: '@vue/cli-plugin-unit-jest',
+  // preset: '@vue/cli-plugin-unit-jest',
 };
