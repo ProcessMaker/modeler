@@ -1309,17 +1309,12 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
-    async modelerChange(){
+    async modelerChange(socket){
       console.log('modelerChange');
-      /** WEB SOCKET **/
-      const socket = io(import.meta.env.VITE_WS_URL);
 
-      socket.on('connect', () => {
-        // console.log('########################');
-        // console.log('connected');
-      });
       const xml = await this.getXmlFromDiagram();
 
+      /** WEB SOCKET **/
       socket.emit('modelerUpdate', xml);
     },
   },
@@ -1480,12 +1475,11 @@ export default {
     const socket = io(import.meta.env.VITE_WS_URL);
 
     socket.on('connect', () => {
-      // console.log('########################');
-      // console.log('connected');
+      console.log('########################');
+      console.log('connected', socket.id);
     });
 
     const cursors = {};
-    const cursors2 = {};
 
     document.addEventListener('mousemove', (event) => {
       // Get the mouse position
@@ -1533,8 +1527,6 @@ export default {
     socket.on('modelerUpdateClient', async(data) => {
       // Get the remote mouse position
       const { xml, id } = data;
-      console.log(xml);
-      console.log(id);
       // this.definition = data.definition;
       // const tempDef = this.moddle.create('bpmn:Definitions', definitions);
       // console.log(tempDef);
@@ -1546,12 +1538,13 @@ export default {
       // this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       // store.commit('clearNodes');
       // await this.renderPaper();
-      if (!cursors2[id]) {
-        this.loadXML(xml);
-        cursors2[id] = xml;
-      }
+
+      console.log('Received', id);
+      await this.loadXML(xml);
+      // console.log(xml);
     });
-    window.ProcessMaker.EventBus.$on('modeler-change', () => this.modelerChange());
+
+    window.ProcessMaker.EventBus.$on('modeler-change', () => this.modelerChange(socket));
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
