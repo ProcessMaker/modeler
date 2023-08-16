@@ -11,7 +11,7 @@ import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 describe.skip('Boundary Conditional Event', () => {
-  const startPosition = { x: 210, y: 200 };
+  const startPosition = { x: 150, y: 150 };
   const taskPosition = { x: 200, y: 200 };
   const boundaryConditionalEventPosition = { x: 260, y: 200 };
 

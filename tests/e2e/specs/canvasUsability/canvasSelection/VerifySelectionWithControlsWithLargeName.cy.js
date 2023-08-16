@@ -2,8 +2,8 @@ import {
   waitToRenderAllShapes, getGraphElements,
 } from '../../../support/utils';
 
-describe('Canvas Selection', () => {
-  it.skip('TCP4-2667: Verify selection with controls with large name', () => {
+describe.skip('Canvas Selection', () => {
+  it('TCP4-2667: Verify selection with controls with large name', () => {
     const initialNumberOfElements = 1;
 
     //Step 1: Drag Start Event
@@ -13,6 +13,7 @@ describe('Canvas Selection', () => {
 
     //Step 2: Clicks and drags the mouse over the elements
     cy.get('.paper-container').trigger('mousedown', 'topLeft');
+    cy.get('.paper-container').trigger('mousemove', 'bottomRight');
     cy.get('.paper-container').trigger('mousemove', 'bottomRight');
     cy.get('.paper-container').trigger('mouseup',{ force: true });
 
@@ -30,6 +31,7 @@ describe('Canvas Selection', () => {
         //Step 5: Clicks and drags the mouse over the elements
         cy.get('.paper-container').click('topRight');
         cy.get('.paper-container').trigger('mousedown', 'topLeft');
+        cy.get('.paper-container').trigger('mousemove', 'bottomRight');
         cy.get('.paper-container').trigger('mousemove', 'bottomRight');
         cy.get('.paper-container').trigger('mouseup',{ force: true });
 

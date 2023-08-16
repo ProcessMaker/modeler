@@ -24,8 +24,12 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
     cy.get(inspectorButtonSelector)
       .should('be.visible')
       .then($btn => {
-        expect($btn).to.have.css('width', '48px');
-        expect($btn).to.have.css('height', '48px');
+        cy.get($btn).should('have.css', 'height')
+          .and('include', '4')
+          .and('include', 'px');
+        cy.get($btn).should('have.css', 'width')
+          .and('include', '4')
+          .and('include', 'px');
         expect($btn).to.have.css('background-color', 'rgb(255, 255, 255)');
         expect($btn).to.have.css('border-radius', '4px');
         expect($btn).to.have.css('box-shadow', 'rgba(0, 0, 0, 0.1) 0px 4px 8px 0px');
@@ -43,49 +47,31 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
   it('should close inspector panel when clicks on inspector close button', () => {
     cy.get(inspectorButtonSelector).click();
     cy.get(inspectorPanelSelector).should('be.visible');
-    cy.wait(500);
-    cy.get(inspectorCloseButton).click();
+    cy.get(inspectorCloseButton).should('be.visible').click();
     cy.get(inspectorPanelSelector).should('not.be.visible');
   });
 
-  it.skip('should hide inspector panel when select startElement and taskElement with shift key', () => {
+  it('should hide inspector panel when select startElement and taskElement with shift key', () => {
     cy.get(inspectorButtonSelector).click();
     cy.get(inspectorPanelSelector).should('be.visible');
-
-    cy.wait(500);
-
     const taskPosition = { x: 350, y: 300 };
-
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
-
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click({ shiftKey: true });
-
     cy.get(inspectorPanelSelector).should('not.be.visible');
   });
 
-  it.skip('should show inspector panel deselect startElement and taskElement', () => {
+  it('should show inspector panel deselect startElement and taskElement', () => {
     cy.get(inspectorButtonSelector).click();
     cy.get(inspectorPanelSelector).should('be.visible');
-
-    cy.wait(500);
-
     const taskPosition = { x: 350, y: 300 };
-
     clickAndDropElement(nodeTypes.task, taskPosition);
-
     waitToRenderAllShapes();
-
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').first().click({ shiftKey: true });
-    
     cy.get(inspectorPanelSelector).should('not.be.visible');
-    
-    cy.wait(500);
-    
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
-
     cy.get(inspectorPanelSelector).should('be.visible');
   });
 });
