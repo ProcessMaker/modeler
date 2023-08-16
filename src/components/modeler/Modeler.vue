@@ -1550,7 +1550,6 @@ export default {
         this.loadXML(xml);
         cursors2[id] = xml;
       }
-      
     });
     window.ProcessMaker.EventBus.$on('modeler-change', () => this.modelerChange());
 
