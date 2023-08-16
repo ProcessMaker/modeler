@@ -1309,6 +1309,19 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
+    async modelerChange(){
+      console.log('modelerChange');
+      /** WEB SOCKET **/
+      const socket = io(import.meta.env.VITE_WS_URL);
+
+      socket.on('connect', () => {
+        // console.log('########################');
+        // console.log('connected');
+      });
+      const xml = await this.getXmlFromDiagram();
+
+      socket.emit('modelerUpdate', xml);
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1472,6 +1485,7 @@ export default {
     });
 
     const cursors = {};
+    const cursors2 = {};
 
     document.addEventListener('mousemove', (event) => {
       // Get the mouse position
@@ -1516,6 +1530,29 @@ export default {
         delete cursors[removedClientId];
       }
     });
+    socket.on('modelerUpdateClient', async (data) => {
+      // Get the remote mouse position
+      const { xml, id } = data;
+      console.log(xml);
+      console.log(id);
+      // this.definition = data.definition;
+      // const tempDef = this.moddle.create('bpmn:Definitions', definitions);
+      // console.log(tempDef);
+      // this.definitions = tempDef;
+      // this.xmlManager.definitions = this.definitions;
+      // this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
+      // this.definition = tempDef;
+      // this.xmlManager.definitions = definition;
+      // this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
+      // store.commit('clearNodes');
+      // await this.renderPaper();
+      if (!cursors2[id]) {
+        this.loadXML(xml);
+        cursors2[id] = xml;
+      }
+      
+    });
+    window.ProcessMaker.EventBus.$on('modeler-change', () => this.modelerChange());
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
