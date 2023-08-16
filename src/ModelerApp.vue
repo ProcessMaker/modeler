@@ -80,6 +80,7 @@ export default {
   },
   mounted() {
     window.ProcessMaker.$modeler = this.$refs.modeler;
+  },
 };
 </script>
 
