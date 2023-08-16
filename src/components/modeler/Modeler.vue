@@ -1530,7 +1530,7 @@ export default {
         delete cursors[removedClientId];
       }
     });
-    socket.on('modelerUpdateClient', async (data) => {
+    socket.on('modelerUpdateClient', async(data) => {
       // Get the remote mouse position
       const { xml, id } = data;
       console.log(xml);
