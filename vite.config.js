@@ -36,7 +36,6 @@ export default defineConfig({
   },
   build: {
     cssCodeSplit: false,
-    sourcemap: true,
     lib: {
       entry: resolve(__dirname, 'src/components/index.js'),
       name: libraryName,
@@ -45,15 +44,19 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['vue', 'moment', 'moment-timezone', '@processmaker'],
+      external: ['vue', 'moment', 'moment-timezone', /^@processmaker\/(?!processmaker-bpmn-moddle).+$/, 'lodash'],
       output: {
         exports: 'named',
+        assetFileNames: 'modeler.[ext]',
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           vue: 'Vue',
           moment: 'moment',
           'moment-timezone': 'moment-timezone',
+          '@processmaker/screen-builder': '@processmaker/screen-builder',
+          '@processmaker/vue-form-elements': '@processmaker/vue-form-elements',
+          lodash: 'lodash',
         },
       },
     },
