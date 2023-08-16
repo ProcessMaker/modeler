@@ -33,7 +33,6 @@ import Modeler from './components/modeler/Modeler.vue';
 import FileUpload from 'vue-upload-component';
 import undoRedoStore from '@/undoRedoStore';
 
-import { useCounterStore } from '@/stores/counter';
 
 const reader = new FileReader();
 
@@ -81,14 +80,6 @@ export default {
   },
   mounted() {
     window.ProcessMaker.$modeler = this.$refs.modeler;
-    // pinia
-    // const store = useCounterStore();
-    // setTimeout(() => {
-    //   store.increment();
-    //   store.increment();
-    //   console.log(store.doubleCount);
-    // }, 1000);
-  },
 };
 </script>
 
