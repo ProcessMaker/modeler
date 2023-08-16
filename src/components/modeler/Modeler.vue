@@ -145,6 +145,7 @@
 
 <script>
 import Vue from 'vue';
+import { io } from 'socket.io-client';
 import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
@@ -852,7 +853,7 @@ export default {
 
       const config = definition.config ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
-      
+
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
@@ -1459,6 +1460,60 @@ export default {
             event.offsetY - this.canvasDragPosition.y,
           );
         }
+      }
+    });
+
+    /** WEB SOCKET **/
+    const socket = io(import.meta.env.VITE_WS_URL);
+
+    socket.on('connect', () => {
+      // console.log('########################');
+      // console.log('connected');
+    });
+
+    const cursors = {};
+
+    document.addEventListener('mousemove', (event) => {
+      // Get the mouse position
+      const { clientX, clientY } = event;
+
+      const data = {
+        x: clientX,
+        y: clientY,
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight,
+      };
+
+      // Emit the mouse position to the server
+      socket.emit('mouseMove', data);
+    });
+
+    socket.on('mousePosition', (position) => {
+      // Get the remote mouse position
+      const { x, y, screenWidth, screenHeight, id } = position;
+
+      // Create a new cursor element if it doesn't exist
+      if (!cursors[id]) {
+        // Add the class 'remote-cursor' to the new cursor
+        cursors[id] = document.createElement('div');
+        cursors[id].className = 'remote-cursor';
+        // Add the new cursor to the page
+        document.body.appendChild(cursors[id]);
+      }
+
+      // Set the position of the remote cursor
+      const cursorX = (x / screenWidth) * window.innerWidth;
+      const cursorY = (y / screenHeight) * window.innerHeight;
+      // Update the cursor's position
+      cursors[id].style.left = `${cursorX}px`;
+      cursors[id].style.top = `${cursorY}px`;
+    });
+
+    socket.on('cursorRemoved', (removedClientId) => {
+      // Remove the cursor element from the page
+      if (cursors[removedClientId]) {
+        document.body.removeChild(cursors[removedClientId]);
+        delete cursors[removedClientId];
       }
     });
 

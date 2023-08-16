@@ -38,3 +38,12 @@
 .no-pointer-events {
   pointer-events: none;
 }
+
+.remote-cursor {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
