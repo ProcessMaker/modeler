@@ -145,9 +145,9 @@
 
 <script>
 import Vue from 'vue';
-import { io } from 'socket.io-client';
 import _ from 'lodash';
 import { dia } from 'jointjs';
+// import * as Automerge from "@automerge/automerge"
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
@@ -200,7 +200,7 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-
+import MultiplayerClient from '../multiplayerClient';
 
 export default {
   components: {
@@ -1471,13 +1471,7 @@ export default {
       }
     });
 
-    /** WEB SOCKET **/
-    const socket = io(import.meta.env.VITE_WS_URL);
-
-    socket.on('connect', () => {
-      console.log('########################');
-      console.log('connected', socket.id);
-    });
+    this.multiplayerClient = new MultiplayerClient();
 
     const cursors = {};
 
@@ -1493,10 +1487,10 @@ export default {
       };
 
       // Emit the mouse position to the server
-      socket.emit('mouseMove', data);
+      this.multiplayerClient.emit('mouseMove', data);
     });
 
-    socket.on('mousePosition', (position) => {
+    this.multiplayerClient.on('mousePosition', (position) => {
       // Get the remote mouse position
       const { x, y, screenWidth, screenHeight, id } = position;
 
@@ -1517,36 +1511,20 @@ export default {
       cursors[id].style.top = `${cursorY}px`;
     });
 
-    socket.on('cursorRemoved', (removedClientId) => {
+    this.multiplayerClient.on('cursorRemoved', (removedClientId) => {
       // Remove the cursor element from the page
       if (cursors[removedClientId]) {
         document.body.removeChild(cursors[removedClientId]);
         delete cursors[removedClientId];
       }
     });
-    socket.on('modelerUpdateClient', async(data) => {
-      // Get the remote mouse position
-      const { xml, id } = data;
-      // this.definition = data.definition;
-      // const tempDef = this.moddle.create('bpmn:Definitions', definitions);
-      // console.log(tempDef);
-      // this.definitions = tempDef;
-      // this.xmlManager.definitions = this.definitions;
-      // this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
-      // this.definition = tempDef;
-      // this.xmlManager.definitions = definition;
-      // this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
-      // store.commit('clearNodes');
-      // await this.renderPaper();
-
-      console.log('Received', id);
+    this.multiplayerClient.on('modelerUpdateClient', async(data) => {
+      const { xml } = data;
       await this.loadXML(xml);
-      // console.log(xml);
     });
 
-    window.ProcessMaker.EventBus.$on('modeler-change', () => this.modelerChange(socket));
+    window.ProcessMaker.EventBus.$on('modeler-change', () => this.modelerChange(this.multiplayerClient));
 
-    /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       loadXML: async(xml) => {
         await this.loadXML(xml);
