@@ -19,7 +19,7 @@ function install(Vue) {
         .pop()
         .replace(/\.\w+$/, ''),
     ));
-    Vue.component(name, components[component]);
+    Vue.component(name, components[component].default || components[component]);
   }
   for (const mixin in mixins) {
     Vue.mixin(mixins[mixin].name);

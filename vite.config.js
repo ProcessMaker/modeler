@@ -54,8 +54,6 @@ export default defineConfig({
           vue: 'Vue',
           moment: 'moment',
           'moment-timezone': 'moment-timezone',
-          '@processmaker/screen-builder': '@processmaker/screen-builder',
-          '@processmaker/vue-form-elements': '@processmaker/vue-form-elements',
           lodash: 'lodash',
         },
       },
