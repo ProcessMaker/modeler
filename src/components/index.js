@@ -24,4 +24,4 @@ function install(Vue) {
   }
 }
 
-export default install;
+export default { install };
