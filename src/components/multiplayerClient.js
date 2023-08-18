@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import * as Automerge from "@automerge/automerge";
+import * as Automerge from '@automerge/automerge';
 
 export default class multiplayerClient {
   open = false;

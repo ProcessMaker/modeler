@@ -3,8 +3,8 @@ import { createVuePlugin } from 'vite-plugin-vue2';
 import svgLoader from 'vite-svg-loader';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import bpmnlint from 'rollup-plugin-bpmnlint';
-import wasm from "vite-plugin-wasm"
-import topLevelAwait from "vite-plugin-top-level-await"
+import wasm from 'vite-plugin-wasm';
+import topLevelAwait from 'vite-plugin-top-level-await';
 
 import { resolve } from 'path';
 
@@ -77,6 +77,6 @@ export default defineConfig({
     // versions of the JS wrapper. This causes problems because the JS
     // wrapper has a module level variable to track JS side heap
     // allocations, initializing this twice causes horrible breakage
-    exclude: ["@automerge/automerge-wasm"],
+    exclude: ['@automerge/automerge-wasm'],
   },
 });

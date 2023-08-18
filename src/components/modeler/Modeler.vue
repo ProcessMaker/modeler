@@ -145,7 +145,6 @@
 
 <script>
 import Vue from 'vue';
-import { io } from 'socket.io-client';
 import _ from 'lodash';
 import { dia } from 'jointjs';
 // import * as Automerge from "@automerge/automerge"
@@ -1520,7 +1519,7 @@ export default {
       }
     });
     this.multiplayerClient.on('modelerUpdateClient', async(data) => {
-      const { xml, id } = data;
+      const { xml } = data;
       await this.loadXML(xml);
     });
 
