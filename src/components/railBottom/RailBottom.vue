@@ -6,7 +6,7 @@
       ref="railLeftBox"
     >
       <MiniPaperControl
-        v-show="showComponent"
+        :class="{'hidden-opacity': showComponent === false}"
         :paper-manager="paperManager"
         :graph="graph"
       />
