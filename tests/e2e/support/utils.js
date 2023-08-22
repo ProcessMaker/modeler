@@ -173,7 +173,6 @@ export function waitToRenderNodeUpdates() {
 }
 
 export function connectNodesWithFlow(flowType, startPositionA, endPosition, clickPosition = 'center', startComponentType = null) {
-  const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
   let startPosition = startPositionA;
 
   const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
@@ -464,7 +463,7 @@ export function selectComponentType(component, type) {
   cy.get('[class="btn btn-primary"]').should('be.visible').click();
 }
 
-export function clickAndDropElement(node, position, nodeChild = null) {
+export function clickAndDropElement(node, position) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
 
