@@ -9,7 +9,7 @@ import {
 import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
-describe.skip('Boundary Message Event', () => {
+describe('Boundary Message Event', () => {
   const taskPosition = { x: 300, y: 200 };
   beforeEach(() => {
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');

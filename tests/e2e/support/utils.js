@@ -176,13 +176,6 @@ export function connectNodesWithFlow(flowType, startPositionA, endPosition, clic
   const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
   let startPosition = startPositionA;
 
-  // Add explorer width
-  if (explorerIsVisible) {
-    startPosition = {
-      x: startPositionA.x + 200,
-      y: startPositionA.y,
-    };
-  }
   const mouseEvent = { clientX: startPosition.x , clientY: startPosition.y };
   return getElementAtPosition(startPosition, startComponentType)
     .trigger('mousedown', mouseEvent, { force: true })
@@ -474,32 +467,19 @@ export function selectComponentType(component, type) {
 export function clickAndDropElement(node, position, nodeChild = null) {
   cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
-    const explorerIsVisible = Cypress.$('[data-test=explorer-rail]').is(':visible');
-
-    // Add explorer width
-    if (explorerIsVisible) {
-      position.x += 200;
-    }
 
     cy.get('.main-paper').then($paperContainer => {
       const { x, y } = $paperContainer[0].getBoundingClientRect();
       const mouseEvent = { clientX: position.x + x + tx, clientY: position.y + y + ty };
-
-      if (explorerIsVisible) {
-        cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
-      } else {
-        cy.get(`[data-test=${node}-main]`).click();
-
-        if (nodeChild) {
-          cy.get(`[data-test=${nodeChild}]`).click();
-        }
-      }
-
+      cy.get('.control-add').click();
+      cy.get('[data-test=explorer-rail]').find(`[data-test=${node}]`).click();
+      cy.get('[id="explorer-rail"]>* [class="close--container"]>svg').click();
       cy.document().trigger('mousemove', mouseEvent);
       cy.wait(300);
       cy.get('.paper-container').trigger('mousedown', mouseEvent);
       cy.wait(300);
       cy.get('.paper-container').trigger('mouseup', mouseEvent);
+
     });
   });
 }
@@ -553,4 +533,18 @@ export function selectElements(parameterList) {
     cy.get('body').type('{shift}', { release: false });
     cy.get(element.element).eq(element.pos).click({ force: true });
   }
+}
+
+export function selectElementsMouse(){
+  cy.get('.paper-container').as('paperContainer').click();
+  cy.get('.paper-container').trigger('mousedown', {clientX: 100, clientY: 0 });
+  cy.get('.paper-container').trigger('mousemove', 'bottomRight',{ force: true });
+  cy.get('.paper-container').trigger('mousemove', 'bottomRight',{ force: true });
+  waitToRenderAllShapes();
+  cy.get('.paper-container').trigger('mouseup', 'bottomRight',{ force: true });
+}
+
+export function deselectElementsMouse(){
+  cy.get('.paper-container').trigger('mousedown', {clientX: 100, clientY: 0, force: true });
+  cy.get('.paper-container').trigger('mouseup', {clientX: 100, clientY: 0, force: true });
 }

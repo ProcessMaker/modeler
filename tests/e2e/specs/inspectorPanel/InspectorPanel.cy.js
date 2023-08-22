@@ -10,6 +10,7 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
   const inspectorCloseButton = '[data-cy="inspector-close-button"]';
 
   beforeEach(() => {
+    cy.get('.control-add').click();
     cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
     cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
     waitToRenderAllShapes();

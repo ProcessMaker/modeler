@@ -49,19 +49,19 @@ describe('Recalculations Issues', () => {
 
     //Step 6: Move the selection out the pool toward bottom
     cy.get(taskSelector).eq(1).trigger('mousedown',{ force: true });
-    cy.get('.paper-container').trigger('mousemove', 'bottom');
-    cy.get('.paper-container').trigger('mousemove', 'bottom');
+    cy.get('.paper-container').trigger('mousemove', 'bottom', { force: true });
+    cy.get('.paper-container').trigger('mousemove', 'bottom', { force: true });
     waitToRenderAllShapes();
-    cy.get('.paper-container').trigger('mouseup','bottom');
+    cy.get('.paper-container').trigger('mouseup','bottom',{ force: true });
 
 
     //Step 7: Move the selection out the pool toward right
     cy.wait(1000);
     cy.get(taskSelector).eq(1).trigger('mousedown',{ force: true });
-    cy.get('.paper-container').trigger('mousemove', 'left');
-    cy.get('.paper-container').trigger('mousemove', 'left');
+    cy.get('.paper-container').trigger('mousemove', 'left',{ force: true });
+    cy.get('.paper-container').trigger('mousemove', 'left',{ force: true });
     waitToRenderAllShapes();
-    cy.get('.paper-container').trigger('mouseup','left');
+    cy.get('.paper-container').trigger('mouseup','left',{ force: true });
 
     //Step 8: Press UNDO button
     cy.get('[data-cy="undo-control"]').click();

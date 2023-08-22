@@ -68,7 +68,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     waitToRenderAllShapes();
 
-    getElementAtPosition(taskPosition, null, 200, 0)
+    getElementAtPosition(taskPosition)
       .click()
       .then($task => {
         getCrownButtonForElement($task, 'delete-button').click();
@@ -102,7 +102,7 @@ describe('Undo/Redo control test', { scrollBehavior: false }, () => {
 
     waitToRenderAllShapes();
 
-    cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight');
+    cy.get('[data-tool-name=vertices]').trigger('mousedown', 'topRight', { force: true });
     waitToRenderAllShapes();
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });
     cy.get('[data-tool-name=vertices]').trigger('mousemove', 'bottomLeft', { force: true });

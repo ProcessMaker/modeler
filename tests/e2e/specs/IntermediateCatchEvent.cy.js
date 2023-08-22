@@ -11,7 +11,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Intermediate Catch Event', () => {
-  it.skip('Removes messageRef when message is deleted', () => {
+  it('Removes messageRef when message is deleted', () => {
     const intermediateCatchEventPosition = { x: 350, y: 250 };
     const intermediateThrowEventPosition = { x: 350, y: 400 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);

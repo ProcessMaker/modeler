@@ -44,10 +44,10 @@ describe('Recalculations Issues', () => {
 
         //Step 5: Move the selection out the pool toward bottom
         cy.get(endEventSelector).eq(0).trigger('mousedown',{ force: true });
-        cy.get('.paper-container').trigger('mousemove', 'right');
-        cy.get('.paper-container').trigger('mousemove', 'right');
+        cy.get('.paper-container').trigger('mousemove', 'right', { force: true });
+        cy.get('.paper-container').trigger('mousemove', 'right', { force: true });
         waitToRenderAllShapes();
-        cy.get('.paper-container').trigger('mouseup','right');
+        cy.get('.paper-container').trigger('mouseup','right', { force: true });
         waitToRenderAllShapes();
 
         //Step 6: Verify that End Event is not out the pool
