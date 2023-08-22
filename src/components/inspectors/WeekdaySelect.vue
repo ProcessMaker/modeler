@@ -107,6 +107,7 @@ export default {
           selected: false,
         },
       ],
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       cycleManager: new CycleManager(this.startDate, this.repeat, this.periodicityValue, this.selectedWeekdays, this.endDate, this.ends, this.times),
     };
   },
