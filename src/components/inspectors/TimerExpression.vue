@@ -185,7 +185,7 @@ export default {
      * Parse an ISO8601 expression to get the timer configuration
      */
     parseTimerConfig(value) {
-      if (!value[0].timeCycle.body) {
+      if (!value[0]?.timeCycle?.body) {
         return;
       }
 
