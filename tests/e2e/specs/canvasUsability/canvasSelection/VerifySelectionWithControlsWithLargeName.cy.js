@@ -13,7 +13,6 @@ describe('Canvas Selection', () => {
     getGraphElements().should('have.length', initialNumberOfElements);
 
     //Step 2: Clicks and drags the mouse over the elements
-    selectElementsMouse();
 
     //Step 3: Get with of rectangle of selection
     cy.get('[data-cy="selection-box"]').should('be.visible')
@@ -27,7 +26,6 @@ describe('Canvas Selection', () => {
           .find('input').should('be.visible').clear().type('New Large Name to Start event');
 
         //Step 5: Clicks and drags the mouse over the elements
-        selectElementsMouse();
 
         //Validation 1: Verify the rectangle of the selection cover the element with the large name
         cy.get('[data-cy="selection-box"]').should('exist')

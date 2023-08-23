@@ -546,4 +546,5 @@ export function selectElementsMouse(){
 export function deselectElementsMouse(){
   cy.get('.paper-container').trigger('mousedown', {clientX: 100, clientY: 0, force: true });
   cy.get('.paper-container').trigger('mouseup', {clientX: 100, clientY: 0, force: true });
+  cy.get('.paper-container').click({clientX: 100, clientY: 0});
 }
