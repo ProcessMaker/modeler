@@ -2,11 +2,12 @@ import { io } from 'socket.io-client';
 
 export default class MultiplayerClient {
   client
+  ENDPOINT = 'localhost:3000'
   constructor() {
     this.client = this._createClient();
   }
   _createClient() {
-    this.client = io('localhost:3000');
+    this.client = io(this.ENDPOINT);
     this.client.on('connect', () => {
       //TODO connect logic
     });
