@@ -8,13 +8,11 @@ export default class MultiplayerClient {
   _createClient() {
     this.client = io('localhost:3000');
     this.client.on('connect', () => {
-      console.log('########################');
-      console.log('connected', this.client.id);
+      //TODO connect logic
     });
     return this.client;
   }
   close() {
-    console.log('Websocket client closed.');
     this.client.close();
   }
   addEventListener(event) {
