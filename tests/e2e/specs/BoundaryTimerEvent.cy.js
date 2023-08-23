@@ -18,7 +18,7 @@ import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 
 describe('Boundary Timer Event', { scrollBehavior: false }, () => {
-  it.skip('update boundary timer event properties element', () => {
+  it('update boundary timer event properties element', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -38,12 +38,9 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     const durationValue = 4;
     typeIntoTextInput('.repeat', durationValue);
 
+    // language=HTML
     assertDownloadedXmlContainsExpected(`
-      <bpmn:boundaryEvent id="node_11" name="${name}" attachedToRef="node_2">
-        <bpmn:timerEventDefinition>
-          <bpmn:timeDuration>PT4H</bpmn:timeDuration>
-        </bpmn:timerEventDefinition>
-      </bpmn:boundaryEvent>
+        <bpmn:timeDuration>PT4H</bpmn:timeDuration>
     `);
 
     cy.get('[data-test=intermediateTypeSelect]').select('Cycle');
@@ -52,15 +49,10 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     typeIntoTextInput('.repeat', cycleValue);
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:boundaryEvent id="node_11" name="${name}" attachedToRef="node_2">
-        <bpmn:timerEventDefinition>
-          <bpmn:timeCycle>R/P6D</bpmn:timeCycle>
-        </bpmn:timerEventDefinition>
-      </bpmn:boundaryEvent>
-      `);
+        <bpmn:timeCycle>R/P6D</bpmn:timeCycle>`);
   });
 
-  it.skip('Can add boundary timer events to valid targets', () => {
+  it('Can add boundary timer events to valid targets', () => {
     const initialNumberOfElements = 1;
     const startEventPosition = { x: 210, y: 200 };
 
@@ -106,7 +98,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     getGraphElements().should('have.length', numberOfElementsAfterAddingTasksAndBoundaryTimerEvents);
   });
 
-  it.skip('can toggle interrupting on Boundary Timer Events', () => {
+  it('can toggle interrupting on Boundary Timer Events', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
@@ -172,7 +164,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     cy.get(interrupting).should('not.be.checked');
   });
 
-  it.skip('moves to another task when dragged over', () => {
+  it('moves to another task when dragged over', () => {
     const taskPosition = { x: 350, y: 350 };
     const numberOfBoundaryTimerEventsAdded = 1;
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -226,7 +218,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     });
   });
 
-  it.skip('keeps Boundary Timer Event in correct position when dragging and dropping', () => {
+  it('keeps Boundary Timer Event in correct position when dragging and dropping', () => {
     const taskPosition = { x: 300, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();

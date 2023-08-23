@@ -1,17 +1,20 @@
 import { nodeTypes } from '../../../support/constants';
-import { clickAndDropElement, getElementAtPosition, waitToRenderAllShapes } from '../../../support/utils';
+import {
+  clickAndDropElement,
+  getElementAtPosition,
+  waitToRenderAllShapes,
+  selectElementsMouse,
+} from '../../../support/utils';
 
-describe.skip('Select and Move' , () => {
+describe('Select and Move' , () => {
   it('Elements are selected and moved', () => {
     const explorerX = 200;
     const task1Position = { x: 100 + explorerX, y: 200 };
     clickAndDropElement(nodeTypes.task, task1Position);
+
     //Step 2: Clicks and drags the mouse over the elements
     waitToRenderAllShapes();
-    cy.get('.paper-container').click();
-    cy.get('.paper-container').trigger('mousedown', { clientX: 200, clientY: 150 });
-    cy.get('.paper-container').trigger('mousemove', { clientX: 600, clientY: 700 });
-    cy.get('.paper-container').trigger('mouseup',{ clientX: 600, clientY: 600 });
+    selectElementsMouse();
 
     //move the elements
     cy.get('.paper-container').trigger('mousedown', { clientX: 380, clientY: 210 });

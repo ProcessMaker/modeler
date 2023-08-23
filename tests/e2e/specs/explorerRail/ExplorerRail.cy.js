@@ -1,5 +1,6 @@
 describe('Explorer Rail Tests', () => {
   it('Should pin an element', () => {
+    cy.get('.control-add').click();
     // Try with Start Event
     cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
     cy.wait(300);
@@ -15,6 +16,7 @@ describe('Explorer Rail Tests', () => {
     cy.get('.control-list > [data-test=processmaker-modeler-end-event-main]').should('exist');
   });
   it('Should unpin element',() => {
+    cy.get('.control-add').click();
     // Pin a Start Event and End Event first
     cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
     cy.wait(300);
@@ -43,6 +45,7 @@ describe('Explorer Rail Tests', () => {
     cy.get('.control-list > [data-test=processmaker-modeler-end-event-main]').should('not.exist');
   });
   it('Should open and close the Explorer Rail properly', () => {
+    cy.get('.control-add').click();
     // Close with X icon on top
     cy.get('.close--container').click();
     cy.get('[data-test=body-container]').find('[data-test=explorer-rail]').should('not.be.visible');
@@ -58,6 +61,7 @@ describe('Explorer Rail Tests', () => {
     cy.get('[data-test=body-container]').find('[data-test=explorer-rail]').should('not.be.visible');
   });
   it('Should close the Explorer Rail with all pinned elements and open with the same elements', () => {
+    cy.get('.control-add').click();
     // Pin items
     cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
     cy.wait(300);

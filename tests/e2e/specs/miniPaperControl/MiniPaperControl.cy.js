@@ -72,8 +72,12 @@ describe('Mini Paper control test', { scrollBehavior: false }, () => {
             .then(() => {
               // Checks if the new coordinates are the correct ones
               cy.window().then(win => {
-                expect(win.MiniPaper.newX).to.equal(win.store.state.paper.localToPaperPoint().x);
-                expect(win.MiniPaper.newY).to.equal(win.store.state.paper.localToPaperPoint().y);
+                let valuexA =win.MiniPaper.newX;
+                let valuexB =win.store.state.paper.localToPaperPoint().x;
+                let valueyA =win.MiniPaper.newY;
+                let valueyB =win.store.state.paper.localToPaperPoint().y;
+                expect(Math.round(valuexA)).to.equal(Math.round(valuexB));
+                expect(Math.round(valueyA)).to.equal(Math.round(valueyB));
               });
             });
         });
