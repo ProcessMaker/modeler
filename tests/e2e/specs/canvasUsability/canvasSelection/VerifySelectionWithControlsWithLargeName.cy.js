@@ -1,7 +1,6 @@
 import {
   waitToRenderAllShapes,
   getGraphElements,
-  selectElementsMouse,
 } from '../../../support/utils';
 
 describe('Canvas Selection', () => {
