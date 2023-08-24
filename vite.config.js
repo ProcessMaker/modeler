@@ -37,7 +37,7 @@ export default defineConfig({
   build: {
     cssCodeSplit: false,
     lib: {
-      entry: resolve(__dirname, 'src/components/index.js'),
+      entry: resolve(__dirname, 'src/index.js'),
       name: libraryName,
       fileName: (format) => `${libraryName}.${format}.js`,
     },
