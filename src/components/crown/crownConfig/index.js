@@ -1,3 +1,3 @@
-import CrownConfig from "./crownConfig.vue";
+import CrownConfig from './crownConfig.vue';
 
-export {CrownConfig};
+export { CrownConfig };

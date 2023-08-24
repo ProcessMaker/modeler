@@ -41,6 +41,7 @@ export default defineConfig({
       name: libraryName,
       fileName: (format) => `${libraryName}.${format}.js`,
     },
+    minify: false,
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library

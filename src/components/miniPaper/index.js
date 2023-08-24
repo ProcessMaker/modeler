@@ -1,1 +1,1 @@
-export MiniPaper from "./MiniPaper.vue";
+export { default as MiniPaper } from './MiniPaper.vue';

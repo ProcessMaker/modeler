@@ -1,3 +1,3 @@
-import InspectorButton from "./InspectorButton.vue";
+import InspectorButton from './InspectorButton.vue';
 
-export {InspectorButton}
+export { InspectorButton };

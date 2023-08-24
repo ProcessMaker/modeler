@@ -7,7 +7,7 @@ import UndoRedoStore from './undoRedoStore.js';
 const components = import.meta.glob('./**/*.vue', { import: 'default', eager: true });
 const mixins = import.meta.glob('./mixins/**/*.js');
 
-function install(Vue, options) {
+function install(Vue) {
   // First check to see if we're already installed
   if (this._processMakerVueFormElementsInstalled) {
     return;
