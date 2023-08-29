@@ -14,7 +14,7 @@ describe('Data Objects and Data Stores', () => {
   const taskPosition = { x: 500, y: 400 };
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it.skip(`does not support connecting sequence flows for ${nodeType}`, () => {
+    it(`does not support connecting sequence flows for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       waitToRenderAllShapes();
 
@@ -26,7 +26,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject].forEach(nodeType => {
-    it.skip(`can add data output association flows for ${nodeType}`, () => {
+    it(`can add data output association flows for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
 
@@ -78,7 +78,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it.skip(`does not support connecting data input association to start event for ${nodeType}`, () => {
+    it(`does not support connecting data input association to start event for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       waitToRenderAllShapes();
       connectNodesWithFlow('association-flow-button', dataPosition, startEventPosition);

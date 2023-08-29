@@ -40,7 +40,7 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=start-date-picker] > input').should('contain.value', expectedStartDate.substr(0, 14));
   });
 
-  it.skip('can set a specific end date', () => {
+  it('can set a specific end date', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
     const expectedEndDate = getPeriodicityStringUSFormattedDate(now, true);
@@ -98,7 +98,7 @@ describe('Start Timer Event', () => {
       .should('contain', timerExpression2);
   });
 
-  it.skip('Updates properties for periodicity other than "week"', () => {
+  it('Updates properties for periodicity other than "week"', () => {
     const year = 2023;
     const month = 6;
     const day = 18;
@@ -170,7 +170,7 @@ describe('Start Timer Event', () => {
       .should('contain', endsNeverExpression);
   });
 
-  it.skip('Does not include selected weekdays for periods other than "week"', () => {
+  it('Does not include selected weekdays for periods other than "week"', () => {
     const year = 2019;
     const month = 7;
     const day = 8;

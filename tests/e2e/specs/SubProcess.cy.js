@@ -64,7 +64,7 @@ describe('Sub Process (Call Activities)', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_8" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
   });
 
-  it.only('Allows typing in name field on new sub process', () => {
+  it('Allows typing in name field on new sub process', () => {
     addSubprocessToPaper(subProcessPosition);
     cy.clock();
     cy.tick(500);

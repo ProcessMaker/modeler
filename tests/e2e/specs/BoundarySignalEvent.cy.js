@@ -12,7 +12,7 @@ import { nodeTypes } from '../support/constants';
 import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBehaviour';
 import _ from 'lodash';
 
-describe.skip('Boundary Signal Event', () => {
+describe('Boundary Signal Event', () => {
   const taskPosition = { x: 200, y: 200 };
   const boundarySignalEventPosition = { x: 260, y: 200 };
 

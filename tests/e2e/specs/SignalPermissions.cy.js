@@ -18,7 +18,7 @@ function setPerm(perm, value) {
   return getElementAtPosition(intermediateSignalThrowEventPosition).click();
 }
 
-describe.skip('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
+describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
 
   it('can create a message when intermediate message throw event is dragged on', () => {
     cy.window().then(win => {

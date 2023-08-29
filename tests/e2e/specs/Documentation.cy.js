@@ -12,7 +12,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 
-describe.skip('Documentation accordion', { scrollBehavior: false }, () => {
+describe('Documentation accordion', { scrollBehavior: false }, () => {
   const baseElements = [
     nodeTypes.startEvent,
     nodeTypes.intermediateCatchEvent,
