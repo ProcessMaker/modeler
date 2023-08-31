@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      cursorIcon: require('@/components/remoteCursor/cursor.svg'),
+      cursorIcon: require('@/components/multiplayer/remoteCursor/cursor.svg'),
     };
   },
 };
@@ -39,8 +39,8 @@ export default {
     display: flex;
     width: auto;
     height: 34px;
-    left: 100px;
-    top: 100px;
+    left: 20px;
+    top: 80px;
   }
 
   &-username {

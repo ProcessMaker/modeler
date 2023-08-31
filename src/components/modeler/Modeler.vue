@@ -201,7 +201,7 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-import RemoteCursor from '@/components/remoteCursor/RemoteCursor.vue';
+import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 
 export default {
   components: {
