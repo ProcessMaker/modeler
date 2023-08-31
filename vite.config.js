@@ -5,6 +5,7 @@ import ViteYaml from '@modyfi/vite-plugin-yaml';
 import bpmnlint from 'rollup-plugin-bpmnlint';
 
 import { resolve } from 'path';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 const libraryName = 'modeler';
 
@@ -12,6 +13,7 @@ const libraryName = 'modeler';
 export default defineConfig({
   plugins: [
     createVuePlugin(),
+    cssInjectedByJsPlugin(),
     svgLoader(),
     ViteYaml(),
     bpmnlint({
@@ -37,7 +39,7 @@ export default defineConfig({
   build: {
     cssCodeSplit: false,
     lib: {
-      entry: resolve(__dirname, 'src/index.js'),
+      entry: resolve(__dirname, 'src/components/nodes/index.js'),
       name: libraryName,
       fileName: (format) => `${libraryName}.${format}.js`,
     },
