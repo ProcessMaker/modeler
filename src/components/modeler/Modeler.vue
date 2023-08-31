@@ -140,6 +140,8 @@
         @save-state="pushToUndoStack"
       />
     </b-row>
+
+    <RemoteCursor cursor-color="#6CC551" username="Samantha B." />
   </span>
 </template>
 
@@ -199,7 +201,7 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-
+import RemoteCursor from '@/components/remoteCursor/RemoteCursor.vue';
 
 export default {
   components: {
@@ -210,6 +212,7 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    RemoteCursor,
   },
   props: {
     owner: Object,
@@ -852,7 +855,7 @@ export default {
 
       const config = definition.config ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
-      
+
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
