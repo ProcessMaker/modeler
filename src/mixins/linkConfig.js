@@ -26,6 +26,7 @@ export default {
       sourceShape: null,
       target: null,
       listeningToMouseup: false,
+      listeningToMouseleave: false,
       vertices: null,
       anchorPointFunction: getDefaultAnchorPoint,
     };
@@ -144,9 +145,7 @@ export default {
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
 
-      this.shape.listenTo(this.paper, 'cell:mouseleave', async() => {
-        await this.storeWaypoints();
-      });
+      this.shape.listenTo(this.paper, 'cell:mouseleave', this.storeWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -160,10 +159,16 @@ export default {
       });
     },
     async storeWaypoints() {
-      await this.$nextTick();
-      await this.waitForUpdateWaypoints();
-      await this.$nextTick();
-      this.$emit('save-state');
+      if (this.highlighted) {
+        this.updateWaypoints();
+        await this.$nextTick();
+
+        if (!this.listeningToMouseleave) {
+          this.listeningToMouseleave = true;
+          this.$emit('save-state');
+        }
+
+      }
     },
     /**
       * On Change vertices handler
@@ -173,6 +178,8 @@ export default {
       */
     async onChangeTargets(link, vertices, options){
       if (options && options.ui) {
+        await this.$nextTick();
+        await this.waitForUpdateWaypoints();
         await this.storeWaypoints();
       }
     },
@@ -180,6 +187,7 @@ export default {
       if (options && options.ui) {
         this.updateWaypoints();
         await this.$nextTick();
+        this.listeningToMouseleave = false;
         this.$emit('save-state');
       }
     },
