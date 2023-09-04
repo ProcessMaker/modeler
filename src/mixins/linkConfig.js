@@ -139,10 +139,14 @@ export default {
       resetShapeColor(targetShape);
 
       this.shape.on('change:vertices', this.onChangeVertices);
-      this.shape.on('change:source', this.onChangeVertices);
-      this.shape.on('change:target', this.onChangeVertices);
+      this.shape.on('change:source', this.onChangeTargets);
+      this.shape.on('change:target', this.onChangeTargets);
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+
+      this.shape.listenTo(this.paper, 'cell:mouseleave', async() => {
+        await this.storeWaypoints();
+      });
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -155,16 +159,26 @@ export default {
         resolve();
       });
     },
+    async storeWaypoints() {
+      await this.$nextTick();
+      await this.waitForUpdateWaypoints();
+      await this.$nextTick();
+      this.$emit('save-state');
+    },
     /**
       * On Change vertices handler
       * @param {Object} link
       * @param {Array} vertices
       * @param {Object} options
       */
+    async onChangeTargets(link, vertices, options){
+      if (options && options.ui) {
+        await this.storeWaypoints();
+      }
+    },
     async onChangeVertices(link, vertices, options){
       if (options && options.ui) {
-        await this.$nextTick();
-        await this.waitForUpdateWaypoints();
+        this.updateWaypoints();
         await this.$nextTick();
         this.$emit('save-state');
       }
