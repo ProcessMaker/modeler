@@ -145,7 +145,7 @@ export default {
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
 
-      this.shape.listenTo(this.paper, 'cell:mouseleave', this.storeWaypoints);
+      this.shape.listenTo(this.paper, 'link:mouseleave', this.storeWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -159,15 +159,12 @@ export default {
       });
     },
     async storeWaypoints() {
-      if (this.highlighted) {
+      if (this.highlighted && !this.listeningToMouseleave) {
         this.updateWaypoints();
         await this.$nextTick();
 
-        if (!this.listeningToMouseleave) {
-          this.listeningToMouseleave = true;
-          this.$emit('save-state');
-        }
-
+        this.listeningToMouseleave = true;
+        this.$emit('save-state');
       }
     },
     /**
