@@ -1,6 +1,5 @@
 import {
   clickAndDropElement,
-  getElementAtPosition,
   waitToRenderAllShapes,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
