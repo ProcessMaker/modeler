@@ -61,7 +61,7 @@ export default {
       const nameArray = name.split(' ');
       const firstNameIn = nameArray[0].charAt(0).toUpperCase();
       const lastNameIn = nameArray[nameArray.length - 1].charAt(0).toUpperCase();
-      return firstNameIn + lastNameIn;
+      return `${firstNameIn}${lastNameIn}`;
     },
     /**
      * Calculates a hash value for a given string.
@@ -85,7 +85,7 @@ export default {
      * @returns {number[]} An array containing the lower and upper bounds of the range.
      */
     getRange(value, range)  {
-      return [Math.max(0, value-range), Math.min(value+range, 100)];
+      return [Math.max(0, value-range), Math.min(value + range, 100)];
     },
     /**
      * Get the hash number to within our range
