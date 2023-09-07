@@ -64,10 +64,14 @@ describe('Start Timer Event', () => {
 
     const year = now.getFullYear();
     const month = now.getMonth();
-    const day = now.getDate();
+    let day = now.getDate();
     const hour = 5;
     const minute = 30;
-    const currentDateString = `${year}-${String(month + 1).padStart(2, '0')}-${day}T0${hour}:${minute}:00.000Z`;
+    day = day.toString();
+    if (day.length === 1)
+      day = '0'+day;
+    const currentDateString = `${year}-${String(month + 1).padStart(2, '0')}-${day}`;
+    const currentDateStringA = `:${minute}:00.000Z`;
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
@@ -75,12 +79,14 @@ describe('Start Timer Event', () => {
     cy.get('.vdpMinutesInput').type(`${minute}0`);
     cy.get('.vdp12HourToggleBtn').click();
 
-    const timerExpression1 = `R/${currentDateString}/P1W`;
+    const timerExpression1 = `R/${currentDateString}`;
+    const timerExpression1A = `${currentDateStringA}/P1W`;
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(xml => xml.trim())
-      .should('contain', timerExpression1);
+      .should('contain', timerExpression1)
+      .and('contain', timerExpression1A);
 
     cy.get('[data-test=day-2]').click({ force: true });
     waitToRenderAllShapes();
