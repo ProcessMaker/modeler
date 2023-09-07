@@ -47,9 +47,15 @@
       </b-col>
 
       <InspectorButton
-        v-if="showComponent"
+        ref="inspector-button"
+        v-if="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
         @toggleInspector="handleToggleInspector"
+        :style="{ right: inspectorButtonRight + 'px' }"
+      />
+
+      <PreviewPanel ref="preview-panel"
+        :nodeRegistry="nodeRegistry"
       />
 
       <InspectorPanel
@@ -98,6 +104,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
+        @preview-node="previewNode"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -156,6 +163,7 @@ import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import PreviewPanel from '@/components/inspectors/PreviewPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -203,6 +211,7 @@ import Selection from './Selection';
 
 export default {
   components: {
+    PreviewPanel,
     ToolBar,
     ExplorerRail,
     InspectorButton,
@@ -296,6 +305,8 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      showInspectorButton: true,
+      inspectorButtonRight: 65,
     };
   },
   watch: {
@@ -355,6 +366,8 @@ export default {
   },
   methods: {
     handleToggleInspector(value) {
+      this.showInspectorButton = !(value ?? true);
+      this.inspectorButtonRight = 65 + this.showInspectorButton ? 400 : 0;
       this.isOpenInspector = value;
     },
     isAppleOS() {
@@ -1055,6 +1068,10 @@ export default {
         store.commit('addNode', node);
         this.poolTarget = null;
       });
+    },
+    async previewNode(node) {
+      console.log ('preview node...', node);
+      this.$refs['preview-panel'].show(node.definition);
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (!node) {
