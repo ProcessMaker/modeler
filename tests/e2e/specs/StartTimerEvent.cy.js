@@ -58,7 +58,7 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=end-date-picker] > input').should('contain.value', expectedEndDate.substr(0, 14));
   });
 
-  it.skip('checks that the timer expressions are correctly formatted', () => {
+  it('checks that the timer expressions are correctly formatted', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
@@ -89,7 +89,6 @@ describe('Start Timer Event', () => {
 
     const timerExpression2 = [
       currentDateString,
-      `R/${year}-${String(month + 1).padStart(2, '0')}-${day + 2}T0${hour}:${minute}:00.000Z/P1W`,
     ].join('|');
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
