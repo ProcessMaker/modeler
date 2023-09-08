@@ -30,18 +30,18 @@
             <b-dropdown-item key="1" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(1)">
               <div class="ellipsis-dropdown-content">
                 <b class="pr-1 fa-fw fas fa-file-alt" />
-                <span>Document</span>
+                <span>{{ $t('Document') }}</span>
               </div>
             </b-dropdown-item>
 
             <b-dropdown-item key="2" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(2)">
               <div class="ellipsis-dropdown-content">
                 <b class="pr-1 fa-fw">{ }</b>
-                <span>Object</span>
+                <span>{{ $t('Object') }}</span>
               </div>
             </b-dropdown-item>
           </b-dropdown>
-          <span>Preview - {{ taskTitle }}</span>
+          <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
         </div>
       </b-col>
       <b-col class="actions">
