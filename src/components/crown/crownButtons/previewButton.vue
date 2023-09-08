@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     preview() {
-      console.log('preview...');
       this.$emit('previewNode', this.node);
     },
   },

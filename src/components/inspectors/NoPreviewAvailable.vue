@@ -2,7 +2,7 @@
   <div class="no-preview">
     <img :src="noPreviewImg">
     <h1>No Screen Asigned</h1>
-    <h2>This is a placeholder screen. Please, assign a screen to this task </h2>
+    <h2>This is a placeholder screen. Please, assign a screen to this task.</h2>
   </div>
 </template>
 
@@ -28,6 +28,7 @@ export default {
   justify-content: center;
   align-items: center;
   color: #44494E;
+  padding: 5px;
 }
 
 .no-preview img {

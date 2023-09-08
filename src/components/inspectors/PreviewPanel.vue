@@ -67,15 +67,12 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import store from '@/store';
-import VueResizable from 'vue-resizable';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
-
 
 export default {
   props: ['nodeRegistry', 'visible'],
-  components: {VueResizable, NoPreviewAvailable},
+  components: {NoPreviewAvailable},
   data() {
     return {
       data: {},
