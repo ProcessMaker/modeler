@@ -21,6 +21,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      :players="players"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -141,7 +142,14 @@
       />
     </b-row>
 
-    <RemoteCursor cursor-color="#6CC551" username="Samantha B." />
+    <RemoteCursor 
+      v-for="(player, index) in players"
+      :cursor-color="player.color"
+      :username="player.name"
+      :key="index"
+      :top="player.top"
+      :left="player.left"
+    />
   </span>
 </template>
 
@@ -299,6 +307,7 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      players: [],
     };
   },
   watch: {
@@ -1464,6 +1473,36 @@ export default {
         }
       }
     });
+    if (process.env.NODE_ENV !== 'production') {
+      this.players = [
+        { id: '1',
+          name: 'Juan Perez',
+          color: '#ff1d58',
+          imgSrc: 'https://placekitten.com/300/300',
+          top: 90,
+          left:80,
+        },
+        { id: '2',
+          name: 'Ricardo Ford',
+          color: '#f75990',
+          top: 500,
+          left:100,
+        },
+        { id: '3',
+          name: 'Mauri Clear',
+          color: '#00DDFF', 
+          top: 200,
+          left:200,
+        },
+        { id: '4',
+          name: 'Tisha Mccullough',
+          color: '#0049B7',
+          imgSrc: 'https://xsgames.co/randomusers/avatar.php?g=female',
+          top: 800,
+          left: 600,
+        },
+      ];
+    }
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
