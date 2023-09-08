@@ -1,5 +1,5 @@
 <template>
-  <div class="remote-cursor">
+  <div class="remote-cursor" :style="{ left: left + 'px', top: top + 'px' }">
     <inline-svg :src="cursorIcon" :fill="cursorColor" />
 
     <div class="remote-username">
@@ -23,6 +23,12 @@ export default {
     username: {
       type: String,
     },
+    top: {
+      type: Number,
+    },
+    left: {
+      type: Number,
+    },
   },
   data() {
     return {
@@ -39,8 +45,8 @@ export default {
     display: flex;
     width: auto;
     height: 34px;
-    left: 20px;
-    top: 80px;
+    // left: 20px;
+    // top: 80px;
   }
 
   &-username {

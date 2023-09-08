@@ -38,12 +38,15 @@ export default {
       type: Array,
       required: true,
     },
+    players: {
+      type: Array,
+      required: false,
+    },
   },
   data() {
     return {
       isOpenIssue: false,
       isOpenPanel: false,
-      players: [],
     };
   },
   computed: {
@@ -70,31 +73,6 @@ export default {
         this.isOpenPanel = false;
       }
     },
-  },
-  mounted() {
-    if (process.env.NODE_ENV !== 'production') {
-      this.players = [
-        { id: '1',
-          name: 'Juan Perez',
-          color: 'blue',
-          imgSrc: 'https://placekitten.com/300/300',
-        },
-        { id: '2',
-          name: 'Ricardo Ford',
-          color: '#E4923A',
-        },
-        { id: '3',
-          name: 'Mauri Clear',
-          color: '#E4923A',
-        },
-        { id: '4',
-          name: 'Tisha Mccullough',
-          color: 'yellow',
-          imgSrc: 'https://xsgames.co/randomusers/avatar.php?g=female',
-        },
-      ];
-    }
-    
   },
   methods: {
     /**
