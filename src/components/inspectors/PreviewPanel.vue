@@ -107,7 +107,7 @@ export default {
         return {};
       }
 
-      const type = this.highlightedNode && this.highlightedNode.type;
+      const type = this.highlightedNode?.type;
 
       const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
         data[key] = value;
