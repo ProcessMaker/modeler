@@ -258,6 +258,7 @@ export default {
       new Promise(resolve => this.paper.once('render:done', resolve));
     },
     setUpCrownConfig() {
+      console.log('setupcronwconfig');
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
 

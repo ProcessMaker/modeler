@@ -1,9 +1,17 @@
 $inspector-column-max-width: 400px;
 $inspector-column-min-width: 400px;
 
+#preview_panel::after {
+  display: flex;
+  content: '';
+  left: 0;
+  width: 5px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
 .preview-column {
   max-width: $inspector-column-max-width;
-  min-width: $inspector-column-min-width;
   resize: both;
   overflow:auto;
   background-color: #F5F5F5;

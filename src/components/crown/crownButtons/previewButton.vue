@@ -1,5 +1,6 @@
 <template>
   <crown-button
+    v-if="node.isBpmnType(...validPreviewElements)"
     :title="$t('Preview')"
     role="menuitem"
     id="delete-button"
@@ -14,7 +15,7 @@
 <script>
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
-import { removeFlows } from '@/components/crown/utils.js';
+import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
   components: { CrownButton },
@@ -22,6 +23,7 @@ export default {
   data() {
     return {
       trashIcon,
+      validPreviewElements,
     };
   },
   computed: {
@@ -32,7 +34,7 @@ export default {
   methods: {
     preview() {
       console.log('preview...');
-      this.$emit('preview-node', this.node);
+      this.$emit('previewNode', this.node);
     },
   },
 };

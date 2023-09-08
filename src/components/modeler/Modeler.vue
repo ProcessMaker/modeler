@@ -50,11 +50,14 @@
         ref="inspector-button"
         v-if="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
         :style="{ right: inspectorButtonRight + 'px' }"
       />
 
       <PreviewPanel ref="preview-panel"
+        @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
+        @previewResize="setInspectorButtonPosition"
+        :visible="isOpenPreview"
         :nodeRegistry="nodeRegistry"
       />
 
@@ -104,7 +107,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
-        @preview-node="previewNode"
+        @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -287,6 +290,7 @@ export default {
       miniMapOpen: false,
       panelsCompressed: false,
       isOpenInspector: false,
+      isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -367,8 +371,28 @@ export default {
   methods: {
     handleToggleInspector(value) {
       this.showInspectorButton = !(value ?? true);
-      this.inspectorButtonRight = 65 + this.showInspectorButton ? 400 : 0;
       this.isOpenInspector = value;
+    },
+    handlePreview(node) {
+      this.$refs['preview-panel'].previewNode(node);
+      this.handleTogglePreview(true) ;
+    },
+    handleTogglePreview(value) {
+      this.isOpenPreview = value;
+    },
+    setInspectorButtonPosition() {
+      const previewWidth = this.$refs['preview-panel'].width;
+      if (this.isOpenInspector) {
+        return;
+      }
+
+      if (this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65 + previewWidth;
+      }
+
+      if (!this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65;
+      }
     },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
@@ -1068,10 +1092,6 @@ export default {
         store.commit('addNode', node);
         this.poolTarget = null;
       });
-    },
-    async previewNode(node) {
-      console.log ('preview node...', node);
-      this.$refs['preview-panel'].show(node.definition);
     },
     async removeNode(node, { removeRelationships = true } = {}) {
       if (!node) {

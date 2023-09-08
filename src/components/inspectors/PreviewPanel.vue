@@ -1,7 +1,12 @@
 <template>
   <b-col
+    v-show="visible"
     id="preview_panel"
     class="pl-0 h-100 overflow-hidden preview-column"
+    :style="{ maxWidth: width + 'px' }"
+    @mousedown="onMouseDown"
+    @mouseup="onMouseUp"
+    @mousemove="onMouseMove"
     data-test="preview-column"
   >
     <b-row class="control-bar">
@@ -36,13 +41,13 @@
               </div>
             </b-dropdown-item>
           </b-dropdown>
-          <span>Preview - {{ screenTitle }}</span>
+          <span>Preview - {{ taskTitle }}</span>
         </div>
       </b-col>
       <b-col class="actions">
         <div>
           <i class="fas fa-external-link-alt"/>
-          <i class="fas fa-times" @click="hide()" />
+          <i class="fas fa-times" @click="onClose()" />
         </div>
       </b-col>
     </b-row>
@@ -56,7 +61,7 @@
       <div class="task-title"> {{ taskTitle }} </div>
     </b-row>
 
-    <iframe src="https://www.vestibular.ita.br/" class="paneiframe"/>
+    <no-preview-available/>
   </b-col>
 
 </template>
@@ -65,19 +70,21 @@
 import Vue from 'vue';
 import store from '@/store';
 import VueResizable from 'vue-resizable';
+import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
 
 
 export default {
-  props: ['nodeRegistry'],
-  components: {VueResizable},
+  props: ['nodeRegistry', 'visible'],
+  components: {VueResizable, NoPreviewAvailable},
   data() {
     return {
       data: {},
       selectedPreview: '1',
-      showPanel: true,
       taskTitle: '',
       screenTitle: '',
-      myWidth: '400',
+      width: 400,
+      isDragging: false,
+      currentPos: 400,
     };
   },
   watch: {
@@ -98,11 +105,6 @@ export default {
     },
   },
   methods: {
-    onResize() {
-      console.log('resizee...');
-      this.myWidth = '800';
-
-    },
     prepareData() {
       if (!this.highlightedNode) {
         return {};
@@ -134,13 +136,27 @@ export default {
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
-    show(node) {
-      console.log('show', node);
+    previewNode(node) {
       this.taskTitle = node?.name;
       this.showPanel = true;
     },
-    hide() {
-      this.showPanel = false;
+    onClose() {
+      this.$emit('togglePreview', false);
+    },
+    onMouseDown(event) {
+      this.isDragging = true;
+      this.currentPos = event.x;
+    },
+    onMouseUp() {
+      this.isDragging = false;
+    },
+    onMouseMove(event) {
+      if (this.isDragging) {
+        const dx = this.currentPos - event.x;
+        this.currentPos = event.x;
+        this.width = parseInt(this.width) + dx;
+        this.$emit('previewResize', this.width);
+      }
     },
   },
 };
