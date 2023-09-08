@@ -20,6 +20,7 @@ import { shapes } from 'jointjs';
 import linkConfig from '@/mixins/linkConfig';
 import get from 'lodash/get';
 import { namePosition } from './sequenceFlowConfig';
+import highlightConfig from '@/mixins/highlightConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
@@ -40,7 +41,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [linkConfig],
+  mixins: [highlightConfig, linkConfig],
   data() {
     return {
       shape: null,
