@@ -9,14 +9,10 @@
 <script>
 
 export default {
-  props: [],
   data() {
     return {
       noPreviewImg: require('@/assets/noPreviewImage.png'),
     };
-  },
-  methods: {
-
   },
 };
 </script>
