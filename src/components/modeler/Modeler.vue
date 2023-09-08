@@ -2,6 +2,7 @@
   <span data-test="body-container">
     <tool-bar
       v-if="showComponent"
+      ref="tool-bar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -12,6 +13,7 @@
       :warnings="allWarnings"
       :xml-manager="xmlManager"
       :validationBar="validationBar"
+      :extra-actions="extraActions"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -21,6 +23,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -242,6 +245,7 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,
       internalClipboard: [],
@@ -354,6 +358,11 @@ export default {
     showComponent: () => store.getters.showComponent,
   },
   methods: {
+    handleToolbarAction(action) {
+      if (action.handler instanceof Function) {
+        action.handler(this);
+      }
+    },
     handleToggleInspector(value) {
       this.isOpenInspector = value;
     },
@@ -688,6 +697,15 @@ export default {
         this.parsers[bpmnType].default.push(defaultParser);
       });
       nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
+    },
+    registerMenuAction(action) {
+      if (!action.value || typeof action.value !== 'string') {
+        throw new Error('Menu action must have a action.value');
+      }
+      if (!action.content || typeof action.content !== 'string') {
+        throw new Error('Menu action must have a action.content');
+      }
+      this.extraActions.push(action);
     },
     addMessageFlows() {
       if (this.collaboration) {
@@ -1330,6 +1348,9 @@ export default {
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
@@ -1464,6 +1485,9 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
