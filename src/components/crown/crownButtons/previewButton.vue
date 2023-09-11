@@ -3,7 +3,7 @@
     v-if="node.isBpmnType(...validPreviewElements)"
     :title="$t('Preview')"
     role="menuitem"
-    id="delete-button"
+    id="preview-button"
     aria-label="Preview"
     @click="preview()"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
