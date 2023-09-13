@@ -57,7 +57,7 @@
               {{ $t('Close') }}
             </a>
             <EllipsisMenu
-              :actions="ellipsisMenuActions"
+              :actions="combinedMenuActions"
               :divider="false"
               @navigate="onNavigate"
               @show="onShow"
@@ -131,6 +131,7 @@ export default {
     'xmlManager',
     'validationBar',
     'players',
+    'extraActions',
   ],
   watch: {
     miniMapOpen(isOpen) {
@@ -148,6 +149,9 @@ export default {
     },
   },
   computed: {
+    combinedMenuActions() {
+      return this.extraActions ? this.ellipsisMenuActions.concat(this.extraActions) : this.ellipsisMenuActions;
+    },
     canUndo() {
       return undoRedoStore.getters.canUndo;
     },
@@ -239,7 +243,7 @@ export default {
           this.$emit('publishPmBlock');
           break;
         default:
-          break;
+          this.$emit('action', action);
       }
     },
     onShow() {
