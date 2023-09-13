@@ -1028,7 +1028,7 @@ export default {
       });
     },
 
-    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
+    async handleDrop({ clientX, clientY, control }) {
       this.multiplayer.addNode({
         clientX,
         clientY,
@@ -1143,11 +1143,7 @@ export default {
         this.poolTarget = null;
       });
     },
-    removeNode(node, { removeRelationships = true } = {}) {
-      this.multiplayer.removeNode(node._modelerId);
-    },
-
-    async removeNode2(node, { removeRelationships = true } = {}) {
+    async removeNode(node, { removeRelationships = true } = {}) {
       debugger;
       if (!node) {
         // already removed
