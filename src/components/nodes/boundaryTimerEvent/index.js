@@ -66,6 +66,9 @@ export default merge(cloneDeep(boundaryEventConfig), {
         const eventDefinitions = [
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
+
+        eventDefinitions[0].id = node.definition.get('eventDefinitions')[0].id;
+
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
       } else {
         setNodeProp(node, key, value[key]);

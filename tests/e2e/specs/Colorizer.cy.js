@@ -13,7 +13,7 @@ import tinycolor from 'tinycolor2';
 describe('Crown color picker', () => {
   const colorToSelect = baseNodeColors[0];
 
-  it.skip('should set color on element', () => {
+  it('should set color on element', () => {
     const startEventPosition = { x: 150, y: 150 };
 
     assertDownloadedXmlDoesNotContainExpected('color=');

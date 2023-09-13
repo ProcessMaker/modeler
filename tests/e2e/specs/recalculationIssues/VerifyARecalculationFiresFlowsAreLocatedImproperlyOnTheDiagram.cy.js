@@ -6,7 +6,7 @@ import {
 } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
 
-describe.skip('Recalculations Issues', () => {
+describe('Recalculations Issues', () => {
   it('Verify Elements with connector are not moved out of the Pool container: FOUR-8651', () => {
 
     const endEventSelector = '[data-type="processmaker.components.nodes.endEvent.Shape"]';
@@ -25,14 +25,18 @@ describe.skip('Recalculations Issues', () => {
     cy.get('[id="lane-below-button"]').should('be.visible').click();
 
     //Step 4: Create Process Start Event, Task form, Task Form & End Event
+    const startEventPosition = { x: 400, y: 150 };
+    const taskPosition = { x: 500, y: 200 };
+    const endEventPosition = { x: 700, y: 250 };
+    const task2Position = { x: 500, y: 450 };
     let parameterList = [
-      { element: nodeTypes.startEvent, positionElement:{ x:400, y: 150 },connector:false },
-      { element: nodeTypes.task, positionElement:{ x:500, y: 200 },connector:false },
-      { element: nodeTypes.endEvent, positionElement:{ x:700, y: 250 },connector:false },
-      { element: nodeTypes.task, positionElement:{ x:500, y: 450 },connector:false },
+      { element: nodeTypes.startEvent, positionElement:startEventPosition,connector:false },
+      { element: nodeTypes.task, positionElement:taskPosition,connector:false },
+      { element: nodeTypes.endEvent, positionElement:endEventPosition,connector:false },
+      { element: nodeTypes.task, positionElement:task2Position,connector:false },
     ];
     createProcess(parameterList);
-    connectNodesWithFlow('generic-flow-button',{ x:400, y: 150 }, { x:550, y: 200 });
+    connectNodesWithFlow('generic-flow-button',startEventPosition, taskPosition);
     cy.get('[id="generic-flow-button"]').click();
     cy.get(endEventSelector).first().click();
     cy.get(taskSelector).eq(1).click();

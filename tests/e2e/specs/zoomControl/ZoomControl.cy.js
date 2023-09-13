@@ -1,4 +1,4 @@
-describe.skip('Zoom control test', { scrollBehavior: false }, () => {
+describe('Zoom control test', { scrollBehavior: false }, () => {
   const zoomOutSelector = '[data-cy="zoom-out-control"]';
   const zoomInSelector = '[data-cy="zoom-in-control"]';
   const zoomResetSelector = '[data-cy="zoom-reset-control"]';

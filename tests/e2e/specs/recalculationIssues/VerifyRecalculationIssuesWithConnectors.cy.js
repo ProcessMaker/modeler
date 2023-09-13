@@ -1,11 +1,11 @@
 import {
-  clickAndDropElement,
+  clickAndDropElement, connectNodesWithFlow,
   createProcess,
   selectElements, waitToRenderAllShapes,
 } from '../../support/utils';
 import { nodeTypes } from '../../support/constants';
 
-describe.skip('Recalculations Issues', () => {
+describe('Recalculations Issues', () => {
   it('Veriy Elements wit connector are not moved out of the Pool container: FOUR-8674', () => {
 
     const link = '[data-type="standard.Link"]';
@@ -14,15 +14,16 @@ describe.skip('Recalculations Issues', () => {
     //Step 1: Delete Start Event
     cy.get('[data-type="processmaker.components.nodes.startEvent.Shape"]').first().click();
     cy.get('[id="delete-button"]').should('be.visible').click();
-
-    //Step 2: Create Process Task form , End Event & Boundary Event
+    
+    const taskPosition = { x: 300, y: 200 };
+    const endEventPosition = { x: 500, y: 250 };
     let parameterList = [
-      { element: nodeTypes.task, positionElement:{ x:300, y: 200 },connector:false },
-      { element: nodeTypes.endEvent, positionElement:{ x:550, y: 270 },connector:false },
-      { startPosition:{ x:300, y: 200 }, endPosition:{ x:550, y: 270 },connector:true },
+      { element: nodeTypes.task, positionElement:taskPosition,connector:false },
+      { element: nodeTypes.endEvent, positionElement:endEventPosition,connector:false },
     ];
     createProcess(parameterList);
-
+    connectNodesWithFlow('generic-flow-button',taskPosition, endEventPosition);
+      
     //Step 3: Add Pool
     const poolPosition = { x: 400, y: 200 };
     clickAndDropElement(nodeTypes.pool,poolPosition);
@@ -41,10 +42,10 @@ describe.skip('Recalculations Issues', () => {
 
         //Step 5: Move the selection out the pool toward bottom
         cy.get(endEventSelector).eq(0).trigger('mousedown',{ force: true });
-        cy.get('.paper-container').trigger('mousemove', 'right');
-        cy.get('.paper-container').trigger('mousemove', 'right');
+        cy.get('.paper-container').trigger('mousemove', 'right', { force: true });
+        cy.get('.paper-container').trigger('mousemove', 'right', { force: true });
         waitToRenderAllShapes();
-        cy.get('.paper-container').trigger('mouseup','right');
+        cy.get('.paper-container').trigger('mouseup','right', { force: true });
         waitToRenderAllShapes();
 
         //Step 6: Verify that End Event is not out the pool

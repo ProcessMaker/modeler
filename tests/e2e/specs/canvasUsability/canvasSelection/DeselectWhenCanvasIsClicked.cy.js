@@ -1,11 +1,12 @@
 import {
   clickAndDropElement,
   connectNodesWithFlow,
-  waitToRenderAllShapes,
+  selectElementsMouse,
+  deselectElementsMouse,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Canvas Selection', () => {
+describe('Canvas Selection', () => {
   it('Verify that controls are deselected when the user click in canvas', () => {
     const startEventPosition = { x: 150, y: 150 };
     const taskFormPosition = {
@@ -30,12 +31,7 @@ describe.skip('Canvas Selection', () => {
     connectNodesWithFlow('generic-flow-button', taskFormPosition, endEventPosition);
 
     // Select all elements
-    cy.get('.paper-container').as('paperContainer').click();
-    cy.get('.paper-container').trigger('mousedown', 'topLeft');
-    cy.get('.paper-container').trigger('mousemove', 'bottomRight');
-    waitToRenderAllShapes();
-    cy.get('.paper-container').trigger('mouseup', 'bottomRight');
-
+    selectElementsMouse();
     
     // Validation 1: Verify that controls are selected inside a selection box
     cy.get('[data-cy="selection-box"]').should('exist');
@@ -49,8 +45,7 @@ describe.skip('Canvas Selection', () => {
     });
 
     // Validation 2: Verify that the previous selection was lost after click in the canvas
-    cy.get('.paper-container').trigger('mousedown', 'topLeft');
-    cy.get('.paper-container').trigger('mouseup', 'topLeft');
+    deselectElementsMouse();
     cy.get('[data-cy="selection-box"]').should('not.exist');
   });
 });

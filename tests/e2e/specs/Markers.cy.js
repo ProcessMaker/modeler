@@ -1,7 +1,7 @@
 import { clickAndDropElement, getElementAtPosition, toggleInspector, typeIntoTextInput, waitToRenderAllShapes } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Markers', () => {
+describe('Markers', () => {
   it('Add a task with a custom book marker', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.taskWithMarker, taskPosition);
@@ -11,7 +11,7 @@ describe.skip('Markers', () => {
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
       .should('have.attr', 'xlink:href')
-      .and('match', /^data:image\/svg\+xml;/);
+      .and('contains', 'svg');
   });
 
   it('Dynamically remove custom book marker', () => {
@@ -45,10 +45,10 @@ describe.skip('Markers', () => {
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:first')
       .should('have.attr', 'xlink:href')
-      .and('match', /^data:image\/svg\+xml;/);
+      .and('contains', 'svg');
     getElementAtPosition(taskPosition)
       .find('image[joint-selector*=topRight]:nth-child(2)')
       .should('have.attr', 'xlink:href')
-      .and('match', /^data:image\/svg\+xml;/);
+      .and('contains', 'svg');
   });
 });

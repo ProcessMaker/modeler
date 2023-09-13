@@ -2,6 +2,7 @@
   <span data-test="body-container">
     <tool-bar
       v-if="showComponent"
+      ref="tool-bar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -12,6 +13,7 @@
       :warnings="allWarnings"
       :xml-manager="xmlManager"
       :validationBar="validationBar"
+      :extra-actions="extraActions"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -21,6 +23,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -47,9 +50,18 @@
       </b-col>
 
       <InspectorButton
-        v-if="showComponent"
+        ref="inspector-button"
+        v-if="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
+        :style="{ right: inspectorButtonRight + 'px' }"
+      />
+
+      <PreviewPanel ref="preview-panel"
+        @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
+        @previewResize="setInspectorButtonPosition"
+        :visible="isOpenPreview"
+        :nodeRegistry="nodeRegistry"
       />
 
       <InspectorPanel
@@ -98,6 +110,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
+        @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -156,6 +169,7 @@ import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import PreviewPanel from '@/components/inspectors/PreviewPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -203,6 +217,7 @@ import Selection from './Selection';
 
 export default {
   components: {
+    PreviewPanel,
     ToolBar,
     ExplorerRail,
     InspectorButton,
@@ -242,6 +257,7 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,
       internalClipboard: [],
@@ -278,6 +294,7 @@ export default {
       miniMapOpen: false,
       panelsCompressed: false,
       isOpenInspector: false,
+      isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -296,6 +313,8 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      showInspectorButton: true,
+      inspectorButtonRight: 65,
     };
   },
   watch: {
@@ -354,8 +373,35 @@ export default {
     showComponent: () => store.getters.showComponent,
   },
   methods: {
+    handleToolbarAction(action) {
+      if (action.handler instanceof Function) {
+        action.handler(this);
+      }
+    },
     handleToggleInspector(value) {
+      this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
+    },
+    handlePreview(node) {
+      this.$refs['preview-panel'].previewNode(node);
+      this.handleTogglePreview(true) ;
+    },
+    handleTogglePreview(value) {
+      this.isOpenPreview = value;
+    },
+    setInspectorButtonPosition() {
+      const previewWidth = this.$refs['preview-panel'].width;
+      if (this.isOpenInspector) {
+        return;
+      }
+
+      if (this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65 + previewWidth;
+      }
+
+      if (!this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65;
+      }
     },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
@@ -688,6 +734,15 @@ export default {
         this.parsers[bpmnType].default.push(defaultParser);
       });
       nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
+    },
+    registerMenuAction(action) {
+      if (!action.value || typeof action.value !== 'string') {
+        throw new Error('Menu action must have a action.value');
+      }
+      if (!action.content || typeof action.content !== 'string') {
+        throw new Error('Menu action must have a action.content');
+      }
+      this.extraActions.push(action);
     },
     addMessageFlows() {
       if (this.collaboration) {
@@ -1330,6 +1385,9 @@ export default {
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
@@ -1464,6 +1522,9 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);

@@ -9,7 +9,7 @@ import { nodeTypes } from '../../../support/constants';
 
 const key = isAppleOS() ? '{meta}' : '{ctrl}';
 
-describe.skip('Zoom In/Out Hot keys', () => {
+describe('Zoom In/Out Hot keys', () => {
   it('TCP4-2650: Verify that "CONTROLS RAIL" is not affected by Control ++', () => {
     const initialNumberOfElements = 1;
 
