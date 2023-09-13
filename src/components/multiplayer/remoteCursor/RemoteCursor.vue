@@ -45,8 +45,6 @@ export default {
     display: flex;
     width: auto;
     height: 34px;
-    // left: 20px;
-    // top: 80px;
   }
 
   &-username {
