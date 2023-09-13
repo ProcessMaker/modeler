@@ -1,6 +1,5 @@
 <template>
   <b-col
-    v-show="visible"
     id="preview_panel"
     class="pl-0 h-100 overflow-hidden preview-column"
     :style="{ maxWidth: width + 'px' }"
@@ -62,6 +61,7 @@
     </b-row>
 
     <no-preview-available/>
+    <iframe v-if="previewUrl !== null" :src="previewUrl"/>
   </b-col>
 
 </template>
@@ -76,6 +76,7 @@ export default {
   data() {
     return {
       data: {},
+      previewUrl: 'https://trello.com/',
       selectedPreview: '1',
       taskTitle: '',
       screenTitle: '',
@@ -107,6 +108,18 @@ export default {
         return {};
       }
 
+      const type = this.highlightedNode?.type;
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
+        return data;
+      }, {});
+
+      this.data = type && this.nodeRegistry[type].inspectorData
+        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
+        : defaultDataTransform(this.highlightedNode);
+      this.taskTitle = this.data?.name;
+
+      console.log('prepare data panel preview:', this.data);
       this.taskTitle = this?.highlightedNode?.definition?.name;
     },
 
@@ -120,7 +133,16 @@ export default {
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
-    previewNode(node) {
+    previewNode(node, previewConfigs) {
+      console.log('previewing node');
+      this.prepareData();
+
+      const previewConfig = previewConfigs.find(config => {
+        return config.matcher(this.data);
+      });
+
+      this.previewUrl = previewConfig ? previewConfig.url : null;
+
       this.taskTitle = node?.name;
       this.showPanel = true;
     },
