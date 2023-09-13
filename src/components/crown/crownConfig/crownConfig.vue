@@ -62,6 +62,13 @@
       v-on="$listeners"
     />
 
+    <preview-button
+      :graph="graph"
+      :shape="shape"
+      :node="node"
+      v-on="$listeners"
+    />
+
     <b-modal
       :no-fade="runningInCypressTest"
       id="modal-prevent-closing"
@@ -79,6 +86,7 @@
 </template>
 
 <script>
+import PreviewButton from '@/components/crown/crownButtons/previewButton';
 import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import GenericFlowButton from '@/components/crown/crownButtons/genericFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
@@ -97,6 +105,7 @@ import runningInCypressTest from '@/runningInCypressTest';
 export default {
   components: {
     CrownDropdowns,
+    PreviewButton,
     DeleteButton,
     GenericFlowButton,
     AssociationFlowButton,

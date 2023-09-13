@@ -50,9 +50,18 @@
       </b-col>
 
       <InspectorButton
-        v-if="showComponent"
+        ref="inspector-button"
+        v-if="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
+        :style="{ right: inspectorButtonRight + 'px' }"
+      />
+
+      <PreviewPanel ref="preview-panel"
+        @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
+        @previewResize="setInspectorButtonPosition"
+        :visible="isOpenPreview"
+        :nodeRegistry="nodeRegistry"
       />
 
       <InspectorPanel
@@ -101,6 +110,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
+        @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -159,6 +169,7 @@ import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import PreviewPanel from '@/components/inspectors/PreviewPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -206,6 +217,7 @@ import Selection from './Selection';
 
 export default {
   components: {
+    PreviewPanel,
     ToolBar,
     ExplorerRail,
     InspectorButton,
@@ -282,6 +294,7 @@ export default {
       miniMapOpen: false,
       panelsCompressed: false,
       isOpenInspector: false,
+      isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -300,6 +313,8 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      showInspectorButton: true,
+      inspectorButtonRight: 65,
     };
   },
   watch: {
@@ -364,7 +379,29 @@ export default {
       }
     },
     handleToggleInspector(value) {
+      this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
+    },
+    handlePreview(node) {
+      this.$refs['preview-panel'].previewNode(node);
+      this.handleTogglePreview(true) ;
+    },
+    handleTogglePreview(value) {
+      this.isOpenPreview = value;
+    },
+    setInspectorButtonPosition() {
+      const previewWidth = this.$refs['preview-panel'].width;
+      if (this.isOpenInspector) {
+        return;
+      }
+
+      if (this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65 + previewWidth;
+      }
+
+      if (!this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65;
+      }
     },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
