@@ -156,10 +156,10 @@
     </b-row>
 
     <RemoteCursor 
-      v-for="(player, index) in players"
+      v-for="player in players"
       :cursor-color="player.color"
       :username="player.name"
-      :key="index"
+      :key="player.id"
       :top="player.top"
       :left="player.left"
     />
@@ -1557,36 +1557,6 @@ export default {
         }
       }
     });
-    if (process.env.NODE_ENV !== 'production') {
-      this.players = [
-        { id: '1',
-          name: 'Juan Perez',
-          color: '#FF6F61',
-          imgSrc: 'https://placekitten.com/300/300',
-          top: 90,
-          left:80,
-        },
-        { id: '2',
-          name: 'Ricardo Ford',
-          color: '#34568B',
-          top: 500,
-          left:100,
-        },
-        { id: '3',
-          name: 'Mauri Clear',
-          color: '#88B04B', 
-          top: 200,
-          left:200,
-        },
-        { id: '4',
-          name: 'Tisha Mccullough',
-          color: '#92A8D1',
-          imgSrc: 'https://xsgames.co/randomusers/avatar.php?g=female',
-          top: 800,
-          left: 600,
-        },
-      ];
-    }
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {

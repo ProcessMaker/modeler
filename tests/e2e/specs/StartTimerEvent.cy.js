@@ -37,7 +37,7 @@ describe('Start Timer Event', () => {
     cy.get('.vdpMinutesInput').type('300');
     cy.get('.vdp12HourToggleBtn').click();
     // //compare date and hours to avoid the problems caused when there are some seconds of delay
-    cy.get('[data-test=start-date-picker] > input').should('contain.value', expectedStartDate.substr(0, 13));
+    cy.get('[data-test=start-date-picker] > input').should('contain.value', expectedStartDate.substr(0, 14));
   });
 
   it('can set a specific end date', () => {
@@ -51,11 +51,11 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=ends-on]').click('left', { force: true });
     cy.get('[data-test=end-date-picker]').click();
     // //compare date and hours to avoid the problems caused when there are some seconds of delay
-    cy.get('[data-test=end-date-picker] > input').should('contain.value', expectedEndDate.substr(0, 13));
+    cy.get('[data-test=end-date-picker] > input').should('contain.value', expectedEndDate.substr(0, 14));
     cy.get('.paper-container').click( { force: true } );
     getElementAtPosition(startTimerEventPosition).click();
     cy.contains('Timing Control').click();
-    cy.get('[data-test=end-date-picker] > input').should('contain.value', expectedEndDate.substr(0, 13));
+    cy.get('[data-test=end-date-picker] > input').should('contain.value', expectedEndDate.substr(0, 14));
   });
 
   it('checks that the timer expressions are correctly formatted', () => {

@@ -1,7 +1,7 @@
 <template>
   <b-avatar-group class="container">
-    <template v-for="(item, index) in players" >
-      <Avatar :badgeBackgroundColor="item.color" :imgSrc= "item.imgSrc" :userName="item.name" v-bind:key="index"/>
+    <template v-for="item in players" >
+      <Avatar :badgeBackgroundColor="item.color" :imgSrc= "item.imgSrc" :userName="item.name" :key="item.key"/>
     </template>
   </b-avatar-group> 
 </template>
@@ -15,7 +15,7 @@ export default {
   props: {
     players: {
       type: Array,
-      required: [],
+      required: true,
     },
   },
 };
