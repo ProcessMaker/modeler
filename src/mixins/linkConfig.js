@@ -26,6 +26,7 @@ export default {
       sourceShape: null,
       target: null,
       listeningToMouseup: false,
+      listeningToMouseleave: false,
       vertices: null,
       anchorPointFunction: getDefaultAnchorPoint,
     };
@@ -139,12 +140,32 @@ export default {
       resetShapeColor(targetShape);
 
       this.shape.on('change:vertices', this.onChangeVertices);
+      this.shape.on('change:source', this.onChangeTargets);
+      this.shape.on('change:target', this.onChangeTargets);
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+
+      this.shape.listenTo(this.paper, 'link:mouseleave', this.storeWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
       this.$emit('set-shape-stacking', sourceShape);
+    },
+    waitForUpdateWaypoints() {
+      return new Promise(resolve => {
+        this.updateWaypoints();
+        this.updateWaypoints.flush();
+        resolve();
+      });
+    },
+    async storeWaypoints() {
+      if (this.highlighted && !this.listeningToMouseleave) {
+        this.updateWaypoints();
+        await this.$nextTick();
+
+        this.listeningToMouseleave = true;
+        this.$emit('save-state');
+      }
     },
     /**
       * On Change vertices handler
@@ -152,10 +173,18 @@ export default {
       * @param {Array} vertices
       * @param {Object} options
       */
+    async onChangeTargets(link, vertices, options){
+      if (options && options.ui) {
+        await this.$nextTick();
+        await this.waitForUpdateWaypoints();
+        await this.storeWaypoints();
+      }
+    },
     async onChangeVertices(link, vertices, options){
       if (options && options.ui) {
         this.updateWaypoints();
         await this.$nextTick();
+        this.listeningToMouseleave = false;
         this.$emit('save-state');
       }
     },

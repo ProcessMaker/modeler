@@ -28,3 +28,10 @@
     overflow-x: hidden;
   }
 }
+
+.hidden-opacity {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute; 
+    pointer-events: none; 
+}

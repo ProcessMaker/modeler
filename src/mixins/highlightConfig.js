@@ -113,7 +113,7 @@ export default {
       return this.shape.findView(this.paperManager.paper);
     },
     shapeBody() {
-      return this.shapeView.$el.find('[joint-selector=body]');
+      return this.shapeView.$el.find('[joint-selector=body]') || this.shapeView.$el;
     },
   },
   methods: {

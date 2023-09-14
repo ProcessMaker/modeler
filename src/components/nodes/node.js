@@ -172,8 +172,8 @@ export default class Node {
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
-        clonedNode.definition.eventDefinitions[0].hasOwnProperty(prop) &&
-        clonedNode.definition.eventDefinitions[0].set(prop, null)
+        Object.hasOwn(clonedNode.definition.eventDefinitions[0], prop) &&
+        clonedNode.definition.eventDefinitions[0].set(prop, null),
     );
 
     return clonedNode;
@@ -217,8 +217,8 @@ export default class Node {
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedFlow.definition.eventDefinitions &&
         clonedFlow.definition.eventDefinitions[0] &&
-        clonedFlow.definition.eventDefinitions[0].hasOwnProperty(prop) &&
-        clonedFlow.definition.eventDefinitions[0].set(prop, null)
+        Object.hasOwn(clonedFlow.definition.eventDefinitions[0], prop) &&
+        clonedFlow.definition.eventDefinitions[0].set(prop, null),
     );
 
     return clonedFlow;
