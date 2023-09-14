@@ -1029,7 +1029,6 @@ export default {
     handleDrop(data) {
       const { clientX, clientY, control} = data;
       if (this.isMultiplayer) {
-        console.log('multiplayer-addNode');
         window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
           clientX,
           clientY,
