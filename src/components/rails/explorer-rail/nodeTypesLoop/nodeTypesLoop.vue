@@ -56,7 +56,7 @@ export default {
     <div id="filteredNodes-container" v-if="filteredNodes.length > 0">
       <template v-for="object in filteredNodes">
         <div
-          class="node-types__item"
+          :class="object.type ? 'node-types__item__highlight' : 'node-types__item'"
           :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
@@ -87,7 +87,7 @@ export default {
         <p>{{ $t('Pinned Objects') }}</p>
         <template v-for="pinnedObject in pinnedObjects">
           <div
-            class="node-types__item"
+            :class="pinnedObjects.type ? 'node-types__item__highlight' : 'node-types__item'"
             :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
@@ -109,7 +109,7 @@ export default {
         <p>{{ $t('Object Category') }}</p>
         <template v-for="nodeType in unpinnedObjects">
           <div
-            class="node-types__item"
+            :class="nodeType.type ? 'node-types__item__highlight' : 'node-types__item'"
             :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
@@ -153,6 +153,9 @@ export default {
     &__icon {
       width: 1.5rem;
       height: 1.5rem;
+    }
+    &__highlight {
+      background-color: #FFE39F;
     }
     span {
       margin-left: 0.8rem;
