@@ -224,7 +224,6 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
-import MultiplayerViewUsers from '../topRail/multiplayerViewUsers/MultiplayerViewUsers.vue';
 
 export default {
   components: {
@@ -329,7 +328,7 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       multiplayer: null,
-      isMultiplayer: true,
+      isMultiplayer: false,
     };
   },
   watch: {
