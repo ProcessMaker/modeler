@@ -224,8 +224,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
-
-import Multiplayer from '../../multiplayer/multiplayer';
+import MultiplayerViewUsers from '../topRail/multiplayerViewUsers/MultiplayerViewUsers.vue';
 
 export default {
   components: {
@@ -330,6 +329,7 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       multiplayer: null,
+      isMultiplayer: true,
     };
   },
   watch: {
@@ -1027,17 +1027,21 @@ export default {
         control,
       });
     },
-
-    async handleDrop({ clientX, clientY, control }) {
-      this.multiplayer.addNode({
-        clientX,
-        clientY,
-        control,
-        id: 'node_' + (this.nodeIdGenerator.getDefinitionNumber()),
-      });
+    handleDrop(data) {
+      const { clientX, clientY, control} = data;
+      if (this.isMultiplayer) {
+        console.log('multiplayer-addNode');
+        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
+          clientX,
+          clientY,
+          control,
+          id: 'node_' + (this.nodeIdGenerator.getDefinitionNumber()),
+        });
+      } else  {
+        this.handleDropProcedure(data);
+      }
     },
-    
-    async handleDrop2(data, selected=true) {
+    async handleDropProcedure(data, selected=true) {
       const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
@@ -1090,15 +1094,14 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node, id, selected=true) {
+    async addNode(node, id = null, selected = true) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      debugger;
-      node.setIds(this.nodeIdGenerator, [id, id + '_di']); 
+      node.setIds(this.nodeIdGenerator, id); 
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
@@ -1144,7 +1147,6 @@ export default {
       });
     },
     async removeNode(node, { removeRelationships = true } = {}) {
-      debugger;
       if (!node) {
         // already removed
         return;
@@ -1396,6 +1398,9 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
+    enableMultiplayer() {
+      this.isMultiplayer = true;
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1591,12 +1596,16 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
-        this.multiplayer = new Multiplayer(this);
+        if (this.isMultiplayer) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
+            modeler: this,
+            callback: this.enableMultiplayer,
+          });
+        }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
     });
-    
   },
 };
 </script>

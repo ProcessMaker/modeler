@@ -12,7 +12,7 @@ export default class Multiplayer {
     // define document
     this.ydoc = new Y.Doc();
     this.modeler = modeler;
-    this.#nodeIdGenerator = getNodeIdGenerator(this.definitions);
+    this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
 
     this.room = new Room('room-' + window.ProcessMaker.modeler.process.id);
     const wsProvider = new WebsocketProvider('ws://localhost:1234', this.room.getRoom(), this.ydoc);
@@ -34,19 +34,16 @@ export default class Multiplayer {
         }
       });
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
+      this.addNode(data);
+    });
   }
   addNode(data) {
     console.log(data);
     this.yarray.push([data]);
  
   }
-  removeNode(id) {
-    console.log(id);
-    // TODO REMOVE  A NODE
-  }
   createShape(value) {
-    // todo create a chape
-    this.modeler.handleDrop2(value, false);
-
+    this.modeler.handleDropProcedure(value, false);
   }
 }
