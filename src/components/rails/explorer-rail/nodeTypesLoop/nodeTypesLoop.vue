@@ -56,7 +56,8 @@ export default {
     <div id="filteredNodes-container" v-if="filteredNodes.length > 0">
       <template v-for="object in filteredNodes">
         <div
-          :class="object.type ? 'node-types__item__highlight' : 'node-types__item'"
+          class="node-types__item"
+          :class="{'node-types__item__highlight': object.type === 'processmaker-ai-assistant'}"
           :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
@@ -87,7 +88,8 @@ export default {
         <p>{{ $t('Pinned Objects') }}</p>
         <template v-for="pinnedObject in pinnedObjects">
           <div
-            :class="pinnedObjects.type ? 'node-types__item__highlight' : 'node-types__item'"
+            class="node-types__item"
+            :class="{'node-types__item__highlight': pinnedObject.type === 'processmaker-ai-assistant'}"
             :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
@@ -109,7 +111,8 @@ export default {
         <p>{{ $t('Object Category') }}</p>
         <template v-for="nodeType in unpinnedObjects">
           <div
-            :class="nodeType.type ? 'node-types__item__highlight' : 'node-types__item'"
+            class="node-types__item"
+            :class="{'node-types__item__highlight': nodeType.type === 'processmaker-ai-assistant'}"
             :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
@@ -155,7 +158,7 @@ export default {
       height: 1.5rem;
     }
     &__highlight {
-      background-color: #FFE39F;
+      background-color: #FFF4D3;
     }
     span {
       margin-left: 0.8rem;
