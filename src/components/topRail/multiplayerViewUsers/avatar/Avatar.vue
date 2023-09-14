@@ -57,7 +57,7 @@ export default {
      * @param {string} name - The full name from which to extract initials.
      * @returns {string} The initials of the first and last names.
      */
-    getInitials(name= '') {
+    getInitials(name = '') {
       const nameArray = name.split(' ');
       const firstNameIn = nameArray[0].charAt(0).toUpperCase();
       const lastNameIn = nameArray[nameArray.length - 1].charAt(0).toUpperCase();
