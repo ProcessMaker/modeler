@@ -1,5 +1,6 @@
 <template>
   <b-col
+    v-show="visible"
     id="preview_panel"
     class="pl-0 h-100 overflow-hidden preview-column"
     :style="{ maxWidth: width + 'px' }"
@@ -56,12 +57,11 @@
     </b-row>
 
     <b-row>
-      <div class="item-title"> {{ screenTitle }} </div>
       <div class="task-title"> {{ taskTitle }} </div>
     </b-row>
 
-    <no-preview-available/>
-    <iframe v-if="previewUrl !== null" :src="previewUrl"/>
+    <no-preview-available v-if="previewUrl === null"/>
+    <iframe v-if="previewUrl !== null" :src="previewUrl" style="width:100%; height:100%;border:0px none;"/>
   </b-col>
 
 </template>
@@ -71,15 +71,15 @@ import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
 
 export default {
-  props: ['nodeRegistry', 'visible'],
-  components: {NoPreviewAvailable},
+  props: ['nodeRegistry', 'visible', 'previewConfigs'],
+  components: { NoPreviewAvailable },
   data() {
     return {
       data: {},
-      previewUrl: 'https://trello.com/',
+      previewUrl: null,
       selectedPreview: '1',
       taskTitle: '',
-      screenTitle: '',
+      itemTitle: '',
       width: 400,
       isDragging: false,
       currentPos: 400,
@@ -119,8 +119,8 @@ export default {
         : defaultDataTransform(this.highlightedNode);
       this.taskTitle = this.data?.name;
 
-      console.log('prepare data panel preview:', this.data);
       this.taskTitle = this?.highlightedNode?.definition?.name;
+      this.previewNode();
     },
 
     handleAssignmentChanges(currentValue, previousValue) {
@@ -133,17 +133,26 @@ export default {
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
-    previewNode(node, previewConfigs) {
-      console.log('previewing node');
-      this.prepareData();
+    previewNode(force = false) {
+      if (!this.highlightedNode || (!this.visible && !force)) {
+        return;
+      }
 
-      const previewConfig = previewConfigs.find(config => {
+      const previewConfig = this.previewConfigs.find(config => {
         return config.matcher(this.data);
       });
 
-      this.previewUrl = previewConfig ? previewConfig.url : null;
+      var clone = {};
+      for (let prop in this.data) {
+        //if (typeof this.data[prop] === 'string' || typeof this.data[prop] === 'number' || typeof this.data[prop] == 'boolean') {
+        if ((previewConfig?.receivingParams ?? []).includes(prop)) {
+          clone[prop] = this.data[prop];
+        }
+      }
+      const nodeData = JSON.stringify(clone);
 
-      this.taskTitle = node?.name;
+      this.previewUrl = previewConfig ? `${previewConfig.url}?node=${nodeData}` : null;
+      this.taskTitle = this?.highlightedNode?.definition?.name;
       this.showPanel = true;
     },
     onClose() {

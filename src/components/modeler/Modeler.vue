@@ -62,6 +62,7 @@
         @previewResize="setInspectorButtonPosition"
         :visible="isOpenPreview"
         :nodeRegistry="nodeRegistry"
+        :previewConfigs="previewConfigs"
       />
 
       <InspectorPanel
@@ -376,7 +377,6 @@ export default {
   methods: {
     registerPreview(config) {
       this.previewConfigs.push(config);
-      console.log('registrando preview', config, this.previewConfigs);
     },
     handleToolbarAction(action) {
       if (action.handler instanceof Function) {
@@ -387,8 +387,8 @@ export default {
       this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
     },
-    handlePreview(node) {
-      this.$refs['preview-panel'].previewNode(node, this.previewConfigs);
+    handlePreview() {
+      this.$refs['preview-panel'].previewNode(true);
       this.handleTogglePreview(true) ;
     },
     handleTogglePreview(value) {
