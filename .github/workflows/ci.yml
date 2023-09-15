@@ -1,6 +1,6 @@
 name: ci
 
-on: 
+on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
 
@@ -38,7 +38,7 @@ jobs:
           install: false
           start: npm run serve
           wait-on: http://localhost:8080/
-          config-file: cypress.json
+          config-file: cypress.config.js
           spec: "tests/e2e/**/*"
           record: true
           parallel: true
