@@ -108,15 +108,15 @@ export default {
         return {};
       }
 
-      const type = this.highlightedNode?.type;
       const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
         data[key] = value;
         return data;
       }, {});
 
-      this.data = type && this.nodeRegistry[type].inspectorData
-        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
-        : defaultDataTransform(this.highlightedNode);
+      this.data = defaultDataTransform(this.highlightedNode);
+      // this.data = type && this.nodeRegistry[type].inspectorData
+      //   ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
+      //   : defaultDataTransform(this.highlightedNode);
       this.taskTitle = this.data?.name;
 
       this.taskTitle = this?.highlightedNode?.definition?.name;
@@ -144,7 +144,6 @@ export default {
 
       var clone = {};
       for (let prop in this.data) {
-        //if (typeof this.data[prop] === 'string' || typeof this.data[prop] === 'number' || typeof this.data[prop] == 'boolean') {
         if ((previewConfig?.receivingParams ?? []).includes(prop)) {
           clone[prop] = this.data[prop];
         }
