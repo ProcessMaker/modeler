@@ -1134,6 +1134,37 @@ export default {
         });
       });
     },
+    replaceAiNode({ node, typeToReplaceWith, assetId }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
+          const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+          const newNode = await this.handleDrop({
+            clientX, clientY,
+            control: { type: typeToReplaceWith },
+            nodeThatWillBeReplaced: node,
+          });
+
+          if (typeToReplaceWith === 'processmaker-modeler-task') {
+            newNode.definition.screenRef = assetId;  
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-script-task') {
+            newNode.definition.scriptRef = assetId;  
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
+            // newNode.definition.scriptRef = assetId;  
+            // newNode.definition.calledElement = "ProcessId-39";
+            // newNode.definition.config = "{"calledElement":"ProcessId-39","processId":39,"startEvent":"node_1","name":"FOUR-7021"}";
+
+          }
+          
+          await this.removeNode(node, { removeRelationships: false });
+          this.highlightNode(newNode);
+          this.selectNewNode(newNode);
+        });
+      });
+    },
     replaceGenericFlow({ actualFlow, genericFlow, targetNode }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
@@ -1494,6 +1525,10 @@ export default {
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+    });
+
+    this.$root.$on('replace-ai-node', (data) => {
+      this.replaceAiNode(data);
     });
   },
 };
