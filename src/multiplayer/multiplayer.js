@@ -1,17 +1,19 @@
-// import * as Y from 'yjs';
+import * as Y from 'yjs';
 // import { WebsocketProvider } from 'y-websocket';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
 import { io } from 'socket.io-client';
 export default class Multiplayer {
-  ydoc = null;
-  yarray = null;
+  yDoc = null;
+  yArray = null;
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
+
   constructor(modeler) {
     // define document
-    // this.ydoc = new Y.Doc();
+    this.yDoc = new Y.Doc();
+    this.yArray = this.yDoc.getArray('elements');
     this.modeler = modeler;
     this.#nodeIdGenerator = getNodeIdGenerator(this.definitions);
 
@@ -26,7 +28,7 @@ export default class Multiplayer {
       this.client.emit('joinRoom', this.room.getRoom());
     });
 
-    this.client.on('addElement', (messages) => {
+    this.client.on('createElement', (messages) => {
       console.log('########################');
       console.log('received', messages);
 
@@ -58,12 +60,14 @@ export default class Multiplayer {
     }); */
   }
   addNode(data) {
-    console.log(data);
     this.modeler.handleDrop2(data, false);
     this.#nodeIdGenerator.updateCounters();
-    // this.yarray.push([data]);
 
-    this.client.emit('elementAdded', data);
+    this.yArray.push([data]);
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+
+    // this.client.emit('elementCreate', data);
+    this.client.emit('elementStateUpdate', stateUpdate);
   }
   removeNode(id) {
     console.log(id);
