@@ -8,6 +8,7 @@
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
+          :players="players"
         >
           <component
             :is="component.button"
@@ -129,6 +130,7 @@ export default {
     'warnings',
     'xmlManager',
     'validationBar',
+    'players',
     'extraActions',
   ],
   watch: {

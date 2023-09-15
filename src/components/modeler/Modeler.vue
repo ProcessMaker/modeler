@@ -23,6 +23,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      :players="players"
       @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
@@ -153,6 +154,15 @@
         @save-state="pushToUndoStack"
       />
     </b-row>
+
+    <RemoteCursor 
+      v-for="player in players"
+      :cursor-color="player.color"
+      :username="player.name"
+      :key="player.id"
+      :top="player.top"
+      :left="player.left"
+    />
   </span>
 </template>
 
@@ -213,7 +223,7 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-
+import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 
 export default {
   components: {
@@ -225,6 +235,7 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    RemoteCursor,
   },
   props: {
     owner: Object,
@@ -313,6 +324,7 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      players: [],
       showInspectorButton: true,
       inspectorButtonRight: 65,
     };
@@ -907,7 +919,7 @@ export default {
 
       const config = definition.config ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
-      
+
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
