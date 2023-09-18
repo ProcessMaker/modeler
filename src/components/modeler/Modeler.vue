@@ -472,7 +472,7 @@ export default {
     async close() {
       this.$emit('close');
     },
-    async saveBpmn() {
+    async saveBpmn(redirectTo = null) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -481,8 +481,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-
-      this.$emit('saveBpmn', { xml, svg: svgString });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -1134,7 +1133,7 @@ export default {
         });
       });
     },
-    replaceAiNode({ node, typeToReplaceWith, assetId }) {
+    replaceAiNode({ node, typeToReplaceWith, assetId, redirectTo }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
@@ -1156,12 +1155,12 @@ export default {
             // newNode.definition.scriptRef = assetId;  
             // newNode.definition.calledElement = "ProcessId-39";
             // newNode.definition.config = "{"calledElement":"ProcessId-39","processId":39,"startEvent":"node_1","name":"FOUR-7021"}";
-
           }
           
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
+          this.saveBpmn(redirectTo);
         });
       });
     },
@@ -1357,6 +1356,9 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
+    redirect(redirectTo) {
+      window.location = redirectTo;
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1529,6 +1531,12 @@ export default {
 
     this.$root.$on('replace-ai-node', (data) => {
       this.replaceAiNode(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+      if (redirectUrl) {
+        this.redirect(redirectUrl);
+      }
     });
   },
 };
