@@ -328,7 +328,7 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       multiplayer: null,
-      isMultiplayer: false,
+      isMultiplayer: true,
     };
   },
   watch: {
@@ -1145,6 +1145,13 @@ export default {
       });
     },
     async removeNode(node, { removeRelationships = true } = {}) {
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
+      } else  {
+        this.removeNodeProcedure(node, removeRelationships);
+      }
+    },
+    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
         // already removed
         return;
