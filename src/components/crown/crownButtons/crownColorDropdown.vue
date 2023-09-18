@@ -1,5 +1,5 @@
 <template>
-  <div class="cog-container" role="menuitem">
+  <div class="cog-container" role="menuitem" v-if="!hide">
     <crown-button
       v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       :title="$t('Open Color Palette')"
@@ -101,6 +101,10 @@ export default {
     iconName: {
       type: String,
       default: '',
+    },
+    hide: {
+      type: Boolean,
+      default: false,
     },
   },
   components: { CrownButton, 'sketch-picker': Sketch, IconSelector },

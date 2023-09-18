@@ -13,6 +13,7 @@
     :is-rendering="isRendering"
     :boundary-event-dropdown-data="boundaryEventDropdownData"
     :dropdown-data="dropdownData"
+    :hide-color-dropdown="hideColorDropdown"
     :showCustomIconPicker="true"
     :iconName="this.iconName"
     @set-custom-icon-name="setCustomIconName"
@@ -87,6 +88,7 @@ export default {
       ],
       boundaryEventDropdownData,
       anchorPointFunction: getRectangleAnchorPoint,
+      hideColorDropdown:false,
     };
   },
   computed: {
@@ -127,6 +129,11 @@ export default {
     },
     calculateSizeOnGrid() {
       const taskGridDifference = gridSize - (taskHeight % gridSize);
+      console.log(this.shapeView);
+      console.log(this.shapeView.selectors);
+      console.log(this.shapeView.selectors.label);
+      console.log(this.shapeView.selectors.label.getBBox());
+      console.log(this.shapeView.selectors.label.getBBox().height);
       const labelHeight = Math.floor(this.shapeView.selectors.label.getBBox().height);
       const labelSpace = labelHeight + labelPadding + topAndBottomMarkersSpace;
       let newHeight = this.paperManager.ceilToNearestGridMultiple(labelSpace) - taskGridDifference;

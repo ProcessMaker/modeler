@@ -20,6 +20,7 @@
     />
 
     <crown-color-dropdown
+      :hide="hideColorDropdown"
       :dropdown-open="colorDropdownOpen"
       :node="node"
       :showCustomIconPicker="showCustomIconPicker"
@@ -47,6 +48,10 @@ export default {
     taskDropdownInitiallyOpen: {
       type: Boolean,
       required: true,
+    },
+    hideColorDropdown: {
+      type: Boolean,
+      default: false,
     },
     showCustomIconPicker: Boolean,
     iconName: {
