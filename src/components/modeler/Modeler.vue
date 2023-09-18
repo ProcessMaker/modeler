@@ -327,6 +327,8 @@ export default {
       players: [],
       showInspectorButton: true,
       inspectorButtonRight: 65,
+      multiplayer: null,
+      isMultiplayer: false,
     };
   },
   watch: {
@@ -1024,7 +1026,21 @@ export default {
         control,
       });
     },
-    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
+    handleDrop(data) {
+      const { clientX, clientY, control} = data;
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
+          clientX,
+          clientY,
+          control,
+          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
+        });
+      } else  {
+        this.handleDropProcedure(data);
+      }
+    },
+    async handleDropProcedure(data, selected=true) {
+      const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
         return;
@@ -1043,9 +1059,11 @@ export default {
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
-
-      this.highlightNode(newNode);
-      await this.addNode(newNode);
+      if (selected) {
+        this.highlightNode(newNode);
+      }
+      
+      await this.addNode(newNode, id, selected);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -1062,6 +1080,7 @@ export default {
 
       return newNode;
     },
+    
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1073,14 +1092,14 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node) {
+    async addNode(node, id = null, selected = true) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator);
+      node.setIds(this.nodeIdGenerator, id); 
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
@@ -1098,9 +1117,11 @@ export default {
       ].includes(node.type)) {
         return;
       }
-
-      // Select the node after it has been added to the store (does not apply to flows)
-      this.selectNewNode(node);
+      if (selected) {
+        // Select the node after it has been added to the store (does not apply to flows)
+        this.selectNewNode(node);
+      }
+      
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1375,6 +1396,9 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
+    enableMultiplayer() {
+      this.isMultiplayer = true;
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1540,6 +1564,12 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
+        if (this.isMultiplayer) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
+            modeler: this,
+            callback: this.enableMultiplayer,
+          });
+        }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
