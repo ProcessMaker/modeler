@@ -1033,7 +1033,7 @@ export default {
           clientX,
           clientY,
           control,
-          id: 'node_' + (this.nodeIdGenerator.getDefinitionNumber()),
+          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
         });
       } else  {
         this.handleDropProcedure(data);
