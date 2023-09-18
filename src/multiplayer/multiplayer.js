@@ -1,47 +1,65 @@
+import { io } from 'socket.io-client';
 import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
 export default class Multiplayer {
-  ydoc = null;
-  yarray = null;
+  clientIO = null;
+  yDoc = null;
+  yArray = null;
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
+
   constructor(modeler) {
     // define document
-    this.ydoc = new Y.Doc();
+    this.yDoc = new Y.Doc();
+    // Create a shared array
+    this.yArray = this.yDoc.getArray('elements');
+    // Create a Modeler instance
     this.modeler = modeler;
+    // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
+    // Get the room name from the process id
+    this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
 
-    this.room = new Room('room-' + window.ProcessMaker.modeler.process.id);
-    const wsProvider = new WebsocketProvider('ws://localhost:1234', this.room.getRoom(), this.ydoc);
-    wsProvider.on('status', () => {
-      // todo status handler
+    // Connect to websocket server
+    this.clientIO = io('ws://127.0.0.1:3000', { transports: ['websocket', 'polling']});
+
+    this.clientIO.on('connect', () => {
+      // console.log('########################');
+      // console.log('connected', this.clientIO.id);
+
+      // Join the room
+      this.clientIO.emit('joinRoom', this.room.getRoom());
     });
 
-    // array of numbers which produce a sum
-    this.yarray = this.ydoc.getArray('count');
-    // observe changes of the diagram
-    this.yarray.observe(event => {
-      event.changes.delta.forEach((value) =>{
-        if (value.insert) {
-          value.insert.forEach((value) => {
-            this.createShape(value);
-            this.#nodeIdGenerator.updateCounters();
-          });
-        }
+    // Listen for updates when a new element is added
+    this.clientIO.on('createElement', (messages) => {
+      // console.log('########################');
+      // console.log('received', messages);
+
+      // Add the new element to the process
+      messages.map((data) => {
+        this.createShape(data);
       });
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
   }
   addNode(data) {
-    this.yarray.push([data]);
- 
+    // Add the new element to the process
+    this.createShape(data);
+    // Add the new element to the shared array
+    this.yArray.push([data]);
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('createElement', stateUpdate);
   }
   createShape(value) {
     this.modeler.handleDropProcedure(value, false);
+    this.#nodeIdGenerator.updateCounters();
   }
 }
