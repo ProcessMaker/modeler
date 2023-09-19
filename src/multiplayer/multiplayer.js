@@ -15,8 +15,8 @@ export default class Multiplayer {
     this.modeler = modeler;
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
 
-    this.room = new Room('room-' + window.ProcessMaker.modeler.process.id);
-    const wsProvider = new WebsocketProvider('ws://localhost:1234', this.room.getRoom(), this.ydoc);
+    this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
+    const wsProvider = new WebsocketProvider(process.env.VUE_APP_WEBSOCKET_PROVIDER, this.room.getRoom(), this.ydoc);
     wsProvider.on('status', () => {
       // todo status handler
     });
