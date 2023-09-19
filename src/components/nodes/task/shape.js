@@ -11,6 +11,9 @@ export default shapes.standard.Rectangle.extend({
   }, {
     tagName: 'image',
     selector: 'image',
+  }, {
+    tagName: 'i',
+    selector: 'icon',
   },
   markersMarkup('topLeft'),
   markersMarkup('topCenter'),
@@ -25,6 +28,7 @@ export default shapes.standard.Rectangle.extend({
     size: { width: 100, height: 60 },
     attrs: {
       'image': { 'ref-x': 4, 'ref-y': 4, ref: 'rect', width: 16, height: 16, 'data-test': 'nodeIcon' },
+      'icon': { ref: 'rect', 'ref-x': 4, 'ref-y': 4, ref: 'rect', width: 16, height: 16, 'data-test': 'nodeIcon'},
       ...markersAttrs('topLeft', { 'ref-y': 4, ref: 'rect' }),
       ...markersAttrs('topCenter', { 'ref-y': 4, ref: 'rect' }),
       ...markersAttrs('topRight', { 'ref-y': 4, 'ref-x': 96, ref: 'rect' }, -1),
