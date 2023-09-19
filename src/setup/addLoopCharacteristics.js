@@ -16,7 +16,7 @@ export default (node) => {
     return;
   }
 
-  if (node.implementation === "package-ai/processmaker-ai-assistant") {
+  if (node.implementation === 'package-ai/processmaker-ai-assistant') {
     return;
   }
 
