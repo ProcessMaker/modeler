@@ -38,7 +38,7 @@ const containsSvg = (str) => {
   // Check if the string contains an SVG root element
   const stringPattern = /<svg[^>]*>/;
 
-  const encodedStringPattern = /^<\?xml/.test(str) && /<svg[^>]*>/.test(str);
+  const encodedStringPattern = str.startsWith('<xml') && /<svg[^>]*>/.test(str);
 
   // Check if the variable is a string and either a URL or contains '.svg'
   return typeof str === 'string' && (urlPattern.test(str) || pathPattern.test(str) || stringPattern.test(str) || encodedStringPattern);
