@@ -28,21 +28,29 @@ const recolorSvg = (svgString, color) => {
   return svgDocument.documentElement.outerHTML;
 };
 
-const isSVGEncodedString = (str) => {
-  // Check if the string starts with the XML declaration and contains an SVG root element
-  return /^<\?xml/.test(str) && /<svg[^>]*>/.test(str);
-};
+const containsSvg = (str) => {
+  // Regular expression to match a URL pattern
+  const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/;
 
-const isSVGString = (str) => {
+  // Regular expression to check if the string contains '.svg'
+  const pathPattern = /\.svg/;
+  
   // Check if the string contains an SVG root element
-  return /<svg[^>]*>/.test(str);
+  const stringPattern = /<svg[^>]*>/;
+
+  const encodedStringPattern = /^<\?xml/.test(str) && /<svg[^>]*>/.test(str);
+
+  // Check if the variable is a string and either a URL or contains '.svg'
+  return typeof str === 'string' && (urlPattern.test(str) || pathPattern.test(str) || stringPattern.test(str) || encodedStringPattern);
 };
 
 const coloredIcon = (iconString, node) => {
-  if (!isSVGString(iconString) && !isSVGEncodedString(iconString)) {
+  if (!containsSvg(iconString)) {
+    // If the input is not an SVG, add Font Awesome icons and extract the SVG
     library.add(fas, fab);
 
-    const [prefix, iconName] = iconString.split('-');
+    const [prefix, iconClass] = iconString.split(' ');
+    const [classPrefix, iconName] = iconString.split('-');
     const iconDefinition = findIconDefinition({ prefix, iconName });
     const svg = icon(iconDefinition).html;
     iconString = svg[0];
