@@ -30,7 +30,7 @@ const recolorSvg = (svgString, color) => {
 
 const containsSvg = (str) => {
   // Regular expression to match a URL pattern
-  const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/;
+  const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)((?:\/[\w@?^=%&:/~+#-]*)*)?$/;
 
   // Regular expression to check if the string contains '.svg'
   const pathPattern = /\.svg/;
