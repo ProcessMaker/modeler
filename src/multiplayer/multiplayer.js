@@ -10,6 +10,7 @@ export default class Multiplayer {
   #nodeIdGenerator = null;
   room = null;
   deletedItem = null;
+
   constructor(modeler) {
     // define document
     this.yDoc = new Y.Doc();
@@ -23,7 +24,7 @@ export default class Multiplayer {
     this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
 
     // Connect to websocket server
-    this.clientIO = io('ws://127.0.0.1:3000', { transports: ['websocket', 'polling']});
+    this.clientIO = io(process.env.VUE_APP_WEBSOCKET_PROVIDER, { transports: ['websocket', 'polling']});
 
     this.clientIO.on('connect', () => {
       // console.log('########################');
@@ -34,19 +35,27 @@ export default class Multiplayer {
     });
 
     // Listen for updates when a new element is added
-    this.clientIO.on('createElement', (messages) => {
-      // console.log('########################');
-      // console.log('received', messages);
+    this.clientIO.on('createElement', async(payload) => {
+      // Create the new element in the process
+      await this.createRemoteShape(payload.changes);
+      // Add the new element to the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
+    });
 
-      // Add the new element to the process
-      messages.map((data) => {
-        this.createShape(data);
-      });
+    // Listen for updates when an element is removed
+    this.clientIO.on('removeElement', (payload) => {
+      // Get the node id
+      const node = this.getNodeById(payload.nodeId);
+      // Remove the element from the process
+      this.removeShape(node);
+      // Remove the element from the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
@@ -65,13 +74,28 @@ export default class Multiplayer {
     this.modeler.handleDropProcedure(value, false);
     this.#nodeIdGenerator.updateCounters();
   }
+  createRemoteShape(changes) {
+    return new Promise(resolve => {
+      changes.map((data) => {
+        this.createShape(data);
+      });
+
+      resolve();
+    });
+  }
   removeNode(data) {
     const index =  this.getIndex(data.definition);
-    this.yarray.delete(index, 1); // delete one element
+    this.removeShape(data);
+    this.yArray.delete(index, 1); // delete one element
+
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('removeElement', stateUpdate);
   }
   getIndex(definition) {
     let index = -1;
-    for (const value of this.yarray) {
+    for (const value of this.yArray) {
       index ++;
       if (value.id === definition.id) {
         break ;
@@ -79,8 +103,12 @@ export default class Multiplayer {
     }
     return index;
   }
-  removeShape(nodeId) {
+  getNodeById(nodeId) {
     const node = this.modeler.nodes.find((element) => element.definition && element.definition.id === nodeId);
+
+    return node;
+  }
+  removeShape(node) {
     this.modeler.removeNodeProcedure(node, true);
   }
 }
