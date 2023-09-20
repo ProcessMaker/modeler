@@ -9,7 +9,7 @@ export default class Multiplayer {
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
-
+  deletedItem = null;
   constructor(modeler) {
     // define document
     this.yDoc = new Y.Doc();
@@ -47,6 +47,9 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
+      this.removeNode(data);
+    });
   }
   addNode(data) {
     // Add the new element to the process
@@ -61,5 +64,23 @@ export default class Multiplayer {
   createShape(value) {
     this.modeler.handleDropProcedure(value, false);
     this.#nodeIdGenerator.updateCounters();
+  }
+  removeNode(data) {
+    const index =  this.getIndex(data.definition);
+    this.yarray.delete(index, 1); // delete one element
+  }
+  getIndex(definition) {
+    let index = -1;
+    for (const value of this.yarray) {
+      index ++;
+      if (value.id === definition.id) {
+        break ;
+      }
+    }
+    return index;
+  }
+  removeShape(nodeId) {
+    const node = this.modeler.nodes.find((element) => element.definition && element.definition.id === nodeId);
+    this.modeler.removeNodeProcedure(node, true);
   }
 }

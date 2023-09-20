@@ -71,7 +71,7 @@ export default class Node {
   }
 
   setIds(nodeIdGenerator, id) {
-    const [nodeId, diagramId] = id ? [ id + '_di'] : nodeIdGenerator.generate();
+    const [nodeId, diagramId] = id ? [ id, id + '_di'] : nodeIdGenerator.generate();
     if (!this.id) {
       this.id = nodeId;
     }
