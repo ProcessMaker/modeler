@@ -1,5 +1,5 @@
 <template>
-  <div class="message d-flex flex-column">
+  <div class="message d-flex flex-column w-100">
     <div class="d-flex justify-content-center align-items-center">
       <div>
         {{
@@ -46,7 +46,7 @@ export default {
   justify-content: center;
   align-items: center;
   top: 50%;
-  left: 30%;
+  left: 0;
   border: 0 none;
   z-index: 2;
 }
