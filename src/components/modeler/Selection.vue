@@ -595,8 +595,6 @@ export default {
         });
       });
       return changed;
-
-      // }];
     },
     /**
      * Selector will update the waypoints of the related flows

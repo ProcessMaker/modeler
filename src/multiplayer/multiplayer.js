@@ -45,14 +45,11 @@ export default class Multiplayer {
         const newProperties = {};
         ymap.changes.keys.forEach((change, key) => {
           if (change.action === 'add') {
-            // console.log(`Property "${key}" was added. Initial value: "${ymapNested.get(key)}".`);
             // TODO add new properties
           } else if (change.action === 'update') {
-            // console.log(`Property "${key}" was updated. New value: "${ymapNested.get(key)}". Previous value: "${change.oldValue}".`);
             newProperties[key] = ymapNested.get(key);
           } else if (change.action === 'delete') {
-            // TODO delete properties
-            // console.log(`Property "${key}" was deleted. New value: undefined. Previous value: "${change.oldValue}".`);
+            // TODO delete propertiees
           }
         });
         if (Object.keys(newProperties).length > 0 ) {
