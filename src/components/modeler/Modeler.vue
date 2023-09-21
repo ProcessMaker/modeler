@@ -1395,7 +1395,7 @@ export default {
         if (this.isSelecting) {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
-          this.$refs.selector.stopDrag(event, cellView);
+          this.$refs.selector.stopDrag();
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);

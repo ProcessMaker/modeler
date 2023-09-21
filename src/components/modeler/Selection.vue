@@ -48,7 +48,7 @@ export default {
     paperManager: Object,
     useModelGeometry: Boolean,
     processNode: Object,
-    isMultiplayer: Boolean
+    isMultiplayer: Boolean,
   },
   data() {
     return {
@@ -568,7 +568,7 @@ export default {
      * Stop drag procedure
      * @param {Object} event
      */
-    async stopDrag(event, cellView) {
+    async stopDrag() {
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
