@@ -2,6 +2,8 @@ import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
+import { faker } from '@faker-js/faker';
+
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -28,7 +30,42 @@ export default class Multiplayer {
 
     this.clientIO.on('connect', () => {
       // Join the room
-      this.clientIO.emit('joinRoom', this.room.getRoom());
+      this.clientIO.emit('joinRoom', {
+        roomName: this.room.getRoom(),
+        clientName: faker.person.fullName(),
+      });
+    });
+
+    this.clientIO.on('clientJoined', (payload) => {
+      console.log('########################');
+      console.log('client joined', payload);
+
+      this.modeler.enableMultiplayer(payload.isMultiplayer);
+
+      if (payload.isMultiplayer) {
+        payload.clients.map(client => {
+          const newPlayer = {
+            id: client.id,
+            name: client.name,
+            color: '#FF6F61',
+            imgSrc: null,
+            top: 90,
+            left: 80,
+          };
+
+          this.modeler.addPlayer(newPlayer);
+        });
+      }
+    });
+
+    this.clientIO.on('clientLeft', (payload) => {
+      console.log('########################');
+      console.log('client left', payload);
+
+      // Remove the player from the multiplayer list
+      this.modeler.removePlayer(payload.clientId);
+
+      this.modeler.enableMultiplayer(payload.isMultiplayer);
     });
 
     // Listen for updates when a new element is added
@@ -51,6 +88,7 @@ export default class Multiplayer {
 
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
+      console.log('multiplayer-addNode');
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {

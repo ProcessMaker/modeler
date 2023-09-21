@@ -155,14 +155,14 @@
       />
     </b-row>
 
-    <RemoteCursor
+    <!-- <RemoteCursor
       v-for="player in players"
       :cursor-color="player.color"
       :username="player.name"
       :key="player.id"
       :top="player.top"
       :left="player.left"
-    />
+    /> -->
   </span>
 </template>
 
@@ -224,6 +224,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
+import Multiplayer from '@/multiplayer/multiplayer';
 
 export default {
   components: {
@@ -1402,8 +1403,18 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
-    enableMultiplayer() {
-      this.isMultiplayer = true;
+    enableMultiplayer(value) {
+      this.isMultiplayer = value;
+    },
+    addPlayer(player) {
+      this.players.push(player);
+    },
+    removePlayer(playerId) {
+      const playerIndex = this.players.findIndex(player => player.id === playerId);
+
+      if (playerIndex !== -1) {
+        this.players.splice(playerIndex, 1);
+      }
     },
   },
   created() {
@@ -1570,12 +1581,8 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
-        if (this.isMultiplayer) {
-          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
-            modeler: this,
-            callback: this.enableMultiplayer,
-          });
-        }
+
+        new Multiplayer(this);
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
