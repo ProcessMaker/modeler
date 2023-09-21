@@ -61,7 +61,7 @@
     </b-row>
 
     <no-preview-available v-if="previewUrl === null"/>
-    <iframe v-if="previewUrl !== null" :src="previewUrl" style="width:100%; height:100%;border:0px none;"/>
+    <iframe v-else :src="previewUrl" style="width:100%; height:100%;border:0px none;"/>
   </b-col>
 
 </template>
@@ -114,9 +114,6 @@ export default {
       }, {});
 
       this.data = defaultDataTransform(this.highlightedNode);
-      // this.data = type && this.nodeRegistry[type].inspectorData
-      //   ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
-      //   : defaultDataTransform(this.highlightedNode);
       this.taskTitle = this.data?.name;
 
       this.taskTitle = this?.highlightedNode?.definition?.name;
