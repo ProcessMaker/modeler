@@ -1562,8 +1562,6 @@ export default {
       }
     });
 
-    this.enableMultiplayer();
-
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
       $t: this.$t,

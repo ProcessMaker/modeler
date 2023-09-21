@@ -27,9 +27,6 @@ export default class Multiplayer {
     this.clientIO = io(process.env.VUE_APP_WEBSOCKET_PROVIDER, { transports: ['websocket', 'polling']});
 
     this.clientIO.on('connect', () => {
-      // console.log('########################');
-      // console.log('connected', this.clientIO.id);
-
       // Join the room
       this.clientIO.emit('joinRoom', this.room.getRoom());
     });
