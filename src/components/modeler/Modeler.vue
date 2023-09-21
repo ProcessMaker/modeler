@@ -49,6 +49,8 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <WelcomeMessage/>
+
       <InspectorButton
         v-if="showComponent"
         :showInspector="isOpenInspector"
@@ -153,6 +155,7 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
+import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
@@ -213,6 +216,7 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    WelcomeMessage,
   },
   props: {
     owner: Object,
