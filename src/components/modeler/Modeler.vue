@@ -49,7 +49,7 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
-      <WelcomeMessage/>
+      <WelcomeMessage v-if="showWelcomeMessage"/>
 
       <InspectorButton
         v-if="showComponent"
@@ -335,9 +335,11 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-
   },
   computed: {
+    showWelcomeMessage() {
+      return !this.selectedNode && !this.nodes.length;
+    },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
     },
