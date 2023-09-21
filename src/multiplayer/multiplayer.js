@@ -13,6 +13,8 @@ export default class Multiplayer {
     // define document
     this.ydoc = new Y.Doc();
     this.modeler = modeler;
+  }
+  init() {
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
 
     this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
@@ -20,9 +22,8 @@ export default class Multiplayer {
     wsProvider.on('status', () => {
       // todo status handler
     });
-
     // array of numbers which produce a sum
-    this.yarray = this.ydoc.getArray('count');
+    this.yarray = this.ydoc.getArray('modeler');
     // observe changes of the diagram
     this.yarray.observe(event => {
       event.changes.delta.forEach((value) => {
