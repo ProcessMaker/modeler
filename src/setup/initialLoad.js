@@ -21,7 +21,8 @@ window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
   loadXML(blank);
 });
 window.ProcessMaker.EventBus.$on('multiplayer-start', (params) => {
-  new Multiplayer(params.modeler);
+  const multiplayer = new Multiplayer(params.modeler);
+  multiplayer.init();
   params.callback();
 });
 

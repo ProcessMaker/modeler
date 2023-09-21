@@ -328,7 +328,7 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       multiplayer: null,
-      isMultiplayer: false,
+      isMultiplayer: true,
     };
   },
   watch: {
