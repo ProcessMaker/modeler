@@ -48,6 +48,7 @@ export default {
     paperManager: Object,
     useModelGeometry: Boolean,
     processNode: Object,
+    isMultiplayer: Boolean
   },
   data() {
     return {
@@ -567,7 +568,7 @@ export default {
      * Stop drag procedure
      * @param {Object} event
      */
-    async stopDrag() {
+    async stopDrag(event, cellView) {
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements
@@ -576,6 +577,26 @@ export default {
       await this.paperManager.awaitScheduledUpdates();
       this.overPoolStopDrag();
       this.updateSelectionBox();
+      if (this.isMultiplayer) { 
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties());
+      }
+      
+
+    },
+    getProperties() {
+      const changed = [];
+      this.selected.forEach(function(item) {
+        changed.push({
+          id: item.model.component.node.definition.id,
+          properties: {
+            clientX: item.model.get('position').x,
+            clientY: item.model.get('position').y,
+          },
+        });
+      });
+      return changed;
+
+      // }];
     },
     /**
      * Selector will update the waypoints of the related flows

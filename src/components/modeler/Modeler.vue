@@ -152,6 +152,7 @@
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        :isMultiplayer="isMultiplayer"
       />
     </b-row>
 
@@ -328,13 +329,12 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       multiplayer: null,
-      isMultiplayer: false,
+      isMultiplayer: true,
     };
   },
   watch: {
     isRendering() {
       const loadingMessage = 'Loading process, please be patient.';
-
       if (this.isRendering) {
         window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
@@ -1199,7 +1199,7 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDrop({
+          const newNode = await this.handleDropProcedure({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
@@ -1395,7 +1395,7 @@ export default {
         if (this.isSelecting) {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
-          this.$refs.selector.stopDrag(event);
+          this.$refs.selector.stopDrag(event, cellView);
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
