@@ -637,6 +637,7 @@ export default {
       this.translateConfig(nodeType.inspectorConfig[0]);
       addLoopCharacteristics(nodeType);
       this.nodeRegistry[nodeType.id] = nodeType;
+      console.log("NODETYPE", nodeType);
       Vue.component(nodeType.id, nodeType.component);
       this.nodeTypes.push(nodeType);
 
@@ -663,12 +664,19 @@ export default {
       });
     },
     registerPmBlock(pmBlockNode, customParser) {
+      console.log('REGISTER PM BLOCK', pmBlockNode);
       const defaultParser = () => pmBlockNode.id;
+      const implementationParser = definition => {
+        if (definition.get('implementation') === pmBlockNode.implementation) {
+          return pmBlockNode.id;
+        }
+        return undefined;
+      };
 
       this.translateConfig(pmBlockNode.inspectorConfig[0]);
       addLoopCharacteristics(pmBlockNode);
       this.nodeRegistry[pmBlockNode.id] = pmBlockNode;
-
+      console.log("PM BLOCK NODE", pmBlockNode);
       Vue.component(pmBlockNode.id, pmBlockNode.component);
       this.pmBlockNodes.push(pmBlockNode);
 
@@ -685,6 +693,12 @@ export default {
           this.parsers[bpmnType].custom.push(customParser);
           return;
         }
+
+        if (nodeType.implementation) {
+          this.parsers[bpmnType].implementation.push(implementationParser);
+          return;
+        }
+
         this.parsers[bpmnType].default.push(defaultParser);
       });
       nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
@@ -901,12 +915,14 @@ export default {
       this.$emit('parsed');
     },
     async loadXML(xml = null) {
+      console.log("LOAD XML", xml);
       let emitChangeEvent = false;
       if (xml === null) {
         xml = this.currentXML;
         emitChangeEvent = true;
       }
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
+      console.log("DEF", this.definitions);
       this.xmlManager.definitions = this.definitions;
       this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
@@ -1328,16 +1344,22 @@ export default {
     });
 
     this.registerNode(Process);
-    /* Initialize the BpmnModdle and its extensions */
-    window.ProcessMaker.EventBus.$emit('modeler-init', {
-      registerInspectorExtension,
-      registerBpmnExtension: this.registerBpmnExtension,
-      registerNode: this.registerNode,
-      registerStatusBar: this.registerStatusBar,
+
+    /* Register custom nodes */
+    window.ProcessMaker.EventBus.$emit('modeler-init-pm-block', {
       registerPmBlock: this.registerPmBlock,
     });
 
+    /* Initialize the BpmnModdle and its extensions */
+    window.ProcessMaker.EventBus.$emit('modeler-init', {
+      registerInspectorExtension,
+      registerBpmnExtension: this.registerBpmnExtension, 
+      registerNode: this.registerNode,
+      registerStatusBar: this.registerStatusBar,
+    });
+  
     this.moddle = new BpmnModdle(this.extensions);
+    console.log("MODELER THIS MODDLE", this.moddle);
     this.linter = new Linter(linterConfig);
     this.xmlManager = new XMLManager(this.moddle);
     this.$emit('set-xml-manager', this.xmlManager);

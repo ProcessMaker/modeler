@@ -100,6 +100,7 @@ const customParserFactory = (nodeType, primaryIdentifier, secondaryIdentifier) =
 };
 
 export default function registerNodes({ registerNode, registerBpmnExtension }) {
+  console.log("SETUP REGISTER NODE");
   customEventNodes.forEach(([nodeType, primaryIdentifier, secondaryIdentifier]) => {
     registerNode(nodeType, customParserFactory(nodeType, primaryIdentifier, secondaryIdentifier));
   });
