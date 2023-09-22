@@ -154,15 +154,6 @@
         @save-state="pushToUndoStack"
       />
     </b-row>
-
-    <!-- <RemoteCursor
-      v-for="player in players"
-      :cursor-color="player.color"
-      :username="player.name"
-      :key="player.id"
-      :top="player.top"
-      :left="player.left"
-    /> -->
   </span>
 </template>
 
@@ -1582,7 +1573,11 @@ export default {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
 
-        new Multiplayer(this);
+        try {
+          new Multiplayer(this);
+        } catch (error) {
+          console.warn('Could not initialize multiplayer', error);
+        }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
