@@ -51,7 +51,7 @@ window.ProcessMaker = {
   },
   modeler: {
     process: {
-      id: 3,
+      id: 1,
     },
   },
 };
