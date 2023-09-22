@@ -1574,7 +1574,8 @@ export default {
         await undoRedoStore.dispatch('pushState', xml);
 
         try {
-          new Multiplayer(this);
+          const multiplayer = new Multiplayer(this);
+          multiplayer.init();
         } catch (error) {
           console.warn('Could not initialize multiplayer', error);
         }
