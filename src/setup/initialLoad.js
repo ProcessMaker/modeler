@@ -24,7 +24,8 @@ window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
  * TODO: Remove this block when the collaborative mode will be dynamic
  */
 window.ProcessMaker.EventBus.$on('multiplayer-start', (params) => {
-  new Multiplayer(params.modeler);
+  const multiplayer = new Multiplayer(params.modeler);
+  multiplayer.init();
   params.callback();
 });
 
