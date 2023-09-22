@@ -20,6 +20,8 @@ export default class Multiplayer {
     this.yArray = this.yDoc.getArray('elements');
     // Create a Modeler instance
     this.modeler = modeler;
+  }
+  init() {
     // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
     // Get the room name from the process id
