@@ -8,6 +8,7 @@ export default class Multiplayer {
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
+  deletedItem = null;
   constructor(modeler) {
     // define document
     this.ydoc = new Y.Doc();
@@ -16,8 +17,8 @@ export default class Multiplayer {
   init() {
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
 
-    this.room = new Room('room-' + window.ProcessMaker.modeler.process.id);
-    const wsProvider = new WebsocketProvider('ws://localhost:1234', this.room.getRoom(), this.ydoc);
+    this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
+    const wsProvider = new WebsocketProvider(process.env.VUE_APP_WEBSOCKET_PROVIDER, this.room.getRoom(), this.ydoc);
     wsProvider.on('status', () => {
       // todo status handler
     });
@@ -25,7 +26,7 @@ export default class Multiplayer {
     this.yarray = this.ydoc.getArray('modeler');
     // observe changes of the diagram
     this.yarray.observe(event => {
-      event.changes.delta.forEach((value) =>{
+      event.changes.delta.forEach((value) => {
         if (value.insert) {
           value.insert.forEach((value) => {
             this.createShape(value);
@@ -33,16 +34,42 @@ export default class Multiplayer {
           });
         }
       });
+      // remove nodes observer
+      event.changes.deleted.forEach((value)=>{
+        if (value.content && value.content.arr) {
+          this.removeShape(value.content.arr[0].id);
+        }
+      });
     });
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
+      this.removeNode(data);
+    });
   }
   addNode(data) {
     this.yarray.push([data]);
- 
   }
   createShape(value) {
     this.modeler.handleDropProcedure(value, false);
+  }
+  removeNode(data) {
+    const index =  this.getIndex(data.definition);
+    this.yarray.delete(index, 1); // delete one element 
+  }
+  getIndex(definition) {
+    let index = -1;
+    for (const value of this.yarray) {
+      index ++;
+      if (value.id === definition.id) {
+        break ;
+      }
+    }
+    return index;
+  }
+  removeShape(nodeId) {
+    const node = this.modeler.nodes.find((element) => element.definition && element.definition.id === nodeId);
+    this.modeler.removeNodeProcedure(node, true);
   }
 }

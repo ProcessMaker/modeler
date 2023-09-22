@@ -2,7 +2,7 @@
   "name": "@processmaker/modeler",
   "version": "1.39.8",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",

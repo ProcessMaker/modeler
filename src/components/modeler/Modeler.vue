@@ -1144,7 +1144,14 @@ export default {
         this.poolTarget = null;
       });
     },
-    async removeNode(node, { removeRelationships = true } = {}) {
+    async removeNode(node, options) {
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
+      } else  {
+        this.removeNodeProcedure(node, options);
+      }
+    },
+    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
         // already removed
         return;
