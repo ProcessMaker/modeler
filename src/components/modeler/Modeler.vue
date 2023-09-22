@@ -1145,7 +1145,6 @@ export default {
       });
     },
     async removeNode(node, options) {
-      debugger;
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
       } else  {
