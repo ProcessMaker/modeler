@@ -1143,11 +1143,11 @@ export default {
         this.poolTarget = null;
       });
     },
-    async removeNode(node, { removeRelationships = true } = {}) {
+    async removeNode(node, options) {
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
       } else  {
-        this.removeNodeProcedure(node, removeRelationships);
+        this.removeNodeProcedure(node, options);
       }
     },
     async removeNodeProcedure(node, { removeRelationships = true } = {}) {
@@ -1198,7 +1198,7 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDrop({
+          const newNode = await this.handleDropProcedure({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
