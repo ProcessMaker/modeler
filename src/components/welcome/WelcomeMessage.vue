@@ -49,7 +49,7 @@ export default {
   align-items: center;
   left: 0;
   border: 0 none;
-  z-index: 2;
+  z-index: 1;
   font-size: 110%;
   font-weight: 100;
   height: calc(100% - 130px);
