@@ -850,7 +850,7 @@ export default {
 
       this.removeUnsupportedElementAttributes(definition);
 
-      const config = definition.config && definition.config.startsWith('{') ? JSON.parse(definition.config) : {};
+      const config = definition.config && _.isJSON(definition.config) ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
       
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
