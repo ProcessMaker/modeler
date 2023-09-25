@@ -338,7 +338,7 @@ export default {
   },
   computed: {
     showWelcomeMessage() {
-      return !this.selectedNode && !this.nodes.length;
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly;
     },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
