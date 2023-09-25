@@ -1139,7 +1139,7 @@ export default {
         });
       });
     },
-    replaceAiNode({ node, typeToReplaceWith, assetId, redirectTo }) {
+    replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
@@ -1151,14 +1151,17 @@ export default {
 
           if (typeToReplaceWith === 'processmaker-modeler-task') {
             newNode.definition.screenRef = assetId;  
+            newNode.definition.name = assetName;  
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-script-task') {
-            newNode.definition.scriptRef = assetId;  
+            newNode.definition.scriptRef = assetId;
+            newNode.definition.name = assetName;  
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
             // newNode.definition.scriptRef = assetId;  
+            // newNode.definition.name = assetName;  
             // newNode.definition.calledElement = "ProcessId-39";
             // newNode.definition.config = "{"calledElement":"ProcessId-39","processId":39,"startEvent":"node_1","name":"FOUR-7021"}";
           }
