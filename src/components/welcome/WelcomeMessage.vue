@@ -15,7 +15,7 @@
       </div>
     </div>
     <b-button class="new-process-btn d-flex flex-row p-2 align-items-center" @click="onClick">
-      <inline-svg :src="corneaIcon" class="mx-2" />
+      <inline-svg :src="proceC2Icon" class="mx-2 ai-icon" />
       <div class="mr-3">{{ $t("Kick-start a new process with our generative AI") }}</div>
       <span class="fa fa-chevron-right" />
     </b-button>
@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      corneaIcon: require('@/assets/corneaIcon.svg'),
+      proceC2Icon: require('@/assets/proceC2.svg'),
     };
   },
   methods: {},
@@ -73,5 +73,10 @@ export default {
   background-color: #edf7ff;
   color: #0872C2;
   border-color: #0872C2;
+}
+
+.ai-icon {
+  width: 22px;
+  height: 22px;
 }
 </style>
