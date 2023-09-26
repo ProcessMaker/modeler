@@ -1160,10 +1160,9 @@ export default {
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
-            // newNode.definition.scriptRef = assetId;  
-            // newNode.definition.name = assetName;  
-            // newNode.definition.calledElement = "ProcessId-39";
-            // newNode.definition.config = "{"calledElement":"ProcessId-39","processId":39,"startEvent":"node_1","name":"FOUR-7021"}";
+            newNode.definition.name = assetName;
+            newNode.definition.calledElement = `ProcessId-${assetId}`;
+            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":${assetId}}`;
           }
           
           await this.removeNode(node, { removeRelationships: false });
