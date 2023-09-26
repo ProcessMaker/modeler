@@ -58,6 +58,9 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateNodes', ( data ) => {
+      this.updateNodes(data);
+    });
   }
   addNode(data) {
     // Add the new element to the process
@@ -92,11 +95,11 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('removeElement', stateUpdate);
   }
-  getIndex(definition) {
+  getIndex(id) {
     let index = -1;
     for (const value of this.yArray) {
       index ++;
-      if (value.id === definition.id) {
+      if (value.get('id') === id) {
         break ;
       }
     }
@@ -109,5 +112,45 @@ export default class Multiplayer {
   }
   removeShape(node) {
     this.modeler.removeNodeProcedure(node, true);
+  }
+  getRemovedNodes(array1, array2) {
+    return array1.filter(object1 => {
+      return !array2.some(object2 => {
+        return object1.definition.id === object2.get('id');
+      });
+    });
+  }
+  updateNodes(data) {
+    data.forEach((value) => {
+      const index = this.getIndex(value.id);
+      const nodeToUpdate =  this.yarray.get(index);
+      this.doTransact(nodeToUpdate, value.properties);
+    });
+  }
+  doTransact(ymapNested, data) {
+    this.ydoc.transact(() => {
+      for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          ymapNested.set(key, data[key]);
+        }
+      }
+    });
+  }
+  updateShapes(data) {
+    const { paper } = this.modeler;
+    const element = this.getJointElement(paper.model, data.id);
+    // Update the element's position attribute
+    element.set('position', { x:data.clientX, y:data.clientY });
+    // Trigger a rendering of the element on the paper
+    paper.findViewByModel(element).update();
+  }
+  getJointElement(graph, targetValue) {
+    const cells = graph.getCells();
+    for (const cell of cells) {
+      if (cell.component.id === targetValue) {
+        return cell;
+      }
+    }
+    return null; // Return null if no matching element is found
   }
 }
