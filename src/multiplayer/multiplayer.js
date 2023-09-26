@@ -43,10 +43,12 @@ export default class Multiplayer {
 
     // Listen for updates when an element is removed
     this.clientIO.on('removeElement', (payload) => {
-      // Get the node id
-      const node = this.getNodeById(payload.nodeId);
-      // Remove the element from the process
-      this.removeShape(node);
+      payload.deletedNodes.forEach(nodeId => {
+        // Get the node id
+        const node = this.getNodeById(nodeId);
+        // Remove the element from the process
+        this.removeShape(node);
+      });
       // Remove the element from the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
     });
@@ -66,7 +68,10 @@ export default class Multiplayer {
     // Add the new element to the process
     this.createShape(data);
     // Add the new element to the shared array
-    this.yArray.push([data]);
+    // this.yArray.push([data]);
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
@@ -86,7 +91,7 @@ export default class Multiplayer {
     });
   }
   removeNode(data) {
-    const index =  this.getIndex(data.definition);
+    const index =  this.getIndex(data.definition.id);
     this.removeShape(data);
     this.yArray.delete(index, 1); // delete one element
 
@@ -127,11 +132,11 @@ export default class Multiplayer {
       this.doTransact(nodeToUpdate, value.properties);
     });
   }
-  doTransact(ymapNested, data) {
-    this.ydoc.transact(() => {
+  doTransact(yMapNested, data) {
+    this.yDoc.transact(() => {
       for (const key in data) {
         if (Object.prototype.hasOwnProperty.call(data, key)) {
-          ymapNested.set(key, data[key]);
+          yMapNested.set(key, data[key]);
         }
       }
     });
