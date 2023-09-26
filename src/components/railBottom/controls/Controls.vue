@@ -39,7 +39,7 @@ import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
 import clickAndDrop from '@/mixins/clickAndDrop';
 import plusIcon from '@/assets/railBottom/plus.svg?url';
 
-export default ({
+export default {
   components: {
     SubmenuPopper,
     InlineSvg,
@@ -96,6 +96,6 @@ export default ({
       nodeTypesStore.commit('clearFilteredPmBlockNodes');
     },
   },
-});
+};
 </script>
 <style lang="scss" scoped src="./controls.scss"></style>

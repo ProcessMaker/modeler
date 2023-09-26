@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import trashIcon from '@/assets/trash-alt-solid.svg';
+import trashIcon from '@/assets/trash-alt-solid.svg?url';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 

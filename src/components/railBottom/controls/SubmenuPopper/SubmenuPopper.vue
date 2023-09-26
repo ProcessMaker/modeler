@@ -53,7 +53,7 @@ import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
 import InlineSvg from 'vue-inline-svg';
 
-export default ({
+export default {
   props: {
     data: { type: Object },
     selectedItem: { type: String },
@@ -76,7 +76,7 @@ export default ({
       this.$emit('clickToSubmenu', { event, control });
     },
   },
-});
+};
 
 </script>
 

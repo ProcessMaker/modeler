@@ -30,7 +30,7 @@ import undoRedoStore from '@/undoRedoStore';
 import undoIcon from '@/assets/railBottom/undo.svg?url';
 import redoIcon from '@/assets/railBottom/redo.svg?url';
 
-export default ({
+export default {
   components: {
     InlineSvg,
   },
@@ -85,7 +85,7 @@ export default ({
         .then(() => this.$emit('load-xml'));
     },
   },
-});
+};
 </script>
 
 <style lang="scss" scoped src="./undoRedoControl.scss"></style>

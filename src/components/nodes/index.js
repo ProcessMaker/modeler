@@ -4,7 +4,7 @@ export { default as errorEndEvent } from './errorEndEvent';
 export { default as terminateEndEvent } from './terminateEndEvent';
 export { default as exclusiveGateway } from './exclusiveGateway';
 export { default as inclusiveGateway } from './inclusiveGateway';
-export { default as parallelGateway } from './parallelGateway/';
+export { default as parallelGateway } from './parallelGateway';
 export { default as eventBasedGateway } from './eventBasedGateway';
 export { default as sequenceFlow } from './sequenceFlow';
 export { default as messageFlow } from './messageFlow';

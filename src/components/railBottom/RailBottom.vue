@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { nextTick } from 'vue';
 import MiniPaperControl from '@/components/railBottom/miniPaperControl/MiniPaperControl.vue';
 import ZoomControl from '@/components/railBottom/zoomControl/ZoomControl.vue';
 import UndoRedoControl from '@/components/railBottom/undoRedoControl/UndoRedoControl.vue';
@@ -119,7 +118,7 @@ export default {
     },
   },
   async mounted() {
-    await nextTick();
+    await this.$nextTick();
 
     this.controlObserver.observe(this.$refs.controlBox.$el);
   },

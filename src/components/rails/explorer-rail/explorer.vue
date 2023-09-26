@@ -9,9 +9,6 @@ import PmBlocksLoop from '@/components/rails/explorer-rail/pmBlocksLoop/pmBlocks
 export default {
   name: 'ExplorerRail',
   props: {
-    explorerExpanded: {
-      type: Boolean,
-    },
     nodeTypes: {
       type: Array,
     },

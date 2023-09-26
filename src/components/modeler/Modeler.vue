@@ -328,7 +328,7 @@ export default {
         return;
       }
 
-      window.ProcessMaker.navbar.alerts = window.ProcessMaker.navbar.alerts.filter(alert => {
+      window.ProcessMaker.navbar.alerts = window.ProcessMaker?.navbar?.alerts.filter(alert => {
         return alert.alertText !== loadingMessage;
       });
       document.body.style.cursor = 'auto';
@@ -940,8 +940,8 @@ export default {
     },
     async waitForCursorToChange() {
       const cursorWaitTime = 300;
-      await this.$nextTick();
-      return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
+      return await this.$nextTick();
+      // return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
     },
     async renderPaper() {
       this.isRendering = true;

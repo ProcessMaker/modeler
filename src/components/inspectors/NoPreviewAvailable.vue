@@ -11,7 +11,7 @@
 export default {
   data() {
     return {
-      noPreviewImg: require('@/assets/noPreviewImage.png'),
+      noPreviewImg: import('@/assets/noPreviewImage.png'),
     };
   },
 };
