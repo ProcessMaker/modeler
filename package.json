@@ -1,8 +1,8 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.39.7",
+  "version": "1.39.8",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
@@ -69,7 +69,9 @@
     "vue-monaco": "^1.2.1",
     "vue-popperjs": "^2.3.0",
     "vue-upload-component": "^2.8.20",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "y-websocket": "^1.5.0",
+    "yjs": "^13.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
