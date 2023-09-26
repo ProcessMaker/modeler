@@ -152,6 +152,7 @@
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        :isMultiplayer="isMultiplayer"
       />
     </b-row>
   </span>
@@ -326,7 +327,6 @@ export default {
   watch: {
     isRendering() {
       const loadingMessage = 'Loading process, please be patient.';
-
       if (this.isRendering) {
         window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
@@ -1135,11 +1135,11 @@ export default {
         this.poolTarget = null;
       });
     },
-    async removeNode(node, { removeRelationships = true } = {}) {
+    async removeNode(node, options) {
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
       } else  {
-        this.removeNodeProcedure(node, removeRelationships);
+        this.removeNodeProcedure(node, options);
       }
     },
     async removeNodeProcedure(node, { removeRelationships = true } = {}) {
@@ -1386,7 +1386,7 @@ export default {
         if (this.isSelecting) {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
-          this.$refs.selector.stopDrag(event);
+          this.$refs.selector.stopDrag();
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);

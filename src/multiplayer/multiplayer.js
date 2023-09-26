@@ -74,10 +74,12 @@ export default class Multiplayer {
 
     // Listen for updates when an element is removed
     this.clientIO.on('removeElement', (payload) => {
-      // Get the node id
-      const node = this.getNodeById(payload.nodeId);
-      // Remove the element from the process
-      this.removeShape(node);
+      payload.deletedNodes.forEach(nodeId => {
+        // Get the node id
+        const node = this.getNodeById(nodeId);
+        // Remove the element from the process
+        this.removeShape(node);
+      });
       // Remove the element from the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
     });
@@ -89,12 +91,18 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateNodes', ( data ) => {
+      this.updateNodes(data);
+    });
   }
   addNode(data) {
     // Add the new element to the process
     this.createShape(data);
     // Add the new element to the shared array
-    this.yArray.push([data]);
+    // this.yArray.push([data]);
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
@@ -114,7 +122,7 @@ export default class Multiplayer {
     });
   }
   removeNode(data) {
-    const index =  this.getIndex(data.definition);
+    const index =  this.getIndex(data.definition.id);
     this.removeShape(data);
     this.yArray.delete(index, 1); // delete one element
 
@@ -123,11 +131,11 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('removeElement', stateUpdate);
   }
-  getIndex(definition) {
+  getIndex(id) {
     let index = -1;
     for (const value of this.yArray) {
       index ++;
-      if (value.id === definition.id) {
+      if (value.get('id') === id) {
         break ;
       }
     }
@@ -140,5 +148,45 @@ export default class Multiplayer {
   }
   removeShape(node) {
     this.modeler.removeNodeProcedure(node, true);
+  }
+  getRemovedNodes(array1, array2) {
+    return array1.filter(object1 => {
+      return !array2.some(object2 => {
+        return object1.definition.id === object2.get('id');
+      });
+    });
+  }
+  updateNodes(data) {
+    data.forEach((value) => {
+      const index = this.getIndex(value.id);
+      const nodeToUpdate =  this.yarray.get(index);
+      this.doTransact(nodeToUpdate, value.properties);
+    });
+  }
+  doTransact(yMapNested, data) {
+    this.yDoc.transact(() => {
+      for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          yMapNested.set(key, data[key]);
+        }
+      }
+    });
+  }
+  updateShapes(data) {
+    const { paper } = this.modeler;
+    const element = this.getJointElement(paper.model, data.id);
+    // Update the element's position attribute
+    element.set('position', { x:data.clientX, y:data.clientY });
+    // Trigger a rendering of the element on the paper
+    paper.findViewByModel(element).update();
+  }
+  getJointElement(graph, targetValue) {
+    const cells = graph.getCells();
+    for (const cell of cells) {
+      if (cell.component.id === targetValue) {
+        return cell;
+      }
+    }
+    return null; // Return null if no matching element is found
   }
 }
