@@ -150,6 +150,7 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
+import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
@@ -850,7 +851,7 @@ export default {
 
       this.removeUnsupportedElementAttributes(definition);
 
-      const config = definition.config ? JSON.parse(definition.config) : {};
+      const config = definition.config && isJSON(definition.config) ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
       
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
