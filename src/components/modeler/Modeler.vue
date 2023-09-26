@@ -23,6 +23,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      :players="players"
       @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
@@ -52,9 +53,18 @@
       <WelcomeMessage v-if="showWelcomeMessage"/>
 
       <InspectorButton
-        v-if="showComponent"
+        ref="inspector-button"
+        v-if="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
+        :style="{ right: inspectorButtonRight + 'px' }"
+      />
+
+      <PreviewPanel ref="preview-panel"
+        @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
+        @previewResize="setInspectorButtonPosition"
+        :visible="isOpenPreview"
+        :nodeRegistry="nodeRegistry"
       />
 
       <InspectorPanel
@@ -103,6 +113,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
+        @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -143,8 +154,18 @@
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        :isMultiplayer="isMultiplayer"
       />
     </b-row>
+
+    <RemoteCursor 
+      v-for="player in players"
+      :cursor-color="player.color"
+      :username="player.name"
+      :key="player.id"
+      :top="player.top"
+      :left="player.left"
+    />
   </span>
 </template>
 
@@ -156,12 +177,14 @@ import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
+import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import PreviewPanel from '@/components/inspectors/PreviewPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -205,10 +228,11 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-
+import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 
 export default {
   components: {
+    PreviewPanel,
     ToolBar,
     ExplorerRail,
     InspectorButton,
@@ -217,6 +241,7 @@ export default {
     Selection,
     RailBottom,
     WelcomeMessage,
+    RemoteCursor,
   },
   props: {
     owner: Object,
@@ -286,6 +311,7 @@ export default {
       miniMapOpen: false,
       panelsCompressed: false,
       isOpenInspector: false,
+      isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
       allWarnings: [],
@@ -304,12 +330,16 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      players: [],
+      showInspectorButton: true,
+      inspectorButtonRight: 65,
+      multiplayer: null,
+      isMultiplayer: false,
     };
   },
   watch: {
     isRendering() {
       const loadingMessage = 'Loading process, please be patient.';
-
       if (this.isRendering) {
         window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
@@ -370,7 +400,29 @@ export default {
       }
     },
     handleToggleInspector(value) {
+      this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
+    },
+    handlePreview(node) {
+      this.$refs['preview-panel'].previewNode(node);
+      this.handleTogglePreview(true) ;
+    },
+    handleTogglePreview(value) {
+      this.isOpenPreview = value;
+    },
+    setInspectorButtonPosition() {
+      const previewWidth = this.$refs['preview-panel'].width;
+      if (this.isOpenInspector) {
+        return;
+      }
+
+      if (this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65 + previewWidth;
+      }
+
+      if (!this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65;
+      }
     },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
@@ -873,9 +925,9 @@ export default {
 
       this.removeUnsupportedElementAttributes(definition);
 
-      const config = definition.config ? JSON.parse(definition.config) : {};
+      const config = definition.config && isJSON(definition.config) ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
-      
+
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
@@ -980,7 +1032,21 @@ export default {
         control,
       });
     },
-    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
+    handleDrop(data) {
+      const { clientX, clientY, control} = data;
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
+          clientX,
+          clientY,
+          control,
+          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
+        });
+      } else  {
+        this.handleDropProcedure(data);
+      }
+    },
+    async handleDropProcedure(data, selected=true) {
+      const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
         return;
@@ -999,9 +1065,11 @@ export default {
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
-
-      this.highlightNode(newNode);
-      await this.addNode(newNode);
+      if (selected) {
+        this.highlightNode(newNode);
+      }
+      
+      await this.addNode(newNode, id, selected);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -1018,6 +1086,7 @@ export default {
 
       return newNode;
     },
+    
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1029,14 +1098,14 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node) {
+    async addNode(node, id = null, selected = true) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator);
+      node.setIds(this.nodeIdGenerator, id); 
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
@@ -1054,9 +1123,11 @@ export default {
       ].includes(node.type)) {
         return;
       }
-
-      // Select the node after it has been added to the store (does not apply to flows)
-      this.selectNewNode(node);
+      if (selected) {
+        // Select the node after it has been added to the store (does not apply to flows)
+        this.selectNewNode(node);
+      }
+      
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1079,7 +1150,14 @@ export default {
         this.poolTarget = null;
       });
     },
-    async removeNode(node, { removeRelationships = true } = {}) {
+    async removeNode(node, options) {
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
+      } else  {
+        this.removeNodeProcedure(node, options);
+      }
+    },
+    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
         // already removed
         return;
@@ -1127,7 +1205,7 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDrop({
+          const newNode = await this.handleDropProcedure({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
@@ -1356,7 +1434,7 @@ export default {
         if (this.isSelecting) {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
-          this.$refs.selector.stopDrag(event);
+          this.$refs.selector.stopDrag();
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
@@ -1366,6 +1444,9 @@ export default {
     },
     redirect(redirectTo) {
       window.location = redirectTo;
+    },
+    enableMultiplayer() {
+      this.isMultiplayer = true;
     },
   },
   created() {
@@ -1532,6 +1613,12 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
+        if (this.isMultiplayer) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
+            modeler: this,
+            callback: this.enableMultiplayer,
+          });
+        }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),

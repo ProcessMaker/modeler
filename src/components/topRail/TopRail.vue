@@ -1,5 +1,6 @@
 <template>
   <div class="top-rail-container">
+    <MultiplayerViewUsers :players="players"/>
     <ValidateIssue
       v-show="isOpenIssue"
       :number-of-errors="numberOfErrors"
@@ -20,12 +21,13 @@
 <script>
 import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
-
+import MultiplayerViewUsers from '@/components/topRail/multiplayerViewUsers/MultiplayerViewUsers';
 export default {
   components: {
     ValidateButton,
     ValidateIssue,
     ValidatePanel,
+    MultiplayerViewUsers,
   },
   props: {
     validationErrors: {
@@ -35,6 +37,10 @@ export default {
     warnings: {
       type: Array,
       required: true,
+    },
+    players: {
+      type: Array,
+      required: false,
     },
   },
   data() {
