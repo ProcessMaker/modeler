@@ -1,7 +1,7 @@
 <template>
   <b-avatar-group class="container">
     <template v-for="item in players" >
-      <Avatar :badgeBackgroundColor="item.color" :imgSrc= "item.imgSrc" :userName="item.name" :key="item.key"/>
+      <Avatar :badgeBackgroundColor="item.color" :imgSrc="item.imgSrc" :userName="item.name" :key="item.key"/>
     </template>
   </b-avatar-group> 
 </template>

@@ -1,8 +1,8 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.39.7",
+  "version": "1.39.9",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
@@ -56,6 +56,7 @@
     "jointjs": "^3.1.1",
     "js-yaml-loader": "^1.2.2",
     "lodash": "^4.17.21",
+    "lodash-contrib": "^4.1200.1",
     "luxon": "^1.21.1",
     "mocha-junit-reporter": "^2.0.0",
     "mustache": "^3.2.1",
@@ -68,14 +69,16 @@
     "vue-monaco": "^1.2.1",
     "vue-popperjs": "^2.3.0",
     "vue-upload-component": "^2.8.20",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "y-websocket": "^1.5.0",
+    "yjs": "^13.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
     "@cypress/code-coverage": "^3.11.0",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/processmaker-bpmn-moddle": "0.14.0",
+    "@processmaker/processmaker-bpmn-moddle": "0.14.1",
     "@types/jest": "^24.9.1",
     "@vue/babel-preset-app": "^5.0.4",
     "@vue/cli-plugin-babel": "~5.0.0",
