@@ -83,7 +83,7 @@ export default {
 
       // Set the appropriate attribute or property based on the control icon type
       if (isSvgIcon) {
-        tempGhost.src = control.icon
+        tempGhost.src = control.icon;
       } else {
         tempGhost.setAttribute('class', control.icon);
       }

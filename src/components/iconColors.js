@@ -49,7 +49,7 @@ const coloredIcon = (iconString, node) => {
     // If the input is not an SVG, add Font Awesome icons and extract the SVG
     library.add(fas, fab);
 
-    const [prefix, ] = iconString.split(' ');
+    const [prefix ] = iconString.split(' ');
     const [, iconName] = iconString.split('-');
     const iconDefinition = findIconDefinition({ prefix, iconName });
     const svg = icon(iconDefinition).html;

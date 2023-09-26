@@ -11,7 +11,7 @@ export default {
       if (this.node.definition.get('customIcon')) {
         this.setCustomIcon(this.node.definition.get('customIcon'));
       }
-    }
+    },
   },
 
   methods: {
@@ -39,7 +39,7 @@ export default {
     },
     getIconURL(icon) {
       return coloredIcon(icon, this.node);
-    }
+    },
   },
   mounted() {
     if (this.node.definition.get('customIcon')) {

@@ -64,7 +64,7 @@ export default {
           @mouseleave="showPin = false"
           @click.self="onClickHandler($event, object)"
         >
-          <i v-if="!containsSvg(object.icon)" :class="object.icon" class="fa-lg"></i>
+          <i v-if="!containsSvg(object.icon)" :class="object.icon" class="fa-lg"/>
           <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
           <span>{{ $t(object.label) }}</span>
           <img
@@ -96,7 +96,7 @@ export default {
             @mouseleave="showPin = false"
             @click.stop="onClickHandler($event, pinnedObject)"
           >
-            <i v-if="!containsSvg(pinnedObject.icon)" :class="pinnedObject.icon" class="fa-lg"></i>
+            <i v-if="!containsSvg(pinnedObject.icon)" :class="pinnedObject.icon" class="fa-lg"/>
             <img v-else class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
             <span>{{ $t(pinnedObject.label) }}</span>
             <img
@@ -119,7 +119,7 @@ export default {
             @mouseleave="showPin = false"
             @click.stop="onClickHandler($event, nodeType)"
           >
-            <i v-if="!containsSvg(nodeType.icon)" :class="nodeType.icon" class="fa-lg"></i>
+            <i v-if="!containsSvg(nodeType.icon)" :class="nodeType.icon" class="fa-lg"/>
             <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
             <span>{{ $t(nodeType.label) }}</span>
             <img
