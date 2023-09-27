@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <b-button class="new-process-btn d-flex flex-row p-2 align-items-center" @click="onClick">
+    <b-button class="new-process-btn d-flex flex-row p-2 align-items-center" @click="redirectToAiProcess()">
       <inline-svg :src="proceC2Icon" class="mx-2 ai-icon" />
       <div class="mr-3">{{ $t("Kick-start a new process with our generative AI") }}</div>
       <span class="fa fa-chevron-right" />
@@ -34,7 +34,15 @@ export default {
       proceC2Icon: require('@/assets/proceC2.svg'),
     };
   },
-  methods: {},
+  methods: {
+    redirectToAiProcess() {
+      const processId = window.ProcessMaker.modeler.process.id ?? null;
+      if (processId) {
+        const url = `/package-ai/processes/create/${processId}/${processId}`;
+        window.location = url;
+      }
+    },
+  },
 };
 </script>
 <style>
