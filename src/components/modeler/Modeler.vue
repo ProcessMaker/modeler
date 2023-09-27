@@ -722,6 +722,7 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+      nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
     },
     registerPmBlock(pmBlockNode, customParser) {
       const defaultParser = () => pmBlockNode.id;
@@ -1028,7 +1029,7 @@ export default {
       });
     },
     handleDrop(data) {
-      const { clientX, clientY, control} = data;
+      const { clientX, clientY, control } = data;
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
           clientX,
