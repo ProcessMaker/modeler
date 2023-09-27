@@ -3,7 +3,7 @@
     <b-col
       id="inspector"
       class="pl-0 h-100 overflow-hidden inspector-column"
-      :class="[{ 'ignore-pointer': canvasDragPosition }]"
+      :class="[{ 'ignore-pointer': canvasDragPosition, 'ai-inspector': isAiInspector }]"
       data-test="inspector-column"
     >
       <b-card
@@ -15,7 +15,7 @@
         <template #header>
           <div class="inspector-header">
             <div class="inspector-header-title">
-              {{ $t('Configuration') }}
+              {{ inspectorHeaderTitle }}
             </div>
             <button
               type="button"
@@ -79,6 +79,7 @@ Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
+  components: { },
   props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions'],
   data() {
     return {
@@ -103,6 +104,16 @@ export default {
     'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
+    inspectorHeaderTitle() {
+      if (this.data.implementation === 'package-ai/processmaker-ai-assistant') {
+        return this.$t('AI Assistant');
+      }
+
+      return this.$t('Configuration');
+    },
+    isAiInspector() {
+      return this.data.implementation === 'package-ai/processmaker-ai-assistant';
+    },
     highlightedNode() {
       return store.getters.highlightedNodes[0];
     },

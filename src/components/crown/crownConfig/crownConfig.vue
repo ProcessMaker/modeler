@@ -33,6 +33,7 @@
 
     <crown-dropdowns
       :dropdown-data="dropdownData"
+      :hide-color-dropdown="hideColorDropdown"
       :boundary-event-dropdown-data="boundaryEventDropdownData"
       :node="node"
       :node-registry="nodeRegistry"
@@ -135,6 +136,10 @@ export default {
       default: () => [],
     },
     showCustomIconPicker: {
+      type: Boolean,
+      default: false,
+    },
+    hideColorDropdown: {
       type: Boolean,
       default: false,
     },

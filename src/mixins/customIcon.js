@@ -6,6 +6,13 @@ export default {
       iconName: '',
     };
   },
+  watch: {
+    shape() {
+      if (this.node.definition.get('customIcon')) {
+        this.setCustomIcon(this.node.definition.get('customIcon'));
+      }
+    },
+  },
 
   methods: {
     setCustomIconName(iconName) {
@@ -14,11 +21,24 @@ export default {
     resetCustomIconName() {
       this.setCustomIconName('');
     },
-    setCustomIcon(base64Icon) {
-      if (!this.shape){
+    setCustomIcon(icon) {
+      if (!this.shape) {
         return;
       }
-      this.shape.attr('image/xlink:href', coloredIcon(atob(base64Icon), this.node));
+    
+      try {
+        const decodedIcon = atob(icon);
+        this.updateIcon(decodedIcon);
+      } catch (error) {
+        this.updateIcon(icon);
+      }
+    },
+    updateIcon(icon) {
+      const iconURL = this.getIconURL(icon);
+      this.shape.attr('image/xlink:href', iconURL);
+    },
+    getIconURL(icon) {
+      return coloredIcon(icon, this.node);
     },
   },
   mounted() {

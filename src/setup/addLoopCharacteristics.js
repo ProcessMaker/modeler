@@ -16,6 +16,10 @@ export default (node) => {
     return;
   }
 
+  if (node.implementation === 'package-ai/processmaker-ai-assistant') {
+    return;
+  }
+
   // Insert the loop config inspector at the specified index
   node.inspectorConfig[0].items.splice(node.loopInspectorIndex || 1, 0, loopCharacteristicsInspector);
 
