@@ -157,15 +157,6 @@
         :isMultiplayer="isMultiplayer"
       />
     </b-row>
-
-    <RemoteCursor
-      v-for="player in players"
-      :cursor-color="player.color"
-      :username="player.name"
-      :key="player.id"
-      :top="player.top"
-      :left="player.left"
-    />
   </span>
 </template>
 
@@ -229,6 +220,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
+import Multiplayer from '@/multiplayer/multiplayer';
 
 export default {
   components: {
@@ -1228,13 +1220,13 @@ export default {
           });
 
           if (typeToReplaceWith === 'processmaker-modeler-task') {
-            newNode.definition.screenRef = assetId;  
-            newNode.definition.name = assetName;  
+            newNode.definition.screenRef = assetId;
+            newNode.definition.name = assetName;
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-script-task') {
             newNode.definition.scriptRef = assetId;
-            newNode.definition.name = assetName;  
+            newNode.definition.name = assetName;
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
@@ -1242,7 +1234,7 @@ export default {
             newNode.definition.calledElement = `ProcessId-${assetId}`;
             newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":${assetId}}`;
           }
-          
+
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
@@ -1445,8 +1437,18 @@ export default {
     redirect(redirectTo) {
       window.location = redirectTo;
     },
-    enableMultiplayer() {
-      this.isMultiplayer = true;
+    enableMultiplayer(value) {
+      this.isMultiplayer = value;
+    },
+    addPlayer(player) {
+      this.players.push(player);
+    },
+    removePlayer(playerId) {
+      const playerIndex = this.players.findIndex(player => player.id === playerId);
+
+      if (playerIndex !== -1) {
+        this.players.splice(playerIndex, 1);
+      }
     },
   },
   created() {
@@ -1613,11 +1615,12 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
-        if (this.isMultiplayer) {
-          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
-            modeler: this,
-            callback: this.enableMultiplayer,
-          });
+
+        try {
+          const multiplayer = new Multiplayer(this);
+          multiplayer.init();
+        } catch (error) {
+          console.warn('Could not initialize multiplayer', error);
         }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
