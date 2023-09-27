@@ -1,66 +1,62 @@
+import { io } from 'socket.io-client';
 import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
 export default class Multiplayer {
-  ydoc = null;
-  yarray = null;
+  clientIO = null;
+  yDoc = null;
+  yArray = null;
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
   deletedItem = null;
+
   constructor(modeler) {
     // define document
-    this.ydoc = new Y.Doc();
+    this.yDoc = new Y.Doc();
+    // Create a shared array
+    this.yArray = this.yDoc.getArray('elements');
+    // Create a Modeler instance
     this.modeler = modeler;
   }
   init() {
+    // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
-
+    // Get the room name from the process id
     this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
-    const wsProvider = new WebsocketProvider(process.env.VUE_APP_WEBSOCKET_PROVIDER, this.room.getRoom(), this.ydoc);
-    wsProvider.on('status', () => {
-      // todo status handler
+
+    // Connect to websocket server
+    this.clientIO = io(process.env.VUE_APP_WEBSOCKET_PROVIDER, { transports: ['websocket', 'polling']});
+
+    this.clientIO.on('connect', () => {
+      // Join the room
+      this.clientIO.emit('joinRoom', this.room.getRoom());
     });
-    // array of numbers which produce a sum
-    this.yarray = this.ydoc.getArray('modeler');
-    // observe changes of the diagram
-    this.yarray.observe(event => {
-      event.changes.delta.forEach((value) => {
-        if (value.insert) {
-          value.insert.forEach((value) => {
-            this.createShape(value.toJSON());
-            this.#nodeIdGenerator.updateCounters();
-          });
-        }
+
+    // Listen for updates when a new element is added
+    this.clientIO.on('createElement', async(payload) => {
+      // Create the new element in the process
+      await this.createRemoteShape(payload.changes);
+      // Add the new element to the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
+    });
+
+    // Listen for updates when an element is removed
+    this.clientIO.on('removeElement', (payload) => {
+      payload.deletedNodes.forEach(nodeId => {
+        // Get the node id
+        const node = this.getNodeById(nodeId);
+        // Remove the element from the process
+        this.removeShape(node);
       });
-      // remove nodes observer
-      if (event.changes.deleted && event.changes.deleted.size > 0) {
-        this.removeShape();
-      }
+      // Remove the element from the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
     });
-    this.yarray.observeDeep(ymapEventArray => {
-      ymapEventArray.forEach((ymap) => {
-        const ymapNested = ymap.target ;
-        const newProperties = {};
-        ymap.changes.keys.forEach((change, key) => {
-          if (change.action === 'add') {
-            // TODO add new properties
-          } else if (change.action === 'update') {
-            newProperties[key] = ymapNested.get(key);
-          } else if (change.action === 'delete') {
-            // TODO delete propertiees
-          }
-        });
-        if (Object.keys(newProperties).length > 0 ) {
-          newProperties['id'] = ymapNested.get('id');
-          this.updateShapes(newProperties);
-        }
-      });
-    });
+
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
@@ -69,20 +65,44 @@ export default class Multiplayer {
     });
   }
   addNode(data) {
-    const ymapNested = new Y.Map();
-    this.doTransact(ymapNested, data);
-    this.yarray.push([ymapNested]);
+    // Add the new element to the process
+    this.createShape(data);
+    // Add the new element to the shared array
+    // this.yArray.push([data]);
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('createElement', stateUpdate);
   }
   createShape(value) {
     this.modeler.handleDropProcedure(value, false);
+    this.#nodeIdGenerator.updateCounters();
+  }
+  createRemoteShape(changes) {
+    return new Promise(resolve => {
+      changes.map((data) => {
+        this.createShape(data);
+      });
+
+      resolve();
+    });
   }
   removeNode(data) {
     const index =  this.getIndex(data.definition.id);
-    this.yarray.delete(index, 1); // delete one element 
+    this.removeShape(data);
+    this.yArray.delete(index, 1); // delete one element
+
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('removeElement', stateUpdate);
   }
   getIndex(id) {
     let index = -1;
-    for (const value of this.yarray) {
+    for (const value of this.yArray) {
       index ++;
       if (value.get('id') === id) {
         break ;
@@ -90,11 +110,13 @@ export default class Multiplayer {
     }
     return index;
   }
-  removeShape() {
-    const nodes = this.getRemovedNodes(this.modeler.nodes, this.yarray.toArray());
-    nodes.forEach((value) => {
-      this.modeler.removeNodeProcedure(value, true);
-    });
+  getNodeById(nodeId) {
+    const node = this.modeler.nodes.find((element) => element.definition && element.definition.id === nodeId);
+
+    return node;
+  }
+  removeShape(node) {
+    this.modeler.removeNodeProcedure(node, true);
   }
   getRemovedNodes(array1, array2) {
     return array1.filter(object1 => {
@@ -110,11 +132,11 @@ export default class Multiplayer {
       this.doTransact(nodeToUpdate, value.properties);
     });
   }
-  doTransact(ymapNested, data) {
-    this.ydoc.transact(() => {
+  doTransact(yMapNested, data) {
+    this.yDoc.transact(() => {
       for (const key in data) {
         if (Object.prototype.hasOwnProperty.call(data, key)) {
-          ymapNested.set(key, data[key]);
+          yMapNested.set(key, data[key]);
         }
       }
     });

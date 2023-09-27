@@ -158,7 +158,7 @@
       />
     </b-row>
 
-    <RemoteCursor 
+    <RemoteCursor
       v-for="player in players"
       :cursor-color="player.color"
       :username="player.name"
@@ -1069,7 +1069,7 @@ export default {
       if (selected) {
         this.highlightNode(newNode);
       }
-      
+
       await this.addNode(newNode, id, selected);
       if (!nodeThatWillBeReplaced) {
         return;
@@ -1087,7 +1087,7 @@ export default {
 
       return newNode;
     },
-    
+
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1106,7 +1106,7 @@ export default {
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator, id); 
+      node.setIds(this.nodeIdGenerator, id);
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
@@ -1128,7 +1128,6 @@ export default {
         // Select the node after it has been added to the store (does not apply to flows)
         this.selectNewNode(node);
       }
-      
 
       return new Promise(resolve => {
         setTimeout(() => {
