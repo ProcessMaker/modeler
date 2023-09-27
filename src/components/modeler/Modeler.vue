@@ -50,6 +50,8 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <WelcomeMessage v-if="showWelcomeMessage"/>
+
       <InspectorButton
         ref="inspector-button"
         v-if="showComponent && showInspectorButton"
@@ -174,6 +176,7 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
+import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -237,6 +240,7 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    WelcomeMessage,
     RemoteCursor,
   },
   props: {
@@ -361,9 +365,11 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-
   },
   computed: {
+    showWelcomeMessage() {
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly;
+    },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
     },
@@ -524,7 +530,7 @@ export default {
     async close() {
       this.$emit('close');
     },
-    async saveBpmn() {
+    async saveBpmn(redirectTo = null) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -533,8 +539,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-
-      this.$emit('saveBpmn', { xml, svg: svgString });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -1213,6 +1218,39 @@ export default {
         });
       });
     },
+    replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
+          const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+          const newNode = await this.handleDrop({
+            clientX, clientY,
+            control: { type: typeToReplaceWith },
+            nodeThatWillBeReplaced: node,
+          });
+
+          if (typeToReplaceWith === 'processmaker-modeler-task') {
+            newNode.definition.screenRef = assetId;  
+            newNode.definition.name = assetName;  
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-script-task') {
+            newNode.definition.scriptRef = assetId;
+            newNode.definition.name = assetName;  
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
+            newNode.definition.name = assetName;
+            newNode.definition.calledElement = `ProcessId-${assetId}`;
+            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":${assetId}}`;
+          }
+          
+          await this.removeNode(node, { removeRelationships: false });
+          this.highlightNode(newNode);
+          this.selectNewNode(newNode);
+          this.saveBpmn(redirectTo);
+        });
+      });
+    },
     replaceGenericFlow({ actualFlow, genericFlow, targetNode }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
@@ -1405,6 +1443,9 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
+    redirect(redirectTo) {
+      window.location = redirectTo;
+    },
     enableMultiplayer() {
       this.isMultiplayer = true;
     },
@@ -1582,6 +1623,16 @@ export default {
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+    });
+
+    this.$root.$on('replace-ai-node', (data) => {
+      this.replaceAiNode(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+      if (redirectUrl) {
+        this.redirect(redirectUrl);
+      }
     });
   },
 };

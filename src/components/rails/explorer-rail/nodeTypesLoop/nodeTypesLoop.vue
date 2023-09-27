@@ -58,6 +58,7 @@ export default {
       <template v-for="object in filteredNodes">
         <div
           class="node-types__item"
+          :class="{'node-types__item__highlight': object.type === 'processmaker-ai-assistant'}"
           :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
@@ -90,6 +91,7 @@ export default {
         <template v-for="pinnedObject in pinnedObjects">
           <div
             class="node-types__item"
+            :class="{'node-types__item__highlight': pinnedObject.type === 'processmaker-ai-assistant'}"
             :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
@@ -113,6 +115,7 @@ export default {
         <template v-for="nodeType in unpinnedObjects">
           <div
             class="node-types__item"
+            :class="{'node-types__item__highlight': nodeType.type === 'processmaker-ai-assistant'}"
             :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
@@ -157,6 +160,9 @@ export default {
     &__icon {
       width: 1.5rem;
       height: 1.5rem;
+    }
+    &__highlight {
+      background-color: #FFF4D3;
     }
     span {
       margin-left: 0.8rem;
