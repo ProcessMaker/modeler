@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.39.8",
+  "version": "1.39.10",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",
@@ -41,6 +41,7 @@
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
     "@processmaker/screen-builder": "2.70.0",
     "@processmaker/vue-form-elements": "0.45.0",
@@ -56,6 +57,7 @@
     "jointjs": "^3.1.1",
     "js-yaml-loader": "^1.2.2",
     "lodash": "^4.17.21",
+    "lodash-contrib": "^4.1200.1",
     "luxon": "^1.21.1",
     "mocha-junit-reporter": "^2.0.0",
     "mustache": "^3.2.1",
@@ -79,7 +81,7 @@
     "@cypress/code-coverage": "^3.11.0",
     "@faker-js/faker": "^8.1.0",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/processmaker-bpmn-moddle": "0.14.0",
+    "@processmaker/processmaker-bpmn-moddle": "0.14.1",
     "@types/jest": "^24.9.1",
     "@vue/babel-preset-app": "^5.0.4",
     "@vue/cli-plugin-babel": "~5.0.0",
@@ -97,7 +99,7 @@
     "bpmnlint-loader": "^0.1.4",
     "circular-dependency-plugin": "^5.2.2",
     "copy-webpack-plugin": "^5.1.1",
-    "cypress": "10.3.0",
+    "cypress": "10.11.0",
     "eslint": "^7.32.0",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^27.2.3",
@@ -120,8 +122,6 @@
     "yargs": "^14.2.3"
   },
   "peerDependencies": {
-    "@fortawesome/fontawesome-free": "^5.11.2",
-    "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
     "@panter/vue-i18next": "^0.15.1",

@@ -3,10 +3,11 @@ import pinIcon from '@/assets/pin-angle.svg';
 import pinFillIcon from '@/assets/pin-angle-fill.svg';
 import nodeTypesStore from '@/nodeTypesStore';
 import clickAndDrop from '@/mixins/clickAndDrop';
+import iconHelper from '@/mixins/iconHelper';
 
 export default {
   name: 'NodeTypesLoop',
-  mixins: [clickAndDrop],
+  mixins: [clickAndDrop, iconHelper],
   data() {
     return {
       pinIcon,
@@ -57,13 +58,15 @@ export default {
       <template v-for="object in filteredNodes">
         <div
           class="node-types__item"
+          :class="{'node-types__item__highlight': object.type === 'processmaker-ai-assistant'}"
           :data-test="object.type"
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
           @click.self="onClickHandler($event, object)"
         >
-          <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
+          <i v-if="!containsSvg(object.icon)" :class="object.icon" class="fa-lg"/>
+          <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
           <span>{{ $t(object.label) }}</span>
           <img
             v-if="nodeTypeAlreadyPinned(object, object.type)"
@@ -88,13 +91,15 @@ export default {
         <template v-for="pinnedObject in pinnedObjects">
           <div
             class="node-types__item"
+            :class="{'node-types__item__highlight': pinnedObject.type === 'processmaker-ai-assistant'}"
             :data-test="pinnedObject.type"
             :key="pinnedObject.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
             @click.stop="onClickHandler($event, pinnedObject)"
           >
-            <img class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
+            <i v-if="!containsSvg(pinnedObject.icon)" :class="pinnedObject.icon" class="fa-lg"/>
+            <img v-else class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
             <span>{{ $t(pinnedObject.label) }}</span>
             <img
               :src="pinFillIcon"
@@ -110,13 +115,15 @@ export default {
         <template v-for="nodeType in unpinnedObjects">
           <div
             class="node-types__item"
+            :class="{'node-types__item__highlight': nodeType.type === 'processmaker-ai-assistant'}"
             :data-test="nodeType.type"
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
             @click.stop="onClickHandler($event, nodeType)"
           >
-            <img class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
+            <i v-if="!containsSvg(nodeType.icon)" :class="nodeType.icon" class="fa-lg"/>
+            <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
             <span>{{ $t(nodeType.label) }}</span>
             <img
               :src="pinIcon"
@@ -153,6 +160,9 @@ export default {
     &__icon {
       width: 1.5rem;
       height: 1.5rem;
+    }
+    &__highlight {
+      background-color: #FFF4D3;
     }
     span {
       margin-left: 0.8rem;

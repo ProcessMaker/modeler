@@ -35,6 +35,11 @@ describe('Boundary event validation', () => {
       .should('have.length', numberOfPortsAroundTask);
 
     getElementAtPosition(taskPosition, nodeTypes.task).click({ force:true });
+    cy.get('body').then($body => {
+      if ($body.find('[data-test="add-boundary-timer-event"]').length <= 0) {
+        cy.get('[data-test="boundary-event-dropdown"]').click({ force:true });
+      }
+    });
 
     const dataTest = nodeTypes.boundaryTimerEvent.replace('processmaker-modeler-', 'add-');
     cy.get(`[data-test="${dataTest}"]`)
