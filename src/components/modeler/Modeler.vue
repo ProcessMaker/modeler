@@ -52,7 +52,6 @@
 
       <WelcomeMessage
         v-if="showWelcomeMessage"
-        :session="session"
       />
 
       <InspectorButton
@@ -277,10 +276,6 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
-      session: {
-        date: '12/12/12',
-        time: '12:12:12',
-      },
       extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,

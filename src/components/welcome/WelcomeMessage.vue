@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!session || Object.keys(session).length === 0"
+    v-if="!promptSessionId || promptSessionId === ''"
     class="message d-flex flex-column w-100 align-items-center"
   >
     <div class="d-flex justify-content-center align-items-center flex-column justify-content-center">
@@ -67,13 +67,41 @@ export default {
   components: {
     InlineSvg,
   },
-  props: ['session'],
   data() {
     return {
       proceC2Icon: require('@/assets/proceC2.svg'),
+      session: {
+        date: '12/12/12',
+        time: '12:12:12',
+      },
+      processId: window.ProcessMaker?.modeler?.process?.id,
     };
   },
+  computed: {
+    promptSessionId() {
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+      let item = promptSessions.find(item => item.processId === this.processId && item.server === window.location.host);
+
+      if (item) {
+        return item.promptSessionId;
+      }
+
+      return '';
+    },
+  },
+  mounted() {
+    if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
+      localStorage.setItem('promptSessions', JSON.stringify([]));
+    }
+  },
   methods: {
+    getPromptSessionForProcess() {
+      
+    },
     redirectToAiProcess() {
       const processId = window.ProcessMaker.modeler.process.id ?? null;
       if (processId) {
