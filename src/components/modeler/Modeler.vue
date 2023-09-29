@@ -530,7 +530,7 @@ export default {
     async close() {
       this.$emit('close');
     },
-    async saveBpmn(redirectTo = null) {
+    async saveBpmn(redirectTo = null, id = null) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -539,7 +539,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -1240,13 +1240,14 @@ export default {
           if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
             newNode.definition.name = assetName;
             newNode.definition.calledElement = `ProcessId-${assetId}`;
-            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":${assetId}}`;
+            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":"${assetName}"}`;
+            redirectTo = `${redirectTo}/${newNode.id}`;
           }
           
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
-          this.saveBpmn(redirectTo);
+          this.saveBpmn(redirectTo, newNode.id);
         });
       });
     },
