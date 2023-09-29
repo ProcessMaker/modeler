@@ -1,5 +1,8 @@
 <template>
-  <div class="message d-flex flex-column w-100 align-items-center">
+  <div
+    v-if="!session || Object.keys(session).length === 0"
+    class="message d-flex flex-column w-100 align-items-center"
+  >
     <div class="d-flex justify-content-center align-items-center flex-column justify-content-center">
       <div class="w-100">
         {{
@@ -8,17 +11,52 @@
       </div>
       <div class="justify-content-center align-items-center w-100 text-center my-4">
         <div class="text-align-center d-flex text-center justify-content-center align-items-center">
-          <div class="hyphen" /> 
-          or 
+          <div class="hyphen" />
+          {{ $t("or") }}
           <div class="hyphen" />
         </div>
       </div>
     </div>
-    <b-button class="new-process-btn d-flex flex-row p-2 align-items-center" @click="redirectToAiProcess()">
+    <b-button
+      class="new-process-btn d-flex flex-row p-2 align-items-center"
+      @click="redirectToAiProcess()"
+    >
       <inline-svg :src="proceC2Icon" class="mx-2 ai-icon" />
       <div class="mr-3">{{ $t("Kick-start a new process with our generative AI") }}</div>
       <span class="fa fa-chevron-right" />
     </b-button>
+  </div>
+  <div
+    v-else
+    class="message d-flex flex-column w-100 align-items-center"
+  >
+    <b-button
+      class="new-process-btn d-flex flex-row px-2 py-4 align-items-center text-capitalize"
+      @click="redirectToAiProcess()"
+    >
+      <div class="d-flex justify-content-between">
+        <inline-svg :src="proceC2Icon" class="mx-3 my-auto ai-icon" />
+        <div class="mr-4 text-left">
+          <div class="h5 m-0">{{ $t("Continue your AI session") }}</div>
+          <div class="text-secondary font-weight-light">
+            {{ $t("Last session") + " " + session.time + " at " + session.date }}
+          </div>
+        </div>
+      </div>
+      <span class="fa fa-chevron-right" />
+    </b-button>
+    <div class="d-flex justify-content-center align-items-center flex-column justify-content-center">
+      <div class="justify-content-center align-items-center w-100 text-center my-4">
+        <div class="text-align-center d-flex text-center justify-content-center align-items-center">
+          <div class="hyphen" />
+          {{ $t("or") }}
+          <div class="hyphen" />
+        </div>
+      </div>
+      <div class="w-100">
+        {{ $t("Click and drop objects to build the process you like.") }}
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -29,6 +67,7 @@ export default {
   components: {
     InlineSvg,
   },
+  props: ['session'],
   data() {
     return {
       proceC2Icon: require('@/assets/proceC2.svg'),
@@ -71,8 +110,8 @@ export default {
   margin: 5px 13px 0px 13px;
 }
 .new-process-btn {
-  color: #0872C2;
-  border-color: #0872C2;
+  color: #0872c2;
+  border-color: #0872c2;
   background-color: #ffffff;
   box-shadow: 0 3px 9px -3px #c2c2c2;
 }
@@ -81,6 +120,11 @@ export default {
   background-color: #edf7ff;
   color: #0872C2;
   border-color: #0872C2;
+}
+
+.ai-icon {
+  width: 22px;
+  height: 22px;
 }
 
 .ai-icon {

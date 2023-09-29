@@ -50,7 +50,10 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
-      <WelcomeMessage v-if="showWelcomeMessage"/>
+      <WelcomeMessage
+        v-if="showWelcomeMessage"
+        :session="session"
+      />
 
       <InspectorButton
         ref="inspector-button"
@@ -274,6 +277,10 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      session: {
+        date: '12/12/12',
+        time: '12:12:12',
+      },
       extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,
