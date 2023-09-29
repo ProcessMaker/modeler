@@ -85,7 +85,7 @@ export default class Multiplayer {
     });
 
     // Listen for updates when a element is updated
-    this.clientIO.on('updateElement', async(payload) => {
+    this.clientIO.on('updateElement', (payload) => {
       const { updateDoc, updatedNodes } = payload;
 
       // Update the elements in the process
