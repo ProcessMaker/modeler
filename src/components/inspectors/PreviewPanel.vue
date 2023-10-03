@@ -72,7 +72,7 @@ import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
 
 export default {
   props: ['nodeRegistry', 'visible'],
-  components: {NoPreviewAvailable},
+  components: { NoPreviewAvailable },
   data() {
     return {
       data: {},

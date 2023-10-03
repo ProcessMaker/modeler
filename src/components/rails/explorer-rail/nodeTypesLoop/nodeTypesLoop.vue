@@ -3,10 +3,11 @@ import pinIcon from '@/assets/pin-angle.svg';
 import pinFillIcon from '@/assets/pin-angle-fill.svg';
 import nodeTypesStore from '@/nodeTypesStore';
 import clickAndDrop from '@/mixins/clickAndDrop';
+import iconHelper from '@/mixins/iconHelper';
 
 export default {
   name: 'NodeTypesLoop',
-  mixins: [clickAndDrop],
+  mixins: [clickAndDrop, iconHelper],
   data() {
     return {
       pinIcon,
@@ -64,7 +65,8 @@ export default {
           @mouseleave="showPin = false"
           @click.self="onClickHandler($event, object)"
         >
-          <img class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
+          <i v-if="!containsSvg(object.icon)" :class="object.icon" class="fa-lg"/>
+          <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
           <span>{{ $t(object.label) }}</span>
           <img
             v-if="nodeTypeAlreadyPinned(object, object.type)"
@@ -96,7 +98,8 @@ export default {
             @mouseleave="showPin = false"
             @click.stop="onClickHandler($event, pinnedObject)"
           >
-            <img class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
+            <i v-if="!containsSvg(pinnedObject.icon)" :class="pinnedObject.icon" class="fa-lg"/>
+            <img v-else class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
             <span>{{ $t(pinnedObject.label) }}</span>
             <img
               :src="pinFillIcon"
@@ -119,7 +122,8 @@ export default {
             @mouseleave="showPin = false"
             @click.stop="onClickHandler($event, nodeType)"
           >
-            <img class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
+            <i v-if="!containsSvg(nodeType.icon)" :class="nodeType.icon" class="fa-lg"/>
+            <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
             <span>{{ $t(nodeType.label) }}</span>
             <img
               :src="pinIcon"

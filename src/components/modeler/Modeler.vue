@@ -159,15 +159,6 @@
         :isMultiplayer="isMultiplayer"
       />
     </b-row>
-
-    <RemoteCursor 
-      v-for="player in players"
-      :cursor-color="player.color"
-      :username="player.name"
-      :key="player.id"
-      :top="player.top"
-      :left="player.left"
-    />
   </span>
 </template>
 
@@ -231,6 +222,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
+import Multiplayer from '@/multiplayer/multiplayer';
 
 export default {
   components: {
@@ -729,6 +721,7 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+      nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
     },
     registerPmBlock(pmBlockNode, customParser) {
       const defaultParser = () => pmBlockNode.id;
@@ -1035,7 +1028,7 @@ export default {
       });
     },
     handleDrop(data) {
-      const { clientX, clientY, control} = data;
+      const { clientX, clientY, control } = data;
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
           clientX,
@@ -1070,7 +1063,7 @@ export default {
       if (selected) {
         this.highlightNode(newNode);
       }
-      
+
       await this.addNode(newNode, id, selected);
       if (!nodeThatWillBeReplaced) {
         return;
@@ -1088,7 +1081,7 @@ export default {
 
       return newNode;
     },
-    
+
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1107,7 +1100,7 @@ export default {
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator, id); 
+      node.setIds(this.nodeIdGenerator, id);
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
@@ -1129,7 +1122,6 @@ export default {
         // Select the node after it has been added to the store (does not apply to flows)
         this.selectNewNode(node);
       }
-      
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1230,13 +1222,13 @@ export default {
           });
 
           if (typeToReplaceWith === 'processmaker-modeler-task') {
-            newNode.definition.screenRef = assetId;  
-            newNode.definition.name = assetName;  
+            newNode.definition.screenRef = assetId;
+            newNode.definition.name = assetName;
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-script-task') {
             newNode.definition.scriptRef = assetId;
-            newNode.definition.name = assetName;  
+            newNode.definition.name = assetName;
           }
 
           if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
@@ -1245,7 +1237,7 @@ export default {
             newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":"${assetName}"}`;
             redirectTo = `${redirectTo}/${newNode.id}`;
           }
-          
+
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
@@ -1448,8 +1440,18 @@ export default {
     redirect(redirectTo) {
       window.location = redirectTo;
     },
-    enableMultiplayer() {
-      this.isMultiplayer = true;
+    enableMultiplayer(value) {
+      this.isMultiplayer = value;
+    },
+    addPlayer(player) {
+      this.players.push(player);
+    },
+    removePlayer(playerId) {
+      const playerIndex = this.players.findIndex(player => player.id === playerId);
+
+      if (playerIndex !== -1) {
+        this.players.splice(playerIndex, 1);
+      }
     },
   },
   created() {
@@ -1616,11 +1618,12 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
-        if (this.isMultiplayer) {
-          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
-            modeler: this,
-            callback: this.enableMultiplayer,
-          });
+
+        try {
+          const multiplayer = new Multiplayer(this);
+          multiplayer.init();
+        } catch (error) {
+          console.warn('Could not initialize multiplayer', error);
         }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),

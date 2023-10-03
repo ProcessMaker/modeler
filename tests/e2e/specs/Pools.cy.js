@@ -224,7 +224,7 @@ describe('Pools', { scrollBehavior: false }, () => {
     `;
     assertDownloadedXmlContainsExpected(pool1taskXml);
 
-    cy.get('.paper-container').click('topLeft',{force:true});
+    cy.get('.paper-container').click('topLeft',{ force:true });
     waitToRenderAllShapes();
 
     moveElement(taskPosition, 300, 600, nodeTypes.task);
