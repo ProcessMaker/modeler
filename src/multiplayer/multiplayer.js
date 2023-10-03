@@ -84,6 +84,19 @@ export default class Multiplayer {
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
     });
 
+    // Listen for updates when a element is updated
+    this.clientIO.on('updateElement', (payload) => {
+      const { updateDoc, updatedNodes } = payload;
+
+      // Update the elements in the process
+      updatedNodes.forEach((data) => {
+        this.updateShapes(data);
+      });
+
+      // Update the element in the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
+    });
+
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
@@ -91,6 +104,7 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-updateNodes', ( data ) => {
       this.updateNodes(data);
     });
@@ -159,18 +173,23 @@ export default class Multiplayer {
   updateNodes(data) {
     data.forEach((value) => {
       const index = this.getIndex(value.id);
-      const nodeToUpdate =  this.yarray.get(index);
+      const nodeToUpdate =  this.yArray.get(index);
       this.doTransact(nodeToUpdate, value.properties);
     });
   }
   doTransact(yMapNested, data) {
     this.yDoc.transact(() => {
       for (const key in data) {
-        if (Object.prototype.hasOwnProperty.call(data, key)) {
+        if (Object.hasOwn(data, key)) {
           yMapNested.set(key, data[key]);
         }
       }
     });
+
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('updateElement', stateUpdate);
   }
   updateShapes(data) {
     const { paper } = this.modeler;
