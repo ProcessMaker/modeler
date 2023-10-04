@@ -86,23 +86,17 @@ export default class Multiplayer {
 
     // Listen for updates when a element is updated
     this.clientIO.on('updateElement', (payload) => {
-      const { updateDoc, updatedNodes } = payload;
+      const { updateDoc, updatedNodes, isReplaced } = payload;
 
-      // Update the elements in the process
-      updatedNodes.forEach((data) => {
-        this.updateShapes(data);
-      });
-
-      // Update the element in the shared array
-      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
-    });
-
-    // Listen for updates when an element is replaced
-    this.clientIO.on('replaceElement', async(payload) => {
-      const { updatedNode, updateDoc } = payload;
-
-      // Update the elements in the process
-      this.replaceShape(updatedNode);
+      if (isReplaced) {
+        // Replace the element in the process
+        this.replaceShape(updatedNodes[0]);
+      } else {
+        // Update the elements in the process
+        updatedNodes.forEach((data) => {
+          this.updateShapes(data);
+        });
+      }
 
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
@@ -211,7 +205,7 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
 
-    this.clientIO.emit('replaceElement', stateUpdate);
+    this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: true });
   }
   replaceShape(updatedNode) {
     // Get the node to update
@@ -241,7 +235,7 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    this.clientIO.emit('updateElement', stateUpdate);
+    this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: false });
   }
   updateShapes(data) {
     const { paper } = this.modeler;
