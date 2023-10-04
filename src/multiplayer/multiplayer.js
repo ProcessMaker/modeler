@@ -6,7 +6,6 @@ import { faker } from '@faker-js/faker';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
-import DataAssociation from '@/components/nodes/genericFlow/DataAssociation';
 const BpmnFlows = [
   {
     type: 'processmaker-modeler-text-annotation',
@@ -241,7 +240,6 @@ export default class Multiplayer {
     return null; // Return null if no matching element is found
   }
   addFlow(data) {
-    console.log(data);
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
     this.yArray.push([yMapNested]);
@@ -252,7 +250,6 @@ export default class Multiplayer {
     this.#nodeIdGenerator.updateCounters();
   }
   createFlow(data){
-    console.log(data);
     const { paper } = this.modeler;
     const sourceElem = this.getJointElement(paper.model, data.sourceRefId);
     const targetElem = this.getJointElement(paper.model, data.targetRefId);

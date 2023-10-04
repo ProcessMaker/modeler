@@ -47,7 +47,6 @@ export default {
       if (cellView){
         point = V(this.paper.viewport).toLocalPoint(clientX, clientY);
       }
-      debugger;
       const comingFromDataStoreOrDataObject = this.node.isBpmnType('bpmn:DataStoreReference', 'bpmn:DataObjectReference');
 
       const dataAssociationConfig = comingFromDataStoreOrDataObject
