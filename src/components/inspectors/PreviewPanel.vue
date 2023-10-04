@@ -125,7 +125,6 @@ export default {
   },
   methods: {
     loading() {
-      console.log('loading...');
       this.showSpinner = false;
     },
     prepareData() {
@@ -139,7 +138,6 @@ export default {
       }, {});
 
       this.data = defaultDataTransform(this.highlightedNode);
-      console.log('highlighted y data:', this.highlightedNode, this.data);
       this.taskTitle = this.data?.name;
 
       this.taskTitle = this?.highlightedNode?.definition?.name;
