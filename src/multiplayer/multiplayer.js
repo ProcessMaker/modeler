@@ -97,6 +97,17 @@ export default class Multiplayer {
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
 
+    // Listen for updates when an element is replaced
+    this.clientIO.on('replaceElement', async(payload) => {
+      const { updatedNode, updateDoc } = payload;
+
+      // Update the elements in the process
+      this.replaceShape(updatedNode);
+
+      // Update the element in the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
+    });
+
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
@@ -107,6 +118,10 @@ export default class Multiplayer {
 
     window.ProcessMaker.EventBus.$on('multiplayer-updateNodes', ( data ) => {
       this.updateNodes(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('multiplayer-replaceNode', ({ nodeData, newControl }) => {
+      this.replaceNode(nodeData, newControl);
     });
   }
   addNode(data) {
@@ -176,6 +191,43 @@ export default class Multiplayer {
       const nodeToUpdate =  this.yArray.get(index);
       this.doTransact(nodeToUpdate, value.properties);
     });
+  }
+  replaceNode(nodeData, newControl) {
+    // Get the node to update
+    const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
+    const nodeToUpdate =  this.yArray.get(index);
+    // Update the node id in the nodeData
+    nodeData.id = `node_${this.#nodeIdGenerator.getDefinitionNumber()}`;
+    // Replace the node in the process
+    this.modeler.replaceNodeProcedure(nodeData, true);
+    // Update the node id generator
+    this.#nodeIdGenerator.updateCounters();
+    // Update the node in the shared array
+    this.yDoc.transact(() => {
+      nodeToUpdate.set('control', newControl);
+      nodeToUpdate.set('id', nodeData.id);
+    });
+
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+
+    this.clientIO.emit('replaceElement', stateUpdate);
+  }
+  replaceShape(updatedNode) {
+    // Get the node to update
+    const node = this.getNodeById(updatedNode.oldNodeId);
+    // Update the node id in the nodeData
+    const nodeData = {
+      clientX: updatedNode.clientX,
+      clientY: updatedNode.clientY,
+      control: { type: updatedNode.control.type },
+      nodeThatWillBeReplaced: node,
+      id: updatedNode.id,
+    };
+
+    // Replace the node in the process
+    this.modeler.replaceNodeProcedure(nodeData, true);
+    this.#nodeIdGenerator.updateCounters();
   }
   doTransact(yMapNested, data) {
     this.yDoc.transact(() => {
