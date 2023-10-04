@@ -42,44 +42,50 @@ describe('Recalculations Issues', () => {
     cy.get(taskSelector).eq(1).click();
     cy.get('[id="generic-flow-button"]').click();
     cy.get(taskSelector).eq(0).click();
+    cy.get('[data-type="standard.Link"]>path:nth-child(1)')
+      .should('have.length', 6);
+    let lenList = [];
+    for (let i = 0; i < 3; i++){
+      cy.get('[data-type="standard.Link"]>path:nth-child(1)').eq(i).invoke('attr', 'd')
+        .then(val => {
+          lenList[i] = val;
+          cy.log('This is the coordinates'+ lenList);
+        });
+    }
+    //Step 5: Move any element of the pool
+    const taskPositionM = { x:500, y: 220 };
+    cy.get(taskSelector).first().click().trigger('mousedown',{ force: true });
+    cy.get('.paper-container').trigger('mousemove', taskPositionM);
+    cy.get('.paper-container').trigger('mousemove', taskPositionM);
+    waitToRenderAllShapes();
+    cy.get('.paper-container').trigger('mouseup',taskPositionM);
+    waitToRenderAllShapes();
 
-    cy.get('[data-type="standard.Link"]>path:nth-child(1)').eq(1).invoke('attr', 'd')
-      .then(val => {
-        const positionA = val;
-        cy.log('This is the coordinates'+ positionA);
+    //Step 6: Move the pool
+    poolPosition = { x:300, y: 300 };
+    cy.get(poolSelector).first().click({ force: true });
+    cy.get(poolSelector).first().trigger('mousedown',{ force: true });
+    cy.get('.paper-container').trigger('mousemove', poolPosition);
+    cy.get('.paper-container').trigger('mousemove', poolPosition);
+    waitToRenderAllShapes();
+    cy.get('.paper-container').trigger('mouseup',poolPosition);
+    waitToRenderAllShapes();
 
-        //Step 5: Move any element of the pool
-        const taskPosition = { x:500, y: 220 };
-        cy.get(taskSelector).first().click().trigger('mousedown',{ force: true });
-        cy.get('.paper-container').trigger('mousemove', taskPosition);
-        cy.get('.paper-container').trigger('mousemove', taskPosition);
-        waitToRenderAllShapes();
-        cy.get('.paper-container').trigger('mouseup',taskPosition);
-        waitToRenderAllShapes();
+    //Step 7: Press UNDO button twice
+    cy.get('[data-cy="undo-control"]').click({ force: true });
+    waitToRenderAllShapes();
+    cy.get('[data-cy="undo-control"]').click({ force: true });
+    waitToRenderAllShapes();
 
-        //Step 6: Move the pool
-        poolPosition = { x:300, y: 300 };
-        cy.get(poolSelector).first().click({ force: true });
-        cy.get(poolSelector).first().trigger('mousedown',{ force: true });
-        cy.get('.paper-container').trigger('mousemove', poolPosition);
-        cy.get('.paper-container').trigger('mousemove', poolPosition);
-        waitToRenderAllShapes();
-        cy.get('.paper-container').trigger('mouseup',poolPosition);
-        waitToRenderAllShapes();
-
-        //Step 7: Press UNDO button twice
-        cy.get('[data-cy="undo-control"]').click({ force: true });
-        waitToRenderAllShapes();
-        cy.get('[data-cy="undo-control"]').click({ force: true });
-        waitToRenderAllShapes();
-
-        //Step 8: Verify that connector flow was not moved
-        cy.get('[data-type="standard.Link"]>path:nth-child(1)').eq(2).invoke('attr', 'd')
-          .then(val => {
-            const positionB = val;
-            cy.log('This is the coordinates after moved '+ positionB);
-            expect(positionA).equal(positionB);
-          });
-      });
+    let lenList2 = [];
+    for (let i = 0; i < 3; i++){
+      cy.get('[data-type="standard.Link"]>path:nth-child(1)').eq(i).invoke('attr', 'd')
+        .then(val => {
+          lenList2[i] = val;
+          cy.log('This is the coordinates FINAL '+ lenList2);
+          let isUndoPosition = !lenList2.map(item => lenList.includes(item)).includes(false);
+          expect(isUndoPosition).to.equal(true);
+        });
+    }
   });
 });
