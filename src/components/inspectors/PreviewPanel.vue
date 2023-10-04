@@ -171,7 +171,7 @@ export default {
           clone[prop] = this.data[prop];
         }
       }
-      const nodeData = JSON.stringify(clone);
+      const nodeData = encodeURI(JSON.stringify(clone));
 
       this.previewUrl = previewConfig ? `${previewConfig.url}?node=${nodeData}` : null;
       this.taskTitle = this?.highlightedNode?.definition?.name;
