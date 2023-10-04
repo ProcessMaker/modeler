@@ -47,7 +47,7 @@
       </b-col>
 
       <InspectorButton
-        v-if="showComponent"
+        v-show="showComponent"
         :showInspector="isOpenInspector"
         @toggleInspector="handleToggleInspector"
       />
