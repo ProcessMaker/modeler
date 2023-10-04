@@ -26,9 +26,18 @@ import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAsso
 import { id } from './config';
 
 const BpmnFlows = [
-  DataOutputAssociation,
-  SequenceFlow,
-  MessageFlow,
+  {
+    type: 'processmaker-modeler-text-annotation',
+    factory: DataOutputAssociation,
+  },
+  {
+    type: 'processmaker-modeler-sequence-flow',
+    factory: SequenceFlow,
+  },
+  {
+    type: 'processmaker-modeler-message-flow',
+    factory: MessageFlow,
+  },
 ];
 
 export default {
@@ -58,7 +67,7 @@ export default {
   computed: {
     isValidConnection() {
       return BpmnFlows.some(FlowClass => {
-        return FlowClass.isValid({
+        return FlowClass.factory.isValid({
           sourceShape: this.sourceShape,
           targetShape: this.target,
           sourceConfig: this.sourceConfig,
@@ -89,18 +98,30 @@ export default {
   },
   methods: {
     completeLink() {
-      const Flow = BpmnFlows.find(FlowClass => {
-        return FlowClass.isValid({
+      const bpmnFlow = BpmnFlows.find(FlowClass => {
+        return FlowClass.factory.isValid({
           sourceShape: this.sourceShape,
           targetShape: this.target,
           sourceConfig: this.sourceConfig,
           targetConfig: this.targetConfig,
         });
       });
-      const flow = new Flow(this.nodeRegistry, this.moddle, this.paper);
+      const flow = new bpmnFlow.factory(this.nodeRegistry, this.moddle, this.paper);
       const genericLink = this.shape.findView(this.paper);
+      const waypoint =  [genericLink.sourceAnchor.toJSON(), genericLink.targetAnchor.toJSON()];
+      // Multiplayer hook
+      if (this.$parent.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+          type: bpmnFlow.type,
+          id: `node_${this.$parent.nodeIdGenerator.getDefinitionNumber()}`,
+          sourceRefId: this.sourceNode.definition.id,
+          targetRefId: this.targetNode.definition.id,
+          waypoint,
+        });
+      }
+
       this.$emit('replace-generic-flow', {
-        actualFlow: flow.makeFlowNode(this.sourceShape, this.target, genericLink),
+        actualFlow: flow.makeFlowNode(this.sourceShape, this.target, waypoint),
         genericFlow: this.node,
         targetNode: get(this.target, 'component.node'),
       });
