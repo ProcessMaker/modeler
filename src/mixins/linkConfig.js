@@ -239,6 +239,21 @@ export default {
         if (this.updateDefinitionLinks) {
           this.updateDefinitionLinks();
         }
+        // console.log(this);
+        if (this.shape.component.node.type === 'processmaker-modeler-data-input-association') {
+          // console.log(this.node);
+          if (this.$parent.isMultiplayer) {
+            const genericLink = this.shape.findView(this.paper);
+            const waypoint =  [genericLink.sourceAnchor.toJSON(), genericLink.targetAnchor.toJSON()];
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+              type: this.shape.component.node.type,
+              id: `node_${this.$parent.nodeIdGenerator.getDefinitionNumber()}`,
+              sourceRefId: this.sourceNode.definition.id,
+              targetRefId: this.targetNode.definition.id,
+              waypoint,
+            });
+          }
+        }
 
         this.$emit('save-state');
       });
