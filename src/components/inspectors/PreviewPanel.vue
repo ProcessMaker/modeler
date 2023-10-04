@@ -75,8 +75,8 @@
       </svg>
     </div>
 
-    <no-preview-available v-show="previewUrl === null"/>
-    <iframe v-show="previewUrl !== null && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border:0px none;" @load="loading"/>
+    <no-preview-available v-show="!previewUrl"/>
+    <iframe title="Preview" v-show="!!previewUrl && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border:0px none;" @load="loading"/>
   </b-col>
 
 </template>
