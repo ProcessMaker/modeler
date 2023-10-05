@@ -308,6 +308,7 @@ export default class Multiplayer {
       const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
       // add Nodes
       this.modeler.addNode(actualFlow, data.id);
+      this.#nodeIdGenerator.updateCounters();
     }
 
   }
