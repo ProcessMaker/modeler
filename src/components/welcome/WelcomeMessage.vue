@@ -13,7 +13,12 @@
               {{ $t('Last session by:') }}
               <avatar-image class="ml-2 mr-1 d-flex align-items-center" size="18" :input-data="lastSession" hide-name="true"/> {{ aiProcessButtonSubtitle }}
             </div>
-            <div v-else>{{ aiProcessButtonSubtitle }}</div>
+            <div v-else>
+              <span v-if="aiProcessButtonSubtitle">
+                <i class="fa fa-spinner fa-spin"/>
+              </span>
+              <span>{{ aiProcessButtonSubtitle }}</span>
+            </div>
             
           </div>
         </div>
@@ -75,6 +80,11 @@ export default {
       if (!this.promptSessionId || this.promptSessionId === '') {
         return this.$t('Kick-start an AI generated process');
       }
+
+      if (this.lastSession.firstname === undefined) {
+        return null;
+      }
+
       return `${this.lastSession.firstname} ${this.lastSession.lastnameInitials}. | ${this.formatDateTime(this.lastSession.requestDate)}`;
     },
   },
