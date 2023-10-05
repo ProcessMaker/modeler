@@ -18,7 +18,7 @@ export default class Flow {
   }
 
   // eslint-disable-next-line no-unused-vars
-  makeFlowNode(sourceShape, targetShape, genericLink) {
+  makeFlowNode(sourceShape, targetShape, waypoint) {
     throw new Error('Best practice is to implement \'makeFlowDefinition\' in each class');
   }
 

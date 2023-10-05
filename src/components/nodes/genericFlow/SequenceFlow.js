@@ -21,17 +21,14 @@ export default class SequenceFlow extends Flow {
       !DataAssociation.isADataNode(targetNode);
   }
 
-  makeFlowNode(sourceShape, targetShape, genericLink) {
+  makeFlowNode(sourceShape, targetShape, waypoint) {
     const diagram = this.nodeRegistry['processmaker-modeler-sequence-flow'].diagram(this.moddle);
     const sequenceFlowDefinition = this.nodeRegistry['processmaker-modeler-sequence-flow'].definition(this.moddle, this.$t);
 
     sequenceFlowDefinition.set('sourceRef', sourceShape.component.node.definition);
     sequenceFlowDefinition.set('targetRef', targetShape.component.node.definition);
 
-    const start = genericLink.sourceAnchor;
-    const end = genericLink.targetAnchor;
-
-    diagram.waypoint = [start, end].map(point => this.moddle.create('dc:Point', point));
+    diagram.waypoint = waypoint.map(point => this.moddle.create('dc:Point', point));
 
     if (
       sequenceFlowDefinition.sourceRef.$type === 'bpmn:ExclusiveGateway' ||
