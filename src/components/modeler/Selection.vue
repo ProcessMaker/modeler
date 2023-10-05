@@ -585,15 +585,21 @@ export default {
     },
     getProperties() {
       const changed = [];
-      this.selected.forEach(function(item) {
-        changed.push({
-          id: item.model.component.node.definition.id,
-          properties: {
-            clientX: item.model.get('position').x,
-            clientY: item.model.get('position').y,
-          },
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
+      ];
+      this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          changed.push({
+            id: shape.model.component.node.definition.id,
+            properties: {
+              clientX: shape.model.get('position').x,
+              clientY: shape.model.get('position').y,
+            },
+          });
         });
-      });
       return changed;
     },
     /**

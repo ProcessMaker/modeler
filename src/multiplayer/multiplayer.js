@@ -3,7 +3,27 @@ import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
 import { faker } from '@faker-js/faker';
-
+import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
+import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
+import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
+const BpmnFlows = [
+  {
+    type: 'processmaker-modeler-text-annotation',
+    factory: DataOutputAssociation,
+  },
+  {
+    type: 'processmaker-modeler-sequence-flow',
+    factory: SequenceFlow,
+  },
+  {
+    type: 'processmaker-modeler-message-flow',
+    factory: MessageFlow,
+  },
+  {
+    type: 'processmaker-modeler-data-input-association',
+    factory: DataOutputAssociation,
+  },
+];
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -105,7 +125,6 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
-
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
@@ -116,6 +135,10 @@ export default class Multiplayer {
 
     window.ProcessMaker.EventBus.$on('multiplayer-replaceNode', ({ nodeData, newControl }) => {
       this.replaceNode(nodeData, newControl);
+    });
+
+    window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
+      this.addFlow(data);
     });
   }
   addNode(data) {
@@ -136,11 +159,20 @@ export default class Multiplayer {
     this.#nodeIdGenerator.updateCounters();
   }
   createRemoteShape(changes) {
+    const flows = [
+      'processmaker-modeler-sequence-flow',
+      'processmaker-modeler-text-annotation',
+      'processmaker-modeler-message-flow',
+      'processmaker-modeler-data-input-association',
+    ];
     return new Promise(resolve => {
       changes.map((data) => {
-        this.createShape(data);
+        if (flows.includes(data.type)) {
+          this.createFlow(data);
+        } else {
+          this.createShape(data);
+        }
       });
-
       resolve();
     });
   }
@@ -253,5 +285,30 @@ export default class Multiplayer {
       }
     }
     return null; // Return null if no matching element is found
+  }
+  addFlow(data) {
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('createElement', stateUpdate);
+    this.#nodeIdGenerator.updateCounters();
+  }
+  createFlow(data){
+    const { paper } = this.modeler;
+    const sourceElem = this.getJointElement(paper.model, data.sourceRefId);
+    const targetElem = this.getJointElement(paper.model, data.targetRefId);
+    if (sourceElem && targetElem) {
+      const bpmnFlow = BpmnFlows.find(FlowClass => {
+        return FlowClass.type === data.type;
+      });
+      const flow = new bpmnFlow.factory(this.modeler.nodeRegistry, this.modeler.moddle, this.modeler.paper);
+      const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
+      // add Nodes
+      this.modeler.addNode(actualFlow, data.id);
+    }
+
   }
 }

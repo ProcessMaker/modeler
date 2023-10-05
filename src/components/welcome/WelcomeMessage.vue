@@ -6,14 +6,19 @@
     >
       <div class="d-flex justify-content-between">
         <inline-svg :src="proceC2Icon" class="mx-3 my-auto ai-icon" />
-        <div class="mr-4 text-left">
+        <div class="mr-2 text-left">
           <div class="h5 m-0">{{ aiProcessButtonTitle }}</div>
           <div class="text-secondary font-weight-light small">
-            {{ aiProcessButtonSubtitle }}
+            <div v-if="processId" class="d-flex align-items-center">
+              {{ $t('Last session by:') }}
+              <avatar-image class="ml-2 mr-1 d-flex align-items-center" size="18" :input-data="lastSession" hide-name="true"/> {{ aiProcessButtonSubtitle }}
+            </div>
+            <div v-else>{{ aiProcessButtonSubtitle }}</div>
+            
           </div>
         </div>
       </div>
-      <span class="fa fa-chevron-right" />
+      <span class="fa fa-chevron-right mx-3" />
     </b-button>
     <div class="d-flex justify-content-center align-items-center flex-column justify-content-center">
       <div class="justify-content-center align-items-center w-100 text-center my-4">
@@ -40,11 +45,8 @@ export default {
   data() {
     return {
       proceC2Icon: require('@/assets/proceC2.svg'),
-      session: {
-        date: '12/12/12',
-        time: '12:12:12',
-        username: 'admin',
-      },
+      lastSession: {},
+      history: [],
       processId: window.ProcessMaker?.modeler?.process?.id,
     };
   },
@@ -73,24 +75,62 @@ export default {
       if (!this.promptSessionId || this.promptSessionId === '') {
         return this.$t('Kick-start an AI generated process');
       }
-      return this.$t('Last session by:') + ' ' + this.session.username + ' | ' + this.session.date + ' | ' + this.session.time;
+      return `${this.lastSession.firstname} ${this.lastSession.lastnameInitials}. | ${this.formatDateTime(this.lastSession.request_date)}`;
     },
   },
   mounted() {
     if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
       localStorage.setItem('promptSessions', JSON.stringify([]));
     }
+
+    if (this.promptSessionId && this.promptSessionId !== '') {
+      this.getLastSharedHistory();
+    }
   },
   methods: {
-    getPromptSessionForProcess() {
-      
-    },
     redirectToAiProcess() {
       const processId = window.ProcessMaker.modeler.process.id ?? null;
       if (processId) {
         const url = `/package-ai/processes/create/${processId}/${processId}`;
         window.location = url;
       }
+    },
+    getLastSharedHistory() {
+      const url = '/package-ai/getLastSharedSessionHistory';
+
+      const params = {  
+        sharedSessionId: this.promptSessionId,
+      };
+
+      window.ProcessMaker.apiClient.post(url, params)
+        .then(response => {
+          this.$set(this.lastSession, 'request_date', response.data.request_date);
+          this.$set(this.lastSession, 'firstname', response.data.firstname);
+          this.$set(this.lastSession, 'lastname', response.data.lastname);
+          this.$set(this.lastSession, 'lastnameInitials', response.data.lastnameInitials);
+          this.$set(this.lastSession, 'avatar', response.data.avatar);
+        }).catch((error) => {
+          const errorMsg = error.response?.data?.message || error.message;
+          this.loading = false;
+          window.ProcessMaker.alert(errorMsg, 'danger');
+        });
+    },
+    formatDateTime(value) {
+      let config = '';
+      if (
+        typeof window.ProcessMaker !== 'undefined' && 
+        window.ProcessMaker.user && 
+        window.ProcessMaker.user.datetime_format
+      ) {
+        config = window.ProcessMaker.user.datetime_format;
+      }
+      if (value) {
+        if (window.moment(value).isValid()) {
+          return window.moment(value).format(config);
+        }
+        return value;
+      }
+      return 'n/a';
     },
   },
 };

@@ -1149,9 +1149,8 @@ export default {
       if (this.isMultiplayer && !options?.isReplaced) {
         // Emit event to server to remove node
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
-      } else  {
-        this.removeNodeProcedure(node, options);
       }
+      this.removeNodeProcedure(node, options);
     },
     async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
