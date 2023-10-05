@@ -61,7 +61,7 @@
     </b-row>
 
     <div id="spinner" class="row justify-content-center" v-if="showSpinner">
-      <img :src="spinner">
+      <img alt="spinner" :src="spinner">
     </div>
 
     <no-preview-available v-show="!previewUrl"/>
