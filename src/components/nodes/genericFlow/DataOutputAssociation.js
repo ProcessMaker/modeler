@@ -68,17 +68,14 @@ export default class DataOutputAssociation extends DataAssociation {
     return (targetIsDataObject && dataObjectValidSources.includes(sourceType));
   }
 
-  makeFlowNode(sourceShape, targetShape, genericLink) {
+  makeFlowNode(sourceShape, targetShape, waypoint) {
     const diagram = dataOutputConfig.diagram(this.moddle);
     const dataOutputAssociation = dataOutputConfig.definition(this.moddle);
 
     dataOutputAssociation.set('sourceRef', sourceShape.component.node.definition);
     dataOutputAssociation.set('targetRef', targetShape.component.node.definition);
 
-    const start = genericLink.sourceAnchor;
-    const end = genericLink.targetAnchor;
-
-    diagram.waypoint = [start, end].map(point => this.moddle.create('dc:Point', point));
+    diagram.waypoint = waypoint.map(point => this.moddle.create('dc:Point', point));
 
     const node = new Node(
       dataOutputConfig.id,
