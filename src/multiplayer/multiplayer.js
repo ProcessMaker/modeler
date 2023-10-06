@@ -106,12 +106,17 @@ export default class Multiplayer {
 
     // Listen for updates when a element is updated
     this.clientIO.on('updateElement', (payload) => {
-      const { updateDoc, updatedNodes } = payload;
+      const { updateDoc, updatedNodes, isReplaced } = payload;
 
-      // Update the elements in the process
-      updatedNodes.forEach((data) => {
-        this.updateShapes(data);
-      });
+      if (isReplaced) {
+        // Replace the element in the process
+        this.replaceShape(updatedNodes[0]);
+      } else {
+        // Update the elements in the process
+        updatedNodes.forEach((data) => {
+          this.updateShapes(data);
+        });
+      }
 
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
@@ -127,6 +132,11 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-updateNodes', ( data ) => {
       this.updateNodes(data);
     });
+
+    window.ProcessMaker.EventBus.$on('multiplayer-replaceNode', ({ nodeData, newControl }) => {
+      this.replaceNode(nodeData, newControl);
+    });
+
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
       this.addFlow(data);
     });
@@ -208,6 +218,43 @@ export default class Multiplayer {
       this.doTransact(nodeToUpdate, value.properties);
     });
   }
+  replaceNode(nodeData, newControl) {
+    // Get the node to update
+    const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
+    const nodeToUpdate =  this.yArray.get(index);
+    // Update the node id in the nodeData
+    nodeData.id = `node_${this.#nodeIdGenerator.getDefinitionNumber()}`;
+    // Replace the node in the process
+    this.modeler.replaceNodeProcedure(nodeData, true);
+    // Update the node id generator
+    this.#nodeIdGenerator.updateCounters();
+    // Update the node in the shared array
+    this.yDoc.transact(() => {
+      nodeToUpdate.set('control', newControl);
+      nodeToUpdate.set('id', nodeData.id);
+    });
+
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+
+    this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: true });
+  }
+  replaceShape(updatedNode) {
+    // Get the node to update
+    const node = this.getNodeById(updatedNode.oldNodeId);
+    // Update the node id in the nodeData
+    const nodeData = {
+      clientX: updatedNode.clientX,
+      clientY: updatedNode.clientY,
+      control: { type: updatedNode.control.type },
+      nodeThatWillBeReplaced: node,
+      id: updatedNode.id,
+    };
+
+    // Replace the node in the process
+    this.modeler.replaceNodeProcedure(nodeData, true);
+    this.#nodeIdGenerator.updateCounters();
+  }
   doTransact(yMapNested, data) {
     this.yDoc.transact(() => {
       for (const key in data) {
@@ -220,7 +267,7 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    this.clientIO.emit('updateElement', stateUpdate);
+    this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: false });
   }
   updateShapes(data) {
     const { paper } = this.modeler;
@@ -261,7 +308,8 @@ export default class Multiplayer {
       const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
       // add Nodes
       this.modeler.addNode(actualFlow, data.id);
+      this.#nodeIdGenerator.updateCounters();
     }
-    
+
   }
 }
