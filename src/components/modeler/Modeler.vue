@@ -309,6 +309,7 @@ export default {
       isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
+      isLoaded: false,
       allWarnings: [],
       nodeTypes: [],
       pmBlockNodes: [],
@@ -348,6 +349,8 @@ export default {
       });
       document.body.style.cursor = 'auto';
       this.cursor = null;
+
+      this.isLoaded = true;
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -364,7 +367,7 @@ export default {
   },
   computed: {
     showWelcomeMessage() {
-      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly;
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
     },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;

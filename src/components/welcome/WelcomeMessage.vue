@@ -9,11 +9,16 @@
         <div class="mr-2 text-left">
           <div class="h5 m-0">{{ aiProcessButtonTitle }}</div>
           <div class="text-secondary font-weight-light small">
-            <div v-if="processId" class="d-flex align-items-center">
+            <div v-if="(this.promptSessionId && this.promptSessionId !== '')" class="d-flex align-items-center">
               {{ $t('Last session by:') }}
               <avatar-image class="ml-2 mr-1 d-flex align-items-center" size="18" :input-data="lastSession" hide-name="true"/> {{ aiProcessButtonSubtitle }}
             </div>
-            <div v-else>{{ aiProcessButtonSubtitle }}</div>
+            <div v-else>
+              <span v-if="showSessionLoader">
+                <i class="fa fa-spinner fa-spin"/>
+              </span>
+              <span>{{ aiProcessButtonSubtitle }}</span>
+            </div>
             
           </div>
         </div>
@@ -65,6 +70,13 @@ export default {
 
       return '';
     },
+    showSessionLoader() {
+      if (!(!this.promptSessionId || this.promptSessionId === '') && this.lastSession.firstname === undefined) {
+        return true;
+      }
+
+      return false;
+    },
     aiProcessButtonTitle() {
       if (!this.promptSessionId || this.promptSessionId === '') {
         return this.$t('Create a process with AI');
@@ -75,7 +87,8 @@ export default {
       if (!this.promptSessionId || this.promptSessionId === '') {
         return this.$t('Kick-start an AI generated process');
       }
-      return `${this.lastSession.firstname} ${this.lastSession.lastnameInitials}. | ${this.formatDateTime(this.lastSession.request_date)}`;
+
+      return `${this.lastSession.firstname} ${this.lastSession.lastnameInitials}. | ${this.formatDateTime(this.lastSession.requestDate)}`;
     },
   },
   mounted() {
@@ -104,7 +117,7 @@ export default {
 
       window.ProcessMaker.apiClient.post(url, params)
         .then(response => {
-          this.$set(this.lastSession, 'request_date', response.data.request_date);
+          this.$set(this.lastSession, 'requestDate', response.data.requestDate);
           this.$set(this.lastSession, 'firstname', response.data.firstname);
           this.$set(this.lastSession, 'lastname', response.data.lastname);
           this.$set(this.lastSession, 'lastnameInitials', response.data.lastnameInitials);
