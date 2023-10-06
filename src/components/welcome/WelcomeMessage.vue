@@ -14,7 +14,7 @@
               <avatar-image class="ml-2 mr-1 d-flex align-items-center" size="18" :input-data="lastSession" hide-name="true"/> {{ aiProcessButtonSubtitle }}
             </div>
             <div v-else>
-              <span v-if="aiProcessButtonSubtitle">
+              <span v-if="showSessionLoader">
                 <i class="fa fa-spinner fa-spin"/>
               </span>
               <span>{{ aiProcessButtonSubtitle }}</span>
@@ -70,6 +70,13 @@ export default {
 
       return '';
     },
+    showSessionLoader() {
+      if (!(!this.promptSessionId || this.promptSessionId === '') && this.lastSession.firstname === undefined) {
+        return true;
+      }
+
+      return false;
+    },
     aiProcessButtonTitle() {
       if (!this.promptSessionId || this.promptSessionId === '') {
         return this.$t('Create a process with AI');
@@ -79,10 +86,6 @@ export default {
     aiProcessButtonSubtitle() {
       if (!this.promptSessionId || this.promptSessionId === '') {
         return this.$t('Kick-start an AI generated process');
-      }
-
-      if (this.lastSession.firstname === undefined) {
-        return null;
       }
 
       return `${this.lastSession.firstname} ${this.lastSession.lastnameInitials}. | ${this.formatDateTime(this.lastSession.requestDate)}`;
