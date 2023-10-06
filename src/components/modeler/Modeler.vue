@@ -67,6 +67,7 @@
         @previewResize="setInspectorButtonPosition"
         :visible="isOpenPreview"
         :nodeRegistry="nodeRegistry"
+        :previewConfigs="previewConfigs"
       />
 
       <InspectorPanel
@@ -327,6 +328,7 @@ export default {
       players: [],
       showInspectorButton: true,
       inspectorButtonRight: 65,
+      previewConfigs: [],
       multiplayer: null,
       isMultiplayer: false,
     };
@@ -388,6 +390,9 @@ export default {
     showComponent: () => store.getters.showComponent,
   },
   methods: {
+    registerPreview(config) {
+      this.previewConfigs.push(config);
+    },
     handleToolbarAction(action) {
       if (action.handler instanceof Function) {
         action.handler(this);
@@ -397,8 +402,8 @@ export default {
       this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
     },
-    handlePreview(node) {
-      this.$refs['preview-panel'].previewNode(node);
+    handlePreview() {
+      this.$refs['preview-panel'].previewNode(true);
       this.handleTogglePreview(true) ;
     },
     handleTogglePreview(value) {
@@ -1510,6 +1515,7 @@ export default {
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
       registerPmBlock: this.registerPmBlock,
+      registerPreview: this.registerPreview,
     });
 
     this.moddle = new BpmnModdle(this.extensions);

@@ -57,11 +57,15 @@
     </b-row>
 
     <b-row>
-      <div class="item-title"> {{ screenTitle }} </div>
       <div class="task-title"> {{ taskTitle }} </div>
     </b-row>
 
-    <no-preview-available/>
+    <div id="spinner" class="row justify-content-center" v-if="showSpinner">
+      <img alt="spinner" :src="spinner">
+    </div>
+
+    <no-preview-available v-show="!previewUrl"/>
+    <iframe title="Preview" v-show="!!previewUrl && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border: none;" @load="loading"/>
   </b-col>
 
 </template>
@@ -71,20 +75,28 @@ import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
 
 export default {
-  props: ['nodeRegistry', 'visible'],
+  props: ['nodeRegistry', 'visible', 'previewConfigs'],
   components: { NoPreviewAvailable },
   data() {
     return {
       data: {},
+      previewUrl: null,
+      showSpinner: false,
+      spinner: require('@/assets/spiner.svg'),
       selectedPreview: '1',
       taskTitle: '',
-      screenTitle: '',
-      width: 400,
+      itemTitle: '',
+      width: 600,
       isDragging: false,
-      currentPos: 400,
+      currentPos: 600,
     };
   },
   watch: {
+    previewUrl(value, oldValue) {
+      if (value !== oldValue) {
+        this.showSpinner = true;
+      }
+    },
     highlightedNode() {
       document.activeElement.blur();
       this.prepareData();
@@ -102,12 +114,24 @@ export default {
     },
   },
   methods: {
+    loading() {
+      this.showSpinner = false;
+    },
     prepareData() {
       if (!this.highlightedNode) {
         return {};
       }
 
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
+        return data;
+      }, {});
+
+      this.data = defaultDataTransform(this.highlightedNode);
+      this.taskTitle = this.data?.name;
+
       this.taskTitle = this?.highlightedNode?.definition?.name;
+      this.previewNode();
     },
 
     handleAssignmentChanges(currentValue, previousValue) {
@@ -120,8 +144,25 @@ export default {
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
-    previewNode(node) {
-      this.taskTitle = node?.name;
+    previewNode(force = false) {
+      if (!this.highlightedNode || (!this.visible && !force)) {
+        return;
+      }
+
+      const previewConfig = this.previewConfigs.find(config => {
+        return config.matcher(this.data);
+      });
+
+      let clone = {};
+      for (let prop in this.data) {
+        if ((previewConfig?.receivingParams ?? []).includes(prop)) {
+          clone[prop] = this.data[prop];
+        }
+      }
+      const nodeData = encodeURI(JSON.stringify(clone));
+
+      this.previewUrl = previewConfig ? `${previewConfig.url}?node=${nodeData}` : null;
+      this.taskTitle = this.highlightedNode?.definition?.name;
       this.showPanel = true;
     },
     onClose() {
