@@ -32,10 +32,8 @@
   "module": "./dist/modeler.es.js",
   "exports": {
     ".": {
-      "import": {
-        "import": "./dist/modeler.es.js",
-        "require": "./dist/modeler.umd.js"
-      }
+      "import": "./dist/modeler.es.js",
+      "require": "./dist/modeler.umd.js"
     }
   },
   "files": [
