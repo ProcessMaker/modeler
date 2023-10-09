@@ -1036,19 +1036,9 @@ export default {
       });
     },
     handleDrop(data) {
-      const { clientX, clientY, control } = data;
-      if (this.isMultiplayer) {
-        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
-          clientX,
-          clientY,
-          control,
-          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
-        });
-      } else  {
-        this.handleDropProcedure(data);
-      }
+      this.handleDropProcedure(data);
     },
-    async handleDropProcedure(data, selected=true) {
+    async handleDropProcedure(data, fromClient = false, selected = true) {
       const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
@@ -1072,7 +1062,7 @@ export default {
         this.highlightNode(newNode);
       }
 
-      await this.addNode(newNode, id, selected);
+      await this.addNode(newNode, id, fromClient, selected);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -1101,7 +1091,7 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node, id = null, selected = true) {
+    async addNode(node, id = null, fromClient = false, selected = true) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
@@ -1109,7 +1099,29 @@ export default {
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
       node.setIds(this.nodeIdGenerator, id);
-
+      // Multiplayer hook
+      if (this.isMultiplayer && !fromClient && node.type !== 'processmaker-modeler-generic-flow') {
+        if (node.type==='processmaker-modeler-sequence-flow') {
+          const genericLink = this.nodes.find(node => node.type === 'processmaker-modeler-generic-flow');
+          const waypoint =  genericLink.diagram.waypoint;
+          window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+            type: node.type,
+            id: node.definition.id,
+            sourceRefId: node.definition.sourceRef.id,
+            targetRefId: node.definition.targetRef.id,
+            waypoint,
+          });
+        } else {
+          window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
+            x: node.diagram.bounds.x,
+            y: node.diagram.bounds.y,
+            width: node.diagram.bounds.width,
+            height: node.diagram.bounds.height,
+            type: node.type,
+            id: node.definition.id,
+          });
+        }
+      }
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
       this.poolTarget = null;
@@ -1208,27 +1220,14 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-
-          const nodeData = {
+          const newNode = await this.handleDropProcedure({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
-          };
-
-          if (this.isMultiplayer) {
-            // Get all node types
-            const nodeTypes = nodeTypesStore.getters.getNodeTypes;
-            // Get the new control
-            const newControl = nodeTypes.flatMap(nodeType => {
-              return nodeType.items?.filter(item => item.type === typeToReplaceWith);
-            }).filter(Boolean);
-            // If the new control is found, emit event to server to replace node
-            if (newControl.length === 1) {
-              window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0] });
-            }
-          } else {
-            await this.replaceNodeProcedure(nodeData);
-          }
+          });      
+          await this.removeNode(node, { removeRelationships: false });
+          this.highlightNode(newNode);
+          this.selectNewNode(newNode);
         });
       });
     },

@@ -123,6 +123,7 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
+      console.log(data);
       this.addNode(data);
     });
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
@@ -133,8 +134,8 @@ export default class Multiplayer {
       this.updateNodes(data);
     });
 
-    window.ProcessMaker.EventBus.$on('multiplayer-replaceNode', ({ nodeData, newControl }) => {
-      this.replaceNode(nodeData, newControl);
+    window.ProcessMaker.EventBus.$on('multiplayer-replaceNode', ({ nodeData, newType }) => {
+      this.replaceNode(nodeData, newType);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
@@ -143,9 +144,6 @@ export default class Multiplayer {
   }
   addNode(data) {
     // Add the new element to the process
-    this.createShape(data);
-    // Add the new element to the shared array
-    // this.yArray.push([data]);
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
     this.yArray.push([yMapNested]);
@@ -155,7 +153,13 @@ export default class Multiplayer {
     this.clientIO.emit('createElement', stateUpdate);
   }
   createShape(value) {
-    this.modeler.handleDropProcedure(value, false);
+    const customValue = { ...value, control: { type: value.type } };
+    const { x: clientX, y: clientY } = this.modeler.paper.localToClientPoint({ x: value.x, y: value.y });
+    
+    customValue.clientX = clientX;
+    customValue.clientY = clientY;
+    console.log(customValue);
+    this.modeler.handleDropProcedure(customValue, true, false);
     this.#nodeIdGenerator.updateCounters();
   }
   createRemoteShape(changes) {
@@ -212,13 +216,14 @@ export default class Multiplayer {
     });
   }
   updateNodes(data) {
+    debugger;
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate =  this.yArray.get(index);
       this.doTransact(nodeToUpdate, value.properties);
     });
   }
-  replaceNode(nodeData, newControl) {
+  replaceNode(nodeData, newType) {
     // Get the node to update
     const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
     const nodeToUpdate =  this.yArray.get(index);
@@ -230,7 +235,7 @@ export default class Multiplayer {
     this.#nodeIdGenerator.updateCounters();
     // Update the node in the shared array
     this.yDoc.transact(() => {
-      nodeToUpdate.set('control', newControl);
+      nodeToUpdate.set('type', newType);
       nodeToUpdate.set('id', nodeData.id);
     });
 
@@ -241,18 +246,21 @@ export default class Multiplayer {
   }
   replaceShape(updatedNode) {
     // Get the node to update
+    debugger;
     const node = this.getNodeById(updatedNode.oldNodeId);
     // Update the node id in the nodeData
+    const { x: clientX, y: clientY } = this.modeler.paper.localToClientPoint({ x: updatedNode.x, y: updatedNode.y });
     const nodeData = {
-      clientX: updatedNode.clientX,
-      clientY: updatedNode.clientY,
-      control: { type: updatedNode.control.type },
+      clientX,
+      clientY,
+      control: { type: updatedNode.type },
       nodeThatWillBeReplaced: node,
       id: updatedNode.id,
     };
 
     // Replace the node in the process
     this.modeler.replaceNodeProcedure(nodeData, true);
+    this.modeler.handleDropProcedure(nodeData, true, false);
     this.#nodeIdGenerator.updateCounters();
   }
   doTransact(yMapNested, data) {
@@ -273,7 +281,7 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.getJointElement(paper.model, data.id);
     // Update the element's position attribute
-    element.set('position', { x:data.clientX, y:data.clientY });
+    element.set('position', { x: data.x, y: data.y });
     // Trigger a rendering of the element on the paper
     paper.findViewByModel(element).update();
   }
@@ -307,7 +315,7 @@ export default class Multiplayer {
       const flow = new bpmnFlow.factory(this.modeler.nodeRegistry, this.modeler.moddle, this.modeler.paper);
       const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
       // add Nodes
-      this.modeler.addNode(actualFlow, data.id);
+      this.modeler.addNode(actualFlow, data.id, true);
       this.#nodeIdGenerator.updateCounters();
     }
 

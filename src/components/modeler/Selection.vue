@@ -595,8 +595,8 @@ export default {
           changed.push({
             id: shape.model.component.node.definition.id,
             properties: {
-              clientX: shape.model.get('position').x,
-              clientY: shape.model.get('position').y,
+              x: shape.model.get('position').x,
+              y: shape.model.get('position').y,
             },
           });
         });
