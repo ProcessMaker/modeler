@@ -123,7 +123,6 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
-      console.log(data);
       this.addNode(data);
     });
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
@@ -158,7 +157,6 @@ export default class Multiplayer {
     
     customValue.clientX = clientX;
     customValue.clientY = clientY;
-    console.log(customValue);
     this.modeler.handleDropProcedure(customValue, true, false);
     this.#nodeIdGenerator.updateCounters();
   }
@@ -216,7 +214,6 @@ export default class Multiplayer {
     });
   }
   updateNodes(data) {
-    debugger;
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate =  this.yArray.get(index);
@@ -246,7 +243,6 @@ export default class Multiplayer {
   }
   replaceShape(updatedNode) {
     // Get the node to update
-    debugger;
     const node = this.getNodeById(updatedNode.oldNodeId);
     // Update the node id in the nodeData
     const { x: clientX, y: clientY } = this.modeler.paper.localToClientPoint({ x: updatedNode.x, y: updatedNode.y });
