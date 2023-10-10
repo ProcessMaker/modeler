@@ -34,7 +34,7 @@ window.ProcessMaker = {
     alerts: [],
   },
   multiplayer:{
-    host: provess.env.VUE_APP_WEBSOCKET_PROVIDER,
+    host: process.env.VUE_APP_WEBSOCKET_PROVIDER,
   },
   EventBus: new Vue(),
   apiClient: axios,
