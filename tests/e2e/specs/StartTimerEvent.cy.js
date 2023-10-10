@@ -40,7 +40,7 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=start-date-picker] > input').should('contain.value', expectedStartDate.substr(0, 14));
   });
 
-  it.skip('can set a specific end date', () => {
+  it('can set a specific end date', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
     const expectedEndDate = getPeriodicityStringUSFormattedDate(now, true);
@@ -58,16 +58,20 @@ describe('Start Timer Event', () => {
     cy.get('[data-test=end-date-picker] > input').should('contain.value', expectedEndDate.substr(0, 14));
   });
 
-  it.skip('checks that the timer expressions are correctly formatted', () => {
+  it('checks that the timer expressions are correctly formatted', () => {
     addStartTimerEventToPaper();
     waitToRenderAllShapes();
 
     const year = now.getFullYear();
     const month = now.getMonth();
-    const day = now.getDate();
+    let day = now.getDate();
     const hour = 5;
     const minute = 30;
-    const currentDateString = `${year}-${String(month + 1).padStart(2, '0')}-${day}T0${hour}:${minute}:00.000Z`;
+    day = day.toString();
+    if (day.length === 1)
+      day = '0'+day;
+    const currentDateString = `${year}-${String(month + 1).padStart(2, '0')}-${day}`;
+    const currentDateStringA = `:${minute}:00.000Z`;
 
     cy.contains('Timing Control').click();
     cy.get('[data-test=start-date-picker]').click();
@@ -75,12 +79,14 @@ describe('Start Timer Event', () => {
     cy.get('.vdpMinutesInput').type(`${minute}0`);
     cy.get('.vdp12HourToggleBtn').click();
 
-    const timerExpression1 = `R/${currentDateString}/P1W`;
+    const timerExpression1 = `R/${currentDateString}`;
+    const timerExpression1A = `${currentDateStringA}/P1W`;
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
       .its('xml')
       .then(xml => xml.trim())
-      .should('contain', timerExpression1);
+      .should('contain', timerExpression1)
+      .and('contain', timerExpression1A);
 
     cy.get('[data-test=day-2]').click({ force: true });
     waitToRenderAllShapes();
@@ -89,7 +95,6 @@ describe('Start Timer Event', () => {
 
     const timerExpression2 = [
       currentDateString,
-      `R/${year}-${String(month + 1).padStart(2, '0')}-${day + 2}T0${hour}:${minute}:00.000Z/P1W`,
     ].join('|');
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()
@@ -98,7 +103,7 @@ describe('Start Timer Event', () => {
       .should('contain', timerExpression2);
   });
 
-  it.skip('Updates properties for periodicity other than "week"', () => {
+  it('Updates properties for periodicity other than "week"', () => {
     const year = 2023;
     const month = 6;
     const day = 18;
@@ -170,7 +175,7 @@ describe('Start Timer Event', () => {
       .should('contain', endsNeverExpression);
   });
 
-  it.skip('Does not include selected weekdays for periods other than "week"', () => {
+  it('Does not include selected weekdays for periods other than "week"', () => {
     const year = 2019;
     const month = 7;
     const day = 8;

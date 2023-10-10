@@ -48,6 +48,7 @@ export default {
     paperManager: Object,
     useModelGeometry: Boolean,
     processNode: Object,
+    isMultiplayer: Boolean,
   },
   data() {
     return {
@@ -576,6 +577,30 @@ export default {
       await this.paperManager.awaitScheduledUpdates();
       this.overPoolStopDrag();
       this.updateSelectionBox();
+      if (this.isMultiplayer) { 
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties());
+      }
+      
+
+    },
+    getProperties() {
+      const changed = [];
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+        'processmaker.components.nodes.boundaryEvent.Shape',
+      ];
+      this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          changed.push({
+            id: shape.model.component.node.definition.id,
+            properties: {
+              clientX: shape.model.get('position').x,
+              clientY: shape.model.get('position').y,
+            },
+          });
+        });
+      return changed;
     },
     /**
      * Selector will update the waypoints of the related flows

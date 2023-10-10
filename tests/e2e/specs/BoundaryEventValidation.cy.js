@@ -3,7 +3,7 @@ import { nodeTypes } from '../support/constants';
 import uniqWith from 'lodash/uniqWith';
 import isEqual from 'lodash/isEqual';
 
-describe.skip('Boundary event validation', () => {
+describe('Boundary event validation', () => {
   it('should add boundary events to empty ports around boundary event target, and not allow adding any more', () => {
     const taskPosition = { x: 300, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -35,6 +35,11 @@ describe.skip('Boundary event validation', () => {
       .should('have.length', numberOfPortsAroundTask);
 
     getElementAtPosition(taskPosition, nodeTypes.task).click({ force:true });
+    cy.get('body').then($body => {
+      if ($body.find('[data-test="add-boundary-timer-event"]').length <= 0) {
+        cy.get('[data-test="boundary-event-dropdown"]').click({ force:true });
+      }
+    });
 
     const dataTest = nodeTypes.boundaryTimerEvent.replace('processmaker-modeler-', 'add-');
     cy.get(`[data-test="${dataTest}"]`)

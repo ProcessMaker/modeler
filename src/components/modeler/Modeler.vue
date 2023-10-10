@@ -2,6 +2,7 @@
   <span data-test="body-container">
     <tool-bar
       v-if="showComponent"
+      ref="tool-bar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -12,6 +13,7 @@
       :warnings="allWarnings"
       :xml-manager="xmlManager"
       :validationBar="validationBar"
+      :extra-actions="extraActions"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -21,6 +23,8 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      :players="players"
+      @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -46,10 +50,24 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <WelcomeMessage
+        v-if="showWelcomeMessage"
+      />
+
       <InspectorButton
-        v-show="showComponent"
+        ref="inspector-button"
+        v-if="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
+        :style="{ right: inspectorButtonRight + 'px' }"
+      />
+
+      <PreviewPanel ref="preview-panel"
+        @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
+        @previewResize="setInspectorButtonPosition"
+        :visible="isOpenPreview"
+        :nodeRegistry="nodeRegistry"
+        :previewConfigs="previewConfigs"
       />
 
       <InspectorPanel
@@ -98,6 +116,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
+        @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -138,6 +157,7 @@
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        :isMultiplayer="isMultiplayer"
       />
     </b-row>
   </span>
@@ -150,12 +170,15 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
+import WelcomeMessage from '../welcome/WelcomeMessage.vue';
+import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import PreviewPanel from '@/components/inspectors/PreviewPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -199,10 +222,12 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-
+import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
+import Multiplayer from '@/multiplayer/multiplayer';
 
 export default {
   components: {
+    PreviewPanel,
     ToolBar,
     ExplorerRail,
     InspectorButton,
@@ -210,6 +235,8 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    WelcomeMessage,
+    RemoteCursor,
   },
   props: {
     owner: Object,
@@ -242,6 +269,7 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,
       internalClipboard: [],
@@ -278,8 +306,10 @@ export default {
       miniMapOpen: false,
       panelsCompressed: false,
       isOpenInspector: false,
+      isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
+      isLoaded: false,
       allWarnings: [],
       nodeTypes: [],
       pmBlockNodes: [],
@@ -296,12 +326,17 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      players: [],
+      showInspectorButton: true,
+      inspectorButtonRight: 65,
+      previewConfigs: [],
+      multiplayer: null,
+      isMultiplayer: false,
     };
   },
   watch: {
     isRendering() {
       const loadingMessage = 'Loading process, please be patient.';
-
       if (this.isRendering) {
         window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
@@ -314,6 +349,8 @@ export default {
       });
       document.body.style.cursor = 'auto';
       this.cursor = null;
+
+      this.isLoaded = true;
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -327,13 +364,11 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-    highlightedNodes() {
-      if (window.ProcessMaker && window.ProcessMaker.EventBus) {
-        window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
-      }
-    }
   },
   computed: {
+    showWelcomeMessage() {
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+    },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
     },
@@ -358,8 +393,38 @@ export default {
     showComponent: () => store.getters.showComponent,
   },
   methods: {
+    registerPreview(config) {
+      this.previewConfigs.push(config);
+    },
+    handleToolbarAction(action) {
+      if (action.handler instanceof Function) {
+        action.handler(this);
+      }
+    },
     handleToggleInspector(value) {
+      this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
+    },
+    handlePreview() {
+      this.$refs['preview-panel'].previewNode(true);
+      this.handleTogglePreview(true) ;
+    },
+    handleTogglePreview(value) {
+      this.isOpenPreview = value;
+    },
+    setInspectorButtonPosition() {
+      const previewWidth = this.$refs['preview-panel'].width;
+      if (this.isOpenInspector) {
+        return;
+      }
+
+      if (this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65 + previewWidth;
+      }
+
+      if (!this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65;
+      }
     },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
@@ -467,7 +532,7 @@ export default {
     async close() {
       this.$emit('close');
     },
-    async saveBpmn() {
+    async saveBpmn(redirectTo = null, id = null) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -476,8 +541,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-
-      this.$emit('saveBpmn', { xml, svg: svgString });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -665,6 +729,7 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+      nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
     },
     registerPmBlock(pmBlockNode, customParser) {
       const defaultParser = () => pmBlockNode.id;
@@ -692,6 +757,15 @@ export default {
         this.parsers[bpmnType].default.push(defaultParser);
       });
       nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
+    },
+    registerMenuAction(action) {
+      if (!action.value || typeof action.value !== 'string') {
+        throw new Error('Menu action must have a action.value');
+      }
+      if (!action.content || typeof action.content !== 'string') {
+        throw new Error('Menu action must have a action.content');
+      }
+      this.extraActions.push(action);
     },
     addMessageFlows() {
       if (this.collaboration) {
@@ -854,9 +928,9 @@ export default {
 
       this.removeUnsupportedElementAttributes(definition);
 
-      const config = definition.config ? JSON.parse(definition.config) : {};
+      const config = definition.config && isJSON(definition.config) ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
-      
+
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
@@ -961,7 +1035,21 @@ export default {
         control,
       });
     },
-    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
+    handleDrop(data) {
+      const { clientX, clientY, control } = data;
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
+          clientX,
+          clientY,
+          control,
+          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
+        });
+      } else  {
+        this.handleDropProcedure(data);
+      }
+    },
+    async handleDropProcedure(data, selected=true) {
+      const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
         return;
@@ -980,9 +1068,11 @@ export default {
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
+      if (selected) {
+        this.highlightNode(newNode);
+      }
 
-      this.highlightNode(newNode);
-      await this.addNode(newNode);
+      await this.addNode(newNode, id, selected);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -999,6 +1089,7 @@ export default {
 
       return newNode;
     },
+
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1010,14 +1101,14 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node) {
+    async addNode(node, id = null, selected = true) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator);
+      node.setIds(this.nodeIdGenerator, id);
 
       this.planeElements.push(node.diagram);
       store.commit('addNode', node);
@@ -1035,9 +1126,10 @@ export default {
       ].includes(node.type)) {
         return;
       }
-
-      // Select the node after it has been added to the store (does not apply to flows)
-      this.selectNewNode(node);
+      if (selected) {
+        // Select the node after it has been added to the store (does not apply to flows)
+        this.selectNewNode(node);
+      }
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1060,7 +1152,15 @@ export default {
         this.poolTarget = null;
       });
     },
-    async removeNode(node, { removeRelationships = true } = {}) {
+    async removeNode(node, options) {
+      // Check if the node is not replaced
+      if (this.isMultiplayer && !options?.isReplaced) {
+        // Emit event to server to remove node
+        window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
+      }
+      this.removeNodeProcedure(node, options);
+    },
+    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
         // already removed
         return;
@@ -1108,15 +1208,75 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDrop({
+
+          const nodeData = {
+            clientX, clientY,
+            control: { type: typeToReplaceWith },
+            nodeThatWillBeReplaced: node,
+          };
+
+          if (this.isMultiplayer) {
+            // Get all node types
+            const nodeTypes = nodeTypesStore.getters.getNodeTypes;
+            // Get the new control
+            const newControl = nodeTypes.flatMap(nodeType => {
+              return nodeType.items?.filter(item => item.type === typeToReplaceWith);
+            }).filter(Boolean);
+            // If the new control is found, emit event to server to replace node
+            if (newControl.length === 1) {
+              window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0] });
+            }
+          } else {
+            await this.replaceNodeProcedure(nodeData);
+          }
+        });
+      });
+    },
+    async replaceNodeProcedure(data, isReplaced = false) {
+      if (isReplaced) {
+        // Get the clientX and clientY from the node that will be replaced
+        const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
+        data.clientX = clientX;
+        data.clientY = clientY;
+      }
+
+      const newNode = await this.handleDropProcedure(data);
+
+      await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
+      this.highlightNode(newNode);
+      this.selectNewNode(newNode);
+    },
+    replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
+          const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+          const newNode = await this.handleDropProcedure({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
           });
 
+          if (typeToReplaceWith === 'processmaker-modeler-task') {
+            newNode.definition.screenRef = assetId;
+            newNode.definition.name = assetName;
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-script-task') {
+            newNode.definition.scriptRef = assetId;
+            newNode.definition.name = assetName;
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
+            newNode.definition.name = assetName;
+            newNode.definition.calledElement = `ProcessId-${assetId}`;
+            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":"${assetName}"}`;
+            redirectTo = `${redirectTo}/${newNode.id}`;
+          }
+
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
+          this.saveBpmn(redirectTo, newNode.id);
         });
       });
     },
@@ -1304,13 +1464,29 @@ export default {
         if (this.isSelecting) {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
-          this.$refs.selector.stopDrag(event);
+          this.$refs.selector.stopDrag();
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
+    },
+    redirect(redirectTo) {
+      window.location = redirectTo;
+    },
+    enableMultiplayer(value) {
+      this.isMultiplayer = value;
+    },
+    addPlayer(player) {
+      this.players.push(player);
+    },
+    removePlayer(playerId) {
+      const playerIndex = this.players.findIndex(player => player.id === playerId);
+
+      if (playerIndex !== -1) {
+        this.players.splice(playerIndex, 1);
+      }
     },
   },
   created() {
@@ -1334,11 +1510,15 @@ export default {
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
       registerPmBlock: this.registerPmBlock,
+      registerPreview: this.registerPreview,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -1468,12 +1648,32 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
+
+        try {
+          const multiplayer = new Multiplayer(this);
+          multiplayer.init();
+        } catch (error) {
+          console.warn('Could not initialize multiplayer', error);
+        }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+    });
+
+    this.$root.$on('replace-ai-node', (data) => {
+      this.replaceAiNode(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+      if (redirectUrl) {
+        this.redirect(redirectUrl);
+      }
     });
   },
 };

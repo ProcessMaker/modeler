@@ -91,7 +91,7 @@ describe('Switching elements', () => {
     assertDownloadedXmlDoesNotContainExpected('<bpmn:boundaryEvent');
   });
 
-  it.only('switch a saved user task to a script task', () => {
+  it('switch a saved user task to a script task', () => {
     uploadXml('processWithTwoTasks.xml');
     cy.get('[data-type="processmaker.components.nodes.task.Shape"]').eq(1).click();
     cy.get('[data-test=select-type-dropdown]').click();

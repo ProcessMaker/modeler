@@ -29,7 +29,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     toggleInspector();
   });
 
-  it.skip('can render an intermediate message throw event', () => {
+  it('can render an intermediate message throw event', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
@@ -38,7 +38,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet);
   });
 
-  it.skip('can create a message when intermediate message throw event is dragged on', () => {
+  it('can create a message when intermediate message throw event is dragged on', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     getElementAtPosition(intermediateMessageThrowEventPosition).click();
@@ -52,7 +52,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlContainsExpected(eventXMLSnippet, messageXMLSnippet);
   });
 
-  it.skip('can remove the message when intermediate message throw event is deleted', () => {
+  it('can remove the message when intermediate message throw event is deleted', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
@@ -70,7 +70,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     assertDownloadedXmlDoesNotContainExpected(messageXMLSnippet);
   });
 
-  it.skip('retains new message name when clicking off and on intermediate message throw event', () => {
+  it('retains new message name when clicking off and on intermediate message throw event', () => {
     const startEventPosition = { x: 210, y: 200 };
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
@@ -92,7 +92,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
-  it.skip('associates and renames message on intermediate message catch event', () => {
+  it('associates and renames message on intermediate message catch event', () => {
     const intermediateMessageCatchEventPosition = { x: 200, y: 300 };
     const catchEventXMLSnippet = `
       <bpmn:intermediateCatchEvent id="node_5" name="Intermediate Message Catch Event">
@@ -128,19 +128,22 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
 
     cy.get('[data-cy="undo-control"]').click();
     waitToRenderAllShapes();
+    waitToRenderAllShapes();
     cy.get('[data-cy="redo-control"]').click();
+    waitToRenderAllShapes();
+    waitToRenderAllShapes();
     waitToRenderAllShapes();
 
     assertDownloadedXmlContainsSubstringNTimes('<bpmn:message id=".*?" name=".*?" />', 1, 'Expect single message');
   });
 
-  it.skip('retains message name after loading XML', () => {
+  it('retains message name after loading XML', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
 
     // Edit message
     cy.get('[data-cy="events-list"]').click();
     cy.get('[data-cy="events-edit"]').click();
-    cy.get('[data-cy="events-edit-name"]').clear().type(messageName);
+    cy.get('[data-cy="events-edit-name"]').clear().type(messageName).should('have.value',messageName);
     cy.get('[data-cy="events-save"]').click();
 
     /* Something outside of the inspector panel has to be selected to trigger the focusout event;
@@ -158,7 +161,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     cy.get('[data-test="messageRef:select"] .multiselect__single').should('contain.text', messageName);
   });
 
-  it.skip('allows connection between pools', () => {
+  it('allows connection between pools', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     clickAndDropElement(nodeTypes.pool, { x: 200, y: 150 });
     const secondPoolPosition = { x: 200, y: 450 };
@@ -169,8 +172,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     getNumberOfLinks().should('equal', 1);
   });
 
-
-  it.skip('allows valid message flow connections', () => {
+  it('allows valid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     clickAndDropElement(nodeTypes.pool, { x: 200, y: 150 });
     const secondPoolPosition = { x: 200, y: 450 };
@@ -194,8 +196,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
     });
   });
 
-
-  it.skip('disallows invalid message flow connections', () => {
+  it('disallows invalid message flow connections', () => {
     addNodeTypeToPaper(intermediateMessageThrowEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-message-throw-event');
     clickAndDropElement(nodeTypes.pool, { x: 200, y: 150 });
     const secondPoolPosition = { x: 200, y: 450 };

@@ -14,7 +14,7 @@ describe('Data Objects and Data Stores', () => {
   const taskPosition = { x: 500, y: 400 };
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it.skip(`does not support connecting sequence flows for ${nodeType}`, () => {
+    it(`does not support connecting sequence flows for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       waitToRenderAllShapes();
 
@@ -26,7 +26,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject].forEach(nodeType => {
-    it.skip(`can add data output association flows for ${nodeType}`, () => {
+    it(`can add data output association flows for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       connectNodesWithFlow('generic-flow-button', startEventPosition, dataPosition);
 
@@ -78,7 +78,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it.skip(`does not support connecting data input association to start event for ${nodeType}`, () => {
+    it(`does not support connecting data input association to start event for ${nodeType}`, () => {
       clickAndDropElement(nodeType, dataPosition);
       waitToRenderAllShapes();
       connectNodesWithFlow('association-flow-button', dataPosition, startEventPosition);
@@ -87,7 +87,7 @@ describe('Data Objects and Data Stores', () => {
   });
 
   [nodeTypes.dataObject, nodeTypes.dataStore].forEach(nodeType => {
-    it.skip(`can add data input association flows for ${nodeType}`, () => {
+    it(`can add data input association flows for ${nodeType}`, () => {
       clickAndDropElement(nodeTypes.task, taskPosition);
       waitToRenderAllShapes();
       clickAndDropElement(nodeType, dataPosition);
@@ -97,24 +97,24 @@ describe('Data Objects and Data Stores', () => {
       const name = nodeType === 'processmaker-modeler-data-object' ? 'Data Object' : 'Data Store';
       getNumberOfLinks().should('equal', 1);
       assertDownloadedXmlMatch(`
-        <bpmn:task id="node_2" name="Form Task" pm:assignment="requester">
+        <bpmn:task id="node_*" name="Form Task" pm:assignment="requester">
           <bpmn:ioSpecification id="*">
-            <bpmn:dataInput id="data_input_node_8" name="${name}" isCollection="false" />
+            <bpmn:dataInput id="data_input_node_*" name="${name}" isCollection="false" />
             <bpmn:inputSet id="*">
-              <bpmn:dataInputRefs>data_input_node_8</bpmn:dataInputRefs>
+              <bpmn:dataInputRefs>data_input_node_*</bpmn:dataInputRefs>
             </bpmn:inputSet>
             <bpmn:outputSet id="*" />
           </bpmn:ioSpecification>
-          <bpmn:dataInputAssociation id="node_9">
-            <bpmn:sourceRef>node_8</bpmn:sourceRef>
-            <bpmn:targetRef>data_input_node_8</bpmn:targetRef>
+          <bpmn:dataInputAssociation id="node_*">
+            <bpmn:sourceRef>node_*</bpmn:sourceRef>
+            <bpmn:targetRef>data_input_node_*</bpmn:targetRef>
           </bpmn:dataInputAssociation>
         </bpmn:task>
       `);
     });
   });
 
-  it.skip('removed the data input association on the task when the data object is deleted', () => {
+  it('removed the data input association on the task when the data object is deleted', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     clickAndDropElement(nodeTypes.dataObject, dataPosition);
@@ -122,15 +122,15 @@ describe('Data Objects and Data Stores', () => {
     connectNodesWithFlow('association-flow-button', dataPosition, taskPosition);
     waitToRenderAllShapes();
 
-    assertDownloadedXmlContainsExpected(`
-      <bpmn:dataInputAssociation id="node_9">
-        <bpmn:sourceRef>node_8</bpmn:sourceRef>
-        <bpmn:targetRef>data_input_node_8</bpmn:targetRef>
+    assertDownloadedXmlMatch(`
+      <bpmn:dataInputAssociation id="node_*">
+        <bpmn:sourceRef>node_*</bpmn:sourceRef>
+        <bpmn:targetRef>data_input_node_*</bpmn:targetRef>
       </bpmn:dataInputAssociation>
     `);
 
-    assertDownloadedXmlContainsExpected(`
-      <bpmn:dataObjectReference id="node_8" name="Data Object" />
+    assertDownloadedXmlMatch(`
+      <bpmn:dataObjectReference id="node_*" name="Data Object" />
     `);
 
     getElementAtPosition(dataPosition)
@@ -155,21 +155,21 @@ describe('Data Objects and Data Stores', () => {
     `);
   });
 
-  it.skip('removes the data output association on the task when the data object is deleted', () => {
+  it('removes the data output association on the task when the data object is deleted', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     waitToRenderAllShapes();
     clickAndDropElement(nodeTypes.dataObject, dataPosition);
     waitToRenderAllShapes();
     connectNodesWithFlow('generic-flow-button', taskPosition, dataPosition);
 
-    assertDownloadedXmlContainsExpected(`
-      <bpmn:dataOutputAssociation id="node_16">
-        <bpmn:targetRef>node_8</bpmn:targetRef>
+    assertDownloadedXmlMatch(`
+      <bpmn:dataOutputAssociation id="node_*">
+        <bpmn:targetRef>node_*</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     `);
 
-    assertDownloadedXmlContainsExpected(`
-      <bpmn:dataObjectReference id="node_8" name="Data Object" />
+    assertDownloadedXmlMatch(`
+      <bpmn:dataObjectReference id="node_*" name="Data Object" />
     `);
 
     getElementAtPosition(dataPosition)

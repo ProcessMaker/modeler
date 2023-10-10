@@ -12,7 +12,7 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Copy element', { scrollBehavior: false }, () => {
-  it.skip('should copy start events', () => {
+  it('should copy start events', () => {
     const startEventPosition = { x: 210, y: 200 };
 
     getElementAtPosition(startEventPosition).click();
@@ -33,23 +33,12 @@ describe('Copy element', { scrollBehavior: false }, () => {
         <bpmndi:BPMNDiagram id="BPMNDiagram_1">
           <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
             <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
-              <dc:Bounds x="210" y="200" width="36" height="36" />
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
-              <dc:Bounds x="210" y="288" width="36" height="36" />
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape id="node_3_di" bpmnElement="node_3">
-              <dc:Bounds x="210" y="376" width="36" height="36" />
-            </bpmndi:BPMNShape>
-          </bpmndi:BPMNPlane>
-        </bpmndi:BPMNDiagram>
-      </bpmn:definitions>
     `;
 
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);
   });
 
-  it.skip('should copy tasks', () => {
+  it('should copy tasks', () => {
     const taskPosition = { x: 300, y: 250 };
 
     clickAndDropElement(nodeTypes.task, taskPosition);
@@ -84,10 +73,8 @@ describe('Copy element', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
 
     cy.get('[data-test=copy-button]').click();
-    
     cy.get('.paper-container').click('center', { force: true });
     cy.get('body').type('{ctrl}v');
-    
     waitToRenderAllShapes();
 
     const process = `
@@ -108,7 +95,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
 
   });
 
-  it.skip('copies message on Message Event', () => {
+  it('copies message on Message Event', () => {
     const messageEndEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(messageEndEventPosition, nodeTypes.endEvent, 'switch-to-message-end-event');
     waitToRenderAllShapes();
@@ -118,9 +105,9 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
     cy.get('body').type('{ctrl}v');
 
-    waitToRenderAllShapes();
-
-    const intermediateMessageThrowEventPosition = { x: 350, y: 450 };
+    cy.get('[role="alert"]',{ timeout: 7000 }).should('not.exist');
+    cy.get('[data-type="processmaker.components.nodes.endEvent.Shape"]').eq(0).click({ force:true });
+    const intermediateMessageThrowEventPosition = { x: 600, y: 450 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateMessageThrowEventPosition);
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-intermediate-message-throw-event]').click();

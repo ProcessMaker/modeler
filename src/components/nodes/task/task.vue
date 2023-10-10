@@ -13,6 +13,7 @@
     :is-rendering="isRendering"
     :boundary-event-dropdown-data="boundaryEventDropdownData"
     :dropdown-data="dropdownData"
+    :hide-color-dropdown="hideColorDropdown"
     :showCustomIconPicker="true"
     :iconName="this.iconName"
     @set-custom-icon-name="setCustomIconName"
@@ -87,6 +88,7 @@ export default {
       ],
       boundaryEventDropdownData,
       anchorPointFunction: getRectangleAnchorPoint,
+      hideColorDropdown:false,
     };
   },
   computed: {

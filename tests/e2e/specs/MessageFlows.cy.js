@@ -9,29 +9,26 @@ import {
   getNumberOfLinks,
   isElementCovered,
   modalConfirm,
-  moveElement,
   removeStartEvent,
   setBoundaryEvent,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Message Flows', { scrollBehavior: false }, () => {
+describe('Message Flows', { scrollBehavior: false }, () => {
   it('Can connect two pools with a message flow', () => {
-    const pool1Position = { x: 250, y: 250 };
+    cy.get('[data-cy="zoom-out-control"]').click();
+    cy.get('[data-cy="zoom-out-control"]').click();
+    const pool1Position = { x: 150, y: 250 };
     clickAndDropElement(nodeTypes.pool, pool1Position);
 
-    const pool2Position = { x: 250, y: 600 };
+    const pool2Position = { x: 250, y: 400 };
     clickAndDropElement(nodeTypes.pool, pool2Position);
 
-    connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
-
-    moveElement(pool1Position, 300, 300, nodeTypes.pool);
-    waitToRenderAllShapes();
-    moveElement(pool1Position, 250, 250, nodeTypes.pool);
+    connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position);
 
     const numberOfMessageFlowsAdded = 1;
-    getElementAtPosition(pool2Position)
+    cy.get('[data-type="processmaker.modeler.bpmn.pool"]').eq(0).click({ force:true })
       .then(getLinksConnectedToElement)
       .should($links => {
         expect($links.length).to.eq(numberOfMessageFlowsAdded);

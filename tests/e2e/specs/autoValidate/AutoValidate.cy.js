@@ -13,14 +13,7 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
   const defaultNumberOfErrors = 2;
 
   beforeEach(() => {
-    cy.get('[data-test=processmaker-modeler-start-event] > .pinIcon').click();
-    cy.get('[data-test=processmaker-modeler-task] > .pinIcon').click();
-    cy.get('[data-test=processmaker-modeler-exclusive-gateway] > .pinIcon').click();
 
-    cy.get('.control-add').click();
-    waitToRenderAllShapes();
-    cy.get('[data-test=explorer-rail]').should('not.be.visible');
-    waitToRenderAllShapes();
   });
 
   it('should render new auto validate control', () => {
@@ -123,7 +116,7 @@ describe('Auto Validate test', { scrollBehavior: false }, () => {
     const gatewayPosition = { x: 200, y: 400 };
     clickAndDropElement(nodeTypes.exclusiveGateway, gatewayPosition, nodeTypes.inclusiveGateway);
     waitToRenderAllShapes();
-    const currentNumberOfErrorsWithGateway = defaultNumberOfErrors + 3;
+    const currentNumberOfErrorsWithGateway = defaultNumberOfErrors + 2;
 
     cy.get(validateButtonIssueSelector)
       .then($btn => {

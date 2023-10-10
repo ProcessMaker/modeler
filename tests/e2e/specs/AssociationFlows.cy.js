@@ -4,13 +4,16 @@ import {
   clickAndDropElement,
   getElementAtPosition,
   getLinksConnectedToElement,
-  modalConfirm, waitToRenderAllShapes, waitForAnimations,
+  modalConfirm,
+  waitToRenderAllShapes,
+  waitForAnimations,
+  removeStartEvent,
 } from '../support/utils';
 
 import { direction } from '../../../src/components/nodes/association/associationConfig';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Association Flows', () => {
+describe('Association Flows', () => {
   it('Change direction of association to none, one and both', () => {
     const directionSelectSelector = '[name=associationDirection]';
     const textAnnotationPosition = { x: 400, y: 100 };
@@ -37,12 +40,15 @@ describe.skip('Association Flows', () => {
   });
 
   it('should keep association flow when changing element type', () => {
-    const startEventPosition = { x: 210, y: 200 };
-    const textAnnotationPosition = { x: 400, y: 100 };
+    const startEventPosition = { x: 400, y: 100 };
+    const textAnnotationPosition = { x: 150, y: 150 };
+    removeStartEvent();
+    clickAndDropElement(nodeTypes.startEvent, startEventPosition);
     clickAndDropElement(nodeTypes.textAnnotation, textAnnotationPosition);
     waitToRenderAllShapes();
 
-    connectNodesWithFlow('association-flow-button', textAnnotationPosition, startEventPosition);
+    connectNodesWithFlow('association-flow-button', textAnnotationPosition, { x: 420, y: 160 });
+    waitToRenderAllShapes();
 
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-start-timer-event]').click();
@@ -56,7 +62,7 @@ describe.skip('Association Flows', () => {
       });
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:association id="node_3" associationDirection="None" sourceRef="node_2" targetRef="node_4" />
+      <bpmn:association id="node_4" associationDirection="None" sourceRef="node_3" targetRef="node_5" />
     `);
   });
 });

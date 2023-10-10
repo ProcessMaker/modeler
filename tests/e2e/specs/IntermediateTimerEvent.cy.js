@@ -9,7 +9,7 @@ import {
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
 
-describe.skip('Intermediate Timer Event', () => {
+describe('Intermediate Timer Event', () => {
   beforeEach(() => {
     toggleInspector();
   });
@@ -17,7 +17,7 @@ describe.skip('Intermediate Timer Event', () => {
   /**
    * TODO: this test was skipped because the Timing Control is not available
    */
-  it.skip('Update delay field on Intermediate Timer Event', () => {
+  it('Update delay field on Intermediate Timer Event', () => {
     const intermediateCatchEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
     waitToRenderAllShapes();
@@ -44,7 +44,7 @@ describe.skip('Intermediate Timer Event', () => {
   /**
    * TODO: this test was skipped because the Timing Control is not available
    */
-  it.skip('Update date/time field on Intermediate Timer Event', () => {
+  it('Update date/time field on Intermediate Timer Event', () => {
     const intermediateCatchEventPosition = { x: 350, y: 250 };
     const nameInput = '[name=name]';
     const testString = 'testing';
@@ -68,20 +68,20 @@ describe.skip('Intermediate Timer Event', () => {
     typeIntoTextInput('[data-test=date-picker]', startDateTime);
     cy.get('[data-test=date-picker]').type('{enter}');
 
-    cy.get('[data-test=date-picker]').should('have.value', startDateTime);
+    cy.get('[data-test=date-picker]>input').should('have.value', startDateTime);
     assertDownloadedXmlContainsExpected(expectedIntermediateCatchEventWithTimer);
   });
 
   /**
    * TODO: this test was skipped because the Timing Control is not available
    */
-  it.skip('Sets default values when switching between types', () => {
+  it('Sets default values when switching between types', () => {
     cy.clock();
 
     const intermediateCatchEventPosition = { x: 350, y: 250 };
     clickAndDropElement(nodeTypes.intermediateCatchEvent, intermediateCatchEventPosition);
 
-    getElementAtPosition(intermediateCatchEventPosition).click();
+    cy.get('[data-type="processmaker.components.nodes.intermediateEvent.Shape"]').first().click({ force:true });
     cy.contains('Timing Control').click();
     cy.get('[data-test=intermediateTypeSelect]').select('Date/Time');
 
@@ -100,7 +100,7 @@ describe.skip('Intermediate Timer Event', () => {
   /**
    * TODO: this test was skipped because the Timing Control is not available
    */
-  it.skip('should toggle between showing the weekday select when week is selected, and hiding it when it is not', () => {
+  it('should toggle between showing the weekday select when week is selected, and hiding it when it is not', () => {
     const intermediateTimerEventPosition = { x: 350, y: 250 };
     addNodeTypeToPaper(intermediateTimerEventPosition, nodeTypes.intermediateCatchEvent, 'switch-to-intermediate-timer-catch-event');
     cy.contains('Timing Control').click();
