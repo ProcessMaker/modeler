@@ -33,6 +33,9 @@ window.ProcessMaker = {
   navbar: {
     alerts: [],
   },
+  multiplayer:{
+    host: provess.env.VUE_APP_WEBSOCKET_PROVIDER,
+  },
   EventBus: new Vue(),
   apiClient: axios,
   alert(msg, variant, showValue = 60, stayNextScreen = false) {
@@ -54,4 +57,5 @@ window.ProcessMaker = {
       id: 1,
     },
   },
+  
 };
