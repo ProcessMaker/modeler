@@ -48,7 +48,7 @@ export default class Multiplayer {
     this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
 
     // Connect to websocket server
-    this.clientIO = io(process.env.VUE_APP_WEBSOCKET_PROVIDER, { transports: ['websocket', 'polling']});
+    this.clientIO = io(window.Processmaker.multiplayer.host, { transports: ['websocket', 'polling']});
 
     this.clientIO.on('connect', () => {
       // Join the room
