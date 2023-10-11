@@ -94,9 +94,6 @@ export default class Multiplayer {
     // Listen for updates when a new element is added
     this.clientIO.on('createElement', async(payload) => {
       // Create the new element in the process
-      console.log('on createElement');
-      console.log(payload);
-      console.log(payload.changes);
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
@@ -249,6 +246,8 @@ export default class Multiplayer {
     });
   }
   updateNodes(data) {
+    console.log('updateNodes multiplayer.js');
+    console.log(data);
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate =  this.yArray.get(index);
@@ -356,8 +355,6 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    console.log('addBoundaryEvent Multiplayer.js');
-    console.log(data);
     this.clientIO.emit('createElement', stateUpdate);
     this.#nodeIdGenerator.updateCounters();
   }
