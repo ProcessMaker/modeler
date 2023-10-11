@@ -6,6 +6,13 @@ import { faker } from '@faker-js/faker';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
+
 const BpmnFlows = [
   {
     type: 'processmaker-modeler-text-annotation',
@@ -87,6 +94,9 @@ export default class Multiplayer {
     // Listen for updates when a new element is added
     this.clientIO.on('createElement', async(payload) => {
       // Create the new element in the process
+      console.log('on createElement');
+      console.log(payload);
+      console.log(payload.changes);
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
@@ -140,6 +150,10 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
       this.addFlow(data);
     });
+
+    window.ProcessMaker.EventBus.$on('multiplayer-addBoundaryEvent', ( data ) => {
+      this.addBoundaryEvent(data);
+    });
   }
   addNode(data) {
     // Add the new element to the process
@@ -158,6 +172,15 @@ export default class Multiplayer {
     this.modeler.handleDropProcedure(value, false);
     this.#nodeIdGenerator.updateCounters();
   }
+  createBoundaryEvent(value) {
+    // create a different method  instead handle drop procedure
+    // This method should:
+    // Find the parent node using an id 
+    // create the boundary node
+    // attach the boundary to the parent node found
+    this.modeler.handleDropProcedure(value, false);
+    this.#nodeIdGenerator.updateCounters();
+  }
   createRemoteShape(changes) {
     const flows = [
       'processmaker-modeler-sequence-flow',
@@ -165,11 +188,25 @@ export default class Multiplayer {
       'processmaker-modeler-message-flow',
       'processmaker-modeler-data-input-association',
     ];
+
+    const boundaries = [
+      boundaryErrorEventId,
+      boundaryConditionalEventId,
+      boundaryEscalationEventId,
+      boundaryMessageEventId,
+      boundarySignalEventId,
+      boundaryTimerEventId,
+    ];
+
     return new Promise(resolve => {
       changes.map((data) => {
         if (flows.includes(data.type)) {
           this.createFlow(data);
-        } else {
+        }
+        else if (boundaries.includes(data.type)) {
+          this.createBoundaryEvent(data);
+        }
+        else {
           this.createShape(data);
         }
       });
@@ -311,5 +348,17 @@ export default class Multiplayer {
       this.#nodeIdGenerator.updateCounters();
     }
 
+  }
+  addBoundaryEvent(data) {
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    console.log('addBoundaryEvent Multiplayer.js');
+    console.log(data);
+    this.clientIO.emit('createElement', stateUpdate);
+    this.#nodeIdGenerator.updateCounters();
   }
 }

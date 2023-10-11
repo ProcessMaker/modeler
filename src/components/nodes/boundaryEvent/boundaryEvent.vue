@@ -65,6 +65,12 @@ export default {
   },
   methods: {
     getTaskUnderShape() {
+      console.log('this.graphaaa');
+      console.log(this.graph);
+      console.log('this.shapeaaa');
+      console.log(this.shape);
+      console.log('this.graph.findModelsUnderElement(this.shape)');
+      console.log(this.graph.findModelsUnderElement(this.shape));
       return this.graph
         .findModelsUnderElement(this.shape)
         .find(model => isValidBoundaryEventTarget(model.component));
@@ -119,7 +125,8 @@ export default {
       if (!this.hasPositionChanged()) {
         return;
       }
-
+      console.log('task');
+      console.log(task);
       const { x, y } = getBoundaryAnchorPoint(this.getCenterPosition(), task);
       const { width, height } = this.shape.size();
       this.shape.position(x - (width / 2), y - (height / 2));
@@ -202,6 +209,37 @@ export default {
 
       this.invalidTargetElement = targetElement;
     },
+    addMultiplayerBoundaryEvent(task) {
+      console.log('Add multiplayerBoundaryEvent boundaryEvent.vue');
+      console.log(this.node);
+      console.log('Add multiplayer boudnary is multiplayer and node is boundary');
+      const control = {
+        bpmnType: this.node.diagram.$type,
+        // icon:,
+        id: this.node.diagram.id,
+        type: this.node.type,
+        attachedToRef: this.node.definition.get('attachedToRef'),
+        // task,
+      };
+
+      const { paper } = window.ProcessMaker.$modeler;
+      const { x: clientX, y: clientY } = paper.localToClientPoint(this.node.diagram.bounds);
+
+      console.log({
+        clientX,
+        clientY,
+        control,
+        id: this.node.definition.id,//`node_${this.nodeIdGenerator.getDefinitionNumber()}`,
+      });
+      
+      window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', {
+        clientX: clientX + 18,
+        clientY: clientY + 18,
+        control,
+        type: this.node.type,
+        id: this.node.definition.id,//`node_${this.nodeIdGenerator.getDefinitionNumber()}`,
+      });
+    },
   },
   async mounted() {
     this.shape = new EventShape();
@@ -214,6 +252,7 @@ export default {
     const task = this.getTaskUnderShape();
     this.attachBoundaryEventToTask(task);
     this.updateShapePosition(task);
+    this.addMultiplayerBoundaryEvent(task);
   },
 };
 </script>

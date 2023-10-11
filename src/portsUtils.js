@@ -4,6 +4,8 @@ import differenceWith from 'lodash/differenceWith';
 import isEqual from 'lodash/isEqual';
 
 function getModelPortPoints(model, group) {
+
+  console.log(model, group);
   const { x: modelX, y: modelY } = model.position();
   const points = Object.values(model.getPortsPositions(group))
     .map(({ x, y }) => new g.Point(modelX + x, modelY + y));
@@ -16,6 +18,7 @@ function getModelPortPoints(model, group) {
 }
 
 function getClosestAnchorPoint(model, coords, group) {
+  console.log(coords);
   const referencePoint = new g.Point(coords.x, coords.y);
   return referencePoint.chooseClosest(getModelPortPoints(model, group));
 }

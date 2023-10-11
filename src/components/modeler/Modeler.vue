@@ -1064,9 +1064,14 @@ export default {
       diagram.bounds.y = y;
 
       const newNode = this.createNode(control.type, definition, diagram);
-
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
+
+        const parentNode = this.nodes.find(n => n.definition.id === data.control.attachedToRef.id);
+        if (parentNode) {
+          console.log('parentnode found');
+          console.log(parentNode);
+        }
       }
       if (selected) {
         this.highlightNode(newNode);
