@@ -209,7 +209,7 @@ export default {
 
       this.invalidTargetElement = targetElement;
     },
-    addMultiplayerBoundaryEvent(task) {
+    addMultiplayerBoundaryEvent() {
       console.log('Add multiplayerBoundaryEvent boundaryEvent.vue');
       console.log(this.node);
       console.log('Add multiplayer boudnary is multiplayer and node is boundary');
@@ -252,7 +252,7 @@ export default {
     const task = this.getTaskUnderShape();
     this.attachBoundaryEventToTask(task);
     this.updateShapePosition(task);
-    this.addMultiplayerBoundaryEvent(task);
+    this.addMultiplayerBoundaryEvent();
   },
 };
 </script>
