@@ -588,7 +588,6 @@ export default {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
-        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
       this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
         .forEach(shape => {
