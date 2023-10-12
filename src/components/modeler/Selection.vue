@@ -35,8 +35,15 @@ import { id as associationId } from '@/components/nodes/association';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 import { invalidNodeColor, poolColor } from '@/components/nodeColors';
+import { log } from '@processmaker/screen-builder';
 
 export default {
   name: 'Selection',
@@ -584,7 +591,7 @@ export default {
 
     },
     getProperties() {
-      const changed = [];
+      let changed = [];
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
@@ -598,8 +605,41 @@ export default {
               clientY: shape.model.get('position').y,
             },
           });
+          const boundariesChanges = this.getBoundariesChangesForShape(shape);
+          changed = changed.concat(boundariesChanges);
         });
       return changed;
+    },
+
+    /**
+     * Get properties for each boundary inside a shape
+     */
+    getBoundariesChangesForShape(shape) {
+      let boundariesChanged = [];
+      const boundaryEventTypes = [
+        boundaryErrorEventId,
+        boundaryConditionalEventId,
+        boundaryEscalationEventId,
+        boundaryMessageEventId,
+        boundarySignalEventId,
+        boundaryTimerEventId,
+      ];
+
+      const boundaryNodes = window.ProcessMaker.$modeler.nodes.filter(node => boundaryEventTypes.includes(node.type));
+
+      boundaryNodes.forEach(boundaryNode => {
+        if (boundaryNode.definition.attachedToRef.id === shape.model.component.node.definition.id) {
+          boundariesChanged.push({
+            id: boundaryNode.definition.id,
+            properties: {
+              clientX: boundaryNode.diagram.bounds.x,
+              clientY: boundaryNode.diagram.bounds.y,
+            },
+          });
+        }
+      });
+      
+      return boundariesChanged;
     },
     /**
      * Selector will update the waypoints of the related flows
