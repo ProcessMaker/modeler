@@ -246,8 +246,6 @@ export default class Multiplayer {
     });
   }
   updateNodes(data) {
-    console.log('updateNodes multiplayer.js');
-    console.log(data);
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate =  this.yArray.get(index);

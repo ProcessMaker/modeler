@@ -205,11 +205,9 @@ export default {
     addMultiplayerBoundaryEvent() {
       const control = {
         bpmnType: this.node.diagram.$type,
-        // icon:,
         id: this.node.diagram.id,
         type: this.node.type,
         attachedToRef: this.node.definition.get('attachedToRef'),
-        // task,
       };
 
       const { paper } = window.ProcessMaker.$modeler;
