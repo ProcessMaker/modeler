@@ -175,8 +175,7 @@ export default class Multiplayer {
       changes.map((data) => {
         if (flows.includes(data.type)) {
           this.createFlow(data);
-        }
-        else {
+        } else {
           this.createShape(data);
         }
       });
@@ -290,7 +289,7 @@ export default class Multiplayer {
   }
   attachBoundaryEventToNode(element, data) {
     const { paper } = this.modeler;
-    let node = this.getNodeById(data.attachedToRefId);
+    const node = this.getNodeById(data.attachedToRefId);
 
     // Find previous attached task
     const previousAttachedTask = element.getParentCell();

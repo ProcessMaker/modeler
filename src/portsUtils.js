@@ -4,7 +4,6 @@ import differenceWith from 'lodash/differenceWith';
 import isEqual from 'lodash/isEqual';
 
 function getModelPortPoints(model, group) {
-
   const { x: modelX, y: modelY } = model.position();
   const points = Object.values(model.getPortsPositions(group))
     .map(({ x, y }) => new g.Point(modelX + x, modelY + y));
