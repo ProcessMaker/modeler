@@ -602,6 +602,7 @@ export default {
             properties: {
               clientX: shape.model.get('position').x,
               clientY: shape.model.get('position').y,
+              attachedToRefId: shape.model.component.node.definition.get('attachedToRef')?.id ?? null,
             },
           });
           const boundariesChanges = this.getBoundariesChangesForShape(shape);
@@ -633,11 +634,11 @@ export default {
             properties: {
               clientX: boundaryNode.diagram.bounds.x,
               clientY: boundaryNode.diagram.bounds.y,
+              attachedToRefId: boundaryNode.definition.get('attachedToRef')?.id ?? null,
             },
           });
         }
       });
-      
       return boundariesChanged;
     },
     /**

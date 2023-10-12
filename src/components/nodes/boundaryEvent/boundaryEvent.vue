@@ -216,6 +216,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', {
         clientX: clientX + 18,
         clientY: clientY + 18,
+        attachedToRefId: this.node.definition.get('attachedToRef')?.id,
         control,
         type: this.node.type,
         id: this.node.definition.id,

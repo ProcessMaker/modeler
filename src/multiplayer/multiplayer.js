@@ -243,7 +243,6 @@ export default class Multiplayer {
 
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-
     this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: true });
   }
   replaceShape(updatedNode) {
@@ -281,9 +280,32 @@ export default class Multiplayer {
     const element = this.getJointElement(paper.model, data.id);
     // Update the element's position attribute
     element.set('position', { x:data.clientX, y:data.clientY });
+
+    if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
+      this.attachBoundaryEventToNode(element, data);
+    }
+
     // Trigger a rendering of the element on the paper
     paper.findViewByModel(element).update();
   }
+  attachBoundaryEventToNode(element, data) {
+    const { paper } = this.modeler;
+    let node = this.getNodeById(data.attachedToRefId);
+
+    // Find previous attached task
+    const previousAttachedTask = element.getParentCell();
+
+    // Find new attached task
+    const newAttachedTask = this.getJointElement(paper.model, data.attachedToRefId);
+
+    if (previousAttachedTask) {
+      previousAttachedTask.unembed(element);
+    }
+    newAttachedTask.embed(element);
+    
+    element.component.node.definition.set('attachedToRef', node.definition);
+  }
+
   getJointElement(graph, targetValue) {
     const cells = graph.getCells();
     for (const cell of cells) {
