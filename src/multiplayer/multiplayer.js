@@ -169,15 +169,6 @@ export default class Multiplayer {
     this.modeler.handleDropProcedure(value, false);
     this.#nodeIdGenerator.updateCounters();
   }
-  createBoundaryEvent(value) {
-    // create a different method  instead handle drop procedure
-    // This method should:
-    // Find the parent node using an id 
-    // create the boundary node
-    // attach the boundary to the parent node found
-    this.modeler.handleDropProcedure(value, false);
-    this.#nodeIdGenerator.updateCounters();
-  }
   createRemoteShape(changes) {
     const flows = [
       'processmaker-modeler-sequence-flow',
@@ -199,9 +190,6 @@ export default class Multiplayer {
       changes.map((data) => {
         if (flows.includes(data.type)) {
           this.createFlow(data);
-        }
-        else if (boundaries.includes(data.type)) {
-          this.createBoundaryEvent(data);
         }
         else {
           this.createShape(data);
