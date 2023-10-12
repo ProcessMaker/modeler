@@ -43,7 +43,6 @@ import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEv
 import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 import { invalidNodeColor, poolColor } from '@/components/nodeColors';
-import { log } from '@processmaker/screen-builder';
 
 export default {
   name: 'Selection',
