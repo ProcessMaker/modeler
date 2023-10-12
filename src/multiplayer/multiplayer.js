@@ -6,12 +6,6 @@ import { faker } from '@faker-js/faker';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
-import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
-import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
-import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
-import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
-import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
-import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 
 const BpmnFlows = [
   {
@@ -175,15 +169,6 @@ export default class Multiplayer {
       'processmaker-modeler-text-annotation',
       'processmaker-modeler-message-flow',
       'processmaker-modeler-data-input-association',
-    ];
-
-    const boundaries = [
-      boundaryErrorEventId,
-      boundaryConditionalEventId,
-      boundaryEscalationEventId,
-      boundaryMessageEventId,
-      boundarySignalEventId,
-      boundaryTimerEventId,
     ];
 
     return new Promise(resolve => {
