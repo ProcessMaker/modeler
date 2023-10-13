@@ -368,7 +368,7 @@ export default {
       if (window.ProcessMaker && window.ProcessMaker.EventBus) {
         window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
       }
-    }
+    },
   },
   computed: {
     showWelcomeMessage() {
