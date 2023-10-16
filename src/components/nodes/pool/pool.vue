@@ -133,6 +133,29 @@ export default {
       pull(this.containingProcess.get('flowElements'), elementDefinition);
       toPool.component.containingProcess.get('flowElements').push(elementDefinition);
     },
+    moveElementRemote(element, toPool) {
+      const elementDefinition = element.component.node.definition;
+
+      if (this.laneSet) {
+        /* Remove references to the element from the current Lane */
+        const containingLane = this.laneSet.get('lanes').find(lane => {
+          return lane.get('flowNodeRef').includes(elementDefinition);
+        });
+
+        pull(containingLane.get('flowNodeRef'), elementDefinition);
+      }
+
+      /* Remove references to the element from the current process */
+      pull(this.containingProcess.get('flowElements'), elementDefinition);
+
+      toPool.component.containingProcess.get('flowElements').push(elementDefinition);
+      this.moveEmbeddedElements(element, toPool);
+
+      element.component.node.pool = toPool;
+      this.shape.unembed(element);
+      toPool.component.shape.embed(element);
+    },
+
     moveElement(element, toPool) {
       const elementDefinition = element.component.node.definition;
 
@@ -155,7 +178,7 @@ export default {
       this.shape.unembed(element);
       toPool.component.addToPool(element);
     },
-    async addLane() {
+    async addLane(emitMultiplayer =  true) {
       /* A Lane element must be contained in a LaneSet element.
          * Get the current laneSet element or create a new one. */
 
@@ -177,35 +200,40 @@ export default {
 
       lanes.push(this.pushNewLane());
 
-      await Promise.all(lanes);
+      await Promise.all(lanes).
+        then((val) => {
+          if (emitMultiplayer && this.$parent.isMultiplayer) {
+            window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', val);
+          }
+        });
       this.$emit('set-shape-stacking', this.shape);
       this.graph.getLinks().forEach(link => {
         this.$emit('set-shape-stacking', link);
       });
       this.$emit('save-state');
     },
-    createLaneSet() {
+    createLaneSet(id) {
       const laneSet = this.moddle.create('bpmn:LaneSet');
       this.laneSet = laneSet;
       const generator = this.nodeIdGenerator;
-      const [laneSetId] = generator.generate();
+      const [laneSetId] =  id ? id : generator.generate();
       this.laneSet.set('id', laneSetId);
       this.containingProcess.get('laneSets').push(laneSet);
     },
-    pushNewLane(definition = Lane.definition(this.moddle, this.$t)) {
+    async pushNewLane(definition = Lane.definition(this.moddle, this.$t)) {
       definition.set('color', this.node.definition.get('color'));
       this.$emit('set-pool-target', this.shape);
 
       const diagram = Lane.diagram(this.moddle);
       diagram.bounds.width = this.shape.getBBox().width;
-
-      this.$emit('add-node', new Node(
+      const node = new Node(
         Lane.id,
         definition,
         diagram,
-      ));
-
-      return this.$nextTick();
+      );
+      this.$emit('add-node', node);
+      await this.$nextTick();
+      return node;
     },
     addToPool(element) {
       if (element.component.node.isBpmnType('bpmn:BoundaryEvent')) {

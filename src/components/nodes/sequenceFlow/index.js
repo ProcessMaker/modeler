@@ -2,6 +2,8 @@ import component from './sequenceFlow.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import { getNodeIdGenerator } from '@/NodeIdGenerator';
+import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
 export const id = 'processmaker-modeler-sequence-flow';
 
@@ -82,4 +84,17 @@ export default {
       ],
     },
   ],
+  async multiplayerClient(modeler, data) {
+    const { paper } = modeler;
+    const sourceElem = modeler.getElementByNodeId( data.sourceRefId);
+    const targetElem = modeler.getElementByNodeId( data.targetRefId);
+    if (sourceElem && targetElem) {
+      const flow = new SequenceFlow(modeler.nodeRegistry, modeler.moddle, paper);
+      const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
+      // add Nodes
+      modeler.addNode(actualFlow, data.id);
+      const nodeIdereator = getNodeIdGenerator(modeler.definitions);
+      nodeIdereator.updateCounters();
+    }
+  },
 };
