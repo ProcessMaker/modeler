@@ -210,8 +210,7 @@ export default {
         attachedToRef: this.node.definition.get('attachedToRef'),
       };
 
-      const { paper } = window.ProcessMaker.$modeler;
-      const { x: clientX, y: clientY } = paper.localToClientPoint(this.node.diagram.bounds);
+      const { x: clientX, y: clientY } = store.getters.paper.localToClientPoint(this.node.diagram.bounds);
       
       window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', {
         clientX: clientX + 18,

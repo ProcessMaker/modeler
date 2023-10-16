@@ -625,7 +625,7 @@ export default {
         boundaryTimerEventId,
       ];
 
-      const boundaryNodes = window.ProcessMaker.$modeler.nodes.filter(node => boundaryEventTypes.includes(node.type));
+      const boundaryNodes = store.getters.nodes.filter(node => boundaryEventTypes.includes(node.type));
 
       boundaryNodes.forEach(boundaryNode => {
         if (boundaryNode.definition.attachedToRef.id === shape.model.component.node.definition.id) {
