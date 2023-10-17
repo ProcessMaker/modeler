@@ -1276,6 +1276,8 @@ export default {
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
+          await this.pushToUndoStack();
+          await this.$nextTick();
           this.saveBpmn(redirectTo, newNode.id);
         });
       });
