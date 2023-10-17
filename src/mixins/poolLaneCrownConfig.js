@@ -14,7 +14,6 @@ export default {
       ].includes(this.node.type)) {
         return;
       }
-
       if (this.node.pool) {
         if (!this.graph.getCell(this.node.pool)) {
           this.node.pool = this.graph.getElements().find(element => {
@@ -27,7 +26,6 @@ export default {
         if (this.isLane) {
           this.configureLaneInParentPool();
         }
-
         return;
       }
 
