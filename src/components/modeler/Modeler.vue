@@ -945,10 +945,10 @@ export default {
         store.commit('addNode', node);
       }
       else {
-        this.loadNodeForMultiplayer(node, definition, diagram);
+        this.loadNodeForMultiplayer(node);
       }
     },
-    loadNodeForMultiplayer(node, definition, diagram) {
+    loadNodeForMultiplayer(node) {
       if (node.type === 'processmaker-modeler-task' ||
           node.type === 'processmaker-modeler-start-event' ||
           node.type === 'processmaker-modeler-end-event'
