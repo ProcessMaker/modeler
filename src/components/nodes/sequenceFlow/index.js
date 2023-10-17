@@ -86,8 +86,8 @@ export default {
   ],
   async multiplayerClient(modeler, data) {
     const { paper } = modeler;
-    const sourceElem = modeler.getElementByNodeId( data.sourceRefId);
-    const targetElem = modeler.getElementByNodeId( data.targetRefId);
+    const sourceElem = modeler.getElementByNodeId(data.sourceRefId);
+    const targetElem = modeler.getElementByNodeId(data.targetRefId);
     if (sourceElem && targetElem) {
       const flow = new SequenceFlow(modeler.nodeRegistry, modeler.moddle, paper);
       const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);

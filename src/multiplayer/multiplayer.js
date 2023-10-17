@@ -172,7 +172,7 @@ export default class Multiplayer {
         break ;
       }
     }
-    return found ? index: -1;
+    return found ? index : -1;
   }
   getNodeById(nodeId) {
     const node = this.modeler.nodes.find((element) => element.definition && element.definition.id === nodeId);
@@ -312,7 +312,7 @@ export default class Multiplayer {
       width: lane.diagram.bounds.width,
       height: lane.diagram.bounds.height,
       poolId: lane.pool.component.node.definition.id,
-      laneSetId:  lane.pool.component.laneSet.id,
+      laneSetId: lane.pool.component.laneSet.id,
     };
     return data;
   }

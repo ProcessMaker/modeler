@@ -578,13 +578,12 @@ export default {
       this.overPoolStopDrag();
       this.updateSelectionBox();
       if (this.isMultiplayer) { 
-        const changed = [];
-        this.getProperties(this.selected, changed);
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', changed);
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
       }
     },
 
-    getProperties(shapes, changed) {
+    getProperties(shapes) {
+      let changed = [];
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
@@ -595,7 +594,7 @@ export default {
         .forEach(shape => {
           if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
             const children = shape.model.component.getElementsUnderArea(shape.model, this.graph);
-            this.getContainerProperties(children, changed);
+            changed = [...changed, ...this.getContainerProperties(children, changed)];
           } else {
             const { node } = shape.model.component;
             const defaultData = {
@@ -607,14 +606,16 @@ export default {
                 width: shape.model.get('size').width,
               },
             };
-            if (node.pool && node.pool.component) {
+            if (node?.pool?.component) {
               defaultData['poolId'] = node.pool.component.id;
             }
             changed.push(defaultData);
           }
         });
+      return changed;
     },
-    getContainerProperties(children, changed) {
+    getContainerProperties(children) {
+      const changed = [];
       children.forEach(model => {
         changed.push({
           id: model.component.node.definition.id,
@@ -626,6 +627,7 @@ export default {
           },
         });
       });
+      return changed;
     },
     /**
      * Selector will update the waypoints of the related flows

@@ -531,12 +531,7 @@ export default {
     },
     getElementByNodeId(id) {
       const cells = this.paper.model.getCells();
-      for (const cell of cells) {
-        if (cell.component && cell.component.id === id) {
-          return cell;
-        }
-      }
-      return null; // Return null if no matching element is found
+      return cells.find((cell) => cell.component && cell.component.id === id);
     },
     async close() {
       this.$emit('close');
@@ -1112,9 +1107,9 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-data-input-association',
       ];
-      const flowTypes =[
+      const flowTypes = [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
       ];
@@ -1132,7 +1127,7 @@ export default {
             id: node.definition.id,
             isAddingLaneAbove: true,
           };
-          if (node.pool && node.pool.component) {
+          if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
           }
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);

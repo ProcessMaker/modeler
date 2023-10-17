@@ -179,7 +179,7 @@ export default {
       this.shape.unembed(element);
       toPool.component.addToPool(element);
     },
-    async addLane(emitMultiplayer =  true) {
+    async addLane(emitMultiplayer = true) {
       /* A Lane element must be contained in a LaneSet element.
          * Get the current laneSet element or create a new one. */
 
@@ -201,8 +201,8 @@ export default {
 
       lanes.push(this.pushNewLane());
 
-      await Promise.all(lanes).
-        then((val) => {
+      await Promise.all(lanes)
+        .then((val) => {
           if (emitMultiplayer && this.$parent.isMultiplayer) {
             window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', val);
           }
@@ -217,7 +217,7 @@ export default {
       const laneSet = this.moddle.create('bpmn:LaneSet');
       this.laneSet = laneSet;
       const generator = this.nodeIdGenerator;
-      const [laneSetId] =  id ? id : generator.generate();
+      const [laneSetId] =  id ?? generator.generate();
       this.laneSet.set('id', laneSetId);
       this.containingProcess.get('laneSets').push(laneSet);
     },
