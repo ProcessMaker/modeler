@@ -1046,6 +1046,12 @@ export default {
       diagram.bounds.y = data.y;
       const newNode = this.createNode(data.type, definition, diagram);
       await this.addNode(newNode, data.id, true);
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      //});
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
     },
     
     async handleDrop(data) {
@@ -1193,6 +1199,7 @@ export default {
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
+        this.multiplayerHook(node, false);
         store.commit('addNode', node);
         this.poolTarget = null;
       });
