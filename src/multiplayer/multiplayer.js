@@ -294,7 +294,7 @@ export default class Multiplayer {
     this.yDoc.transact(() => {
       lanes.forEach((lane) => {
         const yMapNested = new Y.Map();
-        const data =  this.prepareLaneData(lane);
+        const data = this.prepareLaneData(lane);
         this.doTransact(yMapNested, data);
         this.yArray.push([yMapNested]);
         const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
