@@ -153,23 +153,26 @@ export default class Multiplayer {
   }
   removeNode(data) {
     const index =  this.getIndex(data.definition.id);
-    this.removeShape(data);
-    this.yArray.delete(index, 1); // delete one element
-
-    // Encode the state as an update and send it to the server
-    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-    // Send the update to the web socket server
-    this.clientIO.emit('removeElement', stateUpdate);
+    if (index >= 0) {
+      this.removeShape(data);
+      this.yArray.delete(index, 1); // delete one element
+      // Encode the state as an update and send it to the server
+      const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+      // Send the update to the web socket server
+      this.clientIO.emit('removeElement', stateUpdate);
+    }
   }
   getIndex(id) {
     let index = -1;
+    let found = false;
     for (const value of this.yArray) {
       index ++;
       if (value.get('id') === id) {
+        found = true;
         break ;
       }
     }
-    return index;
+    return found ? index: -1;
   }
   getNodeById(nodeId) {
     const node = this.modeler.nodes.find((element) => element.definition && element.definition.id === nodeId);
