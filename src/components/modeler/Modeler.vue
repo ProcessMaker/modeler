@@ -1259,7 +1259,7 @@ export default {
               window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0].type });
             }
           } else {
-            await this.replaceNodeProcedure(nodeData);
+            await this.replaceNodeProcedure(nodeData, true);
           }
         });
       });
