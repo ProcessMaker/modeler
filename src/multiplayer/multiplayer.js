@@ -248,10 +248,6 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
-    // validate if the parent pool was updated
-    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
-      element.component.node.pool.component.moveElementRemote(element, newPool);
-    }
     // Update the element's position attribute
     element.resize(
       /* Add labelWidth to ensure elements don't overlap with the pool label */
@@ -260,7 +256,13 @@ export default class Multiplayer {
     );
     element.set('position', { x: data.x, y: data.y });
     // Trigger a rendering of the element on the paper
-    paper.findViewByModel(element).update();
+    await paper.findViewByModel(element).update();
+    // validate if the parent pool was updated
+    await element.component.$nextTick();
+    await this.modeler.paperManager.awaitScheduledUpdates();
+    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
+      element.component.node.pool.component.moveElementRemote(element, newPool);
+    }
   }
  
   addFlow(data) {

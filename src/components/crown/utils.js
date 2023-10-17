@@ -62,15 +62,16 @@ export function removeNodeAssociations(node, modeler) {
 
 export function removeBoundaryEvents(graph, node, removeNode) {
   const nodeShape = graph.getCells().find(el => el.component && el.component.node === node);
-
-  nodeShape.getEmbeddedCells({ deep: true })
-    .filter(cell => {
-      return cell.component && cell.component.node.isBpmnType('bpmn:BoundaryEvent');
-    })
-    .forEach(boundaryEventShape => {
-      graph.getConnectedLinks(boundaryEventShape).forEach(shape => removeNode(shape.component.node));
-      removeNode(boundaryEventShape.component.node);
-    });
+  if (nodeShape) {
+    nodeShape.getEmbeddedCells({ deep: true })
+      .filter(cell => {
+        return cell.component && cell.component.node.isBpmnType('bpmn:BoundaryEvent');
+      })
+      .forEach(boundaryEventShape => {
+        graph.getConnectedLinks(boundaryEventShape).forEach(shape => removeNode(shape.component.node));
+        removeNode(boundaryEventShape.component.node);
+      });
+  }
 }
 
 export function removeOutgoingAndIncomingRefsToFlow(node){

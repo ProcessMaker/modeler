@@ -148,12 +148,13 @@ export default {
       /* Remove references to the element from the current process */
       pull(this.containingProcess.get('flowElements'), elementDefinition);
 
-      toPool.component.containingProcess.get('flowElements').push(elementDefinition);
-      this.moveEmbeddedElements(element, toPool);
-
       element.component.node.pool = toPool;
+    
       this.shape.unembed(element);
       toPool.component.shape.embed(element);
+      if (element.component.node.type !== laneId && toPool.component.laneSet) {
+        toPool.component.updateLaneChildren();
+      }
     },
 
     moveElement(element, toPool) {
