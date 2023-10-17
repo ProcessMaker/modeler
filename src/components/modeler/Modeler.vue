@@ -941,7 +941,57 @@ export default {
     },
     async createNodeAsync(type, definition, diagram) {
       const node =  this.createNode(type, definition, diagram);
-      store.commit('addNode', node);
+      if (!this.isMultiplayer) {
+        store.commit('addNode', node);
+      }
+      else {
+        this.loadNodeForMultiplayer(node, definition, diagram);
+      }
+    },
+    loadNodeForMultiplayer(node, definition, diagram) {
+      if (node.type === 'processmaker-modeler-task' ||
+          node.type === 'processmaker-modeler-start-event' ||
+          node.type === 'processmaker-modeler-end-event'
+      ) {
+        let ctrl =  {
+          id: node.definition.id,
+          type: node.type,
+          label: node.name,
+          bpmnType: [node.definition.$type],
+          items: [ ],
+        };
+
+        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
+          clientX: node.diagram.bounds.x,
+          clientY: node.diagram.bounds.y,
+          control: ctrl,
+          id: node.definition.id,
+        });
+      }
+
+      if (node.type === 'processmaker-modeler-sequence-flow') {
+        const nodeData = {
+          type: node.type,
+          id: node.definition.id,
+          sourceRefId: node.definition.sourceRef.id,
+          targetRefId: node.definition.targetRef.id,
+          waypoint: node.diagram.waypoint,
+        };
+        const initTime = new Date();
+        const sourceCheck = window.setInterval(() => {
+          const sourceExists = (node?.definition.$parent?.flowElements ?? [])
+            .find(n => n.id === nodeData.sourceRefId) ?? false;
+          const targetExists = (node?.definition.$parent?.flowElements ?? [])
+            .find(n => n.id === nodeData.targetRefId) ?? false;
+          const timelapse = new Date() - initTime;
+          if ((sourceExists && targetExists) || timelapse > 2000) {
+            this.multiplayer.createFlow(nodeData);
+            window.clearInterval(sourceCheck);
+          }
+        }, 100);
+
+        window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', nodeData);
+      }
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
@@ -1658,6 +1708,7 @@ export default {
         try {
           const multiplayer = new Multiplayer(this);
           multiplayer.init();
+          this.multiplayer = multiplayer;
         } catch (error) {
           console.warn('Could not initialize multiplayer', error);
         }
