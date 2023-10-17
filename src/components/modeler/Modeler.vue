@@ -1110,6 +1110,9 @@ export default {
         'processmaker-modeler-lane',
         'processmaker-modeler-generic-flow',
         'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-output-association',
       ];
       const flowTypes =[
         'processmaker-modeler-sequence-flow',
