@@ -1113,6 +1113,7 @@ export default {
       ];
       const flowTypes =[
         'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
       ];
       if (!this.isMultiplayer) {
         return;
