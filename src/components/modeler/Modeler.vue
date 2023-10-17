@@ -1111,23 +1111,37 @@ export default {
         'processmaker-modeler-generic-flow',
         'processmaker-modeler-sequence-flow',
       ];
+      const flowTypes =[
+        'processmaker-modeler-sequence-flow',
+      ];
       if (!this.isMultiplayer) {
         return;
       }
-      if (!blackList.includes(node.type) && !fromClient) {
-        const defaultData = {
-          x: node.diagram.bounds.x,
-          y: node.diagram.bounds.y,
-          height: node.diagram.bounds.height,
-          width: node.diagram.bounds.width,
-          type: node.type,
-          id: node.definition.id,
-          isAddingLaneAbove: true,
-        };
-        if (node.pool && node.pool.component) {
-          defaultData['poolId'] = node.pool.component.id;
+      if (!fromClient) {
+        if (!blackList.includes(node.type) && !flowTypes.includes(node.type)) {
+          const defaultData = {
+            x: node.diagram.bounds.x,
+            y: node.diagram.bounds.y,
+            height: node.diagram.bounds.height,
+            width: node.diagram.bounds.width,
+            type: node.type,
+            id: node.definition.id,
+            isAddingLaneAbove: true,
+          };
+          if (node.pool && node.pool.component) {
+            defaultData['poolId'] = node.pool.component.id;
+          }
+          window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
-        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
+        if (flowTypes.includes(node.type)) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+            id: node.definition.id,
+            type: node.type,
+            sourceRefId: node.definition.sourceRef.id,
+            targetRefId: node.definition.targetRef.id,
+            waypoint: node.diagram.waypoint,
+          });
+        }
       }
     },
     async addNode(node, id = null, fromClient = false) {

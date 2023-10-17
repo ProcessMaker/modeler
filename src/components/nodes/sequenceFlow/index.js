@@ -92,7 +92,7 @@ export default {
       const flow = new SequenceFlow(modeler.nodeRegistry, modeler.moddle, paper);
       const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
       // add Nodes
-      modeler.addNode(actualFlow, data.id);
+      modeler.addNode(actualFlow, data.id, true);
       const nodeIdereator = getNodeIdGenerator(modeler.definitions);
       nodeIdereator.updateCounters();
     }
