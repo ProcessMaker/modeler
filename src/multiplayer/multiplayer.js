@@ -89,7 +89,7 @@ export default class Multiplayer {
     });
 
     // Listen for updates when a new element is added
-    this.clientIO.on('createElement', async (payload) => {
+    this.clientIO.on('createElement', async(payload) => {
       // Create the new element in the process
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
@@ -153,7 +153,7 @@ export default class Multiplayer {
       'multiplayer-replaceNode',
       ({ nodeData, newControl }) => {
         this.replaceNode(nodeData, newControl);
-      }
+      },
     );
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', (data) => {
@@ -161,7 +161,7 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspector', (data) =>
-      this.updateInspector(data)
+      this.updateInspector(data),
     );
   }
   addNode(data) {
@@ -221,7 +221,7 @@ export default class Multiplayer {
   }
   getNodeById(nodeId) {
     const node = this.modeler.nodes.find(
-      (element) => element.definition && element.definition.id === nodeId
+      (element) => element.definition && element.definition.id === nodeId,
     );
 
     return node;
@@ -267,14 +267,15 @@ export default class Multiplayer {
       isReplaced: true,
     });
   }
+  // eslint-disable-next-line no-unused-vars
   updateNodeFromInspectorChanges(data) {
-    const index = this.getIndex(data.id);
-    const nodeToUpdate = this.yArray.get(index);
-    const node = this.getNodeById(data.id);
-    const nodeData = {
-      name: data.properties.definition.name,
-      documentation: data.properties.definition.documentation,
-    };
+    // const index = this.getIndex(data.id);
+    // const nodeToUpdate = this.yArray.get(index);
+    // const node = this.getNodeById(data.id);
+    // const nodeData = {
+    //   name: data.properties.definition.name,
+    //   documentation: data.properties.definition.documentation,
+    // };
     // this.modeler.replaceNodeProcedure(nodeData, true);
     this.#nodeIdGenerator.updateCounters();
   }
@@ -350,12 +351,12 @@ export default class Multiplayer {
       const flow = new bpmnFlow.factory(
         this.modeler.nodeRegistry,
         this.modeler.moddle,
-        this.modeler.paper
+        this.modeler.paper,
       );
       const actualFlow = flow.makeFlowNode(
         sourceElem,
         targetElem,
-        data.waypoint
+        data.waypoint,
       );
       // add Nodes
       this.modeler.addNode(actualFlow, data.id);
