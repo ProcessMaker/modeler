@@ -114,6 +114,7 @@
         :is-completed="requestCompletedNodes.includes(node.definition.id)"
         :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
         :is-idle="requestIdleNodes.includes(node.definition.id)"
+        :is-commented="requestCommentedNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
         @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
@@ -332,6 +333,7 @@ export default {
       previewConfigs: [],
       multiplayer: null,
       isMultiplayer: false,
+      requestCommentedNodes: [],
     };
   },
   watch: {
@@ -1495,6 +1497,14 @@ export default {
         this.players.splice(playerIndex, 1);
       }
     },
+    listenForCommentedNodes() {
+      if (window.ProcessMaker && window.ProcessMaker.EventBus) {
+        window.ProcessMaker.EventBus.$on('comments:commentedNodes', this.commentedNodesChanged);
+      }
+    },
+    commentedNodesChanged(value) {
+      this.requestCommentedNodes = value;
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1682,6 +1692,7 @@ export default {
         this.redirect(redirectUrl);
       }
     });
+    this.listenForCommentedNodes();
   },
 };
 </script>

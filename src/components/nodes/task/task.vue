@@ -162,7 +162,9 @@ export default {
       },
     });
 
+    
     this.shape.addTo(this.graph);
+    
     this.shape.component = this;
   },
 };
