@@ -3,11 +3,14 @@
     <b-col
       id="inspector"
       class="pl-0 h-100 overflow-hidden inspector-column"
-      :class="[{ 'ignore-pointer': canvasDragPosition, 'ai-inspector': isAiInspector }]"
+      :class="[
+        { 'ignore-pointer': canvasDragPosition, 'ai-inspector': isAiInspector },
+      ]"
       data-test="inspector-column"
     >
       <b-card
-        no-body class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0"
+        no-body
+        class="inspector-container border-top-0 border-bottom-0 border-right-0 rounded-0"
         data-test="inspector-container"
         :style="{ height: parentHeight }"
         data-cy="inspector-panel"
@@ -80,7 +83,15 @@ Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
   components: {},
-  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions', 'isMultiplayer'],
+  props: [
+    'nodeRegistry',
+    'moddle',
+    'processNode',
+    'parentHeight',
+    'canvasDragPosition',
+    'definitions',
+    'isMultiplayer',
+  ],
   data() {
     return {
       data: {},
@@ -92,8 +103,6 @@ export default {
   },
   watch: {
     highlightedNode(oldValue, value) {
-      console.log('old', oldValue);
-      console.log('new', value);
       if (!isEqual(oldValue, value)) {
         document.activeElement.blur();
         this.prepareData();
@@ -128,7 +137,9 @@ export default {
       return this.$t('Configuration');
     },
     isAiInspector() {
-      return this.data.implementation === 'package-ai/processmaker-ai-assistant';
+      return (
+        this.data.implementation === 'package-ai/processmaker-ai-assistant'
+      );
     },
     highlightedNode() {
       return store.getters.highlightedNodes[0];
@@ -151,17 +162,30 @@ export default {
         inspectorHandler = this.customInspectorHandler;
       }
 
-      return value => {
+      return (value) => {
         if (!value) {
           return;
         }
-        if (isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
-
+        if (
+          isString(value.documentation) &&
+          get(
+            this.highlightedNode.definition.get('documentation')[0],
+            'text'
+          ) !== value.documentation
+        ) {
           const documentation = value.documentation
-            ? [this.moddle.create('bpmn:Documentation', { text: value.documentation })]
+            ? [
+                this.moddle.create('bpmn:Documentation', {
+                  text: value.documentation,
+                }),
+              ]
             : undefined;
 
-          this.setNodeProp(this.highlightedNode, 'documentation', documentation);
+          this.setNodeProp(
+            this.highlightedNode,
+            'documentation',
+            documentation
+          );
         }
 
         inspectorHandler(omit(value, ['documentation']));
@@ -189,24 +213,32 @@ export default {
     },
     prepareConfig() {
       if (!this.highlightedNode) {
-        return this.config = {
+        return (this.config = {
           name: 'Empty',
           items: [],
-        };
+        });
       }
 
       const { type, definition } = this.highlightedNode;
 
       if (this.highlightedNode === this.processNode) {
-        return this.config = Process.inspectorConfig;
+        return (this.config = Process.inspectorConfig);
       }
 
-      const inspectorConfig = cloneDeep(this.nodeRegistry[type].inspectorConfig);
-      const sequenceFlowConfigurationFormElements = get(inspectorConfig, '[0].items[0].items');
+      const inspectorConfig = cloneDeep(
+        this.nodeRegistry[type].inspectorConfig
+      );
+      const sequenceFlowConfigurationFormElements = get(
+        inspectorConfig,
+        '[0].items[0].items'
+      );
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
-        let helper = this.$t('Enter the expression that describes the workflow condition');
-        helper += ' <a href="https://docs.processmaker.com/designing-processes/expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
+        let helper = this.$t(
+          'Enter the expression that describes the workflow condition'
+        );
+        helper +=
+          ' <a href="https://docs.processmaker.com/designing-processes/expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
         const expressionConfig = {
           component: 'FormInput',
           config: {
@@ -217,21 +249,31 @@ export default {
         };
 
         // Always move the Expression Field below the Name field in the inspector
-        const nameField = sequenceFlowConfigurationFormElements.find(x => x.config && x.config.label === 'Name');
-        const nameFieldIndex = sequenceFlowConfigurationFormElements.indexOf(nameField);
+        const nameField = sequenceFlowConfigurationFormElements.find(
+          (x) => x.config && x.config.label === 'Name'
+        );
+        const nameFieldIndex =
+          sequenceFlowConfigurationFormElements.indexOf(nameField);
         if (nameField && nameFieldIndex >= 0) {
-          sequenceFlowConfigurationFormElements.splice(nameFieldIndex + 1, 0, expressionConfig);
-        }
-        else {
+          sequenceFlowConfigurationFormElements.splice(
+            nameFieldIndex + 1,
+            0,
+            expressionConfig
+          );
+        } else {
           sequenceFlowConfigurationFormElements.push(expressionConfig);
         }
-
       }
       if (this.highlightedNode._modelerId?.length > 0 && this.isMultiplayer) {
-        console.count('trigger');
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspector', inspectorConfig[0]);
+        const body = {
+          id: this.highlightedNode.definition.id,
+          properties: {
+            definition: this.highlightedNode.definition,
+          },
+        };
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspector', body);
       }
-      return this.config = inspectorConfig;
+      return (this.config = inspectorConfig);
     },
     prepareData() {
       if (!this.highlightedNode) {
@@ -240,30 +282,47 @@ export default {
 
       const type = this.highlightedNode && this.highlightedNode.type;
 
-      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
-        data[key] = value;
+      const defaultDataTransform = (node) =>
+        Object.entries(node.definition).reduce((data, [key, value]) => {
+          data[key] = value;
 
-        return data;
-      }, {});
+          return data;
+        }, {});
 
-      this.data = type && this.nodeRegistry[type].inspectorData
-        ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
-        : defaultDataTransform(this.highlightedNode);
+      this.data =
+        type && this.nodeRegistry[type].inspectorData
+          ? this.nodeRegistry[type].inspectorData(
+              this.highlightedNode,
+              defaultDataTransform,
+              this
+            )
+          : defaultDataTransform(this.highlightedNode);
     },
     isSequenceFlow(type) {
       return type === sequenceFlowId;
     },
     isConnectedToGateway(definition) {
-      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(definition.sourceRef.$type);
+      return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(
+        definition.sourceRef.$type
+      );
     },
     isConnectedToSubProcess(definition) {
       return definition.targetRef.$type === 'bpmn:CallActivity';
     },
     customInspectorHandler(value) {
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler);
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(
+        value,
+        this.highlightedNode,
+        this.setNodeProp,
+        this.moddle,
+        this.definitions,
+        this.defaultInspectorHandler
+      );
     },
     processNodeInspectorHandler(value) {
-      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
+      return this.defaultInspectorHandler(
+        omit(value, ['artifacts', 'flowElements', 'laneSets'])
+      );
     },
     setNodeProp(node, key, value) {
       this.$emit('shape-resize');
