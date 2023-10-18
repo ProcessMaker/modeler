@@ -114,7 +114,7 @@ export default new Vuex.Store({
   },
   actions: {
     getUserPinnedObjects({ commit }) {
-      if (!window.ProcessMaker.user) {
+      if (window.ProcessMaker?.user?.id === 'standalone') {
         // For standalone version of Modeler
         const pinnedNodes = localStorage.pinnedNodes ? JSON.parse(localStorage.pinnedNodes) : [] ;
         pinnedNodes.forEach(node => {
@@ -137,7 +137,7 @@ export default new Vuex.Store({
     addUserPinnedObject({ commit, state }, pinnedNode) {
       commit('setPinnedNodes', pinnedNode);
       const pinnedNodes = state.pinnedNodeTypes;
-      if (!window.ProcessMaker.user) {
+      if (window.ProcessMaker?.user?.id === 'standalone') {
         // For standalone version of Modeler
         localStorage.pinnedNodes = JSON.stringify(pinnedNodes);
         return;
@@ -152,7 +152,7 @@ export default new Vuex.Store({
     removeUserPinnedObject({ commit, state }, nodeToUnpin) {
       commit('setUnpinNode', nodeToUnpin);
       const pinnedNodes = state.pinnedNodeTypes;
-      if (!window.ProcessMaker.user) {
+      if (window.ProcessMaker?.user?.id === 'standalone') {
         // For standalone version of Modeler
         localStorage.pinnedNodes = JSON.stringify(pinnedNodes);
         return;

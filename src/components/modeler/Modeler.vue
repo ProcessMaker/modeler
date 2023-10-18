@@ -529,6 +529,10 @@ export default {
         return this.paper.findViewByModel(shape);
       });
     },
+    getElementByNodeId(id) {
+      const cells = this.paper.model.getCells();
+      return cells.find((cell) => cell.component && cell.component.id === id);
+    },
     async close() {
       this.$emit('close');
     },
@@ -1035,22 +1039,22 @@ export default {
         control,
       });
     },
-    handleDrop(data) {
-      const { clientX, clientY, control } = data;
-      if (this.isMultiplayer) {
-        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
-          clientX,
-          clientY,
-          control,
-          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
-          color: null,
-        });
-      } else  {
-        this.handleDropProcedure(data);
+    async addRemoteNode(data){
+      const definition = this.nodeRegistry[data.type].definition(this.moddle, this.$t);
+      const diagram = this.nodeRegistry[data.type].diagram(this.moddle);
+      diagram.bounds.x = data.x;
+      diagram.bounds.y = data.y;
+      const newNode = this.createNode(data.type, definition, diagram);
+      await this.addNode(newNode, data.id, true);
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
       }
     },
-    async handleDropProcedure(data, selected=true) {
-      const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
+    
+    async handleDrop(data) {
+      const { clientX, clientY, control, nodeThatWillBeReplaced } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
         return;
@@ -1069,11 +1073,10 @@ export default {
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
-      if (selected) {
-        this.highlightNode(newNode);
-      }
 
-      await this.addNode(newNode, id, selected);
+      this.highlightNode(newNode);
+
+      await this.addNode(newNode);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -1102,7 +1105,50 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node, id = null, selected = true) {
+    multiplayerHook(node, fromClient) {
+      const blackList = [
+        'processmaker-modeler-lane',
+        'processmaker-modeler-generic-flow',
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-input-association',
+      ];
+      const flowTypes = [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
+      ];
+      if (!this.isMultiplayer) {
+        return;
+      }
+      if (!fromClient) {
+        if (!blackList.includes(node.type) && !flowTypes.includes(node.type)) {
+          const defaultData = {
+            x: node.diagram.bounds.x,
+            y: node.diagram.bounds.y,
+            height: node.diagram.bounds.height,
+            width: node.diagram.bounds.width,
+            type: node.type,
+            id: node.definition.id,
+            isAddingLaneAbove: true,
+          };
+          if (node?.pool?.component) {
+            defaultData['poolId'] = node.pool.component.id;
+          }
+          window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
+        }
+        if (flowTypes.includes(node.type)) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+            id: node.definition.id,
+            type: node.type,
+            sourceRefId: node.definition.sourceRef.id,
+            targetRefId: node.definition.targetRef.id,
+            waypoint: node.diagram.waypoint,
+          });
+        }
+      }
+    },
+    async addNode(node, id = null, fromClient = false) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
@@ -1112,6 +1158,9 @@ export default {
       node.setIds(this.nodeIdGenerator, id);
 
       this.planeElements.push(node.diagram);
+      // add multiplayer logic as a hook
+      this.multiplayerHook(node, fromClient);
+
       store.commit('addNode', node);
       this.poolTarget = null;
 
@@ -1127,7 +1176,7 @@ export default {
       ].includes(node.type)) {
         return;
       }
-      if (selected) {
+      if (!fromClient) {
         // Select the node after it has been added to the store (does not apply to flows)
         this.selectNewNode(node);
       }
@@ -1149,6 +1198,7 @@ export default {
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
+        this.multiplayerHook(node, false);
         store.commit('addNode', node);
         this.poolTarget = null;
       });
@@ -1208,10 +1258,10 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
-          const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
+          const { x, y } = node.diagram.bounds;
 
           const nodeData = {
-            clientX, clientY,
+            x, y,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
           };
@@ -1225,10 +1275,10 @@ export default {
             }).filter(Boolean);
             // If the new control is found, emit event to server to replace node
             if (newControl.length === 1) {
-              window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0] });
+              window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0].type });
             }
           } else {
-            await this.replaceNodeProcedure(nodeData);
+            await this.replaceNodeProcedure(nodeData, true);
           }
         });
       });
@@ -1241,7 +1291,7 @@ export default {
         data.clientY = clientY;
       }
 
-      const newNode = await this.handleDropProcedure(data);
+      const newNode = await this.handleDrop(data);
 
       await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
       this.highlightNode(newNode);
@@ -1251,7 +1301,7 @@ export default {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDropProcedure({
+          const newNode = await this.handleDrop({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
