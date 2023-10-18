@@ -1,4 +1,4 @@
-import { dia, linkTools, shapes } from 'jointjs';
+import { dia, linkTools } from 'jointjs';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import { invalidNodeColor, setShapeColor, validNodeColor } from '@/components/nodeColors';
@@ -99,7 +99,7 @@ export default {
           fill: COLOR_COMMENTED_FILL,
           stroke: 'transparent',
           r: 7.5, // radius of the circle
-          cx: 50 // move the centre of the circle 5 pixels from the end of the path
+          cx: 50, // move the centre of the circle 5 pixels from the end of the path
         });
       }
     },
