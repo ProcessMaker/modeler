@@ -2,7 +2,6 @@ import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
-import { faker } from '@faker-js/faker';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
@@ -54,7 +53,8 @@ export default class Multiplayer {
       // Join the room
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
-        clientName: faker.person.fullName(),
+        clientName: window.ProcessMaker.user.fullName,
+        clientAvatar: window.ProcessMaker.user.avatar,
       });
     });
 
@@ -67,7 +67,7 @@ export default class Multiplayer {
             id: client.id,
             name: client.name,
             color: '#FF6F61',
-            imgSrc: null,
+            avatar: client.avatar,
             top: 90,
             left: 80,
           };
