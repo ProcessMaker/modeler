@@ -1043,6 +1043,7 @@ export default {
           clientY,
           control,
           id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
+          color: null,
         });
       } else  {
         this.handleDropProcedure(data);

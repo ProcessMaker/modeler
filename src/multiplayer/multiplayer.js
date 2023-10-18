@@ -6,6 +6,7 @@ import { faker } from '@faker-js/faker';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
+import store from '@/store';
 const BpmnFlows = [
   {
     type: 'processmaker-modeler-text-annotation',
@@ -140,6 +141,7 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
       this.addFlow(data);
     });
+    
   }
   addNode(data) {
     // Add the new element to the process
@@ -274,6 +276,10 @@ export default class Multiplayer {
     const element = this.getJointElement(paper.model, data.id);
     // Update the element's position attribute
     element.set('position', { x:data.clientX, y:data.clientY });
+    
+    const node = this.getNodeById(data.id);
+    store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+
     // Trigger a rendering of the element on the paper
     paper.findViewByModel(element).update();
   }

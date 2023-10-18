@@ -137,6 +137,16 @@ export default {
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
       Vue.set(this.node.definition, 'color', color);
       this.$emit('save-state');
+      
+      const properties = {
+        id: this.node.definition.id,
+        properties: {
+          color: this.node.definition.color,
+          clientX: this.node.diagram.bounds.x,
+          clientY: this.node.diagram.bounds.y,
+        },
+      };
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [properties]);
     },
     resetNodeColor() {
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: undefined });
