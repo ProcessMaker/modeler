@@ -164,6 +164,31 @@ export default {
         this.updateWaypoints();
         await this.$nextTick();
 
+        if (this.$parent.isMultiplayer && this.linkView) {
+          // update waypoints in multiplayer mode
+          const nodeType = this.linkView.model.component.node.type;
+          const sourceRefId = this.linkView.sourceView.model.component.node.definition.id;
+          const targetRefId = this.linkView.targetView.model.component.node.definition.id;
+
+          const changes = [
+            {
+              id: this.linkView.model.component.node.definition.id,
+              properties: {
+                type: nodeType,
+                waypoint: [
+                  this.linkView.sourceAnchor.toJSON(),
+                  ...this.shape.vertices(),
+                  this.linkView.targetAnchor.toJSON(),
+                ],
+                sourceRefId,
+                targetRefId,
+              },
+            },
+          ];
+
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', changes);
+        }
+
         this.listeningToMouseleave = true;
         this.$emit('save-state');
       }
@@ -175,14 +200,15 @@ export default {
       * @param {Object} options
       */
     async onChangeTargets(link, vertices, options){
-      if (options && options.ui) {
+      if (options?.ui) {
         await this.$nextTick();
         await this.waitForUpdateWaypoints();
+        this.listeningToMouseleave = false;
         await this.storeWaypoints();
       }
     },
     async onChangeVertices(link, vertices, options){
-      if (options && options.ui) {
+      if (options?.ui) {
         this.updateWaypoints();
         await this.$nextTick();
         this.listeningToMouseleave = false;
