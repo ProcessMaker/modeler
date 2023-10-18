@@ -332,6 +332,13 @@ export default {
       previewConfigs: [],
       multiplayer: null,
       isMultiplayer: false,
+      flowTypes: [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-association',
+      ],
     };
   },
   watch: {
@@ -1115,18 +1122,13 @@ export default {
         'processmaker-modeler-data-input-association',
         'processmaker-modeler-data-output-association',
       ];
-      const flowTypes = [
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-message-flow',
-        'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-output-association',
-        'processmaker-modeler-association',
-      ];
+
       if (!this.isMultiplayer) {
         return;
       }
+
       if (!fromClient) {
-        if (!blackList.includes(node.type) && !flowTypes.includes(node.type)) {
+        if (!blackList.includes(node.type) && !this.flowTypes.includes(node.type)) {
           const defaultData = {
             x: node.diagram.bounds.x,
             y: node.diagram.bounds.y,
@@ -1141,7 +1143,7 @@ export default {
           }
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
-        if (flowTypes.includes(node.type)) {
+        if (this.flowTypes.includes(node.type)) {
           const sourceRefId = node.definition.sourceRef.id;
           const targetRefId = node.definition.targetRef.id;
 
