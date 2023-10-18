@@ -1144,8 +1144,8 @@ export default {
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
         if (this.flowTypes.includes(node.type)) {
-          const sourceRefId = node.definition.sourceRef.id;
-          const targetRefId = node.definition.targetRef.id;
+          const sourceRefId = node.definition.sourceRef?.id;
+          const targetRefId = node.definition.targetRef?.id;
 
           if (sourceRefId && targetRefId) {
             window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {

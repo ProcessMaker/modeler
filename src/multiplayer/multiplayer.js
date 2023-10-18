@@ -1,8 +1,8 @@
 import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
-import Room from './room';
 import { getDefaultAnchorPoint } from '@/portsUtils';
+import Room from './room';
 
 export default class Multiplayer {
   clientIO = null;
