@@ -25,7 +25,8 @@ export default class Multiplayer {
     // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
     // Get the room name from the process id
-    this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
+    const processId = window.ProcessMaker.modeler.process.uuid ?? window.ProcessMaker.modeler.process.id;
+    this.room = new Room(`room-${processId}`);
 
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
@@ -34,8 +35,8 @@ export default class Multiplayer {
       // Join the room
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
-        clientName: window.ProcessMaker.user.fullName,
-        clientAvatar: window.ProcessMaker.user.avatar,
+        clientName: window.ProcessMaker.user?.fullName,
+        clientAvatar: window.ProcessMaker.user?.avatar,
       });
     });
 
