@@ -23,7 +23,7 @@ export default {
     filteredPlayers() {
       const allPlayers = uniqBy(this.players, 'name');
       return allPlayers.filter(player => {
-        return player.name.toLowerCase() !== window.ProcessMaker.user.fullName.toLowerCase();
+        return player.name.toLowerCase() !== window.ProcessMaker.user?.fullName?.toLowerCase();
       });
     },
   },

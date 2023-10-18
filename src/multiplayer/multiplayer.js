@@ -2,6 +2,7 @@ import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
+import { faker } from '@faker-js/faker';
 import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
@@ -44,7 +45,8 @@ export default class Multiplayer {
     // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
     // Get the room name from the process id
-    this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
+    const processId = window.ProcessMaker.modeler.process.uuid ?? window.ProcessMaker.modeler.process.id;
+    this.room = new Room(`room-${processId}`);
 
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
@@ -53,8 +55,8 @@ export default class Multiplayer {
       // Join the room
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
-        clientName: window.ProcessMaker.user.fullName,
-        clientAvatar: window.ProcessMaker.user.avatar,
+        clientName: window.ProcessMaker.user?.fullName ?? faker.person.fullName(),
+        clientAvatar: window.ProcessMaker.user?.avatar ?? '',
       });
     });
 
