@@ -139,6 +139,7 @@ export default {
         if (!value) {
           return;
         }
+       
         if (isString(value.documentation) && get(this.highlightedNode.definition.get('documentation')[0], 'text') !== value.documentation) {
 
           const documentation = value.documentation
@@ -211,7 +212,11 @@ export default {
         }
 
       }
-
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
+        id: this.highlightedNode.definition.id,
+        properties:{  inspector: JSON.parse(JSON.stringify(this.highlightedNode.definition)) },
+        
+      }]);
       return this.config = inspectorConfig;
     },
     prepareData() {
@@ -230,6 +235,8 @@ export default {
       this.data = type && this.nodeRegistry[type].inspectorData
         ? this.nodeRegistry[type].inspectorData(this.highlightedNode, defaultDataTransform, this)
         : defaultDataTransform(this.highlightedNode);
+
+     
     },
     isSequenceFlow(type) {
       return type === sequenceFlowId;

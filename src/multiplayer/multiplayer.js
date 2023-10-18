@@ -191,6 +191,7 @@ export default class Multiplayer {
     });
   }
   updateNodes(data) {
+    console.log(data);
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate =  this.yArray.get(index);
@@ -249,8 +250,13 @@ export default class Multiplayer {
     this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: false });
   }
   async updateShapes(data) {
+
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
+    if (data.inspector) {
+      element.component.node.definition.name = data.inspector.name;
+      return;
+    }
     const newPool = this.modeler.getElementByNodeId(data.poolId);
     // Update the element's position attribute
     element.resize(
