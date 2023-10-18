@@ -33,8 +33,8 @@ export default class Multiplayer {
       // Join the room
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
-        clientName: window.ProcessMaker.user?.fullName ?? '',
-        clientAvatar: window.ProcessMaker.user?.avatar ?? '',
+        clientName: window.ProcessMaker.user?.fullName,
+        clientAvatar: window.ProcessMaker.user?.avatar,
       });
     });
 
