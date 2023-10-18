@@ -268,11 +268,6 @@ export default {
         }
 
         if (this.linkView && ['processmaker-modeler-association', 'processmaker-modeler-data-input-association'].includes(this.shape.component.node.type)) {
-          const currentNode = this.shape.component.node;
-          // update sourceRef and targetRef
-          currentNode.definition.set('sourceRef', this.linkView.sourceView.model.component.node.definition);
-          currentNode.definition.set('targetRef', this.linkView.targetView.model.component.node.definition);
-
           this.$parent.multiplayerHook(this.shape.component.node, false);
         }
 
