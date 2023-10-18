@@ -1153,8 +1153,13 @@ export default {
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
         if (this.flowTypes.includes(node.type)) {
-          const sourceRefId = node.definition.sourceRef?.id;
-          const targetRefId = node.definition.targetRef?.id;
+          let sourceRefId = node.definition.sourceRef?.id;
+          let targetRefId = node.definition.targetRef?.id;
+
+          if (node.type === 'processmaker-modeler-data-input-association') {
+            sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
+            targetRefId = node.definition.targetRef?.$parent?.$parent.get('id');
+          }
 
           if (sourceRefId && targetRefId) {
             window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
