@@ -1048,7 +1048,6 @@ export default {
       await this.addNode(newNode, data.id, true);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
-      //});
       if (this.autoValidate) {
         this.validateBpmnDiagram();
       }
