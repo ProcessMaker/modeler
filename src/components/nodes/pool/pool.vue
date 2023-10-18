@@ -155,6 +155,7 @@ export default {
       if (element.component.node.type !== laneId && toPool.component.laneSet) {
         toPool.component.updateLaneChildren();
       }
+      this.$emit('set-shape-stacking', element.component.shape);
     },
 
     moveElement(element, toPool) {
