@@ -23,6 +23,7 @@ export default {
   props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
   data() {
     return {
+      linkView: null,
       sourceShape: null,
       target: null,
       listeningToMouseup: false,
@@ -189,9 +190,9 @@ export default {
       }
     },
     updateWaypoints() {
-      const linkView = this.shape.findView(this.paper);
-      const start = linkView.sourceAnchor;
-      const end = linkView.targetAnchor;
+      this.linkView = this.shape.findView(this.paper);
+      const start = this.linkView.sourceAnchor;
+      const end = this.linkView.targetAnchor;
 
       this.node.diagram.waypoint = [start,
         ...this.shape.vertices(),
@@ -239,6 +240,16 @@ export default {
         if (this.updateDefinitionLinks) {
           this.updateDefinitionLinks();
         }
+
+        if (this.linkView && ['processmaker-modeler-association', 'processmaker-modeler-data-input-association'].includes(this.shape.component.node.type)) {
+          const currentNode = this.shape.component.node;
+          // update sourceRef and targetRef
+          currentNode.definition.set('sourceRef', this.linkView.sourceView.model.component.node.definition);
+          currentNode.definition.set('targetRef', this.linkView.targetView.model.component.node.definition);
+
+          this.$parent.multiplayerHook(this.shape.component.node, false);
+        }
+
         this.$emit('save-state');
       });
 

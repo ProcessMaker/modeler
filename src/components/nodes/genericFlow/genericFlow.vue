@@ -109,6 +109,7 @@ export default {
       const flow = new bpmnFlow.factory(this.nodeRegistry, this.moddle, this.paper);
       const genericLink = this.shape.findView(this.paper);
       const waypoint =  [genericLink.sourceAnchor.toJSON(), genericLink.targetAnchor.toJSON()];
+
       this.$emit('replace-generic-flow', {
         actualFlow: flow.makeFlowNode(this.sourceShape, this.target, waypoint),
         genericFlow: this.node,
