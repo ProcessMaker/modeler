@@ -85,6 +85,7 @@
         :canvas-drag-position="canvasDragPosition"
         @shape-resize="shapeResize(false)"
         @toggleInspector="handleToggleInspector"
+        :is-multiplayer="isMultiplayer"
       />
 
       <component

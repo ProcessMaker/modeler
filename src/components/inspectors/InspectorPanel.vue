@@ -45,7 +45,7 @@
 
 <script>
 import Vue from 'vue';
-
+import { isEqual } from 'lodash';
 import { renderer } from '@processmaker/screen-builder';
 
 import {
@@ -79,8 +79,8 @@ Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
 export default {
-  components: { },
-  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions'],
+  components: {},
+  props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions', 'isMultiplayer'],
   data() {
     return {
       data: {},
@@ -91,17 +91,33 @@ export default {
     };
   },
   watch: {
-    highlightedNode() {
-      document.activeElement.blur();
-      this.prepareData();
-      this.prepareConfig();
+    highlightedNode(oldValue, value) {
+      console.log('old', oldValue);
+      console.log('new', value);
+      if (!isEqual(oldValue, value)) {
+        document.activeElement.blur();
+        this.prepareData();
+        this.prepareConfig();
+      }
     },
-    'highlightedNode.definition.assignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignmentLock'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.allowReassignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.assignment'(current, previous) {
+      this.handleAssignmentChanges(current, previous);
+    },
+    'highlightedNode.definition.assignmentLock'(current, previous) {
+      this.handleAssignmentChanges(current, previous);
+    },
+    'highlightedNode.definition.allowReassignment'(current, previous) {
+      this.handleAssignmentChanges(current, previous);
+    },
+    'highlightedNode.definition.assignedUsers'(current, previous) {
+      this.handleAssignmentChanges(current, previous);
+    },
+    'highlightedNode.definition.assignedGroups'(current, previous) {
+      this.handleAssignmentChanges(current, previous);
+    },
+    'highlightedNode.definition.assignmentRules'(current, previous) {
+      this.handleAssignmentChanges(current, previous);
+    },
   },
   computed: {
     inspectorHeaderTitle() {
@@ -162,7 +178,7 @@ export default {
     /**
      * On Close even handler
      */
-    onClose(){
+    onClose() {
       this.$emit('toggleInspector', false);
     },
     handleAssignmentChanges(currentValue, previousValue) {
@@ -211,7 +227,10 @@ export default {
         }
 
       }
-
+      if (this.highlightedNode._modelerId?.length > 0 && this.isMultiplayer) {
+        console.count('trigger');
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspector', inspectorConfig[0]);
+      }
       return this.config = inspectorConfig;
     },
     prepareData() {

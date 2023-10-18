@@ -28,6 +28,7 @@ export default class Multiplayer {
   clientIO = null;
   yDoc = null;
   yArray = null;
+  yArrayInspector = null;
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
@@ -38,6 +39,7 @@ export default class Multiplayer {
     this.yDoc = new Y.Doc();
     // Create a shared array
     this.yArray = this.yDoc.getArray('elements');
+    this.yArrayInspector = this.yDoc.getArray('inspector');
     // Create a Modeler instance
     this.modeler = modeler;
   }
@@ -140,6 +142,8 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
       this.addFlow(data);
     });
+
+    window.ProcessMaker.EventBus.$on('multiplayer-updateInspector', (data) => this.updateInspector(data));
   }
   addNode(data) {
     // Add the new element to the process
@@ -310,6 +314,14 @@ export default class Multiplayer {
       this.modeler.addNode(actualFlow, data.id);
       this.#nodeIdGenerator.updateCounters();
     }
-
+  }
+  updateInspector(data) {
+    console.log('data', data);
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    this.clientIO.emit('updateInspector', stateUpdate);
   }
 }
