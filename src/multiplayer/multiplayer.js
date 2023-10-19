@@ -228,6 +228,7 @@ export default class Multiplayer {
       clientY,
       control: { type: updatedNode.type },
       nodeThatWillBeReplaced: node,
+      color: node.color,
       id: updatedNode.id,
     };
 
@@ -253,6 +254,7 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
+
     // Update the element's position attribute
     element.resize(
       /* Add labelWidth to ensure elements don't overlap with the pool label */

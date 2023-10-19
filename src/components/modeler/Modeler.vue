@@ -1131,6 +1131,7 @@ export default {
             type: node.type,
             id: node.definition.id,
             isAddingLaneAbove: true,
+            color: node.color,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;

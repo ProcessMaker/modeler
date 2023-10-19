@@ -142,8 +142,12 @@ export default {
         id: this.node.definition.id,
         properties: {
           color: this.node.definition.color,
-          clientX: this.node.diagram.bounds.x,
-          clientY: this.node.diagram.bounds.y,
+          x: this.node.diagram.bounds.x,
+          y: this.node.diagram.bounds.y,
+          height: this.node.diagram.bounds.height,
+          width: this.node.diagram.bounds.width,
+          type: this.node.type,
+          id: this.node.definition.id,
         },
       };
       window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [properties]);
