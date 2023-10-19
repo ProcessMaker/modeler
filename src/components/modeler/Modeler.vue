@@ -1291,36 +1291,34 @@ export default {
             nodeThatWillBeReplaced: node,
           };
 
-          if (this.isMultiplayer) {
-            // Get all node types
-            const nodeTypes = nodeTypesStore.getters.getNodeTypes;
-            // Get the new control
-            const newControl = nodeTypes.flatMap(nodeType => {
-              return nodeType.items?.filter(item => item.type === typeToReplaceWith);
-            }).filter(Boolean);
-            // If the new control is found, emit event to server to replace node
-            if (newControl.length === 1) {
-              window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0].type });
-            }
-          } else {
-            await this.replaceNodeProcedure(nodeData, true);
-          }
+          await this.replaceNodeProcedure(nodeData);
         });
       });
     },
     async replaceNodeProcedure(data, isReplaced = false) {
-      if (isReplaced) {
-        // Get the clientX and clientY from the node that will be replaced
-        const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
-        data.clientX = clientX;
-        data.clientY = clientY;
-      }
+      // Get the clientX and clientY from the node that will be replaced
+      const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
+      data.clientX = clientX;
+      data.clientY = clientY;
 
       const newNode = await this.handleDrop(data);
 
       await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
       this.highlightNode(newNode);
       this.selectNewNode(newNode);
+
+      if (this.isMultiplayer && !isReplaced) {
+        // Get all node types
+        const nodeTypes = nodeTypesStore.getters.getNodeTypes;
+        // Get the new control
+        const newControl = nodeTypes.flatMap(nodeType => {
+          return nodeType.items?.filter(item => item.type === data.typeToReplaceWith);
+        }).filter(Boolean);
+        // If the new control is found, emit event to server to replace node
+        if (newControl.length === 1) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { data, newControl: newControl[0].type });
+        }
+      }
     },
     replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
       this.performSingleUndoRedoTransaction(async() => {
