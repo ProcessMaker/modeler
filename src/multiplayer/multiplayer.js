@@ -2,28 +2,6 @@ import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
-import { faker } from '@faker-js/faker';
-import MessageFlow from '@/components/nodes/genericFlow/MessageFlow';
-import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
-import DataOutputAssociation from '@/components/nodes/genericFlow/DataOutputAssociation';
-const BpmnFlows = [
-  {
-    type: 'processmaker-modeler-text-annotation',
-    factory: DataOutputAssociation,
-  },
-  {
-    type: 'processmaker-modeler-sequence-flow',
-    factory: SequenceFlow,
-  },
-  {
-    type: 'processmaker-modeler-message-flow',
-    factory: MessageFlow,
-  },
-  {
-    type: 'processmaker-modeler-data-input-association',
-    factory: DataOutputAssociation,
-  },
-];
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -47,7 +25,8 @@ export default class Multiplayer {
     // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
     // Get the room name from the process id
-    this.room = new Room(`room-${window.ProcessMaker.modeler.process.id}`);
+    const processId = window.ProcessMaker.modeler.process.uuid ?? window.ProcessMaker.modeler.process.id;
+    this.room = new Room(`room-${processId}`);
 
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, {
@@ -58,7 +37,8 @@ export default class Multiplayer {
       // Join the room
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
-        clientName: faker.person.fullName(),
+        clientName: window.ProcessMaker.user?.fullName,
+        clientAvatar: window.ProcessMaker.user?.avatar,
       });
     });
 
@@ -71,7 +51,7 @@ export default class Multiplayer {
             id: client.id,
             name: client.name,
             color: '#FF6F61',
-            imgSrc: null,
+            avatar: client.avatar,
             top: 90,
             left: 80,
           };
@@ -160,15 +140,16 @@ export default class Multiplayer {
       this.addFlow(data);
     });
 
+    window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
+      this.addLaneNodes(lanes);
+    });
+
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspector', (data) =>
       this.updateInspector(data),
     );
   }
   addNode(data) {
-    // Add the new element to the process
-    this.createShape(data);
     // Add the new element to the shared array
-    // this.yArray.push([data]);
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
     this.yArray.push([yMapNested]);
@@ -177,47 +158,45 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('createElement', stateUpdate);
   }
-  createShape(value) {
-    this.modeler.handleDropProcedure(value, false);
+  createShape(value){
+    if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
+      this.modeler.nodeRegistry[value.type].multiplayerClient(this.modeler, value);
+    } else {
+      this.modeler.addRemoteNode(value);
+    }
     this.#nodeIdGenerator.updateCounters();
+
   }
   createRemoteShape(changes) {
-    const flows = [
-      'processmaker-modeler-sequence-flow',
-      'processmaker-modeler-text-annotation',
-      'processmaker-modeler-message-flow',
-      'processmaker-modeler-data-input-association',
-    ];
     return new Promise((resolve) => {
       changes.map((data) => {
-        if (flows.includes(data.type)) {
-          this.createFlow(data);
-        } else {
-          this.createShape(data);
-        }
+        this.createShape(data);
       });
       resolve();
     });
   }
   removeNode(data) {
     const index = this.getIndex(data.definition.id);
-    this.removeShape(data);
-    this.yArray.delete(index, 1); // delete one element
-
-    // Encode the state as an update and send it to the server
-    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-    // Send the update to the web socket server
-    this.clientIO.emit('removeElement', stateUpdate);
+    if (index >= 0) {
+      this.removeShape(data);
+      this.yArray.delete(index, 1); // delete one element
+      // Encode the state as an update and send it to the server
+      const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+      // Send the update to the web socket server
+      this.clientIO.emit('removeElement', stateUpdate);
+    }
   }
   getIndex(id) {
     let index = -1;
+    let found = false;
     for (const value of this.yArray) {
       index++;
       if (value.get('id') === id) {
+        found = true;
         break;
       }
     }
-    return index;
+    return found ? index : -1;
   }
   getNodeById(nodeId) {
     const node = this.modeler.nodes.find(
@@ -240,7 +219,8 @@ export default class Multiplayer {
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate = this.yArray.get(index);
-      this.doTransact(nodeToUpdate, value.properties);
+      const updateData = value.poolId ? { ...value.properties, ...{ poolId: value.poolId } } : value.properties;
+      this.doTransact(nodeToUpdate, updateData);
     });
   }
   replaceNode(nodeData, newControl) {
@@ -249,13 +229,11 @@ export default class Multiplayer {
     const nodeToUpdate = this.yArray.get(index);
     // Update the node id in the nodeData
     nodeData.id = `node_${this.#nodeIdGenerator.getDefinitionNumber()}`;
-    // Replace the node in the process
-    this.modeler.replaceNodeProcedure(nodeData, true);
     // Update the node id generator
     this.#nodeIdGenerator.updateCounters();
     // Update the node in the shared array
     this.yDoc.transact(() => {
-      nodeToUpdate.set('control', newControl);
+      nodeToUpdate.set('type', newControl);
       nodeToUpdate.set('id', nodeData.id);
     });
 
@@ -280,13 +258,14 @@ export default class Multiplayer {
     this.#nodeIdGenerator.updateCounters();
   }
   replaceShape(updatedNode) {
+    const { x: clientX, y: clientY } = this.modeler.paper.localToClientPoint(updatedNode);
     // Get the node to update
     const node = this.getNodeById(updatedNode.oldNodeId);
     // Update the node id in the nodeData
     const nodeData = {
-      clientX: updatedNode.clientX,
-      clientY: updatedNode.clientY,
-      control: { type: updatedNode.control.type },
+      clientX,
+      clientY,
+      control: { type: updatedNode.type },
       nodeThatWillBeReplaced: node,
       id: updatedNode.id,
     };
@@ -312,24 +291,28 @@ export default class Multiplayer {
       isReplaced: false,
     });
   }
-  updateShapes(data) {
+  async updateShapes(data) {
     const { paper } = this.modeler;
-    const element = this.getJointElement(paper.model, data.id);
+    const element = this.modeler.getElementByNodeId(data.id);
+    const newPool = this.modeler.getElementByNodeId(data.poolId);
     // Update the element's position attribute
-    element.set('position', { x: data.clientX, y: data.clientY });
+    element.resize(
+      /* Add labelWidth to ensure elements don't overlap with the pool label */
+      data.width,
+      data.height,
+    );
+    element.set('position', { x: data.x, y: data.y });
     console.log('element', element);
     // Trigger a rendering of the element on the paper
-    paper.findViewByModel(element).update();
-  }
-  getJointElement(graph, targetValue) {
-    const cells = graph.getCells();
-    for (const cell of cells) {
-      if (cell.component.id === targetValue) {
-        return cell;
-      }
+    await paper.findViewByModel(element).update();
+    // validate if the parent pool was updated
+    await element.component.$nextTick();
+    await this.modeler.paperManager.awaitScheduledUpdates();
+    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
+      element.component.node.pool.component.moveElementRemote(element, newPool);
     }
-    return null; // Return null if no matching element is found
   }
+
   addFlow(data) {
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
@@ -340,6 +323,27 @@ export default class Multiplayer {
     this.clientIO.emit('createElement', stateUpdate);
     this.#nodeIdGenerator.updateCounters();
   }
+
+  addLaneNodes(lanes) {
+    const pool = this.getPool(lanes);
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
+      id: pool.component.node.definition.id,
+      properties: {
+        x: pool.component.node.diagram.bounds.x,
+        y: pool.component.node.diagram.bounds.y,
+        height: pool.component.node.diagram.bounds.height,
+        width: pool.component.node.diagram.bounds.width,
+        isAddingLaneAbove: pool.isAddingLaneAbove,
+      },
+    }]);
+    this.yDoc.transact(() => {
+      lanes.forEach((lane) => {
+        const yMapNested = new Y.Map();
+        const data = this.prepareLaneData(lane);
+        this.doTransact(yMapNested, data);
+        this.yArray.push([yMapNested]);
+        const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+        this.clientIO.emit('createElement', stateUpdate);
   createFlow(data) {
     const { paper } = this.modeler;
     const sourceElem = this.getJointElement(paper.model, data.sourceRefId);
@@ -348,6 +352,21 @@ export default class Multiplayer {
       const bpmnFlow = BpmnFlows.find((FlowClass) => {
         return FlowClass.type === data.type;
       });
+    });
+  }
+  prepareLaneData(lane) {
+    const data = {
+      type: lane.type,
+      id: lane.definition.id,
+      name: lane.definition.name,
+      x: lane.diagram.bounds.x,
+      y: lane.diagram.bounds.y,
+      width: lane.diagram.bounds.width,
+      height: lane.diagram.bounds.height,
+      poolId: lane.pool.component.node.definition.id,
+      laneSetId: lane.pool.component.laneSet.id,
+    };
+    return data;
       const flow = new bpmnFlow.factory(
         this.modeler.nodeRegistry,
         this.modeler.moddle,
@@ -372,4 +391,11 @@ export default class Multiplayer {
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     this.clientIO.emit('updateInspector', stateUpdate);
   }
+  getPool(lanes) {
+    if (lanes && lanes.length > 0) {
+      return lanes[0].pool;
+    }
+    return false;
+  }
+
 }
