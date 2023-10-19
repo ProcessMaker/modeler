@@ -265,13 +265,10 @@ export default {
         }
       }
       if (this.highlightedNode._modelerId?.length > 0 && this.isMultiplayer) {
-        const body = {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
           id: this.highlightedNode.definition.id,
-          properties: {
-            definition: this.highlightedNode.definition,
-          },
-        };
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspector', body);
+          properties:{  inspector: JSON.parse(JSON.stringify(this.highlightedNode.definition)) },
+        }]);
       }
       return (this.config = inspectorConfig);
     },

@@ -295,6 +295,10 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
+    if (data.inspector) {
+      element.component.node.definition.name = data.inspector.name;
+      return;
+    }
     // Update the element's position attribute
     element.resize(
       /* Add labelWidth to ensure elements don't overlap with the pool label */
