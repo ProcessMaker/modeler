@@ -579,28 +579,55 @@ export default {
       this.overPoolStopDrag();
       this.updateSelectionBox();
       if (this.isMultiplayer) { 
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties());
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
       }
-      
-
     },
-    getProperties() {
-      const changed = [];
+
+    getProperties(shapes) {
+      let changed = [];
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
         'processmaker.components.nodes.boundaryEvent.Shape',
       ];
-      this.selected.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+
+      shapes.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
         .forEach(shape => {
-          changed.push({
-            id: shape.model.component.node.definition.id,
-            properties: {
-              clientX: shape.model.get('position').x,
-              clientY: shape.model.get('position').y,
-            },
-          });
+          if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
+            const children = shape.model.component.getElementsUnderArea(shape.model, this.graph);
+            changed = [...changed, ...this.getContainerProperties(children, changed)];
+          } else {
+            const { node } = shape.model.component;
+            const defaultData = {
+              id: node.definition.id,
+              properties: {
+                x: shape.model.get('position').x,
+                y: shape.model.get('position').y,
+                height: shape.model.get('size').height,
+                width: shape.model.get('size').width,
+              },
+            };
+            if (node?.pool?.component) {
+              defaultData['poolId'] = node.pool.component.id;
+            }
+            changed.push(defaultData);
+          }
         });
+      return changed;
+    },
+    getContainerProperties(children) {
+      const changed = [];
+      children.forEach(model => {
+        changed.push({
+          id: model.component.node.definition.id,
+          properties: {
+            x: model.get('position').x,
+            y: model.get('position').y,
+            height: model.get('size').height,
+            width: model.get('size').width,
+          },
+        });
+      });
       return changed;
     },
     /**
