@@ -344,15 +344,17 @@ export default class Multiplayer {
         this.yArray.push([yMapNested]);
         const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
         this.clientIO.emit('createElement', stateUpdate);
-  createFlow(data) {
-    const { paper } = this.modeler;
-    const sourceElem = this.getJointElement(paper.model, data.sourceRefId);
-    const targetElem = this.getJointElement(paper.model, data.targetRefId);
-    if (sourceElem && targetElem) {
-      const bpmnFlow = BpmnFlows.find((FlowClass) => {
-        return FlowClass.type === data.type;
       });
     });
+  }
+  updateInspector(data) {
+    console.log('data', data);
+    const yMapNested = new Y.Map();
+    this.doTransact(yMapNested, data);
+    this.yArray.push([yMapNested]);
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    this.clientIO.emit('updateInspector', stateUpdate);
   }
   prepareLaneData(lane) {
     const data = {
@@ -367,29 +369,6 @@ export default class Multiplayer {
       laneSetId: lane.pool.component.laneSet.id,
     };
     return data;
-      const flow = new bpmnFlow.factory(
-        this.modeler.nodeRegistry,
-        this.modeler.moddle,
-        this.modeler.paper,
-      );
-      const actualFlow = flow.makeFlowNode(
-        sourceElem,
-        targetElem,
-        data.waypoint,
-      );
-      // add Nodes
-      this.modeler.addNode(actualFlow, data.id);
-      this.#nodeIdGenerator.updateCounters();
-    }
-  }
-  updateInspector(data) {
-    console.log('data', data);
-    const yMapNested = new Y.Map();
-    this.doTransact(yMapNested, data);
-    this.yArray.push([yMapNested]);
-    // Encode the state as an update and send it to the server
-    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-    this.clientIO.emit('updateInspector', stateUpdate);
   }
   getPool(lanes) {
     if (lanes && lanes.length > 0) {
