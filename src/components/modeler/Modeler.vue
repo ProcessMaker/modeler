@@ -945,7 +945,6 @@ export default {
     },
     async createNodeAsync(type, definition, diagram) {
       const node =  this.createNode(type, definition, diagram);
-      console.log('el nodo', node);
       if (!this.isMultiplayer) {
         store.commit('addNode', node);
       }
