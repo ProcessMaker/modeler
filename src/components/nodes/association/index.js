@@ -1,22 +1,16 @@
+import { getNodeIdGenerator } from '@/NodeIdGenerator';
 import component from './association.vue';
-import { direction } from './associationConfig';
+import { id, bpmnType, direction, definition, diagram } from './associationConfig';
 import idConfigSettings from '@/components/inspectors/idConfigSettings';
-
-export const id  = 'processmaker-modeler-association';
+import { AssociationFlow } from './AssociationFlow';
 
 export default {
   id,
   component,
-  bpmnType: 'bpmn:Association',
+  bpmnType,
   control: false,
-  definition(moddle) {
-    return moddle.create('bpmn:Association', {
-      associationDirection: `${direction.none}`,
-    });
-  },
-  diagram(moddle) {
-    return moddle.create('bpmndi:BPMNEdge');
-  },
+  definition,
+  diagram,
   inspectorConfig: [
     {
       name: 'Data Association',
@@ -53,4 +47,17 @@ export default {
       ],
     },
   ],
+  async multiplayerClient(modeler, data) {
+    const { paper } = modeler;
+    const sourceElem = modeler.getElementByNodeId(data.sourceRefId);
+    const targetElem = modeler.getElementByNodeId(data.targetRefId);
+    if (sourceElem && targetElem) {
+      const flow = new AssociationFlow(modeler.nodeRegistry, modeler.moddle, paper);
+      const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
+      // add Nodes
+      modeler.addNode(actualFlow, data.id, true);
+      const nodeIdIterator = getNodeIdGenerator(modeler.definitions);
+      nodeIdIterator.updateCounters();
+    }
+  },
 };

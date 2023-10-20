@@ -2,6 +2,7 @@
 node_modules
 /dist
 *coverage
+*screenshots
 reports
 .nyc_output
 /public/js

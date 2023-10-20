@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
+import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
 export default class Multiplayer {
@@ -143,12 +144,12 @@ export default class Multiplayer {
       this.modeler.addRemoteNode(value);
     }
     this.#nodeIdGenerator.updateCounters();
-    
+
   }
   createRemoteShape(changes) {
     return new Promise(resolve => {
       changes.map((data) => {
-        this.createShape(data);     
+        this.createShape(data);
       });
       resolve();
     });
@@ -255,27 +256,58 @@ export default class Multiplayer {
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
 
-    // Update the element's position attribute
-    element.resize(
-      /* Add labelWidth to ensure elements don't overlap with the pool label */
-      data.width,
-      data.height,
-    );
-    element.set('position', { x: data.x, y: data.y });
+    if (this.modeler.flowTypes.includes(data.type)) {
+      // Update the element's waypoints
+      // Get the source and target elements
+      const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
+      const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
 
-    const node = this.getNodeById(data.id);
-    store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+      const { waypoint } = data;
+      const startWaypoint = waypoint.shift();
+      const endWaypoint = waypoint.pop();
 
-    // Trigger a rendering of the element on the paper
-    await paper.findViewByModel(element).update();
-    // validate if the parent pool was updated
-    await element.component.$nextTick();
-    await this.modeler.paperManager.awaitScheduledUpdates();
-    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
-      element.component.node.pool.component.moveElementRemote(element, newPool);
+      // Update the element's waypoints
+      const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
+      element.set('vertices', newWaypoint);
+
+      // Update the element's source anchor
+      element.source(sourceElem, {
+        anchor: () => {
+          return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      // Update the element's target anchor
+      element.target(targetElem, {
+        anchor: () => {
+          return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+    } else {
+      // Update the element's position attribute
+      element.resize(
+        /* Add labelWidth to ensure elements don't overlap with the pool label */
+        data.width,
+        data.height,
+      );
+      element.set('position', { x: data.x, y: data.y });
+
+      const node = this.getNodeById(data.id);
+      store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+
+      // Trigger a rendering of the element on the paper
+      await paper.findViewByModel(element).update();
+      // validate if the parent pool was updated
+      await element.component.$nextTick();
+      await this.modeler.paperManager.awaitScheduledUpdates();
+      if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
+        element.component.node.pool.component.moveElementRemote(element, newPool);
+      }
     }
   }
- 
+
   addFlow(data) {
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
@@ -327,8 +359,21 @@ export default class Multiplayer {
   getPool(lanes) {
     if (lanes && lanes.length > 0) {
       return lanes[0].pool;
-    } 
+    }
     return false;
   }
+  getConnectionPoint(element, newPosition) {
+    const { x: elemX, y: elemY } = element.position();
+    const connectionOffset = {
+      x: newPosition.x - elemX,
+      y: newPosition.y - elemY,
+    };
 
+    const { x, y } = element.position();
+    const { width, height } = element.size();
+
+    return connectionOffset
+      ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
+      : { x: x + (width / 2), y: y + (height / 2) };
+  }
 }
