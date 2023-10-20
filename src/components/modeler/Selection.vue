@@ -604,6 +604,7 @@ export default {
                 y: shape.model.get('position').y,
                 height: shape.model.get('size').height,
                 width: shape.model.get('size').width,
+                color: shape.model.get('color'),
               },
             };
             if (node?.pool?.component) {
@@ -624,6 +625,7 @@ export default {
             y: model.get('position').y,
             height: model.get('size').height,
             width: model.get('size').width,
+            color: model.get('color'),
           },
         });
       });
