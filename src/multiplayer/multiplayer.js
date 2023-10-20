@@ -3,7 +3,7 @@ import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
-
+import store from '@/store';
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -232,6 +232,7 @@ export default class Multiplayer {
       clientY,
       control: { type: updatedNode.type },
       nodeThatWillBeReplaced: node,
+      color: node.color,
       id: updatedNode.id,
     };
 
@@ -295,10 +296,15 @@ export default class Multiplayer {
         data.height,
       );
       element.set('position', { x: data.x, y: data.y });
+
+      const node = this.getNodeById(data.id);
+      store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+
       // boundary type 
       if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
         this.attachBoundaryEventToNode(element, data);
       }
+      
       // Trigger a rendering of the element on the paper
       await paper.findViewByModel(element).update();
       // validate if the parent pool was updated
