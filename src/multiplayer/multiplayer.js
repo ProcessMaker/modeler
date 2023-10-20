@@ -327,7 +327,10 @@ export default class Multiplayer {
     if (previousAttachedTask) {
       previousAttachedTask.unembed(element);
     }
-    newAttachedTask.embed(element);
+    
+    if (newAttachedTask) {
+      newAttachedTask.embed(element);
+    }
 
     element.component.node.definition.set('attachedToRef', node.definition);
   }

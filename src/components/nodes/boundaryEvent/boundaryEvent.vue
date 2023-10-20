@@ -219,6 +219,7 @@ export default {
         control,
         type: this.node.type,
         id: this.node.definition.id,
+        color: this.node.definition.get('color'),
       });
     },
   },

@@ -648,6 +648,7 @@ export default {
               height: boundaryNode.diagram.bounds.height,
               width: boundaryNode.diagram.bounds.width,
               attachedToRefId: boundaryNode.definition.get('attachedToRef')?.id ?? null,
+              color: boundaryNode.definition.get('color') ?? null,
             },
           });
         }
