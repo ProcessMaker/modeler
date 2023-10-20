@@ -188,6 +188,17 @@ export default {
           );
         }
 
+        if (this.isMultiplayer) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+            {
+              id: this.highlightedNode.definition.id,
+              properties: {
+                inspector: JSON.parse(JSON.stringify(value)),
+              },
+            },
+          ]);
+        }
+
         inspectorHandler(omit(value, ['documentation']));
       };
     },
@@ -263,21 +274,6 @@ export default {
         } else {
           sequenceFlowConfigurationFormElements.push(expressionConfig);
         }
-      }
-      if (this.highlightedNode._modelerId?.length > 0 && this.isMultiplayer) {
-        const defaultDataTransform = (node) =>
-          Object.entries(node.definition).reduce((data, [key, value]) => {
-            data[key] = value;
-            return data;
-          }, {});
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
-          {
-            id: this.highlightedNode.definition.id,
-            properties: {
-              inspector: defaultDataTransform(this.highlightedNode),
-            },
-          },
-        ]);
       }
       return (this.config = inspectorConfig);
     },
