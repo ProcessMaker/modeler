@@ -1190,10 +1190,6 @@ export default {
         node.pool = this.poolTarget;
       }
 
-      if (!id) {
-        this.nodeIdGenerator.updateCounters();
-      }
-
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
       node.setIds(this.nodeIdGenerator, id);
