@@ -1122,7 +1122,7 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    multiplayerHook(node, fromClient) {
+    multiplayerHook(node, fromClient, isProcessRequested = false) {
       const blackList = [
         'processmaker-modeler-lane',
         'processmaker-modeler-generic-flow',
@@ -1150,6 +1150,11 @@ export default {
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
           }
+
+          if (isProcessRequested) {
+            return defaultData;
+          }
+
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
         if (this.flowTypes.includes(node.type)) {
@@ -1158,17 +1163,23 @@ export default {
 
           if (node.type === 'processmaker-modeler-data-input-association') {
             sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
-            targetRefId = node.definition.targetRef?.$parent?.$parent.get('id');
+            targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
 
           if (sourceRefId && targetRefId) {
-            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+            const flowData = {
               id: node.definition.id,
               type: node.type,
               sourceRefId,
               targetRefId,
               waypoint: node.diagram.waypoint,
-            });
+            };
+
+            if (isProcessRequested) {
+              return flowData;
+            }
+
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', flowData);
           }
         }
       }
@@ -1176,6 +1187,10 @@ export default {
     async addNode(node, id = null, fromClient = false) {
       if (!node.pool) {
         node.pool = this.poolTarget;
+      }
+
+      if (!id) {
+        this.nodeIdGenerator.updateCounters();
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
