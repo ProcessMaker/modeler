@@ -102,7 +102,21 @@ export default class Multiplayer {
 
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
+    }); 
+
+    this.clientIO.on('updateInspector', (payload) => {
+      const { updateDoc, updatedNodes } = payload;
+
+      
+      // Update the elements in the process
+      updatedNodes.forEach((data) => {
+        this.updateShapeFromInspector(data);
+      });
+      
+      // Update the element in the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
+
 
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
@@ -126,6 +140,10 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
       this.addLaneNodes(lanes);
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateInspectorProperty', ( data ) => {
+      this.updateInspectorProperty(data);
+    });
+    
   }
   addNode(data) {
     // Add the new element to the shared array
@@ -375,5 +393,24 @@ export default class Multiplayer {
     return connectionOffset
       ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
       : { x: x + (width / 2), y: y + (height / 2) };
+  }
+  updateInspectorProperty(data) {
+    const index = this.getIndex(data.id);
+    const nodeToUpdate =  this.yArray.get(index);
+
+    nodeToUpdate.set(data.key, data.value);
+
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    // Send the update to the web socket server
+    this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
+
+  }
+  updateShapeFromInspector(data) {
+    const node = this.getNodeById(data.id);
+    if (typeof data.value !== 'object') {
+      const keys = Object.keys(data).
+        filter((key) => key !== 'id');
+      store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]]});
+    }
   }
 }

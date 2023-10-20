@@ -6,6 +6,7 @@ import uniq from 'lodash/uniq';
 Vue.use(Vuex);
 
 function setDefinitionPropertyReactive(definition, key, value) {
+ 
   if (Object.hasOwn(definition, key)) {
     definition.set(key, value);
     return;
@@ -38,6 +39,7 @@ export default new Vuex.Store({
     copiedElements: [],
     clientLeftPaper: false,
     readOnly: false,
+    isMultiplayer: false,
   },
   getters: {
     nodes: state => state.nodes,
@@ -60,6 +62,7 @@ export default new Vuex.Store({
     clientLeftPaper: state => state.clientLeftPaper,
     isReadOnly: state => state.readOnly,
     showComponent: state => !state.readOnly,
+    isMultiplayer: state => state.isMultiplayer,
   },
   mutations: {
     setReadOnly(state, value) {
@@ -96,7 +99,11 @@ export default new Vuex.Store({
         }
       }
       setDefinitionPropertyReactive(node.definition, key, value);
-
+      if (state.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id , key, value,
+        });
+      }
       if (value == null) {
         Vue.delete(node.definition, key);
       }
@@ -158,6 +165,9 @@ export default new Vuex.Store({
     },
     setClientLeftPaper(state, status) {
       state.clientLeftPaper = status;
+    },
+    enableMultiplayer(state, value){
+      state.isMultiplayer = value;
     },
   },
   actions: {

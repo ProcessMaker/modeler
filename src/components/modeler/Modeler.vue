@@ -330,8 +330,6 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       previewConfigs: [],
-      multiplayer: null,
-      isMultiplayer: false,
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -398,6 +396,7 @@ export default {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
     showComponent: () => store.getters.showComponent,
+    isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
     registerPreview(config) {
@@ -1136,8 +1135,12 @@ export default {
             type: node.type,
             id: node.definition.id,
             isAddingLaneAbove: true,
-            color: node.color,
+            color: node.definition.color,
+            dueIn: node.definition.dueIn,
+            name: node.definition.name,
+            assignedUsers: node.definition.assignedUsers,
           };
+          console.log(node);
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
           }
@@ -1546,7 +1549,8 @@ export default {
       window.location = redirectTo;
     },
     enableMultiplayer(value) {
-      this.isMultiplayer = value;
+      //this.isMultiplayer = value;
+      store.commit('enableMultiplayer', value);
     },
     addPlayer(player) {
       this.players.push(player);
