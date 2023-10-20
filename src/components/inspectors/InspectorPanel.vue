@@ -170,21 +170,21 @@ export default {
           isString(value.documentation) &&
           get(
             this.highlightedNode.definition.get('documentation')[0],
-            'text',
+            'text'
           ) !== value.documentation
         ) {
           const documentation = value.documentation
             ? [
-              this.moddle.create('bpmn:Documentation', {
-                text: value.documentation,
-              }),
-            ]
+                this.moddle.create('bpmn:Documentation', {
+                  text: value.documentation,
+                }),
+              ]
             : undefined;
 
           this.setNodeProp(
             this.highlightedNode,
             'documentation',
-            documentation,
+            documentation
           );
         }
 
@@ -226,16 +226,16 @@ export default {
       }
 
       const inspectorConfig = cloneDeep(
-        this.nodeRegistry[type].inspectorConfig,
+        this.nodeRegistry[type].inspectorConfig
       );
       const sequenceFlowConfigurationFormElements = get(
         inspectorConfig,
-        '[0].items[0].items',
+        '[0].items[0].items'
       );
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         let helper = this.$t(
-          'Enter the expression that describes the workflow condition',
+          'Enter the expression that describes the workflow condition'
         );
         helper +=
           ' <a href="https://docs.processmaker.com/designing-processes/expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
@@ -250,7 +250,7 @@ export default {
 
         // Always move the Expression Field below the Name field in the inspector
         const nameField = sequenceFlowConfigurationFormElements.find(
-          (x) => x.config && x.config.label === 'Name',
+          (x) => x.config && x.config.label === 'Name'
         );
         const nameFieldIndex =
           sequenceFlowConfigurationFormElements.indexOf(nameField);
@@ -258,17 +258,26 @@ export default {
           sequenceFlowConfigurationFormElements.splice(
             nameFieldIndex + 1,
             0,
-            expressionConfig,
+            expressionConfig
           );
         } else {
           sequenceFlowConfigurationFormElements.push(expressionConfig);
         }
       }
       if (this.highlightedNode._modelerId?.length > 0 && this.isMultiplayer) {
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
-          id: this.highlightedNode.definition.id,
-          properties:{  inspector: JSON.parse(JSON.stringify(this.highlightedNode.definition)) },
-        }]);
+        const defaultDataTransform = (node) =>
+          Object.entries(node.definition).reduce((data, [key, value]) => {
+            data[key] = value;
+            return data;
+          }, {});
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+          {
+            id: this.highlightedNode.definition.id,
+            properties: {
+              inspector: defaultDataTransform(this.highlightedNode),
+            },
+          },
+        ]);
       }
       return (this.config = inspectorConfig);
     },
@@ -289,10 +298,10 @@ export default {
       this.data =
         type && this.nodeRegistry[type].inspectorData
           ? this.nodeRegistry[type].inspectorData(
-            this.highlightedNode,
-            defaultDataTransform,
-            this,
-          )
+              this.highlightedNode,
+              defaultDataTransform,
+              this
+            )
           : defaultDataTransform(this.highlightedNode);
     },
     isSequenceFlow(type) {
@@ -300,7 +309,7 @@ export default {
     },
     isConnectedToGateway(definition) {
       return ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway'].includes(
-        definition.sourceRef.$type,
+        definition.sourceRef.$type
       );
     },
     isConnectedToSubProcess(definition) {
@@ -313,12 +322,12 @@ export default {
         this.setNodeProp,
         this.moddle,
         this.definitions,
-        this.defaultInspectorHandler,
+        this.defaultInspectorHandler
       );
     },
     processNodeInspectorHandler(value) {
       return this.defaultInspectorHandler(
-        omit(value, ['artifacts', 'flowElements', 'laneSets']),
+        omit(value, ['artifacts', 'flowElements', 'laneSets'])
       );
     },
     setNodeProp(node, key, value) {

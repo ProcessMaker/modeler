@@ -2,6 +2,9 @@ import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
 import Room from './room';
+import { forEach } from 'lodash';
+import store from '@/store';
+
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -25,7 +28,9 @@ export default class Multiplayer {
     // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
     // Get the room name from the process id
-    const processId = window.ProcessMaker.modeler.process.uuid ?? window.ProcessMaker.modeler.process.id;
+    const processId =
+      window.ProcessMaker.modeler.process.uuid ??
+      window.ProcessMaker.modeler.process.id;
     this.room = new Room(`room-${processId}`);
 
     // Connect to websocket server
@@ -69,7 +74,7 @@ export default class Multiplayer {
     });
 
     // Listen for updates when a new element is added
-    this.clientIO.on('createElement', async(payload) => {
+    this.clientIO.on('createElement', async (payload) => {
       // Create the new element in the process
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
@@ -133,19 +138,19 @@ export default class Multiplayer {
       'multiplayer-replaceNode',
       ({ nodeData, newControl }) => {
         this.replaceNode(nodeData, newControl);
-      },
+      }
     );
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', (data) => {
       this.addFlow(data);
     });
 
-    window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
+    window.ProcessMaker.EventBus.$on('multiplayer-addLanes', (lanes) => {
       this.addLaneNodes(lanes);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspector', (data) =>
-      this.updateInspector(data),
+      this.updateInspector(data)
     );
   }
   addNode(data) {
@@ -158,14 +163,19 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('createElement', stateUpdate);
   }
-  createShape(value){
-    if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
-      this.modeler.nodeRegistry[value.type].multiplayerClient(this.modeler, value);
+  createShape(value) {
+    if (
+      this.modeler.nodeRegistry[value.type] &&
+      this.modeler.nodeRegistry[value.type].multiplayerClient
+    ) {
+      this.modeler.nodeRegistry[value.type].multiplayerClient(
+        this.modeler,
+        value
+      );
     } else {
       this.modeler.addRemoteNode(value);
     }
     this.#nodeIdGenerator.updateCounters();
-
   }
   createRemoteShape(changes) {
     return new Promise((resolve) => {
@@ -200,7 +210,7 @@ export default class Multiplayer {
   }
   getNodeById(nodeId) {
     const node = this.modeler.nodes.find(
-      (element) => element.definition && element.definition.id === nodeId,
+      (element) => element.definition && element.definition.id === nodeId
     );
 
     return node;
@@ -219,7 +229,9 @@ export default class Multiplayer {
     data.forEach((value) => {
       const index = this.getIndex(value.id);
       const nodeToUpdate = this.yArray.get(index);
-      const updateData = value.poolId ? { ...value.properties, ...{ poolId: value.poolId } } : value.properties;
+      const updateData = value.poolId
+        ? { ...value.properties, ...{ poolId: value.poolId } }
+        : value.properties;
       this.doTransact(nodeToUpdate, updateData);
     });
   }
@@ -258,7 +270,8 @@ export default class Multiplayer {
     this.#nodeIdGenerator.updateCounters();
   }
   replaceShape(updatedNode) {
-    const { x: clientX, y: clientY } = this.modeler.paper.localToClientPoint(updatedNode);
+    const { x: clientX, y: clientY } =
+      this.modeler.paper.localToClientPoint(updatedNode);
     // Get the node to update
     const node = this.getNodeById(updatedNode.oldNodeId);
     // Update the node id in the nodeData
@@ -295,15 +308,23 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
+
     if (data.inspector) {
-      element.component.node.definition.name = data.inspector.name;
+      forEach(data.inspector, (value, key) => {
+        store.commit('updateNodeProp', {
+          node: element.component.node,
+          key,
+          value,
+        });
+      });
+      // element.component.node.definition = data.inspector;
       return;
     }
     // Update the element's position attribute
     element.resize(
       /* Add labelWidth to ensure elements don't overlap with the pool label */
       data.width,
-      data.height,
+      data.height
     );
     element.set('position', { x: data.x, y: data.y });
     console.log('element', element);
@@ -312,7 +333,11 @@ export default class Multiplayer {
     // validate if the parent pool was updated
     await element.component.$nextTick();
     await this.modeler.paperManager.awaitScheduledUpdates();
-    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
+    if (
+      newPool &&
+      element.component.node.pool &&
+      element.component.node.pool.component.id !== data.poolId
+    ) {
       element.component.node.pool.component.moveElementRemote(element, newPool);
     }
   }
@@ -330,16 +355,18 @@ export default class Multiplayer {
 
   addLaneNodes(lanes) {
     const pool = this.getPool(lanes);
-    window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
-      id: pool.component.node.definition.id,
-      properties: {
-        x: pool.component.node.diagram.bounds.x,
-        y: pool.component.node.diagram.bounds.y,
-        height: pool.component.node.diagram.bounds.height,
-        width: pool.component.node.diagram.bounds.width,
-        isAddingLaneAbove: pool.isAddingLaneAbove,
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+      {
+        id: pool.component.node.definition.id,
+        properties: {
+          x: pool.component.node.diagram.bounds.x,
+          y: pool.component.node.diagram.bounds.y,
+          height: pool.component.node.diagram.bounds.height,
+          width: pool.component.node.diagram.bounds.width,
+          isAddingLaneAbove: pool.isAddingLaneAbove,
+        },
       },
-    }]);
+    ]);
     this.yDoc.transact(() => {
       lanes.forEach((lane) => {
         const yMapNested = new Y.Map();
@@ -380,5 +407,4 @@ export default class Multiplayer {
     }
     return false;
   }
-
 }
