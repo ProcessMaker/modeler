@@ -189,7 +189,7 @@ import getValidationProperties from '@/targetValidationUtils';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
-import { id as associationId } from '../nodes/association';
+import { id as associationId } from '../nodes/association/associationConfig';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
@@ -332,6 +332,13 @@ export default {
       previewConfigs: [],
       multiplayer: null,
       isMultiplayer: false,
+      flowTypes: [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-association',
+      ],
     };
   },
   watch: {
@@ -1052,7 +1059,7 @@ export default {
         this.validateBpmnDiagram();
       }
     },
-    
+
     async handleDrop(data) {
       const { clientX, clientY, control, nodeThatWillBeReplaced } = data;
       this.validateDropTarget({ clientX, clientY, control });
@@ -1118,15 +1125,12 @@ export default {
         'processmaker-modeler-boundary-conditional-even',
         'processmaker-modeler-boundary-message-event',
       ];
-      const flowTypes = [
-        'processmaker-modeler-sequence-flow',
-        'processmaker-modeler-message-flow',
-      ];
       if (!this.isMultiplayer) {
         return;
       }
+
       if (!fromClient) {
-        if (!blackList.includes(node.type) && !flowTypes.includes(node.type)) {
+        if (!blackList.includes(node.type) && !this.flowTypes.includes(node.type)) {
           const defaultData = {
             x: node.diagram.bounds.x,
             y: node.diagram.bounds.y,
@@ -1141,14 +1145,24 @@ export default {
           }
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
-        if (flowTypes.includes(node.type)) {
-          window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
-            id: node.definition.id,
-            type: node.type,
-            sourceRefId: node.definition.sourceRef.id,
-            targetRefId: node.definition.targetRef.id,
-            waypoint: node.diagram.waypoint,
-          });
+        if (this.flowTypes.includes(node.type)) {
+          let sourceRefId = node.definition.sourceRef?.id;
+          let targetRefId = node.definition.targetRef?.id;
+
+          if (node.type === 'processmaker-modeler-data-input-association') {
+            sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
+            targetRefId = node.definition.targetRef?.$parent?.$parent.get('id');
+          }
+
+          if (sourceRefId && targetRefId) {
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+              id: node.definition.id,
+              type: node.type,
+              sourceRefId,
+              targetRefId,
+              waypoint: node.diagram.waypoint,
+            });
+          }
         }
       }
     },
@@ -1342,8 +1356,9 @@ export default {
         await this.paperManager.performAtomicAction(async() => {
           await this.highlightNode(null);
           await this.$nextTick();
-          await this.addNode(actualFlow);
           await store.commit('removeNode', genericFlow);
+          await this.$nextTick();
+          await this.addNode(actualFlow, genericFlow.definition.id);
           await this.$nextTick();
           await this.highlightNode(targetNode);
         });
