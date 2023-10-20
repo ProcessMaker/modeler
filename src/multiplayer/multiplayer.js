@@ -24,6 +24,7 @@ export default class Multiplayer {
     // Create a Modeler instance
     this.modeler = modeler;
   }
+
   init() {
     // Get the node id generator
     this.#nodeIdGenerator = getNodeIdGenerator(this.modeler.definitions);
@@ -74,7 +75,7 @@ export default class Multiplayer {
     });
 
     // Listen for updates when a new element is added
-    this.clientIO.on('createElement', async (payload) => {
+    this.clientIO.on('createElement', async(payload) => {
       // Create the new element in the process
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
@@ -138,7 +139,7 @@ export default class Multiplayer {
       'multiplayer-replaceNode',
       ({ nodeData, newControl }) => {
         this.replaceNode(nodeData, newControl);
-      }
+      },
     );
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', (data) => {
@@ -150,9 +151,10 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspector', (data) =>
-      this.updateInspector(data)
+      this.updateInspector(data),
     );
   }
+
   addNode(data) {
     // Add the new element to the shared array
     const yMapNested = new Y.Map();
@@ -163,6 +165,7 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('createElement', stateUpdate);
   }
+
   createShape(value) {
     if (
       this.modeler.nodeRegistry[value.type] &&
@@ -170,13 +173,14 @@ export default class Multiplayer {
     ) {
       this.modeler.nodeRegistry[value.type].multiplayerClient(
         this.modeler,
-        value
+        value,
       );
     } else {
       this.modeler.addRemoteNode(value);
     }
     this.#nodeIdGenerator.updateCounters();
   }
+
   createRemoteShape(changes) {
     return new Promise((resolve) => {
       changes.map((data) => {
@@ -185,6 +189,7 @@ export default class Multiplayer {
       resolve();
     });
   }
+
   removeNode(data) {
     const index = this.getIndex(data.definition.id);
     if (index >= 0) {
@@ -196,6 +201,7 @@ export default class Multiplayer {
       this.clientIO.emit('removeElement', stateUpdate);
     }
   }
+
   getIndex(id) {
     let index = -1;
     let found = false;
@@ -208,16 +214,19 @@ export default class Multiplayer {
     }
     return found ? index : -1;
   }
+
   getNodeById(nodeId) {
     const node = this.modeler.nodes.find(
-      (element) => element.definition && element.definition.id === nodeId
+      (element) => element.definition && element.definition.id === nodeId,
     );
 
     return node;
   }
+
   removeShape(node) {
     this.modeler.removeNodeProcedure(node, true);
   }
+
   getRemovedNodes(array1, array2) {
     return array1.filter((object1) => {
       return !array2.some((object2) => {
@@ -225,6 +234,7 @@ export default class Multiplayer {
       });
     });
   }
+
   updateNodes(data) {
     data.forEach((value) => {
       const index = this.getIndex(value.id);
@@ -235,6 +245,7 @@ export default class Multiplayer {
       this.doTransact(nodeToUpdate, updateData);
     });
   }
+
   replaceNode(nodeData, newControl) {
     // Get the node to update
     const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
@@ -257,6 +268,7 @@ export default class Multiplayer {
       isReplaced: true,
     });
   }
+
   // eslint-disable-next-line no-unused-vars
   updateNodeFromInspectorChanges(data) {
     // const index = this.getIndex(data.id);
@@ -269,6 +281,7 @@ export default class Multiplayer {
     // this.modeler.replaceNodeProcedure(nodeData, true);
     this.#nodeIdGenerator.updateCounters();
   }
+
   replaceShape(updatedNode) {
     const { x: clientX, y: clientY } =
       this.modeler.paper.localToClientPoint(updatedNode);
@@ -287,6 +300,7 @@ export default class Multiplayer {
     this.modeler.replaceNodeProcedure(nodeData, true);
     this.#nodeIdGenerator.updateCounters();
   }
+
   doTransact(yMapNested, data) {
     this.yDoc.transact(() => {
       for (const key in data) {
@@ -304,6 +318,7 @@ export default class Multiplayer {
       isReplaced: false,
     });
   }
+
   async updateShapes(data) {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
@@ -324,7 +339,7 @@ export default class Multiplayer {
     element.resize(
       /* Add labelWidth to ensure elements don't overlap with the pool label */
       data.width,
-      data.height
+      data.height,
     );
     element.set('position', { x: data.x, y: data.y });
     console.log('element', element);
@@ -378,6 +393,7 @@ export default class Multiplayer {
       });
     });
   }
+
   updateInspector(data) {
     console.log('data', data);
     const yMapNested = new Y.Map();
@@ -387,6 +403,7 @@ export default class Multiplayer {
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     this.clientIO.emit('updateInspector', stateUpdate);
   }
+
   prepareLaneData(lane) {
     const data = {
       type: lane.type,
@@ -401,6 +418,7 @@ export default class Multiplayer {
     };
     return data;
   }
+
   getPool(lanes) {
     if (lanes && lanes.length > 0) {
       return lanes[0].pool;
