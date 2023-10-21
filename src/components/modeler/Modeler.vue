@@ -952,7 +952,25 @@ export default {
     },
     async createNodeAsync(type, definition, diagram) {
       const node =  this.createNode(type, definition, diagram);
+      if (!this.isMultiplayer) {
+        store.commit('addNode', node);
+      }
+      else {
+        this.loadNodeForMultiplayer(node);
+      }
+    },
+    async loadNodeForMultiplayer(node) {
+      if (node.type === 'processmaker-modeler-lane') {
+        await this.addNode(node, node.definition.id, true);
+        this.nodeIdGenerator.updateCounters();
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', [node]);
+        return;
+      }
+      this.multiplayerHook(node, false);
       store.commit('addNode', node);
+      this.poolTarget = null;
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
@@ -1728,6 +1746,7 @@ export default {
         try {
           const multiplayer = new Multiplayer(this);
           multiplayer.init();
+          this.multiplayer = multiplayer;
         } catch (error) {
           console.warn('Could not initialize multiplayer', error);
         }
