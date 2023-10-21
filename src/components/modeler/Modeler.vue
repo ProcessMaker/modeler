@@ -959,7 +959,15 @@ export default {
         this.loadNodeForMultiplayer(node);
       }
     },
-    loadNodeForMultiplayer(node) {
+    async loadNodeForMultiplayer(node) {
+      if (node.type === 'processmaker-modeler-lane') {
+        await this.addNode(node, node.definition.id, true);
+        this.nodeIdGenerator.updateCounters();
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', [node]);
+        return;
+      }
       this.multiplayerHook(node, false);
       store.commit('addNode', node);
       this.poolTarget = null;
