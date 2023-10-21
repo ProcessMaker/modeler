@@ -1130,7 +1130,7 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    multiplayerHook(node, fromClient) {
+    multiplayerHook(node, fromClient, isProcessRequested = false) {
       const blackList = [
         'processmaker-modeler-lane',
         'processmaker-modeler-generic-flow',
@@ -1159,6 +1159,11 @@ export default {
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
           }
+
+          if (isProcessRequested) {
+            return defaultData;
+          }
+
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
         if (this.flowTypes.includes(node.type)) {
@@ -1167,17 +1172,23 @@ export default {
 
           if (node.type === 'processmaker-modeler-data-input-association') {
             sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
-            targetRefId = node.definition.targetRef?.$parent?.$parent.get('id');
+            targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
 
           if (sourceRefId && targetRefId) {
-            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+            const flowData = {
               id: node.definition.id,
               type: node.type,
               sourceRefId,
               targetRefId,
               waypoint: node.diagram.waypoint,
-            });
+            };
+
+            if (isProcessRequested) {
+              return flowData;
+            }
+
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', flowData);
           }
         }
       }
@@ -1300,36 +1311,34 @@ export default {
             nodeThatWillBeReplaced: node,
           };
 
-          if (this.isMultiplayer) {
-            // Get all node types
-            const nodeTypes = nodeTypesStore.getters.getNodeTypes;
-            // Get the new control
-            const newControl = nodeTypes.flatMap(nodeType => {
-              return nodeType.items?.filter(item => item.type === typeToReplaceWith);
-            }).filter(Boolean);
-            // If the new control is found, emit event to server to replace node
-            if (newControl.length === 1) {
-              window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { nodeData, newControl: newControl[0].type });
-            }
-          } else {
-            await this.replaceNodeProcedure(nodeData, true);
-          }
+          await this.replaceNodeProcedure(nodeData);
         });
       });
     },
     async replaceNodeProcedure(data, isReplaced = false) {
-      if (isReplaced) {
-        // Get the clientX and clientY from the node that will be replaced
-        const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
-        data.clientX = clientX;
-        data.clientY = clientY;
-      }
+      // Get the clientX and clientY from the node that will be replaced
+      const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
+      data.clientX = clientX;
+      data.clientY = clientY;
 
       const newNode = await this.handleDrop(data);
 
       await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
       this.highlightNode(newNode);
       this.selectNewNode(newNode);
+
+      if (this.isMultiplayer && !isReplaced) {
+        // Get all node types
+        const nodeTypes = nodeTypesStore.getters.getNodeTypes;
+        // Get the new control
+        const newControl = nodeTypes.flatMap(nodeType => {
+          return nodeType.items?.filter(item => item.type === data.typeToReplaceWith);
+        }).filter(Boolean);
+        // If the new control is found, emit event to server to replace node
+        if (newControl.length === 1) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { data, newControl: newControl[0].type });
+        }
+      }
     },
     replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
       this.performSingleUndoRedoTransaction(async() => {
