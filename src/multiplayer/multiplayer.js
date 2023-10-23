@@ -150,11 +150,11 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
-      this.addFlowOrBoundaryEvent(data);
+      this.addCommonElement(data);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addBoundaryEvent', ( data ) => {
-      this.addFlowOrBoundaryEvent(data);
+      this.addCommonElement(data);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
@@ -364,7 +364,7 @@ export default class Multiplayer {
 
     element.component.node.definition.set('attachedToRef', node.definition);
   }
-  addFlowOrBoundaryEvent(data) {
+  addCommonElement(data) {
     // Add a new flow / boundary event to the shared array
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
