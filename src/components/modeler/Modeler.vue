@@ -365,7 +365,7 @@ export default {
       this.paperManager.scale = canvasScale;
     },
     highlightedNodes() {
-      if (window.ProcessMaker && window.ProcessMaker.EventBus) {
+      if (window.ProcessMaker?.EventBus) {
         window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
       }
     },
