@@ -66,12 +66,42 @@ export default class Multiplayer {
       this.modeler.enableMultiplayer(payload.isMultiplayer);
     });
 
+    this.clientIO.on('requestProcess', (payload) => {
+      const { firstClient, clientId } = payload;
+
+      // Check if the current client is the first client
+      if (firstClient.id === this.clientIO.id) {
+        // Get the process definition
+        const nodes = this.modeler.nodes.map((node) => this.modeler.multiplayerHook(node, false, true));
+
+        nodes.forEach((node) => {
+          const yMapNested = new Y.Map();
+          this.doTransact(yMapNested, node);
+          this.yArray.push([yMapNested]);
+          // Encode the state as an update and send it to the server
+          const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+          // Send the update to the web socket server
+          this.clientIO.emit('createElement', { updateDoc: stateUpdate, clientId });
+        });
+      }
+    });
+
     // Listen for updates when a new element is added
     this.clientIO.on('createElement', async(payload) => {
       // Create the new element in the process
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
+    });
+
+    // Listen for updates when a new element is requested
+    this.clientIO.on('createRequestedElement', async(payload) => {
+      if (payload.clientId === this.clientIO.id) {
+        // Create the new element in the process
+        await this.createRemoteShape(payload.changes);
+        // Add the new element to the shared array
+        Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
+      }
     });
 
     // Listen for updates when an element is removed
@@ -139,7 +169,7 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    this.clientIO.emit('createElement', stateUpdate);
+    this.clientIO.emit('createElement', { updateDoc: stateUpdate });
   }
   createShape(value){
     if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
@@ -341,7 +371,7 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    this.clientIO.emit('createElement', stateUpdate);
+    this.clientIO.emit('createElement', { updateDoc: stateUpdate });
     this.#nodeIdGenerator.updateCounters();
   }
 
@@ -364,7 +394,7 @@ export default class Multiplayer {
         this.doTransact(yMapNested, data);
         this.yArray.push([yMapNested]);
         const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-        this.clientIO.emit('createElement', stateUpdate);
+        this.clientIO.emit('createElement', { updateDoc: stateUpdate });
       });
     });
   }
