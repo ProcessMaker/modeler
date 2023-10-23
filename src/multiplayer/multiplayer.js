@@ -150,11 +150,11 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
-      this.addFlow(data);
+      this.addFlowOrBoundaryEvent(data);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addBoundaryEvent', ( data ) => {
-      this.addBoundaryEvent(data);
+      this.addFlowOrBoundaryEvent(data);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
@@ -330,11 +330,11 @@ export default class Multiplayer {
       const node = this.getNodeById(data.id);
       store.commit('updateNodeProp', { node, key: 'color', value: data.color });
 
-      // boundary type 
+      // boundary type
       if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
         this.attachBoundaryEventToNode(element, data);
       }
-      
+
       // Trigger a rendering of the element on the paper
       await paper.findViewByModel(element).update();
       // validate if the parent pool was updated
@@ -357,14 +357,15 @@ export default class Multiplayer {
     if (previousAttachedTask) {
       previousAttachedTask.unembed(element);
     }
-    
+
     if (newAttachedTask) {
       newAttachedTask.embed(element);
     }
 
     element.component.node.definition.set('attachedToRef', node.definition);
   }
-  addFlow(data) {
+  addFlowOrBoundaryEvent(data) {
+    // Add a new flow / boundary event to the shared array
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
     this.yArray.push([yMapNested]);
@@ -374,7 +375,6 @@ export default class Multiplayer {
     this.clientIO.emit('createElement', { updateDoc: stateUpdate });
     this.#nodeIdGenerator.updateCounters();
   }
-
   addLaneNodes(lanes) {
     const pool = this.getPool(lanes);
     window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
@@ -398,17 +398,6 @@ export default class Multiplayer {
       });
     });
   }
-  addBoundaryEvent(data) {
-    const yMapNested = new Y.Map();
-    this.doTransact(yMapNested, data);
-    this.yArray.push([yMapNested]);
-    // Encode the state as an update and send it to the server
-    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-    // Send the update to the web socket server
-    this.clientIO.emit('createElement', stateUpdate);
-    this.#nodeIdGenerator.updateCounters();
-  }
-  
   prepareLaneData(lane) {
     const data = {
       type: lane.type,
