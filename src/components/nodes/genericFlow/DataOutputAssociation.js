@@ -55,7 +55,7 @@ export default class DataOutputAssociation extends DataAssociation {
     const sourceIsDataObject = sourceNode.definition.$type === 'bpmn:DataObjectReference';
     const targetIsDataStore = targetNode.definition.$type === 'bpmn:DataStoreReference';
     const targetIsDataObject = targetNode.definition.$type === 'bpmn:DataObjectReference';
-    
+
     if (sourceIsDataStore && dataStoreValidTargets.includes(targetType)) {
       return true;
     }

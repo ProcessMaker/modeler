@@ -31,7 +31,7 @@ import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
-import { id as associationId } from '@/components/nodes/association';
+import { id as associationId } from '@/components/nodes/association/associationConfig';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
@@ -577,7 +577,7 @@ export default {
       await this.paperManager.awaitScheduledUpdates();
       this.overPoolStopDrag();
       this.updateSelectionBox();
-      if (this.isMultiplayer) { 
+      if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
       }
     },
@@ -604,6 +604,7 @@ export default {
                 y: shape.model.get('position').y,
                 height: shape.model.get('size').height,
                 width: shape.model.get('size').width,
+                color: shape.model.get('color'),
               },
             };
             if (node?.pool?.component) {
@@ -624,6 +625,7 @@ export default {
             y: model.get('position').y,
             height: model.get('size').height,
             width: model.get('size').width,
+            color: model.get('color'),
           },
         });
       });

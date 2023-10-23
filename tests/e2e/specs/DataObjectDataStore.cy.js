@@ -33,7 +33,7 @@ describe('Data Objects and Data Stores', () => {
       getNumberOfLinks().should('equal', 1);
       assertDownloadedXmlContainsExpected(`
         <bpmn:startEvent id="node_1" name="Start Event">
-          <bpmn:dataOutputAssociation id="node_4">
+          <bpmn:dataOutputAssociation id="node_3">
             <bpmn:targetRef>node_2</bpmn:targetRef>
           </bpmn:dataOutputAssociation>
         </bpmn:startEvent>
