@@ -35,6 +35,12 @@ import { id as associationId } from '@/components/nodes/association/associationC
 import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 import { invalidNodeColor, poolColor } from '@/components/nodeColors';
 
@@ -587,7 +593,6 @@ export default {
       const shapesToNotTranslate = [
         'PoolLane',
         'standard.Link',
-        'processmaker.components.nodes.boundaryEvent.Shape',
       ];
 
       shapes.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
@@ -604,6 +609,7 @@ export default {
                 y: shape.model.get('position').y,
                 height: shape.model.get('size').height,
                 width: shape.model.get('size').width,
+                attachedToRefId: shape.model.component.node.definition.get('attachedToRef')?.id ?? null,
                 color: shape.model.get('color'),
               },
             };
@@ -612,8 +618,42 @@ export default {
             }
             changed.push(defaultData);
           }
+          const boundariesChanges = this.getBoundariesChangesForShape(shape);
+          changed = changed.concat(boundariesChanges);
         });
+        
       return changed;
+    },
+    /**
+     * Get properties for each boundary inside a shape
+     */
+    getBoundariesChangesForShape(shape) {
+      let boundariesChanged = [];
+      const boundaryEventTypes = [
+        boundaryErrorEventId,
+        boundaryConditionalEventId,
+        boundaryEscalationEventId,
+        boundaryMessageEventId,
+        boundarySignalEventId,
+        boundaryTimerEventId,
+      ];
+      const boundaryNodes = store.getters.nodes.filter(node => boundaryEventTypes.includes(node.type));
+      boundaryNodes.forEach(boundaryNode => {
+        if (boundaryNode.definition.attachedToRef.id === shape.model.component.node.definition.id) {
+          boundariesChanged.push({
+            id: boundaryNode.definition.id,
+            properties: {
+              x: boundaryNode.diagram.bounds.x,
+              y: boundaryNode.diagram.bounds.y,
+              height: boundaryNode.diagram.bounds.height,
+              width: boundaryNode.diagram.bounds.width,
+              attachedToRefId: boundaryNode.definition.get('attachedToRef')?.id ?? null,
+              color: boundaryNode.definition.get('color') ?? null,
+            },
+          });
+        }
+      });
+      return boundariesChanged;
     },
     getContainerProperties(children) {
       const changed = [];
