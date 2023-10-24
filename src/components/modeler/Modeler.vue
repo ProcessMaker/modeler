@@ -1134,13 +1134,13 @@ export default {
             width: node.diagram.bounds.width,
             type: node.type,
             id: node.definition.id,
+            oldNodeId: null,
             isAddingLaneAbove: true,
             color: node.definition.color,
             dueIn: node.definition.dueIn,
             name: node.definition.name,
             assignedUsers: node.definition.assignedUsers,
           };
-          console.log(node);
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
           }
@@ -1224,7 +1224,7 @@ export default {
     },
     async removeNode(node, options) {
       // Check if the node is not replaced
-      if (this.isMultiplayer && !options?.isReplaced) {
+      if (this.isMultiplayer) {
         // Emit event to server to remove node
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
       }

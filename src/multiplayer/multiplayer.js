@@ -222,10 +222,18 @@ export default class Multiplayer {
     // Get the node to update
     const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
     const nodeToUpdate =  this.yArray.get(index);
+   
     // Update the node id in the nodeData
     nodeData.id = `node_${this.#nodeIdGenerator.getDefinitionNumber()}`;
     // Update the node id generator
     this.#nodeIdGenerator.updateCounters();
+    this.replaceShape({
+      oldNodeId: nodeData.nodeThatWillBeReplaced.definition.id,
+      id: nodeData.id,
+      type: newControl,
+      x: nodeData.x,
+      y: nodeData.y,
+    });
     // Update the node in the shared array
     this.yDoc.transact(() => {
       nodeToUpdate.set('type', newControl);
@@ -395,22 +403,34 @@ export default class Multiplayer {
       : { x: x + (width / 2), y: y + (height / 2) };
   }
   updateInspectorProperty(data) {
+    console.log('updateInspectorProperty', data);
     const index = this.getIndex(data.id);
     const nodeToUpdate =  this.yArray.get(index);
 
-    nodeToUpdate.set(data.key, data.value);
+    if (nodeToUpdate) {
+      nodeToUpdate.set(data.key, data.value);
 
-    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-    // Send the update to the web socket server
-    this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
-
+      const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+      // Send the update to the web socket server
+      this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
+    }
   }
   updateShapeFromInspector(data) {
-    const node = this.getNodeById(data.id);
-    if (typeof data.value !== 'object') {
-      const keys = Object.keys(data).
-        filter((key) => key !== 'id');
-      store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]]});
+    let node = null;
+    console.log('updateShapeFromInspector', data);
+    if (data.oldNodeId) {
+      const index = this.getIndex(data.oldNodeId);
+      const yNode =  this.yArray.get(index);
+      yNode.set('id', data.id);
+      node = this.getNodeById(data.oldNodeId);
+      store.commit('updateNodeProp', { node, key: 'id', value: data.id });
+    } else {
+      node = this.getNodeById(data.id);
+      if (node && typeof data.value !== 'object') {
+        const keys = Object.keys(data).
+          filter((key) => key !== 'id');
+        store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
+      }
     }
   }
 }
