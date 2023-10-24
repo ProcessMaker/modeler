@@ -137,7 +137,7 @@ export default {
       store.commit('updateNodeProp', { node: this.node, key: 'color', value: color });
       Vue.set(this.node.definition, 'color', color);
       this.$emit('save-state');
-      
+
       const properties = {
         id: this.node.definition.id,
         properties: {
@@ -148,6 +148,7 @@ export default {
           width: this.node.diagram.bounds.width,
           type: this.node.type,
           id: this.node.definition.id,
+          attachedToRefId: this.node.definition.get('attachedToRef')?.id,
         },
       };
       window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [properties]);

@@ -1099,7 +1099,6 @@ export default {
       diagram.bounds.y = y;
 
       const newNode = this.createNode(control.type, definition, diagram);
-
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
@@ -1142,9 +1141,13 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-boundary-timer-event',
+        'processmaker-modeler-boundary-error-event',
+        'processmaker-modeler-boundary-signal-event',
+        'processmaker-modeler-boundary-conditional-even',
+        'processmaker-modeler-boundary-message-event',
       ];
-
       if (!this.isMultiplayer) {
         return;
       }
