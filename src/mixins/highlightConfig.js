@@ -185,7 +185,7 @@ export default {
 
         this.circle.addTo(this.graph);
       }
-    },    
+    },
     setBorderOutline(borderOutline) {
       if (this.currentBorderOutline) {
         this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline);
