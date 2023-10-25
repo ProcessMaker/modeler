@@ -4,6 +4,7 @@ import { getNodeIdGenerator } from '../NodeIdGenerator';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
+
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -459,18 +460,13 @@ export default class Multiplayer {
       : { x: x + (width / 2), y: y + (height / 2) };
   }
   updateInspectorProperty(data) {
-    console.log('updateInspectorProperty', data);
     const index = this.getIndex(data.id);
     const nodeToUpdate =  this.yArray.get(index);
 
     if (nodeToUpdate) {
       let newValue = data.value;
       if (data.key === 'loopCharacteristics') {
-        newValue = JSON.stringify({
-          id: data.value.id,
-          bpmnType: data.value.$type,
-          loopMaximum: data.value.loopMaximum,
-        });
+        newValue = JSON.stringify(data.value);
       }
       nodeToUpdate.set(data.key, newValue);
 
@@ -479,27 +475,40 @@ export default class Multiplayer {
       this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
     }
   }
+  setNodeProp(node, key, value) {
+    store.commit('updateNodeProp', { node, key, value });
+  }
   updateShapeFromInspector(data) {
     let node = null;
-    console.log('updateShapeFromInspector', data);
     if (data.oldNodeId && data.oldNodeId !== data.id) {
       const index = this.getIndex(data.oldNodeId);
       const yNode =  this.yArray.get(index);
       yNode.set('id', data.id);
       node = this.getNodeById(data.oldNodeId);
       store.commit('updateNodeProp', { node, key: 'id', value: data.id });
-    } else {
-      node = this.getNodeById(data.id);
+      return;
+    } 
+    
+    node = this.getNodeById(data.id);
+   
+    if (node) {
       if (data.loopCharacteristics) {
         const loopCharacteristics = JSON.parse(data.loopCharacteristics);
-        console.log(loopCharacteristics);
+        this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({
+          type: node.definition.type,
+          '$loopCharactetistics': {
+            id: data.id,
+            loopCharacteristics,
+          },
+        }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
+        return;
       }
-      if (node) {
-        
-        const keys = Object.keys(data).
-          filter((key) => key !== 'id');
-        store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
-      }
+
+
+      const keys = Object.keys(data).
+        filter((key) => key !== 'id');
+      store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
     }
+    
   }
 }

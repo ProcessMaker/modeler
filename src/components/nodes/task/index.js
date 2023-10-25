@@ -63,10 +63,10 @@ export default {
       }),
     });
   },
-  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) {
-    handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle);
-    loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
-    defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'));
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
+    handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle, isMultiplayer);
+    loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
+    defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
   },
   inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);

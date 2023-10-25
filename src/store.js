@@ -98,11 +98,6 @@ export default new Vuex.Store({
           return;
         }
       }
-      if (state.isMultiplayer) {
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
-          id: node.definition.id , key, value,
-        });
-      }
       setDefinitionPropertyReactive(node.definition, key, value);
     
       if (value == null) {
