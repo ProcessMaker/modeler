@@ -1,7 +1,9 @@
 import { io } from 'socket.io-client';
 import * as Y from 'yjs';
 import { getNodeIdGenerator } from '../NodeIdGenerator';
+import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
+import store from '@/store';
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -64,12 +66,42 @@ export default class Multiplayer {
       this.modeler.enableMultiplayer(payload.isMultiplayer);
     });
 
+    this.clientIO.on('requestProcess', (payload) => {
+      const { firstClient, clientId } = payload;
+
+      // Check if the current client is the first client
+      if (firstClient.id === this.clientIO.id) {
+        // Get the process definition
+        const nodes = this.modeler.nodes.map((node) => this.modeler.multiplayerHook(node, false, true));
+
+        nodes.forEach((node) => {
+          const yMapNested = new Y.Map();
+          this.doTransact(yMapNested, node);
+          this.yArray.push([yMapNested]);
+          // Encode the state as an update and send it to the server
+          const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+          // Send the update to the web socket server
+          this.clientIO.emit('createElement', { updateDoc: stateUpdate, clientId });
+        });
+      }
+    });
+
     // Listen for updates when a new element is added
     this.clientIO.on('createElement', async(payload) => {
       // Create the new element in the process
       await this.createRemoteShape(payload.changes);
       // Add the new element to the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
+    });
+
+    // Listen for updates when a new element is requested
+    this.clientIO.on('createRequestedElement', async(payload) => {
+      if (payload.clientId === this.clientIO.id) {
+        // Create the new element in the process
+        await this.createRemoteShape(payload.changes);
+        // Add the new element to the shared array
+        Y.applyUpdate(this.yDoc, new Uint8Array(payload.updateDoc));
+      }
     });
 
     // Listen for updates when an element is removed
@@ -118,7 +150,11 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addFlow', ( data ) => {
-      this.addFlow(data);
+      this.addCommonElement(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('multiplayer-addBoundaryEvent', ( data ) => {
+      this.addCommonElement(data);
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
@@ -133,7 +169,7 @@ export default class Multiplayer {
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    this.clientIO.emit('createElement', stateUpdate);
+    this.clientIO.emit('createElement', { updateDoc: stateUpdate });
   }
   createShape(value){
     if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
@@ -142,12 +178,12 @@ export default class Multiplayer {
       this.modeler.addRemoteNode(value);
     }
     this.#nodeIdGenerator.updateCounters();
-    
+
   }
   createRemoteShape(changes) {
     return new Promise(resolve => {
       changes.map((data) => {
-        this.createShape(data);     
+        this.createShape(data);
       });
       resolve();
     });
@@ -214,7 +250,6 @@ export default class Multiplayer {
 
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-
     this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: true });
   }
   replaceShape(updatedNode) {
@@ -227,6 +262,7 @@ export default class Multiplayer {
       clientY,
       control: { type: updatedNode.type },
       nodeThatWillBeReplaced: node,
+      color: node.color,
       id: updatedNode.id,
     };
 
@@ -252,34 +288,93 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
-    // Update the element's position attribute
-    element.resize(
-      /* Add labelWidth to ensure elements don't overlap with the pool label */
-      data.width,
-      data.height,
-    );
-    element.set('position', { x: data.x, y: data.y });
-    // Trigger a rendering of the element on the paper
-    await paper.findViewByModel(element).update();
-    // validate if the parent pool was updated
-    await element.component.$nextTick();
-    await this.modeler.paperManager.awaitScheduledUpdates();
-    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
-      element.component.node.pool.component.moveElementRemote(element, newPool);
+
+    if (this.modeler.flowTypes.includes(data.type)) {
+      // Update the element's waypoints
+      // Get the source and target elements
+      const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
+      const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
+
+      const { waypoint } = data;
+      const startWaypoint = waypoint.shift();
+      const endWaypoint = waypoint.pop();
+
+      // Update the element's waypoints
+      const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
+      element.set('vertices', newWaypoint);
+
+      // Update the element's source anchor
+      element.source(sourceElem, {
+        anchor: () => {
+          return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+
+      // Update the element's target anchor
+      element.target(targetElem, {
+        anchor: () => {
+          return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
+        },
+        connectionPoint: { name: 'boundary' },
+      });
+    } else {
+      // Update the element's position attribute
+      element.resize(
+        /* Add labelWidth to ensure elements don't overlap with the pool label */
+        data.width,
+        data.height,
+      );
+      element.set('position', { x: data.x, y: data.y });
+
+      const node = this.getNodeById(data.id);
+      store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+
+      // boundary type
+      if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
+        this.attachBoundaryEventToNode(element, data);
+      }
+
+      // Trigger a rendering of the element on the paper
+      await paper.findViewByModel(element).update();
+      // validate if the parent pool was updated
+      await element.component.$nextTick();
+      await this.modeler.paperManager.awaitScheduledUpdates();
+      if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
+        element.component.node.pool.component.moveElementRemote(element, newPool);
+      }
     }
   }
- 
-  addFlow(data) {
+  attachBoundaryEventToNode(element, data) {
+    const node = this.getNodeById(data.attachedToRefId);
+
+    // Find previous attached task
+    const previousAttachedTask = element.getParentCell();
+
+    // Find new attached task
+    const newAttachedTask = this.modeler.getElementByNodeId(data.attachedToRefId);
+
+    if (previousAttachedTask) {
+      previousAttachedTask.unembed(element);
+    }
+
+    if (newAttachedTask) {
+      newAttachedTask.embed(element);
+    }
+
+    element.component.node.definition.set('attachedToRef', node.definition);
+  }
+  addCommonElement(data) {
+    // Add a new flow / boundary event to the shared array
     const yMapNested = new Y.Map();
     this.doTransact(yMapNested, data);
     this.yArray.push([yMapNested]);
     // Encode the state as an update and send it to the server
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     // Send the update to the web socket server
-    this.clientIO.emit('createElement', stateUpdate);
+    this.clientIO.emit('createElement', { updateDoc: stateUpdate });
     this.#nodeIdGenerator.updateCounters();
   }
-
   addLaneNodes(lanes) {
     const pool = this.getPool(lanes);
     window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
@@ -299,7 +394,7 @@ export default class Multiplayer {
         this.doTransact(yMapNested, data);
         this.yArray.push([yMapNested]);
         const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-        this.clientIO.emit('createElement', stateUpdate);
+        this.clientIO.emit('createElement', { updateDoc: stateUpdate });
       });
     });
   }
@@ -320,8 +415,21 @@ export default class Multiplayer {
   getPool(lanes) {
     if (lanes && lanes.length > 0) {
       return lanes[0].pool;
-    } 
+    }
     return false;
   }
+  getConnectionPoint(element, newPosition) {
+    const { x: elemX, y: elemY } = element.position();
+    const connectionOffset = {
+      x: newPosition.x - elemX,
+      y: newPosition.y - elemY,
+    };
 
+    const { x, y } = element.position();
+    const { width, height } = element.size();
+
+    return connectionOffset
+      ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
+      : { x: x + (width / 2), y: y + (height / 2) };
+  }
 }

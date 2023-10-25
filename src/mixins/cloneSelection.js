@@ -1,6 +1,6 @@
 import { id as laneId } from '../components/nodes/poolLane/config';
 import { id as sequenceFlowId } from '../components/nodes/sequenceFlow';
-import { id as associationId } from '../components/nodes/association';
+import { id as associationId } from '../components/nodes/association/associationConfig';
 import { id as messageFlowId } from '../components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../components/nodes/dataInputAssociation/config';
