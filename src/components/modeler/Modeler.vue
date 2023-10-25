@@ -56,7 +56,7 @@
 
       <InspectorButton
         ref="inspector-button"
-        v-if="showComponent && showInspectorButton"
+        v-show="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
         @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
         :style="{ right: inspectorButtonRight + 'px' }"
@@ -370,6 +370,11 @@ export default {
     },
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
+    },
+    highlightedNodes() {
+      if (window.ProcessMaker?.EventBus) {
+        window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
+      }
     },
   },
   computed: {
