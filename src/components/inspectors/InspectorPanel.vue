@@ -148,7 +148,7 @@ export default {
           this.setNodeProp(this.highlightedNode, 'documentation', documentation);
         }
 
-        inspectorHandler(omit(value, ['documentation']), store.isMultiplayer );
+        inspectorHandler(omit(value, ['documentation']), store.state.isMultiplayer);
       };
     },
     hasCustomInspectorHandler() {
@@ -240,17 +240,18 @@ export default {
     isConnectedToSubProcess(definition) {
       return definition.targetRef.$type === 'bpmn:CallActivity';
     },
-    customInspectorHandler(value) {
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler, store.state.isMultiplayer);
+    customInspectorHandler(value, isMultiplayer) {
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler, isMultiplayer);
     },
-    processNodeInspectorHandler(value) {
-      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
+    processNodeInspectorHandler(value, isMultiplayer) {
+      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), isMultiplayer);
     },
     setNodeProp(node, key, value) {
       this.$emit('shape-resize');
       store.commit('updateNodeProp', { node, key, value });
     },
     defaultInspectorHandler(value, isMultiplayer) {
+      console.log('defaultInspectorHandler', value);
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
         if (this.highlightedNode.definition.get(key) !== value[key]) {        

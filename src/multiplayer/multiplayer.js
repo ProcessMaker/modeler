@@ -133,17 +133,16 @@ export default class Multiplayer {
 
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
-    }); 
+    });
 
     this.clientIO.on('updateInspector', (payload) => {
       const { updateDoc, updatedNodes } = payload;
 
-      
       // Update the elements in the process
       updatedNodes.forEach((data) => {
         this.updateShapeFromInspector(data);
       });
-      
+
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
@@ -176,9 +175,10 @@ export default class Multiplayer {
       this.addLaneNodes(lanes);
     });
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspectorProperty', ( data ) => {
-      this.updateInspectorProperty(data);
+      if (this.modeler.isMultiplayer) {
+        this.updateInspectorProperty(data);
+      }
     });
-    
   }
   addNode(data) {
     // Add the new element to the shared array
@@ -257,7 +257,7 @@ export default class Multiplayer {
     // Get the node to update
     const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
     const nodeToUpdate =  this.yArray.get(index);
-   
+
     // Update the node id in the nodeData
     nodeData.id = `node_${this.#nodeIdGenerator.getDefinitionNumber()}`;
     // Update the node id generator
@@ -507,6 +507,11 @@ export default class Multiplayer {
 
       const keys = Object.keys(data).
         filter((key) => key !== 'id');
+      if (keys[0] === 'condition') {
+        node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
+      } else {
+        store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
+      }
       store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
     }
     

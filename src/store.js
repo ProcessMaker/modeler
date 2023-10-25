@@ -6,7 +6,6 @@ import uniq from 'lodash/uniq';
 Vue.use(Vuex);
 
 function setDefinitionPropertyReactive(definition, key, value) {
- 
   if (Object.hasOwn(definition, key)) {
     definition.set(key, value);
     return;
@@ -99,7 +98,6 @@ export default new Vuex.Store({
         }
       }
       setDefinitionPropertyReactive(node.definition, key, value);
-    
       if (value == null) {
         Vue.delete(node.definition, key);
       }
