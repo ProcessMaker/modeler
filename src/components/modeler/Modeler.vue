@@ -56,7 +56,7 @@
 
       <InspectorButton
         ref="inspector-button"
-        v-if="showComponent && showInspectorButton"
+        v-show="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
         @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
         :style="{ right: inspectorButtonRight + 'px' }"
@@ -368,6 +368,11 @@ export default {
     },
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
+    },
+    highlightedNodes() {
+      if (window.ProcessMaker?.EventBus) {
+        window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
+      }
     },
   },
   computed: {
@@ -951,7 +956,25 @@ export default {
     },
     async createNodeAsync(type, definition, diagram) {
       const node =  this.createNode(type, definition, diagram);
+      if (!this.isMultiplayer) {
+        store.commit('addNode', node);
+      }
+      else {
+        this.loadNodeForMultiplayer(node);
+      }
+    },
+    async loadNodeForMultiplayer(node) {
+      if (node.type === 'processmaker-modeler-lane') {
+        await this.addNode(node, node.definition.id, true);
+        this.nodeIdGenerator.updateCounters();
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', [node]);
+        return;
+      }
+      this.multiplayerHook(node, false);
       store.commit('addNode', node);
+      this.poolTarget = null;
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
@@ -1075,7 +1098,6 @@ export default {
       diagram.bounds.y = y;
 
       const newNode = this.createNode(control.type, definition, diagram);
-
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
@@ -1111,16 +1133,20 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    multiplayerHook(node, fromClient) {
+    multiplayerHook(node, fromClient, isProcessRequested = false) {
       const blackList = [
         'processmaker-modeler-lane',
         'processmaker-modeler-generic-flow',
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-boundary-timer-event',
+        'processmaker-modeler-boundary-error-event',
+        'processmaker-modeler-boundary-signal-event',
+        'processmaker-modeler-boundary-conditional-even',
+        'processmaker-modeler-boundary-message-event',
       ];
-
       if (!this.isMultiplayer) {
         return;
       }
@@ -1148,6 +1174,11 @@ export default {
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
           }
+
+          if (isProcessRequested) {
+            return defaultData;
+          }
+
           window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
         }
         if (this.flowTypes.includes(node.type)) {
@@ -1156,17 +1187,23 @@ export default {
 
           if (node.type === 'processmaker-modeler-data-input-association') {
             sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
-            targetRefId = node.definition.targetRef?.$parent?.$parent.get('id');
+            targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
 
           if (sourceRefId && targetRefId) {
-            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', {
+            const flowData = {
               id: node.definition.id,
               type: node.type,
               sourceRefId,
               targetRefId,
               waypoint: node.diagram.waypoint,
-            });
+            };
+
+            if (isProcessRequested) {
+              return flowData;
+            }
+
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', flowData);
           }
         }
       }
@@ -1718,6 +1755,7 @@ export default {
         try {
           const multiplayer = new Multiplayer(this);
           multiplayer.init();
+          this.multiplayer = multiplayer;
         } catch (error) {
           console.warn('Could not initialize multiplayer', error);
         }

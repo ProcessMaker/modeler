@@ -202,6 +202,26 @@ export default {
 
       this.invalidTargetElement = targetElement;
     },
+    addMultiplayerBoundaryEvent() {
+      const control = {
+        bpmnType: this.node.diagram.$type,
+        id: this.node.diagram.id,
+        type: this.node.type,
+        attachedToRef: this.node.definition.get('attachedToRef'),
+      };
+
+      window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', {
+        x: this.node.diagram.bounds.x,
+        y: this.node.diagram.bounds.y,
+        height: this.node.diagram.bounds.height,
+        width: this.node.diagram.bounds.width,
+        attachedToRefId: this.node.definition.get('attachedToRef')?.id,
+        control,
+        type: this.node.type,
+        id: this.node.definition.id,
+        color: this.node.definition.get('color'),
+      });
+    },
   },
   async mounted() {
     this.shape = new EventShape();
@@ -214,6 +234,10 @@ export default {
     const task = this.getTaskUnderShape();
     this.attachBoundaryEventToTask(task);
     this.updateShapePosition(task);
+    
+    if (this.node.fromCrown) {
+      this.addMultiplayerBoundaryEvent();  
+    }
   },
 };
 </script>
