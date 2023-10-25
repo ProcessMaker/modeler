@@ -251,7 +251,6 @@ export default {
       store.commit('updateNodeProp', { node, key, value });
     },
     defaultInspectorHandler(value, isMultiplayer) {
-      console.log('defaultInspectorHandler', value);
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
         if (this.highlightedNode.definition.get(key) !== value[key]) {        

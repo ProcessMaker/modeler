@@ -509,8 +509,6 @@ export default class Multiplayer {
         filter((key) => key !== 'id');
       if (keys[0] === 'condition') {
         node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
-      } else {
-        store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
       }
       store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
     }
