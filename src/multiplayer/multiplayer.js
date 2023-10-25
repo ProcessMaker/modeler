@@ -488,10 +488,11 @@ export default class Multiplayer {
       store.commit('updateNodeProp', { node, key: 'id', value: data.id });
       return;
     } 
-    
+    // create a node
     node = this.getNodeById(data.id);
    
     if (node) {
+      // loopCharacteristics property section
       if (data.loopCharacteristics) {
         const loopCharacteristics = JSON.parse(data.loopCharacteristics);
         this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({

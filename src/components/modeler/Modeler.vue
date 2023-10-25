@@ -1167,9 +1167,7 @@ export default {
             name: node.definition.name,
             assignedUsers: node.definition.assignedUsers,
             config: node.definition.config,
-
-            loopCharacteristics: '',
-            
+            loopCharacteristics: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;

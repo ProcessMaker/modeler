@@ -146,6 +146,7 @@ export default {
             : undefined;
 
           this.setNodeProp(this.highlightedNode, 'documentation', documentation);
+          this.multiplayerHook('documentation', documentation, store.state.isMultiplayer);
         }
 
         inspectorHandler(omit(value, ['documentation']), store.state.isMultiplayer);
@@ -254,17 +255,20 @@ export default {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
         if (this.highlightedNode.definition.get(key) !== value[key]) {        
-          if (isMultiplayer) {
-            window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
-              id: this.highlightedNode.definition.id , key, value: value[key],
-            });
-          }
+          this.multiplayerHook(key, value[key], isMultiplayer);
           this.setNodeProp(this.highlightedNode, key, value[key]);
         }
       }
     },
     updateState() {
       this.$emit('save-state');
+    },
+    multiplayerHook(key, value, isMultiplayer) {
+      if (isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: this.highlightedNode.definition.id , key, value,
+        });
+      }
     },
   },
 };
