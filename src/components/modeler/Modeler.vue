@@ -688,7 +688,7 @@ export default {
 
       return;
     },
-    blurFocusedScreenBuilderElement() {//
+    blurFocusedScreenBuilderElement() {
       const elementsToBlur = ['INPUT', 'SELECT'];
       if (elementsToBlur.includes(document.activeElement && document.activeElement.tagName)) {
         document.activeElement.blur();
@@ -1629,7 +1629,7 @@ export default {
     store.commit('setPaper', this.paperManager.paper);
 
     this.paperManager.addEventHandler('element:pointerclick', ({ model: shape }) => {
-      this.blurFocusedScreenBuilderElement;//
+      this.blurFocusedScreenBuilderElement;
       if (shape.attributes.type !== 'basic.Circle') {
         if (shape.component.circle) {
           window.ProcessMaker.EventBus.$emit('modeler:openComments', true);
