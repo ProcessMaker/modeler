@@ -249,7 +249,6 @@ export default {
     setNodeProp(node, key, value) {
       this.$emit('shape-resize');
       store.commit('updateNodeProp', { node, key, value });
-      this
     },
     defaultInspectorHandler(value, isMultiplayer) {
       /* Go through each property and rebind it to our data */
