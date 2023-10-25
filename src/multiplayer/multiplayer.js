@@ -408,7 +408,15 @@ export default class Multiplayer {
     const nodeToUpdate =  this.yArray.get(index);
 
     if (nodeToUpdate) {
-      nodeToUpdate.set(data.key, data.value);
+      let newValue = data.value;
+      if (data.key === 'loopCharacteristics') {
+        newValue = JSON.stringify({
+          id: data.value.id,
+          bpmnType: data.value.$type,
+          loopMaximum: data.value.loopMaximum,
+        });
+      }
+      nodeToUpdate.set(data.key, newValue);
 
       const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
       // Send the update to the web socket server
@@ -418,7 +426,7 @@ export default class Multiplayer {
   updateShapeFromInspector(data) {
     let node = null;
     console.log('updateShapeFromInspector', data);
-    if (data.oldNodeId) {
+    if (data.oldNodeId && data.oldNodeId !== data.id) {
       const index = this.getIndex(data.oldNodeId);
       const yNode =  this.yArray.get(index);
       yNode.set('id', data.id);
@@ -426,7 +434,12 @@ export default class Multiplayer {
       store.commit('updateNodeProp', { node, key: 'id', value: data.id });
     } else {
       node = this.getNodeById(data.id);
-      if (node && typeof data.value !== 'object') {
+      if (data.loopCharacteristics) {
+        const loopCharacteristics = JSON.parse(data.loopCharacteristics);
+        console.log(loopCharacteristics);
+      }
+      if (node) {
+        
         const keys = Object.keys(data).
           filter((key) => key !== 'id');
         store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });

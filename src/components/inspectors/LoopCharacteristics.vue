@@ -154,6 +154,7 @@ export default {
       this.saveData();
     },
     changeLoopType(value) {
+      console.log(value);
       this.setLoopCharacteristics(value);
       this.saveData();
     },
