@@ -53,6 +53,9 @@ export default merge(cloneDeep(baseStartEventConfig), {
         ];
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
       } else {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id , key, value: value[key],
+        });
         setNodeProp(node, key, value[key]);
       }
     }
