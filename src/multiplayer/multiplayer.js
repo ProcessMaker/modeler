@@ -190,14 +190,18 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('createElement', { updateDoc: stateUpdate });
   }
-  createShape(value){
+  createShape(value) {
+    const node = this.getNodeById(value.id);
+    // validate repeated sahpes
+    if (node) {
+      return;
+    }
     if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
       this.modeler.nodeRegistry[value.type].multiplayerClient(this.modeler, value);
     } else {
       this.modeler.addRemoteNode(value);
     }
     this.#nodeIdGenerator.updateCounters();
-
   }
   createRemoteShape(changes) {
     return new Promise(resolve => {
