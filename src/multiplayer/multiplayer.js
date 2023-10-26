@@ -192,7 +192,7 @@ export default class Multiplayer {
   }
   createShape(value) {
     const node = this.getNodeById(value.id);
-    // validate repeated sahpes
+    // validate repeated shapes
     if (node) {
       return;
     }
