@@ -487,10 +487,10 @@ export default class Multiplayer {
       node = this.getNodeById(data.oldNodeId);
       store.commit('updateNodeProp', { node, key: 'id', value: data.id });
       return;
-    } 
+    }
     // create a node
     node = this.getNodeById(data.id);
-   
+
     if (node) {
       // loopCharacteristics property section
       if (data.loopCharacteristics) {
@@ -505,14 +505,18 @@ export default class Multiplayer {
         return;
       }
 
+      const keys = Object.keys(data).filter((key) => key !== 'id')[0];
 
-      const keys = Object.keys(data).
-        filter((key) => key !== 'id');
       if (keys[0] === 'condition') {
         node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
       }
+
+      if (keys[0] === 'gatewayDirection') {
+        node.definition.set('gatewayDirection', data[keys[0]]);
+      }
+
       store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
     }
-    
+
   }
 }
