@@ -290,7 +290,7 @@ describe('Sequence Flows', { scrollBehavior: false }, () => {
     const taskPosition = { x: 350, y: 250 };
     let numberOfSequenceFlowsAdded = 1;
 
-    const sequenceFlow = '<bpmn:sequenceFlow id="node_16" sourceRef="node_1" targetRef="node_8"';
+    const sequenceFlow = '<bpmn:sequenceFlow id="node_12" sourceRef="node_1" targetRef="node_8"';
 
     addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-script-task');
     getElementAtPosition(taskPosition).getType().should('equal', nodeTypes.scriptTask);
@@ -315,7 +315,7 @@ describe('Sequence Flows', { scrollBehavior: false }, () => {
       expect($links.length).to.eq(numberOfSequenceFlowsAdded);
     });
 
-    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_16" sourceRef="node_1" targetRef="node_18"';
+    const updatedSequenceFlow = '<bpmn:sequenceFlow id="node_12" sourceRef="node_1" targetRef="node_14"';
     assertDownloadedXmlContainsExpected(updatedSequenceFlow);
   });
 });
