@@ -64,7 +64,7 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
-    handleMarkerFlagsValue(value.markerFlags, node, setNodeProp, moddle, isMultiplayer);
+    handleMarkerFlagsValue(value.markerFlags, node, setNodeProp);
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
   },
