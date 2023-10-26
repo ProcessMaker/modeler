@@ -1571,7 +1571,6 @@ export default {
       window.location = redirectTo;
     },
     enableMultiplayer(value) {
-      //this.isMultiplayer = value;
       store.commit('enableMultiplayer', value);
     },
     addPlayer(player) {
