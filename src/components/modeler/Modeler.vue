@@ -1608,7 +1608,7 @@ export default {
       }
     },
     listenForCommentedNodes() {
-      if (window.ProcessMaker && window.ProcessMaker.EventBus) {
+      if (window.ProcessMaker?.EventBus) {
         window.ProcessMaker.EventBus.$on('comments:commentedNodes', this.commentedNodesChanged);
       }
     },
