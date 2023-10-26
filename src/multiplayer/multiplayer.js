@@ -505,7 +505,7 @@ export default class Multiplayer {
         return;
       }
 
-      const keys = Object.keys(data).filter((key) => key !== 'id')[0];
+      const keys = Object.keys(data).filter((key) => key !== 'id');
 
       if (keys[0] === 'condition') {
         node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
