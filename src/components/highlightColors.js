@@ -6,3 +6,4 @@ export const COLOR_IDLE = '#CCCCCC';
 export const COLOR_IDLE_FILL = '#F5F5F5';
 export const COLOR_COMPLETED = '#00BA7C';
 export const COLOR_COMPLETED_FILL = '#D6FFE6';
+export const COLOR_COMMENTED_FILL = '#FABD2D';

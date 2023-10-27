@@ -8,6 +8,7 @@ import store from '@/store';
 import {
   COLOR_IDLE,
   COLOR_COMPLETED,
+  COLOR_COMMENTED_FILL,
 } from '@/components/highlightColors.js';
 
 const endpoints = {
@@ -20,7 +21,7 @@ function isPoint(item) {
 }
 
 export default {
-  props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
+  props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle', 'isCommented'],
   data() {
     return {
       linkView: null,
@@ -91,6 +92,15 @@ export default {
       else if (this.isIdle) {
         this.shape.attr({
           line: { stroke: COLOR_IDLE },
+        });
+      }
+      else if (this.isCommented) {
+        this.shape.attr('line/sourceMarker', {
+          type: 'circle', // SVG Circle
+          fill: COLOR_COMMENTED_FILL,
+          stroke: 'transparent',
+          r: 7.5, // radius of the circle
+          cx: 50, // move the centre of the circle 5 pixels from the end of the path
         });
       }
     },

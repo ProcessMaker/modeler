@@ -1,3 +1,4 @@
+import { shapes } from 'jointjs';
 import cloneDeep from 'lodash/cloneDeep';
 import store from '@/store';
 import {
@@ -9,6 +10,7 @@ import {
   COLOR_IDLE_FILL,
   COLOR_COMPLETED,
   COLOR_COMPLETED_FILL,
+  COLOR_COMMENTED_FILL,
 } from '@/components/highlightColors.js';
 
 const errorHighlighter = {
@@ -74,6 +76,10 @@ const idleHighlighter = {
   },
 };
 
+function createCircle(options) {
+  return new shapes.basic.Circle(options);
+}
+
 export default {
   props: [
     'highlighted',
@@ -84,11 +90,13 @@ export default {
     'isCompleted',
     'isInProgress',
     'isIdle',
+    'isCommented',
   ],
   data() {
     return {
       shape: null,
       currentBorderOutline: null,
+      circle: null,
     };
   },
   watch: {
@@ -146,6 +154,36 @@ export default {
       this.shapeView.unhighlight(this.shapeBody, defaultHighlighter);
       if (this.highlighted) {
         this.shapeView.highlight(this.shapeBody, defaultHighlighter);
+      }
+
+      if (this.isCommented) {
+        this.updateOrCreateCircle();
+      }
+    },
+    updateOrCreateCircle() {
+      if (this.circle) {
+        this.circle.position(
+          this.shape.get('position').x + this.shape.get('size').width - 7.5,
+          this.shape.get('position').y - 7.5,
+        );
+      } else {
+        this.circle = createCircle({
+          position: {
+            x: this.shape.get('position').x + this.shape.get('size').width - 7.5,
+            y: this.shape.get('position').y - 7.5,
+          },
+          size: { width: 15, height: 15 },
+          attrs: {
+            circle: {
+              fill: COLOR_COMMENTED_FILL,
+              stroke: 'transparent',
+            },
+          },
+        });
+
+        this.shape.embed(this.circle);
+
+        this.circle.addTo(this.graph);
       }
     },
     setBorderOutline(borderOutline) {

@@ -114,6 +114,7 @@
         :is-completed="requestCompletedNodes.includes(node.definition.id)"
         :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
         :is-idle="requestIdleNodes.includes(node.definition.id)"
+        :is-commented="requestCommentedNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
         @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
@@ -136,6 +137,14 @@
         @shape-resize="shapeResize"
       />
 
+      <Popover
+        v-if="popover"
+        :style="{
+          left: popoverPosition.x+'px',
+          top:  popoverPosition.y+'px'
+        }"
+      />
+      
       <RailBottom
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
@@ -224,6 +233,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 import Multiplayer from '@/multiplayer/multiplayer';
+import Popover from '../comments/Popover';
 
 export default {
   components: {
@@ -237,6 +247,7 @@ export default {
     RailBottom,
     WelcomeMessage,
     RemoteCursor,
+    Popover,
   },
   props: {
     owner: Object,
@@ -332,6 +343,9 @@ export default {
       previewConfigs: [],
       multiplayer: null,
       isMultiplayer: false,
+      requestCommentedNodes: [],
+      popover:false,
+      popoverPosition: {},
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -1593,6 +1607,14 @@ export default {
         this.players.splice(playerIndex, 1);
       }
     },
+    listenForCommentedNodes() {
+      if (window.ProcessMaker?.EventBus) {
+        window.ProcessMaker.EventBus.$on('comments:commentedNodes', this.commentedNodesChanged);
+      }
+    },
+    commentedNodesChanged(value) {
+      this.requestCommentedNodes = value;
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1653,7 +1675,21 @@ export default {
 
     store.commit('setPaper', this.paperManager.paper);
 
-    this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
+    this.paperManager.addEventHandler('element:pointerclick', ({ model: shape }) => {
+      this.blurFocusedScreenBuilderElement();
+      if (shape.attributes.type !== 'basic.Circle') {
+        if (shape.component.circle) {
+          window.ProcessMaker.EventBus.$emit('modeler:openComments', true);
+        }
+      }
+    }, this);
+
+    this.paperManager.addEventHandler('link:pointerclick', ({ model: shape }) => {
+      if (shape.attributes.attrs.line.sourceMarker.type === 'circle') {
+        window.ProcessMaker.EventBus.$emit('modeler:openComments', true);
+      }
+      
+    });
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
       if (this.isGrabbing) return;
@@ -1667,12 +1703,30 @@ export default {
     }, this);
 
     this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }) => {
+      this.popover = false;
       if (this.isBpmnNode(shape) && shape.attr('body/cursor') !== 'default' && !this.isGrabbing) {
         shape.attr('body/cursor', 'move');
       }
       // If the user is panning the Paper while hovering an element, ignore the default move cursor
       if (this.isGrabbing && this.isBpmnNode(shape)) {
         shape.attr('body/cursor', 'grabbing');
+      }
+      if (shape.attributes.type !== 'basic.Circle') {
+        if (shape.component.circle) {
+          this.popover = true;
+          this.popoverPosition.x = (shape.attributes.position.x + (shape.attributes.size.width / 2)+ 50);
+          this.popoverPosition.y = (shape.attributes.position.y - 30);
+        }
+      }
+    });
+    this.paperManager.addEventHandler('cell:mouseout element:mouseout', () => {
+      this.popover = false;
+    });
+    this.paperManager.addEventHandler('link:mouseover', ({ model: shape }, evt) => {
+      if (shape.attributes.attrs.line.sourceMarker.type === 'circle') {
+        this.popover = true;
+        this.popoverPosition.x = (evt.offsetX - 80);
+        this.popoverPosition.y = (evt.offsetY - 50);
       }
     });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
@@ -1781,6 +1835,7 @@ export default {
         this.redirect(redirectUrl);
       }
     });
+    this.listenForCommentedNodes();
   },
 };
 </script>

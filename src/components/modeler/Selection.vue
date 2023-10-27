@@ -447,6 +447,7 @@ export default {
      * Filter the selected elements
      */
     filterSelected() {
+      this.selected = this.selected.filter(shape => shape.model.get('type') !== 'basic.Circle');
       const flowTypes = [
         sequenceFlowId,
         dataOutputAssociationFlowId,
