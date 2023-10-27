@@ -121,7 +121,15 @@ export default {
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
         ];
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id,
+          key: 'eventDefinitions',
+          value: eventDefinitions,
+        });
       } else {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id , key, value: value[key],
+        });
         setNodeProp(node, key, value[key]);
       }
     }

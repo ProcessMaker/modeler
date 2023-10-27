@@ -25,14 +25,22 @@ export default {
     }, {});
   },
   inspectorHandler(value, node, setNodeProp) {
-    
     for (const key in omit(value, ['$type', 'eventDefinitions'])) {
       if (node.definition[key] === value[key]) {
         continue;
       }
       if (key === 'condition') {
         node.definition.get('eventDefinitions')[0].get('condition').body = value[key];
+
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id,
+          key,
+          value: value[key],
+        });
       } else {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id , key, value: value[key],
+        });
         setNodeProp(node, key, value[key]);
       }
     }

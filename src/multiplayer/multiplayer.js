@@ -4,6 +4,7 @@ import { getNodeIdGenerator } from '../NodeIdGenerator';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
+
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -134,6 +135,19 @@ export default class Multiplayer {
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
 
+    this.clientIO.on('updateInspector', (payload) => {
+      const { updateDoc, updatedNodes } = payload;
+
+      // Update the elements in the process
+      updatedNodes.forEach((data) => {
+        this.updateShapeFromInspector(data);
+      });
+
+      // Update the element in the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
+    });
+
+
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
@@ -160,6 +174,11 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
       this.addLaneNodes(lanes);
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateInspectorProperty', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateInspectorProperty(data);
+      }
+    });
   }
   addNode(data) {
     // Add the new element to the shared array
@@ -171,14 +190,18 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('createElement', { updateDoc: stateUpdate });
   }
-  createShape(value){
+  createShape(value) {
+    const node = this.getNodeById(value.id);
+    // validate repeated shapes
+    if (node) {
+      return;
+    }
     if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
       this.modeler.nodeRegistry[value.type].multiplayerClient(this.modeler, value);
     } else {
       this.modeler.addRemoteNode(value);
     }
     this.#nodeIdGenerator.updateCounters();
-
   }
   createRemoteShape(changes) {
     return new Promise(resolve => {
@@ -238,10 +261,18 @@ export default class Multiplayer {
     // Get the node to update
     const index = this.getIndex(nodeData.nodeThatWillBeReplaced.definition.id);
     const nodeToUpdate =  this.yArray.get(index);
+
     // Update the node id in the nodeData
     nodeData.id = `node_${this.#nodeIdGenerator.getDefinitionNumber()}`;
     // Update the node id generator
     this.#nodeIdGenerator.updateCounters();
+    this.replaceShape({
+      oldNodeId: nodeData.nodeThatWillBeReplaced.definition.id,
+      id: nodeData.id,
+      type: newControl,
+      x: nodeData.x,
+      y: nodeData.y,
+    });
     // Update the node in the shared array
     this.yDoc.transact(() => {
       nodeToUpdate.set('type', newControl);
@@ -431,5 +462,68 @@ export default class Multiplayer {
     return connectionOffset
       ? { x: x + connectionOffset.x, y: y + connectionOffset.y }
       : { x: x + (width / 2), y: y + (height / 2) };
+  }
+  updateInspectorProperty(data) {
+    const index = this.getIndex(data.id);
+    const nodeToUpdate =  this.yArray.get(index);
+
+    if (nodeToUpdate) {
+      let newValue = data.value;
+      if (data.key === 'loopCharacteristics') {
+        newValue = JSON.stringify(data.value);
+      }
+      nodeToUpdate.set(data.key, newValue);
+
+      const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+      // Send the update to the web socket server
+      this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
+    }
+  }
+  setNodeProp(node, key, value) {
+    store.commit('updateNodeProp', { node, key, value });
+  }
+  updateShapeFromInspector(data) {
+    let node = null;
+    if (data.oldNodeId && data.oldNodeId !== data.id) {
+      const index = this.getIndex(data.oldNodeId);
+      const yNode =  this.yArray.get(index);
+      yNode.set('id', data.id);
+      node = this.getNodeById(data.oldNodeId);
+      store.commit('updateNodeProp', { node, key: 'id', value: data.id });
+      return;
+    }
+    // create a node
+    node = this.getNodeById(data.id);
+
+    if (node) {
+      // loopCharacteristics property section
+      if (data.loopCharacteristics) {
+        const loopCharacteristics = JSON.parse(data.loopCharacteristics);
+        this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({
+          type: node.definition.type,
+          '$loopCharactetistics': {
+            id: data.id,
+            loopCharacteristics,
+          },
+        }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
+        return;
+      }
+      if (this.modeler.nodeRegistry[node.type] && this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler) {
+        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data);
+        return;
+      }
+      const keys = Object.keys(data).filter((key) => key !== 'id');
+
+      if (keys[0] === 'condition') {
+        node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
+      }
+
+      if (keys[0] === 'gatewayDirection') {
+        node.definition.set('gatewayDirection', data[keys[0]]);
+      }
+
+      store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
+    }
+
   }
 }

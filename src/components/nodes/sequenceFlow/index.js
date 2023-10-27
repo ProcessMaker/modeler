@@ -55,6 +55,9 @@ export default {
           setNodeProp(node, key, conditionExpression);
         }
       } else {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id , key, value: value[key],
+        });
         setNodeProp(node, key, value[key]);
       }
     }

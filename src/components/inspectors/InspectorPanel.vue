@@ -146,9 +146,10 @@ export default {
             : undefined;
 
           this.setNodeProp(this.highlightedNode, 'documentation', documentation);
+          this.multiplayerHook('documentation', documentation, store.state.isMultiplayer);
         }
 
-        inspectorHandler(omit(value, ['documentation']));
+        inspectorHandler(omit(value, ['documentation']), store.state.isMultiplayer);
       };
     },
     hasCustomInspectorHandler() {
@@ -240,26 +241,34 @@ export default {
     isConnectedToSubProcess(definition) {
       return definition.targetRef.$type === 'bpmn:CallActivity';
     },
-    customInspectorHandler(value) {
-      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler);
+    customInspectorHandler(value, isMultiplayer) {
+      return this.nodeRegistry[this.highlightedNode.type].inspectorHandler(value, this.highlightedNode, this.setNodeProp, this.moddle, this.definitions, this.defaultInspectorHandler, isMultiplayer);
     },
-    processNodeInspectorHandler(value) {
-      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']));
+    processNodeInspectorHandler(value, isMultiplayer) {
+      return this.defaultInspectorHandler(omit(value, ['artifacts', 'flowElements', 'laneSets']), isMultiplayer);
     },
     setNodeProp(node, key, value) {
       this.$emit('shape-resize');
       store.commit('updateNodeProp', { node, key, value });
     },
-    defaultInspectorHandler(value) {
+    defaultInspectorHandler(value, isMultiplayer) {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
-        if (this.highlightedNode.definition.get(key) !== value[key]) {
+        if (this.highlightedNode.definition.get(key) !== value[key]) {        
+          this.multiplayerHook(key, value[key], isMultiplayer);
           this.setNodeProp(this.highlightedNode, key, value[key]);
         }
       }
     },
     updateState() {
       this.$emit('save-state');
+    },
+    multiplayerHook(key, value, isMultiplayer) {
+      if (isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: this.highlightedNode.definition.id , key, value,
+        });
+      }
     },
   },
 };

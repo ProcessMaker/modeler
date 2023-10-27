@@ -330,8 +330,6 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       previewConfigs: [],
-      multiplayer: null,
-      isMultiplayer: false,
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -403,6 +401,7 @@ export default {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
     showComponent: () => store.getters.showComponent,
+    isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
     registerPreview(config) {
@@ -1161,8 +1160,15 @@ export default {
             width: node.diagram.bounds.width,
             type: node.type,
             id: node.definition.id,
+            oldNodeId: null,
             isAddingLaneAbove: true,
-            color: node.color,
+            color: node.definition.color,
+            dueIn: node.definition.dueIn,
+            name: node.definition.name,
+            assignedUsers: node.definition.assignedUsers,
+            config: node.definition.config,
+            loopCharacteristics: null,
+            gatewayDirection: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
@@ -1258,7 +1264,7 @@ export default {
     },
     async removeNode(node, options) {
       // Check if the node is not replaced
-      if (this.isMultiplayer && !options?.isReplaced) {
+      if (this.isMultiplayer) {
         // Emit event to server to remove node
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
       }
@@ -1318,35 +1324,19 @@ export default {
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
           };
-
-          await this.replaceNodeProcedure(nodeData);
+          await this.replaceNodeProcedure(nodeData, true);
         });
       });
     },
     async replaceNodeProcedure(data, isReplaced = false) {
-      // Get the clientX and clientY from the node that will be replaced
-      const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
-      data.clientX = clientX;
-      data.clientY = clientY;
-
-      const newNode = await this.handleDrop(data);
-
-      await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
-      this.highlightNode(newNode);
-      this.selectNewNode(newNode);
-
-      if (this.isMultiplayer && !isReplaced) {
-        // Get all node types
-        const nodeTypes = nodeTypesStore.getters.getNodeTypes;
-        // Get the new control
-        const newControl = nodeTypes.flatMap(nodeType => {
-          return nodeType.items?.filter(item => item.type === data.typeToReplaceWith);
-        }).filter(Boolean);
-        // If the new control is found, emit event to server to replace node
-        if (newControl.length === 1) {
-          window.ProcessMaker.EventBus.$emit('multiplayer-replaceNode', { data, newControl: newControl[0].type });
-        }
+      if (isReplaced) {
+        // Get the clientX and clientY from the node that will be replaced
+        const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
+        data.clientX = clientX;
+        data.clientY = clientY;
       }
+      await this.handleDrop(data);
+      await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
     },
     replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
       this.performSingleUndoRedoTransaction(async() => {
@@ -1581,7 +1571,7 @@ export default {
       window.location = redirectTo;
     },
     enableMultiplayer(value) {
-      this.isMultiplayer = value;
+      store.commit('enableMultiplayer', value);
     },
     addPlayer(player) {
       this.players.push(player);
