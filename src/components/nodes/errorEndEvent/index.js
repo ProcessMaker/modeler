@@ -45,6 +45,23 @@ export default merge(cloneDeep(endEventConfig), {
     const error = node.definition.get('eventDefinitions')[0].errorRef;
     if (error.name !== value.errorName) {
       error.name = value.errorName;
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id,
+        key: 'eventDefinitions',
+        value: node.definition.get('eventDefinitions'),
+      });
+    }
+  },
+  multiplayerInspectorHandler(node, data){
+    const keys = Object.keys(data).filter((key) => key !== 'id');
+    if (keys[0] === 'eventDefinitions') {
+      const error = data[keys[0]][0].errorRef;
+      const errorRef = node.definition.get('eventDefinitions')[0].errorRef;
+      if (error && errorRef) {
+        if (error.name !== errorRef.name) {
+          errorRef.name = error.name;
+        }
+      }
     }
   },
   inspectorConfig: [
