@@ -23,22 +23,22 @@ window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
 
 
 
-ProcessMaker.EventBus.$on(
-  "modeler-init",
+window.ProcessMaker.EventBus.$on(
+  'modeler-init',
   (event) => {
     event.registerPreview({
       url:'/designer/screens/preview',
       receivingParams: ['screenRef'],
       matcher: (nodeData) => {
         return nodeData?.$type  === 'bpmn:Task';
-      }
+      },
     });
     event.registerPreview({
       url:'/designer/scripts/preview',
       receivingParams: ['scriptRef'],
       matcher: (nodeData) => {
         return nodeData?.$type === 'bpmn:ScriptTask';
-      }
+      },
     });
   });
 
