@@ -47,7 +47,11 @@ export default {
   },
   methods: {
     preview() {
-      this.$emit('previewNode', this.node);
+      if (window.ProcessMaker.$modeler.isOpenPreview) {
+        window.ProcessMaker.$modeler.isOpenPreview = false;
+      } else {
+        this.$emit('previewNode', this.node);
+      }
     },
   },
 };
