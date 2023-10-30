@@ -73,7 +73,6 @@
 <script>
 import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
-import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
   props: ['nodeRegistry', 'visible', 'previewConfigs'],
@@ -90,7 +89,6 @@ export default {
       width: 600,
       isDragging: false,
       currentPos: 600,
-      validPreviewElements,
     };
   },
   watch: {
