@@ -7,7 +7,7 @@
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
     @mousemove="onMouseMove"
-    data-test="preview-column"
+    data-test="preview-pane"
   >
     <b-row class="control-bar">
       <b-col cols="9">

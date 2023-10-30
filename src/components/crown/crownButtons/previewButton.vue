@@ -5,6 +5,7 @@
     role="menuitem"
     id="preview-button"
     aria-label="Preview"
+    data-test="preview-button"
     @click="preview()"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
@@ -16,7 +17,6 @@
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
-import store from '@/store';
 
 export default {
   components: { CrownButton },
