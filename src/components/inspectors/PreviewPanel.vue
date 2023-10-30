@@ -73,6 +73,7 @@
 <script>
 import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
+import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
   props: ['nodeRegistry', 'visible', 'previewConfigs'],
@@ -89,6 +90,7 @@ export default {
       width: 600,
       isDragging: false,
       currentPos: 600,
+      validPreviewElements,
     };
   },
   watch: {
@@ -138,7 +140,16 @@ export default {
       if (currentValue === previousValue) {
         return;
       }
-      this.prepareData();
+
+      const nodeConfig = this.previewConfigs.find(config => {
+        return config.matcher(this.data);
+      });
+      if (nodeConfig) {
+        this.prepareData();
+      }
+      else {
+        this.$emit('togglePreview', false);
+      }
     },
 
     onSelectedPreview(item) {
@@ -159,9 +170,13 @@ export default {
           clone[prop] = this.data[prop];
         }
       }
+
+
       const nodeData = encodeURI(JSON.stringify(clone));
 
-      this.previewUrl = previewConfig ? `${previewConfig.url}?node=${nodeData}` : null;
+      // if the node has the configurations (for example screenRef for a task in a task)
+      const nodeHasConfigParams = Object.keys(clone).length > 0;
+      this.previewUrl = previewConfig &&  nodeHasConfigParams ? `${previewConfig.url}?node=${nodeData}` : null;
       this.taskTitle = this.highlightedNode?.definition?.name;
       this.showPanel = true;
     },

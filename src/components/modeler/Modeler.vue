@@ -224,6 +224,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 import Multiplayer from '@/multiplayer/multiplayer';
+import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
   components: {
@@ -418,6 +419,9 @@ export default {
       this.isOpenInspector = value;
     },
     handlePreview() {
+      if (this.highlightedNodes.length != 1) {
+        this.isOpenPreview = false;
+      }
       this.$refs['preview-panel'].previewNode(true);
       this.handleTogglePreview(true) ;
     },
