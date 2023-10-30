@@ -1,6 +1,6 @@
 <template>
   <crown-button
-    v-if="node.isBpmnType(...validPreviewElements)"
+    v-if="displayIcon"
     :title="$t('Preview')"
     role="menuitem"
     id="preview-button"
@@ -16,6 +16,7 @@
 import trashIcon from '@/assets/trash-alt-solid.svg';
 import CrownButton from '@/components/crown/crownButtons/crownButton';
 import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
+import store from '@/store';
 
 export default {
   components: { CrownButton },
@@ -24,7 +25,20 @@ export default {
     return {
       trashIcon,
       validPreviewElements,
+      displayIcon: false,
     };
+  },
+  mounted() {
+    const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+      data[key] = value;
+      return data;
+    }, {});
+    const nodeData = defaultDataTransform(this.node);
+
+    const previewConfig = window.ProcessMaker.$modeler.previewConfigs.find(config => {
+      return config.matcher(nodeData);
+    });
+    this.displayIcon =  !!previewConfig;
   },
   computed: {
     isPoolLane() {
