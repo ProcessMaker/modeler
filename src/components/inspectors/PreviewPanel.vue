@@ -7,7 +7,7 @@
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
     @mousemove="onMouseMove"
-    data-test="preview-pane"
+    data-test="preview-panel"
   >
     <b-row class="control-bar">
       <b-col cols="9">
@@ -142,10 +142,10 @@ export default {
       const nodeConfig = this.previewConfigs.find(config => {
         return config.matcher(this.data);
       });
+
       if (nodeConfig) {
         this.prepareData();
-      }
-      else {
+      } else {
         this.$emit('togglePreview', false);
       }
     },
@@ -168,7 +168,6 @@ export default {
           clone[prop] = this.data[prop];
         }
       }
-
 
       const nodeData = encodeURI(JSON.stringify(clone));
 
