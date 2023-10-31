@@ -52,7 +52,7 @@ export default merge(cloneDeep(endEventConfig), {
       });
     }
   },
-  multiplayerInspectorHandler(node, data){
+  multiplayerInspectorHandler(node, data) {
     const keys = Object.keys(data).filter((key) => key !== 'id');
     if (keys[0] === 'eventDefinitions') {
       const error = data[keys[0]][0].errorRef;
