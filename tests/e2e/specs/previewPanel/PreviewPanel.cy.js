@@ -51,7 +51,7 @@ describe('Inspector panel tests', { scrollBehavior: false }, () => {
     cy.get('[data-test=preview-button]').should('not.exist');
   });
 
-  it.only('preview icon should switch between displaying and hiding the preview pane', () => {
+  it('preview icon should switch between displaying and hiding the preview pane', () => {
     const taskPosition = { x: 400, y: 100 };
     clickAndDropElement(nodeTypes.task, taskPosition);
 
