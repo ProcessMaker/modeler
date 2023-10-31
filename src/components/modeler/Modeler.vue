@@ -417,6 +417,9 @@ export default {
       this.isOpenInspector = value;
     },
     handlePreview() {
+      if (this.highlightedNodes.length != 1) {
+        this.isOpenPreview = false;
+      }
       this.$refs['preview-panel'].previewNode(true);
       this.handleTogglePreview(true) ;
     },

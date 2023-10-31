@@ -20,3 +20,25 @@ window.ProcessMaker.EventBus.$on('modeler-init', registerNodes);
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
   loadXML(blank);
 });
+
+
+
+window.ProcessMaker.EventBus.$on(
+  'modeler-init',
+  (event) => {
+    event.registerPreview({
+      url:'/designer/screens/preview',
+      receivingParams: ['screenRef'],
+      matcher: (nodeData) => {
+        return nodeData?.$type  === 'bpmn:Task';
+      },
+    });
+    event.registerPreview({
+      url:'/designer/scripts/preview',
+      receivingParams: ['scriptRef'],
+      matcher: (nodeData) => {
+        return nodeData?.$type === 'bpmn:ScriptTask';
+      },
+    });
+  });
+
