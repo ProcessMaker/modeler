@@ -84,7 +84,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         @shape-resize="shapeResize(false)"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
       />
 
       <component
