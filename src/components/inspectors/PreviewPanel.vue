@@ -40,7 +40,7 @@
       </b-col>
       <b-col class="actions">
         <div>
-          <i class="fas fa-external-link-alt"/>
+          <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
           <i class="fas fa-times" @click="onClose()" />
         </div>
       </b-col>
@@ -108,6 +108,12 @@ export default {
   methods: {
     loading() {
       this.showSpinner = false;
+    },
+    openAsset() {
+      const nodeConfig = this.previewConfigs.find(config => {
+        return config.matcher(this.data);
+      });
+      window.open(nodeConfig.assetUrl(this.data), '_blank');
     },
     prepareData() {
       if (!this.highlightedNode) {

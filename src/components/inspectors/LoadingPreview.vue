@@ -2,7 +2,7 @@
   <div class="no-preview">
     <img id="preview-asset" :src="previewAsset" alt="Preview Asset">
     <h1>The preview is loading</h1>
-    <h2>Some assets can takes some time to load</h2>
+    <h2>Some assets can take some time to load</h2>
 
     <img alt="spinner" :src="spinnerImg">
   </div>
