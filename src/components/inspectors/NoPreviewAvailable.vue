@@ -1,8 +1,8 @@
 <template>
   <div class="no-preview">
     <img :src="noPreviewImg" alt="no preview">
-    <h1>No Screen Asigned</h1>
-    <h2>This is a placeholder screen. Please, assign a screen to this task.</h2>
+    <h1>No Resource Assigned</h1>
+    <h2>This is a placeholder. Please, assign a resource to this task.</h2>
   </div>
 </template>
 
