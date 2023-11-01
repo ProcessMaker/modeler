@@ -54,9 +54,7 @@
       <div class="task-title"> {{ taskTitle }} </div>
     </b-row>
 
-    <div id="spinner" class="row justify-content-center" v-if="showSpinner">
-      <img alt="spinner" :src="spinner">
-    </div>
+    <loading-preview v-if="showSpinner"/>
 
     <no-preview-available v-show="!previewUrl"/>
     <iframe title="Preview" v-show="!!previewUrl && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border: none;" @load="loading"/>
@@ -67,16 +65,16 @@
 <script>
 import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
+import LoadingPreview from '@/components/inspectors/LoadingPreview.vue';
 
 export default {
   props: ['nodeRegistry', 'visible', 'previewConfigs'],
-  components: { NoPreviewAvailable },
+  components: { NoPreviewAvailable, LoadingPreview },
   data() {
     return {
       data: {},
       previewUrl: null,
       showSpinner: false,
-      spinner: require('@/assets/spiner.svg'),
       selectedPreview: '1',
       taskTitle: '',
       itemTitle: '',
