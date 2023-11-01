@@ -67,11 +67,10 @@ export default {
   },
   multiplayerInspectorHandler(node, data, setNodeProp, moddle) {
     const keys = Object.keys(data).filter((key) => key !== 'id');
-    if (keys.length <= 0) {
+    if (keys.length === 0) {
       return;
     }
     if (keys[0] === 'conditionExpression') {
-      console.log('conditionExpression', data);
       const conditionExpression = moddle.create('bpmn:FormalExpression', { body: data[keys[0]][0].body });
       setNodeProp(node, keys[0], conditionExpression);
       return;
