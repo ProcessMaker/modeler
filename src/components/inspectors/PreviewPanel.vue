@@ -34,12 +34,6 @@
               </div>
             </b-dropdown-item>
 
-            <b-dropdown-item key="2" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(2)">
-              <div class="ellipsis-dropdown-content">
-                <b class="pr-1 fa-fw">{ }</b>
-                <span>{{ $t('Object') }}</span>
-              </div>
-            </b-dropdown-item>
           </b-dropdown>
           <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
         </div>
