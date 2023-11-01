@@ -1,5 +1,5 @@
 $inspector-column-max-width: 400px;
-$inspector-column-min-width: 400px;
+$inspector-column-min-width: 200px;
 
 #preview_panel::after {
   display: flex;
@@ -12,10 +12,12 @@ $inspector-column-min-width: 400px;
 
 .preview-column {
   max-width: $inspector-column-max-width;
+  min-width: $inspector-column-min-width;
   resize: both;
   overflow:auto;
   background-color: #F5F5F5;
   border-left: 8px solid #EBEEF2;
+  z-index: 2;
 }
 
 .paneiframe {

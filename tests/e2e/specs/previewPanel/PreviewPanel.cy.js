@@ -64,4 +64,31 @@ describe('Inspector panel tests', { scrollBehavior: false }, () => {
         cy.get('[data-test=preview-panel]').should('not.be.visible');
       });
   });
+
+  it('Manual tasks should have a preview', () => {
+    const taskPosition = { x: 400, y: 100 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-manual-task]').click();
+
+    getElementAtPosition(taskPosition)
+      .then($task => {
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+        cy.get('[data-test=preview-panel]').should('be.visible');
+      });
+  });
+
+
+  it('After deleting a tas window pane should be hidden', () => {
+    const taskPosition = { x: 400, y: 100 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+
+    getElementAtPosition(taskPosition)
+      .then($task => {
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+        getCrownButtonForElement($task, 'delete-button').click({ force: true });
+        cy.get('[data-test=preview-panel]').should('not.be.visible');
+      });
+  });
+
 });
