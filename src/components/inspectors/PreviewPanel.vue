@@ -109,10 +109,13 @@ export default {
     loading() {
       this.showSpinner = false;
     },
-    openAsset() {
-      const nodeConfig = this.previewConfigs.find(config => {
-        return config.matcher(this.data);
+    getConfig(data) {
+      return this.previewConfigs.find(config => {
+        return config.matcher(data);
       });
+    },
+    openAsset() {
+      const nodeConfig = this.getConfig(this.data);
       window.open(nodeConfig.assetUrl(this.data), '_blank');
     },
     prepareData() {
@@ -137,9 +140,7 @@ export default {
         return;
       }
 
-      const nodeConfig = this.previewConfigs.find(config => {
-        return config.matcher(this.data);
-      });
+      const nodeConfig = this.getConfig(this.data);
 
       if (nodeConfig) {
         this.prepareData();
