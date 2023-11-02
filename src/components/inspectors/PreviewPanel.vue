@@ -34,19 +34,13 @@
               </div>
             </b-dropdown-item>
 
-            <b-dropdown-item key="2" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(2)">
-              <div class="ellipsis-dropdown-content">
-                <b class="pr-1 fa-fw">{ }</b>
-                <span>{{ $t('Object') }}</span>
-              </div>
-            </b-dropdown-item>
           </b-dropdown>
           <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
         </div>
       </b-col>
       <b-col class="actions">
         <div>
-          <i class="fas fa-external-link-alt"/>
+          <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
           <i class="fas fa-times" @click="onClose()" />
         </div>
       </b-col>
@@ -60,9 +54,7 @@
       <div class="task-title"> {{ taskTitle }} </div>
     </b-row>
 
-    <div id="spinner" class="row justify-content-center" v-if="showSpinner">
-      <img alt="spinner" :src="spinner">
-    </div>
+    <loading-preview v-if="showSpinner"/>
 
     <no-preview-available v-show="!previewUrl"/>
     <iframe title="Preview" v-show="!!previewUrl && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border: none;" @load="loading"/>
@@ -73,16 +65,16 @@
 <script>
 import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
+import LoadingPreview from '@/components/inspectors/LoadingPreview.vue';
 
 export default {
   props: ['nodeRegistry', 'visible', 'previewConfigs'],
-  components: { NoPreviewAvailable },
+  components: { NoPreviewAvailable, LoadingPreview },
   data() {
     return {
       data: {},
       previewUrl: null,
       showSpinner: false,
-      spinner: require('@/assets/spiner.svg'),
       selectedPreview: '1',
       taskTitle: '',
       itemTitle: '',
@@ -117,6 +109,15 @@ export default {
     loading() {
       this.showSpinner = false;
     },
+    getConfig(data) {
+      return this.previewConfigs.find(config => {
+        return config.matcher(data);
+      });
+    },
+    openAsset() {
+      const nodeConfig = this.getConfig(this.data);
+      window.open(nodeConfig.assetUrl(this.data), '_blank');
+    },
     prepareData() {
       if (!this.highlightedNode) {
         return {};
@@ -139,9 +140,7 @@ export default {
         return;
       }
 
-      const nodeConfig = this.previewConfigs.find(config => {
-        return config.matcher(this.data);
-      });
+      const nodeConfig = this.getConfig(this.data);
 
       if (nodeConfig) {
         this.prepareData();

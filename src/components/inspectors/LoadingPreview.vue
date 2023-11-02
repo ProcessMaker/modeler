@@ -1,8 +1,10 @@
 <template>
   <div class="no-preview">
-    <img :src="noPreviewImg" alt="no preview">
-    <h1>No Resource Assigned</h1>
-    <h2>This is a placeholder. Please, assign a resource to this task.</h2>
+    <img id="preview-asset" :src="previewAsset" alt="Preview Asset">
+    <h1>The preview is loading</h1>
+    <h2>Some assets can take some time to load</h2>
+
+    <img alt="spinner" :src="spinnerImg">
   </div>
 </template>
 
@@ -11,7 +13,8 @@
 export default {
   data() {
     return {
-      noPreviewImg: require('@/assets/noPreviewImage.png'),
+      previewAsset: require('@/assets/previewAsset.png'),
+      spinnerImg: require('@/assets/spinner.svg'),
     };
   },
 };
@@ -23,13 +26,10 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #44494E;
   padding: 5px;
 }
-
-.no-preview img {
-  max-width: 50%;
-  width: auto;
+#preview-asset {
+  width: 200px;
   padding-bottom: 150px;
 }
 
@@ -43,5 +43,6 @@ export default {
 .no-preview h2 {
   text-align: center;
   font-size: x-large;
+  margin-bottom: 50px;
 }
 </style>
