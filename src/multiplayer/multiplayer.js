@@ -54,9 +54,9 @@ export default class Multiplayer {
             top: 90,
             left: 80,
           };
-
           this.modeler.addPlayer(newPlayer);
         });
+        this.syncLocalNodes(this.clientIO.id);
       }
     });
 
@@ -72,18 +72,7 @@ export default class Multiplayer {
 
       // Check if the current client is the first client
       if (firstClient.id === this.clientIO.id) {
-        // Get the process definition
-        const nodes = this.modeler.nodes.map((node) => this.modeler.multiplayerHook(node, false, true));
-
-        nodes.forEach((node) => {
-          const yMapNested = new Y.Map();
-          this.doTransact(yMapNested, node);
-          this.yArray.push([yMapNested]);
-          // Encode the state as an update and send it to the server
-          const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
-          // Send the update to the web socket server
-          this.clientIO.emit('createElement', { updateDoc: stateUpdate, clientId });
-        });
+        this.syncLocalNodes(clientId);
       }
     });
 
@@ -178,6 +167,24 @@ export default class Multiplayer {
       if (this.modeler.isMultiplayer) {
         this.updateInspectorProperty(data);
       }
+    });
+  }
+  /**
+   * Sync the modeler nodes with the microservice
+   * @param {String} clientId 
+   */
+  syncLocalNodes(clientId){
+    // Get the process definition
+    const nodes = this.modeler.nodes.map((node) => this.modeler.multiplayerHook(node, false, true));
+
+    nodes.forEach((node) => {
+      const yMapNested = new Y.Map();
+      this.doTransact(yMapNested, node);
+      this.yArray.push([yMapNested]);
+      // Encode the state as an update and send it to the server
+      const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+      // Send the update to the web socket server
+      this.clientIO.emit('createElement', { updateDoc: stateUpdate, clientId });
     });
   }
   addNode(data) {
