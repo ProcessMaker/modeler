@@ -171,7 +171,7 @@ export default class Multiplayer {
   }
   /**
    * Sync the modeler nodes with the microservice
-   * @param {String} clientId 
+   * @param {String} clientId
    */
   syncLocalNodes(clientId){
     // Get the process definition
@@ -515,22 +515,39 @@ export default class Multiplayer {
         }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
         return;
       }
-      if (this.modeler.nodeRegistry[node.type] && this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler) {
+      if (this.modeler.nodeRegistry[node.type]?.multiplayerInspectorHandler) {
         this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data);
         return;
       }
       const keys = Object.keys(data).filter((key) => key !== 'id');
+      const key = keys[0];
+      const value = data[key];
 
-      if (keys[0] === 'condition') {
-        node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
+      if (key === 'condition') {
+        node.definition.get('eventDefinitions')[0].get('condition').body = value;
       }
 
-      if (keys[0] === 'gatewayDirection') {
-        node.definition.set('gatewayDirection', data[keys[0]]);
+      if (key === 'gatewayDirection') {
+        node.definition.set('gatewayDirection', value);
       }
 
-      store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
+      if (key === 'messageRef') {
+        let message = this.modeler.definitions.rootElements.find(element => element.id === value);
+
+        if (!message) {
+          message = this.modeler.moddle.create('bpmn:Message', {
+            id: value,
+            name: value,
+          });
+          this.modeler.definitions.rootElements.push(message);
+        }
+
+        node.definition.get('eventDefinitions')[0].messageRef = message;
+      }
+
+      if (!['messageRef', 'gatewayDirection', 'condition'].includes(key)) {
+        store.commit('updateNodeProp', { node, key, value });
+      }
     }
-
   }
 }

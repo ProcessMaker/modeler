@@ -34,8 +34,9 @@ export default {
       });
       setNodeProp(node, key, value[key]);
     }
-      
+
     let message = definitions.rootElements.find(element => element.id === value.messageRef);
+
     if (!message && value.messageRef) {
       message = moddle.create('bpmn:Message', {
         id: value.messageRef,
@@ -44,5 +45,9 @@ export default {
       definitions.rootElements.push(message);
     }
     node.definition.get('eventDefinitions')[0].messageRef = message;
+
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+      id: node.definition.id , key: 'messageRef', value: value.messageRef,
+    });
   },
 };
