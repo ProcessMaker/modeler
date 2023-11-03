@@ -68,13 +68,8 @@ export default class Multiplayer {
 
     this.clientIO.on('requestProcess', (payload) => {
       const { firstClient, clientId } = payload;
-
-      // Check if the current client is the first client
-      if (firstClient.id === this.clientIO.id) {
-        console.log('firstClient.id ', firstClient.id);
-        console.log('this.clientIO.id ', this.clientIO.id);
-        this.syncLocalNodes(clientId);
-      }
+      // Sync the local Nodes
+      this.syncLocalNodes(clientId);
     });
 
     // Listen for updates when a new element is added
