@@ -12,6 +12,8 @@ const blank = `
 <bpmn:process id="Process_1" isExecutable="true"></bpmn:process>
 <bpmndi:BPMNDiagram id="BPMNDiagram_1">
 <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"></bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>
 `;
 
 window.ProcessMaker.EventBus.$on('modeler-init', registerNodes);
