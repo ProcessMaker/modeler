@@ -75,7 +75,7 @@ $inspector-column-min-width: 200px;
 .preview-placeholder h1 {
   text-align: center;
   margin-bottom: 30px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-size: 32px;
   font-weight: 600;
   line-height: 38px;
@@ -85,11 +85,9 @@ $inspector-column-min-width: 200px;
 .preview-placeholder h2 {
   text-align: center;
   margin-bottom: 50px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 27px;
   letter-spacing: -0.02em;
-  text-align: center;
-
 }
