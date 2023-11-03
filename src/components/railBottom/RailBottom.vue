@@ -22,6 +22,7 @@
       :style="[overlap ? { width: 'auto'} : { width: '100%'}]"
     >
       <UndoRedoControl
+        v-if="!isMultiplayer"
         v-show="showComponent"
         :is-rendering="isRendering"
         @load-xml="$emit('load-xml')"
@@ -117,6 +118,7 @@ export default {
     showComponent() {
       return store.getters.showComponent;
     },
+    isMultiplayer: () => store.getters.isMultiplayer,
   },
   async mounted() {
     await nextTick();
