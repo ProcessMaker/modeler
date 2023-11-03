@@ -1,8 +1,8 @@
 <template>
-  <div class="no-preview">
-    <img :src="noPreviewImg" alt="no preview">
+  <div class="preview-placeholder">
+    <img id="preview-image" :src="noPreviewImg" alt="no preview">
     <h1>No Resource Assigned</h1>
-    <h2>This is a placeholder. Please, assign a resource to this task.</h2>
+    <h2>This is a placeholder screen. Please, assign a resource to this task.</h2>
   </div>
 </template>
 
@@ -17,31 +17,13 @@ export default {
 };
 </script>
 
+
+<style lang="scss" src="./preview_panel.scss" scoped />
+
 <style scoped>
-.no-preview {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #44494E;
-  padding: 5px;
-}
-
-.no-preview img {
-  max-width: 50%;
-  width: auto;
-  padding-bottom: 150px;
-}
-
-.no-preview h1 {
-  text-align: center;
-  font-weight: bold;
-  font-size: xx-large;
-  margin-bottom: 50px;
-}
-
-.no-preview h2 {
-  text-align: center;
-  font-size: x-large;
-}
+  #preview-image {
+    width: 200px;
+    margin-top:50px;
+    margin-bottom: 50px;
+  }
 </style>
