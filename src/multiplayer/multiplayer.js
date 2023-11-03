@@ -67,9 +67,11 @@ export default class Multiplayer {
     });
 
     this.clientIO.on('requestProcess', (payload) => {
-      const { firstClient, clientId } = payload;
+      const { clientId } = payload;
       // Sync the local Nodes
-      this.syncLocalNodes(clientId);
+      if (clientId) {
+        this.syncLocalNodes(clientId);
+      }
     });
 
     // Listen for updates when a new element is added
