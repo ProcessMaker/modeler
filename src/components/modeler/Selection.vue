@@ -31,10 +31,16 @@ import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
-import { id as associationId } from '@/components/nodes/association';
+import { id as associationId } from '@/components/nodes/association/associationConfig';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 import { invalidNodeColor, poolColor } from '@/components/nodeColors';
 
@@ -577,20 +583,89 @@ export default {
       await this.paperManager.awaitScheduledUpdates();
       this.overPoolStopDrag();
       this.updateSelectionBox();
-      if (this.isMultiplayer) { 
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties());
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
       }
-      
-
     },
-    getProperties() {
+
+    getProperties(shapes) {
+      let changed = [];
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+      ];
+
+      shapes.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
+            const children = shape.model.component.getElementsUnderArea(shape.model, this.graph);
+            changed = [...changed, ...this.getContainerProperties(children, changed)];
+          } else {
+            const { node } = shape.model.component;
+            const defaultData = {
+              id: node.definition.id,
+              properties: {
+                x: shape.model.get('position').x,
+                y: shape.model.get('position').y,
+                height: shape.model.get('size').height,
+                width: shape.model.get('size').width,
+                attachedToRefId: shape.model.component.node.definition.get('attachedToRef')?.id ?? null,
+                color: shape.model.get('color'),
+              },
+            };
+            if (node?.pool?.component) {
+              defaultData['poolId'] = node.pool.component.id;
+            }
+            changed.push(defaultData);
+          }
+          const boundariesChanges = this.getBoundariesChangesForShape(shape);
+          changed = changed.concat(boundariesChanges);
+        });
+        
+      return changed;
+    },
+    /**
+     * Get properties for each boundary inside a shape
+     */
+    getBoundariesChangesForShape(shape) {
+      let boundariesChanged = [];
+      const boundaryEventTypes = [
+        boundaryErrorEventId,
+        boundaryConditionalEventId,
+        boundaryEscalationEventId,
+        boundaryMessageEventId,
+        boundarySignalEventId,
+        boundaryTimerEventId,
+      ];
+      const boundaryNodes = store.getters.nodes.filter(node => boundaryEventTypes.includes(node.type));
+      boundaryNodes.forEach(boundaryNode => {
+        if (boundaryNode.definition.attachedToRef.id === shape.model.component.node.definition.id) {
+          boundariesChanged.push({
+            id: boundaryNode.definition.id,
+            properties: {
+              x: boundaryNode.diagram.bounds.x,
+              y: boundaryNode.diagram.bounds.y,
+              height: boundaryNode.diagram.bounds.height,
+              width: boundaryNode.diagram.bounds.width,
+              attachedToRefId: boundaryNode.definition.get('attachedToRef')?.id ?? null,
+              color: boundaryNode.definition.get('color') ?? null,
+            },
+          });
+        }
+      });
+      return boundariesChanged;
+    },
+    getContainerProperties(children) {
       const changed = [];
-      this.selected.forEach(function(item) {
+      children.forEach(model => {
         changed.push({
-          id: item.model.component.node.definition.id,
+          id: model.component.node.definition.id,
           properties: {
-            clientX: item.model.get('position').x,
-            clientY: item.model.get('position').y,
+            x: model.get('position').x,
+            y: model.get('position').y,
+            height: model.get('size').height,
+            width: model.get('size').width,
+            color: model.get('color'),
           },
         });
       });

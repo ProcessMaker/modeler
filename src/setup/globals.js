@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import mockProcesses from './mockProcesses.json';
 import mockSignals from './mockSignals.json';
 import mockProcessSvg from './mockProcessSvg';
+import { faker } from '@faker-js/faker';
 
 axios.defaults.baseURL = 'https://bpm4.local.processmaker.com/api/1.0/';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -33,6 +34,9 @@ window.ProcessMaker = {
   navbar: {
     alerts: [],
   },
+  multiplayer:{
+    host: process.env.VUE_APP_WEBSOCKET_PROVIDER,
+  },
   EventBus: new Vue(),
   apiClient: axios,
   alert(msg, variant, showValue = 60, stayNextScreen = false) {
@@ -54,4 +58,10 @@ window.ProcessMaker = {
       id: 1,
     },
   },
+  user: {
+    id: 'standalone',
+    fullName:  faker.person.fullName(),
+    avatar: null,
+  },
+  
 };

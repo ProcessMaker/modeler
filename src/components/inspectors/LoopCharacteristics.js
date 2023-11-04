@@ -2,13 +2,19 @@ import LoopCharactetistics from '@/components/inspectors/LoopCharacteristics.vue
 import NodeInspector from '@/NodeInspector';
 import omit from 'lodash/omit';
 
-export const loopCharacteristicsHandler = function(value, node, setNodeProp, moddle, definitions) {
+export const loopCharacteristicsHandler = function(value, node, setNodeProp, moddle, definitions, isMultiplayer) {
   const nodeInspector = new NodeInspector(definitions, { prefix: `${node.definition.id}_inner` });
   let update = nodeInspector.setDefinitionProps(value.$loopCharactetistics, setNodeProp, moddle, {});
   update = nodeInspector.setReferences(update);
   if (update.loopCharacteristics) {
     delete node.definition.loopCharacteristics;
+    if (isMultiplayer) {
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id , key: 'loopCharacteristics', value: update.loopCharacteristics,
+      });
+    }
     setNodeProp(node, 'loopCharacteristics', update.loopCharacteristics);
+    
   } else {
     node.definition.loopCharacteristics = null;
     delete node.definition.loopCharacteristics;

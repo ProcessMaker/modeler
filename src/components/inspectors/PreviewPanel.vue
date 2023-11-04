@@ -7,7 +7,7 @@
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
     @mousemove="onMouseMove"
-    data-test="preview-column"
+    data-test="preview-panel"
   >
     <b-row class="control-bar">
       <b-col cols="9">
@@ -34,19 +34,13 @@
               </div>
             </b-dropdown-item>
 
-            <b-dropdown-item key="2" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(2)">
-              <div class="ellipsis-dropdown-content">
-                <b class="pr-1 fa-fw">{ }</b>
-                <span>{{ $t('Object') }}</span>
-              </div>
-            </b-dropdown-item>
           </b-dropdown>
           <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
         </div>
       </b-col>
       <b-col class="actions">
         <div>
-          <i class="fas fa-external-link-alt"/>
+          <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
           <i class="fas fa-times" @click="onClose()" />
         </div>
       </b-col>
@@ -57,11 +51,13 @@
     </b-row>
 
     <b-row>
-      <div class="item-title"> {{ screenTitle }} </div>
       <div class="task-title"> {{ taskTitle }} </div>
     </b-row>
 
-    <no-preview-available/>
+    <loading-preview v-if="showSpinner"/>
+
+    <no-preview-available v-show="!previewUrl"/>
+    <iframe title="Preview" v-show="!!previewUrl && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border: none;" @load="loading"/>
   </b-col>
 
 </template>
@@ -69,22 +65,30 @@
 <script>
 import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
+import LoadingPreview from '@/components/inspectors/LoadingPreview.vue';
 
 export default {
-  props: ['nodeRegistry', 'visible'],
-  components: {NoPreviewAvailable},
+  props: ['nodeRegistry', 'visible', 'previewConfigs'],
+  components: { NoPreviewAvailable, LoadingPreview },
   data() {
     return {
       data: {},
+      previewUrl: null,
+      showSpinner: false,
       selectedPreview: '1',
       taskTitle: '',
-      screenTitle: '',
-      width: 400,
+      itemTitle: '',
+      width: 600,
       isDragging: false,
-      currentPos: 400,
+      currentPos: 600,
     };
   },
   watch: {
+    previewUrl(value, oldValue) {
+      if (value !== oldValue) {
+        this.showSpinner = true;
+      }
+    },
     highlightedNode() {
       document.activeElement.blur();
       this.prepareData();
@@ -102,26 +106,74 @@ export default {
     },
   },
   methods: {
+    loading() {
+      this.showSpinner = false;
+    },
+    getConfig(data) {
+      return this.previewConfigs.find(config => {
+        return config.matcher(data);
+      });
+    },
+    openAsset() {
+      const nodeConfig = this.getConfig(this.data);
+      window.open(nodeConfig.assetUrl(this.data), '_blank');
+    },
     prepareData() {
       if (!this.highlightedNode) {
         return {};
       }
 
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
+        return data;
+      }, {});
+
+      this.data = defaultDataTransform(this.highlightedNode);
+      this.taskTitle = this.data?.name;
+
       this.taskTitle = this?.highlightedNode?.definition?.name;
+      this.previewNode();
     },
 
     handleAssignmentChanges(currentValue, previousValue) {
       if (currentValue === previousValue) {
         return;
       }
-      this.prepareData();
+
+      const nodeConfig = this.getConfig(this.data);
+
+      if (nodeConfig) {
+        this.prepareData();
+      } else {
+        this.$emit('togglePreview', false);
+      }
     },
 
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
-    previewNode(node) {
-      this.taskTitle = node?.name;
+    previewNode(force = false) {
+      if (!this.highlightedNode || (!this.visible && !force)) {
+        return;
+      }
+
+      const previewConfig = this.previewConfigs.find(config => {
+        return config.matcher(this.data);
+      });
+
+      let clone = {};
+      for (let prop in this.data) {
+        if ((previewConfig?.receivingParams ?? []).includes(prop)) {
+          clone[prop] = this.data[prop];
+        }
+      }
+
+      const nodeData = encodeURI(JSON.stringify(clone));
+
+      // if the node has the configurations (for example screenRef for a task in a task)
+      const nodeHasConfigParams = Object.keys(clone).length > 0;
+      this.previewUrl = previewConfig &&  nodeHasConfigParams ? `${previewConfig.url}?node=${nodeData}` : null;
+      this.taskTitle = this.highlightedNode?.definition?.name;
       this.showPanel = true;
     },
     onClose() {

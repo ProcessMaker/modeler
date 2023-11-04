@@ -41,12 +41,17 @@ export default {
     const currentConfig = JSON.parse(value.config);
 
     value['calledElement'] = currentConfig.calledElement;
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+      id: node.definition.id, key: 'calledElement', value: currentConfig.calledElement,
+    });
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
     if (currentConfig.name !== value.name) {
       currentConfig.name = value.name;
     }
-
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+      id: node.definition.id, key: 'config', value: JSON.stringify(currentConfig),
+    });
     setNodeProp(node, 'config', JSON.stringify(currentConfig));
 
   },

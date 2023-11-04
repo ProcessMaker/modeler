@@ -50,9 +50,13 @@
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <WelcomeMessage
+        v-if="showWelcomeMessage"
+      />
+
       <InspectorButton
         ref="inspector-button"
-        v-if="showComponent && showInspectorButton"
+        v-show="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
         @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
         :style="{ right: inspectorButtonRight + 'px' }"
@@ -63,6 +67,7 @@
         @previewResize="setInspectorButtonPosition"
         :visible="isOpenPreview"
         :nodeRegistry="nodeRegistry"
+        :previewConfigs="previewConfigs"
       />
 
       <InspectorPanel
@@ -79,7 +84,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         @shape-resize="shapeResize(false)"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
       />
 
       <component
@@ -155,15 +160,6 @@
         :isMultiplayer="isMultiplayer"
       />
     </b-row>
-
-    <RemoteCursor 
-      v-for="player in players"
-      :cursor-color="player.color"
-      :username="player.name"
-      :key="player.id"
-      :top="player.top"
-      :left="player.left"
-    />
   </span>
 </template>
 
@@ -174,6 +170,7 @@ import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
+import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -192,7 +189,7 @@ import getValidationProperties from '@/targetValidationUtils';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
-import { id as associationId } from '../nodes/association';
+import { id as associationId } from '../nodes/association/associationConfig';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
@@ -226,6 +223,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
+import Multiplayer from '@/multiplayer/multiplayer';
 
 export default {
   components: {
@@ -237,6 +235,7 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    WelcomeMessage,
     RemoteCursor,
   },
   props: {
@@ -310,6 +309,7 @@ export default {
       isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
+      isLoaded: false,
       allWarnings: [],
       nodeTypes: [],
       pmBlockNodes: [],
@@ -329,8 +329,14 @@ export default {
       players: [],
       showInspectorButton: true,
       inspectorButtonRight: 65,
-      multiplayer: null,
-      isMultiplayer: false,
+      previewConfigs: [],
+      flowTypes: [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-association',
+      ],
     };
   },
   watch: {
@@ -348,6 +354,8 @@ export default {
       });
       document.body.style.cursor = 'auto';
       this.cursor = null;
+
+      this.isLoaded = true;
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -361,9 +369,16 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-
+    highlightedNodes() {
+      if (window.ProcessMaker?.EventBus) {
+        window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
+      }
+    },
   },
   computed: {
+    showWelcomeMessage() {
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+    },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
     },
@@ -386,8 +401,12 @@ export default {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
     showComponent: () => store.getters.showComponent,
+    isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    registerPreview(config) {
+      this.previewConfigs.push(config);
+    },
     handleToolbarAction(action) {
       if (action.handler instanceof Function) {
         action.handler(this);
@@ -397,8 +416,11 @@ export default {
       this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
     },
-    handlePreview(node) {
-      this.$refs['preview-panel'].previewNode(node);
+    handlePreview() {
+      if (this.highlightedNodes.length != 1) {
+        this.isOpenPreview = false;
+      }
+      this.$refs['preview-panel'].previewNode(true);
       this.handleTogglePreview(true) ;
     },
     handleTogglePreview(value) {
@@ -521,10 +543,14 @@ export default {
         return this.paper.findViewByModel(shape);
       });
     },
+    getElementByNodeId(id) {
+      const cells = this.paper.model.getCells();
+      return cells.find((cell) => cell.component && cell.component.id === id);
+    },
     async close() {
       this.$emit('close');
     },
-    async saveBpmn() {
+    async saveBpmn(redirectTo = null, id = null) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -533,8 +559,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-
-      this.$emit('saveBpmn', { xml, svg: svgString });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -722,6 +747,7 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+      nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
     },
     registerPmBlock(pmBlockNode, customParser) {
       const defaultParser = () => pmBlockNode.id;
@@ -933,7 +959,25 @@ export default {
     },
     async createNodeAsync(type, definition, diagram) {
       const node =  this.createNode(type, definition, diagram);
+      if (!this.isMultiplayer) {
+        store.commit('addNode', node);
+      }
+      else {
+        this.loadNodeForMultiplayer(node);
+      }
+    },
+    async loadNodeForMultiplayer(node) {
+      if (node.type === 'processmaker-modeler-lane') {
+        await this.addNode(node, node.definition.id, true);
+        this.nodeIdGenerator.updateCounters();
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', [node]);
+        return;
+      }
+      this.multiplayerHook(node, false);
       store.commit('addNode', node);
+      this.poolTarget = null;
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
@@ -1027,21 +1071,22 @@ export default {
         control,
       });
     },
-    handleDrop(data) {
-      const { clientX, clientY, control} = data;
-      if (this.isMultiplayer) {
-        window.ProcessMaker.EventBus.$emit('multiplayer-addNode', {
-          clientX,
-          clientY,
-          control,
-          id: `node_${this.nodeIdGenerator.getDefinitionNumber()}`,
-        });
-      } else  {
-        this.handleDropProcedure(data);
+    async addRemoteNode(data){
+      const definition = this.nodeRegistry[data.type].definition(this.moddle, this.$t);
+      const diagram = this.nodeRegistry[data.type].diagram(this.moddle);
+      diagram.bounds.x = data.x;
+      diagram.bounds.y = data.y;
+      const newNode = this.createNode(data.type, definition, diagram);
+      await this.addNode(newNode, data.id, true);
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
       }
     },
-    async handleDropProcedure(data, selected=true) {
-      const { clientX, clientY, control, nodeThatWillBeReplaced, id } = data;
+
+    async handleDrop(data) {
+      const { clientX, clientY, control, nodeThatWillBeReplaced } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
         return;
@@ -1056,15 +1101,13 @@ export default {
       diagram.bounds.y = y;
 
       const newNode = this.createNode(control.type, definition, diagram);
-
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
-      if (selected) {
-        this.highlightNode(newNode);
-      }
-      
-      await this.addNode(newNode, id, selected);
+
+      this.highlightNode(newNode);
+
+      await this.addNode(newNode);
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -1081,7 +1124,7 @@ export default {
 
       return newNode;
     },
-    
+
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1093,16 +1136,93 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node, id = null, selected = true) {
+    multiplayerHook(node, fromClient, isProcessRequested = false) {
+      const blackList = [
+        'processmaker-modeler-lane',
+        'processmaker-modeler-generic-flow',
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-boundary-timer-event',
+        'processmaker-modeler-boundary-error-event',
+        'processmaker-modeler-boundary-signal-event',
+        'processmaker-modeler-boundary-conditional-even',
+        'processmaker-modeler-boundary-message-event',
+      ];
+      if (!this.isMultiplayer) {
+        return;
+      }
+
+      if (!fromClient) {
+        if (!blackList.includes(node.type) && !this.flowTypes.includes(node.type)) {
+          const defaultData = {
+            x: node.diagram.bounds.x,
+            y: node.diagram.bounds.y,
+            height: node.diagram.bounds.height,
+            width: node.diagram.bounds.width,
+            type: node.type,
+            id: node.definition.id,
+            oldNodeId: null,
+            isAddingLaneAbove: true,
+            color: node.definition.color,
+            dueIn: node.definition.dueIn,
+            name: node.definition.name,
+            assignedUsers: node.definition.assignedUsers,
+            config: node.definition.config,
+            loopCharacteristics: null,
+            gatewayDirection: null,
+          };
+          if (node?.pool?.component) {
+            defaultData['poolId'] = node.pool.component.id;
+          }
+
+          if (isProcessRequested) {
+            return defaultData;
+          }
+
+          window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
+        }
+        if (this.flowTypes.includes(node.type)) {
+          let sourceRefId = node.definition.sourceRef?.id;
+          let targetRefId = node.definition.targetRef?.id;
+
+          if (node.type === 'processmaker-modeler-data-input-association') {
+            sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
+            targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
+          }
+
+          if (sourceRefId && targetRefId) {
+            const flowData = {
+              id: node.definition.id,
+              type: node.type,
+              sourceRefId,
+              targetRefId,
+              waypoint: node.diagram.waypoint,
+            };
+
+            if (isProcessRequested) {
+              return flowData;
+            }
+
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', flowData);
+          }
+        }
+      }
+    },
+    async addNode(node, id = null, fromClient = false) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator, id); 
+      node.setIds(this.nodeIdGenerator, id);
 
       this.planeElements.push(node.diagram);
+      // add multiplayer logic as a hook
+      this.multiplayerHook(node, fromClient);
+
       store.commit('addNode', node);
       this.poolTarget = null;
 
@@ -1118,11 +1238,10 @@ export default {
       ].includes(node.type)) {
         return;
       }
-      if (selected) {
+      if (!fromClient) {
         // Select the node after it has been added to the store (does not apply to flows)
         this.selectNewNode(node);
       }
-      
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1141,16 +1260,18 @@ export default {
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
+        this.multiplayerHook(node, false);
         store.commit('addNode', node);
         this.poolTarget = null;
       });
     },
     async removeNode(node, options) {
+      // Check if the node is not replaced
       if (this.isMultiplayer) {
+        // Emit event to server to remove node
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
-      } else  {
-        this.removeNodeProcedure(node, options);
       }
+      this.removeNodeProcedure(node, options);
     },
     async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
@@ -1199,16 +1320,60 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
+          const { x, y } = node.diagram.bounds;
+
+          const nodeData = {
+            x, y,
+            control: { type: typeToReplaceWith },
+            nodeThatWillBeReplaced: node,
+          };
+          await this.replaceNodeProcedure(nodeData, true);
+        });
+      });
+    },
+    async replaceNodeProcedure(data, isReplaced = false) {
+      if (isReplaced) {
+        // Get the clientX and clientY from the node that will be replaced
+        const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
+        data.clientX = clientX;
+        data.clientY = clientY;
+      }
+      await this.handleDrop(data);
+      await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
+    },
+    replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
-          const newNode = await this.handleDropProcedure({
+          const newNode = await this.handleDrop({
             clientX, clientY,
             control: { type: typeToReplaceWith },
             nodeThatWillBeReplaced: node,
           });
 
+          if (typeToReplaceWith === 'processmaker-modeler-task') {
+            newNode.definition.screenRef = assetId;
+            newNode.definition.name = assetName;
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-script-task') {
+            newNode.definition.scriptRef = assetId;
+            newNode.definition.name = assetName;
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
+            newNode.definition.name = assetName;
+            newNode.definition.calledElement = `ProcessId-${assetId}`;
+            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":"${assetName}"}`;
+            redirectTo = `${redirectTo}/${newNode.id}`;
+          }
+
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
+          await this.pushToUndoStack();
+          await this.$nextTick();
+          this.saveBpmn(redirectTo, newNode.id);
         });
       });
     },
@@ -1217,8 +1382,9 @@ export default {
         await this.paperManager.performAtomicAction(async() => {
           await this.highlightNode(null);
           await this.$nextTick();
-          await this.addNode(actualFlow);
           await store.commit('removeNode', genericFlow);
+          await this.$nextTick();
+          await this.addNode(actualFlow, genericFlow.definition.id);
           await this.$nextTick();
           await this.highlightNode(targetNode);
         });
@@ -1404,8 +1570,21 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
-    enableMultiplayer() {
-      this.isMultiplayer = true;
+    redirect(redirectTo) {
+      window.location = redirectTo;
+    },
+    enableMultiplayer(value) {
+      store.commit('enableMultiplayer', value);
+    },
+    addPlayer(player) {
+      this.players.push(player);
+    },
+    removePlayer(playerId) {
+      const playerIndex = this.players.findIndex(player => player.id === playerId);
+
+      if (playerIndex !== -1) {
+        this.players.splice(playerIndex, 1);
+      }
     },
   },
   created() {
@@ -1437,6 +1616,7 @@ export default {
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
       registerPmBlock: this.registerPmBlock,
+      registerPreview: this.registerPreview,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -1572,15 +1752,27 @@ export default {
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
-        if (this.isMultiplayer) {
-          window.ProcessMaker.EventBus.$emit('multiplayer-start', {
-            modeler: this,
-            callback: this.enableMultiplayer,
-          });
+
+        try {
+          const multiplayer = new Multiplayer(this);
+          multiplayer.init();
+          this.multiplayer = multiplayer;
+        } catch (error) {
+          console.warn('Could not initialize multiplayer', error);
         }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+    });
+
+    this.$root.$on('replace-ai-node', (data) => {
+      this.replaceAiNode(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+      if (redirectUrl) {
+        this.redirect(redirectUrl);
+      }
     });
   },
 };

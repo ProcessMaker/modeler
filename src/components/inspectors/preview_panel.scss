@@ -1,5 +1,5 @@
 $inspector-column-max-width: 400px;
-$inspector-column-min-width: 400px;
+$inspector-column-min-width: 200px;
 
 #preview_panel::after {
   display: flex;
@@ -12,10 +12,12 @@ $inspector-column-min-width: 400px;
 
 .preview-column {
   max-width: $inspector-column-max-width;
+  min-width: $inspector-column-min-width;
   resize: both;
   overflow:auto;
-  background-color: #F5F5F5;
+  background-color: #fff;
   border-left: 8px solid #EBEEF2;
+  z-index: 2;
 }
 
 .paneiframe {
@@ -60,4 +62,32 @@ $inspector-column-min-width: 400px;
   font-weight: bold;
   text-align: center;
   color: #6c757d;
+}
+
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+.preview-placeholder h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: -0.04em;
+}
+
+.preview-placeholder h2 {
+  text-align: center;
+  margin-bottom: 50px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 27px;
+  letter-spacing: -0.02em;
 }

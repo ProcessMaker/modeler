@@ -1,10 +1,10 @@
 const { nodeTypes } = require('../../support/constants');
 const {
   clickAndDropElement,
-  waitToRenderAllShapes, getCrownButtonForElement,
+  waitToRenderAllShapes, getCrownButtonForElement, getElementAtPosition,
 } = require('../../support/utils');
 
-describe('Inspector panel test', { scrollBehavior: false }, () => {
+describe('Inspector panel tests', { scrollBehavior: false }, () => {
 
   beforeEach(() => {
     cy.get('.control-add').click();
@@ -18,16 +18,77 @@ describe('Inspector panel test', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
   });
 
+  it('preview icon should  be visible in tasks', () => {
+
+    const taskPosition = { x: 400, y: 100 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+
+    cy.get('[data-test=preview-button]').should('be.visible');
+  });
 
   it('should open preview panel when clicks on preview icon', () => {
     const taskPosition = { x: 500, y: 500 };
     clickAndDropElement(nodeTypes.task, taskPosition);
-    crown('preview-button');
+    //const previewButton = crown('preview-button');
+
+    getElementAtPosition(taskPosition)
+      .then($task => {
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+      });
+
+    cy.get('[data-test=preview-panel]').should('be.visible');
+
+  });
+
+  it('preview icon should not be visible in start or end events', () => {
+
+    const startEventPosition = { x: 500, y: 500 };
+    clickAndDropElement(nodeTypes.startEvent, startEventPosition);
+    cy.get('[data-test=preview-button]').should('not.exist');
+
+    const endEventPosition = { x: 100, y: 800 };
+    clickAndDropElement(nodeTypes.endEvent, endEventPosition);
+    cy.get('[data-test=preview-button]').should('not.exist');
+  });
+
+  it('preview icon should switch between displaying and hiding the preview pane', () => {
+    const taskPosition = { x: 400, y: 100 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+
+    getElementAtPosition(taskPosition)
+      .then($task => {
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+        cy.get('[data-test=preview-panel]').should('be.visible');
+
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+        cy.get('[data-test=preview-panel]').should('not.be.visible');
+      });
+  });
+
+  it('Manual tasks should have a preview', () => {
+    const taskPosition = { x: 400, y: 100 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+    cy.get('[data-test=select-type-dropdown]').click();
+    cy.get('[data-test=switch-to-manual-task]').click();
+
+    getElementAtPosition(taskPosition)
+      .then($task => {
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+        cy.get('[data-test=preview-panel]').should('be.visible');
+      });
+  });
+
+
+  it('After deleting a tas window pane should be hidden', () => {
+    const taskPosition = { x: 400, y: 100 };
+    clickAndDropElement(nodeTypes.task, taskPosition);
+
+    getElementAtPosition(taskPosition)
+      .then($task => {
+        getCrownButtonForElement($task, 'preview-button').click({ force: true });
+        getCrownButtonForElement($task, 'delete-button').click({ force: true });
+        cy.get('[data-test=preview-panel]').should('not.be.visible');
+      });
   });
 
 });
-
-function crown(buttonId)
-{
-  getCrownButtonForElement(null, buttonId).click({ force: true });
-}
