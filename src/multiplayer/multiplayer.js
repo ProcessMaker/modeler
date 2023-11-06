@@ -514,7 +514,7 @@ export default class Multiplayer {
         return;
       }
       if (this.modeler.nodeRegistry[node.type] && this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler) {
-        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data);
+        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data,this.setNodeProp, this.modeler.moddle);
         return;
       }
       const keys = Object.keys(data).filter((key) => key !== 'id');
