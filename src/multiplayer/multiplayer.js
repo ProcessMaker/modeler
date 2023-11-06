@@ -56,7 +56,6 @@ export default class Multiplayer {
           };
           this.modeler.addPlayer(newPlayer);
         });
-        this.syncLocalNodes(this.clientIO.id);
       }
     });
 
@@ -68,10 +67,9 @@ export default class Multiplayer {
     });
 
     this.clientIO.on('requestProcess', (payload) => {
-      const { firstClient, clientId } = payload;
-
-      // Check if the current client is the first client
-      if (firstClient.id === this.clientIO.id) {
+      const { clientId } = payload;
+      // Sync the local Nodes
+      if (clientId) {
         this.syncLocalNodes(clientId);
       }
     });
