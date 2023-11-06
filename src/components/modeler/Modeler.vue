@@ -65,7 +65,7 @@
       <PreviewPanel ref="preview-panel"
         @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
         @previewResize="setInspectorButtonPosition"
-        :visible="isOpenPreview"
+        :visible="isOpenPreview && !(highlightedNodes.length > 1)"
         :nodeRegistry="nodeRegistry"
         :previewConfigs="previewConfigs"
       />
