@@ -52,6 +52,8 @@ export default {
       value: value.messageRef,
       extras: {
         messageName: message?.name,
+        allowedUsers: node.definition.get('allowedUsers'),
+        allowedGroups: node.definition.get('allowedGroups'),
       },
     });
   },

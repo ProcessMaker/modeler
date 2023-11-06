@@ -552,9 +552,17 @@ export default class Multiplayer {
         }
 
         node.definition.get('eventDefinitions')[0].messageRef = message;
+
+        if (extras?.allowedUsers) {
+          node.definition.set('allowedUsers', extras.allowedUsers);
+        }
+
+        if (extras?.allowedGroups) {
+          node.definition.set('allowedGroups', extras.allowedGroups);
+        }
       }
 
-      if (!['messageRef', 'gatewayDirection', 'condition'].includes(key)) {
+      if (!['messageRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups'].includes(key)) {
         store.commit('updateNodeProp', { node, key, value });
       }
     }
