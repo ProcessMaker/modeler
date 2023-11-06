@@ -47,7 +47,12 @@ export default {
     node.definition.get('eventDefinitions')[0].messageRef = message;
 
     window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
-      id: node.definition.id , key: 'messageRef', value: value.messageRef,
+      id: node.definition.id,
+      key: 'messageRef',
+      value: value.messageRef,
+      extras: {
+        messageName: message?.name,
+      },
     });
   },
 };

@@ -481,6 +481,10 @@ export default class Multiplayer {
       }
       nodeToUpdate.set(data.key, newValue);
 
+      if (data.extras && Object.keys(data.extras).length > 0) {
+        nodeToUpdate.set('extras', data.extras);
+      }
+
       const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
       // Send the update to the web socket server
       this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
@@ -503,6 +507,11 @@ export default class Multiplayer {
     node = this.getNodeById(data.id);
 
     if (node) {
+      let extras = {};
+      // extras property section
+      if (data.extras && Object.keys(data.extras).length > 0) {
+        extras = data.extras;
+      }
       // loopCharacteristics property section
       if (data.loopCharacteristics) {
         const loopCharacteristics = JSON.parse(data.loopCharacteristics);
@@ -537,7 +546,7 @@ export default class Multiplayer {
         if (!message) {
           message = this.modeler.moddle.create('bpmn:Message', {
             id: value,
-            name: value,
+            name: extras?.messageName || value,
           });
           this.modeler.definitions.rootElements.push(message);
         }

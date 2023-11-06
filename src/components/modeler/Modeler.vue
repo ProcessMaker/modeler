@@ -1173,6 +1173,7 @@ export default {
             loopCharacteristics: null,
             gatewayDirection: null,
             messageRef: null,
+            extras: {},
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
