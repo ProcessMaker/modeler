@@ -1201,6 +1201,8 @@ export default {
               sourceRefId,
               targetRefId,
               waypoint: node.diagram.waypoint,
+              name: node.definition.name,
+              conditionExpression: null,
             };
 
             if (isProcessRequested) {

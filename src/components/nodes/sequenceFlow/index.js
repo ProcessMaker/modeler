@@ -52,6 +52,9 @@ export default {
         // Set the condition expression IFF the expresion body changed
         if (definition[key].body !== value[key]) {
           const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+            id: node.definition.id , key, value: [conditionExpression],
+          });
           setNodeProp(node, key, conditionExpression);
         }
       } else {
@@ -61,6 +64,18 @@ export default {
         setNodeProp(node, key, value[key]);
       }
     }
+  },
+  multiplayerInspectorHandler(node, data, setNodeProp, moddle) {
+    const keys = Object.keys(data).filter((key) => key !== 'id');
+    if (keys.length === 0) {
+      return;
+    }
+    if (keys[0] === 'conditionExpression') {
+      const conditionExpression = moddle.create('bpmn:FormalExpression', { body: data[keys[0]][0].body });
+      setNodeProp(node, keys[0], conditionExpression);
+      return;
+    }
+    setNodeProp(node, keys[0], data[keys[0]]);
   },
   inspectorConfig: [
     {
