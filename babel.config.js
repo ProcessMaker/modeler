@@ -5,5 +5,5 @@ module.exports = {
   sourceType: 'unambiguous',
   plugins: [
     'istanbul',
-  ]
+  ],
 };
