@@ -63,14 +63,14 @@ jobs:
           name: cypress-videos
           path: tests/e2e/videos
 
-      - name: Run Coverage
-        run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
+#      - name: Run Coverage
+#        run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
 
       - name: Store Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report
-          path: combined-coverage
+          path: cypress-coverage
 
       - name: Run build bundle 📦
         run: npm run build-bundle
