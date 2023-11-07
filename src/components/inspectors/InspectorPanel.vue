@@ -96,12 +96,17 @@ export default {
       this.prepareData();
       this.prepareConfig();
     },
+
     'highlightedNode.definition.assignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.assignmentLock'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.allowReassignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
+
+    'highlightedNode.definition.id'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.name'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.documentation'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
     inspectorHeaderTitle() {
@@ -167,6 +172,8 @@ export default {
       this.$emit('toggleInspector', false);
     },
     handleAssignmentChanges(currentValue, previousValue) {
+      console.log('currentValue', currentValue);
+      console.log('previousValue', previousValue);
       if (currentValue === previousValue) {
         return;
       }

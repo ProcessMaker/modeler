@@ -1093,7 +1093,7 @@ export default {
       }
 
       const definition = this.nodeRegistry[control.type].definition(this.moddle, this.$t);
-
+      
       const diagram = this.nodeRegistry[control.type].diagram(this.moddle);
 
       const { x, y } = this.paperManager.clientToGridPoint(clientX, clientY);
@@ -1101,6 +1101,10 @@ export default {
       diagram.bounds.y = y;
 
       const newNode = this.createNode(control.type, definition, diagram);
+      
+      // initilize properties to support data binding
+      definition.documentation =  [this.moddle.create('bpmn:Documentation', { text: '' })];
+
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
@@ -1172,6 +1176,7 @@ export default {
             config: node.definition.config,
             loopCharacteristics: null,
             gatewayDirection: null,
+            documentation: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
