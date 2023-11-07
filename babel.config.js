@@ -3,7 +3,4 @@ module.exports = {
     '@vue/cli-plugin-babel/preset',
   ],
   sourceType: 'unambiguous',
-  plugins: [
-    'istanbul',
-  ],
 };
