@@ -529,21 +529,15 @@ export default class Multiplayer {
         node.definition.set('gatewayDirection', data[keys[0]]);
       }
       if (keys[0] === 'documentation') {
-        //node.definition.set('gatewayDirection', data[keys[0]]);
         const documentation =  data[keys[0]][0].text
           ? [this.modeler.moddle.create('bpmn:Documentation', { text: data[keys[0]][0].text })]
           : undefined;
 
         this.setNodeProp(node, 'documentation', documentation);
-      //   store.commit('updateNodeProp', { node, key:keys[0], value: documentation });
-      //   //store.commit('highlightNode', node);
         return;
       }
 
       store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
-
-      //store.commit('highlightNode');
-      //store.commit('highlightNode', node);
     }
 
   }
