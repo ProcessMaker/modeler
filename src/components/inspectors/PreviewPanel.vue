@@ -44,8 +44,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="divider">
-      </b-row>
+      <b-row class="divider"/>
 
       <b-row>
         <div class="task-title"> {{ taskTitle }} </div>
