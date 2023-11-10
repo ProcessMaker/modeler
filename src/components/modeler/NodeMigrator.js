@@ -31,7 +31,6 @@ export class NodeMigrator {
 
     const incoming = this._nodeThatWillBeReplaced.definition.get('incoming');
     const outgoing = this._nodeThatWillBeReplaced.definition.get('outgoing');
-
     this._definition.get('incoming').push(...incoming);
     this._definition.get('outgoing').push(...outgoing);
 

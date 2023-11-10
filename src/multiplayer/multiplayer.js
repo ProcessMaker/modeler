@@ -580,6 +580,10 @@ export default class Multiplayer {
       }
     }
   }
+  /**
+   * Update the shared document and emit socket sign to update the flows
+   * @param {Object} data
+   */
   updateFlows(data){
     data.forEach((value) => {
       const index = this.getIndex(value.id);
@@ -596,17 +600,31 @@ export default class Multiplayer {
     const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
     this.clientIO.emit('updateFlows', { updateDoc: stateUpdate, isReplaced: false });
   }
+  /**
+   * Update the flow client, All node refs will be updated and forced to remount
+   * @param {Object} data
+   */
   updateFlowClient(data) {
     let remount = false;
     const flow = this.getNodeById(data.id);
     if (flow && data.sourceRefId) {
       const sourceRef = this.getNodeById(data.sourceRefId);
       flow.definition.set('sourceRef', sourceRef.definition);
+      const outgoing = sourceRef.definition.get('outgoing')
+        .find((element) => element.id == flow.definition.id);
+      if (!outgoing) {
+        sourceRef.definition.get('outgoing').push(...[flow.definition]);
+      }
       remount = true;
     }
     if (flow && data.targetRefId) {
       const targetRef = this.getNodeById(data.targetRefId);
       flow.definition.set('targetRef', targetRef.definition);
+      const incoming = targetRef.definition.get('incoming')
+        .find((element) => element.id === flow.definition.id);
+      if (!incoming) {
+        targetRef.definition.get('incoming').push(...[flow.definition]);
+      }
       remount = true;
     }
     if (remount) {
