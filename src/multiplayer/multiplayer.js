@@ -135,12 +135,10 @@ export default class Multiplayer {
     });
     this.clientIO.on('updateFlows', (payload) => {
       const { updateDoc, updatedNodes } = payload;
-
       // Update the elements in the process
       updatedNodes.forEach((data) => {
         this.updateFlowClient(data);
       });
-
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
