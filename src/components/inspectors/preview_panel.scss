@@ -1,15 +1,5 @@
 $inspector-column-min-width: 200px;
 
-#nada::after {
-  display: flex;
-  content: '';
-  left: 0;
-  width: 5px;
-  height: 100%;
-  cursor: ew-resize;
-  border: 1px solid red;
-}
-
 .preview-column {
   min-width: $inspector-column-min-width;
   resize: both;
@@ -29,7 +19,6 @@ $inspector-column-min-width: 200px;
   background-color: white;
   padding: 0 5px 0 5px;
   color: #7f7f7f;
-  border: 1px solid blue;
 }
 
 .resizer-column {
