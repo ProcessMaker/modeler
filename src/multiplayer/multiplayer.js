@@ -133,7 +133,15 @@ export default class Multiplayer {
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
-
+    this.clientIO.on('updateFlows', (payload) => {
+      const { updateDoc, updatedNodes } = payload;
+      // Update the elements in the process
+      updatedNodes.forEach((data) => {
+        this.updateFlowClient(data);
+      });
+      // Update the element in the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
+    });
 
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
@@ -164,6 +172,11 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspectorProperty', ( data ) => {
       if (this.modeler.isMultiplayer) {
         this.updateInspectorProperty(data);
+      }
+    });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateFlows', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateFlows(data);
       }
     });
   }
@@ -245,7 +258,7 @@ export default class Multiplayer {
     return node;
   }
   removeShape(node) {
-    this.modeler.removeNodeProcedure(node, true);
+    this.modeler.removeNodeProcedure(node,  { removeRelationships: false });
   }
   getRemovedNodes(array1, array2) {
     return array1.filter(object1 => {
@@ -563,6 +576,58 @@ export default class Multiplayer {
       if (!['messageRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups'].includes(key)) {
         store.commit('updateNodeProp', { node, key, value });
       }
+    }
+  }
+  /**
+   * Update the shared document and emit socket sign to update the flows
+   * @param {Object} data
+   */
+  updateFlows(data){
+    data.forEach((value) => {
+      const index = this.getIndex(value.id);
+      const nodeToUpdate =  this.yArray.get(index);
+      this.yDoc.transact(() => {
+        for (const key in value) {
+          if (Object.hasOwn(value, key)) {
+            nodeToUpdate.set(key, value[key]);
+          }
+        }
+      });
+    });
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    this.clientIO.emit('updateFlows', { updateDoc: stateUpdate, isReplaced: false });
+  }
+  /**
+   * Update the flow client, All node refs will be updated and forced to remount
+   * @param {Object} data
+   */
+  updateFlowClient(data) {
+    let remount = false;
+    const flow = this.getNodeById(data.id);
+    if (flow && data.sourceRefId) {
+      const sourceRef = this.getNodeById(data.sourceRefId);
+      flow.definition.set('sourceRef', sourceRef.definition);
+      const outgoing = sourceRef.definition.get('outgoing')
+        .find((element) => element.id === flow.definition.id);
+      if (!outgoing) {
+        sourceRef.definition.get('outgoing').push(...[flow.definition]);
+      }
+      remount = true;
+    }
+    if (flow && data.targetRefId) {
+      const targetRef = this.getNodeById(data.targetRefId);
+      flow.definition.set('targetRef', targetRef.definition);
+      const incoming = targetRef.definition.get('incoming')
+        .find((element) => element.id === flow.definition.id);
+      if (!incoming) {
+        targetRef.definition.get('incoming').push(...[flow.definition]);
+      }
+      remount = true;
+    }
+    if (remount) {
+      // Force Remount Flow
+      flow._modelerId += '_replaced';
     }
   }
 }
