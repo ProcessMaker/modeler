@@ -609,7 +609,7 @@ export default class Multiplayer {
       const sourceRef = this.getNodeById(data.sourceRefId);
       flow.definition.set('sourceRef', sourceRef.definition);
       const outgoing = sourceRef.definition.get('outgoing')
-        .find((element) => element.id == flow.definition.id);
+        .find((element) => element.id === flow.definition.id);
       if (!outgoing) {
         sourceRef.definition.get('outgoing').push(...[flow.definition]);
       }
