@@ -13,15 +13,14 @@
       <b-row class="control-bar">
         <b-col cols="9">
           <div>
-            <i v-show = "selectedPreview == 1" class="fas fa-file-alt"/>
-            <b v-show = "selectedPreview == 2"> {} </b>
+            <i v-show = "selectedPreview === 1" class="fas fa-file-alt"/>
+            <b v-show = "selectedPreview === 2"> {} </b>
             <b-dropdown
               variant="ellipsis"
               no-caret
               no-flip
               lazy
-              class="dropdown-right"
-              style="margin-top:-10px"
+              class="preview-type-dropdown"
               v-model="selectedPreview"
             >
               <template #button-content>
@@ -40,15 +39,12 @@
           </div>
         </b-col>
         <b-col class="actions">
-          <div style="padding-right:15px;">
-            <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
-            <i class="fas fa-times" @click="onClose()" />
-          </div>
+          <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
+          <i class="fas fa-times" @click="onClose()" />
         </b-col>
       </b-row>
 
-      <b-row>
-        <div style="background-color: #0074D9; height: 20px; width: 100%">&nbsp;</div>
+      <b-row class="divider">
       </b-row>
 
       <b-row>

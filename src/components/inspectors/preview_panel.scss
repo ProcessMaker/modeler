@@ -21,6 +21,10 @@ $inspector-column-min-width: 200px;
   color: #7f7f7f;
 }
 
+.preview-type-dropdown {
+  margin-top:-10px;
+}
+
 .resizer-column {
   cursor:ew-resize;
   width:5px;
@@ -31,8 +35,15 @@ $inspector-column-min-width: 200px;
   text-align: right;
 }
 
+.preview-column .divider {
+  background-color: #0074D9;
+  height: 20px;
+  width: 100%;
+}
+
 .preview-column .control-bar .actions div {
   width: 100%;
+  padding-right: 15px;
   text-align: right;
 }
 
