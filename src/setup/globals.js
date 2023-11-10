@@ -36,6 +36,7 @@ window.ProcessMaker = {
   },
   multiplayer:{
     host: process.env.VUE_APP_WEBSOCKET_PROVIDER,
+    enabled: /^true$/i.test(process.env.VUE_APP_COLLABORATIVE_ENABLED),
   },
   EventBus: new Vue(),
   apiClient: axios,
@@ -63,5 +64,4 @@ window.ProcessMaker = {
     fullName:  faker.person.fullName(),
     avatar: null,
   },
-  
 };

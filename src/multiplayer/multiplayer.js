@@ -32,6 +32,14 @@ export default class Multiplayer {
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
 
+    if (window.ProcessMaker.multiplayer.enabled) {
+      this.webSocketEvents();
+      this.multiplayerEvents();
+    } else {
+      this.clientIO.disconnect();
+    }
+  }
+  webSocketEvents() {
     this.clientIO.on('connect', () => {
       // Join the room
       this.clientIO.emit('joinRoom', {
@@ -133,11 +141,13 @@ export default class Multiplayer {
       // Update the element in the shared array
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
+  }
 
-
+  multiplayerEvents() {
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
@@ -161,6 +171,7 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
       this.addLaneNodes(lanes);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspectorProperty', ( data ) => {
       if (this.modeler.isMultiplayer) {
         this.updateInspectorProperty(data);
