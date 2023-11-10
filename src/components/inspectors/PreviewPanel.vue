@@ -1,65 +1,76 @@
 <template>
-  <b-col
-    v-show="visible"
-    id="preview_panel"
-    class="pl-0 h-100 overflow-hidden preview-column"
-    :style="{ maxWidth: width + 'px' }"
-    @mousedown="onMouseDown"
+  <b-row ref="resizableDiv"
     @mouseup="onMouseUp"
     @mousemove="onMouseMove"
-    data-test="preview-panel"
+    v-show="visible"
   >
-    <b-row class="control-bar">
-      <b-col cols="9">
-        <div>
-          <i v-show = "selectedPreview == 1" class="fas fa-file-alt"/>
-          <b v-show = "selectedPreview == 2"> {} </b>
-          <b-dropdown
-            variant="ellipsis"
-            no-caret
-            no-flip
-            lazy
-            class="dropdown-right"
-            style="margin-top:-10px"
-            v-model="selectedPreview"
-          >
-            <template #button-content>
-              <i class="fas fa-sort-down" />
-            </template>
+    <b-col class="col-auto p-0 resizer-column" @mousedown="onMouseDown" />
+    <b-col
+      class="pl-0 h-100 overflow-hidden preview-column"
+      :style="{ width: panelWidth + 'px' }"
+      data-test="preview-panel"
+    >
+      <b-row class="control-bar">
+        <b-col cols="9">
+          <div>
+            <i v-show = "selectedPreview == 1" class="fas fa-file-alt"/>
+            <b v-show = "selectedPreview == 2"> {} </b>
+            <b-dropdown
+              variant="ellipsis"
+              no-caret
+              no-flip
+              lazy
+              class="dropdown-right"
+              style="margin-top:-10px"
+              v-model="selectedPreview"
+            >
+              <template #button-content>
+                <i class="fas fa-sort-down" />
+              </template>
 
-            <b-dropdown-item key="1" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(1)">
-              <div class="ellipsis-dropdown-content">
-                <b class="pr-1 fa-fw fas fa-file-alt" />
-                <span>{{ $t('Document') }}</span>
-              </div>
-            </b-dropdown-item>
+              <b-dropdown-item key="1" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(1)">
+                <div class="ellipsis-dropdown-content">
+                  <b class="pr-1 fa-fw fas fa-file-alt" />
+                  <span>{{ $t('Document') }}</span>
+                </div>
+              </b-dropdown-item>
 
-          </b-dropdown>
-          <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
-        </div>
-      </b-col>
-      <b-col class="actions">
-        <div>
-          <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
-          <i class="fas fa-times" @click="onClose()" />
-        </div>
-      </b-col>
-    </b-row>
+            </b-dropdown>
+            <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
+          </div>
+        </b-col>
+        <b-col class="actions">
+          <div style="padding-right:15px;">
+            <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
+            <i class="fas fa-times" @click="onClose()" />
+          </div>
+        </b-col>
+      </b-row>
 
-    <b-row>
-      <div style="background-color: #0074D9; height: 20px; width: 100%">&nbsp;</div>
-    </b-row>
+      <b-row>
+        <div style="background-color: #0074D9; height: 20px; width: 100%">&nbsp;</div>
+      </b-row>
 
-    <b-row>
-      <div class="task-title"> {{ taskTitle }} </div>
-    </b-row>
+      <b-row>
+        <div class="task-title"> {{ taskTitle }} </div>
+      </b-row>
 
-    <loading-preview v-if="showSpinner"/>
+      <loading-preview v-show="showSpinner"/>
 
-    <no-preview-available v-show="!previewUrl"/>
-    <iframe title="Preview" v-show="!!previewUrl && !showSpinner" :src="previewUrl" style="width:100%; height:100%;border: none;" @load="loading"/>
-  </b-col>
+      <no-preview-available v-show="!previewUrl"/>
 
+      <iframe
+        title="Preview"
+        v-show="!!previewUrl && !showSpinner"
+        :src="previewUrl"
+        class="preview-iframe"
+        @load="loading"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUp"
+      />
+
+    </b-col>
+  </b-row>
 </template>
 
 <script>
@@ -68,7 +79,7 @@ import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
 import LoadingPreview from '@/components/inspectors/LoadingPreview.vue';
 
 export default {
-  props: ['nodeRegistry', 'visible', 'previewConfigs'],
+  props: ['nodeRegistry', 'visible', 'previewConfigs', 'panelWidth'],
   components: { NoPreviewAvailable, LoadingPreview },
   data() {
     return {
@@ -79,7 +90,6 @@ export default {
       taskTitle: '',
       itemTitle: '',
       width: 600,
-      isDragging: false,
       currentPos: 600,
     };
   },
@@ -148,7 +158,6 @@ export default {
         this.$emit('togglePreview', false);
       }
     },
-
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
@@ -174,25 +183,25 @@ export default {
       const nodeHasConfigParams = Object.keys(clone).length > 0;
       this.previewUrl = previewConfig &&  nodeHasConfigParams ? `${previewConfig.url}?node=${nodeData}` : null;
       this.taskTitle = this.highlightedNode?.definition?.name;
-      this.showPanel = true;
     },
     onClose() {
       this.$emit('togglePreview', false);
     },
     onMouseDown(event) {
-      this.isDragging = true;
-      this.currentPos = event.x;
+      this.$emit('startResize', event);
     },
     onMouseUp() {
-      this.isDragging = false;
+      this.$emit('stopResize');
     },
     onMouseMove(event) {
-      if (this.isDragging) {
-        const dx = this.currentPos - event.x;
-        this.currentPos = event.x;
-        this.width = parseInt(this.width) + dx;
-        this.$emit('previewResize', this.width);
+      if (window.ProcessMaker.$modeler.isResizingPreview) {
+        this.$emit('previewResize', event);
       }
+    },
+    setWidth(positionX) {
+      const dx = this.currentPos - positionX;
+      this.currentPos = positionX;
+      this.width = parseInt(this.width) + dx;
     },
   },
 };

@@ -1,34 +1,41 @@
-$inspector-column-max-width: 400px;
 $inspector-column-min-width: 200px;
 
-#preview_panel::after {
+#nada::after {
   display: flex;
   content: '';
   left: 0;
   width: 5px;
   height: 100%;
   cursor: ew-resize;
+  border: 1px solid red;
 }
 
 .preview-column {
-  max-width: $inspector-column-max-width;
   min-width: $inspector-column-min-width;
   resize: both;
   overflow:auto;
   background-color: #fff;
-  border-left: 8px solid #EBEEF2;
   z-index: 2;
 }
 
-.paneiframe {
-  display:block;
-  width:100%;
+.preview-iframe {
+  width:90%;
+  height:100%;
+  padding: 0 30px 0 50px;
+  border: none;
 }
 
 .preview-column .control-bar {
   background-color: white;
   padding: 0 5px 0 5px;
   color: #7f7f7f;
+  border: 1px solid blue;
+}
+
+.resizer-column {
+  cursor:ew-resize;
+  width:5px;
+  background-color:#EBEEF2;
 }
 
 .preview-column .control-bar .actions {
@@ -43,16 +50,6 @@ $inspector-column-min-width: 200px;
 .preview-column .control-bar .actions div i {
   width: 20px;
   cursor: pointer;
-}
-
-.item-title {
-  margin-top: 15px;
-  width: 100%;
-  height: 30px;
-  font-size: larger;
-  text-align: center;
-  align-items: center;
-  color: #7f7f7f;
 }
 
 .task-title {
