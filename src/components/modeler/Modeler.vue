@@ -1106,6 +1106,12 @@ export default {
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
       const newNode = this.createNode(data.type, definition, diagram);
+      //verify if the node has a pool as a container
+      if (data.poolId) {
+        const pool = this.getElementByNodeId(data.poolId);
+        this.poolTarget = pool;
+
+      }
       await this.addNode(newNode, data.id, true);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
