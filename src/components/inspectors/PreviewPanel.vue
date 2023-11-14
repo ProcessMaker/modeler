@@ -161,9 +161,7 @@ export default {
         return;
       }
 
-      const previewConfig = this.previewConfigs.find(config => {
-        return config.matcher(this.data);
-      });
+      const previewConfig = this.getConfig(this.data);
 
       let clone = {};
       for (let prop in this.data) {
@@ -176,7 +174,11 @@ export default {
 
       // if the node has the configurations (for example screenRef for a task in a task)
       const nodeHasConfigParams = Object.keys(clone).length > 0;
-      this.previewUrl = previewConfig &&  nodeHasConfigParams ? `${previewConfig.url}?node=${nodeData}` : null;
+      const nodeHasConfiguredAssets = !!previewConfig.assetUrl(this.data);
+      this.previewUrl = nodeHasConfiguredAssets && previewConfig &&  nodeHasConfigParams
+        ? `${previewConfig.url}?node=${nodeData}`
+        : null;
+
       this.taskTitle = this.highlightedNode?.definition?.name;
     },
     onClose() {
