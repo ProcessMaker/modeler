@@ -164,6 +164,12 @@
         @save-state="pushToUndoStack"
         :isMultiplayer="isMultiplayer"
       />
+      {{ players }}
+      <RemoteCursor
+        v-for="player in players"
+        :key="player.id"
+        :data="player"
+      /> 
     </b-row>
   </span>
 </template>
@@ -1566,6 +1572,7 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', { top: x, left: y });
       if (store.getters.isReadOnly) {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
@@ -1616,6 +1623,7 @@ export default {
       store.commit('enableMultiplayer', value);
     },
     addPlayer(player) {
+      console.log('addPlayer', player);
       this.players.push(player);
     },
     removePlayer(playerId) {

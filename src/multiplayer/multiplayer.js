@@ -31,7 +31,6 @@ export default class Multiplayer {
 
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
-
     if (window.ProcessMaker.multiplayer.enabled) {
       this.webSocketEvents();
       this.multiplayerEvents();
@@ -46,25 +45,16 @@ export default class Multiplayer {
         roomName: this.room.getRoom(),
         clientName: window.ProcessMaker.user?.fullName,
         clientAvatar: window.ProcessMaker.user?.avatar,
+        clientColor: window.ProcessMaker.user?.color,
+        clientCursor: {
+          top: 300,
+          left: 300,
+        },
       });
     });
 
     this.clientIO.on('clientJoined', (payload) => {
-      this.modeler.enableMultiplayer(payload.isMultiplayer);
-
-      if (payload.isMultiplayer) {
-        payload.clients.map(client => {
-          const newPlayer = {
-            id: client.id,
-            name: client.name,
-            color: '#FF6F61',
-            avatar: client.avatar,
-            top: 90,
-            left: 80,
-          };
-          this.modeler.addPlayer(newPlayer);
-        });
-      }
+      this.addPlayers(payload);
     });
 
     this.clientIO.on('clientLeft', (payload) => {
@@ -192,6 +182,28 @@ export default class Multiplayer {
         this.updateFlows(data);
       }
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateMousePosition', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateMousePosition(data);
+      }
+    });
+    
+  }
+  addPlayers(payload) {
+    console.log('clientJoined', payload);
+    this.modeler.enableMultiplayer(payload.isMultiplayer);
+    if (payload.isMultiplayer) {
+      payload.clients.map(client => {
+        const newPlayer = {
+          id: client.id,
+          name: client.name,
+          color: client.color,
+          avatar: client.avatar,
+          cursor: client.cursor, 
+        };
+        this.modeler.addPlayer(newPlayer);
+      });
+    }
   }
   /**
    * Sync the modeler nodes with the microservice
@@ -642,5 +654,16 @@ export default class Multiplayer {
       // Force Remount Flow
       flow._modelerId += '_replaced';
     }
+  }
+  /**
+   * Updates the mouse position
+   * @param {Object} data 
+   */
+  updateMousePosition(data) {
+    this.clientIO.emit('cursorTrackingUpdate', { 
+      roomName: this.room.getRoom(),
+      clientId:  this.clientIO.id,
+      clientCursor: data,
+    });
   }
 }

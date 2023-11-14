@@ -1,5 +1,5 @@
 <template>
-  <b-avatar-group class="container" v-if="!isMultiplayer">
+  <b-avatar-group class="container" v-show="isMultiplayer">
     <template v-for="item in filteredPlayers" >
       <Avatar :badgeBackgroundColor="item.color" :imgSrc="item.avatar" :userName="item.name" :key="item.key"/>
     </template>
@@ -23,6 +23,7 @@ export default {
   },
   computed: {
     filteredPlayers() {
+      console.log(this.players);
       const allPlayers = uniqBy(this.players, 'name');
       return allPlayers.filter(player => {
         return player.name.toLowerCase() !== window.ProcessMaker.user?.fullName.toLowerCase();

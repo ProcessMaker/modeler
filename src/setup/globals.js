@@ -63,5 +63,6 @@ window.ProcessMaker = {
     id: 'standalone',
     fullName:  faker.person.fullName(),
     avatar: null,
+    color: 'red',
   },
 };
