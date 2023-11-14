@@ -1110,7 +1110,6 @@ export default {
       if (data.poolId) {
         const pool = this.getElementByNodeId(data.poolId);
         this.poolTarget = pool;
-
       }
       await this.addNode(newNode, data.id, true);
       await this.$nextTick();
