@@ -174,7 +174,7 @@ export default {
 
       // if the node has the configurations (for example screenRef for a task in a task)
       const nodeHasConfigParams = Object.keys(clone).length > 0;
-      const nodeHasConfiguredAssets = !!previewConfig.assetUrl(this.data);
+      const nodeHasConfiguredAssets = !!previewConfig?.assetUrl(this.data);
 
       this.previewUrl = nodeHasConfiguredAssets && previewConfig &&  nodeHasConfigParams
         ? `${previewConfig.url}?node=${nodeData}`
