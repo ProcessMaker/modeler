@@ -598,8 +598,10 @@ export default {
       shapes.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
         .forEach(shape => {
           if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
-            const children = shape.model.component.getElementsUnderArea(shape.model, this.graph);
-            changed = [...changed, ...this.getContainerProperties(children, changed)];
+            const childrens = shape.model.component.getElementsUnderArea(shape.model, this.graph)
+              .filter((element) => element.component);
+
+            changed = [...changed, ...this.getContainerProperties(childrens, changed)];
           } else {
             const { node } = shape.model.component;
             const defaultData = {
@@ -655,9 +657,9 @@ export default {
       });
       return boundariesChanged;
     },
-    getContainerProperties(children) {
+    getContainerProperties(childrens) {
       const changed = [];
-      children.forEach(model => {
+      childrens.forEach(model => {
         changed.push({
           id: model.component.node.definition.id,
           properties: {
