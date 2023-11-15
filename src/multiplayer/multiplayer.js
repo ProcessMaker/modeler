@@ -245,7 +245,6 @@ export default class Multiplayer {
   removeNode(data) {
     const index =  this.getIndex(data.definition.id);
     if (index >= 0) {
-      this.removeShape(data);
       this.yArray.delete(index, 1); // delete one element
       // Encode the state as an update and send it to the server
       const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
