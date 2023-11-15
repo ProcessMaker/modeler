@@ -86,6 +86,7 @@ export default {
         tempGhost.src = control.icon;
       } else {
         tempGhost.setAttribute('class', control.icon);
+        tempGhost.style.fontSize = '42px';
       }
 
       document.body.appendChild(tempGhost);
