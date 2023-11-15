@@ -45,6 +45,8 @@
         ref="paper-container"
         :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
         :style="{ width: parentWidth, height: parentHeight }"
+        @mouseup="onMouseUp"
+        @mousemove="[onMouseMove($event), setInspectorButtonPosition($event)]"
       >
 
         <div ref="paper" data-test="paper" class="main-paper" />
@@ -64,10 +66,13 @@
 
       <PreviewPanel ref="preview-panel"
         @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
-        @previewResize="setInspectorButtonPosition"
+        @previewResize="[onMouseMove($event), setInspectorButtonPosition($event)]"
+        @startResize="onStartPreviewResize"
+        @stopResize="onMouseUp"
         :visible="isOpenPreview && !(highlightedNodes.length > 1)"
         :nodeRegistry="nodeRegistry"
         :previewConfigs="previewConfigs"
+        :panelWidth="previewPanelWidth"
       />
 
       <InspectorPanel
@@ -164,6 +169,7 @@
 </template>
 
 <script>
+
 import Vue from 'vue';
 import _ from 'lodash';
 import { dia } from 'jointjs';
@@ -212,7 +218,14 @@ import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault } from '@/components/crown/utils';
+import {
+  removeBoundaryEvents,
+  removeNodeAssociations,
+  removeNodeFlows,
+  removeNodeMessageFlows,
+  removeOutgoingAndIncomingRefsToFlow,
+  removeSourceDefault,
+} from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
@@ -330,6 +343,9 @@ export default {
       showInspectorButton: true,
       inspectorButtonRight: 65,
       previewConfigs: [],
+      isResizingPreview: false,
+      currentCursorPosition: 0,
+      previewPanelWidth: 600,
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -404,6 +420,20 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    onStartPreviewResize(event) {
+      this.isResizingPreview = true;
+      this.currentCursorPosition = event.x;
+    },
+    onMouseUp() {
+      this.isResizingPreview = false;
+    },
+    onMouseMove(event) {
+      if (this.isResizingPreview) {
+        const dx = this.currentCursorPosition - event.x;
+        this.previewPanelWidth = parseInt(this.previewPanelWidth) + dx;
+        this.currentCursorPosition = event.x;
+      }
+    },
     registerPreview(config) {
       this.previewConfigs.push(config);
     },
@@ -427,13 +457,12 @@ export default {
       this.isOpenPreview = value;
     },
     setInspectorButtonPosition() {
-      const previewWidth = this.$refs['preview-panel'].width;
       if (this.isOpenInspector) {
         return;
       }
 
       if (this.isOpenPreview && !this.isOpenInspector) {
-        this.inspectorButtonRight = 65 + previewWidth;
+        this.inspectorButtonRight = 65 + this.previewPanelWidth;
       }
 
       if (!this.isOpenPreview && !this.isOpenInspector) {
@@ -1077,6 +1106,11 @@ export default {
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
       const newNode = this.createNode(data.type, definition, diagram);
+      //verify if the node has a pool as a container
+      if (data.poolId) {
+        const pool = this.getElementByNodeId(data.poolId);
+        this.poolTarget = pool;
+      }
       await this.addNode(newNode, data.id, true);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
@@ -1172,6 +1206,8 @@ export default {
             config: node.definition.config,
             loopCharacteristics: null,
             gatewayDirection: null,
+            messageRef: null,
+            extras: {},
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
@@ -1191,6 +1227,14 @@ export default {
             sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
             targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
+          const waypoint = [];
+
+          node.diagram.waypoint?.forEach(point => {
+            waypoint.push({
+              x: point.x,
+              y: point.y,
+            });
+          });
 
           if (sourceRefId && targetRefId) {
             const flowData = {
@@ -1198,7 +1242,10 @@ export default {
               type: node.type,
               sourceRefId,
               targetRefId,
-              waypoint: node.diagram.waypoint,
+              waypoint,
+              name: node.definition.name,
+              conditionExpression: null,
+              color: null,
             };
 
             if (isProcessRequested) {

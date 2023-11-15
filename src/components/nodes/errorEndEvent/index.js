@@ -52,7 +52,7 @@ export default merge(cloneDeep(endEventConfig), {
       });
     }
   },
-  multiplayerInspectorHandler(node, data){
+  multiplayerInspectorHandler(node, data, setNodeProp) {
     const keys = Object.keys(data).filter((key) => key !== 'id');
     if (keys[0] === 'eventDefinitions') {
       const error = data[keys[0]][0].errorRef;
@@ -62,7 +62,9 @@ export default merge(cloneDeep(endEventConfig), {
           errorRef.name = error.name;
         }
       }
+      return;
     }
+    setNodeProp(node, keys[0], data[keys[0]]);
   },
   inspectorConfig: [
     {
