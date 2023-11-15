@@ -1633,6 +1633,12 @@ export default {
         this.players.splice(playerIndex, 1);
       }
     },
+    /**
+     * Update the lasso tool
+     */
+    updateLasso(){
+      this.$refs.selector.updateSelectionBox();
+    },
   },
   created() {
     if (runningInCypressTest()) {
