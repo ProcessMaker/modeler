@@ -41,15 +41,16 @@ $inspector-column-min-width: 200px;
   width: 100%;
 }
 
-.preview-column .control-bar .actions div {
+.preview-column .control-bar .actions {
   width: 100%;
-  padding-right: 15px;
+  padding-right: 45px;
   text-align: right;
 }
 
-.preview-column .control-bar .actions div i {
+.preview-column .control-bar .actions i {
   width: 20px;
   cursor: pointer;
+  margin-left: 5px;
 }
 
 .task-title {
