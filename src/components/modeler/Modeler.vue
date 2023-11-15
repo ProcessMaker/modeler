@@ -1223,12 +1223,14 @@ export default {
             targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
           const waypoint = [];
-          node.diagram.waypoint.forEach(point => {
+
+          node.diagram.waypoint?.forEach(point => {
             waypoint.push({
               x: point.x,
               y: point.y,
             });
           });
+
           if (sourceRefId && targetRefId) {
             const flowData = {
               id: node.definition.id,
@@ -1238,6 +1240,7 @@ export default {
               waypoint,
               name: node.definition.name,
               conditionExpression: null,
+              color: null,
             };
 
             if (isProcessRequested) {

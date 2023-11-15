@@ -352,34 +352,40 @@ export default class Multiplayer {
     const newPool = this.modeler.getElementByNodeId(data.poolId);
 
     if (this.modeler.flowTypes.includes(data.type)) {
-      // Update the element's waypoints
-      // Get the source and target elements
-      const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
-      const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
-
       const { waypoint } = data;
-      const startWaypoint = waypoint.shift();
-      const endWaypoint = waypoint.pop();
 
-      // Update the element's waypoints
-      const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
-      element.set('vertices', newWaypoint);
+      if (waypoint) {
+        // Update the element's waypoints
+        // Get the source and target elements
+        const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
+        const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
 
-      // Update the element's source anchor
-      element.source(sourceElem, {
-        anchor: () => {
-          return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
-        },
-        connectionPoint: { name: 'boundary' },
-      });
+        const startWaypoint = waypoint.shift();
+        const endWaypoint = waypoint.pop();
 
-      // Update the element's target anchor
-      element.target(targetElem, {
-        anchor: () => {
-          return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
-        },
-        connectionPoint: { name: 'boundary' },
-      });
+        // Update the element's waypoints
+        const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
+        element.set('vertices', newWaypoint);
+
+        // Update the element's source anchor
+        element.source(sourceElem, {
+          anchor: () => {
+            return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
+          },
+          connectionPoint: { name: 'boundary' },
+        });
+
+        // Update the element's target anchor
+        element.target(targetElem, {
+          anchor: () => {
+            return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
+          },
+          connectionPoint: { name: 'boundary' },
+        });
+      } else {
+        const node = this.getNodeById(data.id);
+        store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+      }
     } else {
       // Update the element's position attribute
       element.resize(
