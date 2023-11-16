@@ -95,6 +95,13 @@ export default {
       }
     },
     highlightedNode() {
+      // If there isn't preview configuration hide the panel
+      const nodeConfig = this.getConfig(this.data);
+      if (!nodeConfig) {
+        this.$emit('togglePreview', false);
+        return;
+      }
+
       document.activeElement.blur();
       this.previewNode();
     },
