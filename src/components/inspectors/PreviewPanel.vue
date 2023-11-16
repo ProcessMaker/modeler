@@ -56,7 +56,7 @@
 
       <iframe
         title="Preview"
-        v-show="!!previewUrl && !showSpinner"
+        :style="{visibility: displayPreviewIframe}"
         :src="previewUrl"
         class="preview-iframe"
         @load="loading"
@@ -109,6 +109,11 @@ export default {
   computed: {
     highlightedNode() {
       return store.getters.highlightedNodes[0];
+    },
+    displayPreviewIframe() {
+      const result = !!this.previewUrl && !this.showSpinner;
+      console.log('mostrar iframe', result);
+      return result ? 'visible' : 'hidden';
     },
   },
   methods: {
