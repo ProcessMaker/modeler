@@ -1181,7 +1181,7 @@ export default {
         'processmaker-modeler-boundary-timer-event',
         'processmaker-modeler-boundary-error-event',
         'processmaker-modeler-boundary-signal-event',
-        'processmaker-modeler-boundary-conditional-even',
+        'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ];
       if (!this.isMultiplayer) {
