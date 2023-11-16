@@ -102,6 +102,8 @@ export default {
     'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.allowInterstitial'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    'highlightedNode.definition.interstitialScreenRef'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
     inspectorHeaderTitle() {
