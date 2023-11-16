@@ -5,6 +5,7 @@ import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import { loopCharacteristicsHandler } from '@/components/inspectors/LoopCharacteristics';
 
 export const id = 'processmaker-modeler-call-activity';
 
@@ -86,4 +87,5 @@ export default {
       ],
     },
   ],
+  loopCharacteristicsHandler,
 };
