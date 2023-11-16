@@ -422,7 +422,10 @@ export default {
   },
   methods: {
     onNodeDefinitionChanged() {
-      this.handlePreview();
+      // re-render the preview just if the preview pane is open
+      if (this.isOpenPreview) {
+        this.handlePreview();
+      }
     },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
