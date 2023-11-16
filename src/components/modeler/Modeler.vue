@@ -69,7 +69,7 @@
         @previewResize="[onMouseMove($event), setInspectorButtonPosition($event)]"
         @startResize="onStartPreviewResize"
         @stopResize="onMouseUp"
-        :visible="isOpenPreview"
+        :visible="isOpenPreview && !(highlightedNodes.length > 1)"
         :nodeRegistry="nodeRegistry"
         :previewConfigs="previewConfigs"
         :panelWidth="previewPanelWidth"
