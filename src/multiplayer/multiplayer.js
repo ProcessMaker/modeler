@@ -5,6 +5,7 @@ import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
 import { setEventTimerDefinition } from '@/components/nodes/boundaryTimerEvent';
+import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
 
 export default class Multiplayer {
   clientIO = null;
@@ -200,7 +201,13 @@ export default class Multiplayer {
    */
   syncLocalNodes(clientId){
     // Get the process definition
-    const nodes = this.modeler.nodes.map((node) => this.modeler.multiplayerHook(node, false, true));
+    const nodes = this.modeler.nodes.map((node) => {
+      if (node.definition.$type === 'bpmn:BoundaryEvent') {
+        return getBoundaryEventData(node);
+      }
+
+      return this.modeler.multiplayerHook(node, false, true);
+    });
 
     nodes.forEach((node) => {
       const yMapNested = new Y.Map();
@@ -228,7 +235,7 @@ export default class Multiplayer {
     if (node) {
       return;
     }
-    if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
+    if (this.modeler.nodeRegistry[value.type]?.multiplayerClient) {
       this.modeler.nodeRegistry[value.type].multiplayerClient(this.modeler, value);
     } else {
       this.modeler.addRemoteNode(value);
