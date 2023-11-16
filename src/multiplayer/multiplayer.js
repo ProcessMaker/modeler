@@ -4,6 +4,7 @@ import { getNodeIdGenerator } from '../NodeIdGenerator';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
+import { setEventTimerDefinition } from '@/components/nodes/boundaryTimerEvent';
 
 export default class Multiplayer {
   clientIO = null;
@@ -558,8 +559,8 @@ export default class Multiplayer {
         return;
       }
       const keys = Object.keys(data).filter((key) => key !== 'id');
-      const key = keys[0];
-      const value = data[key];
+      let key = keys[0];
+      let value = data[key];
 
       if (key === 'condition') {
         node.definition.get('eventDefinitions')[0].get('condition').body = value;
@@ -603,6 +604,15 @@ export default class Multiplayer {
         }
 
         node.definition.get('eventDefinitions')[0].signalRef = signal;
+      }
+
+      if (key === 'eventTimerDefinition') {
+        const { type, body } = value;
+
+        const eventDefinitions = setEventTimerDefinition(this.modeler.moddle, node, type, body);
+
+        key = 'eventDefinitions';
+        value = eventDefinitions;
       }
 
       const specialProperties = [

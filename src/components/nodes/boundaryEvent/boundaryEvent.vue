@@ -210,6 +210,16 @@ export default {
         attachedToRef: this.node.definition.get('attachedToRef'),
       };
 
+      const eventDefinition = this.node.definition.get('eventDefinitions')[0];
+      const eventDefinitionType = Object.keys(eventDefinition).reduce((acc, key) => {
+        if (key.startsWith('time')) {
+          acc[key] = eventDefinition[key];
+        }
+        return acc;
+      }, {});
+
+      const type = Object.keys(eventDefinitionType)[0];
+
       window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', {
         x: this.node.diagram.bounds.x,
         y: this.node.diagram.bounds.y,
@@ -220,6 +230,11 @@ export default {
         type: this.node.type,
         id: this.node.definition.id,
         color: this.node.definition.get('color'),
+        cancelActivity: this.node.definition.get('cancelActivity'),
+        eventTimerDefinition: {
+          type,
+          body: eventDefinitionType[type]?.body,
+        },
       });
     },
   },
@@ -234,9 +249,9 @@ export default {
     const task = this.getTaskUnderShape();
     this.attachBoundaryEventToTask(task);
     this.updateShapePosition(task);
-    
+
     if (this.node.fromCrown) {
-      this.addMultiplayerBoundaryEvent();  
+      this.addMultiplayerBoundaryEvent();
     }
   },
 };
