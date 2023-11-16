@@ -421,7 +421,7 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
-    onNodeDefinitionChanged( definition) {
+    onNodeDefinitionChanged() {
       this.handlePreview();
     },
     onStartPreviewResize(event) {
