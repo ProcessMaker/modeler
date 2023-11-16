@@ -411,6 +411,7 @@ export default class Multiplayer {
       if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
         element.component.node.pool.component.moveElementRemote(element, newPool);
       }
+      this.modeler.updateLasso();
     }
   }
   attachBoundaryEventToNode(element, data) {

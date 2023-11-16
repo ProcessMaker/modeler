@@ -69,7 +69,7 @@
         @previewResize="[onMouseMove($event), setInspectorButtonPosition($event)]"
         @startResize="onStartPreviewResize"
         @stopResize="onMouseUp"
-        :visible="isOpenPreview"
+        :visible="isOpenPreview && !(highlightedNodes.length > 1)"
         :nodeRegistry="nodeRegistry"
         :previewConfigs="previewConfigs"
         :panelWidth="previewPanelWidth"
@@ -1633,6 +1633,12 @@ export default {
       if (playerIndex !== -1) {
         this.players.splice(playerIndex, 1);
       }
+    },
+    /**
+     * Update the lasso tool
+     */
+    updateLasso(){
+      this.$refs.selector.updateSelectionBox();
     },
   },
   created() {
