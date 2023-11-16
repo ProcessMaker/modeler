@@ -1177,7 +1177,6 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-input-association',
         'processmaker-modeler-boundary-timer-event',
         'processmaker-modeler-boundary-error-event',
         'processmaker-modeler-boundary-signal-event',
