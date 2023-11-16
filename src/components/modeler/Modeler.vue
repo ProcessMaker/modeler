@@ -1207,6 +1207,7 @@ export default {
             loopCharacteristics: null,
             gatewayDirection: null,
             messageRef: null,
+            signalRef: null,
             extras: {},
           };
           if (node?.pool?.component) {

@@ -592,7 +592,25 @@ export default class Multiplayer {
         }
       }
 
-      if (!['messageRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups'].includes(key)) {
+      if (key === 'signalRef') {
+        let signal = this.modeler.definitions.rootElements.find(element => element.id === value);
+
+        if (!signal) {
+          signal = this.modeler.moddle.create('bpmn:Signal', {
+            id: value,
+            name: extras?.signalName || value,
+          });
+          this.modeler.definitions.rootElements.push(signal);
+        }
+
+        node.definition.get('eventDefinitions')[0].signalRef = signal;
+      }
+
+      const specialProperties = [
+        'messageRef', 'signalRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
+      ];
+
+      if (!specialProperties.includes(key)) {
         store.commit('updateNodeProp', { node, key, value });
       }
     }
