@@ -118,6 +118,7 @@ export default {
       deep: true,
       handler() {
         setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+        this.$emit('definition-changed', this.node.definition);
       },
     },
   },

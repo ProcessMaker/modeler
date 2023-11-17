@@ -139,6 +139,7 @@
         @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
+        @definition-changed="onNodeDefinitionChanged"
       />
 
       <RailBottom
@@ -420,6 +421,12 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    onNodeDefinitionChanged() {
+      // re-render the preview just if the preview pane is open
+      if (this.isOpenPreview) {
+        this.handlePreview();
+      }
+    },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
       this.currentCursorPosition = event.x;
@@ -1177,11 +1184,10 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-input-association',
         'processmaker-modeler-boundary-timer-event',
         'processmaker-modeler-boundary-error-event',
         'processmaker-modeler-boundary-signal-event',
-        'processmaker-modeler-boundary-conditional-even',
+        'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ];
       if (!this.isMultiplayer) {
