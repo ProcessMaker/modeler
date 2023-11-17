@@ -26,16 +26,16 @@
           </button>
         </div>
       </div>
-  </b-card>
+    </b-card>
   </div>
 </template>
 <script>
 import InlineSvg from 'vue-inline-svg';
 
 export default {
-  name: "CreateAssetsCard",
+  name: 'CreateAssetsCard',
   components: {
-    InlineSvg
+    InlineSvg,
   },
   data() {
     return {
@@ -48,7 +48,7 @@ export default {
     },
     onCancel() {
       this.$emit('closeCreateAssets');
-    }
+    },
   },
 };
 </script>

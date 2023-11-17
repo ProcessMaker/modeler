@@ -62,6 +62,11 @@
         @closeCreateAssets="onCloseCreateAssets()"
       />
 
+      <CreateAssetsFailCard
+        ref="createAssetsFailCard"
+        v-if="true"
+      />
+
       <InspectorButton
         ref="inspector-button"
         v-show="showComponent && showInspectorButton"
@@ -184,6 +189,7 @@ import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
+import CreateAssetsFailCard from '../aiMessages/CreateAssetsFailCard.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -257,6 +263,7 @@ export default {
     RailBottom,
     WelcomeMessage,
     CreateAssetsCard,
+    CreateAssetsFailCard,
     RemoteCursor,
   },
   props: {
@@ -1636,7 +1643,7 @@ export default {
     },
     onCloseCreateAssets() {
       this.isAiGenerated = false;
-    }
+    },
   },
   created() {
     if (runningInCypressTest()) {
