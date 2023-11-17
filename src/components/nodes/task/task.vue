@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import { util } from 'jointjs';
 import highlightConfig from '@/mixins/highlightConfig';
 import portsConfig from '@/mixins/portsConfig';
@@ -97,7 +98,7 @@ export default {
     },
   },
   watch: {
-    'node.definition.name'(name) {
+    'node.definition.name': debounce(function(name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr('label/text', util.breakText(name, { width }));
       const { height } = this.shape.size();
@@ -109,7 +110,7 @@ export default {
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
       }
-    },
+    }, 300),
     'node.definition.isForCompensation'() {
       setupCompensationMarker(this.node.definition, this.markers, this.$set, this.$delete);
     },
@@ -117,6 +118,7 @@ export default {
       deep: true,
       handler() {
         setupLoopCharacteristicsMarkers(this.node.definition, this.markers, this.$set, this.$delete);
+        this.$emit('definition-changed', this.node.definition);
       },
     },
   },

@@ -69,7 +69,7 @@
         @previewResize="[onMouseMove($event), setInspectorButtonPosition($event)]"
         @startResize="onStartPreviewResize"
         @stopResize="onMouseUp"
-        :visible="isOpenPreview"
+        :visible="isOpenPreview && !(highlightedNodes.length > 1)"
         :nodeRegistry="nodeRegistry"
         :previewConfigs="previewConfigs"
         :panelWidth="previewPanelWidth"
@@ -139,6 +139,7 @@
         @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
+        @definition-changed="onNodeDefinitionChanged"
       />
 
       <RailBottom
@@ -421,6 +422,12 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    onNodeDefinitionChanged() {
+      // re-render the preview just if the preview pane is open
+      if (this.isOpenPreview) {
+        this.handlePreview();
+      }
+    },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
       this.currentCursorPosition = event.x;
@@ -1107,6 +1114,11 @@ export default {
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
       const newNode = this.createNode(data.type, definition, diagram);
+      //verify if the node has a pool as a container
+      if (data.poolId) {
+        const pool = this.getElementByNodeId(data.poolId);
+        this.poolTarget = pool;
+      }
       await this.addNode(newNode, data.id, true);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
@@ -1173,11 +1185,10 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-input-association',
         'processmaker-modeler-boundary-timer-event',
         'processmaker-modeler-boundary-error-event',
         'processmaker-modeler-boundary-signal-event',
-        'processmaker-modeler-boundary-conditional-even',
+        'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ];
       if (!this.isMultiplayer) {
@@ -1203,6 +1214,7 @@ export default {
             loopCharacteristics: null,
             gatewayDirection: null,
             messageRef: null,
+            signalRef: null,
             extras: {},
           };
           if (node?.pool?.component) {
@@ -1224,12 +1236,14 @@ export default {
             targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
           const waypoint = [];
-          node.diagram.waypoint.forEach(point => {
+
+          node.diagram.waypoint?.forEach(point => {
             waypoint.push({
               x: point.x,
               y: point.y,
             });
           });
+
           if (sourceRefId && targetRefId) {
             const flowData = {
               id: node.definition.id,
@@ -1239,6 +1253,7 @@ export default {
               waypoint,
               name: node.definition.name,
               conditionExpression: null,
+              color: null,
             };
 
             if (isProcessRequested) {
@@ -1625,6 +1640,12 @@ export default {
       if (playerIndex !== -1) {
         this.players.splice(playerIndex, 1);
       }
+    },
+    /**
+     * Update the lasso tool
+     */
+    updateLasso(){
+      this.$refs.selector.updateSelectionBox();
     },
   },
   created() {
