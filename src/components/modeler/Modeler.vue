@@ -139,6 +139,7 @@
         @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
+        @definition-changed="onNodeDefinitionChanged"
       />
 
       <RailBottom
@@ -420,6 +421,12 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    onNodeDefinitionChanged() {
+      // re-render the preview just if the preview pane is open
+      if (this.isOpenPreview) {
+        this.handlePreview();
+      }
+    },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
       this.currentCursorPosition = event.x;

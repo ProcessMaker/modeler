@@ -56,7 +56,7 @@
 
       <iframe
         title="Preview"
-        v-show="!!previewUrl && !showSpinner"
+        :style="{visibility: displayPreviewIframe}"
         :src="previewUrl"
         class="preview-iframe"
         @load="loading"
@@ -95,19 +95,25 @@ export default {
       }
     },
     highlightedNode() {
+      // If there isn't preview configuration hide the panel
+      const nodeConfig = this.getConfig(this.data);
+      if (!nodeConfig) {
+        this.$emit('togglePreview', false);
+        return;
+      }
+
       document.activeElement.blur();
-      this.prepareData();
+      this.previewNode();
     },
-    'highlightedNode.definition'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignmentLock'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.allowReassignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
     highlightedNode() {
       return store.getters.highlightedNodes[0];
+    },
+    displayPreviewIframe() {
+      const result = !!this.previewUrl && !this.showSpinner;
+      console.log('mostrar iframe', result);
+      return result ? 'visible' : 'hidden';
     },
   },
   methods: {
@@ -137,21 +143,6 @@ export default {
       this.taskTitle = this.data?.name;
 
       this.taskTitle = this?.highlightedNode?.definition?.name;
-      this.previewNode();
-    },
-
-    handleAssignmentChanges(currentValue, previousValue) {
-      if (currentValue === previousValue) {
-        return;
-      }
-
-      const nodeConfig = this.getConfig(this.data);
-
-      if (nodeConfig) {
-        this.prepareData();
-      } else {
-        this.$emit('togglePreview', false);
-      }
     },
     onSelectedPreview(item) {
       this.selectedPreview = item;
@@ -160,7 +151,7 @@ export default {
       if (!this.highlightedNode || (!this.visible && !force)) {
         return;
       }
-
+      this.prepareData();
       const previewConfig = this.getConfig(this.data);
 
       let clone = {};
@@ -179,7 +170,6 @@ export default {
       this.previewUrl = nodeHasConfiguredAssets && previewConfig &&  nodeHasConfigParams
         ? `${previewConfig.url}?node=${nodeData}`
         : null;
-
       this.taskTitle = this.highlightedNode?.definition?.name;
     },
     onClose() {
