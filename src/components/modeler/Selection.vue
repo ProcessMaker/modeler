@@ -347,7 +347,7 @@ export default {
      */
     prepareConectedLinks(shapes){
       const { paper } = this.paperManager;
-      this.conectedLinks = [];
+      this.connectedLinks = [];
       this.isValidSelectionLinks = true;
       shapes.forEach((shape) => {
         let conectedLinks = this.graph.getConnectedLinks(shape.model);
@@ -368,8 +368,8 @@ export default {
         }
         conectedLinks.forEach((link) => {
           const linkView = paper.findViewByModel(link);
-          if (!this.conectedLinks.some(obj => obj.id === linkView.id)) {
-            this.conectedLinks.push(linkView);
+          if (!this.connectedLinks.some(obj => obj.id === linkView.id)) {
+            this.connectedLinks.push(linkView);
             this.validateSelectionLinks(linkView);
           }
         });
@@ -585,7 +585,7 @@ export default {
       this.updateSelectionBox();
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConnectedLinkProperties(this.conectedLinks));
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConnectedLinkProperties(this.connectedLinks));
       }
     },
 
@@ -709,7 +709,7 @@ export default {
      * Selector will update the waypoints of the related flows
      */
     updateFlowsWaypoint(){
-      this.conectedLinks.forEach((link)=> {
+      this.connectedLinks.forEach((link)=> {
         if (link.model.component && link.model.get('type') === 'standard.Link'){
           const start = link.sourceAnchor;
           const end = link.targetAnchor;
@@ -917,7 +917,7 @@ export default {
         if (this.newPool){
           /* Remove the shape from its current pool */
           this.moveElements(this.selected, this.oldPool, this.newPool);
-          this.moveConectedLinks(this.conectedLinks, this.oldPool, this.newPool);
+          this.moveConnectedLinks(this.connectedLinks, this.oldPool, this.newPool);
           this.newPool = null;
           this.oldPool = null;
           this.updateLaneChildren(this.selected);
@@ -1057,7 +1057,7 @@ export default {
           oldPool.model.component.moveElement(shape.model, newPool.model);
         });
     },
-    moveConectedLinks(links, oldPool, newPool){
+    moveConnectedLinks(links, oldPool, newPool){
       links.forEach(link => {
         oldPool.model.component.moveFlow(link.model, newPool.model);
       });
