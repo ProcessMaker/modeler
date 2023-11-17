@@ -354,7 +354,7 @@ export default {
         'processmaker-modeler-data-output-association',
         'processmaker-modeler-association',
       ],
-      isAiGenerated: window.ProcessMaker.modeler.isAiGenerated,
+      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
     };
   },
   watch: {
