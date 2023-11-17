@@ -353,7 +353,6 @@ export default {
         'processmaker-modeler-data-output-association',
         'processmaker-modeler-association',
       ],
-      multiplayer: null,
       isAiGenerated: window.ProcessMaker.modeler.isAiGenerated,
     };
   },
@@ -1815,8 +1814,6 @@ export default {
         this.redirect(redirectUrl);
       }
     });
-
-    console.log('oof', this.isAiGenerated);
   },
 };
 </script>
