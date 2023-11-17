@@ -148,7 +148,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .message {
   color: #5f666d;
   font-style: italic;
@@ -185,11 +185,6 @@ export default {
   background-color: #edf7ff;
   color: #0872C2;
   border-color: #0872C2;
-}
-
-.ai-icon {
-  width: 22px;
-  height: 22px;
 }
 
 .ai-icon {
