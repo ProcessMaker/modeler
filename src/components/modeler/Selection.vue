@@ -585,7 +585,7 @@ export default {
       this.updateSelectionBox();
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConectedLinkProperties(this.conectedLinks));
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConnectedLinkProperties(this.conectedLinks));
       }
     },
 
@@ -630,7 +630,7 @@ export default {
      * Get connected link properties
      * @param {Array} links 
      */
-    getConectedLinkProperties(links) {
+    getConnectedLinkProperties(links) {
       let changed = [];
       links.forEach((linkView) => {
         const waypoint = [];
