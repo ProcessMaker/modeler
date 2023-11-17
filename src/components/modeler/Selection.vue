@@ -585,6 +585,7 @@ export default {
       this.updateSelectionBox();
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConectedLinkProperties(this.conectedLinks));
       }
     },
 
@@ -600,7 +601,6 @@ export default {
           if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
             const childrens = shape.model.component.getElementsUnderArea(shape.model, this.graph)
               .filter((element) => element.component);
-
             changed = [...changed, ...this.getContainerProperties(childrens, changed)];
           } else {
             const { node } = shape.model.component;
@@ -624,6 +624,38 @@ export default {
           changed = changed.concat(boundariesChanges);
         });
         
+      return changed;
+    },
+    /**
+     * Get connected link properties
+     * @param {Array} links 
+     */
+    getConectedLinkProperties(links) {
+      let changed = [];
+      links.forEach((linkView) => {
+        const waypoint = [];
+        const { node } =  linkView.model.component;
+        node.diagram.waypoint?.forEach(point => {
+          waypoint.push({
+            x: point.x,
+            y: point.y,
+          });
+        });
+        const sourceRefId = linkView.sourceView.model.component.node.definition.id;
+        const targetRefId = linkView.targetView.model.component.node.definition.id;
+        const nodeType = linkView.model.component.node.type;
+        changed.push(
+          {
+            id: node.definition.id,
+            properties: {
+              type: nodeType,
+              waypoint,
+              sourceRefId,
+              targetRefId,
+            },
+          });
+      
+      });
       return changed;
     },
     /**
