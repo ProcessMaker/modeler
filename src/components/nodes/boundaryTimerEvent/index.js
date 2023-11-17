@@ -15,13 +15,9 @@ export const setEventTimerDefinition = (moddle, node, type, body) => {
     [type]: moddle.create('bpmn:Expression', { body }),
   };
 
-  const eventDefinitions = [
+  return [
     moddle.create('bpmn:TimerEventDefinition', eventDefinition),
   ];
-
-  eventDefinitions[0].id = node.definition.get('eventDefinitions')[0].id;
-
-  return eventDefinitions;
 };
 
 export default merge(cloneDeep(boundaryEventConfig), {
@@ -73,9 +69,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
         }
 
         const eventDefinitions = setEventTimerDefinition(moddle, node, type, body);
-
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
-
         window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
           id: node.definition.id,
           key: 'eventTimerDefinition',
