@@ -32,6 +32,14 @@ export default class Multiplayer {
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
 
+    if (window.ProcessMaker.multiplayer.enabled) {
+      this.webSocketEvents();
+      this.multiplayerEvents();
+    } else {
+      this.clientIO.disconnect();
+    }
+  }
+  webSocketEvents() {
     this.clientIO.on('connect', () => {
       // Join the room
       this.clientIO.emit('joinRoom', {
@@ -56,7 +64,6 @@ export default class Multiplayer {
           };
           this.modeler.addPlayer(newPlayer);
         });
-        this.syncLocalNodes(this.clientIO.id);
       }
     });
 
@@ -68,10 +75,9 @@ export default class Multiplayer {
     });
 
     this.clientIO.on('requestProcess', (payload) => {
-      const { firstClient, clientId } = payload;
-
-      // Check if the current client is the first client
-      if (firstClient.id === this.clientIO.id) {
+      const { clientId } = payload;
+      // Sync the local Nodes
+      if (clientId) {
         this.syncLocalNodes(clientId);
       }
     });
@@ -136,10 +142,22 @@ export default class Multiplayer {
       Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
     });
 
+    this.clientIO.on('updateFlows', (payload) => {
+      const { updateDoc, updatedNodes } = payload;
+      // Update the elements in the process
+      updatedNodes.forEach((data) => {
+        this.updateFlowClient(data);
+      });
+      // Update the element in the shared array
+      Y.applyUpdate(this.yDoc, new Uint8Array(updateDoc));
+    });
+  }
 
+  multiplayerEvents() {
     window.ProcessMaker.EventBus.$on('multiplayer-addNode', ( data ) => {
       this.addNode(data);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-removeNode', ( data ) => {
       this.removeNode(data);
     });
@@ -163,15 +181,21 @@ export default class Multiplayer {
     window.ProcessMaker.EventBus.$on('multiplayer-addLanes', ( lanes ) => {
       this.addLaneNodes(lanes);
     });
+
     window.ProcessMaker.EventBus.$on('multiplayer-updateInspectorProperty', ( data ) => {
       if (this.modeler.isMultiplayer) {
         this.updateInspectorProperty(data);
       }
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateFlows', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateFlows(data);
+      }
+    });
   }
   /**
    * Sync the modeler nodes with the microservice
-   * @param {String} clientId 
+   * @param {String} clientId
    */
   syncLocalNodes(clientId){
     // Get the process definition
@@ -247,7 +271,7 @@ export default class Multiplayer {
     return node;
   }
   removeShape(node) {
-    this.modeler.removeNodeProcedure(node, true);
+    this.modeler.removeNodeProcedure(node,  { removeRelationships: false });
   }
   getRemovedNodes(array1, array2) {
     return array1.filter(object1 => {
@@ -481,6 +505,10 @@ export default class Multiplayer {
       }
       nodeToUpdate.set(data.key, newValue);
 
+      if (data.extras && Object.keys(data.extras).length > 0) {
+        nodeToUpdate.set('extras', data.extras);
+      }
+
       const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
       // Send the update to the web socket server
       this.clientIO.emit('updateFromInspector', { updateDoc: stateUpdate, isReplaced: false });
@@ -503,6 +531,11 @@ export default class Multiplayer {
     node = this.getNodeById(data.id);
 
     if (node) {
+      let extras = {};
+      // extras property section
+      if (data.extras && Object.keys(data.extras).length > 0) {
+        extras = data.extras;
+      }
       // loopCharacteristics property section
       if (data.loopCharacteristics) {
         const loopCharacteristics = JSON.parse(data.loopCharacteristics);
@@ -515,22 +548,99 @@ export default class Multiplayer {
         }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
         return;
       }
-      if (this.modeler.nodeRegistry[node.type] && this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler) {
-        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data);
+      if (this.modeler.nodeRegistry[node.type]?.multiplayerInspectorHandler) {
+        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data,this.setNodeProp, this.modeler.moddle);
         return;
       }
       const keys = Object.keys(data).filter((key) => key !== 'id');
+      const key = keys[0];
+      const value = data[key];
 
-      if (keys[0] === 'condition') {
-        node.definition.get('eventDefinitions')[0].get('condition').body = data[keys[0]];
+      if (key === 'condition') {
+        node.definition.get('eventDefinitions')[0].get('condition').body = value;
       }
 
-      if (keys[0] === 'gatewayDirection') {
-        node.definition.set('gatewayDirection', data[keys[0]]);
+      if (key === 'gatewayDirection') {
+        node.definition.set('gatewayDirection', value);
       }
 
-      store.commit('updateNodeProp', { node, key:keys[0], value: data[keys[0]] });
+      if (key === 'messageRef') {
+        let message = this.modeler.definitions.rootElements.find(element => element.id === value);
+
+        if (!message) {
+          message = this.modeler.moddle.create('bpmn:Message', {
+            id: value,
+            name: extras?.messageName || value,
+          });
+          this.modeler.definitions.rootElements.push(message);
+        }
+
+        node.definition.get('eventDefinitions')[0].messageRef = message;
+
+        if (extras?.allowedUsers) {
+          node.definition.set('allowedUsers', extras.allowedUsers);
+        }
+
+        if (extras?.allowedGroups) {
+          node.definition.set('allowedGroups', extras.allowedGroups);
+        }
+      }
+
+      if (!['messageRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups'].includes(key)) {
+        store.commit('updateNodeProp', { node, key, value });
+      }
     }
-
+  }
+  /**
+   * Update the shared document and emit socket sign to update the flows
+   * @param {Object} data
+   */
+  updateFlows(data){
+    data.forEach((value) => {
+      const index = this.getIndex(value.id);
+      const nodeToUpdate =  this.yArray.get(index);
+      this.yDoc.transact(() => {
+        for (const key in value) {
+          if (Object.hasOwn(value, key)) {
+            nodeToUpdate.set(key, value[key]);
+          }
+        }
+      });
+    });
+    // Encode the state as an update and send it to the server
+    const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
+    this.clientIO.emit('updateFlows', { updateDoc: stateUpdate, isReplaced: false });
+  }
+  /**
+   * Update the flow client, All node refs will be updated and forced to remount
+   * @param {Object} data
+   */
+  updateFlowClient(data) {
+    let remount = false;
+    const flow = this.getNodeById(data.id);
+    if (flow && data.sourceRefId) {
+      const sourceRef = this.getNodeById(data.sourceRefId);
+      flow.definition.set('sourceRef', sourceRef.definition);
+      const outgoing = sourceRef.definition.get('outgoing')
+        .find((element) => element.id === flow.definition.id);
+      if (!outgoing) {
+        sourceRef.definition.get('outgoing').push(...[flow.definition]);
+      }
+      remount = true;
+    }
+    if (flow && data.targetRefId) {
+      const targetRef = this.getNodeById(data.targetRefId);
+      flow.definition.set('targetRef', targetRef.definition);
+      const incoming = targetRef.definition.get('incoming')
+        .find((element) => element.id === flow.definition.id);
+      if (!incoming) {
+        targetRef.definition.get('incoming').push(...[flow.definition]);
+      }
+      remount = true;
+    }
+    if (remount) {
+      // Force Remount Flow
+      flow._modelerId += '_replaced';
+    }
   }
 }
