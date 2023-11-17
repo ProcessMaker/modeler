@@ -506,9 +506,6 @@ export default class Multiplayer {
 
     if (nodeToUpdate) {
       let newValue = data.value;
-      if (data.key === 'loopCharacteristics') {
-        newValue = JSON.stringify(data.value);
-      }
       nodeToUpdate.set(data.key, newValue);
 
       if (data.extras && Object.keys(data.extras).length > 0) {
@@ -545,11 +542,27 @@ export default class Multiplayer {
       // loopCharacteristics property section
       if (data.loopCharacteristics) {
         const loopCharacteristics = JSON.parse(data.loopCharacteristics);
+
+        if (loopCharacteristics.ioSpecification) {
+          const loopDataInputRef = loopCharacteristics?.ioSpecification.dataInputs?.length ? loopCharacteristics?.ioSpecification.dataInputs[0].id : null;
+          const loopDataOutputRef = loopCharacteristics?.ioSpecification.dataOutputs?.length ? loopCharacteristics?.ioSpecification.dataOutputs[0].id : null;
+
+          loopCharacteristics.loopCharacteristics.loopDataInputRef = loopDataInputRef;
+          loopCharacteristics.loopCharacteristics.loopDataOutputRef = loopDataOutputRef;
+
+          loopCharacteristics.ioSpecification.inputSets[0].dataInputRefs = [
+            loopDataInputRef,
+          ];
+          loopCharacteristics.ioSpecification.outputSets[0].dataOutputRefs = [
+            loopDataOutputRef,
+          ];
+        }
         this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({
           type: node.definition.type,
           '$loopCharactetistics': {
             id: data.id,
-            loopCharacteristics,
+            loopCharacteristics: loopCharacteristics.loopCharacteristics,
+            ioSpecification: loopCharacteristics. ioSpecification,
           },
         }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
         return;
