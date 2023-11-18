@@ -10,7 +10,7 @@ export const loopCharacteristicsHandler = function(value, node, setNodeProp, mod
     delete node.definition.loopCharacteristics;
     if (isMultiplayer) {
       window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
-        id: node.definition.id , key: 'loopCharacteristics', value: update.loopCharacteristics,
+        id: node.definition.id , key: 'loopCharacteristics', value: JSON.stringify(update),
       });
     }
     setNodeProp(node, 'loopCharacteristics', update.loopCharacteristics);
@@ -21,6 +21,11 @@ export const loopCharacteristicsHandler = function(value, node, setNodeProp, mod
   }
   if (update.ioSpecification) {
     delete node.definition.ioSpecification;
+    if (isMultiplayer) {
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id , key: 'loopCharacteristics', value: JSON.stringify(update),
+      });
+    }
     setNodeProp(node, 'ioSpecification', update.ioSpecification);
   } else {
     delete node.definition.ioSpecification;
