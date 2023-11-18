@@ -256,7 +256,7 @@ export default {
     defaultInspectorHandler(value, isMultiplayer) {
       /* Go through each property and rebind it to our data */
       for (const key in omit(value, ['$type', 'eventDefinitions'])) {
-        if (this.highlightedNode.definition.get(key) !== value[key]) {        
+        if (this.highlightedNode.definition.get(key) !== value[key]) {
           this.multiplayerHook(key, value[key], isMultiplayer);
           this.setNodeProp(this.highlightedNode, key, value[key]);
         }
