@@ -1218,6 +1218,7 @@ export default {
             gatewayDirection: null,
             messageRef: null,
             signalRef: null,
+            signalPayload: null,
             extras: {},
           };
           if (node?.pool?.component) {

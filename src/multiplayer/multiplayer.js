@@ -614,6 +614,17 @@ export default class Multiplayer {
         node.definition.get('eventDefinitions')[0].signalRef = signal;
       }
 
+      if (key === 'signalPayload') {
+        const eventDefinitions = node.definition.get('eventDefinitions');
+        const SIGNAL_EVENT_DEFINITION_TYPE = 'bpmn:SignalEventDefinition';
+
+        eventDefinitions.forEach(definition => {
+          if (definition.$type === SIGNAL_EVENT_DEFINITION_TYPE) {
+            definition.config = value;
+          }
+        });
+      }
+
       if (key === 'eventTimerDefinition') {
         const { type, body } = value;
 
@@ -624,7 +635,7 @@ export default class Multiplayer {
       }
 
       const specialProperties = [
-        'messageRef', 'signalRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
+        'messageRef', 'signalRef', 'signalPayload', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
       ];
 
       if (!specialProperties.includes(key)) {
