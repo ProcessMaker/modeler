@@ -69,7 +69,7 @@
         @previewResize="[onMouseMove($event), setInspectorButtonPosition($event)]"
         @startResize="onStartPreviewResize"
         @stopResize="onMouseUp"
-        :visible="isOpenPreview"
+        :visible="isOpenPreview && !(highlightedNodes.length > 1)"
         :nodeRegistry="nodeRegistry"
         :previewConfigs="previewConfigs"
         :panelWidth="previewPanelWidth"
@@ -139,6 +139,7 @@
         @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
+        @definition-changed="onNodeDefinitionChanged"
       />
 
       <RailBottom
@@ -237,6 +238,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 import Multiplayer from '@/multiplayer/multiplayer';
+import { getBoundaryEventData } from '../nodes/boundaryEvent/boundaryEventUtils';
 
 export default {
   components: {
@@ -353,6 +355,13 @@ export default {
         'processmaker-modeler-data-output-association',
         'processmaker-modeler-association',
       ],
+      boundaryEventTypes: [
+        'processmaker-modeler-boundary-timer-event',
+        'processmaker-modeler-boundary-error-event',
+        'processmaker-modeler-boundary-signal-event',
+        'processmaker-modeler-boundary-conditional-event',
+        'processmaker-modeler-boundary-message-event',
+      ],
     };
   },
   watch: {
@@ -420,6 +429,12 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    onNodeDefinitionChanged() {
+      // re-render the preview just if the preview pane is open
+      if (this.isOpenPreview) {
+        this.handlePreview();
+      }
+    },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
       this.currentCursorPosition = event.x;
@@ -1106,6 +1121,11 @@ export default {
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
       const newNode = this.createNode(data.type, definition, diagram);
+      //verify if the node has a pool as a container
+      if (data.poolId) {
+        const pool = this.getElementByNodeId(data.poolId);
+        this.poolTarget = pool;
+      }
       await this.addNode(newNode, data.id, true);
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
@@ -1172,12 +1192,7 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-data-input-association',
-        'processmaker-modeler-boundary-timer-event',
-        'processmaker-modeler-boundary-error-event',
-        'processmaker-modeler-boundary-signal-event',
-        'processmaker-modeler-boundary-conditional-even',
-        'processmaker-modeler-boundary-message-event',
+        ...this.boundaryEventTypes,
       ];
       if (!this.isMultiplayer) {
         return;
@@ -1202,6 +1217,7 @@ export default {
             loopCharacteristics: null,
             gatewayDirection: null,
             messageRef: null,
+            signalRef: null,
             extras: {},
           };
           if (node?.pool?.component) {
@@ -1223,12 +1239,14 @@ export default {
             targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
           }
           const waypoint = [];
-          node.diagram.waypoint.forEach(point => {
+
+          node.diagram.waypoint?.forEach(point => {
             waypoint.push({
               x: point.x,
               y: point.y,
             });
           });
+
           if (sourceRefId && targetRefId) {
             const flowData = {
               id: node.definition.id,
@@ -1238,6 +1256,7 @@ export default {
               waypoint,
               name: node.definition.name,
               conditionExpression: null,
+              color: null,
             };
 
             if (isProcessRequested) {
@@ -1290,6 +1309,8 @@ export default {
       });
     },
     async addClonedNodes(nodes) {
+      const flowNodes = [];
+
       nodes.forEach(node => {
         if (!node.pool) {
           node.pool = this.poolTarget;
@@ -1299,10 +1320,24 @@ export default {
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
-        this.multiplayerHook(node, false);
+
+        if (this.flowTypes.includes(node.type)) {
+          // Add flow to array to render after
+          flowNodes.push(node);
+        } else if (this.boundaryEventTypes.includes(node.type)) {
+          // Get boundary event data
+          const defaultData = getBoundaryEventData(node);
+          window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', defaultData);
+        } else {
+          this.multiplayerHook(node, false);
+        }
+
         store.commit('addNode', node);
         this.poolTarget = null;
       });
+
+      // Render flows after all nodes have been added
+      flowNodes.forEach(node => this.multiplayerHook(node, false));
     },
     async removeNode(node, options) {
       // Check if the node is not replaced
@@ -1624,6 +1659,12 @@ export default {
       if (playerIndex !== -1) {
         this.players.splice(playerIndex, 1);
       }
+    },
+    /**
+     * Update the lasso tool
+     */
+    updateLasso(){
+      this.$refs.selector.updateSelectionBox();
     },
   },
   created() {

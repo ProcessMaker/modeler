@@ -37,6 +37,7 @@ export default {
     }
 
     let signal = definitions.rootElements.find(element => element.id === value.signalRef);
+
     if (!signal && value.signalRef) {
       signal = moddle.create('bpmn:Signal', {
         id: value.signalRef,
@@ -45,5 +46,14 @@ export default {
       definitions.rootElements.push(signal);
     }
     node.definition.get('eventDefinitions')[0].signalRef = signal;
+
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+      id: node.definition.id,
+      key: 'signalRef',
+      value: value.signalRef,
+      extras: {
+        signalName: signal?.name,
+      },
+    });
   },
 };
