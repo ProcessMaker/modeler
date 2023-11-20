@@ -165,7 +165,9 @@ export default class Multiplayer {
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-updateNodes', ( data ) => {
-      this.updateNodes(data);
+      if (this.modeler.isMultiplayer) {
+        this.updateNodes(data);
+      }
     });
 
     window.ProcessMaker.EventBus.$on('multiplayer-replaceNode', ({ nodeData, newControl }) => {
@@ -409,7 +411,7 @@ export default class Multiplayer {
   updateGatewayDefaultFlow(element, data){
     if (Object.hasOwn(data, 'default')) {
       const node = this.getNodeById(data.default);
-      element.component.node.definition.set('default', node);
+      element.component.node.definition.set('default', node || null);
     }
   }
   /**
