@@ -359,36 +359,8 @@ export default class Multiplayer {
     const newPool = this.modeler.getElementByNodeId(data.poolId);
 
     if (this.modeler.flowTypes.includes(data.type)) {
-      const { waypoint } = data;
-
-      if (waypoint) {
-        // Update the element's waypoints
-        // Get the source and target elements
-        const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
-        const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
-
-        const startWaypoint = waypoint.shift();
-        const endWaypoint = waypoint.pop();
-
-        // Update the element's waypoints
-        const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
-        element.set('vertices', newWaypoint);
-
-        // Update the element's source anchor
-        element.source(sourceElem, {
-          anchor: () => {
-            return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
-          },
-          connectionPoint: { name: 'boundary' },
-        });
-
-        // Update the element's target anchor
-        element.target(targetElem, {
-          anchor: () => {
-            return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
-          },
-          connectionPoint: { name: 'boundary' },
-        });
+      if ('waypoint' in data) {
+        this.updateMovedWaypoints();
       } else {
         const node = this.getNodeById(data.id);
         store.commit('updateNodeProp', { node, key: 'color', value: data.color });
@@ -420,6 +392,42 @@ export default class Multiplayer {
       }
       this.modeler.updateLasso();
     }
+  }
+  /**
+   * Update moved waypoint object
+   * @param {Object} element
+   * @param {Object} data
+   */
+  updateMovedWaypoints(element, data ) {
+    const { waypoint } = data;
+    const { paper } = this.modeler;
+    // Update the element's waypoints
+    // Get the source and target elements
+    const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
+    const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
+
+    let { 0: startWaypoint, [waypoint.length - 1]: endWaypoint } = waypoint;
+    // Update the element's waypoints
+    element.vertices(waypoint);
+    // update bpmn waypoints
+    element.component.node.diagram.waypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
+    // Force Remount Flow
+    element.component.node._modelerId += '_replaced';
+    // Update the element's source anchor
+    element.source(sourceElem, {
+      anchor: () => {
+        return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
+      },
+      connectionPoint: { name: 'boundary' },
+    });
+
+    // Update the element's target anchor
+    element.target(targetElem, {
+      anchor: () => {
+        return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
+      },
+      connectionPoint: { name: 'boundary' },
+    });
   }
   attachBoundaryEventToNode(element, data) {
     const node = this.getNodeById(data.attachedToRefId);
@@ -661,27 +669,44 @@ export default class Multiplayer {
     const flow = this.getNodeById(data.id);
     if (flow && data.sourceRefId) {
       const sourceRef = this.getNodeById(data.sourceRefId);
-      flow.definition.set('sourceRef', sourceRef.definition);
+    
       const outgoing = sourceRef.definition.get('outgoing')
         .find((element) => element.id === flow.definition.id);
       if (!outgoing) {
         sourceRef.definition.get('outgoing').push(...[flow.definition]);
       }
+      flow.definition.set('sourceRef', sourceRef.definition);
       remount = true;
     }
     if (flow && data.targetRefId) {
       const targetRef = this.getNodeById(data.targetRefId);
-      flow.definition.set('targetRef', targetRef.definition);
+     
       const incoming = targetRef.definition.get('incoming')
         .find((element) => element.id === flow.definition.id);
       if (!incoming) {
         targetRef.definition.get('incoming').push(...[flow.definition]);
       }
+      flow.definition.set('targetRef', targetRef.definition);
       remount = true;
     }
+
+    // update moddle waypoints
+    this.refreshNodeWaypoint(this.modeler.getElementByNodeId(data.id));
     if (remount) {
       // Force Remount Flow
       flow._modelerId += '_replaced';
     }
+  }
+  /**
+   * Refresh the node Waypoint data
+   * @param {Object} element
+   */
+  refreshNodeWaypoint(element) {
+    const linkView = this.modeler.paper.findViewByModel(element);
+    const start = linkView.sourceAnchor;
+    const end = linkView.targetAnchor;
+    element.component.node.diagram.waypoint = [start,
+      ...element.component.shape.vertices(),
+      end].map(point => this.modeler.moddle.create('dc:Point', point));
   }
 }
