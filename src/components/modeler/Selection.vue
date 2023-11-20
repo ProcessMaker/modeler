@@ -599,9 +599,9 @@ export default {
       shapes.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
         .forEach(shape => {
           if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
-            const childrens = shape.model.component.getElementsUnderArea(shape.model, this.graph)
+            const children = shape.model.component.getElementsUnderArea(shape.model, this.graph)
               .filter((element) => element.component);
-            changed = [...changed, ...this.getContainerProperties(childrens, changed)];
+            changed = [...changed, ...this.getContainerProperties(children, changed)];
           } else {
             const { node } = shape.model.component;
             const defaultData = {
@@ -623,12 +623,12 @@ export default {
           const boundariesChanges = this.getBoundariesChangesForShape(shape);
           changed = changed.concat(boundariesChanges);
         });
-        
+
       return changed;
     },
     /**
      * Get connected link properties
-     * @param {Array} links 
+     * @param {Array} links
      */
     getConnectedLinkProperties(links) {
       let changed = [];
@@ -692,10 +692,11 @@ export default {
       });
       return boundariesChanged;
     },
-    getContainerProperties(childrens) {
+    getContainerProperties(children) {
       const changed = [];
-      childrens.forEach(model => {
-        changed.push({
+
+      children.forEach(model => {
+        const defaultData = {
           id: model.component.node.definition.id,
           properties: {
             x: model.get('position').x,
@@ -704,7 +705,13 @@ export default {
             width: model.get('size').width,
             color: model.get('color'),
           },
-        });
+        };
+
+        if (model.component.node.definition.$type === 'bpmn:BoundaryEvent') {
+          defaultData.properties.attachedToRefId = model.component.node.definition.get('attachedToRef')?.id ?? null;
+        }
+
+        changed.push(defaultData);
       });
       return changed;
     },

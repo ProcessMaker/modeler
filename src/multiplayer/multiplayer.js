@@ -636,7 +636,7 @@ export default class Multiplayer {
     const flow = this.getNodeById(data.id);
     if (flow && data.sourceRefId) {
       const sourceRef = this.getNodeById(data.sourceRefId);
-    
+
       const outgoing = sourceRef.definition.get('outgoing')
         .find((element) => element.id === flow.definition.id);
       if (!outgoing) {
@@ -647,7 +647,7 @@ export default class Multiplayer {
     }
     if (flow && data.targetRefId) {
       const targetRef = this.getNodeById(data.targetRefId);
-     
+
       const incoming = targetRef.definition.get('incoming')
         .find((element) => element.id === flow.definition.id);
       if (!incoming) {
