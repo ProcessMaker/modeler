@@ -4,8 +4,8 @@ import { getNodeIdGenerator } from '../NodeIdGenerator';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
-import { setEventTimerDefinition } from '@/components/nodes/boundaryTimerEvent';
 import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
+import { InspectorUtils } from './inspector.utils';
 
 export default class Multiplayer {
   clientIO = null;
@@ -14,6 +14,7 @@ export default class Multiplayer {
   modeler = null;
   #nodeIdGenerator = null;
   room = null;
+  inspector = null;
   deletedItem = null;
 
   constructor(modeler) {
@@ -30,6 +31,7 @@ export default class Multiplayer {
     // Get the room name from the process id
     const processId = window.ProcessMaker.modeler.process.uuid ?? window.ProcessMaker.modeler.process.id;
     this.room = new Room(`room-${processId}`);
+    this.inspector = new InspectorUtils(this.modeler, store);
 
     // Connect to websocket server
     this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
@@ -563,104 +565,48 @@ export default class Multiplayer {
   updateShapeFromInspector(data) {
     let node = null;
     if (data.oldNodeId && data.oldNodeId !== data.id) {
-      const index = this.getIndex(data.oldNodeId);
-      const yNode =  this.yArray.get(index);
-      yNode.set('id', data.id);
-      node = this.getNodeById(data.oldNodeId);
-      store.commit('updateNodeProp', { node, key: 'id', value: data.id });
+      this.inspector.updateNodeId(data.oldNodeId, data.id);
+    }
+
+    node = this.getNodeById(data.id);
+    if (!node) {
       return;
     }
-    // create a node
-    node = this.getNodeById(data.id);
 
-    if (node) {
-      let extras = {};
-      // extras property section
-      if (data.extras && Object.keys(data.extras).length > 0) {
-        extras = data.extras;
-      }
-      // loopCharacteristics property section
-      if (data.loopCharacteristics) {
-        const loopCharacteristics = JSON.parse(data.loopCharacteristics);
-        this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({
-          type: node.definition.type,
-          '$loopCharactetistics': {
-            id: data.id,
-            loopCharacteristics,
-          },
-        }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
-        return;
-      }
-      if (this.modeler.nodeRegistry[node.type]?.multiplayerInspectorHandler) {
-        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data,this.setNodeProp, this.modeler.moddle);
-        return;
-      }
-      const keys = Object.keys(data).filter((key) => key !== 'id');
-      let key = keys[0];
-      let value = data[key];
+    const { extras = {} } = data;
+    const { definition } = node;
 
-      if (key === 'condition') {
-        node.definition.get('eventDefinitions')[0].get('condition').body = value;
-      }
+    if (data.loopCharacteristics) {
+      this.inspector.handleLoopCharacteristics(node, data.loopCharacteristics);
+      return;
+    }
 
-      if (key === 'gatewayDirection') {
-        node.definition.set('gatewayDirection', value);
-      }
+    if (this.modeler.nodeRegistry[node.type]?.multiplayerInspectorHandler) {
+      this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data, this.setNodeProp, this.modeler.moddle);
+      return;
+    }
 
-      if (key === 'messageRef') {
-        let message = this.modeler.definitions.rootElements.find(element => element.id === value);
+    const keys = Object.keys(data).filter((key) => key !== 'id');
+    const key = keys[0];
+    const value = data[key];
 
-        if (!message) {
-          message = this.modeler.moddle.create('bpmn:Message', {
-            id: value,
-            name: extras?.messageName || value,
-          });
-          this.modeler.definitions.rootElements.push(message);
-        }
-
-        node.definition.get('eventDefinitions')[0].messageRef = message;
-
-        if (extras?.allowedUsers) {
-          node.definition.set('allowedUsers', extras.allowedUsers);
-        }
-
-        if (extras?.allowedGroups) {
-          node.definition.set('allowedGroups', extras.allowedGroups);
-        }
-      }
-
-      if (key === 'signalRef') {
-        let signal = this.modeler.definitions.rootElements.find(element => element.id === value);
-
-        if (!signal) {
-          signal = this.modeler.moddle.create('bpmn:Signal', {
-            id: value,
-            name: extras?.signalName || value,
-          });
-          this.modeler.definitions.rootElements.push(signal);
-        }
-
-        node.definition.get('eventDefinitions')[0].signalRef = signal;
-      }
-
-      if (key === 'eventTimerDefinition') {
-        const { type, body } = value;
-
-        const eventDefinitions = setEventTimerDefinition(this.modeler.moddle, node, type, body);
-
-        key = 'eventDefinitions';
-        value = eventDefinitions;
-      }
-
-      const specialProperties = [
-        'messageRef', 'signalRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
-      ];
-
-      if (!specialProperties.includes(key)) {
-        store.commit('updateNodeProp', { node, key, value });
-      }
+    if (key === 'condition') {
+      this.inspector.updateEventCondition(definition, value);
+    } else if (key === 'gatewayDirection') {
+      this.inspector.updateGatewayDirection(definition, value);
+    } else if (key === 'messageRef') {
+      this.inspector.updateMessageRef(node, value, extras);
+    } else if (key === 'signalRef') {
+      this.inspector.updateSignalRef(node, value, extras);
+    } else if (key === 'signalPayload') {
+      this.inspector.updateSignalPayload(node, value);
+    } else if (key === 'eventTimerDefinition') {
+      this.inspector.updateEventTimerDefinition(node, value);
+    } else if (!this.inspector.isSpecialProperty(key)) {
+      this.inspector.updateNodeProperty(node, key, value);
     }
   }
+
   /**
    * Update the shared document and emit socket sign to update the flows
    * @param {Object} data
