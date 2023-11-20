@@ -534,114 +534,136 @@ export default class Multiplayer {
   updateShapeFromInspector(data) {
     let node = null;
     if (data.oldNodeId && data.oldNodeId !== data.id) {
-      const index = this.getIndex(data.oldNodeId);
-      const yNode =  this.yArray.get(index);
-      yNode.set('id', data.id);
-      node = this.getNodeById(data.oldNodeId);
-      store.commit('updateNodeProp', { node, key: 'id', value: data.id });
+      this.updateNodeId(data.oldNodeId, data.id);
+    }
+
+    node = this.getNodeById(data.id);
+    if (!node) {
       return;
     }
-    // create a node
-    node = this.getNodeById(data.id);
 
-    if (node) {
-      let extras = {};
-      // extras property section
-      if (data.extras && Object.keys(data.extras).length > 0) {
-        extras = data.extras;
-      }
-      // loopCharacteristics property section
-      if (data.loopCharacteristics) {
-        const loopCharacteristics = JSON.parse(data.loopCharacteristics);
-        this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({
-          type: node.definition.type,
-          '$loopCharactetistics': {
-            id: data.id,
-            loopCharacteristics,
-          },
-        }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
-        return;
-      }
-      if (this.modeler.nodeRegistry[node.type]?.multiplayerInspectorHandler) {
-        this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data,this.setNodeProp, this.modeler.moddle);
-        return;
-      }
-      const keys = Object.keys(data).filter((key) => key !== 'id');
-      let key = keys[0];
-      let value = data[key];
+    const { extras = {} } = data;
+    const { definition } = node;
 
-      if (key === 'condition') {
-        node.definition.get('eventDefinitions')[0].get('condition').body = value;
-      }
-
-      if (key === 'gatewayDirection') {
-        node.definition.set('gatewayDirection', value);
-      }
-
-      if (key === 'messageRef') {
-        let message = this.modeler.definitions.rootElements.find(element => element.id === value);
-
-        if (!message) {
-          message = this.modeler.moddle.create('bpmn:Message', {
-            id: value,
-            name: extras?.messageName || value,
-          });
-          this.modeler.definitions.rootElements.push(message);
-        }
-
-        node.definition.get('eventDefinitions')[0].messageRef = message;
-
-        if (extras?.allowedUsers) {
-          node.definition.set('allowedUsers', extras.allowedUsers);
-        }
-
-        if (extras?.allowedGroups) {
-          node.definition.set('allowedGroups', extras.allowedGroups);
-        }
-      }
-
-      if (key === 'signalRef') {
-        let signal = this.modeler.definitions.rootElements.find(element => element.id === value);
-
-        if (!signal) {
-          signal = this.modeler.moddle.create('bpmn:Signal', {
-            id: value,
-            name: extras?.signalName || value,
-          });
-          this.modeler.definitions.rootElements.push(signal);
-        }
-
-        node.definition.get('eventDefinitions')[0].signalRef = signal;
-      }
-
-      if (key === 'signalPayload') {
-        const eventDefinitions = node.definition.get('eventDefinitions');
-        const SIGNAL_EVENT_DEFINITION_TYPE = 'bpmn:SignalEventDefinition';
-
-        eventDefinitions.forEach(definition => {
-          if (definition.$type === SIGNAL_EVENT_DEFINITION_TYPE) {
-            definition.config = value;
-          }
-        });
-      }
-
-      if (key === 'eventTimerDefinition') {
-        const { type, body } = value;
-
-        const eventDefinitions = setEventTimerDefinition(this.modeler.moddle, node, type, body);
-
-        key = 'eventDefinitions';
-        value = eventDefinitions;
-      }
-
-      const specialProperties = [
-        'messageRef', 'signalRef', 'signalPayload', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
-      ];
-
-      if (!specialProperties.includes(key)) {
-        store.commit('updateNodeProp', { node, key, value });
-      }
+    if (data.loopCharacteristics) {
+      this.handleLoopCharacteristics(node, data.loopCharacteristics);
+      return;
     }
+
+    if (this.modeler.nodeRegistry[node.type]?.multiplayerInspectorHandler) {
+      this.modeler.nodeRegistry[node.type].multiplayerInspectorHandler(node, data, this.setNodeProp, this.modeler.moddle);
+      return;
+    }
+
+    const keys = Object.keys(data).filter((key) => key !== 'id');
+    const key = keys[0];
+    const value = data[key];
+
+    if (key === 'condition') {
+      this.updateEventCondition(definition, value);
+    } else if (key === 'gatewayDirection') {
+      this.updateGatewayDirection(definition, value);
+    } else if (key === 'messageRef') {
+      this.updateMessageRef(node, value, extras);
+    } else if (key === 'signalRef') {
+      this.updateSignalRef(node, value, extras);
+    } else if (key === 'signalPayload') {
+      this.updateSignalPayload(node, value);
+    } else if (key === 'eventTimerDefinition') {
+      this.updateEventTimerDefinition(node, value);
+    } else if (!this.isSpecialProperty(key)) {
+      this.updateNodeProperty(node, key, value);
+    }
+  }
+
+  updateNodeId(oldNodeId, newId) {
+    const index = this.getIndex(oldNodeId);
+    const yNode = this.yArray.get(index);
+    yNode.set('id', newId);
+    const node = this.getNodeById(oldNodeId);
+    store.commit('updateNodeProp', { node, key: 'id', value: newId });
+  }
+
+  handleLoopCharacteristics(node, loopCharacteristics) {
+    const parsedLoopCharacteristics = JSON.parse(loopCharacteristics);
+    this.modeler.nodeRegistry[node.type].loopCharacteristicsHandler({
+      type: node.definition.type,
+      '$loopCharactetistics': {
+        id: node.id,
+        loopCharacteristics: parsedLoopCharacteristics,
+      },
+    }, node, this.setNodeProp, this.modeler.moddle, this.modeler.definitions, false);
+  }
+
+  updateEventCondition(definition, value) {
+    definition.get('eventDefinitions')[0].get('condition').body = value;
+  }
+
+  updateGatewayDirection(definition, value) {
+    definition.set('gatewayDirection', value);
+  }
+
+  isSpecialProperty(key) {
+    const specialProperties = [
+      'messageRef', 'signalRef', 'signalPayload', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
+    ];
+    return specialProperties.includes(key);
+  }
+
+  updateNodeProperty(node, key, value) {
+    store.commit('updateNodeProp', { node, key, value });
+  }
+  updateMessageRef(node, value, extras) {
+    let message = this.modeler.definitions.rootElements.find(element => element.id === value);
+
+    if (!message) {
+      message = this.modeler.moddle.create('bpmn:Message', {
+        id: value,
+        name: extras?.messageName || value,
+      });
+      this.modeler.definitions.rootElements.push(message);
+    }
+
+    node.definition.get('eventDefinitions')[0].messageRef = message;
+
+    if (extras?.allowedUsers) {
+      node.definition.set('allowedUsers', extras.allowedUsers);
+    }
+
+    if (extras?.allowedGroups) {
+      node.definition.set('allowedGroups', extras.allowedGroups);
+    }
+  }
+
+  updateSignalRef(node, value, extras) {
+    let signal = this.modeler.definitions.rootElements.find(element => element.id === value);
+
+    if (!signal) {
+      signal = this.modeler.moddle.create('bpmn:Signal', {
+        id: value,
+        name: extras?.signalName || value,
+      });
+      this.modeler.definitions.rootElements.push(signal);
+    }
+
+    node.definition.get('eventDefinitions')[0].signalRef = signal;
+  }
+
+  updateSignalPayload(node, value) {
+    const eventDefinitions = node.definition.get('eventDefinitions');
+    const SIGNAL_EVENT_DEFINITION_TYPE = 'bpmn:SignalEventDefinition';
+
+    eventDefinitions.forEach(definition => {
+      if (definition.$type === SIGNAL_EVENT_DEFINITION_TYPE) {
+        definition.config = value;
+      }
+    });
+  }
+
+  updateEventTimerDefinition(node, value) {
+    const { type, body } = value;
+    const eventDefinitions = setEventTimerDefinition(this.modeler.moddle, node, type, body);
+    store.commit('updateNodeProp', { node, key: 'eventDefinitions', value: eventDefinitions });
   }
   /**
    * Update the shared document and emit socket sign to update the flows
