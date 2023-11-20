@@ -366,17 +366,25 @@ export default class Multiplayer {
         store.commit('updateNodeProp', { node, key: 'color', value: data.color });
       }
     } else {
+      // updata gateway default folow
+      this.updateGatewayDefaultFlow(element, data);
+      if (typeof element.resize === 'function' && data.width && data.height) {
+        element.resize(
+          /* Add labelWidth to ensure elements don't overlap with the pool label */
+          data.width,
+          data.height,
+        );
+      }
       // Update the element's position attribute
-      element.resize(
-        /* Add labelWidth to ensure elements don't overlap with the pool label */
-        data.width,
-        data.height,
-      );
-      element.set('position', { x: data.x, y: data.y });
-
-      const node = this.getNodeById(data.id);
-      store.commit('updateNodeProp', { node, key: 'color', value: data.color });
-
+      if (data.x && data.y) {
+        element.set('position', { x: data.x, y: data.y });
+      }
+      // udpdate the element's color
+      if (data.color) {
+        const node = this.getNodeById(data.id);
+        store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+        return;
+      }
       // boundary type
       if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
         this.attachBoundaryEventToNode(element, data);
@@ -391,6 +399,17 @@ export default class Multiplayer {
         element.component.node.pool.component.moveElementRemote(element, newPool);
       }
       this.modeler.updateLasso();
+    }
+  }
+  /**
+   * Update default Flow property
+   * @param {Object} element
+   * @param {Object} data
+   */
+  updateGatewayDefaultFlow(element, data){
+    if (Object.hasOwn(data, 'default')) {
+      const node = this.getNodeById(data.default);
+      element.component.node.definition.set('default', node);
     }
   }
   /**
