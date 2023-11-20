@@ -633,28 +633,31 @@ export default {
     getConnectedLinkProperties(links) {
       let changed = [];
       links.forEach((linkView) => {
-        const waypoint = [];
-        const { node } =  linkView.model.component;
-        node.diagram.waypoint?.forEach(point => {
-          waypoint.push({
-            x: point.x,
-            y: point.y,
+        const vertices = linkView.model.component.shape.vertices();
+        if (vertices?.length) {
+          const waypoint = [];
+          const { node } =  linkView.model.component;
+
+          node.diagram.waypoint?.forEach(point => {
+            waypoint.push({
+              x: point.x,
+              y: point.y,
+            });
           });
-        });
-        const sourceRefId = linkView.sourceView.model.component.node.definition.id;
-        const targetRefId = linkView.targetView.model.component.node.definition.id;
-        const nodeType = linkView.model.component.node.type;
-        changed.push(
-          {
-            id: node.definition.id,
-            properties: {
-              type: nodeType,
-              waypoint,
-              sourceRefId,
-              targetRefId,
-            },
-          });
-      
+          const sourceRefId = linkView.sourceView.model.component.node.definition.id;
+          const targetRefId = linkView.targetView.model.component.node.definition.id;
+          const nodeType = linkView.model.component.node.type;
+          changed.push(
+            {
+              id: node.definition.id,
+              properties: {
+                type: nodeType,
+                waypoint,
+                sourceRefId,
+                targetRefId,
+              },
+            });
+        }
       });
       return changed;
     },
