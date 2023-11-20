@@ -360,7 +360,7 @@ export default class Multiplayer {
 
     if (this.modeler.flowTypes.includes(data.type)) {
       if ('waypoint' in data) {
-        this.updateMovedWaypoints();
+        this.updateMovedWaypoint(element, data);
       } else {
         const node = this.getNodeById(data.id);
         store.commit('updateNodeProp', { node, key: 'color', value: data.color });
@@ -398,7 +398,7 @@ export default class Multiplayer {
    * @param {Object} element
    * @param {Object} data
    */
-  updateMovedWaypoints(element, data ) {
+  updateMovedWaypoint(element, data ) {
     const { waypoint } = data;
     const { paper } = this.modeler;
     // Update the element's waypoints
@@ -698,7 +698,7 @@ export default class Multiplayer {
     }
   }
   /**
-   * Refresh the node Waypoint data
+   * Refresh the node waypoint data
    * @param {Object} element
    */
   refreshNodeWaypoint(element) {
