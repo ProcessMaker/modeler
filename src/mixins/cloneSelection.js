@@ -47,7 +47,6 @@ export default {
             if (node.definition && node.definition.$type !== 'bpmn:BoundaryEvent') {
               clonedNodes.push(clonedElement);
             }  else {
-              clonedElement.fromCrown = true;
               clonedBoundaryEvents.push(clonedElement);
             }
           }

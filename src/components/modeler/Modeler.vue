@@ -238,6 +238,7 @@ import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/gener
 import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 import Multiplayer from '@/multiplayer/multiplayer';
+import { getBoundaryEventData } from '../nodes/boundaryEvent/boundaryEventUtils';
 
 export default {
   components: {
@@ -347,6 +348,7 @@ export default {
       isResizingPreview: false,
       currentCursorPosition: 0,
       previewPanelWidth: 600,
+      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -354,7 +356,13 @@ export default {
         'processmaker-modeler-data-output-association',
         'processmaker-modeler-association',
       ],
-      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
+      boundaryEventTypes: [
+        'processmaker-modeler-boundary-timer-event',
+        'processmaker-modeler-boundary-error-event',
+        'processmaker-modeler-boundary-signal-event',
+        'processmaker-modeler-boundary-conditional-event',
+        'processmaker-modeler-boundary-message-event',
+      ],
     };
   },
   watch: {
@@ -1185,11 +1193,7 @@ export default {
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-association',
         'processmaker-modeler-data-input-association',
-        'processmaker-modeler-boundary-timer-event',
-        'processmaker-modeler-boundary-error-event',
-        'processmaker-modeler-boundary-signal-event',
-        'processmaker-modeler-boundary-conditional-event',
-        'processmaker-modeler-boundary-message-event',
+        ...this.boundaryEventTypes,
       ];
       if (!this.isMultiplayer) {
         return;
@@ -1306,6 +1310,8 @@ export default {
       });
     },
     async addClonedNodes(nodes) {
+      const flowNodes = [];
+
       nodes.forEach(node => {
         if (!node.pool) {
           node.pool = this.poolTarget;
@@ -1315,10 +1321,24 @@ export default {
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
-        this.multiplayerHook(node, false);
+
+        if (this.flowTypes.includes(node.type)) {
+          // Add flow to array to render after
+          flowNodes.push(node);
+        } else if (this.boundaryEventTypes.includes(node.type)) {
+          // Get boundary event data
+          const defaultData = getBoundaryEventData(node);
+          window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', defaultData);
+        } else {
+          this.multiplayerHook(node, false);
+        }
+
         store.commit('addNode', node);
         this.poolTarget = null;
       });
+
+      // Render flows after all nodes have been added
+      flowNodes.forEach(node => this.multiplayerHook(node, false));
     },
     async removeNode(node, options) {
       // Check if the node is not replaced
