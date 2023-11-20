@@ -4,7 +4,7 @@
     :style="{'backgroundColor': generateColorHsl(userName, saturationRange, lightnessRange)}"
   >
     <span v-if="imgSrc" class="b-avatar-img" :id="id">
-      <img :src="imgSrc" id="">
+      <img :src="imgSrc" :alt=userName>
     </span>
     <span v-else class="b-avatar-text avatar-initials" :id="id">
       <span>
