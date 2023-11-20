@@ -10,6 +10,16 @@ import { defaultDurationTimerEvent } from '@/constants';
 
 export const id = 'processmaker-modeler-boundary-timer-event';
 
+export const setEventTimerDefinition = (moddle, node, type, body) => {
+  const eventDefinition = {
+    [type]: moddle.create('bpmn:Expression', { body }),
+  };
+
+  return [
+    moddle.create('bpmn:TimerEventDefinition', eventDefinition),
+  ];
+};
+
 export default merge(cloneDeep(boundaryEventConfig), {
   id,
   component,
@@ -58,17 +68,16 @@ export default merge(cloneDeep(boundaryEventConfig), {
           continue;
         }
 
-        const eventDefinition = {
-          [type]: moddle.create('bpmn:Expression', { body }),
-        };
-
-        const eventDefinitions = [
-          moddle.create('bpmn:TimerEventDefinition', eventDefinition),
-        ];
-
-        eventDefinitions[0].id = node.definition.get('eventDefinitions')[0].id;
-
+        const eventDefinitions = setEventTimerDefinition(moddle, node, type, body);
         setNodeProp(node, 'eventDefinitions', eventDefinitions);
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id,
+          key: 'eventTimerDefinition',
+          value: {
+            type,
+            body,
+          },
+        });
       } else {
         window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
           id: node.definition.id , key, value: value[key],
