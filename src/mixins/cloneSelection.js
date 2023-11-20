@@ -128,7 +128,7 @@ export default {
         const originalTargetElement = this.getDataInputOutputAssociationTargetRef(originalAssociation.definition);
         const clonedElement = clonedNodes.find(node => node.cloneOf === originalTargetElement.id);
         const clonedDataInput = getOrFindDataInput(this.moddle, clonedElement, srcClone.definition);
-
+        clonedDataInput.$parent.$parent = clonedElement.definition;
         clonedAssociation.definition.set('sourceRef', [srcClone.definition]);
         clonedAssociation.definition.set('targetRef', clonedDataInput);
         clonedElement.definition.set('dataInputAssociations', [clonedAssociation.definition]);

@@ -4,6 +4,8 @@ import { getNodeIdGenerator } from '../NodeIdGenerator';
 import { getDefaultAnchorPoint } from '@/portsUtils';
 import Room from './room';
 import store from '@/store';
+import { setEventTimerDefinition } from '@/components/nodes/boundaryTimerEvent';
+import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
 
 export default class Multiplayer {
   clientIO = null;
@@ -199,7 +201,13 @@ export default class Multiplayer {
    */
   syncLocalNodes(clientId){
     // Get the process definition
-    const nodes = this.modeler.nodes.map((node) => this.modeler.multiplayerHook(node, false, true));
+    const nodes = this.modeler.nodes.map((node) => {
+      if (node.definition.$type === 'bpmn:BoundaryEvent') {
+        return getBoundaryEventData(node);
+      }
+
+      return this.modeler.multiplayerHook(node, false, true);
+    });
 
     nodes.forEach((node) => {
       const yMapNested = new Y.Map();
@@ -227,7 +235,7 @@ export default class Multiplayer {
     if (node) {
       return;
     }
-    if (this.modeler.nodeRegistry[value.type] && this.modeler.nodeRegistry[value.type].multiplayerClient) {
+    if (this.modeler.nodeRegistry[value.type]?.multiplayerClient) {
       this.modeler.nodeRegistry[value.type].multiplayerClient(this.modeler, value);
     } else {
       this.modeler.addRemoteNode(value);
@@ -245,7 +253,6 @@ export default class Multiplayer {
   removeNode(data) {
     const index =  this.getIndex(data.definition.id);
     if (index >= 0) {
-      this.removeShape(data);
       this.yArray.delete(index, 1); // delete one element
       // Encode the state as an update and send it to the server
       const stateUpdate = Y.encodeStateAsUpdate(this.yDoc);
@@ -352,34 +359,40 @@ export default class Multiplayer {
     const newPool = this.modeler.getElementByNodeId(data.poolId);
 
     if (this.modeler.flowTypes.includes(data.type)) {
-      // Update the element's waypoints
-      // Get the source and target elements
-      const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
-      const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
-
       const { waypoint } = data;
-      const startWaypoint = waypoint.shift();
-      const endWaypoint = waypoint.pop();
 
-      // Update the element's waypoints
-      const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
-      element.set('vertices', newWaypoint);
+      if (waypoint) {
+        // Update the element's waypoints
+        // Get the source and target elements
+        const sourceElem = this.modeler.getElementByNodeId(data.sourceRefId);
+        const targetElem = this.modeler.getElementByNodeId(data.targetRefId);
 
-      // Update the element's source anchor
-      element.source(sourceElem, {
-        anchor: () => {
-          return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
-        },
-        connectionPoint: { name: 'boundary' },
-      });
+        const startWaypoint = waypoint.shift();
+        const endWaypoint = waypoint.pop();
 
-      // Update the element's target anchor
-      element.target(targetElem, {
-        anchor: () => {
-          return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
-        },
-        connectionPoint: { name: 'boundary' },
-      });
+        // Update the element's waypoints
+        const newWaypoint = waypoint.map(point => this.modeler.moddle.create('dc:Point', point));
+        element.set('vertices', newWaypoint);
+
+        // Update the element's source anchor
+        element.source(sourceElem, {
+          anchor: () => {
+            return getDefaultAnchorPoint(this.getConnectionPoint(sourceElem, startWaypoint), sourceElem.findView(paper));
+          },
+          connectionPoint: { name: 'boundary' },
+        });
+
+        // Update the element's target anchor
+        element.target(targetElem, {
+          anchor: () => {
+            return getDefaultAnchorPoint(this.getConnectionPoint(targetElem, endWaypoint), targetElem.findView(paper));
+          },
+          connectionPoint: { name: 'boundary' },
+        });
+      } else {
+        const node = this.getNodeById(data.id);
+        store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+      }
     } else {
       // Update the element's position attribute
       element.resize(
@@ -405,6 +418,7 @@ export default class Multiplayer {
       if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
         element.component.node.pool.component.moveElementRemote(element, newPool);
       }
+      this.modeler.updateLasso();
     }
   }
   attachBoundaryEventToNode(element, data) {
@@ -553,8 +567,8 @@ export default class Multiplayer {
         return;
       }
       const keys = Object.keys(data).filter((key) => key !== 'id');
-      const key = keys[0];
-      const value = data[key];
+      let key = keys[0];
+      let value = data[key];
 
       if (key === 'condition') {
         node.definition.get('eventDefinitions')[0].get('condition').body = value;
@@ -586,7 +600,34 @@ export default class Multiplayer {
         }
       }
 
-      if (!['messageRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups'].includes(key)) {
+      if (key === 'signalRef') {
+        let signal = this.modeler.definitions.rootElements.find(element => element.id === value);
+
+        if (!signal) {
+          signal = this.modeler.moddle.create('bpmn:Signal', {
+            id: value,
+            name: extras?.signalName || value,
+          });
+          this.modeler.definitions.rootElements.push(signal);
+        }
+
+        node.definition.get('eventDefinitions')[0].signalRef = signal;
+      }
+
+      if (key === 'eventTimerDefinition') {
+        const { type, body } = value;
+
+        const eventDefinitions = setEventTimerDefinition(this.modeler.moddle, node, type, body);
+
+        key = 'eventDefinitions';
+        value = eventDefinitions;
+      }
+
+      const specialProperties = [
+        'messageRef', 'signalRef', 'gatewayDirection', 'condition', 'allowedUsers', 'allowedGroups',
+      ];
+
+      if (!specialProperties.includes(key)) {
         store.commit('updateNodeProp', { node, key, value });
       }
     }
