@@ -3,16 +3,18 @@
     class="b-avatar rounded-circle"
     :style="{'backgroundColor': generateColorHsl(userName, saturationRange, lightnessRange)}"
   >
-    <span v-if="imgSrc" class="b-avatar-img">
-      <img :src="imgSrc" :alt=userName>
+    <span v-if="imgSrc" class="b-avatar-img" :id="id">
+      <img :src="imgSrc" id="">
     </span>
-    <span v-else class="b-avatar-text avatar-initials">
+    <span v-else class="b-avatar-text avatar-initials" :id="id">
       <span>
         {{ this.getInitials(userName) }}
       </span>
-
     </span>
-    <span class="b-avatar-badge badge-danger"
+    <b-tooltip :target="id" triggers="hover">
+      {{ userName }}
+    </b-tooltip>
+    <span v-if="badgeBackgroundColor" class="b-avatar-badge badge-danger"
       :style="{bottom: '0px', right: '0px', backgroundColor: badgeBackgroundColor}" 
     />
   </span>
@@ -33,6 +35,10 @@ export default {
     userName: {
       type: String,
       required: false,
+    },
+    id: {
+      type: String,
+      required: true,
     },
   },
   data() {

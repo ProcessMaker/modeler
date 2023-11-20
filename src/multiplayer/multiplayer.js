@@ -59,8 +59,8 @@ export default class Multiplayer {
           const newPlayer = {
             id: client.id,
             name: client.name,
-            color: '#FF6F61',
-            avatar: client.avatar,
+            color:  client.color,
+            avatar: client.avatar || null,
             top: 90,
             left: 80,
           };
