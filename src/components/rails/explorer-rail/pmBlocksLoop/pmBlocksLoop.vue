@@ -136,14 +136,7 @@ export default {
       </div>
     </template>
 
-
-
-
-
-
-
-
-      <!-- <div class="pmBlocksContainer p-2">
+    <!-- <div class="pmBlocksContainer p-2">
         <template v-for="nodeType in pmBlockNodeTypes">
           <div
             class="pm-block-node-types__item p-2 d-block"
