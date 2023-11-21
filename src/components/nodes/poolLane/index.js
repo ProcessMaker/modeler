@@ -81,8 +81,9 @@ export default {
       definition,
       diagram,
     );
+    // link the parent pool to the lane
+    node.pool = pool;
     await modeler.addNode(node, data.id, true);
     modeler.setShapeStacking(pool.component.shape);
-
   },
 };
