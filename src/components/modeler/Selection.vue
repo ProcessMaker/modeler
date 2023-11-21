@@ -79,6 +79,7 @@ export default {
       hasMouseMoved: false,
       showLasso: false,
       isOutOfThePool: false,
+      isRollBack: false,
       stopForceMove: false,
       draggableBlackList: [
         laneId,
@@ -523,6 +524,7 @@ export default {
       if (!this.$refs.drag){
         return;
       }
+      this.isRollBack = false;
       this.stopForceMove = false;
       this.dragging = true;
       this.hasMouseMoved = false;
@@ -585,7 +587,9 @@ export default {
       this.updateSelectionBox();
       if (this.isMultiplayer) {
         window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConnectedLinkProperties(this.connectedLinks));
+        if (!this.isRollBack) {
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConnectedLinkProperties(this.connectedLinks));
+        }
       }
     },
 
@@ -959,6 +963,7 @@ export default {
           shape.model.translate(deltaX/scale.sx, deltaY/scale.sy);
         });
       this.isOutOfThePool = false;
+      this.isRollBack = true;
       await store.commit('allowSavingElementPosition');
       this.paperManager.setStateValid();
       await this.$nextTick();
