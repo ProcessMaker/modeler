@@ -141,22 +141,6 @@ export default {
         </template>
       </div>
     </template>
-
-    <!-- <div class="pmBlocksContainer p-2">
-        <template v-for="nodeType in pmBlockNodeTypes">
-          <div
-            class="pm-block-node-types__item p-2 d-block"
-            :key="nodeType.id"
-            @click.stop="onClickHandler($event, nodeType)"
-          >
-            <div class="d-flex">
-              <i v-if="!nodeType.svgIcon" class="node-types__item__icon" :class="nodeType.customIcon"/>
-              <img v-else class="node-types__item__icon" :src="nodeType.svgIcon" :alt="$t(nodeType.label)">
-              <label>{{ $t(nodeType.label) }}</label>
-            </div>
-          </div>
-        </template>
-      </div> -->
   </div>
 </template>
 
