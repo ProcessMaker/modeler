@@ -101,6 +101,10 @@ export default ({
       width: 24px;
       height: 24px;
     }
+    & > i {
+      color: #000000;
+      padding: 5px;
+    }
     &.active {
       background-color: #EBEEF2;
     }
