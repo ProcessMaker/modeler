@@ -19,8 +19,8 @@ export default {
     nodeTypesStore.dispatch('getUserPinnedObjects');
   },
   methods: {
-    nodeTypeAlreadyPinned(object, type) {
-      return !!this.pinnedObjects.find(obj => obj.type === type);
+    blockAlreadyPinned(object, type) {
+      return !!this.pinnedBlocks.find(obj => obj.type === type);
     },
     unPin(object) {
       this.deselect();
@@ -32,7 +32,7 @@ export default {
     },
   },
   computed: {
-    pinnedObjects() {
+    pinnedBlocks() {
       const pinnedNodeTypes = nodeTypesStore.getters.getPinnedNodeTypes;
 
       //Filter pinnedNodeTypes to only return objects with PM Blocks type.
@@ -42,9 +42,9 @@ export default {
 
       return filteredPinnedNodeTypes; 
     },
-    unpinnedObjects() {
+    unpinnedBlocks() {
       const objects = this.pmBlockNodeTypes;
-      return objects.filter((obj) => !this.pinnedObjects.some(pinnedObj => pinnedObj.type === obj.type));
+      return objects.filter((obj) => !this.pinnedBlocks.some(pinnedObj => pinnedObj.type === obj.type));
     },
     pmBlockNodeTypes() {
       return nodeTypesStore.getters.getPmBlockNodeTypes;
@@ -76,7 +76,7 @@ export default {
             <img v-else class="node-types__item__icon" :src="object.svgIcon" :alt="$t(object.label)">
             <label>{{ $t(object.label) }}</label>
             <img
-              v-if="nodeTypeAlreadyPinned(object, object.type)"
+              v-if="blockAlreadyPinned(object, object.type)"
               :src="pinFillIcon"
               class="pinIcon"
               alt="Unpin Element"
@@ -94,32 +94,32 @@ export default {
       </template>
     </div>
     <template v-if="filteredPmBlockNodes.length === 0 && !searchTerm">
-      <div class="pinnedObjects" v-if="pinnedObjects.length > 0">
+      <div class="pinnedBlocks" v-if="pinnedBlocks.length > 0">
         <p>{{ $t('Pinned PM Blocks') }}</p>
-        <template v-for="pinnedObject in pinnedObjects">
+        <template v-for="pinnedBlock in pinnedBlocks">
           <div
             class="node-types__item"
-            :data-test="pinnedObject.type"
-            :key="pinnedObject.id"
+            :data-test="pinnedBlock.type"
+            :key="pinnedBlock.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
-            @click.stop="onClickHandler($event, pinnedObject)"
+            @click.stop="onClickHandler($event, pinnedBlock)"
           >
-            <i v-if="!containsSvg(pinnedObject.icon)" :class="pinnedObject.customIcon" class="fa-lg"/>
-            <img v-else class="node-types__item__icon" :src="pinnedObject.svgIcon" :alt="$t(pinnedObject.label)">
-            <span>{{ $t(pinnedObject.label) }}</span>
+            <i v-if="!containsSvg(pinnedBlock.icon)" :class="pinnedBlock.customIcon" class="fa-lg"/>
+            <img v-else class="node-types__item__icon" :src="pinnedBlock.svgIcon" :alt="$t(pinnedBlock.label)">
+            <span>{{ $t(pinnedBlock.label) }}</span>
             <img
               :src="pinFillIcon"
               class="pinIcon"
               alt="Pin/Unpin Element"
-              @click="unPin(pinnedObject)"
+              @click="unPin(pinnedBlock)"
             >
           </div>
         </template>
       </div>
       <div class="objectCategory">
         <p>{{ $t('PM Block Category') }}</p>
-        <template v-for="nodeType in unpinnedObjects">
+        <template v-for="nodeType in unpinnedBlocks">
           <div
             class="node-types__item"
             :data-test="nodeType.type"
@@ -146,7 +146,7 @@ export default {
 
 <style lang="scss">
 #pmBlockNodeTypesList {
-  .pinnedObjects {
+  .pinnedBlocks {
     margin-bottom: 1rem;
   }
 }
