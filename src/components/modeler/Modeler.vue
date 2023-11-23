@@ -363,6 +363,7 @@ export default {
       isResizingPreview: false,
       currentCursorPosition: 0,
       previewPanelWidth: 600,
+      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -370,7 +371,6 @@ export default {
         'processmaker-modeler-data-output-association',
         'processmaker-modeler-association',
       ],
-      isAiGenerated: window.ProcessMaker.modeler.isAiGenerated,
       boundaryEventTypes: [
         'processmaker-modeler-boundary-timer-event',
         'processmaker-modeler-boundary-error-event',
@@ -513,6 +513,14 @@ export default {
       if (source.default && source.default.id === flow.id) {
         flow = null;
       }
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+        {
+          id: source.id,
+          properties: {
+            default: flow?.id || null,
+          },
+        },
+      ]);
       source.set('default', flow);
     },
     cloneElement(node, copyCount) {
@@ -1234,7 +1242,9 @@ export default {
             gatewayDirection: null,
             messageRef: null,
             signalRef: null,
+            signalPayload: null,
             extras: {},
+            default: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
@@ -1676,14 +1686,14 @@ export default {
         this.players.splice(playerIndex, 1);
       }
     },
+    onCloseCreateAssets() {
+      this.isAiGenerated = false;
+    },
     /**
      * Update the lasso tool
      */
     updateLasso(){
       this.$refs.selector.updateSelectionBox();
-    },
-    onCloseCreateAssets() {
-      this.isAiGenerated = false;
     },
   },
   created() {

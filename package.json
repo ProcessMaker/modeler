@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.40.3",
+  "version": "1.41.0",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",

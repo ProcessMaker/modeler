@@ -19,13 +19,22 @@ export class NodeMigrator {
       const shape = this._graph.getLinks().find(element => {
         return element.component && element.component.node.definition === definition;
       });
-      shape.component.node._modelerId += '_replaced';
+      const { node } = shape.component;
+      node._modelerId += '_replaced';
+      const waypoint = [];
+      node.diagram.waypoint?.forEach(point => {
+        waypoint.push({
+          x: point.x,
+          y: point.y,
+        });
+      });
       flowNodes.push({
-        id: shape.component.node.definition.id,
-        type: shape.component.node.type,
-        name: shape.component.node.definition.name,
-        sourceRefId: shape.component.node.definition.sourceRef.id,
-        targetRefId: shape.component.node.definition.targetRef.id,
+        id: node.definition.id,
+        type: node.type,
+        name: node.definition.name,
+        waypoint,
+        sourceRefId: node.definition.sourceRef.id,
+        targetRefId: node.definition.targetRef.id,
       });
     };
 

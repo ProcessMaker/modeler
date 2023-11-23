@@ -63,7 +63,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  right: 10%;
+  left: 2%;
   z-index: 1;
   font-size: 100%;
   height: 120px;
