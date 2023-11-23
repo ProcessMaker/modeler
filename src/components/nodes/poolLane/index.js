@@ -59,7 +59,9 @@ export default {
       name: data.name,
     });
     // Set the position of the pool
-    pool.set('position', { x: data.poolX, y: data.poolY });
+    if (data.poolX && data.poolY) {
+      pool.set('position', { x: data.poolX, y: data.poolY });
+    }
 
     if (!pool.component.laneSet && pool.component.createLaneSet) {
       pool.component.createLaneSet([data.laneSetId]);
