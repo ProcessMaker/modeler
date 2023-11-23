@@ -364,7 +364,7 @@ export default {
       isResizingPreview: false,
       currentCursorPosition: 0,
       previewPanelWidth: 600,
-      isAiGenerated: window.ProcessMaker.modeler.isAiGenerated,
+      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
       assetsCreated: true,
       // ^ To be changed depending on microservice response 
       flowTypes: [
@@ -516,6 +516,14 @@ export default {
       if (source.default && source.default.id === flow.id) {
         flow = null;
       }
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+        {
+          id: source.id,
+          properties: {
+            default: flow?.id || null,
+          },
+        },
+      ]);
       source.set('default', flow);
     },
     cloneElement(node, copyCount) {
@@ -1237,7 +1245,9 @@ export default {
             gatewayDirection: null,
             messageRef: null,
             signalRef: null,
+            signalPayload: null,
             extras: {},
+            default: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
