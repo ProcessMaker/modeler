@@ -5,6 +5,7 @@ import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import { loopCharacteristicsHandler } from '@/components/inspectors/LoopCharacteristics';
 
 export const id = 'processmaker-modeler-call-activity';
 
@@ -34,10 +35,18 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp) {
-
-    setNodeProp(node, 'id', value.id);
-    setNodeProp(node, 'name', value.name);
-
+    if (node.definition.get('id') !== value['id']) {
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id, key: 'id', value: value.id,
+      });
+      setNodeProp(node, 'id', value.id);
+    }
+    if (node.definition.get('name') !== value['name']) {
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id, key: 'name', value: value.name,
+      });
+      setNodeProp(node, 'name', value.name);
+    }
     const currentConfig = JSON.parse(value.config);
 
     value['calledElement'] = currentConfig.calledElement;
@@ -86,4 +95,5 @@ export default {
       ],
     },
   ],
+  loopCharacteristicsHandler,
 };

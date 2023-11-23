@@ -1,7 +1,13 @@
 <template>
-  <b-avatar-group class="container" v-if="!isMultiplayer">
+  <b-avatar-group class="container" v-show="isMultiplayer">
     <template v-for="item in filteredPlayers" >
-      <Avatar :badgeBackgroundColor="item.color" :imgSrc="item.avatar" :userName="item.name" :key="item.key"/>
+      <Avatar
+        :badgeBackgroundColor="item.color"
+        :imgSrc="item.avatar"
+        :userName="item.name"
+        :id="item.id"
+        :key="item.id"
+      />
     </template>
   </b-avatar-group> 
 </template>
