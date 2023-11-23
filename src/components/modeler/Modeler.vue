@@ -56,6 +56,12 @@
         v-if="showWelcomeMessage"
       />
 
+      <CreateAssetsCard
+        ref="createAssetsCard"
+        v-if="isAiGenerated"
+        @closeCreateAssets="onCloseCreateAssets()"
+      />
+
       <InspectorButton
         ref="inspector-button"
         v-show="showComponent && showInspectorButton"
@@ -178,6 +184,7 @@ import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
+import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -251,6 +258,7 @@ export default {
     Selection,
     RailBottom,
     WelcomeMessage,
+    CreateAssetsCard,
     RemoteCursor,
   },
   props: {
@@ -1670,6 +1678,9 @@ export default {
       if (playerIndex !== -1) {
         this.players.splice(playerIndex, 1);
       }
+    },
+    onCloseCreateAssets() {
+      this.isAiGenerated = false;
     },
     /**
      * Update the lasso tool
