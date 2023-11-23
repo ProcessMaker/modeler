@@ -23,7 +23,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
-      :players="players"
+      :players="filteredPlayers"
       @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
@@ -165,6 +165,11 @@
         @save-state="pushToUndoStack"
         :isMultiplayer="isMultiplayer"
       />
+      <RemoteCursor
+        v-for="player in filteredPlayers"
+        :key="player.id"
+        :data="player"
+      /> 
     </b-row>
   </span>
 </template>
@@ -172,7 +177,8 @@
 <script>
 
 import Vue from 'vue';
-import _ from 'lodash';
+
+import { _, uniqBy } from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
@@ -401,6 +407,12 @@ export default {
     },
   },
   computed: {
+    filteredPlayers() {
+      const allPlayers = uniqBy(this.players, 'name');
+      return allPlayers.filter(player => {
+        return player.name.toLowerCase() !== window.ProcessMaker.user?.fullName.toLowerCase();
+      });
+    },
     showWelcomeMessage() {
       return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
     },
@@ -1611,6 +1623,7 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', { top: y, left: x });
       if (store.getters.isReadOnly) {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
@@ -1662,6 +1675,15 @@ export default {
     },
     addPlayer(player) {
       this.players.push(player);
+    },
+    /**
+     * UpdateClientCursor
+     * @param {Object} data 
+     */
+    updateClientCursor(data) {
+      // console.log('players',this.players);
+      // console.log('updateClientCursor-data',data);
+      this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
     },
     removePlayer(playerId) {
       const playerIndex = this.players.findIndex(player => player.id === playerId);
