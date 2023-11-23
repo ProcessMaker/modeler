@@ -64,7 +64,7 @@
 
       <CreateAssetsFailCard
         ref="createAssetsFailCard"
-        v-if="true"
+        v-if="false"
       />
 
       <InspectorButton
