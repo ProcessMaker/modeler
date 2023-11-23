@@ -58,6 +58,9 @@ export default {
     const definition = modeler.moddle.create('bpmn:Lane', {
       name: data.name,
     });
+    // Set the position of the pool
+    pool.set('position', { x: data.poolX, y: data.poolY });
+
     if (!pool.component.laneSet && pool.component.createLaneSet) {
       pool.component.createLaneSet([data.laneSetId]);
       /* If there are currently elements in the pool, add them to the first lane */
@@ -81,6 +84,10 @@ export default {
       definition,
       diagram,
     );
+
+    // Set the pool as the parent of the lane
+    node.pool = pool;
+
     await modeler.addNode(node, data.id, true);
     modeler.setShapeStacking(pool.component.shape);
 
