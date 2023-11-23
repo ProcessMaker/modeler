@@ -1679,7 +1679,7 @@ export default {
         this.players.splice(playerIndex, 1);
       }
     },
-      onCloseCreateAssets() {
+    onCloseCreateAssets() {
       this.isAiGenerated = false;
     },
     /**
