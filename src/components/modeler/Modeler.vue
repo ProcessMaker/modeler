@@ -497,6 +497,14 @@ export default {
       if (source.default && source.default.id === flow.id) {
         flow = null;
       }
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+        {
+          id: source.id,
+          properties: {
+            default: flow?.id || null,
+          },
+        },
+      ]);
       source.set('default', flow);
     },
     cloneElement(node, copyCount) {
@@ -1218,7 +1226,9 @@ export default {
             gatewayDirection: null,
             messageRef: null,
             signalRef: null,
+            signalPayload: null,
             extras: {},
+            default: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
