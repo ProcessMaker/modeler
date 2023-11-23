@@ -365,8 +365,8 @@ export default {
       currentCursorPosition: 0,
       previewPanelWidth: 600,
       isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
-      assetsCreated: true,
-      // ^ To be changed depending on microservice response 
+      assetsCreated: false,
+      // ^ TODO: To be changed depending on microservice response
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
