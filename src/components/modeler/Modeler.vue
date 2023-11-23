@@ -348,6 +348,7 @@ export default {
       isResizingPreview: false,
       currentCursorPosition: 0,
       previewPanelWidth: 600,
+      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
