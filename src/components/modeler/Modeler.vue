@@ -61,11 +61,16 @@
         v-if="isAiGenerated"
         @closeCreateAssets="onCloseCreateAssets()"
       />
-
+      
       <AssetsCreatedCard
         ref="assetsCreatedCard"
         v-if="assetsCreated"
         @closeAssetsCreated="onCloseAssetsCreated()"
+      />
+
+      <CreateAssetsFailCard
+        ref="createAssetsFailCard"
+        v-if="false"
       />
 
       <InspectorButton
@@ -192,6 +197,7 @@ import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
 import AssetsCreatedCard from '../aiMessages/AssetsCreatedCard.vue';
+import CreateAssetsFailCard from '../aiMessages/CreateAssetsFailCard.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -267,6 +273,7 @@ export default {
     WelcomeMessage,
     CreateAssetsCard,
     AssetsCreatedCard,
+    CreateAssetsFailCard,
     RemoteCursor,
   },
   props: {
