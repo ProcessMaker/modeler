@@ -178,7 +178,7 @@
 
 import Vue from 'vue';
 
-import { _, uniqBy } from 'lodash';
+import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
@@ -408,7 +408,7 @@ export default {
   },
   computed: {
     filteredPlayers() {
-      const allPlayers = uniqBy(this.players, 'name');
+      const allPlayers = _.uniqBy(this.players, 'name');
       return allPlayers.filter(player => {
         return player.name.toLowerCase() !== window.ProcessMaker.user?.fullName.toLowerCase();
       });
