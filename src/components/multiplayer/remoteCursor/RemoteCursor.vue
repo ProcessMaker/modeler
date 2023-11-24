@@ -37,6 +37,7 @@ export default {
     display: flex;
     width: auto;
     height: 34px;
+    z-index: 2;
   }
 
   &-username {

@@ -1673,17 +1673,23 @@ export default {
     enableMultiplayer(value) {
       store.commit('enableMultiplayer', value);
     },
-    addPlayer(player) {
-      this.players.push(player);
+    emptyPlayers(){
+      this.players = [];
+    },
+    addPlayer(data) {
+      const player = this.players.find(player => player.id === data.id);
+      if (!player) {
+        this.players.push(data);
+      }
     },
     /**
-     * UpdateClientCursor
+     * Update Client Cursor
      * @param {Object} data 
      */
     updateClientCursor(data) {
-      // console.log('players',this.players);
-      // console.log('updateClientCursor-data',data);
-      this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
+      if (data) {
+        this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
+      }
     },
     removePlayer(playerId) {
       const playerIndex = this.players.findIndex(player => player.id === playerId);

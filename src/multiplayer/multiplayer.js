@@ -51,6 +51,7 @@ export default class Multiplayer {
   webSocketEvents() {
     this.clientIO.on('connect', () => {
       // Join the room
+      this.modeler.emptyPlayers();
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
         clientName: window.ProcessMaker.user?.fullName,
