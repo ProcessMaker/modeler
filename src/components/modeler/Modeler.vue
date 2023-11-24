@@ -61,6 +61,11 @@
         v-if="isAiGenerated"
         @closeCreateAssets="onCloseCreateAssets()"
       />
+
+      <GeneratingAssetsCard
+        ref="generatingAssetsCard"
+        v-if="generatingAi"
+      />
       
       <AssetsCreatedCard
         ref="assetsCreatedCard"
@@ -160,6 +165,7 @@
       />
 
       <RailBottom
+        v-if="!generatingAi"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -196,6 +202,7 @@ import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
+import GeneratingAssetsCard from '../aiMessages/GeneratingAssetsCard.vue';
 import AssetsCreatedCard from '../aiMessages/AssetsCreatedCard.vue';
 import CreateAssetsFailCard from '../aiMessages/CreateAssetsFailCard.vue';
 import { isJSON } from 'lodash-contrib';
@@ -272,6 +279,7 @@ export default {
     RailBottom,
     WelcomeMessage,
     CreateAssetsCard,
+    GeneratingAssetsCard,
     AssetsCreatedCard,
     CreateAssetsFailCard,
     RemoteCursor,
@@ -372,6 +380,7 @@ export default {
       currentCursorPosition: 0,
       previewPanelWidth: 600,
       isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
+      generatingAi: false,
       assetsCreated: false,
       // ^ TODO: To be changed depending on microservice response
       flowTypes: [
