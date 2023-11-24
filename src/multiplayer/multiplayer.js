@@ -203,11 +203,15 @@ export default class Multiplayer {
    * Sync the modeler nodes with the microservice
    * @param {String} clientId
    */
-  syncLocalNodes(clientId){
+  syncLocalNodes(clientId) {
     // Get the process definition
     const nodes = this.modeler.nodes.map((node) => {
       if (node.definition.$type === 'bpmn:BoundaryEvent') {
         return getBoundaryEventData(node);
+      }
+
+      if (node.definition.$type === 'bpmn:Lane') {
+        return this.prepareLaneData(node);
       }
 
       return this.modeler.multiplayerHook(node, false, true);
@@ -484,7 +488,8 @@ export default class Multiplayer {
   }
   addLaneNodes(lanes) {
     const pool = this.getPool(lanes);
-    window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [{
+
+    const defaultPoolData = {
       id: pool.component.node.definition.id,
       properties: {
         x: pool.component.node.diagram.bounds.x,
@@ -493,7 +498,10 @@ export default class Multiplayer {
         width: pool.component.node.diagram.bounds.width,
         isAddingLaneAbove: pool.isAddingLaneAbove,
       },
-    }]);
+    };
+
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [defaultPoolData]);
+
     this.yDoc.transact(() => {
       lanes.forEach((lane) => {
         const yMapNested = new Y.Map();
@@ -516,6 +524,8 @@ export default class Multiplayer {
       height: lane.diagram.bounds.height,
       poolId: lane.pool.component.node.definition.id,
       laneSetId: lane.pool.component.laneSet.id,
+      poolX: lane.pool.component.node.diagram.bounds.x,
+      poolY: lane.pool.component.node.diagram.bounds.y,
     };
     return data;
   }
