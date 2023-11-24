@@ -6,7 +6,7 @@ import Room from './room';
 import store from '@/store';
 import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
 import { InspectorUtils } from './inspector.utils';
-
+import ColorUtil from '../colorUtil';
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -16,7 +16,7 @@ export default class Multiplayer {
   room = null;
   inspector = null;
   deletedItem = null;
-
+  colorUtil = null;
   constructor(modeler) {
     // define document
     this.yDoc = new Y.Doc();
@@ -42,10 +42,7 @@ export default class Multiplayer {
     } else {
       this.clientIO.disconnect();
     }
-  }
-  randomColor = () => {
-    const randomColor = Math.floor(Math.random()*16777215).toString(16);
-    return '#' + randomColor;
+    this.colorUtil = new ColorUtil(50, 50, 10);
   }
 
   webSocketEvents() {
@@ -56,7 +53,7 @@ export default class Multiplayer {
         roomName: this.room.getRoom(),
         clientName: window.ProcessMaker.user?.fullName,
         clientAvatar: window.ProcessMaker.user?.avatar,
-        clientColor: window.ProcessMaker.user?.color || this.randomColor(),
+        clientColor: window.ProcessMaker.user?.color || this.colorUtil.randomColor(window.ProcessMaker.user?.fullName),
         clientCursor: {
           top: 300,
           left: 300,
