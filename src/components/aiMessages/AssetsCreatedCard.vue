@@ -1,26 +1,20 @@
 <template>
   <div class="message mt-3">
-    <b-card no-body class="h-100" style="border-radius: 8px;">
+    <b-card no-body class="h-100 w-100" style="border-radius: 8px;">
       <div class="h-100 d-flex pl-2 justify-content-between align-items-center">
         <div class="col-9">
           <div class="text-left">
             <inline-svg :src="proceC2Icon" class="ml-0 mr-2 my-auto ai-icon" />
-            <span style="color: #556271; font-weight: 600;">{{ $t("Create your missing assets with AI") }}</span>
+            <span style="color: #556271; font-weight: 600;">{{ $t("Assets Generated Successfully") }}</span>
           </div>
           <div style="color: #556271; font-weight: 400;">
-            {{ $t("Use AI to easily produce the necessary screens and scripts to complete the process.") }}
+            {{ $t("Check them on their corresponding tasks") }}
           </div>
         </div>
         <div class="col-3 h-100 p-0 d-flex flex-column justify-content-center">
           <button
-            class="h-100 createBtn btn btn-primary btn-block"
-            @click="onCreateAssets()"
-          >
-            {{ $t("Create now") }}
-          </button>
-          <button
             class="h-100 m-0 cancelBtn btn btn-light btn-block"
-            @click="onCancel()"
+            @click="onClose()"
           >
             {{ $t("Close") }}
           </button>
@@ -33,7 +27,7 @@
 import InlineSvg from 'vue-inline-svg';
 
 export default {
-  name: 'CreateAssetsCard',
+  name: 'AssetsCreatedCard',
   components: {
     InlineSvg,
   },
@@ -43,11 +37,8 @@ export default {
     };
   },
   methods: {
-    onCreateAssets(){
-
-    },
-    onCancel() {
-      this.$emit('closeCreateAssets');
+    onClose() {
+      this.$emit('closeAssetsCreated');
     },
   },
 };
@@ -61,13 +52,12 @@ export default {
   word-wrap: break-word;
   position: absolute;
   display: flex;
-  justify-content: center;
   align-items: center;
-  left: 2%;
+  right: 10%;
   z-index: 1;
   font-size: 100%;
-  height: 120px;
-  width: 520px;
+  height: 90px;
+  width: 480px;
 }
 
 .ai-icon {

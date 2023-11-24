@@ -61,6 +61,12 @@
         v-if="isAiGenerated"
         @closeCreateAssets="onCloseCreateAssets()"
       />
+      
+      <AssetsCreatedCard
+        ref="assetsCreatedCard"
+        v-if="assetsCreated"
+        @closeAssetsCreated="onCloseAssetsCreated()"
+      />
 
       <CreateAssetsFailCard
         ref="createAssetsFailCard"
@@ -190,6 +196,7 @@ import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
 import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
+import AssetsCreatedCard from '../aiMessages/AssetsCreatedCard.vue';
 import CreateAssetsFailCard from '../aiMessages/CreateAssetsFailCard.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
@@ -265,6 +272,7 @@ export default {
     RailBottom,
     WelcomeMessage,
     CreateAssetsCard,
+    AssetsCreatedCard,
     CreateAssetsFailCard,
     RemoteCursor,
   },
@@ -364,6 +372,8 @@ export default {
       currentCursorPosition: 0,
       previewPanelWidth: 600,
       isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
+      assetsCreated: false,
+      // ^ TODO: To be changed depending on microservice response
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -1686,14 +1696,17 @@ export default {
         this.players.splice(playerIndex, 1);
       }
     },
-    onCloseCreateAssets() {
-      this.isAiGenerated = false;
-    },
     /**
      * Update the lasso tool
      */
     updateLasso(){
       this.$refs.selector.updateSelectionBox();
+    },
+    onCloseCreateAssets() {
+      this.isAiGenerated = false;
+    },
+    onCloseAssetsCreated() {
+      this.assetsCreated = false;
     },
   },
   created() {
