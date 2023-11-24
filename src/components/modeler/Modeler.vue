@@ -59,6 +59,7 @@
       <CreateAssetsCard
         ref="createAssetsCard"
         v-if="isAiGenerated"
+        @onGenerateAssets="generateAssets()"
         @closeCreateAssets="onCloseCreateAssets()"
       />
       
@@ -374,6 +375,8 @@ export default {
       isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
       assetsCreated: false,
       // ^ TODO: To be changed depending on microservice response
+      currentNonce: null,
+      promptSessionId: '',
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -1702,6 +1705,60 @@ export default {
     updateLasso(){
       this.$refs.selector.updateSelectionBox();
     },
+    getNonce() {
+      const max = 999999999999999;
+      const nonce = Math.floor(Math.random() * max);
+      this.currentNonce = nonce;
+      localStorage.currentNonce = this.currentNonce;
+    },
+    getPromptSessionForProcess() {
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+      let item = promptSessions.find(item => item.processId === window.ProcessMaker?.modeler?.process?.id && item.server === window.location.host);
+
+      if (item) {
+        return item.promptSessionId;
+      }
+
+      return '';
+    },
+    getPromptSessionForUser() {
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+      let item = promptSessions.find(item => item.userId === window.ProcessMaker?.modeler?.process?.user_id && item.server === window.location.host);
+
+      if (item) {
+        return item.promptSessionId;
+      }
+
+      return '';
+    },
+    generateAssets() {
+      this.getNonce();
+
+      const params = {
+        promptSessionId: this.promptSessionId,
+        nonce: this.currentNonce,
+        processId: window.ProcessMaker?.modeler?.process?.id,
+      };
+
+      const url = '/package-ai/generateProcessArtifacts';
+
+      window.ProcessMaker.apiClient.post(url, params)
+        .then((response) => {
+          console.log('Success', response);
+        })
+        .catch((error) => {
+          const errorMsg = error.response?.data?.message || error.message;
+          window.ProcessMaker.alert(errorMsg, 'danger');
+        });
+    },
     onCloseCreateAssets() {
       this.isAiGenerated = false;
     },
@@ -1896,6 +1953,15 @@ export default {
         this.redirect(redirectUrl);
       }
     });
+
+    // AI Setup
+    this.currentNonce = localStorage.currentNonce;
+
+    if (window.ProcessMaker?.modeler?.process?.id) {
+      this.promptSessionId = this.getPromptSessionForProcess();
+    } else {
+      this.promptSessionId = this.getPromptSessionForUser();
+    }
   },
 };
 </script>
