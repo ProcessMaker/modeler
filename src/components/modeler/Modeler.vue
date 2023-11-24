@@ -1711,20 +1711,6 @@ export default {
       this.currentNonce = nonce;
       localStorage.currentNonce = this.currentNonce;
     },
-    getPromptSessionForProcess() {
-      // Get sessions list
-      let promptSessions = localStorage.getItem('promptSessions');
-
-      // If promptSessions does not exist, set it as an empty array
-      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
-      let item = promptSessions.find(item => item.processId === window.ProcessMaker?.modeler?.process?.id && item.server === window.location.host);
-
-      if (item) {
-        return item.promptSessionId;
-      }
-
-      return '';
-    },
     getPromptSessionForUser() {
       // Get sessions list
       let promptSessions = localStorage.getItem('promptSessions');
@@ -1751,8 +1737,7 @@ export default {
       const url = '/package-ai/generateProcessArtifacts';
 
       window.ProcessMaker.apiClient.post(url, params)
-        .then((response) => {
-          console.log('Success', response);
+        .then(() => {
         })
         .catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
@@ -1956,12 +1941,7 @@ export default {
 
     // AI Setup
     this.currentNonce = localStorage.currentNonce;
-
-    if (window.ProcessMaker?.modeler?.process?.id) {
-      this.promptSessionId = this.getPromptSessionForProcess();
-    } else {
-      this.promptSessionId = this.getPromptSessionForUser();
-    }
+    this.promptSessionId = this.getPromptSessionForUser();
   },
 };
 </script>
