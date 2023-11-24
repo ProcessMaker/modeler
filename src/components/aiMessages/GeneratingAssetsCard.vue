@@ -5,12 +5,12 @@
         <div>
           <div class="text-left">
             <inline-svg :src="proceC2Icon" class="ml-0 mr-2 my-auto ai-icon" />
-            <span style="color: #556271; font-weight: 400;">{{ $t("Generating...") }}</span>
+            <span class="card-text">{{ $t("Generating...") }}</span>
           </div>
         </div>
         <div class="p-0">
           <button
-            class="h-100 px-3 cancelBtn btn btn-secondary"
+            class="h-100 px-3 cancel-btn btn btn-secondary"
             @click="onClose()"
           >
             {{ $t("STOP") }}
@@ -58,12 +58,17 @@ export default {
   width: 450px;
 }
 
+.card-text {
+  color: #556271;
+  font-weight: 400;
+}
+
 .ai-icon {
   width: 22px;
   height: 22px;
 }
 
-.cancelBtn {
+.cancel-btn {
   font-weight: 600;
   text-transform: capitalize;
 }
