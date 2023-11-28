@@ -197,6 +197,11 @@ export default class Multiplayer {
         this.updateFlows(data);
       }
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateSelectedNodes', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateSelectedNodes(data);
+      }
+    });
     window.ProcessMaker.EventBus.$on('multiplayer-updateMousePosition', ( data ) => {
       if (this.modeler.isMultiplayer) {
         this.updateMousePosition(data);
@@ -241,6 +246,18 @@ export default class Multiplayer {
       this.modeler.updateClientCursor(client);
     });
   }
+  updateSelectedNodes(data) {
+    const selectedNodes = [];
+    data.forEach((value) => {
+      selectedNodes.push({
+        clientId: this.clientIO.id,
+        nodeId: value.id,
+      });
+    });
+    console.log('updateSelectedNodes', selectedNodes);
+    this.clientIO.emit('updateSelectedNodes', data);
+  }
+
   /**
    * Sync the modeler nodes with the microservice
    * @param {String} clientId

@@ -112,6 +112,7 @@ export default {
     selected(newSelected) {
       this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
+      this.multiplayerHighlightedNodes(newSelected);
     },
   },
   methods: {
@@ -778,6 +779,11 @@ export default {
         store.commit('addToHighlightedNodes', selectedNodes);
       } else {
         store.commit('highlightNode', this.processNode);
+      }
+    },
+    multiplayerHighlightedNodes(selected){
+      if (selected?.length) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateSelectedNodes', this.getProperties(selected));
       }
     },
     /**
