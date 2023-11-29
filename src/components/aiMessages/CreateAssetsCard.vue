@@ -43,8 +43,8 @@ export default {
     };
   },
   methods: {
-    onCreateAssets(){
-
+    onCreateAssets() {
+      this.$emit('onGenerateAssets');
     },
     onCancel() {
       this.$emit('closeCreateAssets');
