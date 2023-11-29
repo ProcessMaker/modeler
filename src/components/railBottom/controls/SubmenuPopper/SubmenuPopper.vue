@@ -37,7 +37,7 @@
         <span />
       </div>
       <i v-if="!containsSvg(data.icon)" :class="data.icon" class="fa-lg"/>
-      <inline-svg :src="data.icon" />
+      <inline-svg v-else :src="data.icon" />
     </a>
   </popper>
   <a v-else class="control-submenu-item"
@@ -46,7 +46,7 @@
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
     <i v-if="!containsSvg(data.icon)" :class="data.icon" class="fa-lg"/>
-    <inline-svg :src="data.icon" />
+    <inline-svg v-else :src="data.icon" />
   </a>
 </template>
 
@@ -100,6 +100,10 @@ export default ({
     & > svg {
       width: 24px;
       height: 24px;
+    }
+    & > i {
+      color: #000000;
+      padding: 5px;
     }
     &.active {
       background-color: #EBEEF2;
