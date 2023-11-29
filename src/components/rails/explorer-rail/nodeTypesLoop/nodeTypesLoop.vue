@@ -33,7 +33,14 @@ export default {
   },
   computed: {
     pinnedObjects() {
-      return nodeTypesStore.getters.getPinnedNodeTypes;
+      const pinnedNodeTypes = nodeTypesStore.getters.getPinnedNodeTypes;
+
+      // Filter pinnedNodeTypes to exclude objects with PM Blocks type.
+      const filteredPinnedNodeTypes = pinnedNodeTypes.filter(obj => {
+        return !obj.type?.includes('processmaker-pm-block');
+      });
+
+      return filteredPinnedNodeTypes; 
     },
     objects() {
       return nodeTypesStore.getters.getNodeTypes;

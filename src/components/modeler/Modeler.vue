@@ -1166,6 +1166,8 @@ export default {
       const diagram = this.nodeRegistry[data.type].diagram(this.moddle);
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
+      diagram.bounds.width = data.width;
+      diagram.bounds.height = data.height;
       const newNode = this.createNode(data.type, definition, diagram);
       //verify if the node has a pool as a container
       if (data.poolId) {
