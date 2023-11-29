@@ -80,9 +80,15 @@ export default class Multiplayer {
         this.syncLocalNodes(clientId);
       }
     });
-    
+
+    // Listen for updates when the cursor data was updated
     this.clientIO.on('updateUserCursor', async(payload) => {
       this.updateClientCursor(payload);
+    });
+
+    // Listen for updates when the cursor data was updated
+    this.clientIO.on('selectedNodesWasUpdated', async(payload) => {
+      this.updateHightligtedNodes(payload);
     });
 
     // Listen for updates when a new element is added
@@ -246,16 +252,30 @@ export default class Multiplayer {
       this.modeler.updateClientCursor(client);
     });
   }
+  /**
+   * Updates the selected nodes by the user
+   * @param {Object} data
+   */
   updateSelectedNodes(data) {
     const selectedNodes = [];
     data.forEach((value) => {
-      selectedNodes.push({
-        clientId: this.clientIO.id,
-        nodeId: value.id,
-      });
+      selectedNodes.push(value.id);
     });
     console.log('updateSelectedNodes', selectedNodes);
-    this.clientIO.emit('updateSelectedNodes', data);
+    this.clientIO.emit('updateSelectedNodes', {
+      clientId: this.clientIO.id,
+      roomName: this.room.getRoom(),
+      selectedNodes,
+    });
+  }
+  /**
+   * Update highlighted nodes
+   * @param {Object} data
+   */
+  updateHightligtedNodes(payload) {
+    payload.clients.map(client => {
+      this.modeler.updateHightligtedNodes(client);
+    });
   }
 
   /**

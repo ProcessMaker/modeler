@@ -131,6 +131,12 @@ export default {
         },
       };
     },
+    unhighlightShape() {
+      if (!this.shapeView) {
+        return;
+      }
+      this.shapeView.unhighlight(this.shapeBody, errorHighlighter);
+    },
     setShapeHighlightCustomColor(color) {
       if (!this.shapeView) {
         return;

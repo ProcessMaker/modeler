@@ -1691,6 +1691,24 @@ export default {
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
       }
     },
+    updateHightligtedNodes(data) {
+      if (data) {
+        // unhighlight current selected shape
+        const player = this.players.find(player => player.id === data.id);
+        player.selectedNodes.forEach((nodeId) => {
+          console.log('nodeId', nodeId);
+          const element = this.getElementByNodeId(nodeId);
+          element.component.unhighlightShape(data.color);
+        });
+        // highlight selected shape
+        this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
+        data.selectedNodes.forEach((nodeId) => {
+          console.log('nodeId', nodeId);
+          const element = this.getElementByNodeId(nodeId);
+          element.component.setShapeHighlightCustomColor(data.color);
+        });
+      }
+    },
     removePlayer(playerId) {
       const playerIndex = this.players.findIndex(player => player.id === playerId);
 
