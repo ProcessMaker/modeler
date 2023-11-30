@@ -1736,8 +1736,76 @@ export default {
 
       return '';
     },
+    setPromptSessions(promptSessionId) {
+      let index = 'userId';
+      let id = window.ProcessMaker?.modeler?.process?.user_id;
+
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+
+      let item = promptSessions.find(item => item[index] === id && item.server === window.location.host);
+
+      if (item) {
+        item.promptSessionId = promptSessionId;
+      } else {
+        promptSessions.push({ [index]: id, server: window.location.host, promptSessionId });
+      }
+
+      localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
+    },
+    removePromptSessionForUser() {
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+
+      let item = promptSessions.find(item => item.userId === window.ProcessMaker?.modeler?.process?.user_id && item.server === window.location.host);
+
+      if (item) {
+        item.promptSessionId = '';
+      }
+
+      localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
+    },
+    fetchHistory() {
+      let url = '/package-ai/getPromptSessionHistory';
+
+      let params = {
+        server: window.location.host,
+        processId: this.processId,
+      };
+
+      if (this.promptSessionId && this.promptSessionId !== null && this.promptSessionId !== '') {
+        params = {
+          promptSessionId: this.promptSessionId,
+        };
+      }
+
+      window.ProcessMaker.apiClient.post(url, params)
+        .then(response => {
+          this.setPromptSessions((response.data.promptSessionId));
+          this.promptSessionId = (response.data.promptSessionId);
+          localStorage.promptSessionId = (response.data.promptSessionId);
+        }).catch((error) => {
+          const errorMsg = error.response?.data?.message || error.message;
+
+          if (error.response.status === 404) {
+            this.removePromptSessionForUser();
+            localStorage.promptSessionId = '';
+            this.promptSessionId = '';
+          } else {
+            window.ProcessMaker.alert(errorMsg, 'danger');
+          }
+        });
+    },
     generateAssets() {
       this.getNonce();
+
+      // TODO: Add endpoint to get the promprSessionId
 
       const params = {
         promptSessionId: this.promptSessionId,
@@ -1952,7 +2020,11 @@ export default {
 
     // AI Setup
     this.currentNonce = localStorage.currentNonce;
+    if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
+      localStorage.setItem('promptSessions', JSON.stringify([]));
+    }
     this.promptSessionId = this.getPromptSessionForUser();
+    this.fetchHistory();
   },
 };
 </script>
