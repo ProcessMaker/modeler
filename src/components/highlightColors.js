@@ -1,4 +1,4 @@
-export const COLOR_DEFAULT = 'red';
+export const COLOR_DEFAULT = '#5096db';
 export const COLOR_ERROR = '#FF0000';
 export const COLOR_IN_PROGRESS = '#3FA6FF';
 export const COLOR_IN_PROGRESS_FILL = '#DCF2FF';

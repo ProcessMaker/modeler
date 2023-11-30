@@ -128,21 +128,22 @@ export default {
               'data-cy': 'selected',
             },
           },
+          partial: false,
+          type: 'default',
         },
       };
     },
-    unhighlightShape() {
+    setHighlightColor(highlighted, color) {
       if (!this.shapeView) {
         return;
       }
-      this.shapeView.unhighlight(this.shapeBody, errorHighlighter);
-    },
-    setShapeHighlightCustomColor(color) {
-      if (!this.shapeView) {
-        return;
+      if (highlighted) {
+        this.shapeView.unhighlight(this.shapeBody, errorHighlighter);
+        this.shapeView.highlight(this.shapeBody, this.prepareCustomColorHighlighter(color));
+      } else {
+        this.shapeView.unhighlight(this.shapeBody, this.prepareCustomColorHighlighter(color));
       }
-      this.shapeView.unhighlight(this.shapeBody, errorHighlighter);
-      this.shapeView.highlight(this.shapeBody, this.prepareCustomColorHighlighter(color));
+     
     },
     setShapeHighlightForReadOnly() {
       if (!this.shapeView) {

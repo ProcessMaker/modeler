@@ -82,6 +82,18 @@ export default {
     },
   },
   methods: {
+    setHighlightColor(highlighted, color){
+      if (highlighted) {
+        this.shape.attr({
+          line: { stroke: color },
+          '.joint-highlight-stroke': { 'display': 'none' },
+        });
+        this.shapeView.showTools();
+      } else {
+        resetShapeColor(this.shape);
+        this.shapeView.hideTools();
+      }
+    },
     setShapeHighlight() {
       if (this.isCompleted) {
         this.shape.attr({

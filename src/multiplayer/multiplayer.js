@@ -257,15 +257,11 @@ export default class Multiplayer {
    * @param {Object} data
    */
   updateSelectedNodes(data) {
-    const selectedNodes = [];
-    data.forEach((value) => {
-      selectedNodes.push(value.id);
-    });
-    console.log('updateSelectedNodes', selectedNodes);
+    console.log('updateSelectedNodes', data);
     this.clientIO.emit('updateSelectedNodes', {
       clientId: this.clientIO.id,
       roomName: this.room.getRoom(),
-      selectedNodes,
+      selectedNodes: data,
     });
   }
   /**

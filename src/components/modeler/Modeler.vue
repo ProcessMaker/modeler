@@ -1698,14 +1698,14 @@ export default {
         player.selectedNodes.forEach((nodeId) => {
           console.log('nodeId', nodeId);
           const element = this.getElementByNodeId(nodeId);
-          element.component.unhighlightShape(data.color);
+          element.component.setHighlightColor(false, data.color);
         });
         // highlight selected shape
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
         data.selectedNodes.forEach((nodeId) => {
           console.log('nodeId', nodeId);
           const element = this.getElementByNodeId(nodeId);
-          element.component.setShapeHighlightCustomColor(data.color);
+          element.component.setHighlightColor(true, data.color);
         });
       }
     },

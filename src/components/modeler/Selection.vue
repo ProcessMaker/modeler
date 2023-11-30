@@ -782,9 +782,16 @@ export default {
       }
     },
     highlightNodesMultiplayer(selected){
-      if (selected?.length) {
-        window.ProcessMaker.EventBus.$emit('multiplayer-updateSelectedNodes', this.getProperties(selected));
-      }
+      // Update selected nodes
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateSelectedNodes', this.getSelectedNodeKeys(selected));
+    },
+    getSelectedNodeKeys(selected) {
+      const keys = [];
+      selected.forEach(shape => {
+        const { node } = shape.model.component;
+        keys.push( node.definition.id);
+      });
+      return keys;
     },
     /**
      * Gets the child shape
