@@ -7,6 +7,8 @@
       @openPanel="handleOpenPanel"
     />
 
+    <AiGenerateButton/>
+
     <ValidateButton @openIssue="handleOpenIssue" />
 
     <ValidatePanel
@@ -22,11 +24,13 @@
 import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
 import MultiplayerViewUsers from '@/components/topRail/multiplayerViewUsers/MultiplayerViewUsers';
+import AiGenerateButton from '../aiMessages/AiGenerateButton.vue';
 export default {
   components: {
     ValidateButton,
     ValidateIssue,
     ValidatePanel,
+    AiGenerateButton,
     MultiplayerViewUsers,
   },
   props: {
