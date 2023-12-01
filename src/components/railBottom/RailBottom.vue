@@ -84,12 +84,12 @@ export default {
       // Control coordinates
       const controlEl = entries[0].target.getBoundingClientRect();
       // Zoom coordinates
-      const zoomEl = this.$refs.zoomBox.$el.getBoundingClientRect();
+      const zoomEl = this.$refs.zoomBox?.$el.getBoundingClientRect();
       // Undo/Redo coordinates
-      const undoRedoEl = this.$refs.undoRedoBox.$el.getBoundingClientRect();
+      const undoRedoEl = this.$refs.undoRedoBox?.$el.getBoundingClientRect();
 
       // Checks overlapping
-      if (this.overlap) {
+      if (this.overlap && undoRedoEl) {
         if (controlEl.width < this.widthOverlapControl) {
           // Get the computed styles of the ZoomControl
           const zoomStyles = window.getComputedStyle(this.$refs.zoomBox.$el);
@@ -107,7 +107,7 @@ export default {
             this.overlap = false;
           }
         }
-      } else if (undoRedoEl.left < zoomEl.right) {
+      } else if (undoRedoEl?.left < zoomEl?.right) {
         this.overlap = true;
         this.widthOverlapControl = controlEl.width;
         this.leftOverlapUndoRedo = undoRedoEl.left;

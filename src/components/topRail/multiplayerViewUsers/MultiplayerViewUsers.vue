@@ -1,6 +1,6 @@
 <template>
   <b-avatar-group class="container" v-show="isMultiplayer">
-    <template v-for="item in filteredPlayers" >
+    <template v-for="item in players" >
       <Avatar
         :badgeBackgroundColor="item.color"
         :imgSrc="item.avatar"
@@ -13,7 +13,6 @@
 </template>
   
 <script>
-import { uniqBy } from 'lodash';
 import Avatar from '@/components/topRail/multiplayerViewUsers/avatar/Avatar';
 import store from '@/store';
 
@@ -28,12 +27,6 @@ export default {
     },
   },
   computed: {
-    filteredPlayers() {
-      const allPlayers = uniqBy(this.players, 'name');
-      return allPlayers.filter(player => {
-        return player.name.toLowerCase() !== window.ProcessMaker.user?.fullName.toLowerCase();
-      });
-    },
     isMultiplayer: () => store.getters.isMultiplayer,
   },
 };

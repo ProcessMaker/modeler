@@ -6,7 +6,7 @@ import Room from './room';
 import store from '@/store';
 import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
 import { InspectorUtils } from './inspector.utils';
-
+import ColorUtil from '../colorUtil';
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -16,7 +16,7 @@ export default class Multiplayer {
   room = null;
   inspector = null;
   deletedItem = null;
-
+  colorUtil = null;
   constructor(modeler) {
     // define document
     this.yDoc = new Y.Doc();
@@ -42,33 +42,28 @@ export default class Multiplayer {
     } else {
       this.clientIO.disconnect();
     }
+    this.colorUtil = new ColorUtil(50, 50, 10);
   }
+
   webSocketEvents() {
     this.clientIO.on('connect', () => {
       // Join the room
+      this.modeler.emptyPlayers();
       this.clientIO.emit('joinRoom', {
         roomName: this.room.getRoom(),
         clientName: window.ProcessMaker.user?.fullName,
         clientAvatar: window.ProcessMaker.user?.avatar,
+        clientColor: window.ProcessMaker.user?.color || this.colorUtil.randomColor(window.ProcessMaker.user?.fullName),
+        clientCursor: {
+          top: 300,
+          left: 300,
+        },
       });
     });
 
     this.clientIO.on('clientJoined', (payload) => {
       this.modeler.enableMultiplayer(payload.isMultiplayer);
-
-      if (payload.isMultiplayer) {
-        payload.clients.map(client => {
-          const newPlayer = {
-            id: client.id,
-            name: client.name,
-            color:  client.color,
-            avatar: client.avatar || null,
-            top: 90,
-            left: 80,
-          };
-          this.modeler.addPlayer(newPlayer);
-        });
-      }
+      this.addPlayers(payload);
     });
 
     this.clientIO.on('clientLeft', (payload) => {
@@ -84,6 +79,10 @@ export default class Multiplayer {
       if (clientId) {
         this.syncLocalNodes(clientId);
       }
+    });
+    
+    this.clientIO.on('updateUserCursor', async(payload) => {
+      this.updateClientCursor(payload);
     });
 
     // Listen for updates when a new element is added
@@ -197,6 +196,49 @@ export default class Multiplayer {
       if (this.modeler.isMultiplayer) {
         this.updateFlows(data);
       }
+    });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateMousePosition', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateMousePosition(data);
+      }
+    });
+  }
+  /**
+   * Add a Player
+   * @param {Object} payload 
+   */
+  addPlayers(payload) {
+    if (payload.isMultiplayer) {
+      payload.clients.map(client => {
+        const newPlayer = {
+          id: client.id,
+          name: client.name,
+          color: client.color,
+          avatar: client.avatar,
+          cursor: client.cursor,
+        };
+        this.modeler.addPlayer(newPlayer);
+      });
+    }
+  }
+  /**
+   * Updates the mouse position
+   * @param {Object} data 
+   */
+  updateMousePosition(data) {
+    this.clientIO.emit('cursorTrackingUpdate', { 
+      roomName: this.room.getRoom(),
+      clientId:  this.clientIO.id,
+      clientCursor: data,
+    });
+  }
+  /**
+   * Update Client cursor handler
+   * @param {Object} payload 
+   */
+  updateClientCursor(payload){
+    payload.clients.map(client => {
+      this.modeler.updateClientCursor(client);
     });
   }
   /**
