@@ -2,7 +2,7 @@
   <div class="mr-2">
     <button
       id="aiAssetButton"
-      :class="['btn px-2 ai-btn', showPopover ? 'ai-btn-open' : 'ai-btn-closed']"
+      :class="['btn py-0 px-2 ai-btn', showPopover ? 'ai-btn-open' : 'ai-btn-closed']"
       @click="showPopover = !showPopover"
     >
       <inline-svg :src="proceC2Icon" class="my-auto ai-icon" />
@@ -20,7 +20,7 @@
         </div>
         <div class="m-2">
           <span class="text-primary">
-            {{ $t('Optimal results need propper task naming and connections.') }}
+            {{ $t('Optimal results need proper task naming and connections.') }}
           </span>
         </div>
         <button class="m-2 btn btn-primary" @click="onGenerateAssets()">
@@ -57,6 +57,10 @@ export default {
   height: 22px;
 }
 
+.ai-btn-open > .ai-icon {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(3deg) brightness(200%) contrast(150%);
+}
+
 .ai-btn {
   display: flex;
   justify-content: center;
@@ -72,6 +76,6 @@ export default {
 
 .ai-btn-open {
   color: #FFFFFF;
-  background-color: #6A7888;
+  background-color: #104a75;
 }
 </style>
