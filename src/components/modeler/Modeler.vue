@@ -1696,14 +1696,12 @@ export default {
         // unhighlight current selected shape
         const player = this.players.find(player => player.id === data.id);
         player.selectedNodes.forEach((nodeId) => {
-          console.log('nodeId', nodeId);
           const element = this.getElementByNodeId(nodeId);
           element.component.setHighlightColor(false, data.color);
         });
         // highlight selected shape
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
         data.selectedNodes.forEach((nodeId) => {
-          console.log('nodeId', nodeId);
           const element = this.getElementByNodeId(nodeId);
           element.component.setHighlightColor(true, data.color);
         });

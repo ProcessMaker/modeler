@@ -257,7 +257,6 @@ export default class Multiplayer {
    * @param {Object} data
    */
   updateSelectedNodes(data) {
-    console.log('updateSelectedNodes', data);
     this.clientIO.emit('updateSelectedNodes', {
       clientId: this.clientIO.id,
       roomName: this.room.getRoom(),
