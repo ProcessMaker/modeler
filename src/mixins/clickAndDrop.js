@@ -86,6 +86,9 @@ export default {
         tempGhost.src = control.icon;
       } else {
         tempGhost.setAttribute('class', control.icon);
+        tempGhost.style.fontSize = '42px';
+        tempGhost.style.width = '42px';
+        tempGhost.style.height = '42px';
       }
 
       document.body.appendChild(tempGhost);

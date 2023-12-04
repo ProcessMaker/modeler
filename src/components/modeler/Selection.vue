@@ -633,7 +633,7 @@ export default {
      */
     getConnectedLinkProperties(links) {
       let changed = [];
-      links.forEach((linkView) => {
+      links?.forEach((linkView) => {
         const vertices = linkView.model.component.shape.vertices();
         if (vertices?.length) {
           const waypoint = [];
@@ -720,7 +720,7 @@ export default {
      * Selector will update the waypoints of the related flows
      */
     updateFlowsWaypoint(){
-      this.connectedLinks.forEach((link)=> {
+      this.connectedLinks?.forEach((link)=> {
         if (link.model.component && link.model.get('type') === 'standard.Link'){
           const start = link.sourceAnchor;
           const end = link.targetAnchor;
