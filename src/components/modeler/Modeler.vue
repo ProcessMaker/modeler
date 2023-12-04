@@ -1691,14 +1691,16 @@ export default {
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
       }
     },
+    unhightligtedNodes(clientId) {
+      const player = this.players.find(player => player.id === clientId);
+      player.selectedNodes.forEach((nodeId) => {
+        const element = this.getElementByNodeId(nodeId);
+        element.component.setHighlightColor(false, player.color);
+      });
+    },
     updateHightligtedNodes(data) {
       if (data) {
-        // unhighlight current selected shape
-        const player = this.players.find(player => player.id === data.id);
-        player.selectedNodes.forEach((nodeId) => {
-          const element = this.getElementByNodeId(nodeId);
-          element.component.setHighlightColor(false, data.color);
-        });
+        this.unhightligtedNodes(data.id);
         // highlight selected shape
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
         data.selectedNodes.forEach((nodeId) => {

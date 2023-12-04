@@ -67,6 +67,8 @@ export default class Multiplayer {
     });
 
     this.clientIO.on('clientLeft', (payload) => {
+      // Unhighlight nodes
+      this.modeler.unhightligtedNodes(payload.clientId);
       // Remove the player from the multiplayer list
       this.modeler.removePlayer(payload.clientId);
 
