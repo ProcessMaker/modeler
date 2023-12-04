@@ -68,7 +68,7 @@ export default class Multiplayer {
 
     this.clientIO.on('clientLeft', (payload) => {
       // Unhighlight nodes
-      this.modeler.unhightligtedNodes(payload.clientId);
+      this.modeler.unhightligtNodes(payload.clientId);
       // Remove the player from the multiplayer list
       this.modeler.removePlayer(payload.clientId);
 
@@ -259,6 +259,11 @@ export default class Multiplayer {
    * @param {Object} data
    */
   updateSelectedNodes(data) {
+    const warningMessage = 'Another user is working on this object, wait until they finish maken changes.';
+    if (this.modeler.isMultiplayerSelected(data)) {
+      console.log('isMultiplayerSelected', this.modeler.isMultiplayerSelected(data));
+      window.ProcessMaker.alert(warningMessage, 'warning');
+    } 
     this.clientIO.emit('updateSelectedNodes', {
       clientId: this.clientIO.id,
       roomName: this.room.getRoom(),
