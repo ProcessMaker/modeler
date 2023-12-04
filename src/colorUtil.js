@@ -44,7 +44,6 @@ export default class ColorUtil {
     * @returns {Number}
     */
   generateHSL(name) {
-    console.log(name);
     const hash = this.getHashOfString(name);
     const h = this.normalizeHash(hash, 0, 360);
     const s = this.normalizeHash(hash, this.saturationRange[0], this.saturationRange[1]);

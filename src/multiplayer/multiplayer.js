@@ -67,6 +67,8 @@ export default class Multiplayer {
     });
 
     this.clientIO.on('clientLeft', (payload) => {
+      // Unhighlight nodes
+      this.modeler.unhightligtNodes(payload.clientId);
       // Remove the player from the multiplayer list
       this.modeler.removePlayer(payload.clientId);
 
@@ -80,9 +82,15 @@ export default class Multiplayer {
         this.syncLocalNodes(clientId);
       }
     });
-    
+
+    // Listen for updates when the cursor data was updated
     this.clientIO.on('updateUserCursor', async(payload) => {
       this.updateClientCursor(payload);
+    });
+
+    // Listen for updates when the cursor data was updated
+    this.clientIO.on('selectedNodesWasUpdated', async(payload) => {
+      this.updateHightligtedNodes(payload);
     });
 
     // Listen for updates when a new element is added
@@ -197,6 +205,11 @@ export default class Multiplayer {
         this.updateFlows(data);
       }
     });
+    window.ProcessMaker.EventBus.$on('multiplayer-updateSelectedNodes', ( data ) => {
+      if (this.modeler.isMultiplayer) {
+        this.updateSelectedNodes(data);
+      }
+    });
     window.ProcessMaker.EventBus.$on('multiplayer-updateMousePosition', ( data ) => {
       if (this.modeler.isMultiplayer) {
         this.updateMousePosition(data);
@@ -241,6 +254,31 @@ export default class Multiplayer {
       this.modeler.updateClientCursor(client);
     });
   }
+  /**
+   * Updates the selected nodes by the user
+   * @param {Object} data
+   */
+  updateSelectedNodes(data) {
+    const warningMessage = 'Another user is working on this object, wait until they finish making changes.';
+    if (this.modeler.isMultiplayerSelected(data)) {
+      window.ProcessMaker.alert(warningMessage, 'warning');
+    } 
+    this.clientIO.emit('updateSelectedNodes', {
+      clientId: this.clientIO.id,
+      roomName: this.room.getRoom(),
+      selectedNodes: data,
+    });
+  }
+  /**
+   * Update highlighted nodes
+   * @param {Object} data
+   */
+  updateHightligtedNodes(payload) {
+    payload.clients.map(client => {
+      this.modeler.updateHightligtedNodes(client);
+    });
+  }
+
   /**
    * Sync the modeler nodes with the microservice
    * @param {String} clientId

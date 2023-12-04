@@ -117,25 +117,54 @@ export default {
     },
   },
   methods: {
-    setShapeHighlight() {
-      if (store.getters.isReadOnly) {
-        this.shapeView.unhighlight(this.shapeBody, completedHighlighter);
-        if (this.isCompleted) {
-          this.shape.attr('body/fill', COLOR_COMPLETED_FILL);
-          this.shapeView.highlight(this.shapeBody, completedHighlighter);
-        }
-        this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
-        if (this.isInProgress) {
-          this.shape.attr('body/fill', COLOR_IN_PROGRESS_FILL);
-          this.shapeView.highlight(this.shapeBody, inProgressHighlighter);
-        }
-        if (this.isIdle) {
-          this.shape.attr('body/fill', COLOR_IDLE_FILL);
-          this.shapeView.highlight(this.shapeBody, idleHighlighter);
-        }
+    prepareCustomColorHighlighter(color) {
+      return {
+        highlighter: {
+          name: 'stroke',
+          options: {
+            attrs: {
+              stroke: color,
+              'stroke-width': 3,
+              'data-cy': 'selected',
+            },
+          },
+          partial: false,
+          type: 'default',
+        },
+      };
+    },
+    setHighlightColor(highlighted, color) {
+      if (!this.shapeView) {
         return;
       }
-
+      if (highlighted) {
+        this.shapeView.unhighlight(this.shapeBody, errorHighlighter);
+        this.shapeView.highlight(this.shapeBody, this.prepareCustomColorHighlighter(color));
+      } else {
+        this.shapeView.unhighlight(this.shapeBody, this.prepareCustomColorHighlighter(color));
+      }
+     
+    },
+    setShapeHighlightForReadOnly() {
+      if (!this.shapeView) {
+        return;
+      }
+      this.shapeView.unhighlight(this.shapeBody, completedHighlighter);
+      if (this.isCompleted) {
+        this.shape.attr('body/fill', COLOR_COMPLETED_FILL);
+        this.shapeView.highlight(this.shapeBody, completedHighlighter);
+      }
+      this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
+      if (this.isInProgress) {
+        this.shape.attr('body/fill', COLOR_IN_PROGRESS_FILL);
+        this.shapeView.highlight(this.shapeBody, inProgressHighlighter);
+      }
+      if (this.isIdle) {
+        this.shape.attr('body/fill', COLOR_IDLE_FILL);
+        this.shapeView.highlight(this.shapeBody, idleHighlighter);
+      }
+    },
+    setShapeHighlightForDefault() {
       if (!this.shapeView) {
         return;
       }
@@ -148,6 +177,19 @@ export default {
         this.shapeView.highlight(this.shapeBody, defaultHighlighter);
       }
     },
+    setShapeHighlight() {
+      if (!this.shapeView) {
+        return;
+      }
+      this.shapeView.unhighlight(this.shapeBody, errorHighlighter);
+      if (store.getters.isReadOnly) {
+        this.setShapeHighlightForReadOnly();
+      } else {
+        this.setShapeHighlightForDefault();
+      }
+    },
+
+
     setBorderOutline(borderOutline) {
       if (this.currentBorderOutline) {
         this.shapeView.unhighlight(this.shapeBody, this.currentBorderOutline);
