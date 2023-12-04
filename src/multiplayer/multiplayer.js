@@ -261,7 +261,6 @@ export default class Multiplayer {
   updateSelectedNodes(data) {
     const warningMessage = 'Another user is working on this object, wait until they finish maken changes.';
     if (this.modeler.isMultiplayerSelected(data)) {
-      console.log('isMultiplayerSelected', this.modeler.isMultiplayerSelected(data));
       window.ProcessMaker.alert(warningMessage, 'warning');
     } 
     this.clientIO.emit('updateSelectedNodes', {
