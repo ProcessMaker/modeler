@@ -15,7 +15,8 @@
         <li v-for="(item, key) in data.items"
           :class="['control-submenu-list', {'active': selectedItem === item.type}]"
           :key="key"
-          @click="onClickHandler($event, item)"
+          @mousedown.stop="$emit('mouseDownSubmenu', $event, item)"
+          @mouseup.stop="$emit('mouseUpSubmenu', $event, item)"
           :data-test="item.type"
         >
           <i v-if="!containsSvg(item.icon)" :class="item.icon" class="fa-lg"/>
@@ -73,12 +74,6 @@ export default ({
       element: null,
       wasClicked: false,
     };
-  },
-  methods: {
-    onClickHandler(event, control) {
-      event.stopPropagation();
-      this.$emit('clickToSubmenu', { event, control });
-    },
   },
 });
 

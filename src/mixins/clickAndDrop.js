@@ -109,6 +109,25 @@ export default {
       nodeTypesStore.commit('clearSelectedNode');
       nodeTypesStore.commit('setGhostNode', null);
     },
+    /**
+     * The user mouse-down'd inside the panel so this *might* be a
+     * click-and-drag event. Set mouseDownDrag to true and fire
+     * the onClickHandler (previously, this is what the click event did).
+     */
+    startDragNewObject(e, control) {
+      window.ProcessMaker.mouseDownDrag = true;
+      this.onClickHandler(e, control);
+    },
+    /**
+     * The user mouse-up'd inside the panel so this is a
+     * click-move-click event, not a click-and-drag event.
+     * 
+     * Also used by the Pin buttons so we don't trigger a new element
+     * when they are clicked/dragged.
+     */
+    cancelDragNewObject() {
+      window.ProcessMaker.mouseDownDrag = false;
+    },
   },
   computed: {
     selectedItem() {

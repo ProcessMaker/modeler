@@ -8,12 +8,15 @@
       :class="['control-item', {'active': selectedItem && (selectedItem.type === item.type)}]"
       :id="item.id"
       :key="item.id"
-      @click.stop="onClickControlHandler($event, item)"
+      @mousedown.stop="onClickControlHandler($event, item, 'down')"
+      @mouseup.stop="onClickControlHandler($event, item, 'up')"
       :data-test="`${item.type}-main`"
     >
+      <!-- @click.stop="onClickControlHandler($event, item)" -->
       <SubmenuPopper
         :data="item"
-        @clickToSubmenu="clickToSubmenuHandler"
+        @mouseDownSubmenu="($event, data) => clickToSubmenuHandler($event, data, 'down')"
+        @mouseUpSubmenu="($event, data) => clickToSubmenuHandler($event, data, 'up')"
         :selectedItem="selectedSubmenuItem"
         :popperType="popperType"
       />
@@ -65,22 +68,32 @@ export default ({
     },
   },
   methods: {
-    clickToSubmenuHandler(data){
+    clickToSubmenuHandler(event, data, type){
+      if (type === 'up') {
+        this.cancelDragNewObject();
+        return;
+      }
+
       window.ProcessMaker.EventBus.$off('custom-pointerclick');
       this.wasClicked = false;
       this.parent = this.selectedItem;
       this.selectedSubmenuItem = data.control.type;
-      this.onClickHandler(data.event, data.control);
+      this.startDragNewObject(event, data);
     },
     /**
      * On click on the botton rail control
      * @param {Object} event
      * @param {Object} control
      */
-    onClickControlHandler(event, control) {
+    onClickControlHandler(event, control, type) {
+      if (type === 'up') {
+        this.cancelDragNewObject();
+        return;
+      }
+
       this.selectedSubmenuItem = null;
       this.popperType = this.currentType === control.type ? null : control.type;
-      this.onClickHandler(event, control);
+      this.startDragNewObject(event, control);
       this.currentType = this.popperType;
     },
     toggleExplorer() {

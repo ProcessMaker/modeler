@@ -489,7 +489,11 @@ export default {
       this.isResizingPreview = true;
       this.currentCursorPosition = event.x;
     },
-    onMouseUp() {
+    onMouseUp(event) {
+      if (window.ProcessMaker.mouseDownDrag) {
+          window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
+          window.ProcessMaker.mouseDownDrag = false;
+      }
       this.isResizingPreview = false;
     },
     onMouseMove(event) {
