@@ -67,7 +67,7 @@
         ref="generatingAssetsCard"
         v-if="generatingAi"
       />
-      
+
       <AssetsCreatedCard
         ref="assetsCreatedCard"
         v-if="assetsCreated"
@@ -193,7 +193,7 @@
         v-for="player in filteredPlayers"
         :key="player.id"
         :data="player"
-      /> 
+      />
     </b-row>
   </span>
 </template>
@@ -1100,9 +1100,7 @@ export default {
       return hasSource && hasTarget;
     },
     async waitForCursorToChange() {
-      const cursorWaitTime = 300;
       return await this.$nextTick();
-      // return new Promise(resolve => setTimeout(resolve, cursorWaitTime));
     },
     async renderPaper() {
       this.isRendering = true;
@@ -1724,7 +1722,7 @@ export default {
     },
     /**
      * Update Client Cursor
-     * @param {Object} data 
+     * @param {Object} data
      */
     updateClientCursor(data) {
       if (data) {
@@ -1733,11 +1731,11 @@ export default {
     },
     /**
      * Unhightligt selected Nodes
-     * @param {String} clientId 
+     * @param {String} clientId
      */
     unhightligtNodes(clientId) {
       const player = this.players.find(player => player.id === clientId);
-      
+
       player?.selectedNodes?.forEach((nodeId) => {
         const element = this.getElementByNodeId(nodeId);
         element.component.setHighlightColor(false, player.color);
@@ -1745,7 +1743,7 @@ export default {
     },
     /**
      * Update the hightligted nodes
-     * @param {Object} data 
+     * @param {Object} data
      */
     updateHightligtedNodes(data) {
       if (data) {
@@ -1768,7 +1766,7 @@ export default {
           intersectionExists = player?.selectedNodes?.some(item => data.includes(item));
           return false;
         });
-       
+
       }
       return intersectionExists;
     },
