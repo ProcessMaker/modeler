@@ -1,6 +1,8 @@
 import nodeTypesStore from '@/nodeTypesStore';
+import iconHelper from '@/mixins/iconHelper';
 
 export default {
+  mixins: [iconHelper],
   data() {
     return {
       wasClicked: false,
@@ -68,20 +70,31 @@ export default {
       nodeTypesStore.commit('setGhostNode', tempGhost);
     },
     createDraggingHelper(event, control) {
+
       if (this.movedElement) {
         document.removeEventListener('mousemove', this.setDraggingPosition);
         document.body.removeChild(this.movedElement);
-        nodeTypesStore.commit('setGhostNode', null);
       }
-      const sourceElement = event.target;
-      nodeTypesStore.commit('setGhostNode', document.createElement('img'));
-      let tempGhost = this.movedElement;
-      Object.keys(this.helperStyles).forEach((property) => {
-        tempGhost.style[property] = this.helperStyles[property];
-      });
-      tempGhost.src = control.icon;
+
+      const isSvgIcon = this.containsSvg(control.icon);
+      const tempGhost = isSvgIcon ? document.createElement('img') : document.createElement('i');
+
+      Object.assign(tempGhost.style, this.helperStyles);
+
+      // Set the appropriate attribute or property based on the control icon type
+      if (isSvgIcon) {
+        tempGhost.src = control.icon;
+      } else {
+        tempGhost.setAttribute('class', control.icon);
+        tempGhost.style.fontSize = '42px';
+        tempGhost.style.width = '42px';
+        tempGhost.style.height = '42px';
+      }
+
+      document.body.appendChild(tempGhost);
       nodeTypesStore.commit('setGhostNode', tempGhost);
-      document.body.appendChild(this.movedElement);
+    
+      const sourceElement = event.target;
       this.xOffset = event.clientX - sourceElement.getBoundingClientRect().left;
       this.yOffset = event.clientY - sourceElement.getBoundingClientRect().top;
     },

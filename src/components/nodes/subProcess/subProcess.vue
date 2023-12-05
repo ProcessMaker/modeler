@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import { util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
 import TaskShape from '@/components/nodes/task/shape';
@@ -128,7 +129,7 @@ export default {
     },
   },
   watch: {
-    'node.definition.name'(name) {
+    'node.definition.name': debounce(function(name) {
       const { width } = this.node.diagram.bounds;
       this.shape.attr('label/text', util.breakText(name, { width }));
 
@@ -142,7 +143,7 @@ export default {
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
       }
-    },
+    }, 300),
     'node.definition.config'(config) {
       store.commit('updateNodeProp', {
         node: this.node,

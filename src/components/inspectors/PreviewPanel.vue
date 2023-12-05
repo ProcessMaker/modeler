@@ -1,146 +1,195 @@
 <template>
-  <b-col
-    v-show="visible"
-    id="preview_panel"
-    class="pl-0 h-100 overflow-hidden preview-column"
-    :style="{ maxWidth: width + 'px' }"
-    @mousedown="onMouseDown"
+  <b-row ref="resizableDiv"
     @mouseup="onMouseUp"
     @mousemove="onMouseMove"
-    data-test="preview-column"
+    v-show="visible"
   >
-    <b-row class="control-bar">
-      <b-col cols="9">
-        <div>
-          <i v-show = "selectedPreview == 1" class="fas fa-file-alt"/>
-          <b v-show = "selectedPreview == 2"> {} </b>
-          <b-dropdown
-            variant="ellipsis"
-            no-caret
-            no-flip
-            lazy
-            class="dropdown-right"
-            style="margin-top:-10px"
-            v-model="selectedPreview"
-          >
-            <template #button-content>
-              <i class="fas fa-sort-down" />
-            </template>
+    <b-col class="col-auto p-0 resizer-column" @mousedown="onMouseDown" />
+    <b-col
+      class="pl-0 h-100 overflow-hidden preview-column"
+      :style="{ width: panelWidth + 'px' }"
+      data-test="preview-panel"
+    >
+      <b-row class="control-bar">
+        <b-col cols="9">
+          <div>
+            <i v-show = "selectedPreview === 1" class="fas fa-file-alt"/>
+            <b v-show = "selectedPreview === 2"> {} </b>
+            <b-dropdown
+              variant="ellipsis"
+              no-caret
+              no-flip
+              lazy
+              class="preview-type-dropdown"
+              v-model="selectedPreview"
+            >
+              <template #button-content>
+                <i class="fas fa-sort-down" />
+              </template>
 
-            <b-dropdown-item key="1" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(1)">
-              <div class="ellipsis-dropdown-content">
-                <b class="pr-1 fa-fw fas fa-file-alt" />
-                <span>{{ $t('Document') }}</span>
-              </div>
-            </b-dropdown-item>
+              <b-dropdown-item key="1" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(1)">
+                <div class="ellipsis-dropdown-content">
+                  <b class="pr-1 fa-fw fas fa-file-alt" />
+                  <span>{{ $t('Document') }}</span>
+                </div>
+              </b-dropdown-item>
 
-            <b-dropdown-item key="2" class="ellipsis-dropdown-item mx-auto" @click="onSelectedPreview(2)">
-              <div class="ellipsis-dropdown-content">
-                <b class="pr-1 fa-fw">{ }</b>
-                <span>{{ $t('Object') }}</span>
-              </div>
-            </b-dropdown-item>
-          </b-dropdown>
-          <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
-        </div>
-      </b-col>
-      <b-col class="actions">
-        <div>
-          <i class="fas fa-external-link-alt"/>
+            </b-dropdown>
+            <span>{{ $t('Preview') }} - {{ taskTitle }}</span>
+          </div>
+        </b-col>
+        <b-col class="actions">
+          <i class="fas fa-external-link-alt" v-show="previewUrl" @click="openAsset()"/>
           <i class="fas fa-times" @click="onClose()" />
-        </div>
-      </b-col>
-    </b-row>
+        </b-col>
+      </b-row>
 
-    <b-row>
-      <div style="background-color: #0074D9; height: 20px; width: 100%">&nbsp;</div>
-    </b-row>
+      <b-row class="divider"/>
 
-    <b-row>
-      <div class="item-title"> {{ screenTitle }} </div>
-      <div class="task-title"> {{ taskTitle }} </div>
-    </b-row>
+      <b-row>
+        <div class="task-title"> {{ taskTitle }} </div>
+      </b-row>
 
-    <no-preview-available/>
-  </b-col>
+      <loading-preview v-show="showSpinner"/>
 
+      <no-preview-available v-show="!previewUrl"/>
+
+      <iframe
+        title="Preview"
+        :style="{visibility: displayPreviewIframe}"
+        :src="previewUrl"
+        class="preview-iframe"
+        @load="loading"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUp"
+      />
+
+    </b-col>
+  </b-row>
 </template>
 
 <script>
 import store from '@/store';
 import NoPreviewAvailable from '@/components/inspectors/NoPreviewAvailable';
+import LoadingPreview from '@/components/inspectors/LoadingPreview.vue';
 
 export default {
-  props: ['nodeRegistry', 'visible'],
-  components: {NoPreviewAvailable},
+  props: ['nodeRegistry', 'visible', 'previewConfigs', 'panelWidth'],
+  components: { NoPreviewAvailable, LoadingPreview },
   data() {
     return {
       data: {},
+      previewUrl: null,
+      showSpinner: false,
       selectedPreview: '1',
       taskTitle: '',
-      screenTitle: '',
-      width: 400,
-      isDragging: false,
-      currentPos: 400,
+      itemTitle: '',
+      width: 600,
+      currentPos: 600,
     };
   },
   watch: {
-    highlightedNode() {
-      document.activeElement.blur();
-      this.prepareData();
+    previewUrl(value, oldValue) {
+      if (value !== oldValue) {
+        this.showSpinner = true;
+      }
     },
-    'highlightedNode.definition'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignmentLock'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.allowReassignment'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignedUsers'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignedGroups'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    'highlightedNode.definition.assignmentRules'(current, previous) { this.handleAssignmentChanges(current, previous); },
+    highlightedNode() {
+      // If there isn't preview configuration hide the panel
+      const nodeConfig = this.getConfig(this.data);
+      if (!nodeConfig) {
+        this.$emit('togglePreview', false);
+        return;
+      }
+
+      document.activeElement.blur();
+      this.previewNode();
+    },
   },
   computed: {
     highlightedNode() {
       return store.getters.highlightedNodes[0];
     },
+    displayPreviewIframe() {
+      const result = !!this.previewUrl && !this.showSpinner;
+      console.log('mostrar iframe', result);
+      return result ? 'visible' : 'hidden';
+    },
   },
   methods: {
+    loading() {
+      this.showSpinner = false;
+    },
+    getConfig(data) {
+      return this.previewConfigs.find(config => {
+        return config.matcher(data);
+      });
+    },
+    openAsset() {
+      const nodeConfig = this.getConfig(this.data);
+      window.open(nodeConfig.assetUrl(this.data), '_blank');
+    },
     prepareData() {
       if (!this.highlightedNode) {
         return {};
       }
 
+      const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+        data[key] = value;
+        return data;
+      }, {});
+
+      this.data = defaultDataTransform(this.highlightedNode);
+      this.taskTitle = this.data?.name;
+
       this.taskTitle = this?.highlightedNode?.definition?.name;
     },
-
-    handleAssignmentChanges(currentValue, previousValue) {
-      if (currentValue === previousValue) {
-        return;
-      }
-      this.prepareData();
-    },
-
     onSelectedPreview(item) {
       this.selectedPreview = item;
     },
-    previewNode(node) {
-      this.taskTitle = node?.name;
-      this.showPanel = true;
+    previewNode(force = false) {
+      if (!this.highlightedNode || (!this.visible && !force)) {
+        return;
+      }
+      this.prepareData();
+      const previewConfig = this.getConfig(this.data);
+
+      let clone = {};
+      for (let prop in this.data) {
+        if ((previewConfig?.receivingParams ?? []).includes(prop)) {
+          clone[prop] = this.data[prop];
+        }
+      }
+
+      const nodeData = encodeURI(JSON.stringify(clone));
+
+      // if the node has the configurations (for example screenRef for a task in a task)
+      const nodeHasConfigParams = Object.keys(clone).length > 0;
+      const nodeHasConfiguredAssets = !!previewConfig?.assetUrl(this.data);
+
+      this.previewUrl = nodeHasConfiguredAssets && previewConfig &&  nodeHasConfigParams
+        ? `${previewConfig.url}?node=${nodeData}`
+        : null;
+      this.taskTitle = this.highlightedNode?.definition?.name;
     },
     onClose() {
       this.$emit('togglePreview', false);
     },
     onMouseDown(event) {
-      this.isDragging = true;
-      this.currentPos = event.x;
+      this.$emit('startResize', event);
     },
     onMouseUp() {
-      this.isDragging = false;
+      this.$emit('stopResize');
     },
     onMouseMove(event) {
-      if (this.isDragging) {
-        const dx = this.currentPos - event.x;
-        this.currentPos = event.x;
-        this.width = parseInt(this.width) + dx;
-        this.$emit('previewResize', this.width);
+      if (window.ProcessMaker.$modeler.isResizingPreview) {
+        this.$emit('previewResize', event);
       }
+    },
+    setWidth(positionX) {
+      const dx = this.currentPos - positionX;
+      this.currentPos = positionX;
+      this.width = parseInt(this.width) + dx;
     },
   },
 };

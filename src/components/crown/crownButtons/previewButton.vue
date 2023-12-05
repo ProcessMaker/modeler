@@ -1,10 +1,11 @@
 <template>
   <crown-button
-    v-if="node.isBpmnType(...validPreviewElements)"
+    v-if="displayIcon"
     :title="$t('Preview')"
     role="menuitem"
     id="preview-button"
     aria-label="Preview"
+    data-test="preview-button"
     @click="preview()"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
@@ -24,7 +25,20 @@ export default {
     return {
       trashIcon,
       validPreviewElements,
+      displayIcon: false,
     };
+  },
+  mounted() {
+    const defaultDataTransform = (node) => Object.entries(node.definition).reduce((data, [key, value]) => {
+      data[key] = value;
+      return data;
+    }, {});
+    const nodeData = defaultDataTransform(this.node);
+
+    const previewConfig = window.ProcessMaker.$modeler.previewConfigs.find(config => {
+      return config.matcher(nodeData);
+    });
+    this.displayIcon =  !!previewConfig;
   },
   computed: {
     isPoolLane() {
@@ -33,7 +47,11 @@ export default {
   },
   methods: {
     preview() {
-      this.$emit('previewNode', this.node);
+      if (window.ProcessMaker.$modeler.isOpenPreview) {
+        window.ProcessMaker.$modeler.isOpenPreview = false;
+      } else {
+        this.$emit('previewNode', this.node);
+      }
     },
   },
 };

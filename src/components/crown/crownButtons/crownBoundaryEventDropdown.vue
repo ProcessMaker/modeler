@@ -90,6 +90,7 @@ export default {
 
       const node = new Node(nodeType, definition, diagram);
       node.pool = this.node.pool;
+      node.fromCrown = true;
 
       store.commit('highlightNode', node);
 

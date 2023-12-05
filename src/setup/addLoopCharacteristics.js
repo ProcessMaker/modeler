@@ -16,6 +16,10 @@ export default (node) => {
     return;
   }
 
+  if (node.implementation === 'package-ai/processmaker-ai-assistant') {
+    return;
+  }
+
   // Insert the loop config inspector at the specified index
   node.inspectorConfig[0].items.splice(node.loopInspectorIndex || 1, 0, loopCharacteristicsInspector);
 
@@ -24,10 +28,10 @@ export default (node) => {
   const originalInspectorData = node.inspectorData || null;
 
   // Override the inspector handler to add loop props
-  node.inspectorHandler = (value, node, setNodeProp, moddle, definitions, defaultInspectorHandler) => {
+  node.inspectorHandler = (value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) => {
     originalInspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler);
-    value = loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions);
-    defaultInspectorHandler(value);
+    value = loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
+    defaultInspectorHandler(value, isMultiplayer);
   };
 
   // Override the data handler to load loop config into the inspector

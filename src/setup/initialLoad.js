@@ -20,3 +20,31 @@ window.ProcessMaker.EventBus.$on('modeler-init', registerNodes);
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
   loadXML(blank);
 });
+
+
+
+window.ProcessMaker.EventBus.$on(
+  'modeler-init',
+  (event) => {
+    event.registerPreview({
+      url: '/designer/screens/preview',
+      assetUrl: (nodeData) => `/designer/screen-builder/${nodeData.screenRef}/edit`,
+      receivingParams: ['screenRef'],
+      matcher: (nodeData) => nodeData?.$type  === 'bpmn:Task',
+    });
+
+    event.registerPreview({
+      url: '/designer/scripts/preview',
+      assetUrl: (nodeData) => `/designer/scripts/${nodeData.scriptRef}/builder`,
+      receivingParams: ['scriptRef'],
+      matcher: (nodeData) => nodeData?.$type === 'bpmn:ScriptTask',
+    });
+
+    event.registerPreview({
+      url: '/designer/scripts/preview',
+      assetUrl: (nodeData) => `/designer/screen-builder/${nodeData.screenRef}/edit`,
+      receivingParams: ['screenRef'],
+      matcher: (nodeData) => nodeData?.$type === 'bpmn:ManualTask',
+    });
+  });
+

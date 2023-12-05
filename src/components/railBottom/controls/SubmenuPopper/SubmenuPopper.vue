@@ -18,7 +18,8 @@
           @click="onClickHandler($event, item)"
           :data-test="item.type"
         >
-          <inline-svg :src="item.icon" :alt=item.label />
+          <i v-if="!containsSvg(item.icon)" :class="item.icon" class="fa-lg"/>
+          <inline-svg v-else :src="item.icon" :alt=item.label />
           <div class="control-submenu-list-label">
             {{ item.label }}
           </div>
@@ -35,8 +36,8 @@
       <div class="control-submenu-options">
         <span />
       </div>
-
-      <inline-svg :src="data.icon" />
+      <i v-if="!containsSvg(data.icon)" :class="data.icon" class="fa-lg"/>
+      <inline-svg v-else :src="data.icon" />
     </a>
   </popper>
   <a v-else class="control-submenu-item"
@@ -44,7 +45,8 @@
     :title="$t(data.label)"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
   >
-    <inline-svg :src=data.icon />
+    <i v-if="!containsSvg(data.icon)" :class="data.icon" class="fa-lg"/>
+    <inline-svg v-else :src="data.icon" />
   </a>
 </template>
 
@@ -52,8 +54,10 @@
 import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
 import InlineSvg from 'vue-inline-svg';
+import iconHelper from '@/mixins/iconHelper';
 
 export default {
+  mixins: [iconHelper],
   props: {
     data: { type: Object },
     selectedItem: { type: String },
@@ -96,6 +100,10 @@ export default {
     & > svg {
       width: 24px;
       height: 24px;
+    }
+    & > i {
+      color: #000000;
+      padding: 5px;
     }
     &.active {
       background-color: #EBEEF2;

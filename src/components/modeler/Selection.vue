@@ -31,10 +31,16 @@ import { id as poolId } from '@/components/nodes/pool/config';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as genericFlowId } from '@/components/nodes/genericFlow/config';
 import { id as sequenceFlowId } from '@/components/nodes/sequenceFlow';
-import { id as associationId } from '@/components/nodes/association';
+import { id as associationId } from '@/components/nodes/association/associationConfig';
 import { id as messageFlowId } from '@/components/nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '@/components/nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '@/components/nodes/dataInputAssociation/config';
+import { id as boundaryErrorEventId } from '@/components/nodes/boundaryErrorEvent';
+import { id as boundaryConditionalEventId } from '@/components/nodes/boundaryConditionalEvent';
+import { id as boundaryEscalationEventId } from '@/components/nodes/boundaryEscalationEvent';
+import { id as boundaryMessageEventId } from '@/components/nodes/boundaryMessageEvent';
+import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEvent';
+import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 import { invalidNodeColor, poolColor } from '@/components/nodeColors';
 
@@ -48,6 +54,7 @@ export default {
     paperManager: Object,
     useModelGeometry: Boolean,
     processNode: Object,
+    isMultiplayer: Boolean,
   },
   data() {
     return {
@@ -105,6 +112,7 @@ export default {
     selected(newSelected) {
       this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
+      this.highlightNodesMultiplayer (newSelected);
     },
   },
   methods: {
@@ -340,7 +348,7 @@ export default {
      */
     prepareConectedLinks(shapes){
       const { paper } = this.paperManager;
-      this.conectedLinks = [];
+      this.connectedLinks = [];
       this.isValidSelectionLinks = true;
       shapes.forEach((shape) => {
         let conectedLinks = this.graph.getConnectedLinks(shape.model);
@@ -361,8 +369,8 @@ export default {
         }
         conectedLinks.forEach((link) => {
           const linkView = paper.findViewByModel(link);
-          if (!this.conectedLinks.some(obj => obj.id === linkView.id)) {
-            this.conectedLinks.push(linkView);
+          if (!this.connectedLinks.some(obj => obj.id === linkView.id)) {
+            this.connectedLinks.push(linkView);
             this.validateSelectionLinks(linkView);
           }
         });
@@ -576,12 +584,143 @@ export default {
       await this.paperManager.awaitScheduledUpdates();
       this.overPoolStopDrag();
       this.updateSelectionBox();
+      if (this.isMultiplayer) {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getProperties(this.selected));
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', this.getConnectedLinkProperties(this.connectedLinks));
+      }
+    },
+
+    getProperties(shapes) {
+      let changed = [];
+      const shapesToNotTranslate = [
+        'PoolLane',
+        'standard.Link',
+      ];
+
+      shapes.filter(shape => !shapesToNotTranslate.includes(shape.model.get('type')))
+        .forEach(shape => {
+          if (shape.model.get('type') === 'processmaker.modeler.bpmn.pool') {
+            const children = shape.model.component.getElementsUnderArea(shape.model, this.graph)
+              .filter((element) => element.component);
+            changed = [...changed, ...this.getContainerProperties(children, changed)];
+          } else {
+            const { node } = shape.model.component;
+            const defaultData = {
+              id: node.definition.id,
+              properties: {
+                x: shape.model.get('position').x,
+                y: shape.model.get('position').y,
+                height: shape.model.get('size').height,
+                width: shape.model.get('size').width,
+                attachedToRefId: shape.model.component.node.definition.get('attachedToRef')?.id ?? null,
+                color: shape.model.get('color'),
+              },
+            };
+            if (node?.pool?.component) {
+              defaultData['poolId'] = node.pool.component.id;
+            }
+            changed.push(defaultData);
+          }
+          const boundariesChanges = this.getBoundariesChangesForShape(shape);
+          changed = changed.concat(boundariesChanges);
+        });
+
+      return changed;
+    },
+    /**
+     * Get connected link properties
+     * @param {Array} links
+     */
+    getConnectedLinkProperties(links) {
+      let changed = [];
+      links?.forEach((linkView) => {
+        const vertices = linkView.model.component.shape.vertices();
+        if (vertices?.length) {
+          const waypoint = [];
+          const { node } =  linkView.model.component;
+
+          node.diagram.waypoint?.forEach(point => {
+            waypoint.push({
+              x: point.x,
+              y: point.y,
+            });
+          });
+          const sourceRefId = linkView.sourceView.model.component.node.definition.id;
+          const targetRefId = linkView.targetView.model.component.node.definition.id;
+          const nodeType = linkView.model.component.node.type;
+          changed.push(
+            {
+              id: node.definition.id,
+              properties: {
+                type: nodeType,
+                waypoint,
+                sourceRefId,
+                targetRefId,
+              },
+            });
+        }
+      });
+      return changed;
+    },
+    /**
+     * Get properties for each boundary inside a shape
+     */
+    getBoundariesChangesForShape(shape) {
+      let boundariesChanged = [];
+      const boundaryEventTypes = [
+        boundaryErrorEventId,
+        boundaryConditionalEventId,
+        boundaryEscalationEventId,
+        boundaryMessageEventId,
+        boundarySignalEventId,
+        boundaryTimerEventId,
+      ];
+      const boundaryNodes = store.getters.nodes.filter(node => boundaryEventTypes.includes(node.type));
+      boundaryNodes.forEach(boundaryNode => {
+        if (boundaryNode.definition.attachedToRef.id === shape.model.component.node.definition.id) {
+          boundariesChanged.push({
+            id: boundaryNode.definition.id,
+            properties: {
+              x: boundaryNode.diagram.bounds.x,
+              y: boundaryNode.diagram.bounds.y,
+              height: boundaryNode.diagram.bounds.height,
+              width: boundaryNode.diagram.bounds.width,
+              attachedToRefId: boundaryNode.definition.get('attachedToRef')?.id ?? null,
+              color: boundaryNode.definition.get('color') ?? null,
+            },
+          });
+        }
+      });
+      return boundariesChanged;
+    },
+    getContainerProperties(children) {
+      const changed = [];
+
+      children.forEach(model => {
+        const defaultData = {
+          id: model.component.node.definition.id,
+          properties: {
+            x: model.get('position').x,
+            y: model.get('position').y,
+            height: model.get('size').height,
+            width: model.get('size').width,
+            color: model.get('color'),
+          },
+        };
+
+        if (model.component.node.definition.$type === 'bpmn:BoundaryEvent') {
+          defaultData.properties.attachedToRefId = model.component.node.definition.get('attachedToRef')?.id ?? null;
+        }
+
+        changed.push(defaultData);
+      });
+      return changed;
     },
     /**
      * Selector will update the waypoints of the related flows
      */
     updateFlowsWaypoint(){
-      this.conectedLinks.forEach((link)=> {
+      this.connectedLinks?.forEach((link)=> {
         if (link.model.component && link.model.get('type') === 'standard.Link'){
           const start = link.sourceAnchor;
           const end = link.targetAnchor;
@@ -641,6 +780,18 @@ export default {
       } else {
         store.commit('highlightNode', this.processNode);
       }
+    },
+    highlightNodesMultiplayer(selected){
+      // Update selected nodes
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateSelectedNodes', this.getSelectedNodeKeys(selected));
+    },
+    getSelectedNodeKeys(selected) {
+      const keys = [];
+      selected.forEach(shape => {
+        const { node } = shape.model.component;
+        keys.push( node.definition.id);
+      });
+      return keys;
     },
     /**
      * Gets the child shape
@@ -789,7 +940,7 @@ export default {
         if (this.newPool){
           /* Remove the shape from its current pool */
           this.moveElements(this.selected, this.oldPool, this.newPool);
-          this.moveConectedLinks(this.conectedLinks, this.oldPool, this.newPool);
+          this.moveConnectedLinks(this.connectedLinks, this.oldPool, this.newPool);
           this.newPool = null;
           this.oldPool = null;
           this.updateLaneChildren(this.selected);
@@ -929,7 +1080,7 @@ export default {
           oldPool.model.component.moveElement(shape.model, newPool.model);
         });
     },
-    moveConectedLinks(links, oldPool, newPool){
+    moveConnectedLinks(links, oldPool, newPool){
       links.forEach(link => {
         oldPool.model.component.moveFlow(link.model, newPool.model);
       });

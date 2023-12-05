@@ -1,10 +1,13 @@
 <template>
   <div class="top-rail-container">
+    <MultiplayerViewUsers :players="players"/>
     <ValidateIssue
       v-show="isOpenIssue"
       :number-of-errors="numberOfErrors"
       @openPanel="handleOpenPanel"
     />
+
+    <AiGenerateButton/>
 
     <ValidateButton @openIssue="handleOpenIssue" />
 
@@ -20,12 +23,15 @@
 <script>
 import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
-
+import MultiplayerViewUsers from '@/components/topRail/multiplayerViewUsers/MultiplayerViewUsers';
+import AiGenerateButton from '../aiMessages/AiGenerateButton.vue';
 export default {
   components: {
     ValidateButton,
     ValidateIssue,
     ValidatePanel,
+    AiGenerateButton,
+    MultiplayerViewUsers,
   },
   props: {
     validationErrors: {
@@ -35,6 +41,10 @@ export default {
     warnings: {
       type: Array,
       required: true,
+    },
+    players: {
+      type: Array,
+      required: false,
     },
   },
   data() {

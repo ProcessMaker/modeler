@@ -6,6 +6,7 @@ import advancedAccordionConfig from '@/components/inspectors/advancedAccordionCo
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import icon from '@/assets/toolpanel/subProcess.svg?url';
+import { loopCharacteristicsHandler } from '@/components/inspectors/LoopCharacteristics';
 
 export const id = 'processmaker-modeler-call-activity';
 
@@ -35,19 +36,32 @@ export default {
     });
   },
   inspectorHandler(value, node, setNodeProp) {
-
-    setNodeProp(node, 'id', value.id);
-    setNodeProp(node, 'name', value.name);
-
+    if (node.definition.get('id') !== value['id']) {
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id, key: 'id', value: value.id,
+      });
+      setNodeProp(node, 'id', value.id);
+    }
+    if (node.definition.get('name') !== value['name']) {
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+        id: node.definition.id, key: 'name', value: value.name,
+      });
+      setNodeProp(node, 'name', value.name);
+    }
     const currentConfig = JSON.parse(value.config);
 
     value['calledElement'] = currentConfig.calledElement;
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+      id: node.definition.id, key: 'calledElement', value: currentConfig.calledElement,
+    });
     setNodeProp(node, 'calledElement', currentConfig.calledElement);
 
     if (currentConfig.name !== value.name) {
       currentConfig.name = value.name;
     }
-
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+      id: node.definition.id, key: 'config', value: JSON.stringify(currentConfig),
+    });
     setNodeProp(node, 'config', JSON.stringify(currentConfig));
 
   },
@@ -82,4 +96,5 @@ export default {
       ],
     },
   ],
+  loopCharacteristicsHandler,
 };
