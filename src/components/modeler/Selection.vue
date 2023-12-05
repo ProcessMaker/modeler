@@ -112,6 +112,7 @@ export default {
     selected(newSelected) {
       this.prepareConectedLinks(newSelected);
       this.addToHighlightedNodes(newSelected);
+      this.highlightNodesMultiplayer (newSelected);
     },
   },
   methods: {
@@ -779,6 +780,18 @@ export default {
       } else {
         store.commit('highlightNode', this.processNode);
       }
+    },
+    highlightNodesMultiplayer(selected){
+      // Update selected nodes
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateSelectedNodes', this.getSelectedNodeKeys(selected));
+    },
+    getSelectedNodeKeys(selected) {
+      const keys = [];
+      selected.forEach(shape => {
+        const { node } = shape.model.component;
+        keys.push( node.definition.id);
+      });
+      return keys;
     },
     /**
      * Gets the child shape

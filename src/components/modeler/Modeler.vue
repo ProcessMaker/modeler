@@ -1735,6 +1735,47 @@ export default {
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
       }
     },
+    /**
+     * Unhightligt selected Nodes
+     * @param {String} clientId 
+     */
+    unhightligtNodes(clientId) {
+      const player = this.players.find(player => player.id === clientId);
+      
+      player?.selectedNodes?.forEach((nodeId) => {
+        const element = this.getElementByNodeId(nodeId);
+        element.component.setHighlightColor(false, player.color);
+      });
+    },
+    /**
+     * Update the hightligted nodes
+     * @param {Object} data 
+     */
+    updateHightligtedNodes(data) {
+      if (data) {
+        this.unhightligtNodes(data.id);
+        // highlight selected shape
+        this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
+        data?.selectedNodes?.forEach((nodeId) => {
+          const element = this.getElementByNodeId(nodeId);
+          element.component.setHighlightColor(true, data.color);
+        });
+      }
+    },
+    isMultiplayerSelected(data) {
+      let intersectionExists = false;
+      if (data) {
+        this.players?.some((player) => {
+          if (intersectionExists) {
+            return true; // This will break out of the loop
+          }
+          intersectionExists = player?.selectedNodes?.some(item => data.includes(item));
+          return false;
+        });
+       
+      }
+      return intersectionExists;
+    },
     removePlayer(playerId) {
       const playerIndex = this.players.findIndex(player => player.id === playerId);
 
