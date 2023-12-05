@@ -491,8 +491,8 @@ export default {
     },
     onMouseUp(event) {
       if (window.ProcessMaker.mouseDownDrag) {
-          window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
-          window.ProcessMaker.mouseDownDrag = false;
+        window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
+        window.ProcessMaker.mouseDownDrag = false;
       }
       this.isResizingPreview = false;
     },
