@@ -1,12 +1,11 @@
 import component from './boundaryTimerEvent.vue';
 import IntermediateTimer from '../../inspectors/IntermediateTimer.vue';
 import boundaryEventConfig from '../boundaryEvent';
-import merge from 'lodash/merge';
-import cloneDeep from 'lodash/cloneDeep';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import { defaultDurationTimerEvent } from '@/constants';
+import { omit, cloneDeep, merge } from 'lodash';
 
 export const id = 'processmaker-modeler-boundary-timer-event';
 
@@ -42,7 +41,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   inspectorData(node) {
     return Object.entries(node.definition).reduce((data, [key, value]) => {
       if (key === 'eventDefinitions') {
-        const type = Object.keys(value[0])[1];
+        const type = Object.keys(omit(value[0], ['id', '$type', 'get', 'set', '$instanceOf']))[0];
         const body = value[0][type].body;
         data[key] = { type, body };
       } else {

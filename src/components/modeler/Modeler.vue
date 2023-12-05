@@ -23,7 +23,7 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
-      :players="players"
+      :players="filteredPlayers"
       @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
@@ -54,6 +54,29 @@
 
       <WelcomeMessage
         v-if="showWelcomeMessage"
+      />
+
+      <CreateAssetsCard
+        ref="createAssetsCard"
+        v-if="isAiGenerated"
+        @onGenerateAssets="generateAssets()"
+        @closeCreateAssets="onCloseCreateAssets()"
+      />
+
+      <GeneratingAssetsCard
+        ref="generatingAssetsCard"
+        v-if="generatingAi"
+      />
+      
+      <AssetsCreatedCard
+        ref="assetsCreatedCard"
+        v-if="assetsCreated"
+        @closeAssetsCreated="onCloseAssetsCreated()"
+      />
+
+      <CreateAssetsFailCard
+        ref="createAssetsFailCard"
+        v-if="false"
       />
 
       <InspectorButton
@@ -143,6 +166,7 @@
       />
 
       <RailBottom
+        v-if="!generatingAi"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -165,6 +189,11 @@
         @save-state="pushToUndoStack"
         :isMultiplayer="isMultiplayer"
       />
+      <RemoteCursor
+        v-for="player in filteredPlayers"
+        :key="player.id"
+        :data="player"
+      /> 
     </b-row>
   </span>
 </template>
@@ -172,12 +201,17 @@
 <script>
 
 import Vue from 'vue';
+
 import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
+import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
+import GeneratingAssetsCard from '../aiMessages/GeneratingAssetsCard.vue';
+import AssetsCreatedCard from '../aiMessages/AssetsCreatedCard.vue';
+import CreateAssetsFailCard from '../aiMessages/CreateAssetsFailCard.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -251,6 +285,10 @@ export default {
     Selection,
     RailBottom,
     WelcomeMessage,
+    CreateAssetsCard,
+    GeneratingAssetsCard,
+    AssetsCreatedCard,
+    CreateAssetsFailCard,
     RemoteCursor,
   },
   props: {
@@ -348,6 +386,12 @@ export default {
       isResizingPreview: false,
       currentCursorPosition: 0,
       previewPanelWidth: 600,
+      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
+      generatingAi: false,
+      assetsCreated: false,
+      // ^ TODO: To be changed depending on microservice response
+      currentNonce: null,
+      promptSessionId: '',
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -401,6 +445,12 @@ export default {
     },
   },
   computed: {
+    filteredPlayers() {
+      const allPlayers = _.uniqBy(this.players, 'name');
+      return allPlayers.filter(player => {
+        return player.name.toLowerCase() !== window.ProcessMaker.user?.fullName.toLowerCase();
+      });
+    },
     showWelcomeMessage() {
       return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
     },
@@ -497,6 +547,14 @@ export default {
       if (source.default && source.default.id === flow.id) {
         flow = null;
       }
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+        {
+          id: source.id,
+          properties: {
+            default: flow?.id || null,
+          },
+        },
+      ]);
       source.set('default', flow);
     },
     cloneElement(node, copyCount) {
@@ -1120,6 +1178,8 @@ export default {
       const diagram = this.nodeRegistry[data.type].diagram(this.moddle);
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
+      diagram.bounds.width = data.width;
+      diagram.bounds.height = data.height;
       const newNode = this.createNode(data.type, definition, diagram);
       //verify if the node has a pool as a container
       if (data.poolId) {
@@ -1218,7 +1278,9 @@ export default {
             gatewayDirection: null,
             messageRef: null,
             signalRef: null,
+            signalPayload: null,
             extras: {},
+            default: null,
           };
           if (node?.pool?.component) {
             defaultData['poolId'] = node.pool.component.id;
@@ -1601,6 +1663,7 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', { top: y, left: x });
       if (store.getters.isReadOnly) {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
@@ -1650,8 +1713,64 @@ export default {
     enableMultiplayer(value) {
       store.commit('enableMultiplayer', value);
     },
-    addPlayer(player) {
-      this.players.push(player);
+    emptyPlayers(){
+      this.players = [];
+    },
+    addPlayer(data) {
+      const player = this.players.find(player => player.id === data.id);
+      if (!player) {
+        this.players.push(data);
+      }
+    },
+    /**
+     * Update Client Cursor
+     * @param {Object} data 
+     */
+    updateClientCursor(data) {
+      if (data) {
+        this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
+      }
+    },
+    /**
+     * Unhightligt selected Nodes
+     * @param {String} clientId 
+     */
+    unhightligtNodes(clientId) {
+      const player = this.players.find(player => player.id === clientId);
+      
+      player?.selectedNodes?.forEach((nodeId) => {
+        const element = this.getElementByNodeId(nodeId);
+        element.component.setHighlightColor(false, player.color);
+      });
+    },
+    /**
+     * Update the hightligted nodes
+     * @param {Object} data 
+     */
+    updateHightligtedNodes(data) {
+      if (data) {
+        this.unhightligtNodes(data.id);
+        // highlight selected shape
+        this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
+        data?.selectedNodes?.forEach((nodeId) => {
+          const element = this.getElementByNodeId(nodeId);
+          element.component.setHighlightColor(true, data.color);
+        });
+      }
+    },
+    isMultiplayerSelected(data) {
+      let intersectionExists = false;
+      if (data) {
+        this.players?.some((player) => {
+          if (intersectionExists) {
+            return true; // This will break out of the loop
+          }
+          intersectionExists = player?.selectedNodes?.some(item => data.includes(item));
+          return false;
+        });
+       
+      }
+      return intersectionExists;
     },
     removePlayer(playerId) {
       const playerIndex = this.players.findIndex(player => player.id === playerId);
@@ -1665,6 +1784,119 @@ export default {
      */
     updateLasso(){
       this.$refs.selector.updateSelectionBox();
+    },
+    getNonce() {
+      const max = 999999999999999;
+      const nonce = Math.floor(Math.random() * max);
+      this.currentNonce = nonce;
+      localStorage.currentNonce = this.currentNonce;
+    },
+    getPromptSessionForUser() {
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+      let item = promptSessions.find(item => item.userId === window.ProcessMaker?.modeler?.process?.user_id && item.server === window.location.host);
+
+      if (item) {
+        return item.promptSessionId;
+      }
+
+      return '';
+    },
+    setPromptSessions(promptSessionId) {
+      let index = 'userId';
+      let id = window.ProcessMaker?.modeler?.process?.user_id;
+
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+
+      let item = promptSessions.find(item => item[index] === id && item.server === window.location.host);
+
+      if (item) {
+        item.promptSessionId = promptSessionId;
+      } else {
+        promptSessions.push({ [index]: id, server: window.location.host, promptSessionId });
+      }
+
+      localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
+    },
+    removePromptSessionForUser() {
+      // Get sessions list
+      let promptSessions = localStorage.getItem('promptSessions');
+
+      // If promptSessions does not exist, set it as an empty array
+      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
+
+      let item = promptSessions.find(item => item.userId === window.ProcessMaker?.modeler?.process?.user_id && item.server === window.location.host);
+
+      if (item) {
+        item.promptSessionId = '';
+      }
+
+      localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
+    },
+    fetchHistory() {
+      let url = '/package-ai/getPromptSessionHistory';
+
+      let params = {
+        server: window.location.host,
+        processId: this.processId,
+      };
+
+      if (this.promptSessionId && this.promptSessionId !== null && this.promptSessionId !== '') {
+        params = {
+          promptSessionId: this.promptSessionId,
+        };
+      }
+
+      window.ProcessMaker.apiClient.post(url, params)
+        .then(response => {
+          this.setPromptSessions((response.data.promptSessionId));
+          this.promptSessionId = (response.data.promptSessionId);
+          localStorage.promptSessionId = (response.data.promptSessionId);
+        }).catch((error) => {
+          const errorMsg = error.response?.data?.message || error.message;
+
+          if (error.response.status === 404) {
+            this.removePromptSessionForUser();
+            localStorage.promptSessionId = '';
+            this.promptSessionId = '';
+          } else {
+            window.ProcessMaker.alert(errorMsg, 'danger');
+          }
+        });
+    },
+    generateAssets() {
+      this.getNonce();
+
+      // TODO: Add endpoint to get the promprSessionId
+
+      const params = {
+        promptSessionId: this.promptSessionId,
+        nonce: this.currentNonce,
+        processId: window.ProcessMaker?.modeler?.process?.id,
+      };
+
+      const url = '/package-ai/generateProcessArtifacts';
+
+      window.ProcessMaker.apiClient.post(url, params)
+        .then(() => {
+        })
+        .catch((error) => {
+          const errorMsg = error.response?.data?.message || error.message;
+          window.ProcessMaker.alert(errorMsg, 'danger');
+        });
+    },
+    onCloseCreateAssets() {
+      this.isAiGenerated = false;
+    },
+    onCloseAssetsCreated() {
+      this.assetsCreated = false;
     },
   },
   created() {
@@ -1854,6 +2086,14 @@ export default {
         this.redirect(redirectUrl);
       }
     });
+
+    // AI Setup
+    this.currentNonce = localStorage.currentNonce;
+    if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
+      localStorage.setItem('promptSessions', JSON.stringify([]));
+    }
+    this.promptSessionId = this.getPromptSessionForUser();
+    this.fetchHistory();
   },
 };
 </script>
