@@ -56,29 +56,6 @@
         v-if="showWelcomeMessage"
       />
 
-      <CreateAssetsCard
-        ref="createAssetsCard"
-        v-if="isAiGenerated"
-        @onGenerateAssets="generateAssets()"
-        @closeCreateAssets="onCloseCreateAssets()"
-      />
-
-      <GeneratingAssetsCard
-        ref="generatingAssetsCard"
-        v-if="generatingAi"
-      />
-      
-      <AssetsCreatedCard
-        ref="assetsCreatedCard"
-        v-if="assetsCreated"
-        @closeAssetsCreated="onCloseAssetsCreated()"
-      />
-
-      <CreateAssetsFailCard
-        ref="createAssetsFailCard"
-        v-if="false"
-      />
-
       <InspectorButton
         ref="inspector-button"
         v-show="showComponent && showInspectorButton"
@@ -166,7 +143,6 @@
       />
 
       <RailBottom
-        v-if="!generatingAi"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -208,10 +184,6 @@ import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
 import WelcomeMessage from '../welcome/WelcomeMessage.vue';
-import CreateAssetsCard from '../aiMessages/CreateAssetsCard.vue';
-import GeneratingAssetsCard from '../aiMessages/GeneratingAssetsCard.vue';
-import AssetsCreatedCard from '../aiMessages/AssetsCreatedCard.vue';
-import CreateAssetsFailCard from '../aiMessages/CreateAssetsFailCard.vue';
 import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
@@ -263,6 +235,7 @@ import {
 } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
+import { DetachObjectFlows } from '@/components/modeler/DetachObjectFlows';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
 import RailBottom from '@/components/railBottom/RailBottom.vue';
@@ -285,10 +258,6 @@ export default {
     Selection,
     RailBottom,
     WelcomeMessage,
-    CreateAssetsCard,
-    GeneratingAssetsCard,
-    AssetsCreatedCard,
-    CreateAssetsFailCard,
     RemoteCursor,
   },
   props: {
@@ -386,12 +355,6 @@ export default {
       isResizingPreview: false,
       currentCursorPosition: 0,
       previewPanelWidth: 600,
-      isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
-      generatingAi: false,
-      assetsCreated: false,
-      // ^ TODO: To be changed depending on microservice response
-      currentNonce: null,
-      promptSessionId: '',
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -406,6 +369,7 @@ export default {
         'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ],
+      detachObjectFlows: null,
     };
   },
   watch: {
@@ -1178,8 +1142,6 @@ export default {
       const diagram = this.nodeRegistry[data.type].diagram(this.moddle);
       diagram.bounds.x = data.x;
       diagram.bounds.y = data.y;
-      diagram.bounds.width = data.width;
-      diagram.bounds.height = data.height;
       const newNode = this.createNode(data.type, definition, diagram);
       //verify if the node has a pool as a container
       if (data.poolId) {
@@ -1785,119 +1747,6 @@ export default {
     updateLasso(){
       this.$refs.selector.updateSelectionBox();
     },
-    getNonce() {
-      const max = 999999999999999;
-      const nonce = Math.floor(Math.random() * max);
-      this.currentNonce = nonce;
-      localStorage.currentNonce = this.currentNonce;
-    },
-    getPromptSessionForUser() {
-      // Get sessions list
-      let promptSessions = localStorage.getItem('promptSessions');
-
-      // If promptSessions does not exist, set it as an empty array
-      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
-      let item = promptSessions.find(item => item.userId === window.ProcessMaker?.modeler?.process?.user_id && item.server === window.location.host);
-
-      if (item) {
-        return item.promptSessionId;
-      }
-
-      return '';
-    },
-    setPromptSessions(promptSessionId) {
-      let index = 'userId';
-      let id = window.ProcessMaker?.modeler?.process?.user_id;
-
-      // Get sessions list
-      let promptSessions = localStorage.getItem('promptSessions');
-
-      // If promptSessions does not exist, set it as an empty array
-      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
-
-      let item = promptSessions.find(item => item[index] === id && item.server === window.location.host);
-
-      if (item) {
-        item.promptSessionId = promptSessionId;
-      } else {
-        promptSessions.push({ [index]: id, server: window.location.host, promptSessionId });
-      }
-
-      localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
-    },
-    removePromptSessionForUser() {
-      // Get sessions list
-      let promptSessions = localStorage.getItem('promptSessions');
-
-      // If promptSessions does not exist, set it as an empty array
-      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
-
-      let item = promptSessions.find(item => item.userId === window.ProcessMaker?.modeler?.process?.user_id && item.server === window.location.host);
-
-      if (item) {
-        item.promptSessionId = '';
-      }
-
-      localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
-    },
-    fetchHistory() {
-      let url = '/package-ai/getPromptSessionHistory';
-
-      let params = {
-        server: window.location.host,
-        processId: this.processId,
-      };
-
-      if (this.promptSessionId && this.promptSessionId !== null && this.promptSessionId !== '') {
-        params = {
-          promptSessionId: this.promptSessionId,
-        };
-      }
-
-      window.ProcessMaker.apiClient.post(url, params)
-        .then(response => {
-          this.setPromptSessions((response.data.promptSessionId));
-          this.promptSessionId = (response.data.promptSessionId);
-          localStorage.promptSessionId = (response.data.promptSessionId);
-        }).catch((error) => {
-          const errorMsg = error.response?.data?.message || error.message;
-
-          if (error.response.status === 404) {
-            this.removePromptSessionForUser();
-            localStorage.promptSessionId = '';
-            this.promptSessionId = '';
-          } else {
-            window.ProcessMaker.alert(errorMsg, 'danger');
-          }
-        });
-    },
-    generateAssets() {
-      this.getNonce();
-
-      // TODO: Add endpoint to get the promprSessionId
-
-      const params = {
-        promptSessionId: this.promptSessionId,
-        nonce: this.currentNonce,
-        processId: window.ProcessMaker?.modeler?.process?.id,
-      };
-
-      const url = '/package-ai/generateProcessArtifacts';
-
-      window.ProcessMaker.apiClient.post(url, params)
-        .then(() => {
-        })
-        .catch((error) => {
-          const errorMsg = error.response?.data?.message || error.message;
-          window.ProcessMaker.alert(errorMsg, 'danger');
-        });
-    },
-    onCloseCreateAssets() {
-      this.isAiGenerated = false;
-    },
-    onCloseAssetsCreated() {
-      this.assetsCreated = false;
-    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -1937,6 +1786,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    this.detachObjectFlows = new DetachObjectFlows(this);
     store.commit('setReadOnly', this.readOnly);
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
@@ -2086,14 +1936,6 @@ export default {
         this.redirect(redirectUrl);
       }
     });
-
-    // AI Setup
-    this.currentNonce = localStorage.currentNonce;
-    if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
-      localStorage.setItem('promptSessions', JSON.stringify([]));
-    }
-    this.promptSessionId = this.getPromptSessionForUser();
-    this.fetchHistory();
   },
 };
 </script>
