@@ -263,6 +263,7 @@ import {
 } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
+import { DetachObjectFlows } from '@/components/modeler/DetachObjectFlows';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
 import RailBottom from '@/components/railBottom/RailBottom.vue';
@@ -406,6 +407,7 @@ export default {
         'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ],
+      detachObjectFlows: null,
     };
   },
   watch: {
@@ -1937,6 +1939,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    this.detachObjectFlows = new DetachObjectFlows(this);
     store.commit('setReadOnly', this.readOnly);
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
