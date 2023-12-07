@@ -1,7 +1,5 @@
-import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import { COLOR_DEFAULT } from '@/components/highlightColors.js';
-import Node from '@/components/nodes/node';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
 const ALLOWED_TYPES = [
@@ -53,7 +51,7 @@ export default {
      * Capture the hovered link model the moment the new node is dropped
      * Otherwise, the mouse could move away while the node is being built
      */
-    checkHoveredLink(cellView) {
+    checkHoveredLink() {
       if (this.hoveredLinkModel) {
         this.linkModel = this.hoveredLinkModel;
       }
@@ -122,11 +120,11 @@ export default {
         {
           x: targetPosition.x + targetSize.width / 2,
           y: targetPosition.y + targetSize.height / 2,
-        }
+        },
       ];
 
       const newFlowNode = flow.makeFlowNode(source, target, waypoints);
       this.addNode(newFlowNode);
-    }
+    },
   },
 };
