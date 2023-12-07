@@ -13,13 +13,13 @@ export function removeNodeFlows(node, modeler) {
   if (node.definition.incoming) {
     node.definition.incoming.forEach((flow) => {
       const node = modeler.nodes.find(node => node.definition === flow);
-      modeler.removeNode(node);
+      modeler.removeNode(node, { clearSelection: false });
     });
   }
   if (node.definition.outgoing) {
     node.definition.outgoing.forEach((flow) => {
       const node = modeler.nodes.find(node => node.definition === flow);
-      modeler.removeNode(node);
+      modeler.removeNode(node, { clearSelection: false });
     });
   }
 }

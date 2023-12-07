@@ -1413,7 +1413,7 @@ export default {
       }
       this.removeNodeProcedure(node, options);
     },
-    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
+    async removeNodeProcedure(node, { removeRelationships = true, clearSelection = true } = {}) {
       if (!node) {
         // already removed
         return;
@@ -1431,8 +1431,10 @@ export default {
       this.removeNodesFromLane(node);
       this.removeNodesFromPool(node);
       store.commit('removeNode', node);
-      store.commit('highlightNode', this.processNode);
-      //this.$refs.selector.clearSelection();
+      if (clearSelection) {
+        store.commit('highlightNode', this.processNode);
+        this.$refs.selector.clearSelection();
+      }
       await this.$nextTick();
       await this.pushToUndoStack();
       // force to update the processNode property in every delete
