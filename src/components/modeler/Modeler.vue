@@ -265,6 +265,7 @@ import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
+import linkEditing from '../../mixins/linkEditing';
 import RailBottom from '@/components/railBottom/RailBottom.vue';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
@@ -319,7 +320,7 @@ export default {
       default: () => [],
     },
   },
-  mixins: [hotkeys, cloneSelection],
+  mixins: [hotkeys, cloneSelection, linkEditing],
   data() {
     return {
       extraActions: [],
@@ -490,6 +491,7 @@ export default {
       this.currentCursorPosition = event.x;
     },
     onMouseUp(event) {
+      this.checkHoveredLink();
       if (window.ProcessMaker.mouseDownDrag) {
         window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
         window.ProcessMaker.mouseDownDrag = false;
@@ -1221,6 +1223,9 @@ export default {
       this.highlightNode(newNode);
 
       await this.addNode(newNode);
+
+      this.$emit('nodeAdded', newNode);
+
       if (!nodeThatWillBeReplaced) {
         return;
       }
@@ -2098,6 +2103,9 @@ export default {
     }
     this.promptSessionId = this.getPromptSessionForUser();
     this.fetchHistory();
+
+    // linkEditing mixin
+    this.linkEditingInit();
   },
 };
 </script>

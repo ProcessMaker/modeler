@@ -12,7 +12,6 @@
       @mouseup.stop="onClickControlHandler($event, item, 'up')"
       :data-test="`${item.type}-main`"
     >
-      <!-- @click.stop="onClickControlHandler($event, item)" -->
       <SubmenuPopper
         :data="item"
         @mouseDownSubmenu="($event, data) => clickToSubmenuHandler($event, data, 'down')"
