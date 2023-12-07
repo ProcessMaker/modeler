@@ -9,6 +9,7 @@
           :validation-errors="validationErrors"
           :warnings="warnings"
           :players="players"
+          v-on="$listeners"
         >
           <component
             :is="component.button"

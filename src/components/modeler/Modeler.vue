@@ -25,6 +25,7 @@
       @clearSelection="clearSelection"
       :players="filteredPlayers"
       @action="handleToolbarAction"
+      @onGenerateAssets="generateAssets()"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -60,23 +61,25 @@
         ref="createAssetsCard"
         v-if="isAiGenerated"
         @onGenerateAssets="generateAssets()"
-        @closeCreateAssets="onCloseCreateAssets()"
+        @closeCreateAssets="isAiGenerated = false"
       />
 
       <GeneratingAssetsCard
         ref="generatingAssetsCard"
-        v-if="generatingAi"
+        v-if="loadingAI"
+        @stopAssetGeneration="onStopAssetGeneration()"
       />
       
       <AssetsCreatedCard
         ref="assetsCreatedCard"
         v-if="assetsCreated"
-        @closeAssetsCreated="onCloseAssetsCreated()"
+        @closeAssetsCreated="assetsCreated = false"
       />
 
       <CreateAssetsFailCard
         ref="createAssetsFailCard"
-        v-if="false"
+        v-if="assetFail"
+        @onDismiss="assetFail = false"
       />
 
       <InspectorButton
@@ -166,7 +169,7 @@
       />
 
       <RailBottom
-        v-if="!generatingAi"
+        v-if="!loadingAI"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -199,9 +202,7 @@
 </template>
 
 <script>
-
 import Vue from 'vue';
-
 import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
@@ -387,11 +388,12 @@ export default {
       currentCursorPosition: 0,
       previewPanelWidth: 600,
       isAiGenerated: window.ProcessMaker?.modeler?.isAiGenerated,
-      generatingAi: false,
       assetsCreated: false,
-      // ^ TODO: To be changed depending on microservice response
+      assetFail: false,
       currentNonce: null,
       promptSessionId: '',
+      loadingAI: false,
+      cancelledJobs: [],
       flowTypes: [
         'processmaker-modeler-sequence-flow',
         'processmaker-modeler-message-flow',
@@ -1845,7 +1847,7 @@ export default {
 
       let params = {
         server: window.location.host,
-        processId: this.processId,
+        processId: window.ProcessMaker?.modeler?.process?.id,
       };
 
       if (this.promptSessionId && this.promptSessionId !== null && this.promptSessionId !== '') {
@@ -1860,9 +1862,8 @@ export default {
           this.promptSessionId = (response.data.promptSessionId);
           localStorage.promptSessionId = (response.data.promptSessionId);
         }).catch((error) => {
-          const errorMsg = error.response?.data?.message || error.message;
-
-          if (error.response.status === 404) {
+          const errorMsg = error.message;
+          if (error === 404) {
             this.removePromptSessionForUser();
             localStorage.promptSessionId = '';
             this.promptSessionId = '';
@@ -1874,7 +1875,7 @@ export default {
     generateAssets() {
       this.getNonce();
 
-      // TODO: Add endpoint to get the promprSessionId
+      this.fetchHistory();
 
       const params = {
         promptSessionId: this.promptSessionId,
@@ -1885,18 +1886,58 @@ export default {
       const url = '/package-ai/generateProcessArtifacts';
 
       window.ProcessMaker.apiClient.post(url, params)
-        .then(() => {
+        .then((response) => {
+          console.log('generate', response);
         })
         .catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
           window.ProcessMaker.alert(errorMsg, 'danger');
+          this.assetFail = true;
         });
     },
-    onCloseCreateAssets() {
-      this.isAiGenerated = false;
+    subscribeToProgress() {
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsProgressEvent';
+      window.Echo.private(channel).listen(
+        streamProgressEvent,
+        (response) => {
+          console.log('subscribe', response);
+          if (response.data.promptSessionId !== this.promptSessionId) {
+            return;
+          }
+
+          if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
+            return;
+          }
+
+          if (response.data) {
+            if (response.data.progress.status === 'running') {
+              this.loadingAI = true;
+              console.log('running', response);
+            } else if (response.data.progress.status === 'error') {
+              this.loadingAI = false;
+              window.ProcessMaker.alert(response.data.message, 'danger');
+              console.log('error', response);
+              this.assetFail = true;
+            } else {
+              this.setPromptSessions(response.data.promptSessionId);
+              console.log('success', response);
+              this.assetsCreated = true;
+              this.fetchHistory();
+              setTimeout(() => {
+                this.loadingAI = false;
+              }, 500);
+            }
+          }
+        },
+      );
     },
-    onCloseAssetsCreated() {
-      this.assetsCreated = false;
+    onStopAssetGeneration() {
+      if (this.currentNonce) {
+        this.cancelledJobs.push(this.currentNonce);
+        localStorage.setItem('cancelledJobs', JSON.stringify(this.cancelledJobs));
+        this.loadingAI = false;
+      }
     },
   },
   created() {
@@ -2092,8 +2133,14 @@ export default {
     if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
       localStorage.setItem('promptSessions', JSON.stringify([]));
     }
+    if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
+      this.cancelledJobs = [];
+    } else {
+      this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
+    }
     this.promptSessionId = this.getPromptSessionForUser();
     this.fetchHistory();
+    this.subscribeToProgress();
   },
 };
 </script>
