@@ -1664,14 +1664,18 @@ export default {
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
       const { paper } = this.paperManager;
-      window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', {
-        coordinates: {
-          clientX: x,
-          clientY: y,
-        },
-        paperTranslate:  paper.translate(), // add papper translate
-        paperScale: paper.scale(), // add scale
-      });
+      let updateMousePosition = _.debounce(function() {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', {
+          coordinates: {
+            clientX: x,
+            clientY: y,
+          },
+          paperTranslate:  paper.translate(), // add papper translate
+          paperScale: paper.scale(), // add scale
+        });
+      }, 3000000, { leading: true, trailing: true });
+      updateMousePosition();
+            
       if (store.getters.isReadOnly) {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
