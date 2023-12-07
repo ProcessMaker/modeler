@@ -554,6 +554,7 @@ export default {
      * @param {*} event
      */
     drag(event) {
+      console.log('drag');
       if (this.stopForceMove) return;
       if (!this.dragging) return;
       this.hasMouseMoved = true;
@@ -576,6 +577,7 @@ export default {
      * @param {Object} event
      */
     async stopDrag() {
+      
       this.dragging = false;
       this.stopForceMove = false;
       // Readjusts the selection box, taking into consideration elements

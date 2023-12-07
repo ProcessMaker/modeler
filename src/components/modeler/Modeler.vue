@@ -408,6 +408,8 @@ export default {
         'processmaker-modeler-boundary-message-event',
       ],
       detachObjectFlows: null,
+      detachStartTime: null,
+      detachTime: 3000,
     };
   },
   watch: {
@@ -1430,7 +1432,7 @@ export default {
       this.removeNodesFromPool(node);
       store.commit('removeNode', node);
       store.commit('highlightNode', this.processNode);
-      this.$refs.selector.clearSelection();
+      //this.$refs.selector.clearSelection();
       await this.$nextTick();
       await this.pushToUndoStack();
       // force to update the processNode property in every delete
@@ -1640,6 +1642,7 @@ export default {
           await this.$nextTick();
         }
       }
+      this.detachStartTime = new Date();
       this.$refs.selector.startDrag({
         clientX: event.clientX,
         clientY: event.clientY,
@@ -1684,7 +1687,9 @@ export default {
           this.$refs.selector.updateSelection(event);
         } else {
           if (this.isDragging) {
+           
             this.$refs.selector.drag(event);
+            this.detachObjectFlowsProcedure(event);
           }
         }
       }
@@ -1708,6 +1713,18 @@ export default {
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
+    },
+    detachObjectFlowsProcedure(event) {
+      if (this.detachStartTime) {
+        const detachEndTime = new Date();
+        const pressDuration = detachEndTime - this.detachStartTime;
+        if (pressDuration > this.detachTime ) {
+
+          this.detachObjectFlows.detachObjectFlows(this.highlightedNode.definition.id);
+
+        }
+        this.detachStartTime = null;
+      }
     },
     redirect(redirectTo) {
       window.location = redirectTo;
@@ -1785,7 +1802,7 @@ export default {
      * Update the lasso tool
      */
     updateLasso(){
-      this.$refs.selector.updateSelectionBox();
+      this.$refs.selector.updateSelectionBox(true, true);
     },
     getNonce() {
       const max = 999999999999999;
