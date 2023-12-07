@@ -1714,7 +1714,7 @@ export default {
       this.dragStart = null;
       this.isSelecting = false;
     },
-    detachObjectFlowsProcedure(event) {
+    detachObjectFlowsProcedure() {
       if (this.detachStartTime) {
         const detachEndTime = new Date();
         const pressDuration = detachEndTime - this.detachStartTime;
