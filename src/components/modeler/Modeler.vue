@@ -1902,17 +1902,52 @@ export default {
         streamProgressEvent,
         (response) => {
           if (response.data.promptSessionId !== this.promptSessionId) {
+            response.data?.tasks.forEach(task => {
+              const taskNode = this.getElementByNodeId(task.id);
+              taskNode.component.unsetHighlights();
+            });
+            response.data?.serviceTasks.forEach(task => {
+              const taskNode = this.getElementByNodeId(task.id);
+              taskNode.component.unsetHighlights();
+            });
+            response.data?.scriptTasks.forEach(task => {
+              const taskNode = this.getElementByNodeId(task.id);
+              taskNode.component.unsetHighlights();
+            });
             return;
           }
 
           if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
+            response.data?.tasks.forEach(task => {
+              const taskNode = this.getElementByNodeId(task.id);
+              taskNode.component.unsetHighlights();
+            });
+            response.data?.serviceTasks.forEach(task => {
+              const taskNode = this.getElementByNodeId(task.id);
+              taskNode.component.unsetHighlights();
+            });
+            response.data?.scriptTasks.forEach(task => {
+              const taskNode = this.getElementByNodeId(task.id);
+              taskNode.component.unsetHighlights();
+            });
             return;
           }
 
           if (response.data) {
             if (response.data.progress.status === 'running') {
               this.loadingAI = true;
-              // Blue color for nodes running
+              response.data?.tasks.forEach(task => {
+                const taskNode = this.getElementByNodeId(task.id);
+                taskNode.component.setAiStatusHighlight(task.status);
+              });
+              response.data?.serviceTasks.forEach(task => {
+                const taskNode = this.getElementByNodeId(task.id);
+                taskNode.component.setAiStatusHighlight(task.status);
+              });
+              response.data?.scriptTasks.forEach(task => {
+                const taskNode = this.getElementByNodeId(task.id);
+                taskNode.component.setAiStatusHighlight(task.status);
+              });
             } else if (response.data.progress.status === 'error') {
               this.loadingAI = false;
               window.ProcessMaker.alert(response.data.message, 'danger');
@@ -1922,6 +1957,19 @@ export default {
               this.setPromptSessions(response.data.promptSessionId);
               // Successful generation 
               this.assetsCreated = true;
+
+              response.data?.tasks.forEach(task => {
+                const taskNode = this.getElementByNodeId(task.id);
+                taskNode.component.unsetHighlights();
+              });
+              response.data?.serviceTasks.forEach(task => {
+                const taskNode = this.getElementByNodeId(task.id);
+                taskNode.component.unsetHighlights();
+              });
+              response.data?.scriptTasks.forEach(task => {
+                const taskNode = this.getElementByNodeId(task.id);
+                taskNode.component.unsetHighlights();
+              });
               this.fetchHistory();
               setTimeout(() => {
                 this.loadingAI = false;
