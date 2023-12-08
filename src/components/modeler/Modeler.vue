@@ -1886,8 +1886,8 @@ export default {
       const url = '/package-ai/generateProcessArtifacts';
 
       window.ProcessMaker.apiClient.post(url, params)
-        .then((response) => {
-          console.log('generate', response);
+        .then(() => {
+          // Response
         })
         .catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
@@ -1901,7 +1901,6 @@ export default {
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
-          console.log('subscribe', response);
           if (response.data.promptSessionId !== this.promptSessionId) {
             return;
           }
@@ -1913,15 +1912,15 @@ export default {
           if (response.data) {
             if (response.data.progress.status === 'running') {
               this.loadingAI = true;
-              console.log('running', response);
+              // Blue color for nodes running
             } else if (response.data.progress.status === 'error') {
               this.loadingAI = false;
               window.ProcessMaker.alert(response.data.message, 'danger');
-              console.log('error', response);
+              // Stop and show error
               this.assetFail = true;
             } else {
               this.setPromptSessions(response.data.promptSessionId);
-              console.log('success', response);
+              // Successful generation 
               this.assetsCreated = true;
               this.fetchHistory();
               setTimeout(() => {
