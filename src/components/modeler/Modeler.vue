@@ -1895,6 +1895,34 @@ export default {
           this.assetFail = true;
         });
     },
+    highlightTaskArrays(data) {
+      if (data) {
+        this.addAiHighlights(data.tasks);
+        this.addAiHighlights(data.serviceTasks);
+        this.addAiHighlights(data.scriptTasks);
+      }
+    },
+    unhighlightTaskArrays(data) {
+      if (data) {
+        this.removeAiHighlights(data.tasks);
+        this.removeAiHighlights(data.serviceTasks);
+        this.removeAiHighlights(data.scriptTasks);
+      }
+    },
+    addAiHighlights(taskArray) {
+      let self = this;
+      taskArray.forEach(task => {
+        const taskNode = self.getElementByNodeId(task.id);
+        taskNode.component.setAiStatusHighlight(task.status);
+      });
+    },
+    removeAiHighlights(taskArray) {
+      let self = this;
+      taskArray.forEach(task => {
+        const taskNode = self.getElementByNodeId(task.id);
+        taskNode.component.unsetHighlights();
+      });
+    },
     subscribeToProgress() {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsProgressEvent';
@@ -1902,52 +1930,19 @@ export default {
         streamProgressEvent,
         (response) => {
           if (response.data.promptSessionId !== this.promptSessionId) {
-            response.data?.tasks.forEach(task => {
-              const taskNode = this.getElementByNodeId(task.id);
-              taskNode.component.unsetHighlights();
-            });
-            response.data?.serviceTasks.forEach(task => {
-              const taskNode = this.getElementByNodeId(task.id);
-              taskNode.component.unsetHighlights();
-            });
-            response.data?.scriptTasks.forEach(task => {
-              const taskNode = this.getElementByNodeId(task.id);
-              taskNode.component.unsetHighlights();
-            });
+            this.unhighlightTaskArrays(response.data);
             return;
           }
 
           if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
-            response.data?.tasks.forEach(task => {
-              const taskNode = this.getElementByNodeId(task.id);
-              taskNode.component.unsetHighlights();
-            });
-            response.data?.serviceTasks.forEach(task => {
-              const taskNode = this.getElementByNodeId(task.id);
-              taskNode.component.unsetHighlights();
-            });
-            response.data?.scriptTasks.forEach(task => {
-              const taskNode = this.getElementByNodeId(task.id);
-              taskNode.component.unsetHighlights();
-            });
+            this.unhighlightTaskArrays(response.data);
             return;
           }
 
           if (response.data) {
             if (response.data.progress.status === 'running') {
               this.loadingAI = true;
-              response.data?.tasks.forEach(task => {
-                const taskNode = this.getElementByNodeId(task.id);
-                taskNode.component.setAiStatusHighlight(task.status);
-              });
-              response.data?.serviceTasks.forEach(task => {
-                const taskNode = this.getElementByNodeId(task.id);
-                taskNode.component.setAiStatusHighlight(task.status);
-              });
-              response.data?.scriptTasks.forEach(task => {
-                const taskNode = this.getElementByNodeId(task.id);
-                taskNode.component.setAiStatusHighlight(task.status);
-              });
+              this.highlightTaskArrays(response.data);
             } else if (response.data.progress.status === 'error') {
               this.loadingAI = false;
               window.ProcessMaker.alert(response.data.message, 'danger');
@@ -1957,19 +1952,7 @@ export default {
               this.setPromptSessions(response.data.promptSessionId);
               // Successful generation 
               this.assetsCreated = true;
-
-              response.data?.tasks.forEach(task => {
-                const taskNode = this.getElementByNodeId(task.id);
-                taskNode.component.unsetHighlights();
-              });
-              response.data?.serviceTasks.forEach(task => {
-                const taskNode = this.getElementByNodeId(task.id);
-                taskNode.component.unsetHighlights();
-              });
-              response.data?.scriptTasks.forEach(task => {
-                const taskNode = this.getElementByNodeId(task.id);
-                taskNode.component.unsetHighlights();
-              });
+              this.unhighlightTaskArrays(response.data);
               this.fetchHistory();
               setTimeout(() => {
                 this.loadingAI = false;
