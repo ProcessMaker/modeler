@@ -143,7 +143,29 @@ export default {
       } else {
         this.shapeView.unhighlight(this.shapeBody, this.prepareCustomColorHighlighter(color));
       }
-     
+    },
+    setAiStatusHighlight(status) {
+      this.shapeView.unhighlight(this.shapeBody, completedHighlighter);
+      if (status === 'generated') {
+        this.shape.attr('body/fill', COLOR_COMPLETED_FILL);
+        this.shapeView.highlight(this.shapeBody, completedHighlighter);
+      }
+      this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
+      if (status === 'generating') {
+        this.shape.attr('body/fill', COLOR_IN_PROGRESS_FILL);
+        this.shapeView.highlight(this.shapeBody, inProgressHighlighter);
+      }
+      this.shapeView.unhighlight(this.shapeBody, idleHighlighter);
+      if (status === 'previously generated') {
+        this.shape.attr('body/fill', COLOR_IDLE_FILL);
+        this.shapeView.highlight(this.shapeBody, idleHighlighter);
+      }
+    },
+    unsetHighlights() {
+      this.shape.attr('body/fill', '#FFFFFF');
+      this.shapeView.unhighlight(this.shapeBody, inProgressHighlighter);
+      this.shapeView.unhighlight(this.shapeBody, completedHighlighter);
+      this.shapeView.unhighlight(this.shapeBody, idleHighlighter);
     },
     setShapeHighlightForReadOnly() {
       if (!this.shapeView) {
