@@ -264,6 +264,7 @@ import {
 } from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
+import { DetachObjectFlows } from '@/components/modeler/DetachObjectFlows';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
 import RailBottom from '@/components/railBottom/RailBottom.vue';
@@ -408,6 +409,9 @@ export default {
         'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ],
+      detachObjectFlows: null,
+      detachStartTime: null,
+      detachTime: 3000,
     };
   },
   watch: {
@@ -1411,7 +1415,7 @@ export default {
       }
       this.removeNodeProcedure(node, options);
     },
-    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
+    async removeNodeProcedure(node, { removeRelationships = true, clearSelection = true } = {}) {
       if (!node) {
         // already removed
         return;
@@ -1429,8 +1433,10 @@ export default {
       this.removeNodesFromLane(node);
       this.removeNodesFromPool(node);
       store.commit('removeNode', node);
-      store.commit('highlightNode', this.processNode);
-      this.$refs.selector.clearSelection();
+      if (clearSelection) {
+        store.commit('highlightNode', this.processNode);
+        this.$refs.selector.clearSelection();
+      }
       await this.$nextTick();
       await this.pushToUndoStack();
       // force to update the processNode property in every delete
@@ -1640,6 +1646,7 @@ export default {
           await this.$nextTick();
         }
       }
+      this.detachStartTime = new Date();
       this.$refs.selector.startDrag({
         clientX: event.clientX,
         clientY: event.clientY,
@@ -1684,7 +1691,9 @@ export default {
           this.$refs.selector.updateSelection(event);
         } else {
           if (this.isDragging) {
+           
             this.$refs.selector.drag(event);
+            this.detachObjectFlowsProcedure(event);
           }
         }
       }
@@ -1708,6 +1717,18 @@ export default {
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
+    },
+    detachObjectFlowsProcedure() {
+      if (this.detachStartTime) {
+        const detachEndTime = new Date();
+        const pressDuration = detachEndTime - this.detachStartTime;
+        if (pressDuration > this.detachTime ) {
+
+          this.detachObjectFlows.detachObjectFlows(this.highlightedNode.definition.id);
+
+        }
+        this.detachStartTime = null;
+      }
     },
     redirect(redirectTo) {
       window.location = redirectTo;
@@ -1785,7 +1806,7 @@ export default {
      * Update the lasso tool
      */
     updateLasso(){
-      this.$refs.selector.updateSelectionBox();
+      this.$refs.selector.updateSelectionBox(true, true);
     },
     getNonce() {
       const max = 999999999999999;
@@ -2008,6 +2029,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    this.detachObjectFlows = new DetachObjectFlows(this);
     store.commit('setReadOnly', this.readOnly);
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
