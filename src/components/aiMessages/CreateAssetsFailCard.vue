@@ -1,6 +1,11 @@
 <template>
   <div class="customAlert mx-auto mt-2">
-    <b-alert show dismissible variant="warning">
+    <b-alert
+      show
+      dismissible
+      variant="warning"
+      @dismissed="onDismiss()"
+    >
       {{ $t("Generation of assets was not able to complete. Try again") }}
     </b-alert>
   </div>
@@ -10,6 +15,11 @@ export default {
   name: 'CreateAssetsFailCard',
   data() {
     return {};
+  },
+  methods: {
+    onDismiss() {
+      this.$emit('onDismiss');
+    },
   },
 };
 </script>

@@ -11,7 +11,7 @@
         <div class="p-0">
           <button
             class="h-100 px-3 cancel-btn btn btn-secondary"
-            @click="onClose()"
+            @click="onStop()"
           >
             {{ $t("STOP") }}
           </button>
@@ -34,7 +34,7 @@ export default {
     };
   },
   methods: {
-    onClose() {
+    onStop() {
       this.$emit('stopAssetGeneration');
     },
   },
