@@ -7,7 +7,9 @@
       @openPanel="handleOpenPanel"
     />
 
-    <AiGenerateButton/>
+    <AiGenerateButton
+      v-on="$listeners"
+    />
 
     <ValidateButton @openIssue="handleOpenIssue" />
 
