@@ -1875,6 +1875,9 @@ export default {
     generateAssets() {
       this.getNonce();
 
+      // Show Generating message
+      this.loadingAI = true;
+
       this.fetchHistory();
 
       const params = {
