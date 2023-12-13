@@ -323,6 +323,7 @@ export default {
   mixins: [hotkeys, cloneSelection, linkEditing],
   data() {
     return {
+      undoKeyPressed: false,
       extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,
@@ -453,7 +454,11 @@ export default {
       });
     },
     showWelcomeMessage() {
-      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+      if (this.undoKeyPressed) {
+        return false;
+      }
+      const isOriginalConditionMet = !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+      return isOriginalConditionMet;
     },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
@@ -479,7 +484,26 @@ export default {
     showComponent: () => store.getters.showComponent,
     isMultiplayer: () => store.getters.isMultiplayer,
   },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  },
   methods: {
+    handleKeyDown(event) {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+        this.undoKeyPressed = true;
+        this.undoAction();
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+        event.preventDefault();
+        this.redoAction();
+      }
+    },
+    undoAction() {
+      this.$refs['tool-bar'].undo();
+    },
+    redoAction() {
+      this.$refs['tool-bar'].redo();
+    },
     onNodeDefinitionChanged() {
       // re-render the preview just if the preview pane is open
       if (this.isOpenPreview) {
@@ -1946,6 +1970,7 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
+    window.addEventListener('keydown', this.handleKeyDown);
     store.commit('setReadOnly', this.readOnly);
     this.graph = new dia.Graph();
     store.commit('setGraph', this.graph);
