@@ -63,6 +63,7 @@ export default {
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon],
   data() {
     return {
+      localNode: { ...this.node },
       shape: null,
       definition: null,
       dropdownData: [
@@ -106,7 +107,7 @@ export default {
       const heightByGrid = this.calculateSizeOnGrid();
       const newHeight = this.useTaskHeight(heightByGrid) ? taskHeight : heightByGrid;
       if (height !== newHeight) {
-        this.node.diagram.bounds.height = newHeight;
+        this.localNode.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
       }

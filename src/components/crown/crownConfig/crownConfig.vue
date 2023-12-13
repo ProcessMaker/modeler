@@ -177,6 +177,9 @@ export default {
       taskDropdownInitiallyOpen: false,
       showReplaceModal: false,
       nodeToReplace: null,
+      localPlaneElements: [...this.planeElements],
+      localNode: { ...this.node },
+
     };
   },
   created() {
@@ -261,8 +264,8 @@ export default {
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
 
-      if (!this.planeElements.includes(this.node.diagram)) {
-        this.planeElements.push(this.node.diagram);
+      if (!this.localPlaneElements.includes(this.node.diagram)) {
+        this.localPlaneElements.push(this.node.diagram);
       }
 
       const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
@@ -285,8 +288,8 @@ export default {
     },
     setUpPositionHandling() {
       this.shape.on('change:position', (element, newPosition) => {
-        this.node.diagram.bounds.x = newPosition.x;
-        this.node.diagram.bounds.y = newPosition.y;
+        this.localNode.diagram.bounds.x = newPosition.x;
+        this.localNode.diagram.bounds.y = newPosition.y;
 
         if (!this.savePositionOnPointerupEventSet) {
           this.shape.listenToOnce(this.paper, 'element:pointerup', this.setNodePosition);

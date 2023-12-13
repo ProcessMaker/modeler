@@ -11,6 +11,7 @@ export default {
   props: ['node', 'rootElements', 'id'],
   data() {
     return {
+      localRootElements: [...this.rootElements],
       message: this.moddle.create('bpmn:Message', {
         id: `${this.id}_message`,
         name: `${this.id}_message`,
@@ -29,7 +30,7 @@ export default {
         id: `${this.id}_message`,
         name: `${this.id}_message`,
       });
-      this.rootElements.push(this.message);
+      this.localRootElements.push(this.message);
       this.node.definition.get('eventDefinitions')[0].messageRef = this.message;
     },
   },

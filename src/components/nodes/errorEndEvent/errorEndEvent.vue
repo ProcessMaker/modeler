@@ -10,6 +10,7 @@ export default {
   props: ['moddle', 'rootElements', 'id'],
   data() {
     return {
+      localRootElements: [...this.rootElements],
       error: this.moddle.create('bpmn:Error', {
         id: `${this.id}_error`,
         name: `${this.id}_error`,
@@ -28,7 +29,7 @@ export default {
         id: `${this.id}_error`,
         name: `${this.id}_error`,
       });
-      this.rootElements.push(this.error);
+      this.localRootElements.push(this.error);
       this.node.definition.get('eventDefinitions')[0].errorRef = this.error;
     },
   },

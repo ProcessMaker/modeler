@@ -47,6 +47,7 @@ export default {
     return {
       shape: null,
       definition: null,
+      localPlaneElements: [...this.planeElements], 
     };
   },
   watch: {
@@ -76,8 +77,8 @@ export default {
     this.shape.component = this;
     this.shape.addTo(this.graph);
 
-    if (!this.planeElements.includes(this.node.diagram)) {
-      this.planeElements.push(this.node.diagram);
+    if (!this.localPlaneElements.includes(this.node.diagram)) {
+      this.localPlaneElements.push(this.node.diagram);
     }
   },
   beforeDestroy() {
