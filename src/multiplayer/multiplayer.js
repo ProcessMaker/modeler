@@ -55,8 +55,12 @@ export default class Multiplayer {
         clientAvatar: window.ProcessMaker.user?.avatar,
         clientColor: window.ProcessMaker.user?.color || this.colorUtil.randomColor(window.ProcessMaker.user?.fullName),
         clientCursor: {
-          top: 300,
-          left: 300,
+          coordinates: {
+            clientX: 300,
+            clientY: 300,
+          },
+          paperTranslate: this.modeler.paper.translate(),
+          paperScale: this.modeler.paper.scale(),
         },
       });
     });

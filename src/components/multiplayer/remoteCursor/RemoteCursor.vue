@@ -41,20 +41,21 @@ export default {
   }
 
   &-username {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 12px;
+    margin: 17px 0 0 17px;
     padding: 4px 10px;
     gap: 10px;
     border-radius: 4px;
     background-color: #212529;
-
     color: #FFFFFF;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    min-width: 100px;
   }
 }
 </style>
