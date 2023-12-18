@@ -195,7 +195,7 @@
       <RemoteCursor
         v-for="player in filteredPlayers"
         :key="player.id"
-        :data="player"
+        :data="prepareCursorData(player)"
       /> 
     </b-row>
   </span>
@@ -1699,7 +1699,19 @@ export default {
     },
     pointerMoveHandler(event) {
       const { clientX: x, clientY: y } = event;
-      window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', { top: y, left: x });
+      const { paper } = this.paperManager;
+      let updateMousePosition = _.debounce(function() {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateMousePosition', {
+          coordinates: {
+            clientX: x,
+            clientY: y,
+          },
+          paperTranslate:  paper.translate(), // add papper translate
+          paperScale: paper.scale(), // add scale
+        });
+      }, 3000000, { leading: true, trailing: true });
+      updateMousePosition();
+            
       if (store.getters.isReadOnly) {
         if (this.canvasDragPosition && !this.clientLeftPaper) {
           this.paperManager.translate(
@@ -1766,6 +1778,26 @@ export default {
       if (data) {
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
       }
+    },
+    /**
+     * Prepare cursor data taking into account, paper translate and paper scale
+     * @param {Object} player
+     * @return {Object}
+     */
+    prepareCursorData(player) {
+      const { paper } = this.paperManager;
+      const localTranslate = paper.translate();
+      // calculate paper translated deltas
+      let deltaX = localTranslate.tx - player.cursor.paperTranslate.tx/player.cursor.paperScale.sx;
+      let deltaY = localTranslate.ty - player.cursor.paperTranslate.ty/player.cursor.paperScale.sy;
+      // get new cursor coordinates taking into consideration paper scale and paper translated
+      const left = player.cursor.coordinates.clientX/player.cursor.paperScale.sx + deltaX;
+      const top = player.cursor.coordinates.clientY/player.cursor.paperScale.sy + deltaY;
+      return {
+        cursor: { left, top },
+        color: player.color,
+        name: player.name,
+      };
     },
     /**
      * Unhightligt selected Nodes
