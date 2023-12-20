@@ -23,6 +23,7 @@ export default {
   },
   methods: {
     onClickHandler(event, control) {
+      window.ProcessMaker.addingNewElement = control;
       this.createDraggingHelper(event, control);
       document.addEventListener('mousemove', this.setDraggingPosition);
       this.setDraggingPosition(event);
@@ -38,6 +39,7 @@ export default {
         this.popperType = control.type;
       }
       window.ProcessMaker.EventBus.$on('custom-pointerclick', message => {
+        window.ProcessMaker.addingNewElement = null;
         window.ProcessMaker.EventBus.$off('custom-pointerclick');
         document.removeEventListener('mousemove', this.setDraggingPosition);
         if (this.movedElement) {

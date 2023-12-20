@@ -17,6 +17,15 @@ export default {
     };
   },
   watch: {
+    hoveredLinkModel() {
+      if (this.hoveredLinkModel) {
+        this.originalColor = this.hoveredLinkModel.attr('line/stroke');
+        this.originalHoveredLink = this.hoveredLinkModel;
+        this.hoveredLinkModel.attr('line/stroke', COLOR_DEFAULT);
+      } else {
+        this.resetLinkColor();
+      }
+    }
   },
   computed: {
     draggingNode() {
@@ -25,106 +34,167 @@ export default {
   },
   methods: {
     linkEditingInit() {
-      this.paperManager.addEventHandler('cell:mouseover', (cellView) => {
-        if (!this.isLink(cellView.model)) {
-          return;
+
+      this.paperManager.addEventHandler('cell:mouseover', (view, evt) => {
+        if (view && view.model.isLink() && this.addingEligibleItem()) {
+          this.hoveredLinkModel = this.linkModel = view.model;
         }
-        this.hoveredLinkModel = cellView.model;
-        this.previewBisect();
       });
-      
-      this.paperManager.addEventHandler('cell:mouseout', () => {
-        this.unPreviewBisect();
+
+      this.paperManager.addEventHandler('cell:mouseout', (view, evt) => {
         this.hoveredLinkModel = null;
       });
       
-      this.$on('nodeAdded', (newNode) => {
-        if (this.canBisect(newNode) && this.linkModel) {
-          this.bisect(newNode);
+      this.paperManager.addEventHandler('element:pointermove', (view, evt) => {
+        if (!this.modelCanBisect(view.model)) {
+          return;
         }
+        let viewFromPoint = this.findViewFromPoint(view, evt);
+        if (viewFromPoint && viewFromPoint.model.isLink()) {
+          this.hoveredLinkModel = this.linkModel = viewFromPoint.model;
+        } else {
+          this.hoveredLinkModel = this.linkModel = null;
+        }
+      });
+      
+      this.paperManager.addEventHandler('element:pointerup', (view, evt) => {
+        if (this.linkModel && this.modelCanBisect(view.model)) {
+          this.paperManager.performAtomicAction(() => {
+            this.bisectElement(view.model, this.linkModel);
+          });
+          this.linkModel = null;
+        }
+      });
+
+      this.$on('node-added', (newNode) => {
+        this.bisectNode(newNode);
       });
     },
 
-    /**
-     * Called in Modeler.vue's onMouseUp method
-     * 
-     * Capture the hovered link model the moment the new node is dropped
-     * Otherwise, the mouse could move away while the node is being built
-     */
-    checkHoveredLink() {
-      if (this.hoveredLinkModel) {
-        this.linkModel = this.hoveredLinkModel;
+    findViewFromPoint(elementView, evt) {
+      const nodesFromPoint = Array.from(
+        document.elementsFromPoint(evt.clientX, evt.clientY)
+      );
+      while (nodesFromPoint.length > 0) {
+        const el = nodesFromPoint.shift();
+        const view = this.paper.findView(el);
+        if (view && view !== elementView) {
+          return view;
+        }
       }
+      return null;
     },
 
     isLink(model) {
       return model.component && model.attributes.type === 'standard.Link';
     },
 
-    previewBisect() {
-      if (!this.draggingNode) {
-        return;
-      }
-
-      if (!this.hoveredLinkModel) {
-        return;
-      }
-
-      if (!this.canBisect(this.draggingNode)) {
-        return;
-      }
-
-      this.originalColor = this.hoveredLinkModel.attr('line/stroke');
-      this.hoveredLinkModel.attr('line/stroke', COLOR_DEFAULT);
+    modelCanBisect(model) {
+      const type = model.component?.node?.type;
+      return ALLOWED_TYPES.includes(type);
     },
 
-    unPreviewBisect() {
-      if (!this.hoveredLinkModel) {
+    controlCanBisect(control) {
+      return ALLOWED_TYPES.includes(control.type);
+    },
+
+    bisectNode(node) {
+      if (!this.linkModel) {
         return;
       }
 
-      if (this.originalColor) {
-        this.hoveredLinkModel.attr('line/stroke', this.originalColor);
-        this.originalColor = null;
-      }
-    },
-
-    canBisect(node) {
-      return ALLOWED_TYPES.includes(node.type);
-    },
-
-    bisect(node) {
       const nodeId = node.definition.id;
-      const cell = this.getElementByNodeId(nodeId);
-      const originalTargetCell = this.linkModel.getTargetCell();
-      this.linkModel.component.setTarget(cell);
-      const size = cell.size();
-      cell.translate(-Math.round(size.width / 2), -Math.round(size.height / 2));
-      this.$refs.selector.updateSelectionBox();
+      const element = this.getElementByNodeId(nodeId);
 
-      this.newOutgoingLink(cell, originalTargetCell);
+      if (!this.modelCanBisect(element)) {
+        return;
+      }
+
+      const size = element.size();
+      this.paperManager.performAtomicAction(() => {
+        element.translate(-Math.round(size.width / 2), -Math.round(size.height / 2));
+        this.bisectElement(element, this.linkModel);
+        this.$refs.selector.updateSelectionBox();
+      });
+
       this.linkModel = null;
+    },
+
+    bisectElement(element, link) {
+      const originalTargetElement = link.getTargetCell();
+
+      // Update target of the existing link in the UI
+      link.component.setTarget(element);
+
+      const linkDefinition = link.component.node.definition;
+      const elementDefinition = element.component.node.definition;
+      const originalTargetDefinition = linkDefinition.get('targetRef');
+      const originalTargetIncomingNodes = originalTargetDefinition.get('incoming');
+
+      // Remove the existing link from the original target in the bpmn definition
+      originalTargetDefinition.set('incoming', originalTargetIncomingNodes.filter(link => link !== linkDefinition));
+
+      // Update the existing link in the bpmn definition to point to our new element
+      linkDefinition.set('targetRef', elementDefinition);
+
+      // Update our new element to have the existing link as a target 
+      elementDefinition.get('incoming').push(linkDefinition);
+      
+      // Reset the end waypoint for the existing link to the center of the new element in the bpmn definition
+      const linkDiagram = link.component.node.diagram;
+      const waypoints = linkDiagram.get('waypoint');
+
+      // Remove the last waypoint
+      waypoints.pop();
+
+      // Create a new end waypoint for the existing link
+      const newEndWaypoint = this.moddle.create('dc:Point', this.getCenterPosition(element));
+
+      // Add it to the existing link
+      linkDiagram.set('waypoint', [
+        ...waypoints,
+        newEndWaypoint
+      ]);
+
+      // User helper to add a new link from our new element to the existing links original original target.
+      // This takes care of both the UI and the BPMN definition
+      this.newOutgoingLink(element, originalTargetElement);
+    },
+    
+    getCenterPosition(element) {
+      const size = element.size();
+      const position = element.position();
+      return {
+        x: position.x + size.width / 2,
+        y: position.y + size.height / 2,
+      };
     },
 
     newOutgoingLink(source, target) {
       const flow = new SequenceFlow(this.nodeRegistry, this.moddle, this.paper);
-      const sourcePosition = source.position();
-      const sourceSize = source.size();
-      const targetPosition = target.position();
-      const targetSize = target.size();
       const waypoints = [
-        {
-          x: sourcePosition.x + sourceSize.width / 2,
-          y: sourcePosition.y + sourceSize.height / 2,
-        },
-        {
-          x: targetPosition.x + targetSize.width / 2,
-          y: targetPosition.y + targetSize.height / 2,
-        },
+        this.getCenterPosition(source),
+        this.getCenterPosition(target),
       ];
 
       const newFlowNode = flow.makeFlowNode(source, target, waypoints);
       this.addNode(newFlowNode);
     },
+
+    resetLinkColor() {
+      if (this.originalHoveredLink) {
+        this.originalHoveredLink.attr('line/stroke', this.originalColor);
+      }
+    },
+
+    addingEligibleItem() {
+      if (window.ProcessMaker.addingNewElement) {
+        const control = window.ProcessMaker.addingNewElement;
+        if (this.controlCanBisect(control)) {
+          return true;
+        }
+      }
+      return false;
+    }
   },
 };

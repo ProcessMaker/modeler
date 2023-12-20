@@ -136,7 +136,7 @@
         :plane-elements="planeElements"
         :moddle="moddle"
         :nodeRegistry="nodeRegistry"
-        :root-elements="definitions.get('rootElements')"
+        :root-elements="definitions?.get('rootElements')"
         :isRendering="isRendering"
         :paperManager="paperManager"
         :auto-validate="autoValidate"
@@ -518,7 +518,6 @@ export default {
       this.currentCursorPosition = event.x;
     },
     onMouseUp(event) {
-      this.checkHoveredLink();
       if (window.ProcessMaker.mouseDownDrag) {
         window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
         window.ProcessMaker.mouseDownDrag = false;
@@ -1251,7 +1250,7 @@ export default {
 
       await this.addNode(newNode);
 
-      this.$emit('nodeAdded', newNode);
+      this.$emit('node-added', newNode);
 
       if (!nodeThatWillBeReplaced) {
         return;
@@ -1992,6 +1991,9 @@ export default {
     subscribeToProgress() {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsProgressEvent';
+      if (!window.Echo) {
+        return;
+      }
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
