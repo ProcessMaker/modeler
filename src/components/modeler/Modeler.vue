@@ -1918,8 +1918,12 @@ export default {
       const url = '/package-ai/generateProcessArtifacts';
 
       window.ProcessMaker.apiClient.post(url, params)
-        .then(() => {
-          // Response
+        .then((response) => {
+          if (response.data) {
+            if (response.data.error) {
+              this.assetFail = true;
+            }
+          }
         })
         .catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
@@ -1991,6 +1995,18 @@ export default {
               }, 500);
             }
           }
+        },
+      );
+    },
+    subscribeToErrors() {
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsErrorEvent';
+      window.Echo.private(channel).listen(
+        streamProgressEvent,
+        (response) => {
+          console.log(response);
+          // Output error
+          this.assetFail = true;
         },
       );
     },
@@ -2203,6 +2219,7 @@ export default {
     this.promptSessionId = this.getPromptSessionForUser();
     this.fetchHistory();
     this.subscribeToProgress();
+    this.subscribeToErrors();
   },
 };
 </script>
