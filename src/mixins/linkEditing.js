@@ -8,6 +8,7 @@ const ALLOWED_BPMN_TYPES = [
   'bpmn:GlobalTask',
   'bpmn:CallActivity',
   'bpmn:ScriptTask',
+  'bpmn:ServiceTask',
 ];
 
 const ALLOWED_ALTERNATE_TYPES = [
@@ -156,7 +157,7 @@ export default {
         return true;
       }
 
-      // Check alternate types
+      // Sometimes the bpmn type is not set, so check for a type in the config 
       const alternateType = this.getAlternateType(controlOrModel);
       return ALLOWED_ALTERNATE_TYPES.includes(alternateType);
     },
