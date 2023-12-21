@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     onGenerateAssets() {
+      this.showPopover = false;
       this.$emit('onGenerateAssets');
     },
   },
