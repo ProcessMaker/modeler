@@ -267,6 +267,7 @@ import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
 import cloneSelection from '../../mixins/cloneSelection';
 import linkEditing from '../../mixins/linkEditing';
+import transparentDragging from '@/mixins/transparentDragging';
 import RailBottom from '@/components/railBottom/RailBottom.vue';
 
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
@@ -321,7 +322,7 @@ export default {
       default: () => [],
     },
   },
-  mixins: [hotkeys, cloneSelection, linkEditing],
+  mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
   data() {
     return {
       localOwner: { ...this.owner },
@@ -448,8 +449,16 @@ export default {
         window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
       }
     },
+    creatingNewNode() {
+      if (this.creatingNewNode) {
+        this.clearSelection();
+      }
+    }
   },
   computed: {
+    creatingNewNode() {
+      return nodeTypesStore.getters.getSelectedNode;
+    },
     filteredPlayers() {
       const allPlayers = _.uniqBy(this.players, 'name');
       return allPlayers.filter(player => {
@@ -2243,6 +2252,9 @@ export default {
 
     // linkEditing mixin
     this.linkEditingInit();
+
+    // transparentDragging mixin
+    this.initTransparentDragging();
   },
 };
 </script>

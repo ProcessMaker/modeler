@@ -2,10 +2,25 @@ import nodeTypesStore from '@/nodeTypesStore';
 import { COLOR_DEFAULT } from '@/components/highlightColors.js';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
-const ALLOWED_TYPES = [
-  'processmaker-modeler-script-task',
-  'processmaker-modeler-service-task',
+const ALLOWED_BPMN_TYPES = [
+  'bpmn:Task',
+  'bpmn:UserTask',
+  'bpmn:GlobalTask',
+  'bpmn:CallActivity',
+  'bpmn:ScriptTask',
+];
+
+const ALLOWED_ALTERNATE_TYPES = [
   'processmaker-modeler-task',
+  'processmaker-modeler-manual-task',
+  'processmaker-modeler-script-task',
+  'processmaker-modeler-call-activity',
+  'processmaker-modeler-intermediate-catch-timer-event',
+  'processmaker-modeler-intermediate-signal-catch-event',
+  'processmaker-modeler-intermediate-signal-throw-event',
+  'processmaker-modeler-intermediate-message-catch-event',
+  'processmaker-modeler-intermediate-message-throw-event',
+  'processmaker-modeler-intermediate-conditional-catch-event',
 ];
 
 export default {
@@ -13,7 +28,14 @@ export default {
     return {
       linkModel: null,
       hoveredLinkModel: null,
+      originalHoveredLink: null,
       originalColor: null,
+      activeElement: null,
+      timeout: null,
+      tooltipEl: null,
+      clickPosition: null,
+      currentMovingModel: null,
+      currentMovingModelCanBisect: null,
     };
   },
   watch: {
@@ -22,52 +44,89 @@ export default {
         this.originalColor = this.hoveredLinkModel.attr('line/stroke');
         this.originalHoveredLink = this.hoveredLinkModel;
         this.hoveredLinkModel.attr('line/stroke', COLOR_DEFAULT);
+        this.addElementTooltip();
       } else {
         this.resetLinkColor();
+        this.removeElementTooltip();
       }
     }
   },
   computed: {
-    draggingNode() {
-      return nodeTypesStore.getters.getSelectedNode;
+    ghostNode() {
+      return nodeTypesStore.getters.getGhostNode;
     },
   },
   methods: {
     linkEditingInit() {
 
+      // Handle hovering a new element on the page
       this.paperManager.addEventHandler('cell:mouseover', (view, evt) => {
         if (view && view.model.isLink() && this.addingEligibleItem()) {
-          this.hoveredLinkModel = this.linkModel = view.model;
+          this.timeout = setTimeout(() => {
+            this.hoveredLinkModel = view.model;
+          }, 1000);
         }
       });
-
       this.paperManager.addEventHandler('cell:mouseout', (view, evt) => {
-        this.hoveredLinkModel = null;
+        clearTimeout(this.timeout);
+        this.timeout = null;
+        if (this.hoveredLinkModel) {
+          this.hoveredLinkModel = null;
+        }
       });
       
+      // Handle hovering an existing element on the page
       this.paperManager.addEventHandler('element:pointermove', (view, evt) => {
-        if (!this.modelCanBisect(view.model)) {
+        if (!this.canBisectCached(view.model)) {
           return;
         }
-        let viewFromPoint = this.findViewFromPoint(view, evt);
-        if (viewFromPoint && viewFromPoint.model.isLink()) {
-          this.hoveredLinkModel = this.linkModel = viewFromPoint.model;
+
+        // get any links under the element we're moving
+        const viewFromPoint = this.findViewFromPoint(view, evt);
+        const model = viewFromPoint?.model;
+
+        if (model && model.isLink()) {
+          if (this.hoveredLinkModel !== model && !this.timeout) {
+            this.timeout = setTimeout(() => {
+              this.hoveredLinkModel = model;
+              this.linkModel = model;
+              this.activeElement = view.model;
+            }, 1000);
+          }
         } else {
-          this.hoveredLinkModel = this.linkModel = null;
+          clearTimeout(this.timeout);
+          this.timeout = null;
+          if (this.hoveredLinkModel) {
+            this.hoveredLinkModel = null;
+            this.linkModel = null;
+            this.activeElement = null;
+          }
         }
       });
       
+      // Handle dropping an existing element on the page
       this.paperManager.addEventHandler('element:pointerup', (view, evt) => {
-        if (this.linkModel && this.modelCanBisect(view.model)) {
+        if (this.linkModel && this.canBisect(view.model)) {
+          this.clickPosition = { x: evt.clientX, y: evt.clientY };
           this.paperManager.performAtomicAction(() => {
             this.bisectElement(view.model, this.linkModel);
+            this.hoveredLinkModel = null;
+            this.linkModel = null;
+            this.activeElement = null;
           });
-          this.linkModel = null;
         }
       });
 
+      // Handle dropping a new element on the page
       this.$on('node-added', (newNode) => {
         this.bisectNode(newNode);
+      });
+
+      // We need to save the hovered link because the mouse could move
+      // before the node is created
+      window.ProcessMaker.EventBus.$on('capture-hovered-link', (evt) => {
+        this.clickPosition = { x: evt.clientX, y: evt.clientY };
+        this.linkModel = this.hoveredLinkModel;
       });
     },
 
@@ -89,13 +148,49 @@ export default {
       return model.component && model.attributes.type === 'standard.Link';
     },
 
-    modelCanBisect(model) {
-      const type = model.component?.node?.type;
-      return ALLOWED_TYPES.includes(type);
+    canBisect(controlOrModel) {
+      const bpmnTypes = this.getBpmnTypes(controlOrModel);
+      const allowedByBpmnType = bpmnTypes.some(type => ALLOWED_BPMN_TYPES.includes(type));
+
+      if (allowedByBpmnType) {
+        return true;
+      }
+
+      // Check alternate types
+      const alternateType = this.getAlternateType(controlOrModel);
+      return ALLOWED_ALTERNATE_TYPES.includes(alternateType);
     },
 
-    controlCanBisect(control) {
-      return ALLOWED_TYPES.includes(control.type);
+    canBisectCached(model) {
+      let canBisect = false;
+      if (this.currentMovingModel === model) {
+        canBisect = this.currentMovingModelCanBisect;
+      } else {
+        canBisect = this.canBisect(model);
+        this.currentMovingModel = model;
+        this.currentMovingModelCanBisect = canBisect;
+      }
+
+      return canBisect;
+    },
+
+    getBpmnTypes(item) {
+      let nodeDefinitionType = item.component?.node?.definition?.$type;
+      let controlTypes = item.bpmnType || [];
+      if (!Array.isArray(controlTypes)) {
+        controlTypes = [controlTypes];
+      }
+      if (nodeDefinitionType) {
+        return [nodeDefinitionType];
+      }
+      return controlTypes;
+    },
+
+    getAlternateType(item) {
+      if (item.type) {
+        return item.type;
+      }
+      return item.component?.node?.type;
     },
 
     bisectNode(node) {
@@ -106,7 +201,7 @@ export default {
       const nodeId = node.definition.id;
       const element = this.getElementByNodeId(nodeId);
 
-      if (!this.modelCanBisect(element)) {
+      if (!this.canBisect(element)) {
         return;
       }
 
@@ -117,6 +212,7 @@ export default {
         this.$refs.selector.updateSelectionBox();
       });
 
+      this.hoveredLinkModel = null;
       this.linkModel = null;
     },
 
@@ -139,7 +235,32 @@ export default {
 
       // Update our new element to have the existing link as a target 
       elementDefinition.get('incoming').push(linkDefinition);
-      
+
+
+      // Handle splitting vertices
+      let vertices = link.vertices();
+      const linkView = this.paper.findViewByModel(link);
+      const localClick = this.paper.clientToLocalPoint(this.clickPosition);
+      let nearestVertex = linkView.getVertexIndex(localClick.x, localClick.y);
+      if (vertices.length > 0) {
+        nearestVertex--;
+      }
+
+      // Add vertices after the drop point to the new link
+      const newVertices = [];
+      vertices.forEach((vertex, index) => {
+        if (index > nearestVertex) {
+          newVertices.push(vertex);
+        }
+      });
+
+      // Remove new vertices from the existing link
+      let vertexToRemove = nearestVertex + 1;
+      while(vertices.length > vertexToRemove) {
+        link.removeVertex(vertexToRemove);
+        vertices = link.vertices();
+      }
+
       // Reset the end waypoint for the existing link to the center of the new element in the bpmn definition
       const linkDiagram = link.component.node.diagram;
       const waypoints = linkDiagram.get('waypoint');
@@ -158,7 +279,7 @@ export default {
 
       // User helper to add a new link from our new element to the existing links original original target.
       // This takes care of both the UI and the BPMN definition
-      this.newOutgoingLink(element, originalTargetElement);
+      this.newOutgoingLink(element, originalTargetElement, newVertices);
     },
     
     getCenterPosition(element) {
@@ -170,10 +291,17 @@ export default {
       };
     },
 
-    newOutgoingLink(source, target) {
+    newOutgoingLink(source, target, newVertices) {
+      const waypointsFromVertices = newVertices.map(vertex => {
+        return {
+          x: vertex.x,
+          y: vertex.y,
+        };
+      });
       const flow = new SequenceFlow(this.nodeRegistry, this.moddle, this.paper);
       const waypoints = [
         this.getCenterPosition(source),
+        ...waypointsFromVertices,
         this.getCenterPosition(target),
       ];
 
@@ -188,13 +316,77 @@ export default {
     },
 
     addingEligibleItem() {
-      if (window.ProcessMaker.addingNewElement) {
-        const control = window.ProcessMaker.addingNewElement;
-        if (this.controlCanBisect(control)) {
+      const addingNewElement = nodeTypesStore.getters.getSelectedNode;
+      if (addingNewElement) {
+        if (this.canBisect(addingNewElement)) {
           return true;
         }
       }
       return false;
+    },
+
+    addElementTooltip() {
+      var el = document.createElement('div');
+      el.innerHTML = this.$t('Drop to add to this flow');
+      el.classList.add('element-tooltip');
+      document.body.appendChild(el);
+      document.addEventListener('mousemove', this.setTooltipPosition);
+
+      el.style.zIndex = '9999';
+
+      this.tooltipEl = el;
+      this.setTooltipPosition()
+    },
+
+    setTooltipPosition() {
+      let left = 0;
+      let top = 0;
+
+      if (this.activeElement) { // Moving an existing element
+
+        const elementPosition = this.activeElement.position();
+        const elementSize = this.activeElement.size();
+        const bottomCenter = {
+          x: elementPosition.x + elementSize.width / 2,
+          y: elementPosition.y + elementSize.height,
+        }
+        const realBottomCenter = this.paper.localToClientPoint(bottomCenter);
+
+        const tooltipTopCenter = {
+          x: realBottomCenter.x - this.tooltipEl.offsetWidth / 2,
+          y: realBottomCenter.y + 10,
+        }
+
+        left = tooltipTopCenter.x;
+        top = tooltipTopCenter.y;
+
+      } else if (this.ghostNode) { // Creating a new element
+
+        const bottomCenter = {
+          x: this.ghostNode.offsetLeft + (this.ghostNode.offsetWidth / 2),
+          y: this.ghostNode.offsetTop + this.ghostNode.offsetHeight,
+        }
+
+        const tooltipTopCenter = {
+          x: bottomCenter.x - this.tooltipEl.offsetWidth / 2,
+          y: bottomCenter.y + 10,
+        }
+
+        left = tooltipTopCenter.x;
+        top = tooltipTopCenter.y;
+
+      }
+
+      this.tooltipEl.style.left = left + 'px';
+      this.tooltipEl.style.top = top + 'px';
+    },
+
+    removeElementTooltip() {
+      if (this.tooltipEl) {
+        document.removeEventListener('mousemove', this.setTooltipPosition);
+        document.body.removeChild(this.tooltipEl);
+        this.tooltipEl = null;
+      }
     }
   },
 };
