@@ -3,6 +3,8 @@
     <button
       id="aiAssetButton"
       :class="['btn py-0 px-2 ai-btn', showPopover ? 'ai-btn-open' : 'ai-btn-closed']"
+      :title="$t('AI Asset Generator')"
+      v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
       @click="showPopover = !showPopover"
     >
       <inline-svg :src="proceC2Icon" class="my-auto ai-icon" />
