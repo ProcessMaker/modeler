@@ -50,7 +50,7 @@ export default {
         this.resetLinkColor();
         this.removeElementTooltip();
       }
-    }
+    },
   },
   computed: {
     ghostNode() {
@@ -61,14 +61,14 @@ export default {
     linkEditingInit() {
 
       // Handle hovering a new element on the page
-      this.paperManager.addEventHandler('cell:mouseover', (view, evt) => {
+      this.paperManager.addEventHandler('cell:mouseover', (view) => {
         if (view && view.model.isLink() && this.addingEligibleItem()) {
           this.timeout = setTimeout(() => {
             this.hoveredLinkModel = view.model;
           }, 1000);
         }
       });
-      this.paperManager.addEventHandler('cell:mouseout', (view, evt) => {
+      this.paperManager.addEventHandler('cell:mouseout', () => {
         clearTimeout(this.timeout);
         this.timeout = null;
         if (this.hoveredLinkModel) {
@@ -133,7 +133,7 @@ export default {
 
     findViewFromPoint(elementView, evt) {
       const nodesFromPoint = Array.from(
-        document.elementsFromPoint(evt.clientX, evt.clientY)
+        document.elementsFromPoint(evt.clientX, evt.clientY),
       );
       while (nodesFromPoint.length > 0) {
         const el = nodesFromPoint.shift();
@@ -257,7 +257,7 @@ export default {
 
       // Remove new vertices from the existing link
       let vertexToRemove = nearestVertex + 1;
-      while(vertices.length > vertexToRemove) {
+      while (vertices.length > vertexToRemove) {
         link.removeVertex(vertexToRemove);
         vertices = link.vertices();
       }
@@ -275,7 +275,7 @@ export default {
       // Add it to the existing link
       linkDiagram.set('waypoint', [
         ...waypoints,
-        newEndWaypoint
+        newEndWaypoint,
       ]);
 
       // User helper to add a new link from our new element to the existing links original original target.
@@ -336,7 +336,7 @@ export default {
       el.style.zIndex = '9999';
 
       this.tooltipEl = el;
-      this.setTooltipPosition()
+      this.setTooltipPosition();
     },
 
     setTooltipPosition() {
@@ -350,13 +350,13 @@ export default {
         const bottomCenter = {
           x: elementPosition.x + elementSize.width / 2,
           y: elementPosition.y + elementSize.height,
-        }
+        };
         const realBottomCenter = this.paper.localToClientPoint(bottomCenter);
 
         const tooltipTopCenter = {
           x: realBottomCenter.x - this.tooltipEl.offsetWidth / 2,
           y: realBottomCenter.y + 10,
-        }
+        };
 
         left = tooltipTopCenter.x;
         top = tooltipTopCenter.y;
@@ -366,12 +366,12 @@ export default {
         const bottomCenter = {
           x: this.ghostNode.offsetLeft + (this.ghostNode.offsetWidth / 2),
           y: this.ghostNode.offsetTop + this.ghostNode.offsetHeight,
-        }
+        };
 
         const tooltipTopCenter = {
           x: bottomCenter.x - this.tooltipEl.offsetWidth / 2,
           y: bottomCenter.y + 10,
-        }
+        };
 
         left = tooltipTopCenter.x;
         top = tooltipTopCenter.y;
@@ -388,6 +388,6 @@ export default {
         document.body.removeChild(this.tooltipEl);
         this.tooltipEl = null;
       }
-    }
+    },
   },
 };

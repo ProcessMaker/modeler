@@ -453,7 +453,7 @@ export default {
       if (this.creatingNewNode) {
         this.clearSelection();
       }
-    }
+    },
   },
   computed: {
     creatingNewNode() {

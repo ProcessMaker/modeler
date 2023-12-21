@@ -1,16 +1,16 @@
 const transparentHighlighter = {
-    highlighter: {
-        name: 'addClass',
-        options: {
-            className: 'transparent-cell'
-        }
-    }
-}
+  highlighter: {
+    name: 'addClass',
+    options: {
+      className: 'transparent-cell',
+    },
+  },
+};
 
 export default {
   data() {
     return {
-        hasTransparency: false,
+      hasTransparency: false,
     };
   },
   methods: {
@@ -41,6 +41,6 @@ export default {
     removeTransparency(view) {
       view.unhighlight(null, transparentHighlighter);
       this.hasTransparency = false;
-    }
-  }
-}
+    },
+  },
+};
