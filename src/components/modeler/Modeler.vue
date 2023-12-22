@@ -25,7 +25,7 @@
       @clearSelection="clearSelection"
       :players="filteredPlayers"
       @action="handleToolbarAction"
-      @onGenerateAssets="generateAssets()"
+      @onGenerateAssets="onGenerateAssets()"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -60,7 +60,7 @@
       <CreateAssetsCard
         ref="createAssetsCard"
         v-if="isAiGenerated"
-        @onGenerateAssets="generateAssets()"
+        @onGenerateAssets="onGenerateAssets()"
         @closeCreateAssets="isAiGenerated = false"
       />
 
@@ -654,7 +654,7 @@ export default {
     async close() {
       this.$emit('close');
     },
-    async saveBpmn(redirectTo = null, id = null) {
+    async saveBpmn(redirectTo = null, id = null, generatingAssets = false) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -663,7 +663,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id, generatingAssets });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -1904,6 +1904,9 @@ export default {
           }
         });
     },
+    onGenerateAssets() {
+      this.saveBpmn(null, null, true);
+    },
     generateAssets() {
       this.getNonce();
 
@@ -1990,6 +1993,20 @@ export default {
                 this.loadingAI = false;
               }, 500);
             }
+          }
+        },
+      );
+    },
+    subscribeToGenerationCompleted() {
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const streamCompletedEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsCompletedEvent';
+      window.Echo.private(channel).listen(
+        streamCompletedEvent,
+        (response) => {
+          if (response.data) {
+            setTimeout(() => {
+              window.location.replace(window.location.href.split('?')[0]);
+            }, 1500);
           }
         },
       );
@@ -2184,9 +2201,12 @@ export default {
       this.replaceAiNode(data);
     });
 
-    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl, nodeId, generatingAssets) => {
       if (redirectUrl) {
         this.redirect(redirectUrl);
+      }
+      if (generatingAssets) {
+        this.generateAssets();
       }
     });
 
@@ -2203,6 +2223,7 @@ export default {
     this.promptSessionId = this.getPromptSessionForUser();
     this.fetchHistory();
     this.subscribeToProgress();
+    this.subscribeToGenerationCompleted();
   },
 };
 </script>
