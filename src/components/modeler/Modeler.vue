@@ -1920,7 +1920,7 @@ export default {
       window.ProcessMaker.apiClient.post(url, params)
         .then((response) => {
           if (response.data) {
-            if (response.data.error) {
+            if (response.data?.error) {
               this.assetFail = true;
             }
           }
@@ -2003,8 +2003,7 @@ export default {
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsErrorEvent';
       window.Echo.private(channel).listen(
         streamProgressEvent,
-        (response) => {
-          console.log(response);
+        () => {
           // Output error
           this.assetFail = true;
         },
