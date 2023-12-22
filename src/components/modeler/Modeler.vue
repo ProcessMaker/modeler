@@ -1,5 +1,5 @@
 <template>
-  <span data-test="body-container">
+  <span data-test="body-container" @keydown="handleKeyDown">
     <tool-bar
       v-if="showComponent"
       ref="tool-bar"
