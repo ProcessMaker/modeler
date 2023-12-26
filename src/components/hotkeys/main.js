@@ -24,8 +24,7 @@ export default {
     },
     keyupListener(event) {
       if (event.code === 'Space') {
-        this.isGrabbing = false;
-        this.paperManager.removeEventHandler('blank:pointermove');
+        this.panMode = false;
       }
     },
     keydownListener(event) {
@@ -46,19 +45,10 @@ export default {
       }
 
       if (event.code === 'Space') {
-        this.isGrabbing = true;
-        this.paperManager.addEventHandler('blank:pointermove', (event, x, y) => {
-          if (!this.canvasDragPosition) {
-            const scale = this.paperManager.scale;
-            this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-          }
-          if (this.canvasDragPosition && !this.clientLeftPaper) {
-            this.paperManager.translate(
-              event.offsetX - this.canvasDragPosition.x,
-              event.offsetY - this.canvasDragPosition.y,
-            );
-          }
-        });
+        if (this.panMode) {
+          return;
+        }
+        this.panMode = true;
       }
 
       moveShapeByKeypress(
@@ -66,6 +56,39 @@ export default {
         store.getters.highlightedShapes,
         this.pushToUndoStack,
       );
+    },
+    startPanning() {
+      this.panning = true;
+      this.paperManager.addEventHandler('blank:pointermove', this.blankMoveHandler);
+      this.paperManager.addEventHandler('cell:pointermove', this.cellMoveHandler);
+    },
+    blankMoveHandler(event, x, y) {
+      this.checkCanvasDragPosition(x, y);
+      this.translatePaper(event);
+    },
+    cellMoveHandler(shape, event, x, y) {
+      this.checkCanvasDragPosition(x, y);
+      this.translatePaper(event);
+    },
+    checkCanvasDragPosition(x, y) {
+      if (!this.canvasDragPosition) {
+        const scale = this.paperManager.scale;
+        this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
+      }
+    },
+    translatePaper(event) {
+      if (this.clientLeftPaper) {
+        return;
+      }
+      this.paperManager.translate(
+        event.offsetX - this.canvasDragPosition.x,
+        event.offsetY - this.canvasDragPosition.y,
+      );
+    },
+    stopPanning() {
+      this.paperManager.removeEventHandler('blank:pointermove', this.blankMoveHandler);
+      this.paperManager.removeEventHandler('cell:pointermove', this.cellMoveHandler);
+      this.panning = false;
     },
   },
 };

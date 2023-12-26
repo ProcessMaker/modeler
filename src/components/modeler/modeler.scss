@@ -12,17 +12,17 @@
     top: 0;
   }
 
-  .grabbing-cursor {
+  .grabbing-cursor, .grabbing-cursor .joint-element, .grabbing-cursor path {
     cursor: grabbing !important;
+  }
+  
+  .grab-cursor, .grab-cursor .joint-element, .grab-cursor path {
+    cursor: grab !important;
   }
 
   .paper-container {
     position: initial !important;
     user-select: none;
-  }
-
-  .joint-element {
-    cursor: default;
   }
 
   .joint-marker-vertex:hover {

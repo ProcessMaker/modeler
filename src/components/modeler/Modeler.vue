@@ -44,7 +44,7 @@
       <b-col
         class="paper-container h-100 pr-4"
         ref="paper-container"
-        :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
+        :class="[cursor, { 'grabbing-cursor' : panMode && panning, 'grab-cursor' : panMode && !panning }]"
         :style="{ width: parentWidth, height: parentHeight }"
         @mouseup="onMouseUp"
         @mousemove="[onMouseMove($event), setInspectorButtonPosition($event)]"
@@ -174,10 +174,12 @@
         :paper-manager="paperManager"
         :graph="graph"
         :is-rendering="isRendering"
+        :pan-mode="panMode"
         @load-xml="loadXML"
         @clearSelection="clearSelection"
         @set-cursor="cursor = $event"
         @onCreateElement="onCreateElementHandler"
+        @set-pan-mode="panMode = $event"
       />
 
       <selection
@@ -365,7 +367,8 @@ export default {
       panelsCompressed: false,
       isOpenInspector: false,
       isOpenPreview: false,
-      isGrabbing: false,
+      panMode: false,
+      panning: false,
       isRendering: false,
       isLoaded: false,
       allWarnings: [],
@@ -415,6 +418,14 @@ export default {
     };
   },
   watch: {
+    isReadOnly() {
+      this.panMode = this.isReadOnly;
+    },
+    panning() {
+      if (!this.panning) {
+        this.canvasDragPosition = null;
+      }
+    },
     isRendering() {
       const loadingMessage = 'Loading process, please be patient.';
       if (this.isRendering) {
@@ -456,6 +467,12 @@ export default {
     },
   },
   computed: {
+    isReadOnly() {
+      return store.getters.isReadOnly
+    },
+    panCursor() {
+      return this.panning ? 'grabbing' : 'grab';
+    },
     creatingNewNode() {
       return nodeTypesStore.getters.getSelectedNode;
     },
@@ -469,7 +486,7 @@ export default {
       if (this.undoKeyPressed) {
         return false;
       }
-      const isOriginalConditionMet = !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+      const isOriginalConditionMet = !this.selectedNode && !this.nodes.length && !this.isReadOnly && this.isLoaded;
       return isOriginalConditionMet;
     },
     noElementsSelected() {
@@ -1719,17 +1736,11 @@ export default {
         });
       }, 3000000, { leading: true, trailing: true });
       updateMousePosition();
-            
-      if (store.getters.isReadOnly) {
-        if (this.canvasDragPosition && !this.clientLeftPaper) {
-          this.paperManager.translate(
-            event.offsetX - this.canvasDragPosition.x,
-            event.offsetY - this.canvasDragPosition.y,
-          );
-        }
+
+      if (this.panMode) {
         return;
       }
-      if (this.isGrabbing) return;
+
       if (this.dragStart && (Math.abs(x - this.dragStart.x) > 5 || Math.abs(y - this.dragStart.y) > 5)) {
         this.isDragging = true;
         this.dragStart = null;
@@ -2110,13 +2121,10 @@ export default {
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
     this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
-      if (this.isGrabbing) return;
-      if (store.getters.isReadOnly) {
-        this.isGrabbing = true;
+      if (this.panMode) {
+        this.startPanning();
+        return;
       }
-      const scale = this.paperManager.scale;
-      this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-      this.isOverShape = false;
       this.pointerDownHandler(event);
     }, this);
 
@@ -2124,19 +2132,19 @@ export default {
       if (this.isBpmnNode(shape) && shape.attr('body/cursor') !== 'default' && !this.isGrabbing) {
         shape.attr('body/cursor', 'move');
       }
-      // If the user is panning the Paper while hovering an element, ignore the default move cursor
-      if (this.isGrabbing && this.isBpmnNode(shape)) {
-        shape.attr('body/cursor', 'grabbing');
-      }
     });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
-      this.isGrabbing = false;
-      this.canvasDragPosition = null;
+      if (this.panMode) {
+        this.stopPanning();
+      }
       this.activeNode = null;
       this.pointerUpHandler(event);
     }, this);
     this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
-      this.canvasDragPosition = null;
+      if (this.panMode) {
+        this.stopPanning();
+        return;
+      }
       this.activeNode = null;
       this.pointerUpHandler(event, cellView);
     }, this);
@@ -2167,7 +2175,9 @@ export default {
       }
 
       // ignore click event if the user is Grabbing the paper
-      if (this.isGrabbing) return;
+      if (this.panMode) {
+        return;
+      }
 
       shape.component.$emit('click', event);
       this.$emit('click', {
@@ -2180,29 +2190,14 @@ export default {
       if (!this.isBpmnNode(shape)) {
         return;
       }
-      // If the user is pressing Space (grabbing) and clicking on a Cell, return
-      if (this.isGrabbing) {
+      // If the user is panning
+      if (this.panMode) {
+        this.startPanning();
         return;
       }
       this.setShapeStacking(shape);
       this.activeNode = shape.component.node;
-      this.isOverShape = true;
       this.pointerDowInShape(event, shape);
-    });
-    // If the user is grabbing the paper while he clicked in a cell, move the paper and not the cell
-    this.paperManager.addEventHandler('cell:pointermove', (_, event, x, y) => {
-      if (this.isGrabbing) {
-        if (!this.canvasDragPosition) {
-          const scale = this.paperManager.scale;
-          this.canvasDragPosition = { x: x * scale.sx, y: y * scale.sy };
-        }
-        if (this.canvasDragPosition && !this.clientLeftPaper) {
-          this.paperManager.translate(
-            event.offsetX - this.canvasDragPosition.x,
-            event.offsetY - this.canvasDragPosition.y,
-          );
-        }
-      }
     });
 
     /* Register custom nodes */
