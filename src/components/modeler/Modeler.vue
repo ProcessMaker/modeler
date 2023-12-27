@@ -466,7 +466,7 @@ export default {
   },
   computed: {
     isReadOnly() {
-      return store.getters.isReadOnly
+      return store.getters.isReadOnly;
     },
     panCursor() {
       return this.panning ? 'grabbing' : 'grab';

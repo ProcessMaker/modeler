@@ -2,7 +2,8 @@
   <div class="pan-tool-box">
     <button type="button" class="pan-tool-button" :class="panMode ? 'pan-tool-button-active' : ''"
       data-cy="pan-button" @click="$emit('set-pan-mode', !panMode)" v-b-tooltip.hover
-      :title="$t('Pan Tool')">
+      :title="$t('Pan Tool')"
+    >
       <inline-svg :src="icon" />
     </button>
   </div>
@@ -18,14 +19,14 @@ export default {
     panMode: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
       icon: require('@/assets/railBottom/pan-icon.svg'),
-    }
+    };
   },
-}
+};
 </script>
 <style lang="scss" scoped src="./bottomLeftControl.scss"></style>
 
