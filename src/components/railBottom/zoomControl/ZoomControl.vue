@@ -50,7 +50,6 @@ export default ({
       scaleStep: 0.1,
       minusIcon: require('@/assets/railBottom/minus.svg'),
       plusIcon: require('@/assets/railBottom/plus.svg'),
-      localPaperManager: { ...this.paperManager },
     };
   },
   computed: {
@@ -60,16 +59,16 @@ export default ({
   },
   methods: {
     onClickZoomOut() {
-      this.localPaperManager.scale = Math.max(
+      this.paperManager.scale = Math.max(
         this.minimumScale,
-        this.localPaperManager.scale.sx -= this.scaleStep,
+        this.paperManager.scale.sx -= this.scaleStep,
       );
     },
     onClickZoomIn() {
-      this.localPaperManager.scale = this.paperManager.scale.sx + this.scaleStep;
+      this.paperManager.scale = this.paperManager.scale.sx + this.scaleStep;
     },
     onClickReset() {
-      this.localPaperManager.scale = this.initialScale;
+      this.paperManager.scale = this.initialScale;
     },
   },
 });

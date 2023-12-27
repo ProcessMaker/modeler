@@ -46,7 +46,6 @@ export default {
       shape: null,
       initialAssociationDirection: this.node.definition.associationDirection,
       associationDirection: direction,
-      localNode: { ...this.node },
     };
   },
   computed: {
@@ -89,7 +88,7 @@ export default {
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
-      this.localNode.definition.targetRef = targetShape.component.node.definition;
+      this.node.definition.targetRef = targetShape.component.node.definition;
     },
     updateAssociationMarker(direction) {
       if (direction === this.associationDirection.none) {

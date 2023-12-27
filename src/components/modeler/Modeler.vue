@@ -327,7 +327,6 @@ export default {
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
   data() {
     return {
-      localOwner: { ...this.owner },
       undoKeyPressed: false,
       extraActions: [],
       pasteInProgress: false,
@@ -850,7 +849,7 @@ export default {
       }
     },
     registerStatusBar(component) {
-      this.localOwner.validationBar.push(component);
+      this.owner.validationBar.push(component);
     },
     /**
      * Register a mixin into a node component.

@@ -87,7 +87,6 @@ export default {
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon],
   data() {
     return {
-      localNode: { ...this.node },
       subProcessSvg: null,
       failedToLoadPreview: false,
       boundaryEventDropdownData,
@@ -140,7 +139,7 @@ export default {
 
       if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
         const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
-        this.localNode.diagram.bounds.height = newHeight;
+        this.node.diagram.bounds.height = newHeight;
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
       }

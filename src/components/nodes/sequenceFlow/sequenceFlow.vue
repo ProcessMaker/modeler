@@ -45,7 +45,6 @@ export default {
   data() {
     return {
       shape: null,
-      localNode: { ...this.node },
     };
   },
   computed: {
@@ -113,7 +112,7 @@ export default {
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
 
-      this.localNode.definition.targetRef = targetShape.component.node.definition;
+      this.node.definition.targetRef = targetShape.component.node.definition;
       this.sourceShape.component.node.definition.get('outgoing').push(this.node.definition);
       targetShape.component.node.definition.get('incoming').push(this.node.definition);
     },

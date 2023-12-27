@@ -44,7 +44,6 @@ export default {
   mixins: [linkConfig],
   data() {
     return {
-      localNode: { ...this.node },
       shape: null,
     };
   },
@@ -69,7 +68,7 @@ export default {
     },
     updateDefinitionLinks() {
       const targetShape = this.shape.getTargetElement();
-      this.localNode.definition.targetRef = targetShape.component.node.definition;
+      this.node.definition.targetRef = targetShape.component.node.definition;
     },
   },
   mounted() {

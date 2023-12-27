@@ -72,7 +72,6 @@ export default {
   mixins: [highlightConfig, resizeConfig, portsConfig],
   data() {
     return {
-      localNode: { ...this.node }, 
       shape: null,
       definition: null,
       laneSet: null,
@@ -462,10 +461,10 @@ export default {
       });
       const { x, y } = this.shape.position();
       const { width: newWidth, height: newHeight } = this.shape.get('size');
-      this.localNode.diagram.bounds.x = x;
-      this.localNode.diagram.bounds.y = y;
-      this.localNode.diagram.bounds.width = newWidth;
-      this.localNode.diagram.bounds.height = newHeight;
+      this.node.diagram.bounds.x = x;
+      this.node.diagram.bounds.y = y;
+      this.node.diagram.bounds.width = newWidth;
+      this.node.diagram.bounds.height = newHeight;
     },
     updateLaneChildren() {
       /* Ensure elements in the pool are added to the lanes they are above */
@@ -515,10 +514,10 @@ export default {
 
       const { x, y } = pool.position();
       const { width: newWidth, height: newHeight } = pool.get('size');
-      this.localNode.diagram.bounds.x = x;
-      this.localNode.diagram.bounds.y = y;
-      this.localNode.diagram.bounds.width = newWidth;
-      this.localNode.diagram.bounds.height = newHeight;
+      this.node.diagram.bounds.x = x;
+      this.node.diagram.bounds.y = y;
+      this.node.diagram.bounds.width = newWidth;
+      this.node.diagram.bounds.height = newHeight;
     },
   },
   mounted() {

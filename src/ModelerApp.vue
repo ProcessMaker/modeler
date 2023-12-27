@@ -75,7 +75,7 @@ export default {
     saveBpmn(payload) {
       // save into browser storage
       localStorage.setItem('bpmn', payload.xml);
-    },
+    }
   },
   created() {
     reader.onload = this.setUploadedXml;
