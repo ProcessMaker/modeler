@@ -2112,7 +2112,7 @@ export default {
 
     this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
 
-    this.paperManager.addEventHandler('blank:pointerdown', (event, x, y) => {
+    this.paperManager.addEventHandler('blank:pointerdown', (event) => {
       if (this.panMode) {
         this.startPanning();
         return;
