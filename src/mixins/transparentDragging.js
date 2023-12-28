@@ -1,26 +1,19 @@
-const transparentHighlighter = {
-  highlighter: {
-    name: 'addClass',
-    options: {
-      className: 'transparent-cell',
-    },
-  },
-};
+import { highlighters, dia } from 'jointjs';
 
 export default {
   data() {
     return {
-      hasTransparency: false,
+      hasTransparency: {},
     };
   },
   methods: {
     initTransparentDragging() {
-      this.graph.on('change:position', (model) => {
-        this.addTransparency(model);
+      this.paperManager.addEventHandler('cell:pointerup blank:pointerup', () => {
+        this.removeTransparency();
       });
 
-      this.paperManager.addEventHandler('element:pointerup', (view) => {
-        this.removeTransparency(view);
+      this.graph.on('change:position', (model) => {
+        this.addTransparency(model);
       });
 
       this.$on('node-added', (node) => {
@@ -31,16 +24,22 @@ export default {
       });
     },
     addTransparency(model) {
-      if (this.hasTransparency) {
+      if (model.id in this.hasTransparency) {
         return;
       }
       const view = this.paper.findViewByModel(model);
-      view.highlight(null, transparentHighlighter);
-      this.hasTransparency = true;
+      highlighters.addClass.add(view, 'root', 'transparent-highlighter', { className: 'transparent-cell' });
+      this.hasTransparency[model.id] = view;
     },
-    removeTransparency(view) {
-      view.unhighlight(null, transparentHighlighter);
-      this.hasTransparency = false;
+    removeTransparency() {
+      let atLeastOneRemoved = false;
+      Object.values(this.hasTransparency).forEach((view) => {
+        dia.HighlighterView.remove(view, 'transparent-highlighter');
+        atLeastOneRemoved = true;
+      });
+      if (atLeastOneRemoved) {
+        this.paper.dumpViews();
+      }
     },
   },
 };
