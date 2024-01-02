@@ -468,9 +468,6 @@ export default {
     isReadOnly() {
       return store.getters.isReadOnly;
     },
-    panCursor() {
-      return this.panning ? 'grabbing' : 'grab';
-    },
     creatingNewNode() {
       return nodeTypesStore.getters.getSelectedNode;
     },
@@ -2120,11 +2117,6 @@ export default {
       this.pointerDownHandler(event);
     }, this);
 
-    this.paperManager.addEventHandler('cell:mouseover element:mouseover', ({ model: shape }) => {
-      if (this.isBpmnNode(shape) && shape.attr('body/cursor') !== 'default' && !this.isGrabbing) {
-        shape.attr('body/cursor', 'move');
-      }
-    });
     this.paperManager.addEventHandler('blank:pointerup', (event) => {
       if (this.panMode) {
         this.stopPanning();
