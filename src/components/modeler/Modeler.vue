@@ -478,7 +478,7 @@ export default {
       });
     },
     showWelcomeMessage() {
-      return !this.selectedNode && !this.nodes.length && !this.isReadOnly && this.isLoaded;
+      return !this.selectedNode && !this.nodes.length && !this.isReadOnly && this.isLoaded && !undoRedoStore.getters.isRunning
     },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;

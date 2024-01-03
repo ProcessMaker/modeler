@@ -31,6 +31,9 @@ export default new Vuex.Store({
     isLoading(state) {
       return state.isLoading;
     },
+    isRunning(state) {
+      return state.isRunning;
+    }
   },
   mutations: {
     setPosition(state, position) {
@@ -58,6 +61,9 @@ export default new Vuex.Store({
     isLoading(state, payload) {
       state.isLoading = payload;
     },
+    isRunning(state, payload) {
+      state.isRunning = payload;
+    }
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
@@ -73,6 +79,7 @@ export default new Vuex.Store({
         return;
       }
 
+      commit('isRunning', true);
       commit('setPosition', state.position - 1);
     },
     redo({ state, getters, commit }) {
@@ -80,6 +87,7 @@ export default new Vuex.Store({
         return;
       }
 
+      commit('isRunning', true);
       commit('setPosition', state.position + 1);
     },
     enableVersions({ commit }) {
@@ -91,5 +99,8 @@ export default new Vuex.Store({
     setLoadingState({ commit }, value) {
       commit('isLoading', value);
     },
+    done({ commit }) {
+      commit('isRunning', false);
+    }
   },
 });

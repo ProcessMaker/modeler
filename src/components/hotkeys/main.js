@@ -1,11 +1,12 @@
 import ZoomInOut from './zoomInOut';
+import UndoRedo from './undoRedo';
 import CopyPaste from './copyPaste.js';
 import moveShapeByKeypress from './moveWithArrowKeys';
 import EscKey from './escKey';
 import store from '@/store';
 
 export default {
-  mixins: [ZoomInOut, CopyPaste, EscKey],
+  mixins: [ZoomInOut, CopyPaste, EscKey, UndoRedo],
   computed: {
     clientLeftPaper() {
       return store.getters.clientLeftPaper;
@@ -19,6 +20,7 @@ export default {
     handleHotkeys(event, options) {
       // Pass event to all handlers
       this.zoomInOutHandler(event, options);
+      this.undoRedoHandler(event, options);
       this.copyPasteHandler(event, options);
       this.escapeKeyHandler(event);
     },
