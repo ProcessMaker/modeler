@@ -148,7 +148,7 @@
   ],
   "engines": {
     "npm": ">=8",
-    "node": ">=16 <18"
+    "node": ">=16"
   },
   "husky": {
     "hooks": {
