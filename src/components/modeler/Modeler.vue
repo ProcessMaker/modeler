@@ -1771,10 +1771,12 @@ export default {
      */
     unhightligtNodes(clientId) {
       const player = this.players.find(player => player.id === clientId);
-      
+
       player?.selectedNodes?.forEach((nodeId) => {
         const element = this.getElementByNodeId(nodeId);
-        element.component.setHighlightColor(false, player.color);
+        if (element) {
+          element.component.setHighlightColor(false, player.color);
+        }
       });
     },
     /**
