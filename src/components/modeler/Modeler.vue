@@ -1790,7 +1790,9 @@ export default {
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
         data?.selectedNodes?.forEach((nodeId) => {
           const element = this.getElementByNodeId(nodeId);
-          element.component.setHighlightColor(true, data.color);
+          if (element) {
+            element.component.setHighlightColor(true, data.color);
+          }
         });
       }
     },
