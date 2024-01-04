@@ -1928,6 +1928,7 @@ export default {
           if (response.data) {
             if (response.data?.error) {
               this.assetFail = true;
+              this.loadingAI = false;
             }
           }
         })
@@ -1935,6 +1936,7 @@ export default {
           const errorMsg = error.response?.data?.message || error.message;
           window.ProcessMaker.alert(errorMsg, 'danger');
           this.assetFail = true;
+          this.loadingAI = false;
         });
     },
     highlightTaskArrays(data) {
@@ -1990,6 +1992,7 @@ export default {
               window.ProcessMaker.alert(response.data.message, 'danger');
               // Stop and show error
               this.assetFail = true;
+              this.loadingAI = false;
             } else {
               this.setPromptSessions(response.data.promptSessionId);
               // Successful generation 
@@ -2026,6 +2029,7 @@ export default {
         () => {
           // Output error
           this.assetFail = true;
+          this.loadingAI = false;
         },
       );
     },
