@@ -1879,6 +1879,7 @@ export default {
       localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
     },
     fetchHistory() {
+      if (process.env.NODE_ENV !== 'production') return;
       let url = '/package-ai/getPromptSessionHistory';
 
       let params = {
