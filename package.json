@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.43.9",
+  "version": "1.43.10",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",
@@ -43,8 +43,8 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
-    "@processmaker/screen-builder": "2.70.0",
-    "@processmaker/vue-form-elements": "0.45.0",
+    "@processmaker/screen-builder": "2.79.3",
+    "@processmaker/vue-form-elements": "0.50.1",
     "@processmaker/vue-multiselect": "^2.2.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
@@ -148,7 +148,7 @@
   ],
   "engines": {
     "npm": ">=8",
-    "node": ">=16 <18"
+    "node": ">=16"
   },
   "husky": {
     "hooks": {
