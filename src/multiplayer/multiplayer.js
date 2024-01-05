@@ -7,6 +7,7 @@ import store from '@/store';
 import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
 import { InspectorUtils } from './inspector.utils';
 import ColorUtil from '../colorUtil';
+import { debounce } from 'lodash';
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -211,7 +212,7 @@ export default class Multiplayer {
     });
     window.ProcessMaker.EventBus.$on('multiplayer-updateSelectedNodes', ( data ) => {
       if (this.modeler.isMultiplayer) {
-        this.updateSelectedNodes(data);
+        this.debouncedUpdateSelectedNodes(data);
       }
     });
     window.ProcessMaker.EventBus.$on('multiplayer-updateMousePosition', ( data ) => {
@@ -258,6 +259,17 @@ export default class Multiplayer {
       this.modeler.updateClientCursor(client);
     });
   }
+
+  /**
+   * Debounces the updatedSelectedNodes function to avoid triggering multiple times
+   * the update
+   *
+   * @param {Object} payload
+   */
+  debouncedUpdateSelectedNodes = debounce((data) => {
+    this.updateSelectedNodes(data);
+  }, 400);
+
   /**
    * Updates the selected nodes by the user
    * @param {Object} data
