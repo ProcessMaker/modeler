@@ -1882,6 +1882,7 @@ export default {
       localStorage.setItem('promptSessions', JSON.stringify(promptSessions));
     },
     fetchHistory() {
+      if (process.env.NODE_ENV !== 'production') return;
       let url = '/package-ai/getPromptSessionHistory';
 
       let params = {
@@ -1900,12 +1901,17 @@ export default {
           this.setPromptSessions((response.data.promptSessionId));
           this.promptSessionId = (response.data.promptSessionId);
           localStorage.promptSessionId = (response.data.promptSessionId);
-        }).catch((error) => {
-          const errorMsg = error.message;
-          if (error === 404) {
+        })
+        .catch((error) => {
+          
+          const errorMsg = error.response?.data?.message || error.message;
+          
+          this.loading = false;
+          if (error.response.status === 404) {
             this.removePromptSessionForUser();
             localStorage.promptSessionId = '';
             this.promptSessionId = '';
+            this.fetchHistory();
           } else {
             window.ProcessMaker.alert(errorMsg, 'danger');
           }
