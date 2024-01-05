@@ -7,7 +7,7 @@
       <div class="d-flex justify-content-between">
         <inline-svg :src="proceC2Icon" class="mx-3 my-auto ai-icon" />
         <div class="mr-2 text-left">
-          <h1>Modeler Test From CI</h1>
+          <h1>Modeler Test From CI Again</h1>
           <div class="h5 m-0">{{ aiProcessButtonTitle }}</div>
           <div class="text-secondary font-weight-light small">
             <div v-if="(this.promptSessionId && this.promptSessionId !== '')" class="d-flex align-items-center">
