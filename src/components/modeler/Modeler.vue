@@ -479,6 +479,9 @@ export default {
     },
     showComponent: () => store.getters.showComponent,
     isMultiplayer: () => store.getters.isMultiplayer,
+    isPackageAiInstalled() {
+      return window.ProcessMaker?.modeler?.isPackageAiInstalled;
+    },
   },
   methods: {
     onNodeDefinitionChanged() {
@@ -2237,20 +2240,22 @@ export default {
     });
 
     // AI Setup
-    this.currentNonce = localStorage.currentNonce;
-    if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
-      localStorage.setItem('promptSessions', JSON.stringify([]));
+    if (this.isPackageAiInstalled) {
+      this.currentNonce = localStorage.currentNonce;
+      if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
+        localStorage.setItem('promptSessions', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
+        this.cancelledJobs = [];
+      } else {
+        this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
+      }
+      this.promptSessionId = this.getPromptSessionForUser();
+      this.fetchHistory();
+      this.subscribeToProgress();
+      this.subscribeToGenerationCompleted();
+      this.subscribeToErrors();
     }
-    if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
-      this.cancelledJobs = [];
-    } else {
-      this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
-    }
-    this.promptSessionId = this.getPromptSessionForUser();
-    this.fetchHistory();
-    this.subscribeToProgress();
-    this.subscribeToGenerationCompleted();
-    this.subscribeToErrors();
   },
 };
 </script>

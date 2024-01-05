@@ -8,6 +8,7 @@
     />
 
     <AiGenerateButton
+      v-if="isPackageAiInstalled"
       v-on="$listeners"
     />
 
@@ -27,6 +28,8 @@ import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
 import MultiplayerViewUsers from '@/components/topRail/multiplayerViewUsers/MultiplayerViewUsers';
 import AiGenerateButton from '../aiMessages/AiGenerateButton.vue';
+import undoRedoStore from '@/undoRedoStore';
+
 export default {
   components: {
     ValidateButton,
@@ -70,6 +73,9 @@ export default {
     numberOfErrors() {
       // Get the number of errors
       return this.errorList.length + this.warnings.length;
+    },
+    isPackageAiInstalled() {
+      return window.ProcessMaker?.modeler?.isPackageAiInstalled;
     },
   },
   watch: {
