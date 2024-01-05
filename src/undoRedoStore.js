@@ -33,7 +33,7 @@ export default new Vuex.Store({
     },
     isRunning(state) {
       return state.isRunning;
-    }
+    },
   },
   mutations: {
     setPosition(state, position) {
@@ -63,7 +63,7 @@ export default new Vuex.Store({
     },
     isRunning(state, payload) {
       state.isRunning = payload;
-    }
+    },
   },
   actions: {
     pushState({ state, getters, commit }, newState) {
@@ -101,6 +101,6 @@ export default new Vuex.Store({
     },
     done({ commit }) {
       commit('isRunning', false);
-    }
+    },
   },
 });
