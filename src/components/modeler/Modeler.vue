@@ -25,7 +25,7 @@
       @clearSelection="clearSelection"
       :players="filteredPlayers"
       @action="handleToolbarAction"
-      @onGenerateAssets="generateAssets()"
+      @onGenerateAssets="onGenerateAssets()"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -60,7 +60,7 @@
       <CreateAssetsCard
         ref="createAssetsCard"
         v-if="isAiGenerated"
-        @onGenerateAssets="generateAssets()"
+        @onGenerateAssets="onGenerateAssets()"
         @closeCreateAssets="isAiGenerated = false"
       />
 
@@ -682,7 +682,7 @@ export default {
     async close() {
       this.$emit('close');
     },
-    async saveBpmn(redirectTo = null, id = null) {
+    async saveBpmn(redirectTo = null, id = null, generatingAssets = false) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -691,7 +691,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id, generatingAssets });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -1796,10 +1796,12 @@ export default {
      */
     unhightligtNodes(clientId) {
       const player = this.players.find(player => player.id === clientId);
-      
+
       player?.selectedNodes?.forEach((nodeId) => {
         const element = this.getElementByNodeId(nodeId);
-        element.component.setHighlightColor(false, player.color);
+        if (element) {
+          element.component.setHighlightColor(false, player.color);
+        }
       });
     },
     /**
@@ -1813,7 +1815,9 @@ export default {
         this.players = this.players.map((item) => (item.id === data.id ? { ...item, ...data } : item));
         data?.selectedNodes?.forEach((nodeId) => {
           const element = this.getElementByNodeId(nodeId);
-          element.component.setHighlightColor(true, data.color);
+          if (element) {
+            element.component.setHighlightColor(true, data.color);
+          }
         });
       }
     },
@@ -1929,6 +1933,9 @@ export default {
           }
         });
     },
+    onGenerateAssets() {
+      this.saveBpmn(null, null, true);
+    },
     generateAssets() {
       this.getNonce();
 
@@ -1950,6 +1957,7 @@ export default {
           if (response.data) {
             if (response.data?.error) {
               this.assetFail = true;
+              this.loadingAI = false;
             }
           }
         })
@@ -1957,6 +1965,7 @@ export default {
           const errorMsg = error.response?.data?.message || error.message;
           window.ProcessMaker.alert(errorMsg, 'danger');
           this.assetFail = true;
+          this.loadingAI = false;
         });
     },
     highlightTaskArrays(data) {
@@ -2015,6 +2024,7 @@ export default {
               window.ProcessMaker.alert(response.data.message, 'danger');
               // Stop and show error
               this.assetFail = true;
+              this.loadingAI = false;
             } else {
               this.setPromptSessions(response.data.promptSessionId);
               // Successful generation 
@@ -2029,6 +2039,20 @@ export default {
         },
       );
     },
+    subscribeToGenerationCompleted() {
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const streamCompletedEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsCompletedEvent';
+      window.Echo.private(channel).listen(
+        streamCompletedEvent,
+        (response) => {
+          if (response.data) {
+            setTimeout(() => {
+              window.location.replace(window.location.href.split('?')[0]);
+            }, 1500);
+          }
+        },
+      );
+    },
     subscribeToErrors() {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsErrorEvent';
@@ -2037,6 +2061,7 @@ export default {
         () => {
           // Output error
           this.assetFail = true;
+          this.loadingAI = false;
         },
       );
     },
@@ -2209,9 +2234,12 @@ export default {
       this.replaceAiNode(data);
     });
 
-    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl, nodeId, generatingAssets) => {
       if (redirectUrl) {
         this.redirect(redirectUrl);
+      }
+      if (generatingAssets) {
+        this.generateAssets();
       }
     });
 
@@ -2228,14 +2256,10 @@ export default {
     this.promptSessionId = this.getPromptSessionForUser();
     this.fetchHistory();
     this.subscribeToProgress();
-
-    // linkEditing mixin
-    this.linkEditingInit();
-
-    // transparentDragging mixin
-    this.initTransparentDragging();
-    
+    this.subscribeToGenerationCompleted();
     this.subscribeToErrors();
+    this.linkEditingInit();
+    this.initTransparentDragging();
   },
 };
 </script>
