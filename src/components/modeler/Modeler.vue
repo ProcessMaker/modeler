@@ -505,6 +505,156 @@ export default {
     isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    mountedInit() {
+      store.commit('setReadOnly', this.readOnly);
+      this.graph = new dia.Graph();
+      store.commit('setGraph', this.graph);
+      this.graph.set('interactiveFunc', cellView => {
+        const isPoolEdge = cellView.model.get('type') === 'standard.EmbeddedImage';
+        return {
+          elementMove: isPoolEdge,
+          labelMove: false,
+        };
+      });
+
+      this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
+      this.paper = this.paperManager.paper;
+    },
+    addEventHandlers() {
+      this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
+
+      this.handleResize();
+      window.addEventListener('resize', this.handleResize);
+
+      store.commit('setPaper', this.paperManager.paper);
+
+      this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
+
+      this.paperManager.addEventHandler('blank:pointerdown', (event) => {
+        if (this.panMode) {
+          this.startPanning();
+          return;
+        }
+        this.pointerDownHandler(event);
+      }, this);
+
+      this.paperManager.addEventHandler('blank:pointerup', (event) => {
+        if (this.panMode) {
+          this.stopPanning();
+        }
+        this.activeNode = null;
+        this.pointerUpHandler(event);
+      }, this);
+      this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
+        if (this.panMode) {
+          this.stopPanning();
+          return;
+        }
+        this.activeNode = null;
+        this.pointerUpHandler(event, cellView);
+      }, this);
+
+      this.$refs['paper-container'].addEventListener('mouseenter', () => {
+        store.commit('setClientLeftPaper', false);
+      });
+
+      this.$el.addEventListener('mousemove', event => {
+        this.pointerMoveHandler(event);
+      });
+
+      this.$refs['paper-container'].addEventListener('mouseleave', () => {
+        this.paperManager.removeEventHandler('blank:pointermove');
+        store.commit('setClientLeftPaper', true);
+      });
+
+      this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
+        const clickHandler = cellView.model.get('onClick');
+        if (clickHandler) {
+          clickHandler(cellView, evt, x, y);
+        }
+      });
+
+      this.paperManager.addEventHandler('cell:pointerclick', ({ model: shape }, event) => {
+        if (!this.isBpmnNode(shape)) {
+          return;
+        }
+
+        // ignore click event if the user is Grabbing the paper
+        if (this.panMode) {
+          return;
+        }
+
+        shape.component.$emit('click', event);
+        this.$emit('click', {
+          event,
+          node: this.highlightedNode.definition,
+        });
+      });
+
+      this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
+        if (!this.isBpmnNode(shape)) {
+          return;
+        }
+        // If the user is panning
+        if (this.panMode) {
+          this.startPanning();
+          return;
+        }
+        this.setShapeStacking(shape);
+        this.activeNode = shape.component.node;
+        this.pointerDowInShape(event, shape);
+      });
+
+      this.$root.$on('replace-ai-node', (data) => {
+        this.replaceAiNode(data);
+      });
+
+      window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl, nodeId, generatingAssets) => {
+        if (redirectUrl) {
+          this.redirect(redirectUrl);
+        }
+        if (generatingAssets) {
+          this.generateAssets();
+        }
+      });
+
+    },
+    registerCustomNodes()
+    {
+      /* Register custom nodes */
+      window.ProcessMaker.EventBus.$emit('modeler-start', {
+        $t: this.$t,
+        modeler: this,
+        registerMenuAction: this.registerMenuAction,
+        loadXML: async(xml) => {
+          await this.loadXML(xml);
+          await undoRedoStore.dispatch('pushState', xml);
+
+          try {
+            const multiplayer = new Multiplayer(this);
+            multiplayer.init();
+            this.multiplayer = multiplayer;
+          } catch (error) {
+            console.warn('Could not initialize multiplayer', error);
+          }
+        },
+        addWarnings: warnings => this.$emit('warnings', warnings),
+        addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+      });
+    },
+    initAI() {
+      // AI Setup
+      this.currentNonce = localStorage.currentNonce;
+      if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
+        localStorage.setItem('promptSessions', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
+        this.cancelledJobs = [];
+      } else {
+        this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
+      }
+      this.promptSessionId = this.getPromptSessionForUser();
+    },
     onNodeDefinitionChanged() {
       // re-render the preview just if the preview pane is open
       if (this.isOpenPreview) {
@@ -2111,149 +2261,10 @@ export default {
     this.$emit('set-xml-manager', this.xmlManager);
   },
   mounted() {
-    store.commit('setReadOnly', this.readOnly);
-    this.graph = new dia.Graph();
-    store.commit('setGraph', this.graph);
-    this.graph.set('interactiveFunc', cellView => {
-      const isPoolEdge = cellView.model.get('type') === 'standard.EmbeddedImage';
-      return {
-        elementMove: isPoolEdge,
-        labelMove: false,
-      };
-    });
-
-    this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
-    this.paper = this.paperManager.paper;
-
-    this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
-
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
-
-    store.commit('setPaper', this.paperManager.paper);
-
-    this.paperManager.addEventHandler('element:pointerclick', this.blurFocusedScreenBuilderElement, this);
-
-    this.paperManager.addEventHandler('blank:pointerdown', (event) => {
-      if (this.panMode) {
-        this.startPanning();
-        return;
-      }
-      this.pointerDownHandler(event);
-    }, this);
-
-    this.paperManager.addEventHandler('blank:pointerup', (event) => {
-      if (this.panMode) {
-        this.stopPanning();
-      }
-      this.activeNode = null;
-      this.pointerUpHandler(event);
-    }, this);
-    this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
-      if (this.panMode) {
-        this.stopPanning();
-        return;
-      }
-      this.activeNode = null;
-      this.pointerUpHandler(event, cellView);
-    }, this);
-
-    this.$refs['paper-container'].addEventListener('mouseenter', () => {
-      store.commit('setClientLeftPaper', false);
-    });
-
-    this.$el.addEventListener('mousemove', event => {
-      this.pointerMoveHandler(event);
-    });
-
-    this.$refs['paper-container'].addEventListener('mouseleave', () => {
-      this.paperManager.removeEventHandler('blank:pointermove');
-      store.commit('setClientLeftPaper', true);
-    });
-
-    this.paperManager.addEventHandler('cell:pointerclick', (cellView, evt, x, y) => {
-      const clickHandler = cellView.model.get('onClick');
-      if (clickHandler) {
-        clickHandler(cellView, evt, x, y);
-      }
-    });
-
-    this.paperManager.addEventHandler('cell:pointerclick', ({ model: shape }, event) => {
-      if (!this.isBpmnNode(shape)) {
-        return;
-      }
-
-      // ignore click event if the user is Grabbing the paper
-      if (this.panMode) {
-        return;
-      }
-
-      shape.component.$emit('click', event);
-      this.$emit('click', {
-        event,
-        node: this.highlightedNode.definition,
-      });
-    });
-
-    this.paperManager.addEventHandler('cell:pointerdown', ({ model: shape }, event) => {
-      if (!this.isBpmnNode(shape)) {
-        return;
-      }
-      // If the user is panning
-      if (this.panMode) {
-        this.startPanning();
-        return;
-      }
-      this.setShapeStacking(shape);
-      this.activeNode = shape.component.node;
-      this.pointerDowInShape(event, shape);
-    });
-
-    /* Register custom nodes */
-    window.ProcessMaker.EventBus.$emit('modeler-start', {
-      $t: this.$t,
-      modeler: this,
-      registerMenuAction: this.registerMenuAction,
-      loadXML: async(xml) => {
-        await this.loadXML(xml);
-        await undoRedoStore.dispatch('pushState', xml);
-
-        try {
-          const multiplayer = new Multiplayer(this);
-          multiplayer.init();
-          this.multiplayer = multiplayer;
-        } catch (error) {
-          console.warn('Could not initialize multiplayer', error);
-        }
-      },
-      addWarnings: warnings => this.$emit('warnings', warnings),
-      addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
-    });
-
-    this.$root.$on('replace-ai-node', (data) => {
-      this.replaceAiNode(data);
-    });
-
-    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl, nodeId, generatingAssets) => {
-      if (redirectUrl) {
-        this.redirect(redirectUrl);
-      }
-      if (generatingAssets) {
-        this.generateAssets();
-      }
-    });
-
-    // AI Setup
-    this.currentNonce = localStorage.currentNonce;
-    if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
-      localStorage.setItem('promptSessions', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
-      this.cancelledJobs = [];
-    } else {
-      this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
-    }
-    this.promptSessionId = this.getPromptSessionForUser();
+    this.mountedInit();
+    this.addEventHandlers();
+    this.registerCustomNodes();
+    this.initAi();
     this.fetchHistory();
     this.subscribeToProgress();
     this.subscribeToGenerationCompleted();
