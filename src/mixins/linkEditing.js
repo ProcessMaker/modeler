@@ -62,7 +62,7 @@ export default {
 
       // Handle hovering a new element on the page
       this.paperManager.addEventHandler('cell:mouseover', (view) => {
-        if (view && view.model.isLink() && this.addingEligibleItem()) {
+        if (view?.model?.isLink() && this.addingEligibleItem()) {
           this.timeout = setTimeout(() => {
             this.hoveredLinkModel = view.model;
           }, 1000);
@@ -86,7 +86,7 @@ export default {
         const viewFromPoint = this.findViewFromPoint(view, evt);
         const model = viewFromPoint?.model;
 
-        if (model && model.isLink()) {
+        if (model?.isLink()) {
           if (this.hoveredLinkModel !== model && !this.timeout) {
             this.timeout = setTimeout(() => {
               this.hoveredLinkModel = model;
@@ -327,7 +327,7 @@ export default {
     },
 
     addElementTooltip() {
-      var el = document.createElement('div');
+      const el = document.createElement('div');
       el.innerHTML = this.$t('Drop to add to this flow');
       el.classList.add('element-tooltip');
       document.body.appendChild(el);
