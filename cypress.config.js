@@ -7,6 +7,7 @@ module.exports = defineConfig({
   fixturesFolder: 'tests/e2e/fixtures',
   screenshotsFolder: 'tests/e2e/screenshots',
   videosFolder: 'tests/e2e/videos',
+  numTestsKeptInMemory: 10,
 
   e2e: {
     // We've imported your old cypress plugins here.
