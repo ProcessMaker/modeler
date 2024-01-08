@@ -503,6 +503,9 @@ export default {
     },
     showComponent: () => store.getters.showComponent,
     isMultiplayer: () => store.getters.isMultiplayer,
+    isPackageAiInstalled() {
+      return window.ProcessMaker?.modeler?.isPackageAiInstalled;
+    },
   },
   methods: {
     mountedInit() {
@@ -644,16 +647,22 @@ export default {
     },
     initAI() {
       // AI Setup
-      this.currentNonce = localStorage.currentNonce;
-      if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
-        localStorage.setItem('promptSessions', JSON.stringify([]));
+      if (this.isPackageAiInstalled) {
+        this.currentNonce = localStorage.currentNonce;
+        if (!localStorage.getItem('promptSessions') || localStorage.getItem('promptSessions') === 'null') {
+          localStorage.setItem('promptSessions', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
+          this.cancelledJobs = [];
+        } else {
+          this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
+        }
+        this.promptSessionId = this.getPromptSessionForUser();
+        this.fetchHistory();
+        this.subscribeToProgress();
+        this.subscribeToGenerationCompleted();
+        this.subscribeToErrors();
       }
-      if (!localStorage.getItem('cancelledJobs') || localStorage.getItem('cancelledJobs') === 'null') {
-        this.cancelledJobs = [];
-      } else {
-        this.cancelledJobs = JSON.parse(localStorage.getItem('cancelledJobs'));
-      }
-      this.promptSessionId = this.getPromptSessionForUser();
     },
     onNodeDefinitionChanged() {
       // re-render the preview just if the preview pane is open
@@ -2072,12 +2081,17 @@ export default {
           this.setPromptSessions((response.data.promptSessionId));
           this.promptSessionId = (response.data.promptSessionId);
           localStorage.promptSessionId = (response.data.promptSessionId);
-        }).catch((error) => {
-          const errorMsg = error.message;
-          if (error === 404) {
+        })
+        .catch((error) => {
+          
+          const errorMsg = error.response?.data?.message || error.message;
+          
+          this.loading = false;
+          if (error.response.status === 404) {
             this.removePromptSessionForUser();
             localStorage.promptSessionId = '';
             this.promptSessionId = '';
+            this.fetchHistory();
           } else {
             window.ProcessMaker.alert(errorMsg, 'danger');
           }
@@ -2265,10 +2279,6 @@ export default {
     this.addEventHandlers();
     this.registerCustomNodes();
     this.initAi();
-    this.fetchHistory();
-    this.subscribeToProgress();
-    this.subscribeToGenerationCompleted();
-    this.subscribeToErrors();
     this.linkEditingInit();
     this.initTransparentDragging();
   },
