@@ -43,4 +43,4 @@ export default ({
 
 </script>
 
-<style lang="scss" scoped src="./miniPaperControl.scss"></style>
+<style lang="scss" scoped src="../bottomLeftControl.scss"></style>

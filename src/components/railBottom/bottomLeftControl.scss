@@ -1,4 +1,4 @@
-.mini-paper {
+.mini-paper, .pan-tool {
   &-box {
     position: relative;
     display: flex;
@@ -30,6 +30,10 @@
     }
 
     &:hover:not(.mini-paper-button-active) {
+      background-color: #ebeef2;
+    }
+    
+    &:hover:not(.pan-tool-button-active) {
       background-color: #ebeef2;
     }
 

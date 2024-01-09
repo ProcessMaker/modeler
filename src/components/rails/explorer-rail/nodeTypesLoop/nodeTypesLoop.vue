@@ -70,7 +70,8 @@ export default {
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
-          @click.self="onClickHandler($event, object)"
+          @mousedown.stop="startDragNewObject($event, object)"
+          @mouseup.stop="cancelDragNewObject()"
         >
           <i v-if="!containsSvg(object.icon)" :class="object.icon" class="fa-lg"/>
           <img v-else class="node-types__item__icon" :src="object.icon" :alt="$t(object.label)">
@@ -81,6 +82,7 @@ export default {
             class="pinIcon"
             alt="Unpin Element"
             @click="unPin(object)"
+            @mousedown.stop="cancelDragNewObject()"
           >
           <img
             v-else
@@ -88,6 +90,7 @@ export default {
             class="pinIcon"
             alt="Pin Element"
             @click="addPin(object)"
+            @mousedown.stop="cancelDragNewObject()"
           >
         </div>
       </template>
@@ -103,7 +106,8 @@ export default {
             :key="pinnedObject.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
-            @click.stop="onClickHandler($event, pinnedObject)"
+            @mousedown.stop="startDragNewObject($event, pinnedObject)"
+            @mouseup.stop="cancelDragNewObject()"
           >
             <i v-if="!containsSvg(pinnedObject.icon)" :class="pinnedObject.icon" class="fa-lg"/>
             <img v-else class="node-types__item__icon" :src="pinnedObject.icon" :alt="$t(pinnedObject.label)">
@@ -113,6 +117,7 @@ export default {
               class="pinIcon"
               alt="Pin/Unpin Element"
               @click="unPin(pinnedObject)"
+              @mousedown.stop="cancelDragNewObject()"
             >
           </div>
         </template>
@@ -127,7 +132,8 @@ export default {
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
-            @click.stop="onClickHandler($event, nodeType)"
+            @mousedown.stop="startDragNewObject($event, nodeType)"
+            @mouseup.stop="cancelDragNewObject()"
           >
             <i v-if="!containsSvg(nodeType.icon)" :class="nodeType.icon" class="fa-lg"/>
             <img v-else class="node-types__item__icon" :src="nodeType.icon" :alt="$t(nodeType.label)">
@@ -137,6 +143,7 @@ export default {
               class="pinIcon"
               alt="Pin/Unpin Element"
               @click="addPin(nodeType)"
+              @mousedown.stop="cancelDragNewObject()"
             >
           </div>
         </template>
