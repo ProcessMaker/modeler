@@ -2278,7 +2278,7 @@ export default {
     this.mountedInit();
     this.addEventHandlers();
     this.registerCustomNodes();
-    this.initAi();
+    this.initAI();
     this.linkEditingInit();
     this.initTransparentDragging();
   },
