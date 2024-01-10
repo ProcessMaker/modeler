@@ -716,7 +716,9 @@ export default {
       }
 
       if (this.isOpenPreview && !this.isOpenInspector) {
-        this.inspectorButtonRight = 65 + this.previewPanelWidth;
+        // the scaling is optimized for 1920px width. Other resolutions will be adjusted accordingly
+        const delta = screen.width / 1920;
+        this.inspectorButtonRight = 65 * delta + this.previewPanelWidth;
       }
 
       if (!this.isOpenPreview && !this.isOpenInspector) {
