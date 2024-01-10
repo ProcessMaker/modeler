@@ -112,7 +112,6 @@ export default {
     },
     displayPreviewIframe() {
       const result = !!this.previewUrl && !this.showSpinner;
-      console.log('mostrar iframe', result);
       return result ? 'visible' : 'hidden';
     },
   },
