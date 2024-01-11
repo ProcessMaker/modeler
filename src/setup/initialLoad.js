@@ -18,7 +18,8 @@ const blank = `
 
 window.ProcessMaker.EventBus.$on('modeler-init', registerNodes);
 window.ProcessMaker.EventBus.$on('modeler-start', ({ loadXML }) => {
-  loadXML(blank);
+  const bpmn = localStorage.getItem('bpmn');
+  loadXML(bpmn || blank);
 });
 
 

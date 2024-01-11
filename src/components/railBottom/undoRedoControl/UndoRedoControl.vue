@@ -43,6 +43,10 @@ export default ({
       redoIcon: require('@/assets/railBottom/redo.svg'),
     };
   },
+  mounted() {
+    this.$root.$on('undo-keyboard-shortcut', this.undo);
+    this.$root.$on('redo-keyboard-shortcut', this.redo);
+  },
   watch: {
     canUndo(canUndo) {
       if (!canUndo) {

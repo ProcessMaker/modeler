@@ -69,7 +69,8 @@ export default {
           :key="object.id"
           @mouseover="showPin = true"
           @mouseleave="showPin = false"
-          @click.stop="onClickHandler($event, object)"
+          @mousedown.stop="startDragNewObject($event, object)"
+          @mouseup.stop="cancelDragNewObject()"
         >
           <div class="d-flex">
             <i v-if="!object.svgIcon" class="node-types__item__icon" :class="object.customIcon"/>
@@ -103,7 +104,8 @@ export default {
             :key="pinnedBlock.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
-            @click.stop="onClickHandler($event, pinnedBlock)"
+            @mousedown.stop="startDragNewObject($event, pinnedBlock)"
+            @mouseup.stop="cancelDragNewObject()"
           >
             <i v-if="!containsSvg(pinnedBlock.icon)" :class="pinnedBlock.customIcon" class="fa-lg"/>
             <img v-else class="node-types__item__icon" :src="pinnedBlock.svgIcon" :alt="$t(pinnedBlock.label)">
@@ -126,7 +128,8 @@ export default {
             :key="nodeType.id"
             @mouseover="showPin = true"
             @mouseleave="showPin = false"
-            @click.stop="onClickHandler($event, nodeType)"
+            @mousedown.stop="startDragNewObject($event, nodeType)"
+            @mouseup.stop="cancelDragNewObject()"
           >
             <i v-if="!containsSvg(nodeType.icon)" :class="nodeType.customIcon" class="fa-lg"/>
             <img v-else class="node-types__item__icon" :src="nodeType.svgIcon" :alt="$t(nodeType.label)">

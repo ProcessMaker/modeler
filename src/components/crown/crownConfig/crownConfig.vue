@@ -162,11 +162,6 @@ export default {
 
       this.showCrown = this.highlightedShapes[0] === this.shape;
     },
-    highlighted(highlighted) {
-      if (!highlighted) {
-        this.taskDropdownInitiallyOpen = false;
-      }
-    },
     shape() {
       if (this.highlighted) {
         this.showCrown = true;
@@ -179,7 +174,7 @@ export default {
       showCrown: false,
       savePositionOnPointerupEventSet: false,
       style: null,
-      taskDropdownInitiallyOpen: this.paperNotRendered(),
+      taskDropdownInitiallyOpen: false,
       showReplaceModal: false,
       nodeToReplace: null,
     };

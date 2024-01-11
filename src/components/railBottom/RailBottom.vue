@@ -15,6 +15,11 @@
         :paper-manager="paperManager"
         ref="zoomBox"
       />
+      
+      <PanControl
+        @set-pan-mode="$emit('set-pan-mode', $event)"
+        :pan-mode="panMode"
+      />
     </div>
 
     <div
@@ -46,12 +51,14 @@ import { nextTick } from 'vue';
 import MiniPaperControl from '@/components/railBottom/miniPaperControl/MiniPaperControl.vue';
 import ZoomControl from '@/components/railBottom/zoomControl/ZoomControl.vue';
 import UndoRedoControl from '@/components/railBottom/undoRedoControl/UndoRedoControl.vue';
+import PanControl from './PanControl.vue';
 import Controls from '@/components/railBottom/controls/Controls.vue';
 import store from '@/store';
 
 export default {
   components: {
     MiniPaperControl,
+    PanControl,
     ZoomControl,
     UndoRedoControl,
     Controls,
@@ -61,6 +68,7 @@ export default {
     graph: Object,
     isRendering: Boolean,
     nodeTypes: Array,
+    panMode: Boolean,
   },
   data() {
     return {
