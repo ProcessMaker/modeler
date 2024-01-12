@@ -82,3 +82,8 @@ export default {
   background-color: #104a75;
 }
 </style>
+<style>
+.top-rail-container svg.ai-icon path {
+  fill: #212529;
+}
+</style>
