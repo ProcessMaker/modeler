@@ -169,7 +169,7 @@
       />
 
       <RailBottom
-        v-if="!loadingAI"
+        v-show="!loadingAI"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
