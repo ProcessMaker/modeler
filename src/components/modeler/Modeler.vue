@@ -169,7 +169,7 @@
       />
 
       <RailBottom
-        v-if="!loadingAI"
+        v-show="!loadingAI"
         :nodeTypes="nodeTypes"
         :paper-manager="paperManager"
         :graph="graph"
@@ -2192,10 +2192,13 @@ export default {
               this.assetFail = true;
               this.loadingAI = false;
             } else {
+              this.highlightTaskArrays(response.data);
+              setTimeout(() => {
+                this.unhighlightTaskArrays(response.data);  
+              }, 1000);
               this.setPromptSessions(response.data.promptSessionId);
               // Successful generation 
-              this.assetsCreated = true;
-              this.unhighlightTaskArrays(response.data);
+              this.assetsCreated = true; 
               this.fetchHistory();
               setTimeout(() => {
                 this.loadingAI = false;
