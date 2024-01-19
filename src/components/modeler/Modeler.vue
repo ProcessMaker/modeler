@@ -2100,6 +2100,7 @@ export default {
         });
     },
     onGenerateAssets() {
+      this.isAiGenerated = false;
       this.saveBpmn(null, null, true);
     },
     generateAssets() {
@@ -2215,9 +2216,8 @@ export default {
         streamCompletedEvent,
         (response) => {
           if (response.data) {
-            setTimeout(() => {
-              window.location.replace(window.location.href.split('?')[0]);
-            }, 1500);
+            this.updateScreenRefs(response.data.screenIds);
+            this.updateScriptRefs(response.data.scriptIds);
           }
         },
       );
@@ -2240,6 +2240,30 @@ export default {
         localStorage.setItem('cancelledJobs', JSON.stringify(this.cancelledJobs));
         this.loadingAI = false;
       }
+    },
+    updateScreenRefs(elements) {
+      elements.forEach(el => {
+        const node = this.nodes.find(n => n.definition.id === el.node_id);
+        let definition = node.definition;
+
+        if (node.type === 'processmaker-modeler-task') {
+          definition.screenRef = el.screen_id;
+          store.commit('updateNodeProp', { node, key: 'definition', value: definition });
+          this.$emit('save-state');
+        }
+      });
+    },
+    updateScriptRefs(elements) {
+      elements.forEach(el => {
+        const node = this.nodes.find(n => n.definition.id === el.node_id);
+        let definition = node.definition;
+
+        if (node.type === 'processmaker-modeler-script-task') {
+          definition.scriptRef = el.script_id;
+          store.commit('updateNodeProp', { node, key: 'definition', value: definition });
+          this.$emit('save-state');
+        }
+      });
     },
   },
   created() {
