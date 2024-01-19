@@ -2100,6 +2100,7 @@ export default {
         });
     },
     onGenerateAssets() {
+      this.isAiGenerated = false;
       this.saveBpmn(null, null, true);
     },
     generateAssets() {
