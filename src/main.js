@@ -9,7 +9,7 @@ import * as VueDeepSet from 'vue-deepset';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import ScreenBuilder from '@processmaker/screen-builder';
-import Multiselect from '@processmaker/vue-multiselect/src/Multiselect';
+import { Multiselect } from '@processmaker/vue-multiselect';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
