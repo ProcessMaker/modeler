@@ -28,6 +28,11 @@ git clone git@github.com:ProcessMaker/modeler.git
 cd modeler
 ```
 
+Install dependencies:
+```bash
+npm install or yarn install
+```
+
 You can now run any of the below commands. Most commands make calls `vue-cli-service`. You can read more about those commands at https://cli.vuejs.org/guide/cli-service.html#cli-service.
 
 ```bash
