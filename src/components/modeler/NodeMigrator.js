@@ -14,17 +14,32 @@ export class NodeMigrator {
     if (keepOriginalName(this._nodeThatWillBeReplaced)) {
       this._definition.name = this._nodeThatWillBeReplaced.definition.name;
     }
-
+    const flowNodes = [];
     const forceNodeToRemount = definition => {
       const shape = this._graph.getLinks().find(element => {
         return element.component && element.component.node.definition === definition;
       });
-      shape.component.node._modelerId += '_replaced';
+      const { node } = shape.component;
+      node._modelerId += '_replaced';
+      const waypoint = [];
+      node.diagram.waypoint?.forEach(point => {
+        waypoint.push({
+          x: point.x,
+          y: point.y,
+        });
+      });
+      flowNodes.push({
+        id: node.definition.id,
+        type: node.type,
+        name: node.definition.name,
+        waypoint,
+        sourceRefId: node.definition.sourceRef.id,
+        targetRefId: node.definition.targetRef.id,
+      });
     };
 
     const incoming = this._nodeThatWillBeReplaced.definition.get('incoming');
     const outgoing = this._nodeThatWillBeReplaced.definition.get('outgoing');
-
     this._definition.get('incoming').push(...incoming);
     this._definition.get('outgoing').push(...outgoing);
 
@@ -62,6 +77,8 @@ export class NodeMigrator {
           forceNodeToRemount(flow);
         });
     }
+    // multiplayer hook to update the flows
+    window.ProcessMaker.EventBus.$emit('multiplayer-updateFlows', flowNodes);
   }
 
   _handleSequenceFlowForGateway(ref) {

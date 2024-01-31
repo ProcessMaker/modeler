@@ -2,11 +2,13 @@
 node_modules
 /dist
 *coverage
+*screenshots
 reports
 .nyc_output
 /public/js
 
 # local env files
+.env
 .env.local
 .env.*.local
 

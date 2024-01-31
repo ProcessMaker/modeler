@@ -18,17 +18,14 @@ export default class MessageFlow extends Flow {
       Flow.allowOutgoingFlow(sourceConfig, sourceNode);
   }
 
-  makeFlowNode(sourceShape, targetShape, genericLink) {
+  makeFlowNode(sourceShape, targetShape, waypoint) {
     const diagram = this.nodeRegistry['processmaker-modeler-message-flow'].diagram(this.moddle);
     const messageFlowDefinition = this.nodeRegistry['processmaker-modeler-message-flow'].definition(this.moddle);
 
     messageFlowDefinition.set('sourceRef', sourceShape.component.node.definition);
     messageFlowDefinition.set('targetRef', targetShape.component.node.definition);
-
-    const start = genericLink.sourceAnchor;
-    const end = genericLink.targetAnchor;
-
-    diagram.waypoint = [start, end].map(point => this.moddle.create('dc:Point', point));
+ 
+    diagram.waypoint = waypoint.map(point => this.moddle.create('dc:Point', point));
 
     return new Node(
       'processmaker-modeler-message-flow',

@@ -2,6 +2,8 @@ import component from './sequenceFlow.vue';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import { getNodeIdGenerator } from '@/NodeIdGenerator';
+import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
 
 export const id = 'processmaker-modeler-sequence-flow';
 
@@ -50,12 +52,30 @@ export default {
         // Set the condition expression IFF the expresion body changed
         if (definition[key].body !== value[key]) {
           const conditionExpression = moddle.create('bpmn:FormalExpression', { body: value[key] });
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+            id: node.definition.id , key, value: [conditionExpression],
+          });
           setNodeProp(node, key, conditionExpression);
         }
       } else {
+        window.ProcessMaker.EventBus.$emit('multiplayer-updateInspectorProperty', {
+          id: node.definition.id , key, value: value[key],
+        });
         setNodeProp(node, key, value[key]);
       }
     }
+  },
+  multiplayerInspectorHandler(node, data, setNodeProp, moddle) {
+    const keys = Object.keys(data).filter((key) => key !== 'id');
+    if (keys.length === 0) {
+      return;
+    }
+    if (keys[0] === 'conditionExpression') {
+      const conditionExpression = moddle.create('bpmn:FormalExpression', { body: data[keys[0]][0].body });
+      setNodeProp(node, keys[0], conditionExpression);
+      return;
+    }
+    setNodeProp(node, keys[0], data[keys[0]]);
   },
   inspectorConfig: [
     {
@@ -82,4 +102,17 @@ export default {
       ],
     },
   ],
+  async multiplayerClient(modeler, data) {
+    const { paper } = modeler;
+    const sourceElem = modeler.getElementByNodeId(data.sourceRefId);
+    const targetElem = modeler.getElementByNodeId(data.targetRefId);
+    if (sourceElem && targetElem) {
+      const flow = new SequenceFlow(modeler.nodeRegistry, modeler.moddle, paper);
+      const actualFlow = flow.makeFlowNode(sourceElem, targetElem, data.waypoint);
+      // add Nodes
+      modeler.addNode(actualFlow, data.id, true);
+      const nodeIdereator = getNodeIdGenerator(modeler.definitions);
+      nodeIdereator.updateCounters();
+    }
+  },
 };

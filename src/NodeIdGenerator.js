@@ -58,6 +58,14 @@ export default class NodeIdGenerator {
     this.refreshLastIdCounter();
     return NodeIdGenerator.#counter;
   }
+  getDefinitionNumber() {
+    return NodeIdGenerator.#counter;
+  }
+
+  updateCounters() {
+    NodeIdGenerator.#counter++;
+    NodeIdGenerator.#diagramCounter++;
+  }
 
   refreshLastDiagramIdCounter() {
     let lastIdCounter = this.matchIds(new RegExp(`^${NodeIdGenerator.prefix}(\\d+)_di$`), this.definitions.diagrams);

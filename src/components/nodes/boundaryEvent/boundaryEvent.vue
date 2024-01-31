@@ -27,6 +27,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import store from '@/store';
 import { canAddBoundaryEventToTarget } from '@/boundaryEventValidation';
+import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryEventUtils';
 
 export default {
   components: {
@@ -202,6 +203,11 @@ export default {
 
       this.invalidTargetElement = targetElement;
     },
+    addMultiplayerBoundaryEvent() {
+      const defaultData = getBoundaryEventData(this.node);
+
+      window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', defaultData);
+    },
   },
   async mounted() {
     this.shape = new EventShape();
@@ -214,6 +220,10 @@ export default {
     const task = this.getTaskUnderShape();
     this.attachBoundaryEventToTask(task);
     this.updateShapePosition(task);
+
+    if (this.node.fromCrown) {
+      this.addMultiplayerBoundaryEvent();
+    }
   },
 };
 </script>

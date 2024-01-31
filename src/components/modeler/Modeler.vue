@@ -2,6 +2,7 @@
   <span data-test="body-container">
     <tool-bar
       v-if="showComponent"
+      ref="tool-bar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -12,6 +13,7 @@
       :warnings="allWarnings"
       :xml-manager="xmlManager"
       :validationBar="validationBar"
+      :extra-actions="extraActions"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -21,6 +23,8 @@
       @close="close"
       @save-state="pushToUndoStack"
       @clearSelection="clearSelection"
+      :players="players"
+      @action="handleToolbarAction"
     />
     <b-row class="modeler h-100">
       <b-tooltip
@@ -41,15 +45,34 @@
         ref="paper-container"
         :class="[cursor, { 'grabbing-cursor' : isGrabbing }]"
         :style="{ width: parentWidth, height: parentHeight }"
+        @mouseup="onMouseUp"
+        @mousemove="[onMouseMove($event), setInspectorButtonPosition($event)]"
       >
 
         <div ref="paper" data-test="paper" class="main-paper" />
       </b-col>
 
+      <WelcomeMessage
+        v-if="showWelcomeMessage"
+      />
+
       <InspectorButton
-        v-if="showComponent"
+        ref="inspector-button"
+        v-show="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
+        :style="{ right: inspectorButtonRight + 'px' }"
+      />
+
+      <PreviewPanel ref="preview-panel"
+        @togglePreview="[handleTogglePreview($event), setInspectorButtonPosition($event)]"
+        @previewResize="[onMouseMove($event), setInspectorButtonPosition($event)]"
+        @startResize="onStartPreviewResize"
+        @stopResize="onMouseUp"
+        :visible="isOpenPreview && !(highlightedNodes.length > 1)"
+        :nodeRegistry="nodeRegistry"
+        :previewConfigs="previewConfigs"
+        :panelWidth="previewPanelWidth"
       />
 
       <InspectorPanel
@@ -66,7 +89,7 @@
         :parent-height="parentHeight"
         :canvas-drag-position="canvasDragPosition"
         @shape-resize="shapeResize(false)"
-        @toggleInspector="handleToggleInspector"
+        @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
       />
 
       <component
@@ -98,6 +121,7 @@
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         @add-node="addNode"
         @remove-node="removeNode"
+        @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
         @set-cursor="cursor = $event"
         @set-pool-target="poolTarget = $event"
         @unset-pools="unsetPools"
@@ -115,6 +139,7 @@
         @clone-selection="cloneSelection"
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
+        @definition-changed="onNodeDefinitionChanged"
       />
 
       <RailBottom
@@ -138,24 +163,29 @@
         @remove-nodes="removeNodes"
         :processNode="processNode"
         @save-state="pushToUndoStack"
+        :isMultiplayer="isMultiplayer"
       />
     </b-row>
   </span>
 </template>
 
 <script>
+
 import Vue from 'vue';
 import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
 import BpmnModdle from 'bpmn-moddle';
 import ExplorerRail from '../rails/explorer-rail/explorer';
+import WelcomeMessage from '../welcome/WelcomeMessage.vue';
+import { isJSON } from 'lodash-contrib';
 import pull from 'lodash/pull';
 import remove from 'lodash/remove';
 import store from '@/store';
 import nodeTypesStore from '@/nodeTypesStore';
 import InspectorButton from '@/components/inspectors/inspectorButton/InspectorButton.vue';
 import InspectorPanel from '@/components/inspectors/InspectorPanel';
+import PreviewPanel from '@/components/inspectors/PreviewPanel';
 import undoRedoStore from '@/undoRedoStore';
 import { Linter } from 'bpmnlint';
 import linterConfig from '../../../.bpmnlintrc';
@@ -166,7 +196,7 @@ import getValidationProperties from '@/targetValidationUtils';
 import { id as laneId } from '@/components/nodes/poolLane/config';
 import { id as processId } from '@/components/inspectors/process';
 import { id as sequenceFlowId } from '../nodes/sequenceFlow';
-import { id as associationId } from '../nodes/association';
+import { id as associationId } from '../nodes/association/associationConfig';
 import { id as messageFlowId } from '../nodes/messageFlow/config';
 import { id as dataOutputAssociationFlowId } from '../nodes/dataOutputAssociation/config';
 import { id as dataInputAssociationFlowId } from '../nodes/dataInputAssociation/config';
@@ -189,7 +219,14 @@ import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
 import XMLManager from '@/components/modeler/XMLManager';
-import { removeNodeFlows, removeNodeMessageFlows, removeNodeAssociations, removeOutgoingAndIncomingRefsToFlow, removeBoundaryEvents, removeSourceDefault } from '@/components/crown/utils';
+import {
+  removeBoundaryEvents,
+  removeNodeAssociations,
+  removeNodeFlows,
+  removeNodeMessageFlows,
+  removeOutgoingAndIncomingRefsToFlow,
+  removeSourceDefault,
+} from '@/components/crown/utils';
 import { getInvalidNodes } from '@/components/modeler/modelerUtils';
 import { NodeMigrator } from '@/components/modeler/NodeMigrator';
 import addLoopCharacteristics from '@/setup/addLoopCharacteristics';
@@ -199,10 +236,13 @@ import RailBottom from '@/components/railBottom/RailBottom.vue';
 import ProcessmakerModelerGenericFlow from '@/components/nodes/genericFlow/genericFlow';
 
 import Selection from './Selection';
-
+import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
+import Multiplayer from '@/multiplayer/multiplayer';
+import { getBoundaryEventData } from '../nodes/boundaryEvent/boundaryEventUtils';
 
 export default {
   components: {
+    PreviewPanel,
     ToolBar,
     ExplorerRail,
     InspectorButton,
@@ -210,6 +250,8 @@ export default {
     ProcessmakerModelerGenericFlow,
     Selection,
     RailBottom,
+    WelcomeMessage,
+    RemoteCursor,
   },
   props: {
     owner: Object,
@@ -242,6 +284,7 @@ export default {
   mixins: [hotkeys, cloneSelection],
   data() {
     return {
+      extraActions: [],
       pasteInProgress: false,
       cloneInProgress: false,
       internalClipboard: [],
@@ -278,8 +321,10 @@ export default {
       miniMapOpen: false,
       panelsCompressed: false,
       isOpenInspector: false,
+      isOpenPreview: false,
       isGrabbing: false,
       isRendering: false,
+      isLoaded: false,
       allWarnings: [],
       nodeTypes: [],
       pmBlockNodes: [],
@@ -296,12 +341,32 @@ export default {
       isSelecting: false,
       isIntoTheSelection: false,
       dragStart: null,
+      players: [],
+      showInspectorButton: true,
+      inspectorButtonRight: 65,
+      previewConfigs: [],
+      isResizingPreview: false,
+      currentCursorPosition: 0,
+      previewPanelWidth: 600,
+      flowTypes: [
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-message-flow',
+        'processmaker-modeler-data-input-association',
+        'processmaker-modeler-data-output-association',
+        'processmaker-modeler-association',
+      ],
+      boundaryEventTypes: [
+        'processmaker-modeler-boundary-timer-event',
+        'processmaker-modeler-boundary-error-event',
+        'processmaker-modeler-boundary-signal-event',
+        'processmaker-modeler-boundary-conditional-event',
+        'processmaker-modeler-boundary-message-event',
+      ],
     };
   },
   watch: {
     isRendering() {
       const loadingMessage = 'Loading process, please be patient.';
-
       if (this.isRendering) {
         window.ProcessMaker.alert(loadingMessage, 'warning');
         document.body.style.cursor = 'wait !important';
@@ -314,6 +379,8 @@ export default {
       });
       document.body.style.cursor = 'auto';
       this.cursor = null;
+
+      this.isLoaded = true;
     },
     currentXML() {
       this.validateIfAutoValidateIsOn();
@@ -327,9 +394,16 @@ export default {
     canvasScale(canvasScale) {
       this.paperManager.scale = canvasScale;
     },
-
+    highlightedNodes() {
+      if (window.ProcessMaker?.EventBus) {
+        window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
+      }
+    },
   },
   computed: {
+    showWelcomeMessage() {
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+    },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
     },
@@ -352,10 +426,63 @@ export default {
       return getInvalidNodes(this.validationErrors, this.nodes);
     },
     showComponent: () => store.getters.showComponent,
+    isMultiplayer: () => store.getters.isMultiplayer,
   },
   methods: {
+    onNodeDefinitionChanged() {
+      // re-render the preview just if the preview pane is open
+      if (this.isOpenPreview) {
+        this.handlePreview();
+      }
+    },
+    onStartPreviewResize(event) {
+      this.isResizingPreview = true;
+      this.currentCursorPosition = event.x;
+    },
+    onMouseUp() {
+      this.isResizingPreview = false;
+    },
+    onMouseMove(event) {
+      if (this.isResizingPreview) {
+        const dx = this.currentCursorPosition - event.x;
+        this.previewPanelWidth = parseInt(this.previewPanelWidth) + dx;
+        this.currentCursorPosition = event.x;
+      }
+    },
+    registerPreview(config) {
+      this.previewConfigs.push(config);
+    },
+    handleToolbarAction(action) {
+      if (action.handler instanceof Function) {
+        action.handler(this);
+      }
+    },
     handleToggleInspector(value) {
+      this.showInspectorButton = !(value ?? true);
       this.isOpenInspector = value;
+    },
+    handlePreview() {
+      if (this.highlightedNodes.length != 1) {
+        this.isOpenPreview = false;
+      }
+      this.$refs['preview-panel'].previewNode(true);
+      this.handleTogglePreview(true) ;
+    },
+    handleTogglePreview(value) {
+      this.isOpenPreview = value;
+    },
+    setInspectorButtonPosition() {
+      if (this.isOpenInspector) {
+        return;
+      }
+
+      if (this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65 + this.previewPanelWidth;
+      }
+
+      if (!this.isOpenPreview && !this.isOpenInspector) {
+        this.inspectorButtonRight = 65;
+      }
     },
     isAppleOS() {
       return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
@@ -370,6 +497,14 @@ export default {
       if (source.default && source.default.id === flow.id) {
         flow = null;
       }
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [
+        {
+          id: source.id,
+          properties: {
+            default: flow?.id || null,
+          },
+        },
+      ]);
       source.set('default', flow);
     },
     cloneElement(node, copyCount) {
@@ -460,10 +595,14 @@ export default {
         return this.paper.findViewByModel(shape);
       });
     },
+    getElementByNodeId(id) {
+      const cells = this.paper.model.getCells();
+      return cells.find((cell) => cell.component && cell.component.id === id);
+    },
     async close() {
       this.$emit('close');
     },
-    async saveBpmn() {
+    async saveBpmn(redirectTo = null, id = null) {
       const svg = document.querySelector('.mini-paper svg');
       const css = 'text { font-family: sans-serif; }';
       const style = document.createElement('style');
@@ -472,8 +611,7 @@ export default {
       svg.appendChild(style);
       const xml = await this.getXmlFromDiagram();
       const svgString = (new XMLSerializer()).serializeToString(svg);
-
-      this.$emit('saveBpmn', { xml, svg: svgString });
+      this.$emit('saveBpmn', { xml, svg: svgString, redirectUrl: redirectTo, nodeId: id });
     },
     borderOutline(nodeId) {
       return this.decorations.borderOutline && this.decorations.borderOutline[nodeId];
@@ -661,6 +799,7 @@ export default {
 
         this.parsers[bpmnType].default.push(defaultParser);
       });
+      nodeTypesStore.commit('setNodeTypes', this.nodeTypes);
     },
     registerPmBlock(pmBlockNode, customParser) {
       const defaultParser = () => pmBlockNode.id;
@@ -688,6 +827,15 @@ export default {
         this.parsers[bpmnType].default.push(defaultParser);
       });
       nodeTypesStore.commit('setPmBlockNodeTypes', this.pmBlockNodes);
+    },
+    registerMenuAction(action) {
+      if (!action.value || typeof action.value !== 'string') {
+        throw new Error('Menu action must have a action.value');
+      }
+      if (!action.content || typeof action.content !== 'string') {
+        throw new Error('Menu action must have a action.content');
+      }
+      this.extraActions.push(action);
     },
     addMessageFlows() {
       if (this.collaboration) {
@@ -850,9 +998,9 @@ export default {
 
       this.removeUnsupportedElementAttributes(definition);
 
-      const config = definition.config ? JSON.parse(definition.config) : {};
+      const config = definition.config && isJSON(definition.config) ? JSON.parse(definition.config) : {};
       const type = config?.processKey || parser(definition, this.moddle);
-      
+
       const unnamedElements = ['bpmn:TextAnnotation', 'bpmn:Association', 'bpmn:DataOutputAssociation', 'bpmn:DataInputAssociation'];
       const requireName = unnamedElements.indexOf(bpmnType) === -1;
       if (requireName && !definition.get('name')) {
@@ -863,7 +1011,25 @@ export default {
     },
     async createNodeAsync(type, definition, diagram) {
       const node =  this.createNode(type, definition, diagram);
+      if (!this.isMultiplayer) {
+        store.commit('addNode', node);
+      }
+      else {
+        this.loadNodeForMultiplayer(node);
+      }
+    },
+    async loadNodeForMultiplayer(node) {
+      if (node.type === 'processmaker-modeler-lane') {
+        await this.addNode(node, node.definition.id, true);
+        this.nodeIdGenerator.updateCounters();
+        await this.$nextTick();
+        await this.paperManager.awaitScheduledUpdates();
+        window.ProcessMaker.EventBus.$emit('multiplayer-addLanes', [node]);
+        return;
+      }
+      this.multiplayerHook(node, false);
       store.commit('addNode', node);
+      this.poolTarget = null;
     },
     createNode(type, definition, diagram) {
       if (Node.isTimerType(type)) {
@@ -957,7 +1123,29 @@ export default {
         control,
       });
     },
-    async handleDrop({ clientX, clientY, control, nodeThatWillBeReplaced }) {
+    async addRemoteNode(data){
+      const definition = this.nodeRegistry[data.type].definition(this.moddle, this.$t);
+      const diagram = this.nodeRegistry[data.type].diagram(this.moddle);
+      diagram.bounds.x = data.x;
+      diagram.bounds.y = data.y;
+      diagram.bounds.width = data.width;
+      diagram.bounds.height = data.height;
+      const newNode = this.createNode(data.type, definition, diagram);
+      //verify if the node has a pool as a container
+      if (data.poolId) {
+        const pool = this.getElementByNodeId(data.poolId);
+        this.poolTarget = pool;
+      }
+      await this.addNode(newNode, data.id, true);
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      if (this.autoValidate) {
+        this.validateBpmnDiagram();
+      }
+    },
+
+    async handleDrop(data) {
+      const { clientX, clientY, control, nodeThatWillBeReplaced } = data;
       this.validateDropTarget({ clientX, clientY, control });
       if (!this.allowDrop) {
         return;
@@ -972,12 +1160,12 @@ export default {
       diagram.bounds.y = y;
 
       const newNode = this.createNode(control.type, definition, diagram);
-
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
 
       this.highlightNode(newNode);
+
       await this.addNode(newNode);
       if (!nodeThatWillBeReplaced) {
         return;
@@ -995,6 +1183,7 @@ export default {
 
       return newNode;
     },
+
     setShapeCenterUnderCursor(diagram) {
       diagram.bounds.x -= (diagram.bounds.width / 2);
       diagram.bounds.y -= (diagram.bounds.height / 2);
@@ -1006,16 +1195,104 @@ export default {
       const view = newNodeComponent.shapeView;
       await this.$refs.selector.selectElement(view);
     },
-    async addNode(node) {
+    multiplayerHook(node, fromClient, isProcessRequested = false) {
+      const blackList = [
+        'processmaker-modeler-lane',
+        'processmaker-modeler-generic-flow',
+        'processmaker-modeler-sequence-flow',
+        'processmaker-modeler-association',
+        'processmaker-modeler-data-input-association',
+        ...this.boundaryEventTypes,
+      ];
+      if (!this.isMultiplayer) {
+        return;
+      }
+
+      if (!fromClient) {
+        if (!blackList.includes(node.type) && !this.flowTypes.includes(node.type)) {
+          const defaultData = {
+            x: node.diagram.bounds.x,
+            y: node.diagram.bounds.y,
+            height: node.diagram.bounds.height,
+            width: node.diagram.bounds.width,
+            type: node.type,
+            id: node.definition.id,
+            oldNodeId: null,
+            isAddingLaneAbove: true,
+            color: node.definition.color,
+            dueIn: node.definition.dueIn,
+            name: node.definition.name,
+            assignedUsers: node.definition.assignedUsers,
+            config: node.definition.config,
+            loopCharacteristics: null,
+            gatewayDirection: null,
+            messageRef: null,
+            signalRef: null,
+            signalPayload: null,
+            extras: {},
+            default: null,
+          };
+          if (node?.pool?.component) {
+            defaultData['poolId'] = node.pool.component.id;
+          }
+
+          if (isProcessRequested) {
+            return defaultData;
+          }
+
+          window.ProcessMaker.EventBus.$emit('multiplayer-addNode', defaultData);
+        }
+        if (this.flowTypes.includes(node.type)) {
+          let sourceRefId = node.definition.sourceRef?.id;
+          let targetRefId = node.definition.targetRef?.id;
+
+          if (node.type === 'processmaker-modeler-data-input-association') {
+            sourceRefId = Array.isArray(node.definition.sourceRef) && node.definition.sourceRef[0]?.id;
+            targetRefId = node.definition.targetRef?.$parent?.$parent?.get('id');
+          }
+          const waypoint = [];
+
+          node.diagram.waypoint?.forEach(point => {
+            waypoint.push({
+              x: point.x,
+              y: point.y,
+            });
+          });
+
+          if (sourceRefId && targetRefId) {
+            const flowData = {
+              id: node.definition.id,
+              type: node.type,
+              sourceRefId,
+              targetRefId,
+              waypoint,
+              name: node.definition.name,
+              conditionExpression: null,
+              color: null,
+            };
+
+            if (isProcessRequested) {
+              return flowData;
+            }
+
+            window.ProcessMaker.EventBus.$emit('multiplayer-addFlow', flowData);
+          }
+        }
+      }
+    },
+    async addNode(node, id = null, fromClient = false) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
       const targetProcess = node.getTargetProcess(this.processes, this.processNode);
       addNodeToProcess(node, targetProcess);
-      node.setIds(this.nodeIdGenerator);
+      node.setIds(this.nodeIdGenerator, id);
 
       this.planeElements.push(node.diagram);
+      // add multiplayer logic as a hook
+      this.multiplayerHook(node, fromClient);
+
       store.commit('addNode', node);
       this.poolTarget = null;
 
@@ -1031,9 +1308,10 @@ export default {
       ].includes(node.type)) {
         return;
       }
-
-      // Select the node after it has been added to the store (does not apply to flows)
-      this.selectNewNode(node);
+      if (!fromClient) {
+        // Select the node after it has been added to the store (does not apply to flows)
+        this.selectNewNode(node);
+      }
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -1043,6 +1321,8 @@ export default {
       });
     },
     async addClonedNodes(nodes) {
+      const flowNodes = [];
+
       nodes.forEach(node => {
         if (!node.pool) {
           node.pool = this.poolTarget;
@@ -1052,11 +1332,34 @@ export default {
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
+
+        if (this.flowTypes.includes(node.type)) {
+          // Add flow to array to render after
+          flowNodes.push(node);
+        } else if (this.boundaryEventTypes.includes(node.type)) {
+          // Get boundary event data
+          const defaultData = getBoundaryEventData(node);
+          window.ProcessMaker.EventBus.$emit('multiplayer-addBoundaryEvent', defaultData);
+        } else {
+          this.multiplayerHook(node, false);
+        }
+
         store.commit('addNode', node);
         this.poolTarget = null;
       });
+
+      // Render flows after all nodes have been added
+      flowNodes.forEach(node => this.multiplayerHook(node, false));
     },
-    async removeNode(node, { removeRelationships = true } = {}) {
+    async removeNode(node, options) {
+      // Check if the node is not replaced
+      if (this.isMultiplayer) {
+        // Emit event to server to remove node
+        window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
+      }
+      this.removeNodeProcedure(node, options);
+    },
+    async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
         // already removed
         return;
@@ -1103,6 +1406,30 @@ export default {
     replaceNode({ node, typeToReplaceWith }) {
       this.performSingleUndoRedoTransaction(async() => {
         await this.paperManager.performAtomicAction(async() => {
+          const { x, y } = node.diagram.bounds;
+
+          const nodeData = {
+            x, y,
+            control: { type: typeToReplaceWith },
+            nodeThatWillBeReplaced: node,
+          };
+          await this.replaceNodeProcedure(nodeData, true);
+        });
+      });
+    },
+    async replaceNodeProcedure(data, isReplaced = false) {
+      if (isReplaced) {
+        // Get the clientX and clientY from the node that will be replaced
+        const { x: clientX, y: clientY } = this.paper.localToClientPoint(data.nodeThatWillBeReplaced.diagram.bounds);
+        data.clientX = clientX;
+        data.clientY = clientY;
+      }
+      await this.handleDrop(data);
+      await this.removeNode(data.nodeThatWillBeReplaced, { removeRelationships: false, isReplaced });
+    },
+    replaceAiNode({ node, typeToReplaceWith, assetId, assetName, redirectTo }) {
+      this.performSingleUndoRedoTransaction(async() => {
+        await this.paperManager.performAtomicAction(async() => {
           const { x: clientX, y: clientY } = this.paper.localToClientPoint(node.diagram.bounds);
           const newNode = await this.handleDrop({
             clientX, clientY,
@@ -1110,9 +1437,29 @@ export default {
             nodeThatWillBeReplaced: node,
           });
 
+          if (typeToReplaceWith === 'processmaker-modeler-task') {
+            newNode.definition.screenRef = assetId;
+            newNode.definition.name = assetName;
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-script-task') {
+            newNode.definition.scriptRef = assetId;
+            newNode.definition.name = assetName;
+          }
+
+          if (typeToReplaceWith === 'processmaker-modeler-call-activity') {
+            newNode.definition.name = assetName;
+            newNode.definition.calledElement = `ProcessId-${assetId}`;
+            newNode.definition.config = `{"calledElement":"ProcessId-${assetId}","processId":${assetId},"startEvent":"node_1","name":"${assetName}"}`;
+            redirectTo = `${redirectTo}/${newNode.id}`;
+          }
+
           await this.removeNode(node, { removeRelationships: false });
           this.highlightNode(newNode);
           this.selectNewNode(newNode);
+          await this.pushToUndoStack();
+          await this.$nextTick();
+          this.saveBpmn(redirectTo, newNode.id);
         });
       });
     },
@@ -1121,8 +1468,9 @@ export default {
         await this.paperManager.performAtomicAction(async() => {
           await this.highlightNode(null);
           await this.$nextTick();
-          await this.addNode(actualFlow);
           await store.commit('removeNode', genericFlow);
+          await this.$nextTick();
+          await this.addNode(actualFlow, genericFlow.definition.id);
           await this.$nextTick();
           await this.highlightNode(targetNode);
         });
@@ -1300,13 +1648,35 @@ export default {
         if (this.isSelecting) {
           this.$refs.selector.endSelection(this.paperManager.paper);
         } else {
-          this.$refs.selector.stopDrag(event);
+          this.$refs.selector.stopDrag();
         }
       }
       window.ProcessMaker.EventBus.$emit('custom-pointerclick', event);
       this.isDragging = false;
       this.dragStart = null;
       this.isSelecting = false;
+    },
+    redirect(redirectTo) {
+      window.location = redirectTo;
+    },
+    enableMultiplayer(value) {
+      store.commit('enableMultiplayer', value);
+    },
+    addPlayer(player) {
+      this.players.push(player);
+    },
+    removePlayer(playerId) {
+      const playerIndex = this.players.findIndex(player => player.id === playerId);
+
+      if (playerIndex !== -1) {
+        this.players.splice(playerIndex, 1);
+      }
+    },
+    /**
+     * Update the lasso tool
+     */
+    updateLasso(){
+      this.$refs.selector.updateSelectionBox();
     },
   },
   created() {
@@ -1330,11 +1700,15 @@ export default {
     this.registerNode(Process);
     /* Initialize the BpmnModdle and its extensions */
     window.ProcessMaker.EventBus.$emit('modeler-init', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       registerInspectorExtension,
       registerBpmnExtension: this.registerBpmnExtension,
       registerNode: this.registerNode,
       registerStatusBar: this.registerStatusBar,
       registerPmBlock: this.registerPmBlock,
+      registerPreview: this.registerPreview,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
@@ -1464,12 +1838,33 @@ export default {
 
     /* Register custom nodes */
     window.ProcessMaker.EventBus.$emit('modeler-start', {
+      $t: this.$t,
+      modeler: this,
+      registerMenuAction: this.registerMenuAction,
       loadXML: async(xml) => {
         await this.loadXML(xml);
         await undoRedoStore.dispatch('pushState', xml);
+
+        try {
+          const multiplayer = new Multiplayer(this);
+          multiplayer.init();
+          this.multiplayer = multiplayer;
+        } catch (error) {
+          console.warn('Could not initialize multiplayer', error);
+        }
       },
       addWarnings: warnings => this.$emit('warnings', warnings),
       addBreadcrumbs: breadcrumbs => this.breadcrumbData.push(breadcrumbs),
+    });
+
+    this.$root.$on('replace-ai-node', (data) => {
+      this.replaceAiNode(data);
+    });
+
+    window.ProcessMaker.EventBus.$on('save-changes', (redirectUrl) => {
+      if (redirectUrl) {
+        this.redirect(redirectUrl);
+      }
     });
   },
 };

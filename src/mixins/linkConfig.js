@@ -23,9 +23,11 @@ export default {
   props: ['highlighted', 'paper', 'paperManager', 'isCompleted', 'isIdle'],
   data() {
     return {
+      linkView: null,
       sourceShape: null,
       target: null,
       listeningToMouseup: false,
+      listeningToMouseleave: false,
       vertices: null,
       anchorPointFunction: getDefaultAnchorPoint,
     };
@@ -139,10 +141,12 @@ export default {
       resetShapeColor(targetShape);
 
       this.shape.on('change:vertices', this.onChangeVertices);
-      this.shape.on('change:source', this.onChangeVertices);
-      this.shape.on('change:target', this.onChangeVertices);
+      this.shape.on('change:source', this.onChangeTargets);
+      this.shape.on('change:target', this.onChangeTargets);
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
+
+      this.shape.listenTo(this.paper, 'link:mouseleave', this.storeWaypoints);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -155,24 +159,66 @@ export default {
         resolve();
       });
     },
+    async storeWaypoints() {
+      if (this.highlighted && !this.listeningToMouseleave) {
+        this.updateWaypoints();
+        await this.$nextTick();
+
+        if (this.$parent.isMultiplayer && this.linkView) {
+          // update waypoints in multiplayer mode
+          const nodeType = this.linkView.model.component.node.type;
+          const sourceRefId = this.linkView.sourceView.model.component.node.definition.id;
+          const targetRefId = this.linkView.targetView.model.component.node.definition.id;
+
+          const changes = [
+            {
+              id: this.linkView.model.component.node.definition.id,
+              properties: {
+                type: nodeType,
+                waypoint: [
+                  this.linkView.sourceAnchor.toJSON(),
+                  ...this.shape.vertices(),
+                  this.linkView.targetAnchor.toJSON(),
+                ],
+                sourceRefId,
+                targetRefId,
+              },
+            },
+          ];
+
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', changes);
+        }
+
+        this.listeningToMouseleave = true;
+        this.$emit('save-state');
+      }
+    },
     /**
       * On Change vertices handler
       * @param {Object} link
       * @param {Array} vertices
       * @param {Object} options
       */
-    async onChangeVertices(link, vertices, options){
-      if (options && options.ui) {
+    async onChangeTargets(link, vertices, options){
+      if (options?.ui) {
         await this.$nextTick();
         await this.waitForUpdateWaypoints();
+        this.listeningToMouseleave = false;
+        await this.storeWaypoints();
+      }
+    },
+    async onChangeVertices(link, vertices, options){
+      if (options?.ui) {
+        this.updateWaypoints();
         await this.$nextTick();
+        this.listeningToMouseleave = false;
         this.$emit('save-state');
       }
     },
     updateWaypoints() {
-      const linkView = this.shape.findView(this.paper);
-      const start = linkView.sourceAnchor;
-      const end = linkView.targetAnchor;
+      this.linkView = this.shape.findView(this.paper);
+      const start = this.linkView.sourceAnchor;
+      const end = this.linkView.targetAnchor;
 
       this.node.diagram.waypoint = [start,
         ...this.shape.vertices(),
@@ -219,6 +265,10 @@ export default {
 
         if (this.updateDefinitionLinks) {
           this.updateDefinitionLinks();
+        }
+
+        if (this.linkView && ['processmaker-modeler-association', 'processmaker-modeler-data-input-association'].includes(this.shape.component.node.type)) {
+          this.$parent.multiplayerHook(this.shape.component.node, false);
         }
 
         this.$emit('save-state');

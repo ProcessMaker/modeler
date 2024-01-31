@@ -1,28 +1,30 @@
 import {
   clickAndDropElement,
-  getElementAtPosition,
   waitToRenderAllShapes,
 } from '../../../support/utils';
 import { nodeTypes } from '../../../support/constants';
 
-describe.skip('Selection of pool with shift click', () => {
+describe('Selection of pool with shift click', () => {
   it('should add to selection a pool with shift key', () => {
+    cy.get('[data-cy="zoom-out-control"]').click();
+    cy.get('[data-cy="zoom-out-control"]').click();
+    cy.get('[data-cy="zoom-out-control"]').click();
     // Drag pool 1 and elements inside
     const pool1Position = { x: 200, y: 50 };
     clickAndDropElement(nodeTypes.pool, pool1Position);
 
-    const taskPosition1 = { x: 480, y: 180 };
-    const endEventPosition1 = { x: 640, y: 240 };
+    const taskPosition1 = { x: 220, y: 180 };
+    const endEventPosition1 = { x: 350, y: 200 };
     clickAndDropElement(nodeTypes.task, taskPosition1);
     clickAndDropElement(nodeTypes.endEvent, endEventPosition1);
 
     // Drag pool 2 and elements inside
-    const pool2Position = { x: 300, y: 550 };
+    const pool2Position = { x: 300, y: 400 };
     clickAndDropElement(nodeTypes.pool, pool2Position);
 
-    const startEventPosition2 = { x: 280, y: 620 };
+    const startEventPosition2 = { x: 390, y: 500 };
     const taskPosition2 = { x: 480, y: 500 };
-    const endEventPosition2 = { x: 640, y: 620 };
+    const endEventPosition2 = { x: 640, y: 500 };
     clickAndDropElement(nodeTypes.startEvent, startEventPosition2);
     clickAndDropElement(nodeTypes.task, taskPosition2);
     clickAndDropElement(nodeTypes.endEvent, endEventPosition2);
@@ -40,44 +42,32 @@ describe.skip('Selection of pool with shift click', () => {
     // get current position of pool 1
     // eslint-disable-next-line no-unused-vars
     let pool1;
-    getElementAtPosition(pool1Position, nodeTypes.pool,true, 12, 100).then(($pool1) => {
+    cy.get('[data-type="processmaker.modeler.bpmn.pool"]').eq(0).then(($pool1) => {
       pool1 = $pool1[0].getBoundingClientRect();
     });
 
     // get current position of pool 2
     // eslint-disable-next-line no-unused-vars
     let pool2;
-    getElementAtPosition(pool2Position, nodeTypes.pool,true).then(($pool2) => {
+    cy.get('[data-type="processmaker.modeler.bpmn.pool"]').eq(1).then(($pool2) => {
       pool2 = $pool2[0].getBoundingClientRect();
     });
 
     // Move the selected pools to another position (upper)
-    const translateAmount = { x: 0, y: 100 };
-    // click and drag fromPosition to fromPosition + translateAmount
-    cy.get('.paper-container').trigger('mousedown', { which: 1, x: pool1Position.x, y: pool1Position.y  });
-    cy.get('.paper-container').trigger('mousemove', { x: pool1Position.x + translateAmount.x, y: pool1Position.y + translateAmount.y  });
-    cy.get('.paper-container').trigger('mousemove', { x: pool1Position.x + translateAmount.x, y: pool1Position.y + translateAmount.y  });
-    waitToRenderAllShapes();
-    cy.get('.paper-container').trigger('mouseup',{ force: true });
+    cy.get('.paper-container').trigger('mousedown', { clientX: 300, clientY: 400 });
+    cy.get('.paper-container').trigger('mousemove', { clientX: 387, clientY: 450 });
+    cy.get('.paper-container').trigger('mousemove', { clientX: 400, clientY: 600 });
+    cy.get('.paper-container').trigger('mouseup',{ clientX: 400, clientY: 600 });
 
     waitToRenderAllShapes();
+    cy.log('this is the position of'+ pool1);
 
-    // Validate that the selected pools were moved
-    const newPool1Position = {
-      x: pool1Position.x + translateAmount.x,
-      y: pool1Position.y + translateAmount.y,
-    };
-    const newPool2Position = {
-      x: pool2Position.x + translateAmount.x,
-      y: pool2Position.y + translateAmount.y,
-    };
-
-    getElementAtPosition(newPool1Position, nodeTypes.pool,true).then(($pool1) => {
+    cy.get('[data-type="processmaker.modeler.bpmn.pool"]').eq(0).then(($pool1) => {
       const { y } = $pool1[0].getBoundingClientRect();
       expect(pool1.y).to.be.lessThan(y);
     });
 
-    getElementAtPosition(newPool2Position, nodeTypes.pool,true).then(($pool2) => {
+    cy.get('[data-type="processmaker.modeler.bpmn.pool"]').eq(1).then(($pool2) => {
       const { y } = $pool2[0].getBoundingClientRect();
       expect(pool2.y).to.be.lessThan(y);
     });

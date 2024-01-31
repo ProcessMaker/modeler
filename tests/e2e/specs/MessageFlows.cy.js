@@ -9,7 +9,6 @@ import {
   getNumberOfLinks,
   isElementCovered,
   modalConfirm,
-  moveElement,
   removeStartEvent,
   setBoundaryEvent,
   waitToRenderAllShapes,
@@ -17,21 +16,19 @@ import {
 import { nodeTypes } from '../support/constants';
 
 describe('Message Flows', { scrollBehavior: false }, () => {
-  it.skip('Can connect two pools with a message flow', () => {
-    const pool1Position = { x: 250, y: 250 };
+  it('Can connect two pools with a message flow', () => {
+    cy.get('[data-cy="zoom-out-control"]').click();
+    cy.get('[data-cy="zoom-out-control"]').click();
+    const pool1Position = { x: 150, y: 250 };
     clickAndDropElement(nodeTypes.pool, pool1Position);
 
-    const pool2Position = { x: 250, y: 600 };
+    const pool2Position = { x: 250, y: 400 };
     clickAndDropElement(nodeTypes.pool, pool2Position);
 
-    connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position, 'top');
-
-    moveElement(pool1Position, 300, 300, nodeTypes.pool);
-    waitToRenderAllShapes();
-    moveElement(pool1Position, 250, 250, nodeTypes.pool);
+    connectNodesWithFlow('generic-flow-button', pool1Position, pool2Position);
 
     const numberOfMessageFlowsAdded = 1;
-    getElementAtPosition(pool2Position)
+    cy.get('[data-type="processmaker.modeler.bpmn.pool"]').eq(0).click({ force:true })
       .then(getLinksConnectedToElement)
       .should($links => {
         expect($links.length).to.eq(numberOfMessageFlowsAdded);
@@ -259,10 +256,10 @@ describe('Message Flows', { scrollBehavior: false }, () => {
     connectNodesWithFlow('generic-flow-button', startEventPosition, boundaryEventPosition, 'center');
 
     const endEventId = 'node_3';
-    const boundaryEventId = 'node_22';
+    const boundaryEventId = 'node_18';
     const endEventXml = `<bpmn:endEvent id="${endEventId}" name="Message End Event">`;
     const boundaryEventXml = `<bpmn:boundaryEvent id="${boundaryEventId}" name="Boundary Message Event" attachedToRef="node_12">`;
-    const messageFlowXml = `<bpmn:messageFlow id="node_24" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
+    const messageFlowXml = `<bpmn:messageFlow id="node_19" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
 
     assertDownloadedXmlContainsExpected(endEventXml, boundaryEventXml, messageFlowXml);
   });
