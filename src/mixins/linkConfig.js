@@ -30,6 +30,7 @@ export default {
       listeningToMouseleave: false,
       vertices: null,
       anchorPointFunction: getDefaultAnchorPoint,
+      onChangeWasFired: false,
     };
   },
   watch: {
@@ -159,6 +160,9 @@ export default {
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
 
       this.shape.listenTo(this.paper, 'link:mouseleave', this.storeWaypoints);
+      // Listens to the 'pointerup' event when a link is interacted with on the shape.
+      // When the event occurs, the 'pointerUpHandler' method is invoked to handle the pointer up action.
+      this.shape.listenTo(this.paper, 'link:pointerup', this.pointerUpHandler);
 
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
@@ -200,23 +204,97 @@ export default {
 
           window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', changes);
         }
-
         this.listeningToMouseleave = true;
         this.$emit('save-state');
       }
     },
+
     /**
-      * On Change vertices handler
-      * @param {Object} link
-      * @param {Array} vertices
-      * @param {Object} options
-      */
-    async onChangeTargets(link, vertices, options){
-      if (options?.ui) {
-        await this.$nextTick();
-        await this.waitForUpdateWaypoints();
-        this.listeningToMouseleave = false;
-        await this.storeWaypoints();
+     * Handles the pointer up event.
+     * Performs actions based on changes in the target shape.
+     * @async
+     */
+    async pointerUpHandler() {
+      // Check if the 'onChange' event was fired. If not, exit the method.
+      if (!this.onChangeWasFired) {
+        return;
+      }
+      // Check if the target shape has changed.
+      const targetChanged = this.target.id !== this.currentTarget.id;
+      if (targetChanged) {
+        // Disable the 'onChange' event to prevent redundant processing.
+        this.onChangeWasFired = false;
+        // Extract information about the new target shape
+        const targetNode = get(this.currentTarget, 'component.node');
+        const targetConfig = targetNode && this.nodeRegistry[targetNode.type];
+        // Validate the flow with the new target node.
+        const isValid = this.isValid?.({
+          sourceShape: this.sourceShape,
+          targetShape: this.currentTarget,
+          targetConfig,
+        });
+        // If the flow is valid, update the target and related information.
+        if (isValid) {
+          this.setTarget(this.currentTarget);
+          this.target = this.currentTarget;
+          // Optionally update definition links.
+          if (this.updateDefinitionLinks) {
+            this.updateDefinitionLinks();
+          }
+          this.listeningToMouseleave = true;
+          // Store waypoints asynchronously.
+          await this.storeWaypoints();
+        } else {
+          // If the flow is not valid, revert to the previous target.
+          this.setTarget(this.target);
+        }
+      } else {
+        // the target was not changed, set the target with the anchor offset.
+        this.setTarget(this.target, this.getAnchorOffset());
+      }
+    },
+
+    /**
+     * Calculates the offset between the target anchor point and the position of the target element.
+     *
+     * @returns {Object} An object representing the offset with 'x' and 'y' properties.
+     */
+    getAnchorOffset() {
+      // Get the waypoints of the sequence flow
+      const sequenceFlowWaypoints = this.node.diagram.waypoint;
+      // Get the last waypoint, which is the target anchor point
+      const targetAnchorPoint = sequenceFlowWaypoints[sequenceFlowWaypoints.length - 1];
+      // Get the position (x, y) of the target element
+      const { x: targetX, y: targetY } = this.target.position();
+      // Calculate and return the offset between the target anchor point and the target element position
+      return {
+        x: targetAnchorPoint.x - targetX,
+        y: targetAnchorPoint.y - targetY,
+      };
+    },
+
+    /**
+     * Handles changes in target shapes for a link.
+     * @async
+     * @param {Link} link - The link whose target is being changed.
+     * @param {Vertices} vertices - The new vertices information.
+     * @param {Object} options - Additional options.
+     */
+    async onChangeTargets(link, vertices, options) {
+      this.onChangeWasFired = true;
+      if (options?.ui && vertices.id) {
+        const newTarget = this.paper.getModelById(vertices.id);
+        if (this.currentTarget.id !== newTarget.id) {
+          // Change the target if it's different from the current target
+          this.currentTarget = newTarget;
+          this.listeningToMouseleave = true;
+        } else {
+          // If the target is the same, wait for the next update and store waypoints
+          await this.$nextTick();
+          await this.waitForUpdateWaypoints();
+          this.listeningToMouseleave = false;
+          await this.storeWaypoints();
+        }
       }
     },
     async onChangeVertices(link, vertices, options){
@@ -319,10 +397,15 @@ export default {
 
       const sourceAnchorTool = new linkTools.SourceAnchor({ snap: this.getAnchorPointFunction('source') });
       const targetAnchorTool = new linkTools.TargetAnchor({ snap: this.getAnchorPointFunction('target') });
-      const toolsView = new dia.ToolsView({
+      let toolsView = new dia.ToolsView({
         tools: [verticesTool, sourceAnchorTool, targetAnchorTool],
       });
-
+      if (this.shape.component.node.type === 'processmaker-modeler-sequence-flow') {
+        toolsView = new dia.ToolsView({
+          tools: [verticesTool, sourceAnchorTool, targetAnchorTool, new linkTools.TargetArrowhead()],
+        });
+      }
+      this.currentTarget = this.shape.getTargetElement();
       this.shapeView.addTools(toolsView);
       this.shapeView.hideTools();
     },

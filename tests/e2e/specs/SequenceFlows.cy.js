@@ -121,7 +121,7 @@ describe('Sequence Flows', { scrollBehavior: false }, () => {
 
         /* Move anchor to top */
         cy.get(anchorSelector).trigger('mousedown');
-        cy.get(anchorSelector).trigger('mousemove', 1, -200, { force: true });
+        cy.get(anchorSelector).trigger('mousemove', 1, -10, { force: true });
         cy.get(anchorSelector).trigger('mouseup', { force: true });
         cy.get(anchorSelector).should(() => {
           const { top: newTop } = $anchor.position();

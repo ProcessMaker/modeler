@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     isValidConnection() {
-      return SequenceFlow.isValid({
+      return this.isValid({
         sourceShape: this.sourceShape,
         targetShape: this.target,
         targetConfig: this.targetConfig,
@@ -94,6 +94,9 @@ export default {
     },
   },
   methods: {
+    isValid(params) {
+      return SequenceFlow.isValid(params);
+    },
     setDefaultMarker(value) {
       this.shape.attr('line', {
         sourceMarker: {
