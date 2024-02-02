@@ -228,7 +228,7 @@ export default {
         const targetNode = get(this.currentTarget, 'component.node');
         const targetConfig = targetNode && this.nodeRegistry[targetNode.type];
         // Validate the flow with the new target node.
-        const isValid = this.isValid && this.isValid({
+        const isValid = this.isValid?.({
           sourceShape: this.sourceShape,
           targetShape: this.currentTarget,
           targetConfig,
