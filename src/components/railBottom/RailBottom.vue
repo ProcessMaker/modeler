@@ -18,6 +18,7 @@
       
       <PanControl
         @set-pan-mode="$emit('set-pan-mode', $event)"
+        v-show="showComponent"
         :pan-mode="panMode"
       />
     </div>
