@@ -18,6 +18,7 @@
       
       <PanControl
         @set-pan-mode="$emit('set-pan-mode', $event)"
+        :class="{'hidden-opacity': showComponent === false}"
         :pan-mode="panMode"
       />
     </div>
