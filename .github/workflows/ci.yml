@@ -5,13 +5,8 @@ on:
     types: [opened, reopened, synchronize, edited]
 
 jobs:
-  ci:
-    runs-on: 'ubuntu-latest'
-    strategy:
-      fail-fast: false # https://github.com/cypress-io/github-action/issues/48
-      matrix:
-        containers: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-
+  setup:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@master
@@ -19,7 +14,7 @@ jobs:
       - name: Setup node env 🏗
         uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 20
           check-latest: true
           cache: 'npm'
 
@@ -31,15 +26,31 @@ jobs:
 
       - name: Run tests 🧪
         run: npm run test-unit
+  e2e:
+    needs: setup
+    runs-on: 'ubuntu-latest'
+    strategy:
+      fail-fast: false # https://github.com/cypress-io/github-action/issues/48
+      matrix:
+        containers: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+      - name: Setup node env 🏗
+        uses: actions/setup-node@master
+        with:
+          node-version: 20
+          check-latest: true
+          cache: 'npm'
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          install: false
+          install: true
           start: npm run serve
           wait-on: http://localhost:8080/
           config-file: cypress.config.js
-          spec: "tests/e2e/**/*"
+          spec: "tests/e2e/specs/**/*"
           record: true
           parallel: true
           browser: chrome
@@ -51,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
       - name: Upload Cypress Screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Only capture images on failure
         if: failure()
         with:
@@ -59,21 +70,98 @@ jobs:
           path: tests/e2e/screenshots
 
       - name: Upload Cypress Videos
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Only capture videos on failure
         if: failure()
         with:
           name: cypress-videos
           path: tests/e2e/videos
 
-      - name: Run Coverage
-        run: npx nyc report --reporter html --reporter text --reporter json-summary --report-dir combined-coverage
+      - name: Prepare coverage
+        run: mkdir coverage && mv .nyc_output/out.json coverage/coverage-${{ matrix.containers }}.json
 
+      - name: Archive code coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.containers }}
+          path: ./coverage/coverage-${{ matrix.containers }}.json
+  coverage:
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@master
+        with:
+          node-version: 20
+          check-latest: true
+          cache: 'npm'
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+      - name: Create reports folder
+        run: mkdir reports .nyc_output
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports
+          merge-multiple: true
+      - run: ls -R reports
+      - name: Run Coverage
+        run: |
+          npx nyc merge reports
+          mv coverage.json .nyc_output/out.json
+      - name: Create coverage report
+        run: npx nyc report --reporter html --reporter text --reporter json-summary --reporter lcov
       - name: Store Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
-          path: combined-coverage
+          path: |
+            cypress-coverage
+            .nyc_output
+            reports
+  sonarqube:
+    needs: coverage
+    name: Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: code-coverage-report
+      - run: ls -R
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      # We do not recommend to use this in a pull request. Prefer using pull request
+      # decoration instead.
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+      - name: Setup node env 🏗
+        uses: actions/setup-node@master
+        with:
+          node-version: 20
+          check-latest: true
+          cache: 'npm'
 
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
       - name: Run build bundle 📦
         run: npm run build-bundle
