@@ -744,7 +744,6 @@ export default class Multiplayer {
   updateFlowClient(data) {
     let remount = false;
     const flow = this.getNodeById(data.id);
-    const flowElem = this.modeler.getElementByNodeId(data.id);
     if (flow && data.sourceRefId) {
       removeOutgoingAndIncomingRefsToFlow(flow);
       const sourceRef = this.getNodeById(data.sourceRefId);
