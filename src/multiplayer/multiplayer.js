@@ -8,6 +8,9 @@ import { getBoundaryEventData } from '@/components/nodes/boundaryEvent/boundaryE
 import { InspectorUtils } from './inspector.utils';
 import ColorUtil from '../colorUtil';
 import { debounce } from 'lodash';
+import {
+  removeOutgoingAndIncomingRefsToFlow,
+} from '@/components/crown/utils';
 export default class Multiplayer {
   clientIO = null;
   yDoc = null;
@@ -742,6 +745,7 @@ export default class Multiplayer {
     let remount = false;
     const flow = this.getNodeById(data.id);
     if (flow && data.sourceRefId) {
+      removeOutgoingAndIncomingRefsToFlow(flow);
       const sourceRef = this.getNodeById(data.sourceRefId);
 
       const outgoing = sourceRef.definition.get('outgoing')

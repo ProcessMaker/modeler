@@ -6,6 +6,9 @@ import { getDefaultAnchorPoint } from '@/portsUtils';
 import resetShapeColor from '@/components/resetShapeColor';
 import store from '@/store';
 import {
+  removeOutgoingAndIncomingRefsToFlow,
+} from '@/components/crown/utils';
+import {
   COLOR_IDLE,
   COLOR_COMPLETED,
 } from '@/components/highlightColors.js';
@@ -235,6 +238,7 @@ export default {
         });
         // If the flow is valid, update the target and related information.
         if (isValid) {
+          removeOutgoingAndIncomingRefsToFlow(this.node);
           this.setTarget(this.currentTarget);
           this.target = this.currentTarget;
           // Optionally update definition links.
@@ -244,6 +248,23 @@ export default {
           this.listeningToMouseleave = true;
           // Store waypoints asynchronously.
           await this.storeWaypoints();
+          const waypoint = [];
+          this.node.diagram.waypoint?.forEach(point => {
+            waypoint.push({
+              x: point.x,
+              y: point.y,
+            });
+          });
+          window.ProcessMaker.EventBus.$emit('multiplayer-updateFlows', [
+            {
+              id: this.node.definition.id,
+              type: this.node.type,
+              name: this.node.definition.name,
+              waypoint,
+              sourceRefId: this.node.definition.sourceRef.id,
+              targetRefId: this.node.definition.targetRef.id,
+            },
+          ]);
         } else {
           // If the flow is not valid, revert to the previous target.
           this.setTarget(this.target);
