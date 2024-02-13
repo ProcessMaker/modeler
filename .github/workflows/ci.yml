@@ -135,6 +135,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: code-coverage-report
+      - name: Fix code coverage paths
+        working-directory: ./cypress-coverage
+        run: |
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lcov.info
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
