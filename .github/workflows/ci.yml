@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
       - name: Setup node env 🏗
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           check-latest: true
@@ -36,9 +36,9 @@ jobs:
 
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
       - name: Setup node env 🏗
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           check-latest: true
@@ -90,10 +90,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
       - name: Setup node env 🏗
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           check-latest: true
@@ -128,14 +128,13 @@ jobs:
     name: Scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: code-coverage-report
-      - run: ls -R
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -153,9 +152,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
       - name: Setup node env 🏗
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           check-latest: true
