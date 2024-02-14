@@ -2085,7 +2085,7 @@ export default {
           localStorage.promptSessionId = (response.data.promptSessionId);
         })
         .catch((error) => {
-          
+          console.log('error');
           const errorMsg = error.response?.data?.message || error.message;
           
           this.loading = false;
@@ -2164,7 +2164,7 @@ export default {
       });
     },
     subscribeToProgress() {
-      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsProgressEvent';
       if (!window.Echo) {
         return;
@@ -2210,7 +2210,7 @@ export default {
       );
     },
     subscribeToGenerationCompleted() {
-      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamCompletedEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsCompletedEvent';
       window.Echo.private(channel).listen(
         streamCompletedEvent,
@@ -2223,7 +2223,7 @@ export default {
       );
     },
     subscribeToErrors() {
-      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.modeler?.process?.user_id}`;
+      const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsErrorEvent';
       window.Echo.private(channel).listen(
         streamProgressEvent,
