@@ -35,8 +35,7 @@ module.exports = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
-
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: 'jest-coverage',
   testEnvironment: 'jsdom',
   preset: '@vue/cli-plugin-unit-jest',
