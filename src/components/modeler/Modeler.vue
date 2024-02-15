@@ -549,9 +549,12 @@ export default {
         this.pointerUpHandler(event);
       }, this);
       this.paperManager.addEventHandler('cell:pointerup', (cellView, event) => {
+        // If panMode is true, stop panning. But do not return if we are in read-only mode.
         if (this.panMode) {
           this.stopPanning();
-          return;
+          if (!this.isReadOnly) {
+            return;
+          }
         }
         this.activeNode = null;
         this.pointerUpHandler(event, cellView);
@@ -582,8 +585,8 @@ export default {
           return;
         }
 
-        // ignore click event if the user is Grabbing the paper
-        if (this.panMode) {
+        // Ignore click event if the user is Grabbing the paper, only when isReadOnly is false.
+        if (!this.isReadOnly && this.panMode) {
           return;
         }
 
@@ -598,10 +601,12 @@ export default {
         if (!this.isBpmnNode(shape)) {
           return;
         }
-        // If the user is panning
+        // If panMode is true, start panning. But do not return if we are in read-only mode.
         if (this.panMode) {
           this.startPanning();
-          return;
+          if (!this.isReadOnly) {
+            return;
+          }
         }
         this.setShapeStacking(shape);
         this.activeNode = shape.component.node;
