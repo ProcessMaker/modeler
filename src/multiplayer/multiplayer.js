@@ -465,6 +465,7 @@ export default class Multiplayer {
     const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
+    const node = this.getNodeById(data.id);
 
     if (this.modeler.flowTypes.includes(data.type)) {
       if ('waypoint' in data) {
@@ -489,7 +490,6 @@ export default class Multiplayer {
       }
       // udpdate the element's color
       if (data.color) {
-        const node = this.getNodeById(data.id);
         store.commit('updateNodeProp', { node, key: 'color', value: data.color });
         return;
       }
@@ -507,6 +507,10 @@ export default class Multiplayer {
         element.component.node.pool.component.moveElementRemote(element, newPool);
       }
       this.modeler.updateLasso();
+    }
+    if (node) {
+      // Remove transparency
+      this.modeler.$emit('node-added', node);
     }
   }
   /**
