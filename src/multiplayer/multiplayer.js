@@ -461,55 +461,88 @@ export default class Multiplayer {
     // Send the update to the web socket server
     this.clientIO.emit('updateElement', { updateDoc: stateUpdate, isReplaced: false });
   }
+  /**
+   * Update shape client
+   * @param {*} data 
+   */
   async updateShapes(data) {
-    const { paper } = this.modeler;
     const element = this.modeler.getElementByNodeId(data.id);
     const newPool = this.modeler.getElementByNodeId(data.poolId);
-    const node = this.getNodeById(data.id);
 
     if (this.modeler.flowTypes.includes(data.type)) {
       if ('waypoint' in data) {
         this.updateMovedWaypoint(element, data);
       } else {
-        const node = this.getNodeById(data.id);
-        store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+        this.updateNodeColor(data);
       }
     } else {
-      // updata gateway default folow
-      this.updateGatewayDefaultFlow(element, data);
-      if (typeof element.resize === 'function' && data.width && data.height) {
-        element.resize(
-          /* Add labelWidth to ensure elements don't overlap with the pool label */
-          data.width,
-          data.height,
-        );
-      }
-      // Update the element's position attribute
-      if (data.x && data.y) {
-        element.set('position', { x: data.x, y: data.y });
-      }
-      // udpdate the element's color
-      if (data.color) {
-        store.commit('updateNodeProp', { node, key: 'color', value: data.color });
-        return;
-      }
-      // boundary type
-      if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
-        this.attachBoundaryEventToNode(element, data);
-      }
-
-      // Trigger a rendering of the element on the paper
-      await paper.findViewByModel(element).update();
-      // validate if the parent pool was updated
-      await element.component.$nextTick();
-      await this.modeler.paperManager.awaitScheduledUpdates();
-      if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
-        element.component.node.pool.component.moveElementRemote(element, newPool);
-      }
-      this.modeler.updateLasso();
+      this.updateNonFlowElement(element, data, newPool);
     }
+    // always remove transparency
+    this.removeTransparency(data);
+  }
+  /**
+   * Update node color
+   * @param {Object} data 
+   * @returns 
+   */
+  async updateNodeColor(data) {
+    const node = this.getNodeById(data.id);
+    if (!node) return;
+    store.commit('updateNodeProp', { node, key: 'color', value: data.color });
+  }
+  /**
+   * Update Shape properties
+   * @param {Object} element 
+   * @param {Object} data 
+   * @param {Object} newPool 
+   * @returns 
+   */
+  async updateNonFlowElement(element, data, newPool) {
+    const { paper } = this.modeler;
+
+    // Update default gateway flow
+    this.updateGatewayDefaultFlow(element, data);
+  
+    // Resize element if width and height provided
+    if (typeof element.resize === 'function' && data.width && data.height) {
+      element.resize(data.width, data.height);
+    }
+  
+    // Update element's position
+    if (data.x && data.y) {
+      element.set('position', { x: data.x, y: data.y });
+    }
+  
+    // Update element's color
+    if (data.color) {
+      this.updateNodeColor(data);
+      return;
+    }
+  
+    // Handle boundary type
+    if (element.component.node.definition.$type === 'bpmn:BoundaryEvent') {
+      this.attachBoundaryEventToNode(element, data);
+    }
+  
+    // Trigger rendering of the element on the paper
+    await paper.findViewByModel(element).update();
+    await element.component.$nextTick();
+    await this.modeler.paperManager.awaitScheduledUpdates();
+  
+    // Check if parent pool was updated
+    if (newPool && element.component.node.pool && element.component.node.pool.component.id !== data.poolId) {
+      element.component.node.pool.component.moveElementRemote(element, newPool);
+    }
+    this.modeler.updateLasso();
+  }
+  /**
+   * Removes transparency
+   * @param {Object} data 
+   */
+  removeTransparency(data) {
+    const node = this.getNodeById(data.id);
     if (node) {
-      // Remove transparency
       this.modeler.$emit('node-added', node);
     }
   }
