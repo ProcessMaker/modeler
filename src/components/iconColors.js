@@ -50,7 +50,9 @@ const coloredIcon = (iconString, node) => {
     library.add(fas, fab);
 
     const [prefix ] = iconString.split(' ');
-    const [, iconName] = iconString.split('-');
+    let name = iconString.split('-');
+    name.shift();
+    const iconName = name.join('-');
     const iconDefinition = findIconDefinition({ prefix, iconName });
     const svg = icon(iconDefinition).html;
     iconString = svg[0];
