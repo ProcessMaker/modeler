@@ -1052,6 +1052,10 @@ export default {
         }
       }
     },
+    /**
+     * Prepare data and fire updateNode for multiplayer
+     * @param {Object} node
+     */
     fitElementMultiplayerMode(node) {
       const properties = {
         id: node.definition.id,

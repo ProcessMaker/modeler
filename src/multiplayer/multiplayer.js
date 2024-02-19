@@ -538,11 +538,17 @@ export default class Multiplayer {
     }
     this.modeler.updateLasso();
   }
+  /**
+   * Update bpmn Bounds data
+   * @param {Object} element
+   */
   updateBounds(element) {
-    store.commit('updateNodeBounds', {
-      node: element.component.node,
-      bounds: element.getBBox(),
-    });
+    if (element?.component) {
+      store.commit('updateNodeBounds', {
+        node: element.component.node,
+        bounds: element.getBBox(),
+      });
+    }
   }
   /**
    * Removes transparency
