@@ -1040,6 +1040,7 @@ export default {
                 node: laneShape.component.node,
                 bounds: laneShape.getBBox(),
               });
+              this.fitElementMultiplayerMode(laneShape.component.node);
             });
           }
           pool.component.updateAnchorPointPosition();
@@ -1047,8 +1048,21 @@ export default {
             node: pool.component.node,
             bounds: pool.getBBox(),
           });
+          this.fitElementMultiplayerMode(pool.component.node);
         }
       }
+    },
+    fitElementMultiplayerMode(node) {
+      const properties = {
+        id: node.definition.id,
+        properties: {
+          x: node.diagram.bounds?.x,
+          y: node.diagram.bounds?.y,
+          height: node.diagram.bounds?.height,
+          width: node.diagram.bounds?.width,
+        },
+      };
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateNodes', [properties]);
     },
     /**
      * Updates the lane children when a element is moved into the pool
