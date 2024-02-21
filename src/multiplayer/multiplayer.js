@@ -507,11 +507,13 @@ export default class Multiplayer {
     // Resize element if width and height provided
     if (typeof element.resize === 'function' && data.width && data.height) {
       element.resize(data.width, data.height);
+      this.updateBounds(element);
     }
   
     // Update element's position
     if (data.x && data.y) {
       element.set('position', { x: data.x, y: data.y });
+      this.updateBounds(element);
     }
   
     // Update element's color
@@ -535,6 +537,18 @@ export default class Multiplayer {
       element.component.node.pool.component.moveElementRemote(element, newPool);
     }
     this.modeler.updateLasso();
+  }
+  /**
+   * Update bpmn Bounds data
+   * @param {Object} element
+   */
+  updateBounds(element) {
+    if (element?.component) {
+      store.commit('updateNodeBounds', {
+        node: element.component.node,
+        bounds: element.getBBox(),
+      });
+    }
   }
   /**
    * Removes transparency
