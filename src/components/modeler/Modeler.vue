@@ -401,8 +401,11 @@ export default {
     },
   },
   computed: {
+    isPackageAiInstalled() {
+      return window.ProcessMaker?.modeler?.isPackageAiInstalled;
+    },
     showWelcomeMessage() {
-      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded;
+      return !this.selectedNode && !this.nodes.length && !store.getters.isReadOnly && this.isLoaded && this.isPackageAiInstalled;
     },
     noElementsSelected() {
       return this.highlightedNodes.filter(node => !node.isType('processmaker-modeler-process')).length === 0;
