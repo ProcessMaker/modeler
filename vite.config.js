@@ -1,13 +1,10 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
-import svgLoader from 'vite-svg-loader';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import bpmnlint from 'rollup-plugin-bpmnlint';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
-
-
 import { resolve } from 'path';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+import vitePluginRequire from 'vite-plugin-require';
 
 const libraryName = 'modeler';
 
@@ -15,17 +12,8 @@ const libraryName = 'modeler';
 export default defineConfig({
   plugins: [
     vue(),
-    // nodePolyfills({
-    //   globals: {
-    //     Buffer: true,
-    //     process: true,
-    //   },
-    // }),
+    vitePluginRequire.default(),
     cssInjectedByJsPlugin(),
-    svgLoader({
-      defaultImport: 'url',
-      svgo: false,
-    }),
     ViteYaml(),
     bpmnlint({
       include: '**/.bpmnlintrc',
@@ -60,7 +48,23 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['vue', 'moment', 'moment-timezone', 'lodash', '@processmaker/vue-multiselect', '@processmaker/vue-form-elements', '@processmaker/screen-builder', 'i18next', '@panter/vue-i18next'],
+      external: [
+        'vue',
+        'moment',
+        'moment-timezone',
+        'lodash',
+        '@processmaker/vue-multiselect',
+        '@processmaker/vue-form-elements',
+        '@processmaker/screen-builder',
+        'i18next',
+        '@panter/vue-i18next',
+        'jointjs',
+        'luxon',
+        'bpmn-moddle',
+        /^bootstrap\/.+$/,
+        /^@processmaker\/(?!processmaker-bpmn-moddle).+$/,
+        /^@fortawesome\/.+$/,
+      ],
       output: {
         exports: 'named',
         assetFileNames: 'modeler.[ext]',

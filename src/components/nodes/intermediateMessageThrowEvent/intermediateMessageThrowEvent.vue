@@ -1,6 +1,6 @@
 <script>
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import intermediateMailSymbol from '!!svg-inline-loader!@/assets/intermediate-mail-alt.svg';
+import intermediateMailSymbol from '@/assets/intermediate-mail-alt.svg';
 import pull from 'lodash/pull';
 import store from '@/store';
 import updateIconColor from '@/mixins/updateIconColor';

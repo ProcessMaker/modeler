@@ -1,6 +1,6 @@
 <script>
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
-import signalStartEventIcon from '!!svg-inline-loader!@/assets/signal-start-event.svg';
+import signalStartEventIcon from '@/assets/signal-start-event.svg';
 
 export default {
   extends: baseStartEvent,
