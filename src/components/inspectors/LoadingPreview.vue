@@ -9,12 +9,14 @@
 </template>
 
 <script>
+import previewAsset from '@/assets/previewAsset.png';
+import spinnerImg from '@/assets/spinner.svg';
 
 export default {
   data() {
     return {
-      previewAsset: require('@/assets/previewAsset.png'),
-      spinnerImg: require('@/assets/spinner.svg'),
+      previewAsset,
+      spinnerImg,
     };
   },
 };

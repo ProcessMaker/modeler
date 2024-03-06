@@ -1,6 +1,6 @@
 <script>
 import GatewayComponent from '@/components/nodes/gateway/gateway';
-import parallelGatewaySymbol from '@/assets/parallel-gateway-symbol.svg';
+import parallelGatewaySymbol from '@/assets/parallel-gateway-symbol.svg?raw';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

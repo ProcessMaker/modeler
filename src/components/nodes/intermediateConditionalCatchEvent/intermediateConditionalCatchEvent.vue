@@ -1,6 +1,6 @@
 <script>
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import conditionalIcon from '@/assets/conditional-icon.svg';
+import conditionalIcon from '@/assets/conditional-icon.svg?raw';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

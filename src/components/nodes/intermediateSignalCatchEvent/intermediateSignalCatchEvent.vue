@@ -1,6 +1,6 @@
 <script>
 import IntermediateEvent from '@/components/nodes/intermediateEvent/intermediateEvent';
-import intermediateSignalCatchEventSymbol from '@/assets/intermediate-signal-catch-event.svg';
+import intermediateSignalCatchEventSymbol from '@/assets/intermediate-signal-catch-event.svg?raw';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

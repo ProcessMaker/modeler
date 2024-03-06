@@ -1,6 +1,6 @@
 <script>
 import TaskComponent from '@/components/nodes/task/task';
-import manualIcon from '@/assets/manual-task.svg';
+import manualIcon from '@/assets/manual-task.svg?raw';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

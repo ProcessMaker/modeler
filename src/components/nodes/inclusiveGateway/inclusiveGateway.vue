@@ -1,6 +1,6 @@
 <script>
 import GatewayComponent from '@/components/nodes/gateway/gateway';
-import inclusiveGatewaySymbol from '@/assets/inclusive-gatway-symbol.svg';
+import inclusiveGatewaySymbol from '@/assets/inclusive-gatway-symbol.svg?raw';
 import { gatewayDirection } from '@/components/nodes/gateway/gatewayConfig';
 import updateIconColor from '@/mixins/updateIconColor';
 

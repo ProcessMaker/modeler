@@ -1,7 +1,7 @@
 <script>
 import BoundaryEvent from '@/components/nodes/boundaryEvent/boundaryEvent';
 import getIntermediateMailIconShapeAttributes from '@/mixins/intermediateMailIcon';
-import boundaryMessageMailSymbol from '@/assets/boundary-message-event.svg';
+import boundaryMessageMailSymbol from '@/assets/boundary-message-event.svg?raw';
 import updateIconColor from '@/mixins/updateIconColor';
 
 export default {

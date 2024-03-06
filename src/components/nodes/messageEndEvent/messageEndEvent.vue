@@ -1,6 +1,6 @@
 <script>
 import EndEvent from '@/components/nodes/endEvent/endEvent';
-import messageEndEventSymbol from '@/assets/message-end-event.svg';
+import messageEndEventSymbol from '@/assets/message-end-event.svg?raw';
 import pull from 'lodash/pull';
 import store from '@/store';
 import updateIconColor from '@/mixins/updateIconColor';

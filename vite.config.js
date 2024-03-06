@@ -5,6 +5,7 @@ import bpmnlint from 'rollup-plugin-bpmnlint';
 import { resolve } from 'path';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import vitePluginRequire from 'vite-plugin-require';
+import svgLoader from 'vite-svg-loader';
 
 const libraryName = 'modeler';
 
@@ -13,6 +14,11 @@ export default defineConfig({
   plugins: [
     vue(),
     vitePluginRequire.default(),
+    svgLoader(
+      {
+        defaultImport: 'url',
+      }
+    ),
     cssInjectedByJsPlugin(),
     ViteYaml(),
     bpmnlint({

@@ -35,8 +35,10 @@
 
 <script>
 import InlineSvg from 'vue-inline-svg';
+import minusIcon from '@/assets/railBottom/minus.svg';
+import plusIcon from '@/assets/railBottom/plus.svg';
 
-export default ({
+export default {
   components: {
     InlineSvg,
   },
@@ -48,8 +50,8 @@ export default ({
       initialScale: 1,
       minimumScale: 0.2,
       scaleStep: 0.1,
-      minusIcon: require('@/assets/railBottom/minus.svg'),
-      plusIcon: require('@/assets/railBottom/plus.svg'),
+      minusIcon,
+      plusIcon,
     };
   },
   computed: {
@@ -71,7 +73,7 @@ export default ({
       this.paperManager.scale = this.initialScale;
     },
   },
-});
+};
 
 </script>
 

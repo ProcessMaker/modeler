@@ -23,8 +23,9 @@
 <script>
 import InlineSvg from 'vue-inline-svg';
 import MiniPaper from '@/components/miniPaper/MiniPaper.vue';
+import miniMapIcon from '@/assets/railBottom/mini-map.svg';
 
-export default ({
+export default {
   components: {
     InlineSvg,
     MiniPaper,
@@ -36,10 +37,10 @@ export default ({
   data() {
     return {
       miniMapOpen: false,
-      miniMapIcon: require('@/assets/railBottom/mini-map.svg'),
+      miniMapIcon,
     };
   },
-});
+};
 
 </script>
 

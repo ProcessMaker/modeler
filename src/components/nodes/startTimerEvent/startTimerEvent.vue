@@ -1,5 +1,5 @@
 <script>
-import clockIcon from '@/assets/clock.svg';
+import clockIcon from '@/assets/clock.svg?raw';
 import baseStartEvent from '@/components/nodes/baseStartEvent/baseStartEvent';
 
 export default {
