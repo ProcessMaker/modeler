@@ -64,8 +64,19 @@ export default new Vuex.Store({
     isRunning(state, payload) {
       state.isRunning = payload;
     },
+    resetStack(state,) {
+      state.stack = [];
+    },
+    resetPosition(state) {
+      state.position = null;
+    },
   },
   actions: {
+    resetState({ state, getters, commit }, newState) {
+      commit('resetStack');
+      commit('resetPosition');
+
+    },
     pushState({ state, getters, commit }, newState) {
       if (newState === getters.currentState || state.disabled) {
         return;
