@@ -72,10 +72,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    resetState({ state, getters, commit }, newState) {
+    resetState() {
       commit('resetStack');
       commit('resetPosition');
-
     },
     pushState({ state, getters, commit }, newState) {
       if (newState === getters.currentState || state.disabled) {
