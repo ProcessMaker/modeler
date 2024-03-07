@@ -11,6 +11,7 @@
 
 <script>
 import InlineSvg from 'vue-inline-svg';
+import inspectorIconSvg from '@/assets/inspector.svg';
 
 export default {
   components: {
@@ -24,7 +25,7 @@ export default {
   },
   data() {
     return {
-      inspectorIcon: require('@/assets/inspector.svg'),
+      inspectorIcon: inspectorIconSvg,
     };
   },
   methods: {

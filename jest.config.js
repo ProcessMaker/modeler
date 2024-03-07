@@ -38,5 +38,4 @@ module.exports = {
   collectCoverage: false,
   coverageDirectory: 'jest-coverage',
   testEnvironment: 'jsdom',
-  preset: '@vue/cli-plugin-unit-jest',
 };

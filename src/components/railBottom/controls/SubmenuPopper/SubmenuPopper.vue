@@ -57,7 +57,7 @@ import 'vue-popperjs/dist/vue-popper.css';
 import InlineSvg from 'vue-inline-svg';
 import iconHelper from '@/mixins/iconHelper';
 
-export default ({
+export default {
   mixins: [iconHelper],
   props: {
     data: { type: Object },
@@ -75,7 +75,7 @@ export default ({
       wasClicked: false,
     };
   },
-});
+};
 
 </script>
 

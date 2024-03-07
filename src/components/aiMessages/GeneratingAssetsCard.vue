@@ -22,6 +22,7 @@
 </template>
 <script>
 import InlineSvg from 'vue-inline-svg';
+import proceC2Icon from '@/assets/proceC2.svg';
 
 export default {
   name: 'GeneratingAssetsCard',
@@ -30,7 +31,7 @@ export default {
   },
   data() {
     return {
-      proceC2Icon: require('@/assets/proceC2.svg'),
+      proceC2Icon,
     };
   },
   methods: {
@@ -50,7 +51,7 @@ export default {
   position: absolute;
   display: flex;
   align-items: center;
-  bottom: 35px; 
+  bottom: 35px;
   left: 35%;
   z-index: 1;
   font-size: 100%;

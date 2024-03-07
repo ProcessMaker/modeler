@@ -7,11 +7,12 @@
 </template>
 
 <script>
+import noPreviewImageIcon from '@/assets/noPreviewImage.png';
 
 export default {
   data() {
     return {
-      noPreviewImg: require('@/assets/noPreviewImage.png'),
+      noPreviewImg: noPreviewImageIcon,
     };
   },
 };

@@ -4,6 +4,7 @@ import boundaryEventConfig from '../boundaryEvent';
 import interruptingToggleConfig from '../boundaryEvent/interruptingToggleInspector';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
+import icon from '@/assets/toolpanel/boundary-timer-event.svg';
 import { defaultDurationTimerEvent } from '@/constants';
 import { omit, cloneDeep, merge } from 'lodash';
 
@@ -24,7 +25,7 @@ export default merge(cloneDeep(boundaryEventConfig), {
   component,
   control: false,
   label: 'Boundary Timer Event',
-  icon: require('@/assets/toolpanel/boundary-timer-event.svg'),
+  icon,
   definition(moddle, $t) {
     return moddle.create('bpmn:BoundaryEvent', {
       name: $t('Boundary Timer Event'),

@@ -3,6 +3,12 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
+import icon from '@/assets/toolpanel/end-event.svg';
+import endEventIcon from '@/assets/toolpanel/end-event.svg';
+import messageEndEventIcon from '@/assets/toolpanel/message-end-event.svg';
+import errorEndEventIcon from '@/assets/toolpanel/error-end-event.svg';
+import signalEndEventIcon from '@/assets/toolpanel/signal-end-event.svg';
+import terminateEndEventIcon from '@/assets/toolpanel/terminate-end-event.svg';
 
 const id = 'processmaker-modeler-end-event';
 
@@ -12,40 +18,40 @@ export default {
   bpmnType: 'bpmn:EndEvent',
   control: true,
   category: 'BPMN',
-  icon: require('@/assets/toolpanel/end-event.svg'),
+  icon,
   label: defaultNames[id],
   rank: 30,
   items: [
     {
-      icon: require('@/assets/toolpanel/end-event.svg'),
+      icon: endEventIcon,
       label: defaultNames[id],
       control: true,
       rank: 31,
       id: 'processmaker-modeler-end-event',
     },
     {
-      icon: require('@/assets/toolpanel/message-end-event.svg'),
+      icon: messageEndEventIcon,
       label: defaultNames['processmaker-modeler-message-end-event'],
       control: true,
       rank: 32,
       id: 'processmaker-modeler-message-end-event',
     },
     {
-      icon: require('@/assets/toolpanel/error-end-event.svg'),
+      icon: errorEndEventIcon,
       label: defaultNames['processmaker-modeler-error-end-event'],
       control: true,
       rank: 33,
       id: 'processmaker-modeler-error-end-event',
     },
     {
-      icon: require('@/assets/toolpanel/signal-end-event.svg'),
+      icon: signalEndEventIcon,
       label: defaultNames['processmaker-modeler-signal-end-event'],
       control: true,
       rank: 34,
       id: 'processmaker-modeler-signal-end-event',
     },
     {
-      icon: require('@/assets/toolpanel/terminate-end-event.svg'),
+      icon: terminateEndEventIcon,
       label: defaultNames['processmaker-modeler-terminate-end-event'],
       control: true,
       rank: 35,
