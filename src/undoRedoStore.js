@@ -64,7 +64,7 @@ export default new Vuex.Store({
     isRunning(state, payload) {
       state.isRunning = payload;
     },
-    resetStack(state,) {
+    resetStack(state) {
       state.stack = [];
     },
     resetPosition(state) {
