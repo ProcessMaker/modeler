@@ -72,7 +72,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    resetState() {
+    resetState({ commit }) {
       commit('resetStack');
       commit('resetPosition');
     },
