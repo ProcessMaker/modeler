@@ -13,7 +13,7 @@ const libraryName = 'modeler';
 export default defineConfig({
   plugins: [
     vue(),
-    vitePluginRequire.default(),
+    vitePluginRequire(),
     svgLoader(
       {
         defaultImport: 'url',

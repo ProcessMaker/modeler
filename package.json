@@ -31,7 +31,6 @@
     "test-unit": "JEST_JUNIT_OUTPUT_DIR=test_summary_reports/jest/ jest --ci --runInBand --reporters=default --reporters=jest-junit",
     "prepare": "husky"
   },
-  "type": "module",
   "main": "./dist/modeler.cjs.js",
   "module": "./dist/modeler.es.js",
   "exports": {
