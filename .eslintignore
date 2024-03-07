@@ -1,0 +1,8 @@
+node_modules/
+dist/
+husky/
+cypress/
+cypress-coverage/
+jest-coverage
+public/
+test_summary_reports/

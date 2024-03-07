@@ -17,7 +17,7 @@ export default defineConfig({
     svgLoader(
       {
         defaultImport: 'url',
-      }
+      },
     ),
     cssInjectedByJsPlugin(),
     ViteYaml(),
