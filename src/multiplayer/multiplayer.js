@@ -35,7 +35,8 @@ export default class Multiplayer {
     // Get the room name from the process id
     const processId = window.ProcessMaker.modeler.process.uuid ?? window.ProcessMaker.modeler.process.id;
     const appUrl = window.ProcessMaker.app?.url || '';
-    this.room = new Room(`room-${appUrl}-${processId}`);
+    const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
+    this.room = new Room(`room${alternative}-${appUrl}-${processId}`);
     this.inspector = new InspectorUtils(this.modeler, store);
 
     // Connect to websocket server
