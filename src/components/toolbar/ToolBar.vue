@@ -4,7 +4,10 @@
       aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
-      <div class="d-flex mr-3">
+      <div
+        ref="toolbar-options"
+        class="d-flex mr-3"
+      >
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"

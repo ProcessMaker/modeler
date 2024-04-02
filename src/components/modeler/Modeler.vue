@@ -3,6 +3,7 @@
     <tool-bar
       v-if="showComponent"
       ref="tool-bar"
+      v-show="showToolbar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -322,6 +323,13 @@ export default {
     requestInProgressNodes: {
       type: Array,
       default: () => [],
+    },
+    /**
+     * When true the toolbar is displayed inside the modeler
+     */
+    showToolbar: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
