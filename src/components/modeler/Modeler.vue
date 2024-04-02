@@ -324,6 +324,9 @@ export default {
       type: Array,
       default: () => [],
     },
+    /**
+     * When true the toolbar is displayed inside the modeler
+     */
     showToolbar: {
       type: Boolean,
       default: true,
