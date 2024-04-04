@@ -125,7 +125,7 @@ export default {
         }).catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
           this.loading = false;
-          window.ProcessMaker.alert(errorMsg, 'danger');
+          console.error(errorMsg, 'danger');
         });
     },
     formatDateTime(value) {
