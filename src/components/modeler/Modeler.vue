@@ -2113,7 +2113,7 @@ export default {
             this.promptSessionId = '';
             this.fetchHistory();
           } else {
-            window.ProcessMaker.alert(errorMsg, 'danger');
+            console.error(errorMsg, 'danger');
           }
         });
     },
@@ -2146,8 +2146,8 @@ export default {
             }
           }
         })
-        .catch((error) => {
-          const errorMsg = error.response?.data?.message || error.message;
+        .catch(() => {
+          const errorMsg = this.$t('ProcessMaker AI is currently offline. Please try again later.');
           window.ProcessMaker.alert(errorMsg, 'danger');
           this.assetFail = true;
           this.loadingAI = false;
