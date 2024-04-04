@@ -2113,7 +2113,7 @@ export default {
             this.promptSessionId = '';
             this.fetchHistory();
           } else {
-            console.log(errorMsg, 'danger');
+            console.error(errorMsg, 'danger');
           }
         });
     },
