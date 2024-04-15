@@ -634,7 +634,7 @@ export default {
         if (redirectUrl) {
           this.redirect(redirectUrl);
         }
-        if (generatingAssets) {
+        if (!nodeId && generatingAssets) {
           this.generateAssets();
         }
       });
@@ -1926,7 +1926,7 @@ export default {
       this.isSelecting = false;
     },
     redirect(redirectTo) {
-      window.location = redirectTo;
+      window.parent.location = redirectTo;
     },
     enableMultiplayer(value) {
       store.commit('enableMultiplayer', value);
