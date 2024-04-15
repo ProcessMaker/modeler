@@ -279,6 +279,7 @@ import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 import Multiplayer from '@/multiplayer/multiplayer';
 import { getBoundaryEventData } from '../nodes/boundaryEvent/boundaryEventUtils';
+import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
   components: {
@@ -421,6 +422,7 @@ export default {
         'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ],
+      validPreviewElements,
     };
   },
   watch: {
@@ -462,6 +464,7 @@ export default {
       this.paperManager.scale = canvasScale;
     },
     highlightedNodes() {
+      this.applyPreviewVisibilityForSelection();
       if (window.ProcessMaker?.EventBus) {
         window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
       }
@@ -2286,6 +2289,15 @@ export default {
           this.$emit('save-state');
         }
       });
+    },
+    applyPreviewVisibilityForSelection() {
+      if (this.highlightedNodes.length !== 1) {
+        this.isOpenPreview = false;
+      }
+      else {
+        const nodeType =  this.highlightedNodes[0].definition?.$type;
+        this.isOpenPreview = this.isOpenPreview && this.validPreviewElements.includes(nodeType);
+      }
     },
   },
   created() {
