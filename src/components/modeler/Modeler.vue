@@ -1926,7 +1926,11 @@ export default {
       this.isSelecting = false;
     },
     redirect(redirectTo) {
-      window.parent.location = redirectTo;
+      if (window.ProcessMaker.AbTesting) {
+        window.parent.location = redirectTo;  
+      } else {
+        window.location = redirectTo;
+      }
     },
     enableMultiplayer(value) {
       store.commit('enableMultiplayer', value);
