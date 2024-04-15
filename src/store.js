@@ -170,9 +170,10 @@ export default new Vuex.Store({
         const { data } = await window.ProcessMaker.apiClient.get('processes', {
           params: {
             order_direction: 'asc',
-            per_page: 1000,
+            per_page: 10000,
             status: 'all',
             include: 'events,category',
+            simplified_data: true,
           },
         });
         commit('setGlobalProcesses', data.data);
