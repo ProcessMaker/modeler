@@ -50,7 +50,8 @@ export default new Vuex.Store({
       state.pinnedNodeTypes.sort((node1, node2) => node1.rank - node2.rank);
     },
     setUnpinNode(state, payload) {
-      state.pinnedNodeTypes = state.pinnedNodeTypes.filter(node => node !== payload);
+      const nodeIndex = state.pinnedNodeTypes.findIndex(node => node.type === payload.type);
+      state.pinnedNodeTypes.splice(nodeIndex, 1);
     },
     setFilteredNodeTypes(state, searchTerm) {
       const pinnedNodeTypes = state.pinnedNodeTypes;
@@ -134,7 +135,9 @@ export default new Vuex.Store({
           console.error(e);
         });
     },
-    addUserPinnedObject({ commit, state }, pinnedNode) {
+    addUserPinnedObject({ commit, state }, payload) {
+      const { fromAlternative, ...pinnedNode } = payload;
+
       commit('setPinnedNodes', pinnedNode);
       const pinnedNodes = state.pinnedNodeTypes;
       if (window.ProcessMaker?.user?.id === 'standalone') {
@@ -142,14 +145,19 @@ export default new Vuex.Store({
         localStorage.pinnedNodes = JSON.stringify(pinnedNodes);
         return;
       }
-      const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
-      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
-        .catch((e) => {
-          // eslint-disable-next-line no-console
-          console.error(e);
-        });
+
+      if (!fromAlternative) {
+        const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+        window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.error(e);
+          });
+      }
     },
-    removeUserPinnedObject({ commit, state }, nodeToUnpin) {
+    removeUserPinnedObject({ commit, state }, payload) {
+      const { fromAlternative, ...nodeToUnpin } = payload;
+
       commit('setUnpinNode', nodeToUnpin);
       const pinnedNodes = state.pinnedNodeTypes;
       if (window.ProcessMaker?.user?.id === 'standalone') {
@@ -157,12 +165,15 @@ export default new Vuex.Store({
         localStorage.pinnedNodes = JSON.stringify(pinnedNodes);
         return;
       }
-      const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
-      window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
-        .catch((e) => {
-          // eslint-disable-next-line no-console
-          console.error(e);
-        });
+
+      if (!fromAlternative) {
+        const user = window.ProcessMaker.user ? window.ProcessMaker.user.id : '';
+        window.ProcessMaker.apiClient.put(`/users/${user}/update_pinned_controls`, { pinnedNodes })
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.error(e);
+          });
+      }
     },
   },
 });
