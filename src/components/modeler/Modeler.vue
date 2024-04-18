@@ -88,7 +88,7 @@
         v-show="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
         @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
-        :style="{ right: inspectorButtonRight + 'px' }"
+        :style="{ right: inspectorButtonRight + 'px', top: inspectorButtonTopHeight + 'px' }"
       />
 
       <PreviewPanel ref="preview-panel"
@@ -397,6 +397,7 @@ export default {
       players: [],
       showInspectorButton: true,
       inspectorButtonRight: 65,
+      inspectorButtonTopHeight: 95,
       previewConfigs: [],
       isResizingPreview: false,
       currentCursorPosition: 0,
@@ -734,6 +735,10 @@ export default {
     setInspectorButtonPosition() {
       if (this.isOpenInspector) {
         return;
+      }
+
+      if (window.ProcessMaker.AbTesting) {
+        this.inspectorButtonTopHeight = 30;
       }
 
       if (this.isOpenPreview && !this.isOpenInspector) {
