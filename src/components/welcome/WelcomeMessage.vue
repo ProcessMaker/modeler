@@ -105,7 +105,11 @@ export default {
       const processId = window.ProcessMaker.modeler.process.id ?? null;
       if (processId) {
         const url = `/package-ai/processes/create/${processId}/${processId}`;
-        window.location = url;
+        if (window.ProcessMaker.AbTesting) {
+          window.parent.location = url;
+        } else {
+          window.location = url;
+        }
       }
     },
     getLastSharedHistory() {
