@@ -2197,6 +2197,10 @@ export default {
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
+          if (response.data.processId !== window.ProcessMaker?.modeler?.process?.id) {
+            return;
+          }
+
           if (response.data.promptSessionId !== this.promptSessionId) {
             this.unhighlightTaskArrays(response.data);
             return;
