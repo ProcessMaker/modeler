@@ -12,7 +12,7 @@ export default {
     return {
       /** @type {BroadcastChannel} */
       bc: null,
-      isAbTestingInstalled: !!window.ProcessMaker?.modeler.abPublish,
+      isAbTestingInstalled: !!window.ProcessMaker?.AbTesting,
       pinIcon,
       pinFillIcon,
       showPin: false,
