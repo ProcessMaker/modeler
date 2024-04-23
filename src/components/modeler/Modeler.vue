@@ -2208,21 +2208,8 @@ export default {
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
-          if (response.data.alternative !== alternative) {
-            return;
-          }
-
-          if (response.data.processId !== window.ProcessMaker?.modeler?.process?.id) {
-            return;
-          }
-
-          if (response.data.promptSessionId !== this.promptSessionId) {
-            this.unhighlightTaskArrays(response.data);
-            return;
-          }
-
-          if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
-            this.unhighlightTaskArrays(response.data);
+          
+          if (this.shouldOmitEvent(response, alternative)) {
             return;
           }
 
@@ -2252,6 +2239,26 @@ export default {
           }
         },
       );
+    },
+    shouldOmitEvent(response, alternative) {
+      if (response.data.alternative !== alternative) {
+        return true;
+      }
+
+      if (response.data.processId !== window.ProcessMaker?.modeler?.process?.id) {
+        return true;
+      }
+
+      if (response.data.promptSessionId !== this.promptSessionId) {
+        this.unhighlightTaskArrays(response.data);
+        return true;
+      }
+
+      if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
+        this.unhighlightTaskArrays(response.data);
+        return true;
+      }
+      return false;
     },
     subscribeToGenerationCompleted() {
       const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
