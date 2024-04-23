@@ -2209,7 +2209,7 @@ export default {
         streamProgressEvent,
         (response) => {
           
-          if (this.shouldOmitEvent(response, alternative)) {
+          if (this.shouldOmitEvent(response, alternative, true)) {
             return;
           }
 
@@ -2240,22 +2240,26 @@ export default {
         },
       );
     },
-    shouldOmitEvent(response, alternative) {
+    shouldOmitEvent(response, alternative, unhighlightTasks = false) {
       if (response.data.alternative !== alternative) {
         return true;
       }
 
-      if (response.data.processId !== window.ProcessMaker?.modeler?.process?.id) {
+      if (parseInt(response.data.processId) !== parseInt(window.ProcessMaker?.modeler?.process?.id)) {
         return true;
       }
 
       if (response.data.promptSessionId !== this.promptSessionId) {
-        this.unhighlightTaskArrays(response.data);
+        if (unhighlightTasks) {
+          this.unhighlightTaskArrays(response.data);
+        }
         return true;
       }
 
       if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
-        this.unhighlightTaskArrays(response.data);
+        if (unhighlightTasks) {
+          this.unhighlightTaskArrays(response.data);
+        }
         return true;
       }
       return false;
@@ -2267,7 +2271,7 @@ export default {
       window.Echo.private(channel).listen(
         streamCompletedEvent,
         (response) => {
-          if (response.data.alternative !== alternative) {
+          if (this.shouldOmitEvent(response, alternative)) {
             return;
           }
 
