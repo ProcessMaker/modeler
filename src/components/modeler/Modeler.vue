@@ -2145,6 +2145,7 @@ export default {
         promptSessionId: this.promptSessionId,
         nonce: this.currentNonce,
         processId: window.ProcessMaker?.modeler?.process?.id,
+        alternative: window.ProcessMaker?.AbTesting?.alternative || 'A',
       };
 
       const url = '/package-ai/generateProcessArtifacts';
@@ -2183,17 +2184,22 @@ export default {
       let self = this;
       taskArray.forEach(task => {
         const taskNode = self.getElementByNodeId(task.id);
-        taskNode.component.setAiStatusHighlight(task.status);
+        if (taskNode) {
+          taskNode.component.setAiStatusHighlight(task.status);  
+        }
       });
     },
     removeAiHighlights(taskArray) {
       let self = this;
       taskArray.forEach(task => {
         const taskNode = self.getElementByNodeId(task.id);
-        taskNode.component.unsetHighlights();
+        if (taskNode) {
+          taskNode.component.unsetHighlights();
+        }
       });
     },
     subscribeToProgress() {
+      const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsProgressEvent';
       if (!window.Echo) {
@@ -2202,17 +2208,8 @@ export default {
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
-          if (response.data.processId !== window.ProcessMaker?.modeler?.process?.id) {
-            return;
-          }
-
-          if (response.data.promptSessionId !== this.promptSessionId) {
-            this.unhighlightTaskArrays(response.data);
-            return;
-          }
-
-          if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
-            this.unhighlightTaskArrays(response.data);
+          
+          if (this.shouldOmitEvent(response, alternative, true)) {
             return;
           }
 
@@ -2243,12 +2240,41 @@ export default {
         },
       );
     },
+    shouldOmitEvent(response, alternative, unhighlightTasks = false) {
+      if (response.data.alternative !== alternative) {
+        return true;
+      }
+
+      if (parseInt(response.data.processId) !== parseInt(window.ProcessMaker?.modeler?.process?.id)) {
+        return true;
+      }
+
+      if (response.data.promptSessionId !== this.promptSessionId) {
+        if (unhighlightTasks) {
+          this.unhighlightTaskArrays(response.data);
+        }
+        return true;
+      }
+
+      if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
+        if (unhighlightTasks) {
+          this.unhighlightTaskArrays(response.data);
+        }
+        return true;
+      }
+      return false;
+    },
     subscribeToGenerationCompleted() {
+      const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamCompletedEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsCompletedEvent';
       window.Echo.private(channel).listen(
         streamCompletedEvent,
         (response) => {
+          if (this.shouldOmitEvent(response, alternative)) {
+            return;
+          }
+
           if (response.data) {
             this.updateScreenRefs(response.data.screenIds);
             this.updateScriptRefs(response.data.scriptIds);
@@ -2278,6 +2304,11 @@ export default {
     updateScreenRefs(elements) {
       elements.forEach(el => {
         const node = this.nodes.find(n => n.definition.id === el.node_id);
+
+        if (!node) {
+          return;
+        }
+
         let definition = node.definition;
 
         if (node.type === 'processmaker-modeler-task') {
@@ -2290,6 +2321,11 @@ export default {
     updateScriptRefs(elements) {
       elements.forEach(el => {
         const node = this.nodes.find(n => n.definition.id === el.node_id);
+
+        if (!node) {
+          return;
+        }
+
         let definition = node.definition;
 
         if (node.type === 'processmaker-modeler-script-task') {
