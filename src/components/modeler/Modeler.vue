@@ -2256,7 +2256,7 @@ export default {
         return true;
       }
 
-      if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
+      if (this.cancelledJobs.some((element) => element === parseInt(response.data.nonce))) {
         if (unhighlightTasks) {
           this.unhighlightTaskArrays(response.data);
         }
