@@ -5,7 +5,7 @@ $inspector-column-min-width: 200px;
   resize: both;
   overflow:auto;
   background-color: #fff;
-  z-index: 2;
+  z-index: 3;
 }
 
 .preview-iframe {
@@ -29,6 +29,7 @@ $inspector-column-min-width: 200px;
   cursor:ew-resize;
   width:5px;
   background-color:#EBEEF2;
+  z-index: 3;
 }
 
 .preview-column .control-bar .actions {
