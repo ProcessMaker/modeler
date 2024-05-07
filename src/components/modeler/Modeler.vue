@@ -681,9 +681,11 @@ export default {
         }
         this.promptSessionId = this.getPromptSessionForUser();
         this.fetchHistory();
-        this.subscribeToProgress();
-        this.subscribeToGenerationCompleted();
-        this.subscribeToErrors();
+        this.$nextTick(() => {
+          this.subscribeToProgress();
+          this.subscribeToGenerationCompleted();
+          this.subscribeToErrors();
+        });
       }
     },
     onNodeDefinitionChanged() {
@@ -2199,7 +2201,6 @@ export default {
       });
     },
     subscribeToProgress() {
-      const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamProgressEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsProgressEvent';
       if (!window.Echo) {
@@ -2208,7 +2209,7 @@ export default {
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
-          
+          const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
           if (this.shouldOmitEvent(response, alternative, true)) {
             return;
           }
@@ -2265,12 +2266,12 @@ export default {
       return false;
     },
     subscribeToGenerationCompleted() {
-      const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamCompletedEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsCompletedEvent';
       window.Echo.private(channel).listen(
         streamCompletedEvent,
         (response) => {
+          const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
           if (this.shouldOmitEvent(response, alternative)) {
             return;
           }
