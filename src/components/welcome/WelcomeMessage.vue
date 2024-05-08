@@ -126,15 +126,15 @@ export default {
           const errorMsg = error.response?.data?.message || error.message;
           this.loading = false;
           if (error.response.status === 404) {
-            this.promptSessionId = "";
+            this.promptSessionId = '';
             this.fetchHistory();
           } else {
-            console.log(errorMsg, "danger");
+            console.log(errorMsg, 'danger');
           }
         });
     },
     fetchHistory() {
-      const url = `/package-ai/getSharedSessionHistory`;
+      const url = '/package-ai/getSharedSessionHistory';
 
       let params = {
         server: window.location.host,
@@ -153,9 +153,9 @@ export default {
           
           this.loading = false;
           if (error.response.status === 404) {
-            this.promptSessionId = "";
+            this.promptSessionId = '';
           } else {
-            console.log(errorMsg, "danger");
+            console.log(errorMsg, 'danger');
           }
         });
     },
