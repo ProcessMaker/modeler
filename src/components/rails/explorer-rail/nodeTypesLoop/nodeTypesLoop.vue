@@ -29,7 +29,10 @@ export default {
       this.bc.onmessage = (event) => {
         const { data } = event;
 
-        if (data.alternative !== window.ProcessMaker.modeler.alternative) { // Ignore messages from the same alternative
+        if (data.processId &&
+          (data.alternative !== window.ProcessMaker.modeler.alternative ||
+            data.processId !== window.ProcessMaker.modeler.process.id)
+        ) { // Ignore messages from the same alternative
           const { action, object } = data;
 
           if (action === 'add-pin') {
@@ -52,7 +55,12 @@ export default {
     unPin(object) {
       // If the action is coming from an alternative, don't send a message to other alternatives
       if (this.isAbTestingInstalled && !object.fromAlternative) {
-        this.bc.postMessage({ action: 'remove-pin', object, alternative: window.ProcessMaker.modeler.alternative });
+        this.bc.postMessage({
+          action: 'remove-pin',
+          processId: window.ProcessMaker.modeler.process.id,
+          object,
+          alternative: window.ProcessMaker.modeler.alternative,
+        });
       }
 
       this.deselect();
@@ -61,7 +69,12 @@ export default {
     addPin(object) {
       // If the action is coming from an alternative, don't send a message to other alternatives
       if (this.isAbTestingInstalled && !object.fromAlternative) {
-        this.bc.postMessage({ action: 'add-pin', object, alternative: window.ProcessMaker.modeler.alternative });
+        this.bc.postMessage({
+          action: 'add-pin',
+          processId: window.ProcessMaker.modeler.process.id,
+          object,
+          alternative: window.ProcessMaker.modeler.alternative,
+        });
       }
 
       this.deselect();
