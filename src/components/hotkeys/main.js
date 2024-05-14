@@ -17,6 +17,10 @@ export default {
     document.addEventListener('keyup', this.keyupListener);
   },
   methods: {
+    startPanEventHandlers() {
+      document.addEventListener('keydown', this.keydownListener);
+    },
+    
     handleHotkeys(event, options) {
       // Pass event to all handlers
       this.zoomInOutHandler(event, options);

@@ -10,6 +10,9 @@ export default {
   mixins: [clickAndDrop, iconHelper],
   data() {
     return {
+      /** @type {BroadcastChannel} */
+      bc: null,
+      isAbTestingInstalled: !!window.ProcessMaker?.AbTesting,
       pinIcon,
       pinFillIcon,
       showPin: false,
@@ -17,16 +20,50 @@ export default {
   },
   created() {
     nodeTypesStore.dispatch('getUserPinnedObjects');
+
+    // Create BroadcastChannel to communicate with other alternatives
+    this.bc = new BroadcastChannel('package-ab-testing');
+
+    if (this.isAbTestingInstalled) {
+      // Listen for messages from other alternatives
+      this.bc.onmessage = (event) => {
+        const { data } = event;
+
+        if (data.alternative !== window.ProcessMaker.modeler.alternative) { // Ignore messages from the same alternative
+          const { action, object } = data;
+
+          if (action === 'add-pin') {
+            object.fromAlternative = true;
+            // Add pin to the store without sending a message to other alternatives
+            this.addPin(object);
+          } else if (action === 'remove-pin') {
+            object.fromAlternative = true;
+            // Remove pin from the store without sending a message to other alternatives
+            this.unPin(object);
+          }
+        }
+      };
+    }
   },
   methods: {
     nodeTypeAlreadyPinned(object, type) {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
     unPin(object) {
+      // If the action is coming from an alternative, don't send a message to other alternatives
+      if (this.isAbTestingInstalled && !object.fromAlternative) {
+        this.bc.postMessage({ action: 'remove-pin', object, alternative: window.ProcessMaker.modeler.alternative });
+      }
+
       this.deselect();
       return nodeTypesStore.dispatch('removeUserPinnedObject', object);
     },
     addPin(object) {
+      // If the action is coming from an alternative, don't send a message to other alternatives
+      if (this.isAbTestingInstalled && !object.fromAlternative) {
+        this.bc.postMessage({ action: 'add-pin', object, alternative: window.ProcessMaker.modeler.alternative });
+      }
+
       this.deselect();
       return nodeTypesStore.dispatch('addUserPinnedObject', object);
     },
@@ -40,7 +77,7 @@ export default {
         return !obj.type?.includes('processmaker-pm-block');
       });
 
-      return filteredPinnedNodeTypes; 
+      return filteredPinnedNodeTypes;
     },
     objects() {
       return nodeTypesStore.getters.getNodeTypes;

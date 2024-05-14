@@ -1,6 +1,11 @@
 export default {
   methods: {
     copyPasteHandler(event, options) {
+      // Checking if the `key` property exists in the `event` object.
+      if (!event.key) {
+        return;
+      }
+
       const node = event.target.nodeName.toLowerCase();
       const isBody = node === 'body';
       const key = event.key.toLowerCase();

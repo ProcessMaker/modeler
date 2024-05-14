@@ -1,6 +1,11 @@
 export default {
   methods: {
     undoRedoHandler(event, options) {
+      // Checking if the `key` property exists in the `event` object.
+      if (!event.key) {
+        return;
+      }
+
       const key = event.key.toLowerCase();
       const isRedo = key === 'y';
       const isUndo= key === 'z';

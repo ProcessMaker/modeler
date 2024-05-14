@@ -4,7 +4,10 @@
       aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
     >
       <breadcrumb :breadcrumb-data="breadcrumbData" />
-      <div class="d-flex mr-3">
+      <div
+        ref="toolbar-options"
+        class="d-flex mr-3"
+      >
         <TopRail
           :validation-errors="validationErrors"
           :warnings="warnings"
@@ -199,16 +202,19 @@ export default {
           value: 'save-template',
           content: this.$t('Save as Template'),
           icon: '',
+          dataTest: 'process-save-template',
         },
         {
           value: 'save-pm-block',
           content: this.$t('Save as PM Block'),
           icon: '',
+          dataTest: 'process-save-pm-block',
         },
         {
           value: 'discard-draft',
           content: this.$t('Discard Draft'),
           icon: '',
+          dataTest: 'process-discard-draft',
         },
       ],
     };

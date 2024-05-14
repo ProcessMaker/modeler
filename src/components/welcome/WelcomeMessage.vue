@@ -106,7 +106,11 @@ export default {
       const processId = window.ProcessMaker.modeler.process.id ?? null;
       if (processId) {
         const url = `/package-ai/processes/create/${processId}/${processId}`;
-        window.location = url;
+        if (window.ProcessMaker.AbTesting) {
+          window.parent.location = url;
+        } else {
+          window.location = url;
+        }
       }
     },
     getLastSharedHistory() {
@@ -126,7 +130,7 @@ export default {
         }).catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
           this.loading = false;
-          window.ProcessMaker.alert(errorMsg, 'danger');
+          console.error(errorMsg, 'danger');
         });
     },
     formatDateTime(value) {

@@ -3,6 +3,7 @@
     <tool-bar
       v-if="showComponent"
       ref="tool-bar"
+      v-show="showToolbar"
       :canvas-drag-position="canvasDragPosition"
       :cursor="cursor"
       :is-rendering="isRendering"
@@ -87,7 +88,7 @@
         v-show="showComponent && showInspectorButton"
         :showInspector="isOpenInspector"
         @toggleInspector="[handleToggleInspector($event), setInspectorButtonPosition($event)]"
-        :style="{ right: inspectorButtonRight + 'px' }"
+        :style="{ right: inspectorButtonRight + 'px', top: inspectorButtonTopHeight + 'px' }"
       />
 
       <PreviewPanel ref="preview-panel"
@@ -278,6 +279,7 @@ import Selection from './Selection';
 import RemoteCursor from '@/components/multiplayer/remoteCursor/RemoteCursor.vue';
 import Multiplayer from '@/multiplayer/multiplayer';
 import { getBoundaryEventData } from '../nodes/boundaryEvent/boundaryEventUtils';
+import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
   components: {
@@ -322,6 +324,13 @@ export default {
     requestInProgressNodes: {
       type: Array,
       default: () => [],
+    },
+    /**
+     * When true the toolbar is displayed inside the modeler
+     */
+    showToolbar: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
@@ -388,6 +397,7 @@ export default {
       players: [],
       showInspectorButton: true,
       inspectorButtonRight: 65,
+      inspectorButtonTopHeight: 95,
       previewConfigs: [],
       isResizingPreview: false,
       currentCursorPosition: 0,
@@ -413,6 +423,7 @@ export default {
         'processmaker-modeler-boundary-conditional-event',
         'processmaker-modeler-boundary-message-event',
       ],
+      validPreviewElements,
     };
   },
   watch: {
@@ -454,6 +465,7 @@ export default {
       this.paperManager.scale = canvasScale;
     },
     highlightedNodes() {
+      this.applyPreviewVisibilityForSelection();
       if (window.ProcessMaker?.EventBus) {
         window.ProcessMaker.EventBus.$emit('modeler:highlightedNodes', this.highlightedNodes);
       }
@@ -626,7 +638,7 @@ export default {
         if (redirectUrl) {
           this.redirect(redirectUrl);
         }
-        if (generatingAssets) {
+        if (!nodeId && generatingAssets) {
           this.generateAssets();
         }
       });
@@ -669,9 +681,11 @@ export default {
         }
         this.promptSessionId = this.getPromptSessionForUser();
         this.fetchHistory();
-        this.subscribeToProgress();
-        this.subscribeToGenerationCompleted();
-        this.subscribeToErrors();
+        this.$nextTick(() => {
+          this.subscribeToProgress();
+          this.subscribeToGenerationCompleted();
+          this.subscribeToErrors();
+        });
       }
     },
     onNodeDefinitionChanged() {
@@ -723,6 +737,10 @@ export default {
     setInspectorButtonPosition() {
       if (this.isOpenInspector) {
         return;
+      }
+
+      if (window.ProcessMaker.AbTesting) {
+        this.inspectorButtonTopHeight = 30;
       }
 
       if (this.isOpenPreview && !this.isOpenInspector) {
@@ -1918,7 +1936,11 @@ export default {
       this.isSelecting = false;
     },
     redirect(redirectTo) {
-      window.location = redirectTo;
+      if (window.ProcessMaker.AbTesting) {
+        window.parent.location = redirectTo;  
+      } else {
+        window.location = redirectTo;
+      }
     },
     enableMultiplayer(value) {
       store.commit('enableMultiplayer', value);
@@ -2105,7 +2127,7 @@ export default {
             this.promptSessionId = '';
             this.fetchHistory();
           } else {
-            window.ProcessMaker.alert(errorMsg, 'danger');
+            console.error(errorMsg, 'danger');
           }
         });
     },
@@ -2125,6 +2147,7 @@ export default {
         promptSessionId: this.promptSessionId,
         nonce: this.currentNonce,
         processId: window.ProcessMaker?.modeler?.process?.id,
+        alternative: window.ProcessMaker?.AbTesting?.alternative || 'A',
       };
 
       const url = '/package-ai/generateProcessArtifacts';
@@ -2138,8 +2161,8 @@ export default {
             }
           }
         })
-        .catch((error) => {
-          const errorMsg = error.response?.data?.message || error.message;
+        .catch(() => {
+          const errorMsg = this.$t('ProcessMaker AI is currently offline. Please try again later.');
           window.ProcessMaker.alert(errorMsg, 'danger');
           this.assetFail = true;
           this.loadingAI = false;
@@ -2163,14 +2186,18 @@ export default {
       let self = this;
       taskArray.forEach(task => {
         const taskNode = self.getElementByNodeId(task.id);
-        taskNode.component.setAiStatusHighlight(task.status);
+        if (taskNode) {
+          taskNode.component.setAiStatusHighlight(task.status);  
+        }
       });
     },
     removeAiHighlights(taskArray) {
       let self = this;
       taskArray.forEach(task => {
         const taskNode = self.getElementByNodeId(task.id);
-        taskNode.component.unsetHighlights();
+        if (taskNode) {
+          taskNode.component.unsetHighlights();
+        }
       });
     },
     subscribeToProgress() {
@@ -2182,13 +2209,8 @@ export default {
       window.Echo.private(channel).listen(
         streamProgressEvent,
         (response) => {
-          if (response.data.promptSessionId !== this.promptSessionId) {
-            this.unhighlightTaskArrays(response.data);
-            return;
-          }
-
-          if (this.cancelledJobs.some((element) => element === response.data.nonce)) {
-            this.unhighlightTaskArrays(response.data);
+          const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
+          if (this.shouldOmitEvent(response, alternative, true)) {
             return;
           }
 
@@ -2219,12 +2241,41 @@ export default {
         },
       );
     },
+    shouldOmitEvent(response, alternative, unhighlightTasks = false) {
+      if (response.data.alternative !== alternative) {
+        return true;
+      }
+
+      if (parseInt(response.data.processId) !== parseInt(window.ProcessMaker?.modeler?.process?.id)) {
+        return true;
+      }
+
+      if (response.data.promptSessionId !== this.promptSessionId) {
+        if (unhighlightTasks) {
+          this.unhighlightTaskArrays(response.data);
+        }
+        return true;
+      }
+
+      if (this.cancelledJobs.some((element) => element === parseInt(response.data.nonce))) {
+        if (unhighlightTasks) {
+          this.unhighlightTaskArrays(response.data);
+        }
+        return true;
+      }
+      return false;
+    },
     subscribeToGenerationCompleted() {
       const channel = `ProcessMaker.Models.User.${window.ProcessMaker?.user?.id}`;
       const streamCompletedEvent = '.ProcessMaker\\Package\\PackageAi\\Events\\GenerateArtifactsCompletedEvent';
       window.Echo.private(channel).listen(
         streamCompletedEvent,
         (response) => {
+          const alternative = window.ProcessMaker.AbTesting?.alternative || 'A';
+          if (this.shouldOmitEvent(response, alternative)) {
+            return;
+          }
+
           if (response.data) {
             this.updateScreenRefs(response.data.screenIds);
             this.updateScriptRefs(response.data.scriptIds);
@@ -2254,6 +2305,11 @@ export default {
     updateScreenRefs(elements) {
       elements.forEach(el => {
         const node = this.nodes.find(n => n.definition.id === el.node_id);
+
+        if (!node) {
+          return;
+        }
+
         let definition = node.definition;
 
         if (node.type === 'processmaker-modeler-task') {
@@ -2266,6 +2322,11 @@ export default {
     updateScriptRefs(elements) {
       elements.forEach(el => {
         const node = this.nodes.find(n => n.definition.id === el.node_id);
+
+        if (!node) {
+          return;
+        }
+
         let definition = node.definition;
 
         if (node.type === 'processmaker-modeler-script-task') {
@@ -2274,6 +2335,15 @@ export default {
           this.$emit('save-state');
         }
       });
+    },
+    applyPreviewVisibilityForSelection() {
+      if (this.highlightedNodes.length !== 1) {
+        this.isOpenPreview = false;
+      }
+      else {
+        const nodeType =  this.highlightedNodes[0].definition?.$type;
+        this.isOpenPreview = this.isOpenPreview && this.validPreviewElements.includes(nodeType);
+      }
     },
   },
   created() {
