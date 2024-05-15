@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.47.13",
+  "version": "1.47.14",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
