@@ -28,21 +28,21 @@ export default {
       // Listen for messages from other alternatives
       this.bc.onmessage = (event) => {
         const { data } = event;
+        const { processId, alternative, action, object } = data;
+        const { modeler } = window.ProcessMaker;
 
-        if (data.processId &&
-          (data.alternative !== window.ProcessMaker.modeler.alternative ||
-            data.processId !== window.ProcessMaker.modeler.process.id)
-        ) { // Ignore messages from the same alternative
-          const { action, object } = data;
+        if (processId && (alternative !== modeler.alternative || processId !== modeler.process.id)) {
+          if (object) {
+            object.fromAlternative = true;
+          }
 
-          if (action === 'add-pin') {
-            object.fromAlternative = true;
-            // Add pin to the store without sending a message to other alternatives
-            this.addPin(object);
-          } else if (action === 'remove-pin') {
-            object.fromAlternative = true;
-            // Remove pin from the store without sending a message to other alternatives
-            this.unPin(object);
+          const actions = {
+            'add-pin': () => this.addPin(object),
+            'remove-pin': () => this.unPin(object),
+          };
+
+          if (actions[action]) {
+            actions[action]();
           }
         }
       };
@@ -52,11 +52,11 @@ export default {
     nodeTypeAlreadyPinned(object, type) {
       return !!this.pinnedObjects.find(obj => obj.type === type);
     },
-    unPin(object) {
+    handlePin(action, object) {
       // If the action is coming from an alternative, don't send a message to other alternatives
       if (this.isAbTestingInstalled && !object.fromAlternative) {
         this.bc.postMessage({
-          action: 'remove-pin',
+          action: `${action}-pin`,
           processId: window.ProcessMaker.modeler.process.id,
           object,
           alternative: window.ProcessMaker.modeler.alternative,
@@ -64,21 +64,13 @@ export default {
       }
 
       this.deselect();
-      return nodeTypesStore.dispatch('removeUserPinnedObject', object);
+      return nodeTypesStore.dispatch(`${action}UserPinnedObject`, object);
+    },
+    unPin(object) {
+      return this.handlePin('remove', object);
     },
     addPin(object) {
-      // If the action is coming from an alternative, don't send a message to other alternatives
-      if (this.isAbTestingInstalled && !object.fromAlternative) {
-        this.bc.postMessage({
-          action: 'add-pin',
-          processId: window.ProcessMaker.modeler.process.id,
-          object,
-          alternative: window.ProcessMaker.modeler.alternative,
-        });
-      }
-
-      this.deselect();
-      return nodeTypesStore.dispatch('addUserPinnedObject', object);
+      return this.handlePin('add', object);
     },
   },
   computed: {
