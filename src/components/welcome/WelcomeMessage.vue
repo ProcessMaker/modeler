@@ -9,7 +9,7 @@
         <div class="mr-2 text-left">
           <div class="h5 m-0">{{ aiProcessButtonTitle }}</div>
           <div class="text-secondary font-weight-light small">
-            <div v-if="(this.promptSessionId && this.promptSessionId !== '')" class="d-flex align-items-center">
+            <div v-if="this.lastSession?.process_title" class="d-flex align-items-center">
               {{ $t('Last session by:') }}
               <avatar-image class="ml-2 mr-1 d-flex align-items-center" size="18" :input-data="lastSession" hide-name="true"/> {{ aiProcessButtonSubtitle }}
             </div>
@@ -53,23 +53,15 @@ export default {
       lastSession: {},
       history: [],
       processId: window.ProcessMaker?.modeler?.process?.id,
+      promptSessionId: '',
     };
   },
-  computed: {
+  watch: {
     promptSessionId() {
-      // Get sessions list
-      let promptSessions = localStorage.getItem('promptSessions');
-
-      // If promptSessions does not exist, set it as an empty array
-      promptSessions = promptSessions ? JSON.parse(promptSessions) : [];
-      let item = promptSessions.find(item => item.processId === this.processId && item.server === window.location.host);
-
-      if (item) {
-        return item.promptSessionId;
-      }
-
-      return '';
+      this.getLastSharedHistory();
     },
+  },
+  computed: {
     showSessionLoader() {
       if (!(!this.promptSessionId || this.promptSessionId === '') && this.lastSession.firstname === undefined) {
         return true;
@@ -78,13 +70,13 @@ export default {
       return false;
     },
     aiProcessButtonTitle() {
-      if (!this.promptSessionId || this.promptSessionId === '') {
+      if (!this.lastSession?.process_title) {
         return this.$t('Create a process with AI');
       }
       return this.$t('Continue AI session');
     },
     aiProcessButtonSubtitle() {
-      if (!this.promptSessionId || this.promptSessionId === '') {
+      if (!this.lastSession?.process_title) {
         return this.$t('Kick-start an AI generated process');
       }
 
@@ -98,13 +90,16 @@ export default {
 
     if (this.promptSessionId && this.promptSessionId !== '') {
       this.getLastSharedHistory();
+    } else {
+      this.fetchHistory();
     }
   },
   methods: {
     redirectToAiProcess() {
+      const alternative = window.ProcessMaker?.AbTesting?.alternative || 'A';
       const processId = window.ProcessMaker.modeler.process.id ?? null;
       if (processId) {
-        const url = `/package-ai/processes/create/${processId}/${processId}`;
+        const url = `/package-ai/processes/create/${processId}/${processId}?alternative=${alternative}`;
         if (window.ProcessMaker.AbTesting) {
           window.parent.location = url;
         } else {
@@ -126,10 +121,42 @@ export default {
           this.$set(this.lastSession, 'lastname', response.data.lastname);
           this.$set(this.lastSession, 'lastnameInitials', response.data.lastnameInitials);
           this.$set(this.lastSession, 'avatar', response.data.avatar);
+          this.$set(this.lastSession, 'process_title', response.data.process_title);
         }).catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
           this.loading = false;
-          console.error(errorMsg, 'danger');
+          if (error.response.status === 404) {
+            this.promptSessionId = '';
+            this.fetchHistory();
+          } else {
+            console.log(errorMsg, 'danger');
+          }
+        });
+    },
+    fetchHistory() {
+      const url = '/package-ai/getSharedSessionHistory';
+
+      let params = {
+        server: window.location.host,
+        tenant: window.ProcessMaker.user.id,
+        userId: window.ProcessMaker.user.id,
+        processId: this.processId,
+        userName: window.ProcessMaker.user.username,
+      };
+
+      window.ProcessMaker.apiClient.post(url, params)
+        .then(response => {
+          this.promptSessionId = response.data.sharedSessionId;
+        }).catch((error) => {
+          
+          const errorMsg = error.response?.data?.message || error.message;
+          
+          this.loading = false;
+          if (error.response.status === 404) {
+            this.promptSessionId = '';
+          } else {
+            console.log(errorMsg, 'danger');
+          }
         });
     },
     formatDateTime(value) {
