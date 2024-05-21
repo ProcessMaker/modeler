@@ -67,6 +67,7 @@ export default {
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp);
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
+    handleElementDestinationType(value.elementDestinationType, node, setNodeProp);
   },
   inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
@@ -96,6 +97,23 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
+            {
+              component: 'FormSelect',
+              config: {
+                label: 'Element Destination',
+                helper: 'Select the element destination',
+                placeholder: 'Select the element destination',
+                name: 'elementDestinationType',
+                options: [
+                  { value: 'taskSource', content: 'Task Source (Default)' },
+                  { value: 'taskList', content: 'Task List' },
+                  { value: 'processLaunchpad', content: 'Process Launchpad' },
+                  { value: 'homepageDashboard', content: 'Homepage Dashboard' },
+                  { value: 'customDashboard', content: 'Custom Dashboard' },
+                  { value: 'externalURL', content: 'External URL' },
+                ],
+              },
+            },
           ],
         },
         loopCharacteristicsInspector,
@@ -119,5 +137,11 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
 
   if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
     setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+  }
+}
+
+function handleElementDestinationType(value, node, setNodeProp) {
+  if (value) {
+    setNodeProp(node, 'elementDestinationType', value);
   }
 }
