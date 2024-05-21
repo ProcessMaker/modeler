@@ -77,7 +77,7 @@ export default defineConfig({
           vue: 'Vue',
           moment: 'moment',
           'moment-timezone': 'moment-timezone',
-          lodash: 'lodash',
+          lodash: '_',
         },
       },
     },
