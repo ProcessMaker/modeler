@@ -27,7 +27,7 @@
     </b-form-group>
 
     <b-form-group v-if="destinationType === 'externalURL'" :label="$t('URL')">
-      <b-form-input id="input-default" placeholder="https://ci-ba427360a6.engk8s.processmaker.net/processes"></b-form-input>
+      <b-form-input id="input-default" placeholder="https://ci-ba427360a6.engk8s.processmaker.net/processes"/>
       <small class="form-text text-muted">{{ $t("Determine de URL where the request will end") }}</small>
     </b-form-group>
 
@@ -58,7 +58,7 @@ export default {
       launchpadOptions:[
         { value: 'first', content: 'Launchpad 1' },
         { value: 'second', content: 'Launchpad 2' },
-      ]
+      ],
     };  
   },
   methods: {
