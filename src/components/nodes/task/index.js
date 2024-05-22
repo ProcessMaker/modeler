@@ -3,6 +3,8 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+
+import elementDestination from '@/components/inspectors/taskElementDestination';
 import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
 import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -97,23 +99,7 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
-            {
-              component: 'FormSelect',
-              config: {
-                label: 'Element Destination',
-                helper: 'Select the element destination',
-                placeholder: 'Select the element destination',
-                name: 'elementDestinationType',
-                options: [
-                  { value: 'taskSource', content: 'Task Source (Default)' },
-                  { value: 'taskList', content: 'Task List' },
-                  { value: 'processLaunchpad', content: 'Process Launchpad' },
-                  { value: 'homepageDashboard', content: 'Homepage Dashboard' },
-                  { value: 'customDashboard', content: 'Custom Dashboard' },
-                  { value: 'externalURL', content: 'External URL' },
-                ],
-              },
-            },
+            elementDestination,
           ],
         },
         loopCharacteristicsInspector,
