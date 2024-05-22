@@ -1,14 +1,4 @@
 import ElementDestination from '@/components/inspectors/ElementDestination.vue';
-// import NodeInspector from '@/NodeInspector';
-// import omit from 'lodash/omit';
-
-export const elementDestinationHandler = function(value, node, setNodeProp, moddle, definitions, isMultiplayer) {
- 
-};
-
-export const elementDestinationData = function(inspectorData, node, defaultDataTransform, { definitions }) {
- 
-};
 
 export default {
   component: ElementDestination,
