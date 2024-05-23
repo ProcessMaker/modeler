@@ -6,7 +6,7 @@ export default {
     label: 'Element Destination',
     helper: 'Select the element destination',
     placeholder: 'Select the element destination',
-    name: 'elementDestinationType',
+    name: 'elementDestination',
     destinationType: 'taskSource',
     options: [
       { value: 'taskSource', content: 'Task Source (Default)' },
