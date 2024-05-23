@@ -8,12 +8,6 @@
       <small class="form-text text-muted">{{ $t("Enter the destination...") }}</small>
     </b-form-group>
 
-
-    <!-- <b-form-group v-if="destinationType === 'customDashboard'" :label="$t('Dashboard')"> -->
-      <!-- <b-form-select id="" v-model="urlModel['customDashboard']" @change="destinationValueChange" placeholder="$t('Dashboard')">
-        <b-form-select-option :value="null" disabled>{{ $t('Select a dashboard') }}</b-form-select-option>
-        <option v-for="option in dashboardOptions" :key="option.value" :value="option.value">{{ $t(option.content) }}</option>
-      </b-form-select> -->
     <multiselect
       v-if="destinationType === 'customDashboard'"
       id="search-dashboard-text"
