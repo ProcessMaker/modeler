@@ -12,7 +12,7 @@ export default {
       { value: 'summaryScreen', content: 'Summary Screen'},
       { value: 'taskList', content: 'Task List' },
       { value: 'processLaunchpad', content: 'Process Launchpad' },
-      { value: 'homepageDashboard', content: 'Homepage Dashboard' },
+      { value: 'homepageDashboard', content: 'Wellcome Screen' },
       { value: 'customDashboard', content: 'Dashboard' },
       { value: 'externalURL', content: 'External URL' },
     ],
