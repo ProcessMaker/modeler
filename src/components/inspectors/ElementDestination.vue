@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import {isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import debounce from 'lodash/debounce';
 export default {
   props: {
@@ -183,7 +183,7 @@ export default {
       this.$emit('input', data);
     },
     resetProperties() {
-      this.urlModel = { ...this.defaultValues};
+      this.urlModel = { ...this.defaultValues };
     },
     searchChange(filter) {
       this.loadDashboardsDebounced(filter);
@@ -219,10 +219,10 @@ export default {
         value: {
           title: this.customDashboad.title,
           url: this.customDashboad.url,
-        }
+        },
       });
       this.$emit('input', data);
-    }
+    },
   },
 };
 </script>

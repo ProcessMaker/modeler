@@ -39,7 +39,6 @@ export default {
       const mod = isAppleOS ? event.metaKey : event.ctrlKey;
       let options = { mod, isAppleOS, modeler: this };
       try {
-        console.log("keydownListener");
         this.handleHotkeys(event, options);
       } catch (error) {
         // eslint-disable-next-line no-console

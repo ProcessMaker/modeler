@@ -9,7 +9,7 @@ export default {
     name: 'elementDestinationType',
     destinationType: 'taskSource',
     options: [
-      { value: 'summaryScreen', content: 'Summary Screen'},
+      { value: 'summaryScreen', content: 'Summary Screen' },
       { value: 'taskList', content: 'Task List' },
       { value: 'processLaunchpad', content: 'Process Launchpad' },
       { value: 'homepageDashboard', content: 'Wellcome Screen' },
