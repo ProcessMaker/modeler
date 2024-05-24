@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash';
 import debounce from 'lodash/debounce';
 export default {
   props: {
