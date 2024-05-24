@@ -33,10 +33,6 @@ export default {
       }),
     });
   },
-  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
-    defaultInspectorHandler(value, isMultiplayer);
-    handleElementDestination(value.elementDestination, node, setNodeProp);
-  },
   inspectorConfig: [
     {
       name: defaultNames[id],
@@ -64,8 +60,3 @@ export default {
     },
   ],
 };
-function handleElementDestination(value, node, setNodeProp) {
-  if (value) {
-    setNodeProp(node, 'elementDestination', value);
-  }
-}
