@@ -42,7 +42,6 @@ import {
   textAnnotation,
 } from '@/components/nodes';
 import bpmnExtension from '@processmaker/processmaker-bpmn-moddle/resources/processmaker';
-console.log('bpmnExtension', bpmnExtension);
 const nodeTypes = [
   startEvent,
   dataObject,

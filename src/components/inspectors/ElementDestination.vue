@@ -193,8 +193,9 @@ export default {
 
       const params = {
         order_direction: 'asc',
-        per_page: 10,
+        per_page: 20,
         page: 1,
+        fields: 'title,url',
       };
 
       if (filter) {
