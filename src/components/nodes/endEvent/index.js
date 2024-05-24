@@ -94,4 +94,14 @@ export default {
       ],
     },
   ],
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
+    defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
+    handleElementDestination(value.elementDestination, node, setNodeProp);
+  },
 };
+
+function handleElementDestination(value, node, setNodeProp) {
+  if (value) {
+    setNodeProp(node, 'elementDestination', value);
+  }
+}

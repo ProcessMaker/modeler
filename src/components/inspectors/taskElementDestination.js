@@ -18,3 +18,9 @@ export default {
     ],
   },
 };
+
+function handleElementDestination(value, node, setNodeProp) {
+  if (value) {
+    setNodeProp(node, 'elementDestination', value);
+  }
+}
