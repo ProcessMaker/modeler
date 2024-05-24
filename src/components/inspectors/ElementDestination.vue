@@ -29,39 +29,15 @@
       :clear-on-select="false"
       @search-change="searchChange"
     />
-    <!-- <multiselect
-      v-if="destinationType === 'customDashboard'"
-      id="search-dashboard-text"
-      :value="urlModel['customDashboard']"
-      :placeholder="$t('Dashboard')"
-      :options="dashboardOptions"
-      :multiple="false"
-      :show-labels="false"
-      :searchable="false"
-      :allow-empty="false"
-      track-by="value"
-      label="title"
-      class="assignable-input"
-      @change="change"
-    >
-      <template slot="noResult">
-        <slot name="noResult">
-          {{ $t('No elements found. Consider changing the search query.') }}
-        </slot>
-      </template>
-      <template slot="noOptions">
-        <slot name="noOptions">
-          {{ $t('No Data Available') }}
-        </slot>
-      </template>
-    </multiselect> -->
-    <!-- <small class="form-text text-muted">{{ $t("Select the dashboard to show the summary of this request when it completes") }}</small> -->
-    <!-- </b-form-group> -->
-
-    <b-form-group v-if="destinationType === 'externalURL'" :label="$t('URL')">
-      <b-form-input v-model="urlModel['externalURL']" id="externalURL" :placeholder="urlPlaceholder" @change="destinationValueChange"/>
-      <small class="form-text text-muted">{{ $t("Determine de URL where the request will end") }}</small>
-    </b-form-group>
+    <form-input
+      v-if="destinationType === 'externalURL'" 
+      :label="$t('URL')"
+      v-model="externalURL"
+      :error="getValidationErrorForURL(externalURL)"
+      data-cy="events-add-id"
+      :placeholder="urlPlaceholder"
+      :helper="$t('Determine de URL where the request will end')"
+    />
   </div>
 </template>
 
@@ -87,6 +63,7 @@ export default {
       destinationType: null,
       dashboards: [],
       customDashboad: null,
+      
       defaultValues: {
         summaryScreen: null,
         customDashboard: null,
@@ -104,19 +81,18 @@ export default {
         { value: 'first', title: 'Dashboard 1' },
         { value: 'second', title: 'Dashboard 2' },
       ],
+      externalURL: '',
     };  
   },
   watch: {
-    value: {
-      deep: true,
-      handler(value) {
-        if (!isEqual(this.local, value)) {
-          this.loadData();
-        }
-      },
-    },
     customDashboad() {
-      this.setBpmnValues();
+      this.setBpmnValues({
+        title: this.customDashboad.title,
+        url: this.customDashboad.url,
+      });
+    },
+    externalURL() {
+      this.setBpmnValues(this.externalURL);
     },
   },
   computed: {
@@ -139,17 +115,30 @@ export default {
     
   },
   methods: {
-    loadData() {
+    getValidationErrorForURL(url) {
+      if (!this.isValidURL(url)) {
+        return this.$t('invalid URL');
+      }
+      return '';
+    },
+    isValidURL(string) {
       try {
-        if (typeof this.value !== 'string') {
-          throw new Error('Value is not a string');
-        } 
-
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    },
+    loadData() {  
+      try {
         this.local = JSON.parse(this.value);
-
         this.destinationType = this.getDestinationType();
-        this.customDashboad = this.getDestinationValue();
-        
+        if (this.destinationType  === 'customDashboard'){
+          this.customDashboad = this.getDestinationValue();
+        } 
+        if (this.destinationType  === 'externalURL'){
+          this.externalURL = this.getDestinationValue();
+        }
       } catch (error) {
         console.error('Error loading data:', error.message);
         // You might want to handle or report the error further depending on your application's needs
@@ -172,16 +161,7 @@ export default {
       this.$emit('input', data);
       
     },
-    destinationValueChange(value) {
-      const data =  JSON.stringify({
-        type: this.destinationType,
-        value,
-      });
-      // Reset all properties except 'destinationType' to a default value (e.g., null)
-     
-      this.urlModel[this.destinationType] = value,
-      this.$emit('input', data);
-    },
+
     resetProperties() {
       this.urlModel = { ...this.defaultValues };
     },
@@ -214,13 +194,10 @@ export default {
     filterValidDashboards(dashboards) {
       return dashboards;
     },
-    setBpmnValues() { 
+    setBpmnValues(value) {
       const data =  JSON.stringify({
         type: this.destinationType,
-        value: {
-          title: this.customDashboad.title,
-          url: this.customDashboad.url,
-        },
+        value,
       });
       this.$emit('input', data);
     },

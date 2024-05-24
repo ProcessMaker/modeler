@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import elementDestination from '@/components/inspectors/taskElementDestination';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-manual-task';
@@ -32,6 +33,10 @@ export default {
       }),
     });
   },
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
+    defaultInspectorHandler(value, isMultiplayer);
+    handleElementDestination(value.elementDestination, node, setNodeProp);
+  },
   inspectorConfig: [
     {
       name: defaultNames[id],
@@ -50,6 +55,7 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
+            elementDestination,
           ],
         },
         documentationAccordionConfig,
@@ -58,3 +64,8 @@ export default {
     },
   ],
 };
+function handleElementDestination(value, node, setNodeProp) {
+  if (value) {
+    setNodeProp(node, 'elementDestination', value);
+  }
+}
