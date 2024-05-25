@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-form-group :label="$t('Element Destination')">
-      <b-form-select id="" v-model="destinationType" @change="destinationTypeChange">
+      <b-form-select id="" v-model="destinationType" @change="destinationTypeChange" data-test="element-destination-type">
         <b-form-select-option :value="null" disabled>{{ $t('Select element destination') }}</b-form-select-option>
         <option v-for="option in options" :key="option.value" :value="option.value">{{ $t(option.content) }}</option>
       </b-form-select>
@@ -28,6 +28,7 @@
       :preserve-search="false"
       :clear-on-select="false"
       @search-change="searchChange"
+      data-test="dashboard"
     />
     <form-input
       v-if="destinationType === 'externalURL'" 
@@ -37,6 +38,7 @@
       data-cy="events-add-id"
       :placeholder="urlPlaceholder"
       :helper="$t('Determine de URL where the request will end')"
+      data-test="external-url"
     />
   </div>
 </template>

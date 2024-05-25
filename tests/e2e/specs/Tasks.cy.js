@@ -28,7 +28,44 @@ describe('Tasks', () => {
     typeIntoTextInput('[name=name]', testString);
     cy.get('[name=name]').should('have.value', testString);
   });
+  it('Update task element destination', () => {
+    clickAndDropElement(nodeTypes.task, taskPosition);
+    waitToRenderAllShapes();
 
+    getElementAtPosition(taskPosition).click();
+    cy.get('[data-test=element-destination-type]').should('exist');
+
+    cy.get('[data-test=element-destination-type]').select('Task Source (Default)').should('have.value', 'taskSource');
+    cy.get('[data-test=dashboard]').should('not.exist');
+    cy.get('[data-test=custom-url]').should('not.exist');
+
+    cy.get('[data-test=element-destination-type]').select('Task List').should('have.value', 'taskList');
+    cy.get('[data-test=dashboard]').should('not.exist');
+    cy.get('[data-test=custom-url]').should('not.exist');
+
+    cy.get('[data-test=element-destination-type]').select('Process Launchpad').should('have.value', 'processLaunchpad');
+    cy.get('[data-test=dashboard]').should('not.exist');
+    cy.get('[data-test=custom-url]').should('not.exist');
+
+    cy.get('[data-test=element-destination-type]').select('Welcome Dashboard').should('have.value', 'homepageDashboard');
+    cy.get('[data-test=dashboard]').should('not.exist');
+    cy.get('[data-test=custom-url]').should('not.exist');
+
+    cy.get('[data-test=element-destination-type]').select('Custom Dashboard').should('have.value', 'customDashboard');
+    cy.get('[data-test=dashboard]').should('exist');
+    cy.get('[data-test=custom-url]').should('not.exist');
+
+    cy.get('[data-test=element-destination-type]').select('External URL').should('have.value', 'externalURL');
+    cy.get('[data-test=dashboard]').should('not.exist');
+    cy.get('[data-test=external-url]').should('exist');
+    cy.get('[data-test=external-url]').type('INVALID URL');
+    cy.get('[data-test=external-url]').parent().get('[class=invalid-feedback]').should('exist');
+
+    cy.get('[data-test=external-url]').clear();
+    cy.get('[data-test=external-url]').type('http://processmaker.test/tasks');
+    cy.get('[data-test=external-url]').parent().get('[class=invalid-feedback]').should('not.exist');
+  });
+  
   it('Correctly renders task after undo/redo', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     cy.wait(500);
