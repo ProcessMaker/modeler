@@ -69,12 +69,9 @@ export default {
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp);
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
-    console.log('inspectorHandler', value);
-    console.log('inspectorHandler', node);
     handleElementDestination(value.elementDestination, node, setNodeProp);
   },
   inspectorData(node, defaultDataTransform, inspector) {
-    console.log('inspectorData', node);
     const inspectorData = defaultDataTransform(node);
     loopCharacteristicsData(inspectorData, node, defaultDataTransform, inspector);
     inspectorData.markerFlags = {

@@ -94,14 +94,4 @@ export default {
       ],
     },
   ],
-  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
-    defaultInspectorHandler(value, isMultiplayer);
-    handleElementDestination(value.elementDestination, node, setNodeProp);
-  },
 };
-
-function handleElementDestination(value, node, setNodeProp) {
-  if (value) {
-    setNodeProp(node, 'elementDestination', value);
-  }
-}
