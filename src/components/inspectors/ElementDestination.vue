@@ -86,10 +86,10 @@ export default {
     };  
   },
   watch: {
-    customDashboard() {
+    customDashboard(newValue) {
       this.setBpmnValues({
-        title: this.customDashboard.title,
-        url: this.customDashboard.url,
+        title: newValue.title,
+        url: newValue.url,
       });
     },
     externalURL() {
