@@ -118,7 +118,7 @@ export default {
   methods: {
     getValidationErrorForURL(url) {
       if (!this.isValidURL(url)) {
-        return this.$t('invalid URL');
+        return this.$t('Must be a valid URL');
       }
       return '';
     },
