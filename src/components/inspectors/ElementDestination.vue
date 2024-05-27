@@ -13,7 +13,7 @@
       :label="$t('Dashboard')"
       name="Dashboard"
       :helper="$t('Select the dashboard to show the summary of this request when it completes')"
-      v-model="customDashboad"
+      v-model="customDashboard"
       :placeholder="$t('Type here to search')"
       :showLabels="false"
       :allow-empty="false"
@@ -63,7 +63,7 @@ export default {
       validation: '',
       destinationType: null,
       dashboards: [],
-      customDashboad: null,
+      customDashboard: null,
       
       defaultValues: {
         summaryScreen: null,
@@ -86,10 +86,10 @@ export default {
     };  
   },
   watch: {
-    customDashboad() {
+    customDashboard() {
       this.setBpmnValues({
-        title: this.customDashboad.title,
-        url: this.customDashboad.url,
+        title: this.customDashboard.title,
+        url: this.customDashboard.url,
       });
     },
     externalURL() {
@@ -135,7 +135,7 @@ export default {
         this.local = JSON.parse(this.value);
         this.destinationType = this.getDestinationType();
         if (this.destinationType  === 'customDashboard'){
-          this.customDashboad = this.getDestinationValue();
+          this.customDashboard = this.getDestinationValue();
         } 
         if (this.destinationType  === 'externalURL'){
           this.externalURL = this.getDestinationValue();
