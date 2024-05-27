@@ -62,7 +62,7 @@ describe('Tasks', () => {
     cy.get('[data-test=external-url]').parent().get('[class=invalid-feedback]').should('exist');
 
     cy.get('[data-test=external-url]').clear();
-    cy.get('[data-test=external-url]').type('http://processmaker.test/tasks');
+    cy.get('[data-test=external-url]').type('https://processmaker.test/tasks');
     cy.get('[data-test=external-url]').parent().get('[class=invalid-feedback]').should('not.exist');
   });
   
