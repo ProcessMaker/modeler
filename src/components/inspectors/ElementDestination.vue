@@ -131,7 +131,7 @@ export default {
       }
     },
     loadData() {  
-      try {
+      if (this.value) {
         this.local = JSON.parse(this.value);
         this.destinationType = this.getDestinationType();
         if (this.destinationType  === 'customDashboard'){
@@ -140,9 +140,6 @@ export default {
         if (this.destinationType  === 'externalURL'){
           this.externalURL = this.getDestinationValue();
         }
-      } catch (error) {
-        console.error('Error loading data:', error.message);
-        // You might want to handle or report the error further depending on your application's needs
       }
     },
     getDestinationType() {

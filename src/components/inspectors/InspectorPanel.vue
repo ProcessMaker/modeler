@@ -106,7 +106,6 @@ export default {
     'highlightedNode.definition.interstitialScreenRef'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.screenRef'(current, previous) { this.handleAssignmentChanges(current, previous); },
     'highlightedNode.definition.scriptRef'(current, previous) { this.handleAssignmentChanges(current, previous); },
-    // 'highlightedNode.definition.elementDestination'(current, previous) { this.handleAssignmentChanges(current, previous); },
   },
   computed: {
     inspectorHeaderTitle() {
