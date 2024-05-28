@@ -1,12 +1,25 @@
 <template>
   <div>
-    <b-form-group :label="$t('Element Destination')">
-      <b-form-select id="" v-model="destinationType" @change="destinationTypeChange" data-test="element-destination-type">
-        <b-form-select-option :value="null" disabled>{{ $t('Select element destination') }}</b-form-select-option>
-        <option v-for="option in options" :key="option.value" :value="option.value">{{ $t(option.content) }}</option>
-      </b-form-select>
-      <small class="form-text text-muted">{{ $t("Enter the destination...") }}</small>
-    </b-form-group>
+    <form-multi-select
+      :label="$t('Element Destination')"
+      name="ElementDestination"
+      :helper="$t('Enter the destination...')"
+      v-model="elementDestination"
+      :placeholder="$t('Select element destination')"
+      :showLabels="false"
+      :allow-empty="false"
+      :options="options"
+      :loading="loading"
+      optionContent="content"
+      optionValue="value"
+      class="p-0 mb-2"
+      :validation="validation"
+      :searchable="false"
+      :internal-search="false"
+      :preserve-search="false"
+      :clear-on-select="true"
+      data-test="element-destination-type"
+    />
 
     <form-multi-select
       v-if="destinationType === 'customDashboard'"
@@ -26,7 +39,7 @@
       :searchable="true"
       :internal-search="false"
       :preserve-search="false"
-      :clear-on-select="false"
+      :clear-on-select="true"
       @search-change="searchChange"
       data-test="dashboard"
     />
@@ -45,6 +58,7 @@
 
 <script>
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 export default {
   props: {
     options: {
@@ -64,7 +78,7 @@ export default {
       destinationType: null,
       dashboards: [],
       customDashboard: null,
-      
+      elementDestination: null,
       defaultValues: {
         summaryScreen: null,
         customDashboard: null,
@@ -78,19 +92,28 @@ export default {
       local: null,
       loadDashboardsDebounced: null,
       urlPlaceholder: 'https://ci-ba427360a6.engk8s.processmaker.net/processes',
-      dashboardOptions: [
-        { value: 'first', title: 'Dashboard 1' },
-        { value: 'second', title: 'Dashboard 2' },
-      ],
       externalURL: '',
     };  
   },
   watch: {
-    customDashboard(newValue) {
-      this.setBpmnValues({
-        title: newValue.title,
-        url: newValue.url,
-      });
+    elementDestination: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.destinationTypeChange(newValue.value);
+        }
+      },
+      deep: true,
+    },
+    customDashboard: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.setBpmnValues({
+            title: newValue.title,
+            url: newValue.url,
+          });
+        }
+      },
+      deep: true,
     },
     externalURL() {
       this.setBpmnValues(this.externalURL);
@@ -133,6 +156,7 @@ export default {
     loadData() {  
       if (this.value) {
         this.local = JSON.parse(this.value);
+        this.elementDestination = this.getElementDestination();
         this.destinationType = this.getDestinationType();
         if (this.destinationType  === 'customDashboard'){
           this.customDashboard = this.getDestinationValue();
@@ -142,6 +166,10 @@ export default {
         }
       }
     },
+    getElementDestination() {
+      if (!this.local?.type) return null;
+      return this.options.find(element => element.value === this.local.type);
+    },
     getDestinationType() {
       if (!this.local?.type) return null;
       return this.local?.type;
@@ -150,14 +178,14 @@ export default {
       if (!this.local?.value) return null;
       return this.local?.value;
     },
-    destinationTypeChange(){
-      this.resetProperties(this.destinationType); 
+    destinationTypeChange(newType){
+      this.destinationType = newType;
+      this.resetProperties(); 
       const data =  JSON.stringify({
         type: this.destinationType,
         value: this.urlModel[this.destinationType],
       });
       this.$emit('input', data);
-      
     },
 
     resetProperties() {

@@ -33,37 +33,74 @@ describe('Tasks', () => {
     waitToRenderAllShapes();
 
     getElementAtPosition(taskPosition).click();
+
+    // Task source (default)
     cy.get('[data-test=element-destination-type]').should('exist');
-
-    cy.get('[data-test=element-destination-type]').select('Task Source (Default)').should('have.value', 'taskSource');
+    cy.get('[data-test=element-destination-type]').click();
+    cy.get('[id=option-1-0]').click();
+    cy.get('[class=multiselect__single]').should('exist');
+    cy.get('[class=multiselect__single]').contains('Task Source (Default)');
     cy.get('[data-test=dashboard]').should('not.exist');
-    cy.get('[data-test=custom-url]').should('not.exist');
+    cy.get('[data-test=external-url]').should('not.exist');
 
-    cy.get('[data-test=element-destination-type]').select('Task List').should('have.value', 'taskList');
+    // Process Launchpad
+    cy.get('[data-test=element-destination-type]').should('exist');
+    cy.get('[data-test=element-destination-type]').click();
+    cy.get('[id=option-1-2]').click();
+    cy.get('[class=multiselect__single]').should('exist');
+    cy.get('[class=multiselect__single]').contains('Process Launchpad');
     cy.get('[data-test=dashboard]').should('not.exist');
-    cy.get('[data-test=custom-url]').should('not.exist');
+    cy.get('[data-test=external-url]').should('not.exist');
 
-    cy.get('[data-test=element-destination-type]').select('Process Launchpad').should('have.value', 'processLaunchpad');
+    // Process Launchpad
+    cy.get('[data-test=element-destination-type]').should('exist');
+    cy.get('[data-test=element-destination-type]').click();
+    cy.get('[id=option-1-3]').click();
+    cy.get('[class=multiselect__single]').should('exist');
+    cy.get('[class=multiselect__single]').contains('Welcome Dashboard');
     cy.get('[data-test=dashboard]').should('not.exist');
-    cy.get('[data-test=custom-url]').should('not.exist');
+    cy.get('[data-test=external-url]').should('not.exist');
 
-    cy.get('[data-test=element-destination-type]').select('Welcome Dashboard').should('have.value', 'homepageDashboard');
-    cy.get('[data-test=dashboard]').should('not.exist');
-    cy.get('[data-test=custom-url]').should('not.exist');
-
-    cy.get('[data-test=element-destination-type]').select('Custom Dashboard').should('have.value', 'customDashboard');
+    // Custom Dashboard
+    cy.get('[data-test=element-destination-type]').should('exist');
+    cy.get('[data-test=element-destination-type]').click();
+    cy.get('[id=option-1-4]').click();
+    cy.get('[class=multiselect__single]').should('exist');
+    cy.get('[class=multiselect__single]').contains('Custom Dashboard');
     cy.get('[data-test=dashboard]').should('exist');
-    cy.get('[data-test=custom-url]').should('not.exist');
+    cy.get('[data-test=external-url]').should('not.exist');
 
-    cy.get('[data-test=element-destination-type]').select('External URL').should('have.value', 'externalURL');
+    // Custom Dashboard
+    cy.get('[data-test=element-destination-type]').should('exist');
+    cy.get('[data-test=element-destination-type]').click();
+    cy.get('[id=option-1-5]').click();
+    cy.get('[class=multiselect__single]').should('exist');
+    cy.get('[class=multiselect__single]').contains('External URL');
     cy.get('[data-test=dashboard]').should('not.exist');
     cy.get('[data-test=external-url]').should('exist');
-    cy.get('[data-test=external-url]').type('INVALID URL');
-    cy.get('[data-test=external-url]').parent().get('[class=invalid-feedback]').should('exist');
+    cy.get('[data-test=downloadXMLBtn]').click();
+    const validXML = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="node_1" name="Start Event" />
+    <bpmn:task id="node_2" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;externalURL&#34;,&#34;value&#34;:null}" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
+        <dc:Bounds x="150" y="210" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
+        <dc:Bounds x="340" y="310" width="116" height="76" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>`;
 
-    cy.get('[data-test=external-url]').clear();
-    cy.get('[data-test=external-url]').type('https://processmaker.test/tasks');
-    cy.get('[data-test=external-url]').parent().get('[class=invalid-feedback]').should('not.exist');
+    cy.window()
+      .its('xml')
+      .then(xml => xml.trim())
+      .should('eq', validXML.trim());
   });
   
   it('Correctly renders task after undo/redo', () => {
