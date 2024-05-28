@@ -79,23 +79,7 @@ describe('Tasks', () => {
     cy.get('[data-test=dashboard]').should('not.exist');
     cy.get('[data-test=external-url]').should('exist');
     cy.get('[data-test=downloadXMLBtn]').click();
-    const validXML = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">
-  <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:startEvent id="node_1" name="Start Event" />
-    <bpmn:task id="node_2" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;externalURL&#34;,&#34;value&#34;:null}" />
-  </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">
-        <dc:Bounds x="150" y="210" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">
-        <dc:Bounds x="340" y="310" width="116" height="76" />
-      </bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn:definitions>`;
+    const validXML = '<?xml version="1.0" encoding="UTF-8"?>\n<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:pm="http://processmaker.com/BPMN/2.0/Schema.xsd" id="Definitions_03dabax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="ProcessMaker Modeler" exporterVersion="1.0">\n  <bpmn:process id="Process_1" isExecutable="true">\n    <bpmn:startEvent id="node_1" name="Start Event" />\n    <bpmn:task id="node_2" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;externalURL&#34;,&#34;value&#34;:null}" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id="BPMNDiagram_1">\n    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">\n      <bpmndi:BPMNShape id="node_1_di" bpmnElement="node_1">\n        <dc:Bounds x="150" y="210" width="36" height="36" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id="node_2_di" bpmnElement="node_2">\n        <dc:Bounds x="340" y="310" width="116" height="76" />\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>';
 
     cy.window()
       .its('xml')
