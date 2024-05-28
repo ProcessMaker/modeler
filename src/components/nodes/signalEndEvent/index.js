@@ -4,7 +4,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import { signalSelector, default as signalEventDefinition } from '../signalEventDefinition';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
-
+import elementDestination from '@/components/inspectors/endEventElementDestination';
 export const id = 'processmaker-modeler-signal-end-event';
 
 export default merge(cloneDeep(endEventConfig), {
@@ -28,6 +28,7 @@ export default merge(cloneDeep(endEventConfig), {
           items: [
             {},
             signalSelector('Select the signal reference that this element throws'),
+            elementDestination,
           ],
         },
       ],
