@@ -216,6 +216,12 @@ export default {
           icon: '',
           dataTest: 'process-discard-draft',
         },
+        {
+          value: 'documentation',
+          content: this.$t('Documentation'),
+          icon: '',
+          dataTest: 'process-documentation',
+        },
       ],
     };
   },
@@ -249,6 +255,10 @@ export default {
         case 'save-pm-block':
           this.$emit('publishPmBlock');
           break;
+        case 'documentation':
+          this.$emit('processDocumentation');
+          window.ProcessMaker.EventBus.$emit('processDocumentation');
+          break;
         default:
           this.$emit('action', action);
       }
@@ -279,6 +289,14 @@ export default {
     if (childProcess?.asset_type === 'PM_BLOCK') {
       this.ellipsisMenuActions.splice(indexOfActions, 2);
     }
+
+    if (!window.ProcessMaker.packages.includes('package-ai')) {
+      const indexOfDocumentation = this.ellipsisMenuActions.findIndex(object => {
+        return object.value === 'documentation';
+      });
+      this.ellipsisMenuActions.splice(indexOfDocumentation, 1);
+    }
+
   },
 };
 </script>
