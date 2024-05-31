@@ -290,7 +290,7 @@ export default {
       this.ellipsisMenuActions.splice(indexOfActions, 2);
     }
 
-    if (!window.ProcessMaker.packages.includes('package-ai')) {
+    if (!(window.ProcessMaker && window.ProcessMaker.packages && window.ProcessMaker.packages.includes('package-ai'))) {
       const indexOfDocumentation = this.ellipsisMenuActions.findIndex(object => {
         return object.value === 'documentation';
       });
