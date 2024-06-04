@@ -256,8 +256,8 @@ export default {
           this.$emit('publishPmBlock');
           break;
         case 'documentation':
-          this.$emit('processDocumentation');
-          window.ProcessMaker.EventBus.$emit('processDocumentation');
+          const childProcess = this.$root.$children[0]?.process;
+          window.location.href = `/modeler/${childProcess.id}/documentation`;
           break;
         default:
           this.$emit('action', action);
