@@ -235,10 +235,7 @@ export default {
     filterValidDashboards(dashboards) {
       return dashboards;
     },
-    setBpmnValues(value, stringify=true) {
-      if (stringify) {
-
-      }
+    setBpmnValues(value) {
       const data =  JSON.stringify({
         type: this.destinationType,
         value,
@@ -247,7 +244,7 @@ export default {
     },
     onProcessInput(event) {
       this.anotherProcess = event;
-      this.setBpmnValues(event, false);
+      this.setBpmnValues(event);
     }
   },
 };
