@@ -256,8 +256,7 @@ export default {
           this.$emit('publishPmBlock');
           break;
         case 'documentation':
-          const childProcess = this.$root.$children[0]?.process;
-          window.location.href = `/modeler/${childProcess.id}/documentation`;
+          window.location.href = `/modeler/${this.$root.$children[0]?.process?.id}/documentation`;
           break;
         default:
           this.$emit('action', action);
