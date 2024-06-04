@@ -245,7 +245,7 @@ export default {
     onProcessInput(event) {
       this.anotherProcess = event;
       this.setBpmnValues(event);
-    }
+    },
   },
 };
 </script>
