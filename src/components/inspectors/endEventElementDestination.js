@@ -9,12 +9,13 @@ export default {
     name: 'elementDestination',
     destinationType: 'taskSource',
     options: [
-      { value: 'summaryScreen', content: 'Summary Screen' },
+      { value: 'summaryScreen', content: 'Summary Screen (Default)' },
       { value: 'taskList', content: 'Task List' },
       { value: 'processLaunchpad', content: 'Process Launchpad' },
       { value: 'homepageDashboard', content: 'Welcome Screen' },
       { value: 'customDashboard', content: 'Dashboard' },
       { value: 'externalURL', content: 'External URL' },
+      { value: 'anotherProcess', content: 'Another Process' },
     ],
   },
 };

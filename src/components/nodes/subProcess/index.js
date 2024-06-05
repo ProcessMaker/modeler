@@ -1,5 +1,5 @@
 import component from './subProcess';
-import SubProcessFormSelect from './SubProcessFormSelect';
+import ProcessFormSelect from '@/components/inspectors/ProcessFormSelect';
 import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from '@/components/nodes/task/taskConfig';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
@@ -83,7 +83,7 @@ export default {
               config: nameConfigSettings,
             },
             {
-              component: SubProcessFormSelect,
+              component: ProcessFormSelect,
               config: {
                 name: 'config',
               },
