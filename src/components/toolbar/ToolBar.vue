@@ -63,6 +63,7 @@
             <EllipsisMenu
               :actions="combinedMenuActions"
               :divider="false"
+              :lauchpad="true"
               @navigate="onNavigate"
               @show="onShow"
               @hide="onHide"
