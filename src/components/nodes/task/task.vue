@@ -166,6 +166,21 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    const docElement = this.node?.definition?.documentation;
+    const doc = Array.isArray(docElement)
+      ? (docElement[0].text ?? '').trim()
+      : (docElement ?? '').trim();
+
+    const view = this.paper.findViewByModel(this.shape);
+
+    // TODO try to avoid the interval
+    const interval = window.setInterval(() => {
+      if (view.$('circle').length > 0) {
+        view.$('circle').css('display', (doc ? 'block' : 'none'));
+        clearInterval(interval);
+      }
+    }, 200);
   },
 };
 </script>
