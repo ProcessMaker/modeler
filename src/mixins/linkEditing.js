@@ -108,8 +108,7 @@ export default {
           }, 1000);
         }
       });
-      this.paperManager.addEventHandler('cell:mouseout', (view, a, b, c, d) => {
-
+      this.paperManager.addEventHandler('cell:mouseout', () => {
         clearTimeout(this.timeout);
         this.timeout = null;
         if (this.hoveredLinkModel) {
