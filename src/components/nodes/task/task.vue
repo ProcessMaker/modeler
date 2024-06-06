@@ -175,6 +175,7 @@ export default {
     const view = this.paper.findViewByModel(this.shape);
 
     // TODO try to avoid the interval
+    view.$('circle').css('display', 'none');
     const interval = window.setInterval(() => {
       if (view.$('circle').length > 0) {
         view.$('circle').css('display', (doc ? 'block' : 'none'));

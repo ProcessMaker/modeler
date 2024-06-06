@@ -29,9 +29,9 @@ export default shapes.standard.Rectangle.extend({
     attrs: {
       'image': { 'ref-x': 4, 'ref-y': 4, ref: 'rect', width: 16, height: 16, 'data-test': 'nodeIcon' },
       'documentation': {
-        'cx': 110, 'cy': 70, 'r': 10,
+        'cx': 100, 'cy': 5, 'r': 10,
         'label': '7',
-        'fill': '#8DC8FF', 'stroke': '#2B9DFF', 'strokeWidth': '3',
+        'fill': '#8DC8FF', 'stroke': '#2B9DFF', 'strokeWidth': '3', 'display': 'none',
         ref: 'rect', width: 15, height: 15, 'data-test': 'nodeDocCircle' },
       ...markersAttrs('topLeft', { 'ref-y': 4, ref: 'rect' }),
       ...markersAttrs('topCenter', { 'ref-y': 4, ref: 'rect' }),
