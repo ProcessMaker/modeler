@@ -37,6 +37,8 @@ export default {
       clickPosition: null,
       currentMovingModel: null,
       currentMovingModelCanBisect: null,
+
+      currentHover: null,
     };
   },
   watch: {
@@ -60,8 +62,46 @@ export default {
   methods: {
     linkEditingInit() {
 
+      // TODO better move this to its own file
+      this.paperManager.addEventHandler('cell:mouseleave', (view) => {
+        if (1===1 || view.cid !== this.currentHover) {
+          this.currentHover = null;
+          view.model.attr({
+            documentation: {
+              r: 10,
+              stroke: '#2B9DFF',
+              strokeWidth: '3',
+              fill: '#8DC8FF',
+            },
+          });
+        }
+      });
+
       // Handle hovering a new element on the page
       this.paperManager.addEventHandler('cell:mouseover', (view) => {
+
+
+        // TODO better move this to its own file
+        const docElement = view?.model?.component?.node?.definition?.documentation;
+        const doc = Array.isArray(docElement)
+          ? (docElement[0].text ?? '').trim()
+          : (docElement ?? '').trim();
+
+        if (view.cid !== this.currentHover) {
+          this.currentHover = view.cid;
+        }
+
+        if (doc) {
+          view.model.attr({
+            documentation: {
+              r: 20,
+              fill: '#1572C2',
+              strokeWidth: 0,
+            },
+          });
+        }
+
+
         if (view?.model?.isLink() && this.addingEligibleItem()) {
           this.timeout = setTimeout(() => {
             this.hoveredLinkModel = view.model;
