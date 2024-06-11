@@ -79,7 +79,6 @@ export default {
   font-weight: 700;
   width: 35px;
   height: 35px;
-  border-radius: 00%;
   align-items: center;
   text-align: center;
   vertical-align: middle;
