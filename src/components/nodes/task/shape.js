@@ -13,7 +13,10 @@ export default shapes.standard.Rectangle.extend({
     selector: 'image',
   }, {
     tagName: 'circle',
-    selector: 'documentation',
+    selector: 'doccircle',
+  }, {
+    tagName: 'text',
+    selector: 'doclabel',
   },
   markersMarkup('topLeft'),
   markersMarkup('topCenter'),
@@ -28,7 +31,13 @@ export default shapes.standard.Rectangle.extend({
     size: { width: 100, height: 60 },
     attrs: {
       'image': { 'ref-x': 4, 'ref-y': 4, ref: 'rect', width: 16, height: 16, 'data-test': 'nodeIcon' },
-      'documentation': {
+      'doclabel': {
+        'ref-x': 92,
+        'ref-y': -4, ref: 'rect', fontSize: 20, fontWeight: 'bold',
+        width: 16, height: 16, 'data-test': 'nodeDocLabel', 'text':'',
+        fill: 'white', display: 'none',
+      },
+      'doccircle': {
         'cx': 100, 'cy': 5, 'r': 10,
         'label': '7',
         'fill': '#8DC8FF', 'stroke': '#2B9DFF', 'strokeWidth': '3', 'display': 'none',

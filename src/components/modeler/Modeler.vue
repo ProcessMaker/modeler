@@ -102,6 +102,8 @@
         :panelWidth="previewPanelWidth"
       />
 
+      <NodeDocumentation ref="nodeDocumentation"/>
+
       <InspectorPanel
         v-if="showComponent"
         ref="inspector-panel"
@@ -206,6 +208,7 @@
 
 <script>
 import Vue from 'vue';
+import NodeDocumentation from '../documenting/NodeDocumentation.vue';
 import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
@@ -283,6 +286,7 @@ import validPreviewElements from '@/components/crown/crownButtons/validPreviewEl
 
 export default {
   components: {
+    NodeDocumentation,
     PreviewPanel,
     ToolBar,
     ExplorerRail,
@@ -541,6 +545,29 @@ export default {
       this.paper = this.paperManager.paper;
     },
     addEventHandlers() {
+
+      window.ProcessMaker.EventBus.$on('show-documentation', () => {
+        if (this.$refs['nodeDocumentation'] && this.$refs['nodeDocumentation'].isVisible === false) {
+          this.$refs['nodeDocumentation'].text = evento.text;
+          this.$refs['nodeDocumentation'].number = evento.number;
+          this.$refs['nodeDocumentation'].position.x = evento.position.x + 290;
+          this.$refs['nodeDocumentation'].position.y = evento.position.y + 50;
+          this.$refs['nodeDocumentation'].elementType = evento.node.definition.$type.replace('bpmn:', '');
+          this.$refs['nodeDocumentation'].elementTitle = evento.node.definition.name;
+          this.$refs['nodeDocumentation'].isVisible = true;
+        }
+      });
+
+      window.ProcessMaker.EventBus.$on('hide-documentation', (evento) => {
+        if (this.$refs['nodeDocumentation']) {
+          this.$refs['nodeDocumentation'].text = '';
+          this.$refs['nodeDocumentation'].number = null;
+          this.$refs['nodeDocumentation'].isVisible = false;
+        }
+      });
+
+
+
       this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
       this.handleResize();

@@ -64,14 +64,19 @@ export default {
 
       // TODO better move this to its own file
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
+        window.ProcessMaker.EventBus.$emit('hide-documentation');
+        //TODO remove the 1===1
         if (1===1 || view.cid !== this.currentHover) {
           this.currentHover = null;
           view.model.attr({
-            documentation: {
+            doccircle: {
               r: 10,
               stroke: '#2B9DFF',
               strokeWidth: '3',
               fill: '#8DC8FF',
+            },
+            doclabel: {
+              display:'none',
             },
           });
         }
@@ -79,7 +84,6 @@ export default {
 
       // Handle hovering a new element on the page
       this.paperManager.addEventHandler('cell:mouseover', (view) => {
-
 
         // TODO better move this to its own file
         const docElement = view?.model?.component?.node?.definition?.documentation;
@@ -92,15 +96,19 @@ export default {
         }
 
         if (doc) {
+          window.ProcessMaker.EventBus.$emit('show-documentation', {number: view.model.component._uid, text: doc, position: view?.model?.attributes?.position, node: view.model.component.node});
+
           view.model.attr({
-            documentation: {
+            doccircle: {
               r: 20,
               fill: '#1572C2',
               strokeWidth: 0,
             },
+            doclabel: {
+              display: 'block',
+            },
           });
         }
-
 
         if (view?.model?.isLink() && this.addingEligibleItem()) {
           this.timeout = setTimeout(() => {

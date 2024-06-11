@@ -175,10 +175,29 @@ export default {
     const view = this.paper.findViewByModel(this.shape);
 
     // TODO try to avoid the interval
-    view.$('circle').css('display', 'none');
+    //view.$('circle').css('display', 'none');
+
+    view.model.attr({
+      doccircle: {
+        display:'none',
+      },
+      doclabel: {
+        display: 'none',
+        text:this._uid,
+        'ref-x': (95 - String(this._uid).length * 2),
+      },
+    });
+
     const interval = window.setInterval(() => {
       if (view.$('circle').length > 0) {
-        view.$('circle').css('display', (doc ? 'block' : 'none'));
+        view.model.attr({
+          doccircle: {
+            display:(doc ? 'block' : 'none'),
+          },
+          doclabel: {
+            display: 'none',
+          },
+        });
         clearInterval(interval);
       }
     }, 200);
