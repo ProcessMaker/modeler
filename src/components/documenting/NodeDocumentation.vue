@@ -6,21 +6,24 @@
     <div class="content">
       <div class="element-type">{{ elementType }}</div>
       <div class="element-title">{{ elementTitle }}</div>
-      <div class="element-description" v-html="text"/>
+      <div class="element-description" v-html="safeString(text)"/>
     </div>
   </div>
 </template>
 
 <script>
+
+import {escape as lodashEscape} from 'lodash';
+
 export default {
   name: 'NodeDocumentation',
   data() {
     return {
       isVisible: false,
-      text: 'pp',
-      number: 22,
-      elementType: 'Start Event',
-      elementTitle: 'Inicio del Proceso',
+      text: '',
+      number: 0,
+      elementType: ' Event',
+      elementTitle: '',
       position: {
         x: 0,
         y: 0,
@@ -28,6 +31,9 @@ export default {
     };
   },
   methods: {
+    safeString: (string) => {
+      return lodashEscape(string.replace(/<\/[^>]+(>|$)/g, ''));
+    },
   },
 };
 </script>
