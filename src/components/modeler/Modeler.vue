@@ -546,19 +546,19 @@ export default {
     },
     addEventHandlers() {
 
-      window.ProcessMaker.EventBus.$on('show-documentation', () => {
+      window.ProcessMaker.EventBus.$on('show-documentation', (event) => {
         if (this.$refs['nodeDocumentation'] && this.$refs['nodeDocumentation'].isVisible === false) {
-          this.$refs['nodeDocumentation'].text = evento.text;
-          this.$refs['nodeDocumentation'].number = evento.number;
-          this.$refs['nodeDocumentation'].position.x = evento.position.x + 290;
-          this.$refs['nodeDocumentation'].position.y = evento.position.y + 50;
-          this.$refs['nodeDocumentation'].elementType = evento.node.definition.$type.replace('bpmn:', '');
-          this.$refs['nodeDocumentation'].elementTitle = evento.node.definition.name;
+          this.$refs['nodeDocumentation'].text = event.text;
+          this.$refs['nodeDocumentation'].number = event.number;
+          this.$refs['nodeDocumentation'].position.x = event.position.x + 290;
+          this.$refs['nodeDocumentation'].position.y = event.position.y + 50;
+          this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
+          this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
           this.$refs['nodeDocumentation'].isVisible = true;
         }
       });
 
-      window.ProcessMaker.EventBus.$on('hide-documentation', (evento) => {
+      window.ProcessMaker.EventBus.$on('hide-documentation', () => {
         if (this.$refs['nodeDocumentation']) {
           this.$refs['nodeDocumentation'].text = '';
           this.$refs['nodeDocumentation'].number = null;
