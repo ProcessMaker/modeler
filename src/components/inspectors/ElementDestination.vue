@@ -78,7 +78,7 @@ export default {
       destinationType: null,
       dashboards: [],
       customDashboard: null,
-      elementDestination: this.options[0] || null ,
+      elementDestination: this.options[0] || nul ,
       defaultValues: {
         summaryScreen: null,
         customDashboard: null,
