@@ -73,6 +73,7 @@ export default {
   
   data() {
     return {
+      loading: false,
       validation: '',
       destinationType: null,
       dashboards: [],
