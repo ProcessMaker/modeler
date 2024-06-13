@@ -54,12 +54,19 @@
       data-test="external-url"
     />
   </div>
+  <process-form-select
+    v-if="destinationType === 'anotherProcess'"
+    @input="onProcessInput"
+    :value="anotherProcess"
+  />
 </template>
 
 <script>
+import ProcessFormSelect from '@/components/inspectors/ProcessFormSelect';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
 export default {
+  components: { ProcessFormSelect },
   props: {
     options: {
       type: Array,
@@ -79,6 +86,7 @@ export default {
       dashboards: [],
       customDashboard: null,
       elementDestination: this.options[0] || null,
+      anotherProcess: '{}',
       defaultValues: {
         summaryScreen: null,
         customDashboard: null,
@@ -87,6 +95,7 @@ export default {
         homepageDashboard: '/process-browser',
         taskList: '/tasks',
         taskSource: null,
+        anotherProcess: '{}',
       },
       urlModel: null,
       local: null,
@@ -117,6 +126,9 @@ export default {
     },
     externalURL() {
       this.setBpmnValues(this.externalURL);
+    },
+    anotherProcess() {
+      this.setBpmnValues(this.anotherProcess);
     },
   },
   computed: {
@@ -163,6 +175,9 @@ export default {
         } 
         if (this.destinationType  === 'externalURL'){
           this.externalURL = this.getDestinationValue();
+        }
+        if (this.destinationType  === 'anotherProcess'){
+          this.anotherProcess = this.getDestinationValue();
         }
       }
     },
@@ -226,6 +241,10 @@ export default {
         value,
       });
       this.$emit('input', data);
+    },
+    onProcessInput(event) {
+      this.anotherProcess = event;
+      this.setBpmnValues(event);
     },
   },
 };
