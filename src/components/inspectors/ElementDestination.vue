@@ -53,12 +53,12 @@
       :helper="$t('Determine de URL where the request will end')"
       data-test="external-url"
     />
+    <process-form-select
+      v-if="destinationType === 'anotherProcess'"
+      @input="onProcessInput"
+      :value="anotherProcess"
+    />
   </div>
-  <process-form-select
-    v-if="destinationType === 'anotherProcess'"
-    @input="onProcessInput"
-    :value="anotherProcess"
-  />
 </template>
 
 <script>
