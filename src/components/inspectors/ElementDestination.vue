@@ -53,20 +53,13 @@
       :helper="$t('Determine de URL where the request will end')"
       data-test="external-url"
     />
-    <process-form-select
-      v-if="destinationType === 'anotherProcess'"
-      @input="onProcessInput"
-      :value="anotherProcess"
-    />
   </div>
 </template>
 
 <script>
-import ProcessFormSelect from '@/components/inspectors/ProcessFormSelect';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
 export default {
-  components: { ProcessFormSelect },
   props: {
     options: {
       type: Array,
@@ -80,13 +73,11 @@ export default {
   
   data() {
     return {
-      loading: false,
       validation: '',
       destinationType: null,
       dashboards: [],
       customDashboard: null,
-      elementDestination: null,
-      anotherProcess: '{}',
+      elementDestination: this.options[0] || null,
       defaultValues: {
         summaryScreen: null,
         customDashboard: null,
@@ -95,7 +86,6 @@ export default {
         homepageDashboard: '/process-browser',
         taskList: '/tasks',
         taskSource: null,
-        anotherProcess: '{}',
       },
       urlModel: null,
       local: null,
@@ -107,7 +97,7 @@ export default {
   watch: {
     elementDestination: {
       handler(newValue, oldValue) {
-        if (!isEqual(newValue, oldValue)) {
+        if (newValue && !isEqual(newValue, oldValue)) {
           this.destinationTypeChange(newValue.value);
         }
       },
@@ -126,9 +116,6 @@ export default {
     },
     externalURL() {
       this.setBpmnValues(this.externalURL);
-    },
-    anotherProcess() {
-      this.setBpmnValues(this.anotherProcess);
     },
   },
   computed: {
@@ -175,9 +162,6 @@ export default {
         } 
         if (this.destinationType  === 'externalURL'){
           this.externalURL = this.getDestinationValue();
-        }
-        if (this.destinationType  === 'anotherProcess'){
-          this.anotherProcess = this.getDestinationValue();
         }
       }
     },
@@ -241,10 +225,6 @@ export default {
         value,
       });
       this.$emit('input', data);
-    },
-    onProcessInput(event) {
-      this.anotherProcess = event;
-      this.setBpmnValues(event);
     },
   },
 };
