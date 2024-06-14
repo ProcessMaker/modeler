@@ -2337,11 +2337,8 @@ export default {
           return;
         }
 
-        let definition = node.definition;
-
         if (node.type === 'processmaker-modeler-task') {
-          definition.screenRef = el.screen_id;
-          store.commit('updateNodeProp', { node, key: 'definition', value: definition });
+          store.commit('updateNodeProp', { node, key: 'screenRef', value: el.screen_id });
           this.$emit('save-state');
         }
       });
@@ -2354,11 +2351,8 @@ export default {
           return;
         }
 
-        let definition = node.definition;
-
         if (node.type === 'processmaker-modeler-script-task') {
-          definition.scriptRef = el.script_id;
-          store.commit('updateNodeProp', { node, key: 'definition', value: definition });
+          store.commit('updateNodeProp', { node, key: 'scriptRef', value: el.script_id });
           this.$emit('save-state');
         }
       });
