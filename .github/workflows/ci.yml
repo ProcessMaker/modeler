@@ -47,8 +47,8 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: true
-          start: npm run serve
-          wait-on: http://localhost:8080/
+          start: npm run dev
+          wait-on: http://localhost:5173/
           config-file: cypress.config.js
           spec: "tests/e2e/specs/**/*"
           record: true

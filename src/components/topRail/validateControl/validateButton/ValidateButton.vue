@@ -13,6 +13,8 @@
 
 <script>
 import InlineSvg from 'vue-inline-svg';
+import validateCloseIcon from '@/assets/topRail/validate-close.svg';
+import validateOpenIcon from '@/assets/topRail/validate-open.svg';
 
 export default {
   components: {
@@ -21,8 +23,8 @@ export default {
   data() {
     return {
       isOpen: false,
-      validateCloseIcon: require('@/assets/topRail/validate-close.svg'),
-      validateOpenIcon: require('@/assets/topRail/validate-open.svg'),
+      validateCloseIcon,
+      validateOpenIcon,
     };
   },
   methods: {

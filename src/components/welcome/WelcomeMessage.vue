@@ -19,7 +19,7 @@
               </span>
               <span>{{ aiProcessButtonSubtitle }}</span>
             </div>
-            
+
           </div>
         </div>
       </div>
@@ -41,6 +41,7 @@
 </template>
 <script>
 import InlineSvg from 'vue-inline-svg';
+import proceC2Icon from '@/assets/proceC2.svg';
 
 export default {
   name: 'WelcomeMessage',
@@ -49,7 +50,7 @@ export default {
   },
   data() {
     return {
-      proceC2Icon: require('@/assets/proceC2.svg'),
+      proceC2Icon,
       lastSession: {},
       history: [],
       processId: window.ProcessMaker?.modeler?.process?.id,
@@ -110,7 +111,7 @@ export default {
     getLastSharedHistory() {
       const url = '/package-ai/getLastSharedSessionHistory';
 
-      const params = {  
+      const params = {
         sharedSessionId: this.promptSessionId,
       };
 
@@ -162,8 +163,8 @@ export default {
     formatDateTime(value) {
       let config = '';
       if (
-        typeof window.ProcessMaker !== 'undefined' && 
-        window.ProcessMaker.user && 
+        typeof window.ProcessMaker !== 'undefined' &&
+        window.ProcessMaker.user &&
         window.ProcessMaker.user.datetime_format
       ) {
         config = window.ProcessMaker.user.datetime_format;

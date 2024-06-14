@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import cursorIconSvg from '@/components/multiplayer/remoteCursor/cursor.svg';
 export default {
   props: {
     data: {
@@ -18,7 +19,7 @@ export default {
   },
   data() {
     return {
-      cursorIcon: require('@/components/multiplayer/remoteCursor/cursor.svg'),
+      cursorIcon: cursorIconSvg,
     };
   },
   computed: {

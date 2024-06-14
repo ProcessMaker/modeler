@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:20-alpine
 
 RUN apk add python3 make g++\
     && rm -rf /var/cache/apk/*
@@ -11,4 +11,4 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 5173

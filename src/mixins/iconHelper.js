@@ -3,12 +3,14 @@ export default {
     containsSvg(icon) {
       // Regular expression to match a URL pattern
       const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w@?^=%&:/~+#-]*)*$/;
-      
+
       // Regular expression to check if the string contains '.svg'
       const svgPattern = /\.svg/;
-      
+
+      const dataImagePattern = /^data:image\/svg\+xml;base64,[A-Za-z0-9+/=]+$/;
+
       // Check if the variable is a string and either a URL or contains '.svg'
-      return typeof icon === 'string' && (urlPattern.test(icon) || svgPattern.test(icon));
+      return typeof icon === 'string' && (urlPattern.test(icon) || svgPattern.test(icon) || dataImagePattern.test(icon));
     },
   },
 };

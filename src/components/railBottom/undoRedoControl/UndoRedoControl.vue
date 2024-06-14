@@ -27,8 +27,10 @@
 <script>
 import InlineSvg from 'vue-inline-svg';
 import undoRedoStore from '@/undoRedoStore';
+import undoIcon from '@/assets/railBottom/undo.svg';
+import redoIcon from '@/assets/railBottom/redo.svg';
 
-export default ({
+export default {
   components: {
     InlineSvg,
   },
@@ -39,8 +41,8 @@ export default ({
   },
   data() {
     return {
-      undoIcon: require('@/assets/railBottom/undo.svg'),
-      redoIcon: require('@/assets/railBottom/redo.svg'),
+      undoIcon,
+      redoIcon,
     };
   },
   mounted() {
@@ -87,7 +89,7 @@ export default ({
         .then(() => this.$emit('load-xml'));
     },
   },
-});
+};
 </script>
 
 <style lang="scss" scoped src="./undoRedoControl.scss"></style>

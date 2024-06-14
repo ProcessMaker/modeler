@@ -39,8 +39,9 @@ import InlineSvg from 'vue-inline-svg';
 import nodeTypesStore from '@/nodeTypesStore';
 import SubmenuPopper from './SubmenuPopper/SubmenuPopper.vue';
 import clickAndDrop from '@/mixins/clickAndDrop';
+import plusIcon from '@/assets/railBottom/plus.svg';
 
-export default ({
+export default {
   components: {
     SubmenuPopper,
     InlineSvg,
@@ -51,7 +52,7 @@ export default ({
   mixins: [clickAndDrop],
   data() {
     return {
-      plusIcon: require('@/assets/railBottom/plus.svg'),
+      plusIcon,
       currentType: null,
     };
   },
@@ -107,6 +108,6 @@ export default ({
       nodeTypesStore.commit('clearFilteredPmBlockNodes');
     },
   },
-});
+};
 </script>
 <style lang="scss" scoped src="./controls.scss"></style>
