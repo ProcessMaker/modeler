@@ -57,7 +57,7 @@ describe('Tasks', () => {
     cy.get('[data-test=element-destination-type]').click();
     cy.get('[id=option-1-3]').click();
     cy.get('[class=multiselect__single]').should('exist');
-    cy.get('[class=multiselect__single]').contains('Welcome Dashboard');
+    cy.get('[class=multiselect__single]').contains('Welcome Screen');
     cy.get('[data-test=dashboard]').should('not.exist');
     cy.get('[data-test=external-url]').should('not.exist');
 
@@ -87,7 +87,7 @@ describe('Tasks', () => {
     //   .then(xml => xml.trim())
     //   .should('eq', validXML.trim());
   });
-  
+
   it('Correctly renders task after undo/redo', () => {
     clickAndDropElement(nodeTypes.task, taskPosition);
     cy.wait(500);
