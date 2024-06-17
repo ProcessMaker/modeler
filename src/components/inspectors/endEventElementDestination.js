@@ -13,7 +13,7 @@ export default {
       { value: 'taskList', content: 'Task List' },
       { value: 'processLaunchpad', content: 'Process Launchpad' },
       { value: 'homepageDashboard', content: 'Welcome Screen' },
-      { value: 'customDashboard', content: 'Dashboard' },
+      { value: 'customDashboard', content: 'Custom Dashboard' },
       { value: 'externalURL', content: 'External URL' },
       { value: 'anotherProcess', content: 'Another Process' },
     ],
