@@ -44,7 +44,7 @@
       data-test="dashboard"
     />
     <form-input
-      v-if="destinationType === 'externalURL'" 
+      v-if="destinationType === 'externalURL'"
       :label="$t('URL')"
       v-model="externalURL"
       :error="getValidationErrorForURL(externalURL)"
@@ -77,7 +77,7 @@ export default {
     },
   },
   name: 'ElementDestination',
-  
+
   data() {
     return {
       loading: false,
@@ -102,7 +102,7 @@ export default {
       loadDashboardsDebounced: null,
       urlPlaceholder: 'https://ci-ba427360a6.engk8s.processmaker.net/processes',
       externalURL: '',
-    };  
+    };
   },
   watch: {
     elementDestination: {
@@ -148,7 +148,6 @@ export default {
   mounted() {
     this.urlModel = { ...this.defaultValues };
     this.loadData();
-    
   },
   methods: {
     getValidationErrorForURL(url) {
@@ -165,14 +164,14 @@ export default {
         return false;
       }
     },
-    loadData() {  
+    loadData() {
       if (this.value) {
         this.local = JSON.parse(this.value);
         this.elementDestination = this.getElementDestination();
         this.destinationType = this.getDestinationType();
         if (this.destinationType  === 'customDashboard'){
           this.customDashboard = this.getDestinationValue();
-        } 
+        }
         if (this.destinationType  === 'externalURL'){
           this.externalURL = this.getDestinationValue();
         }
@@ -193,9 +192,9 @@ export default {
       if (!this.local?.value) return null;
       return this.local?.value;
     },
-    destinationTypeChange(newType){
+    destinationTypeChange(newType) {
       this.destinationType = newType;
-      this.resetProperties(); 
+      this.resetProperties();
       const data =  JSON.stringify({
         type: this.destinationType,
         value: this.urlModel[this.destinationType],
@@ -204,7 +203,11 @@ export default {
     },
 
     resetProperties() {
-      this.urlModel = { ...this.defaultValues };
+      this.urlModel = {
+        ...this.defaultValues,
+        customDashboard: this.customDashboard,
+        anotherProcess: this.anotherProcess,
+      };
     },
     searchChange(filter) {
       this.loadDashboardsDebounced(filter);
