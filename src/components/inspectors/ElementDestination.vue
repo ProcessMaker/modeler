@@ -85,7 +85,7 @@ export default {
       destinationType: null,
       dashboards: [],
       customDashboard: null,
-      elementDestination: null,
+      elementDestination: this.options[0] || null,
       anotherProcess: '{}',
       defaultValues: {
         summaryScreen: null,
@@ -107,7 +107,7 @@ export default {
   watch: {
     elementDestination: {
       handler(newValue, oldValue) {
-        if (!isEqual(newValue, oldValue)) {
+        if (newValue && !isEqual(newValue, oldValue)) {
           this.destinationTypeChange(newValue.value);
         }
       },
