@@ -81,7 +81,7 @@
     "@cypress/code-coverage": "^3.12.10",
     "@faker-js/faker": "^8.1.0",
     "@panter/vue-i18next": "^0.15.2",
-    "@processmaker/processmaker-bpmn-moddle": "0.14.1",
+    "@processmaker/processmaker-bpmn-moddle": "0.15.0",
     "@types/jest": "^24.9.1",
     "@vue/babel-preset-app": "^5.0.4",
     "@vue/cli-plugin-babel": "~5.0.0",
