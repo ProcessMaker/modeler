@@ -92,7 +92,7 @@ export default {
     };
   },
   watch: {
-    highlightedNode(nVal, oVal) {
+    highlightedNode(newVal, oldVal) {
       if (!isEqual(newVal, oldVal)) {
         document.activeElement.blur();
         this.prepareData();
