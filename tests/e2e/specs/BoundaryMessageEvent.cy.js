@@ -18,7 +18,7 @@ describe('Boundary Message Event', () => {
   it('Render an interrupting boundary message event', () => {
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
 
-    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_14" name="Boundary Message Event" attachedToRef="node_8"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_15" name="Boundary Message Event" attachedToRef="node_9"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     waitToRenderAllShapes();
@@ -38,7 +38,7 @@ describe('Boundary Message Event', () => {
 
     const interrupting = '[name=cancelActivity]';
     cy.get(interrupting).click();
-    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_14" name="Boundary Message Event" cancelActivity="false" attachedToRef="node_8"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
+    const boundaryMessageEventXML = '<bpmn:boundaryEvent id="node_15" name="Boundary Message Event" cancelActivity="false" attachedToRef="node_9"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>';
 
     cy.get('[data-test=downloadXMLBtn]').click();
     cy.window()

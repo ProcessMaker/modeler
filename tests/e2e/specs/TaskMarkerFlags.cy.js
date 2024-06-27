@@ -23,7 +23,7 @@ describe('Task Marker Flags', () => {
 
   it('sets a task as "for compensation"', () => {
     cy.get('[data-test=for-compensation').check({ force: true });
-    assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" />');
+    assertDownloadedXmlContainsExpected('<bpmn:task id="node_2" name="Form Task" isForCompensation="true" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />');
     assertBottomCenterTaskMarkerHasImage('compensation');
   });
 
@@ -46,7 +46,7 @@ describe('Task Marker Flags', () => {
     assertBottomCenterTaskMarkerHasImage('compensation');
     assertBottomCenterTaskMarkerHasImage('loop', 1);
     assertDownloadedXmlContainsExpected(`
-      <bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester">
+      <bpmn:task id="node_1" name="Form Task" isForCompensation="true" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}">
         <bpmn:standardLoopCharacteristics id="node_1_inner_2" />
       </bpmn:task>
     `);
