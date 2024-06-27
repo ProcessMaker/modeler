@@ -85,7 +85,7 @@ export default {
       destinationType: null,
       dashboards: [],
       customDashboard: null,
-      elementDestination: this.options[0] || null,
+      elementDestination: null,
       anotherProcess: '{}',
       defaultValues: {
         summaryScreen: null,
@@ -165,6 +165,8 @@ export default {
       }
     },
     loadData() {
+      this.elementDestination = this.options?.[0] ?? null;
+
       if (this.value) {
         this.local = JSON.parse(this.value);
         this.elementDestination = this.getElementDestination();
