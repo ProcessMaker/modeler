@@ -173,7 +173,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
     waitToRenderAllShapes();
 
     const taskXml = '<bpmn:task id="node_2" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />';
-    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_11" name="Boundary Timer Event" attachedToRef="node_2">';
+    const boundaryEventOnTaskXml = '<bpmn:boundaryEvent id="node_12" name="Boundary Timer Event" attachedToRef="node_2">';
 
     assertDownloadedXmlContainsExpected(taskXml, boundaryEventOnTaskXml);
 
@@ -196,8 +196,8 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
           .trigger('mouseup')
           .then(waitToRenderAllShapes)
           .then(() => {
-            const task2Xml = '<bpmn:task id="node_12" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />';
-            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_11" name="Boundary Timer Event" attachedToRef="node_12">';
+            const task2Xml = '<bpmn:task id="node_13" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />';
+            const boundaryEventOnTask2Xml = '<bpmn:boundaryEvent id="node_12" name="Boundary Timer Event" attachedToRef="node_13">';
 
             assertDownloadedXmlContainsExpected(task2Xml, boundaryEventOnTask2Xml);
             assertDownloadedXmlDoesNotContainExpected(boundaryEventOnTaskXml);

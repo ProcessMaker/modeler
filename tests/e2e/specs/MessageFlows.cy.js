@@ -256,10 +256,10 @@ describe('Message Flows', { scrollBehavior: false }, () => {
     connectNodesWithFlow('generic-flow-button', startEventPosition, boundaryEventPosition, 'center');
 
     const endEventId = 'node_3';
-    const boundaryEventId = 'node_18';
+    const boundaryEventId = 'node_19';
     const endEventXml = `<bpmn:endEvent id="${endEventId}" name="Message End Event">`;
-    const boundaryEventXml = `<bpmn:boundaryEvent id="${boundaryEventId}" name="Boundary Message Event" attachedToRef="node_12">`;
-    const messageFlowXml = `<bpmn:messageFlow id="node_19" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
+    const boundaryEventXml = `<bpmn:boundaryEvent id="${boundaryEventId}" name="Boundary Message Event" attachedToRef="node_13">`;
+    const messageFlowXml = `<bpmn:messageFlow id="node_20" name="" sourceRef="${endEventId}" targetRef="${boundaryEventId}" />`;
 
     assertDownloadedXmlContainsExpected(endEventXml, boundaryEventXml, messageFlowXml);
   });
