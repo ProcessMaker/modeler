@@ -7,7 +7,7 @@ describe('Terminate End Event', () => {
     addNodeTypeToPaper(terminateEndEventPosition, nodeTypes.endEvent, 'switch-to-terminate-end-event');
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:endEvent id="node_3" name="Terminate End Event">
+      <bpmn:endEvent id="node_3" name="Terminate End Event" pm:elementDestination="{&#34;type&#34;:&#34;summaryScreen&#34;,&#34;value&#34;:null}">
         <bpmn:terminateEventDefinition />
       </bpmn:endEvent>
     `);
