@@ -27,7 +27,7 @@ describe('Boundary Conditional Event', () => {
   it('set condition on Boundary Conditional Events', () => {
     toggleInspector();
 
-    const expectedBpmn = '<bpmn:boundaryEvent id="node_11" name="Boundary Conditional Event" attachedToRef="node_2"><bpmn:conditionalEventDefinition><bpmn:condition xsi:type="bpmn:tFormalExpression">form_input_1=="one"</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:boundaryEvent>';
+    const expectedBpmn = '<bpmn:boundaryEvent id="node_12" name="Boundary Conditional Event" attachedToRef="node_2"><bpmn:conditionalEventDefinition><bpmn:condition xsi:type="bpmn:tFormalExpression">form_input_1=="one"</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:boundaryEvent>';
     const condition = '[name=condition]';
     cy.get(condition).clear().type('form_input_1=="one"');
     cy.get('[data-test=downloadXMLBtn]').click();
