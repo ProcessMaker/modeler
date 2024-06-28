@@ -36,7 +36,7 @@ describe('Boundary Signal Event', () => {
     selectOptionByName('[data-test="signalRef:select"]', signalName);
 
     assertDownloadedXmlContainsExpected(`
-      <bpmn:boundaryEvent id="node_11" name="${name}" attachedToRef="node_2">
+      <bpmn:boundaryEvent id="node_12" name="${name}" attachedToRef="node_2">
         <bpmn:signalEventDefinition signalRef="${signalRef}" />
       </bpmn:boundaryEvent>
     `);
