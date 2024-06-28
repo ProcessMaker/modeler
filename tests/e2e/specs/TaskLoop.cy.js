@@ -21,7 +21,7 @@ describe('Task Loop properties', () => {
 
     // loopMaximum should be removed from xml
     assertDownloadedXmlMatch(`
-      <bpmn:task id="node_1" name="Form Task" pm:assignment="requester">
+      <bpmn:task id="node_1" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}">
         <bpmn:standardLoopCharacteristics id="*" />
       </bpmn:task>
     `);
