@@ -63,6 +63,7 @@ export default {
     linkEditingInit() {
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
         window.ProcessMaker.EventBus.$emit('hide-documentation');
+        // TODO check if the true condition is correct
         if (1===1 || view.cid !== this.currentHover) {
           this.currentHover = null;
           view.model.attr({

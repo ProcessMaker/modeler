@@ -558,6 +558,7 @@ export default {
           event.view.model.attr({
             doclabel: {
               text: event.number,
+              'ref-x': (95 - String(event.number).length * 2),
             },
           });
         }
