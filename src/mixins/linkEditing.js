@@ -61,11 +61,8 @@ export default {
   },
   methods: {
     linkEditingInit() {
-
-      // TODO better move this to its own file
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
         window.ProcessMaker.EventBus.$emit('hide-documentation');
-        //TODO remove the 1===1
         if (1===1 || view.cid !== this.currentHover) {
           this.currentHover = null;
           view.model.attr({
@@ -84,8 +81,6 @@ export default {
 
       // Handle hovering a new element on the page
       this.paperManager.addEventHandler('cell:mouseover', (view) => {
-
-        // TODO better move this to its own file
         const docElement = view?.model?.component?.node?.definition?.documentation;
         const doc = Array.isArray(docElement)
           ? (docElement[0].text ?? '').trim()
@@ -96,7 +91,25 @@ export default {
         }
 
         if (doc) {
-          window.ProcessMaker.EventBus.$emit('show-documentation', {number: view.model.component._uid, text: doc, position: view?.model?.attributes?.position, node: view.model.component.node});
+          const nodeId = view.model.component.node.id;
+          let nodeNumber = -1;
+          for (let process of view.model.component.$attrs.processes) {
+            nodeNumber = process.flowElements.findIndex(item => item.id === nodeId);
+            if (nodeNumber >=0) {
+              break;
+            }
+          }
+
+          if (nodeNumber >= 0) {
+            window.ProcessMaker.EventBus.$emit(
+              'show-documentation', {
+                number: nodeNumber + 1,
+                text: doc,
+                position: view?.model?.attributes?.position,
+                node: view.model.component.node,
+                view,
+              });
+          }
 
           view.model.attr({
             doccircle: {

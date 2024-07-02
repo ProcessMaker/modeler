@@ -6,7 +6,7 @@
     <div class="content">
       <div class="element-type">{{ elementType }}</div>
       <div class="element-title">{{ elementTitle }}</div>
-      <div class="element-description" v-html="safeString(text)"/>
+      <div class="element-description" v-html="text"/>
     </div>
   </div>
 </template>

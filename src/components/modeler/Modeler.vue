@@ -555,6 +555,11 @@ export default {
           this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
           this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
           this.$refs['nodeDocumentation'].isVisible = true;
+          event.view.model.attr({
+            doclabel: {
+              text: event.number,
+            },
+          });
         }
       });
 
@@ -2144,7 +2149,6 @@ export default {
           localStorage.promptSessionId = (response.data.promptSessionId);
         })
         .catch((error) => {
-          console.log('error');
           const errorMsg = error.response?.data?.message || error.message;
           
           this.loading = false;

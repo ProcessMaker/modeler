@@ -32,7 +32,7 @@ export default shapes.standard.Rectangle.extend({
     attrs: {
       'image': { 'ref-x': 4, 'ref-y': 4, ref: 'rect', width: 16, height: 16, 'data-test': 'nodeIcon' },
       'doclabel': {
-        'ref-x': 92,
+        'ref-x': 95,
         'ref-y': -4, ref: 'rect', fontSize: 20, fontWeight: 'bold',
         width: 16, height: 16, 'data-test': 'nodeDocLabel', 'text':'',
         fill: 'white', display: 'none',
