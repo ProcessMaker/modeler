@@ -8,7 +8,7 @@
       :placeholder="$t('Select element destination')"
       :showLabels="false"
       :allow-empty="false"
-      :options="options"
+      :options="optionsCopy"
       :loading="loading"
       optionContent="content"
       optionValue="value"
@@ -80,6 +80,7 @@ export default {
 
   data() {
     return {
+      optionsCopy: [],
       loading: false,
       validation: '',
       destinationType: null,
@@ -165,7 +166,12 @@ export default {
       }
     },
     loadData() {
-      this.elementDestination = this.options?.[0] ?? null;
+      this.optionsCopy = this.options.map(option => ({
+        value: option.value,
+        content: this.$t(option.content),
+      }));
+
+      this.elementDestination = this.optionsCopy?.[0] ?? null;
 
       if (this.value) {
         this.local = JSON.parse(this.value);
@@ -184,7 +190,7 @@ export default {
     },
     getElementDestination() {
       if (!this.local?.type) return null;
-      return this.options.find(element => element.value === this.local.type);
+      return this.optionsCopy.find(element => element.value === this.local.type);
     },
     getDestinationType() {
       if (!this.local?.type) return null;
