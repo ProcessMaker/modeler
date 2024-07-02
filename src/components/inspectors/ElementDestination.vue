@@ -35,7 +35,7 @@
       optionContent="title"
       optionValue="url"
       class="p-0 mb-2"
-      :validation="validation"
+      validation="required"
       :searchable="true"
       :internal-search="false"
       :preserve-search="false"
