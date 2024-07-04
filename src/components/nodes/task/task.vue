@@ -173,18 +173,14 @@ export default {
       : (docElement ?? '').trim();
 
     const view = this.paper.findViewByModel(this.shape);
-
-    // TODO try to avoid the interval
-    //view.$('circle').css('display', 'none');
-
     view.model.attr({
       doccircle: {
         display:'none',
       },
       doclabel: {
         display: 'none',
-        text:this._uid,
-        'ref-x': (95 - String(this._uid).length * 2),
+        style: 'text-anchor: middle; transform: translate(100px, -4px);',
+        text: this._uid,
       },
     });
 

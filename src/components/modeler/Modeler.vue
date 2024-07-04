@@ -544,14 +544,26 @@ export default {
       this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
       this.paper = this.paperManager.paper;
     },
+    setCardPosition(docNode) {
+      switch (docNode.node.type) {
+        case 'processmaker-modeler-start-event':
+          return { x: docNode.position.x + 170, y: docNode.position.y + 70 };
+        case 'processmaker-modeler-end-event':
+          return { x: docNode.position.x + 170, y: docNode.position.y + 70 };
+        case 'processmaker-modeler-exclusive-gateway':
+          return { x: docNode.position.x + 170, y: docNode.position.y + 80 };
+        case 'processmaker-modeler-task':
+          return { x: docNode.position.x + 225, y: docNode.position.y + 100 };
+        default:
+          return { x: docNode.position.x + 200, y: docNode.position.y + 100 };
+      }
+    },
     addEventHandlers() {
-
       window.ProcessMaker.EventBus.$on('show-documentation', (event) => {
         if (this.$refs['nodeDocumentation'] && this.$refs['nodeDocumentation'].isVisible === false) {
           this.$refs['nodeDocumentation'].text = event.text;
-          this.$refs['nodeDocumentation'].number = event.number;
-          this.$refs['nodeDocumentation'].position.x = event.position.x + 290;
-          this.$refs['nodeDocumentation'].position.y = event.position.y + 50;
+          this.$refs['nodeDocumentation'].number = event.number;  
+          this.$refs['nodeDocumentation'].position = this.setCardPosition(event);
           this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
           this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
           this.$refs['nodeDocumentation'].isVisible = true;
@@ -559,6 +571,7 @@ export default {
             doclabel: {
               text: event.number,
               'ref-x': (95 - String(event.number).length * 2),
+              display: 'block',
             },
           });
         }

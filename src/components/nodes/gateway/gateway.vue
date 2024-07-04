@@ -122,9 +122,11 @@ export default {
       },
       doclabel: {
         display: 'none',
-        text:this._uid,
+        style: 'text-anchor: middle; transform: translate(100px, -4px);',
+        text: this._uid,
       },
     });
+
     const interval = window.setInterval(() => {
       if (view.$('circle').length > 0) {
         view.model.attr({
