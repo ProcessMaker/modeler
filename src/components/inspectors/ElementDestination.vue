@@ -3,7 +3,7 @@
     <form-multi-select
       :label="$t('Element Destination')"
       name="ElementDestination"
-      :helper="$t('Enter the destination...')"
+      :helper="helper"
       v-model="elementDestination"
       :placeholder="$t('Select element destination')"
       :showLabels="false"
@@ -139,6 +139,13 @@ export default {
     },
     node() {
       return this.$root.$children[0].$refs.modeler.highlightedNode.definition;
+    },
+    helper() {
+      if (this.node.$type === 'bpmn:EndEvent') {
+        return this.$t('The user will go here after completing the task.');
+      }
+
+      return this.$t('Select where to send users after this task. Any Non-default destination will disable the “Display Next Assigned Task” function.');
     },
   },
   created() {
