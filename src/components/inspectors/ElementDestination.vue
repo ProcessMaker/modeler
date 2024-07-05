@@ -137,6 +137,9 @@ export default {
       const list = this.filterValidDashboards(this.dashboards) || [];
       return list;
     },
+    node() {
+      return this.$root.$children[0].$refs.modeler.highlightedNode.definition;
+    },
   },
   created() {
     this.loadDashboardsDebounced = debounce((filter) => {
@@ -208,6 +211,10 @@ export default {
         value: this.urlModel[this.destinationType],
       });
       this.$emit('input', data);
+
+      this.$nextTick(() => {
+        this.handleInterstitial(newType);
+      });
     },
 
     resetProperties() {
@@ -256,6 +263,29 @@ export default {
     onProcessInput(event) {
       this.anotherProcess = event;
       this.setBpmnValues(event);
+    },
+    /**
+     * Handle interstitial for task source
+     *
+     * @param {String} newValue
+     */
+    handleInterstitial(newValue) {
+      const taskTypes = ['bpmn:Task', 'bpmn:ManualTask'];
+
+      if (!taskTypes.includes(this.node.$type)) {
+        return;
+      }
+
+      let isDisabled = false;
+
+      if (newValue === 'taskSource') {
+        isDisabled = true;
+      }
+
+      this.$root.$emit('handle-interstitial', {
+        nodeId: this.node.id,
+        isDisabled,
+      });
     },
   },
 };
