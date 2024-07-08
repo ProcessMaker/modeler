@@ -163,6 +163,22 @@ export default new Vuex.Store({
     enableMultiplayer(state, value){
       state.isMultiplayer = value;
     },
+    reset(state, payload){
+      Object.assign(state,{
+        graph: null,
+        paper: null,
+        highlightedNodes: [],
+        nodes: [],
+        rootElements: [],
+        autoValidate: false,
+        globalProcesses: [],
+        allowSavingElementPosition: true,
+        copiedElements: [],
+        clientLeftPaper: false,
+        readOnly: false,
+        isMultiplayer: false,
+      }, payload);
+    },
   },
   actions: {
     async fetchGlobalProcesses({ commit }) {
