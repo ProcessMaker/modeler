@@ -37,7 +37,6 @@ export default {
       clickPosition: null,
       currentMovingModel: null,
       currentMovingModelCanBisect: null,
-
       currentHover: null,
     };
   },
@@ -63,21 +62,18 @@ export default {
     linkEditingInit() {
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
         window.ProcessMaker.EventBus.$emit('hide-documentation');
-        // TODO check if the true condition is correct
-        if (1===1 || view.cid !== this.currentHover) {
-          this.currentHover = null;
-          view.model.attr({
-            doccircle: {
-              r: 10,
-              stroke: '#2B9DFF',
-              strokeWidth: '3',
-              fill: '#8DC8FF',
-            },
-            doclabel: {
-              display:'none',
-            },
-          });
-        }
+        this.currentHover = null;
+        view.model.attr({
+          doccircle: {
+            r: 10,
+            stroke: '#2B9DFF',
+            strokeWidth: '3',
+            fill: '#8DC8FF',
+          },
+          doclabel: {
+            display:'none',
+          },
+        });
       });
 
       // Handle hovering a new element on the page
