@@ -122,7 +122,7 @@ export default {
       },
       doclabel: {
         display: 'none',
-        style: 'text-anchor: middle; transform: translate(100px, -4px);',
+        style: 'text-anchor: middle; transform: translate(30px, -4px);',
         text: this._uid,
       },
     });
