@@ -250,6 +250,14 @@ export default {
         case 'save-pm-block':
           this.$emit('publishPmBlock');
           break;
+        case 'documentation':
+          if (window.parent.location !== window.location) {
+            parent.location.href = `/modeler/${this.$root.$children[0]?.process?.id}/documentation`;
+          }
+          else {
+            window.location.href = `/modeler/${this.$root.$children[0]?.process?.id}/documentation`;
+          }
+          break;
         default:
           this.$emit('action', action);
       }
