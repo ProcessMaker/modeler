@@ -101,7 +101,7 @@ export default {
       urlModel: null,
       local: null,
       loadDashboardsDebounced: null,
-      urlPlaceholder: 'https://ci-ba427360a6.engk8s.processmaker.net/processes',
+      urlPlaceholder: `${window.location.origin}/processes`,
       externalURL: '',
     };
   },
@@ -285,7 +285,7 @@ export default {
 
       let isDisabled = false;
 
-      if (newValue === 'taskSource') {
+      if (newValue !== 'taskSource') {
         isDisabled = true;
       }
 
