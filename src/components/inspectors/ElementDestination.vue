@@ -50,7 +50,7 @@
       :error="getValidationErrorForURL(externalURL)"
       data-cy="events-add-id"
       :placeholder="urlPlaceholder"
-      :helper="$t('Determine de URL where the request will end')"
+      :helper="$t('Determine the URL where the request will end')"
       data-test="external-url"
     />
     <process-form-select
