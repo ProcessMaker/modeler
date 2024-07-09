@@ -102,6 +102,8 @@
         :panelWidth="previewPanelWidth"
       />
 
+      <NodeDocumentation ref="nodeDocumentation"/>
+
       <InspectorPanel
         v-if="showComponent"
         ref="inspector-panel"
@@ -206,6 +208,7 @@
 
 <script>
 import Vue from 'vue';
+import NodeDocumentation from '../documenting/NodeDocumentation.vue';
 import _ from 'lodash';
 import { dia } from 'jointjs';
 import boundaryEventConfig from '../nodes/boundaryEvent';
@@ -283,6 +286,7 @@ import validPreviewElements from '@/components/crown/crownButtons/validPreviewEl
 
 export default {
   components: {
+    NodeDocumentation,
     PreviewPanel,
     ToolBar,
     ExplorerRail,
@@ -540,7 +544,49 @@ export default {
       this.paperManager = PaperManager.factory(this.$refs.paper, this.graph.get('interactiveFunc'), this.graph);
       this.paper = this.paperManager.paper;
     },
+    setCardPosition(docNode) {
+      switch (docNode.node.type) {
+        case 'processmaker-modeler-start-event':
+          return { x: docNode.position.x + 170, y: docNode.position.y + 70 };
+        case 'processmaker-modeler-end-event':
+          return { x: docNode.position.x + 170, y: docNode.position.y + 70 };
+        case 'processmaker-modeler-exclusive-gateway':
+          return { x: docNode.position.x + 170, y: docNode.position.y + 80 };
+        case 'processmaker-modeler-task':
+          return { x: docNode.position.x + 225, y: docNode.position.y + 100 };
+        default:
+          return { x: docNode.position.x + 200, y: docNode.position.y + 100 };
+      }
+    },
     addEventHandlers() {
+      window.ProcessMaker.EventBus.$on('show-documentation', (event) => {
+        if (this.$refs['nodeDocumentation'] && this.$refs['nodeDocumentation'].isVisible === false) {
+          this.$refs['nodeDocumentation'].text = event.text;
+          this.$refs['nodeDocumentation'].number = event.number;  
+          this.$refs['nodeDocumentation'].position = this.setCardPosition(event);
+          this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
+          this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
+          this.$refs['nodeDocumentation'].isVisible = true;
+          event.view.model.attr({
+            doclabel: {
+              text: event.number,
+              'ref-x': (95 - String(event.number).length * 2),
+              display: 'block',
+            },
+          });
+        }
+      });
+
+      window.ProcessMaker.EventBus.$on('hide-documentation', () => {
+        if (this.$refs['nodeDocumentation']) {
+          this.$refs['nodeDocumentation'].text = '';
+          this.$refs['nodeDocumentation'].number = null;
+          this.$refs['nodeDocumentation'].isVisible = false;
+        }
+      });
+
+
+
       this.paperManager.addEventHandler('cell:pointerdblclick', focusNameInputAndHighlightLabel);
 
       this.handleResize();
@@ -2117,7 +2163,6 @@ export default {
           localStorage.promptSessionId = (response.data.promptSessionId);
         })
         .catch((error) => {
-          console.log('error');
           const errorMsg = error.response?.data?.message || error.message;
           
           this.loading = false;
