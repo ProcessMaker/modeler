@@ -336,6 +336,12 @@ export default {
       type: Boolean,
       default: true,
     },
+    forDocumenting: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
   data() {
@@ -428,6 +434,7 @@ export default {
         'processmaker-modeler-boundary-message-event',
       ],
       validPreviewElements,
+      centered: false,
     };
   },
   watch: {
@@ -484,6 +491,9 @@ export default {
     isReadOnly() {
       return store.getters.isReadOnly;
     },
+    isForDocumenting() {
+      return store.getters.isForDocumenting;
+    },
     creatingNewNode() {
       return nodeTypesStore.getters.getSelectedNode;
     },
@@ -531,6 +541,7 @@ export default {
   methods: {
     mountedInit() {
       store.commit('setReadOnly', this.readOnly);
+      store.commit('setForDocumenting', this.forDocumenting);
       this.graph = new dia.Graph();
       store.commit('setGraph', this.graph);
       this.graph.set('interactiveFunc', cellView => {
@@ -2386,10 +2397,11 @@ export default {
     },
     adjustPaperPosition()
     {
+      this.centered = false;
       this.paper.on('render:done scale:changed translate:changed', () => {
-        if (this.test) {
+        if (this.isForDocumenting && !this.centered) {
           this.paperManager.centerContent(); 
-          this.test = false;
+          this.centered = true;
         }
       });
     },
