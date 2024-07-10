@@ -2384,6 +2384,15 @@ export default {
         this.isOpenPreview = this.isOpenPreview && this.validPreviewElements.includes(nodeType);
       }
     },
+    adjustPaperPosition()
+    {
+      this.paper.on('render:done scale:changed translate:changed', () => {
+        if (this.test) {
+          this.paperManager.centerContent(); 
+          this.test = false;
+        }
+      });
+    },
   },
   created() {
     if (runningInCypressTest()) {
@@ -2429,6 +2438,8 @@ export default {
     this.initAI();
     this.linkEditingInit();
     this.initTransparentDragging();
+    this.test = true;
+    this.adjustPaperPosition();
   },
 };
 </script>
