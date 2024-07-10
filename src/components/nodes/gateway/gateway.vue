@@ -23,6 +23,8 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
+import store from '@/store';
+
 
 const hasDefaultFlow = [
   'bpmn:ExclusiveGateway',
@@ -128,7 +130,7 @@ export default {
     });
 
     const interval = window.setInterval(() => {
-      if (view.$('circle').length > 0) {
+      if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
         view.model.attr({
           doccircle: {
             display:(doc ? 'block' : 'none'),

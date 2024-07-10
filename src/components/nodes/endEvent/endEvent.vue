@@ -24,6 +24,8 @@ import { endColor, endColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
+import store from '@/store';
+
 
 export default {
   components: {
@@ -117,7 +119,7 @@ export default {
     });
 
     const interval = window.setInterval(() => {
-      if (view.$('circle').length > 0) {
+      if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
         view.model.attr({
           doccircle: {
             display:(doc ? 'block' : 'none'),

@@ -1,6 +1,7 @@
 import nodeTypesStore from '@/nodeTypesStore';
 import { COLOR_DEFAULT } from '@/components/highlightColors.js';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
+import store from '@/store';
 
 const ALLOWED_BPMN_TYPES = [
   'bpmn:Task',
@@ -61,19 +62,21 @@ export default {
   methods: {
     linkEditingInit() {
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
-        window.ProcessMaker.EventBus.$emit('hide-documentation');
-        this.currentHover = null;
-        view.model.attr({
-          doccircle: {
-            r: 10,
-            stroke: '#2B9DFF',
-            strokeWidth: '3',
-            fill: '#8DC8FF',
-          },
-          doclabel: {
-            display:'none',
-          },
-        });
+        if (store.getters.isForDocumenting) {
+          window.ProcessMaker.EventBus.$emit('hide-documentation');
+          this.currentHover = null;
+          view.model.attr({
+            doccircle: {
+              r: 10,
+              stroke: '#2B9DFF',
+              strokeWidth: '3',
+              fill: '#8DC8FF',
+            },
+            doclabel: {
+              display:'none',
+            },
+          });
+        }
       });
 
       // Handle hovering a new element on the page
@@ -87,7 +90,7 @@ export default {
           this.currentHover = view.cid;
         }
 
-        if (doc) {
+        if (doc && store.getters.isForDocumenting) {
           const nodeId = view.model.component.node.id;
           let nodeNumber = -1;
           for (let process of view.model.component.$attrs.processes) {
