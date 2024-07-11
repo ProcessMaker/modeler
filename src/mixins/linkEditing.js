@@ -77,7 +77,13 @@ export default {
       });
 
       // Handle hovering a new element on the page
-      this.paperManager.addEventHandler('cell:mouseover', (view) => {
+      this.paperManager.addEventHandler('cell:mouseover', (view, evt) => {
+        const offset = this.getOffset(this.$refs.paper);
+        const pos = {
+          x: evt.clientX - offset.x + window.scrollX,
+          y: evt.clientY - offset.y + window.scrollY,
+        };
+
         const docElement = view?.model?.component?.node?.definition?.documentation;
         const doc = Array.isArray(docElement)
           ? (docElement[0].text ?? '').trim()
@@ -102,7 +108,7 @@ export default {
               'show-documentation', {
                 number: nodeNumber + 1,
                 text: doc,
-                position: view?.model?.attributes?.position,
+                position: pos,
                 node: view.model.component.node,
                 view,
               });
@@ -189,6 +195,19 @@ export default {
       });
     },
 
+    getOffset(el) 
+    {
+      var offsetX = 0;
+      var offsetY = 0;
+      while (el) {
+        offsetX += el.offsetLeft - el.scrollLeft;
+        offsetY += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+      }
+      return { x: offsetX, y: offsetY };
+    },
+
+  
     findViewFromPoint(elementView, evt) {
       const nodesFromPoint = Array.from(
         document.elementsFromPoint(evt.clientX, evt.clientY),

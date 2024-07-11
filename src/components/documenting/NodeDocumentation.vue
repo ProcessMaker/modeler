@@ -1,9 +1,11 @@
 <template>
   <b-card
     no-body
-    class="position-absolute m-2 border-0 flex-grow-0"
+    class="position-absolute m-2 border-0 flex-grow-0 border-radius-13"
     :style="{top: position.y + 'px', left: position.x + 'px' }"
     v-show="isVisible"
+    @mouseover="mouseOver"
+    @mouseleave="mouseLeave"
   >
     <div class="d-flex card-styling">
       <div class="card-number">
@@ -12,7 +14,10 @@
       <div class="p-3 card-documentation flex-grow-1 border">
         <div class="d-flex justify-content-between">
           <div class="mt-1 element-type">
-            <img class="mr-1 bpmn-icon" :src="iconType" :alt="$t('BPMN icon')">
+            <img v-show="iconType" 
+              class="mr-1 bpmn-icon" 
+              :src="iconType" 
+              :alt="$t('BPMN icon')">
             <span class="text-capitalize">
               {{ elementType }}
             </span>
@@ -42,6 +47,7 @@ export default {
         x: 0,
         y: 0,
       },
+      event: null,
       startEventIcon: require('./../../assets/documenting/start_event.svg'),
       endEventIcon: require('./../../assets/documenting/end_event.svg'),
       taskIcon: require('./../../assets/documenting/task.svg'),
@@ -51,6 +57,12 @@ export default {
   methods: {
     safeString: (string) => {
       return lodashEscape(string.replace(/<\/[^>]+(>|$)/g, ''));
+    },
+    mouseOver() {
+      window.ProcessMaker.EventBus.$emit('show-documentation', this.event);
+    },
+    mouseLeave() {
+      window.ProcessMaker.EventBus.$emit('hide-documentation');
     },
   },
   computed: {
@@ -75,8 +87,11 @@ export default {
 <style scoped>
 .card-styling {
   min-height: 140px;
+  min-width: 350px;
 }
-
+.border-radius-13 {
+  border-radius: 13 !important;
+}
 .card-number {
   display: flex;
   background: #cdddee;
