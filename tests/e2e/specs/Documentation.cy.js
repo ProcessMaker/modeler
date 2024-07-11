@@ -46,7 +46,7 @@ describe('Documentation accordion', { scrollBehavior: false }, () => {
         clickAndDropElement(type, position);
         waitToRenderAllShapes();
         cy.get('iframe.tox-edit-area__iframe').should('not.be.visible');
-        cy.contains('Advanced').click();
+        cy.contains('Advanced').click({ force: true });
         cy.tick(accordionOpenAnimationTime);
         cy.get('iframe.tox-edit-area__iframe').should('not.be.visible');
         cy.contains('Documentation').click();

@@ -3,6 +3,7 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import advancedAccordionConfig from '@/components/inspectors/advancedAccordionConfig';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
+import elementDestination from '@/components/inspectors/taskElementDestination';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-manual-task';
@@ -50,6 +51,7 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
+            elementDestination,
           ],
         },
         documentationAccordionConfig,

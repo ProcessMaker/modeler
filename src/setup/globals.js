@@ -2,6 +2,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import mockProcesses from './mockProcesses.json';
+import mockDashboards from './mockDashboards.json';
 import mockSignals from './mockSignals.json';
 import mockProcessSvg from './mockProcessSvg';
 import { faker } from '@faker-js/faker';
@@ -29,7 +30,7 @@ mock.onGet(/\/processes\/\d+/).reply((config) => {
     setTimeout(() => resolve([200, { svg: mockProcessSvg, ...process }]), 1000);
   });
 });
-
+mock.onGet('dynamic-ui/dashboards').reply(200, mockDashboards);
 window.ProcessMaker = {
   navbar: {
     alerts: [],

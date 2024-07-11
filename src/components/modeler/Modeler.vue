@@ -2395,12 +2395,14 @@ export default {
         this.isOpenPreview = this.isOpenPreview && this.validPreviewElements.includes(nodeType);
       }
     },
-    adjustPaperPosition()
-    {
+    reset(payload) {
+      store.commit('reset', payload);
+    },
+    adjustPaperPosition() {
       this.centered = false;
       this.paper.on('render:done scale:changed translate:changed', () => {
         if (this.isForDocumenting && !this.centered) {
-          this.paperManager.centerContent(); 
+          this.paperManager.centerContent();
           this.centered = true;
         }
       });

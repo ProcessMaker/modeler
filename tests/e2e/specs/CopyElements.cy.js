@@ -58,9 +58,9 @@ describe('Copy element', { scrollBehavior: false }, () => {
 
     const processWithTwoStartEventCopies = `
       <bpmn:startEvent id="node_1" name="Start Event" />
-      <bpmn:task id="node_2" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" />
-      <bpmn:task id="node_26" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" />
-      <bpmn:task id="node_28" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" />
+      <bpmn:task id="node_2" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />
+      <bpmn:task id="node_27" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />
+      <bpmn:task id="node_29" name="Test Name" pm:dueIn="45" pm:assignment="requester" pm:assignedUsers="John Smith" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />
     `;
 
     assertDownloadedXmlContainsExpected(processWithTwoStartEventCopies);

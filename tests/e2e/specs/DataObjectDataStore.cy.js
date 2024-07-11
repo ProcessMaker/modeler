@@ -97,7 +97,7 @@ describe('Data Objects and Data Stores', () => {
       const name = nodeType === 'processmaker-modeler-data-object' ? 'Data Object' : 'Data Store';
       getNumberOfLinks().should('equal', 1);
       assertDownloadedXmlMatch(`
-        <bpmn:task id="node_*" name="Form Task" pm:assignment="requester">
+        <bpmn:task id="node_*" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}">
           <bpmn:ioSpecification id="*">
             <bpmn:dataInput id="data_input_node_*" name="${name}" isCollection="false" />
             <bpmn:inputSet id="*">

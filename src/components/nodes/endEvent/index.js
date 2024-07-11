@@ -4,6 +4,7 @@ import advancedAccordionConfig from '@/components/inspectors/advancedAccordionCo
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
 
+import elementDestination from '@/components/inspectors/endEventElementDestination';
 const id = 'processmaker-modeler-end-event';
 
 export default {
@@ -85,6 +86,7 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
+            elementDestination,
           ],
         },
         documentationAccordionConfig,

@@ -61,7 +61,7 @@ describe('Sub Process (Call Activities)', { scrollBehavior: false }, () => {
     selectCalledProcess('Process with multiple start events');
     selectSubProcessStartEvent(startEventName);
 
-    assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_8" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
+    assertDownloadedXmlContainsExpected(`<bpmn:callActivity id="node_9" name="${defaultSubProcessNodeName}" calledElement="Subprocess1-5" pm:config="${encodedConfig}" />`);
   });
 
   it('Allows typing in name field on new sub process', () => {
