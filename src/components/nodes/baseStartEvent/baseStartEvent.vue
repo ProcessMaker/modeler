@@ -26,7 +26,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from './defaultNames';
 import updateIconColor from '@/mixins/updateIconColor';
-import store from '@/store';
+import documentingIcons from '@/mixins/documentingIcons';
 
 export default {
   components: {
@@ -45,7 +45,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, documentingIcons],
   data() {
     return {
       shape: new EventShape(),
@@ -108,36 +108,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    const docElement = this.node?.definition?.documentation;
-    const doc = Array.isArray(docElement)
-      ? (docElement[0].text ?? '').trim()
-      : (docElement ?? '').trim();
-
-    const view = this.paper.findViewByModel(this.shape);
-    view.model.attr({
-      doccircle: {
-        display:'none',
-      },
-      doclabel: {
-        display: 'none',
-        style: 'text-anchor: middle; transform: translate(30px, -4px);',
-        text: null,
-      },
-    });
-
-    const interval = window.setInterval(() => {
-      if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
-        view.model.attr({
-          doccircle: {
-            display:(doc ? 'block' : 'none'),
-          },
-          doclabel: {
-            display: 'none',
-          },
-        });
-        clearInterval(interval);
-      }
-    }, 200);
+    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
   },
 };
 </script>

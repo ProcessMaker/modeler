@@ -3,7 +3,7 @@
 
     <b-card no-body class="h-100 rounded-0">
       <b-card-body class="overflow-hidden position-relative p-0 vh-100">
-        <modeler ref="modeler" @saveBpmn="saveBpmn" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" />
+        <modeler ref="modeler" @saveBpmn="saveBpmn" @set-xml-manager="xmlManager = $event" @validate="validationErrors = $event" @warnings="warnings = $event" :decorations="decorations" :for-documenting="true" />
       </b-card-body>
     </b-card>
 

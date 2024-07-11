@@ -23,7 +23,7 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
-import store from '@/store';
+import documentingIcons from '@/mixins/documentingIcons';
 
 
 const hasDefaultFlow = [
@@ -48,7 +48,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag, documentingIcons],
   created() {
     const flow = this.node.definition.default || null;
     delete this.node.definition.default;
@@ -112,38 +112,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    const docElement = this.node?.definition?.documentation;
-    const doc = Array.isArray(docElement)
-      ? (docElement[0].text ?? '').trim()
-      : (docElement ?? '').trim();
-
-    const view = this.paper.findViewByModel(this.shape);
-    view.model.attr({
-      doccircle: {
-        display:'none',
-      },
-      doclabel: {
-        display: 'none',
-        style: 'text-anchor: middle; transform: translate(30px, -4px);',
-        text: null,
-      },
-    });
-
-    const interval = window.setInterval(() => {
-      if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
-        view.model.attr({
-          doccircle: {
-            display:(doc ? 'block' : 'none'),
-          },
-          doclabel: {
-            display: 'none',
-          },
-        });
-        clearInterval(interval);
-      }
-    }, 200);
-
-
+    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
   },
 };
 </script>

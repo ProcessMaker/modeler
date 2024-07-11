@@ -39,7 +39,7 @@ import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundary
 import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
-import store from '@/store';
+import documentingIcons from '@/mixins/documentingIcons';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -61,7 +61,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon, documentingIcons],
   data() {
     return {
       shape: null,
@@ -168,36 +168,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    const docElement = this.node?.definition?.documentation;
-    const doc = Array.isArray(docElement)
-      ? (docElement[0].text ?? '').trim()
-      : (docElement ?? '').trim();
-
-    const view = this.paper.findViewByModel(this.shape);
-    view.model.attr({
-      doccircle: {
-        display:'none',
-      },
-      doclabel: {
-        display: 'none',
-        style: 'text-anchor: middle; transform: translate(100px, -4px);',
-        text: null,
-      },
-    });
-
-    const interval = window.setInterval(() => {
-      if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
-        view.model.attr({
-          doccircle: {
-            display:(doc ? 'block' : 'none'),
-          },
-          doclabel: {
-            display: 'none',
-          },
-        });
-        clearInterval(interval);
-      }
-    }, 200);
+    this.initDocumentingIcons({labelX: '100px', labelY: '-4px'});
   },
 };
 </script>
