@@ -17,7 +17,8 @@
             <img v-show="iconType" 
               class="mr-1 bpmn-icon" 
               :src="iconType" 
-              :alt="$t('BPMN icon')">
+              :alt="$t('BPMN icon')"
+            >
             <span class="text-capitalize">
               {{ elementType }}
             </span>
