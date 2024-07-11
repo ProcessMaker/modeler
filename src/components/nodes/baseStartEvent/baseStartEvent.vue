@@ -121,7 +121,7 @@ export default {
       doclabel: {
         display: 'none',
         style: 'text-anchor: middle; transform: translate(30px, -4px);',
-        text:this._uid,
+        text: null,
       },
     });
 
