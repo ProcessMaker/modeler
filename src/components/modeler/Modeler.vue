@@ -556,18 +556,7 @@ export default {
       this.paper = this.paperManager.paper;
     },
     setCardPosition(docNode) {
-      switch (docNode.node.type) {
-        case 'processmaker-modeler-start-event':
-          return { x: docNode.position.x, y: docNode.position.y };
-        case 'processmaker-modeler-end-event':
-          return { x: docNode.position.x, y: docNode.position.y };
-        case 'processmaker-modeler-exclusive-gateway':
-          return { x: docNode.position.x, y: docNode.position.y };
-        case 'processmaker-modeler-task':
-          return { x: docNode.position.x, y: docNode.position.y };
-        default:
-          return { x: docNode.position.x, y: docNode.position.y };
-      }
+      return { x: docNode.position.x, y: docNode.position.y };
     },
     addEventHandlers() {
       window.ProcessMaker.EventBus.$on('show-documentation', (event) => {

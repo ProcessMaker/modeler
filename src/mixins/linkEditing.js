@@ -200,8 +200,8 @@ export default {
 
     getOffset(el) 
     {
-      var offsetX = 0;
-      var offsetY = 0;
+      let offsetX = 0;
+      let offsetY = 0;
       while (el) {
         offsetX += el.offsetLeft - el.scrollLeft;
         offsetY += el.offsetTop - el.scrollTop;
