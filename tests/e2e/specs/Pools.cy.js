@@ -219,8 +219,8 @@ describe('Pools', { scrollBehavior: false }, () => {
     const pool1taskXml = `
       <bpmn:process id="Process_1" isExecutable="true">
         <bpmn:startEvent id="node_1" name="Start Event" />
-        <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />
-        <bpmn:boundaryEvent id="node_13" name="Boundary Timer Event" attachedToRef="node_4">
+        <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />
+        <bpmn:boundaryEvent id="node_14" name="Boundary Timer Event" attachedToRef="node_4">
     `;
     assertDownloadedXmlContainsExpected(pool1taskXml);
 
@@ -231,8 +231,8 @@ describe('Pools', { scrollBehavior: false }, () => {
 
     const pool2taskXml = `
       <bpmn:process id="Process_2">
-        <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" />
-        <bpmn:boundaryEvent id="node_13" name="Boundary Timer Event" attachedToRef="node_4">
+        <bpmn:task id="node_4" name="Form Task" pm:assignment="requester" pm:elementDestination="{&#34;type&#34;:&#34;taskSource&#34;,&#34;value&#34;:null}" />
+        <bpmn:boundaryEvent id="node_14" name="Boundary Timer Event" attachedToRef="node_4">
     `;
     assertDownloadedXmlContainsExpected(pool2taskXml);
   });

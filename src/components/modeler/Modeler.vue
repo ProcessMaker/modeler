@@ -2339,6 +2339,9 @@ export default {
         this.isOpenPreview = this.isOpenPreview && this.validPreviewElements.includes(nodeType);
       }
     },
+    reset(payload){
+      store.commit('reset', payload);
+    },
   },
   created() {
     if (runningInCypressTest()) {

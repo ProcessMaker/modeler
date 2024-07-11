@@ -3,6 +3,8 @@ import nameConfigSettings from '@/components/inspectors/nameConfigSettings';
 import { taskHeight, taskWidth } from './taskConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
+
+import elementDestination from '@/components/inspectors/taskElementDestination';
 import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
 import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -67,6 +69,7 @@ export default {
     handleMarkerFlagsValue(value.markerFlags, node, setNodeProp);
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
+    handleElementDestination(value.elementDestination, node, setNodeProp);
   },
   inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
@@ -96,6 +99,7 @@ export default {
               component: 'FormInput',
               config: nameConfigSettings,
             },
+            elementDestination,
           ],
         },
         loopCharacteristicsInspector,
@@ -119,5 +123,11 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
 
   if (newIsForCompensationValue != null && newIsForCompensationValue !== currentIsForCompensationValue) {
     setNodeProp(node, 'isForCompensation', newIsForCompensationValue);
+  }
+}
+
+function handleElementDestination(value, node, setNodeProp) {
+  if (value) {
+    setNodeProp(node, 'elementDestination', value);
   }
 }
