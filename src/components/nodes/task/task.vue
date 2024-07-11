@@ -39,6 +39,7 @@ import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundary
 import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
+import store from '@/store';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -180,12 +181,12 @@ export default {
       doclabel: {
         display: 'none',
         style: 'text-anchor: middle; transform: translate(100px, -4px);',
-        text: this._uid,
+        text: null,
       },
     });
 
     const interval = window.setInterval(() => {
-      if (view.$('circle').length > 0) {
+      if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
         view.model.attr({
           doccircle: {
             display:(doc ? 'block' : 'none'),
