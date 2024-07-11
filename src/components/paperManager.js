@@ -114,4 +114,16 @@ export default class PaperManager {
     }
     return Promise.resolve();
   }
+
+  centerContent() {
+    const bbox = this.paper.model.getBBox();
+
+    const paperSize = this.paper.getComputedSize();
+    
+    const offsetX = (paperSize.width - bbox.width) / 2 - bbox.x;
+    const offsetY = (paperSize.height - bbox.height) / 2 - bbox.y;
+
+    this.paper.translate(offsetX, offsetY);
+  }
+
 }
