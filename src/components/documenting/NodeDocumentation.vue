@@ -32,7 +32,7 @@
 
 <script>
 
-import {escape as lodashEscape} from 'lodash';
+import { escape as lodashEscape } from 'lodash';
 
 export default {
   name: 'NodeDocumentation',
