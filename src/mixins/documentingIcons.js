@@ -8,7 +8,7 @@ export default {
         labelY: '-4px', // y position of the number inside the circle icon
       };
 
-      const params = Object.assign({}, defaultParams, iconParams);
+      const params = { ...defaultParams, ...iconParams };
 
       const docElement = this.node?.definition?.documentation;
       const doc = Array.isArray(docElement)
