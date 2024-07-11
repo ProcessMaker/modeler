@@ -558,15 +558,15 @@ export default {
     setCardPosition(docNode) {
       switch (docNode.node.type) {
         case 'processmaker-modeler-start-event':
-          return { x: docNode.position.x + 170, y: docNode.position.y + 70 };
+          return { x: docNode.position.x, y: docNode.position.y };
         case 'processmaker-modeler-end-event':
-          return { x: docNode.position.x + 170, y: docNode.position.y + 70 };
+          return { x: docNode.position.x, y: docNode.position.y };
         case 'processmaker-modeler-exclusive-gateway':
-          return { x: docNode.position.x + 170, y: docNode.position.y + 80 };
+          return { x: docNode.position.x, y: docNode.position.y };
         case 'processmaker-modeler-task':
-          return { x: docNode.position.x + 225, y: docNode.position.y + 100 };
+          return { x: docNode.position.x, y: docNode.position.y };
         default:
-          return { x: docNode.position.x + 200, y: docNode.position.y + 100 };
+          return { x: docNode.position.x, y: docNode.position.y };
       }
     },
     addEventHandlers() {
@@ -578,6 +578,7 @@ export default {
           this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
           this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
           this.$refs['nodeDocumentation'].isVisible = true;
+          this.$refs['nodeDocumentation'].event = event;
           event.view.model.attr({
             doclabel: {
               text: event.number,
