@@ -23,6 +23,8 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
+import documentingIcons from '@/mixins/documentingIcons';
+
 
 const hasDefaultFlow = [
   'bpmn:ExclusiveGateway',
@@ -46,7 +48,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag, documentingIcons],
   created() {
     const flow = this.node.definition.default || null;
     delete this.node.definition.default;
@@ -109,6 +111,8 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
   },
 };
 </script>

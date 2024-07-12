@@ -26,6 +26,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from './defaultNames';
 import updateIconColor from '@/mixins/updateIconColor';
+import documentingIcons from '@/mixins/documentingIcons';
 
 export default {
   components: {
@@ -44,7 +45,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, documentingIcons],
   data() {
     return {
       shape: new EventShape(),
@@ -106,6 +107,8 @@ export default {
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
   },
 };
 </script>
