@@ -51,6 +51,7 @@ export default {
       event: null,
       startEventIcon: require('./../../assets/documenting/start_event.svg'),
       endEventIcon: require('./../../assets/documenting/end_event.svg'),
+      intermediateEventIcon: require('./../../assets/documenting/intermediate_event.svg'),
       taskIcon: require('./../../assets/documenting/task.svg'),
       gatewayIcon: require('./../../assets/documenting/gateway.svg'),
     };
@@ -73,9 +74,17 @@ export default {
           return this.startEventIcon;
         case 'EndEvent':
           return this.endEventIcon;
+        case 'IntermediateEvent':
+          return this.intermediateEventIcon;
         case 'Task':
           return this.taskIcon;
+        case 'ServiceTask':
+          return this.taskIcon;
         case 'ExclusiveGateway':
+          return this.gatewayIcon;
+        case 'ParallelGateway':
+          return this.gatewayIcon;
+        case 'InclusiveGateway':
           return this.gatewayIcon;
         default:
           return '';
