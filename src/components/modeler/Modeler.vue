@@ -2389,7 +2389,7 @@ export default {
         this.isOpenPreview = this.isOpenPreview && this.validPreviewElements.includes(nodeType);
       }
     },
-    reset(payload){
+    reset(payload) {
       this.$refs.selector.clearSelection();
 
       store.commit('reset', payload);
