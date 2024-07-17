@@ -782,6 +782,8 @@ export default {
 
       clonedNode.diagram.bounds.y += yOffset;
       this.addNode(clonedNode);
+
+      this.$emit('cloneElement', clonedNode);
     },
     copyElement() {
       // Checking if User selected a single flow and tries to copy it, to deny it.
@@ -1630,6 +1632,8 @@ export default {
         window.ProcessMaker.EventBus.$emit('multiplayer-removeNode', node);
       }
       this.removeNodeProcedure(node, options);
+
+      this.$emit('removeNode', node, options);
     },
     async removeNodeProcedure(node, { removeRelationships = true } = {}) {
       if (!node) {
@@ -2340,6 +2344,8 @@ export default {
       }
     },
     reset(payload){
+      this.$refs.selector.clearSelection();
+
       store.commit('reset', payload);
     },
   },
