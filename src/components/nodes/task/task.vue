@@ -39,6 +39,7 @@ import boundaryEventDropdownData from '@/components/nodes/boundaryEvent/boundary
 import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
+import documentingIcons from '@/mixins/documentingIcons';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -60,7 +61,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, customIcon, documentingIcons],
   data() {
     return {
       shape: null,
@@ -166,6 +167,8 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({labelX: '100px', labelY: '-4px'});
   },
 };
 </script>
