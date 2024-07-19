@@ -578,6 +578,7 @@ export default {
             },
           });
 
+          // if it is a link
           if (event?.view?.path?.segments) {
             const firstSegment = event.view.path.segments[0];
             const diffX = Math.floor(firstSegment.nextSegment.end.x) - Math.floor(firstSegment.end.x);
