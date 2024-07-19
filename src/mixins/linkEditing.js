@@ -64,18 +64,22 @@ export default {
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
         if (store.getters.isForDocumenting) {
           window.ProcessMaker.EventBus.$emit('hide-documentation');
+
+          if (view?.model?.attributes?.attrs?.doccircle) {
+            view.model.attr({
+              doccircle: {
+                r: 10,
+                stroke: '#2B9DFF',
+                strokeWidth: '3',
+                fill: '#8DC8FF',
+              },
+              doclabel: {
+                display:'none',
+              },
+            });
+          }
+
           this.currentHover = null;
-          view.model.attr({
-            doccircle: {
-              r: 10,
-              stroke: '#2B9DFF',
-              strokeWidth: '3',
-              fill: '#8DC8FF',
-            },
-            doclabel: {
-              display:'none',
-            },
-          });
         }
       });
 
@@ -86,6 +90,7 @@ export default {
           x: evt.clientX - offset.x + window.scrollX,
           y: evt.clientY - offset.y + window.scrollY,
         };
+
 
         const docElement = view?.model?.component?.node?.definition?.documentation;
         const doc = Array.isArray(docElement)
@@ -117,16 +122,18 @@ export default {
               });
           }
 
-          view.model.attr({
-            doccircle: {
-              r: 20,
-              fill: '#1572C2',
-              strokeWidth: 0,
-            },
-            doclabel: {
-              display: 'block',
-            },
-          });
+          if (view?.model?.attributes?.attrs?.doccircle) {
+            view.model.attr({
+              doccircle: {
+                r: 20,
+                fill: '#1572C2',
+                strokeWidth: 0,
+              },
+              doclabel: {
+                display: 'block',
+              },
+            });
+          }
         }
 
         if (view?.model?.isLink() && this.addingEligibleItem()) {
