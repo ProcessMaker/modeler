@@ -207,6 +207,7 @@
 </template>
 
 <script>
+import { shapes } from 'jointjs';
 import Vue from 'vue';
 import NodeDocumentation from '../documenting/NodeDocumentation.vue';
 import _ from 'lodash';
@@ -568,6 +569,7 @@ export default {
           this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
           this.$refs['nodeDocumentation'].isVisible = true;
           this.$refs['nodeDocumentation'].event = event;
+
           event.view.model.attr({
             doclabel: {
               text: event.number,
@@ -575,6 +577,31 @@ export default {
               display: 'block',
             },
           });
+
+          // if it is a link
+          if (event?.view?.path?.segments) {
+            const firstSegment = event.view.path.segments[0];
+            const diffX = Math.floor(firstSegment.nextSegment.end.x) - Math.floor(firstSegment.end.x);
+            const diffY = Math.floor(firstSegment.nextSegment.end.y) - Math.floor(firstSegment.end.y);
+            const deltaX = diffX == 0 ? -17 : -Math.sign(diffX) * 5;
+            const deltaY = diffY == 0 ? -17 : -Math.sign(diffY) * 5;
+
+            const circle = new shapes.basic.Circle({
+              id: 'sequenceDocCircle',
+              position: { x: event.view.sourcePoint.x + deltaX, y: event.view.sourcePoint.y + deltaY },
+              size: { width: 40, height: 40 },
+
+              attrs: {
+                circle: {
+                  fill:  '#1572C2',
+                  strokeWidth: 0,
+                },
+                text: { text: event.number , fill: 'white', fontSize: 20, fontWeight: 'bold'},
+              },
+            });
+
+            circle.addTo(this.graph);
+          }
         }
       });
 
@@ -583,6 +610,11 @@ export default {
           this.$refs['nodeDocumentation'].text = '';
           this.$refs['nodeDocumentation'].number = null;
           this.$refs['nodeDocumentation'].isVisible = false;
+        }
+
+        const cell = this.graph.getCell('sequenceDocCircle');
+        if (cell) {
+          cell.remove();
         }
       });
 
