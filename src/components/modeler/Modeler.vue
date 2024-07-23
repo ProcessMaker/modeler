@@ -1977,7 +1977,7 @@ export default {
       }, 3000000, { leading: true, trailing: true });
       updateMousePosition();
 
-      if (this.panMode) {
+      if (this.panMode || this.isForDocumenting) {
         return;
       }
 
