@@ -135,7 +135,7 @@ export default {
         case 'EndEvent':
           return this.endEventIcon;
         case 'IntermediateEvent':
-          return this.endEventIcon;
+          return this.intermediateEventIcon;
         case 'Task':
         case 'CallActivity':
           return this.getCalledElementIcon();
