@@ -44,15 +44,35 @@ export default {
       number: 0,
       elementType: '',
       elementTitle: '',
+      elementImplementation: '',
+      elementCalledElement: '',
+      elementConfig: '',
       position: {
         x: 0,
         y: 0,
       },
       event: null,
-      startEventIcon: require('./../../assets/documenting/start_event.svg'),
-      endEventIcon: require('./../../assets/documenting/end_event.svg'),
-      intermediateEventIcon: require('./../../assets/documenting/intermediate_event.svg'),
+      actionsByEmailIcon: require('./../../assets/documenting/action-by-email.svg'),
+      bamboohrIcon: require('./../../assets/documenting/bamboohr.svg'),
+      dataConnectorIcon: require('./../../assets/documenting/data-connector.svg'),
+      dataObjectIcon: require('./../../assets/documenting/data-object.svg'),
+      dataStoreIcon: require('./../../assets/documenting/data-store.svg'),
+      docusignIcon: require('./../../assets/documenting/docusign.svg'),
+      endEventIcon: require('./../../assets/documenting/end-event.svg'),
+      flowgenieIcon: require('./../../assets/documenting/flowgenie.svg'),
+      genericGatewayIcon: require('./../../assets/documenting/generic-gateway.svg'),
+      githubIcon: require('./../../assets/documenting/github.svg'),
+      idpIcon: require('./../../assets/documenting/idp.svg'),
+      intermediateEventIcon: require('./../../assets/documenting/intermediate-event.svg'),
+      pdfIcon: require('./../../assets/documenting/pdf.svg'),
+      poolIcon: require('./../../assets/documenting/pool.svg'),
+      sendEmailIcon: require('./../../assets/documenting/send-email.svg'),
+      slackNotificationIcon: require('./../../assets/documenting/slack-notification.svg'),
+      slackIcon: require('./../../assets/documenting/slack.svg'),
+      startEventIcon: require('./../../assets/documenting/start-event.svg'),
+      tableIcon: require('./../../assets/documenting/table.svg'),
       taskIcon: require('./../../assets/documenting/task.svg'),
+      textAnnotationIcon: require('./../../assets/documenting/text-annotation.svg'),
       gatewayIcon: require('./../../assets/documenting/gateway.svg'),
     };
   },
@@ -65,6 +85,46 @@ export default {
     },
     mouseLeave() {
       window.ProcessMaker.EventBus.$emit('hide-documentation');
+    },
+    getImplementationIcon() {
+      switch (this.elementImplementation) {
+        case 'connector-send-email/processmaker-communication-email-send':
+          return this.sendEmailIcon;
+        case 'connector-slack/processmaker-communication-slack':
+          return this.slackIcon;
+        case 'package-decision-engine/decision-table':
+          return this.tableIcon;
+        case 'package-rpa/processmaker-communication-rpa':
+          return this.taskIcon;
+        case 'package-data-sources/data-source-task-service':
+          return this.dataConnectorIcon;
+        case 'package-ai/processmaker-ai-task':
+        case 'package-ai/processmaker-ai-assistant':
+          return this.flowgenieIcon;
+        case 'connector-pdf-print/processmaker-communication-pdf-print':
+          return this.pdfIcon;
+        case 'connector-idp/processmaker-communication-idp':
+          return this.idpIcon;
+        default:
+          return this.taskIcon;
+      }
+    },
+    getCalledElementIcon() {
+      if (this.elementCalledElement === 'ProcessId-DocuSignSendEnvelope') {
+        return this.docusignIcon;
+      }
+
+      let parsedConfig = null;
+
+      if (this.elementConfig) {
+        parsedConfig = JSON.parse(this.elementConfig);  
+      }
+      
+      if (parsedConfig?.options) {
+        return this.actionsByEmailIcon;
+      }
+
+      return this.taskIcon;
     },
     getImplementationIcon() {
       switch (this.elementImplementation) {
@@ -149,7 +209,8 @@ export default {
         case 'IntermediateConditionalCatchEvent':
           return this.intermediateEventIcon;
         case 'Task':
-          return this.taskIcon;
+        case 'CallActivity':
+          return this.getCalledElementIcon();
         case 'ServiceTask':
           return this.getImplementationIcon();
         case 'ScriptTask':
@@ -159,6 +220,10 @@ export default {
         case 'InclusiveGateway':
         case 'EventBasedGateway':
           return this.gatewayIcon;
+        case 'DataStoreReference':
+          return this.dataStoreIcon;
+        case 'DataObjectReference':
+          return this.dataObjectIcon;
         default:
           return '';
       }

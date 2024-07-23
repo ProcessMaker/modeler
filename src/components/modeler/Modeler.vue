@@ -567,6 +567,9 @@ export default {
           this.$refs['nodeDocumentation'].position = this.setCardPosition(event);
           this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
           this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
+          this.$refs['nodeDocumentation'].elementImplementation = event.node.definition.implementation;
+          this.$refs['nodeDocumentation'].elementCalledElement = event.node.definition.calledElement;
+          this.$refs['nodeDocumentation'].elementConfig = event.node.definition.config;
           this.$refs['nodeDocumentation'].isVisible = true;
           this.$refs['nodeDocumentation'].event = event;
 
