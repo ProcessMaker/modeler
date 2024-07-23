@@ -126,46 +126,6 @@ export default {
 
       return this.taskIcon;
     },
-    getImplementationIcon() {
-      switch (this.elementImplementation) {
-        case 'connector-send-email/processmaker-communication-email-send':
-          return this.sendEmailIcon;
-        case 'connector-slack/processmaker-communication-slack':
-          return this.slackIcon;
-        case 'package-decision-engine/decision-table':
-          return this.tableIcon;
-        case 'package-rpa/processmaker-communication-rpa':
-          return this.taskIcon;
-        case 'package-data-sources/data-source-task-service':
-          return this.dataConnectorIcon;
-        case 'package-ai/processmaker-ai-task':
-        case 'package-ai/processmaker-ai-assistant':
-          return this.flowgenieIcon;
-        case 'connector-pdf-print/processmaker-communication-pdf-print':
-          return this.pdfIcon;
-        case 'connector-idp/processmaker-communication-idp':
-          return this.idpIcon;
-        default:
-          return this.taskIcon;
-      }
-    },
-    getCalledElementIcon() {
-      if (this.elementCalledElement === 'ProcessId-DocuSignSendEnvelope') {
-        return this.docusignIcon;
-      }
-
-      let parsedConfig = null;
-
-      if (this.elementConfig) {
-        parsedConfig = JSON.parse(this.elementConfig);  
-      }
-      
-      if (parsedConfig?.options) {
-        return this.actionsByEmailIcon;
-      }
-
-      return this.taskIcon;
-    },
   },
   computed: {
     elementName() {
@@ -191,7 +151,9 @@ export default {
         case 'connector-idp/processmaker-communication-idp':
           return this.$t('IDP Connector');
         default:
-          return this.elementType.replace(/([A-Z])/g, ' $1').trim();
+          return this.elementType.includes('Intermediate') 
+            ? this.$t('Intermediate Event')
+            : this.elementType.replace(/([A-Z])/g, ' $1').trim();
       }
     },
     iconType() {
