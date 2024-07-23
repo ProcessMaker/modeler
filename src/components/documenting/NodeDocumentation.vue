@@ -120,7 +120,7 @@ export default {
         parsedConfig = JSON.parse(this.elementConfig);  
       }
       
-      if (parsedConfig && parsedConfig.options) {
+      if (parsedConfig?.options) {
         return this.actionsByEmailIcon;
       }
 
