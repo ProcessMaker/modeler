@@ -23,6 +23,7 @@ import { namePosition } from './sequenceFlowConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
+import documentingIcons from '@/mixins/documentingIcons';
 
 export default {
   components: {
@@ -41,7 +42,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, linkConfig],
+  mixins: [highlightConfig, linkConfig, documentingIcons],
   data() {
     return {
       shape: null,
@@ -147,6 +148,8 @@ export default {
 
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({ elementType: 'flow' });
   },
 };
 </script>

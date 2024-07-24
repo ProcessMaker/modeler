@@ -24,6 +24,7 @@ import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import documentingIcons from '@/mixins/documentingIcons';
 
 export default {
   components: {
@@ -42,7 +43,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, documentingIcons],
   data() {
     return {
       shape: null,
@@ -100,6 +101,8 @@ export default {
     });
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
   },
 };
 </script>
