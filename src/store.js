@@ -38,6 +38,7 @@ export default new Vuex.Store({
     copiedElements: [],
     clientLeftPaper: false,
     readOnly: false,
+    forDocumenting: false,
     isMultiplayer: false,
   },
   getters: {
@@ -45,7 +46,7 @@ export default new Vuex.Store({
     paper: state => state.paper,
     highlightedNodes: state => state.highlightedNodes,
     nodeShape: state => node => {
-      return state.graph.getCells().find(cell => cell.component && cell.component.node === node);
+      return state.graph?.getCells().find(cell => cell.component && cell.component.node === node);
     },
     highlightedShapes: (state, getters) => {
       return getters.highlightedNodes
@@ -60,12 +61,17 @@ export default new Vuex.Store({
     copiedElements: state => state.copiedElements,
     clientLeftPaper: state => state.clientLeftPaper,
     isReadOnly: state => state.readOnly,
+    isForDocumenting: state => state.forDocumenting,
     showComponent: state => !state.readOnly,
+    showPanTool: state => state.forDocumenting,
     isMultiplayer: state => state.isMultiplayer,
   },
   mutations: {
     setReadOnly(state, value) {
       state.readOnly = value;
+    },
+    setForDocumenting(state, value) {
+      state.forDocumenting = value;
     },
     preventSavingElementPosition(state) {
       state.allowSavingElementPosition = false;

@@ -18,7 +18,7 @@
       
       <PanControl
         @set-pan-mode="$emit('set-pan-mode', $event)"
-        v-show="showComponent"
+        v-show="showComponent || showPanTool"
         :pan-mode="panMode"
       />
     </div>
@@ -126,6 +126,9 @@ export default {
   computed: {
     showComponent() {
       return store.getters.showComponent;
+    },
+    showPanTool() {
+      return store.getters.showPanTool;
     },
     isMultiplayer: () => store.getters.isMultiplayer,
   },

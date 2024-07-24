@@ -1,6 +1,7 @@
 import nodeTypesStore from '@/nodeTypesStore';
 import { COLOR_DEFAULT } from '@/components/highlightColors.js';
 import SequenceFlow from '@/components/nodes/genericFlow/SequenceFlow';
+import store from '@/store';
 
 const ALLOWED_BPMN_TYPES = [
   'bpmn:Task',
@@ -37,6 +38,7 @@ export default {
       clickPosition: null,
       currentMovingModel: null,
       currentMovingModelCanBisect: null,
+      currentHover: null,
     };
   },
   watch: {
@@ -59,9 +61,34 @@ export default {
   },
   methods: {
     linkEditingInit() {
+      this.paperManager.addEventHandler('cell:mouseleave', (view) => {
+        if (store.getters.isForDocumenting) {
+          window.ProcessMaker.EventBus.$emit('hide-documentation');
+
+          if (view?.model?.attributes?.attrs?.doccircle) {
+            view.model.attr({
+              doccircle: {
+                r: 10,
+                stroke: '#2B9DFF',
+                strokeWidth: '3',
+                fill: '#8DC8FF',
+              },
+              doclabel: {
+                display:'none',
+              },
+            });
+          }
+
+          this.currentHover = null;
+        }
+      });
 
       // Handle hovering a new element on the page
-      this.paperManager.addEventHandler('cell:mouseover', (view) => {
+      this.paperManager.addEventHandler('cell:mouseover', (view, evt) => {
+        if (store.getters.isForDocumenting) {
+          this.showDocumentingIcons(view, evt);
+        }
+
         if (view?.model?.isLink() && this.addingEligibleItem()) {
           this.timeout = setTimeout(() => {
             this.hoveredLinkModel = view.model;
@@ -131,6 +158,19 @@ export default {
       });
     },
 
+    getOffset(el) 
+    {
+      let offsetX = 0;
+      let offsetY = 0;
+      while (el) {
+        offsetX += el.offsetLeft - el.scrollLeft;
+        offsetY += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+      }
+      return { x: offsetX, y: offsetY };
+    },
+
+  
     findViewFromPoint(elementView, evt) {
       const nodesFromPoint = Array.from(
         document.elementsFromPoint(evt.clientX, evt.clientY),
@@ -387,6 +427,60 @@ export default {
         document.removeEventListener('mousemove', this.setTooltipPosition);
         document.body.removeChild(this.tooltipEl);
         this.tooltipEl = null;
+      }
+    },
+
+    showDocumentingIcons(view, evt) {
+      const offset = this.getOffset(this.$refs.paper);
+      const pos = {
+        x: evt.clientX - offset.x + window.scrollX,
+        y: evt.clientY - offset.y + window.scrollY,
+      };
+
+
+      const docElement = view?.model?.component?.node?.definition?.documentation;
+      const doc = Array.isArray(docElement)
+        ? (docElement[0].text ?? '').trim()
+        : (docElement ?? '').trim();
+
+      if (view.cid !== this.currentHover) {
+        this.currentHover = view.cid;
+      }
+
+      if (doc) {
+        const nodeId = view.model.component.node.id;
+        let nodeNumber = -1;
+        for (let process of view.model.component.$attrs.processes) {
+          nodeNumber = process.flowElements.findIndex(item => item.id === nodeId);
+          if (nodeNumber >=0) {
+            break;
+          }
+        }
+
+        if (nodeNumber >= 0) {
+          window.ProcessMaker.EventBus.$emit(
+            'show-documentation', {
+              number: nodeNumber + 1,
+              text: doc,
+              position: pos,
+              node: view.model.component.node,
+              view,
+            });
+        }
+
+        // if it is not a link
+        if (view?.path?.segments === undefined) {
+          view.model.attr({
+            doccircle: {
+              r: 20,
+              fill: '#1572C2',
+              strokeWidth: 0,
+            },
+            doclabel: {
+              display: 'block',
+            },
+          });
+        }
       }
     },
   },
