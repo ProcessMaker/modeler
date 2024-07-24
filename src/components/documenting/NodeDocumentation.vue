@@ -20,7 +20,7 @@
               :alt="$t('BPMN icon')"
             >
             <span class="text-capitalize">
-              {{ elementType }}
+              {{ elementName }}
             </span>
           </div>
         </div>
@@ -128,6 +128,34 @@ export default {
     },
   },
   computed: {
+    elementName() {
+      if (this.elementCalledElement === 'ProcessId-DocuSignSendEnvelope') {
+        return this.$t('DocuSign');
+      }
+      switch (this.elementImplementation) {
+        case 'connector-send-email/processmaker-communication-email-send':
+          return this.$t('Send Email Task');
+        case 'connector-slack/processmaker-communication-slack':
+          return this.$t('Slack Connector');
+        case 'package-decision-engine/decision-table':
+          return this.$t('Decision Table');
+        case 'package-rpa/processmaker-communication-rpa':
+          return this.$t('Communication RPA');
+        case 'package-data-sources/data-source-task-service':
+          return this.$t('Data Source');
+        case 'package-ai/processmaker-ai-task':
+        case 'package-ai/processmaker-ai-assistant':
+          return this.$t('FlowGenie');
+        case 'connector-pdf-print/processmaker-communication-pdf-print':
+          return this.$t('PDF Connector');
+        case 'connector-idp/processmaker-communication-idp':
+          return this.$t('IDP Connector');
+        default:
+          return this.elementType.includes('Intermediate') 
+            ? this.$t('Intermediate Event')
+            : this.elementType.replace(/([A-Z])/g, ' $1').trim();
+      }
+    },
     iconType() {
       switch (this.elementType) {
         case 'StartEvent':
@@ -135,17 +163,24 @@ export default {
         case 'EndEvent':
           return this.endEventIcon;
         case 'IntermediateEvent':
+        case 'IntermediateTimerEvent':
+        case 'IntermediateCatchEvent':
+        case 'IntermediateThrowEvent':
+        case 'IntermediateMessageCatchEvent':
+        case 'IntermediateMessageThrowEvent':
+        case 'IntermediateConditionalCatchEvent':
           return this.intermediateEventIcon;
         case 'Task':
         case 'CallActivity':
           return this.getCalledElementIcon();
         case 'ServiceTask':
           return this.getImplementationIcon();
+        case 'ScriptTask':
+          return this.taskIcon;
         case 'ExclusiveGateway':
-          return this.gatewayIcon;
         case 'ParallelGateway':
-          return this.gatewayIcon;
         case 'InclusiveGateway':
+        case 'EventBasedGateway':
           return this.gatewayIcon;
         case 'DataStoreReference':
           return this.dataStoreIcon;
