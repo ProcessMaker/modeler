@@ -63,23 +63,7 @@ export default {
     linkEditingInit() {
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
         if (store.getters.isForDocumenting) {
-          window.ProcessMaker.EventBus.$emit('hide-documentation');
-
-          if (view?.model?.attributes?.attrs?.doccircle) {
-            view.model.attr({
-              doccircle: {
-                r: 10,
-                stroke: '#2B9DFF',
-                strokeWidth: '3',
-                fill: '#8DC8FF',
-              },
-              doclabel: {
-                display:'none',
-              },
-            });
-          }
-
-          this.currentHover = null;
+          this.hideDocumentingIcons(view);
         }
       });
 
@@ -95,6 +79,7 @@ export default {
           }, 1000);
         }
       });
+
       this.paperManager.addEventHandler('cell:mouseout', () => {
         clearTimeout(this.timeout);
         this.timeout = null;
@@ -430,22 +415,29 @@ export default {
       }
     },
 
+    hideDocumentingIcons(view) {
+      if (view?.model?.isLink()) {
+        return;
+      }
+      window.ProcessMaker.EventBus.$emit('hide-documentation', { view });
+      this.currentHover = null;
+    },
+
     showDocumentingIcons(view, evt) {
+      const docElement = view?.model?.component?.node?.definition?.documentation;
+      if (docElement === undefined) {
+        return;
+
+      }
+      const doc = Array.isArray(docElement)
+        ? (docElement[0].text ?? '').trim()
+        : (docElement ?? '').trim();
+
       const offset = this.getOffset(this.$refs.paper);
       const pos = {
         x: evt.clientX - offset.x + window.scrollX,
         y: evt.clientY - offset.y + window.scrollY,
       };
-
-
-      const docElement = view?.model?.component?.node?.definition?.documentation;
-      const doc = Array.isArray(docElement)
-        ? (docElement[0].text ?? '').trim()
-        : (docElement ?? '').trim();
-
-      if (view.cid !== this.currentHover) {
-        this.currentHover = view.cid;
-      }
 
       if (doc) {
         const nodeId = view.model.component.node.id;
@@ -469,18 +461,18 @@ export default {
         }
 
         // if it is not a link
-        if (view?.path?.segments === undefined) {
-          view.model.attr({
-            doccircle: {
-              r: 20,
-              fill: '#1572C2',
-              strokeWidth: 0,
-            },
-            doclabel: {
-              display: 'block',
-            },
-          });
-        }
+        // if (view?.path?.segments === undefined) {
+        //   view.model.attr({
+        //     doccircle: {
+        //       r: 20,
+        //       fill: '#1572C2',
+        //       strokeWidth: 0,
+        //     },
+        //     doclabel: {
+        //       display: 'block',
+        //     },
+        //   });
+        // }
       }
     },
   },

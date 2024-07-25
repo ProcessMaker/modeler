@@ -1,4 +1,5 @@
 import { dia, shapes } from 'jointjs';
+import { docIconMarkup, docIconAttrs } from '@/mixins/documentingIcons';
 
 const iconSize = 18;
 
@@ -6,8 +7,8 @@ export default dia.Element.define('processmaker.components.nodes.gateway.Shape',
   markup: [
     ...shapes.standard.Polygon.prototype.markup,
     { tagName: 'image', selector: 'image' },
-    { tagName: 'circle', selector: 'doccircle'},
-    { tagName: 'text', selector: 'doclabel' },
+    docIconMarkup('doccircle'),
+    docIconMarkup('doclabel'),
   ],
   attrs: {
     body: {
@@ -34,16 +35,7 @@ export default dia.Element.define('processmaker.components.nodes.gateway.Shape',
       refY: '50%',
       refY2: -(iconSize / 2),
     },
-    'doclabel': {
-      'ref-x': 8,
-      'ref-y': 10, ref: 'circle', fontSize: 20, fontWeight: 'bold',
-      width: 16, height: 16, 'data-test': 'nodeDocLabel', 'text':'',
-      fill: 'white', display: 'none',
-    },
-    'doccircle': {
-      'cx': 30, 'cy': 5, 'r': 10,
-      'label': '7',
-      'fill': '#8DC8FF', 'stroke': '#2B9DFF', 'strokeWidth': '3', 'display': 'none',
-      ref: 'rect', width: 15, height: 15, 'data-test': 'nodeDocCircle' },
+    ...docIconAttrs('doclabel', { 'ref-x': 8, 'ref-y': 10 }),
+    ...docIconAttrs('doccircle', { 'cx': 30, 'cy': 5 }),
   },
 });

@@ -22,6 +22,7 @@ import highlightConfig from '@/mixins/highlightConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import DataStoreShape from './shape';
 import portsConfig from '@/mixins/portsConfig';
+import documentingIcons from '@/mixins/documentingIcons';
 
 export default {
   components: {
@@ -40,7 +41,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, hideLabelOnDrag, portsConfig],
+  mixins: [highlightConfig, hideLabelOnDrag, portsConfig, documentingIcons],
   data() {
     return {
       shape: null,
@@ -62,6 +63,8 @@ export default {
     this.shape.resize(bounds.width, bounds.height);
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({labelX: '39px', labelY: '-4px'});
   },
 };
 </script>

@@ -84,7 +84,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('show-documentation', this.event);
     },
     mouseLeave() {
-      window.ProcessMaker.EventBus.$emit('hide-documentation');
+      window.ProcessMaker.EventBus.$emit('hide-documentation', this.event);
     },
     getImplementationIcon() {
       switch (this.elementImplementation) {
