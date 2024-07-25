@@ -459,20 +459,6 @@ export default {
               view,
             });
         }
-
-        // if it is not a link
-        // if (view?.path?.segments === undefined) {
-        //   view.model.attr({
-        //     doccircle: {
-        //       r: 20,
-        //       fill: '#1572C2',
-        //       strokeWidth: 0,
-        //     },
-        //     doclabel: {
-        //       display: 'block',
-        //     },
-        //   });
-        // }
       }
     },
   },
