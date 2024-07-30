@@ -16,13 +16,16 @@
 </template>
 
 <script>
-import { shapes, util } from 'jointjs';
+import { util } from 'jointjs';
 import resizeConfig from '@/mixins/resizeConfig';
 import { labelWidth } from '../pool/poolSizes';
 import pull from 'lodash/pull';
 import { poolColor } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import { getPoolLine } from './poolLaneShape';
+import documentingIcons from '@/mixins/documentingIcons';
+
 
 export default {
   components: {
@@ -42,7 +45,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, resizeConfig],
+  mixins: [highlightConfig, resizeConfig, documentingIcons],
   data() {
     return {
       shape: null,
@@ -55,9 +58,9 @@ export default {
     },
   },
   mounted() {
-    this.shape = new shapes.standard.Rectangle();
-    this.shape.set('type', 'PoolLane');
     const bounds = this.node.diagram.bounds;
+
+    this.shape = getPoolLine(bounds);
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
 
@@ -75,6 +78,9 @@ export default {
 
     this.shape.component = this;
     this.shape.addTo(this.graph);
+
+    this.initDocumentingIcons({labelX: '995px', labelY: '-4px'});
+
 
     if (!this.planeElements.includes(this.node.diagram)) {
       this.planeElements.push(this.node.diagram);

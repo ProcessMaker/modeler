@@ -64,16 +64,6 @@ export default {
         : (docElement ?? '').trim();
 
       const view = this.paper.findViewByModel(this.shape);
-      view.model.attr({
-        doccircle: {
-          display:'none',
-        },
-        doclabel: {
-          display: 'none',
-          style: `text-anchor: middle; transform: translate(${params.labelX}, ${params.labelY});`,
-          text: null,
-        },
-      });
 
       const interval = window.setInterval(() => {
         if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
@@ -83,6 +73,8 @@ export default {
             },
             doclabel: {
               display: 'none',
+              style: `text-anchor: middle; transform: translate(${params.labelX}, ${params.labelY});`,
+              text: null,
             },
           });
           clearInterval(interval);

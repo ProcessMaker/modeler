@@ -439,16 +439,22 @@ export default {
         y: evt.clientY - offset.y + window.scrollY,
       };
 
-      if (doc) {
-        const nodeId = view.model.component.node.id;
-        let nodeNumber = -1;
-        for (let process of view.model.component.$attrs.processes) {
-          nodeNumber = process.flowElements.findIndex(item => item.id === nodeId);
-          if (nodeNumber >=0) {
-            break;
-          }
+      // pool and lanes doc. card is displayed just when the mouse if over the circle icon
+      if (['processmaker-modeler-pool', 'processmaker-modeler-lane']
+        .some(item => item === view.model.component.$options.propsData.node.type)
+      ) {
+        const cursorClientCoords = this.paper.clientToLocalPoint(pos.x, pos.y);
+        const circlePosX = view.model.attributes.attrs.doccircle.cx + view.model.component.shape.attributes.position.x;
+        const circlePosY = view.model.attributes.attrs.doccircle.cy + view.model.component.shape.attributes.position.y;
+        const distance = Math.sqrt((
+          cursorClientCoords.x - circlePosX) ^2 + (cursorClientCoords.y - circlePosY)^2);
+        if (distance > 7) {
+          return;
         }
+      }
 
+      if (doc) {
+        const nodeNumber = this.getNodeNumber(view.model.component.id);
         if (nodeNumber >= 0) {
           window.ProcessMaker.EventBus.$emit(
             'show-documentation', {
@@ -460,6 +466,24 @@ export default {
             });
         }
       }
+    },
+
+    getNodeNumber(nodeId) {
+      const xmlString = window.ProcessMaker.$modeler.currentXML;
+
+      const extractIds = (xml) => {
+        const idRegex = /id="([^"]*)"/g;
+        const ids = [];
+        let match;
+        while ((match = idRegex.exec(xml)) !== null) {
+          ids.push(match[1]);
+        }
+        return ids;
+      };
+
+      const ids = extractIds(xmlString);
+
+      return ids.indexOf(nodeId);
     },
   },
 };
