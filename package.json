@@ -1,6 +1,6 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.54.0",
+  "version": "1.55.0",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "test:unit": "vue-cli-service test:unit",
@@ -43,7 +43,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
-    "@processmaker/screen-builder": "2.92.0",
+    "@processmaker/screen-builder": "2.93.0",
     "@processmaker/vue-form-elements": "0.58.0",
     "@processmaker/vue-multiselect": "2.3.0",
     "bootstrap": "^4.3.1",
