@@ -20,5 +20,10 @@ export function getPoolLine(bounds, forDocumenting = false) {
     },
   });
 
-  return new PoolLaneClass();
+  const result = new PoolLaneClass();
+
+  // The original type name used in the app is 'PoolLane'
+  result.set('type', 'PoolLane');
+
+  return result;
 }
