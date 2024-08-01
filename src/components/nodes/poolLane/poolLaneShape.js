@@ -1,8 +1,6 @@
 import { shapes } from 'jointjs';
 import { docIconMarkup, docIconAttrs, docIconAdaptMarkup} from '@/mixins/documentingIcons';
 
-
-//export default PoolLane;
 export function getPoolLine(bounds, forDocumenting = false) {
   let markup = [
     docIconMarkup('doccircle'),
