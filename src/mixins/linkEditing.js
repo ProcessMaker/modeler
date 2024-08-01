@@ -447,8 +447,8 @@ export default {
         const circlePosX = view.model.attributes.attrs.doccircle.cx + view.model.component.shape.attributes.position.x;
         const circlePosY = view.model.attributes.attrs.doccircle.cy + view.model.component.shape.attributes.position.y;
         const distance = Math.sqrt((
-          cursorClientCoords.x - circlePosX) ^2 + (cursorClientCoords.y - circlePosY)^2);
-        if (distance > 7) {
+          cursorClientCoords.x - circlePosX) ** 2 + (cursorClientCoords.y - circlePosY) ** 2);
+        if (distance > 20) {
           return;
         }
       }

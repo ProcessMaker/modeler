@@ -25,6 +25,7 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import { getPoolLine } from './poolLaneShape';
 import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 
 export default {
@@ -60,7 +61,7 @@ export default {
   mounted() {
     const bounds = this.node.diagram.bounds;
 
-    this.shape = getPoolLine(bounds);
+    this.shape = getPoolLine(bounds, store.getters.isForDocumenting);
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
 

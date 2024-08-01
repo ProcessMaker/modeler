@@ -21,8 +21,9 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import portsConfig from '@/mixins/portsConfig';
-import DataObjectShape from './shape';
+import { getDataObjectShape } from './shape';
 import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 
 export default {
@@ -57,7 +58,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new DataObjectShape();
+    this.shape = getDataObjectShape(store.getters.isForDocumenting);
     this.shape.attr('label/text', this.node.definition.get('name'));
 
     const bounds = this.node.diagram.bounds;

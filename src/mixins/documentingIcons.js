@@ -1,5 +1,14 @@
 import store from '@/store';
 
+export function docIconAdaptMarkup(markup, forDocumenting) {
+  // Remove the icon tags from markup if modeler is in designer mode
+  if (!forDocumenting) {
+    return markup.filter(item => !['doccircle', 'doclabel'].includes(item.selector));
+  }
+
+  return markup;
+}
+
 export function docIconMarkup(selector) {
   const markups = [
     {
@@ -45,6 +54,9 @@ export function docIconAttrs(selector, customValues) {
 export default {
   methods: {
     initDocumentingIcons(iconParams) {
+      if (!(store.getters.isForDocumenting ?? false)) {
+        return;
+      }
       const elementType = iconParams.elementType ?? '';
 
       if (elementType === 'flow') {
@@ -83,6 +95,10 @@ export default {
     },
 
     initDocumentingIconsForFlow() {
+
+      if (!(store.getters.isForDocumenting ?? false)) {
+        return;
+      }
       const docElement = this.node?.definition?.documentation;
       const doc = Array.isArray(docElement)
         ? (docElement[0].text ?? '').trim()
