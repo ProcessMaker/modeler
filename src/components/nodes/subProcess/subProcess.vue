@@ -58,6 +58,7 @@ import updateIconColor from '@/mixins/updateIconColor';
 import customIcon from '@/mixins/customIcon';
 import { getRectangleAnchorPoint } from '@/portsUtils';
 import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiInstanceMarkers';
+import documentingIcons from '@/mixins/documentingIcons';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -84,7 +85,7 @@ export default {
     'isRendering',
     'paperManager',
   ],
-  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon],
+  mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon, documentingIcons],
   data() {
     return {
       subProcessSvg: null,
@@ -219,6 +220,8 @@ export default {
     if (this.node.definition.get('customIcon')) {
       this.setCustomIcon(this.node.definition.get('customIcon'));
     }
+
+    this.initDocumentingIcons({labelX: '100px', labelY: '-4px'});
   },
 };
 </script>

@@ -20,8 +20,11 @@
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import { shapes } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
+import { getDataObjectShape } from './shape';
+import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
+
 
 export default {
   inheritAttrs: false,
@@ -41,7 +44,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, hideLabelOnDrag, portsConfig],
+  mixins: [highlightConfig, hideLabelOnDrag, portsConfig, documentingIcons],
   data() {
     return {
       shape: null,
@@ -55,23 +58,16 @@ export default {
     },
   },
   mounted() {
-    this.shape = new shapes.standard.Path();
-    this.shape.attr('root/title', 'joint.shapes.standard.Path');
-    this.shape.attr('label', {
-      refY: 65,
-      text: this.node.definition.get('name'),
-      fill: 'black',
-    });
-    this.shape.attr('body', {
-      refD: 'M1,1 L25,1 L35,10 L35,49 L1,49 L1,1 M24,1 L24,10 L35,10',
-    });
+    this.shape = getDataObjectShape(store.getters.isForDocumenting);
+    this.shape.attr('label/text', this.node.definition.get('name'));
 
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
-
     this.shape.addTo(this.graph);
     this.shape.component = this;
+
+    this.initDocumentingIcons({labelX: '39px', labelY: '-4px'});
   },
 };
 </script>
