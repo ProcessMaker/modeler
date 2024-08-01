@@ -1,5 +1,5 @@
 import { shapes } from 'jointjs';
-import { docIconMarkup, docIconAttrs, docIconAdaptMarkup} from '@/mixins/documentingIcons';
+import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/documentingIcons';
 
 export function getPoolLine(bounds, forDocumenting = false) {
   let markup = [

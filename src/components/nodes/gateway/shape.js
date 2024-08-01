@@ -1,5 +1,5 @@
 import { dia, shapes } from 'jointjs';
-import { docIconMarkup, docIconAttrs, docIconAdaptMarkup} from '@/mixins/documentingIcons';
+import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/documentingIcons';
 
 const iconSize = 18;
 

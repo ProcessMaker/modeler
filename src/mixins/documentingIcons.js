@@ -47,7 +47,7 @@ export function docIconAttrs(selector, customValues) {
   const selectorAttributes = attrs.find(item => item.selector === selector).attributes;
 
   let result = {};
-  result[selector]  = {...selectorAttributes, ...customValues};
+  result[selector]  = { ...selectorAttributes, ...customValues };
   return result;
 }
 

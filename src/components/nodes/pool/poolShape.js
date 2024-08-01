@@ -1,6 +1,6 @@
 import { shapes } from 'jointjs';
 import { labelWidth } from '@/components/nodes/pool/poolSizes';
-import { docIconMarkup, docIconAttrs, docIconAdaptMarkup} from '@/mixins/documentingIcons';
+import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/documentingIcons';
 
 
 export function getPoolShape(forDocumenting = false) {

@@ -65,7 +65,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    this.initDocumentingIcons({labelX: '39px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '39px', labelY: '-4px' });
   },
 };
 </script>

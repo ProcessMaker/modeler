@@ -221,7 +221,7 @@ export default {
       this.setCustomIcon(this.node.definition.get('customIcon'));
     }
 
-    this.initDocumentingIcons({labelX: '100px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '100px', labelY: '-4px' });
   },
 };
 </script>

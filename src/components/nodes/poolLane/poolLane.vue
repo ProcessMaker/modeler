@@ -80,7 +80,7 @@ export default {
     this.shape.component = this;
     this.shape.addTo(this.graph);
 
-    this.initDocumentingIcons({labelX: '995px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '995px', labelY: '-4px' });
 
 
     if (!this.planeElements.includes(this.node.diagram)) {

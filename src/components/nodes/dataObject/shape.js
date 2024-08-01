@@ -1,5 +1,5 @@
 import { shapes, util } from 'jointjs';
-import { docIconMarkup, docIconAttrs, docIconAdaptMarkup} from '@/mixins/documentingIcons';
+import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/documentingIcons';
 
 export function getDataObjectShape(forDocumenting = false) {
   let markup = [

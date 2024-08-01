@@ -1,6 +1,6 @@
 import { shapes, util } from 'jointjs';
 import { markersMarkup, markersAttrs } from '@/mixins/hasMarkers';
-import { docIconMarkup, docIconAttrs, docIconAdaptMarkup} from '@/mixins/documentingIcons';
+import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/documentingIcons';
 
 export function getEventShape(forDocumenting = false) {
   let markup = [{
