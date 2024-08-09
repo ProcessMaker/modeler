@@ -719,9 +719,13 @@ export default {
         }
 
         shape.component.$emit('click', event);
-        this.$emit('click', {
-          event,
-          node: this.highlightedNode.definition,
+
+        // Use nextTick to ensure that the node is highlighted before emitting the click event.
+        this.$nextTick(() => {
+          this.$emit('click', {
+            event,
+            node: this.highlightedNode.definition,
+          });
         });
       });
 
