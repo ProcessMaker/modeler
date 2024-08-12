@@ -1,5 +1,10 @@
 import idConfigSettings from './idConfigSettings';
 
+const extendedIdConfigSettings = {
+  ...idConfigSettings,
+  validateKeyStrokes: '^[_A-Za-z][-._A-Za-z0-9]*$ ',
+};
+
 const process = {
   id: 'processmaker-modeler-process',
   bpmnType: 'bpmn:Process',
@@ -21,7 +26,7 @@ const process = {
           items: [
             {
               component: 'FormInput',
-              config: idConfigSettings,
+              config: extendedIdConfigSettings,
             },
             {
               component: 'FormInput',
