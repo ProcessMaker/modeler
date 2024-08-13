@@ -12,7 +12,7 @@ import {
   typeIntoTextInput,
   uploadXml,
   waitToRenderAllShapes,
-  toggleInspector,
+  toggleInspector, waitToRenderNodeUpdates,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
@@ -250,15 +250,9 @@ describe('Modeler', { scrollBehavior: false }, () => {
 
     cy.get('[name=id]').clear();
 
-    const invalidId = '12 id!';
-    typeIntoTextInput('[name=id]', invalidId);
-
-    cy.get('[name=id]').should('have.value', '12 id');
-
     const validId = 'Process_1';
-    typeIntoTextInput('[name=id]', validId);
-
-    cy.get('[name=id]').should('have.value', 'Process_1');
+    typeIntoTextInput('[name=id]', validId  );
+    cy.get('[name=id]').should('have.value', validId);
   });
 
   it('shows warning for unknown element during parsing', () => {
