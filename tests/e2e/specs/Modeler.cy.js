@@ -12,7 +12,7 @@ import {
   typeIntoTextInput,
   uploadXml,
   waitToRenderAllShapes,
-  toggleInspector, waitToRenderNodeUpdates,
+  toggleInspector,
 } from '../support/utils';
 
 import { nodeTypes } from '../support/constants';
