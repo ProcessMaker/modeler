@@ -13,7 +13,7 @@
       </div>
       <div class="p-3 card-documentation flex-grow-1 border">
         <div class="d-flex justify-content-between">
-          <div class="mt-1 element-type">
+          <div class="mt-1 element-type d-flex align-items-center pr-3">
             <img v-show="iconType" 
               class="mr-1 bpmn-icon" 
               :src="iconType" 
@@ -84,7 +84,7 @@ export default {
       window.ProcessMaker.EventBus.$emit('show-documentation', this.event);
     },
     mouseLeave() {
-      window.ProcessMaker.EventBus.$emit('hide-documentation');
+      window.ProcessMaker.EventBus.$emit('hide-documentation', this.event);
     },
     getImplementationIcon() {
       switch (this.elementImplementation) {

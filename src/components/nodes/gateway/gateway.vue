@@ -18,12 +18,13 @@
 
 <script>
 import portsConfig from '@/mixins/portsConfig';
-import GatewayShape from '@/components/nodes/gateway/shape';
+import { getGatewayShape } from '@/components/nodes/gateway/shape';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
 import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 
 const hasDefaultFlow = [
@@ -98,7 +99,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new GatewayShape();
+    this.shape = getGatewayShape(store.getters.isForDocumenting);
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
@@ -112,7 +113,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '30px', labelY: '-4px' });
   },
 };
 </script>

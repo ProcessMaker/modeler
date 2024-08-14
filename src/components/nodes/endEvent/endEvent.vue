@@ -19,12 +19,13 @@
 <script>
 import portsConfig from '@/mixins/portsConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
-import EventShape from '../baseStartEvent/eventShape';
+import { getEventShape } from '../baseStartEvent/eventShape';
 import { endColor, endColorStroke } from '@/components/nodeColors';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
 import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 
 export default {
@@ -83,7 +84,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new EventShape();
+    this.shape = getEventShape(store.getters.isForDocumenting);
     this.shape.set('type', 'processmaker.components.nodes.endEvent.Shape');
     const bounds = this.node.diagram.bounds;
     this.shape.position(bounds.get('x'), bounds.get('y'));
@@ -101,7 +102,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '30px', labelY: '-4px' });
   },
 };
 </script>

@@ -28,7 +28,7 @@ import { util } from 'jointjs';
 import highlightConfig from '@/mixins/highlightConfig';
 import portsConfig from '@/mixins/portsConfig';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
-import TaskShape from '@/components/nodes/task/shape';
+import { getTaskShape } from '@/components/nodes/task/shape';
 import { taskHeight } from './taskConfig';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import customIcon from '@/mixins/customIcon';
@@ -40,6 +40,7 @@ import setupLoopCharacteristicsMarkers from '@/components/nodes/task/setupMultiI
 import setupCompensationMarker from '@/components/nodes/task/setupCompensationMarker';
 import { getRectangleAnchorPoint } from '@/portsUtils';
 import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 const labelPadding = 15;
 const topAndBottomMarkersSpace = 2 * markerSize;
@@ -148,7 +149,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new TaskShape();
+    this.shape = getTaskShape(store.getters.isForDocumenting);
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(bounds.width, bounds.height);
@@ -168,7 +169,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    this.initDocumentingIcons({labelX: '100px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '100px', labelY: '-4px' });
   },
 };
 </script>

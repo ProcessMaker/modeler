@@ -18,7 +18,7 @@
 
 <script>
 import portsConfig from '@/mixins/portsConfig';
-import EventShape from './eventShape';
+import { getEventShape } from './eventShape';
 import hasMarkers from '@/mixins/hasMarkers';
 import hideLabelOnDrag from '@/mixins/hideLabelOnDrag';
 import { startColor, startColorStroke } from '@/components/nodeColors';
@@ -27,6 +27,7 @@ import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from './defaultNames';
 import updateIconColor from '@/mixins/updateIconColor';
 import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 export default {
   components: {
@@ -48,7 +49,7 @@ export default {
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, documentingIcons],
   data() {
     return {
-      shape: new EventShape(),
+      shape: getEventShape(store.getters.isForDocumenting),
       definition: null,
       dropdownData: [
         {
@@ -108,7 +109,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
 
-    this.initDocumentingIcons({labelX: '30px', labelY: '-4px'});
+    this.initDocumentingIcons({ labelX: '30px', labelY: '-4px' });
   },
 };
 </script>
