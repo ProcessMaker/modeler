@@ -16,10 +16,13 @@
 </template>
 
 <script>
-import { shapes, util } from 'jointjs';
+import { util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
 import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
+import { getTextAnnotationShape } from './textAnnotationShape';
+import documentingIcons from '@/mixins/documentingIcons';
+import store from '@/store';
 
 export const maxTextAnnotationWidth = 160;
 export default {
@@ -40,7 +43,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig],
+  mixins: [highlightConfig, portsConfig, documentingIcons],
   data() {
     return {
       shape: null,
@@ -100,8 +103,7 @@ export default {
   mounted() {
     const bounds = this.node.diagram.bounds;
 
-    this.shape = new shapes.standard.Polyline();
-    this.shape.set('type', 'textAnnotation');
+    this.shape = getTextAnnotationShape(store.getters.isForDocumenting);
     this.shape.position(bounds.x, bounds.y);
     this.shape.resize(this.nodeWidth, bounds.height);
     this.shape.attr({
@@ -121,6 +123,7 @@ export default {
     this.shape.addTo(this.graph);
     this.shape.component = this;
     this.updateNodeText(this.node.definition.get('text'));
+    this.initDocumentingIcons({ labelX: '-6px', labelY: '-17px' });
   },
 };
 </script>
