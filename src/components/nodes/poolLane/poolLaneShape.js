@@ -3,9 +3,9 @@ import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/docume
 
 export function getPoolLine(bounds, forDocumenting = false) {
   let markup = [
+    ...shapes.standard.Rectangle.prototype.markup,
     docIconMarkup('doccircle'),
     docIconMarkup('doclabel'),
-    ...shapes.standard.Rectangle.prototype.markup,
   ];
 
   markup = docIconAdaptMarkup(markup, forDocumenting);
@@ -13,8 +13,8 @@ export function getPoolLine(bounds, forDocumenting = false) {
   const PoolLaneClass = shapes.standard.Rectangle.define('processmaker.modeler.bpmn.poolLane', {
     markup,
     attrs: {
-      ...docIconAttrs('doclabel', { 'x': -108, 'ref-y': 5 }),
-      ...docIconAttrs('doccircle', { 'cx': bounds.width  + 22, 'cy': 5 }),
+      ...docIconAttrs('doclabel', { 'x': -20, 'y':22 }),
+      ...docIconAttrs('doccircle', { 'cx': bounds.width  - 12, 'cy': 12 }),
     },
   });
 
