@@ -63,23 +63,7 @@ export default {
     linkEditingInit() {
       this.paperManager.addEventHandler('cell:mouseleave', (view) => {
         if (store.getters.isForDocumenting) {
-          window.ProcessMaker.EventBus.$emit('hide-documentation');
-
-          if (view?.model?.attributes?.attrs?.doccircle) {
-            view.model.attr({
-              doccircle: {
-                r: 10,
-                stroke: '#2B9DFF',
-                strokeWidth: '3',
-                fill: '#8DC8FF',
-              },
-              doclabel: {
-                display:'none',
-              },
-            });
-          }
-
-          this.currentHover = null;
+          this.hideDocumentingIcons(view);
         }
       });
 
@@ -95,6 +79,7 @@ export default {
           }, 1000);
         }
       });
+
       this.paperManager.addEventHandler('cell:mouseout', () => {
         clearTimeout(this.timeout);
         this.timeout = null;
@@ -430,33 +415,46 @@ export default {
       }
     },
 
+    hideDocumentingIcons(view) {
+      if (view?.model?.isLink()) {
+        return;
+      }
+      window.ProcessMaker.EventBus.$emit('hide-documentation', { view });
+      this.currentHover = null;
+    },
+
     showDocumentingIcons(view, evt) {
+      const docElement = view?.model?.component?.node?.definition?.documentation;
+      if (docElement === undefined) {
+        return;
+
+      }
+      const doc = Array.isArray(docElement)
+        ? (docElement[0].text ?? '').trim()
+        : (docElement ?? '').trim();
+
       const offset = this.getOffset(this.$refs.paper);
       const pos = {
         x: evt.clientX - offset.x + window.scrollX,
         y: evt.clientY - offset.y + window.scrollY,
       };
 
-
-      const docElement = view?.model?.component?.node?.definition?.documentation;
-      const doc = Array.isArray(docElement)
-        ? (docElement[0].text ?? '').trim()
-        : (docElement ?? '').trim();
-
-      if (view.cid !== this.currentHover) {
-        this.currentHover = view.cid;
+      // pool and lanes doc. card is displayed just when the mouse if over the circle icon
+      if (['processmaker-modeler-pool', 'processmaker-modeler-lane']
+        .some(item => item === view.model.component.$options.propsData.node.type)
+      ) {
+        const cursorClientCoords = this.paper.clientToLocalPoint(pos.x, pos.y);
+        const circlePosX = view.model.attributes.attrs.doccircle.cx + view.model.component.shape.attributes.position.x;
+        const circlePosY = view.model.attributes.attrs.doccircle.cy + view.model.component.shape.attributes.position.y;
+        const distance = Math.sqrt((
+          cursorClientCoords.x - circlePosX) ** 2 + (cursorClientCoords.y - circlePosY) ** 2);
+        if (distance > 20) {
+          return;
+        }
       }
 
       if (doc) {
-        const nodeId = view.model.component.node.id;
-        let nodeNumber = -1;
-        for (let process of view.model.component.$attrs.processes) {
-          nodeNumber = process.flowElements.findIndex(item => item.id === nodeId);
-          if (nodeNumber >=0) {
-            break;
-          }
-        }
-
+        const nodeNumber = this.getNodeNumber(view.model.component.id);
         if (nodeNumber >= 0) {
           window.ProcessMaker.EventBus.$emit(
             'show-documentation', {
@@ -467,21 +465,25 @@ export default {
               view,
             });
         }
-
-        // if it is not a link
-        if (view?.path?.segments === undefined) {
-          view.model.attr({
-            doccircle: {
-              r: 20,
-              fill: '#1572C2',
-              strokeWidth: 0,
-            },
-            doclabel: {
-              display: 'block',
-            },
-          });
-        }
       }
+    },
+
+    getNodeNumber(nodeId) {
+      const xmlString = window.ProcessMaker.$modeler.currentXML;
+
+      const extractIds = (xml) => {
+        const idRegex = /id="([^"]*)"/g;
+        const ids = [];
+        let match;
+        while ((match = idRegex.exec(xml)) !== null) {
+          ids.push(match[1]);
+        }
+        return ids;
+      };
+
+      const ids = extractIds(xmlString);
+
+      return ids.indexOf(nodeId);
     },
   },
 };

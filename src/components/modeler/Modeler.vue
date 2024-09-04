@@ -605,15 +605,44 @@ export default {
 
             circle.addTo(this.graph);
           }
+
+          if (event.view?.path?.segments === undefined) {
+            event.view.model.attr({
+              doccircle: {
+                r: 20,
+                fill: '#1572C2',
+                strokeWidth: 0,
+              },
+              doclabel: {
+                display: 'block',
+              },
+            });
+          }
+
         }
       });
 
-      window.ProcessMaker.EventBus.$on('hide-documentation', () => {
+      window.ProcessMaker.EventBus.$on('hide-documentation', (event) => {
         if (this.$refs['nodeDocumentation']) {
           this.$refs['nodeDocumentation'].text = '';
           this.$refs['nodeDocumentation'].number = null;
           this.$refs['nodeDocumentation'].isVisible = false;
         }
+
+        if (event.view?.model?.attributes?.attrs?.doccircle) {
+          event.view.model.attr({
+            doccircle: {
+              r: 10,
+              stroke: '#2B9DFF',
+              strokeWidth: '3',
+              fill: '#8DC8FF',
+            },
+            doclabel: {
+              display:'none',
+            },
+          });
+        }
+
 
         const cell = this.graph.getCell('sequenceDocCircle');
         if (cell) {
@@ -690,9 +719,13 @@ export default {
         }
 
         shape.component.$emit('click', event);
-        this.$emit('click', {
-          event,
-          node: this.highlightedNode.definition,
+
+        // Use nextTick to ensure that the node is highlighted before emitting the click event.
+        this.$nextTick(() => {
+          this.$emit('click', {
+            event,
+            node: this.highlightedNode.definition,
+          });
         });
       });
 

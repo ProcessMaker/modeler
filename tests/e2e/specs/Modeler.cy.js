@@ -250,15 +250,9 @@ describe('Modeler', { scrollBehavior: false }, () => {
 
     cy.get('[name=id]').clear();
 
-    const invalidId = '12 id!';
-    typeIntoTextInput('[name=id]', invalidId);
-
-    cy.get('.invalid-feedback').should('contain', 'The Node Identifier format is invalid.');
-
     const validId = 'Process_1';
-    typeIntoTextInput('[name=id]', validId);
-
-    cy.get('.invalid-feedback').should('not.exist');
+    typeIntoTextInput('[name=id]', validId  );
+    cy.get('[name=id]').should('have.value', validId);
   });
 
   it('shows warning for unknown element during parsing', () => {

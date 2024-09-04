@@ -44,6 +44,8 @@ import AddLaneBelowButton from '@/components/crown/crownButtons/addLaneBelowButt
 import { configurePool, elementShouldHaveFlowNodeRef } from '@/components/nodes/pool/poolUtils';
 import Node from '@/components/nodes/node';
 import { aPortEveryXPixels } from '@/portsUtils';
+import documentingIcons from '@/mixins/documentingIcons';
+
 
 export default {
   components: {
@@ -69,7 +71,7 @@ export default {
     'paperManager',
     'nodeIdGenerator',
   ],
-  mixins: [highlightConfig, resizeConfig, portsConfig],
+  mixins: [highlightConfig, resizeConfig, portsConfig, documentingIcons],
   data() {
     return {
       shape: null,
@@ -528,6 +530,10 @@ export default {
 
     this.shape = configurePool(this.collaboration, this.node, this.graph);
     this.shape.component = this;
+    this.initDocumentingIcons({ labelX: '-10px', labelY: '-4px' });
+
+
+
     /* If there are no other pools, the first pool should capture all current flow elements.
      * Don't do this when parsing an uploaded diagram. */
     if (!this.collaboration) {
