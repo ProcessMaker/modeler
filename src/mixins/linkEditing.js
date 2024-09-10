@@ -443,7 +443,7 @@ export default {
       if (['processmaker-modeler-pool', 'processmaker-modeler-lane']
         .some(item => item === view.model.component.$options.propsData.node.type)
       ) {
-        const cursorClientCoords = this.paper.clientToLocalPoint(pos.x, pos.y);
+        const cursorClientCoords = this.paper.clientToLocalPoint(evt.clientX, evt.clientY);
         const circlePosX = view.model.attributes.attrs.doccircle.cx + view.model.component.shape.attributes.position.x;
         const circlePosY = view.model.attributes.attrs.doccircle.cy + view.model.component.shape.attributes.position.y;
         const distance = Math.sqrt((

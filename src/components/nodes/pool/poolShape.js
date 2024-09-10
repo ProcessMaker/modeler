@@ -5,9 +5,9 @@ import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/docume
 
 export function getPoolShape(forDocumenting = false) {
   let markup = [
+    ...shapes.standard.Rectangle.prototype.markup,
     docIconMarkup('doccircle'),
     docIconMarkup('doclabel'),
-    ...shapes.standard.Rectangle.prototype.markup,
     { tagName: 'polyline', selector: 'polyline' },
   ];
 
@@ -27,8 +27,8 @@ export function getPoolShape(forDocumenting = false) {
         fill: '#fff',
         strokeWidth: 2,
       },
-      ...docIconAttrs('doclabel', { 'x': -10, 'ref-y': -4 }),
-      ...docIconAttrs('doccircle', { 'cx': -18, 'cy': 5 }),
+      ...docIconAttrs('doclabel', { 'x': 28, 'ref-y': 0 }),
+      ...docIconAttrs('doccircle', { 'cx': 12, 'cy': 12 }),
     },
   });
 

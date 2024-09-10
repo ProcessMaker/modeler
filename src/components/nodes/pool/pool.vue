@@ -530,7 +530,7 @@ export default {
 
     this.shape = configurePool(this.collaboration, this.node, this.graph);
     this.shape.component = this;
-    this.initDocumentingIcons({ labelX: '-10px', labelY: '-4px' });
+    this.initDocumentingIcons({ labelX: '-15px', labelY: '2px' });
 
 
 
