@@ -1,7 +1,7 @@
 <template>
   <div>
     <form-multi-select
-      :label="$t('Element Destination')"
+      :label="$t(label)"
       name="ElementDestination"
       :helper="helper"
       v-model="elementDestination"
@@ -68,6 +68,10 @@ import isEqual from 'lodash/isEqual';
 export default {
   components: { ProcessFormSelect },
   props: {
+    label: {
+      type: String,
+      default: 'Element Destination',
+    },
     options: {
       type: Array,
     },
@@ -142,7 +146,7 @@ export default {
     },
     helper() {
       if (this.node.$type === 'bpmn:EndEvent') {
-        return this.$t('The user will go here after completing the task.');
+        return this.$t('The user will go here after completing the process.');
       }
 
       return this.$t('Select where to send users after this task. Any Non-default destination will disable the “Display Next Assigned Task” function.');
