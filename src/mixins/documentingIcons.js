@@ -24,11 +24,13 @@ export function docIconMarkup(selector) {
 }
 
 export function docIconAttrs(selector, customValues) {
+  const geometry = labelGeometry();
   const attrs = [
     {
       selector: 'doclabel',
       attributes: {
-        'ref-x': 26, 'ref-y': -4, ref: 'circle', fontSize: 20, fontWeight: 'bold',
+        'ref-x': geometry['ref-x'], 'ref-y': geometry['ref-y'], ref: 'circle',
+        fontSize: geometry.fontSize, fontWeight: 'bold',
         width: 16, height: 16, 'data-test': 'nodeDocLabel', 'text':'',
         fill: 'white', display: 'none',
       },
@@ -79,14 +81,17 @@ export default {
 
       const interval = window.setInterval(() => {
         if (view.$('circle').length > 0 && store.getters.isForDocumenting) {
+          const nodeId = this?.node?.definition?.id;
+          const nodeNumber = this.getNodeNumber(nodeId) + 1;
+
           view.model.attr({
             doccircle: {
               display:(doc ? 'block' : 'none'),
             },
             doclabel: {
-              display: 'none',
+              display: (store.getters.isForPrinting && doc ? 'block' : 'none'),
               style: `text-anchor: middle; transform: translate(${params.labelX}, ${params.labelY});`,
-              text: null,
+              text: (store.getters.isForPrinting ? nodeNumber : ''),
             },
           });
           clearInterval(interval);
@@ -95,27 +100,109 @@ export default {
     },
 
     initDocumentingIconsForFlow() {
-
       if (!(store.getters.isForDocumenting ?? false)) {
         return;
       }
+
       const docElement = this.node?.definition?.documentation;
       const doc = Array.isArray(docElement)
         ? (docElement[0].text ?? '').trim()
         : (docElement ?? '').trim();
 
-      if (doc && store.getters.isForDocumenting) {
-        this.shape.attr('line', {
-          sourceMarker: {
-            'type': 'circle',
-            'fill': '#8DC8FF',
-            'r': 10,
-            'cx': 20,
-            'stroke': '#2B9DFF',
-            'stroke-width': 3,
-          },
-        });
-      }
+      const geometry = labelGeometry();
+
+      const interval = window.setInterval(() => {
+        if (doc && store.getters.isForDocumenting) {
+          const nodeId = this?.node?.definition?.id;
+          const nodeNumber = this.getNodeNumber(nodeId) + 1;
+          this.shape.attr('line', {
+            sourceMarker: {
+              'type': 'circle',
+              'fill': '#8DC8FF',
+              'r': 10,
+              'cx': 20,
+              'stroke': '#2B9DFF',
+              'stroke-width': 3,
+            },
+          });
+
+          // add the node number when printing
+          if (store.getters.isForPrinting) {
+            this.shape.appendLabel({
+              attrs: {
+                rect: {
+                  fill: 'none',
+                  stroke: 'none',
+                },
+                text: {
+                  text: nodeNumber,
+                  fill: 'white',
+                  fontSize: geometry.fontSize,
+                  fontWeight: 'bold',
+                  'font-size': geometry.fontSize,
+                  'text-anchor': 'middle',
+                  'y-alignment': 'middle',
+                },
+              },
+              position: {
+                distance: 40,
+                offset: {
+                  x: -20,
+                  y: 1,
+                },
+              },
+            });
+          }
+
+          clearInterval(interval);
+        }
+      }, 200);
+    },
+
+    getNodeNumber(nodeId) {
+      const xmlString = window.ProcessMaker.$modeler.currentXML;
+
+      const extractIds = (xml) => {
+        const idRegex = /id="([^"]*)"/g;
+        const ids = [];
+        let match;
+        while ((match = idRegex.exec(xml)) !== null) {
+          ids.push(match[1]);
+        }
+        return ids;
+      };
+
+      const ids = extractIds(xmlString);
+
+      return ids.indexOf(nodeId);
     },
   },
 };
+
+function labelGeometry() {
+  if (store.getters.isForDocumenting && store.getters.isForPrinting) {
+    return {
+      fontSize: 12,
+      forLink: {
+        distance: 40,
+        offset: { x: -10, y: 1 },
+      },
+      forGeneralShape : {
+        'ref-x': 26,
+        'ref-y': 0,
+      },
+    };
+  }
+
+  return {
+    fontSize: 20,
+    forLink: {
+      distance: 40,
+      offset: { x: -10, y: 1 },
+    },
+    forGeneralShape : {
+      'ref-x': 26,
+      'ref-y': -4,
+    },
+  };
+}
