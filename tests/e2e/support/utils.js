@@ -464,8 +464,7 @@ export function selectComponentType(component, type) {
 }
 
 export function clickAndDropElement(node, position) {
-  cy.get('body').should('be.visible');
-  cy.window().its('store.state.paper', { timeout: 60000 }).then(paper => {
+  cy.window().its('store.state.paper').then(paper => {
     const { tx, ty } = paper.translate();
 
     cy.get('.main-paper').then($paperContainer => {
