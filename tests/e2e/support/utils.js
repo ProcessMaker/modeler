@@ -465,6 +465,7 @@ export function selectComponentType(component, type) {
 
 export function clickAndDropElement(node, position) {
   cy.window().its('store.state.paper').then(paper => {
+
     const { tx, ty } = paper.translate();
 
     cy.get('.main-paper').then($paperContainer => {
