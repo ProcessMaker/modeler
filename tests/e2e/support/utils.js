@@ -2,7 +2,7 @@ import { saveDebounce } from '../../../src/components/inspectors/inspectorConsta
 import path from 'path';
 import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
 
-const renderTime = 500;
+const renderTime = 5000;
 
 export function getTinyMceEditor() {
   return cy
