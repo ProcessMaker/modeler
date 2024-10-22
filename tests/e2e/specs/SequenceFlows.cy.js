@@ -145,6 +145,7 @@ describe('Sequence Flows', { scrollBehavior: false }, () => {
   });
 
   it('Retains target anchor point after parsing and moving shape', () => {
+    cy.wait(3000);
     const startEventPosition = { x: 210, y: 200 };
     const taskPosition = { x: 350, y: 300 };
     clickAndDropElement(nodeTypes.task, taskPosition);
