@@ -49,13 +49,16 @@ jobs:
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
           sudo apt update && sudo apt install ngrok
 
+      - name: Authenticate ngrok 🔑
+        run: ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+
       - name: Start ngrok for localhost:8080 🌍
         run: |
           ngrok http 8080 &
 
       - name: Display ngrok public URL
         run: |
-          sleep 5 # Esperar unos segundos para que se inicie ngrok
+          sleep 5
           curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'
       - name: Cypress run
         uses: cypress-io/github-action@v6
