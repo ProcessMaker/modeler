@@ -2490,8 +2490,11 @@ export default {
     },
   },
   created() {
+    console.log('CREATED', typeof window.Cypress, runningInCypressTest());
     if (runningInCypressTest()) {
       /* Add reference to store on window; this is used in testing to verify rendered nodes */
+      console.log('Setting store to', store);
+      console.log('store.state.paper', store.state.paper);
       window.store = store;
       window.undoRedoStore = undoRedoStore;
     }

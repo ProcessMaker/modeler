@@ -35,4 +35,5 @@ beforeEach(() => {
   waitToRenderAllShapes();
 });
 
-require('./printLogsToTerminal');
+// require('./printLogsToTerminal');
+require('cypress-terminal-report/src/installLogsCollector')();

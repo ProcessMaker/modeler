@@ -19,5 +19,10 @@ module.exports = (on, config) => {
 
   require('@cypress/code-coverage/task')(on, config);
 
+  require('cypress-terminal-report/src/installLogsPrinter')(on, {
+    // printLogsToConsole: 'always',
+    // collectTypes: ['cons:log'],
+  });
+
   return config;
 };
