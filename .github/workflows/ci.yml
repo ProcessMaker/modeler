@@ -48,7 +48,7 @@ jobs:
         with:
           install: true
           start: npm run serve
-          wait-on: http://localhost:8080/
+          wait-on: http://localhost:8080/js/app.js
           config-file: cypress.config.js
           spec: "tests/e2e/specs/**/*"
           record: true
