@@ -43,23 +43,16 @@ jobs:
           node-version: 20
           check-latest: true
           cache: 'npm'
-      - name: Install ngrok 🛠
-        run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && \
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
-          sudo apt update && sudo apt install ngrok
 
-      - name: Authenticate ngrok 🔑
-        run: ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
-
-      - name: Start ngrok for localhost:8080 🌍
-        run: |
-          ngrok http 8080 &
-
-      - name: Display ngrok public URL
+      - name: Install LocalTunnel
+        run: npm install -g localtunnel
+      - name: Start LocalTunnel for localhost:8080 🌍
+        run: lt --port 8080 > localtunnel_url.txt &
+      - name: Display LocalTunnel public URL
         run: |
           sleep 5
-          curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'
+          cat localtunnel_url.txt
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
