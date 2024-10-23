@@ -52,6 +52,7 @@ jobs:
         run: |
           sleep 5
           cat localtunnel_url.txt
+          curl https://loca.lt/mytunnelpassword
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
