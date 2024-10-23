@@ -37,7 +37,10 @@ Cypress.Commands.add('loadModeler', () => {
   cy.visit(url);
   cy.wait('@chunkVendorsJs', { timeout: 30000 });
   cy.wait('@appJs', { timeout: 30000 }).then((interception) => {
-    console.log('appJs', interception.response.statusCode);
+    if (!interception.response) {
+      // if there is no response, wait 5 additional seconds
+      return cy.wait(5000);
+    }
   });
   waitToRenderAllShapes();
 });
