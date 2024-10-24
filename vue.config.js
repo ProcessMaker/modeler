@@ -57,6 +57,11 @@ module.exports = {
           'bpmn-moddle',
         );
       }
+      // when running in development mode (npm run dev and cypress)
+      if (process.env.NODE_ENV === 'development') {
+        // reduce the chunk-vendors size
+        externals.push("@processmaker/screen-builder/dist/vue-form-builder");
+      }
       return externals;
     })(),
     plugins: (() => {
