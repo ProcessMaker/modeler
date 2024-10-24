@@ -24,6 +24,7 @@ module.exports = defineConfig({
     devServer: {
       framework: 'vue-cli',
       bundler: 'webpack',
+      disableHostCheck: true,
     },
   },
 });
