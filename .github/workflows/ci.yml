@@ -65,7 +65,7 @@ jobs:
           echo "server_port = 9000" >> frpc.ini
           echo "token = ${{ secrets.NGROK_AUTH_TOKEN }}" >> frpc.ini
 
-          echo "[${{ steps.subdomain.outputs.subdomain }]" >> frpc.ini
+          echo "[${{ steps.subdomain.outputs.subdomain }}]" >> frpc.ini
           echo "type = http" >> frpc.ini
           echo "local_port = 8080" >> frpc.ini
           echo "remote_port = 7000" >> frpc.ini
