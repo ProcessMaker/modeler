@@ -44,39 +44,15 @@ jobs:
           check-latest: true
           cache: 'npm'
 
-      - name: Generate unique subdomain
-        id: subdomain
+      - name: Install LocalTunnel
+        run: npm install -g localtunnel
+      - name: Start LocalTunnel for localhost:8080 🌍
+        run: lt --port 8080 > localtunnel_url.txt &
+      - name: Display LocalTunnel public URL
         run: |
-          # Generate a unique subdomain based on the date and a random identifier
-          SUBDOMAIN="modeler-$(date +%s)-$RANDOM"
-          echo "Subdomain: $SUBDOMAIN"
-          echo "::set-output name=subdomain::$SUBDOMAIN"
-
-      - name: Download and configure FRPC
-        run: |
-          # Download FRPC from the official repository
-          wget https://github.com/fatedier/frp/releases/download/v0.61.0/frp_0.61.0_linux_amd64.tar.gz
-          tar -xvzf frp_0.61.0_linux_amd64.tar.gz
-          cd frp_0.61.0_linux_amd64
-
-          # Create the FRPC.Ini file using secrets
-          echo "[common]" > frpc.ini
-          echo "server_addr = ${{ secrets.NGROK_SERVER_ADDR }}" >> frpc.ini
-          echo "server_port = 9000" >> frpc.ini
-          echo "token = ${{ secrets.NGROK_AUTH_TOKEN }}" >> frpc.ini
-
-          echo "[web]" >> frpc.ini
-          echo "type = http" >> frpc.ini
-          echo "local_port = 8080" >> frpc.ini
-          echo "remote_port = 7000" >> frpc.ini
-          echo "subdomain = ${{ steps.subdomain.outputs.subdomain }}" >> frpc.ini
-
-          # Execute FRPC to expose the service
-          ./frpc -c ./frpc.ini &
-
-      - name: Print the unique subdomain URL
-        run: |
-          echo "Your service is available at: http://${{ steps.subdomain.outputs.subdomain }}.processmaker4.dev"
+          sleep 5
+          cat localtunnel_url.txt
+          curl https://loca.lt/mytunnelpassword
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
