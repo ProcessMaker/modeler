@@ -2,7 +2,7 @@ import { saveDebounce } from '../../../src/components/inspectors/inspectorConsta
 import path from 'path';
 import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
 
-const renderTime = 5000;
+const renderTime = 300;
 
 export function getTinyMceEditor() {
   return cy
@@ -162,6 +162,8 @@ export function selectOptionByName(selector, name) {
 
 export function waitToRenderAllShapes() {
   cy.wait(renderTime);
+  // wait at least 5 seconds for the canvas be ready [joint-selector="svg"]
+  cy.get('[joint-selector="svg"]', { timeout: 5000 }).should('be.visible');
 }
 
 export function waitForAnimations() {
