@@ -5,7 +5,6 @@ import mockProcesses from './mockProcesses.json';
 import mockDashboards from './mockDashboards.json';
 import mockSignals from './mockSignals.json';
 import mockProcessSvg from './mockProcessSvg';
-import { faker } from '@faker-js/faker';
 
 axios.defaults.baseURL = 'https://bpm4.local.processmaker.com/api/1.0/';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -62,7 +61,7 @@ window.ProcessMaker = {
   },
   user: {
     id: 'standalone',
-    fullName:  faker.person.fullName(),
+    fullName:  'Joe Doe',
     avatar: null,
   },
 };
