@@ -2,7 +2,23 @@ import { saveDebounce } from '../../../src/components/inspectors/inspectorConsta
 import path from 'path';
 import { boundaryEventSelector, nodeTypes, taskSelector } from './constants';
 
-const renderTime = 5000;
+const renderTime = 300;
+
+function waitForCanvasOrReload(retries = 10) {
+  cy.document().then((doc) => {
+    if (doc.querySelector('[joint-selector="svg"]')) {
+      // Element exists, proceed with your test
+    } else if (retries > 0) {
+      // Wait 500ms and check again
+      cy.wait(500).then(() => {
+        waitForCanvasOrReload(retries - 1);
+      });
+    } else {
+      // Element did not appear after retries, reload the page
+      cy.reload();
+    }
+  });
+}
 
 export function getTinyMceEditor() {
   return cy
@@ -162,6 +178,8 @@ export function selectOptionByName(selector, name) {
 
 export function waitToRenderAllShapes() {
   cy.wait(renderTime);
+  // wait at least 5 seconds for the canvas be ready [joint-selector="svg"]
+  waitForCanvasOrReload();
 }
 
 export function waitForAnimations() {
