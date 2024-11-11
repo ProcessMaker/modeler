@@ -147,30 +147,98 @@ export default {
     setTarget(targetShape, connectionPoint) {
       this.setEndpoint(targetShape, endpoints.target, connectionPoint);
     },
+    /**
+     * Completes the link setup by stopping event listeners, resetting events,
+     * setting up shape listeners, embedding the source shape, and storing the initial target.
+     */
     completeLink() {
+      this.stopListeningToEvents();
+      this.resetAndEmitEvents();
+
+      const targetShape = this.getAndResetTargetShape();
+      this.setupShapeListeners(targetShape);
+
+      this.embedAndEmitSourceShape();
+      this.storeInitialTarget();
+    },
+
+    /**
+     * Stops listening to specific events on the shape.
+     */
+    stopListeningToEvents() {
       this.shape.stopListening(this.paper, 'cell:mouseleave');
+    },
+
+    /**
+     * Resets the paper and emits an event to set the cursor to null.
+     */
+    resetAndEmitEvents() {
       this.$emit('set-cursor', null);
-
       this.resetPaper();
+    },
 
+    /**
+     * Retrieves the target shape, resets its color, and returns it.
+     * @returns {Object} The target shape.
+     */
+    getAndResetTargetShape() {
       const targetShape = this.shape.getTargetElement();
       resetShapeColor(targetShape);
+      return targetShape;
+    },
 
+    /**
+     * Sets up listeners for changes in vertices, source, target, and position of shapes.
+     * @param {Object} targetShape - The target shape to listen to.
+     */
+    setupShapeListeners(targetShape) {
       this.shape.on('change:vertices', this.onChangeVertices);
-      this.shape.on('change:source', this.onChangeTargets);
-      this.shape.on('change:target', this.onChangeTargets);
+      this.shape.on('change:source', this.onChangeSource);
+      this.shape.on('change:target', this.onChangeTarget);
       this.shape.listenTo(this.sourceShape, 'change:position', this.updateWaypoints);
       this.shape.listenTo(targetShape, 'change:position', this.updateWaypoints);
-
       this.shape.listenTo(this.paper, 'link:mouseleave', this.storeWaypoints);
-      // Listens to the 'pointerup' event when a link is interacted with on the shape.
-      // When the event occurs, the 'pointerUpHandler' method is invoked to handle the pointer up action.
       this.shape.listenTo(this.paper, 'link:pointerup', this.pointerUpHandler);
+    },
+    // Define the pointerUpHandler function
+    pointerUpHandler (linkView) {
+      // Check if the link is completed
+      const linkModel = linkView.model;
+      const source = linkModel.get('source');
+      const target = linkModel.get('target');
 
+      // Check if the link has both a source and a target
+      if (source.id && target.id) {
+          // Provide options or perform actions
+          this.showLinkOptions(linkView);
+      } else {
+        this.revertToPreviousTarget();
+      }
+    },
+
+    // Function to show options when a link is completed
+    showLinkOptions(linkView) {
+      // Example: Display a dialog or menu with options
+      console.log('Link completed:', linkView.model);
+      this.completeLink();
+      // Implement your logic to show options here
+    },
+    /**
+     * Embeds the source shape into the current shape and emits an event to set shape stacking.
+     */
+    embedAndEmitSourceShape() {
       const sourceShape = this.shape.getSourceElement();
       sourceShape.embed(this.shape);
       this.$emit('set-shape-stacking', sourceShape);
     },
+
+    /**
+     * Stores the initial target of the shape for future reference.
+     */
+    storeInitialTarget() {
+      this.shape.set('initialTarget', this.shape.get('target'));
+    },
+    
     waitForUpdateWaypoints() {
       return new Promise(resolve => {
         this.updateWaypoints();
@@ -217,62 +285,61 @@ export default {
      * Performs actions based on changes in the target shape.
      * @async
      */
-    async pointerUpHandler() {
-      // Check if the 'onChange' event was fired. If not, exit the method.
-      if (!this.onChangeWasFired) {
-        return;
-      }
-      // Check if the target shape has changed.
-      const targetChanged = this.target.id !== this.currentTarget.id;
-      if (targetChanged) {
-        // Disable the 'onChange' event to prevent redundant processing.
-        this.onChangeWasFired = false;
-        // Extract information about the new target shape
-        const targetNode = get(this.currentTarget, 'component.node');
-        const targetConfig = targetNode && this.nodeRegistry[targetNode.type];
-        // Validate the flow with the new target node.
-        const isValid = this.isValid?.({
-          sourceShape: this.sourceShape,
-          targetShape: this.currentTarget,
-          targetConfig,
-        });
-        // If the flow is valid, update the target and related information.
-        if (isValid) {
-          removeOutgoingAndIncomingRefsToFlow(this.node);
-          this.setTarget(this.currentTarget);
-          this.target = this.currentTarget;
-          // Optionally update definition links.
-          if (this.updateDefinitionLinks) {
-            this.updateDefinitionLinks();
-          }
-          this.listeningToMouseleave = true;
-          // Store waypoints asynchronously.
-          await this.storeWaypoints();
-          const waypoint = [];
-          this.node.diagram.waypoint?.forEach(point => {
-            waypoint.push({
-              x: point.x,
-              y: point.y,
-            });
-          });
-          window.ProcessMaker.EventBus.$emit('multiplayer-updateFlows', [
-            {
-              id: this.node.definition.id,
-              type: this.node.type,
-              name: this.node.definition.name,
-              waypoint,
-              sourceRefId: this.node.definition.sourceRef.id,
-              targetRefId: this.node.definition.targetRef.id,
-            },
-          ]);
-        } else {
-          // If the flow is not valid, revert to the previous target.
-          this.setTarget(this.target);
-        }
+    async handleTargetChange(link) {
+      const targetNode = this.paper.findViewByModel(link.get('target').id).model.component.node;
+      const targetConfig = targetNode && this.nodeRegistry[targetNode.type];
+      const isValid = this.validateConnection(targetConfig);
+
+      if (isValid) {
+        await this.processValidTargetChange(link);
       } else {
-        // the target was not changed, set the target with the anchor offset.
-        this.setTarget(this.target, this.getAnchorOffset());
+        this.revertToPreviousTarget();
       }
+    },
+
+    validateConnection(targetConfig) {
+      return this.isValid?.({
+        sourceShape: this.sourceShape,
+        targetShape: this.currentTarget,
+        targetConfig,
+      });
+    },
+
+    async processValidTargetChange(link) {
+      const targetModel = this.paper.findViewByModel(link.get('target').id).model;
+      removeOutgoingAndIncomingRefsToFlow(this.node);
+      this.target = targetModel;
+      if (this.updateDefinitionLinks) {
+        this.updateDefinitionLinks();
+      }
+      this.listeningToMouseleave = true;
+      await this.storeWaypoints();
+      this.emitMultiplayerUpdateFlows();
+    },
+
+    revertToPreviousTarget() {
+      this.setTarget(this.target);
+    },
+
+    setTargetWithAnchorOffset() {
+      this.setTarget(this.target, this.getAnchorOffset());
+    },
+
+    emitMultiplayerUpdateFlows() {
+      const waypoint = this.node.diagram.waypoint?.map(point => ({
+        x: point.x,
+        y: point.y,
+      })) || [];
+      window.ProcessMaker.EventBus.$emit('multiplayer-updateFlows', [
+        {
+          id: this.node.definition.id,
+          type: this.node.type,
+          name: this.node.definition.name,
+          waypoint,
+          sourceRefId: this.node.definition.sourceRef.id,
+          targetRefId: this.node.definition.targetRef.id,
+        },
+      ]);
     },
 
     /**
@@ -295,29 +362,64 @@ export default {
     },
 
     /**
-     * Handles changes in target shapes for a link.
+     * Handles changes in source shapes for a link.
      * @async
-     * @param {Link} link - The link whose target is being changed.
      * @param {Vertices} vertices - The new vertices information.
      * @param {Object} options - Additional options.
      */
-    async onChangeTargets(link, vertices, options) {
-      this.onChangeWasFired = true;
+    async onChangeSource(vertices, options) {
       if (options?.ui && vertices.id) {
-        const newTarget = this.paper.getModelById(vertices.id);
-        if (this.currentTarget.id !== newTarget.id) {
-          // Change the target if it's different from the current target
-          this.currentTarget = newTarget;
-          this.listeningToMouseleave = true;
+        await this.handleWaypointUpdate();
+      }
+    },
+
+    /**
+     * Handles changes in target shapes for a link.
+     * @async
+     * @param {Object} link - The link object.
+     * @param {Vertices} vertices - The new vertices information.
+     * @param {Object} options - Additional options.
+     */
+    async onChangeTarget(link, vertices, options) {
+      const initialTarget = link.get('initialTarget');
+      const currentTarget = link.get('target');
+      // Check if the target has changed to another
+      if (options?.ui && vertices.id) {
+        if (this.isTargetChanged(currentTarget, initialTarget)) {
+          await this.handleTargetChange(link);
+          link.set('initialTarget', currentTarget);
         } else {
-          // If the target is the same, wait for the next update and store waypoints
-          await this.$nextTick();
-          await this.waitForUpdateWaypoints();
-          this.listeningToMouseleave = false;
-          await this.storeWaypoints();
+            await this.handleWaypointUpdate();
         }
       }
     },
+
+    /**
+     * Checks if the target has changed by comparing the current target with the initial target.
+     * @param {Object} currentTarget - The current target object.
+     * @param {Object} initialTarget - The initial target object.
+     * @returns {boolean} - Returns true if the target has changed, otherwise false.
+     */
+    isTargetChanged(currentTarget, initialTarget) {
+      return currentTarget.id && currentTarget.id !== initialTarget.id;
+    },
+
+    /**
+     * Handles the update of waypoints.
+     * @async
+     */
+    async handleWaypointUpdate() {
+      try {
+        console.log('handleWaypointUpdate');
+        await this.$nextTick();
+        await this.waitForUpdateWaypoints();
+        this.listeningToMouseleave = false;
+        await this.storeWaypoints();
+      } catch (error) {
+        console.error('Error in handleWaypointUpdate:', error);
+      }
+    },
+
     async onChangeVertices(link, vertices, options){
       if (options?.ui) {
         this.updateWaypoints();
