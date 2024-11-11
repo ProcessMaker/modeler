@@ -86,7 +86,7 @@ export default {
     },
   },
   methods: {
-    setHighlightColor(highlighted, color){
+    setHighlightColor(highlighted, color) {
       if (highlighted) {
         this.shape.attr({
           line: { stroke: color },
@@ -201,7 +201,7 @@ export default {
       this.shape.listenTo(this.paper, 'link:pointerup', this.pointerUpHandler);
     },
     // Define the pointerUpHandler function
-    pointerUpHandler (linkView) {
+    pointerUpHandler(linkView) {
       // Check if the link is completed
       const linkModel = linkView.model;
       const source = linkModel.get('source');
@@ -209,8 +209,8 @@ export default {
 
       // Check if the link has both a source and a target
       if (source.id && target.id) {
-          // Provide options or perform actions
-          this.showLinkOptions(linkView);
+        // Provide options or perform actions
+        this.showLinkOptions(linkView);
       } else {
         this.revertToPreviousTarget();
       }
@@ -238,7 +238,7 @@ export default {
     storeInitialTarget() {
       this.shape.set('initialTarget', this.shape.get('target'));
     },
-    
+
     waitForUpdateWaypoints() {
       return new Promise(resolve => {
         this.updateWaypoints();
@@ -389,7 +389,7 @@ export default {
           await this.handleTargetChange(link);
           link.set('initialTarget', currentTarget);
         } else {
-            await this.handleWaypointUpdate();
+          await this.handleWaypointUpdate();
         }
       }
     },
@@ -420,7 +420,7 @@ export default {
       }
     },
 
-    async onChangeVertices(link, vertices, options){
+    async onChangeVertices(link, vertices, options) {
       if (options?.ui) {
         this.updateWaypoints();
         await this.$nextTick();
@@ -617,7 +617,7 @@ export default {
     }
 
     this.updateRouter();
-    this.shape.on('change:vertices', function() {
+    this.shape.on('change:vertices', function () {
       this.component.$emit('shape-resize');
     });
 
