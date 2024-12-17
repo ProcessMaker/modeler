@@ -276,26 +276,54 @@ export default {
       this.setBpmnValues(event);
     },
     /**
-     * Handle interstitial for task source
-     *
-     * @param {String} newValue
+     * Handle interstitial behavior based on node type
+     * 
+     * @param {String} newValue - The new destination type value selected
+     * @returns {void}
      */
-    handleInterstitial(newValue) {
-      const taskTypes = ['bpmn:Task', 'bpmn:ManualTask'];
+     handleInterstitial(newValue) {
+      const nodeType = this.node.$type;
+      const nodeId = this.node.id;
 
-      if (!taskTypes.includes(this.node.$type)) {
-        return;
+      const handlers = {
+        /**
+         * Handler for Start Event nodes
+         * Emits handle-interstitial event with node ID and disabled state
+         */
+        'bpmn:StartEvent': () => {
+          this.$root.$emit('handle-interstitial', {
+            nodeId,
+            isDisabled: newValue !== 'taskSource'
+          });
+        },
+        /**
+         * Handler for Task nodes
+         * Delegates to handleTaskInterstitial method
+         */
+        'bpmn:Task': () => this.handleTaskInterstitial(newValue, nodeId),
+        /**
+         * Handler for Manual Task nodes
+         * Delegates to handleTaskInterstitial method
+         */
+        'bpmn:ManualTask': () => this.handleTaskInterstitial(newValue, nodeId)
+      };
+
+      const handler = handlers[nodeType];
+      if (handler) {
+        handler();
       }
+    },
 
-      let isDisabled = false;
-
-      if (newValue !== 'taskSource') {
-        isDisabled = true;
-      }
-
-      this.$root.$emit('handle-interstitial', {
-        nodeId: this.node.id,
-        isDisabled,
+    /**
+     * Handle interstitial for task elements
+     * 
+     * @param {String} newValue - The new destination type value selected
+     * @param {String} nodeId - The ID of the task node being modified
+     */
+    handleTaskInterstitial(newValue, nodeId) {
+      this.$root.$emit('handle-task-interstitial', {
+        nodeId,
+        show: newValue === 'displayNextAssignedTask'
       });
     },
   },
