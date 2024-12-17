@@ -281,7 +281,7 @@ export default {
      * @param {String} newValue - The new destination type value selected
      * @returns {void}
      */
-     handleInterstitial(newValue) {
+    handleInterstitial(newValue) {
       const nodeType = this.node.$type;
       const nodeId = this.node.id;
 
@@ -293,7 +293,7 @@ export default {
         'bpmn:StartEvent': () => {
           this.$root.$emit('handle-interstitial', {
             nodeId,
-            isDisabled: newValue !== 'taskSource'
+            isDisabled: newValue !== 'taskSource',
           });
         },
         /**
@@ -305,7 +305,7 @@ export default {
          * Handler for Manual Task nodes
          * Delegates to handleTaskInterstitial method
          */
-        'bpmn:ManualTask': () => this.handleTaskInterstitial(newValue, nodeId)
+        'bpmn:ManualTask': () => this.handleTaskInterstitial(newValue, nodeId),
       };
 
       const handler = handlers[nodeType];
@@ -323,7 +323,7 @@ export default {
     handleTaskInterstitial(newValue, nodeId) {
       this.$root.$emit('handle-task-interstitial', {
         nodeId,
-        show: newValue === 'displayNextAssignedTask'
+        show: newValue === 'displayNextAssignedTask',
       });
     },
   },
