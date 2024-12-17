@@ -13,7 +13,6 @@ export default {
       { value: 'homepageDashboard', content: 'Welcome Screen' },
       { value: 'customDashboard', content: 'Custom Dashboard' },
       { value: 'externalURL', content: 'External URL' },
-      { value: 'displayNextAssignedTask', content: 'Display Next Assigned Task' },
     ],
   },
 };
