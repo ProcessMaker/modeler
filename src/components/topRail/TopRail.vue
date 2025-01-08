@@ -20,6 +20,9 @@
       :warnings="warnings"
     />
     <slot />
+
+    <LaunchpadButton />
+
   </div>
 </template>
 
@@ -28,6 +31,7 @@ import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
 import MultiplayerViewUsers from '@/components/topRail/multiplayerViewUsers/MultiplayerViewUsers';
 import AiGenerateButton from '../aiMessages/AiGenerateButton.vue';
+import { LaunchpadButton } from './launchpadControl';
 
 export default {
   components: {
@@ -36,6 +40,7 @@ export default {
     ValidatePanel,
     AiGenerateButton,
     MultiplayerViewUsers,
+    LaunchpadButton,
   },
   props: {
     validationErrors: {
