@@ -5,8 +5,8 @@
     :title="$t('Open Launchpad')"
     v-b-tooltip.hover.viewport.d50="{ customClass: 'no-pointer-events' }"
     data-cy="launchpad-button"
-    @mouseover="handleMouseOver"
     @mouseleave="handleMouseLeave"
+    @mouseover="handleMouseOver" 
     @click.prevent="handleOpenLaunchpad"
   >
     <i :class="iconOpen" />
@@ -14,30 +14,22 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-
-export default defineComponent({
-  setup() {
-    const iconOpen = ref('fas fa-play');
-    const handleOpenLaunchpad = () => {
-      console.log('Open Launchpad');
-    };
-
-    const handleMouseOver = () => {
-      iconOpen.value = 'fas fa-external-link-alt';
-    };
-
-    const handleMouseLeave = () => {
-      iconOpen.value = 'fas fa-play';
-    };
-
+export default {
+  data() {
     return {
-      iconOpen,
-      handleOpenLaunchpad,
-      handleMouseOver,
-      handleMouseLeave,
+      iconOpen: 'fas fa-play',
     };
   },
-});
+  methods: {
+    handleOpenLaunchpad() {
+      this.$emit('verifyLaunchpad', window.ProcessMaker.modeler.launchpad === null);
+    },
+    handleMouseOver() { 
+      this.iconOpen = 'fas fa-external-link-alt'; 
+    }, 
+    handleMouseLeave() {
+      this.iconOpen = 'fas fa-play';
+    },
+  },
+};
 </script>
-
