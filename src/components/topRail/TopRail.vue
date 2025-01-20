@@ -117,7 +117,7 @@ export default {
         this.showLaunchpadModal = true;
       } else {
         this.openLaunchpad = false;
-        window.location.href = '/process-browser/' + window.ProcessMaker.modeler.launchpad.process_id;
+        window.location.href = '/process-browser/' + window.ProcessMaker.modeler.process.id;
       }
     },
     closeModal() {
