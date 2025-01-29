@@ -2,6 +2,7 @@
   <b-modal
     ref="launchpad-modal"
     :title="$t('You have not publish your process')"
+    @hide="closeModal"
   >
     <p>
       {{ $t('You have not published your process. Please publish your process to use the Launchpad.') }}
