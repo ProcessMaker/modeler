@@ -223,7 +223,7 @@ export default {
         return;
       }
       // Check if the target shape has changed.
-      const targetChanged = this.target.id !== this.currentTarget.id;
+      const targetChanged = this.target?.id !== this.currentTarget?.id;
       if (targetChanged) {
         // Disable the 'onChange' event to prevent redundant processing.
         this.onChangeWasFired = false;
