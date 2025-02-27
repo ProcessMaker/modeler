@@ -3,9 +3,7 @@ import ElementDestination from '@/components/inspectors/ElementDestination.vue';
 export default {
   component: ElementDestination,
   config: {
-    label: 'Element Destination',
-    helper: 'Select the element destination',
-    placeholder: 'Select the element destination',
+    label: 'Task Destination',
     name: 'elementDestination',
     destinationType: 'taskSource',
     options: [

@@ -4,8 +4,6 @@ export default {
   component: ElementDestination,
   config: {
     label: 'Element Destination',
-    helper: 'Select the element destination',
-    placeholder: 'Select the element destination',
     name: 'elementDestination',
     destinationType: 'taskSource',
     options: [
