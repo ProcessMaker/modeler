@@ -198,7 +198,7 @@ export default {
 
       if (this.isSequenceFlow(type) && this.isConnectedToGateway(definition)) {
         let helper = this.$t('Enter the expression that describes the workflow condition');
-        helper += ' <a href="https://docs.processmaker.com/designing-processes/expression-syntax-components" target="_blank"><i class="far fa-question-circle mr-1"></a>';
+        helper += ' <a href=https://docs.processmaker.com/docs/feel-expression-syntax" target="_blank"><i class="far fa-question-circle mr-1"></a>';
         const expressionConfig = {
           component: 'FormInput',
           config: {

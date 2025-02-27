@@ -343,6 +343,12 @@ export default {
         return false;
       },
     },
+    forPrinting: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
   data() {
@@ -540,9 +546,19 @@ export default {
     },
   },
   methods: {
+    getSvg() {
+      const svg = document.querySelector('.mini-paper svg');
+      const css = 'text { font-family: sans-serif; }';
+      const style = document.createElement('style');
+      style.appendChild(document.createTextNode(css));
+      svg.appendChild(style);
+      const svgString = (new XMLSerializer()).serializeToString(svg);
+      return svgString;
+    },
     mountedInit() {
       store.commit('setReadOnly', this.readOnly);
       store.commit('setForDocumenting', this.forDocumenting);
+      store.commit('setForPrinting', this.forPrinting);
       this.graph = new dia.Graph();
       store.commit('setGraph', this.graph);
       this.graph.set('interactiveFunc', cellView => {
@@ -1466,6 +1482,7 @@ export default {
       if (emitChangeEvent) {
         window.ProcessMaker.EventBus.$emit('modeler-change');
       }
+      window.ProcessMaker.EventBus.$emit('modeler-xml-loaded');
     },
     getBoundaryEvents(process) {
       return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');

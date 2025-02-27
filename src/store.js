@@ -39,6 +39,7 @@ export default new Vuex.Store({
     clientLeftPaper: false,
     readOnly: false,
     forDocumenting: false,
+    forPrinting: false,
     isMultiplayer: false,
   },
   getters: {
@@ -62,6 +63,7 @@ export default new Vuex.Store({
     clientLeftPaper: state => state.clientLeftPaper,
     isReadOnly: state => state.readOnly,
     isForDocumenting: state => state.forDocumenting,
+    isForPrinting: state => state.forPrinting,
     showComponent: state => !state.readOnly,
     showPanTool: state => state.forDocumenting,
     isMultiplayer: state => state.isMultiplayer,
@@ -72,6 +74,9 @@ export default new Vuex.Store({
     },
     setForDocumenting(state, value) {
       state.forDocumenting = value;
+    },
+    setForPrinting(state, value) {
+      state.forPrinting = value;
     },
     preventSavingElementPosition(state) {
       state.allowSavingElementPosition = false;
