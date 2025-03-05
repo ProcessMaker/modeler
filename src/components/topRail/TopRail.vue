@@ -20,6 +20,10 @@
       :warnings="warnings"
     />
     <slot />
+
+    <LaunchpadButton @verifyLaunchpad="handleVerifyLaunchpad"/>
+    <LaunchpadModal :show="showLaunchpadModal" @closeModal="closeModal" />
+
   </div>
 </template>
 
@@ -28,6 +32,7 @@ import store from '@/store';
 import { ValidateButton, ValidateIssue, ValidatePanel } from '@/components/topRail/validateControl';
 import MultiplayerViewUsers from '@/components/topRail/multiplayerViewUsers/MultiplayerViewUsers';
 import AiGenerateButton from '../aiMessages/AiGenerateButton.vue';
+import { LaunchpadButton, LaunchpadModal } from './launchpadControl';
 
 export default {
   components: {
@@ -36,6 +41,8 @@ export default {
     ValidatePanel,
     AiGenerateButton,
     MultiplayerViewUsers,
+    LaunchpadButton,
+    LaunchpadModal,
   },
   props: {
     validationErrors: {
@@ -55,6 +62,8 @@ export default {
     return {
       isOpenIssue: false,
       isOpenPanel: false,
+      showLaunchpadModal: false,
+      openLaunchpad: false,
     };
   },
   computed: {
@@ -101,6 +110,18 @@ export default {
      */
     handleOpenPanel(value) {
       this.isOpenPanel = value;
+    },
+    handleVerifyLaunchpad(value) {
+      this.openLaunchpad = value;
+      if (this.openLaunchpad) {
+        this.showLaunchpadModal = true;
+      } else {
+        this.openLaunchpad = false;
+        window.location.href = '/process-browser/' + window.ProcessMaker.modeler.process.id;
+      }
+    },
+    closeModal() {
+      this.showLaunchpadModal = false;
     },
   },
 };
