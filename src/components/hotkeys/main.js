@@ -13,8 +13,10 @@ export default {
     },
   },
   mounted() {
-    document.addEventListener('keydown', this.keydownListener);
-    document.addEventListener('keyup', this.keyupListener);
+    if (!this.preview) {
+      document.addEventListener('keydown', this.keydownListener);
+      document.addEventListener('keyup', this.keyupListener);
+    }
   },
   methods: {
     startPanEventHandlers() {
