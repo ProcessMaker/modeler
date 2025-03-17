@@ -349,6 +349,15 @@ export default {
         return false;
       },
     },
+    /**
+     * When true the modeler is in preview mode (Overview and Slideshow)
+     */
+    preview: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
   data() {
