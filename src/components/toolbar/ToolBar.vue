@@ -18,6 +18,7 @@
             :is="component.button"
             v-for="(component, index) in validationBar"
             :key="`validation-status-${index}`"
+            v-bind="component.props || {}"
           />
         </TopRail>
 
