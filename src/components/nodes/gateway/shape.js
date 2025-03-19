@@ -1,9 +1,9 @@
 import { dia, shapes } from 'jointjs';
 import { docIconMarkup, docIconAttrs, docIconAdaptMarkup } from '@/mixins/documentingIcons';
-
+import { agentIconMarkup, agentIconAttrs, agentIconAdaptMarkup } from '@/mixins/agentIcons';
 const iconSize = 18;
 
-export function getGatewayShape(forDocumenting = false) {
+export function getGatewayShape() {
   let markup = [
     ...shapes.standard.Polygon.prototype.markup,
     { tagName: 'image', selector: 'image' },
@@ -11,7 +11,9 @@ export function getGatewayShape(forDocumenting = false) {
     docIconMarkup('doclabel'),
   ];
 
-  markup = docIconAdaptMarkup(markup, forDocumenting);
+  markup = docIconAdaptMarkup(markup, true);
+  markup.push(agentIconMarkup('agenticon'));
+  markup = agentIconAdaptMarkup(markup, true);
 
   const GatewayShape = dia.Element.define('processmaker.components.nodes.gateway.Shape', {
     markup,
@@ -42,6 +44,7 @@ export function getGatewayShape(forDocumenting = false) {
       },
       ...docIconAttrs('doclabel', { 'ref-x': 8, 'ref-y': 10 }),
       ...docIconAttrs('doccircle', { 'cx': 30, 'cy': 5 }),
+      ...agentIconAttrs('agenticon', { 'ref-x': 30, 'ref-y': 5 }),
     },
   });
 
