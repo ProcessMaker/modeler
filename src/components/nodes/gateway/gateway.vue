@@ -24,8 +24,8 @@ import CrownConfig from '@/components/crown/crownConfig/crownConfig';
 import highlightConfig from '@/mixins/highlightConfig';
 import defaultNames from '@/components/nodes/gateway/defaultNames';
 import documentingIcons from '@/mixins/documentingIcons';
+import agentIcons from '@/mixins/agentIcons';
 import store from '@/store';
-
 
 const hasDefaultFlow = [
   'bpmn:ExclusiveGateway',
@@ -49,7 +49,7 @@ export default {
     'planeElements',
     'isRendering',
   ],
-  mixins: [highlightConfig, portsConfig, hideLabelOnDrag, documentingIcons],
+  mixins: [highlightConfig, portsConfig, hideLabelOnDrag, documentingIcons, agentIcons],
   created() {
     const flow = this.node.definition.default || null;
     delete this.node.definition.default;
@@ -114,6 +114,7 @@ export default {
     this.shape.component = this;
 
     this.initDocumentingIcons({ labelX: '30px', labelY: '-4px' });
+    this.initAgentIcons();
   },
 };
 </script>
