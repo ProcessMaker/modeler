@@ -5,7 +5,7 @@
     @hide="closeModal"
   >
     <p>
-      {{ $t('You have not published your process. Please publish your process to use the Launchpad.') }}
+      {{ $t('To proceed, please make sure to publish the process. Once the process is published, you will be redirected to the launchpad, where you can manage and track it further.') }}
     </p>
     <template #modal-footer>
       <b-button
