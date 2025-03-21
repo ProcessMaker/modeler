@@ -72,7 +72,7 @@
       <bpmn:outgoing>node_59</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="node_49" name="" sourceRef="node_18" targetRef="node_44" />
-    <bpmn:task id="node_50" name="Results" pm:screenRef="20" pm:allowInterstitial="true" pm:interstitialScreenRef="1" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&#34;reactions&#34;:false,&#34;voting&#34;:false,&#34;edit_comments&#34;:false,&#34;remove_comments&#34;:false,&#34;web_entry&#34;:null,&#34;email_notifications&#34;:{&#34;notifications&#34;:[]}}">
+    <bpmn:task id="node_50" name="Results" pm:screenRef="20" pm:allowInterstitial="false" pm:interstitialScreenRef="1" pm:assignment="requester" pm:assignmentLock="false" pm:allowReassignment="false" pm:config="{&#34;reactions&#34;:false,&#34;voting&#34;:false,&#34;edit_comments&#34;:false,&#34;remove_comments&#34;:false,&#34;web_entry&#34;:null,&#34;email_notifications&#34;:{&#34;notifications&#34;:[]}}">
       <bpmn:incoming>node_67</bpmn:incoming>
       <bpmn:outgoing>node_70</bpmn:outgoing>
     </bpmn:task>
