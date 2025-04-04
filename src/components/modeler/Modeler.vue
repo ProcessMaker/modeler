@@ -349,6 +349,15 @@ export default {
         return false;
       },
     },
+    /**
+     * When true the modeler is in preview mode (Overview and Slideshow)
+     */
+    preview: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   mixins: [hotkeys, cloneSelection, linkEditing, transparentDragging],
   data() {
@@ -1475,6 +1484,8 @@ export default {
         emitChangeEvent = true;
       }
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
+      // Migrate the definitions to new format
+      this.migrateDefinitions(this.definitions);
       this.xmlManager.definitions = this.definitions;
       this.nodeIdGenerator = getNodeIdGenerator(this.definitions);
       store.commit('clearNodes');
@@ -1483,6 +1494,39 @@ export default {
         window.ProcessMaker.EventBus.$emit('modeler-change');
       }
       window.ProcessMaker.EventBus.$emit('modeler-xml-loaded');
+    },
+    /**
+     * Migrate the definitions to the new format
+     *
+     * @param {Object} definitions - The definitions to migrate
+     */
+    migrateDefinitions(definitions) {
+      this.migrateInterstitialToElementDestination(definitions);
+    },
+    /**
+     * Migrate the interstitial property to element destination property
+     *
+     * @param {Object} definitions - The definitions to migrate
+     */
+    migrateInterstitialToElementDestination(definitions) {
+      // find tasks with pm:allowInterstitial="true" and change them to pm:elementDestination="{&#34;type&#34;:&#34;displayNextAssignedTask&#34;}"
+      definitions.rootElements.forEach(rootElement => {
+        // Check if the root element is a process
+        if (rootElement.$type === 'bpmn:Process') {
+          // Get all flow elements in the process
+          const flowElements = rootElement.get('flowElements') || [];
+          
+          // Find all tasks with interstitial enabled
+          flowElements.forEach(element => {
+            if (element.$type === 'bpmn:Task' || element.$type === 'bpmn:UserTask' || element.$type === 'bpmn:ManualTask') {
+              if (element.get('pm:allowInterstitial') === true) {
+                // Always update the element destination to display the next assigned task
+                element.set('pm:elementDestination', JSON.stringify({ type: 'displayNextAssignedTask' }));
+              }
+            }
+          });
+        }
+      });
     },
     getBoundaryEvents(process) {
       return process.get('flowElements').filter(({ $type }) => $type === 'bpmn:BoundaryEvent');
