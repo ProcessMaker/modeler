@@ -52,12 +52,12 @@ describe('Tasks', () => {
     cy.get('[data-test=dashboard]').should('not.exist');
     cy.get('[data-test=external-url]').should('not.exist');
 
-    // Process Launchpad
+    // Home Page
     cy.get('[data-test=element-destination-type]').should('exist');
     cy.get('[data-test=element-destination-type]').click();
-    cy.get('[id=option-1-3]').click();
+    cy.contains('Home Page').click();
     cy.get('[class=multiselect__single]').should('exist');
-    cy.get('[class=multiselect__single]').contains('Welcome Screen');
+    cy.get('[class=multiselect__single]').contains('Home Page');
     cy.get('[data-test=dashboard]').should('not.exist');
     cy.get('[data-test=external-url]').should('not.exist');
 
