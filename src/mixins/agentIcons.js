@@ -1,4 +1,4 @@
-import store from '@/store';
+import _ from 'lodash';
 
 const ICON_CONFIG = {
   DIMENSIONS: {
@@ -81,7 +81,7 @@ export default {
     _updateIconAttributes(view) {
       let enabled = 'none';
       try {
-        const configString = _.get(this.node.definition, 'config')
+        const configString = _.get(this.node.definition, 'config');
         if (configString) {
           const config = JSON.parse(configString);
           enabled = config?.gateway_agent?.enable_gateway_ai ? 'block' : 'none';
