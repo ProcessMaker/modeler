@@ -1,4 +1,4 @@
-import store from '@/store';
+import _ from 'lodash';
 
 const ICON_CONFIG = {
   DIMENSIONS: {
@@ -61,10 +61,13 @@ export function agentIconAttrs(selector, customValues) {
 export default {
   methods: {
     initAgentIcons() {
-      // check if element is for agent
-      if (!(store.getters.isForAgentAI ?? false)) {
-        return;
-      }
+      window.ProcessMaker.EventBus.$on('init-agent-icons', (definition) => {
+        if (definition.id === this.node.definition.id) {
+          this.node.definition = definition;
+          this._initializeIconView();
+        }
+      });
+
       this._initializeIconView();
     },
 
@@ -72,22 +75,26 @@ export default {
       const view = this.paper.findViewByModel(this.shape);
       if (!view) return;
 
-      this._setupIconInterval(view);
-    },
-
-    _setupIconInterval(view) {
-      const interval = window.setInterval(() => {
-        this._updateIconAttributes(view);
-        clearInterval(interval);
-      }, 200);
+      this._updateIconAttributes(view);
     },
 
     _updateIconAttributes(view) {
+      let enabled = 'none';
+      try {
+        const configString = _.get(this.node.definition, 'config');
+        if (configString) {
+          const config = JSON.parse(configString);
+          enabled = config?.gateway_agent?.enable_gateway_ai ? 'block' : 'none';
+        }
+      } catch (error) {
+        enabled = 'none';
+      }
       view.model.attr({
         [ICON_CONFIG.SELECTORS.AGENT]: {
-          display: this.node ? 'block' : 'none',
+          display: enabled,
         },
       });
+      
     },
   },
 };
