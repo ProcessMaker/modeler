@@ -113,7 +113,7 @@ export default {
     },
     handleVerifyLaunchpad(value) {
       this.openLaunchpad = value;
-      if (this.openLaunchpad) {
+      if (this.openLaunchpad || window.ProcessMaker.modeler.isPublished === false) {
         this.showLaunchpadModal = true;
       } else {
         this.openLaunchpad = false;
