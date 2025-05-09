@@ -782,6 +782,11 @@ export default {
           this.generateAssets();
         }
       });
+      
+      this.paperManager.paper.on('link:pointerclick', function(linkView, evt, x, y) {
+        const model = linkView.model;
+        model.component.addCustomMarker();
+      });
 
     },
     registerCustomNodes()

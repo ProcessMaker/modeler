@@ -437,6 +437,21 @@ export default {
         this.listeningToMouseup = false;
       }
     },
+    addCustomMarker() {
+      //change line color
+      this.shape.attr({
+        line: { stroke: 'red' },
+      });
+
+      //add a square marker to the link
+      this.shape.attr({
+        '.joint-marker-target': {
+          'fill': 'red',
+          'stroke': 'red',
+          'stroke-width': 2,
+        },
+      });
+    },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
