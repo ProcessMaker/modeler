@@ -12,6 +12,7 @@
         :show-labels="false"
         :searchable="true"
         :internal-search="false"
+        :disabled="disabled"
         label="name"
         @search-change="loadOptionsDebounced"
         @open="loadOptions"
@@ -135,10 +136,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    required: {
+      type: Boolean,
+      default: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     invalid() {
-      return !this.value;
+      return this.required && !this.value;
     },
     localMessages() {
       return store.getters.rootElements
