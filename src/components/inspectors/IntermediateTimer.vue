@@ -24,7 +24,7 @@
         placeholder=""
         @input="updateFeelExpression"
         data-test="feelExpressionInput"
-      ></b-form-input>
+      />
 
       <div class="mt-1 d-flex align-items-center">
         <small class="text-muted">
@@ -35,7 +35,7 @@
             rel="noopener noreferrer"
             data-test="feelDocLink"
           >
-            <i class="far fa-question-circle mr-1" data-test="feelHelpIcon"></i>
+            <i class="far fa-question-circle mr-1" data-test="feelHelpIcon"/>
           </a>
         </small>
       </div>
