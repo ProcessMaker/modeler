@@ -118,7 +118,7 @@ describe('Intermediate Timer Event', () => {
     // // Type the FEEL expression in the textarea that appears
     cy.get('[data-test=feelExpressionInput]').clear().type('date and time(ProcessVariable.targetDate)');
     
-    const dateTimeFeelXML = '<bpmn:timeDate>date and time(ProcessVariable.targetDate)</bpmn:timeDate>';
+    const dateTimeFeelXML = '<bpmn:timeDate xsi:type="bpmn:tFormalExpression">date and time(ProcessVariable.targetDate)</bpmn:timeDate>';
     assertDownloadedXmlContainsExpected(dateTimeFeelXML);
     
     // Test FEEL expression with Cycle
