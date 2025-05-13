@@ -18,7 +18,7 @@
     </div>
     
     <div v-if="timerPropertyName === 'timeDate' && useDynamicExpression" class="mt-2" data-test="dynamicExpressionContainer">
-      <label>{{ $t('FEEL expression') }}</label>
+      <label for="feelExpression">{{ $t('FEEL expression') }}</label>
       <b-form-input
         v-model="feelExpression"
         placeholder=""
@@ -126,10 +126,7 @@ export default {
       }
       // ISO date strings like "2025-05-01T04:00:00.000Z" are valid syntax for FEEL
       // but should be treated as literal strings, not expressions
-      if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/.test(expression)) {
-        return true;
-      }
-      return false;
+      return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/.test(expression);
     },
     toggleDynamicExpression() {
       if (!this.useDynamicExpression) {
