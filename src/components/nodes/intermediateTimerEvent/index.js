@@ -97,7 +97,6 @@ export default {
 
       return data;
     }, {});
-    console.log(JSON.parse(JSON.stringify(inspectorData)));
     return inspectorData;
   },
   inspectorHandler(value, node, setNodeProp, moddle) {
@@ -121,8 +120,6 @@ export default {
         const eventDefinition = {
           [type]: moddle.create(expressionype, { body }),
         };
-
-        console.log(value[key], ' => ', eventDefinition);
 
         const eventDefinitions = [
           moddle.create('bpmn:TimerEventDefinition', eventDefinition),
