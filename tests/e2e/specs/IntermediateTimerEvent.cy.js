@@ -167,7 +167,7 @@ describe('Intermediate Timer Event', () => {
     const complexExpression = 'date and time(string(ProcessVariable.year) + "-" + string(ProcessVariable.month) + "-" + string(ProcessVariable.day) + "T" + string(ProcessVariable.hour) + ":" + string(ProcessVariable.minute) + ":00Z")';
     cy.get('[data-test=feelExpressionInput]').clear().type(complexExpression);
     
-    const complexFeelXML = `<bpmn:timeDate>${complexExpression}</bpmn:timeDate>`;
+    const complexFeelXML = `<bpmn:timeDate xsi:type="bpmn:tFormalExpression">${complexExpression}</bpmn:timeDate>`;
     assertDownloadedXmlContainsExpected(complexFeelXML);
   });
 
