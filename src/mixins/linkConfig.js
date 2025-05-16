@@ -447,14 +447,14 @@ export default {
         customType: 'stage',
         position: {
           distance: 0.5,
-          offset: { x: 0, y: 0 }
+          offset: { x: 0, y: 0 },
         },
         attrs: {
           text: {
             text: string,
             fill: '#ffffff',
             fontWeight: 'bold',
-            fontSize: 12
+            fontSize: 12,
           },
           rect: {
             fill: '#788793',
@@ -466,9 +466,9 @@ export default {
             refWidth: '250%',    // Expand width in relation to text
             refHeight: '100%',   // Expand height in relation to text
             refX: '-70%',        // Move rect slightly to the left (horizontal padding)
-            refY: '0%'           // Move rect slightly upward (vertical padding)
-          }
-        }
+            refY: '0%',          // Move rect slightly upward (vertical padding)
+          },
+        },
       };
       return label;
     },
@@ -477,11 +477,11 @@ export default {
      * @returns {void}
      */
     setStageLabel() {
-      if(!(this.node.definition?.config)) {
+      if (!(this.node.definition?.config)) {
         return;
       }
       const config = JSON.parse(this.node.definition.config);
-      if(!(config?.stage?.id)) {
+      if (!(config?.stage?.id)) {
         return;
       }
       const label = this.stageLabel(config.stage.order);
@@ -504,7 +504,7 @@ export default {
           linkView.model.removeLabel(i);
         }
       } 
-    }
+    },
   },
   created() {
     this.updateWaypoints = debounce(this.updateWaypoints, 100);
