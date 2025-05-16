@@ -442,7 +442,7 @@ export default {
      * @param {string} string - The text to display in the label.
      * @returns {Object} The label object.
      */
-    stageLabel(string) {
+    stageLabel(string, title) {
       const label = {
         customType: 'stage',
         position: {
@@ -467,6 +467,7 @@ export default {
             refHeight: '100%',   // Expand height in relation to text
             refX: '-70%',        // Move rect slightly to the left (horizontal padding)
             refY: '0%',          // Move rect slightly upward (vertical padding)
+            title: `${this.$t('Stage:')} ${title}`,
           },
         },
       };
@@ -484,7 +485,7 @@ export default {
       if (!(config?.stage?.id)) {
         return;
       }
-      const label = this.stageLabel(config.stage.order);
+      const label = this.stageLabel(config.stage.order, config.stage.label);
       this.$nextTick(()=> {
         this.removeStageLabels();
         const linkView = this.shape.findView(this.paper);
