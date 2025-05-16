@@ -451,6 +451,7 @@ export default {
       ],
       validPreviewElements,
       centered: false,
+      currentStageModel: null
     };
   },
   watch: {
@@ -783,11 +784,12 @@ export default {
         }
       });
       
-      this.paperManager.paper.on('link:pointerclick', function(linkView, evt, x, y) {
-        const model = linkView.model;
-        model.component.addCustomMarker();
+      this.paperManager.paper.on('link:pointerclick', (linkView, evt, x, y) => {
+        this.currentStageModel = linkView.model;
       });
-
+    },
+    getCurrentStageModelComponent() {
+      return this.currentStageModel.component;
     },
     registerCustomNodes()
     {
