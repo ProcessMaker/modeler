@@ -451,7 +451,7 @@ export default {
       ],
       validPreviewElements,
       centered: false,
-      currentStageModel: null
+      currentStageModel: null,
     };
   },
   watch: {
@@ -784,7 +784,7 @@ export default {
         }
       });
       
-      this.paperManager.paper.on('link:pointerclick', (linkView, evt, x, y) => {
+      this.paperManager.paper.on('link:pointerclick', (linkView) => {
         this.currentStageModel = linkView.model;
       });
     },
