@@ -485,7 +485,7 @@ export default {
       if (!(config?.stage?.id)) {
         return;
       }
-      const label = this.stageLabel(config.stage.order, config.stage.label);
+      const label = this.stageLabel(config.stage.order, config.stage.name);
       this.$nextTick(()=> {
         this.removeStageLabels();
         const linkView = this.shape.findView(this.paper);
