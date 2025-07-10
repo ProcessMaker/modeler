@@ -148,6 +148,7 @@
         :is-completed="requestCompletedNodes.includes(node.definition.id)"
         :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
         :is-idle="requestIdleNodes.includes(node.definition.id)"
+        :custom-dropdown-data="customDropdownData"
         @add-node="addNode"
         @remove-node="removeNode"
         @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
@@ -451,6 +452,7 @@ export default {
       ],
       validPreviewElements,
       centered: false,
+      customDropdownData: [],
     };
   },
   watch: {
@@ -854,6 +856,20 @@ export default {
     },
     registerPreview(config) {
       this.previewConfigs.push(config);
+    },
+    registerCustomDropdownData(node, config) {
+      console.log('node', node);
+      console.log('config', config);
+      node.items.push(config);
+
+      this.customDropdownData.push(this.prepareCustomDropdownData(config));
+    },
+    prepareCustomDropdownData(config) {
+      return {
+        label: config.label,
+        nodeType: config.id,
+        dataTest: config.dataTest,
+      };
     },
     handleToolbarAction(action) {
       if (action.handler instanceof Function) {
@@ -2563,6 +2579,7 @@ export default {
       registerStatusBar: this.registerStatusBar,
       registerPmBlock: this.registerPmBlock,
       registerPreview: this.registerPreview,
+      registerCustomDropdownData: this.registerCustomDropdownData,
     });
 
     this.moddle = new BpmnModdle(this.extensions);
