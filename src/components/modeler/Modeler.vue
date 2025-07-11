@@ -1611,6 +1611,8 @@ export default {
         this.setShapeCenterUnderCursor(diagram);
       }
 
+      this.$emit('before-node-added', newNode);
+
       this.highlightNode(newNode);
 
       await this.addNode(newNode);
