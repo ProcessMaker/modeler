@@ -36,14 +36,8 @@ export default {
           return;
         }
 
-        if (isEmailStartEnabled(config)) {
-          this.nodeIcon = emailStartIcon;
-          this.shape.attr('image/xlink:href', coloredIcon(emailStartIcon, this.node));
-          return;
-        }
-
         this.nodeIcon = null;
-        this.shape.attr('image/xlink:href', '');
+        this.shape.attr('image/xlink:href', null);
       },
     },
   },

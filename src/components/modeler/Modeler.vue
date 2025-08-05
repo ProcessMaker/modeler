@@ -858,8 +858,8 @@ export default {
       this.previewConfigs.push(config);
     },
     registerCustomDropdownData(node, config) {
-      console.log('node', node);
-      console.log('config', config);
+      // console.log('node', node);
+      // console.log('config', config);
       node.items.push(config);
 
       this.customDropdownData.push(this.prepareCustomDropdownData(config));
