@@ -45,13 +45,14 @@ export default {
     'processNode',
     'planeElements',
     'isRendering',
+    'customDropdownData',
   ],
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, documentingIcons],
   data() {
     return {
       shape: getEventShape(store.getters.isForDocumenting),
       definition: null,
-      dropdownData: [
+      defaultDropdownData: [
         {
           label: defaultNames['processmaker-modeler-start-event'],
           nodeType: 'processmaker-modeler-start-event',
@@ -79,6 +80,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    dropdownData() {
+      return [...this.defaultDropdownData, ...this.customDropdownData];
+    },
   },
   watch: {
     'node.definition.name'(name) {

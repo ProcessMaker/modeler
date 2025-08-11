@@ -74,6 +74,49 @@ For more information on Cypress, visit [https://cli.vuejs.org/config/#cypress](h
 
 For more information on Jest, visit [https://jestjs.io](https://jestjs.io).
 
+
+## Extending the Modeler with `modeler-init`
+
+The `modeler-init` event is the main entry point for plugins and extensions to customize the modeler at runtime. It provides several extension points, including:
+- Registering custom nodes
+- Registering BPMN extensions
+- Registering inspector extensions
+- Registering custom dropdown items for nodes
+
+### Unified Example
+
+Below is a unified example that demonstrates how to use `modeler-init` to register a custom node and, after the process is loaded, inject a custom dropdown item for a Start Event node.
+
+```js
+import MyCustomNodeConfig from './MyCustomNodeConfig';
+
+// Listen for modeler-init to register nodes and extensions
+window.ProcessMaker.EventBus.$on('modeler-init', ({ registerNode, registerCustomDropdownData }) => {
+  // Register a custom node (if needed)
+  registerNode(MyCustomNodeConfig);
+
+  // Wait for the process to load before injecting dropdown items
+  window.ProcessMaker.EventBus.$on('modeler-start', ({ modeler }) => {
+    // Find the first Start Event node (or your custom node)
+    const startEventNode = modeler.$store.getters.nodes.find(
+      node => node.type === 'processmaker-modeler-start-event'
+    );
+    if (startEventNode) {
+      // Inject a custom dropdown item
+      modeler.registerCustomDropdownData(startEventNode, {
+        label: 'Custom Start Option',
+        id: 'custom-start-option',
+        dataTest: 'switch-to-custom-start-option',
+      });
+    }
+  });
+});
+```
+
+- Use `registerNode` to add custom nodes.
+- Use `registerCustomDropdownData` to add dropdown items, but only after the process and nodes are loaded (in `modeler-start`).
+- You can also use other extension points provided in the `modeler-init` payload as needed.
+
 ## Architecture
 
 The [entry point](https://webpack.js.org/configuration/entry-context/#entry) for the application is `src/main.js`; this is the "starting point" which is used when running `npm run serve` or `npm run build`.
