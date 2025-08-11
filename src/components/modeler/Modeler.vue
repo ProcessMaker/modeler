@@ -453,6 +453,7 @@ export default {
       validPreviewElements,
       centered: false,
       customDropdownData: [],
+      currentStageModel: null,
     };
   },
   watch: {
@@ -784,7 +785,13 @@ export default {
           this.generateAssets();
         }
       });
-
+      
+      this.paperManager.paper.on('link:pointerclick', (linkView) => {
+        this.currentStageModel = linkView.model;
+      });
+    },
+    getCurrentStageModelComponent() {
+      return this.currentStageModel.component;
     },
     registerCustomNodes()
     {
@@ -1624,6 +1631,8 @@ export default {
       if (newNode.isBpmnType('bpmn:BoundaryEvent')) {
         this.setShapeCenterUnderCursor(diagram);
       }
+
+      this.$emit('before-node-added', newNode);
 
       this.highlightNode(newNode);
 
