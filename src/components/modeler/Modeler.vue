@@ -842,6 +842,8 @@ export default {
       if (this.isOpenPreview) {
         this.handlePreview();
       }
+      // Ensure validations are up to date when a node definition changes.
+      this.safeRevalidate();
     },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
@@ -2554,6 +2556,16 @@ export default {
           this.centered = true;
         }
       });
+    },
+    async safeRevalidate() {
+      // Run bpmnlint only when auto-validate is enabled and the model is ready.
+      if (!this.autoValidate) return;
+      // Wait for Vue and JointJS to settle before validating, so we don't lose errors
+      await this.$nextTick();
+      if (this.paperManager?.awaitScheduledUpdates) {
+        await this.paperManager.awaitScheduledUpdates();
+      }
+      await this.validateBpmnDiagram();
     },
   },
   created() {
