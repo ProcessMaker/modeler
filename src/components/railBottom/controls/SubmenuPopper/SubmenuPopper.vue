@@ -92,6 +92,10 @@ export default ({
   border-radius: 4px;
   list-style: none;
   &-item {
+    display: block;
+    min-width: 26px;
+    min-height: 26px;
+    box-sizing: content-box;
     & > svg {
       width: 24px;
       height: 24px;
