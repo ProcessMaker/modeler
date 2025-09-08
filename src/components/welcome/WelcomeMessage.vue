@@ -112,6 +112,7 @@ export default {
 
       const params = {  
         sharedSessionId: this.promptSessionId,
+        server: window.location.host,
       };
 
       window.ProcessMaker.apiClient.post(url, params)
