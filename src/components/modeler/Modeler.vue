@@ -2312,6 +2312,7 @@ export default {
       if (this.promptSessionId && this.promptSessionId !== null && this.promptSessionId !== '') {
         params = {
           promptSessionId: this.promptSessionId,
+          server: window.location.host,
         };
       }
 
