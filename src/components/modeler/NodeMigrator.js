@@ -1,4 +1,4 @@
-import { getAssociationFlowsForNode } from '@/components/modeler/modelerUtils';
+import { getAssociationFlowsForNode, keepOriginalName } from '@/components/modeler/modelerUtils';
 
 export class NodeMigrator {
   constructor(nodeThatWillBeReplaced, definition, graph, newNode, processes, collaboration) {
@@ -11,6 +11,9 @@ export class NodeMigrator {
   }
 
   migrate() {
+    if (keepOriginalName(this._nodeThatWillBeReplaced)) {
+      this._definition.name = this._nodeThatWillBeReplaced.definition.name;
+    }
     const flowNodes = [];
     const forceNodeToRemount = definition => {
       const shape = this._graph.getLinks().find(element => {
