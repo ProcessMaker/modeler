@@ -1,5 +1,5 @@
 <template>
-  <b-card class="mt-2 p-2 pb-0" no-body>
+  <b-card class="mt-2 p-2 pb-0 task-destination" no-body>
     <form-input
       :label="$t('Condition')"
       v-model="condition"
@@ -10,7 +10,6 @@
     <form-multi-select
       :label="$t('Task Destination')"
       v-model="taskDestination"
-      :showLabels="false"
       :allow-empty="false"
       :options="taskDestinationOptions"
       :loading="loading"
@@ -25,9 +24,15 @@
     />
 
     <b-card-footer class="d-flex justify-content-end p-1 bg-white">
-      <button type="button" class="btn btn-primary btn-sm" @click="onSaveCondition">Save</button>
-      <button type="button" class="btn btn-light btn-sm">Duplicate</button>
-      <button type="button" class="btn btn-light text-danger btn-sm">Remove</button>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm text-capitalize"
+        @click="onSaveCondition"
+      >
+        Save
+      </button>
+      <button type="button" class="btn btn-light btn-sm text-capitalize">Duplicate</button>
+      <button type="button" class="btn btn-light btn-sm text-danger text-capitalize">Remove</button>
     </b-card-footer>
   </b-card>
 </template>
@@ -83,3 +88,18 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.task-destination {
+  --label-font-weight: 500;
+  --input-font-size: 14px;
+
+  ::v-deep .form-group label {
+    font-weight: var(--label-font-weight);
+  }
+
+  ::v-deep .form-control {
+    font-size: var(--input-font-size);
+  }
+}
+</style>
