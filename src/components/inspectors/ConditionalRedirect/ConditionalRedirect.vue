@@ -23,7 +23,9 @@
           :value="condition"
           :taskDestinationOptions="taskDestinationOptions"
           :conditionId="condition.id"
-          @input="onConditionInput"
+          @input="onSaveCondition"
+          @duplicate="onDuplicateCondition"
+          @remove="onRemoveCondition"
         />
       </div>
     </div>
@@ -78,7 +80,6 @@ export default {
     },
   },
   mounted() {
-    this.updateConditionalRedirect();
     this.initTaskDestinationOptions();
 
     if (this.value) {
@@ -116,7 +117,7 @@ export default {
         taskDestination: null,
       });
     },
-    onConditionInput(value) {
+    onSaveCondition(value) {
       const index = this.conditions.findIndex((condition) => condition.id === value.conditionId);
 
       if (index !== -1) {
@@ -125,6 +126,21 @@ export default {
           ...value.condition,
         };
       }
+
+      this.updateConditionalRedirect();
+    },
+    onDuplicateCondition(conditionId) {
+      const condition = this.conditions.find((condition) => condition.id === conditionId);
+
+      this.conditions.push({
+        ...condition,
+        id: uuidv4(),
+      });
+
+      this.updateConditionalRedirect();
+    },
+    onRemoveCondition(conditionId) {
+      this.conditions = this.conditions.filter((condition) => condition.id !== conditionId);
 
       this.updateConditionalRedirect();
     },

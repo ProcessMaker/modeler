@@ -31,8 +31,20 @@
       >
         Save
       </button>
-      <button type="button" class="btn btn-light btn-sm text-capitalize">Duplicate</button>
-      <button type="button" class="btn btn-light btn-sm text-danger text-capitalize">Remove</button>
+      <button
+        type="button"
+        class="btn btn-light btn-sm text-capitalize"
+        @click="onDuplicateCondition"
+      >
+        Duplicate
+      </button>
+      <button
+        type="button"
+        class="btn btn-light btn-sm text-danger text-capitalize"
+        @click="onRemoveCondition"
+      >
+        Remove
+      </button>
     </b-card-footer>
   </b-card>
 </template>
@@ -84,6 +96,12 @@ export default {
           taskDestination: this.taskDestination,
         },
       });
+    },
+    onDuplicateCondition() {
+      this.$emit('duplicate', this.conditionId);
+    },
+    onRemoveCondition() {
+      this.$emit('remove', this.conditionId);
     },
   },
 };
