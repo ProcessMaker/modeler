@@ -23,6 +23,29 @@
       data-test="element-destination-type"
     />
 
+    <form-multi-select
+      v-if="taskDestination?.value === 'customDashboard'"
+      :label="$t('Dashboard')"
+      name="Dashboard"
+      :helper="$t('Select the dashboard to show the summary of this request when it completes')"
+      v-model="customDashboard"
+      :placeholder="$t('Type here to search')"
+      :showLabels="false"
+      :allow-empty="false"
+      :options="dashboards"
+      :loading="loading"
+      optionContent="title"
+      optionValue="url"
+      class="p-0 mb-2"
+      validation="required"
+      :searchable="true"
+      :internal-search="false"
+      :preserve-search="false"
+      :clear-on-select="true"
+      @search-change="onDashboardSearchChange"
+      data-test="dashboard"
+    />
+
     <form-input
       v-if="taskDestination?.value === 'externalURL'"
       :label="$t('URL')"
@@ -60,6 +83,9 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
+
 export default {
   props: {
     value: {
@@ -80,32 +106,56 @@ export default {
       loading: false,
       condition: '',
       taskDestination: null,
+      customDashboard: null,
+      dashboards: [],
+      getCustomDashboardsDebounced: null,
       externalURL: '',
       urlPlaceholder: `${window.location.origin}/processes`,
     };
   },
   watch: {
+    customDashboard: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.onSaveCondition();
+        }
+      },
+      deep: true,
+    },
     externalURL() {
       this.onSaveCondition();
     },
+  },
+  created() {
+    this.getCustomDashboardsDebounced = debounce((filter) => {
+      this.getCustomDashboards(filter);
+    }, 500);
   },
   mounted() {
     if (this.value) {
       this.condition = this.value.condition;
       this.taskDestination = this.value.taskDestination;
-      this.externalURL = this.value.externalUrl;
+      this.customDashboard = this.value.customDashboard ?? null;
+      this.externalURL = this.value.externalUrl ?? null;
+    }
+
+    if (this.dashboards.length === 0) {
+      this.getCustomDashboards();
     }
   },
   methods: {
     onSaveCondition() {
-      this.$emit('input', {
+      const conditionData = {
         conditionId: this.conditionId,
         condition: {
           condition: this.condition,
           taskDestination: this.taskDestination,
+          customDashboard: this.customDashboard,
           externalUrl: this.externalURL,
         },
-      });
+      };
+
+      this.$emit('input', conditionData);
     },
     onDuplicateCondition() {
       this.$emit('duplicate', this.conditionId);
@@ -125,6 +175,36 @@ export default {
       } catch {
         return false;
       }
+    },
+    getCustomDashboards(filter) {
+      this.loading = true;
+
+      const params = {
+        order_direction: 'asc',
+        per_page: 20,
+        page: 1,
+        fields: 'title,url',
+      };
+
+      if (filter) {
+        params.filter = filter;
+      }
+
+      window.ProcessMaker.apiClient.get('dynamic-ui/dashboards', {
+        params,
+      })
+        .then(response => {
+          this.dashboards = response.data.data;
+        })
+        .catch(() => {
+          this.dashboards = [];
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    onDashboardSearchChange(filter) {
+      this.getCustomDashboardsDebounced(filter);
     },
   },
 };
