@@ -1147,14 +1147,13 @@ export default {
             const hasProcessId = config.processId && config.processId !== null;
             const hasStartEvent = config.startEvent && config.startEvent !== null;
             
-            if (!hasProcessId || !hasStartEvent) {
-              return true; // Keep the error if required fields are missing
+            // If PM Block is properly configured, remove the error; otherwise keep it
+            return !(hasProcessId && hasStartEvent);
+          } catch (error) {
+            if (error instanceof SyntaxError) {
+              return true; // Keep the error if config is invalid JSON or parsing fails
             }
-            
-            // If PM Block is properly configured, remove the error
-            return false;
-          } catch (e) {
-            return true; // Keep the error if config parsing fails
+            throw error;
           }
         });
         
