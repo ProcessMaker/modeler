@@ -183,7 +183,8 @@ export default {
         order_direction: 'asc',
         per_page: 20,
         page: 1,
-        fields: 'title,url',
+        simplified_data_for_selector: true,
+        fields: 'id,title,token',
       };
 
       if (filter) {
