@@ -28,6 +28,14 @@
           @remove="onRemoveCondition"
         />
       </div>
+
+      <hr class="my-2">
+
+      <div class="d-flex justify-content-end">
+        <small class="text-muted text-right">
+          {{ $t('Rules are evaluated top to bottom.') }}
+        </small>
+      </div>
     </div>
   </div>
 </template>
