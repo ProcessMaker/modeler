@@ -35,7 +35,6 @@
 <script>
 import TaskDestination from './TaskDestination.vue';
 import { v4 as uuidv4 } from 'uuid';
-import isEqual from 'lodash/isEqual';
 
 const MAX_CONDITIONS = 10;
 
@@ -46,7 +45,6 @@ export default {
   props: {
     value: {
       type: String,
-      required: true,
     },
     label: {
       type: String,
