@@ -59,13 +59,6 @@
     <b-card-footer class="d-flex justify-content-end p-1 bg-white">
       <button
         type="button"
-        class="btn btn-primary btn-sm text-capitalize"
-        @click="onSaveCondition"
-      >
-        Save
-      </button>
-      <button
-        type="button"
         class="btn btn-light btn-sm text-capitalize"
         @click="onDuplicateCondition"
       >
@@ -106,14 +99,30 @@ export default {
       loading: false,
       condition: '',
       taskDestination: null,
-      customDashboard: null,
       dashboards: [],
-      getCustomDashboardsDebounced: null,
+      customDashboard: null,
       externalURL: '',
       urlPlaceholder: `${window.location.origin}/processes`,
+      getCustomDashboardsDebounced: null,
+      saveConditionDebounced: null,
     };
   },
   watch: {
+    condition: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.saveConditionDebounced();
+        }
+      },
+    },
+    taskDestination: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.onSaveCondition();
+        }
+      },
+      deep: true,
+    },
     customDashboard: {
       handler(newValue, oldValue) {
         if (!isEqual(newValue, oldValue)) {
@@ -130,6 +139,10 @@ export default {
     this.getCustomDashboardsDebounced = debounce((filter) => {
       this.getCustomDashboards(filter);
     }, 500);
+
+    this.saveConditionDebounced = debounce(() => {
+      this.onSaveCondition();
+    }, 300);
   },
   mounted() {
     if (this.value) {
