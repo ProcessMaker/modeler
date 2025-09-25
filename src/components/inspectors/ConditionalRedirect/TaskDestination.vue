@@ -23,6 +23,16 @@
       data-test="element-destination-type"
     />
 
+    <form-input
+      v-if="taskDestination?.value === 'externalURL'"
+      :label="$t('URL')"
+      v-model="externalURL"
+      :error="getValidationErrorForCustomURL(externalURL)"
+      :placeholder="urlPlaceholder"
+      :helper="$t('Determine the URL where the request will end')"
+      data-test="external-url"
+    />
+
     <b-card-footer class="d-flex justify-content-end p-1 bg-white">
       <button
         type="button"
@@ -70,21 +80,20 @@ export default {
       loading: false,
       condition: '',
       taskDestination: null,
+      externalURL: '',
+      urlPlaceholder: `${window.location.origin}/processes`,
     };
   },
   watch: {
-    value: {
-      handler(newValue) {
-        this.condition = newValue.condition;
-        this.taskDestination = newValue.taskDestination;
-      },
-      deep: true,
+    externalURL() {
+      this.onSaveCondition();
     },
   },
   mounted() {
     if (this.value) {
       this.condition = this.value.condition;
       this.taskDestination = this.value.taskDestination;
+      this.externalURL = this.value.externalUrl;
     }
   },
   methods: {
@@ -94,6 +103,7 @@ export default {
         condition: {
           condition: this.condition,
           taskDestination: this.taskDestination,
+          externalUrl: this.externalURL,
         },
       });
     },
@@ -102,6 +112,19 @@ export default {
     },
     onRemoveCondition() {
       this.$emit('remove', this.conditionId);
+    },
+    getValidationErrorForCustomURL(url) {
+      if (!url) return this.$t('URL is required');
+      if (!this.isValidCustomURL(url)) return this.$t('Must be a valid URL');
+      return '';
+    },
+    isValidCustomURL(url) {
+      try {
+        const parsed = new URL(url);
+        return ['http:', 'https:'].includes(parsed.protocol);
+      } catch {
+        return false;
+      }
     },
   },
 };
