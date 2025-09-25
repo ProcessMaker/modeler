@@ -63,14 +63,6 @@ export default {
     };
   },
   watch: {
-    /* conditionalRedirect: {
-      handler(newValue, oldValue) {
-        if (newValue && !isEqual(newValue, oldValue)) {
-          this.updateConditionalRedirect(newValue);
-        }
-      },
-      deep: true,
-    }, */
     isEnabled: {
       handler() {
         this.updateConditionalRedirect();
@@ -96,7 +88,7 @@ export default {
 
       this.taskDestination = this.taskDestinationOptions?.[0] ?? null;
     },
-    updateConditionalRedirect(newValue) {
+    updateConditionalRedirect() {
       const data =  JSON.stringify({
         isEnabled: this.isEnabled,
         conditions: this.conditions,
