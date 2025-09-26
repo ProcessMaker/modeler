@@ -4,7 +4,7 @@
       :label="$t('Condition')"
       v-model="condition"
       placeholder="e.g., score > 80 and segment == 'A'"
-      data-test="condition"
+      data-test="conditional-task-condition"
     />
 
     <form-multi-select
@@ -20,7 +20,7 @@
       :internal-search="false"
       :preserve-search="false"
       :clear-on-select="true"
-      data-test="element-destination-type"
+      data-test="conditional-task-redirect"
     />
 
     <form-multi-select
@@ -43,7 +43,7 @@
       :preserve-search="false"
       :clear-on-select="true"
       @search-change="onDashboardSearchChange"
-      data-test="dashboard"
+      data-test="conditional-task-dashboard"
     />
 
     <form-input
@@ -53,7 +53,7 @@
       :error="getValidationErrorForCustomURL(externalURL)"
       :placeholder="urlPlaceholder"
       :helper="$t('Determine the URL where the request will end')"
-      data-test="external-url"
+      data-test="conditional-task-external-url"
     />
 
     <b-card-footer class="d-flex justify-content-end p-1 bg-white">
@@ -61,6 +61,7 @@
         type="button"
         class="btn btn-light btn-sm text-capitalize"
         @click="onDuplicateCondition"
+        data-test="conditional-duplicate-button"
       >
         Duplicate
       </button>
@@ -68,6 +69,7 @@
         type="button"
         class="btn btn-light btn-sm text-danger text-capitalize"
         @click="onRemoveCondition"
+        data-test="conditional-remove-button"
       >
         Remove
       </button>

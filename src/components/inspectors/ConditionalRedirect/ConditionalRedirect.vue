@@ -11,6 +11,7 @@
         name="conditionalRedirectEnabled"
         :aria-checked="isEnabled"
         switch
+        data-test="conditional-toggle"
       />
     </div>
     <div v-if="isEnabled">
@@ -19,11 +20,16 @@
         class="btn btn-light"
         @click="addCondition"
         :disabled="conditions.length >= MAX_CONDITIONS"
+        data-test="conditional-add-button"
       >
         <i class="fas fa-plus-circle" />
       </button>
 
-      <div v-for="condition in conditions" :key="condition.id">
+      <div
+        v-for="condition in conditions"
+        :key="condition.id"
+        data-test="conditional-box"
+      >
         <TaskDestination
           :value="condition"
           :taskDestinationOptions="taskDestinationOptions"
