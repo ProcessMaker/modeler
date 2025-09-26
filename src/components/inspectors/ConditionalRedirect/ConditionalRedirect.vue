@@ -14,7 +14,12 @@
       />
     </div>
     <div v-if="isEnabled">
-      <button type="button" class="btn btn-light" @click="addCondition">
+      <button
+        type="button"
+        class="btn btn-light"
+        @click="addCondition"
+        :disabled="conditions.length >= MAX_CONDITIONS"
+      >
         <i class="fas fa-plus-circle" />
       </button>
 
@@ -68,6 +73,7 @@ export default {
       isEnabled: false,
       conditions: [],
       taskDestinationOptions: [],
+      MAX_CONDITIONS,
     };
   },
   watch: {
@@ -81,10 +87,14 @@ export default {
     this.initTaskDestinationOptions();
 
     if (this.value) {
-      const local = JSON.parse(this.value);
+      try {
+        const local = JSON.parse(this.value);
 
-      this.isEnabled = local.isEnabled ?? false;
-      this.conditions = local.conditions ?? [];
+        this.isEnabled = local.isEnabled ?? false;
+        this.conditions = local.conditions ?? [];
+      } catch (error) {
+        console.warn(error, 'Error parsing conditional redirect', this.value);
+      }
     }
   },
   methods: {
@@ -114,6 +124,8 @@ export default {
         condition: '',
         taskDestination: null,
       });
+
+      this.updateConditionalRedirect();
     },
     onSaveCondition(value) {
       const index = this.conditions.findIndex((condition) => condition.id === value.conditionId);

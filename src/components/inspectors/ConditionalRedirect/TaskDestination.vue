@@ -78,6 +78,7 @@
 <script>
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
 
 export default {
   props: {
@@ -146,10 +147,10 @@ export default {
   },
   mounted() {
     if (this.value) {
-      this.condition = this.value.condition;
-      this.taskDestination = this.value.taskDestination;
-      this.customDashboard = this.value.customDashboard ?? null;
-      this.externalURL = this.value.externalUrl ?? null;
+      this.condition = cloneDeep(this.value.condition);
+      this.taskDestination = cloneDeep(this.value.taskDestination);
+      this.customDashboard = cloneDeep(this.value.customDashboard) ?? null;
+      this.externalURL = cloneDeep(this.value.externalUrl) ?? null;
     }
 
     if (this.dashboards.length === 0) {
