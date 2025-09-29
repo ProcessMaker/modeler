@@ -110,6 +110,11 @@ export default {
       saveConditionDebounced: null,
     };
   },
+  computed: {
+    node() {
+      return this.$root.$children[0].$refs.modeler.highlightedNode.definition;
+    },
+  },
   watch: {
     condition: {
       handler(newValue, oldValue) {
@@ -123,6 +128,10 @@ export default {
         if (!isEqual(newValue, oldValue)) {
           this.onSaveCondition();
         }
+
+        this.$nextTick(() => {
+          this.handleInterstitial(newValue.value);
+        });
       },
       deep: true,
     },
@@ -222,6 +231,30 @@ export default {
     },
     onDashboardSearchChange(filter) {
       this.getCustomDashboardsDebounced(filter);
+    },
+    /**
+     * Handles interstitial logic for supported task node types.
+     * @param {string} newValue - The new destination type value selected.
+     */
+    handleInterstitial(newValue) {
+      const { $type: nodeType, id: nodeId } = this.node;
+      const supportedTypes = ['bpmn:Task', 'bpmn:ManualTask'];
+
+      if (supportedTypes.includes(nodeType)) {
+        this.handleTaskInterstitial(newValue, nodeId);
+      }
+    },
+    /**
+     * Handle interstitial for task elements
+     *
+     * @param {String} newValue - The new destination type value selected
+     * @param {String} nodeId - The ID of the task node being modified
+     */
+    handleTaskInterstitial(newValue, nodeId) {
+      this.$root.$emit('handle-task-interstitial', {
+        nodeId,
+        show: newValue === 'displayNextAssignedTask',
+      });
     },
   },
 };
