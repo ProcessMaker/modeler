@@ -61,6 +61,7 @@
         type="button"
         class="btn btn-light btn-sm text-capitalize"
         @click="onDuplicateCondition"
+        :disabled="maxConditionsReached"
         data-test="conditional-duplicate-button"
       >
         Duplicate
@@ -94,6 +95,10 @@ export default {
     },
     taskDestinationOptions: {
       type: Array,
+      required: true,
+    },
+    maxConditionsReached: {
+      type: Boolean,
       required: true,
     },
   },

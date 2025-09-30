@@ -19,7 +19,7 @@
         type="button"
         class="btn btn-light"
         @click="addCondition"
-        :disabled="conditions.length >= MAX_CONDITIONS"
+        :disabled="maxConditionsReached"
         data-test="conditional-add-button"
       >
         <i class="fas fa-plus-circle" />
@@ -34,6 +34,7 @@
           :value="condition"
           :taskDestinationOptions="taskDestinationOptions"
           :conditionId="condition.id"
+          :maxConditionsReached="maxConditionsReached"
           @input="onSaveCondition"
           @duplicate="onDuplicateCondition"
           @remove="onRemoveCondition"
@@ -82,6 +83,11 @@ export default {
       MAX_CONDITIONS,
     };
   },
+  computed: {
+    maxConditionsReached() {
+      return this.conditions.length >= MAX_CONDITIONS;
+    },
+  },
   watch: {
     isEnabled: {
       handler() {
@@ -121,7 +127,7 @@ export default {
       this.$emit('input', data);
     },
     addCondition() {
-      if (this.conditions.length >= MAX_CONDITIONS) {
+      if (this.maxConditionsReached) {
         return;
       }
 
@@ -146,6 +152,10 @@ export default {
       this.updateConditionalRedirect();
     },
     onDuplicateCondition(conditionId) {
+      if (this.maxConditionsReached) {
+        return;
+      }
+
       const condition = this.conditions.find((condition) => condition.id === conditionId);
 
       this.conditions.push({
