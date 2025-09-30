@@ -6,7 +6,7 @@ export default {
     label: 'Conditional Redirects',
     name: 'conditionalRedirect',
     options: [
-      { value: 'taskSource', content: 'Task Source (Default)' },
+      { value: 'taskSource', content: 'Task Source' },
       { value: 'taskList', content: 'Task List' },
       { value: 'processLaunchpad', content: 'Process Launchpad' },
       { value: 'homepageDashboard', content: 'Home Page' },

@@ -2,9 +2,10 @@
   <div>
     <label>{{ $t(label) }}</label>
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <label for="conditionalRedirectEnabled" class="text-muted small">
-        {{ $t("Enable to add rules that route users to different tasks. If none match, the default destination is used.") }}
-      </label>
+      <span
+        class="text-muted small"
+        v-html="conditionalRedirectDescription"
+      />
       <b-form-checkbox
         id="conditionalRedirectEnabled"
         v-model="isEnabled"
@@ -84,6 +85,9 @@ export default {
     };
   },
   computed: {
+    conditionalRedirectDescription() {
+      return this.$t('Enable to add rules that route users to different tasks. If none match, the <b>Task Destination</b> is used.');
+    },
     maxConditionsReached() {
       return this.conditions.length >= MAX_CONDITIONS;
     },
