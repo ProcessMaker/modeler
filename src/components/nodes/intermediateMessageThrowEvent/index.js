@@ -4,6 +4,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import intermediateMessageEventConfig from '@/components/nodes/intermediateMessageEvent';
 import { messageSelector, default as messageEventDefinition } from '../messageEventDefinition';
 import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
+import messageThrowEventDataInputsConfig from '@/components/inspectors/messageThrowEventDataInputsConfig';
 
 const id = 'processmaker-modeler-intermediate-message-throw-event';
 
@@ -32,6 +33,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
             messageSelector('Select the message reference that this element throws'),
           ],
         },
+        messageThrowEventDataInputsConfig,
       ],
     },
   ],

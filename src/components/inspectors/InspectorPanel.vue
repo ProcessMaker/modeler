@@ -78,6 +78,10 @@ Vue.component('FormAccordion', FormAccordion);
 Vue.component('FormDatePicker', FormDatePicker);
 Vue.component('FormMultiSelect', FormMultiSelect);
 
+// Register custom inspector components
+import MessageThrowEventDataInputs from './MessageThrowEventDataInputs';
+Vue.component('MessageThrowEventDataInputs', MessageThrowEventDataInputs);
+
 export default {
   components: { },
   props: ['nodeRegistry', 'moddle', 'processNode', 'parentHeight', 'canvasDragPosition', 'definitions'],
