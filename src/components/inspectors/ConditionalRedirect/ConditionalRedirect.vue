@@ -2,9 +2,10 @@
   <div>
     <label>{{ $t(label) }}</label>
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <label for="conditionalRedirectEnabled" class="text-muted small">
-        {{ $t("Enable to add rules that route users to different tasks. If none match, the default destination is used.") }}
-      </label>
+      <span
+        class="text-muted small"
+        v-html="conditionalRedirectDescription"
+      />
       <b-form-checkbox
         id="conditionalRedirectEnabled"
         v-model="isEnabled"
@@ -19,7 +20,7 @@
         type="button"
         class="btn btn-light"
         @click="addCondition"
-        :disabled="conditions.length >= MAX_CONDITIONS"
+        :disabled="maxConditionsReached"
         data-test="conditional-add-button"
       >
         <i class="fas fa-plus-circle" />
@@ -34,6 +35,7 @@
           :value="condition"
           :taskDestinationOptions="taskDestinationOptions"
           :conditionId="condition.id"
+          :maxConditionsReached="maxConditionsReached"
           @input="onSaveCondition"
           @duplicate="onDuplicateCondition"
           @remove="onRemoveCondition"
@@ -82,6 +84,14 @@ export default {
       MAX_CONDITIONS,
     };
   },
+  computed: {
+    conditionalRedirectDescription() {
+      return this.$t('Enable to add rules that route users to different tasks. If none match, the <b>Task Destination</b> is used.');
+    },
+    maxConditionsReached() {
+      return this.conditions.length >= MAX_CONDITIONS;
+    },
+  },
   watch: {
     isEnabled: {
       handler() {
@@ -121,7 +131,7 @@ export default {
       this.$emit('input', data);
     },
     addCondition() {
-      if (this.conditions.length >= MAX_CONDITIONS) {
+      if (this.maxConditionsReached) {
         return;
       }
 
@@ -146,6 +156,10 @@ export default {
       this.updateConditionalRedirect();
     },
     onDuplicateCondition(conditionId) {
+      if (this.maxConditionsReached) {
+        return;
+      }
+
       const condition = this.conditions.find((condition) => condition.id === conditionId);
 
       this.conditions.push({
