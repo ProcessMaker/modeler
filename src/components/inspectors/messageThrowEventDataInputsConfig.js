@@ -1,5 +1,3 @@
-import MessageThrowEventDataInputs from './MessageThrowEventDataInputs';
-
 export default {
   component: 'FormAccordion',
   container: true,
@@ -11,7 +9,7 @@ export default {
   },
   items: [
     {
-      component: MessageThrowEventDataInputs,
+      component: 'MessageThrowEventDataInputs',
       config: {
         label: 'Data Inputs',
         name: 'dataInputs',

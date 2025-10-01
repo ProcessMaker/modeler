@@ -313,13 +313,13 @@ export default {
       this.showNewDataInput = true;
       this.dataInputName = '';
       this.dataInputId = `din_${Date.now()}`;
-      this.assignmentExpressions = [{ from: '', to: '' }];
+      this.assignmentExpressions = []; // Start with no assignments
     },
     
     editDataInput(dataInput) {
       this.dataInputName = dataInput.name;
       this.dataInputId = dataInput.id;
-      this.assignmentExpressions = dataInput.assignments ? [...dataInput.assignments] : [{ from: '', to: '' }];
+      this.assignmentExpressions = dataInput.assignments ? [...dataInput.assignments] : [];
       this.showEditDataInput = true;
     },
     
@@ -346,10 +346,16 @@ export default {
     },
     
     saveDataInput() {
+      // Filter out empty assignments
+      const validAssignments = this.assignmentExpressions.filter(assignment => 
+        assignment.from && assignment.from.trim() !== '' && 
+        assignment.to && assignment.to.trim() !== ''
+      );
+      
       const dataInput = {
         id: this.dataInputId,
         name: this.dataInputName,
-        assignments: this.assignmentExpressions,
+        assignments: validAssignments,
       };
       
       if (this.showEditDataInput) {
