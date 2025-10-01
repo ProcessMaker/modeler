@@ -1,11 +1,8 @@
 import {
-  addNodeTypeToPaper,
   clickAndDropElement,
-  getElementAtPosition, modalAnimationTime,
-  modalCancel,
-  modalConfirm,
+  getElementAtPosition,
   toggleInspector,
-  typeIntoTextInput, waitForAnimations,
+  typeIntoTextInput,
   waitToRenderAllShapes,
 } from '../../support/utils';
 
