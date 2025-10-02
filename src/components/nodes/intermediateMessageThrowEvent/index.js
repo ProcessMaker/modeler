@@ -7,53 +7,6 @@ import defaultNames from '@/components/nodes/intermediateEvent/defaultNames';
 import messageThrowEventDataInputsConfig from '@/components/inspectors/messageThrowEventDataInputsConfig';
 
 const id = 'processmaker-modeler-intermediate-message-throw-event';
-const BPMN_TYPES = {
-  DATA_INPUT: 'bpmn:DataInput',
-  ASSIGNMENT: 'bpmn:Assignment',
-  EXPRESSION: 'bpmn:Expression',
-  DATA_INPUT_ASSOCIATION: 'bpmn:DataInputAssociation',
-  INPUT_SET: 'bpmn:InputSet',
-};
-
-const createDataInput = (item, moddle) => {
-  return moddle.create(BPMN_TYPES.DATA_INPUT, {
-    id: item.id,  
-    name: item.name,
-  });
-};
-
-const createAssignments = (assignments, moddle) => {
-  // Safety check for backward compatibility
-  if (!Array.isArray(assignments)) {
-    return [];
-  }
-  
-  return assignments
-    .filter(assignment => assignment.from && assignment.to)
-    .map(assignment => {
-      try {
-        // Try to create assignment using the moddle
-        const assignmentElement = moddle.create('bpmn:Assignment', {
-          from: moddle.create('bpmn:Expression', { body: assignment.from }),
-          to: moddle.create('bpmn:Expression', { body: assignment.to }),
-        });
-        return assignmentElement;
-      } catch (error) {
-        console.error('Error creating assignment:', error);
-        // If bpmn:Assignment fails, try a different approach
-        try {
-          const assignmentElement = moddle.create('bpmn:FormalExpression', {
-            body: `${assignment.from} -> ${assignment.to}`,
-          });
-          return assignmentElement;
-        } catch (fallbackError) {
-          console.error('Fallback assignment creation failed:', fallbackError);
-          return null;
-        }
-      }
-    })
-    .filter(assignment => assignment !== null);
-};
 
 const extractAssignments = (assignments) => {
   // Safety check for backward compatibility
