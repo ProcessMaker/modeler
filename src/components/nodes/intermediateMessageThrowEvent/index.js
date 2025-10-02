@@ -30,10 +30,29 @@ const createAssignments = (assignments, moddle) => {
   
   return assignments
     .filter(assignment => assignment.from && assignment.to)
-    .map(assignment => moddle.create(BPMN_TYPES.ASSIGNMENT, {
-      from: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.from }),
-      to: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.to }),
-    }));
+    .map(assignment => {
+      try {
+        // Try to create assignment using the moddle
+        const assignmentElement = moddle.create('bpmn:Assignment', {
+          from: moddle.create('bpmn:Expression', { body: assignment.from }),
+          to: moddle.create('bpmn:Expression', { body: assignment.to }),
+        });
+        return assignmentElement;
+      } catch (error) {
+        console.error('Error creating assignment:', error);
+        // If bpmn:Assignment fails, try a different approach
+        try {
+          const assignmentElement = moddle.create('bpmn:FormalExpression', {
+            body: `${assignment.from} -> ${assignment.to}`,
+          });
+          return assignmentElement;
+        } catch (fallbackError) {
+          console.error('Fallback assignment creation failed:', fallbackError);
+          return null;
+        }
+      }
+    })
+    .filter(assignment => assignment !== null);
 };
 
 const extractAssignments = (assignments) => {
@@ -65,17 +84,21 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
   },
 
   inspectorData(node, defaultDataTransform) {
+    // First get the messageRef data from messageEventDefinition
+    const messageData = messageEventDefinition.inspectorData(node);
+    
+    // Then get the default data
     const data = defaultDataTransform(node);
+    
+    // Merge messageRef data
+    Object.assign(data, messageData);
     
     // Reconstruct dataInputs from BPMN elements
     if (node.definition.dataInputs && node.definition.dataInputAssociations) {
       const dataInputs = [];
       
       node.definition.dataInputs.forEach(dataInput => {
-        // Safety check
-        if (!dataInput || !dataInput.id) {
-          return;
-        }
+        if (!dataInput || !dataInput.id) return;
         
         const dataInputAssociation = node.definition.dataInputAssociations.find(
           association => association && association.targetRef && association.targetRef.id === dataInput.id,
@@ -94,7 +117,6 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       
       data.dataInputs = dataInputs;
     } else {
-      // Initialize empty array for backward compatibility
       data.dataInputs = [];
     }
     
@@ -103,33 +125,82 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
 
   // eslint-disable-next-line no-unused-vars
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
-    // Handle dataInputs specifically
-    if (value.dataInputs && Array.isArray(value.dataInputs)) {
-      const dataInputs = [];
-      const dataInputAssociations = [];
-      value.dataInputs.forEach(item => {
-        // Safety check
-        if (!item || !item.id) {
-          return;
-        }
+    // Handle messageRef using the messageEventDefinition handler
+    if (value.messageRef !== undefined) {
+      messageEventDefinition.inspectorHandler(value, node, setNodeProp, moddle, definitions);
+    }
+    
+    // Handle dataInputs by creating proper BPMN structure
+    if (value.dataInputs !== undefined) {
+      try {
+        // Clear existing data inputs
+        node.definition.dataInputs = [];
+        node.definition.dataInputAssociations = [];
+        node.definition.inputSet = undefined;
         
-        const dataInput = createDataInput(item, moddle);
-        dataInputs.push(dataInput);
-        dataInputAssociations.push(moddle.create('bpmn:DataInputAssociation', {
-          targetRef: dataInput,
-          assignment: createAssignments(item.assignments, moddle),
-        }));
-      });
-      const inputSet = moddle.create('bpmn:InputSet', {
-        dataInputRefs: dataInputs,
-      });
-      node.definition.dataInputs = dataInputs;
-      node.definition.dataInputAssociations = dataInputAssociations;
-      node.definition.inputSet = inputSet;
+        if (Array.isArray(value.dataInputs) && value.dataInputs.length > 0) {
+          const dataInputs = [];
+          const dataInputAssociations = [];
+          
+          value.dataInputs.forEach(item => {
+            if (!item || !item.id) return;
+            
+            // Create data input
+            const dataInput = moddle.create('bpmn:DataInput', {
+              id: item.id,
+              name: item.name || '',
+            });
+            dataInputs.push(dataInput);
+            
+            // Create data input association
+            const dataInputAssociation = moddle.create('bpmn:DataInputAssociation', {
+              targetRef: dataInput,
+            });
+            
+            // Add assignments if they exist
+            if (item.assignments && Array.isArray(item.assignments) && item.assignments.length > 0) {
+              const assignments = item.assignments
+                .filter(assignment => assignment.from && assignment.to)
+                .map(assignment => {
+                  try {
+                    return moddle.create('bpmn:Assignment', {
+                      from: moddle.create('bpmn:Expression', { body: assignment.from }),
+                      to: moddle.create('bpmn:Expression', { body: assignment.to }),
+                    });
+                  } catch (error) {
+                    console.error('Error creating assignment:', error);
+                    return null;
+                  }
+                })
+                .filter(assignment => assignment !== null);
+              
+              if (assignments.length > 0) {
+                dataInputAssociation.assignment = assignments;
+              }
+            }
+            
+            dataInputAssociations.push(dataInputAssociation);
+          });
+          
+          // Create input set
+          const inputSet = moddle.create('bpmn:InputSet', {
+            dataInputRefs: dataInputs,
+          });
+          
+          // Set the properties
+          node.definition.dataInputs = dataInputs;
+          node.definition.dataInputAssociations = dataInputAssociations;
+          node.definition.inputSet = inputSet;
+        }
+      } catch (error) {
+        console.error('Error handling data inputs:', error);
+        // Fallback to simple property storage
+        setNodeProp(node, 'dataInputs', value.dataInputs);
+      }
     }
     
     // Handle all other properties using the default handler
-    const { ...otherProperties } = value;
+    const { dataInputs, messageRef, ...otherProperties } = value;
     if (Object.keys(otherProperties).length > 0) {
       defaultInspectorHandler(otherProperties, node, setNodeProp, moddle, definitions, isMultiplayer);
     }
