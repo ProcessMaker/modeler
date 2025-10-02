@@ -155,7 +155,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     // eslint-disable-next-line no-unused-vars
     const { dataInputs, messageRef, ...otherProperties } = value;
     if (Object.keys(otherProperties).length > 0) {
-      defaultInspectorHandler(otherProperties, node, setNodeProp, moddle, definitions, isMultiplayer);
+      defaultInspectorHandler(otherProperties, isMultiplayer);
     }
   },
   inspectorConfig: [
