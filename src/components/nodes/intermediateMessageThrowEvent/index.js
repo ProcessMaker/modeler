@@ -12,13 +12,13 @@ const BPMN_TYPES = {
   ASSIGNMENT: 'bpmn:Assignment',
   EXPRESSION: 'bpmn:Expression',
   DATA_INPUT_ASSOCIATION: 'bpmn:DataInputAssociation',
-  INPUT_SET: 'bpmn:InputSet'
+  INPUT_SET: 'bpmn:InputSet',
 };
 
 const createDataInput = (item, moddle) => {
   return moddle.create(BPMN_TYPES.DATA_INPUT, {
     id: item.id,  
-    name: item.name
+    name: item.name,
   });
 };
 
@@ -32,7 +32,7 @@ const createAssignments = (assignments, moddle) => {
     .filter(assignment => assignment.from && assignment.to)
     .map(assignment => moddle.create(BPMN_TYPES.ASSIGNMENT, {
       from: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.from }),
-      to: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.to })
+      to: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.to }),
     }));
 };
 
@@ -44,7 +44,7 @@ const extractAssignments = (assignments) => {
   
   return assignments.map(assignment => ({
     from: assignment.from ? assignment.from.body : '',
-    to: assignment.to ? assignment.to.body : ''
+    to: assignment.to ? assignment.to.body : '',
   }));
 };
 export default merge(cloneDeep(intermediateMessageEventConfig), {
@@ -88,7 +88,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
         dataInputs.push({
           id: dataInput.id,
           name: dataInput.name || '',
-          assignments: assignments
+          assignments,
         });
       });
       
@@ -101,10 +101,10 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     return data;
   },
 
-  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
+  inspectorHandler(value, node, setNodeProp, moddle) {
     if (value.dataInputs && Array.isArray(value.dataInputs)) {
-    const dataInputs = [];
-    const dataInputAssociations = [];
+      const dataInputs = [];
+      const dataInputAssociations = [];
       value.dataInputs.forEach(item => {
         // Verificación de seguridad
         if (!item || !item.id) {
@@ -115,11 +115,11 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
         dataInputs.push(dataInput);
         dataInputAssociations.push(moddle.create('bpmn:DataInputAssociation', {
           targetRef: dataInput,
-          assignment: createAssignments(item.assignments, moddle)
+          assignment: createAssignments(item.assignments, moddle),
         }));
       });
       const inputSet = moddle.create('bpmn:InputSet', {
-        dataInputRefs: dataInputs
+        dataInputRefs: dataInputs,
       });
       node.definition.dataInputs = dataInputs;
       node.definition.dataInputAssociations = dataInputAssociations;
