@@ -51,43 +51,43 @@
               :key="index"
               class="assignment-item p-3 border rounded mb-3 bg-white shadow-sm"
             >
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="mb-0">{{ $t('Assignment') }} {{ index + 1 }}</h6>
-              <button 
-                type="button"
-                class="btn btn-sm btn-outline-danger"
-                @click="removeAssignment(index)"
-                :title="$t('Remove assignment')"
-              >
-                <i class="fa fa-trash" />
-              </button>
-            </div>
-            
-            <div class="mb-3">
-              <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
-                <i class="fa fa-code mr-2 text-primary" />
-                {{ $t('From') }}
-              </label>
-              <textarea 
-                v-model="assignment.from"
-                class="form-control"
-                rows="3"
-                :placeholder="$t('e.g., {$data[\'user\'][\'firstname\']} {$data[\'user\'][\'lastname\']}')"
-              />
-            </div>
-            
-            <div>
-              <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
-                <i class="fa fa-arrow-right mr-2 text-success" />
-                {{ $t('To') }}
-              </label>
-              <textarea 
-                v-model="assignment.to"
-                class="form-control"
-                rows="3"
-                :placeholder="$t('e.g., user.firstname')"
-              />
-            </div>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">{{ $t('Assignment') }} {{ index + 1 }}</h6>
+                <button 
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="removeAssignment(index)"
+                  :title="$t('Remove assignment')"
+                >
+                  <i class="fa fa-trash" />
+                </button>
+              </div>
+              
+              <div class="mb-3">
+                <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
+                  <i class="fa fa-code mr-2 text-primary" />
+                  {{ $t('From') }}
+                </label>
+                <textarea 
+                  v-model="assignment.from"
+                  class="form-control"
+                  rows="3"
+                  :placeholder="$t('e.g., {$data[\'user\'][\'firstname\']} {$data[\'user\'][\'lastname\']}')"
+                />
+              </div>
+              
+              <div>
+                <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
+                  <i class="fa fa-arrow-right mr-2 text-success" />
+                  {{ $t('To') }}
+                </label>
+                <textarea 
+                  v-model="assignment.to"
+                  class="form-control"
+                  rows="3"
+                  :placeholder="$t('e.g., user.firstname')"
+                />
+              </div>
             </div>
           </div>
           
@@ -258,7 +258,7 @@ export default {
           this.dataInputs = newValue.map(item => ({
             id: item.id || '',
             name: item.name || '',
-            assignments: Array.isArray(item.assignments) ? [...item.assignments] : []
+            assignments: Array.isArray(item.assignments) ? [...item.assignments] : [],
           }));
         } else {
           this.dataInputs = [];
@@ -288,7 +288,7 @@ export default {
         return this.$t('Data input name is required');
       }
       const exists = this.dataInputs.find(input => 
-        input.name === name && input.id !== this.dataInputId
+        input.name === name && input.id !== this.dataInputId,
       );
       if (exists) {
         return this.$t('Data input name is duplicated');
@@ -301,7 +301,7 @@ export default {
         return this.$t('Data input ID is required');
       }
       const exists = this.dataInputs.find(input => 
-        input.id === id && input.id !== this.dataInputId
+        input.id === id && input.id !== this.dataInputId,
       );
       if (exists) {
         return this.$t('Data input ID is duplicated');
@@ -372,7 +372,7 @@ export default {
       // Filter out empty assignments
       const validAssignments = this.assignmentExpressions.filter(assignment => 
         assignment.from && assignment.from.trim() !== '' && 
-        assignment.to && assignment.to.trim() !== ''
+        assignment.to && assignment.to.trim() !== '',
       );
       
       const dataInput = {

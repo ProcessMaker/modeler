@@ -131,8 +131,6 @@
 </template>
 
 <script>
-import { get } from 'lodash';
-
 export default {
   name: 'DataInputAssociation',
   props: {
@@ -191,7 +189,7 @@ export default {
         return this.$t('Data input name is required');
       }
       const exists = this.dataInputs.find(input => 
-        input.name === name && input.id !== this.dataInputId
+        input.name === name && input.id !== this.dataInputId,
       );
       if (exists) {
         return this.$t('Data input name is duplicated');
@@ -204,7 +202,7 @@ export default {
         return this.$t('Data input ID is required');
       }
       const exists = this.dataInputs.find(input => 
-        input.id === id && input.id !== this.dataInputId
+        input.id === id && input.id !== this.dataInputId,
       );
       if (exists) {
         return this.$t('Data input ID is duplicated');

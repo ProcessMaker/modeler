@@ -1,7 +1,6 @@
 import {
   addNodeTypeToPaper,
   assertDownloadedXmlContainsExpected,
-  clickAndDropElement,
   getElementAtPosition,
   toggleInspector,
   waitToRenderAllShapes,
