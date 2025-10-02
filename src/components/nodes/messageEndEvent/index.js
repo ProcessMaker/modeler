@@ -3,7 +3,7 @@ import merge from 'lodash/merge';
 import cloneDeep from 'lodash/cloneDeep';
 import endEventConfig from '@/components/nodes/endEvent';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
-import { default as messageEventDefinition, messageSelector } from '../messageEventDefinition';
+import { default as messageEventDefinition } from '../messageEventDefinition';
 import MessageSelect from '@/components/inspectors/MessageSelect';
 const id = 'processmaker-modeler-message-end-event';
 
