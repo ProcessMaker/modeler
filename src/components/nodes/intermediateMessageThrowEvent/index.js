@@ -23,12 +23,29 @@ const createDataInput = (item, moddle) => {
 };
 
 const createAssignments = (assignments, moddle) => {
+  // Verificación de seguridad para compatibilidad hacia atrás
+  if (!Array.isArray(assignments)) {
+    return [];
+  }
+  
   return assignments
     .filter(assignment => assignment.from && assignment.to)
     .map(assignment => moddle.create(BPMN_TYPES.ASSIGNMENT, {
       from: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.from }),
       to: moddle.create(BPMN_TYPES.EXPRESSION, { body: assignment.to })
     }));
+};
+
+const extractAssignments = (assignments) => {
+  // Verificación de seguridad para compatibilidad hacia atrás
+  if (!assignments || !Array.isArray(assignments)) {
+    return [];
+  }
+  
+  return assignments.map(assignment => ({
+    from: assignment.from ? assignment.from.body : '',
+    to: assignment.to ? assignment.to.body : ''
+  }));
 };
 export default merge(cloneDeep(intermediateMessageEventConfig), {
   ...messageEventDefinition,
@@ -46,11 +63,54 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       ],
     });
   },
+
+  inspectorData(node, defaultDataTransform) {
+    const data = defaultDataTransform(node);
+    
+    // Reconstruct dataInputs from BPMN elements
+    if (node.definition.dataInputs && node.definition.dataInputAssociations) {
+      const dataInputs = [];
+      
+      node.definition.dataInputs.forEach(dataInput => {
+        // Verificación de seguridad
+        if (!dataInput || !dataInput.id) {
+          return;
+        }
+        
+        const dataInputAssociation = node.definition.dataInputAssociations.find(
+          association => association && association.targetRef && association.targetRef.id === dataInput.id
+        );
+        
+        const assignments = dataInputAssociation && dataInputAssociation.assignment 
+          ? extractAssignments(dataInputAssociation.assignment)
+          : [];
+        
+        dataInputs.push({
+          id: dataInput.id,
+          name: dataInput.name || '',
+          assignments: assignments
+        });
+      });
+      
+      data.dataInputs = dataInputs;
+    } else {
+      // Inicializar array vacío para compatibilidad hacia atrás
+      data.dataInputs = [];
+    }
+    
+    return data;
+  },
+
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
-    if (value.dataInputs) {
+    if (value.dataInputs && Array.isArray(value.dataInputs)) {
     const dataInputs = [];
     const dataInputAssociations = [];
       value.dataInputs.forEach(item => {
+        // Verificación de seguridad
+        if (!item || !item.id) {
+          return;
+        }
+        
         const dataInput = createDataInput(item, moddle);
         dataInputs.push(dataInput);
         dataInputAssociations.push(moddle.create('bpmn:DataInputAssociation', {

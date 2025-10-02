@@ -1285,6 +1285,7 @@ export default {
         .forEach(definition => this.setNode(definition, flowElements, artifacts));
     },
     loadDataAssociations(flowElements) {
+      console.log('loadDataAssociations', flowElements);
       const tasksThatHaveDataOutputAssociations = flowElements.filter(task => task.get('dataOutputAssociations') &&
           task.get('dataOutputAssociations').length > 0);
 
@@ -1295,8 +1296,8 @@ export default {
       });
 
       const tasksThatHaveDataInputAssociations = flowElements.filter(task => task.get('dataInputAssociations') &&
-          task.get('dataInputAssociations').length > 0);
-
+          task.get('dataInputAssociations').length > 0 && task.$type !== 'bpmn:IntermediateThrowEvent');
+      console.log('tasksThatHaveDataInputAssociations', tasksThatHaveDataInputAssociations);
       tasksThatHaveDataInputAssociations.forEach(task => {
         task.get('dataInputAssociations').forEach(dataAssociationLink => {
           this.setNode(dataAssociationLink, flowElements);
@@ -1335,13 +1336,14 @@ export default {
 
         this.addLanes(process);
 
-        const flowElements = process.get('flowElements');
+        let flowElements = process.get('flowElements');
         const artifacts = process.get('artifacts');
 
         this.loadFlowElements(flowElements, artifacts);
         this.loadSequenceFlows(flowElements, artifacts);
         this.loadArtifacts(flowElements, artifacts);
         this.loadAssociations(flowElements, artifacts);
+        console.log('flowElements', flowElements);
         this.loadDataAssociations(flowElements);
       });
 
@@ -1507,6 +1509,7 @@ export default {
         emitChangeEvent = true;
       }
       this.definitions = await this.xmlManager.getDefinitionsFromXml(xml);
+      console.log('definitions', this.definitions);
       // Migrate the definitions to new format
       this.migrateDefinitions(this.definitions);
       this.xmlManager.definitions = this.definitions;

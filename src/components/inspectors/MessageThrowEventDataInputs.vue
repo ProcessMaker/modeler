@@ -51,42 +51,43 @@
               :key="index"
               class="assignment-item p-3 border rounded mb-3 bg-white shadow-sm"
             >
-              <div class="row">
-                <div class="col-md-5">
-                  <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
-                    <i class="fa fa-code mr-2 text-primary" />
-                    {{ $t('From') }}
-                  </label>
-                  <textarea 
-                    v-model="assignment.from"
-                    class="form-control form-control-sm"
-                    rows="2"
-                    :placeholder="$t('e.g., {$data[\'user\'][\'firstname\']} {$data[\'user\'][\'lastname\']}')"
-                  />
-                </div>
-                <div class="col-md-5">
-                  <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
-                    <i class="fa fa-arrow-right mr-2 text-success" />
-                    {{ $t('To') }}
-                  </label>
-                  <textarea 
-                    v-model="assignment.to"
-                    type="text"
-                    class="form-control form-control-sm"
-                    :placeholder="$t('e.g., user.firstname')"
-                  />
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                  <button 
-                    type="button"
-                    class="btn btn-sm btn-outline-danger"
-                    @click="removeAssignment(index)"
-                    :title="$t('Remove assignment')"
-                  >
-                    <i class="fa fa-trash" />
-                  </button>
-                </div>
-              </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="mb-0">{{ $t('Assignment') }} {{ index + 1 }}</h6>
+              <button 
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                @click="removeAssignment(index)"
+                :title="$t('Remove assignment')"
+              >
+                <i class="fa fa-trash" />
+              </button>
+            </div>
+            
+            <div class="mb-3">
+              <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
+                <i class="fa fa-code mr-2 text-primary" />
+                {{ $t('From') }}
+              </label>
+              <textarea 
+                v-model="assignment.from"
+                class="form-control"
+                rows="3"
+                :placeholder="$t('e.g., {$data[\'user\'][\'firstname\']} {$data[\'user\'][\'lastname\']}')"
+              />
+            </div>
+            
+            <div>
+              <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
+                <i class="fa fa-arrow-right mr-2 text-success" />
+                {{ $t('To') }}
+              </label>
+              <textarea 
+                v-model="assignment.to"
+                class="form-control"
+                rows="3"
+                :placeholder="$t('e.g., user.firstname')"
+              />
+            </div>
             </div>
           </div>
           
@@ -96,6 +97,7 @@
               type="button"
               class="btn btn-sm btn-outline-primary"
               @click="addAssignment"
+              data-cy="add-assignment"
             >
               <i class="fa fa-plus mr-1" />
               {{ $t('Add Assignment') }}
@@ -188,10 +190,19 @@
           </div>
         </div>
         
-        <div v-if="dataInput.assignmentExpression" class="mt-2">
-          <label class="text-muted small">{{ $t('Assignment Expression') }}:</label>
-          <div class="bg-light p-2 rounded">
-            <code class="text-dark">{{ dataInput.assignmentExpression }}</code>
+        <div v-if="dataInput.assignments && dataInput.assignments.length > 0" class="mt-2">
+          <label class="text-muted small">{{ $t('Assignment Expressions') }}:</label>
+          <div v-for="(assignment, index) in dataInput.assignments" :key="index" class="bg-light p-2 rounded mb-2">
+            <div class="row">
+              <div class="col-md-6">
+                <small class="text-muted">{{ $t('From') }}:</small>
+                <code class="text-dark d-block">{{ assignment.from }}</code>
+              </div>
+              <div class="col-md-6">
+                <small class="text-muted">{{ $t('To') }}:</small>
+                <code class="text-dark d-block">{{ assignment.to }}</code>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -229,6 +240,7 @@ export default {
       deleteDataInput: null,
       dataInputName: '',
       dataInputId: '',
+      originalDataInputId: '', // Store original ID for editing
       assignmentExpressions: [],
     };
   },
@@ -241,7 +253,16 @@ export default {
   watch: {
     value: {
       handler(newValue) {
-        this.dataInputs = newValue ? [...newValue] : [];
+        // compatibility review with previous version
+        if (Array.isArray(newValue)) {
+          this.dataInputs = newValue.map(item => ({
+            id: item.id || '',
+            name: item.name || '',
+            assignments: Array.isArray(item.assignments) ? [...item.assignments] : []
+          }));
+        } else {
+          this.dataInputs = [];
+        }
       },
       immediate: true,
     },
@@ -319,6 +340,7 @@ export default {
     editDataInput(dataInput) {
       this.dataInputName = dataInput.name;
       this.dataInputId = dataInput.id;
+      this.originalDataInputId = dataInput.id; // Store original ID
       this.assignmentExpressions = dataInput.assignments ? [...dataInput.assignments] : [];
       this.showEditDataInput = true;
     },
@@ -342,6 +364,7 @@ export default {
       this.showEditDataInput = false;
       this.dataInputName = '';
       this.dataInputId = '';
+      this.originalDataInputId = '';
       this.assignmentExpressions = [];
     },
     
@@ -359,7 +382,7 @@ export default {
       };
       
       if (this.showEditDataInput) {
-        const index = this.dataInputs.findIndex(input => input.id === this.dataInputId);
+        const index = this.dataInputs.findIndex(input => input.id === this.originalDataInputId);
         if (index > -1) {
           this.dataInputs.splice(index, 1, dataInput);
         }
