@@ -21,18 +21,6 @@ export default merge(cloneDeep(endEventConfig), {
       ],
     });
   },
-  // inspectorConfig: [
-  //   {
-  //     items: [
-  //       {
-  //         items: [
-  //           {},
-  //           messageSelector('Select the message reference that this element throws'),
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ],
   inspectorConfig: [
     {
       items: [
