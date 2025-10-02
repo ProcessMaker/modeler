@@ -129,7 +129,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     }
     
     // Handle all other properties using the default handler
-    const { dataInputs, ...otherProperties } = value;
+    const { ...otherProperties } = value;
     if (Object.keys(otherProperties).length > 0) {
       defaultInspectorHandler(otherProperties, node, setNodeProp, moddle, definitions, isMultiplayer);
     }
