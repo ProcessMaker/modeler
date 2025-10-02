@@ -78,7 +78,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
         }
         
         const dataInputAssociation = node.definition.dataInputAssociations.find(
-          association => association && association.targetRef && association.targetRef.id === dataInput.id
+          association => association && association.targetRef && association.targetRef.id === dataInput.id,
         );
         
         const assignments = dataInputAssociation && dataInputAssociation.assignment 
