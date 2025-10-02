@@ -1334,7 +1334,7 @@ export default {
 
         this.addLanes(process);
 
-        let flowElements = process.get('flowElements');
+        const flowElements = process.get('flowElements');
         const artifacts = process.get('artifacts');
 
         this.loadFlowElements(flowElements, artifacts);
