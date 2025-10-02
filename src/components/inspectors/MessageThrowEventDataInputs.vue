@@ -277,8 +277,8 @@ export default {
       if (!input.id || !input.id.trim()) {
         errors.push(this.$t('Data input ID is required'));
       }
-      if (input.id && !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(input.id)) {
-        errors.push(this.$t('Data input ID must start with a letter or underscore and contain only letters, numbers, and underscores'));
+      if (input.id && !/^[_A-Za-z][-._A-Za-z0-9]*$/.test(input.id)) {
+        errors.push(this.$t('Data input ID is not a valid xsd:ID'));
       }
       return errors;
     },

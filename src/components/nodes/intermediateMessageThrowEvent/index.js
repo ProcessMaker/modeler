@@ -23,7 +23,7 @@ const createDataInput = (item, moddle) => {
 };
 
 const createAssignments = (assignments, moddle) => {
-  // Verificación de seguridad para compatibilidad hacia atrás
+  // Safety check for backward compatibility
   if (!Array.isArray(assignments)) {
     return [];
   }
@@ -37,7 +37,7 @@ const createAssignments = (assignments, moddle) => {
 };
 
 const extractAssignments = (assignments) => {
-  // Verificación de seguridad para compatibilidad hacia atrás
+  // Safety check for backward compatibility
   if (!assignments || !Array.isArray(assignments)) {
     return [];
   }
@@ -72,7 +72,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       const dataInputs = [];
       
       node.definition.dataInputs.forEach(dataInput => {
-        // Verificación de seguridad
+        // Safety check
         if (!dataInput || !dataInput.id) {
           return;
         }
@@ -94,7 +94,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       
       data.dataInputs = dataInputs;
     } else {
-      // Inicializar array vacío para compatibilidad hacia atrás
+      // Initialize empty array for backward compatibility
       data.dataInputs = [];
     }
     
@@ -103,11 +103,12 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
 
   // eslint-disable-next-line no-unused-vars
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
+    // Handle dataInputs specifically
     if (value.dataInputs && Array.isArray(value.dataInputs)) {
       const dataInputs = [];
       const dataInputAssociations = [];
       value.dataInputs.forEach(item => {
-        // Verificación de seguridad
+        // Safety check
         if (!item || !item.id) {
           return;
         }
@@ -125,6 +126,12 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
       node.definition.dataInputs = dataInputs;
       node.definition.dataInputAssociations = dataInputAssociations;
       node.definition.inputSet = inputSet;
+    }
+    
+    // Handle all other properties using the default handler
+    const { dataInputs, ...otherProperties } = value;
+    if (Object.keys(otherProperties).length > 0) {
+      defaultInspectorHandler(otherProperties, node, setNodeProp, moddle, definitions, isMultiplayer);
     }
   },
   inspectorConfig: [
