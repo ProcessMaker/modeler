@@ -38,7 +38,7 @@
         />
         
         <div class="form-group">
-          <label class="font-weight-bold">{{ $t('Assignment Expressions') }}</label>
+          <h6 class="font-weight-bold mb-2">{{ $t('Assignment Expressions') }}</h6>
           <small class="form-text text-muted mb-3">
             <i class="fa fa-info-circle mr-1" />
             {{ $t('Define how data from the process will be mapped to this input using FEEL expressions') }}
@@ -64,11 +64,12 @@
               </div>
               
               <div class="mb-3">
-                <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
+                <label :for="`assignment-from-${index}`" class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
                   <i class="fa fa-code mr-2 text-primary" />
                   {{ $t('From') }}
                 </label>
                 <textarea 
+                  :id="`assignment-from-${index}`"
                   v-model="assignment.from"
                   class="form-control"
                   rows="3"
@@ -77,11 +78,12 @@
               </div>
               
               <div>
-                <label class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
+                <label :for="`assignment-to-${index}`" class="small font-weight-bold text-dark mb-2 d-flex align-items-center">
                   <i class="fa fa-arrow-right mr-2 text-success" />
                   {{ $t('To') }}
                 </label>
                 <textarea 
+                  :id="`assignment-to-${index}`"
                   v-model="assignment.to"
                   class="form-control"
                   rows="3"
@@ -168,7 +170,8 @@
         </div>
         
         <div class="d-flex justify-content-end">
-          <div class="btn-group" role="group">
+          <fieldset class="btn-group">
+            <legend class="sr-only">{{ $t('Data input actions') }}</legend>
             <button 
               type="button" 
               class="btn btn-sm btn-outline-secondary"
@@ -187,11 +190,11 @@
             >
               <i class="fa fa-trash" />
             </button>
-          </div>
+          </fieldset>
         </div>
         
         <div v-if="dataInput.assignments && dataInput.assignments.length > 0" class="mt-2">
-          <label class="text-muted small">{{ $t('Assignment Expressions') }}:</label>
+          <div class="text-muted small font-weight-bold">{{ $t('Assignment Expressions') }}:</div>
           <div v-for="(assignment, index) in dataInput.assignments" :key="index" class="bg-light p-2 rounded mb-2">
             <div class="row">
               <div class="col-md-6">
