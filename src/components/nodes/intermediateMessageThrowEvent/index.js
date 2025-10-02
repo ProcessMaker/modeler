@@ -101,6 +101,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     return data;
   },
 
+  // eslint-disable-next-line no-unused-vars
   inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
     if (value.dataInputs && Array.isArray(value.dataInputs)) {
       const dataInputs = [];
