@@ -101,7 +101,7 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     return data;
   },
 
-  inspectorHandler(value, node, setNodeProp, moddle) {
+  inspectorHandler(value, node, setNodeProp, moddle, definitions, defaultInspectorHandler, isMultiplayer) {
     if (value.dataInputs && Array.isArray(value.dataInputs)) {
       const dataInputs = [];
       const dataInputAssociations = [];
