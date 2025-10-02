@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import endEventConfig from '@/components/nodes/endEvent';
 import defaultNames from '@/components/nodes/endEvent/defaultNames';
 import { default as messageEventDefinition, messageSelector } from '../messageEventDefinition';
-
+import MessageSelect from '@/components/inspectors/MessageSelect';
 const id = 'processmaker-modeler-message-end-event';
 
 export default merge(cloneDeep(endEventConfig), {
@@ -21,13 +21,32 @@ export default merge(cloneDeep(endEventConfig), {
       ],
     });
   },
+  // inspectorConfig: [
+  //   {
+  //     items: [
+  //       {
+  //         items: [
+  //           {},
+  //           messageSelector('Select the message reference that this element throws'),
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // ],
   inspectorConfig: [
     {
       items: [
         {
           items: [
             {},
-            messageSelector('Select the message reference that this element throws'),
+            {
+              component: MessageSelect,
+              config: {
+                label: 'Message',
+                name: 'messageRef',
+                helper: 'Select the message reference that this element throws',
+              },
+            },
           ],
         },
       ],

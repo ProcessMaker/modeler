@@ -3,7 +3,7 @@
     <form-multi-select
       :label="$t(label)"
       name="ElementDestination"
-      :helper="helper"
+      :helper="helperText"
       v-model="elementDestination"
       :placeholder="$t('Select element destination')"
       :showLabels="false"
@@ -74,6 +74,7 @@ export default {
     },
     options: {
       type: Array,
+      default: () => [],
     },
     value: {
       type: String,
@@ -144,12 +145,12 @@ export default {
     node() {
       return this.$root.$children[0].$refs.modeler.highlightedNode.definition;
     },
-    helper() {
+    helperText() {
       if (this.node.$type === 'bpmn:EndEvent') {
         return this.$t('The user will go here after completing the process.');
       }
 
-      return this.$t('Select where to send users after this task. Any Non-default destination will disable the “Display Next Assigned Task” function.');
+      return this.$t('Select where to send users after this task. Any Non-default destination will disable the "Display Next Assigned Task" function.');
     },
   },
   created() {
@@ -180,14 +181,14 @@ export default {
       }
     },
     loadData() {
-      this.optionsCopy = this.options.map(option => ({
+      this.optionsCopy = (this.options || []).map(option => ({
         value: option.value,
         content: this.$t(option.content),
       }));
 
       this.elementDestination = this.optionsCopy?.[0] ?? null;
-
-      if (this.value) {
+      // validate the value is a valid JSON
+      if (this.value && this.isValidJSON(this.value)) {
         this.local = JSON.parse(this.value);
         this.elementDestination = this.getElementDestination();
         this.destinationType = this.getDestinationType();
@@ -200,6 +201,14 @@ export default {
         if (this.destinationType  === 'anotherProcess'){
           this.anotherProcess = this.getDestinationValue();
         }
+      }
+    },
+    isValidJSON(string) {
+      try {
+        JSON.parse(string);
+        return true;
+      } catch (_) {
+        return false;
       }
     },
     getElementDestination() {

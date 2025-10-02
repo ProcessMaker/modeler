@@ -6,7 +6,7 @@
         :value="selectedOption"
         @input="change"
         :placeholder="$t(placeholder)"
-        :options="options"
+        :options="messageOptions"
         :multiple="multiple"
         :track-by="trackBy"
         :show-labels="false"
@@ -154,7 +154,7 @@ export default {
   },
   data() {
     return {
-      options: [],
+      messageOptions: [],
       selectedOption: null,
       pmql: 'id!=' + window.ProcessMaker.modeler.process.id,
       showListMessages: false,
@@ -305,7 +305,7 @@ export default {
       this.showNewMessage = false;
     },
     updateOptions(globalMessages) {
-      this.options = uniqBy([...this.localMessages, ...globalMessages], 'id');
+      this.messageOptions = uniqBy([...this.localMessages, ...globalMessages], 'id');
     },
     loadOptions() {
       this.updateOptions([]);
@@ -328,7 +328,7 @@ export default {
     value: {
       immediate: true,
       handler(value) {
-        this.selectedOption = this.options.find(option => get(option, this.trackBy) == value);
+        this.selectedOption = this.messageOptions.find(option => get(option, this.trackBy) == value);
 
         if (value && !this.selectedOption) {
           this.loadSelected(value);

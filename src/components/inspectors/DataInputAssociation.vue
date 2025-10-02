@@ -148,6 +148,7 @@ export default {
       deleteDataInput: null,
       dataInputName: '',
       dataInputId: '',
+      originalDataInputId: '', // Store original ID for editing
       dataInputExpression: '',
     };
   },
@@ -189,7 +190,7 @@ export default {
         return this.$t('Data input name is required');
       }
       const exists = this.dataInputs.find(input => 
-        input.name === name && input.id !== this.dataInputId,
+        input.name === name && input.id !== this.originalDataInputId,
       );
       if (exists) {
         return this.$t('Data input name is duplicated');
@@ -202,7 +203,7 @@ export default {
         return this.$t('Data input ID is required');
       }
       const exists = this.dataInputs.find(input => 
-        input.id === id && input.id !== this.dataInputId,
+        input.id === id && input.id !== this.originalDataInputId,
       );
       if (exists) {
         return this.$t('Data input ID is duplicated');
@@ -229,6 +230,7 @@ export default {
     editDataInput(dataInput) {
       this.dataInputName = dataInput.name;
       this.dataInputId = dataInput.id;
+      this.originalDataInputId = dataInput.id; // Store original ID
       this.dataInputExpression = dataInput.assignmentExpression || '';
       this.showEditDataInput = true;
     },
@@ -252,6 +254,7 @@ export default {
       this.showEditDataInput = false;
       this.dataInputName = '';
       this.dataInputId = '';
+      this.originalDataInputId = '';
       this.dataInputExpression = '';
     },
     
@@ -263,7 +266,7 @@ export default {
       };
       
       if (this.showEditDataInput) {
-        const index = this.dataInputs.findIndex(input => input.id === this.dataInputId);
+        const index = this.dataInputs.findIndex(input => input.id === this.originalDataInputId);
         if (index > -1) {
           this.dataInputs.splice(index, 1, dataInput);
         }
