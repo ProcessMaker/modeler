@@ -29,14 +29,7 @@
           :placeholder="$t('e.g., user, account, order')"
           data-cy="data-input-add-name" 
         />
-        <form-input 
-          :label="$t('Data Input ID')" 
-          v-model="dataInputId" 
-          :error="getValidationErrorForId(dataInputId)" 
-          :placeholder="$t('e.g., din_user, din_account')"
-          data-cy="data-input-add-id" 
-        />
-        
+
         <div class="form-group">
           <h6 class="font-weight-bold mb-2">{{ $t('Assignment Expressions') }}</h6>
           <small class="form-text text-muted mb-3">
@@ -49,7 +42,7 @@
             <div 
               v-for="(assignment, index) in assignmentExpressions" 
               :key="index"
-              class="assignment-item p-3 border rounded mb-3 bg-white shadow-sm"
+              class="assignment-item p-3 border rounded mb-1 bg-white shadow-sm"
               :data-cy="`assignment-item-${index}`"
             >
               <div class="d-flex justify-content-between align-items-center mb-3">
@@ -74,8 +67,8 @@
                   :id="`assignment-from-${index}`"
                   v-model="assignment.from"
                   class="form-control"
-                  rows="3"
-                  :placeholder="$t('e.g., {$data[\'user\'][\'firstname\']} {$data[\'user\'][\'lastname\']}')"
+                  rows="2"
+                  :placeholder="$t('e.g., customer.firstname')"
                   :data-cy="`assignment-from-${index}`"
                 />
               </div>
@@ -89,7 +82,7 @@
                   :id="`assignment-to-${index}`"
                   v-model="assignment.to"
                   class="form-control"
-                  rows="3"
+                  rows="2"
                   :placeholder="$t('e.g., user.firstname')"
                   :data-cy="`assignment-to-${index}`"
                 />
@@ -260,16 +253,7 @@ export default {
   watch: {
     value: {
       handler(newValue) {
-        // compatibility review with previous version
-        if (Array.isArray(newValue)) {
-          this.dataInputs = newValue.map(item => ({
-            id: item.id || '',
-            name: item.name || '',
-            assignments: Array.isArray(item.assignments) ? [...item.assignments] : [],
-          }));
-        } else {
-          this.dataInputs = [];
-        }
+        this.dataInputs = newValue;
       },
       immediate: true,
     },
