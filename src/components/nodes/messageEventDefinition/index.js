@@ -71,7 +71,7 @@ export default {
   },
   getDataInputs(node) {
     // Combines dataInputs and dataInputAssociations
-    return node.definition.get('dataInputAssociations').map((association) => {
+    return (node.definition.get('dataInputAssociations') || []).map((association) => {
       return {
         id: association.get('targetRef')?.get('id'),
         name: association.get('targetRef')?.get('name'),
