@@ -45,11 +45,12 @@
           </small>
           
           <!-- Assignment List -->
-          <div v-if="assignmentExpressions.length > 0" class="mb-3">
+          <div v-if="assignmentExpressions.length > 0" class="mb-3" data-cy="assignment-expressions-form">
             <div 
               v-for="(assignment, index) in assignmentExpressions" 
               :key="index"
               class="assignment-item p-3 border rounded mb-3 bg-white shadow-sm"
+              :data-cy="`assignment-item-${index}`"
             >
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="mb-0">{{ $t('Assignment') }} {{ index + 1 }}</h6>
@@ -58,6 +59,7 @@
                   class="btn btn-sm btn-outline-danger"
                   @click="removeAssignment(index)"
                   :title="$t('Remove assignment')"
+                  :data-cy="`remove-assignment-${index}`"
                 >
                   <i class="fa fa-trash" />
                 </button>
@@ -74,6 +76,7 @@
                   class="form-control"
                   rows="3"
                   :placeholder="$t('e.g., {$data[\'user\'][\'firstname\']} {$data[\'user\'][\'lastname\']}')"
+                  :data-cy="`assignment-from-${index}`"
                 />
               </div>
               
@@ -88,6 +91,7 @@
                   class="form-control"
                   rows="3"
                   :placeholder="$t('e.g., user.firstname')"
+                  :data-cy="`assignment-to-${index}`"
                 />
               </div>
             </div>
@@ -341,10 +345,18 @@ export default {
     },
     
     editDataInput(dataInput) {
-      this.dataInputName = dataInput.name;
-      this.dataInputId = dataInput.id;
-      this.originalDataInputId = dataInput.id; // Store original ID
-      this.assignmentExpressions = dataInput.assignments ? [...dataInput.assignments] : [];
+      // Convert Vue.js observed object to plain object to avoid reactivity issues
+      const plainDataInput = {
+        id: dataInput.id,
+        name: dataInput.name,
+        assignments: dataInput.assignments ? JSON.parse(JSON.stringify(dataInput.assignments)) : []
+      };
+      
+      this.dataInputName = plainDataInput.name;
+      this.dataInputId = plainDataInput.id;
+      this.originalDataInputId = plainDataInput.id; // Store original ID
+      this.assignmentExpressions = plainDataInput.assignments;
+      
       this.showEditDataInput = true;
     },
     
@@ -371,19 +383,18 @@ export default {
       this.assignmentExpressions = [];
     },
     
-    saveDataInput() {
-      // Filter out empty assignments
-      const validAssignments = this.assignmentExpressions.filter(assignment => 
-        assignment.from && assignment.from.trim() !== '' && 
-        assignment.to && assignment.to.trim() !== '',
-      );
+    saveDataInput() {      
+      // Keep all assignments, even empty ones, to preserve the structure
+      const assignments = this.assignmentExpressions.map(assignment => ({
+        from: assignment.from || '',
+        to: assignment.to || '',
+      }));
       
       const dataInput = {
         id: this.dataInputId,
         name: this.dataInputName,
-        assignments: validAssignments,
+        assignments: assignments,
       };
-      
       if (this.showEditDataInput) {
         const index = this.dataInputs.findIndex(input => input.id === this.originalDataInputId);
         if (index > -1) {
