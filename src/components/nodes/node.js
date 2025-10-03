@@ -178,7 +178,7 @@ export default class Node {
       }
       clonedNode.definition.set(key, clonedDefinition);
     });
-    if(clonedNode.definition.$type === 'bpmn:IntermediateThrowEvent') {
+    if (clonedNode.definition.$type === 'bpmn:IntermediateThrowEvent') {
       // process dataInputAssociations and inputSet
       const clonedDataInputs = clonedNode.definition.get('dataInputs');
       const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
