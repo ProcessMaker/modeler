@@ -259,6 +259,7 @@ export default {
       this.$root.$emit('handle-task-interstitial', {
         nodeId,
         show: newValue === 'displayNextAssignedTask',
+        isConditionalRedirect: true,
       });
     },
   },
