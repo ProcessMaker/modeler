@@ -166,8 +166,30 @@ export default class Node {
           }
         }
       }
+      if (key === 'dataInputs') {
+        clonedNode.definition.set(key, clonedDefinition.map((dataInputOld, index) => {
+          const dataInput = moddle.create('bpmn:DataInput', {
+            id: 'din_' + (new Date().getTime()) + '_' + index,
+            name: dataInputOld.get('name'),
+          });
+          return dataInput;
+        }));
+        return;
+      }
       clonedNode.definition.set(key, clonedDefinition);
     });
+    if(clonedNode.definition.$type === 'bpmn:IntermediateThrowEvent') {
+      // process dataInputAssociations and inputSet
+      const clonedDataInputs = clonedNode.definition.get('dataInputs');
+      const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
+      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
+        const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
+        dataInputAssociation.set('targetRef', clonedDataInputs[index]);
+        dataInputAssociation.set('assignment', diaOld.get('assignment'));
+        return dataInputAssociation;
+      }));
+      clonedNode.definition.set('dataInputRefs', clonedDataInputs);
+    }
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
