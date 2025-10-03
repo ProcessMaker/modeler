@@ -349,7 +349,7 @@ export default {
       const plainDataInput = {
         id: dataInput.id,
         name: dataInput.name,
-        assignments: dataInput.assignments ? JSON.parse(JSON.stringify(dataInput.assignments)) : []
+        assignments: dataInput.assignments ? JSON.parse(JSON.stringify(dataInput.assignments)) : [],
       };
       
       this.dataInputName = plainDataInput.name;
@@ -393,8 +393,8 @@ export default {
       const dataInput = {
         id: this.dataInputId,
         name: this.dataInputName,
-        assignments: assignments,
-      };
+        assignments,
+      };    
       if (this.showEditDataInput) {
         const index = this.dataInputs.findIndex(input => input.id === this.originalDataInputId);
         if (index > -1) {

@@ -122,72 +122,72 @@ export default merge(cloneDeep(intermediateMessageEventConfig), {
     
     // Handle dataInputs by creating proper BPMN structure
     if (value.dataInputs !== undefined) {
-        try {
-          // Initialize local storage if not exists
-          if (!node._localAssignmentsData) {
-            node._localAssignmentsData = {};
-          }
-
-          let dataInputs = [];
-          if (Array.isArray(value.dataInputs) && value.dataInputs.length > 0) {
-            const dataInputAssociations = [];
-            
-            value.dataInputs.forEach(item => {
-              if (!item || !item.id) return;
-              
-              // Create data input
-              const dataInput = moddle.create('bpmn:DataInput');
-              dataInput.set('id', item.id);
-              dataInput.set('name', item.name || '');
-              dataInputs.push(dataInput);
-              
-              // Create data input association
-              const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
-              dataInputAssociation.set('targetRef', dataInput);
-              
-              // Store assignments in local storage
-              const assignments = item.assignments || [];
-              node._localAssignmentsData[item.id] = assignments;
-              
-              // Create assignments for BPMN model
-              const assignmentObjects = [];
-              if (assignments && Array.isArray(assignments) && assignments.length > 0) {
-                
-                assignments.forEach(assignment => {
-                  if (assignment.from || assignment.to) { // Include assignments even if one field is empty
-                    try {
-                      const assignmentObj = moddle.create('bpmn:Assignment', {
-                        from: moddle.create('bpmn:Expression', { body: assignment.from || '' }),
-                        to: moddle.create('bpmn:Expression', { body: assignment.to || '' }),
-                      });
-                      assignmentObjects.push(assignmentObj);
-                    } catch (error) {
-                      console.error('Error creating assignment:', error);
-                    }
-                  }
-                });
-              }
-              
-              // Always set assignments (even if empty) to ensure the property exists
-              dataInputAssociation.set('assignment', assignmentObjects);
-              dataInputAssociations.push(dataInputAssociation);
-            });
-            
-            // Create input set
-            const inputSet = moddle.create('bpmn:InputSet');
-            inputSet.set('dataInputRefs', dataInputs);
-            
-            // Use direct assignment for better persistence'
-            setTimeout(() => {
-              node.definition.dataInputs = dataInputs;
-              node.definition.dataInputAssociations = dataInputAssociations;
-              node.definition.inputSet = inputSet;
-            }, 10);
-
-          }
-        } catch (error) {
-          console.error('Error handling data inputs:', error);
+      try {
+        // Initialize local storage if not exists
+        if (!node._localAssignmentsData) {
+          node._localAssignmentsData = {};
         }
+
+        let dataInputs = [];
+        if (Array.isArray(value.dataInputs) && value.dataInputs.length > 0) {
+          const dataInputAssociations = [];
+          
+          value.dataInputs.forEach(item => {
+            if (!item || !item.id) return;
+            
+            // Create data input
+            const dataInput = moddle.create('bpmn:DataInput');
+            dataInput.set('id', item.id);
+            dataInput.set('name', item.name || '');
+            dataInputs.push(dataInput);
+            
+            // Create data input association
+            const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
+            dataInputAssociation.set('targetRef', dataInput);
+            
+            // Store assignments in local storage
+            const assignments = item.assignments || [];
+            node._localAssignmentsData[item.id] = assignments;
+            
+            // Create assignments for BPMN model
+            const assignmentObjects = [];
+            if (assignments && Array.isArray(assignments) && assignments.length > 0) {
+              
+              assignments.forEach(assignment => {
+                if (assignment.from || assignment.to) { // Include assignments even if one field is empty
+                  try {
+                    const assignmentObj = moddle.create('bpmn:Assignment', {
+                      from: moddle.create('bpmn:Expression', { body: assignment.from || '' }),
+                      to: moddle.create('bpmn:Expression', { body: assignment.to || '' }),
+                    });
+                    assignmentObjects.push(assignmentObj);
+                  } catch (error) {
+                    console.error('Error creating assignment:', error);
+                  }
+                }
+              });
+            }
+            
+            // Always set assignments (even if empty) to ensure the property exists
+            dataInputAssociation.set('assignment', assignmentObjects);
+            dataInputAssociations.push(dataInputAssociation);
+          });
+          
+          // Create input set
+          const inputSet = moddle.create('bpmn:InputSet');
+          inputSet.set('dataInputRefs', dataInputs);
+          
+          // Use direct assignment for better persistence'
+          setTimeout(() => {
+            node.definition.dataInputs = dataInputs;
+            node.definition.dataInputAssociations = dataInputAssociations;
+            node.definition.inputSet = inputSet;
+          }, 10);
+
+        }
+      } catch (error) {
+        console.error('Error handling data inputs:', error);
+      }
     }
     
     // eslint-disable-next-line no-unused-vars
