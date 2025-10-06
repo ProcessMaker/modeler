@@ -118,27 +118,27 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('body').type('{ctrl}v');
     waitToRenderAllShapes();
 
-    const process = `
-      <bpmn:process id="Process_1" isExecutable="true">
-        <bpmn:startEvent id="node_1" name="Start Event" />
-        <bpmn:endEvent id="node_3" name="Message End Event">
-          <bpmn:messageEventDefinition messageRef="node_3_message" />
-        </bpmn:endEvent>
-        <bpmn:endEvent id="node_4" name="Message End Event">
-          <bpmn:messageEventDefinition messageRef="node_4_message" />
-        </bpmn:endEvent>
-        <bpmn:intermediateThrowEvent id="node_7" name="Intermediate Message Throw Event">
-          <bpmn:messageEventDefinition messageRef="node_7_message" />
-        </bpmn:intermediateThrowEvent>
-        <bpmn:intermediateThrowEvent id="node_8" name="Intermediate Message Throw Event">
-          <bpmn:messageEventDefinition messageRef="node_8_message" />
-        </bpmn:intermediateThrowEvent>
-      </bpmn:process>
-      <bpmn:message id="node_3_message" name="node_3_message" />
-      <bpmn:message id="node_4_message" name="node_4_message" />
-      <bpmn:message id="node_7_message" name="node_7_message" />
-      <bpmn:message id="node_8_message" name="node_8_message" />
-    `;
+     const process = `
+       <bpmn:process id="Process_1" isExecutable="true">
+         <bpmn:startEvent id="node_1" name="Start Event" />
+         <bpmn:endEvent id="node_3" name="Message End Event">
+           <bpmn:messageEventDefinition messageRef="node_3_message" />
+         </bpmn:endEvent>
+         <bpmn:endEvent id="node_4" name="Message End Event">
+           <bpmn:messageEventDefinition messageRef="node_4_message" />
+         </bpmn:endEvent>
+         <bpmn:intermediateThrowEvent id="node_7" name="Intermediate Message Throw Event">
+           <bpmn:messageEventDefinition messageRef="node_7_message" />
+         </bpmn:intermediateThrowEvent>
+         <bpmn:intermediateThrowEvent id="node_8" name="Intermediate Message Throw Event" dataInputRefs="">
+           <bpmn:messageEventDefinition messageRef="node_8_message" />
+         </bpmn:intermediateThrowEvent>
+       </bpmn:process>
+       <bpmn:message id="node_3_message" name="node_3_message" />
+       <bpmn:message id="node_4_message" name="node_4_message" />
+       <bpmn:message id="node_7_message" name="node_7_message" />
+       <bpmn:message id="node_8_message" name="node_8_message" />
+     `;
 
     assertDownloadedXmlContainsExpected(process);
 
