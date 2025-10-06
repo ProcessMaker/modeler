@@ -179,7 +179,7 @@ export default class Node {
       }
       clonedNode.definition.set(key, clonedDefinition);
     }
-    this._handleIntermediateThrowEvent(clonedNode, moddle);
+    this._handleThrowEventDataInputs(clonedNode, moddle);
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
@@ -190,8 +190,19 @@ export default class Node {
     return clonedNode;
   }
 
-  _handleIntermediateThrowEvent(clonedNode, moddle) {
-    if (clonedNode.definition.$type !== 'bpmn:IntermediateThrowEvent') {
+
+  validThrowEvent(clonedNode) {
+    const { $type: nodeType, eventDefinitions } = clonedNode.definition;
+    
+    if (!isIntermediateThrowEvent && !isEndEventWithMessage) {
+      return false;
+    }
+    return true;
+  }
+
+  _handleThrowEventDataInputs(clonedNode, moddle) {
+    // Handle both IntermediateThrowEvent and EndEvent with message event definitions
+    if (!this.validThrowEvent(clonedNode)) {
       return;
     }
 
