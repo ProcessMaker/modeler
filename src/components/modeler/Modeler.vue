@@ -1295,7 +1295,7 @@ export default {
       });
 
       const tasksThatHaveDataInputAssociations = flowElements.filter(task => task.get('dataInputAssociations') &&
-          task.get('dataInputAssociations').length > 0 && task.$type !== 'bpmn:IntermediateThrowEvent');
+          task.get('dataInputAssociations').length > 0);
       tasksThatHaveDataInputAssociations.forEach(task => {
         task.get('dataInputAssociations').forEach(dataAssociationLink => {
           this.setNode(dataAssociationLink, flowElements);
