@@ -22,7 +22,7 @@ export default {
       } else {
         data[key] = value;
       }
-      if (key === 'dataInputs') {
+      if (key === 'dataInputAssociations') {
         data.dataInputs = this.getDataInputs(node);
       }
       return data;
@@ -127,7 +127,15 @@ export default {
       }));
       return dataInput;
     });
-    node.definition.set('dataInputAssociations', diAssociations);
+
+    // Remove orphaned dataInputAssociation objects that are no longer referenced
+    const referencedIds = new Set(value.dataInputs.map(input => input.id));
+    const filteredAssociations = diAssociations.filter(association => {
+      const targetId = association.get('targetRef')?.get('id');
+      return targetId && referencedIds.has(targetId);
+    });
+
+    node.definition.set('dataInputAssociations', filteredAssociations);
     node.definition.set('dataInputs', dataInputs);
     const inputSet = node.definition.get('inputSet') || moddle.create('bpmn:InputSet');
     inputSet.set('dataInputRefs', dataInputs);

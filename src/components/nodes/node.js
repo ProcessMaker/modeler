@@ -200,13 +200,16 @@ export default class Node {
     const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
     
     // Map dataInputAssociations by array index since dataInputs are created in the same order
-    clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
-      const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
-      // Use the dataInput at the same index since they're created in the same order
-      dataInputAssociation.set('targetRef', clonedDataInputs[index]);
-      dataInputAssociation.set('assignment', diaOld.get('assignment'));
-      return dataInputAssociation;
-    }));
+    // Only map if dataInputAssociations exists and is an array
+    if (clonedDataInputAssociations && Array.isArray(clonedDataInputAssociations)) {
+      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
+        const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
+        // Use the dataInput at the same index since they're created in the same order
+        dataInputAssociation.set('targetRef', clonedDataInputs[index]);
+        dataInputAssociation.set('assignment', diaOld.get('assignment'));
+        return dataInputAssociation;
+      }));
+    }
     
     // Create inputSet and set dataInputRefs on it instead of the node definition
     const inputSet = moddle.create('bpmn:InputSet');
