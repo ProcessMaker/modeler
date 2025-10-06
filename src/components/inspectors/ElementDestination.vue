@@ -156,6 +156,8 @@ export default {
       if (this.node.$type === 'bpmn:EndEvent') {
         return this.$t('The user will go here after completing the process.');
       }
+
+      return this.$t('Select where to send users after this task. Any Non-default destination will disable the "Display Next Assigned Task" function.');
     },
   },
   created() {
