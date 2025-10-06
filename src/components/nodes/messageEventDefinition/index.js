@@ -85,8 +85,8 @@ export default {
     });
   },
   setDataInputs(value, node, moddle) {
-    const updatedDataInputs = this.getDataInputs(node);
-    const changed = !isEqual(updatedDataInputs, value.dataInputs);
+    const currentDataInputs = this.getDataInputs(node);
+    const changed = !isEqual(currentDataInputs, value.dataInputs);
     if (!changed) {
       return;
     }
