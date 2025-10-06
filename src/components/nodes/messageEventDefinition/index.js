@@ -103,6 +103,10 @@ export default {
           id: targetRef,
           name: targetName,
         });
+        // Initialize dataInputs array if it doesn't exist
+        if (!node.definition.get('dataInputs')) {
+          node.definition.set('dataInputs', []);
+        }
         node.definition.get('dataInputs').push(newDataInput);
         dataInput = newDataInput;
       }
