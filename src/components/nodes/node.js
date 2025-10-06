@@ -194,10 +194,18 @@ export default class Node {
   validThrowEvent(clonedNode) {
     const { $type: nodeType, eventDefinitions } = clonedNode.definition;
     
-    if (!isIntermediateThrowEvent && !isEndEventWithMessage) {
-      return false;
+    // Check for IntermediateThrowEvent
+    if (nodeType === 'bpmn:IntermediateThrowEvent') {
+      return true;
     }
-    return true;
+    
+    // Check for EndEvent with MessageEventDefinition
+    if (nodeType === 'bpmn:EndEvent' && 
+        eventDefinitions?.[0]?.$type === 'bpmn:MessageEventDefinition') {
+      return true;
+    }
+    
+    return false;
   }
 
   _handleThrowEventDataInputs(clonedNode, moddle) {
