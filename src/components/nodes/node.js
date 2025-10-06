@@ -188,7 +188,7 @@ export default class Node {
         const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
         const originalTargetRefId = diaOld.get('targetRef')?.get('id');
         const matchingDataInput = clonedDataInputs.find(dataInput => 
-          dataInput.get('id') === originalTargetRefId
+          dataInput.get('id') === originalTargetRefId,
         );
         dataInputAssociation.set('targetRef', matchingDataInput);
         dataInputAssociation.set('assignment', diaOld.get('assignment'));
