@@ -156,7 +156,7 @@ export default class Node {
     clonedNode.cloneOf = this.id;
 
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
+    for (const key of Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key))) {
       const definition = this.definition.get(key);
       const clonedDefinition = typeof definition === 'object' ? cloneDeep(definition) : definition;
       if (key === 'eventDefinitions') {
@@ -174,23 +174,21 @@ export default class Node {
           });
           return dataInput;
         }));
-        // Continue processing other properties instead of returning early
+        // Skip the general set operation since we've already handled dataInputs specially
+        continue;
       }
       clonedNode.definition.set(key, clonedDefinition);
-    });
+    }
     if (clonedNode.definition.$type === 'bpmn:IntermediateThrowEvent') {
       // process dataInputAssociations and inputSet
       const clonedDataInputs = clonedNode.definition.get('dataInputs');
       const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
       
-      // Map dataInputAssociations by matching targetRef IDs instead of array index
-      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld) => {
+      // Map dataInputAssociations by array index since dataInputs are created in the same order
+      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
         const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
-        const originalTargetRefId = diaOld.get('targetRef')?.get('id');
-        const matchingDataInput = clonedDataInputs.find(dataInput => 
-          dataInput.get('id') === originalTargetRefId,
-        );
-        dataInputAssociation.set('targetRef', matchingDataInput);
+        // Use the dataInput at the same index since they're created in the same order
+        dataInputAssociation.set('targetRef', clonedDataInputs[index]);
         dataInputAssociation.set('assignment', diaOld.get('assignment'));
         return dataInputAssociation;
       }));
