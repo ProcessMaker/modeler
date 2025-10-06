@@ -174,7 +174,7 @@ export default class Node {
           });
           return dataInput;
         }));
-        return;
+        // Continue processing other properties instead of returning early
       }
       clonedNode.definition.set(key, clonedDefinition);
     });
@@ -182,13 +182,23 @@ export default class Node {
       // process dataInputAssociations and inputSet
       const clonedDataInputs = clonedNode.definition.get('dataInputs');
       const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
-      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
+      
+      // Map dataInputAssociations by matching targetRef IDs instead of array index
+      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld) => {
         const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
-        dataInputAssociation.set('targetRef', clonedDataInputs[index]);
+        const originalTargetRefId = diaOld.get('targetRef')?.get('id');
+        const matchingDataInput = clonedDataInputs.find(dataInput => 
+          dataInput.get('id') === originalTargetRefId
+        );
+        dataInputAssociation.set('targetRef', matchingDataInput);
         dataInputAssociation.set('assignment', diaOld.get('assignment'));
         return dataInputAssociation;
       }));
-      clonedNode.definition.set('dataInputRefs', clonedDataInputs);
+      
+      // Create inputSet and set dataInputRefs on it instead of the node definition
+      const inputSet = moddle.create('bpmn:InputSet');
+      inputSet.set('dataInputRefs', clonedDataInputs);
+      clonedNode.definition.set('inputSet', inputSet);
     }
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
