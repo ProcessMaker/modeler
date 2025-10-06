@@ -37,7 +37,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
 
     // Fill in data input details
     cy.get('[data-cy="data-input-add-name"]').type('User Information');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_user_info');
 
     // Wait for validation to pass
     cy.get('[data-cy="data-input-save"]').should('not.be.disabled');
@@ -52,7 +51,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
 
     // Verify the data input appears in the list
     cy.get('.data-input-item').should('contain', 'User Information');
-    cy.get('.data-input-item').should('contain', 'din_user_info');
 
     // Debug: Log the content of the data input item
     cy.get('.data-input-item').then(($el) => {
@@ -75,7 +73,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add initial data input
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Initial Name');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_initial');
     cy.get('[data-cy="data-input-save"]').click({ force: true });
 
     // Wait for the data input to be created
@@ -90,7 +87,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     
     // Clear and type new values
     cy.get('[data-cy="data-input-add-name"]').clear().type('Updated Name');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_updated');
 
     // Wait for validation to pass
     cy.get('[data-cy="data-input-save"]').should('not.be.disabled');
@@ -101,7 +97,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
 
     // Verify the updated data input
     cy.get('.data-input-item').should('contain', 'Updated Name');
-    cy.get('.data-input-item').should('contain', 'din_updated');
   });
 
   it('should edit assignment expressions (from and to fields)', () => {
@@ -112,7 +107,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add initial data input with assignments
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Assignment Test');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_assignment_test');
     
     // Add initial assignment
     cy.get('[data-cy="add-assignment"]').click({ force: true });
@@ -175,7 +169,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add a data input
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('To Delete');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_to_delete');
     cy.get('[data-cy="data-input-save"]').click({ force: true });
 
     // Verify it exists
@@ -199,19 +192,11 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Wait for form to be visible
     cy.get('[data-cy="data-input-add-name"]').should('be.visible');
 
-    // Check initial state - save button should be disabled (no name, but ID has default value)
+    // Check initial state - save button should be disabled (no name)
     cy.get('[data-cy="data-input-save"]').should('be.disabled');
 
-    // Add name - should now be enabled (has both name and valid ID)
+    // Add name - should now be enabled
     cy.get('[data-cy="data-input-add-name"]').type('Test Name');
-    cy.get('[data-cy="data-input-save"]').should('not.be.disabled');
-
-    // Clear ID and add invalid ID - should be disabled (invalid ID format)
-    cy.get('[data-cy="data-input-add-id"]').clear().type('123-invalid');
-    cy.get('[data-cy="data-input-save"]').should('be.disabled');
-
-    // Add valid ID - should now be enabled
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_valid');
     cy.get('[data-cy="data-input-save"]').should('not.be.disabled');
   });
 
@@ -223,7 +208,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add data input with assignments
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Persistent Data');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_persistent');
 
     // Add assignment
     cy.get('[data-cy="add-assignment"]').click({ force: true });
@@ -241,7 +225,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
 
     // Verify data input still exists after reload
     cy.get('.data-input-item').should('contain', 'Persistent Data');
-    cy.get('.data-input-item').should('contain', 'din_persistent');
 
     // Verify assignments are still there
     cy.get('.data-input-item').should('contain', 'persistent.value');
@@ -255,7 +238,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add first data input
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('User Data');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_user');
     cy.get('[data-cy="add-assignment"]').click({ force: true });
     cy.get('textarea[placeholder*="firstname"]').first().type('user', { force: true });
     cy.get('textarea[placeholder*="user.firstname"]').first().type('user', { force: true });
@@ -264,7 +246,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add second data input
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Order Data');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_order');
     cy.get('[data-cy="add-assignment"]').click({ force: true });
     cy.get('textarea[placeholder*="firstname"]').first().type('order', { force: true });
     cy.get('textarea[placeholder*="user.firstname"]').first().type('order', { force: true });
@@ -284,7 +265,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add data input with complex assignment expressions
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Complex Expressions');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_complex');
     
     // Add assignment with complex FEEL expressions
     cy.get('[data-cy="add-assignment"]').click({ force: true });
@@ -343,7 +323,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add data input with empty assignment fields
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Empty Fields Test');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_empty_test');
     
     // Add assignment but leave fields empty
     cy.get('[data-cy="add-assignment"]').click({ force: true });
@@ -352,7 +331,6 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
 
     // Verify the data input is saved even with empty assignment fields
     cy.get('.data-input-item').should('contain', 'Empty Fields Test');
-    cy.get('.data-input-item').should('contain', 'din_empty_test');
 
     // Edit to add values to the empty fields
     cy.get('[data-cy="edit-data-input"]').click({ force: true });
@@ -384,28 +362,22 @@ describe('Intermediate Message Throw Event Data Inputs', { scrollBehavior: false
     // Add data input with assignments
     cy.get('[data-cy="add-data-input"]').click();
     cy.get('[data-cy="data-input-add-name"]').type('Test Input');
-    cy.get('[data-cy="data-input-add-id"]').clear().type('din_test');
     cy.get('[data-cy="add-assignment"]').click({ force: true });
     cy.get('textarea[placeholder*="firstname"]').first().type('test.value', { force: true });
     cy.get('textarea[placeholder*="user.firstname"]').first().type('test.value', { force: true });
     cy.get('[data-cy="data-input-save"]').click({ force: true });
 
     // Verify BPMN XML contains the expected elements
-    assertDownloadedXmlContainsExpected(`
-      <bpmn:intermediateThrowEvent id="node_3" name="Intermediate Message Throw Event">
-        <bpmn:dataInput id="din_test" name="Test Input" />
-        <bpmn:dataInputAssociation>
-          <bpmn:targetRef>din_test</bpmn:targetRef>
-          <bpmn:assignment>
-            <bpmn:from>test.value</bpmn:from>
-            <bpmn:to>test.value</bpmn:to>
-          </bpmn:assignment>
-        </bpmn:dataInputAssociation>
-        <bpmn:inputSet>
-          <bpmn:dataInputRefs>din_test</bpmn:dataInputRefs>
-        </bpmn:inputSet>
-        <bpmn:messageEventDefinition messageRef="node_3_message" />
-      </bpmn:intermediateThrowEvent>
-    `);
+    assertDownloadedXmlContainsExpected('<bpmn:intermediateThrowEvent id="node_3" name="Intermediate Message Throw Event">');
+    assertDownloadedXmlContainsExpected('<bpmn:dataInput id="din_');
+    assertDownloadedXmlContainsExpected('name="Test Input"');
+    assertDownloadedXmlContainsExpected('<bpmn:dataInputAssociation>');
+    assertDownloadedXmlContainsExpected('<bpmn:targetRef>din_');
+    assertDownloadedXmlContainsExpected('<bpmn:assignment>');
+    assertDownloadedXmlContainsExpected('<bpmn:from>test.value</bpmn:from>');
+    assertDownloadedXmlContainsExpected('<bpmn:to>test.value</bpmn:to>');
+    assertDownloadedXmlContainsExpected('<bpmn:inputSet>');
+    assertDownloadedXmlContainsExpected('<bpmn:dataInputRefs>din_');
+    assertDownloadedXmlContainsExpected('<bpmn:messageEventDefinition messageRef="node_3_message" />');
   });
 });
