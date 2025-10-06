@@ -179,25 +179,7 @@ export default class Node {
       }
       clonedNode.definition.set(key, clonedDefinition);
     }
-    if (clonedNode.definition.$type === 'bpmn:IntermediateThrowEvent') {
-      // process dataInputAssociations and inputSet
-      const clonedDataInputs = clonedNode.definition.get('dataInputs');
-      const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
-      
-      // Map dataInputAssociations by array index since dataInputs are created in the same order
-      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
-        const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
-        // Use the dataInput at the same index since they're created in the same order
-        dataInputAssociation.set('targetRef', clonedDataInputs[index]);
-        dataInputAssociation.set('assignment', diaOld.get('assignment'));
-        return dataInputAssociation;
-      }));
-      
-      // Create inputSet and set dataInputRefs on it instead of the node definition
-      const inputSet = moddle.create('bpmn:InputSet');
-      inputSet.set('dataInputRefs', clonedDataInputs);
-      clonedNode.definition.set('inputSet', inputSet);
-    }
+    this._handleIntermediateThrowEvent(clonedNode, moddle);
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
@@ -206,6 +188,30 @@ export default class Node {
     );
 
     return clonedNode;
+  }
+
+  _handleIntermediateThrowEvent(clonedNode, moddle) {
+    if (clonedNode.definition.$type !== 'bpmn:IntermediateThrowEvent') {
+      return;
+    }
+
+    // process dataInputAssociations and inputSet
+    const clonedDataInputs = clonedNode.definition.get('dataInputs');
+    const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
+    
+    // Map dataInputAssociations by array index since dataInputs are created in the same order
+    clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
+      const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
+      // Use the dataInput at the same index since they're created in the same order
+      dataInputAssociation.set('targetRef', clonedDataInputs[index]);
+      dataInputAssociation.set('assignment', diaOld.get('assignment'));
+      return dataInputAssociation;
+    }));
+    
+    // Create inputSet and set dataInputRefs on it instead of the node definition
+    const inputSet = moddle.create('bpmn:InputSet');
+    inputSet.set('dataInputRefs', clonedDataInputs);
+    clonedNode.definition.set('inputSet', inputSet);
   }
 
   cloneFlow(nodeRegistry, moddle, $t) {
