@@ -19,8 +19,8 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
-    cy.get('body').type('{ctrl}v');
+    cy.get('body').type('{cmd}v');
+    cy.get('body').type('{cmd}v');
 
     const processWithTwoStartEventCopies = `
       <?xml version="1.0" encoding="UTF-8"?>
@@ -53,8 +53,8 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
-    cy.get('body').type('{ctrl}v');
+    cy.get('body').type('{cmd}v');
+    cy.get('body').type('{cmd}v');
 
     const processWithTwoStartEventCopies = `
       <bpmn:startEvent id="node_1" name="Start Event" />
@@ -74,7 +74,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
 
     cy.get('[data-test=copy-button]').click();
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    cy.get('body').type('{cmd}v');
     waitToRenderAllShapes();
 
     const process = `
@@ -103,7 +103,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    cy.get('body').type('{cmd}v');
 
     cy.get('[role="alert"]',{ timeout: 7000 }).should('not.exist');
     cy.get('[data-type="processmaker.components.nodes.endEvent.Shape"]').eq(0).click({ force:true });
@@ -115,7 +115,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    cy.get('body').type('{cmd}v');
     waitToRenderAllShapes();
 
     const process = `
@@ -159,7 +159,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test="copy-button"]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    cy.get('body').type('{cmd}v');
 
     waitToRenderAllShapes();
 

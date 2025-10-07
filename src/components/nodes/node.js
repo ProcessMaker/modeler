@@ -215,7 +215,7 @@ export default class Node {
     }
 
     // process dataInputAssociations and inputSet
-    const clonedDataInputs = clonedNode.definition.get('dataInputs');
+    const clonedDataInputs = clonedNode.definition.get('dataInputs') || [];
     const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
     
     // Map dataInputAssociations by array index since dataInputs are created in the same order
@@ -230,10 +230,18 @@ export default class Node {
       }));
     }
     
-    // Create inputSet and set dataInputRefs on it instead of the node definition
-    const inputSet = moddle.create('bpmn:InputSet');
-    inputSet.set('dataInputRefs', clonedDataInputs);
-    clonedNode.definition.set('inputSet', inputSet);
+    // Create inputSet for throw events
+    // For intermediate throw events, always create inputSet (even without data inputs)
+    // For end events, only create inputSet if there are data inputs
+    const { $type: nodeType } = clonedNode.definition;
+    const shouldCreateInputSet = nodeType === 'bpmn:IntermediateThrowEvent' || 
+                                 (nodeType === 'bpmn:EndEvent' && clonedDataInputs.length > 0);
+    
+    if (shouldCreateInputSet) {
+      const inputSet = moddle.create('bpmn:InputSet');
+      inputSet.set('dataInputRefs', clonedDataInputs);
+      clonedNode.definition.set('inputSet', inputSet);
+    }
   }
 
   cloneFlow(nodeRegistry, moddle, $t) {
