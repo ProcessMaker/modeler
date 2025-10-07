@@ -40,7 +40,7 @@ describe('Message End Event Copy Paste', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
 
     // Paste the element
-    cy.get('body').type('{cmd}v');
+    cy.get('body').type('{ctrl}v');
 
     // Wait for paste to complete
     cy.get('[role="alert"]', { timeout: 7000 }).should('not.exist');
@@ -98,7 +98,7 @@ describe('Message End Event Copy Paste', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
 
     // Paste the element
-    cy.get('body').type('{cmd}v');
+    cy.get('body').type('{ctrl}v');
 
     // Wait for paste to complete
     cy.get('[role="alert"]', { timeout: 7000 }).should('not.exist');
@@ -138,7 +138,7 @@ describe('Message End Event Copy Paste', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
 
     // Paste the element
-    cy.get('body').type('{cmd}v');
+    cy.get('body').type('{ctrl}v');
 
     // Wait for paste to complete
     cy.get('[role="alert"]', { timeout: 7000 }).should('not.exist');
