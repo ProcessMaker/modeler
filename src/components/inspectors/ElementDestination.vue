@@ -211,10 +211,14 @@ export default {
       }
     },
     isValidJSON() {
+      if (!this.value || typeof this.value !== 'string') {
+        return false;
+      }
+      
       try {
         JSON.parse(this.value);
         return true;
-      } catch (error) {
+      } catch {
         return false;
       }
     },
