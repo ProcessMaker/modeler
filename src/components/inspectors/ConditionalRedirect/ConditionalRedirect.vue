@@ -78,6 +78,7 @@ export default {
   },
   data() {
     return {
+      taskDestination: null,
       isEnabled: false,
       conditions: [],
       taskDestinationOptions: [],
