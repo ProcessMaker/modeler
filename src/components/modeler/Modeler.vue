@@ -1556,11 +1556,18 @@ export default {
                 // console.error('Error parsing conditional redirect', error);
               }
 
-              const elementDestination = element.get('pm:elementDestination') ;
+              if (element.get('pm:allowInterstitial') === true && !hasConditionalRedirect) {
+                let elementDestination = element.get('pm:elementDestination');
+                try {
+                  elementDestination = JSON.parse(elementDestination);
+                } catch (error) {
+                  // console.error('Error parsing element destination', error);
+                }
 
-              if (element.get('pm:allowInterstitial') === true && elementDestination === undefined && !hasConditionalRedirect) {
-                // Always update the element destination to display the next assigned task
-                element.set('pm:elementDestination', JSON.stringify({ type: 'displayNextAssignedTask' }));
+                if (elementDestination === undefined || elementDestination?.type !== 'displayNextAssignedTask') {
+                  // Always update the element destination to display the next assigned task
+                  element.set('pm:elementDestination', JSON.stringify({ type: 'displayNextAssignedTask' }));
+                }
               }
             }
           });
