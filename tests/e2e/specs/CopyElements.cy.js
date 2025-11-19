@@ -131,6 +131,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
           <bpmn:messageEventDefinition messageRef="node_7_message" />
         </bpmn:intermediateThrowEvent>
         <bpmn:intermediateThrowEvent id="node_8" name="Intermediate Message Throw Event">
+          <bpmn:inputSet />
           <bpmn:messageEventDefinition messageRef="node_8_message" />
         </bpmn:intermediateThrowEvent>
       </bpmn:process>

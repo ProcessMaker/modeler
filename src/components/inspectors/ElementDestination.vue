@@ -3,7 +3,7 @@
     <form-multi-select
       :label="$t(label)"
       name="ElementDestination"
-      :helper="helper"
+      :helper="computedHelper"
       v-model="elementDestination"
       :placeholder="$t('Select element destination')"
       :showLabels="false"
@@ -79,6 +79,10 @@ export default {
       type: String,
       default: '',
     },
+    helper: {
+      type: String,
+      default: '',
+    },
   },
   name: 'ElementDestination',
 
@@ -144,12 +148,16 @@ export default {
     node() {
       return this.$root.$children[0].$refs.modeler.highlightedNode.definition;
     },
-    helper() {
+    computedHelper() {
+      if (this.helper) {
+        return this.helper;
+      }
+      
       if (this.node.$type === 'bpmn:EndEvent') {
         return this.$t('The user will go here after completing the process.');
       }
 
-      return this.$t('Select where to send users after this task. Any Non-default destination will disable the “Display Next Assigned Task” function.');
+      return this.$t('Select where to send users after this task. Any Non-default destination will disable the "Display Next Assigned Task" function.');
     },
   },
   created() {
@@ -187,7 +195,7 @@ export default {
 
       this.elementDestination = this.optionsCopy?.[0] ?? null;
 
-      if (this.value) {
+      if (this.value && this.isValidJSON(this.value)) {
         this.local = JSON.parse(this.value);
         this.elementDestination = this.getElementDestination();
         this.destinationType = this.getDestinationType();
@@ -200,6 +208,18 @@ export default {
         if (this.destinationType  === 'anotherProcess'){
           this.anotherProcess = this.getDestinationValue();
         }
+      }
+    },
+    isValidJSON() {
+      if (!this.value || typeof this.value !== 'string') {
+        return false;
+      }
+      
+      try {
+        JSON.parse(this.value);
+        return true;
+      } catch {
+        return false;
       }
     },
     getElementDestination() {

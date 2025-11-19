@@ -156,7 +156,7 @@ export default class Node {
     clonedNode.cloneOf = this.id;
 
     Node.diagramPropertiesToCopy.forEach(prop => clonedNode.diagram.bounds[prop] = this.diagram.bounds[prop]);
-    Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key)).forEach(key => {
+    for (const key of Object.keys(this.definition).filter(key => !Node.definitionPropertiesToNotCopy.includes(key))) {
       const definition = this.definition.get(key);
       const clonedDefinition = typeof definition === 'object' ? cloneDeep(definition) : definition;
       if (key === 'eventDefinitions') {
@@ -166,8 +166,20 @@ export default class Node {
           }
         }
       }
+      if (key === 'dataInputs') {
+        clonedNode.definition.set(key, clonedDefinition.map((dataInputOld, index) => {
+          const dataInput = moddle.create('bpmn:DataInput', {
+            id: 'din_' + (new Date().getTime()) + '_' + index,
+            name: dataInputOld.get('name'),
+          });
+          return dataInput;
+        }));
+        // Skip the general set operation since we've already handled dataInputs specially
+        continue;
+      }
       clonedNode.definition.set(key, clonedDefinition);
-    });
+    }
+    this._handleThrowEventDataInputs(clonedNode, moddle);
     Node.eventDefinitionPropertiesToNotCopy.forEach(
       prop => clonedNode.definition.eventDefinitions &&
         clonedNode.definition.eventDefinitions[0] &&
@@ -176,6 +188,50 @@ export default class Node {
     );
 
     return clonedNode;
+  }
+
+
+  validThrowEvent(clonedNode) {
+    const { $type: nodeType, eventDefinitions } = clonedNode.definition;
+    
+    return nodeType === 'bpmn:IntermediateThrowEvent' || 
+           (nodeType === 'bpmn:EndEvent' && eventDefinitions?.[0]?.$type === 'bpmn:MessageEventDefinition');
+  }
+
+  _handleThrowEventDataInputs(clonedNode, moddle) {
+    // Handle both IntermediateThrowEvent and EndEvent with message event definitions
+    if (!this.validThrowEvent(clonedNode)) {
+      return;
+    }
+
+    // process dataInputAssociations and inputSet
+    const clonedDataInputs = clonedNode.definition.get('dataInputs') || [];
+    const clonedDataInputAssociations = clonedNode.definition.get('dataInputAssociations');
+    
+    // Map dataInputAssociations by array index since dataInputs are created in the same order
+    // Only map if dataInputAssociations exists and is an array
+    if (clonedDataInputAssociations && Array.isArray(clonedDataInputAssociations)) {
+      clonedNode.definition.set('dataInputAssociations', clonedDataInputAssociations.map((diaOld, index) => {
+        const dataInputAssociation = moddle.create('bpmn:DataInputAssociation');
+        // Use the dataInput at the same index since they're created in the same order
+        dataInputAssociation.set('targetRef', clonedDataInputs[index]);
+        dataInputAssociation.set('assignment', diaOld.get('assignment'));
+        return dataInputAssociation;
+      }));
+    }
+    
+    // Create inputSet for throw events
+    // For intermediate throw events, always create inputSet (even without data inputs)
+    // For end events, only create inputSet if there are data inputs
+    const { $type: nodeType } = clonedNode.definition;
+    const shouldCreateInputSet = nodeType === 'bpmn:IntermediateThrowEvent' || 
+                                 (nodeType === 'bpmn:EndEvent' && clonedDataInputs.length > 0);
+    
+    if (shouldCreateInputSet) {
+      const inputSet = moddle.create('bpmn:InputSet');
+      inputSet.set('dataInputRefs', clonedDataInputs);
+      clonedNode.definition.set('inputSet', inputSet);
+    }
   }
 
   cloneFlow(nodeRegistry, moddle, $t) {

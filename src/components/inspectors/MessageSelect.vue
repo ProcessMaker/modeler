@@ -6,7 +6,7 @@
         :value="selectedOption"
         @input="change"
         :placeholder="$t(placeholder)"
-        :options="options"
+        :options="allOptions"
         :multiple="multiple"
         :track-by="trackBy"
         :show-labels="false"
@@ -14,7 +14,6 @@
         :internal-search="false"
         label="name"
         @search-change="loadOptionsDebounced"
-        @open="loadOptions"
         :data-test="`${name}:select`"
       >
         <template slot="noResult">
@@ -135,6 +134,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    options: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     invalid() {
@@ -143,6 +146,9 @@ export default {
     localMessages() {
       return store.getters.rootElements
         .filter(element => element.$type === 'bpmn:Message');
+    },
+    allOptions() {
+      return uniqBy([...this.localMessages, ...this.options], 'id');
     },
     validNew() {
       return this.getValidationErrorForNewId(this.messageId) === ''
@@ -154,7 +160,6 @@ export default {
   },
   data() {
     return {
-      options: [],
       selectedOption: null,
       pmql: 'id!=' + window.ProcessMaker.modeler.process.id,
       showListMessages: false,
@@ -304,12 +309,7 @@ export default {
       store.getters.rootElements.push(message);
       this.showNewMessage = false;
     },
-    updateOptions(globalMessages) {
-      this.options = uniqBy([...this.localMessages, ...globalMessages], 'id');
-    },
-    loadOptions() {
-      this.updateOptions([]);
-    },
+
     loadSelected(value) {
       const message = store.getters.rootElements.find(element => element.id === value);
       if (message) {
@@ -328,7 +328,7 @@ export default {
     value: {
       immediate: true,
       handler(value) {
-        this.selectedOption = this.options.find(option => get(option, this.trackBy) == value);
+        this.selectedOption = this.allOptions.find(option => get(option, this.trackBy) == value);
 
         if (value && !this.selectedOption) {
           this.loadSelected(value);
