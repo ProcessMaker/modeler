@@ -70,7 +70,7 @@
         v-if="loadingAI"
         @stopAssetGeneration="onStopAssetGeneration()"
       />
-      
+
       <AssetsCreatedCard
         ref="assetsCreatedCard"
         v-if="assetsCreated"
@@ -202,7 +202,7 @@
         v-for="player in filteredPlayers"
         :key="player.id"
         :data="prepareCursorData(player)"
-      /> 
+      />
     </b-row>
   </span>
 </template>
@@ -523,10 +523,10 @@ export default {
       });
     },
     showWelcomeMessage() {
-      return !this.selectedNode && 
-        !this.nodes.length && 
-        !this.isReadOnly && 
-        this.isLoaded && 
+      return !this.selectedNode &&
+        !this.nodes.length &&
+        !this.isReadOnly &&
+        this.isLoaded &&
         !undoRedoStore.getters.isRunning &&
         this.isPackageAiInstalled;
     },
@@ -591,7 +591,7 @@ export default {
       window.ProcessMaker.EventBus.$on('show-documentation', (event) => {
         if (this.$refs['nodeDocumentation'] && this.$refs['nodeDocumentation'].isVisible === false) {
           this.$refs['nodeDocumentation'].text = event.text;
-          this.$refs['nodeDocumentation'].number = event.number;  
+          this.$refs['nodeDocumentation'].number = event.number;
           this.$refs['nodeDocumentation'].position = this.setCardPosition(event);
           this.$refs['nodeDocumentation'].elementType = event.node.definition.$type.replace('bpmn:', '');
           this.$refs['nodeDocumentation'].elementTitle = event.node.definition.name;
@@ -785,7 +785,7 @@ export default {
           this.generateAssets();
         }
       });
-      
+
       this.paperManager.paper.on('link:pointerclick', (linkView) => {
         this.currentStageModel = linkView.model;
       });
@@ -1537,13 +1537,36 @@ export default {
         if (rootElement.$type === 'bpmn:Process') {
           // Get all flow elements in the process
           const flowElements = rootElement.get('flowElements') || [];
-          
+
           // Find all tasks with interstitial enabled
           flowElements.forEach(element => {
             if (element.$type === 'bpmn:Task' || element.$type === 'bpmn:UserTask' || element.$type === 'bpmn:ManualTask') {
-              if (element.get('pm:allowInterstitial') === true) {
-                // Always update the element destination to display the next assigned task
-                element.set('pm:elementDestination', JSON.stringify({ type: 'displayNextAssignedTask' }));
+              let hasConditionalRedirect = false;
+
+              try {
+                const conditionalRedirect = JSON.parse(element.get('pm:conditionalRedirect'));
+
+                if (conditionalRedirect?.isEnabled === true && Array.isArray(conditionalRedirect.conditions)) {
+                  hasConditionalRedirect = conditionalRedirect.conditions.some(
+                    condition => condition?.taskDestination?.value === 'displayNextAssignedTask',
+                  );
+                }
+              } catch (error) {
+                // console.error('Error parsing conditional redirect', error);
+              }
+
+              if (element.get('pm:allowInterstitial') === true && !hasConditionalRedirect) {
+                let elementDestination = element.get('pm:elementDestination');
+                try {
+                  elementDestination = JSON.parse(elementDestination);
+                } catch (error) {
+                  // console.error('Error parsing element destination', error);
+                }
+
+                if (elementDestination === undefined || elementDestination?.type !== 'displayNextAssignedTask') {
+                  // Always update the element destination to display the next assigned task
+                  element.set('pm:elementDestination', JSON.stringify({ type: 'displayNextAssignedTask' }));
+                }
               }
             }
           });
@@ -2141,7 +2164,7 @@ export default {
     },
     redirect(redirectTo) {
       if (window.ProcessMaker.AbTesting) {
-        window.parent.location = redirectTo;  
+        window.parent.location = redirectTo;
       } else {
         window.location = redirectTo;
       }
@@ -2160,7 +2183,7 @@ export default {
     },
     /**
      * Update Client Cursor
-     * @param {Object} data 
+     * @param {Object} data
      */
     updateClientCursor(data) {
       if (data) {
@@ -2189,7 +2212,7 @@ export default {
     },
     /**
      * Unhightligt selected Nodes
-     * @param {String} clientId 
+     * @param {String} clientId
      */
     unhightligtNodes(clientId) {
       const player = this.players.find(player => player.id === clientId);
@@ -2203,7 +2226,7 @@ export default {
     },
     /**
      * Update the hightligted nodes
-     * @param {Object} data 
+     * @param {Object} data
      */
     updateHightligtedNodes(data) {
       if (data) {
@@ -2228,7 +2251,7 @@ export default {
           intersectionExists = player?.selectedNodes?.some(item => data.includes(item));
           return false;
         });
-       
+
       }
       return intersectionExists;
     },
@@ -2322,7 +2345,7 @@ export default {
         })
         .catch((error) => {
           const errorMsg = error.response?.data?.message || error.message;
-          
+
           this.loading = false;
           if (error.response.status === 404) {
             this.removePromptSessionForUser();
@@ -2390,7 +2413,7 @@ export default {
       taskArray.forEach(task => {
         const taskNode = self.getElementByNodeId(task.id);
         if (taskNode) {
-          taskNode.component.setAiStatusHighlight(task.status);  
+          taskNode.component.setAiStatusHighlight(task.status);
         }
       });
     },
@@ -2430,11 +2453,11 @@ export default {
             } else {
               this.highlightTaskArrays(response.data);
               setTimeout(() => {
-                this.unhighlightTaskArrays(response.data);  
+                this.unhighlightTaskArrays(response.data);
               }, 1000);
               this.setPromptSessions(response.data.promptSessionId);
-              // Successful generation 
-              this.assetsCreated = true; 
+              // Successful generation
+              this.assetsCreated = true;
               this.fetchHistory();
               setTimeout(() => {
                 this.loadingAI = false;
