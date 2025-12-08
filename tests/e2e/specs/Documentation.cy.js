@@ -49,7 +49,7 @@ describe('Documentation accordion', { scrollBehavior: false }, () => {
         cy.contains('Advanced').click({ force: true });
         cy.tick(accordionOpenAnimationTime);
         cy.get('iframe.tox-edit-area__iframe').should('not.be.visible');
-        cy.contains('Documentation').click({ force: true });
+        cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
         getTinyMceEditor().should('be.visible');
 
@@ -67,7 +67,7 @@ describe('Documentation accordion', { scrollBehavior: false }, () => {
 
         clickAndDropElement(type, position);
         waitToRenderAllShapes();
-        cy.contains('Documentation').click({ force: true });
+        cy.contains('Documentation').click();
         cy.tick(accordionOpenAnimationTime);
         getTinyMceEditor().clear().type(docString);
         assertDownloadedXmlContainsExpected(docString);
@@ -84,14 +84,14 @@ describe('Documentation accordion', { scrollBehavior: false }, () => {
   it('can allow the documentation editor modal to edit the documentation', () => {
     clickAndDropElement(nodeTypes.task, position);
     waitToRenderAllShapes();
-    cy.contains('Documentation').click({ force: true });
+    cy.contains('Documentation').click();
     cy.wait(accordionOpenAnimationTime);
 
     const documentationFromInspector = 'some documentation';
     getTinyMceEditor().type(documentationFromInspector);
     cy.wait(modalAnimationTime);
 
-    cy.get('[data-test="documentation-modal-button"]').click({ force: true });
+    cy.get('[data-test="documentation-modal-button"]').click();
 
     const documentationFromModal = 'this is the documentation modal';
     getTinyMceEditorInModal().type(documentationFromModal);

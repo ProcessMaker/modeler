@@ -5,7 +5,6 @@ import defaultNames from '@/components/nodes/task/defaultNames';
 import advancedAccordionConfigWithMarkerFlags from '@/components/inspectors/advancedAccordionConfigWithMarkerFlags';
 
 import elementDestination from '@/components/inspectors/taskElementDestination';
-import conditionalRedirect from '@/components/inspectors/ConditionalRedirect/conditionalRedirect';
 import loopCharacteristicsInspector from '@/components/inspectors/LoopCharacteristics';
 import { loopCharacteristicsHandler, loopCharacteristicsData } from '@/components/inspectors/LoopCharacteristics';
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
@@ -71,7 +70,6 @@ export default {
     loopCharacteristicsHandler(value, node, setNodeProp, moddle, definitions, isMultiplayer);
     defaultInspectorHandler(omit(value, 'markerFlags', '$loopCharactetistics'), isMultiplayer);
     handleElementDestination(value.elementDestination, node, setNodeProp);
-    handleConditionalRedirect(value.conditionalRedirect, node, setNodeProp);
   },
   inspectorData(node, defaultDataTransform, inspector) {
     const inspectorData = defaultDataTransform(node);
@@ -102,7 +100,6 @@ export default {
               config: nameConfigSettings,
             },
             elementDestination,
-            conditionalRedirect,
           ],
         },
         loopCharacteristicsInspector,
@@ -132,11 +129,5 @@ function handleMarkerFlagsValue(markerFlags, node, setNodeProp) {
 function handleElementDestination(value, node, setNodeProp) {
   if (value) {
     setNodeProp(node, 'elementDestination', value);
-  }
-}
-
-function handleConditionalRedirect(value, node, setNodeProp) {
-  if (value) {
-    setNodeProp(node, 'conditionalRedirect', value);
   }
 }
