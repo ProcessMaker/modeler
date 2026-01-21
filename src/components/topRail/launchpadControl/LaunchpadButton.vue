@@ -26,8 +26,12 @@ export default {
   data() {
     return {
       iconOpen: 'fas fa-play',
-      buttonDisabledClass: 'no-hover',
     };
+  },
+  computed: {
+    buttonDisabledClass() {
+      return this.disabled ? 'no-hover' : '';
+    },
   },
   methods: {
     handleOpenLaunchpad() {
