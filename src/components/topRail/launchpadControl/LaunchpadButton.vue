@@ -35,9 +35,7 @@ export default {
   },
   methods: {
     handleOpenLaunchpad() {
-      if (!this.disabled) {
-        this.$emit('verifyLaunchpad', window.ProcessMaker.modeler.launchpad === null);
-      }
+      this.$emit('verifyLaunchpad', window.ProcessMaker.modeler.launchpad === null);
     },
     handleMouseOver() { 
       if (!this.disabled) {
