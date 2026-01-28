@@ -86,7 +86,7 @@ export default {
       return window.ProcessMaker?.modeler?.isPackageAiInstalled;
     },
     disableLaunchpad() {
-      return window.ProcessMaker?.modeler?.process?.is_template;
+      return !!window.ProcessMaker?.modeler?.process?.is_template;
     },
   },
   watch: {
