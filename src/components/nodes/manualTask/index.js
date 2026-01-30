@@ -4,7 +4,6 @@ import advancedAccordionConfig from '@/components/inspectors/advancedAccordionCo
 import documentationAccordionConfig from '@/components/inspectors/documentationAccordionConfig';
 import defaultNames from '@/components/nodes/task/defaultNames';
 import elementDestination from '@/components/inspectors/taskElementDestination';
-import conditionalRedirect from '@/components/inspectors/ConditionalRedirect/conditionalRedirect';
 
 export const taskHeight = 76;
 export const id = 'processmaker-modeler-manual-task';
@@ -53,7 +52,6 @@ export default {
               config: nameConfigSettings,
             },
             elementDestination,
-            conditionalRedirect,
           ],
         },
         documentationAccordionConfig,
