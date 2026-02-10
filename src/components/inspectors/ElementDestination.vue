@@ -50,7 +50,7 @@
       :error="getValidationErrorForURL(externalURL)"
       data-cy="events-add-id"
       :placeholder="urlPlaceholder"
-      :helper="$t('Determine the URL where the request will end')"
+      :helper="$t('URL where the request will redirect. Supports Mustache: {{APP_URL}}, {{_request.id}}, {{_user.id}}, process variables.')"
       data-test="external-url"
     />
     <process-form-select
@@ -174,12 +174,22 @@ export default {
   },
   methods: {
     getValidationErrorForURL(url) {
+      if (!url || !url.trim()) {
+        return '';
+      }
       if (!this.isValidURL(url)) {
-        return this.$t('Must be a valid URL');
+        return this.$t('Must be a valid URL or Mustache expressions ({{APP_URL}}, {{_request.id}}, {{_user.id}}, process variables).');
       }
       return '';
     },
     isValidURL(string) {
+      if (!string || typeof string !== 'string') {
+        return true;
+      }
+      // Allow Mustache: same context as backend (APP_URL, _request, _user, process variables)
+      if (string.includes('{{')) {
+        return true;
+      }
       try {
         new URL(string);
         return true;
