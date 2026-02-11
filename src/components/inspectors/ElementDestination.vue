@@ -50,7 +50,7 @@
       :error="getValidationErrorForURL(externalURL)"
       data-cy="events-add-id"
       :placeholder="urlPlaceholder"
-      :helper="$t('URL where the request will redirect. Supports Mustache: {{APP_URL}}, {{_request.id}}, {{_user.id}}, process variables.')"
+      :helper="externalUrlHelperText"
       data-test="external-url"
     />
     <process-form-select
@@ -158,6 +158,9 @@ export default {
       }
 
       return this.$t('Select where to send users after this task. Any Non-default destination will disable the "Display Next Assigned Task" function.');
+    },
+    externalUrlHelperText() {
+      return this.$t('URL where the request will redirect. Supports Mustache:') + ' {{APP_URL}}, {{_request.id}}, {{_user.id}}, ' + this.$t('process variables.');
     },
   },
   created() {
