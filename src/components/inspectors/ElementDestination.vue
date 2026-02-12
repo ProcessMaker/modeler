@@ -65,6 +65,9 @@
 import ProcessFormSelect from '@/components/inspectors/ProcessFormSelect';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
+
+const MUSTACHE_PATTERN = /{{\s*[^}]+\s*}}/;
+
 export default {
   components: { ProcessFormSelect },
   props: {
@@ -177,7 +180,7 @@ export default {
   },
   methods: {
     getValidationErrorForURL(url) {
-      const isEmpty = !url || !url.trim();
+      const isEmpty = typeof url !== 'string' || !url || !url.trim();
       if (isEmpty) {
         if (this.destinationType === 'externalURL') {
           return this.$t('URL is required when External URL is selected.');
@@ -190,12 +193,12 @@ export default {
       return '';
     },
     isValidURL(string) {
-      if (!string || typeof string !== 'string') {
-        return true;
+      if (typeof string !== 'string' || !string.trim()) {
+        return false;
       }
-      // Allow Mustache: same context as backend (APP_URL, _request, _user, process variables)
+      // Allow Mustache: same context as backend ({{APP_URL}}, {{_request.id}}, {{_user.id}}, process variables)
       if (string.includes('{{')) {
-        return true;
+        return MUSTACHE_PATTERN.test(string);
       }
       try {
         new URL(string);
