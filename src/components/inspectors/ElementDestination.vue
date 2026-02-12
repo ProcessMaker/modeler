@@ -177,7 +177,11 @@ export default {
   },
   methods: {
     getValidationErrorForURL(url) {
-      if (!url || !url.trim()) {
+      const isEmpty = !url || !url.trim();
+      if (isEmpty) {
+        if (this.destinationType === 'externalURL') {
+          return this.$t('URL is required when External URL is selected.');
+        }
         return '';
       }
       if (!this.isValidURL(url)) {
