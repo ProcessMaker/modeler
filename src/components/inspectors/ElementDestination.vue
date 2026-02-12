@@ -188,7 +188,7 @@ export default {
         return '';
       }
       if (!this.isValidURL(url)) {
-        return this.$t('Must be a valid URL or Mustache expressions ({{APP_URL}}, {{_request.id}}, {{_user.id}}, process variables).');
+        return this.$t('Must be a valid URL or Mustache expressions') + ' ({{APP_URL}}, {{_request.id}}, {{_user.id}}, ' + this.$t('process variables') + ').';
       }
       return '';
     },
