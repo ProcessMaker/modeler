@@ -63,10 +63,9 @@
 
 <script>
 import ProcessFormSelect from '@/components/inspectors/ProcessFormSelect';
+import { isValidElementDestinationURL } from '@/utils/elementDestinationUrl';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
-
-const MUSTACHE_PATTERN = /{{\s*[^}]+\s*}}/;
 
 export default {
   components: { ProcessFormSelect },
@@ -193,19 +192,7 @@ export default {
       return '';
     },
     isValidURL(string) {
-      if (typeof string !== 'string' || !string.trim()) {
-        return false;
-      }
-      // Allow Mustache: same context as backend ({{APP_URL}}, {{_request.id}}, {{_user.id}}, process variables)
-      if (string.includes('{{')) {
-        return MUSTACHE_PATTERN.test(string);
-      }
-      try {
-        new URL(string);
-        return true;
-      } catch (_) {
-        return false;
-      }
+      return isValidElementDestinationURL(string);
     },
     loadData() {
       this.optionsCopy = this.options.map(option => ({
