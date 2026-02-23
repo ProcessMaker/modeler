@@ -11,7 +11,7 @@ const MUSTACHE_PLACEHOLDER = /\{\{\s*[^\s}]+\s*\}\}/;
  * @param {string} str - Non-empty trimmed string.
  * @returns {boolean}
  */
-function hasValidMustacheOnly(str) {
+export function hasValidMustacheOnly(str) {
   if (!str.includes('{{')) {
     return false;
   }
@@ -29,7 +29,7 @@ function hasValidMustacheOnly(str) {
  * Validates Element Destination / Conditional Redirect URL field.
  * 1. Must be a non-empty string.
  * 2. If it contains {{: must be valid Mustache (one or more placeholders like {{var}}, no stray braces). Invalid Mustache → false (same as invalid URL).
- * 3. If it does not contain {{: must be a valid URL.
+ * 3. If it does not contain {{: must be a valid URL. 
  *
  * @param {string} value - Value to validate (URL or Mustache template).
  * @returns {boolean}

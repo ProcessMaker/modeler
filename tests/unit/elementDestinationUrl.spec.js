@@ -1,6 +1,27 @@
-import { isValidElementDestinationURL } from '@/utils/elementDestinationUrl';
+import {
+  isValidElementDestinationURL,
+  hasValidMustacheOnly,
+} from '@/utils/elementDestinationUrl';
 
 describe('elementDestinationUrl', () => {
+  describe('hasValidMustacheOnly', () => {
+    it('returns false when string does not contain {{', () => {
+      expect(hasValidMustacheOnly('no mustache here')).toBe(false);
+      expect(hasValidMustacheOnly('https://example.com')).toBe(false);
+    });
+
+    it('returns true when string has only valid placeholders', () => {
+      expect(hasValidMustacheOnly('{{var}}')).toBe(true);
+      expect(hasValidMustacheOnly('{{a}}{{b}}')).toBe(true);
+    });
+
+    it('returns false when string has stray {{ or }}', () => {
+      expect(hasValidMustacheOnly('{{}}')).toBe(false);
+      expect(hasValidMustacheOnly('{{unclosed')).toBe(false);
+      expect(hasValidMustacheOnly('{{a}} }}')).toBe(false);
+    });
+  });
+
   describe('isValidElementDestinationURL', () => {
     describe('non-string or empty', () => {
       it('returns false for non-string values', () => {
