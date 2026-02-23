@@ -1,8 +1,9 @@
 /**
  * Valid Mustache placeholder: {{ variable }}.
- * Variable: one or more non-whitespace characters (no spaces inside the name). Rejects {{}}, {{ }}, {{var2 var2}}.
+ * Variable: one or more non-whitespace characters excluding '}' (no spaces inside the name). Rejects {{}}, {{ }}, {{var2 var2}}.
+ * Uses [^\s}]+ for the variable to avoid ReDoS from backtracking between \s* and \S+.
  */
-const MUSTACHE_PLACEHOLDER = /{{\s*\S+\s*}}/;
+const MUSTACHE_PLACEHOLDER = /\{\{\s*[^\s}]+\s*\}\}/;
 
 /**
  * Returns true if the string has only valid Mustache definitions (one or more) and no stray {{ or }}.
