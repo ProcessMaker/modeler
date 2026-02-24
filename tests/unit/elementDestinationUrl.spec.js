@@ -20,14 +20,14 @@ describe('elementDestinationUrl', () => {
       expect(hasValidMustacheOnly('{{ }}')).toBe(false);
     });
 
-      it('returns false when string has stray {{ or }}', () => {
-        expect(hasValidMustacheOnly('{{unclosed')).toBe(false);
-        expect(hasValidMustacheOnly('{{a}} }}')).toBe(false);
-      });
+    it('returns false when string has stray {{ or }}', () => {
+      expect(hasValidMustacheOnly('{{unclosed')).toBe(false);
+      expect(hasValidMustacheOnly('{{a}} }}')).toBe(false);
+    });
 
-      it('returns false when valid placeholders are followed by empty {{}}', () => {
-        expect(hasValidMustacheOnly('{{server}}/{{_request.id}}{{}}')).toBe(false);
-      });
+    it('returns false when valid placeholders are followed by empty {{}}', () => {
+      expect(hasValidMustacheOnly('{{server}}/{{_request.id}}{{}}')).toBe(false);
+    });
   });
 
   describe('isValidElementDestinationURL', () => {
