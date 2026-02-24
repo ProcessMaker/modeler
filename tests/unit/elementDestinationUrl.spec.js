@@ -15,11 +15,19 @@ describe('elementDestinationUrl', () => {
       expect(hasValidMustacheOnly('{{a}}{{b}}')).toBe(true);
     });
 
-    it('returns false when string has stray {{ or }}', () => {
+    it('returns false when string contains empty mustache {{}} or {{ }}', () => {
       expect(hasValidMustacheOnly('{{}}')).toBe(false);
-      expect(hasValidMustacheOnly('{{unclosed')).toBe(false);
-      expect(hasValidMustacheOnly('{{a}} }}')).toBe(false);
+      expect(hasValidMustacheOnly('{{ }}')).toBe(false);
     });
+
+      it('returns false when string has stray {{ or }}', () => {
+        expect(hasValidMustacheOnly('{{unclosed')).toBe(false);
+        expect(hasValidMustacheOnly('{{a}} }}')).toBe(false);
+      });
+
+      it('returns false when valid placeholders are followed by empty {{}}', () => {
+        expect(hasValidMustacheOnly('{{server}}/{{_request.id}}{{}}')).toBe(false);
+      });
   });
 
   describe('isValidElementDestinationURL', () => {
@@ -79,6 +87,10 @@ describe('elementDestinationUrl', () => {
 
       it('returns false for placeholder with space inside variable name', () => {
         expect(isValidElementDestinationURL('{{var2 var2}}')).toBe(false);
+      });
+
+      it('returns false for URL with valid placeholders plus empty {{}}', () => {
+        expect(isValidElementDestinationURL('{{server}}/{{_request.id}}{{}}')).toBe(false);
       });
     });
 

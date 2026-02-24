@@ -5,6 +5,9 @@
  */
 const MUSTACHE_PLACEHOLDER = /\{\{\s*[^\s}]+\s*\}\}/;
 
+/** Empty or space-only mustache: invalid. */
+const EMPTY_MUSTACHE = /\{\{\s*\}\}/;
+
 /**
  * Returns true if the string has only valid Mustache definitions (one or more) and no stray {{ or }}.
  * Valid: {{var}}, {{ APP_URL }}, https://host/{{path}}, {{a}}{{b}}. Invalid: {{}}, {{ }}, {{unclosed, }}solo.
@@ -13,6 +16,9 @@ const MUSTACHE_PLACEHOLDER = /\{\{\s*[^\s}]+\s*\}\}/;
  */
 export function hasValidMustacheOnly(str) {
   if (!str.includes('{{')) {
+    return false;
+  }
+  if (EMPTY_MUSTACHE.test(str)) {
     return false;
   }
   const globalRegex = new RegExp(MUSTACHE_PLACEHOLDER.source, 'g');
