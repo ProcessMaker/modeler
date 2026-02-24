@@ -1,3 +1,7 @@
+/**
+ * Tests for elementDestinationUrl utils (hasValidMustacheOnly, isValidElementDestinationURL).
+ * Written for 100% line and branch coverage of src/utils/elementDestinationUrl.js.
+ */
 import {
   isValidElementDestinationURL,
   hasValidMustacheOnly,
@@ -15,13 +19,20 @@ describe('elementDestinationUrl', () => {
       expect(hasValidMustacheOnly('{{a}}{{b}}')).toBe(true);
     });
 
+    it('returns true for placeholder with spaces around variable name', () => {
+      expect(hasValidMustacheOnly('{{  x  }}')).toBe(true);
+    });
+
     it('returns false when string contains empty mustache {{}} or {{ }}', () => {
       expect(hasValidMustacheOnly('{{}}')).toBe(false);
       expect(hasValidMustacheOnly('{{ }}')).toBe(false);
     });
 
-    it('returns false when string has stray {{ or }}', () => {
+    it('returns false when string has stray {{ (unclosed)', () => {
       expect(hasValidMustacheOnly('{{unclosed')).toBe(false);
+    });
+
+    it('returns false when string has stray }} after valid placeholder', () => {
       expect(hasValidMustacheOnly('{{a}} }}')).toBe(false);
     });
 
@@ -36,6 +47,7 @@ describe('elementDestinationUrl', () => {
         expect(isValidElementDestinationURL(null)).toBe(false);
         expect(isValidElementDestinationURL(undefined)).toBe(false);
         expect(isValidElementDestinationURL(123)).toBe(false);
+        expect(isValidElementDestinationURL(false)).toBe(false);
         expect(isValidElementDestinationURL({})).toBe(false);
         expect(isValidElementDestinationURL([])).toBe(false);
       });
@@ -109,7 +121,7 @@ describe('elementDestinationUrl', () => {
         expect(isValidElementDestinationURL('  https://example.com  ')).toBe(true);
       });
 
-      it('returns false for invalid URL', () => {
+      it('returns false for invalid URL (exercises catch branch)', () => {
         expect(isValidElementDestinationURL('not a url')).toBe(false);
         expect(isValidElementDestinationURL('://bad')).toBe(false);
       });
