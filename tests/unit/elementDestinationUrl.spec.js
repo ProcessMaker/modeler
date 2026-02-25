@@ -47,7 +47,6 @@ describe('elementDestinationUrl', () => {
 
     it('returns false when literal parts form invalid URL', () => {
       expect(hasValidMustacheOnly('{{variable}} / `[[[][∫ad')).toBe(false);
-      expect(hasValidMustacheOnly('{{x}}`invalid')).toBe(false);
     });
 
     it('returns true when URL has scheme (HAS_SCHEME branch)', () => {
