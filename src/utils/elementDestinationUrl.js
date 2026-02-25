@@ -1,43 +1,37 @@
-/**
- * Valid Mustache placeholder: {{ variable }}.
- * Variable: one or more non-whitespace characters excluding '}' (no spaces inside the name). Rejects {{}}, {{ }}, {{var2 var2}}.
- * Uses [^\s}]+ for the variable to avoid ReDoS from backtracking between \s* and \S+.
- */
+/** Matches one Mustache placeholder {{ variable }}. Variable: [^\s}]+ (no spaces, no '}'). Rejects {{}}, {{ }}, {{a b}}. */
 const MUSTACHE_PLACEHOLDER = /\{\{\s*[^\s}]+\s*\}\}/;
 
-/** Empty or space-only mustache: invalid. */
-const EMPTY_MUSTACHE = /\{\{\s*\}\}/;
+/** Matches URL scheme at start (e.g. http:, https:). */
+const HAS_SCHEME = /^[a-zA-Z][a-zA-Z0-9+.-]*:/;
 
 /**
- * Returns true if the string has only valid Mustache definitions (one or more) and no stray {{ or }}.
- * Valid: {{var}}, {{ APP_URL }}, https://host/{{path}}, {{a}}{{b}}. Invalid: {{}}, {{ }}, {{unclosed, }}solo.
+ * True when the string has only valid Mustache placeholders and the literal parts form a valid URL.
+ * Rejects empty mustache ({{}}, {{ }}), stray { or }, and invalid URL characters.
+ *
  * @param {string} str - Non-empty trimmed string.
  * @returns {boolean}
  */
 export function hasValidMustacheOnly(str) {
-  if (!str.includes('{{')) {
+  if (!str.includes('{{')) return false;
+
+  const g = new RegExp(MUSTACHE_PLACEHOLDER.source, 'g');
+  const urlSkeleton = str.replace(g, 'a');
+  if (urlSkeleton.includes('{') || urlSkeleton.includes('}')) return false;
+
+  const urlToTest = HAS_SCHEME.test(urlSkeleton) ? urlSkeleton : `http://${urlSkeleton}`;
+  try {
+    new URL(urlToTest);
+    return true;
+  } catch {
     return false;
   }
-  if (EMPTY_MUSTACHE.test(str)) {
-    return false;
-  }
-  const globalRegex = new RegExp(MUSTACHE_PLACEHOLDER.source, 'g');
-  const withoutPlaceholders = str.replace(globalRegex, '');
-  const hasStrayBraces = withoutPlaceholders.includes('{{') || withoutPlaceholders.includes('}}');
-  if (hasStrayBraces) {
-    return false;
-  }
-  // No stray braces and string contained {{ → at least one valid placeholder was matched.
-  return true;
 }
 
 /**
- * Validates Element Destination / Conditional Redirect URL field.
- * 1. Must be a non-empty string.
- * 2. If it contains {{: must be valid Mustache (one or more placeholders like {{var}}, no stray braces). Invalid Mustache → false (same as invalid URL).
- * 3. If it does not contain {{: must be a valid URL. 
+ * Validates the Element Destination / Conditional Redirect URL field.
+ * (1) Non-empty string. (2) If it contains {{: only valid Mustache placeholders and URL-valid literals. (3) Else: valid URL.
  *
- * @param {string} value - Value to validate (URL or Mustache template).
+ * @param {string} value - URL or Mustache template to validate.
  * @returns {boolean}
  */
 export function isValidElementDestinationURL(value) {

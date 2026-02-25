@@ -39,6 +39,25 @@ describe('elementDestinationUrl', () => {
     it('returns false when valid placeholders are followed by empty {{}}', () => {
       expect(hasValidMustacheOnly('{{server}}/{{_request.id}}{{}}')).toBe(false);
     });
+
+    it('returns false when skeleton has stray single { or }', () => {
+      expect(hasValidMustacheOnly('{{v}} {')).toBe(false);
+      expect(hasValidMustacheOnly('https://127.0.0.5:8092/admin/users/12/edit{{v}} {{v}} {')).toBe(false);
+    });
+
+    it('returns false when literal parts form invalid URL', () => {
+      expect(hasValidMustacheOnly('{{variable}} / `[[[][∫ad')).toBe(false);
+      expect(hasValidMustacheOnly('{{x}}`invalid')).toBe(false);
+    });
+
+    it('returns true when URL has scheme (HAS_SCHEME branch)', () => {
+      expect(hasValidMustacheOnly('https://host/{{path}}')).toBe(true);
+      expect(hasValidMustacheOnly('http://example.com/{{id}}/view')).toBe(true);
+    });
+
+    it('returns true when no scheme so http:// is prepended', () => {
+      expect(hasValidMustacheOnly('{{host}}/path')).toBe(true);
+    });
   });
 
   describe('isValidElementDestinationURL', () => {
@@ -103,6 +122,11 @@ describe('elementDestinationUrl', () => {
 
       it('returns false for URL with valid placeholders plus empty {{}}', () => {
         expect(isValidElementDestinationURL('{{server}}/{{_request.id}}{{}}')).toBe(false);
+      });
+
+      it('returns false when literal parts form invalid URL', () => {
+        expect(isValidElementDestinationURL('https://127.0.0.5:8092/admin/users/12/edit{{v}} {{v}} {')).toBe(false);
+        expect(isValidElementDestinationURL('{{variable}} / `[[[][∫ad')).toBe(false);
       });
     });
 
