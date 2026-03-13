@@ -50,9 +50,9 @@
       v-if="taskDestination?.value === 'externalURL'"
       :label="$t('URL')"
       v-model="externalURL"
-      :error="getValidationErrorForCustomURL(externalURL)"
+      :error="getValidationErrorForURL(externalURL)"
       :placeholder="urlPlaceholder"
-      :helper="$t('Determine the URL where the request will end')"
+      :helper="externalUrlHelperText"
       data-test="conditional-task-external-url"
     />
 
@@ -79,6 +79,7 @@
 </template>
 
 <script>
+import { isValidElementDestinationURL } from '@/utils/elementDestinationUrl';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
@@ -118,6 +119,9 @@ export default {
   computed: {
     node() {
       return this.$root.$children[0].$refs.modeler.highlightedNode.definition;
+    },
+    externalUrlHelperText() {
+      return this.$t('URL where the request will redirect. Supports Mustache:') + ' {{APP_URL}}, {{_request.id}}, {{_user.id}}, ' + this.$t('process variables.');
     },
   },
   watch: {
@@ -193,18 +197,21 @@ export default {
     onRemoveCondition() {
       this.$emit('remove', this.conditionId);
     },
-    getValidationErrorForCustomURL(url) {
-      if (!url) return this.$t('URL is required');
-      if (!this.isValidCustomURL(url)) return this.$t('Must be a valid URL');
+    getValidationErrorForURL(url) {
+      const isEmpty = typeof url !== 'string' || !url || !url.trim();
+      if (isEmpty) {
+        if (this.taskDestination?.value === 'externalURL') {
+          return this.$t('URL is required when External URL is selected.');
+        }
+        return '';
+      }
+      if (!this.isValidURL(url)) {
+        return this.$t('Must be a valid URL or Mustache expressions') + ' ({{APP_URL}}, {{_request.id}}, {{_user.id}}, ' + this.$t('process variables') + ').';
+      }
       return '';
     },
-    isValidCustomURL(url) {
-      try {
-        const parsed = new URL(url);
-        return ['http:', 'https:'].includes(parsed.protocol);
-      } catch {
-        return false;
-      }
+    isValidURL(string) {
+      return isValidElementDestinationURL(string);
     },
     getCustomDashboards(filter) {
       this.loading = true;

@@ -50,7 +50,7 @@
       :error="getValidationErrorForURL(externalURL)"
       data-cy="events-add-id"
       :placeholder="urlPlaceholder"
-      :helper="$t('Determine the URL where the request will end')"
+      :helper="externalUrlHelperText"
       data-test="external-url"
     />
     <process-form-select
@@ -63,8 +63,10 @@
 
 <script>
 import ProcessFormSelect from '@/components/inspectors/ProcessFormSelect';
+import { isValidElementDestinationURL } from '@/utils/elementDestinationUrl';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
+
 export default {
   components: { ProcessFormSelect },
   props: {
@@ -159,6 +161,9 @@ export default {
 
       return this.$t('Select where to send users after this task. Any Non-default destination will disable the "Display Next Assigned Task" function.');
     },
+    externalUrlHelperText() {
+      return this.$t('URL where the request will redirect. Supports Mustache:') + ' {{APP_URL}}, {{_request.id}}, {{_user.id}}, ' + this.$t('process variables.');
+    },
   },
   created() {
     this.loadDashboardsDebounced = debounce((filter) => {
@@ -174,18 +179,20 @@ export default {
   },
   methods: {
     getValidationErrorForURL(url) {
+      const isEmpty = typeof url !== 'string' || !url || !url.trim();
+      if (isEmpty) {
+        if (this.destinationType === 'externalURL') {
+          return this.$t('URL is required when External URL is selected.');
+        }
+        return '';
+      }
       if (!this.isValidURL(url)) {
-        return this.$t('Must be a valid URL');
+        return this.$t('Must be a valid URL or Mustache expressions') + ' ({{APP_URL}}, {{_request.id}}, {{_user.id}}, ' + this.$t('process variables') + ').';
       }
       return '';
     },
     isValidURL(string) {
-      try {
-        new URL(string);
-        return true;
-      } catch (_) {
-        return false;
-      }
+      return isValidElementDestinationURL(string);
     },
     loadData() {
       this.optionsCopy = this.options.map(option => ({
