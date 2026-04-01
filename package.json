@@ -153,6 +153,7 @@
     "node": ">=16"
   },
   "overrides": {
+    "flatted": "^3.4.2",
     "form-data": "^4.0.4",
     "jointjs": "^3.7.7",
     "lodash": "^4.17.21"
