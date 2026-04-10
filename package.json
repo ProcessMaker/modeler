@@ -56,7 +56,7 @@
     "jest-junit": "^12.0.0",
     "jointjs": "^3.7.7",
     "js-yaml-loader": "^1.2.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "lodash-contrib": "^4.1200.1",
     "luxon": "^1.21.1",
     "mocha-junit-reporter": "^2.0.0",
@@ -132,7 +132,7 @@
     "bpmn-moddle": "^6.0.0",
     "i18next": "^15.0.8",
     "jointjs": "^3.7.7",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "luxon": "^1.21.1",
     "vue": "^2.6.12",
     "vue-color": "^2.7.1"
@@ -157,7 +157,7 @@
     "form-data": "^4.0.4",
     "handlebars": "^4.7.9",
     "jointjs": "^3.7.7",
-    "lodash": "^4.17.21"
+    "lodash": "^4.18.1"
   },
   "husky": {
     "hooks": {
