@@ -1071,7 +1071,7 @@ export default {
     },
     validateIfAutoValidateIsOn() {
       if (this.autoValidate) {
-        this.validateBpmnDiagram();
+        this.safeRevalidate();
       }
     },
     translateConfig(inspectorConfig) {
@@ -1114,8 +1114,51 @@ export default {
       if (!store.getters.globalProcesses || store.getters.globalProcesses.length === 0) {
         await store.dispatch('fetchGlobalProcesses');
       }
+
       this.validationErrors = await this.linter.lint(this.definitions);
+      
+      // Filter out false positive validation errors for properly configured PM Blocks
+      this.filterFalsePositivePMBlockErrors();
+      
       this.$emit('validate', this.validationErrors);
+    },
+    filterFalsePositivePMBlockErrors() {
+      // Filter out false positive validation errors for properly configured PM Blocks
+      if (this.validationErrors['processmaker/call-activity-child-process']) {
+        const originalErrors = this.validationErrors['processmaker/call-activity-child-process'];
+        const filteredErrors = originalErrors.filter(error => {
+          // Find the corresponding node
+          const node = this.nodes.find(n => n.definition.id === error.id);
+          if (!node || !node.isBpmnType('bpmn:CallActivity')) {
+            return true; // Keep the error if we can't find the node
+          }
+          
+          // Check if the PM Block is properly configured
+          const hasCalledElement = node.definition.calledElement && node.definition.calledElement !== '';
+          const hasConfig = node.definition.config && node.definition.config !== '{}';
+          
+          if (!hasCalledElement || !hasConfig) {
+            return true; // Keep the error if the PM Block is genuinely unconfigured
+          }
+          
+          // Parse the config and check for required fields
+          try {
+            const config = JSON.parse(node.definition.config);
+            const hasProcessId = config.processId && config.processId !== null;
+            const hasStartEvent = config.startEvent && config.startEvent !== null;
+            
+            // If PM Block is properly configured, remove the error; otherwise keep it
+            return !(hasProcessId && hasStartEvent);
+          } catch (error) {
+            if (error instanceof SyntaxError) {
+              return true; // Keep the error if config is invalid JSON or parsing fails
+            }
+            throw error;
+          }
+        });
+        
+        this.validationErrors['processmaker/call-activity-child-process'] = filteredErrors;
+      }
     },
     setPools(poolDefinition) {
       if (!this.collaboration) {
@@ -1632,7 +1675,7 @@ export default {
       await this.$nextTick();
       await this.paperManager.awaitScheduledUpdates();
       if (this.autoValidate) {
-        this.validateBpmnDiagram();
+        this.safeRevalidate();
       }
     },
 
@@ -2582,6 +2625,7 @@ export default {
     async safeRevalidate() {
       // Run bpmnlint only when auto-validate is enabled and the model is ready.
       if (!this.autoValidate) return;
+      
       // Wait for Vue and JointJS to settle before validating, so we don't lose errors
       await this.$nextTick();
       if (this.paperManager?.awaitScheduledUpdates) {
@@ -2637,6 +2681,7 @@ export default {
     this.initTransparentDragging();
     this.test = true;
     this.adjustPaperPosition();
+    this.safeRevalidate();
   },
 };
 </script>
