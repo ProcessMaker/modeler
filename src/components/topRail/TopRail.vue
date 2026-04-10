@@ -21,7 +21,7 @@
     />
     <slot />
 
-    <LaunchpadButton @verifyLaunchpad="handleVerifyLaunchpad"/>
+    <LaunchpadButton @verifyLaunchpad="handleVerifyLaunchpad" :disabled="disableLaunchpad"/>
     <LaunchpadModal :show="showLaunchpadModal" @closeModal="closeModal" />
 
   </div>
@@ -84,6 +84,9 @@ export default {
     },
     isPackageAiInstalled() {
       return window.ProcessMaker?.modeler?.isPackageAiInstalled;
+    },
+    disableLaunchpad() {
+      return !!window.ProcessMaker?.modeler?.process?.is_template;
     },
   },
   watch: {
