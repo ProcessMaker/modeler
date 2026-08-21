@@ -43,7 +43,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
-    "@processmaker/screen-builder": "3.8.38",
+    "@processmaker/screen-builder": "3.8.39",
     "@processmaker/vue-form-elements": "0.65.10",
     "@processmaker/vue-multiselect": "2.3.2",
     "bootstrap": "^4.3.1",
