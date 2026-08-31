@@ -24,6 +24,22 @@ on:
         description: Branch to rebuild from (PR base or default)
         required: false
         type: string
+      branch_map:
+        description: JSON object of repo name to git ref
+        required: false
+        type: string
+      cascade_stop_before:
+        description: Halt downstream cascade before this repo (upstream bootstrap)
+        required: false
+        type: string
+      trigger_repo:
+        description: Originating PR repo name
+        required: false
+        type: string
+      trigger_head_ref:
+        description: Originating PR head branch or SHA
+        required: false
+        type: string
 
 jobs:
   run:
@@ -39,4 +55,8 @@ jobs:
       source_repo: ${{ inputs.source_repo }}
       source_run_id: ${{ inputs.source_run_id }}
       origin_branch: ${{ inputs.origin_branch }}
+      branch_map: ${{ inputs.branch_map }}
+      cascade_stop_before: ${{ inputs.cascade_stop_before }}
+      trigger_repo: ${{ inputs.trigger_repo }}
+      trigger_head_ref: ${{ inputs.trigger_head_ref }}
     secrets: inherit
