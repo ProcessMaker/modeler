@@ -41,6 +41,11 @@ on:
         required: false
         type: string
 
+# Cancel superseded PR runs (including nested deploy). Do not cancel a close/delete.
+concurrency:
+  group: js-package-${{ github.repository }}-${{ github.event.pull_request.number || inputs.stack_id || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
+
 jobs:
   run:
     uses: ProcessMaker/.github/.github/workflows/js-package.yml@main
