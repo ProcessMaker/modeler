@@ -1,0 +1,42 @@
+name: js-package
+run-name: js-stack ${{ inputs.stack_id || format('{0}-pr-{1}', github.event.repository.name, github.event.pull_request.number) || github.run_id }}
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, closed]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      stack_id:
+        description: Stack id from the originating PR pack
+        required: false
+        type: string
+      source_repo:
+        description: owner/repo that uploaded the upstream js-stack artifact
+        required: false
+        type: string
+      source_run_id:
+        description: Workflow run id that uploaded the upstream js-stack artifact
+        required: false
+        type: string
+      origin_branch:
+        description: Branch to rebuild from (PR base or default)
+        required: false
+        type: string
+
+jobs:
+  run:
+    uses: ProcessMaker/.github/.github/workflows/js-package.yml@main
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+      actions: write
+      packages: write
+    with:
+      stack_id: ${{ inputs.stack_id }}
+      source_repo: ${{ inputs.source_repo }}
+      source_run_id: ${{ inputs.source_run_id }}
+      origin_branch: ${{ inputs.origin_branch }}
+    secrets: inherit
