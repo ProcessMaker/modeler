@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   run:
-    uses: ProcessMaker/.github/.github/workflows/js-package.yml@main
+    uses: ProcessMaker/.github/.github/workflows/js-package.yml@js-builds-2
     secrets: inherit
     with:
       stack_id: ${{ github.event.pull_request.number || github.run_id }}
