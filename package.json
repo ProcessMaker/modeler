@@ -175,5 +175,8 @@
       "tests/**/*.js"
     ],
     "report-dir": "cypress-coverage"
+  },
+  "processmaker": {
+    "downstream": []
   }
 }
