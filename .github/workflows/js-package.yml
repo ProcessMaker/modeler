@@ -1,0 +1,21 @@
+name: js-package
+run-name: js-stack ${{ github.event.pull_request.number || github.run_id }}
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+  workflow_dispatch:
+
+concurrency:
+  group: js-package-${{ github.repository }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run:
+    uses: ProcessMaker/.github/.github/workflows/js-package.yml@main
+    secrets: inherit
+    with:
+      stack_id: ${{ github.event.pull_request.number || github.run_id }}
+      trigger_repo: ${{ github.event.repository.name }}
+      trigger_ref: ${{ github.event.pull_request.head.sha || github.ref }}
+      pr_body: ${{ github.event.pull_request.body }}
