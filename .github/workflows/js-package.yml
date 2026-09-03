@@ -1,62 +1,22 @@
 name: js-package
-run-name: js-stack ${{ inputs.stack_id || format('{0}-pr-{1}', github.event.repository.name, github.event.pull_request.number) || github.run_id }}
+run-name: js-stack ${{ github.event.pull_request.number || github.run_id }}
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, edited, closed]
-  release:
-    types: [published]
+    types: [opened, reopened, synchronize, edited]
   workflow_dispatch:
-    inputs:
-      stack_id:
-        description: Stack id from the originating PR pack
-        required: false
-        type: string
-      source_repo:
-        description: owner/repo that uploaded the upstream js-stack artifact
-        required: false
-        type: string
-      source_run_id:
-        description: Workflow run id that uploaded the upstream js-stack artifact
-        required: false
-        type: string
-      origin_branch:
-        description: Branch to rebuild from (PR base or default)
-        required: false
-        type: string
-      branch_map:
-        description: JSON object of repo name to git ref
-        required: false
-        type: string
-      cascade_stop_before:
-        description: Halt downstream cascade before this repo (upstream bootstrap)
-        required: false
-        type: string
-      trigger_repo:
-        description: Originating PR repo name
-        required: false
-        type: string
-      trigger_head_ref:
-        description: Originating PR head branch or SHA
-        required: false
-        type: string
+
+concurrency:
+  group: js-package-${{ github.repository }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   run:
-    uses: ProcessMaker/.github/.github/workflows/js-package.yml@main
-    permissions:
-      contents: write
-      id-token: write
-      pull-requests: write
-      actions: write
-      packages: write
-    with:
-      stack_id: ${{ inputs.stack_id }}
-      source_repo: ${{ inputs.source_repo }}
-      source_run_id: ${{ inputs.source_run_id }}
-      origin_branch: ${{ inputs.origin_branch }}
-      branch_map: ${{ inputs.branch_map }}
-      cascade_stop_before: ${{ inputs.cascade_stop_before }}
-      trigger_repo: ${{ inputs.trigger_repo }}
-      trigger_head_ref: ${{ inputs.trigger_head_ref }}
+    uses: ProcessMaker/.github/.github/workflows/js-package.yml@js-builds-2
     secrets: inherit
+    with:
+      stack_id: ${{ github.event.pull_request.number || github.run_id }}
+      trigger_repo: ${{ github.event.repository.name }}
+      trigger_ref: ${{ github.event.pull_request.head.sha || github.ref }}
+      trigger_branch: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      pr_body: ${{ toJSON(github.event.pull_request.body || '') }}
