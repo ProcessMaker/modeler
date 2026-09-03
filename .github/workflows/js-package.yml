@@ -19,4 +19,4 @@ jobs:
       trigger_repo: ${{ github.event.repository.name }}
       trigger_ref: ${{ github.event.pull_request.head.sha || github.ref }}
       trigger_branch: ${{ github.event.pull_request.head.ref || github.ref_name }}
-      pr_body: ${{ github.event.pull_request.body }}
+      pr_body: ${{ toJSON(github.event.pull_request.body || '') }}
