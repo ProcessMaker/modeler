@@ -177,7 +177,6 @@
     "report-dir": "cypress-coverage"
   },
   "processmaker": {
-    "downstream": [],
-    "command": "build-bundle"
+    "downstream": []
   }
 }
