@@ -39,14 +39,17 @@ export default class Multiplayer {
     this.room = new Room(`room${alternative}-${appUrl}-${processId}`);
     this.inspector = new InspectorUtils(this.modeler, store);
 
-    // Connect to websocket server
-    this.clientIO = io(window.ProcessMaker.multiplayer.host, { transports: ['websocket', 'polling']});
+    const multiplayerHost = window.ProcessMaker.multiplayer?.host;
+    const multiplayerEnabled = multiplayerHost
+      && multiplayerHost !== 'null'
+      && window.ProcessMaker.multiplayer?.enabled
+      && window.ProcessMaker.multiplayer.enabled !== 'false'
+      && window.ProcessMaker.multiplayer.enabled !== '0';
 
-    if (window.ProcessMaker.multiplayer.enabled) {
+    if (multiplayerEnabled) {
+      this.clientIO = io(multiplayerHost, { transports: ['websocket', 'polling'] });
       this.webSocketEvents();
       this.multiplayerEvents();
-    } else {
-      this.clientIO.disconnect();
     }
     this.colorUtil = new ColorUtil(50, 50, 10);
   }
