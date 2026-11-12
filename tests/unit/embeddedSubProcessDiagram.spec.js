@@ -3,6 +3,8 @@ import {
   dedupeProcessFlowElementsNestedInSubProcesses,
   getSubProcessBpmnDiagram,
   normalizeEmbeddedSubProcessDi,
+  pruneOrphanSubProcessDiagrams,
+  removeSubProcessBpmnDiagram,
 } from '@/components/nodes/embeddedSubProcess/embeddedSubProcessDiagram';
 
 describe('dedupeProcessFlowElementsNestedInSubProcesses', () => {
@@ -23,6 +25,60 @@ describe('dedupeProcessFlowElementsNestedInSubProcesses', () => {
     expect(subProcess.get('flowElements').map((el) => el.id)).toEqual(
       expect.arrayContaining(['node_17', 'node_18']),
     );
+  });
+});
+
+describe('subprocess BPMNDiagram cleanup', () => {
+  it('removeSubProcessBpmnDiagram removes the matching diagram', () => {
+    const moddle = new BpmnModdle();
+    const subprocess = moddle.create('bpmn:SubProcess', { id: 'node_16' });
+    const mainDiagram = moddle.create('bpmndi:BPMNDiagram', { id: 'main_di' });
+    const subDiagram = moddle.create('bpmndi:BPMNDiagram', { id: 'node_16_diagram' });
+    subDiagram.set('plane', moddle.create('bpmndi:BPMNPlane', {
+      id: 'node_16_plane',
+      bpmnElement: subprocess,
+    }));
+    const definitions = moddle.create('bpmn:Definitions', {
+      rootElements: [],
+      diagrams: [mainDiagram, subDiagram],
+    });
+
+    removeSubProcessBpmnDiagram(definitions, subprocess);
+
+    expect(definitions.get('diagrams')).toHaveLength(1);
+    expect(definitions.get('diagrams')[0].id).toBe('main_di');
+  });
+
+  it('pruneOrphanSubProcessDiagrams removes stale or invalid extra diagrams', () => {
+    const moddle = new BpmnModdle();
+    const process = moddle.create('bpmn:Process', { id: 'Process_1', flowElements:[]});
+    const subprocess = moddle.create('bpmn:SubProcess', { id: 'node_16', flowElements:[]});
+    process.get('flowElements').push(subprocess);
+
+    const mainDiagram = moddle.create('bpmndi:BPMNDiagram', { id: 'main_di' });
+    const validSubDiagram = moddle.create('bpmndi:BPMNDiagram', { id: 'node_16_diagram' });
+    validSubDiagram.set('plane', moddle.create('bpmndi:BPMNPlane', {
+      id: 'node_16_plane',
+      bpmnElement: subprocess,
+    }));
+    const orphanDiagram = moddle.create('bpmndi:BPMNDiagram', { id: 'node_42_diagram' });
+    orphanDiagram.set('plane', moddle.create('bpmndi:BPMNPlane', { id: 'node_42_plane' }));
+    const callActivity = moddle.create('bpmn:CallActivity', { id: 'node_70' });
+    const callActivityDiagram = moddle.create('bpmndi:BPMNDiagram', { id: 'node_70_diagram' });
+    callActivityDiagram.set('plane', moddle.create('bpmndi:BPMNPlane', {
+      id: 'node_70_plane',
+      bpmnElement: callActivity,
+    }));
+
+    const definitions = moddle.create('bpmn:Definitions', {
+      rootElements: [process],
+      diagrams: [mainDiagram, orphanDiagram, callActivityDiagram, validSubDiagram],
+    });
+
+    pruneOrphanSubProcessDiagrams(definitions);
+
+    const diagramIds = definitions.get('diagrams').map((diagram) => diagram.id);
+    expect(diagramIds).toEqual(['main_di', 'node_16_diagram']);
   });
 });
 

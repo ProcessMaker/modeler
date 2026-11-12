@@ -268,6 +268,8 @@ import {
   ensureSubProcessDiagram,
   normalizeEmbeddedSubProcessDi,
   dedupeProcessFlowElementsNestedInSubProcesses,
+  pruneOrphanSubProcessDiagrams,
+  removeSubProcessBpmnDiagram,
 } from '@/components/nodes/embeddedSubProcess/embeddedSubProcessDiagram';
 import { loadEmbeddedSubProcessChildren } from '@/components/nodes/embeddedSubProcess/loadEmbeddedSubProcessChildren';
 import { isNodeVisibleOnCanvas as isNodeVisibleOnCanvasForSubProcess } from '@/components/modeler/canvasVisibility';
@@ -1438,6 +1440,7 @@ export default {
       this.collaboration = this.getCollaboration();
       this.processes = this.getProcesses();
       dedupeProcessFlowElementsNestedInSubProcesses(this.definitions);
+      pruneOrphanSubProcessDiagrams(this.definitions);
       normalizeEmbeddedSubProcessDi(this.definitions);
       this.plane = this.getPlane();
       this.planeElements = this.getPlaneElements();
@@ -1682,6 +1685,7 @@ export default {
       boundaryEventDiagram.bpmnElement = boundaryEvent;
     },
     toXML(cb) {
+      pruneOrphanSubProcessDiagrams(this.definitions);
       normalizeEmbeddedSubProcessDi(this.definitions);
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
@@ -2031,11 +2035,17 @@ export default {
         return;
       }
       if (node.isBpmnType('bpmn:SubProcess')) {
+        if (this.activeSubProcessNode?.definition === node.definition) {
+          await this.exitSubProcess();
+        }
         const children = this.nodes.filter(
           (child) => child.subProcessContainer === node.definition,
         );
         for (const child of children) {
           await this.removeNode(child, { removeRelationships: true });
+        }
+        if (node.isType('processmaker-modeler-embedded-sub-process')) {
+          removeSubProcessBpmnDiagram(this.definitions, node.definition);
         }
       }
       if (removeRelationships) {

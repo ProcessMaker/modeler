@@ -16,6 +16,50 @@ export function getSubProcessPlane(definitions, subProcessDefinition) {
   return getSubProcessBpmnDiagram(definitions, subProcessDefinition)?.plane ?? null;
 }
 
+export function removeSubProcessBpmnDiagram(definitions, subProcessDefinition) {
+  const diagrams = definitions?.get?.('diagrams') || definitions?.diagrams;
+  if (!diagrams?.length || !subProcessDefinition) {
+    return;
+  }
+
+  const diagramIndex = diagrams.findIndex((diagram) => {
+    const planeElement = diagram.plane?.bpmnElement;
+    if (!planeElement) {
+      return false;
+    }
+    return planeElement === subProcessDefinition || planeElement.id === subProcessDefinition.id;
+  });
+
+  if (diagramIndex > 0) {
+    diagrams.splice(diagramIndex, 1);
+  }
+}
+
+/**
+ * Drops extra BPMNDiagram entries that no longer match an embedded bpmn:SubProcess in the model.
+ */
+export function pruneOrphanSubProcessDiagrams(definitions) {
+  const diagrams = definitions?.get?.('diagrams') || definitions?.diagrams;
+  if (!diagrams || diagrams.length <= 1) {
+    return;
+  }
+
+  const validSubProcessIds = new Set(
+    collectSubProcessDefinitions(definitions.rootElements || []).map(({ id }) => id),
+  );
+
+  for (let index = diagrams.length - 1; index >= 1; index -= 1) {
+    const subprocessElement = diagrams[index].plane?.bpmnElement;
+    if (!subprocessElement || subprocessElement.$type !== 'bpmn:SubProcess') {
+      diagrams.splice(index, 1);
+      continue;
+    }
+    if (!validSubProcessIds.has(subprocessElement.id)) {
+      diagrams.splice(index, 1);
+    }
+  }
+}
+
 export function getOrCreateSubProcessBpmnDiagram(moddle, definitions, subProcessDefinition) {
   let diagram = getSubProcessBpmnDiagram(definitions, subProcessDefinition);
 
