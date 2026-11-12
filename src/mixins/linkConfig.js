@@ -8,6 +8,7 @@ import store from '@/store';
 import {
   removeOutgoingAndIncomingRefsToFlow,
 } from '@/components/crown/utils';
+import { findTopVisibleModelAtPoint, isElementVisibleOnCanvas } from '@/components/modeler/canvasVisibility';
 import {
   COLOR_IDLE,
   COLOR_COMPLETED,
@@ -305,6 +306,12 @@ export default {
       this.onChangeWasFired = true;
       if (options?.ui && vertices.id) {
         const newTarget = this.paper.getModelById(vertices.id);
+        if (
+          newTarget
+          && !isElementVisibleOnCanvas(newTarget, this.paper, this.getActiveSubProcessNode())
+        ) {
+          return;
+        }
         if (this.currentTarget.id !== newTarget.id) {
           // Change the target if it's different from the current target
           this.currentTarget = newTarget;
@@ -340,13 +347,19 @@ export default {
         document.addEventListener('mouseup', this.emitSave);
       }
     },
+    getActiveSubProcessNode() {
+      return this.$parent?.activeSubProcessNode ?? null;
+    },
     updateLinkTarget({ clientX, clientY }) {
       const localMousePosition = this.paper.clientToLocalPoint({ x: clientX, y: clientY });
+      const activeSubProcessNode = this.getActiveSubProcessNode();
 
-      /* Sort shapes by z-index descending; grab the shape on top (with the highest z-index) */
-      this.target = this.graph.findModelsFromPoint(localMousePosition).sort((shape1, shape2) => {
-        return shape2.get('z') - shape1.get('z');
-      })[0];
+      this.target = findTopVisibleModelAtPoint(
+        this.graph,
+        this.paper,
+        localMousePosition,
+        activeSubProcessNode,
+      );
 
       if (!this.isValidConnection) {
         this.$emit('set-cursor', 'not-allowed');

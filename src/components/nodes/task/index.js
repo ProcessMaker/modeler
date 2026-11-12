@@ -16,7 +16,7 @@ export const id = 'processmaker-modeler-task';
 export default {
   id: 'processmaker-modeler-task',
   component,
-  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask', 'bpmn:SubProcess'],
+  bpmnType: ['bpmn:Task', 'bpmn:UserTask', 'bpmn:GlobalTask'],
   control: true,
   category: 'BPMN',
   rank: 40,
@@ -49,6 +49,13 @@ export default {
       label: 'Sub Process',
       control: true,
       rank: 44,
+      id: 'processmaker-modeler-embedded-sub-process',
+    },
+    {
+      icon: require('@/assets/toolpanel/subProcess.svg'),
+      label: 'Call Activity',
+      control: true,
+      rank: 45,
       id: 'processmaker-modeler-call-activity',
     },
   ],

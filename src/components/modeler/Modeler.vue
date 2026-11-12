@@ -15,6 +15,8 @@
       :xml-manager="xmlManager"
       :validationBar="validationBar"
       :extra-actions="extraActions"
+      :active-sub-process-label="activeSubProcessLabel"
+      @exit-sub-process="exitSubProcess"
       @load-xml="loadXML"
       @toggle-panels-compressed="panelsCompressed = !panelsCompressed"
       @toggle-mini-map-open="miniMapOpen = $event"
@@ -112,7 +114,7 @@
         :nodeRegistry="nodeRegistry"
         :moddle="moddle"
         :definitions="definitions"
-        :processNode="processNode"
+        :processNode="contextProcessNode"
         @save-state="pushToUndoStack"
         class="inspector h-100"
         :parent-height="parentHeight"
@@ -124,6 +126,7 @@
       <component
         v-for="node in nodes"
         :is="node.type"
+        v-show="isNodeVisibleOnCanvas(node)"
         :key="node._modelerId"
         ref="nodeComponent"
         :graph="graph"
@@ -134,7 +137,7 @@
         :has-error="invalidNodes.includes(node)"
         :border-outline="borderOutline(node.id)"
         :collaboration="collaboration"
-        :process-node="processNode"
+        :process-node="contextProcessNode"
         :processes="processes"
         :plane-elements="planeElements"
         :moddle="moddle"
@@ -149,6 +152,7 @@
         :is-in-progress="requestInProgressNodes.includes(node.definition.id)"
         :is-idle="requestIdleNodes.includes(node.definition.id)"
         :custom-dropdown-data="customDropdownData"
+        :highlighted-nodes="highlightedNodes"
         @add-node="addNode"
         @remove-node="removeNode"
         @previewNode="[handlePreview($event), setInspectorButtonPosition($event)]"
@@ -170,6 +174,7 @@
         @default-flow="toggleDefaultFlow"
         @shape-resize="shapeResize"
         @definition-changed="onNodeDefinitionChanged"
+        @enter-sub-process="enterSubProcess"
       />
 
       <RailBottom
@@ -258,6 +263,14 @@ import ensureShapeIsNotCovered from '@/components/shapeStackUtils';
 import ToolBar from '@/components/toolbar/ToolBar';
 import Node from '@/components/nodes/node';
 import { addNodeToProcess } from '@/components/nodeManager';
+import {
+  addDiagramToSubProcessPlane,
+  ensureSubProcessDiagram,
+  normalizeEmbeddedSubProcessDi,
+  dedupeProcessFlowElementsNestedInSubProcesses,
+} from '@/components/nodes/embeddedSubProcess/embeddedSubProcessDiagram';
+import { loadEmbeddedSubProcessChildren } from '@/components/nodes/embeddedSubProcess/loadEmbeddedSubProcessChildren';
+import { isNodeVisibleOnCanvas as isNodeVisibleOnCanvasForSubProcess } from '@/components/modeler/canvasVisibility';
 import hotkeys from '@/components/hotkeys/main';
 import TimerEventNode from '@/components/nodes/timerEventNode';
 import focusNameInputAndHighlightLabel from '@/components/modeler/focusNameInputAndHighlightLabel';
@@ -287,6 +300,11 @@ import { getBoundaryEventData } from '../nodes/boundaryEvent/boundaryEventUtils'
 import validPreviewElements from '@/components/crown/crownButtons/validPreviewElements';
 
 export default {
+  provide() {
+    return {
+      modeler: this,
+    };
+  },
   components: {
     NodeDocumentation,
     PreviewPanel,
@@ -409,6 +427,8 @@ export default {
       nodeTypes: [],
       pmBlockNodes: [],
       breadcrumbData: [],
+      activeSubProcessNode: null,
+      subProcessContextNode: null,
       activeNode: null,
       xmlManager: null,
       previouslyStackedShape: null,
@@ -541,6 +561,15 @@ export default {
     },
     autoValidate: () => store.getters.autoValidate,
     nodes: () => store.getters.nodes,
+    contextProcessNode() {
+      return this.subProcessContextNode || this.processNode;
+    },
+    activeSubProcessLabel() {
+      if (!this.activeSubProcessNode) {
+        return '';
+      }
+      return this.activeSubProcessNode.definition.get('name') || this.$t('Sub Process');
+    },
     currentXML() {
       return undoRedoStore.getters.currentState;
     },
@@ -1408,8 +1437,11 @@ export default {
     parse() {
       this.collaboration = this.getCollaboration();
       this.processes = this.getProcesses();
+      dedupeProcessFlowElementsNestedInSubProcesses(this.definitions);
+      normalizeEmbeddedSubProcessDi(this.definitions);
       this.plane = this.getPlane();
       this.planeElements = this.getPlaneElements();
+      this.moddle._modelerDefinitions = this.definitions;
 
       this.validatePlaneElements();
       this.cleanPlaneElements();
@@ -1540,6 +1572,7 @@ export default {
       });
       await this.paperManager.awaitScheduledUpdates();
       this.isRendering = false;
+      this.updateCanvasVisibility();
       this.$emit('parsed');
     },
     async loadXML(xml = null) {
@@ -1649,6 +1682,7 @@ export default {
       boundaryEventDiagram.bpmnElement = boundaryEvent;
     },
     toXML(cb) {
+      normalizeEmbeddedSubProcessDi(this.definitions);
       this.moddle.toXML(this.definitions, { format: true }, cb);
     },
     onCreateElementHandler({ event, control }) {
@@ -1820,14 +1854,104 @@ export default {
         }
       }
     },
+    isNodeVisibleOnCanvas(node) {
+      return isNodeVisibleOnCanvasForSubProcess(node, this.activeSubProcessNode);
+    },
+    updateCanvasVisibility() {
+      if (!this.paper) {
+        return;
+      }
+
+      this.nodes.forEach((node) => {
+        const shape = store.getters.nodeShape(node);
+        if (!shape) {
+          return;
+        }
+
+        const view = this.paper.findViewByModel(shape);
+        if (!view?.el) {
+          return;
+        }
+
+        view.el.style.display = this.isNodeVisibleOnCanvas(node) ? '' : 'none';
+      });
+    },
+    async enterSubProcess(subProcessNode) {
+      if (this.$refs.selector) {
+        this.$refs.selector.clearSelection();
+      }
+      ensureSubProcessDiagram(
+        this.moddle,
+        this.definitions,
+        subProcessNode.diagram,
+        subProcessNode.definition,
+      );
+      loadEmbeddedSubProcessChildren({
+        modeler: this,
+        subProcessNode,
+        moddle: this.moddle,
+        nodeRegistry: this.nodeRegistry,
+        planeElements: this.planeElements,
+        definitions: this.definitions,
+      });
+      this.activeSubProcessNode = subProcessNode;
+      this.subProcessContextNode = new Node(
+        'processmaker-modeler-process',
+        subProcessNode.definition,
+        subProcessNode.diagram,
+      );
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.updateCanvasVisibility();
+      store.commit('highlightNode', this.subProcessContextNode);
+      await this.pushToUndoStack();
+    },
+    async exitSubProcess() {
+      if (this.$refs.selector) {
+        this.$refs.selector.clearSelection();
+      }
+      const parentSubProcess = this.activeSubProcessNode;
+      this.activeSubProcessNode = null;
+      this.subProcessContextNode = null;
+      await this.$nextTick();
+      await this.paperManager.awaitScheduledUpdates();
+      this.updateCanvasVisibility();
+      if (parentSubProcess) {
+        store.commit('highlightNode', parentSubProcess);
+      } else {
+        store.commit('highlightNode', this.processNode);
+      }
+      await this.pushToUndoStack();
+    },
     async addNode(node, id = null, fromClient = false) {
       if (!node.pool) {
         node.pool = this.poolTarget;
       }
 
-      const targetProcess = node.getTargetProcess(this.processes, this.processNode);
+      if (this.activeSubProcessNode && !node.subProcessContainer) {
+        node.subProcessContainer = this.activeSubProcessNode.definition;
+      }
+
+      const targetProcess = node.getTargetProcess(this.processes, this.contextProcessNode);
       addNodeToProcess(node, targetProcess);
       node.setIds(this.nodeIdGenerator, id);
+
+      if (node.subProcessContainer) {
+        const subProcessNode = this.nodes.find(
+          ({ definition }) => definition === node.subProcessContainer,
+        ) || this.activeSubProcessNode;
+        if (subProcessNode) {
+          addDiagramToSubProcessPlane(this.moddle, this.definitions, subProcessNode, node.diagram);
+        }
+        store.commit('addNode', node);
+        this.poolTarget = null;
+        await this.$nextTick();
+        this.updateCanvasVisibility();
+        if (!fromClient) {
+          await this.pushToUndoStack();
+        }
+        return;
+      }
 
       this.planeElements.push(node.diagram);
       // add multiplayer logic as a hook
@@ -1905,6 +2029,14 @@ export default {
       if (!node) {
         // already removed
         return;
+      }
+      if (node.isBpmnType('bpmn:SubProcess')) {
+        const children = this.nodes.filter(
+          (child) => child.subProcessContainer === node.definition,
+        );
+        for (const child of children) {
+          await this.removeNode(child, { removeRelationships: true });
+        }
       }
       if (removeRelationships) {
 
