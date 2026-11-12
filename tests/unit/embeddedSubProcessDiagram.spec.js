@@ -8,8 +8,8 @@ import {
 describe('dedupeProcessFlowElementsNestedInSubProcesses', () => {
   it('removes subprocess children incorrectly listed on the process', () => {
     const moddle = new BpmnModdle();
-    const process = moddle.create('bpmn:Process', { id: 'Process_1', isExecutable: true, flowElements: [] });
-    const subProcess = moddle.create('bpmn:SubProcess', { id: 'node_16', flowElements: [] });
+    const process = moddle.create('bpmn:Process', { id: 'Process_1', isExecutable: true, flowElements:[]});
+    const subProcess = moddle.create('bpmn:SubProcess', { id: 'node_16', flowElements:[]});
     const start = moddle.create('bpmn:StartEvent', { id: 'node_17' });
     const end = moddle.create('bpmn:EndEvent', { id: 'node_18' });
     subProcess.get('flowElements').push(start, end);
@@ -27,11 +27,11 @@ describe('dedupeProcessFlowElementsNestedInSubProcesses', () => {
 });
 
 describe('normalizeEmbeddedSubProcessDi', () => {
-  it('moves child shapes and edges to a second BPMNDiagram for the subprocess', async () => {
+  it('moves child shapes and edges to a second BPMNDiagram for the subprocess', async() => {
     const moddle = new BpmnModdle();
-    const definitions = moddle.create('bpmn:Definitions', { rootElements: [], diagrams: [] });
+    const definitions = moddle.create('bpmn:Definitions', { rootElements: [], diagrams:[]});
 
-    const process = moddle.create('bpmn:Process', { id: 'Process_1', isExecutable: true, flowElements: [] });
+    const process = moddle.create('bpmn:Process', { id: 'Process_1', isExecutable: true, flowElements:[]});
     const subProcess = moddle.create('bpmn:SubProcess', {
       id: 'node_16',
       name: 'Sub Process',
@@ -86,10 +86,10 @@ describe('normalizeEmbeddedSubProcessDi', () => {
     );
   });
 
-  it('serializes subprocess children via a separate BPMNDiagram without XML patching', async () => {
+  it('serializes subprocess children via a separate BPMNDiagram without XML patching', async() => {
     const moddle = new BpmnModdle();
-    const definitions = moddle.create('bpmn:Definitions', { rootElements: [], diagrams: [] });
-    const process = moddle.create('bpmn:Process', { id: 'Process_1', isExecutable: true, flowElements: [] });
+    const definitions = moddle.create('bpmn:Definitions', { rootElements: [], diagrams:[]});
+    const process = moddle.create('bpmn:Process', { id: 'Process_1', isExecutable: true, flowElements:[]});
     const subProcess = moddle.create('bpmn:SubProcess', {
       id: 'node_16',
       flowElements: [moddle.create('bpmn:StartEvent', { id: 'node_17' })],
