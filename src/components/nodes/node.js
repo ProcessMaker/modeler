@@ -18,6 +18,7 @@ export default class Node {
   definition;
   diagram;
   pool;
+  subProcessContainer;
 
   constructor(type, definition, diagram) {
     this.type = type;
@@ -280,6 +281,10 @@ export default class Node {
   }
 
   getTargetProcess(processes, processNode) {
+    if (this.subProcessContainer) {
+      return this.subProcessContainer;
+    }
+
     return this.pool
       ? processes.find(({ id }) => id === this.pool.component.node.definition.get('processRef').id)
       : processNode.definition;

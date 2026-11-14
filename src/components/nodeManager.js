@@ -11,6 +11,15 @@ export function addNodeToProcess(node, targetProcess) {
     return;
   }
 
+  if (node.subProcessContainer) {
+    let target = 'flowElements';
+    if (node.isBpmnType('bpmn:TextAnnotation') || node.isBpmnType('bpmn:Association')) {
+      target = 'artifacts';
+    }
+    node.subProcessContainer.get(target).push(node.definition);
+    return;
+  }
+
   if (node.isType('processmaker-modeler-lane')) {
     targetProcess
       .get('laneSets')[0]
