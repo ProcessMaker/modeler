@@ -13,6 +13,7 @@
         :searchable="true"
         :internal-search="false"
         label="name"
+        :custom-label="signalLabel"
         @search-change="loadOptions"
         @open="loadOptions()"
         :data-test="`${name}:select`"
@@ -175,6 +176,9 @@ export default {
     };
   },
   methods: {
+    signalLabel(signal) {
+      return `${signal.name} (ID: ${signal.id})`;
+    },
     deleteSignalUsage(id) {
       const usage = this.signalUsage(id);
       const labels = [];
