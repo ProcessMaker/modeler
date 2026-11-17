@@ -3,7 +3,26 @@
     <div class="toolbar d-flex justify-content-between align-items-center border-top border-bottom" role="toolbar"
       aria-label="Toolbar" :class="{ 'ignore-pointer': canvasDragPosition }"
     >
-      <breadcrumb :breadcrumb-data="breadcrumbData" />
+      <div class="d-flex align-items-center">
+        <button
+          v-if="activeSubProcessLabel"
+          type="button"
+          class="btn btn-sm btn-outline-primary mr-3"
+          data-test="exit-sub-process"
+          @click="$emit('exit-sub-process')"
+        >
+          <i class="fas fa-arrow-left mr-1" />
+          {{ $t('Back to process') }}
+        </button>
+        <span
+          v-if="activeSubProcessLabel"
+          class="text-muted small mr-3"
+          data-test="active-sub-process-label"
+        >
+          {{ activeSubProcessLabel }}
+        </span>
+        <breadcrumb :breadcrumb-data="breadcrumbData" />
+      </div>
       <div
         ref="toolbar-options"
         class="d-flex mr-3"
@@ -124,20 +143,33 @@ export default {
     TopRail,
     FontAwesomeIcon,
   },
-  props: [
-    'canvasDragPosition',
-    'cursor',
-    'paperManager',
-    'isRendering',
-    'breadcrumbData',
-    'panelsCompressed',
-    'validationErrors',
-    'warnings',
-    'xmlManager',
-    'validationBar',
-    'players',
-    'extraActions',
-  ],
+  props: {
+    canvasDragPosition: {
+      type: Object,
+      default: null,
+    },
+    cursor: {
+      type: String,
+      default: null,
+    },
+    paperManager: Object,
+    isRendering: Boolean,
+    breadcrumbData: Array,
+    panelsCompressed: Boolean,
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
+    },
+    warnings: Array,
+    xmlManager: Object,
+    validationBar: Array,
+    players: Array,
+    extraActions: Array,
+    activeSubProcessLabel: {
+      type: String,
+      default: '',
+    },
+  },
   watch: {
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);

@@ -104,12 +104,12 @@ describe('Tasks', () => {
   });
 
   it('Should not display modal when switching task type when *initially* added', () => {
-    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-call-activity');
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
   });
 
   it('Can keep the name when switching task type', () => {
-    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-call-activity');
     typeIntoTextInput('[name=name]', testString);
 
     getElementAtPosition(taskPosition).click().getType().should('equal', nodeTypes.subProcess);
@@ -124,7 +124,7 @@ describe('Tasks', () => {
   });
 
   it('Should display modal to switch task type *after* initially added', () => {
-    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-call-activity');
 
     cy.get('[data-test=select-type-dropdown]').click();
     cy.get('[data-test=switch-to-manual-task]').click();
@@ -138,7 +138,7 @@ describe('Tasks', () => {
   });
 
   it('Does not switch task type if canceled', () => {
-    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-call-activity');
 
     getElementAtPosition({ x: 210, y: 200 }).click();
 

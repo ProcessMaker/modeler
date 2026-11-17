@@ -43,6 +43,7 @@ import { id as boundarySignalEventId } from '@/components/nodes/boundarySignalEv
 import { id as boundaryTimerEventId } from '@/components/nodes/boundaryTimerEvent';
 import { labelWidth, poolPadding } from '../nodes/pool/poolSizes';
 import { invalidNodeColor, poolColor } from '@/components/nodeColors';
+import { isElementVisibleOnCanvas } from '@/components/modeler/canvasVisibility';
 
 export default {
   name: 'Selection',
@@ -116,10 +117,27 @@ export default {
     },
   },
   methods: {
+    isViewVisibleOnCanvas(view) {
+      if (!view?.model) {
+        return false;
+      }
+      if (view.el?.style?.display === 'none') {
+        return false;
+      }
+      const activeSubProcessNode = this.$parent?.activeSubProcessNode ?? null;
+      return isElementVisibleOnCanvas(
+        view.model,
+        this.paperManager.paper,
+        activeSubProcessNode,
+      );
+    },
+    filterVisibleCanvasElements(views) {
+      return views.filter((view) => this.isViewVisibleOnCanvas(view));
+    },
     async selectElements(elements) {
       await this.$nextTick();
       this.clearSelection();
-      this.selected = elements;
+      this.selected = this.filterVisibleCanvasElements(elements);
       this.showLasso = true;
       this.isSelected = true;
       this.isSelecting = true;
@@ -312,18 +330,21 @@ export default {
      */
     getElementsInSelectedArea(area, options, addLinks=true) {
       const { paper } = this.paperManager;
-      const elements =  paper.findViewsInArea(area, options);
+      const elements = this.filterVisibleCanvasElements(
+        paper.findViewsInArea(area, options),
+      );
 
       if (!addLinks) {
         return elements;
       }
       // get flows
-      this.graph.getLinks().forEach(function(link) {
+      this.graph.getLinks().forEach((link) => {
         // Check if the link is within the selected area
         if (area.intersect(link.getBBox())) {
-          // The link is within the selected area
-          // Do something with the link, such as highlighting it
-          elements.push(paper.findViewByModel(link));
+          const linkView = paper.findViewByModel(link);
+          if (linkView && this.isViewVisibleOnCanvas(linkView)) {
+            elements.push(linkView);
+          }
         }
       });
       return elements;
@@ -407,7 +428,9 @@ export default {
         'PoolLane',
         'standard.Link',
       ];
-      selected.filter(shape => includeAll || !shapesToNotTranslate.includes(shape.model.get('type')))
+      selected
+        .filter((view) => this.isViewVisibleOnCanvas(view))
+        .filter(shape => includeAll || !shapesToNotTranslate.includes(shape.model.get('type')))
         .map(function(view) {
           const box = byModel ?
             view.model.getBBox({ useModelGeometry }) :
@@ -448,6 +471,7 @@ export default {
      * Filter the selected elements
      */
     filterSelected() {
+      this.selected = this.filterVisibleCanvasElements(this.selected);
       const flowTypes = [
         sequenceFlowId,
         dataOutputAssociationFlowId,
@@ -766,7 +790,9 @@ export default {
       const mouseX = nEvent.clientX;
       const mouseY = nEvent.clientY;
       const point = V(this.paperManager.paper.viewport).toLocalPoint(mouseX, mouseY);
-      return this.paperManager.paper.findViewsFromPoint(point);
+      return this.filterVisibleCanvasElements(
+        this.paperManager.paper.findViewsFromPoint(point),
+      );
     },
     /**
      * Add an element into the highlighted nodes

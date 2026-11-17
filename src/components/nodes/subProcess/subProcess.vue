@@ -108,9 +108,9 @@ export default {
           dataTest: 'switch-to-script-task',
         },
         {
-          label: defaultNames['processmaker-modeler-call-activity'],
-          nodeType: 'processmaker-modeler-call-activity',
-          dataTest: 'switch-to-sub-process',
+          label: defaultNames['processmaker-modeler-embedded-sub-process'],
+          nodeType: 'processmaker-modeler-embedded-sub-process',
+          dataTest: 'switch-to-embedded-sub-process',
         },
       ],
       nodeIcon: blankDefaultIcon,

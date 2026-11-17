@@ -60,7 +60,8 @@ export default {
       return get(this.target, 'component.node.type');
     },
     shapeName() {
-      return this.node.definition.get('name');
+      const name = this.node.definition.get('name');
+      return name == null ? '' : name;
     },
     nameLabel: {
       get() {

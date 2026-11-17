@@ -22,6 +22,7 @@ export { default as intermediateSignalThrowEvent } from './intermediateSignalThr
 export { default as intermediateConditionalCatchEvent } from './intermediateConditionalCatchEvent';
 export { default as task } from './userTask';
 export { default as subProcess } from './subProcess';
+export { default as embeddedSubProcess } from './embeddedSubProcess';
 //This export is deprecated and will be removed in a future version
 export { default as callActivity } from './subProcess';
 export { default as scriptTask } from './scriptTask';

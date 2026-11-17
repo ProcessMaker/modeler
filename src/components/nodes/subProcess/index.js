@@ -16,7 +16,7 @@ export default {
   control: false,
   category: 'BPMN',
   icon: require('@/assets/toolpanel/subProcess.svg'),
-  label: defaultNames[id],
+  label: defaultNames[id] || 'Call Activity',
   definition(moddle, $t) {
     return moddle.create('bpmn:CallActivity', {
       name: $t(defaultNames[id]),

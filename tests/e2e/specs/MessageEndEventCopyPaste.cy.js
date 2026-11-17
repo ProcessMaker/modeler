@@ -3,6 +3,7 @@ import {
   assertDownloadedXmlContainsExpected,
   getElementAtPosition,
   toggleInspector,
+  pasteFromClipboard,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -40,7 +41,7 @@ describe('Message End Event Copy Paste', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
 
     // Paste the element
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
 
     // Wait for paste to complete
     cy.get('[role="alert"]', { timeout: 7000 }).should('not.exist');
@@ -98,7 +99,7 @@ describe('Message End Event Copy Paste', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
 
     // Paste the element
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
 
     // Wait for paste to complete
     cy.get('[role="alert"]', { timeout: 7000 }).should('not.exist');
@@ -138,7 +139,7 @@ describe('Message End Event Copy Paste', { scrollBehavior: false }, () => {
     cy.get('.paper-container').click('center', { force: true });
 
     // Paste the element
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
 
     // Wait for paste to complete
     cy.get('[role="alert"]', { timeout: 7000 }).should('not.exist');

@@ -14,6 +14,7 @@
       :node="node"
       :node-registry="nodeRegistry"
       :moddle="moddle"
+      :paper="paper"
       v-on="$listeners"
       @toggle-crown-state="showCrown = $event"
     />
@@ -88,6 +89,10 @@
 
 <script>
 import PreviewButton from '@/components/crown/crownButtons/previewButton';
+import {
+  addDiagramToSubProcessPlane,
+  getSubProcessPlane,
+} from '@/components/nodes/embeddedSubProcess/embeddedSubProcessDiagram';
 import DeleteButton from '@/components/crown/crownButtons/deleteButton';
 import GenericFlowButton from '@/components/crown/crownButtons/genericFlowButton';
 import AssociationFlowButton from '@/components/crown/crownButtons/associationFlowButton';
@@ -204,6 +209,9 @@ export default {
         ? this.node.pool.component.containingProcess
         : this.processNode.definition;
     },
+    flowModelContainer() {
+      return this.node.subProcessContainer || this.process;
+    },
     highlightedShapes: () => store.getters.highlightedShapes,
   },
   methods: {
@@ -261,18 +269,40 @@ export default {
       this.paper.on('render:done scale:changed translate:changed', this.repositionCrown);
       this.shape.on('change:position change:size change:attrs', this.repositionCrown);
 
-      if (!this.planeElements.includes(this.node.diagram)) {
+      if (this.node.subProcessContainer) {
+        const subProcessNode = store.getters.nodes.find(
+          (n) => n.definition === this.node.subProcessContainer,
+        );
+        if (subProcessNode) {
+          const definitions = this.moddle._modelerDefinitions;
+          if (definitions) {
+            addDiagramToSubProcessPlane(
+              this.moddle,
+              definitions,
+              subProcessNode,
+              this.node.diagram,
+            );
+          }
+        }
+        pull(this.planeElements, this.node.diagram);
+      } else if (!this.planeElements.includes(this.node.diagram)) {
         this.planeElements.push(this.node.diagram);
       }
 
       const nodeTypes = Object.keys(this.node.definition.$descriptor.allTypesByName);
 
-      if (nodeTypes.includes('bpmn:FlowElement') && !this.process.get('flowElements').includes(this.node.definition)) {
-        this.process.get('flowElements').push(this.node.definition);
+      if (
+        nodeTypes.includes('bpmn:FlowElement')
+        && !this.flowModelContainer.get('flowElements').includes(this.node.definition)
+      ) {
+        this.flowModelContainer.get('flowElements').push(this.node.definition);
       }
 
-      if (nodeTypes.includes('bpmn:Artifact') && !this.process.get('artifacts').includes(this.node.definition)) {
-        this.process.get('artifacts').push(this.node.definition);
+      if (
+        nodeTypes.includes('bpmn:Artifact')
+        && !this.flowModelContainer.get('artifacts').includes(this.node.definition)
+      ) {
+        this.flowModelContainer.get('artifacts').push(this.node.definition);
       }
 
       if (
@@ -307,9 +337,22 @@ export default {
     this.shape.stopListening();
     this.shape.remove();
 
-    pull(this.process.get('flowElements'), this.node.definition);
-    pull(this.planeElements, this.node.diagram);
-    pull(this.process.get('artifacts'), this.node.definition);
+    pull(this.flowModelContainer.get('flowElements'), this.node.definition);
+    if (this.node.subProcessContainer) {
+      const subProcessNode = store.getters.nodes.find(
+        (n) => n.definition === this.node.subProcessContainer,
+      );
+      const definitions = this.moddle._modelerDefinitions;
+      const subprocessPlane = definitions && subProcessNode
+        ? getSubProcessPlane(definitions, subProcessNode.definition)
+        : null;
+      if (subprocessPlane) {
+        pull(subprocessPlane.get('planeElement'), this.node.diagram);
+      }
+    } else {
+      pull(this.planeElements, this.node.diagram);
+    }
+    pull(this.flowModelContainer.get('artifacts'), this.node.definition);
 
     if (this.collaboration) {
       pull(this.collaboration.get('messageFlows'), this.node.definition);

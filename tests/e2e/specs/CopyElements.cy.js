@@ -7,6 +7,7 @@ import {
   modalConfirm,
   toggleInspector,
   typeIntoTextInput,
+  pasteFromClipboard,
   waitToRenderAllShapes,
 } from '../support/utils';
 import { nodeTypes } from '../support/constants';
@@ -19,8 +20,8 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
+    pasteFromClipboard();
 
     const processWithTwoStartEventCopies = `
       <?xml version="1.0" encoding="UTF-8"?>
@@ -53,8 +54,8 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
+    pasteFromClipboard();
 
     const processWithTwoStartEventCopies = `
       <bpmn:startEvent id="node_1" name="Start Event" />
@@ -74,7 +75,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
 
     cy.get('[data-test=copy-button]').click();
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
     waitToRenderAllShapes();
 
     const process = `
@@ -103,7 +104,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
 
     cy.get('[role="alert"]',{ timeout: 7000 }).should('not.exist');
     cy.get('[data-type="processmaker.components.nodes.endEvent.Shape"]').eq(0).click({ force:true });
@@ -115,7 +116,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test=copy-button]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
     waitToRenderAllShapes();
 
     const process = `
@@ -159,7 +160,7 @@ describe('Copy element', { scrollBehavior: false }, () => {
     cy.get('[data-test="copy-button"]').click();
 
     cy.get('.paper-container').click('center', { force: true });
-    cy.get('body').type('{ctrl}v');
+    pasteFromClipboard();
 
     waitToRenderAllShapes();
 

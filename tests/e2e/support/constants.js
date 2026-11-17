@@ -33,6 +33,7 @@ export const nodeTypes = {
   intermediateMessageCatchEvent: 'processmaker-modeler-intermediate-message-catch-event',
   intermediateMessageThrowEvent: 'processmaker-modeler-intermediate-message-throw-event',
   subProcess: 'processmaker-modeler-call-activity',
+  embeddedSubProcess: 'processmaker-modeler-embedded-sub-process',
   testConnector: 'connectors-test-message',
   sendTweet: 'processmaker-connectors-social-twitter-send',
   boundaryEvent: 'processmaker-modeler-boundary-event',
@@ -61,3 +62,8 @@ export const boundaryEventSelector = '.main-paper ' +
 
 export const taskSelector = '.main-paper ' +
   '[data-type="processmaker.components.nodes.task.Shape"]';
+
+export const crownTypeSelectors = {
+  callActivity: 'switch-to-call-activity',
+  embeddedSubProcess: 'switch-to-embedded-sub-process',
+};

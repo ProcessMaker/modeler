@@ -521,6 +521,12 @@ export function isAppleOS() {
   return typeof navigator !== 'undefined' && /Mac|iPad|iPhone/.test(navigator.platform);
 }
 
+/** Paste clipboard contents using the OS-appropriate modifier (⌘ on macOS, Ctrl elsewhere). */
+export function pasteFromClipboard() {
+  const mod = isAppleOS() ? '{meta}' : '{ctrl}';
+  cy.get('body').type(`${mod}v`);
+}
+
 export function createProcess(elements){
   let positionElement;
   let element;

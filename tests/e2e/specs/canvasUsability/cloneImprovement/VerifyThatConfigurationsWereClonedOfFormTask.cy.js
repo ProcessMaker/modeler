@@ -80,7 +80,7 @@ describe('Clone Improvement', () => {
     cy.get('[id="delete-button"]').click({ force: true });
 
     //Step 7: Change the Form Task  to Sub-Process
-    selectComponentType(selectorFormTask,'switch-to-sub-process');
+    selectComponentType(selectorFormTask, 'switch-to-embedded-sub-process');
 
     //Step 8: Clone the Sub-process
     cy.get('[data-test="clone-button"]').click({ force: true });

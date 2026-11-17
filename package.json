@@ -1,8 +1,9 @@
 {
   "name": "@processmaker/modeler",
-  "version": "1.69.50",
+  "version": "1.69.52-branch-43441585",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
+    "serve:ci": "vue-cli-service serve --mode development --port 8080 --host 0.0.0.0",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
@@ -43,8 +44,8 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
-    "@processmaker/screen-builder": "3.8.45",
-    "@processmaker/vue-form-elements": "0.65.13",
+    "@processmaker/screen-builder": "3.8.47",
+    "@processmaker/vue-form-elements": "0.65.14",
     "@processmaker/vue-multiselect": "2.3.3",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",

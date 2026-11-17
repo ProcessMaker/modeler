@@ -17,7 +17,26 @@ describe('crownColorDropdown.vue', () => {
 
   beforeEach(async() => {
     store = jest.requireMock('../../../../src/store.js');
-    node = { definition: { get(){} } };
+    node = {
+      type: 'processmaker-modeler-task',
+      definition: {
+        id: 'node_1',
+        get(key) {
+          return this[key];
+        },
+      },
+      diagram: {
+        bounds: {
+          x: 0,
+          y: 0,
+          width: 116,
+          height: 76,
+        },
+      },
+    };
+    window.ProcessMaker = {
+      EventBus: { $emit: jest.fn() },
+    };
     wrapper = shallowMount(crownColorDropdown, {
       localVue,
       propsData: {
@@ -27,6 +46,7 @@ describe('crownColorDropdown.vue', () => {
       mocks: {
         $t(){},
       },
+      stubs: ['b-modal', 'sketch-picker', 'icon-selector'],
     });
   });
 

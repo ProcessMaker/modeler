@@ -38,14 +38,33 @@ const dontShowOn = [
 
 export default {
   components: { CrownButton, FontAwesomeIcon },
-  props: ['node', 'moddle', 'nodeRegistry'],
+  props: {
+    node: {
+      type: Object,
+      required: true,
+    },
+    moddle: {
+      type: Object,
+      required: true,
+    },
+    nodeRegistry: {
+      type: Object,
+      required: true,
+    },
+    paper: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
       sequenceFlow: Flow,
     };
   },
   computed: {
-    paper: () => store.getters.paper,
+    activePaper() {
+      return this.paper || store.getters.paper;
+    },
     sequenceFlowConfig() {
       return this.nodeRegistry[genericFlowId];
     },
@@ -65,7 +84,7 @@ export default {
       const { clientX, clientY } = cellView;
       let point = null;
       if (cellView){
-        point = V(this.paper.viewport).toLocalPoint(clientX, clientY);
+        point = V(this.activePaper.viewport).toLocalPoint(clientX, clientY);
       }
       const flowPlaceholderDefinition = this.moddle.create('bpmn:SequenceFlow', {
         name: '',

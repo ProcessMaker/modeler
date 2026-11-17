@@ -64,7 +64,7 @@ describe('Boundary Timer Event', { scrollBehavior: false }, () => {
 
     const validBoundaryTimerEventTargets = [
       { type: nodeTypes.task, position: { x: 300, y: 300 }, selector: 'switch-to-user-task' },
-      { type: nodeTypes.subProcess, position: { x: 450, y: 300 }, selector: 'switch-to-sub-process' },
+      { type: nodeTypes.subProcess, position: { x: 450, y: 300 }, selector: 'switch-to-call-activity' },
       {
         type: nodeTypes.task,
         subType: nodeTypes.scriptTask,
