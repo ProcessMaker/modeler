@@ -38,7 +38,24 @@ const dontShowOn = [
 
 export default {
   components: { CrownButton, FontAwesomeIcon },
-  props: ['node', 'moddle', 'nodeRegistry', 'paper'],
+  props: {
+    node: {
+      type: Object,
+      required: true,
+    },
+    moddle: {
+      type: Object,
+      required: true,
+    },
+    nodeRegistry: {
+      type: Object,
+      required: true,
+    },
+    paper: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
       sequenceFlow: Flow,

@@ -50,7 +50,7 @@ export function pruneOrphanSubProcessDiagrams(definitions) {
 
   for (let index = diagrams.length - 1; index >= 1; index -= 1) {
     const subprocessElement = diagrams[index].plane?.bpmnElement;
-    if (!subprocessElement || subprocessElement.$type !== 'bpmn:SubProcess') {
+    if (subprocessElement?.$type !== 'bpmn:SubProcess') {
       diagrams.splice(index, 1);
       continue;
     }

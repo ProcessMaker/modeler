@@ -57,20 +57,23 @@ export default {
     CrownConfig,
     EditEmbeddedSubProcessButton,
   },
-  props: [
-    'graph',
-    'node',
-    'id',
-    'highlighted',
-    'nodeRegistry',
-    'moddle',
-    'paper',
-    'collaboration',
-    'processNode',
-    'planeElements',
-    'isRendering',
-    'paperManager',
-  ],
+  props: {
+    graph: Object,
+    node: Object,
+    id: String,
+    highlighted: Boolean,
+    nodeRegistry: Object,
+    moddle: Object,
+    paper: Object,
+    collaboration: {
+      type: Object,
+      default: null,
+    },
+    processNode: Object,
+    planeElements: Array,
+    isRendering: Boolean,
+    paperManager: Object,
+  },
   mixins: [highlightConfig, portsConfig, hasMarkers, hideLabelOnDrag, updateIconColor, customIcon, documentingIcons],
   data() {
     return {
@@ -112,7 +115,10 @@ export default {
 
       if (labelHeight + labelPadding + topAndBottomMarkersSpace !== height) {
         const newHeight = Math.max(labelHeight + labelPadding + topAndBottomMarkersSpace, taskHeight);
-        this.node.diagram.bounds.height = newHeight;
+        this.$emit('update-node-bounds', {
+          node: this.node,
+          bounds: { height: newHeight },
+        });
         this.shape.resize(width, newHeight);
         this.recalcMarkersAlignment();
       }

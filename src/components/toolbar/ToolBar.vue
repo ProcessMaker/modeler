@@ -143,21 +143,30 @@ export default {
     TopRail,
     FontAwesomeIcon,
   },
-  props: [
-    'canvasDragPosition',
-    'cursor',
-    'paperManager',
-    'isRendering',
-    'breadcrumbData',
-    'panelsCompressed',
-    'validationErrors',
-    'warnings',
-    'xmlManager',
-    'validationBar',
-    'players',
-    'extraActions',
-    'activeSubProcessLabel',
-  ],
+  props: {
+    canvasDragPosition: {
+      type: Object,
+      default: null,
+    },
+    cursor: {
+      type: String,
+      default: null,
+    },
+    paperManager: Object,
+    isRendering: Boolean,
+    breadcrumbData: Array,
+    panelsCompressed: Boolean,
+    validationErrors: Array,
+    warnings: Array,
+    xmlManager: Object,
+    validationBar: Array,
+    players: Array,
+    extraActions: Array,
+    activeSubProcessLabel: {
+      type: String,
+      default: '',
+    },
+  },
   watch: {
     miniMapOpen(isOpen) {
       this.$emit('toggle-mini-map-open', isOpen);

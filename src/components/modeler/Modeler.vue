@@ -175,6 +175,7 @@
         @shape-resize="shapeResize"
         @definition-changed="onNodeDefinitionChanged"
         @enter-sub-process="enterSubProcess"
+        @update-node-bounds="onUpdateNodeBounds"
       />
 
       <RailBottom
@@ -875,6 +876,9 @@ export default {
       }
       // Ensure validations are up to date when a node definition changes.
       this.safeRevalidate();
+    },
+    onUpdateNodeBounds({ node, bounds }) {
+      store.commit('updateNodeBounds', { node, bounds });
     },
     onStartPreviewResize(event) {
       this.isResizingPreview = true;
