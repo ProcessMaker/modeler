@@ -156,7 +156,10 @@ export default {
     isRendering: Boolean,
     breadcrumbData: Array,
     panelsCompressed: Boolean,
-    validationErrors: Array,
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
+    },
     warnings: Array,
     xmlManager: Object,
     validationBar: Array,

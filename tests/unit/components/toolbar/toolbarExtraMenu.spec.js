@@ -12,16 +12,17 @@ describe('Toolbar.vue', () => {
   };
   const stubs = ['b-row', 'b-modal', 'b-btn', 'b-tooltip'];
   const propsData = {
-    canvasDragPosition: {}, // add the expected value or mock data
-    cursor: {},             // add the expected value or mock data
-    paperManager: {},       // add the expected value or mock data
-    isRendering: {},        // add the expected value or mock data
-    breadcrumbData: [],     // add the expected value or mock data
-    panelsCompressed: {},   // add the expected value or mock data
-    validationErrors: {},   // add the expected value or mock data
-    warnings: [],           // add the expected value or mock data
-    xmlManager: {},         // add the expected value or mock data
-    validationBar: {},      // add the expected value or mock data
+    canvasDragPosition: null,
+    cursor: null,
+    paperManager: {},
+    isRendering: false,
+    breadcrumbData: [],
+    panelsCompressed: false,
+    validationErrors: {},
+    warnings: [],
+    xmlManager: {},
+    validationBar: [],
+    players: [],
   };
 
 
