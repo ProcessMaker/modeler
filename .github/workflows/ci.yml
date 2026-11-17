@@ -43,25 +43,45 @@ jobs:
           node-version: 20
           check-latest: true
           cache: 'npm'
+
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+
+      - name: Start dev server
+        run: |
+          npm run serve:ci > serve.log 2>&1 &
+          echo $! > serve.pid
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+          TZ: UTC
+
+      - name: Wait for dev server
+        run: npx wait-on http-get://127.0.0.1:8080/ -t 300000 -v
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          install: true
-          start: npm run serve
-          wait-on: http://localhost:8080/
-          wait-on-timeout: 180
+          install: false
           config-file: cypress.config.js
           spec: "tests/e2e/specs/**/*"
           record: true
           parallel: true
           browser: chrome
         env:
+          NODE_OPTIONS: --max-old-space-size=6144
+          TZ: UTC
           # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
           # in GitHub repo → Settings → Secrets → Actions
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           # Creating a token https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+
+      - name: Print dev server log
+        if: failure()
+        run: |
+          cat serve.log || true
+          kill "$(cat serve.pid)" 2>/dev/null || true
       - name: Upload Cypress Screenshots
         uses: actions/upload-artifact@v4
         # Only capture images on failure

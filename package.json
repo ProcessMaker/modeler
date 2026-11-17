@@ -3,6 +3,7 @@
   "version": "1.69.52-branch-43441585",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
+    "serve:ci": "vue-cli-service serve --mode development --port 8080 --host 0.0.0.0",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --no-fix",
     "build-bundle": "vue-cli-service build --target lib --name modeler ./src/components/nodes/index.js",
