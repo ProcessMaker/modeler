@@ -9,10 +9,21 @@ import { getOrFindDataInput, findIOSpecificationOwner } from '../components/crow
 
 export default {
   methods: {
+    getClonePasteYOffset(nodeForFallback) {
+      const selectorEl = this.$refs.selector?.$el;
+      if (selectorEl && typeof selectorEl.getBoundingClientRect === 'function') {
+        const { height: selectorHeight } = selectorEl.getBoundingClientRect();
+        const { sy } = this.paper.scale();
+        return selectorHeight / sy;
+      }
+      const bounds = nodeForFallback?.diagram?.bounds;
+      return bounds ? bounds.height + 30 : 50;
+    },
     cloneNodesSelection() {
       let clonedNodes = [], clonedFlows = [], clonedBoundaryEvents = [], clonedDataInputAssociations = [], clonedDataOutputAssociations = [];
-      const nodes = this.highlightedNodes;
-      const selector = this.$refs.selector.$el;
+      const nodes = this.highlightedNodes.filter(
+        (node) => !node.isType?.('processmaker-modeler-process'),
+      );
       const flowNodeTypes = [
         sequenceFlowId,
         laneId,
@@ -27,31 +38,29 @@ export default {
         dataOutputAssociationFlowId,
       ];
 
-      if (typeof selector.getBoundingClientRect === 'function') {
-        nodes.forEach(node => {
-          if (flowNodeTypes.includes(node.type)) {
-            const clonedFlow = this.cloneFlowAndSetNewId(node);
-            clonedFlows.push(clonedFlow);
-            clonedNodes.push(clonedFlow);
-          } else if (dataInputAssociationNodeTypes.includes(node.type)) {
-            const clonedFlow = this.cloneFlowAndSetNewId(node);
-            clonedDataInputAssociations.push(clonedFlow);
-            clonedNodes.push(clonedFlow);
-          } else if (dataOutputAssociationNodeTypes.includes(node.type)) {
-            const clonedFlow = this.cloneFlowAndSetNewId(node);
-            clonedDataOutputAssociations.push(clonedFlow);
-            clonedNodes.push(clonedFlow);
-          } else {
-            // Validate boundary events and collect in clonedBoundaryEvents array
-            const clonedElement = this.cloneElementAndCalculateOffset(node);
-            if (node.definition && node.definition.$type !== 'bpmn:BoundaryEvent') {
-              clonedNodes.push(clonedElement);
-            }  else {
-              clonedBoundaryEvents.push(clonedElement);
-            }
+      nodes.forEach(node => {
+        if (flowNodeTypes.includes(node.type)) {
+          const clonedFlow = this.cloneFlowAndSetNewId(node);
+          clonedFlows.push(clonedFlow);
+          clonedNodes.push(clonedFlow);
+        } else if (dataInputAssociationNodeTypes.includes(node.type)) {
+          const clonedFlow = this.cloneFlowAndSetNewId(node);
+          clonedDataInputAssociations.push(clonedFlow);
+          clonedNodes.push(clonedFlow);
+        } else if (dataOutputAssociationNodeTypes.includes(node.type)) {
+          const clonedFlow = this.cloneFlowAndSetNewId(node);
+          clonedDataOutputAssociations.push(clonedFlow);
+          clonedNodes.push(clonedFlow);
+        } else {
+          // Validate boundary events and collect in clonedBoundaryEvents array
+          const clonedElement = this.cloneElementAndCalculateOffset(node);
+          if (node.definition && node.definition.$type !== 'bpmn:BoundaryEvent') {
+            clonedNodes.push(clonedElement);
+          }  else {
+            clonedBoundaryEvents.push(clonedElement);
           }
-        });
-      }
+        }
+      });
       // Sets the clonedBoundaryEvents at the end of the array
       clonedNodes = [...clonedNodes, ...clonedBoundaryEvents];
       this.connectClonedFlows(clonedFlows, clonedNodes);
@@ -79,9 +88,7 @@ export default {
     },
     cloneElementAndCalculateOffset(node) {
       const clonedElement = node.clone(this.nodeRegistry, this.moddle, this.$t);
-      const { height: selectorHeight } = this.$refs.selector.$el.getBoundingClientRect();
-      const { sy } = this.paper.scale();
-      const yOffset = selectorHeight / sy;
+      const yOffset = this.getClonePasteYOffset(node);
       clonedElement.diagram.bounds.y += yOffset;
       clonedElement.setIds(this.nodeIdGenerator);
       return clonedElement;
@@ -112,9 +119,7 @@ export default {
           targetClone.definition.set('incoming', [clonedFlow.definition]);
         }
 
-        const { height: selectorHeight } = this.$refs.selector.$el.getBoundingClientRect();
-        const { sy } = this.paper.scale();
-        const yOffset = selectorHeight / sy;
+        const yOffset = this.getClonePasteYOffset(originalFlow);
         clonedFlow.diagram.waypoint.forEach(point => {
           point.y += yOffset;
         });

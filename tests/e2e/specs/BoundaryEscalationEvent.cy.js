@@ -62,7 +62,7 @@ CommonBoundaryEventBehaviour({
   nodeType: nodeTypes.boundaryEscalationEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_4" name="Boundary Escalation Event" attachedToRef="node_3"><bpmn:escalationEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
-  taskTypeSelector: 'switch-to-sub-process',
+  taskTypeSelector: 'switch-to-call-activity',
   invalidTargets: [{ type: nodeTypes.startEvent }, { type: nodeTypes.task, color: defaultNodeColor }],
   // TODO remove line 68 when this test is ready to pass
   skip: true,

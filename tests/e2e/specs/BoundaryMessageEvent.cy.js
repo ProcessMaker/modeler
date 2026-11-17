@@ -12,7 +12,7 @@ import { CommonBoundaryEventBehaviour } from '../support/BoundaryEventCommonBeha
 describe('Boundary Message Event', () => {
   const taskPosition = { x: 300, y: 200 };
   beforeEach(() => {
-    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-call-activity');
   });
 
   it('Render an interrupting boundary message event', () => {
@@ -55,7 +55,7 @@ CommonBoundaryEventBehaviour({
   nodeType: nodeTypes.boundaryMessageEvent,
   eventXMLSnippet: '<bpmn:boundaryEvent id="node_18" name="Boundary Message Event" attachedToRef="node_8"><bpmn:messageEventDefinition /></bpmn:boundaryEvent>',
   taskType: nodeTypes.subProcess,
-  taskTypeSelector: 'switch-to-sub-process',
+  taskTypeSelector: 'switch-to-call-activity',
   invalidTargets: [{ type: nodeTypes.startEvent }],
   skip: true,
 });

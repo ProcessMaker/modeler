@@ -183,7 +183,7 @@ describe('Intermediate Message Throw Event', { scrollBehavior: false }, () => {
       { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-user-task' },
       { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-manual-task' },
       { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-script-task' },
-      { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-sub-process' },
+      { genericNode: nodeTypes.task, nodeToSwitchTo: 'switch-to-call-activity' },
       { genericNode: nodeTypes.intermediateCatchEvent, nodeToSwitchTo: 'switch-to-intermediate-message-catch-event' },
     ];
 

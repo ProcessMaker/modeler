@@ -7,7 +7,7 @@ import {
   waitToRenderAllShapes,
 } from '../support/utils';
 
-import { nodeTypes } from '../support/constants';
+import { crownTypeSelectors, nodeTypes } from '../support/constants';
 
 function selectCalledProcess(calledProcessName) {
   cy.get('[data-test="inspector-container"]')
@@ -30,7 +30,7 @@ function selectSubProcessStartEvent(startEventName) {
 }
 
 function addSubprocessToPaper(position) {
-  addNodeTypeToPaper(position, nodeTypes.task, 'switch-to-sub-process');
+  addNodeTypeToPaper(position, nodeTypes.task, crownTypeSelectors.callActivity);
 }
 
 function clickSubprocessPlusButton() {
@@ -40,7 +40,7 @@ function clickSubprocessPlusButton() {
 describe('Sub Process (Call Activities)', { scrollBehavior: false }, () => {
   const subProcessPosition = { x: 350, y: 250 };
   const testString = 'testing';
-  const defaultSubProcessNodeName = 'Sub Process';
+  const defaultSubProcessNodeName = 'Call Activity';
 
   beforeEach(() => {
     toggleInspector();

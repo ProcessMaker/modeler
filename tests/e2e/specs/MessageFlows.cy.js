@@ -251,7 +251,7 @@ describe('Message Flows', { scrollBehavior: false }, () => {
 
     clickAndDropElement(nodeTypes.pool, pool1Position);
     clickAndDropElement(nodeTypes.pool, pool2Position);
-    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-sub-process');
+    addNodeTypeToPaper(taskPosition, nodeTypes.task, 'switch-to-call-activity');
     setBoundaryEvent(nodeTypes.boundaryMessageEvent, taskPosition, nodeTypes.subProcess);
     connectNodesWithFlow('generic-flow-button', startEventPosition, boundaryEventPosition, 'center');
 

@@ -2000,7 +2000,7 @@ export default {
           node.pool = this.poolTarget;
         }
 
-        const targetProcess = node.getTargetProcess(this.processes, this.processNode);
+        const targetProcess = node.getTargetProcess(this.processes, this.contextProcessNode);
         addNodeToProcess(node, targetProcess);
 
         this.planeElements.push(node.diagram);
