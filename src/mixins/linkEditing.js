@@ -455,10 +455,10 @@ export default {
 
       if (doc) {
         const nodeNumber = this.getNodeNumber(view.model.component.id);
-        if (nodeNumber >= 0) {
+        if (nodeNumber > 0) {
           window.ProcessMaker.EventBus.$emit(
             'show-documentation', {
-              number: nodeNumber + 1,
+              number: nodeNumber,
               text: doc,
               position: pos,
               node: view.model.component.node,
@@ -469,6 +469,11 @@ export default {
     },
 
     getNodeNumber(nodeId) {
+      const documentationNumber = window.ProcessMaker?.modeler?.documentationNumbers?.[nodeId];
+      if (documentationNumber) {
+        return documentationNumber;
+      }
+
       const xmlString = window.ProcessMaker.$modeler.currentXML;
 
       const extractIds = (xml) => {
@@ -483,7 +488,7 @@ export default {
 
       const ids = extractIds(xmlString);
 
-      return ids.indexOf(nodeId);
+      return ids.indexOf(nodeId) + 1;
     },
   },
 };
