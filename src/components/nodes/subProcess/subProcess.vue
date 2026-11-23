@@ -44,7 +44,7 @@
 import debounce from 'lodash/debounce';
 import { util } from 'jointjs';
 import portsConfig from '@/mixins/portsConfig';
-import TaskShape from '@/components/nodes/task/shape';
+import { getTaskShape } from '@/components/nodes/task/shape';
 import { taskHeight } from '@/components/nodes/task/taskConfig';
 import store from '@/store';
 import hasMarkers, { markerSize } from '@/mixins/hasMarkers';
@@ -196,7 +196,7 @@ export default {
     },
   },
   mounted() {
-    this.shape = new TaskShape();
+    this.shape = getTaskShape(store.getters.isForDocumenting);
     this.$set(this.markers.bottomCenter, 'subprocess', subprocessIcon);
     let bounds = this.node.diagram.bounds;
     this.shape.position(bounds.x, bounds.y);
